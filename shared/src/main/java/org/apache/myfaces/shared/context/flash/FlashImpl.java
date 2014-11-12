@@ -749,14 +749,24 @@ public class FlashImpl extends Flash implements ReleasableFlash
      * On the next request we can get it with _getRenderFlashMapTokenFromPreviousRequest().
      * @param externalContext
      */
-    private void _saveRenderFlashMapTokenForNextRequest(ExternalContext externalContext)
+    private void _saveRenderFlashMapTokenForNextRequest(FacesContext facesContext)
     {
+        ExternalContext externalContext = facesContext.getExternalContext();
         String tokenValue = (String) externalContext.getRequestMap().get(FLASH_RENDER_MAP_TOKEN);
         ClientWindow clientWindow = externalContext.getClientWindow();
         if (clientWindow != null)
         {
-            FlashClientWindowTokenCollection lruMap = getFlashClientWindowTokenCollection(externalContext, true);
-            lruMap.put(clientWindow.getId(), tokenValue);
+            if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
+            {
+                //Use HttpSession or PortletSession object
+                Map<String, Object> sessionMap = externalContext.getSessionMap();
+                sessionMap.put(FLASH_RENDER_MAP_TOKEN+SEPARATOR_CHAR+clientWindow.getId(), tokenValue);
+            }
+            else
+            {
+                FlashClientWindowTokenCollection lruMap = getFlashClientWindowTokenCollection(externalContext, true);
+                lruMap.put(clientWindow.getId(), tokenValue);
+            }
         }
         else
         {
@@ -783,16 +793,26 @@ public class FlashImpl extends Flash implements ReleasableFlash
      * @param externalContext
      * @return
      */
-    private String _getRenderFlashMapTokenFromPreviousRequest(ExternalContext externalContext)
+    private String _getRenderFlashMapTokenFromPreviousRequest(FacesContext facesContext)
     {
+        ExternalContext externalContext = facesContext.getExternalContext();
         String tokenValue = null;
         ClientWindow clientWindow = externalContext.getClientWindow();
         if (clientWindow != null)
         {
-            FlashClientWindowTokenCollection lruMap = getFlashClientWindowTokenCollection(externalContext, false);
-            if (lruMap != null)
+            if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
             {
-                tokenValue = (String) lruMap.get(clientWindow.getId());
+                Map<String, Object> sessionMap = externalContext.getSessionMap();
+                tokenValue = (String) sessionMap.get(FLASH_RENDER_MAP_TOKEN+
+                        SEPARATOR_CHAR+clientWindow.getId());                
+            }
+            else
+            {
+                FlashClientWindowTokenCollection lruMap = getFlashClientWindowTokenCollection(externalContext, false);
+                if (lruMap != null)
+                {
+                    tokenValue = (String) lruMap.get(clientWindow.getId());
+                }
             }
         }
         else
@@ -830,7 +850,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
         Map<String, Object> requestMap = externalContext.getRequestMap();
 
         final String previousRenderToken 
-                = _getRenderFlashMapTokenFromPreviousRequest(externalContext);
+                = _getRenderFlashMapTokenFromPreviousRequest(facesContext);
         if (previousRenderToken != null)
         {
             // "restore" the renderMap from the previous request
@@ -868,7 +888,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
         
         // we now have the final render token for this request, thus we can
         // already save it for the next request, because it won't change
-        _saveRenderFlashMapTokenForNextRequest(externalContext);
+        _saveRenderFlashMapTokenForNextRequest(facesContext);
     }
     
     /**
@@ -1071,20 +1091,29 @@ public class FlashImpl extends Flash implements ReleasableFlash
             Map<String, Object> map = _getRenderFlashMap(facesContext);
             if (map.isEmpty())
             {
-                // Remove token, because it is not necessary
-                FlashClientWindowTokenCollection lruMap = getFlashClientWindowTokenCollection(externalContext, false);
-                if (lruMap != null)
+                if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
                 {
-                    lruMap.remove(clientWindow.getId());
                     Map<String, Object> sessionMap = externalContext.getSessionMap();
-                    if (lruMap.isEmpty())
+                    sessionMap.remove(FLASH_RENDER_MAP_TOKEN+SEPARATOR_CHAR+clientWindow.getId());                
+                }
+                else
+                {
+                    // Remove token, because it is not necessary
+                    FlashClientWindowTokenCollection lruMap = getFlashClientWindowTokenCollection(
+                            externalContext, false);
+                    if (lruMap != null)
                     {
-                        sessionMap.remove(FLASH_CW_LRU_MAP);
-                    }
-                    else
-                    {
-                        //refresh remove
-                        sessionMap.put(FLASH_CW_LRU_MAP, lruMap);
+                        lruMap.remove(clientWindow.getId());
+                        Map<String, Object> sessionMap = externalContext.getSessionMap();
+                        if (lruMap.isEmpty())
+                        {
+                            sessionMap.remove(FLASH_CW_LRU_MAP);
+                        }
+                        else
+                        {
+                            //refresh remove
+                            sessionMap.put(FLASH_CW_LRU_MAP, lruMap);
+                        }
                     }
                 }
             }
@@ -1117,7 +1146,8 @@ public class FlashImpl extends Flash implements ReleasableFlash
 
     public void clearFlashMap(FacesContext facesContext, String clientWindowId, String token)
     {
-        if (!_flashScopeDisabled)
+        if ((!_flashScopeDisabled) && 
+                (!facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext)))
         {
             ExternalContext externalContext = facesContext.getExternalContext();
             ClientWindow clientWindow = externalContext.getClientWindow();

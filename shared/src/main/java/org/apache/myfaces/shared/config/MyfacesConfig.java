@@ -514,14 +514,30 @@ public class MyfacesConfig
     
     /**
      * Indicate the max number of flash tokens stored into session. It is only active when 
-     * javax.faces.CLIENT_WINDOW_MODE is enabled. Each flash token is associated to one client window id at
+     * javax.faces.CLIENT_WINDOW_MODE is enabled and javax.faces.STATE_SAVING_METHOD is set
+     * to "server". Each flash token is associated to one client window id at
      * the same time, so this param is related to the limit of active client windows per session. 
      * By default is the same number as in 
      * (org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION / 
      * org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION) + 1 = 6.
      */
     @JSFWebConfigParam(since="2.2.6", group="state", tags="performance")
-    static final String NUMBER_OF_FLASH_TOKENS_IN_SESSION = "org.apache.myfaces.NUMBER_OF_FLASH_TOKENS_IN_SESSION";
+    static final String INIT_PARAM_NUMBER_OF_FLASH_TOKENS_IN_SESSION = 
+            "org.apache.myfaces.NUMBER_OF_FLASH_TOKENS_IN_SESSION";
+    
+    /**
+     * Indicate the max number of client window ids stored into session by faces flow. It is only active when 
+     * javax.faces.CLIENT_WINDOW_MODE is enabled and javax.faces.STATE_SAVING_METHOD is set
+     * to "server". This param is related to the limit of active client 
+     * windows per session, and it is used to cleanup flow scope beans when a client window or view becomes 
+     * invalid. 
+     * By default is the same number as in 
+     * (org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION / 
+     * org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION) + 1 = 6.
+     */
+    @JSFWebConfigParam(since="2.2.6", group="state", tags="performance")
+    static final String INIT_PARAM_NUMBER_OF_FACES_FLOW_CLIENT_WINDOW_IDS_IN_SESSION = 
+            "org.apache.myfaces.FACES_FLOW_CLIENT_WINDOW_IDS_IN_SESSION";
     
     private boolean _prettyHtml;
     private boolean _detectJavascript;
@@ -564,6 +580,7 @@ public class MyfacesConfig
     private Integer _numberOfViewsInSession;
     private Integer _numberOfSequentialViewsInSession;
     private Integer _numberOfFlashTokensInSession;
+    private Integer _numberOfFacesFlowClientWindowIdsInSession;
 
     private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -866,7 +883,11 @@ public class MyfacesConfig
         }
         myfacesConfig.setNumberOfFlashTokensInSession(WebConfigParamUtils.getIntegerInitParameter(
                         extCtx, 
-                        INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION, numberOfFlashTokensInSessionDefault));
+                        INIT_PARAM_NUMBER_OF_FLASH_TOKENS_IN_SESSION, numberOfFlashTokensInSessionDefault));
+        myfacesConfig.setNumberOfFacesFlowClientWindowIdsInSession(WebConfigParamUtils.getIntegerInitParameter(
+                        extCtx, 
+                        INIT_PARAM_NUMBER_OF_FACES_FLOW_CLIENT_WINDOW_IDS_IN_SESSION, 
+                        numberOfFlashTokensInSessionDefault));
         
         if (TOMAHAWK_AVAILABLE)
         {
@@ -1502,5 +1523,21 @@ public class MyfacesConfig
     public void setNumberOfFlashTokensInSession(Integer numberOfFlashTokensInSession)
     {
         this._numberOfFlashTokensInSession = numberOfFlashTokensInSession;
+    }
+
+    /**
+     * @return the _numberOfFacesFlowClientWindowIdsInSession
+     */
+    public Integer getNumberOfFacesFlowClientWindowIdsInSession()
+    {
+        return _numberOfFacesFlowClientWindowIdsInSession;
+    }
+
+    /**
+     * @param _numberOfFacesFlowClientWindowIdsInSession the _numberOfFacesFlowClientWindowIdsInSession to set
+     */
+    public void setNumberOfFacesFlowClientWindowIdsInSession(Integer numberOfFacesFlowClientWindowIdsInSession)
+    {
+        this._numberOfFacesFlowClientWindowIdsInSession = numberOfFacesFlowClientWindowIdsInSession;
     }
 }

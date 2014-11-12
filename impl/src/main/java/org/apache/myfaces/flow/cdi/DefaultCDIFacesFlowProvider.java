@@ -111,6 +111,26 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
         }
         return null;
     }
+
+    @Override
+    public void refreshClientWindow(FacesContext facesContext)
+    {
+        if (!facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
+        {
+            Flow flow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+            if (flow != null)
+            {
+                BeanManager beanManager = getBeanManager(facesContext);
+                if (beanManager != null)
+                {
+                    FlowScopeBeanHolder beanHolder = CDIUtils.lookup(beanManager, FlowScopeBeanHolder.class);
+
+                    //Refresh client window for flow scope
+                    beanHolder.refreshClientWindow(facesContext);
+                }
+            }
+        }
+    }
     
     public BeanManager getBeanManager()
     {

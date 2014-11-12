@@ -36,5 +36,8 @@ public abstract class FacesFlowProvider
     public abstract void doBeforeExitFlow(FacesContext context, Flow flow);
     
     public abstract Map<Object, Object> getCurrentFlowScope(FacesContext context);
-    
+  
+    public void refreshClientWindow(FacesContext context)
+    {
+    }
 }

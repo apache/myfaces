@@ -39,6 +39,7 @@ import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.flow.FlowHandler;
+import javax.faces.lifecycle.ClientWindow;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.render.RenderKit;
@@ -48,6 +49,7 @@ import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewMetadata;
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.myfaces.event.PostClientWindowAndViewInitializedEvent;
 
 import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.shared.config.MyfacesConfig;
@@ -200,6 +202,16 @@ class RestoreViewExecutor extends PhaseExecutor
             // Restore binding
             // See https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=806
             restoreViewSupport.processComponentBinding(facesContext, viewRoot);
+            
+            ClientWindow clientWindow = facesContext.getExternalContext().getClientWindow();
+            if (clientWindow != null)
+            {
+                // The idea of this event is once the client window and the view is initialized, 
+                // you have the information required to clean up any scope that belongs to old
+                // clientWindow instances like flow scope (in server side state saving).
+                facesContext.getApplication().publishEvent(facesContext, PostClientWindowAndViewInitializedEvent.class, 
+                        clientWindow);
+            }
         }
         else
         { // If the request is a non-postback
@@ -292,6 +304,13 @@ class RestoreViewExecutor extends PhaseExecutor
             
             // Store the new UIViewRoot instance in the FacesContext.
             facesContext.setViewRoot(viewRoot);
+
+            ClientWindow clientWindow = facesContext.getExternalContext().getClientWindow();
+            if (clientWindow != null)
+            {
+                facesContext.getApplication().publishEvent(facesContext, PostClientWindowAndViewInitializedEvent.class, 
+                        clientWindow);
+            }
             
             FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
             if (flowHandler != null)

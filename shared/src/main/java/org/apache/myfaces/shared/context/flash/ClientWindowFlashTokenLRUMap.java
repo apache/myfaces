@@ -66,11 +66,6 @@ class ClientWindowFlashTokenLRUMap extends LRUMap implements Serializable
         super(map, scanUntilRemovable);
     }
     
-    public synchronized String getValue(String key)
-    {
-        return (String) get(key);
-    }
-
     @Override
     protected boolean removeLRU(LinkEntry entry)
     {

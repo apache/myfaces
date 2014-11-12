@@ -30,6 +30,8 @@ import javax.faces.application.NavigationCase;
 import javax.faces.application.NavigationHandler;
 import javax.faces.application.NavigationHandlerWrapper;
 import javax.faces.context.FacesContext;
+import javax.faces.event.SystemEvent;
+import javax.faces.event.SystemEventListener;
 import javax.faces.flow.Flow;
 import javax.faces.flow.FlowCallNode;
 import javax.faces.flow.FlowHandler;
@@ -37,6 +39,7 @@ import javax.faces.flow.FlowNode;
 import javax.faces.flow.Parameter;
 import javax.faces.flow.ReturnNode;
 import javax.faces.lifecycle.ClientWindow;
+import org.apache.myfaces.event.PostClientWindowAndViewInitializedEvent;
 import org.apache.myfaces.spi.FacesFlowProvider;
 import org.apache.myfaces.spi.FacesFlowProviderFactory;
 
@@ -45,7 +48,7 @@ import org.apache.myfaces.spi.FacesFlowProviderFactory;
  * @since 2.2
  * @author Leonardo Uribe
  */
-public class FlowHandlerImpl extends FlowHandler
+public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
 {
     private final static String CURRENT_FLOW_STACK = "oam.flow.STACK.";
     private final static String ROOT_LAST_VIEW_ID = "oam.flow.ROOT_LAST_VIEW_ID.";
@@ -386,6 +389,9 @@ public class FlowHandlerImpl extends FlowHandler
                     facesContext.getExternalContext());
             _facesFlowProvider = factory.getFacesFlowProvider(
                     facesContext.getExternalContext());
+            
+            facesContext.getApplication().unsubscribeFromEvent(PostClientWindowAndViewInitializedEvent.class, this);
+            facesContext.getApplication().subscribeToEvent(PostClientWindowAndViewInitializedEvent.class, this);
         }
         return _facesFlowProvider;
     }
@@ -1064,6 +1070,21 @@ public class FlowHandlerImpl extends FlowHandler
             FlowHandlerImpl flowHandlerImpl = (FlowHandlerImpl) flowHandler;
             return flowHandlerImpl.getActiveFlows(facesContext);
         }
+    }
+
+    @Override
+    public boolean isListenerForSource(Object source)
+    {
+        return source instanceof ClientWindow;
+    }
+
+    @Override
+    public void processEvent(SystemEvent event)
+    {
+        // refresh client window to faces flow provider
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesFlowProvider provider = getFacesFlowProvider(facesContext);
+        provider.refreshClientWindow(facesContext);
     }
 
 }

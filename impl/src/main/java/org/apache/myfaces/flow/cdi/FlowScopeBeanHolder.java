@@ -44,6 +44,7 @@ import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.flow.FlowReference;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.context.ExceptionHandlerImpl;
 
 
@@ -67,6 +68,8 @@ public class FlowScopeBeanHolder implements Serializable
     
     private Map<String, List<String>> activeFlowMapKeys = new ConcurrentHashMap<String, List<String>>();
     
+    private FacesFlowClientWindowCollection windowCollection = null;
+    
     public static final String CURRENT_FLOW_SCOPE_MAP = "oam.CURRENT_FLOW_SCOPE_MAP";
     
     private static final String FLOW_SCOPE_PREFIX = "oam.flow.SCOPE";
@@ -84,6 +87,7 @@ public class FlowScopeBeanHolder implements Serializable
     public void init()
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
+        this.refreshClientWindow(facesContext);
         facesContext.getExternalContext().getSessionMap().put(FLOW_SCOPE_PREFIX_KEY,
             1);
     }
@@ -237,6 +241,38 @@ public class FlowScopeBeanHolder implements Serializable
         }
     }
     
+    public void refreshClientWindow(FacesContext facesContext)
+    {
+        if (windowCollection == null)
+        {
+            Integer ft = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).
+                    getNumberOfFacesFlowClientWindowIdsInSession();
+            windowCollection = new FacesFlowClientWindowCollection(new ClientWindowFacesFlowLRUMap(ft));
+        }
+        ClientWindow cw = facesContext.getExternalContext().getClientWindow();
+        if (cw != null && cw.getId() != null)
+        {
+            windowCollection.setFlowScopeBeanHolder(this);
+            windowCollection.put(cw.getId(), "");
+        }
+    }
+    
+    public void clearFlowMap(String clientWindowId)
+    {
+        List<String> activeFlowKeys = activeFlowMapKeys.remove(clientWindowId);
+        if (activeFlowKeys != null && !activeFlowKeys.isEmpty())
+        {
+            for (String flowMapKey : activeFlowKeys)
+            {
+                ContextualStorage contextualStorage = storageMap.remove(flowMapKey);
+                if (contextualStorage != null)
+                {
+                    FlowScopedContextImpl.destroyAllActive(contextualStorage);
+                }
+            }
+        }
+    }
+    
     public List<String> getActiveFlowMapKeys(FacesContext facesContext)
     {
         ClientWindow cw = facesContext.getExternalContext().getClientWindow();
@@ -290,6 +326,7 @@ public class FlowScopeBeanHolder implements Serializable
         }
         activeFlowKeys.add(0, flowMapKey);
         activeFlowMapKeys.put(baseKey, activeFlowKeys);
+        refreshClientWindow(facesContext);
     }
     
     public void destroyCurrentFlowScope(FacesContext facesContext)
