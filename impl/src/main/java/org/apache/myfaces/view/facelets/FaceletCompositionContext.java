@@ -699,6 +699,15 @@ abstract public class FaceletCompositionContext
         return false;
     }
     
+    public UIViewRoot getViewRoot(FacesContext facesContext)
+    {
+        return facesContext.getViewRoot();
+    }
+    
+    public void setViewRoot(UIViewRoot root)
+    {
+    }
+    
     public VisitContextFactory getVisitContextFactory()
     {
         return (VisitContextFactory)FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);

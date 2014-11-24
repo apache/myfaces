@@ -460,7 +460,12 @@ public final class ComponentSupport
             }
         } while (c != null);
 
-        return ctx.getFacesContext().getViewRoot();
+        UIViewRoot root = ctx.getFacesContext().getViewRoot();
+        if (root == null)
+        {
+            root = FaceletCompositionContext.getCurrentInstance(ctx).getViewRoot(ctx.getFacesContext());
+        }
+        return root;
     }
     
     /**

@@ -159,6 +159,7 @@ final class DefaultFacelet extends AbstractFacelet
             }
             if (parent instanceof UIViewRoot)
             {
+                myFaceletContext.setViewRoot((UIViewRoot)parent);
                 ComponentSupport.setCachedFacesContext((UIViewRoot)parent, facesContext);
             }
         }

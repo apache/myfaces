@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.view.facelets.pss.acid;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.el.ExpressionFactory;
@@ -28,6 +27,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIPanel;
+import javax.faces.component.UIViewParameter;
 import javax.faces.component.html.HtmlDataTable;
 
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
@@ -35,6 +35,7 @@ import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.apache.myfaces.view.facelets.pss.acid.component.UISimpleComponent1;
 import org.apache.myfaces.view.facelets.pss.acid.managed.CheckActionEventBean;
+import org.apache.myfaces.view.facelets.pss.acid.managed.ComponentBindingBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ComponentBindingFormBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.CustomSessionBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ForEachBean;
@@ -591,6 +592,53 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         comp = facesContext.getViewRoot().findComponent("mainForm:panel");
         Assert.assertNotNull(comp);
         
+        
+        endRequest();
+    }    
+    
+    @Test
+    public void testViewParamBinding() throws Exception
+    {
+        startViewRequest("/viewParamBinding1.xhtml");
+        processLifecycleExecuteAndRender();
+        
+        UIComponent comp = facesContext.getViewRoot().findComponent("panel");
+        Assert.assertNotNull(comp);
+        Assert.assertEquals(1, comp.getChildCount());
+        
+        UIViewParameter viewParam = (UIViewParameter) facesContext.getExternalContext().getRequestMap().get("foo");
+        Assert.assertNotNull(viewParam);
+        Assert.assertEquals("foo", viewParam.getName());
+        UIViewParameter viewParam2 = facesContext.getApplication().evaluateExpressionGet(
+                facesContext, "#{componentBindingBean}", ComponentBindingBean.class).getViewParam();
+        Assert.assertNotNull(viewParam2);
+        Assert.assertEquals("foo2", viewParam2.getName());
+        
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        client.submit(button);
+        processLifecycleExecuteAndRender();
+        Assert.assertNotNull(comp);
+        // Even if in the postback two components were added, pss algorithm must replace the
+        // component with the one saved.
+        Assert.assertEquals(1, comp.getChildCount());
+        
+        comp = facesContext.getViewRoot().findComponent("panel");
+        
+        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
+        
+        button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        client.submit(button);
+        processLifecycleExecuteAndRender();
+
+        comp = facesContext.getViewRoot().findComponent("panel");
+        Assert.assertNotNull(comp);
+        // Even if in the postback two components were added, pss algorithm must replace the
+        // component with the one saved.
+        Assert.assertEquals(1, comp.getChildCount());
+        
+        Assert.assertEquals("value1", comp.getAttributes().get("attr1"));
+        Assert.assertEquals("value2", comp.getChildren().get(0).getAttributes().get("attr2"));
         
         endRequest();
     }    

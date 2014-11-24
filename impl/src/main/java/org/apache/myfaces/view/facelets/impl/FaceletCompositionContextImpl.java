@@ -162,6 +162,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     private List<Integer> _dynamicOldDeletionLevel;
     
     private VisitContextFactory _visitContextFactory = null;
+    private UIViewRoot _viewRoot = null;
     
     public FaceletCompositionContextImpl(FaceletFactory factory, FacesContext facesContext)
     {
@@ -201,6 +202,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _isInMetadataSection = 0;
         _sharedStringBuilder = null;
         _ccLevel = 0;
+        _viewRoot = null;
     }
     
     /**
@@ -291,6 +293,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _sharedStringBuilder = null;
         _visitContextFactory = null;
         _dynamicOldDeletionLevel = null;
+        _viewRoot = null;
     }
    
     @Override
@@ -1221,6 +1224,22 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     public boolean isDynamicComponentSection()
     {
         return _dynamicComponentSection > 0;
+    }
+
+    @Override
+    public void setViewRoot(UIViewRoot root)
+    {
+        this._viewRoot = root;
+    }
+
+    @Override
+    public UIViewRoot getViewRoot(FacesContext facesContext)
+    {
+        if (_viewRoot == null)
+        {
+            return facesContext.getViewRoot();
+        }
+        return _viewRoot;
     }
     
     @Override

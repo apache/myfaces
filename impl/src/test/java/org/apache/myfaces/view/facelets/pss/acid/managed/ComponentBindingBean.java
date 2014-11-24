@@ -22,6 +22,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIPanel;
+import javax.faces.component.UIViewParameter;
 import javax.faces.component.html.HtmlPanelGroup;
 import javax.faces.context.FacesContext;
 
@@ -34,6 +35,8 @@ import javax.faces.context.FacesContext;
 public class ComponentBindingBean
 {
     private UIPanel panel;
+    
+    private UIViewParameter viewParam;
     
     public UIPanel getPanel()
     {
@@ -71,5 +74,21 @@ public class ComponentBindingBean
     public void setPanel(UIPanel panel)
     {
         this.panel = panel;
+    }
+
+    /**
+     * @return the viewParam
+     */
+    public UIViewParameter getViewParam()
+    {
+        return viewParam;
+    }
+
+    /**
+     * @param viewParam the viewParam to set
+     */
+    public void setViewParam(UIViewParameter viewParam)
+    {
+        this.viewParam = viewParam;
     }
 }
