@@ -2139,4 +2139,30 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
 
         endRequest();
     }
+    
+    @Test
+    public void testUIRepeatCC1() throws Exception
+    {
+        startViewRequest("/nested_ui_repeat_1.xhtml");
+        processLifecycleExecuteAndRender();
+        
+        MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
+        String content1 = new String(writer1.content());
+        Assert.assertTrue(content1.contains("A-"));
+        Assert.assertTrue(content1.contains("B-"));
+        Assert.assertTrue(content1.contains("C-"));
+        
+        this.client.ajax("mainForm:j_id_7:1:j_id_8:refresh", "action", 
+                "mainForm:j_id_7:1:j_id_8:refresh", 
+                "mainForm:j_id_7:1:j_id_8:compToUpdate", true);
+        
+        processLifecycleExecuteAndRender();
+        
+        MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
+        String content2 = new String(writer2.content());
+        Assert.assertTrue(content2.contains("mainForm:j_id_7:1:j_id_8:compToUpdate"));
+        Assert.assertTrue(content2.contains("B-"));
+
+        endRequest();
+    }
 }
