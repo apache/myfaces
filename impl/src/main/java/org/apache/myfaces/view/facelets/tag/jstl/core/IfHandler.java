@@ -87,67 +87,73 @@ public final class IfHandler extends TagHandler implements ComponentContainerHan
         Boolean restoredValue = (Boolean) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
         boolean b = false;
         boolean markInitialState = false;
-        if (restoredValue != null)
+        try
         {
-            if (!PhaseId.RESTORE_VIEW.equals(ctx.getFacesContext().getCurrentPhaseId()))
+            if (restoredValue != null)
             {
-                b = this.test.getBoolean(ctx);
-                if (!restoredValue.equals(b))
+                if (!PhaseId.RESTORE_VIEW.equals(ctx.getFacesContext().getCurrentPhaseId()))
                 {
-                    markInitialState = true;
+                    b = this.test.getBoolean(ctx);
+                    if (!restoredValue.equals(b))
+                    {
+                        markInitialState = true;
+                    }
+                }
+                else
+                {
+                    b = restoredValue;
                 }
             }
             else
             {
-                b = restoredValue;
+                // No state restored, calculate
+                b = this.test.getBoolean(ctx);
             }
-        }
-        else
-        {
-            // No state restored, calculate
-            b = this.test.getBoolean(ctx);
-        }
-        //boolean b = getTestValue(ctx, fcc, parent, uniqueId);
-        if (this.var != null)
-        {
-            ctx.setAttribute(var.getValue(ctx), Boolean.valueOf(b));
-        }
-        if (b)
-        {
-            boolean oldMarkInitialState = false;
-            Boolean isBuildingInitialState = null;
-            try
+            //boolean b = getTestValue(ctx, fcc, parent, uniqueId);
+            if (this.var != null)
             {
-                if (markInitialState)
+                ctx.setAttribute(var.getValue(ctx), Boolean.valueOf(b));
+            }
+            if (b)
+            {
+                boolean oldMarkInitialState = false;
+                Boolean isBuildingInitialState = null;
+                try
                 {
-                    //set markInitialState flag
-                    oldMarkInitialState = fcc.isMarkInitialState();
-                    fcc.setMarkInitialState(true);
-                    isBuildingInitialState = (Boolean) ctx.getFacesContext().getAttributes().put(
-                            StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+                    if (markInitialState)
+                    {
+                        //set markInitialState flag
+                        oldMarkInitialState = fcc.isMarkInitialState();
+                        fcc.setMarkInitialState(true);
+                        isBuildingInitialState = (Boolean) ctx.getFacesContext().getAttributes().put(
+                                StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+                    }
+                    this.nextHandler.apply(ctx, parent);
                 }
-                this.nextHandler.apply(ctx, parent);
-            }
-            finally
-            {
-                if (markInitialState)
+                finally
                 {
-                    //unset markInitialState flag
-                    if (isBuildingInitialState == null)
+                    if (markInitialState)
                     {
-                        ctx.getFacesContext().getAttributes().remove(
-                                StateManager.IS_BUILDING_INITIAL_STATE);
+                        //unset markInitialState flag
+                        if (isBuildingInitialState == null)
+                        {
+                            ctx.getFacesContext().getAttributes().remove(
+                                    StateManager.IS_BUILDING_INITIAL_STATE);
+                        }
+                        else
+                        {
+                            ctx.getFacesContext().getAttributes().put(
+                                    StateManager.IS_BUILDING_INITIAL_STATE, isBuildingInitialState);
+                        }
+                        fcc.setMarkInitialState(oldMarkInitialState);
                     }
-                    else
-                    {
-                        ctx.getFacesContext().getAttributes().put(
-                                StateManager.IS_BUILDING_INITIAL_STATE, isBuildingInitialState);
-                    }
-                    fcc.setMarkInitialState(oldMarkInitialState);
                 }
             }
         }
-        fcc.endComponentUniqueIdSection();
+        finally
+        {
+            fcc.endComponentUniqueIdSection();
+        }
         //AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
         ComponentSupport.saveInitialTagState(ctx, fcc, parent, uniqueId, b);
         if (fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() && !fcc.isRefreshingTransientBuild())

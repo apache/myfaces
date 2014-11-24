@@ -199,120 +199,126 @@ public final class LegacyForEachHandler extends TagHandler implements ComponentC
         FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
         if (src != null)
         {
-            fcc.startComponentUniqueIdSection();
-            AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-            PageContext pctx = actx.getPageContext();
-            Iterator<?> itr = this.toIterator(src);
-            if (itr != null)
+            try
             {
-                int i = 0;
-
-                // move to start
-                while (i < s && itr.hasNext())
+                fcc.startComponentUniqueIdSection();
+                AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+                PageContext pctx = actx.getPageContext();
+                Iterator<?> itr = this.toIterator(src);
+                if (itr != null)
                 {
-                    itr.next();
-                    i++;
-                }
+                    int i = 0;
 
-                String v = this.getVarName(ctx);
-                String vs = this.getVarStatusName(ctx);
-                ValueExpression ve = null;
-                ValueExpression vO = this.capture(v, pctx);
-                ValueExpression vsO = this.capture(vs, pctx);
-                int mi = 0;
-                Object value = null;
-                try
-                {
-                    boolean first = true;
-                    while (i <= e && itr.hasNext())
+                    // move to start
+                    while (i < s && itr.hasNext())
                     {
-                        value = itr.next();
+                        itr.next();
+                        i++;
+                    }
 
-                        // set the var
+                    String v = this.getVarName(ctx);
+                    String vs = this.getVarStatusName(ctx);
+                    ValueExpression ve = null;
+                    ValueExpression vO = this.capture(v, pctx);
+                    ValueExpression vsO = this.capture(vs, pctx);
+                    int mi = 0;
+                    Object value = null;
+                    try
+                    {
+                        boolean first = true;
+                        while (i <= e && itr.hasNext())
+                        {
+                            value = itr.next();
+
+                            // set the var
+                            if (v != null)
+                            {
+                                if (t || srcVE == null)
+                                {
+                                    if (value == null)
+                                    {
+                                        pctx.getAttributes().put(v, null);
+                                    }
+                                    else
+                                    {
+                                        pctx.getAttributes().put(v, 
+                                                ctx.getExpressionFactory().createValueExpression(
+                                                    value, Object.class));
+                                    }
+                                }
+                                else
+                                {
+                                    ve = this.getVarExpr(srcVE, src, value, i);
+                                    pctx.getAttributes().put(v, ve);
+                                }
+                            }
+
+                            // set the varStatus
+                            if (vs != null)
+                            {
+                                IterationStatus itrS = new IterationStatus(first, !itr.hasNext(), i, sO, eO, mO, value);
+                                if (t || srcVE == null)
+                                {
+                                    if (srcVE == null)
+                                    {
+                                        pctx.getAttributes().put(vs, null);
+                                    }
+                                    else
+                                    {
+                                        pctx.getAttributes().put(vs, 
+                                                ctx.getExpressionFactory().createValueExpression(
+                                                    itrS, Object.class));
+                                    }
+                                }
+                                else
+                                {
+                                    ve = new IterationStatusExpression(itrS);
+                                    pctx.getAttributes().put(vs, ve);
+                                }
+                            }
+
+                            // execute body
+                            this.nextHandler.apply(ctx, parent);
+
+                            // increment steps
+                            mi = 1;
+                            while (mi < m && itr.hasNext())
+                            {
+                                itr.next();
+                                mi++;
+                                i++;
+                            }
+                            i++;
+
+                            first = false;
+                        }
+                    }
+                    finally
+                    {
+                        //Remove them from PageContext
                         if (v != null)
                         {
-                            if (t || srcVE == null)
-                            {
-                                if (value == null)
-                                {
-                                    pctx.getAttributes().put(v, null);
-                                }
-                                else
-                                {
-                                    pctx.getAttributes().put(v, 
-                                            ctx.getExpressionFactory().createValueExpression(
-                                                value, Object.class));
-                                }
-                            }
-                            else
-                            {
-                                ve = this.getVarExpr(srcVE, src, value, i);
-                                pctx.getAttributes().put(v, ve);
-                            }
+                            pctx.getAttributes().put(v, vO);
                         }
-
-                        // set the varStatus
+                        else
+                        {
+                            pctx.getAttributes().remove(v);
+                        }
                         if (vs != null)
                         {
-                            IterationStatus itrS = new IterationStatus(first, !itr.hasNext(), i, sO, eO, mO, value);
-                            if (t || srcVE == null)
-                            {
-                                if (srcVE == null)
-                                {
-                                    pctx.getAttributes().put(vs, null);
-                                }
-                                else
-                                {
-                                    pctx.getAttributes().put(vs, 
-                                            ctx.getExpressionFactory().createValueExpression(
-                                                itrS, Object.class));
-                                }
-                            }
-                            else
-                            {
-                                ve = new IterationStatusExpression(itrS);
-                                pctx.getAttributes().put(vs, ve);
-                            }
+                            pctx.getAttributes().put(vs, vsO);
                         }
-
-                        // execute body
-                        this.nextHandler.apply(ctx, parent);
-
-                        // increment steps
-                        mi = 1;
-                        while (mi < m && itr.hasNext())
+                        else
                         {
-                            itr.next();
-                            mi++;
-                            i++;
+                            pctx.getAttributes().remove(vs);
                         }
-                        i++;
-
-                        first = false;
-                    }
-                }
-                finally
-                {
-                    //Remove them from PageContext
-                    if (v != null)
-                    {
-                        pctx.getAttributes().put(v, vO);
-                    }
-                    else
-                    {
-                        pctx.getAttributes().remove(v);
-                    }
-                    if (vs != null)
-                    {
-                        pctx.getAttributes().put(vs, vsO);
-                    }
-                    else
-                    {
-                        pctx.getAttributes().remove(vs);
                     }
                 }
             }
-            fcc.endComponentUniqueIdSection();
+            finally
+            {
+                fcc.endComponentUniqueIdSection();
+            }
         }
 
         if (fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() && !fcc.isRefreshingTransientBuild())

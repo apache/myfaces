@@ -94,62 +94,96 @@ public final class ChooseHandler extends TagHandler implements ComponentContaine
         String uniqueId = actx.generateUniqueFaceletTagId(
             fcc.startComponentUniqueIdSection(), tagId);
         Integer savedOption = null;
-        
-        Integer restoredSavedOption = getSavedOption(ctx, fcc, parent, uniqueId);
-        
-        if (restoredSavedOption != null)
+        try
         {
-            if (!PhaseId.RESTORE_VIEW.equals(ctx.getFacesContext().getCurrentPhaseId()))
+            Integer restoredSavedOption = getSavedOption(ctx, fcc, parent, uniqueId);
+
+            if (restoredSavedOption != null)
             {
-                for (int i = 0; i < this.when.length; i++)
+                if (!PhaseId.RESTORE_VIEW.equals(ctx.getFacesContext().getCurrentPhaseId()))
                 {
-                    //Ensure each option has its unique section
-                    fcc.startComponentUniqueIdSection();
-                    if (!processed)
+                    for (int i = 0; i < this.when.length; i++)
                     {
-                        if (this.when[i].isTestTrue(ctx))
+                        //Ensure each option has its unique section
+                        fcc.startComponentUniqueIdSection();
+                        try
                         {
-                            boolean markInitialState = !restoredSavedOption.equals(i);
-                            boolean oldMarkInitialState = false;
-                            Boolean isBuildingInitialState = null;
-                            try
+                            if (!processed)
                             {
-                                if (markInitialState)
+                                if (this.when[i].isTestTrue(ctx))
                                 {
-                                    //set markInitialState flag
-                                    oldMarkInitialState = fcc.isMarkInitialState();
-                                    fcc.setMarkInitialState(true);
-                                    isBuildingInitialState = (Boolean) ctx.getFacesContext().getAttributes().put(
-                                            StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
-                                }
-                                this.when[i].apply(ctx, parent);
-                            }
-                            finally
-                            {
-                                if (markInitialState)
-                                {
-                                    //unset markInitialState flag
-                                    if (isBuildingInitialState == null)
+                                    boolean markInitialState = !restoredSavedOption.equals(i);
+                                    boolean oldMarkInitialState = false;
+                                    Boolean isBuildingInitialState = null;
+                                    try
                                     {
-                                        ctx.getFacesContext().getAttributes().remove(
-                                                StateManager.IS_BUILDING_INITIAL_STATE);
+                                        if (markInitialState)
+                                        {
+                                            //set markInitialState flag
+                                            oldMarkInitialState = fcc.isMarkInitialState();
+                                            fcc.setMarkInitialState(true);
+                                            isBuildingInitialState = (Boolean) ctx.getFacesContext().
+                                                    getAttributes().put(
+                                                    StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+                                        }
+                                        this.when[i].apply(ctx, parent);
                                     }
-                                    else
+                                    finally
                                     {
-                                        ctx.getFacesContext().getAttributes().put(
-                                                StateManager.IS_BUILDING_INITIAL_STATE, isBuildingInitialState);
+                                        if (markInitialState)
+                                        {
+                                            //unset markInitialState flag
+                                            if (isBuildingInitialState == null)
+                                            {
+                                                ctx.getFacesContext().getAttributes().remove(
+                                                        StateManager.IS_BUILDING_INITIAL_STATE);
+                                            }
+                                            else
+                                            {
+                                                ctx.getFacesContext().getAttributes().put(
+                                                        StateManager.IS_BUILDING_INITIAL_STATE, isBuildingInitialState);
+                                            }
+                                            fcc.setMarkInitialState(oldMarkInitialState);
+                                        }
                                     }
-                                    fcc.setMarkInitialState(oldMarkInitialState);
+                                    processed = true;
+                                    savedOption = i;
+                                    //return;
                                 }
                             }
-                            processed = true;
-                            savedOption = i;
-                            //return;
+                        }
+                        finally
+                        {
+                            fcc.endComponentUniqueIdSection();
                         }
                     }
-                    fcc.endComponentUniqueIdSection();
-                }
 
+                }
+                else
+                {
+                    for (int i = 0; i < this.when.length; i++)
+                    {
+                        //Ensure each option has its unique section
+                        fcc.startComponentUniqueIdSection();
+                        try
+                        {
+                            if (!processed)
+                            {
+                                if (restoredSavedOption.equals(i))
+                                {
+                                    this.when[i].apply(ctx, parent);
+                                    processed = true;
+                                    savedOption = i;
+                                    //return;
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            fcc.endComponentUniqueIdSection();
+                        }
+                    }
+                }
             }
             else
             {
@@ -157,51 +191,46 @@ public final class ChooseHandler extends TagHandler implements ComponentContaine
                 {
                     //Ensure each option has its unique section
                     fcc.startComponentUniqueIdSection();
-                    if (!processed)
+                    try
                     {
-                        if (restoredSavedOption.equals(i))
+                        if (!processed)
                         {
-                            this.when[i].apply(ctx, parent);
-                            processed = true;
-                            savedOption = i;
-                            //return;
+                            if (this.when[i].isTestTrue(ctx))
+                            {
+                                this.when[i].apply(ctx, parent);
+                                processed = true;
+                                savedOption = i;
+                                //return;
+                            }
                         }
                     }
+                    finally
+                    {
+                        fcc.endComponentUniqueIdSection();
+                    }
+                }
+            }
+            if (this.otherwise != null)
+            {
+                fcc.startComponentUniqueIdSection();
+                try
+                {
+                    if (!processed)
+                    {
+                        this.otherwise.apply(ctx, parent);
+                        savedOption = -1;
+                    }
+                }
+                finally
+                {
                     fcc.endComponentUniqueIdSection();
                 }
             }
         }
-        else
+        finally
         {
-            for (int i = 0; i < this.when.length; i++)
-            {
-                //Ensure each option has its unique section
-                fcc.startComponentUniqueIdSection();
-                if (!processed)
-                {
-                    if (this.when[i].isTestTrue(ctx))
-                    {
-                        this.when[i].apply(ctx, parent);
-                        processed = true;
-                        savedOption = i;
-                        //return;
-                    }
-                }
-                fcc.endComponentUniqueIdSection();
-            }
-        }
-        if (this.otherwise != null)
-        {
-            fcc.startComponentUniqueIdSection();
-            if (!processed)
-            {
-                this.otherwise.apply(ctx, parent);
-                savedOption = -1;
-            }
             fcc.endComponentUniqueIdSection();
         }
-        
-        fcc.endComponentUniqueIdSection();
 
         ComponentSupport.saveInitialTagState(ctx, fcc, parent, uniqueId, savedOption);
         if (fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() && !fcc.isRefreshingTransientBuild())

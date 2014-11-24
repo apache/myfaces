@@ -137,109 +137,114 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
         actx.pushClient(this);
         FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
         String uniqueId = null;
-        if (!_template.isLiteral())
+        try
         {
-            uniqueId = actx.generateUniqueFaceletTagId(
-                fcc.startComponentUniqueIdSection(), tagId);
-        }
-        else if (_params != null)
-        {
-            uniqueId = actx.generateUniqueFaceletTagId(
-                fcc.generateUniqueComponentId(), tagId);
-        }
-        
-        if (_params != null)
-        {
-            //VariableMapper vm = new VariableMapperWrapper(orig);
-            //ctx.setVariableMapper(vm);
-            for (int i = 0; i < _params.length; i++)
+            if (!_template.isLiteral())
             {
-                _params[i].apply(ctx, parent, _params[i].getName(ctx), _params[i].getValue(ctx), uniqueId);
+                uniqueId = actx.generateUniqueFaceletTagId(
+                    fcc.startComponentUniqueIdSection(), tagId);
             }
-        }
-
-        String path;
-        boolean markInitialState = false;
-        if (!_template.isLiteral())
-        {
-            //String uniqueId = fcc.startComponentUniqueIdSection();
-            //path = getTemplateValue(actx, fcc, parent, uniqueId);
-            String restoredPath = (String) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
-            if (restoredPath != null)
+            else if (_params != null)
             {
-                // If is not restore view phase, the path value should be
-                // evaluated and if is not equals, trigger markInitialState stuff.
-                if (!PhaseId.RESTORE_VIEW.equals(ctx.getFacesContext().getCurrentPhaseId()))
+                uniqueId = actx.generateUniqueFaceletTagId(
+                    fcc.generateUniqueComponentId(), tagId);
+            }
+            if (_params != null)
+            {
+                //VariableMapper vm = new VariableMapperWrapper(orig);
+                //ctx.setVariableMapper(vm);
+                for (int i = 0; i < _params.length; i++)
                 {
-                    path = this._template.getValue(ctx);
-                    if (path == null || path.length() == 0)
+                    _params[i].apply(ctx, parent, _params[i].getName(ctx), _params[i].getValue(ctx), uniqueId);
+                }
+            }
+
+            String path;
+            boolean markInitialState = false;
+            if (!_template.isLiteral())
+            {
+                //String uniqueId = fcc.startComponentUniqueIdSection();
+                //path = getTemplateValue(actx, fcc, parent, uniqueId);
+                String restoredPath = (String) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
+                if (restoredPath != null)
+                {
+                    // If is not restore view phase, the path value should be
+                    // evaluated and if is not equals, trigger markInitialState stuff.
+                    if (!PhaseId.RESTORE_VIEW.equals(ctx.getFacesContext().getCurrentPhaseId()))
                     {
-                        return;
+                        path = this._template.getValue(ctx);
+                        if (path == null || path.length() == 0)
+                        {
+                            return;
+                        }
+                        if (!path.equals(restoredPath))
+                        {
+                            markInitialState = true;
+                        }
                     }
-                    if (!path.equals(restoredPath))
+                    else
                     {
-                        markInitialState = true;
+                        path = restoredPath;
                     }
                 }
                 else
                 {
-                    path = restoredPath;
+                    //No state restored, calculate path
+                    path = this._template.getValue(ctx);
                 }
+                ComponentSupport.saveInitialTagState(ctx, fcc, parent, uniqueId, path);
             }
             else
             {
-                //No state restored, calculate path
-                path = this._template.getValue(ctx);
-            }
-            ComponentSupport.saveInitialTagState(ctx, fcc, parent, uniqueId, path);
-        }
-        else
-        {
-            path = _template.getValue(ctx);
-        }
-        try
-        {
-            boolean oldMarkInitialState = false;
-            Boolean isBuildingInitialState = null;
-            if (markInitialState)
-            {
-                //set markInitialState flag
-                oldMarkInitialState = fcc.isMarkInitialState();
-                fcc.setMarkInitialState(true);
-                isBuildingInitialState = (Boolean) ctx.getFacesContext().getAttributes().put(
-                        StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+                path = _template.getValue(ctx);
             }
             try
             {
-                ctx.includeFacelet(parent, path);
+                boolean oldMarkInitialState = false;
+                Boolean isBuildingInitialState = null;
+                if (markInitialState)
+                {
+                    //set markInitialState flag
+                    oldMarkInitialState = fcc.isMarkInitialState();
+                    fcc.setMarkInitialState(true);
+                    isBuildingInitialState = (Boolean) ctx.getFacesContext().getAttributes().put(
+                            StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+                }
+                try
+                {
+                    ctx.includeFacelet(parent, path);
+                }
+                finally
+                {
+                    if (markInitialState)
+                    {
+                        //unset markInitialState flag
+                        if (isBuildingInitialState == null)
+                        {
+                            ctx.getFacesContext().getAttributes().remove(
+                                    StateManager.IS_BUILDING_INITIAL_STATE);
+                        }
+                        else
+                        {
+                            ctx.getFacesContext().getAttributes().put(
+                                    StateManager.IS_BUILDING_INITIAL_STATE, isBuildingInitialState);
+                        }
+                        fcc.setMarkInitialState(oldMarkInitialState);
+                    }
+                }
             }
             finally
             {
-                if (markInitialState)
-                {
-                    //unset markInitialState flag
-                    if (isBuildingInitialState == null)
-                    {
-                        ctx.getFacesContext().getAttributes().remove(
-                                StateManager.IS_BUILDING_INITIAL_STATE);
-                    }
-                    else
-                    {
-                        ctx.getFacesContext().getAttributes().put(
-                                StateManager.IS_BUILDING_INITIAL_STATE, isBuildingInitialState);
-                    }
-                    fcc.setMarkInitialState(oldMarkInitialState);
-                }
+                //ctx.setVariableMapper(orig);
+                actx.popClient(this);
             }
         }
         finally
         {
-            //ctx.setVariableMapper(orig);
-            actx.popClient(this);
-        }
-        if (!_template.isLiteral())
-        {
-            fcc.endComponentUniqueIdSection();
+            if (!_template.isLiteral())
+            {
+                fcc.endComponentUniqueIdSection();
+            }
         }
         if (!_template.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() &&
             !fcc.isRefreshingTransientBuild())

@@ -121,42 +121,49 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
             actx.pushClient(this);
             FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
             String uniqueId = fcc.startComponentUniqueIdSection();
-            if (this._vars.length > 0)
+            try
             {
-                if (ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))
+                if (this._vars.length > 0)
                 {
-                    FaceletState faceletState = ComponentSupport.getFaceletState(ctx, parent, true);
-                    for (int i = 0; i < this._vars.length; i++)
+                    if (ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))
                     {
-                        //((AbstractFaceletContext) ctx).getTemplateContext().setParameter(names[i], values[i]);
-                        faceletState.putBinding(uniqueId, names[i], values[i]);
-                        ValueExpression ve;
-                        if (ExternalSpecifications.isUnifiedELAvailable())
+                        FaceletState faceletState = ComponentSupport.getFaceletState(ctx, parent, true);
+                        for (int i = 0; i < this._vars.length; i++)
                         {
-                            ve = new FaceletStateValueExpressionUEL(uniqueId, names[i]);
+                            //((AbstractFaceletContext) ctx).getTemplateContext().setParameter(names[i], values[i]);
+                            faceletState.putBinding(uniqueId, names[i], values[i]);
+                            ValueExpression ve;
+                            if (ExternalSpecifications.isUnifiedELAvailable())
+                            {
+                                ve = new FaceletStateValueExpressionUEL(uniqueId, names[i]);
+                            }
+                            else
+                            {
+                                ve = new FaceletStateValueExpression(uniqueId, names[i]);
+                            }
+                            actx.getTemplateContext().setParameter(names[i], ve);
                         }
-                        else
+                    }
+                    else
+                    {
+                        for (int i = 0; i < this._vars.length; i++)
                         {
-                            ve = new FaceletStateValueExpression(uniqueId, names[i]);
+                            ((AbstractFaceletContext) ctx).getTemplateContext().setParameter(names[i], values[i]);
                         }
-                        actx.getTemplateContext().setParameter(names[i], ve);
                     }
                 }
-                else
+                // Disable caching always, even in 'always' mode
+                // The only mode that can support EL caching in this condition is alwaysRedirect.
+                if (!ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))
                 {
-                    for (int i = 0; i < this._vars.length; i++)
-                    {
-                        ((AbstractFaceletContext) ctx).getTemplateContext().setParameter(names[i], values[i]);
-                    }
+                    actx.getTemplateContext().setAllowCacheELExpressions(false);
                 }
+                ctx.includeFacelet(parent, this._location);
             }
-            // Disable caching always, even in 'always' mode
-            // The only mode that can support EL caching in this condition is alwaysRedirect.
-            if (!ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))
+            finally
             {
-                actx.getTemplateContext().setAllowCacheELExpressions(false);
+                fcc.endComponentUniqueIdSection();
             }
-            ctx.includeFacelet(parent, this._location);
         }
         catch (FileNotFoundException e)
         {

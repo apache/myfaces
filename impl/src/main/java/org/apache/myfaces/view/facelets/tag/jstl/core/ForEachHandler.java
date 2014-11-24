@@ -350,38 +350,43 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                         serializableValues = false;
                     }
 
-                    fcc.startComponentUniqueIdSection(base);
-
-                    setVar(ctx, parent, uniqueId, base, t, src, srcVE, value, v, i);
-                    boolean last = !itr.hasNext();
-                    // set the varStatus
-                    if (vs != null)
+                    try
                     {
-                        IterationStatus itrS = new IterationStatus(first, last, i, sO, eO, mO, value);
-                        ValueExpression ve;
-                        if (t || srcVE == null)
+                        fcc.startComponentUniqueIdSection(base);
+
+                        setVar(ctx, parent, uniqueId, base, t, src, srcVE, value, v, i);
+                        boolean last = !itr.hasNext();
+                        // set the varStatus
+                        if (vs != null)
                         {
-                            if (srcVE == null)
+                            IterationStatus itrS = new IterationStatus(first, last, i, sO, eO, mO, value);
+                            ValueExpression ve;
+                            if (t || srcVE == null)
                             {
-                                ve = null;
+                                if (srcVE == null)
+                                {
+                                    ve = null;
+                                }
+                                else
+                                {
+                                    ve = ctx.getExpressionFactory().createValueExpression(
+                                                itrS, Object.class);
+                                }
                             }
                             else
                             {
-                                ve = ctx.getExpressionFactory().createValueExpression(
-                                            itrS, Object.class);
+                                ve = new IterationStatusExpression(itrS);
                             }
+                            setVar(ctx, parent, uniqueId, base+"_vs", vs, ve);
                         }
-                        else
-                        {
-                            ve = new IterationStatusExpression(itrS);
-                        }
-                        setVar(ctx, parent, uniqueId, base+"_vs", vs, ve);
+
+                        // execute body
+                        this.nextHandler.apply(ctx, parent);
                     }
-
-                    // execute body
-                    this.nextHandler.apply(ctx, parent);
-
-                    fcc.endComponentUniqueIdSection(base);
+                    finally
+                    {
+                        fcc.endComponentUniqueIdSection(base);
+                    }
 
                     // increment steps
                     mi = 1;
@@ -435,41 +440,46 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                 value = stateValue[1];
                 String base = (String) stateValue[0];
 
-                fcc.startComponentUniqueIdSection(base);
-
-                setVar(ctx, parent, uniqueId, base, t, src, srcVE, value, v, (Integer) stateValue[2]);
-                
-                boolean first = (si == 0);
-                boolean last = (si == size-1);
-                int i = (Integer)stateValue[2];
-                // set the varStatus
-                if (vs != null)
+                try
                 {
-                    IterationStatus itrS = new IterationStatus(first, last, i, sO, eO, mO, value);
-                    ValueExpression ve;
-                    if (t || srcVE == null)
+                    fcc.startComponentUniqueIdSection(base);
+
+                    setVar(ctx, parent, uniqueId, base, t, src, srcVE, value, v, (Integer) stateValue[2]);
+
+                    boolean first = (si == 0);
+                    boolean last = (si == size-1);
+                    int i = (Integer)stateValue[2];
+                    // set the varStatus
+                    if (vs != null)
                     {
-                        if (srcVE == null)
+                        IterationStatus itrS = new IterationStatus(first, last, i, sO, eO, mO, value);
+                        ValueExpression ve;
+                        if (t || srcVE == null)
                         {
-                            ve = null;
+                            if (srcVE == null)
+                            {
+                                ve = null;
+                            }
+                            else
+                            {
+                                ve = ctx.getExpressionFactory().createValueExpression(
+                                            itrS, Object.class);
+                            }
                         }
                         else
                         {
-                            ve = ctx.getExpressionFactory().createValueExpression(
-                                        itrS, Object.class);
+                            ve = new IterationStatusExpression(itrS);
                         }
+                        setVar(ctx, parent, uniqueId, base, vs, ve);
                     }
-                    else
-                    {
-                        ve = new IterationStatusExpression(itrS);
-                    }
-                    setVar(ctx, parent, uniqueId, base, vs, ve);
+
+                    // execute body
+                    this.nextHandler.apply(ctx, parent);
                 }
-
-                // execute body
-                this.nextHandler.apply(ctx, parent);
-
-                fcc.endComponentUniqueIdSection(base);
+                finally
+                {
+                    fcc.endComponentUniqueIdSection(base);
+                }
             }
         }
         finally
@@ -556,72 +566,77 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                             new Object[]{base, value, i});
                     }
 
-                    fcc.startComponentUniqueIdSection(base);
-
-                    setVar(ctx, parent, uniqueId, base, t, src, srcVE, value, v, i);
-
-                    boolean last = !itr.hasNext();
-                    // set the varStatus
-                    if (vs != null)
+                    try
                     {
-                        IterationStatus itrS = new IterationStatus(first, last, i, sO, eO, mO, value);
-                        ValueExpression ve;
-                        if (t || srcVE == null)
+                        fcc.startComponentUniqueIdSection(base);
+
+                        setVar(ctx, parent, uniqueId, base, t, src, srcVE, value, v, i);
+
+                        boolean last = !itr.hasNext();
+                        // set the varStatus
+                        if (vs != null)
                         {
-                            if (srcVE == null)
+                            IterationStatus itrS = new IterationStatus(first, last, i, sO, eO, mO, value);
+                            ValueExpression ve;
+                            if (t || srcVE == null)
                             {
-                                ve = null;
+                                if (srcVE == null)
+                                {
+                                    ve = null;
+                                }
+                                else
+                                {
+                                    ve = ctx.getExpressionFactory().createValueExpression(
+                                                itrS, Object.class);
+                                }
                             }
                             else
                             {
-                                ve = ctx.getExpressionFactory().createValueExpression(
-                                            itrS, Object.class);
+                                ve = new IterationStatusExpression(itrS);
+                            }
+                            setVar(ctx, parent, uniqueId, base, vs, ve);
+                        }
+                        //setVarStatus(ctx, pctx, t, sO, eO, mO, srcVE, value, vs, first, !itr.hasNext(), i);
+
+                        // execute body
+                        boolean markInitialState = (stateValue == null);// !restoredSavedOption.equals(i)
+                        boolean oldMarkInitialState = false;
+                        Boolean isBuildingInitialState = null;
+                        try
+                        {
+                            if (markInitialState && fcc.isUsingPSSOnThisView())
+                            {
+                                //set markInitialState flag
+                                oldMarkInitialState = fcc.isMarkInitialState();
+                                fcc.setMarkInitialState(true);
+                                isBuildingInitialState = (Boolean) ctx.getFacesContext().getAttributes().put(
+                                        StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+                            }                                
+                            this.nextHandler.apply(ctx, parent);
+                        }
+                        finally
+                        {
+                            if (markInitialState && fcc.isUsingPSSOnThisView())
+                            {
+                                //unset markInitialState flag
+                                if (isBuildingInitialState == null)
+                                {
+                                    ctx.getFacesContext().getAttributes().remove(
+                                            StateManager.IS_BUILDING_INITIAL_STATE);
+                                }
+                                else
+                                {
+                                    ctx.getFacesContext().getAttributes().put(
+                                            StateManager.IS_BUILDING_INITIAL_STATE, isBuildingInitialState);
+                                }
+                                fcc.setMarkInitialState(oldMarkInitialState);
                             }
                         }
-                        else
-                        {
-                            ve = new IterationStatusExpression(itrS);
-                        }
-                        setVar(ctx, parent, uniqueId, base, vs, ve);
-                    }
-                    //setVarStatus(ctx, pctx, t, sO, eO, mO, srcVE, value, vs, first, !itr.hasNext(), i);
-
-                    // execute body
-                    boolean markInitialState = (stateValue == null);// !restoredSavedOption.equals(i)
-                    boolean oldMarkInitialState = false;
-                    Boolean isBuildingInitialState = null;
-                    try
-                    {
-                        if (markInitialState && fcc.isUsingPSSOnThisView())
-                        {
-                            //set markInitialState flag
-                            oldMarkInitialState = fcc.isMarkInitialState();
-                            fcc.setMarkInitialState(true);
-                            isBuildingInitialState = (Boolean) ctx.getFacesContext().getAttributes().put(
-                                    StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
-                        }                                
-                        this.nextHandler.apply(ctx, parent);
                     }
                     finally
                     {
-                        if (markInitialState && fcc.isUsingPSSOnThisView())
-                        {
-                            //unset markInitialState flag
-                            if (isBuildingInitialState == null)
-                            {
-                                ctx.getFacesContext().getAttributes().remove(
-                                        StateManager.IS_BUILDING_INITIAL_STATE);
-                            }
-                            else
-                            {
-                                ctx.getFacesContext().getAttributes().put(
-                                        StateManager.IS_BUILDING_INITIAL_STATE, isBuildingInitialState);
-                            }
-                            fcc.setMarkInitialState(oldMarkInitialState);
-                        }
+                        fcc.endComponentUniqueIdSection(base);
                     }
-
-                    fcc.endComponentUniqueIdSection(base);
 
                     // increment steps
                     mi = 1;

@@ -179,47 +179,53 @@ public final class LegacyDecorateHandler extends TagHandler implements TemplateC
         }
         try
         {
-            boolean oldMarkInitialState = false;
-            Boolean isBuildingInitialState = null;
-            if (markInitialState)
-            {
-                //set markInitialState flag
-                oldMarkInitialState = fcc.isMarkInitialState();
-                fcc.setMarkInitialState(true);
-                isBuildingInitialState = (Boolean) ctx.getFacesContext().getAttributes().put(
-                        StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
-            }
             try
             {
-                ctx.includeFacelet(parent, path);
+                boolean oldMarkInitialState = false;
+                Boolean isBuildingInitialState = null;
+                if (markInitialState)
+                {
+                    //set markInitialState flag
+                    oldMarkInitialState = fcc.isMarkInitialState();
+                    fcc.setMarkInitialState(true);
+                    isBuildingInitialState = (Boolean) ctx.getFacesContext().getAttributes().put(
+                            StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+                }
+                try
+                {
+                    ctx.includeFacelet(parent, path);
+                }
+                finally
+                {
+                    if (markInitialState)
+                    {
+                        //unset markInitialState flag
+                        if (isBuildingInitialState == null)
+                        {
+                            ctx.getFacesContext().getAttributes().remove(
+                                    StateManager.IS_BUILDING_INITIAL_STATE);
+                        }
+                        else
+                        {
+                            ctx.getFacesContext().getAttributes().put(
+                                    StateManager.IS_BUILDING_INITIAL_STATE, isBuildingInitialState);
+                        }
+                        fcc.setMarkInitialState(oldMarkInitialState);
+                    }
+                }
             }
             finally
             {
-                if (markInitialState)
-                {
-                    //unset markInitialState flag
-                    if (isBuildingInitialState == null)
-                    {
-                        ctx.getFacesContext().getAttributes().remove(
-                                StateManager.IS_BUILDING_INITIAL_STATE);
-                    }
-                    else
-                    {
-                        ctx.getFacesContext().getAttributes().put(
-                                StateManager.IS_BUILDING_INITIAL_STATE, isBuildingInitialState);
-                    }
-                    fcc.setMarkInitialState(oldMarkInitialState);
-                }
+                ctx.setVariableMapper(orig);
+                actx.popClient(this);
             }
         }
         finally
         {
-            ctx.setVariableMapper(orig);
-            actx.popClient(this);
-        }
-        if (!_template.isLiteral())
-        {
-            fcc.endComponentUniqueIdSection();
+            if (!_template.isLiteral())
+            {
+                fcc.endComponentUniqueIdSection();
+            }
         }
         if (!_template.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() &&
             !fcc.isRefreshingTransientBuild())
