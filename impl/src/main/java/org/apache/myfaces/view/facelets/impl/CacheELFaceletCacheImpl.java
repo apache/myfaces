@@ -181,7 +181,7 @@ class CacheELFaceletCacheImpl extends AbstractFaceletCache<DefaultFacelet>
     @Override
     public boolean isFaceletCached(URL url)
     {
-        return _facelets.containsKey(url);
+        return _facelets.containsKey(url.toString());
     }
 
     @Override
@@ -212,7 +212,7 @@ class CacheELFaceletCacheImpl extends AbstractFaceletCache<DefaultFacelet>
     @Override
     public boolean isViewMetadataFaceletCached(URL url)
     {
-        return _viewMetadataFacelets.containsKey(url);
+        return _viewMetadataFacelets.containsKey(url.toString());
     }
 
     /**
@@ -284,7 +284,7 @@ class CacheELFaceletCacheImpl extends AbstractFaceletCache<DefaultFacelet>
     @Override
     public boolean isCompositeComponentMetadataFaceletCached(URL url)
     {
-        return _compositeComponentMetadataFacelets.containsKey(url);
+        return _compositeComponentMetadataFacelets.containsKey(url.toString());
     }
     
     private static class FaceletNode

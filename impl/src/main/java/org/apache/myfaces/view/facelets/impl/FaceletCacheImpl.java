@@ -96,7 +96,7 @@ class FaceletCacheImpl extends FaceletCache<DefaultFacelet>
     @Override
     public boolean isFaceletCached(URL url)
     {
-        return _facelets.containsKey(url);
+        return _facelets.containsKey(url.toString());
     }
 
     @Override
@@ -126,7 +126,7 @@ class FaceletCacheImpl extends FaceletCache<DefaultFacelet>
     @Override
     public boolean isViewMetadataFaceletCached(URL url)
     {
-        return _viewMetadataFacelets.containsKey(url);
+        return _viewMetadataFacelets.containsKey(url.toString());
     }
 
     /**
