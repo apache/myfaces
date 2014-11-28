@@ -412,12 +412,15 @@ if (!myfaces._impl.core._Runtime) {
                     //we can achieve that with a small timeout, the timeout
                     //triggers after the processing is done!
                     if (!defer) {
-                        _T.globalEval(xhr.responseText.replace("\n", "\r\n") + "\r\n//@ sourceURL=" + src);
+                        //we moved the sourceurl notation to # instead of @ because ie does not cover it correctly
+                        //newer browsers understand # including ie since windows 8.1
+                        //see http://updates.html5rocks.com/2013/06/sourceMappingURL-and-sourceURL-syntax-changed
+                        _T.globalEval(xhr.responseText.replace("\n", "\r\n") + "\r\n//# sourceURL=" + src);
                     } else {
                         //TODO not ideal we maybe ought to move to something else here
                         //but since it is not in use yet, it is ok
                         setTimeout(function() {
-                            _T.globalEval(xhr.responseText + "\r\n//@ sourceURL=" + src);
+                            _T.globalEval(xhr.responseText.replace("\n", "\r\n") + "\r\n//# sourceURL=" + src);
                         }, 1);
                     }
                 } else {
