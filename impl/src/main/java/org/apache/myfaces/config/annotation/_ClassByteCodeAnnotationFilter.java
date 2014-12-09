@@ -48,7 +48,12 @@ class _ClassByteCodeAnnotationFilter
     private static final int CP_INFO_DOUBLE = 6;
     private static final int CP_INFO_NAME_AND_TYPE = 12;
     private static final int CP_INFO_UTF8 = 1;
-    
+
+    private static final int CP_INFO_METHOD_HANDLE = 15;
+    private static final int CP_INFO_METHOD_TYPE = 16;
+    private static final int CP_INFO_INVOKE_DYNAMIC = 18;
+
+
     /**
      * Checks if the .class file referenced by the DataInput could 
      * contain the annotation names available in the set.
@@ -170,6 +175,26 @@ class _ClassByteCodeAnnotationFilter
                     in.readUnsignedShort();
                     in.readUnsignedShort();
                     break;
+
+                case CP_INFO_METHOD_HANDLE:     // Ignore
+                    // u1 reference_kind
+                    // u2 reference_index
+                    in.readUnsignedByte();
+                    in.readUnsignedShort();
+                    break;
+
+                case CP_INFO_METHOD_TYPE:       // Ignore
+                    // u2 descriptor_index
+                    in.readUnsignedShort();
+                    break;
+
+                case CP_INFO_INVOKE_DYNAMIC:    // Ignore
+                    // u2 bootstrap_method_attr_index;
+                    // u2 name_and_type_index;
+                    in.readUnsignedShort();
+                    in.readUnsignedShort();
+                    break;
+
                 default:
                     // THIS SHOULD NOT HAPPEN! Log error info
                     // and break for loop, because from this point
