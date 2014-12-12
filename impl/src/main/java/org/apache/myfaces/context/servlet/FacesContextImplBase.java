@@ -175,6 +175,17 @@ public abstract class FacesContextImplBase extends FacesContext
         return _application;
     }
     
+    /**
+     * 
+     */
+    public void purgeFacesContext()
+    {
+        _application = null;
+        _renderKitFactory = null;
+        _cachedRenderKit = null;
+        _cachedRenderKitId = null;
+    }
+    
     @Override
     public final ExceptionHandler getExceptionHandler()
     {

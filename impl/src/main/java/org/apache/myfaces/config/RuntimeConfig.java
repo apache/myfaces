@@ -147,6 +147,23 @@ public class RuntimeConfig
         _resourceLibraryContracts.clear();
         _injectedObjects.clear();
         _faceletTagLibraries.clear();
+        
+        _resourceBundles.clear();
+        if (facesConfigElResolvers != null)
+        {
+            facesConfigElResolvers.clear();
+        }
+        if (applicationElResolvers != null)
+        {
+            applicationElResolvers.clear();
+        }
+        _faceletsProcessingByFileExtension.clear();
+        _contractMappings.clear();
+        _componentTagDeclarations.clear();
+        _resourceResolvers.clear();
+        _namespaceById = new HashMap<Integer, String>();
+        _idByNamespace = new HashMap<String, Integer>();
+        _viewPoolMappings.clear();
     }
 
     /**

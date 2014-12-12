@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
@@ -137,6 +138,7 @@ import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
 import org.apache.myfaces.cdi.dependent.BeanEntry;
 import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
+import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.renderkit.LazyRenderKit;
 import org.apache.myfaces.spi.FacesConfigurationMerger;
 import org.apache.myfaces.spi.FacesConfigurationMergerFactory;
@@ -196,6 +198,10 @@ public class FacesConfigurator
      */
     public static final String ENABLE_DEFAULT_WINDOW_MODE = 
         "org.apache.myfaces.ENABLE_DEFAULT_WINDOW_MODE";
+    
+    private final static String PARAM_FACELETS_LIBRARIES_DEPRECATED = "facelets.LIBRARIES";
+    private final static String[] PARAMS_FACELETS_LIBRARIES = {ViewHandler.FACELETS_LIBRARIES_PARAM_NAME,
+        PARAM_FACELETS_LIBRARIES_DEPRECATED};
 
     private final ExternalContext _externalContext;
     private FacesContext _facesContext;
@@ -204,6 +210,8 @@ public class FacesConfigurator
     private AnnotationConfigurator _annotationConfigurator;
 
     private RuntimeConfig _runtimeConfig;
+    
+    private Application _application;
     
     private InjectionProvider _injectionProvider;
 
@@ -377,7 +385,70 @@ public class FacesConfigurator
                 lastModified = resModified;
             }
         }
-
+        
+        // get last modified from .taglib.xml
+        String faceletsFiles = WebConfigParamUtils.getStringInitParameter(_externalContext, 
+                PARAMS_FACELETS_LIBRARIES);
+        if (faceletsFiles != null)
+        {
+            String[] faceletFilesList = faceletsFiles.split(";");
+            for (int i = 0, size = faceletFilesList.length; i < size; i++)
+            {
+                String systemId = configFilesList.get(i);
+                resModified = getResourceLastModified(systemId);
+                if (resModified > lastModified)
+                {
+                    lastModified = resModified;
+                }
+            }
+        }
+        
+        // get last modified from -flow.xml
+        Set<String> directoryPaths = _externalContext.getResourcePaths("/");
+        if (directoryPaths != null)
+        {
+            List<String> contextSpecifiedList = configFilesList;
+            for (String dirPath : directoryPaths)
+            {
+                if (dirPath.equals("/WEB-INF/"))
+                {
+                    // Look on /WEB-INF/<flow-Name>/<flowName>-flow.xml
+                    Set<String> webDirectoryPaths = _externalContext.getResourcePaths(dirPath);
+                    for (String webDirPath : webDirectoryPaths)
+                    {
+                        if (webDirPath.endsWith("/") && 
+                            !webDirPath.equals("/WEB-INF/classes/"))
+                        {
+                            String flowName = webDirPath.substring(9, webDirPath.length() - 1);
+                            String filePath = webDirPath+flowName+"-flow.xml";
+                            if (!contextSpecifiedList.contains(filePath))
+                            {
+                                resModified = getResourceLastModified(filePath);
+                                if (resModified > lastModified)
+                                {
+                                    lastModified = resModified;
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (!dirPath.startsWith("/META-INF") && dirPath.endsWith("/"))
+                {
+                    // Look on /<flowName>/<flowName>-flow.xml
+                    String flowName = dirPath.substring(1, dirPath.length() - 1);
+                    String filePath = dirPath+flowName+"-flow.xml";
+                    if (!contextSpecifiedList.contains(filePath))
+                    {
+                        resModified = getResourceLastModified(filePath);
+                        if (resModified > lastModified)
+                        {
+                            lastModified = resModified;
+                        }
+                    }
+                }                
+            }
+        }
+        
         return lastModified;
     }
 
@@ -397,9 +468,10 @@ public class FacesConfigurator
             long ttl = lastUpdate + refreshPeriod;
             if ((System.currentTimeMillis() > ttl) && (getLastModifiedTime() > ttl))
             {
+                boolean purged = false;
                 try
                 {
-                    purgeConfiguration();
+                    purged = purgeConfiguration();
                 }
                 catch (NoSuchMethodException e)
                 {
@@ -420,48 +492,94 @@ public class FacesConfigurator
                 {
                     log.severe("Error during configuration clean-up" + e.getMessage());
                 }
-                configure();
+                if (purged)
+                {
+                    configure();
+                    
+                    // JSF 2.0 Publish PostConstructApplicationEvent after all configuration resources
+                    // has been parsed and processed
+                    FacesContext facesContext = getFacesContext();
+                    Application application = facesContext.getApplication();
 
-                // JSF 2.0 Publish PostConstructApplicationEvent after all configuration resources
-                // has been parsed and processed
-                FacesContext facesContext = getFacesContext();
-                Application application = facesContext.getApplication();
-
-                application.publishEvent(facesContext, PostConstructApplicationEvent.class,
-                        Application.class, application);
+                    application.publishEvent(facesContext, PostConstructApplicationEvent.class,
+                            Application.class, application);
+                }
             }
         }
     }
 
-    private void purgeConfiguration() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
+    private boolean purgeConfiguration() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
     {
 
         Method appFactoryPurgeMethod;
         Method renderKitPurgeMethod;
         Method lifecyclePurgeMethod;
+        Method facesContextPurgeMethod;
 
         // Check that we have access to all of the necessary purge methods before purging anything
         //
         ApplicationFactory applicationFactory
                 = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-        appFactoryPurgeMethod = applicationFactory.getClass().getMethod("purgeApplication", NO_PARAMETER_TYPES);
+        //appFactoryPurgeMethod = applicationFactory.getClass().getMethod("purgeApplication", NO_PARAMETER_TYPES);
+        appFactoryPurgeMethod = getPurgeMethod(applicationFactory, "purgeApplication", NO_PARAMETER_TYPES);
 
         RenderKitFactory renderKitFactory
                 = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-        renderKitPurgeMethod = renderKitFactory.getClass().getMethod("purgeRenderKit", NO_PARAMETER_TYPES);
+        //renderKitPurgeMethod = renderKitFactory.getClass().getMethod("purgeRenderKit", NO_PARAMETER_TYPES);
+        renderKitPurgeMethod = getPurgeMethod(renderKitFactory, "purgeRenderKit", NO_PARAMETER_TYPES);
 
         LifecycleFactory lifecycleFactory
                 = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        lifecyclePurgeMethod = lifecycleFactory.getClass().getMethod("purgeLifecycle", NO_PARAMETER_TYPES);
+        //lifecyclePurgeMethod = lifecycleFactory.getClass().getMethod("purgeLifecycle", NO_PARAMETER_TYPES);
+        lifecyclePurgeMethod = getPurgeMethod(lifecycleFactory, "purgeLifecycle", NO_PARAMETER_TYPES);
 
+        FacesContext facesContext = getFacesContext();
+        facesContextPurgeMethod = getPurgeMethod(facesContext, "purgeFacesContext", NO_PARAMETER_TYPES);
+        
         // If there was no exception so far, now we can purge
         //
-        appFactoryPurgeMethod.invoke(applicationFactory, NO_PARAMETERS);
-        renderKitPurgeMethod.invoke(renderKitFactory, NO_PARAMETERS);
-        RuntimeConfig.getCurrentInstance(_externalContext).purge();
-        lifecyclePurgeMethod.invoke(lifecycleFactory, NO_PARAMETERS);
+        if (appFactoryPurgeMethod != null && renderKitPurgeMethod != null && lifecyclePurgeMethod != null && 
+            facesContextPurgeMethod != null)
+        {
+            appFactoryPurgeMethod.invoke(applicationFactory, NO_PARAMETERS);
+            renderKitPurgeMethod.invoke(renderKitFactory, NO_PARAMETERS);
+            RuntimeConfig.getCurrentInstance(_externalContext).purge();
+            lifecyclePurgeMethod.invoke(lifecycleFactory, NO_PARAMETERS);
+            facesContextPurgeMethod.invoke(facesContext, NO_PARAMETERS);
 
-        // factories and serial factory need not be purged...
+            // factories and serial factory need not be purged...
+
+            // Remove first request processed so we can initialize it again
+            _externalContext.getApplicationMap().remove(LifecycleImpl.FIRST_REQUEST_PROCESSED_PARAM);
+            return true;
+        }
+        return false;
+    }
+    
+    private Method getPurgeMethod(Object instance, String methodName, Class<?>[] parameters)
+    {
+        while (instance != null)
+        {
+            Method purgeMethod = null;
+            try
+            {
+                purgeMethod = instance.getClass().getMethod(methodName, parameters);
+            }
+            catch (NoSuchMethodException e)
+            {
+                // No op, it is expected to found this case, so in that case
+                // look for the parent to do the purge
+            }
+            if (purgeMethod != null)
+            {
+                return purgeMethod;
+            }
+            if (instance instanceof FacesWrapper)
+            {
+                instance = ((FacesWrapper)instance).getWrapped();
+            }
+        }
+        return null;
     }
 
     public void configure() throws FacesException
@@ -780,6 +898,8 @@ public class FacesConfigurator
             String[] contracts = StringUtils.trim(StringUtils.splitShortString(mapping.getContracts(), ' '));
             runtimeConfig.addContractMapping(urlPattern, contracts);
         }
+        
+        this.setApplication(application);
     }
     
     private void _callInjectAndPostConstruct(Object instance)
@@ -1368,7 +1488,7 @@ public class FacesConfigurator
     private void configureFlowHandler()
     {
         FacesContext facesContext = getFacesContext();
-        Application application = facesContext.getApplication();
+        Application application = getApplication();
         
         FacesConfigData dispenser = getDispenser();
         
@@ -1576,8 +1696,7 @@ public class FacesConfigurator
 
     public void configureProtectedViews()
     {
-        Application application = ((ApplicationFactory)
-                FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY)).getApplication();
+        Application application = getApplication();
 
         FacesConfigData dispenser = getDispenser();
         //Protected Views
@@ -1605,5 +1724,19 @@ public class FacesConfigurator
             _facesContext = FacesContext.getCurrentInstance();
         }
         return _facesContext;
+    }
+    
+    protected Application getApplication()
+    {
+        if (_application == null)
+        {
+            return getFacesContext().getApplication();
+        }
+        return _application;
+    }
+    
+    protected void setApplication(Application application)
+    {
+        this._application = application;
     }
 }
