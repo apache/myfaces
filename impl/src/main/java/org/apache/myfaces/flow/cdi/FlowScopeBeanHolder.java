@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
@@ -211,12 +213,26 @@ public class FlowScopeBeanHolder implements Serializable
         if (!oldWindowContextStorages.isEmpty())
         {
             FacesContext facesContext = FacesContext.getCurrentInstance();
-            if (facesContext == null &&
-                applicationContextBean.getServletContext() != null)
+            ServletContext servletContext = null;
+            if (facesContext == null)
             {
                 try
                 {
-                    ServletContext servletContext = applicationContextBean.getServletContext();
+                    servletContext = applicationContextBean.getServletContext();
+                }
+                catch (Throwable e)
+                {
+                    Logger.getLogger(FlowScopeBeanHolder.class.getName()).log(Level.WARNING,
+                        "Cannot locate servletContext to create FacesContext on @PreDestroy flow scope beans. "
+                                + "The beans will be destroyed without active FacesContext instance.");
+                    servletContext = null;
+                }
+            }
+            if (facesContext == null &&
+                servletContext != null)
+            {
+                try
+                {
                     ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
                     ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
                     facesContext = new StartupFacesContextImpl(externalContext, 
