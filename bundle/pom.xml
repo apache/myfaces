@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-core-project</artifactId>
-        <version>2.2.7-SNAPSHOT</version>
+        <version>2.2.7</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
@@ -31,9 +31,9 @@
     <packaging>bundle</packaging>
 
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/bundle</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/bundle</developerConnection>
-        <url>http://svn.apache.org/repos/asf/myfaces/core/trunk/bundle</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.2.7/bundle</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.2.7/bundle</developerConnection>
+        <url>http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.2.7/bundle</url>
     </scm>
     
     <build>
