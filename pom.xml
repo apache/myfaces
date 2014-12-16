@@ -33,7 +33,7 @@
         This project is the home of the MyFaces implementation of the JavaServer Faces 2.1 specification, and
         consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
-    <version>2.1.17</version>
+    <version>2.1.18-SNAPSHOT</version>
     <url>http://myfaces.apache.org/core21</url>
 
     <issueManagement>
@@ -42,9 +42,9 @@
     </issueManagement>
 
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.1.17</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.1.17</developerConnection>
-        <url>http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.1.17</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/2.1.x</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.1.x</developerConnection>
+        <url>http://svn.apache.org/repos/asf/myfaces/core/branches/2.1.x</url>
     </scm>
 
     <modules>
