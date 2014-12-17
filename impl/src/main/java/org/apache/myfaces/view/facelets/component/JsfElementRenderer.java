@@ -52,6 +52,15 @@ public class JsfElementRenderer extends HtmlRenderer
     {
         return true;
     }
+    
+    @Override
+    public void decode(FacesContext context, UIComponent component)
+    {
+        // Check for npe
+        super.decode(context, component);
+        
+        HtmlRendererUtils.decodeClientBehaviors(context, component);
+    }
 
     public void encodeBegin(FacesContext facesContext, UIComponent component)
         throws IOException
