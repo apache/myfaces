@@ -33,6 +33,7 @@ import javax.faces.component.html.HtmlInputFile;
 import javax.faces.component.html.HtmlInputHidden;
 import javax.faces.component.html.HtmlInputSecret;
 import javax.faces.component.html.HtmlInputText;
+import javax.faces.component.html.HtmlInputTextarea;
 import javax.faces.component.html.HtmlOutcomeTargetButton;
 import javax.faces.component.html.HtmlOutcomeTargetLink;
 import javax.faces.component.html.HtmlOutputLabel;
@@ -45,7 +46,6 @@ import javax.faces.view.Location;
 import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagDecorator;
-import static junit.framework.TestCase.fail;
 import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
@@ -240,6 +240,8 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         HtmlSelectManyListbox select2 = (HtmlSelectManyListbox) form.findComponent("select2");
         Assert.assertNotNull(select2);
         
+        HtmlInputTextarea textarea1 = (HtmlInputTextarea) form.findComponent("textarea1");
+        Assert.assertNotNull(textarea1);
     }
 
     @Test

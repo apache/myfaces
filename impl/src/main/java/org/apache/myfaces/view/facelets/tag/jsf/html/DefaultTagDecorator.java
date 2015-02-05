@@ -134,7 +134,7 @@ public class DefaultTagDecorator implements TagDecorator
     
     static private final Object[] T_NAMES = new Object[]
     {
-      "textarea", new Object[]{new TagSelectorImpl(null, "h:inputTextArea")}
+      "textarea", new Object[]{new TagSelectorImpl(null, "h:inputTextarea")}
     };    
 
     static
