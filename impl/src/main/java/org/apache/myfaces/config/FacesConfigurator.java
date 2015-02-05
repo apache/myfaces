@@ -394,7 +394,7 @@ public class FacesConfigurator
             String[] faceletFilesList = faceletsFiles.split(";");
             for (int i = 0, size = faceletFilesList.length; i < size; i++)
             {
-                String systemId = configFilesList.get(i);
+                String systemId = faceletFilesList[i];
                 resModified = getResourceLastModified(systemId);
                 if (resModified > lastModified)
                 {
