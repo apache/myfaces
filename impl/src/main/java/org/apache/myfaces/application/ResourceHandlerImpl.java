@@ -843,7 +843,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                 for (ContractResourceLoader loader : getResourceHandlerSupport()
                         .getContractResourceLoaders())
                 {
-                    if (loader.libraryExists(contract, libraryName))
+                    if (loader.libraryExists(libraryName, contract))
                     {
                         return true;
                     }

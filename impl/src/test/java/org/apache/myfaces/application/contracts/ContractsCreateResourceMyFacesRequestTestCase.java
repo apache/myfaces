@@ -25,11 +25,11 @@ import javax.faces.application.ResourceHandler;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewResource;
 
-import junit.framework.Assert;
 import org.apache.myfaces.config.RuntimeConfig;
 
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class ContractsCreateResourceMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
@@ -92,6 +92,9 @@ public class ContractsCreateResourceMyFacesRequestTestCase extends AbstractMyFac
         
         Resource resource2 = resourceHandler.createResource("myjs.js", "mylib");
         Assert.assertNotNull(resource2);
+        
+        boolean libraryFound = resourceHandler.libraryExists("mylib");
+        Assert.assertTrue(libraryFound);
         
         endRequest();
     }
