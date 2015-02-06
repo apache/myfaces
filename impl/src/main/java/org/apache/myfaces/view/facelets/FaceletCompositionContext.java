@@ -449,6 +449,25 @@ abstract public class FaceletCompositionContext
     }
     
     /**
+     * Start a new unique id section, which means a new counter is used to
+     * generate unique ids to components, but appending a base to the
+     * new counter.
+     * 
+     * @return
+     */
+    public String startComponentUniqueIdSection(String base)
+    {
+        return null;
+    }
+    
+    /**
+     * @param base 
+     */
+    public void endComponentUniqueIdSection(String base)
+    {
+    }
+    
+    /**
      * Generate a unique id that will be used later to derive a unique id per tag
      * by FaceletContext.generateUniqueId(). This generator ensures uniqueness per
      * view but FaceletContext.generateUniqueId() ensures uniqueness per view and
@@ -548,7 +567,7 @@ abstract public class FaceletCompositionContext
     }
 
     /**
-     * Check if the view
+     * Check if the facelet is building view metadata
      * 
      * since 2.1.7, 2.0.13
      * @return 

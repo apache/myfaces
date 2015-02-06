@@ -979,6 +979,13 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _sectionUniqueComponentIdCounter.startUniqueIdSection();
         return _sectionUniqueIdCounter.startUniqueIdSection();
     }
+    
+    public String startComponentUniqueIdSection(String base)
+    {
+        _level++;
+        _sectionUniqueComponentIdCounter.startUniqueIdSection(base);
+        return _sectionUniqueIdCounter.startUniqueIdSection(base);
+    }
 
     @Override
     public void incrementUniqueId()
@@ -1015,6 +1022,13 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _level--;
         _sectionUniqueIdCounter.endUniqueIdSection();
         _sectionUniqueComponentIdCounter.endUniqueIdSection();
+    }
+    
+    public void endComponentUniqueIdSection(String base)
+    {
+        _level--;
+        _sectionUniqueIdCounter.endUniqueIdSection(base);
+        _sectionUniqueComponentIdCounter.endUniqueIdSection(base);
     }
     
     @Override
