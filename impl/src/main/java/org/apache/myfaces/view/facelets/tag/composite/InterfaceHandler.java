@@ -200,8 +200,9 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
         // in other words we are calling ViewDeclarationLanguage.getComponentMetadata
         if ( ((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata() )
         {
+            FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
             UIComponent compositeBaseParent
-                    = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
+                    = fcc.getCompositeComponentFromStack();
             
             CompositeComponentBeanInfo beanInfo = 
                 (CompositeComponentBeanInfo) compositeBaseParent.getAttributes()
@@ -244,7 +245,16 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
             CompositeTagAttributeUtils.addUnspecifiedAttributes(descriptor, tag, 
                     STANDARD_ATTRIBUTES_SORTED, ctx);
             
-            nextHandler.apply(ctx, parent);
+            try
+            {
+                fcc.startComponentUniqueIdSection("__ccmd_");
+                
+                nextHandler.apply(ctx, parent);
+            }
+            finally
+            {
+                fcc.endComponentUniqueIdSection("__ccmd_");
+            }
         }
     }
     
