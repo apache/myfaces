@@ -370,6 +370,137 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
     }
     
     @Test
+    public void testStaticPage1_5() throws Exception
+    {
+        Locale locale = null;
+        startViewRequest("/staticPage.xhtml");
+        processLifecycleExecute();
+        locale = facesContext.getViewRoot().getLocale();
+        executeBeforeRender(facesContext);
+        executeBuildViewCycle(facesContext);
+
+        // Use view scope
+        facesContext.getViewRoot().getViewMap().put("someKey", "someValue");
+        
+        UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
+        
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);
+        
+        client.submit(submitButton);
+
+        processLifecycleExecute();
+        
+        executeBeforeRender(facesContext);
+        executeBuildViewCycle(facesContext);
+        
+        //Check if the view scope value is preserved
+        Assert.assertEquals("someValue", facesContext.getViewRoot().getViewMap().get("someKey"));
+        
+        facesContext.getViewRoot().getViewMap().put("someKey", "someValue2");
+        
+        submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
+        
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);
+        
+        client.submit(submitButton);
+
+        processLifecycleExecute();
+        
+        executeBeforeRender(facesContext);
+        executeBuildViewCycle(facesContext);
+        
+        //Check if the view scope value is preserved
+        Assert.assertEquals("someValue2", facesContext.getViewRoot().getViewMap().get("someKey"));
+        
+        Assert.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
+        
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);
+        
+        UIViewRoot root = new UIViewRoot();
+        root.setLocale(locale);
+        root.setRenderKitId("HTML_BASIC");
+        root.setViewId("/staticPage.xhtml");
+        
+        ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
+        ViewPool viewPool = processor.getViewPool(facesContext, root);
+        ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
+        Assert.assertNotNull(entry);
+        Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
+        
+        endRequest();
+    }    
+    
+    @Test
+    public void testStaticPage1_6() throws Exception
+    {
+        Locale locale = null;
+        startViewRequest("/staticPage3.xhtml");
+        processLifecycleExecute();
+        locale = facesContext.getViewRoot().getLocale();
+        executeBeforeRender(facesContext);
+        executeBuildViewCycle(facesContext);
+
+        // Use view scope
+        facesContext.getViewRoot().getViewMap().put("someKey", "someValue");
+        Assert.assertEquals("viewValue", facesContext.getViewRoot().getViewMap().get("viewKey"));
+        
+        UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
+        
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);
+        
+        client.submit(submitButton);
+
+        processLifecycleExecute();
+        
+        executeBeforeRender(facesContext);
+        executeBuildViewCycle(facesContext);
+        
+        //Check if the view scope value is preserved
+        Assert.assertEquals("someValue", facesContext.getViewRoot().getViewMap().get("someKey"));
+        Assert.assertEquals("viewValue", facesContext.getViewRoot().getViewMap().get("viewKey"));
+        
+        facesContext.getViewRoot().getViewMap().put("someKey", "someValue2");
+        
+        submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
+        
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);
+        
+        client.submit(submitButton);
+
+        processLifecycleExecute();
+        
+        executeBeforeRender(facesContext);
+        executeBuildViewCycle(facesContext);
+        
+        //Check if the view scope value is preserved
+        Assert.assertEquals("someValue2", facesContext.getViewRoot().getViewMap().get("someKey"));
+        Assert.assertEquals("viewValue", facesContext.getViewRoot().getViewMap().get("viewKey"));
+        
+        Assert.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
+        
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);
+        
+        UIViewRoot root = new UIViewRoot();
+        root.setLocale(locale);
+        root.setRenderKitId("HTML_BASIC");
+        root.setViewId("/staticPage3.xhtml");
+        
+        ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
+        ViewPool viewPool = processor.getViewPool(facesContext, root);
+        ViewEntry entry = viewPool.popStaticOrPartialStructureView(facesContext, root);
+        Assert.assertNotNull(entry);
+        Assert.assertEquals(RestoreViewFromPoolResult.COMPLETE, entry.getResult());
+        
+        endRequest();
+    }    
+    
+    @Test
     public void testStaticPage2() throws Exception
     {
         Locale locale = null;
@@ -1784,6 +1915,54 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         Assert.assertNull(entry3);
         
     }
+    
+    @Test
+    public void testPartialPage1_2() throws Exception
+    {
+        Locale locale = null;
+        startViewRequest("/partialPage1.xhtml");
+        processLifecycleExecute();
+        locale = facesContext.getViewRoot().getLocale();
+
+        executeBuildViewCycle(facesContext);
+        
+        // Now let's try to remove some component programatically
+        // that invalidates the view to be reused without a refresh,
+        // so in the pool it should be marked as REFRESH_REQUIRED
+        UIPanel panel = (UIPanel) facesContext.getViewRoot().findComponent("mainForm:panel1");
+        panel.getParent().getChildren().remove(panel);
+
+        facesContext.getViewRoot().getViewMap().put("someKey", "someValue");
+        
+        UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
+
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);
+        
+        client.submit(submitButton);
+        
+        processLifecycleExecute();
+        
+        Assert.assertEquals("someValue", facesContext.getViewRoot().getViewMap().get("someKey"));
+        
+        FaceletState faceletState = (FaceletState) facesContext.getViewRoot().getAttributes().get(
+            ComponentSupport.FACELET_STATE_INSTANCE);        
+                
+        UIViewRoot root = new UIViewRoot();
+        root.setLocale(locale);
+        root.setRenderKitId("HTML_BASIC");
+        root.setViewId("/partialPage1.xhtml");
+        
+        ViewPoolProcessor processor = ViewPoolProcessor.getInstance(facesContext);
+        ViewPool viewPool = processor.getViewPool(facesContext, root);
+        // Check the view was used
+        ViewEntry entry2 = viewPool.popStaticOrPartialStructureView(facesContext, root);
+        Assert.assertNull(entry2);
+        ViewEntry entry3 = viewPool.popDynamicStructureView(facesContext, root, faceletState);
+        Assert.assertNull(entry3);
+        
+    }    
+    
     
     //Pending tests:
     // - Partial

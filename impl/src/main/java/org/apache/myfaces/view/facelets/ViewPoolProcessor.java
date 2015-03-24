@@ -409,36 +409,43 @@ public class ViewPoolProcessor
             UIViewRoot root)
     {
         ViewPool viewPool = getViewPool(context, root);
-        FaceletState faceletState = (FaceletState) root.getAttributes().get(
-                ComponentSupport.FACELET_STATE_INSTANCE);
-        boolean isDynamic = faceletState != null ? faceletState.isDynamic() : false;
-        if (!isDynamic)
+        if (viewPool != null)
         {
-            return viewPool.retrieveStaticViewStructureMetadata(context, root);
+            FaceletState faceletState = (FaceletState) root.getAttributes().get(
+                    ComponentSupport.FACELET_STATE_INSTANCE);
+            boolean isDynamic = faceletState != null ? faceletState.isDynamic() : false;
+            if (!isDynamic)
+            {
+                return viewPool.retrieveStaticViewStructureMetadata(context, root);
+            }
+            else
+            {
+                return viewPool.retrieveDynamicViewStructureMetadata(context, root, faceletState);
+            }
         }
-        else
-        {
-            return viewPool.retrieveDynamicViewStructureMetadata(context, root, faceletState);
-        }
+        return null;
     }
     
     public void pushResetableView(FacesContext context, UIViewRoot view, FaceletState faceletViewState)
     {
         ViewPool viewPool = getViewPool(context, view);
-        boolean isDynamic = faceletViewState != null ? faceletViewState.isDynamic() : false;
-        if (!isDynamic)
+        if (viewPool != null)
         {
-            clearTransientAndNonFaceletComponentsForStaticView(context, view);
-            viewPool.pushStaticStructureView(context, view);
-        }
-        else
-        {
-            ViewStructureMetadata viewStructureMetadata = viewPool.retrieveDynamicViewStructureMetadata(
-                context, view, faceletViewState);
-            if (viewStructureMetadata != null)
+            boolean isDynamic = faceletViewState != null ? faceletViewState.isDynamic() : false;
+            if (!isDynamic)
             {
-                clearTransientAndNonFaceletComponentsForDynamicView(context, view, viewStructureMetadata);
-                viewPool.pushDynamicStructureView(context, view, faceletViewState);
+                clearTransientAndNonFaceletComponentsForStaticView(context, view);
+                viewPool.pushStaticStructureView(context, view);
+            }
+            else
+            {
+                ViewStructureMetadata viewStructureMetadata = viewPool.retrieveDynamicViewStructureMetadata(
+                    context, view, faceletViewState);
+                if (viewStructureMetadata != null)
+                {
+                    clearTransientAndNonFaceletComponentsForDynamicView(context, view, viewStructureMetadata);
+                    viewPool.pushDynamicStructureView(context, view, faceletViewState);
+                }
             }
         }
     }
@@ -447,7 +454,7 @@ public class ViewPoolProcessor
     {
         ViewPool viewPool = getViewPool(context, view);
         
-        if (viewPool.isWorthToRecycleThisView(context, view))
+        if (viewPool != null && viewPool.isWorthToRecycleThisView(context, view))
         {
             ViewStructureMetadata viewStructureMetadata = null;
             if (faceletViewState == null)

@@ -1447,6 +1447,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             {
                 listenerSuccessMap.clear();
             }
+            _restoreViewScopeStateCalled = false;
         }
         if (getResetSaveStateMode() == RESET_MODE_HARD)
         {
@@ -1474,6 +1475,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                     _viewScope.clear();
                 }
             }
+            _restoreViewScopeStateCalled = false;
         }
         
         if (initialStateMarked())
