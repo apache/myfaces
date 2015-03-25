@@ -321,12 +321,24 @@ public class ViewPoolProcessor
         UIViewRoot oldView = entry.getViewRoot();
         // retrieveViewRootInitialState(context, oldView)
         Object viewState = metadata.getViewRootState();
+        Object newViewState;
+        UIComponent metadataFacet = newView.getFacet(UIViewRoot.METADATA_FACET_NAME);
         if (viewState == null)
         {
             // (Optional, it should be always metadata)
             oldView.clearInitialState();
             viewState = oldView.saveState(context);
         }
+        Map<String, Object> viewScopeMap = newView.getViewMap(false);
+        if (viewScopeMap != null && !viewScopeMap.isEmpty())
+        {
+            newViewState = newView.saveState(context);
+        }
+        else
+        {
+            newViewState = null;
+        }
+        
         boolean oldProcessingEvents = context.isProcessingEvents();
         context.setProcessingEvents(false);
         try
@@ -338,9 +350,22 @@ public class ViewPoolProcessor
                 for (String facetKey : facetKeys)
                 {
                     //context.setProcessingEvents(false);
-                    UIComponent facet = oldView.getFacets().remove(facetKey);
-                    //context.setProcessingEvents(true);
-                    newView.getFacets().put(facetKey, facet);
+                    if (metadataFacet != null && UIViewRoot.METADATA_FACET_NAME.equals(facetKey) &&
+                        !PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId()))
+                    {
+                        // Metadata facet is special, it is created when ViewHandler.createView(...) is
+                        // called, so it shouldn't be taken from the oldView, otherwise the state
+                        // will be lost. Instead reuse it and discard the one in oldView.
+                        // But on restore view phase, use the old one, because the new one does not
+                        // have initial state marked.
+                        newView.getFacets().put(facetKey, metadataFacet);
+                    }
+                    else
+                    {
+                        UIComponent facet = oldView.getFacets().remove(facetKey);
+                        //context.setProcessingEvents(true);
+                        newView.getFacets().put(facetKey, facet);
+                    }
                 }
             }
             if (oldView.getChildCount() > 0)
@@ -364,6 +389,27 @@ public class ViewPoolProcessor
                 // Restore bindings like in restore view phase, because in this case,
                 // bindings needs to be set (Application.createComponent is not called!).
                 restoreViewSupport.processComponentBinding(context, newView);
+                
+                // Restore view scope map if necessary
+                if (viewScopeMap != null && !viewScopeMap.isEmpty())
+                {
+                    Map<String, Object> newViewScopeMap = newView.getViewMap(false);
+                    if (newViewScopeMap == null)
+                    {
+                        newView.restoreViewScopeState(context, newViewState);
+                    }
+                    else
+                    {
+                        // Should theoretically not happen, because when a pooled static view 
+                        // is saved, the view scope map is skipped, otherwise it could be a
+                        // leak. Anyway, we let this code here that overrides the values from
+                        // the original map.
+                        for (Map.Entry<String, Object> entry2 : viewScopeMap.entrySet())
+                        {
+                            newViewScopeMap.put(entry2.getKey(), entry2.getValue());
+                        }
+                    }
+                }
             }
             
             // Update request view metadata to ensure resource list is restored as when the

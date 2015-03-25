@@ -26,11 +26,13 @@
 <head>
     <title>Test Static Page</title>
 </head>
+    <f:metadata>
+        <f:viewParam name="id"/>
+    </f:metadata>
 <body>
     <div id="container">
         <h1>Test cache of static page</h1>
         <!-- <h:messages showDetail="true" showSummary="false"/>  -->
-        <c:set var="viewKey" value="viewValue" scope="view" />
         <h:form id="mainForm">
             <h:panelGrid id="testGroup1" columns="2">
                 <h:outputLabel for="name" value="Please enter your name"/>

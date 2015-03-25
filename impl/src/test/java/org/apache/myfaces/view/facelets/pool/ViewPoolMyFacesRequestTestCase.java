@@ -29,7 +29,9 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIForm;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIPanel;
+import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
+import javax.faces.view.ViewMetadata;
 
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
@@ -440,12 +442,14 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         startViewRequest("/staticPage3.xhtml");
         processLifecycleExecute();
         locale = facesContext.getViewRoot().getLocale();
+        facesContext.getViewRoot().getViewMap().put("keyBeforeView", "someBeforeValue");
+        
         executeBeforeRender(facesContext);
         executeBuildViewCycle(facesContext);
 
         // Use view scope
+        Assert.assertEquals("someBeforeValue", facesContext.getViewRoot().getViewMap().get("keyBeforeView"));
         facesContext.getViewRoot().getViewMap().put("someKey", "someValue");
-        Assert.assertEquals("viewValue", facesContext.getViewRoot().getViewMap().get("viewKey"));
         
         UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
         
@@ -461,7 +465,6 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         
         //Check if the view scope value is preserved
         Assert.assertEquals("someValue", facesContext.getViewRoot().getViewMap().get("someKey"));
-        Assert.assertEquals("viewValue", facesContext.getViewRoot().getViewMap().get("viewKey"));
         
         facesContext.getViewRoot().getViewMap().put("someKey", "someValue2");
         
@@ -479,7 +482,6 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         
         //Check if the view scope value is preserved
         Assert.assertEquals("someValue2", facesContext.getViewRoot().getViewMap().get("someKey"));
-        Assert.assertEquals("viewValue", facesContext.getViewRoot().getViewMap().get("viewKey"));
         
         Assert.assertTrue(facesContext.getViewRoot().getChildCount() > 0);
         
@@ -499,6 +501,54 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         
         endRequest();
     }    
+    
+    @Test
+    public void testStaticPage1_7() throws Exception
+    {
+        Locale locale = null;
+        startViewRequest("/staticPage3.xhtml");
+        processLifecycleExecute();
+        locale = facesContext.getViewRoot().getLocale();
+        
+        executeBeforeRender(facesContext);
+        executeBuildViewCycle(facesContext);
+
+        // Use view scope
+        facesContext.getViewRoot().getViewMap().put("someKey", "someValue");
+        //Assert.assertEquals("viewValue", facesContext.getViewRoot().getViewMap().get("viewKey"));
+        
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);
+
+        startViewRequest("/staticPage3.xhtml");
+        request.addParameter("id", "someId");
+        processLifecycleExecute();
+        locale = facesContext.getViewRoot().getLocale();
+        facesContext.getViewRoot().getViewMap().put("keyBeforeView", "someBeforeValue");
+        
+        UIViewParameter paramComponent = ViewMetadata.getViewParameters(facesContext.getViewRoot()).iterator().next();
+        Assert.assertNotNull(paramComponent);
+        Assert.assertEquals("someId", paramComponent.getValue());
+
+        executeBeforeRender(facesContext);
+        executeBuildViewCycle(facesContext);
+
+        paramComponent = ViewMetadata.getViewParameters(facesContext.getViewRoot()).iterator().next();
+        Assert.assertNotNull(paramComponent);
+        Assert.assertEquals("someId", paramComponent.getValue());
+        
+        // Use view scope
+        Assert.assertEquals("someBeforeValue", facesContext.getViewRoot().getViewMap().get("keyBeforeView"));
+        facesContext.getViewRoot().getViewMap().put("someKey", "someValue");
+        //Assert.assertEquals("viewValue", facesContext.getViewRoot().getViewMap().get("viewKey"));
+        
+        UICommand submitButton = (UICommand) facesContext.getViewRoot().findComponent("mainForm:submit");
+        
+        executeViewHandlerRender(facesContext);
+        executeAfterRender(facesContext);
+        
+        endRequest();
+    }        
     
     @Test
     public void testStaticPage2() throws Exception
