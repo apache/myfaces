@@ -798,7 +798,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         final List<String> contracts = facesContext.getResourceLibraryContracts(); 
 
         String pathToLib = null;
-        
+        Boolean libraryFound = null;
         if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(
                 libraryName, isAllowSlashesLibraryName()))
         {
@@ -809,7 +809,21 @@ public class ResourceHandlerImpl extends ResourceHandler
         {
             //Check with locale
             pathToLib = localePrefix + '/' + libraryName;
-            
+
+            libraryFound = getResourceLoaderCache().libraryExists(pathToLib);
+            if (libraryFound != null)
+            {
+                return libraryFound.booleanValue();
+            }
+        }
+        libraryFound = getResourceLoaderCache().libraryExists(libraryName);
+        if (libraryFound != null)
+        {
+            return libraryFound.booleanValue();
+        }
+        
+        if (localePrefix != null)
+        {
             if (!contracts.isEmpty())
             {
                 for (String contract : contracts)
@@ -819,6 +833,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                     {
                         if (loader.libraryExists(pathToLib, contract))
                         {
+                            getResourceLoaderCache().confirmLibraryExists(pathToLib);
                             return true;
                         }
                     }
@@ -830,6 +845,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             {
                 if (loader.libraryExists(pathToLib))
                 {
+                    getResourceLoaderCache().confirmLibraryExists(pathToLib);
                     return true;
                 }
             }            
@@ -845,6 +861,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                 {
                     if (loader.libraryExists(libraryName, contract))
                     {
+                        getResourceLoaderCache().confirmLibraryExists(libraryName);
                         return true;
                     }
                 }
@@ -856,10 +873,20 @@ public class ResourceHandlerImpl extends ResourceHandler
         {
             if (loader.libraryExists(libraryName))
             {
+                getResourceLoaderCache().confirmLibraryExists(libraryName);
                 return true;
             }
         }
 
+        if (localePrefix != null)
+        {
+            //Check with locale
+            getResourceLoaderCache().confirmLibraryNotExists(pathToLib);
+        }
+        else
+        {
+            getResourceLoaderCache().confirmLibraryNotExists(libraryName);
+        }
         return false;
     }
 

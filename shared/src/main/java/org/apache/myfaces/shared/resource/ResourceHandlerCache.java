@@ -39,6 +39,8 @@ public class ResourceHandlerCache
 
     private volatile ConcurrentLRUCache<Object, ResourceValue> _viewResourceCacheMap = null;
     
+    private volatile ConcurrentLRUCache<Object, Boolean> _libraryExistsCacheMap = null;
+    
     /**
      * Controls the size of the cache used to check if a resource exists or not. 
      * 
@@ -305,6 +307,76 @@ public class ResourceHandlerCache
         _viewResourceCacheMap.put(new ResourceKey(resourceName, null,
                 contentType, localePrefix, contractName), new ResourceValue(resource, loader, info));
     }
+    
+    public Boolean libraryExists(String libraryName)
+    {
+        if (!isResourceCachingEnabled() || _libraryExistsCacheMap == null)
+        {
+            return null;
+        }
+
+        if (log.isLoggable(Level.FINE))
+        {
+            log.log(Level.FINE, "Attemping to get libraryExists from cache for "
+                    + libraryName);
+        }
+
+        return _libraryExistsCacheMap.get(libraryName);
+    }
+    
+    public void confirmLibraryExists(String libraryName)
+    {
+        if (!isResourceCachingEnabled())
+        {
+            return;
+        }
+        
+        if (log.isLoggable(Level.FINE))
+        {
+            log.log(Level.FINE, "Attemping to set confirmLibraryExists on cache "
+                    + libraryName);
+        }
+
+        if (_libraryExistsCacheMap == null)
+        {
+            if (log.isLoggable(Level.FINE))
+            {
+                log.log(Level.FINE, "Initializing resource cache map");
+            }
+            int maxSize = getMaxSize()/10;
+            _libraryExistsCacheMap = new ConcurrentLRUCache<Object, Boolean>(
+                    (maxSize * 4 + 3) / 3, maxSize);
+        }
+
+        _libraryExistsCacheMap.put(libraryName, Boolean.TRUE);
+    }
+    
+    public void confirmLibraryNotExists(String libraryName)
+    {
+        if (!isResourceCachingEnabled())
+        {
+            return;
+        }
+        
+        if (log.isLoggable(Level.FINE))
+        {
+            log.log(Level.FINE, "Attemping to set confirmLibraryExists on cache "
+                    + libraryName);
+        }
+
+        if (_libraryExistsCacheMap == null)
+        {
+            if (log.isLoggable(Level.FINE))
+            {
+                log.log(Level.FINE, "Initializing resource cache map");
+            }
+            int maxSize = getMaxSize()/5;
+            _libraryExistsCacheMap = new ConcurrentLRUCache<Object, Boolean>(
+                    (maxSize * 4 + 3) / 3, maxSize);
+        }
+
+        _libraryExistsCacheMap.put(libraryName, Boolean.FALSE);
+    }    
 
     private boolean isResourceCachingEnabled()
     {
