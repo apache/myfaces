@@ -362,11 +362,6 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
     {
         getFacesFlowProvider(context).doAfterEnterFlow(context, flow);
         
-        if (flow.getInitializer() != null)
-        {
-            flow.getInitializer().invoke(context.getELContext(), null);
-        }
-        
         if (outboundParameters != null)
         {
             for (Map.Entry<String, Parameter> entry : flow.getInboundParameters().entrySet())
@@ -377,6 +372,11 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
                     parameter.getValue().setValue(context.getELContext(), outboundParameters.get(entry.getKey()));
                 }
             }
+        }
+
+        if (flow.getInitializer() != null)
+        {
+            flow.getInitializer().invoke(context.getELContext(), null);
         }
     }
     

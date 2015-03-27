@@ -26,8 +26,8 @@ import javax.faces.component.UICommand;
 import javax.faces.flow.Flow;
 import org.apache.myfaces.mc.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.junit.Assert;
 import org.junit.Test;
-import org.testng.Assert;
 
 /**
  * This test is the same as FlowMyFacesRequestTestCase with the diference that
@@ -207,4 +207,45 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         }
     }
 
+    /**
+     * Check outbound parameter is initialized before call initializer method
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testFlow1_12() throws Exception
+    {
+        startViewRequest("/flow_base.xhtml");
+        processLifecycleExecute();
+        
+        ConfigurableNavigationHandler handler = (ConfigurableNavigationHandler) facesContext.getApplication().getNavigationHandler();
+        
+        renderResponse();
+       
+        //Enter flow 1
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:startFlow4");
+        client.submit(button);
+        
+        processLifecycleExecute();
+        
+        Assert.assertEquals("/flow4/flow4.xhtml", facesContext.getViewRoot().getViewId());
+        
+        Flow currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals(currentFlow.getId(), "flow4");
+        
+        renderResponse();
+        
+        NavigationCase goFlowBase = handler.getNavigationCase(facesContext, null, "call_flow5_4");
+        Assert.assertNotNull(goFlowBase);
+        
+        UICommand button2 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:call_flow5");
+        client.submit(button2);
+        
+        processLifecycleExecute();
+        
+        Assert.assertEquals("/flow5/flow5.xhtml", facesContext.getViewRoot().getViewId());
+
+        renderResponse();
+    } 
 }

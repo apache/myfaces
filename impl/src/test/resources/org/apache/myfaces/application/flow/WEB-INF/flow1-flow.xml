@@ -184,6 +184,17 @@
             </outbound-parameter>
         </flow-call>
         
+        <flow-call id="call_flow5_4">
+            <flow-reference>
+                <flow-document-id>flow_def_1</flow-document-id>
+                <flow-id>flow5</flow-id>
+            </flow-reference>
+            <outbound-parameter>
+                <name>someId</name>
+                <value>customId</value>
+            </outbound-parameter>
+        </flow-call>        
+        
         <navigation-rule>
             <from-view-id>*</from-view-id>
             <navigation-case>
@@ -204,6 +215,27 @@
         </view>
         
     </flow-definition>
+    
+    <flow-definition id="flow5">
+        
+        <inbound-parameter>
+            <name>someId</name>
+            <value>#{flowScope.someId}</value>
+        </inbound-parameter>
+        
+        <initializer>#{flow5Bean.init}</initializer>        
+                
+        <flow-return id="end">
+            <from-outcome>exit</from-outcome>
+        </flow-return>
+        
+        <flow-return id="back_flow_5"/>
+        
+        <view id="content">
+            <vdl-document>/flow5/content.xhtml</vdl-document>
+        </view>
+        
+    </flow-definition>    
 
     <navigation-rule>
         <from-view-id>*</from-view-id>
