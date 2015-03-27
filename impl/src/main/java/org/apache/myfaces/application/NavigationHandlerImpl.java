@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -45,6 +46,7 @@ import javax.faces.component.UIViewAction;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -86,6 +88,9 @@ public class NavigationHandlerImpl
     private static final Logger log = Logger.getLogger(NavigationHandlerImpl.class.getName());
 
     private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
+    
+    private static final Set<VisitHint> VISIT_HINTS = Collections.unmodifiableSet(
+            EnumSet.of(VisitHint.SKIP_ITERATION));    
     
     private static final String OUTCOME_NAVIGATION_SB = "oam.navigation.OUTCOME_NAVIGATION_SB";
     
@@ -258,10 +263,18 @@ public class NavigationHandlerImpl
                 if (facesContext.getViewRoot() != null &&
                     facesContext.getViewRoot().getAttributes().containsKey("oam.CALL_PRE_DISPOSE_VIEW"))
                 {
-                    facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
-                    facesContext.getViewRoot().visitTree(VisitContext.createVisitContext(facesContext),
-                                                         new PreDisposeViewCallback());
-                    facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
+                    try
+                    {
+                        facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
+
+                        VisitContext visitContext = VisitContext.createVisitContext(facesContext, null, VISIT_HINTS);
+                        facesContext.getViewRoot().visitTree(visitContext,
+                                                             new PreDisposeViewCallback());
+                    }
+                    finally
+                    {
+                        facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
+                    }
                 }
                 
                 applyFlowTransition(facesContext, navigationContext);
