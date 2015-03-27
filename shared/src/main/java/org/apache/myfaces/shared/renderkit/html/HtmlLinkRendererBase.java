@@ -79,15 +79,16 @@ public abstract class HtmlLinkRendererBase
             String clientId = component.getClientId(facesContext);
             FormInfo formInfo = findNestingForm(component, facesContext);
             boolean disabled = HtmlRendererUtils.isDisabled(component);
+            // MYFACES-3960 Decode, decode client behavior and queue action event at the end
+            boolean activateActionEvent = false;
             if (formInfo != null && !disabled)
             {
                 String reqValue = (String) facesContext.getExternalContext().getRequestParameterMap().get(
                         HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo, facesContext));
-                if (reqValue != null && reqValue.equals(clientId)
-                    || HtmlRendererUtils.isPartialOrBehaviorSubmit(facesContext, clientId))
+                activateActionEvent = reqValue != null && reqValue.equals(clientId)
+                    || HtmlRendererUtils.isPartialOrBehaviorSubmit(facesContext, clientId);
+                if (activateActionEvent)
                 {
-                    component.queueEvent(new ActionEvent(component));
-
                     RendererUtils.initPartialValidationAndModelUpdate(component, facesContext);
                 }
             }
@@ -95,6 +96,10 @@ public abstract class HtmlLinkRendererBase
                     !disabled)
             {
                 HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
+            }
+            if (activateActionEvent)
+            {
+                component.queueEvent(new ActionEvent(component));
             }
         }
         else if (component instanceof UIOutput)

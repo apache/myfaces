@@ -61,11 +61,11 @@ public class HtmlButtonRendererBase
 
         //super.decode must not be called, because value is handled here
         boolean disabled = isDisabled(facesContext, uiComponent);
-        if (!isReset(uiComponent) && isSubmitted(facesContext, uiComponent) &&
-            !disabled)
+        // MYFACES-3960 Decode, decode client behavior and queue action event at the end
+        boolean activateActionEvent = !isReset(uiComponent) && isSubmitted(facesContext, uiComponent) &&
+            !disabled;
+        if (activateActionEvent)
         {
-            uiComponent.queueEvent(new ActionEvent(uiComponent));
-
             org.apache.myfaces.shared.renderkit.RendererUtils.initPartialValidationAndModelUpdate(
                     uiComponent, facesContext);
         }
@@ -74,6 +74,11 @@ public class HtmlButtonRendererBase
                 !disabled)
         {
             HtmlRendererUtils.decodeClientBehaviors(facesContext, uiComponent);
+        }
+        
+        if (activateActionEvent)
+        {
+            uiComponent.queueEvent(new ActionEvent(uiComponent));
         }
     }
 
