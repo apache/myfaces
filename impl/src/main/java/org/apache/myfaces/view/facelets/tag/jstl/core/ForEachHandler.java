@@ -43,7 +43,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
-import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.PageContext;
 import org.apache.myfaces.view.facelets.el.FaceletStateValueExpression;
@@ -265,16 +264,18 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
             {
                 ve = this.getVarExpr(srcVE, src, value, i);
             }
-            setVar(ctx, parent, uniqueId, base, v, ve);
+            setVar(ctx, parent, uniqueId, base, v, ve, srcVE);
         }
     }
     
     private void setVar(FaceletContext ctx, UIComponent parent,
-        String uniqueId, String base, String v, ValueExpression ve)
+        String uniqueId, String base, String v, ValueExpression ve, ValueExpression srcVE)
     {
         AbstractFaceletContext actx = ((AbstractFaceletContext) ctx);
         PageContext pctx = actx.getPageContext();
-        if (ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))
+        //if (ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))
+        //{
+        if (srcVE != null)
         {
             FaceletState faceletState = ComponentSupport.getFaceletState(ctx, parent, true);
             faceletState.putBinding(uniqueId, base, ve);
@@ -377,7 +378,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                             {
                                 ve = new IterationStatusExpression(itrS);
                             }
-                            setVar(ctx, parent, uniqueId, base+"_vs", vs, ve);
+                            setVar(ctx, parent, uniqueId, base+"_vs", vs, ve, srcVE);
                         }
 
                         // execute body
@@ -470,7 +471,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                         {
                             ve = new IterationStatusExpression(itrS);
                         }
-                        setVar(ctx, parent, uniqueId, base, vs, ve);
+                        setVar(ctx, parent, uniqueId, base, vs, ve, srcVE);
                     }
 
                     // execute body
@@ -594,7 +595,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                             {
                                 ve = new IterationStatusExpression(itrS);
                             }
-                            setVar(ctx, parent, uniqueId, base, vs, ve);
+                            setVar(ctx, parent, uniqueId, base, vs, ve, srcVE);
                         }
                         //setVarStatus(ctx, pctx, t, sO, eO, mO, srcVE, value, vs, first, !itr.hasNext(), i);
 
