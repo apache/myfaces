@@ -132,9 +132,9 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addSetNext("faces-config/application/resource-library-contracts/contract-mapping", 
             "addResourceLibraryContractMapping");
         digester.addCallMethod(
-            "faces-config/application/resource-library-contracts/contract-mapping/url-pattern", "setUrlPattern", 0);
+            "faces-config/application/resource-library-contracts/contract-mapping/url-pattern", "addUrlPattern", 0);
         digester.addCallMethod(
-            "faces-config/application/resource-library-contracts/contract-mapping/contracts", "setContracts", 0);
+            "faces-config/application/resource-library-contracts/contract-mapping/contracts", "addContract", 0);
         
         // 2.1 specific start
         digester.addCallMethod("faces-config/factory/facelet-cache-factory", "addFaceletCacheFactory", 0);

@@ -19,6 +19,7 @@
 package org.apache.myfaces.config.element;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -26,7 +27,21 @@ import java.io.Serializable;
  */
 public abstract class ContractMapping implements Serializable
 {
+    /**
+     * @deprecated 
+     * @return 
+     */
+    @Deprecated
     public abstract String getUrlPattern();
     
+    /**
+     * @deprecated 
+     * @return 
+     */
+    @Deprecated
     public abstract String getContracts();
+    
+    public abstract List<String> getUrlPatternList();
+    
+    public abstract List<String> getContractList();
 }

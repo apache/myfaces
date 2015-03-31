@@ -262,7 +262,25 @@ public class DigesterFacesConfigUnmarshallerImplTest extends TestCase
         assertEquals(1, app.getResourceLibraryContractMappings().size());
         
         ContractMapping mapping = app.getResourceLibraryContractMappings().get(0);
-        assertEquals("/files/*.xhtml", mapping.getUrlPattern());
-        assertEquals("contractA contractB", mapping.getContracts());
+        assertEquals("/files/*.xhtml", mapping.getUrlPatternList().get(0));
+        assertEquals("contractA contractB", mapping.getContractList().get(0));
     }
+    
+    public void testContracts2() throws Exception
+    {
+        FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
+                "contracts2.xml"), "contracts2.xml");
+        
+        assertNotNull(cfg);
+
+        Application app = cfg.getApplications().get(0);
+        assertNotNull(app);
+        assertEquals(1, app.getResourceLibraryContractMappings().size());
+        
+        ContractMapping mapping = app.getResourceLibraryContractMappings().get(0);
+        assertTrue(mapping.getUrlPatternList().contains("/files/*.xhtml"));
+        assertTrue(mapping.getUrlPatternList().contains("/files2/*.xhtml"));
+        assertTrue(mapping.getContractList().contains("contractA"));
+        assertTrue(mapping.getContractList().contains("contractB"));
+    }    
 }

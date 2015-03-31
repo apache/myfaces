@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.config.impl.digester.elements;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.apache.myfaces.config.element.ContractMapping;
 
 /**
@@ -26,39 +29,73 @@ import org.apache.myfaces.config.element.ContractMapping;
  */
 public class ContractMappingImpl extends ContractMapping
 {
-    private String urlPattern;
-    private String contracts;
+    private List<String> urlPatternList;
+    private List<String> contractsList;
+    
+    private transient List <String> unmodifiableUrlPatternList;
+    private transient List <String> unmodifiableContractsList;
 
     /**
      * @return the urlPattern
      */
-    public String getUrlPattern()
+    public List<String> getUrlPatternList()
     {
-        return urlPattern;
-    }
-
-    /**
-     * @param urlPattern the urlPattern to set
-     */
-    public void setUrlPattern(String urlPattern)
-    {
-        this.urlPattern = urlPattern;
+        if (urlPatternList == null)
+        {
+            return Collections.emptyList();
+        }
+        if (unmodifiableUrlPatternList == null)
+        {
+            unmodifiableUrlPatternList = 
+                Collections.unmodifiableList(urlPatternList);
+        }
+        return unmodifiableUrlPatternList;
     }
 
     /**
      * @return the contracts
      */
-    public String getContracts()
+    public List<String> getContractList()
     {
-        return contracts;
+        if (contractsList == null)
+        {
+            return Collections.emptyList();
+        }
+        if (unmodifiableContractsList == null)
+        {
+            unmodifiableContractsList = 
+                Collections.unmodifiableList(contractsList);
+        }
+        return unmodifiableContractsList;
     }
 
-    /**
-     * @param contracts the contracts to set
-     */
-    public void setContracts(String contracts)
+    public void addContract(String contract)
     {
-        this.contracts = contracts;
+        if (contractsList == null)
+        {
+            contractsList = new ArrayList<String>();
+        }
+        contractsList.add(contract);
     }
     
+    public void addUrlPattern(String urlPattern)
+    {
+        if (urlPatternList == null)
+        {
+            urlPatternList = new ArrayList<String>();
+        }
+        urlPatternList.add(urlPattern);
+    }
+
+    @Override
+    public String getUrlPattern()
+    {
+        return null;
+    }
+
+    @Override
+    public String getContracts()
+    {
+        return null;
+    }
 }

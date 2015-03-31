@@ -894,9 +894,25 @@ public class FacesConfigurator
         
         for (ContractMapping mapping : dispenser.getResourceLibraryContractMappings())
         {
-            String urlPattern = mapping.getUrlPattern();
-            String[] contracts = StringUtils.trim(StringUtils.splitShortString(mapping.getContracts(), ' '));
-            runtimeConfig.addContractMapping(urlPattern, contracts);
+            if (mapping.getUrlPattern() != null)
+            {
+                // Deprecated way
+                String urlPattern = mapping.getUrlPattern();
+                String[] contracts = StringUtils.trim(StringUtils.splitShortString(mapping.getContracts(), ' '));
+                runtimeConfig.addContractMapping(urlPattern, contracts);
+            }
+            else
+            {
+                List<String> urlMappingsList = mapping.getUrlPatternList();
+                for (String urlPattern: urlMappingsList)
+                {
+                    for (String contract : mapping.getContractList())
+                    {
+                        String[] contracts = StringUtils.trim(StringUtils.splitShortString(contract, ' '));
+                        runtimeConfig.addContractMapping(urlPattern, contracts);
+                    }
+                }
+            }
         }
         
         this.setApplication(application);
