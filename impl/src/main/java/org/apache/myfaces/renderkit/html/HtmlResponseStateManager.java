@@ -38,6 +38,7 @@ import org.apache.myfaces.renderkit.StateTokenProcessor;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.util.StateUtils;
+import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -71,14 +72,25 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     public static final String INIT_PARAM_HANDLE_STATE_CACHING_MECHANICS
             = "org.apache.myfaces.HANDLE_STATE_CACHING_MECHANICS";
     
+    /**
+     * Add autocomplete="off" to the view state hidden field. Enabled by default.
+     */
+    @JSFWebConfigParam(since="2.2.8, 2.1.18, 2.0.24", expectedValues="true, false", 
+           defaultValue="true", group="state")
+    public static final String INIT_PARAM_AUTOCOMPLETE_OFF_VIEW_STATE = 
+            "org.apache.myfaces.AUTOCOMPLETE_OFF_VIEW_STATE";
+            
     private StateCacheFactory _stateCacheFactory;
     
     private StateTokenProcessor _stateTokenProcessor;
+    
+    private Boolean _autoCompleteOffViewState;
     
     public HtmlResponseStateManager()
     {
         _stateCacheFactory = new StateCacheFactoryImpl();
         _stateTokenProcessor = new DefaultStateTokenProcessor();
+        _autoCompleteOffViewState = null;
     }
     
     @Override
@@ -147,6 +159,10 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
                     facesContext), null);
         }
         responseWriter.writeAttribute(HTML.VALUE_ATTR, serializedState, null);
+        if (this.isAutocompleteOffViewState(facesContext))
+        {
+            responseWriter.writeAttribute(HTML.AUTOCOMPLETE_ATTR, "off", null);
+        }
         responseWriter.endElement(HTML.INPUT_ELEM);
     }
 
@@ -368,5 +384,15 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         {
             return STATELESS_TOKEN.equals(token);
         }
+    }
+    
+    private boolean isAutocompleteOffViewState(FacesContext facesContext)
+    {
+        if (_autoCompleteOffViewState == null)
+        {
+            _autoCompleteOffViewState = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
+                    INIT_PARAM_AUTOCOMPLETE_OFF_VIEW_STATE, true);
+        }
+        return _autoCompleteOffViewState;
     }
 }
