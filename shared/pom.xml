@@ -20,7 +20,7 @@
   <parent>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-core-project</artifactId>
-      <version>2.2.8-SNAPSHOT</version>
+      <version>2.2.8</version>
       <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
@@ -34,9 +34,9 @@
   projects like Tomahawk, Orchestra and Portlet-Bridge through shared project.</description>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/shared</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/shared</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/trunk/shared</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.2.8/shared</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.2.8/shared</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/tags/myfaces-core-module-2.2.8/shared</url>
   </scm>
   
   <dependencies>
