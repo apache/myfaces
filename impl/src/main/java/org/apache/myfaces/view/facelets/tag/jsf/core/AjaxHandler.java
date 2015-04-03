@@ -316,7 +316,16 @@ public class AjaxHandler extends TagHandler implements
         }
         else
         {
-            return _event.getValue();
+            if (_event.isLiteral())
+            {
+                return _event.getValue();
+            }
+            else
+            {
+                FaceletContext faceletContext = (FaceletContext) FacesContext.getCurrentInstance().
+                        getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
+                return (String) _event.getValueExpression(faceletContext, String.class).getValue(faceletContext);
+            }
         }
     }
 
@@ -343,16 +352,12 @@ public class AjaxHandler extends TagHandler implements
         {
             if (_event.isLiteral())
             {
-                eventName = getEventName();
+                eventName = _event.getValue();
             }
             else
             {
                 eventName = (String) _event.getValueExpression(faceletContext, String.class).getValue(faceletContext);
             }
-        }
-        else
-        {
-            eventName = getEventName();
         }
         if (eventName == null)
         {
