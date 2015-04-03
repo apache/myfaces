@@ -469,6 +469,9 @@ public class PartialViewContextImpl extends PartialViewContext
             writer.writePreamble("<?xml version=\"1.0\" encoding=\""+
                 (currentEncoding == null ? "UTF-8" : currentEncoding) +"\"?>");
             writer.startDocument();
+            
+            writer.writeAttribute("id", viewRoot.getContainerClientId(_facesContext),"id");
+            
             inDocument = true;
             _facesContext.setResponseWriter(writer);
             
