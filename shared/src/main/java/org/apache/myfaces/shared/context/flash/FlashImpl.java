@@ -1063,18 +1063,21 @@ public class FlashImpl extends Flash implements ReleasableFlash
     {
         Map<String, Object> map = _getExecuteFlashMap(facesContext);
 
-        //JSF 2.2 invoke PreClearFlashEvent
-        facesContext.getApplication().publishEvent(facesContext, 
-            PreClearFlashEvent.class, map);
-        
-        // Clear everything - note that because of naming conventions,
-        // this will in fact automatically recurse through all children
-        // grandchildren etc. - which is kind of a design flaw of SubKeyMap,
-        // but one we're relying on
-        
-        // NOTE that we do not need a null check here, because there will
-        // always be an execute Map, however sometimes an empty one!
-        map.clear();
+        if (!map.isEmpty())
+        {
+            //JSF 2.2 invoke PreClearFlashEvent
+            facesContext.getApplication().publishEvent(facesContext, 
+                PreClearFlashEvent.class, map);
+
+            // Clear everything - note that because of naming conventions,
+            // this will in fact automatically recurse through all children
+            // grandchildren etc. - which is kind of a design flaw of SubKeyMap,
+            // but one we're relying on
+
+            // NOTE that we do not need a null check here, because there will
+            // always be an execute Map, however sometimes an empty one!
+            map.clear();
+        }
     }
     
     private void _clearRenderFlashTokenIfMapEmpty(FacesContext facesContext)
