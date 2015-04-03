@@ -193,7 +193,16 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_DELAY);
             paramBuffer.append(COLON);
-            paramBuffer.append(delay);
+            if ("none".equals(delay))
+            {
+                paramBuffer.append('\'');
+                paramBuffer.append(delay);
+                paramBuffer.append('\'');
+            }
+            else
+            {
+                paramBuffer.append(delay);
+            }
             delay = paramBuffer.toString();
         }
         else
