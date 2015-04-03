@@ -193,27 +193,6 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
         context.getAttributes().put(EVENT_COUNT_KEY, count);
     }
 
-    @Override
-    public void queueEvent(FacesEvent event)
-    {
-        if (event != null && event instanceof ActionEvent)
-        {
-            UIComponent component = event.getComponent();
-            if (component instanceof ActionSource)
-            {
-                if (((ActionSource)component).isImmediate())
-                {
-                    event.setPhaseId(PhaseId.APPLY_REQUEST_VALUES);
-                }
-                else
-                {
-                    event.setPhaseId(PhaseId.INVOKE_APPLICATION);
-                }
-            }
-        }
-        super.queueEvent(event);
-    }
-    
     public MethodBinding getAction()
     {
         MethodExpression actionExpression = getActionExpression();
