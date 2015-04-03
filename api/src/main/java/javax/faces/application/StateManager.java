@@ -73,7 +73,7 @@ public abstract class StateManager
      * </p>
      */
     @JSFWebConfigParam(defaultValue="server", expectedValues="server,client",
-            since="1.1", group="state", tags="performance",
+            since="1.1", group="state", tags="performance", ignoreUpperLowerCase = true,
             desc="Define the state method to be used. There are two different options "
                  + "defined by the specification: 'client' and 'server' state.")
     public static final String STATE_SAVING_METHOD_PARAM_NAME = "javax.faces.STATE_SAVING_METHOD";
