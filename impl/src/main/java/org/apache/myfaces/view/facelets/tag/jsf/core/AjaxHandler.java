@@ -337,7 +337,23 @@ public class AjaxHandler extends TagHandler implements
         // cast to a ClientBehaviorHolder
         ClientBehaviorHolder cvh = (ClientBehaviorHolder) parent;
         
-        String eventName = getEventName();
+        
+        String eventName = null;
+        if (_event != null)
+        {
+            if (_event.isLiteral())
+            {
+                eventName = getEventName();
+            }
+            else
+            {
+                eventName = (String) _event.getValueExpression(faceletContext, String.class).getValue(faceletContext);
+            }
+        }
+        else
+        {
+            eventName = getEventName();
+        }
         if (eventName == null)
         {
             eventName = cvh.getDefaultEventName();
