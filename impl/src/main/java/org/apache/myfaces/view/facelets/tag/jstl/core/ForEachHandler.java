@@ -471,7 +471,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                         {
                             ve = new IterationStatusExpression(itrS);
                         }
-                        setVar(ctx, parent, uniqueId, base, vs, ve, srcVE);
+                        setVar(ctx, parent, uniqueId, base+"_vs", vs, ve, srcVE);
                     }
 
                     // execute body
@@ -595,7 +595,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                             {
                                 ve = new IterationStatusExpression(itrS);
                             }
-                            setVar(ctx, parent, uniqueId, base, vs, ve, srcVE);
+                            setVar(ctx, parent, uniqueId, base+"_vs", vs, ve, srcVE);
                         }
                         //setVarStatus(ctx, pctx, t, sO, eO, mO, srcVE, value, vs, first, !itr.hasNext(), i);
 
