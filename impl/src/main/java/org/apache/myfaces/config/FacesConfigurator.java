@@ -391,7 +391,7 @@ public class FacesConfigurator
                 PARAMS_FACELETS_LIBRARIES);
         if (faceletsFiles != null)
         {
-            String[] faceletFilesList = faceletsFiles.split(";");
+            String[] faceletFilesList = StringUtils.trim(faceletsFiles.split(";"));
             for (int i = 0, size = faceletFilesList.length; i < size; i++)
             {
                 String systemId = faceletFilesList[i];
