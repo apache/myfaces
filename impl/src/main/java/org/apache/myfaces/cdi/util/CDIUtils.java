@@ -19,7 +19,8 @@
 package org.apache.myfaces.cdi.util;
 
 import java.lang.reflect.Type;
-import java.util.Iterator;
+import java.util.Set;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -27,8 +28,7 @@ import javax.faces.context.ExternalContext;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 
 /**
- * 
- * @author Leonardo Uribe
+ * Lookup code for Contextual Instances.
  */
 public class CDIUtils
 {
@@ -38,62 +38,26 @@ public class CDIUtils
             AbstractFacesInitializer.CDI_BEAN_MANAGER_INSTANCE);
     }
 
-    /*
-    public static BeanManager getBeanManagerFromJNDI()
-    {
-        try
-        {
-            // in an application server
-            return (BeanManager) InitialContext.doLookup("java:comp/BeanManager");
-        }
-        catch (NamingException e)
-        {
-            // silently ignore
-        }
 
-        try
-        {
-            // in a servlet container
-            return (BeanManager) InitialContext.doLookup("java:comp/env/BeanManager");
-        }
-        catch (NamingException e)
-        {
-            // silently ignore
-        }
-        return null;
-    }*/
 
-    @SuppressWarnings("unchecked")
     public static <T> T lookup(BeanManager bm, Class<T> clazz)
     {
-        Iterator<Bean< ?>> iter = bm.getBeans(clazz).iterator();
-        if (!iter.hasNext())
-        {
-            throw new IllegalStateException(
-                "CDI BeanManager cannot find an instance of requested type " + 
-                clazz.getName());
-        }
-        Bean<T> bean = (Bean<T>) iter.next();
-        CreationalContext<T> ctx = bm.createCreationalContext(bean);
-        T dao = (T) bm.getReference(bean, clazz, ctx);
-        return dao;
+        Set<Bean<?>> beans = bm.getBeans(clazz);
+        return resolveInstance(bm, beans, clazz);
     }
 
-    @SuppressWarnings(
-    {
-        "unchecked", "rawtypes"
-    })
     public static Object lookup(BeanManager bm, String name)
     {
-        Iterator<Bean< ?>> iter = bm.getBeans(name).iterator();
-        if (!iter.hasNext())
-        {
-            throw new IllegalStateException(
-                "CDI BeanManager cannot find an instance of requested type '" + name + "'");
-        }
-        Bean bean = iter.next();
-        CreationalContext ctx = bm.createCreationalContext(bean);
-        Type type = (Type) bean.getTypes().iterator().next();
-        return bm.getReference(bean, type, ctx);
+        Set<Bean<?>> beans = bm.getBeans(name);
+        return resolveInstance(bm, beans, Object.class);
+    }
+
+    private static <T> T resolveInstance(BeanManager bm, Set<Bean<?>> beans, Type type)
+    {
+        Bean<?> bean = bm.resolve(beans);
+        CreationalContext<?> cc = bm.createCreationalContext(bean);
+        T dao = (T) bm.getReference(bean, type, cc);
+        return dao;
+
     }
 }
