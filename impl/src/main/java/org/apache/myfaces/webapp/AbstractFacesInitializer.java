@@ -567,29 +567,96 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             CDI_SERVLET_CONTEXT_BEAN_MANAGER_ATTRIBUTE);
         if (beanManager == null)
         {
-            // Use reflection to avoid restricted API in GAE
-            Class icclazz = null;
-            Method lookupMethod = null;
+            beanManager = lookupBeanManagerFromCDI();
+        }
+        if (beanManager == null)
+        {
+            beanManager = lookupBeanManagerFromJndi();
+        }
+        if (beanManager != null)
+        {
+            externalContext.getApplicationMap().put(CDI_BEAN_MANAGER_INSTANCE,
+                beanManager);
+        }
+    }
+
+    /**
+     * This method tries to use the CDI-1.1 CDI.current() method to lookup the CDI BeanManager.
+     * We do all this via reflection to not blow up if CDI-1.1 is not on the classpath.
+     * @return the BeanManager or {@code null} if either not in a CDI-1.1 environment
+     *         or the BeanManager doesn't exist yet.
+     */
+    private Object lookupBeanManagerFromCDI()
+    {
+        try
+        {
+            Class cdiClass = null;
+            Method cdiCurrentMethod = null;
+            Method cdiGetBeanManagerMethod = null;
+            cdiClass = ClassUtils.simpleClassForName("javax.enterprise.inject.spi.CDI");
+            cdiCurrentMethod = cdiClass.getMethod("current");
+
+            Object cdiInstance = cdiCurrentMethod.invoke(null);
+
+            cdiGetBeanManagerMethod = cdiClass.getMethod("getBeanManager");
+            return cdiGetBeanManagerMethod.invoke(cdiInstance);
+        }
+        catch (Exception e)
+        {
+            // ignore
+        }
+        return null;
+    }
+
+    /**
+     * Try to lookup the CDI BeanManager from JNDI.
+     * We do all this via reflection to not blow up if CDI is not available.
+     */
+    private Object lookupBeanManagerFromJndi()
+    {
+        Object beanManager = null;
+        // Use reflection to avoid restricted API in GAE
+        Class icclazz = null;
+        Method lookupMethod = null;
+        try
+        {
+            icclazz = ClassUtils.simpleClassForName("javax.naming.InitialContext");
+            if (icclazz != null)
+            {
+                lookupMethod = icclazz.getMethod("doLookup", String.class);
+            }
+        }
+        catch (Throwable t)
+        {
+            //
+        }
+        if (lookupMethod != null)
+        {
+            // Try with JNDI
             try
             {
-                icclazz = ClassUtils.simpleClassForName("javax.naming.InitialContext");
-                if (icclazz != null)
-                {
-                    lookupMethod = icclazz.getMethod("doLookup", String.class);
-                }
+                // in an application server
+                //beanManager = InitialContext.doLookup("java:comp/BeanManager");
+                beanManager = lookupMethod.invoke(icclazz, "java:comp/BeanManager");
             }
-            catch (Throwable t)
+            catch (Exception e)
             {
-                //
+                // silently ignore
             }
-            if (lookupMethod != null)
+            catch (NoClassDefFoundError e)
             {
-                // Try with JNDI
+                //On Google App Engine, javax.naming.Context is a restricted class.
+                //In that case, NoClassDefFoundError is thrown. stageName needs to be configured
+                //below by context parameter.
+            }
+
+            if (beanManager == null)
+            {
                 try
                 {
-                    // in an application server
-                    //beanManager = InitialContext.doLookup("java:comp/BeanManager");
-                    beanManager = lookupMethod.invoke(icclazz, "java:comp/BeanManager");
+                    // in a servlet container
+                    //beanManager = InitialContext.doLookup("java:comp/env/BeanManager");
+                    beanManager = lookupMethod.invoke(icclazz, "java:comp/env/BeanManager");
                 }
                 catch (Exception e)
                 {
@@ -601,35 +668,12 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                     //In that case, NoClassDefFoundError is thrown. stageName needs to be configured
                     //below by context parameter.
                 }
-
-                if (beanManager == null)
-                {
-                    try
-                    {
-                        // in a servlet container
-                        //beanManager = InitialContext.doLookup("java:comp/env/BeanManager");
-                        beanManager = lookupMethod.invoke(icclazz, "java:comp/env/BeanManager");
-                    }
-                    catch (Exception e)
-                    {
-                        // silently ignore
-                    }
-                    catch (NoClassDefFoundError e)
-                    {
-                        //On Google App Engine, javax.naming.Context is a restricted class.
-                        //In that case, NoClassDefFoundError is thrown. stageName needs to be configured
-                        //below by context parameter.
-                    }
-                }
             }
         }
-        if (beanManager != null)
-        {
-            externalContext.getApplicationMap().put(CDI_BEAN_MANAGER_INSTANCE, 
-                beanManager);
-        }
+
+        return beanManager;
     }
-    
+
     public void _callPreDestroyOnInjectedJSFArtifacts(FacesContext facesContext)
     {
         InjectionProvider injectionProvider = InjectionProviderFactory.getInjectionProviderFactory(
