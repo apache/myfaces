@@ -36,7 +36,7 @@ public @interface FacesValidator
      * The value of this annotation attribute is taken to be the <i>validator-id</i> with which instances of this class
      * of component can be instantiated by calling {@link Application#createValidator(java.lang.String)}.
      */
-    public String value();
+    public String value() default "";
     
     /**
      * If it is true, the validator is added to default list calling  

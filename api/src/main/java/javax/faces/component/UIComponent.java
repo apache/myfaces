@@ -193,9 +193,12 @@ public abstract class UIComponent
     /**
      * @since 2.2
      * @param create
-     * @return 
+     * @return A {@code Map} instance, or {@code null}.
      */
-    public abstract Map<String,Object> getPassThroughAttributes(boolean create);
+    public Map<String,Object> getPassThroughAttributes(boolean create)
+    {
+        return Collections.emptyMap();
+    }
 
     /**
      *

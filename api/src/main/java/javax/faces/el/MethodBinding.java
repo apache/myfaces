@@ -25,7 +25,6 @@ import javax.faces.context.FacesContext;
  * 
  * @deprecated
  */
-@Deprecated
 public abstract class MethodBinding
 {
 

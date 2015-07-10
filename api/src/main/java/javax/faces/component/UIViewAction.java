@@ -193,6 +193,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
         context.getAttributes().put(EVENT_COUNT_KEY, count);
     }
 
+    @Deprecated
     public MethodBinding getAction()
     {
         MethodExpression actionExpression = getActionExpression();
@@ -211,6 +212,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
     /**
      * @deprecated Use setActionExpression instead.
      */
+    @Deprecated
     public void setAction(MethodBinding action)
     {
         if (action != null)
@@ -234,17 +236,6 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
         getStateHelper().put(PropertyKeys.immediate, immediate );
     }
 
-    @JSFProperty
-    public Object getValue()
-    {
-        return  getStateHelper().eval(PropertyKeys.value);
-    }
-
-    public void setValue(Object value)
-    {
-        getStateHelper().put(PropertyKeys.value, value );
-    }
-
     @JSFProperty(stateHolder=true, returnSignature = "java.lang.Object", jspName = "action", clientEvent="action")
     public MethodExpression getActionExpression()
     {
@@ -256,6 +247,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
         getStateHelper().put(PropertyKeys.actionExpression, actionExpression);
     }
 
+    @Deprecated
     @JSFProperty(stateHolder=true, returnSignature = "void", methodSignature = "javax.faces.event.ActionEvent")
     public MethodBinding getActionListener()
     {
@@ -265,6 +257,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
     /**
      * @deprecated
      */
+	@Deprecated
     @JSFProperty(returnSignature="void",methodSignature="javax.faces.event.ActionEvent")
     public void setActionListener(MethodBinding actionListener)
     {

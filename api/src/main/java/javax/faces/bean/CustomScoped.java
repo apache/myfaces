@@ -18,7 +18,6 @@
  */
 package javax.faces.bean;
 
-import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -27,11 +26,10 @@ import java.lang.annotation.Target;
 /**
  * @since 2.0
  */
-@Documented
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Inherited
 public @interface CustomScoped
 {
-    public String value() default "";
+    public String value();
 }

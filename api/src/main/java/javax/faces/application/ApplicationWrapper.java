@@ -130,6 +130,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     }
 
     @Override
+    @Deprecated
     public UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType)
             throws FacesException
     {
@@ -163,6 +164,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     }
 
     @Override
+    @Deprecated
     public MethodBinding createMethodBinding(String ref, Class<?>[] params) throws ReferenceSyntaxException
     {
         return getWrapped().createMethodBinding(ref, params);
@@ -181,6 +183,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     }
 
     @Override
+    @Deprecated
     public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType)
             throws ELException
     {
@@ -272,6 +275,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     }
 
     @Override
+    @Deprecated
     public PropertyResolver getPropertyResolver()
     {
         return getWrapped().getPropertyResolver();
@@ -308,6 +312,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     }
 
     @Override
+    @Deprecated
     public VariableResolver getVariableResolver()
     {
         return getWrapped().getVariableResolver();
@@ -371,6 +376,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     }
 
     @Override
+    @Deprecated
     public void setPropertyResolver(PropertyResolver resolver)
     {
         getWrapped().setPropertyResolver(resolver);
@@ -395,6 +401,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     }
 
     @Override
+    @Deprecated
     public void setVariableResolver(VariableResolver resolver)
     {
         getWrapped().setVariableResolver(resolver);

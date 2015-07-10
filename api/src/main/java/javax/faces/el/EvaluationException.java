@@ -25,7 +25,6 @@ import javax.faces.FacesException;
  * 
  * @deprecated
  */
-@Deprecated
 public class EvaluationException extends FacesException
 {
     private static final long serialVersionUID = 4668524591042216006L;

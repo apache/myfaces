@@ -148,6 +148,7 @@ public abstract class StateManager
      * 
      * @since 1.2
      */
+    @Deprecated
     public Object saveView(FacesContext context)
     {
         StateManager.SerializedView serializedView = saveSerializedView(context);
@@ -262,6 +263,7 @@ public abstract class StateManager
         return context.getRenderKit().getResponseStateManager().getViewState(context, saveView(context));
     }
 
+    @Deprecated
     public abstract UIViewRoot restoreView(FacesContext context, String viewId, String renderKitId);
 
     /**
