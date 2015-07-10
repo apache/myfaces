@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.ProjectStage;
@@ -52,7 +52,6 @@ import javax.faces.view.StateManagementStrategy;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewDeclarationLanguageFactory;
 import javax.faces.view.ViewMetadata;
-
 import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.context.RequestViewContext;
@@ -309,7 +308,25 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     }
                     if (faceletViewState != null)
                     {
-                        view.getAttributes().put(ComponentSupport.FACELET_STATE_INSTANCE,  faceletViewState);
+                        //if (skipBuildView)
+                        //{
+                            FaceletState newFaceletState = (FaceletState) view.getAttributes().get(
+                                    ComponentSupport.FACELET_STATE_INSTANCE);
+                            if (newFaceletState != null)
+                            {
+                                newFaceletState.restoreState(context, 
+                                        ((FaceletState)faceletViewState).saveState(context));
+                                faceletViewState = newFaceletState;
+                            }
+                            else
+                            {
+                                view.getAttributes().put(ComponentSupport.FACELET_STATE_INSTANCE,  faceletViewState);
+                            }
+                        //}
+                        //else
+                        //{
+                        //    view.getAttributes().put(ComponentSupport.FACELET_STATE_INSTANCE,  faceletViewState);
+                        //}
                     }
                     if (state.length == 3)
                     {
@@ -373,6 +390,10 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 states = (Map<String, Object>) state[1];
                 //Save the last unique id counter key in UIViewRoot
                 Integer lastUniqueIdCounter = (Integer) view.getAttributes().get(UNIQUE_ID_COUNTER_KEY);
+                // Retrieve the facelet state before restore anything. The reason is
+                // it could be necessary to restore the bindings map from here.
+                FaceletState oldFaceletState = (FaceletState) view.getAttributes().get(
+                        ComponentSupport.FACELET_STATE_INSTANCE);
                 
                 // Visit the children and restore their state.
                 boolean emptyState = false;
@@ -414,7 +435,36 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 }
                 if (faceletViewState != null)
                 {
-                    view.getAttributes().put(ComponentSupport.FACELET_STATE_INSTANCE,  faceletViewState);
+                    // Make sure binding map
+                    if (oldFaceletState != null && oldFaceletState.getBindings() != null && 
+                            !oldFaceletState.getBindings().isEmpty())
+                    {
+                        // Be sure the new facelet state has the binding map filled from the old one.
+                        // When vdl.buildView() is called by restoreView, FaceletState.bindings map is filled, but
+                        // when view pool is enabled, vdl.buildView() could restore the view, but create an alternate
+                        // FaceletState instance, different from the one restored. In this case, the restored instance
+                        // has precedence, but we need to fill bindings map using the entries from the instance that
+                        // comes from the view pool.
+                        FaceletState newFaceletState = (FaceletState) faceletViewState;
+                        for (Map.Entry<String, Map<String, ValueExpression> > entry : 
+                                oldFaceletState.getBindings().entrySet())
+                        {
+                            for (Map.Entry<String, ValueExpression> entry2 : entry.getValue().entrySet())
+                            {
+                                ValueExpression expr = newFaceletState.getBinding(entry.getKey(), entry2.getKey());
+                                if (expr == null)
+                                {
+                                    newFaceletState.putBinding(entry.getKey(), entry2.getKey(), entry2.getValue());
+                                }
+                            }
+                        }
+                        view.getAttributes().put(ComponentSupport.FACELET_STATE_INSTANCE,  newFaceletState);
+                    }
+                    else
+                    {
+                        //restore bindings
+                        view.getAttributes().put(ComponentSupport.FACELET_STATE_INSTANCE,  faceletViewState);
+                    }
                 }
                 if (lastUniqueIdCounter != null)
                 {
