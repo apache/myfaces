@@ -257,7 +257,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
     /**
      * @deprecated
      */
-	@Deprecated
+    @Deprecated
     @JSFProperty(returnSignature="void",methodSignature="javax.faces.event.ActionEvent")
     public void setActionListener(MethodBinding actionListener)
     {
