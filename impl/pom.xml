@@ -578,21 +578,30 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>shade_package</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.apache.commons.codec</pattern>
+                                        <shadedPattern>org.apache.myfaces.shade.commons.codec</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <createSourcesJar>true</createSourcesJar>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.apache.myfaces.core.internal:myfaces-impl-shared</include>
+                                    <include>commons-codec:commons-codec</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <createDependencyReducedPom>false</createDependencyReducedPom>
-                    <createSourcesJar>true</createSourcesJar>
-                    <artifactSet>
-                        <includes>
-                            <include>org.apache.myfaces.core.internal:myfaces-impl-shared</include>
-                        </includes>
-                    </artifactSet>
-                </configuration>
             </plugin>
 
             <!-- create OSGI-ready manifest.mf -->
@@ -1122,6 +1131,7 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
