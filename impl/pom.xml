@@ -702,11 +702,11 @@
                                         <modelId>myfaces-impl-shared</modelId>
                                     </modelIds>
                                     <taglibs>
-                                        <f>http://java.sun.com/jsf/core</f>
-                                        <h>http://java.sun.com/jsf/html</h>
-                                        <ui>http://java.sun.com/jsf/facelets</ui>
-                                        <c>http://java.sun.com/jsp/jstl/core</c>
-                                        <fn>http://java.sun.com/jsp/jstl/functions</fn>
+                                        <f>http://xmlns.jcp.org/jsf/core</f>
+                                        <h>http://xmlns.jcp.org/jsf/html</h>
+                                        <ui>http://xmlns.jcp.org/jsf/facelets</ui>
+                                        <c>http://xmlns.jcp.org/jsp/jstl/core</c>
+                                        <fn>http://xmlns.jcp.org/jsp/jstl/functions</fn>
                                     </taglibs>
                                 </configuration>
                                 <goals>
@@ -802,11 +802,11 @@
                                         <modelId>myfaces-impl-shared</modelId>
                                     </modelIds>
                                     <taglibs>
-                                        <f>http://java.sun.com/jsf/core</f>
-                                        <h>http://java.sun.com/jsf/html</h>
-                                        <ui>http://java.sun.com/jsf/facelets</ui>
-                                        <c>http://java.sun.com/jsp/jstl/core</c>
-                                        <fn>http://java.sun.com/jsp/jstl/functions</fn>
+                                        <f>http://xmlns.jcp.org/jsf/core</f>
+                                        <h>http://xmlns.jcp.org/jsf/html</h>
+                                        <ui>http://xmlns.jcp.org/jsf/facelets</ui>
+                                        <c>http://xmlns.jcp.org/jsp/jstl/core</c>
+                                        <fn>http://xmlns.jcp.org/jsp/jstl/functions</fn>
                                     </taglibs>
                                 </configuration>
                                 <reports>
