@@ -593,19 +593,36 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             Class cdiClass = null;
             Method cdiCurrentMethod = null;
             Method cdiGetBeanManagerMethod = null;
-            cdiClass = ClassUtils.simpleClassForName("javax.enterprise.inject.spi.CDI");
-            cdiCurrentMethod = cdiClass.getMethod("current");
+            cdiClass = simpleClassForNameNoException("javax.enterprise.inject.spi.CDI");
+            if (cdiClass != null)
+            {
+                cdiCurrentMethod = cdiClass.getMethod("current");
 
-            Object cdiInstance = cdiCurrentMethod.invoke(null);
+                Object cdiInstance = cdiCurrentMethod.invoke(null);
 
-            cdiGetBeanManagerMethod = cdiClass.getMethod("getBeanManager");
-            return cdiGetBeanManagerMethod.invoke(cdiInstance);
+                cdiGetBeanManagerMethod = cdiClass.getMethod("getBeanManager");
+                return cdiGetBeanManagerMethod.invoke(cdiInstance);
+            }
         }
         catch (Exception e)
         {
             // ignore
         }
         return null;
+    }
+    
+    private static Class simpleClassForNameNoException(String type)
+    {
+        try
+        {
+            return ClassUtils.classForName(type);
+        }
+        catch (ClassNotFoundException e)
+        {
+            //log.log(Level.SEVERE, "Class " + type + " not found", e);
+            //Ignore
+            return null;
+        }
     }
 
     /**
