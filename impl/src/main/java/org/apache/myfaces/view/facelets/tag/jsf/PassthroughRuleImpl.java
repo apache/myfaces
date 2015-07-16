@@ -91,6 +91,11 @@ final class PassthroughRuleImpl extends MetaRule implements PassthroughRule
                 {
                     type = Object.class;
                 }
+                // if "class" is used, set type as Object (do not confuse with getClass()). 
+                if ("class".equalsIgnoreCase(name))
+                {
+                    type = Object.class;
+                }
                 
                 return new ValueExpressionMetadata(name, type, attribute);
             }
