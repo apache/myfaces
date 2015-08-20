@@ -557,10 +557,14 @@ public class ManagedBeanBuilder
         {
             return APPLICATION;
         }
-        if (facesContext.getViewRoot() != null && 
-            facesContext.getViewRoot().getViewMap().get(beanName) != null)
+        if (facesContext.getViewRoot() != null)
         {
-            return VIEW;
+            // Don't create the view Map during startup
+            Map<String, Object> viewMap = facesContext.getViewRoot().getViewMap(!startup);
+            if (viewMap!= null && viewMap.get(beanName) != null)
+            {
+                return VIEW;
+            }
         }
 
         //not found - check mangaged bean config
