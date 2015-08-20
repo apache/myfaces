@@ -641,6 +641,9 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             }
         }
         
+        // allow components to specify the "class" attribute 
+        m.alias("class", "styleClass");
+        
         return m;
     }
     

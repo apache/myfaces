@@ -94,4 +94,23 @@ public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFa
         
         endRequest();
     }
+    
+    // Test for MYFACES-4003
+    @Test
+    public void testInputTextWithClass() throws Exception
+    {
+        startViewRequest("/testClassAttribute.xhtml");
+        processLifecycleExecuteAndRender();
+        
+        UIComponent jsfInputText = facesContext.getViewRoot().findComponent("form:JSF_inputText");
+        Assert.assertNotNull(jsfInputText);
+        Assert.assertEquals("TEST", jsfInputText.getAttributes().get("styleClass"));
+        
+        // The "class" attribute should have been mapped to a "styleClass" attribute
+        UIComponent testInputText = facesContext.getViewRoot().findComponent("form:test_inputText");
+        Assert.assertNotNull(testInputText);
+        Assert.assertEquals("TEST", testInputText.getAttributes().get("styleClass"));
+        
+        endRequest();
+    }    
 }
