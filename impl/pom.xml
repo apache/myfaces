@@ -495,6 +495,117 @@
                         </goals>
                     </execution>
 
+                    <execution>
+                        <id>make_core_facelet_xsd22</id>
+                        <configuration>
+                            <xmlFile>META-INF/schema/myfaces_facelets_core_2_2.xsd</xmlFile>
+                            <templateFile>myfaces_facelet_core20_xsd.vm</templateFile>
+                            <modelIds>
+                                <modelId>myfaces-api</modelId>
+                                <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
+                            </modelIds>
+                            <params>
+                                <shortname>f</shortname>
+                                <uri>http://xmlns.jcp.org/jsf/core</uri>
+                                <displayname>JSF Core Facelets Tag Library.</displayname>
+                                <tlibversion>2.2</tlibversion>
+                                <description>This tag library implements the standard JSF core tags for Facelets.</description>
+                            </params>
+                        </configuration>
+                        <goals>
+                            <goal>make-config</goal>
+                        </goals>
+                    </execution>
+
+                    <execution>
+                        <id>make_html_facelet_xsd22</id>
+                        <configuration>
+                            <xmlFile>META-INF/schema/myfaces_facelets_html_2_2.xsd</xmlFile>
+                            <templateFile>myfaces_facelet_html20_xsd.vm</templateFile>
+                            <modelIds>
+                                <modelId>myfaces-api</modelId>
+                                <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
+                            </modelIds>
+                            <params>
+                                <shortname>h</shortname>
+                                <uri>http://xmlns.jcp.org/jsf/html</uri>
+                                <displayname>JSF HTML Facelets Tag Library.</displayname>
+                                <description>This tag library implements the standard JSF HTML tags for Facelets.</description>
+                            </params>
+                        </configuration>
+                        <goals>
+                            <goal>make-config</goal>
+                        </goals>
+                    </execution>
+
+                    <execution>
+                        <id>make_c_facelet_xsd22</id>
+                        <configuration>
+                            <xmlFile>META-INF/schema/myfaces_facelets_c_2_2.xsd</xmlFile>
+                            <templateFile>myfaces_facelet_html20_xsd.vm</templateFile>
+                            <modelIds>
+                                <modelId>myfaces-api</modelId>
+                                <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
+                            </modelIds>
+                            <params>
+                                <shortname>c</shortname>
+                                <uri>http://xmlns.jcp.org/jsp/jstl/core</uri>
+                                <displayname>JSTL core Facelets Tag Library.</displayname>
+                                <description>JSTL core Facelets Tag Library.</description>
+                            </params>
+                        </configuration>
+                        <goals>
+                            <goal>make-config</goal>
+                        </goals>
+                    </execution>
+
+                    <execution>
+                        <id>make_ui_facelet_xsd22</id>
+                        <configuration>
+                            <xmlFile>META-INF/schema/myfaces_facelets_ui_2_2.xsd</xmlFile>
+                            <templateFile>myfaces_facelet_html20_xsd.vm</templateFile>
+                            <modelIds>
+                                <modelId>myfaces-api</modelId>
+                                <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
+                            </modelIds>
+                            <params>
+                                <shortname>ui</shortname>
+                                <uri>http://xmlns.jcp.org/jsf/facelets</uri>
+                                <displayname>JSF UI Facelets Tag Library.</displayname>
+                                <description>JSF UI Facelets Tag Library.</description>
+                            </params>
+                        </configuration>
+                        <goals>
+                            <goal>make-config</goal>
+                        </goals>
+                    </execution>
+
+                    <execution>
+                        <id>make_composite_facelet_xsd22</id>
+                        <configuration>
+                            <xmlFile>META-INF/schema/myfaces_facelets_composite_2_2.xsd</xmlFile>
+                            <templateFile>myfaces_facelet_html20_xsd.vm</templateFile>
+                            <modelIds>
+                                <modelId>myfaces-api</modelId>
+                                <modelId>myfaces-impl</modelId>
+                                <modelId>myfaces-impl-shared</modelId>
+                            </modelIds>
+                            <params>
+                                <shortname>composite</shortname>
+                                <uri>http://xmlns.jcp.org/jsf/composite</uri>
+                                <displayname>JSF Composite Facelets Tag Library.</displayname>
+                                <description>JSF Composite Facelets Tag Library.</description>
+                            </params>
+                        </configuration>
+                        <goals>
+                            <goal>make-config</goal>
+                        </goals>
+                    </execution>
+
                     <!-- END XSD GENERATION -->
                 </executions>
             </plugin>
