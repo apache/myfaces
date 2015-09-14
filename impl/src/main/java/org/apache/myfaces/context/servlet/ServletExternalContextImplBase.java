@@ -100,6 +100,10 @@ public abstract class ServletExternalContextImplBase extends ExternalContext
     @Override
     public String getInitParameter(final String s)
     {
+        if (s == null)
+        {
+            throw new NullPointerException("Init parameter name cannot be null");
+        }
         return _servletContext.getInitParameter(s);
     }
 
