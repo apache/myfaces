@@ -589,6 +589,15 @@ public class PartialViewContextImpl extends PartialViewContext
                 writer.write(viewState);
                 writer.endUpdate();
             }
+            else if (viewRoot.isTransient())
+            {
+                //TODO: fix javascript side, so the field is not removed on ajax form update
+                writer.startUpdate(HtmlResponseStateManager.generateUpdateViewStateId(
+                    _facesContext));
+                writer.write("stateless");
+                writer.endUpdate();
+                //END TODO
+            }
             
             
             ClientWindow cw = _facesContext.getExternalContext().getClientWindow();
