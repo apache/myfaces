@@ -66,11 +66,11 @@ public class FlowScopeBeanHolder implements Serializable
      * value: the {@link ContextualStorage} which holds all the
      * {@link javax.enterprise.inject.spi.Bean}s.
      */
-    private Map<String, ContextualStorage> storageMap = new ConcurrentHashMap<String, ContextualStorage>();
+    private Map<String, ContextualStorage> storageMap;
     
-    private Map<String, List<String>> activeFlowMapKeys = new ConcurrentHashMap<String, List<String>>();
+    private Map<String, List<String>> activeFlowMapKeys;
     
-    private FacesFlowClientWindowCollection windowCollection = null;
+    private FacesFlowClientWindowCollection windowCollection;
     
     public static final String CURRENT_FLOW_SCOPE_MAP = "oam.CURRENT_FLOW_SCOPE_MAP";
     
@@ -88,6 +88,10 @@ public class FlowScopeBeanHolder implements Serializable
     @PostConstruct
     public void init()
     {
+        storageMap = new ConcurrentHashMap<String, ContextualStorage>();
+        activeFlowMapKeys = new ConcurrentHashMap<String, List<String>>();
+        windowCollection = null;
+        
         FacesContext facesContext = FacesContext.getCurrentInstance();
         this.refreshClientWindow(facesContext);
         facesContext.getExternalContext().getSessionMap().put(FLOW_SCOPE_PREFIX_KEY,

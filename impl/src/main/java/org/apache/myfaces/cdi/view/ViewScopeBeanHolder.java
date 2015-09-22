@@ -48,8 +48,7 @@ public class ViewScopeBeanHolder implements Serializable
      * value: the {@link ViewScopeContextualStorage} which holds all the
      * {@link javax.enterprise.inject.spi.Bean}s.
      */
-    private Map<String, ViewScopeContextualStorage> storageMap = 
-        new ConcurrentHashMap<String, ViewScopeContextualStorage>();
+    private Map<String, ViewScopeContextualStorage> storageMap;
     
     private static final Random RANDOM_GENERATOR = new Random();
     
@@ -67,6 +66,7 @@ public class ViewScopeBeanHolder implements Serializable
     @PostConstruct
     public void init()
     {
+        storageMap = new ConcurrentHashMap<String, ViewScopeContextualStorage>();
         FacesContext facesContext = FacesContext.getCurrentInstance();
         facesContext.getExternalContext().getSessionMap().put(VIEW_SCOPE_PREFIX_KEY,
             1);
