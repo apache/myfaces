@@ -44,6 +44,7 @@ import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
 import javax.faces.validator.BeanValidator;
 import javax.faces.validator.Validator;
 import javax.faces.view.EditableValueHolderAttachedObjectHandler;
@@ -517,6 +518,22 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         if (_delegate.getBinding() != null)
         {
             ValueExpression ve = _delegate.getBinding().getValueExpression(ctx, Object.class);
+            if (PhaseId.RESTORE_VIEW.equals(faces.getCurrentPhaseId()))
+            {
+                if (!ve.isReadOnly(faces.getELContext()))
+                {
+                    try
+                    {
+                        // force reset it is an easy and cheap way to allow "binding" attribute to work on 
+                        // view scope beans or flow scope beans (using a transient variable)
+                        ve.setValue(faces.getELContext(), null);
+                    }
+                    catch (Exception e)
+                    {
+                        // ignore
+                    }
+                }
+            }
             if (this._rendererType == null)
             {
                 c = app.createComponent(ve, faces, this._componentType);
