@@ -37,6 +37,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.enterprise.inject.spi.BeanManager;
 
 import javax.faces.FacesException;
 import javax.faces.bean.ManagedBean;
@@ -51,6 +52,8 @@ import javax.faces.validator.FacesValidator;
 import javax.faces.view.facelets.FaceletsResourceResolver;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.cdi.util.BeanProvider;
+import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.AnnotationProvider;
@@ -151,6 +154,16 @@ public class DefaultAnnotationProvider extends AnnotationProvider
     @Override
     public Map<Class<? extends Annotation>, Set<Class<?>>> getAnnotatedClasses(ExternalContext ctx)
     {
+        String useCdiForAnnotationScanning =
+                ctx.getInitParameter(CdiAnnotationProviderExtension.USE_CDI_FOR_ANNOTATION_SCANNING);
+        if (useCdiForAnnotationScanning != null && "true".equalsIgnoreCase(useCdiForAnnotationScanning.trim()))
+        {
+            BeanManager beanManager = CDIUtils.getBeanManager(ctx);
+            CdiAnnotationProviderExtension extension =
+                    BeanProvider.getContextualReference(beanManager, CdiAnnotationProviderExtension.class, false);
+            return extension.getMap();
+        }
+
         Map<Class<? extends Annotation>,Set<Class<?>>> map = new HashMap<Class<? extends Annotation>, Set<Class<?>>>();
         Collection<Class<?>> classes = null;
 
