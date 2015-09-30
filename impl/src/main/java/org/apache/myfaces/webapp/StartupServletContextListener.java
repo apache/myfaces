@@ -104,6 +104,8 @@ public class StartupServletContextListener implements ServletContextListener,
         Boolean b = (Boolean) _servletContext.getAttribute(FACES_INIT_DONE);
         if (b == null || b.booleanValue() == false)
         {
+            long start = System.currentTimeMillis();
+
             if (_facesInitializer == null)
             {
                 _facesInitializer = FacesInitializerFactory.getFacesInitializer(_servletContext);
@@ -125,6 +127,10 @@ public class StartupServletContextListener implements ServletContextListener,
 
             //Destroy startup FacesContext
             _facesInitializer.destroyStartupFacesContext(facesContext);
+
+            log.log(Level.INFO, "MyFaces Core has started, it took ["
+                    + (System.currentTimeMillis() - start)
+                    + "] ms.");
         }
         else
         {
