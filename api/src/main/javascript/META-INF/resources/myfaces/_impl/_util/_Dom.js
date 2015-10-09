@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,©
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -253,7 +253,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                 elementId = elem.name;
 
                 //last check for uniqueness
-                if (this.getElementsByName(elementId).length > 1) {
+                if (document.getElementsByName(elementId).length > 1) {
                     //no unique element name so we need to perform
                     //a return null to let the caller deal with this issue
                     return null;
