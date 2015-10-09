@@ -249,7 +249,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                 elementId = elem.name;
 
                 //last check for uniqueness
-                if (this.getElementsByName(elementId).length > 1) {
+                if (document.getElementsByName(elementId).length > 1) {
                     //no unique element name so we need to perform
                     //a return null to let the caller deal with this issue
                     return null;
