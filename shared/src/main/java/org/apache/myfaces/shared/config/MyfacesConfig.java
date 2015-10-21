@@ -539,6 +539,13 @@ public class MyfacesConfig
     static final String INIT_PARAM_NUMBER_OF_FACES_FLOW_CLIENT_WINDOW_IDS_IN_SESSION = 
             "org.apache.myfaces.FACES_FLOW_CLIENT_WINDOW_IDS_IN_SESSION";
     
+    /**
+     * This parameter specifies whether or not the ImportHandler will be supported
+     */
+    @JSFWebConfigParam(since="2.2.9", defaultValue="false", expectedValues="true,false", group="EL")
+    protected static final String SUPPORT_EL_3_IMPORT_HANDLER = "org.apache.myfaces.SUPPORT_EL_3_IMPORT_HANDLER";
+    public final static boolean SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT = false;
+
     private boolean _prettyHtml;
     private boolean _detectJavascript;
     private boolean _allowJavascript;
@@ -581,6 +588,7 @@ public class MyfacesConfig
     private Integer _numberOfSequentialViewsInSession;
     private Integer _numberOfFlashTokensInSession;
     private Integer _numberOfFacesFlowClientWindowIdsInSession;
+    private boolean _supportEL3ImportHandler;
 
     private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -693,6 +701,7 @@ public class MyfacesConfig
         setNumberOfFlashTokensInSession(
                 (INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT / 
                         INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT)+1);
+        setSupportEL3ImportHandler(SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT);                        
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -888,6 +897,10 @@ public class MyfacesConfig
                         extCtx, 
                         INIT_PARAM_NUMBER_OF_FACES_FLOW_CLIENT_WINDOW_IDS_IN_SESSION, 
                         numberOfFlashTokensInSessionDefault));
+                        
+        myfacesConfig.setSupportEL3ImportHandler(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
+                       SUPPORT_EL_3_IMPORT_HANDLER, 
+                       SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT));                        
         
         if (TOMAHAWK_AVAILABLE)
         {
@@ -1539,5 +1552,21 @@ public class MyfacesConfig
     public void setNumberOfFacesFlowClientWindowIdsInSession(Integer numberOfFacesFlowClientWindowIdsInSession)
     {
         this._numberOfFacesFlowClientWindowIdsInSession = numberOfFacesFlowClientWindowIdsInSession;
+    }
+    
+    /**
+     * @return the _supportEL3ImportHandler
+     */
+    public boolean isSupportEL3ImportHandler()
+    {
+        return _supportEL3ImportHandler;
+    }
+    
+    /**
+     * @param supportEL3ImportHandler the _supportEL3ImportHandler to set
+     */
+    public void setSupportEL3ImportHandler(boolean supportEL3ImportHandler)
+    {
+        this._supportEL3ImportHandler = supportEL3ImportHandler;
     }
 }

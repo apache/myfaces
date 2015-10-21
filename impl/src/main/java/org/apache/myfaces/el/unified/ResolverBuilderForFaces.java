@@ -31,16 +31,19 @@ import javax.el.ExpressionFactory;
 import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 import javax.el.ResourceBundleELResolver;
+import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.FlashELResolver;
 import org.apache.myfaces.el.unified.resolver.CompositeComponentELResolver;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
+import org.apache.myfaces.el.unified.resolver.ImportHandlerResolver;
 import org.apache.myfaces.el.unified.resolver.ManagedBeanResolver;
 import org.apache.myfaces.el.unified.resolver.ResourceBundleResolver;
 import org.apache.myfaces.el.unified.resolver.ResourceResolver;
 import org.apache.myfaces.el.unified.resolver.ScopedAttributeResolver;
 import org.apache.myfaces.el.unified.resolver.implicitobject.ImplicitObjectResolver;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
 
 /**
@@ -146,6 +149,13 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
         for (ELResolver resolver : filteredELResolvers)
         {
             compositeElResolver.add(resolver);
+        }
+        
+        // Only add this resolver if the user wants to use the EL ImportHandler
+        if (MyfacesConfig.getCurrentInstance(
+             FacesContext.getCurrentInstance().getExternalContext()).isSupportEL3ImportHandler())
+        {
+            compositeElResolver.add(new ImportHandlerResolver());
         }
         
         // the ScopedAttributeResolver has to be the last one in every

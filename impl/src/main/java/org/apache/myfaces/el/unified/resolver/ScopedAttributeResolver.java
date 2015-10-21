@@ -39,7 +39,7 @@ import java.util.Map;
  * 
  * @author Stan Silvert
  */
-public final class ScopedAttributeResolver extends ELResolver
+public class ScopedAttributeResolver extends ELResolver
 {
 
     /**
