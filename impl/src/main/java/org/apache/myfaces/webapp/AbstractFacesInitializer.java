@@ -473,7 +473,13 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     {
         try
         {
-            Class<?> expressionFactoryClass = Class.forName(expressionFactoryClassName);
+            ClassLoader cl = ClassUtils.getContextClassLoader();
+            if (cl == null)
+            {
+                cl = AbstractFacesInitializer.class.getClassLoader();
+            }
+
+            Class<?> expressionFactoryClass = cl.loadClass(expressionFactoryClassName);
             return (ExpressionFactory) expressionFactoryClass.newInstance();
         }
         catch (Exception ex)
