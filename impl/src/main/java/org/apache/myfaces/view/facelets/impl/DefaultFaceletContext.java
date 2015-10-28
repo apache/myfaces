@@ -296,8 +296,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             // with htmlunit 2.4 or lower, so in order to prevent it it is better to use
             // only positive values instead.
             // Take into account CompilationManager.nextTagId() uses Math.abs too.
-            Integer prefixInt = new Integer(Math.abs(_uniqueIdBuilder.toString().hashCode()));
-            _prefix = prefixInt.toString();
+            _prefix = Integer.toString(Math.abs(_uniqueIdBuilder.toString().hashCode()));
         }
     }
     

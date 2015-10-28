@@ -401,14 +401,6 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
     {
         return new MyFacesResponseStream(outputStream);
     }
-    
-    private void checkNull(Object value, String valueLabel)
-    {
-        if (value == null)
-        {
-            throw new NullPointerException(valueLabel + " is null");
-        }
-    }
 
     private static class MyFacesResponseStream extends ResponseStream
     {

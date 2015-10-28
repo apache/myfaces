@@ -355,7 +355,7 @@ public class DebugUtils
             name = name.substring("javax.faces.webapp.UIComponentTag.".length());
         }
         stream.print(' ');
-        stream.print(name.toString());
+        stream.print(name);
         stream.print("=\"");
         if (value != null)
         {

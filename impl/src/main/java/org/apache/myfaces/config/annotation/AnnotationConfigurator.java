@@ -320,7 +320,7 @@ public class AnnotationConfigurator
                     // first character lowercase.
 
                     beanName = clazz.getName();
-                    index = beanName.lastIndexOf(".");
+                    index = beanName.lastIndexOf('.');
 
                     if (index != -1)
                     {

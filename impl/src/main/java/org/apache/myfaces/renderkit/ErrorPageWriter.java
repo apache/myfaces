@@ -794,7 +794,7 @@ public final class ErrorPageWriter
             SortedMap<String, Object> sortedMap = new TreeMap<String, Object>(vars);
             for (Map.Entry<String, Object> entry : sortedMap.entrySet())
             {
-                String key = entry.getKey().toString();
+                String key = entry.getKey();
                 if (key.indexOf('.') == -1)
                 {
                     writer.write("<tr><td>");

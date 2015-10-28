@@ -24,8 +24,6 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -230,11 +228,13 @@ public final class BeanProvider
         return getContextualReference(type, getBeanManager(), bean);
     }*/
 
+    /*
     private static <T> T getContextualReference(Class<T> type, BeanManager beanManager, Bean<?> bean)
     {
         //noinspection unchecked
         return getContextualReference(type, beanManager, new HashSet<Bean<?>>((Collection) Arrays.asList(bean)));
     }
+    */
 
     /**
      * <p>Get a list of Contextual References by type independent of the qualifier

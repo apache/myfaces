@@ -67,8 +67,8 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     private static final Logger log = Logger.getLogger(ServletExternalContextImpl.class.getName());
 
     private static final String URL_PARAM_SEPERATOR="&";
-    private static final String URL_QUERY_SEPERATOR="?";
-    private static final String URL_FRAGMENT_SEPERATOR="#";
+    private static final char URL_QUERY_SEPERATOR='?';
+    private static final char URL_FRAGMENT_SEPERATOR='#';
     private static final String URL_NAME_VALUE_PAIR_SEPERATOR="=";
 
     private ServletRequest _servletRequest;

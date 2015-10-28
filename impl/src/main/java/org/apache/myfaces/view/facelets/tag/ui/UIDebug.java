@@ -114,7 +114,7 @@ public final class UIDebug extends UIComponentBase
                   + this.getHotkey() + "' & e.shiftKey & e.ctrlKey) faceletsDebug('");
         sb.append(actionId);
         
-        int index = actionId.indexOf ("?");
+        int index = actionId.indexOf('?');
         if (index != -1)
         {
             sb.append('&');

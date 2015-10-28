@@ -710,22 +710,6 @@ final class TextUnit extends CompilationUnit
         }
         return size;
     }
-
-    private static int getFirstTextCharLocationIgnoringSpacesTabsAndCarriageReturn(String text)
-    {
-        for (int i = 0; i < text.length(); i++)
-        {
-            if (Character.isWhitespace(text.charAt(i)))
-            {
-                continue;
-            }
-            else
-            {
-                return i;
-            }
-        }
-        return text.length();
-    }
     
     private static int getLastTextCharLocationIgnoringSpacesTabsAndCarriageReturn(String text)
     {

@@ -256,11 +256,11 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         List<String> parameterList = new ArrayList<String>(paramSize + 2);
         if (executes != null)
         {
-            parameterList.add(executes.toString());
+            parameterList.add(executes);
         }
         if (render != null)
         {
-            parameterList.add(render.toString());
+            parameterList.add(render);
         }
         if (onError != null)
         {

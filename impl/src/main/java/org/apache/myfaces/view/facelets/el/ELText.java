@@ -537,7 +537,7 @@ public class ELText
 
         if (buff.length() > 0)
         {
-            text.add(new ELText(new String(buff.toString())));
+            text.add(new ELText(buff.toString()));
             buff.setLength(0);
         }
 
@@ -622,7 +622,7 @@ public class ELText
 
         if (buff.length() > 0)
         {
-            text.add(new ELText(new String(buff.toString())));
+            text.add(new ELText(buff.toString()));
             buff.setLength(0);
         }
 

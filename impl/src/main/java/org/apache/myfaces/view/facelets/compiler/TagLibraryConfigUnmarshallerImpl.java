@@ -20,7 +20,6 @@ package org.apache.myfaces.view.facelets.compiler;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import javax.faces.context.ExternalContext;
@@ -40,7 +39,6 @@ import org.apache.myfaces.config.impl.digester.elements.facelets.FaceletTagLibra
 import org.apache.myfaces.config.impl.digester.elements.facelets.FaceletValidatorTagImpl;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
-import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
@@ -406,71 +404,6 @@ public class TagLibraryConfigUnmarshallerImpl
             }
             this.buffer.setLength(0);
             return s;
-        }
-
-        @SuppressWarnings("unchecked")
-        private static <T> Class<? extends T> createClass(Class<T> type, String name) throws Exception
-        {
-            Class<? extends T> factory = (Class<? extends T>)ReflectionUtil.forName(name);
-            if (!type.isAssignableFrom(factory))
-            {
-                throw new Exception(name + " must be an instance of " + type.getName());
-            }
-            return factory;
-        }
-
-        private static Method createMethod(Class<?> type, String s) throws Exception
-        {
-            int pos = s.indexOf(' ');
-            if (pos == -1)
-            {
-                throw new Exception("Must Provide Return Type: " + s);
-            }
-            else
-            {
-                int pos2 = s.indexOf('(', pos + 1);
-                if (pos2 == -1)
-                {
-                    throw new Exception("Must provide a method name, followed by '(': " + s);
-                }
-                else
-                {
-                    String mn = s.substring(pos + 1, pos2).trim();
-                    pos = s.indexOf(')', pos2 + 1);
-                    if (pos == -1)
-                    {
-                        throw new Exception("Must close parentheses, ')' missing: " + s);
-                    }
-                    else
-                    {
-                        String[] ps = s.substring(pos2 + 1, pos).trim().split(",");
-                        Class<?>[] pc;
-                        if (ps.length == 1 && "".equals(ps[0]))
-                        {
-                            pc = new Class[0];
-                        }
-                        else
-                        {
-                            pc = new Class[ps.length];
-                            for (int i = 0; i < pc.length; i++)
-                            {
-                                pc[i] = ReflectionUtil.forName(ps[i].trim());
-                            }
-                        }
-                        try
-                        {
-                            return type.getMethod(mn, pc);
-                        }
-                        catch (NoSuchMethodException e)
-                        {
-                            throw new Exception("No Function Found on type: " + type.getName() + " with signature: "
-                                    + s);
-                        }
-
-                    }
-
-                }
-            }
         }
 
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException

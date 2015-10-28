@@ -997,7 +997,7 @@ public class NavigationHandlerImpl
         {
             if (viewId != null)
             {
-                index = viewId.lastIndexOf(".");
+                index = viewId.lastIndexOf('.');
 
                 if (index != -1)
                 {
@@ -1018,7 +1018,7 @@ public class NavigationHandlerImpl
                 String tempViewId = getNavigationHandlerSupport().calculateViewId(facesContext);
                 if (tempViewId != null)
                 {
-                    index = tempViewId.lastIndexOf(".");
+                    index = tempViewId.lastIndexOf('.');
                     if(index != -1)
                     {
                         viewIdToTest.append(tempViewId.substring (index));
@@ -1045,7 +1045,7 @@ public class NavigationHandlerImpl
             index = -1;
             if( viewId != null )
             {
-               index = viewId.lastIndexOf ("/");
+               index = viewId.lastIndexOf('/');
             }
             
             if (index == -1)

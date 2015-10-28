@@ -84,7 +84,7 @@ public class DefaultResourceLibraryContractsProvider extends ResourceLibraryCont
         {
             String urlString = urls[i].toExternalForm();
             int suffixPos = urlString.lastIndexOf(META_INF_CONTRACTS_FILE);
-            int slashPos = urlString.lastIndexOf("/", suffixPos-1);
+            int slashPos = urlString.lastIndexOf('/', suffixPos-1);
             if (suffixPos > 0 && slashPos > 0)
             {
                 contracts.add(urlString.substring(slashPos+1, suffixPos));
