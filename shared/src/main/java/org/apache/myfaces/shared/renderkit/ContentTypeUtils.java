@@ -101,7 +101,7 @@ public class ContentTypeUtils
         String[] splittedArray = StringUtils.splitShortString(contentTypeListString, ',');
         for (int i = 0; i < splittedArray.length; i++)
         {
-            int semicolonIndex = splittedArray[i].indexOf(";");
+            int semicolonIndex = splittedArray[i].indexOf(';');
             if (semicolonIndex != -1)
             {
                 splittedArray[i] = splittedArray[i].substring(0,semicolonIndex);

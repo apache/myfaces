@@ -204,7 +204,7 @@ public class HtmlButtonRendererBase
                         uiComponent, behaviors, facesContext, writer, formInfo, validParams);
                 if (onClick.length() != 0)
                 {
-                    writer.writeAttribute(HTML.ONCLICK_ATTR, onClick.toString(), null);
+                    writer.writeAttribute(HTML.ONCLICK_ATTR, onClick, null);
                 }
             }
             else
@@ -218,7 +218,7 @@ public class HtmlButtonRendererBase
                         commandOnclick , null);
                 if (onClick.length() != 0)
                 {
-                    writer.writeAttribute(HTML.ONCLICK_ATTR, onClick.toString(), null);
+                    writer.writeAttribute(HTML.ONCLICK_ATTR, onClick, null);
                 }
             }
             

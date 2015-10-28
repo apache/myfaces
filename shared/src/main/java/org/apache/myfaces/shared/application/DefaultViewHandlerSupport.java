@@ -237,9 +237,9 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
                     {
                         builder.append(viewId);
                     }
-                    else if(viewId.lastIndexOf(".") != -1 )
+                    else if(viewId.lastIndexOf('.') != -1 )
                     {
-                        builder.append(viewId.substring(0,viewId.lastIndexOf(".")));
+                        builder.append(viewId.substring(0, viewId.lastIndexOf('.')));
                         builder.append(contextSuffixes[0]);
                     }
                     else

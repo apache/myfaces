@@ -1714,7 +1714,7 @@ public final class HtmlRendererUtils
         while (st.hasMoreTokens())
         {
             String contentType = st.nextToken().trim();
-            int semicolonIndex = contentType.indexOf(";");
+            int semicolonIndex = contentType.indexOf(';');
             if (semicolonIndex != -1)
             {
                 contentType = contentType.substring(0, semicolonIndex);
