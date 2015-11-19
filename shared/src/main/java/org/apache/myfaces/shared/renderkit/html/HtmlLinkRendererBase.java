@@ -231,7 +231,9 @@ public abstract class HtmlLinkRendererBase
         // h:commandLink can be rendered outside a form, but with warning (jsf 2.0 TCK)
         FormInfo formInfo = findNestingForm(component, facesContext);
         
-        if (HtmlRendererUtils.isDisabled(component) || formInfo == null)
+        boolean disabled = HtmlRendererUtils.isDisabled(component);
+        
+        if (disabled || formInfo == null)
         {
             writer.startElement(HTML.SPAN_ELEM, component);
             if (component instanceof ClientBehaviorHolder)
@@ -250,28 +252,62 @@ public abstract class HtmlLinkRendererBase
                 {
                     commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
                 }
-                if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+                
+                // only render onclick if != disabled
+                if (!disabled)
                 {
-                    CommonPropertyUtils.renderEventProperties(writer, 
-                            commonPropertiesMarked, component);
-                    CommonPropertyUtils.renderFocusBlurEventProperties(writer,
-                            commonPropertiesMarked, component);
-                }
-                else
-                {
-                    if (isCommonEventsOptimizationEnabled(facesContext))
+                    if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
                     {
-                        Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(component);
-                        CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
-                                commonPropertiesMarked, commonEventsMarked, component, behaviors);
-                        CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
-                            facesContext, writer, commonPropertiesMarked, commonEventsMarked, component, behaviors);
+                        CommonPropertyUtils.renderEventProperties(writer, 
+                                commonPropertiesMarked, component);
+                        CommonPropertyUtils.renderFocusBlurEventProperties(writer,
+                                commonPropertiesMarked, component);
                     }
                     else
                     {
-                        HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, behaviors);
-                        HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
-                                facesContext, writer, component, behaviors);
+                        if (isCommonEventsOptimizationEnabled(facesContext))
+                        {
+                            Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(component);
+                            CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
+                                    commonPropertiesMarked, commonEventsMarked, component, behaviors);
+                            CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                                facesContext, writer, commonPropertiesMarked, commonEventsMarked, component, behaviors);
+                        }
+                        else
+                        {
+                            HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, component, 
+                                    behaviors);
+                            HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                                    facesContext, writer, component, behaviors);
+                        }
+                    }
+                }
+                else
+                {
+                    if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
+                    {
+                        CommonPropertyUtils.renderEventPropertiesWithoutOnclick(writer, 
+                                commonPropertiesMarked, component);
+                        CommonPropertyUtils.renderFocusBlurEventProperties(writer,
+                                commonPropertiesMarked, component);
+                    }
+                    else
+                    {
+                        if (isCommonEventsOptimizationEnabled(facesContext))
+                        {
+                            Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(component);
+                            CommonEventUtils.renderBehaviorizedEventHandlersWithoutOnclick(facesContext, writer, 
+                                    commonPropertiesMarked, commonEventsMarked, component, behaviors);
+                            CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                                facesContext, writer, commonPropertiesMarked, commonEventsMarked, component, behaviors);
+                        }
+                        else
+                        {
+                            HtmlRendererUtils.renderBehaviorizedEventHandlersWithoutOnclick(facesContext, writer,
+                                    component, behaviors);
+                            HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
+                                    facesContext, writer, component, behaviors);
+                        }
                     }
                 }
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
