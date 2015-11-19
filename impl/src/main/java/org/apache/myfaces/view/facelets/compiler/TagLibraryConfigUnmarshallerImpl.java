@@ -216,7 +216,7 @@ public class TagLibraryConfigUnmarshallerImpl
                 }
                 else if ("renderer-type".equals(qName))
                 {
-                    this.rendererType = this.captureBuffer();
+                    this.rendererType = this.captureBufferEmptyNull();
                 }
                 else if ("tag-name".equals(qName))
                 {
@@ -279,7 +279,7 @@ public class TagLibraryConfigUnmarshallerImpl
                     {
                         //String cName = this.captureBuffer();
                         //this.handlerClass = createClass(TagHandler.class, cName);
-                        this.handlerClass = this.captureBuffer();
+                        this.handlerClass = this.captureBufferEmptyNull();
                     }
                     else if ("component".equals(qName))
                     {
@@ -405,6 +405,18 @@ public class TagLibraryConfigUnmarshallerImpl
             this.buffer.setLength(0);
             return s;
         }
+        
+        private String captureBufferEmptyNull() throws Exception
+        {
+            String s = this.buffer.toString().trim();
+            if (s.length() == 0)
+            {
+                //if is "" just set null instead
+                s = null;
+            }
+            this.buffer.setLength(0);
+            return s;
+        }        
 
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException
         {
