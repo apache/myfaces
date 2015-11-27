@@ -392,9 +392,13 @@ public class FlashImpl extends Flash implements ReleasableFlash
     public boolean isKeepMessages()
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = facesContext.getExternalContext();
-        Map<String, Object> requestMap = externalContext.getRequestMap();
-        Boolean keepMessages = (Boolean) requestMap.get(FLASH_KEEP_MESSAGES);
+        Boolean keepMessages = null;
+        if (facesContext != null)
+        {
+            ExternalContext externalContext = facesContext.getExternalContext();
+            Map<String, Object> requestMap = externalContext.getRequestMap();
+            keepMessages = (Boolean) requestMap.get(FLASH_KEEP_MESSAGES);
+        }
         
         return (keepMessages == null ? Boolean.FALSE : keepMessages);
     }
@@ -747,7 +751,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
      * Take the render map key and store it as a key for the next request.
      * 
      * On the next request we can get it with _getRenderFlashMapTokenFromPreviousRequest().
-     * @param externalContext
+     * @param facesContext
      */
     private void _saveRenderFlashMapTokenForNextRequest(FacesContext facesContext)
     {
@@ -790,7 +794,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
      * 
      * Returns the value of _saveRenderFlashMapTokenForNextRequest() from
      * the previous request.
-     * @param externalContext
+     * @param facesContext
      * @return
      */
     private String _getRenderFlashMapTokenFromPreviousRequest(FacesContext facesContext)

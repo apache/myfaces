@@ -829,17 +829,19 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         if (_viewScope == null && create)
         {
-            FacesContext facesContext = getFacesContext();
             if (VIEW_SCOPE_PROXY_MAP_CLASS != null)
             {
-                _viewScope = (Map<String, Object>) 
+                _viewScope = (Map<String, Object>)
                     _ClassUtils.newInstance(VIEW_SCOPE_PROXY_MAP_CLASS);
-                facesContext.getApplication().publishEvent(facesContext, PostConstructViewMapEvent.class, this);
             }
             else
             {
                 //Default to map for testing purposes
                 _viewScope = new ViewScope();
+            }
+            FacesContext facesContext = getFacesContext();
+            if (facesContext != null)
+            {
                 facesContext.getApplication().publishEvent(facesContext, PostConstructViewMapEvent.class, this);
             }
         }
