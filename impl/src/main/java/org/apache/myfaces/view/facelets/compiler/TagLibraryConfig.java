@@ -347,7 +347,7 @@ public final class TagLibraryConfig
                 }
                 else if ("renderer-type".equals(qName))
                 {
-                    this.rendererType = this.captureBuffer();
+                    this.rendererType = this.captureBufferEmptyNull();
                 }
                 else if ("tag-name".equals(qName))
                 {
@@ -395,7 +395,7 @@ public final class TagLibraryConfig
                     }
                     else if ("handler-class".equals(qName))
                     {
-                        String cName = this.captureBuffer();
+                        String cName = this.captureBufferEmptyNull();
                         this.handlerClass = createClass(TagHandler.class, cName);
                     }
                     else if ("component".equals(qName))
@@ -492,6 +492,18 @@ public final class TagLibraryConfig
             this.buffer.setLength(0);
             return s;
         }
+
+        private String captureBufferEmptyNull() throws Exception
+        {
+            String s = this.buffer.toString().trim();
+            if (s.length() == 0)
+            {
+                //if is "" just set null instead
+                s = null;
+            }
+            this.buffer.setLength(0);
+            return s;
+        }   
 
         @SuppressWarnings("unchecked")
         private static <T> Class<? extends T> createClass(Class<T> type, String name) throws Exception
