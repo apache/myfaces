@@ -19,10 +19,10 @@
 package org.apache.myfaces.flow.cdi;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
@@ -51,9 +51,9 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
             FlowBuilderFactoryBean bean = CDIUtils.lookup(
                 beanManager, FlowBuilderFactoryBean.class);
 
-            Instance<Flow> instance = bean.getFlowDefinitions();
+            List<Flow> flows = bean.getFlowDefinitions();
             
-            return instance.iterator();
+            return flows.iterator();
         }
         else
         {
