@@ -398,7 +398,7 @@ if (!myfaces._impl.core._Runtime) {
             xhr.open("GET", src, false);
 
             if (charSet) {
-                xhr.setRequestHeader("Content-Type", "application/x-javascript; charset:" + charSet);
+                xhr.setRequestHeader("Content-Type", "text/javascript; charset:" + charSet);
             }
 
             xhr.send(null);
