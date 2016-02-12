@@ -461,6 +461,18 @@ public class ELText
     {
         return parse(null, null, in);
     }
+    
+    public static ELText parseAllowEmptyString(String in) throws ELException
+    {
+        if (in != null && in.length() == 0)
+        {
+            return new ELText(in);
+        }
+        else
+        {
+            return parse(null, null, in);
+        }
+    }
 
     /**
      * Factory method for creating a validated ELText instance. When an Expression is hit, it will use the

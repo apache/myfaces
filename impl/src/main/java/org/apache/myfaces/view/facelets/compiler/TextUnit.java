@@ -310,7 +310,7 @@ final class TextUnit extends CompilationUnit
                 String value = attrs[i].getValue();
                 this.buffer.append(' ').append(qname).append("=\"").append(value).append("\"");
 
-                ELText txt = ELText.parse(value);
+                ELText txt = ELText.parseAllowEmptyString(value);
                 if (txt != null)
                 {
                     if (txt.isLiteral())

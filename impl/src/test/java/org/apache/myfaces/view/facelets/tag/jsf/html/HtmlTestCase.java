@@ -19,6 +19,7 @@
 
 package org.apache.myfaces.view.facelets.tag.jsf.html;
 
+import java.io.StringWriter;
 import javax.el.MethodExpression;
 import javax.faces.component.ActionSource2;
 import javax.faces.component.UIComponent;
@@ -35,6 +36,7 @@ import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.renderkit.html.HtmlGridRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
+import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.junit.Assert;
 import org.junit.Test;
@@ -113,5 +115,21 @@ public class HtmlTestCase extends FaceletTestCase {
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "panelGrid.xml");
     }
+    
+    @Test
+    public void testEmptyHtml() throws Exception {
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testEmptyHtmlAttribute.xhtml");
+        
+        StringWriter sw = new StringWriter();
+        MockResponseWriter mrw = new MockResponseWriter(sw);
+        facesContext.setResponseWriter(mrw);
+        
+        root.encodeAll(facesContext);
+        sw.flush();
+
+        Assert.assertTrue(sw.toString().contains("alt=\"\""));
+    }
+            
 
 }
