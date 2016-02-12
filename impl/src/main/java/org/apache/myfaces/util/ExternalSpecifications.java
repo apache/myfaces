@@ -142,26 +142,12 @@ public final class ExternalSpecifications
                 //log.log(Level.FINE, "Error loading class (could be normal)", t);
                 cdiAvailable = false;
             }
-            
-            if (cdiAvailable)
-            {
-                cdiAvailable = externalContext.getApplicationMap().containsKey(
-                    AbstractFacesInitializer.CDI_BEAN_MANAGER_INSTANCE);
-            }
 
             log.info("MyFaces CDI support " + (cdiAvailable ? "enabled" : "disabled"));
-            
-            return cdiAvailable;
         }
-        else
-        {
-            if (Boolean.TRUE.equals(cdiAvailable))
-            {
-                return externalContext.getApplicationMap().containsKey(
-                        AbstractFacesInitializer.CDI_BEAN_MANAGER_INSTANCE);
-            }
-            return cdiAvailable;
-        }
+
+        return cdiAvailable && 
+                externalContext.getApplicationMap().containsKey(AbstractFacesInitializer.CDI_BEAN_MANAGER_INSTANCE);
     }
     
     public static boolean isEL3Available()
