@@ -51,6 +51,7 @@ import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.ImplementationHandler;
 import org.apache.myfaces.view.facelets.tag.composite.InterfaceHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
+import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
@@ -288,6 +289,7 @@ public final class SAXCompiler extends Compiler
         private final CompilationManager unit;
         
         private boolean inMetadata = false;
+        private int uiRemoveCount = 0;
         
         private boolean consumingCDATA = false;
         private boolean swallowCDATAContent = false;
@@ -369,7 +371,15 @@ public final class SAXCompiler extends Compiler
                 {
                     this.unit.popTag();
                 }
-            }            
+            }
+            else if (UILibrary.NAMESPACE.equals(uri) ||
+                    UILibrary.ALIAS_NAMESPACE.equals(uri))
+            {
+                if (!inMetadata && "remove".equals(localName))
+                {
+                    this.uiRemoveCount--;
+                }
+            }
         }
 
         public void endEntity(String name) throws SAXException
@@ -446,8 +456,8 @@ public final class SAXCompiler extends Compiler
 
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
-            if ( CoreLibrary.NAMESPACE.equals(uri) ||
-                 CoreLibrary.ALIAS_NAMESPACE.equals(uri))
+            if ( (CoreLibrary.NAMESPACE.equals(uri) ||
+                  CoreLibrary.ALIAS_NAMESPACE.equals(uri)) && this.uiRemoveCount <= 0)
             {
                 if ("metadata".equals(localName))
                 {
@@ -461,6 +471,14 @@ public final class SAXCompiler extends Compiler
             if (inMetadata)
             {
                 this.unit.pushTag(new Tag(createLocation(), uri, localName, qName, createAttributes(attributes)));
+            }
+            else if (UILibrary.NAMESPACE.equals(uri) ||
+                    UILibrary.ALIAS_NAMESPACE.equals(uri))
+            {
+                if ("remove".equals(localName))
+                {
+                    this.uiRemoveCount++;
+                }
             }
         }
 
