@@ -19,6 +19,7 @@
 package org.apache.myfaces.view;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import javax.faces.component.StateHolder;
@@ -66,19 +67,28 @@ public class ViewScopeProxyMap implements Map<String, Object>, StateHolder
         {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             
-            ViewScopeProviderFactory factory = ViewScopeProviderFactory.getViewScopeHandlerFactory(
-                facesContext.getExternalContext());
-            
-            ViewScopeProvider handler = factory.getViewScopeHandler(facesContext.getExternalContext());
-            
-            if (_viewScopeId == null)
+            if (facesContext != null)
             {
-                _viewScopeId = handler.generateViewScopeId(facesContext);
-                _delegate = handler.createViewScopeMap(facesContext, _viewScopeId);
+                ViewScopeProviderFactory factory = ViewScopeProviderFactory.getViewScopeHandlerFactory(
+                    facesContext.getExternalContext());
+
+                ViewScopeProvider handler = factory.getViewScopeHandler(facesContext.getExternalContext());
+
+                if (_viewScopeId == null)
+                {
+                    _viewScopeId = handler.generateViewScopeId(facesContext);
+                    _delegate = handler.createViewScopeMap(facesContext, _viewScopeId);
+                }
+                else
+                {
+                    _delegate = handler.restoreViewScopeMap(facesContext, _viewScopeId);
+                }
             }
             else
             {
-                _delegate = handler.restoreViewScopeMap(facesContext, _viewScopeId);
+                // In junit test cases, where there is no facesContext instance, it is enough to
+                // just get a blank instance.
+                _delegate = new ViewScope();
             }
         }
         return _delegate;
@@ -170,6 +180,28 @@ public class ViewScopeProxyMap implements Map<String, Object>, StateHolder
 
     public void setTransient(boolean newTransientValue)
     {
+    }
+    
+    private static class ViewScope extends HashMap<String, Object>
+    {
+        
+        private static final long serialVersionUID = -1088293802269478164L;
+        
+        @Override
+        public void clear()
+        {
+            /*
+             * The returned Map must be implemented such that calling clear() on the Map causes
+             * Application.publishEvent(java.lang.Class, java.lang.Object) to be called, passing
+             * ViewMapDestroyedEvent.class as the first argument and this UIViewRoot instance as the second argument.
+             */
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            facesContext.getApplication().publishEvent(facesContext, 
+                    PreDestroyViewMapEvent.class, facesContext.getViewRoot());
+            
+            super.clear();
+        }
+        
     }
 
 }
