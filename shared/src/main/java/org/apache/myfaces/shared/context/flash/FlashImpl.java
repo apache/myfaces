@@ -34,6 +34,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -967,14 +968,22 @@ public class FlashImpl extends Flash implements ReleasableFlash
         // if we create more SubKeyMaps with the same subkey, because they are
         // totally equal and point to the same entries in the SessionMap.
         
-        Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
-        Map<String, Object> map = (Map<String, Object>) requestMap.get(FLASH_EXECUTE_MAP);
+        Map<String, Object> requestMap = context != null && context.getExternalContext() != null ?
+                context.getExternalContext().getRequestMap() : null;
+        Map<String, Object> map = requestMap != null ? (Map<String, Object>) requestMap.get(FLASH_EXECUTE_MAP) : null;
         if (map == null)
         {
-            String token = (String) requestMap.get(FLASH_EXECUTE_MAP_TOKEN);
-            String fullToken = FLASH_SESSION_MAP_SUBKEY_PREFIX + SEPARATOR_CHAR + token + SEPARATOR_CHAR;
-            map = _createSubKeyMap(context, fullToken);
-            requestMap.put(FLASH_EXECUTE_MAP, map);
+            if (requestMap != null)
+            {
+                String token = (String) requestMap.get(FLASH_EXECUTE_MAP_TOKEN);
+                String fullToken = FLASH_SESSION_MAP_SUBKEY_PREFIX + SEPARATOR_CHAR + token + SEPARATOR_CHAR;
+                map = _createSubKeyMap(context, fullToken);
+                requestMap.put(FLASH_EXECUTE_MAP, map);
+            }
+            else
+            {
+                map = Collections.emptyMap();
+            }
         }
         return map;
     }
