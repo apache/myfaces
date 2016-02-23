@@ -312,13 +312,13 @@ public abstract class HtmlLinkRendererBase
                 }
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutEvents(writer, 
+                    CommonPropertyUtils.renderAnchorPassthroughPropertiesDisabledWithoutEvents(writer, 
                             commonPropertiesMarked, component);
                 }
                 else
                 {
                     HtmlRendererUtils.renderHTMLAttributes(writer, component, 
-                            HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+                            HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_DISABLED_WITHOUT_EVENTS);
                 }
             }
             else
@@ -326,12 +326,13 @@ public abstract class HtmlLinkRendererBase
                 HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughProperties(writer, 
+                    CommonPropertyUtils.renderAnchorPassthroughPropertiesDisabled(writer, 
                             CommonPropertyUtils.getCommonPropertiesMarked(component), component);
                 }
                 else
                 {
-                    HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES);
+                    HtmlRendererUtils.renderHTMLAttributes(writer, component, 
+                            HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_DISABLED);
                 }
             }
         }
@@ -858,13 +859,13 @@ public abstract class HtmlLinkRendererBase
                 }
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutEvents(writer, 
+                    CommonPropertyUtils.renderAnchorPassthroughPropertiesDisabledWithoutEvents(writer, 
                             commonPropertiesMarked, output);
                 }
                 else
                 {
                     HtmlRendererUtils.renderHTMLAttributes(writer, output, 
-                            HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+                            HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_DISABLED_WITHOUT_EVENTS);
                 }
             }
             else
@@ -872,12 +873,12 @@ public abstract class HtmlLinkRendererBase
                 HtmlRendererUtils.writeIdIfNecessary(writer, output, facesContext);
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughProperties(writer, 
+                    CommonPropertyUtils.renderAnchorPassthroughPropertiesDisabled(writer, 
                             CommonPropertyUtils.getCommonPropertiesMarked(output), output);
                 }
                 else
                 {
-                    HtmlRendererUtils.renderHTMLAttributes(writer, output, HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES);
+                    HtmlRendererUtils.renderHTMLAttributes(writer, output, HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_DISABLED);
                 }
             }
         }
@@ -1053,13 +1054,13 @@ public abstract class HtmlLinkRendererBase
                 }
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughPropertiesWithoutEvents(writer, 
+                    CommonPropertyUtils.renderAnchorPassthroughPropertiesDisabledWithoutEvents(writer, 
                             commonPropertiesMarked, output);
                 }
                 else
                 {
                     HtmlRendererUtils.renderHTMLAttributes(writer, output, 
-                            HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS);
+                            HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_DISABLED_WITHOUT_EVENTS);
                 }
             }
             else
@@ -1067,12 +1068,12 @@ public abstract class HtmlLinkRendererBase
                 HtmlRendererUtils.writeIdIfNecessary(writer, output, facesContext);
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
-                    CommonPropertyUtils.renderAnchorPassthroughProperties(writer, 
+                    CommonPropertyUtils.renderAnchorPassthroughPropertiesDisabled(writer, 
                             CommonPropertyUtils.getCommonPropertiesMarked(output), output);
                 }
                 else
                 {
-                    HtmlRendererUtils.renderHTMLAttributes(writer, output, HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES);
+                    HtmlRendererUtils.renderHTMLAttributes(writer, output, HTML.ANCHOR_PASSTHROUGH_ATTRIBUTES_DISABLED);
                 }
             }
 

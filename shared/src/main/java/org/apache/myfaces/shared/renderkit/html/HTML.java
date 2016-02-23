@@ -251,7 +251,22 @@ public interface HTML
         (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
             ANCHOR_ATTRIBUTES,
             UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE);
-
+    
+    String[] ANCHOR_ATTRIBUTES_DISABLED =
+    {
+        ACCESSKEY_ATTR,
+        TABINDEX_ATTR,
+    };
+    String[] ANCHOR_PASSTHROUGH_ATTRIBUTES_DISABLED =
+        (String[]) ArrayUtils.concat(
+            ANCHOR_ATTRIBUTES_DISABLED,
+            COMMON_PASSTROUGH_ATTRIBUTES,
+            COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONSELECT_AND_ONCHANGE);
+    String[] ANCHOR_PASSTHROUGH_ATTRIBUTES_DISABLED_WITHOUT_EVENTS =
+        (String[]) ArrayUtils.concat(
+            ANCHOR_ATTRIBUTES_DISABLED,
+            UNIVERSAL_ATTRIBUTES);
+    
     // <form>
     String ACCEPT_CHARSET_ATTR = "accept-charset";
     String ENCTYPE_ATTR = "enctype";
