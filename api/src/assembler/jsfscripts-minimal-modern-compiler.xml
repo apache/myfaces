@@ -45,6 +45,7 @@
                 <include>**/_impl/_util/_ListenerQueue.js</include>
                 <include>**/_impl/_util/_Dom.js</include>
                 <include>**/_impl/_util/_HtmlStripper.js</include>
+                <include>**/_impl/_util/_OamSubmit.js</include>
 
                 <include>**/_impl/xhrCore/_AjaxUtils.js</include>
                 <include>**/_impl/xhrCore/_AjaxRequestQueue.js</include>
