@@ -18,9 +18,12 @@
  */
 package javax.faces.component.html;
 
+import javax.faces.component.UIComponent;
 import javax.faces.component.UIData;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFExclude;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacet;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
@@ -172,4 +175,13 @@ abstract class _HtmlDataTable extends UIData
   @JSFProperty
   public abstract String getCaptionStyle();
 
+  /**
+   * The facet associated to the Caption.
+   * 
+   * @return 
+   */
+  @JSFFacet
+  @JSFExclude
+  public abstract UIComponent getCaption();
+  
 }
