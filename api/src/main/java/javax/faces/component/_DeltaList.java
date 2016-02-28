@@ -42,6 +42,7 @@ import javax.faces.context.FacesContext;
  */
 class _DeltaList<T> implements List<T>, PartialStateHolder, RandomAccess
 {
+    private static Object[] emptyObjectArray = new Object[]{};
 
     private List<T> _delegate;
     private boolean _initialStateMarked;
@@ -259,37 +260,46 @@ class _DeltaList<T> implements List<T>, PartialStateHolder, RandomAccess
 
     public Object saveState(FacesContext context)
     {
+        int size = _delegate.size();
         if (initialStateMarked())
         {
-            Object [] lst = new Object[_delegate.size()];
+            Object [] lst = null;
             boolean nullDelta = true;
-            for (int i = 0; i < _delegate.size(); i++)
+            if (size > 0)
             {
-                Object value = _delegate.get(i);
-                if (value instanceof PartialStateHolder)
+                lst = new Object[size];
+                for (int i = 0; i < size; i++)
                 {
-                    //Delta
-                    PartialStateHolder holder = (PartialStateHolder) value;
-                    if (!holder.isTransient())
+                    Object value = _delegate.get(i);
+                    if (value instanceof PartialStateHolder)
                     {
-                        Object attachedState = holder.saveState(context);
-                        if (attachedState != null)
+                        //Delta
+                        PartialStateHolder holder = (PartialStateHolder) value;
+                        if (!holder.isTransient())
+                        {
+                            Object attachedState = holder.saveState(context);
+                            if (attachedState != null)
+                            {
+                                nullDelta = false;
+                            }
+                            lst[i] = new _AttachedDeltaWrapper(value.getClass(),
+                                attachedState);
+                        }
+                    }
+                    else
+                    {
+                        //Full
+                        lst[i] = UIComponentBase.saveAttachedState(context, value);
+                        if (value instanceof StateHolder || value instanceof List)
                         {
                             nullDelta = false;
                         }
-                        lst[i] = new _AttachedDeltaWrapper(value.getClass(),
-                            attachedState);
                     }
                 }
-                else
-                {
-                    //Full
-                    lst[i] = UIComponentBase.saveAttachedState(context, value);
-                    if (value instanceof StateHolder || value instanceof List)
-                    {
-                        nullDelta = false;
-                    }
-                }
+            }
+            else
+            {
+                lst = emptyObjectArray;
             }
             if (nullDelta)
             {
@@ -299,12 +309,19 @@ class _DeltaList<T> implements List<T>, PartialStateHolder, RandomAccess
         }
         else
         {
-            Object [] lst = new Object[_delegate.size()];
-            for (int i = 0; i < _delegate.size(); i++)
+            if (size > 0)
             {
-                lst[i] = UIComponentBase.saveAttachedState(context, _delegate.get(i));
+                Object [] lst = new Object[size];
+                for (int i = 0; i < size; i++)
+                {
+                    lst[i] = UIComponentBase.saveAttachedState(context, _delegate.get(i));
+                }
+                return lst;
             }
-            return lst;
+            else
+            {
+                return emptyObjectArray;
+            }
         }
     }
 
