@@ -77,6 +77,8 @@ public final class EventHandler extends TagHandler
             deferredValueType="java.lang.String")
     private TagAttribute type;
     
+    private Class<?> eventClassLiteral;
+    
     private boolean listenerIsCompositeComponentME;
     
     public EventHandler (TagConfig tagConfig)
@@ -166,6 +168,13 @@ public final class EventHandler extends TagHandler
     {
         Class<?> eventClass = null;
         String value = null;
+        
+        if (type.isLiteral() && eventClassLiteral != null)
+        {
+            // if type is literal it does not change, avoid Reflection and use cached value
+            return (Class<? extends ComponentSystemEvent>) eventClassLiteral;
+        }
+        
         if (type.isLiteral())
         {
             value = type.getValue();
@@ -189,6 +198,10 @@ public final class EventHandler extends TagHandler
             try
             {
                 eventClass = ReflectionUtil.forName (value);
+                if (type.isLiteral())
+                {
+                    eventClassLiteral = eventClass;
+                }
             }
             catch (Throwable e)
             {
