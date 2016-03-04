@@ -847,6 +847,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
                     if (i == bvIndex)
                     {
                         array[0] = _validatorList.get(i);
+                        bvIndex = -1;
                     }
                     else
                     {
