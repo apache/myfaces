@@ -95,6 +95,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * ATTENTION: this constant is duplicate in org.apache.myfaces.renderkit.ErrorPageWriter
      */
     private static final String DEBUG_INFO_KEY = "org.apache.myfaces.debug.DEBUG_INFO";
+    
+    private final static String BEAN_BEFORE_JSF_PROPERTY = "oam.beanBeforeJsf";
 
     private static final Validator[] EMPTY_VALIDATOR_ARRAY = new Validator[0];
     
@@ -824,8 +826,46 @@ public class UIInput extends UIOutput implements EditableValueHolder
     /** See getValidator. */
     public Validator[] getValidators()
     {
-        return _validatorList == null ? EMPTY_VALIDATOR_ARRAY
-                : _validatorList.toArray(new Validator[_validatorList.size()]);
+        if (_ExternalSpecifications.isBeanValidationAvailable() &&
+            Boolean.TRUE.equals(this.getAttributes().containsKey(BEAN_BEFORE_JSF_PROPERTY)))
+        {
+            int bvIndex = -1;
+            for (int i = 0; i < _validatorList.size(); i++)
+            {
+                Validator v = _validatorList.get(i);
+                if (_BeanValidationUtils.isBeanValidator(v))
+                {
+                    bvIndex = i;
+                    break;
+                }
+            }
+            if (bvIndex != -1)
+            {
+                Validator[] array = new Validator[_validatorList.size()];
+                for (int i = 0; i < _validatorList.size(); i++)
+                {
+                    if (i == bvIndex)
+                    {
+                        array[0] = _validatorList.get(i);
+                    }
+                    else
+                    {
+                        array[i+1] = _validatorList.get(i);
+                    }
+                }
+                return array;
+            }
+            else
+            {
+                return _validatorList == null ? EMPTY_VALIDATOR_ARRAY
+                        : _validatorList.toArray(new Validator[_validatorList.size()]);
+            }
+        }
+        else
+        {
+            return _validatorList == null ? EMPTY_VALIDATOR_ARRAY
+                    : _validatorList.toArray(new Validator[_validatorList.size()]);
+        }
     }
 
     /**

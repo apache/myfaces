@@ -1368,6 +1368,14 @@
             <version>${openwebbeans.version}</version>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.bval</groupId>
+            <artifactId>bval-jsr303</artifactId>
+            <version>0.5</version>
+            <scope>test</scope>
+        </dependency>
+        
     </dependencies>
     
 

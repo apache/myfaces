@@ -36,8 +36,10 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandlerDelegate;
 import javax.faces.view.facelets.ValidatorHandler;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.compiler.FaceletsCompilerUtils;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
@@ -65,6 +67,15 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
     public final static String VALIDATOR_ID_EXCLUSION_LIST_KEY
             = "org.apache.myfaces.validator.VALIDATOR_ID_EXCLUSION_LIST";
     
+    /**
+     * Enforce <f:validateBean> to be called first before any JSF validator.
+     */
+    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since = "2.2.10", group="validation")
+    private final static String BEAN_BEFORE_JSF_VALIDATION
+            = "org.apache.myfaces.validator.BEAN_BEFORE_JSF_VALIDATION";
+    
+    private final static String BEAN_BEFORE_JSF_PROPERTY = "oam.beanBeforeJsf";
+    
     private ValidatorHandler _delegate;
     
     /**
@@ -72,6 +83,8 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
      * false - this tag is a leave
      */
     private final boolean _wrapMode;
+    
+    private Boolean _beanBeforeJsfValidation;
     
     public ValidatorTagHandlerDelegate(ValidatorHandler delegate)
     {
@@ -84,6 +97,7 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
         // (this behavior is analog to <f:ajax>)
         // --> Determine if we have children:
         _wrapMode = FaceletsCompilerUtils.hasChildren(_delegate.getValidatorConfig());
+        _beanBeforeJsfValidation = null;
     }
 
     @Override
@@ -277,9 +291,24 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
                 throw new TagException(_delegate.getTag(), "No Validator was created");
             }
             _delegate.setAttributes(faceletContext, v);
+            if (shouldBeanBeforeJsfValidationEnabled(context))
+            {
+                parent.getAttributes().put(BEAN_BEFORE_JSF_PROPERTY, Boolean.TRUE);
+            }
             evh.addValidator(v); 
         }
     }
+    
+    private boolean shouldBeanBeforeJsfValidationEnabled(FacesContext context)
+    {
+        if (_beanBeforeJsfValidation == null)
+        {
+            _beanBeforeJsfValidation = WebConfigParamUtils.getBooleanInitParameter(context.getExternalContext(),
+                    BEAN_BEFORE_JSF_VALIDATION, false);
+        }
+        return _beanBeforeJsfValidation;
+    }
+            
 
     public String getFor()
     {
