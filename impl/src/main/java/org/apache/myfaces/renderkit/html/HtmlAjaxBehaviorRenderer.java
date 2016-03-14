@@ -238,6 +238,31 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
             paramBuffer.append(context.getSourceId());
             paramBuffer.append('\'');
             sourceId = paramBuffer.toString();
+            
+            if (!context.getSourceId().trim().equals(
+                context.getComponent().getClientId(context.getFacesContext())))
+            {
+                // Check if sourceId is not a clientId and there is no execute set
+                UIComponent ref = context.getComponent();
+                ref = (ref.getParent() == null) ? ref : ref.getParent();
+                UIComponent instance = null;
+                try
+                {
+                    instance = ref.findComponent(context.getSourceId());
+                }
+                catch (IllegalArgumentException e)
+                {
+                    // No Op
+                }
+                if (instance == null && executes == null)
+                {
+                    // set the clientId of the component so the behavior can be decoded later, 
+                    // otherwise the behavior will fail
+                    List<String> list = new ArrayList<String>();
+                    list.add(context.getComponent().getClientId(context.getFacesContext()));
+                    executes = mapToString(context, paramBuffer, AJAX_KEY_EXECUTE, list);
+                }
+            }
         }
 
 

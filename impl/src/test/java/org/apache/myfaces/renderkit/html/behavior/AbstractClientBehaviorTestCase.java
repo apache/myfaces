@@ -19,6 +19,7 @@
 package org.apache.myfaces.renderkit.html.behavior;
 
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.ResponseWriter;
@@ -27,6 +28,7 @@ import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.shared.util.FastWriter;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.config.ConfigParser;
+import org.apache.myfaces.test.mock.MockFacesContext22;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -107,6 +109,15 @@ public abstract class AbstractClientBehaviorTestCase extends AbstractJsfTestCase
         for (int i = 0; i < attrs.length; i++)
         {
             UIComponent component = createComponentToTest();
+            
+            if (!component.isInView())
+            {
+                UIViewRoot root = facesContext.getViewRoot();
+                root.getChildren().add(component);
+                facesContext.setViewRoot(root);
+                root.getClientId(facesContext);
+            }
+
             ClientBehaviorHolder clientBehaviorHolder = (ClientBehaviorHolder) component;
             clientBehaviorHolder.addClientBehavior(attrs[i].getClientEvent(), new AjaxBehavior());
             try 

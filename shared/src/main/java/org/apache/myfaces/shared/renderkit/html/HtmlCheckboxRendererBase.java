@@ -383,21 +383,24 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
                 {
                     long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
                     HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(
-                            facesContext, writer, uiComponent, behaviors);
+                            facesContext, writer, uiComponent, itemId != null ? itemId : clientId,  behaviors);
                     if (isCommonEventsOptimizationEnabled(facesContext))
                     {
                         Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(uiComponent);
                         CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
-                                commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+                                commonPropertiesMarked, commonEventsMarked, uiComponent,
+                                itemId != null ? itemId : clientId, behaviors);
                         CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
-                            facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+                            facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, 
+                                itemId != null ? itemId : clientId, behaviors);
                     }
                     else
                     {
                         HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, 
                                 writer, uiComponent, behaviors);
                         HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
-                                facesContext, writer, uiComponent, behaviors);
+                                facesContext, writer, uiComponent, 
+                                itemId != null ? itemId : clientId, behaviors);
                     }
                 }
                 HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
@@ -429,22 +432,23 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
                 {
                     long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(uiComponent);
                     HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(
-                            facesContext, writer, uiComponent, behaviors);
+                            facesContext, writer, uiComponent, itemId != null ? itemId : clientId, behaviors);
                     if (isCommonEventsOptimizationEnabled(facesContext))
                     {
                         Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(uiComponent);
                         CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
-                                commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
+                                commonPropertiesMarked, commonEventsMarked, uiComponent, 
+                                itemId != null ? itemId : clientId, behaviors);
                         CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
                             facesContext, writer, commonPropertiesMarked, commonEventsMarked,
-                            uiComponent, behaviors);
+                            uiComponent, itemId != null ? itemId : clientId, behaviors);
                     }
                     else
                     {
                         HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer,
-                                uiComponent, behaviors);
+                                uiComponent, itemId != null ? itemId : clientId, behaviors);
                         HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
-                                facesContext, writer, uiComponent, behaviors);
+                                facesContext, writer, uiComponent, itemId != null ? itemId : clientId, behaviors);
                     }
                 }
                 HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent, 

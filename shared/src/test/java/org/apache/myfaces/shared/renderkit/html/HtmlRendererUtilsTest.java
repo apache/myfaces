@@ -44,13 +44,15 @@ public class HtmlRendererUtilsTest extends AbstractJsfTestCase
         Collection<ClientBehaviorContext.Parameter> params = new ArrayList<ClientBehaviorContext.Parameter>();
         
         UIComponent component = new HtmlInputText();
-        Assert.assertEquals("", HtmlRendererUtils.buildBehaviorChain(facesContext, component,
+        Assert.assertEquals("", HtmlRendererUtils.buildBehaviorChain(facesContext, component, 
+                component.getClientId(facesContext),
                 ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, null,
                 null));
 
         Assert.assertEquals("return jsf.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'suppe');",
                 HtmlRendererUtils.buildBehaviorChain(facesContext,
-                        component, ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
+                        component, component.getClientId(facesContext), ClientBehaviorEvents.CLICK, 
+                        params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
                         "suppe"));
 
         ClientBehavior submittingBehavior = new ClientBehaviorBase()
@@ -72,11 +74,53 @@ public class HtmlRendererUtilsTest extends AbstractJsfTestCase
 
         Assert.assertEquals("jsf.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'script()', 'suppe'); return false;",
                 HtmlRendererUtils.buildBehaviorChain(facesContext,
-                        component,
+                        component, component.getClientId(facesContext),
                         ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
                         "suppe"));
 
     }
+    
+    public void testBuildBehaviorChain2()
+    {
+        Map<String, List<ClientBehavior>> behaviors = new HashMap<String, List<ClientBehavior>>();
+
+        //Map<String, String> params = new HashMap<String, String>();
+        Collection<ClientBehaviorContext.Parameter> params = new ArrayList<ClientBehaviorContext.Parameter>();
+        
+        UIComponent component = new HtmlInputText();
+        Assert.assertEquals("", HtmlRendererUtils.buildBehaviorChain(facesContext, component, 
+                ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, null,
+                null));
+
+        Assert.assertEquals("return jsf.util.chain(this, event,'huhn', 'suppe');",
+                HtmlRendererUtils.buildBehaviorChain(facesContext,
+                        component, ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
+                        "suppe"));
+
+        ClientBehavior submittingBehavior = new ClientBehaviorBase()
+        {
+            @Override
+            public String getScript(ClientBehaviorContext behaviorContext)
+            {
+                return "script()";
+            }
+
+            @Override
+            public Set<ClientBehaviorHint> getHints()
+            {
+                return EnumSet.allOf(ClientBehaviorHint.class);
+            }
+        };
+
+        behaviors.put(ClientBehaviorEvents.CLICK, Arrays.asList(submittingBehavior));
+
+        Assert.assertEquals("jsf.util.chain(this, event,'huhn', 'script()', 'suppe'); return false;",
+                HtmlRendererUtils.buildBehaviorChain(facesContext,
+                        component, 
+                        ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
+                        "suppe"));
+
+    }    
     
     public void testEscapeJavaScriptForChain()
     {

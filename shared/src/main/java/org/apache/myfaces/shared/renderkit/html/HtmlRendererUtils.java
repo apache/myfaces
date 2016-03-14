@@ -1803,7 +1803,7 @@ public final class HtmlRendererUtils
      * @since 4.0.0
      */
     private static boolean getClientBehaviorScript(FacesContext facesContext,
-            UIComponent uiComponent, String targetClientId, String eventName,
+            UIComponent uiComponent, String sourceId, String eventName,
             Map<String, List<ClientBehavior>> clientBehaviors,
             ScriptContext target,
             Collection<ClientBehaviorContext.Parameter> params)
@@ -1829,7 +1829,7 @@ public final class HtmlRendererUtils
         }
         ClientBehaviorContext context = ClientBehaviorContext
                 .createClientBehaviorContext(facesContext, uiComponent,
-                        eventName, targetClientId, params);
+                        eventName, sourceId, params);
         boolean submitting = false;
         
         // List<ClientBehavior>  attachedEventBehaviors is  99% _DeltaList created in
@@ -1893,12 +1893,12 @@ public final class HtmlRendererUtils
             String userEventCode, String serverEventCode)
     {
         return buildBehaviorChain(facesContext, uiComponent,
-                uiComponent.getClientId(facesContext), eventName, params,
+                null, eventName, params,
                 clientBehaviors, userEventCode, serverEventCode);
     }
 
     public static String buildBehaviorChain(FacesContext facesContext,
-            UIComponent uiComponent, String targetClientId, String eventName,
+            UIComponent uiComponent, String sourceId, String eventName,
             Collection<ClientBehaviorContext.Parameter> params,
             Map<String, List<ClientBehavior>> clientBehaviors,
             String userEventCode, String serverEventCode)
@@ -1912,7 +1912,7 @@ public final class HtmlRendererUtils
         }
         ScriptContext behaviorCode = new ScriptContext();
         ScriptContext retVal = new ScriptContext();
-        getClientBehaviorScript(facesContext, uiComponent, targetClientId,
+        getClientBehaviorScript(facesContext, uiComponent, sourceId,
                 eventName, clientBehaviors, behaviorCode, params);
         if (behaviorCode != null
                 && !behaviorCode.toString().trim().equals(STR_EMPTY))
@@ -1932,8 +1932,15 @@ public final class HtmlRendererUtils
         {
             //according to the spec jsf.util.chain has to be used to build up the 
             //behavior and scripts
-            retVal.append("jsf.util.chain(document.getElementById('"
-                    + targetClientId + "'), event,");
+            if (sourceId == null)
+            {
+                retVal.append("jsf.util.chain(this, event,");
+            }
+            else
+            {
+                retVal.append("jsf.util.chain(document.getElementById('"
+                        + sourceId + "'), event,");
+            }
             while (it.hasNext())
             {
                 retVal.append(it.next());
@@ -1969,13 +1976,13 @@ public final class HtmlRendererUtils
             String userEventCode, String serverEventCode)
     {
         return buildBehaviorChain(facesContext, uiComponent,
-                uiComponent.getClientId(facesContext), eventName1, params,
+                null, eventName1, params,
                 eventName2, params2, clientBehaviors, userEventCode,
                 serverEventCode);
     }
 
     public static String buildBehaviorChain(FacesContext facesContext,
-            UIComponent uiComponent, String targetClientId, String eventName1,
+            UIComponent uiComponent, String sourceId, String eventName1,
             Collection<ClientBehaviorContext.Parameter> params,
             String eventName2,
             Collection<ClientBehaviorContext.Parameter> params2,
@@ -1992,11 +1999,11 @@ public final class HtmlRendererUtils
         ScriptContext behaviorCode = new ScriptContext();
         ScriptContext retVal = new ScriptContext();
         boolean submitting1 = getClientBehaviorScript(facesContext,
-                uiComponent, targetClientId, eventName1, clientBehaviors,
+                uiComponent, sourceId, eventName1, clientBehaviors,
                 behaviorCode, params);
         ScriptContext behaviorCode2 = new ScriptContext();
         boolean submitting2 = getClientBehaviorScript(facesContext,
-                uiComponent, targetClientId, eventName2, clientBehaviors,
+                uiComponent, sourceId, eventName2, clientBehaviors,
                 behaviorCode2, params2);
 
         // ClientBehaviors for both events have to be checked for the Submitting hint
@@ -2029,8 +2036,15 @@ public final class HtmlRendererUtils
             }
             //according to the spec jsf.util.chain has to be used to build up the 
             //behavior and scripts
-            retVal.append("jsf.util.chain(document.getElementById('"
-                    + targetClientId + "'), event,");
+            if (sourceId == null)
+            {
+                retVal.append("jsf.util.chain(this, event,");
+            }
+            else
+            {
+                retVal.append("jsf.util.chain(document.getElementById('"
+                        + sourceId + "'), event,");
+            }
             int cursor = 0;
             while (cursor != size)
             {
@@ -2169,12 +2183,12 @@ public final class HtmlRendererUtils
     public static boolean renderBehaviorizedAttribute(
             FacesContext facesContext, ResponseWriter writer,
             String componentProperty, UIComponent component,
-            String targetClientId, String eventName,
+            String sourceId, String eventName,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
         return renderBehaviorizedAttribute(facesContext, writer,
-                componentProperty, component, targetClientId, eventName, clientBehaviors, componentProperty);
+                componentProperty, component, sourceId, eventName, clientBehaviors, componentProperty);
     }
 
     /**
@@ -2206,11 +2220,11 @@ public final class HtmlRendererUtils
 
     public static boolean renderBehaviorizedAttribute(
             FacesContext facesContext, ResponseWriter writer, String componentProperty, UIComponent component,
-            String targetClientId, String eventName, Map<String, List<ClientBehavior>> clientBehaviors,
+            String sourceId, String eventName, Map<String, List<ClientBehavior>> clientBehaviors,
             String htmlAttrName) throws IOException
     {
         return renderBehaviorizedAttribute(facesContext, writer,
-                componentProperty, component, targetClientId, eventName, null,
+                componentProperty, component, sourceId, eventName, null,
                 clientBehaviors, htmlAttrName, (String) component.getAttributes().get(componentProperty));
     }
 
@@ -2239,14 +2253,14 @@ public final class HtmlRendererUtils
     {
         return renderBehaviorizedAttribute(facesContext, writer,
                 componentProperty, component,
-                component.getClientId(facesContext), eventName,
+                null, eventName,
                 eventParameters, clientBehaviors, htmlAttrName, attributeValue);
     }
 
     public static boolean renderBehaviorizedAttribute(
             FacesContext facesContext, ResponseWriter writer,
             String componentProperty, UIComponent component,
-            String targetClientId, String eventName,
+            String sourceId, String eventName,
             Collection<ClientBehaviorContext.Parameter> eventParameters,
             Map<String, List<ClientBehavior>> clientBehaviors,
             String htmlAttrName, String attributeValue) throws IOException
@@ -2263,7 +2277,7 @@ public final class HtmlRendererUtils
         {
             return renderHTMLAttribute(writer, componentProperty, htmlAttrName,
                     HtmlRendererUtils.buildBehaviorChain(facesContext,
-                            component, targetClientId, eventName,
+                            component, sourceId, eventName,
                             eventParameters, clientBehaviors, attributeValue,
                             STR_EMPTY));
         }
@@ -2275,7 +2289,7 @@ public final class HtmlRendererUtils
                     cbl.get(0).getScript(
                             ClientBehaviorContext.createClientBehaviorContext(
                                     facesContext, component, eventName,
-                                    targetClientId, eventParameters)));
+                                    sourceId, eventParameters)));
         }
     }
 
@@ -2307,7 +2321,7 @@ public final class HtmlRendererUtils
     {
         return renderBehaviorizedAttribute(facesContext, writer,
                 componentProperty, component,
-                component.getClientId(facesContext), eventName,
+                null, eventName,
                 eventParameters, clientBehaviors, htmlAttrName, attributeValue,
                 serverSideScript);
     }
@@ -2316,7 +2330,7 @@ public final class HtmlRendererUtils
     public static boolean renderBehaviorizedAttribute(
             FacesContext facesContext, ResponseWriter writer,
             String componentProperty, UIComponent component,
-            String targetClientId, String eventName,
+            String sourceId, String eventName,
             Collection<ClientBehaviorContext.Parameter> eventParameters,
             Map<String, List<ClientBehavior>> clientBehaviors,
             String htmlAttrName, String attributeValue, String serverSideScript)
@@ -2349,7 +2363,7 @@ public final class HtmlRendererUtils
                                 ClientBehaviorContext
                                         .createClientBehaviorContext(
                                                 facesContext, component,
-                                                eventName, targetClientId,
+                                                eventName, sourceId,
                                                 eventParameters)));
             }
         }
@@ -2357,7 +2371,7 @@ public final class HtmlRendererUtils
         {
             return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
                     HtmlRendererUtils.buildBehaviorChain(facesContext,
-                            component, targetClientId, eventName,
+                            component, sourceId, eventName,
                             eventParameters, clientBehaviors, attributeValue,
                             serverSideScript));
         }
@@ -2375,7 +2389,7 @@ public final class HtmlRendererUtils
     {
         return renderBehaviorizedAttribute(facesContext, writer,
                 componentProperty, component,
-                component.getClientId(facesContext), eventName,
+                null, eventName,
                 eventParameters, eventName2, eventParameters2, clientBehaviors,
                 htmlAttrName, attributeValue, serverSideScript);
     }
@@ -2383,7 +2397,7 @@ public final class HtmlRendererUtils
     public static boolean renderBehaviorizedAttribute(
             FacesContext facesContext, ResponseWriter writer,
             String componentProperty, UIComponent component,
-            String targetClientId, String eventName,
+            String sourceId, String eventName,
             Collection<ClientBehaviorContext.Parameter> eventParameters,
             String eventName2,
             Collection<ClientBehaviorContext.Parameter> eventParameters2,
@@ -2415,7 +2429,7 @@ public final class HtmlRendererUtils
                         cb1.get(0).getScript(ClientBehaviorContext
                                         .createClientBehaviorContext(
                                                 facesContext, component,
-                                                eventName, targetClientId,
+                                                eventName, sourceId,
                                                 eventParameters)));
             }
             else
@@ -2425,7 +2439,7 @@ public final class HtmlRendererUtils
                         cb2.get(0).getScript(ClientBehaviorContext
                                         .createClientBehaviorContext(
                                                 facesContext, component,
-                                                eventName2, targetClientId,
+                                                eventName2, sourceId,
                                                 eventParameters2)));
             }
         }
@@ -2433,7 +2447,7 @@ public final class HtmlRendererUtils
         {
             return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
                     HtmlRendererUtils.buildBehaviorChain(facesContext,
-                            component, targetClientId, eventName,
+                            component, sourceId, eventName,
                             eventParameters, eventName2, eventParameters2,
                             clientBehaviors, attributeValue, serverSideScript));
         }
@@ -2450,47 +2464,47 @@ public final class HtmlRendererUtils
             throws IOException
     {
         renderBehaviorizedEventHandlers(facesContext, writer, uiComponent,
-                uiComponent.getClientId(facesContext), clientBehaviors);
+                null, clientBehaviors);
     }
 
     public static void renderBehaviorizedEventHandlers(
             FacesContext facesContext, ResponseWriter writer,
-            UIComponent uiComponent, String targetClientId,
+            UIComponent uiComponent, String sourceId,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
         renderBehaviorizedAttribute(facesContext, writer, HTML.ONCLICK_ATTR,
-                uiComponent, targetClientId, ClientBehaviorEvents.CLICK,
+                uiComponent, sourceId, ClientBehaviorEvents.CLICK,
                 clientBehaviors, HTML.ONCLICK_ATTR);
         renderBehaviorizedAttribute(facesContext, writer, HTML.ONDBLCLICK_ATTR,
-                uiComponent, targetClientId, ClientBehaviorEvents.DBLCLICK,
+                uiComponent, sourceId, ClientBehaviorEvents.DBLCLICK,
                 clientBehaviors, HTML.ONDBLCLICK_ATTR);
         renderBehaviorizedAttribute(facesContext, writer,
-                HTML.ONMOUSEDOWN_ATTR, uiComponent, targetClientId,
+                HTML.ONMOUSEDOWN_ATTR, uiComponent, sourceId,
                 ClientBehaviorEvents.MOUSEDOWN, clientBehaviors,
                 HTML.ONMOUSEDOWN_ATTR);
         renderBehaviorizedAttribute(facesContext, writer, HTML.ONMOUSEUP_ATTR,
-                uiComponent, targetClientId, ClientBehaviorEvents.MOUSEUP,
+                uiComponent, sourceId, ClientBehaviorEvents.MOUSEUP,
                 clientBehaviors, HTML.ONMOUSEUP_ATTR);
         renderBehaviorizedAttribute(facesContext, writer,
-                HTML.ONMOUSEOVER_ATTR, uiComponent, targetClientId,
+                HTML.ONMOUSEOVER_ATTR, uiComponent, sourceId,
                 ClientBehaviorEvents.MOUSEOVER, clientBehaviors,
                 HTML.ONMOUSEOVER_ATTR);
         renderBehaviorizedAttribute(facesContext, writer,
-                HTML.ONMOUSEMOVE_ATTR, uiComponent, targetClientId,
+                HTML.ONMOUSEMOVE_ATTR, uiComponent, sourceId,
                 ClientBehaviorEvents.MOUSEMOVE, clientBehaviors,
                 HTML.ONMOUSEMOVE_ATTR);
         renderBehaviorizedAttribute(facesContext, writer, HTML.ONMOUSEOUT_ATTR,
-                uiComponent, targetClientId, ClientBehaviorEvents.MOUSEOUT,
+                uiComponent, sourceId, ClientBehaviorEvents.MOUSEOUT,
                 clientBehaviors, HTML.ONMOUSEOUT_ATTR);
         renderBehaviorizedAttribute(facesContext, writer, HTML.ONKEYPRESS_ATTR,
-                uiComponent, targetClientId, ClientBehaviorEvents.KEYPRESS,
+                uiComponent, sourceId, ClientBehaviorEvents.KEYPRESS,
                 clientBehaviors, HTML.ONKEYPRESS_ATTR);
         renderBehaviorizedAttribute(facesContext, writer, HTML.ONKEYDOWN_ATTR,
-                uiComponent, targetClientId, ClientBehaviorEvents.KEYDOWN,
+                uiComponent, sourceId, ClientBehaviorEvents.KEYDOWN,
                 clientBehaviors, HTML.ONKEYDOWN_ATTR);
         renderBehaviorizedAttribute(facesContext, writer, HTML.ONKEYUP_ATTR,
-                uiComponent, targetClientId, ClientBehaviorEvents.KEYUP,
+                uiComponent, sourceId, ClientBehaviorEvents.KEYUP,
                 clientBehaviors, HTML.ONKEYUP_ATTR);
     }
 
@@ -2621,16 +2635,16 @@ public final class HtmlRendererUtils
 
     public static void renderBehaviorizedFieldEventHandlersWithoutOnchange(
             FacesContext facesContext, ResponseWriter writer,
-            UIComponent uiComponent, String targetClientId,
+            UIComponent uiComponent, String sourceId,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
         renderBehaviorizedAttribute(facesContext, writer, HTML.ONFOCUS_ATTR,
-                uiComponent, targetClientId, ClientBehaviorEvents.FOCUS, clientBehaviors, HTML.ONFOCUS_ATTR);
+                uiComponent, sourceId, ClientBehaviorEvents.FOCUS, clientBehaviors, HTML.ONFOCUS_ATTR);
         renderBehaviorizedAttribute(facesContext, writer, HTML.ONBLUR_ATTR,
-                uiComponent, targetClientId, ClientBehaviorEvents.BLUR, clientBehaviors, HTML.ONBLUR_ATTR);
+                uiComponent, sourceId, ClientBehaviorEvents.BLUR, clientBehaviors, HTML.ONBLUR_ATTR);
         renderBehaviorizedAttribute(facesContext, writer, HTML.ONSELECT_ATTR,
-                uiComponent, targetClientId, ClientBehaviorEvents.SELECT, clientBehaviors, HTML.ONSELECT_ATTR);
+                uiComponent, sourceId, ClientBehaviorEvents.SELECT, clientBehaviors, HTML.ONSELECT_ATTR);
     }
 
     public static void renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
@@ -2691,7 +2705,7 @@ public final class HtmlRendererUtils
 
     public static boolean renderBehaviorizedOnchangeEventHandler(
             FacesContext facesContext, ResponseWriter writer,
-            UIComponent uiComponent, String targetClientId,
+            UIComponent uiComponent, String sourceId,
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
@@ -2704,7 +2718,7 @@ public final class HtmlRendererUtils
         if (hasChange && hasValueChange)
         {
             String chain = HtmlRendererUtils.buildBehaviorChain(facesContext,
-                    uiComponent, targetClientId, ClientBehaviorEvents.CHANGE,
+                    uiComponent, sourceId, ClientBehaviorEvents.CHANGE,
                     null, ClientBehaviorEvents.VALUECHANGE, null,
                     clientBehaviors,
                     (String) uiComponent.getAttributes().get(HTML.ONCHANGE_ATTR), null);
@@ -2715,13 +2729,13 @@ public final class HtmlRendererUtils
         else if (hasChange)
         {
             return HtmlRendererUtils.renderBehaviorizedAttribute(facesContext,
-                    writer, HTML.ONCHANGE_ATTR, uiComponent, targetClientId,
+                    writer, HTML.ONCHANGE_ATTR, uiComponent, sourceId,
                     ClientBehaviorEvents.CHANGE, clientBehaviors, HTML.ONCHANGE_ATTR);
         }
         else if (hasValueChange)
         {
             return HtmlRendererUtils.renderBehaviorizedAttribute(facesContext,
-                    writer, HTML.ONCHANGE_ATTR, uiComponent, targetClientId,
+                    writer, HTML.ONCHANGE_ATTR, uiComponent, sourceId,
                     ClientBehaviorEvents.VALUECHANGE, clientBehaviors, HTML.ONCHANGE_ATTR);
         }
         else
