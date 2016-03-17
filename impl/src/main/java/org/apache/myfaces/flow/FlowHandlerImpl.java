@@ -398,12 +398,12 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
     
     private void doBeforeExitFlow(FacesContext context, Flow flow)
     {
-        getFacesFlowProvider(context).doBeforeExitFlow(context, flow);
-        
         if (flow.getFinalizer() != null)
         {
             flow.getFinalizer().invoke(context.getELContext(), null);
         }
+        
+        getFacesFlowProvider(context).doBeforeExitFlow(context, flow);
     }
 
     @Override
