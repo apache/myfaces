@@ -68,7 +68,7 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
             = "org.apache.myfaces.validator.VALIDATOR_ID_EXCLUSION_LIST";
     
     /**
-     * Enforce <f:validateBean> to be called first before any JSF validator.
+     * Enforce f:validateBean to be called first before any JSF validator.
      */
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since = "2.2.10", group="validation")
     private final static String BEAN_BEFORE_JSF_VALIDATION
