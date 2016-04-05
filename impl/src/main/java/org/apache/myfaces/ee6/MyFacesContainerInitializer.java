@@ -227,13 +227,13 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
     {
         try
         {
-            String standaloneStartup = servletContext.getInitParameter(INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN);
+            String skipJarScan = servletContext.getInitParameter(INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN);
 
-            if (standaloneStartup == null)
+            if (skipJarScan == null)
             {
-                standaloneStartup = System.getProperty(INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN);
+                skipJarScan = System.getProperty(INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN);
             }
-            return "true".equalsIgnoreCase(standaloneStartup);
+            return "true".equalsIgnoreCase(skipJarScan);
         }
         catch (Exception e)
         {
