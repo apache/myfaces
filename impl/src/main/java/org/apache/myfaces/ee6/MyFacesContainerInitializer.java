@@ -59,6 +59,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 import javax.servlet.annotation.HandlesTypes;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet;
@@ -113,6 +114,17 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
     private static final String FACES_SERVLET_ADDED_ATTRIBUTE = "org.apache.myfaces.DYNAMICALLY_ADDED_FACES_SERVLET";
     
     private static final String INITIALIZE_ALWAYS_STANDALONE = "org.apache.myfaces.INITIALIZE_ALWAYS_STANDALONE";
+    
+    /**
+     * If the flag is true, the algoritm skip jar scanning for faces-config files to check if the current
+     * application requires FacesServlet to be added dynamically (servlet spec 3). This param can be set using 
+     * a system property with the same name too.
+     */
+    @JSFWebConfigParam(since="2.2.10", expectedValues = "true, false", defaultValue = "false", 
+            tags = "performance")
+    private static final String INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN = 
+            "org.apache.myfaces.INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN";
+    
     private static final String FACES_CONFIG_RESOURCE = "/WEB-INF/faces-config.xml";
     private static final Logger log = Logger.getLogger(MyFacesContainerInitializer.class.getName());
     private static final String[] FACES_SERVLET_MAPPINGS = { "/faces/*", "*.jsf", "*.faces" };
@@ -207,6 +219,29 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
     }
 
     /**
+     * Checks if the <code>INITIALIZE_SCAN_JARS_FOR_FACES_CONFIG</code> flag is true in <code>web.xml</code>.
+     * If the flag is true, this means we should scan app jars for *.faces-config.xml before adding
+     * any FacesServlet; in false, we skip that scan for performance.
+     */
+    private boolean shouldSkipJarFacesConfigScan(ServletContext servletContext)
+    {
+        try
+        {
+            String standaloneStartup = servletContext.getInitParameter(INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN);
+
+            if (standaloneStartup == null)
+            {
+                standaloneStartup = System.getProperty(INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN);
+            }
+            return "true".equalsIgnoreCase(standaloneStartup);
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
+    
+    /**
      * Checks if /WEB-INF/faces-config.xml is present.
      * @return
      */
@@ -235,6 +270,7 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
                 }
             }
 
+            // Skip this scan - for performance - if INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN is set to true 
             // 2. A faces-config.xml file is found in the META-INF directory of a jar in the 
             //    application's classpath.
             // 3. A filename ending in .faces-config.xml is found in the META-INF directory of a jar in 
@@ -242,17 +278,19 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
             // To do this properly it is necessary to use some SPI interfaces MyFaces already has, to 
             // deal with OSGi and other
             // environments properly.
-            ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, true);
-            FacesConfigResourceProviderFactory factory = FacesConfigResourceProviderFactory.
-                getFacesConfigResourceProviderFactory(externalContext);
-            FacesConfigResourceProvider provider = factory.createFacesConfigResourceProvider(externalContext);
-            Collection<URL> metaInfFacesConfigUrls =  provider.getMetaInfConfigurationResources(externalContext);
-            
-            if (metaInfFacesConfigUrls != null && !metaInfFacesConfigUrls.isEmpty())
+            if (!shouldSkipJarFacesConfigScan(servletContext)) 
             {
-                return true;
+                ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, true);
+                FacesConfigResourceProviderFactory factory = FacesConfigResourceProviderFactory.
+                    getFacesConfigResourceProviderFactory(externalContext);
+                FacesConfigResourceProvider provider = factory.createFacesConfigResourceProvider(externalContext);
+                Collection<URL> metaInfFacesConfigUrls =  provider.getMetaInfConfigurationResources(externalContext);
+                
+                if (metaInfFacesConfigUrls != null && !metaInfFacesConfigUrls.isEmpty())
+                {
+                    return true;
+                }
             }
-            
             return false;
         }
         catch (Exception e)
