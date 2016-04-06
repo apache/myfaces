@@ -34,6 +34,7 @@ import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.apache.myfaces.view.facelets.pss.acid.component.UISimpleComponent1;
+import org.apache.myfaces.view.facelets.pss.acid.component.UISimpleComponent2;
 import org.apache.myfaces.view.facelets.pss.acid.managed.CheckActionEventBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ComponentBindingBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ComponentBindingFormBean;
@@ -2136,6 +2137,29 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
         Assert.assertNotNull(comp);
         Assert.assertTrue(comp instanceof UISimpleComponent1);
+
+        endRequest();
+    }
+    
+    @Test
+    public void testSimpleComponent2() throws Exception
+    {
+        startViewRequest("/simpleComponent2.xhtml");
+        processLifecycleExecuteAndRender();
+        
+        UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
+        Assert.assertNotNull(comp);
+        Assert.assertTrue(comp instanceof UISimpleComponent2);
+        //Assert.assertEquals(1, comp.getChildCount());
+        //Assert.assertEquals("Dynamically added child", comp.getChildren().get(0).getAttributes().get("value"));
+        
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
+        client.submit(button);
+        processLifecycleExecuteAndRender();
+        
+        comp = facesContext.getViewRoot().findComponent("mainForm:component");
+        Assert.assertNotNull(comp);
+        Assert.assertTrue(comp instanceof UISimpleComponent2);
 
         endRequest();
     }

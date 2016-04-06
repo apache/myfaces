@@ -765,6 +765,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                             UIComponentBase.saveAttachedState(context, faceletViewState));
                     //Do not save on UIViewRoot
                     view.getAttributes().remove(ComponentSupport.FACELET_STATE_INSTANCE);
+                    view.getTransientStateHelper().putTransient(
+                            ComponentSupport.FACELET_STATE_INSTANCE, faceletViewState);
                 }
                 if (_viewPoolProcessor != null && 
                     _viewPoolProcessor.isViewPoolEnabledForThisView(context, view))

@@ -59,6 +59,11 @@ public class FaceletStateValueExpression extends ValueExpression
         UIViewRoot root = facesContext.getViewRoot();
         FaceletState map = (FaceletState) root.getAttributes().get(
             ComponentSupport.FACELET_STATE_INSTANCE);
+        if (map == null)
+        {
+            map = (FaceletState)root.getTransientStateHelper().getTransient(
+                    ComponentSupport.FACELET_STATE_INSTANCE);
+        }
         return map.getBinding(uniqueId, key);
     }
     
@@ -72,6 +77,11 @@ public class FaceletStateValueExpression extends ValueExpression
         UIViewRoot root = facesContext.getViewRoot();
         FaceletState map = (FaceletState) root.getAttributes().get(
             ComponentSupport.FACELET_STATE_INSTANCE);
+        if (map == null)
+        {
+            map = (FaceletState)root.getTransientStateHelper().getTransient(
+                    ComponentSupport.FACELET_STATE_INSTANCE);
+        }
         return map.getBinding(uniqueId, key);
     }
 
