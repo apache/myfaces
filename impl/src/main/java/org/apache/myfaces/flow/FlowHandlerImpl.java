@@ -128,8 +128,14 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
         if (duplicateFlow != null)
         {
             // There are two flows with the same flowId.
+            // Raise an exception if flows share a duplicate ID and definingDocumentId
+            if (toAdd.getDefiningDocumentId().equals(duplicateFlow.getDefiningDocumentId()))
+            {
+                throw new IllegalArgumentException("There cannot be multiple flows with both the" 
+                                                   + " same ID and the same definingDocumentId");
+            }
             // Give priority to the flow with no defining document id
-            if ("".equals(toAdd.getDefiningDocumentId()))
+            else if ("".equals(toAdd.getDefiningDocumentId()))
             {
                 _flowMapById.put(id, toAdd);
             }
