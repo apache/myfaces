@@ -251,5 +251,43 @@
         </navigation-case>
     </navigation-rule>
     
+    <flow-definition id="flowA">
+
+        <flow-return id="end">
+            <from-outcome>exit</from-outcome>
+        </flow-return>
+        
+        <flow-call id="call_flow_B">
+            <flow-reference>
+                <flow-document-id>flow_def_1</flow-document-id>
+                <flow-id>flowB</flow-id>
+            </flow-reference>
+        </flow-call>        
+        
+        <view id="content">
+            <vdl-document>/flowA/content.xhtml</vdl-document>
+        </view>
+        
+    </flow-definition>    
+    
+    <flow-definition id="flowB">
+
+        <flow-return id="end">
+            <from-outcome>exit</from-outcome>
+        </flow-return>
+
+        <flow-call id="call_flow_A">
+            <flow-reference>
+                <flow-document-id>flow_def_1</flow-document-id>
+                <flow-id>flowA</flow-id>
+            </flow-reference>
+        </flow-call>        
+        
+        <view id="content">
+            <vdl-document>/flowB/content.xhtml</vdl-document>
+        </view>
+        
+    </flow-definition>
+    
 </faces-config>
         

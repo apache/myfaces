@@ -247,5 +247,251 @@ public class FlowMyFacesCDIRequestTestCase extends AbstractMyFacesCDIRequestTest
         Assert.assertEquals("/flow5/flow5.xhtml", facesContext.getViewRoot().getViewId());
 
         renderResponse();
-    } 
+    }
+    
+    /**
+     * This tests do the following:
+     * 
+     * - Start Flow A
+     * - Call Flow B
+     * - Call Flow A
+     * - Call Flow B
+     * - Return from Flow B
+     * - Return from Flow A
+     * - Return from Flow B
+     */
+    @Test
+    public void testFlowA_1() throws Exception
+    {
+        startViewRequest("/flow_base.xhtml");
+        processLifecycleExecute();
+        
+        ConfigurableNavigationHandler handler = (ConfigurableNavigationHandler) facesContext.getApplication().getNavigationHandler();
+        
+        renderResponse();
+       
+        //Enter flow 1
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:startFlowA");
+        client.submit(button);
+        
+        processLifecycleExecute();
+        
+        facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flowA","valueA_1");
+        Assert.assertEquals("/flowA/flowA.xhtml", facesContext.getViewRoot().getViewId());
+        
+        Flow currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals(currentFlow.getId(), "flowA");
+        
+        renderResponse();
+        
+        UICommand button2 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:call_flow_B");
+        client.submit(button2);
+        
+        processLifecycleExecute();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flowB", currentFlow.getId());
+        Assert.assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flowA"));
+        facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flowB","valueB_1");
+        
+        renderResponse();
+        
+        //Check current view is the begin of flow2
+        Assert.assertEquals("/flowB/flowB.xhtml", facesContext.getViewRoot().getViewId());
+        
+        UICommand button3 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:call_flow_A");
+        client.submit(button3);
+        
+        processLifecycleExecute();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flowA", currentFlow.getId());
+        Assert.assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flowB"));
+        facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flowA","valueA_2");
+        
+        renderResponse();
+        
+        //Check current view is the begin of flow2
+        Assert.assertEquals("/flowA/flowA.xhtml", facesContext.getViewRoot().getViewId());
+        
+        UICommand button4 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:call_flow_B");
+        client.submit(button4);
+        
+        processLifecycleExecute();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flowB", currentFlow.getId());
+        Assert.assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flowA"));
+        facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flowB","valueB_2");
+        
+        renderResponse();
+        
+        //Check current view is the begin of flow2
+        Assert.assertEquals("/flowB/flowB.xhtml", facesContext.getViewRoot().getViewId());
+        
+        UICommand button5 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:end_flow");
+        client.submit(button5);
+        
+        processLifecycleExecute();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flowA", currentFlow.getId());
+        Assert.assertEquals("valueA_2", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowA"));
+        
+        renderResponse();
+        
+        UICommand button6 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:end_flow");
+        client.submit(button6);
+        
+        processLifecycleExecute();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flowB", currentFlow.getId());
+        Assert.assertEquals("valueB_1", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowB"));
+
+        renderResponse();
+        
+        UICommand button7 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:end_flow");
+        client.submit(button7);
+        
+        processLifecycleExecute();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flowA", currentFlow.getId());
+        Assert.assertEquals("valueA_1", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowA"));
+        
+        renderResponse();
+    }
+    
+    @Test
+    public void testFlowA_2() throws Exception
+    {
+        startViewRequest("/flow_base.xhtml");
+        processLifecycleExecute();
+        
+        ConfigurableNavigationHandler handler = (ConfigurableNavigationHandler) facesContext.getApplication().getNavigationHandler();
+        
+        renderResponse();
+       
+        //Enter flow A
+        UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:startFlowA");
+        client.submit(button);
+        
+        processLifecycleExecute();
+        
+        facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flowA","valueA_1");
+        Assert.assertEquals("/flowA/flowA.xhtml", facesContext.getViewRoot().getViewId());
+        
+        Flow currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals(currentFlow.getId(), "flowA");
+        
+        renderResponse();
+        
+        //Go to base
+        UICommand button2 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:go_flow_base");
+        client.submit(button2);
+        
+        processLifecycleExecute();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        // We are still on flowA, just returned to base
+        Assert.assertEquals("flowA", currentFlow.getId());
+        
+        renderResponse();
+        
+        //Enter flow B
+        UICommand button3 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:startFlowB");
+        client.submit(button3);
+        
+        processLifecycleExecute();
+        
+        facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flowB","valueB_1");
+        Assert.assertEquals("/flowB/flowB.xhtml", facesContext.getViewRoot().getViewId());
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals(currentFlow.getId(), "flowB");
+        
+        renderResponse();
+        
+        // Call flow A through flow call
+        UICommand button4 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:call_flow_A");
+        client.submit(button4);
+        
+        processLifecycleExecute();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flowA", currentFlow.getId());
+        Assert.assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flowB"));
+        facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flowA","valueA_2");
+        
+        renderResponse();
+        
+        //Check current view is the begin of flow2
+        Assert.assertEquals("/flowA/flowA.xhtml", facesContext.getViewRoot().getViewId());
+
+        // Call flow B through flow call
+        UICommand button5 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:call_flow_B");
+        client.submit(button5);
+        
+        processLifecycleExecute();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flowB", currentFlow.getId());
+        Assert.assertFalse(facesContext.getApplication().getFlowHandler().getCurrentFlowScope().containsKey("flowA"));
+        facesContext.getApplication().getFlowHandler().getCurrentFlowScope().put("flowB","valueB_2");
+        
+        renderResponse();
+        
+        //Check current view is the begin of flow2
+        Assert.assertEquals("/flowB/flowB.xhtml", facesContext.getViewRoot().getViewId());
+        
+        UICommand button6 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:end_flow");
+        client.submit(button6);
+        
+        processLifecycleExecute();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flowA", currentFlow.getId());
+        Assert.assertEquals("valueA_2", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowA"));
+        
+        renderResponse();
+        
+        UICommand button7 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:end_flow");
+        client.submit(button7);
+        
+        processLifecycleExecute();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flowB", currentFlow.getId());
+        Assert.assertEquals("valueB_1", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowB"));
+
+        renderResponse();
+        
+        UICommand button8 = (UICommand) facesContext.getViewRoot().findComponent("mainForm:end_flow");
+        client.submit(button8);
+        
+        processLifecycleExecute();
+        
+        currentFlow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
+        Assert.assertNotNull(currentFlow);
+        Assert.assertEquals("flowA", currentFlow.getId());
+        Assert.assertEquals("valueA_1", facesContext.getApplication().getFlowHandler().getCurrentFlowScope().get("flowA"));
+        
+        renderResponse();
+        
+    }
 }

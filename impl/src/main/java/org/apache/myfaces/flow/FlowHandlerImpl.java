@@ -232,11 +232,12 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
         }
         else
         {
-            // Both sourceFlow and targetFlow are not null, so we need to check the direction
+            // Both sourceFlow and targetFlow are not null, if there is no call node set (force enter flow)
+            // we need to check the direction
             // If targetFlow is on the stack, remove elements until get there.
             // If targetFlow is not there, add it to the stack.
             List<_FlowContextualInfo> currentFlowStack = getCurrentFlowStack(context, clientWindow);
-            if (currentFlowStack != null)
+            if (currentFlowStack != null && outboundCallNode == null)
             {
                 FlowReference targetFlowReference = new FlowReference(
                         targetFlow.getDefiningDocumentId(), targetFlow.getId());
@@ -302,7 +303,7 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
 
         if (sourceFlowIndex != -1)
         {
-            // From sourceFlowIndex, add all flows 
+            // From sourceFlowIndex, remove(add to flowsToRemove list) all flows 
             traverseDependantFlows(sourceFlowReference, sourceFlowIndex+1, currentFlowStack, flowsToRemove);
 
             // Remove all marked elements
@@ -314,7 +315,16 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
                     FlowReference fr = fci.getFlowReference();
                     doBeforeExitFlow(context, getFlow(context, fr.getDocumentId(), fr.getId()));
                     //popFlowReference(context, clientWindow, currentFlowStack, i);
-                    currentFlowStack.remove(fci);
+
+                    //Remove flows from the last to the first to keep the right sequence.
+                    for (int j = currentFlowStack.size()-1; j >= 0; j--)
+                    {
+                        if (currentFlowStack.get(j) == fci)
+                        {
+                            currentFlowStack.remove(j);
+                            break;
+                        }
+                    }
                 }
             }
 
