@@ -41,6 +41,7 @@ import org.apache.myfaces.view.facelets.pss.acid.managed.ComponentBindingFormBea
 import org.apache.myfaces.view.facelets.pss.acid.managed.CustomSessionBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ForEachBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ResourceDependencyBean;
+import org.apache.myfaces.view.facelets.pss.acid.managed.TestBean;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -954,22 +955,34 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         UIComponent comp = facesContext.getViewRoot().findComponent("mainForm:component");
         Assert.assertEquals(1, comp.getChildCount());
         UIComponent wrapper = comp.getChildren().get(0);
-        Assert.assertEquals(2, wrapper.getChildCount());
+        Assert.assertEquals(3, wrapper.getChildCount());
         Assert.assertEquals("Dynamically added child", wrapper.getChildren().get(1).getAttributes().get("value"));
         MockPrintWriter writer1 = (MockPrintWriter) response.getWriter();
-        Assert.assertTrue(new String(writer1.content()).contains("Dynamically added markup"));
+        String content = new String(writer1.content());
+        Assert.assertTrue(content.contains("Dynamically added markup"));
+        Assert.assertTrue(content.contains("Value in param1: value1"));
+        Assert.assertTrue(content.contains("Value in param2: value2"));
         
         UICommand button = (UICommand) facesContext.getViewRoot().findComponent("mainForm:postback");
         client.submit(button);
-        processLifecycleExecuteAndRender();
+        processLifecycleExecute();
+        
+        TestBean bean = facesContext.getApplication().evaluateExpressionGet(
+                facesContext, "#{testBean}", TestBean.class);
+        bean.setParam2("otherValue2");
+        
+        processLifecycleRender();
         
         comp = facesContext.getViewRoot().findComponent("mainForm:component");
         Assert.assertEquals(1, comp.getChildCount());
         wrapper = comp.getChildren().get(0);
-        Assert.assertEquals(2, wrapper.getChildCount());
+        Assert.assertEquals(3, wrapper.getChildCount());
         Assert.assertEquals("Dynamically added child", wrapper.getChildren().get(1).getAttributes().get("value"));
         MockPrintWriter writer2 = (MockPrintWriter) response.getWriter();
-        Assert.assertTrue(new String(writer2.content()).contains("Dynamically added markup"));
+        String content2 = new String(writer2.content());
+        Assert.assertTrue(content2.contains("Dynamically added markup"));
+        Assert.assertTrue(content2.contains("Value in param1: value1"));
+        Assert.assertTrue(content2.contains("Value in param2: otherValue2"));
 
         endRequest();
     }

@@ -897,29 +897,72 @@ public final class SAXCompiler extends Compiler
         String prefix = "oamf"; // The prefix is only a logical name.
         mngr.pushNamespace(prefix, taglibURI);
         
+        boolean tagContainParams = ( 
+                ("include".equals(tagName) || "decorate".equals(tagName) || "composition".equals(tagName)) && 
+                (UILibrary.NAMESPACE.equals(taglibURI) || UILibrary.ALIAS_NAMESPACE.equals(taglibURI)) );
+        
         Location location = new Location(alias, 0, 0);
         int len = attributes.size();
+        if (tagContainParams && attributes.containsKey("params"))
+        {
+            len = len-1;
+        }
+        
         TagAttribute[] ta = new TagAttribute[len];
         int i = 0;
+        Map<String, Object> paramsMap = null;
         for (Map.Entry<String, Object> entry : attributes.entrySet())
         {
             String stringValue = null;
-            if (entry.getValue() instanceof ValueExpression)
+            
+            if (tagContainParams && "params".equals(entry.getKey()))
             {
-                stringValue = ((ValueExpression)entry.getValue()).getExpressionString();
+                paramsMap = (Map<String, Object>) entry.getValue();
             }
-            else if (entry.getValue() instanceof MethodExpression)
+            else
             {
-                stringValue = ((MethodExpression)entry.getValue()).getExpressionString();
+                if (entry.getValue() instanceof ValueExpression)
+                {
+                    stringValue = ((ValueExpression)entry.getValue()).getExpressionString();
+                }
+                else if (entry.getValue() instanceof MethodExpression)
+                {
+                    stringValue = ((MethodExpression)entry.getValue()).getExpressionString();
+                }
+                else if (entry.getValue() != null)
+                {
+                    stringValue = entry.getValue().toString();
+                }
+                ta[i] = new TagAttributeImpl(location, "", entry.getKey(), entry.getKey(), stringValue);
+                i++;
             }
-            else if (entry.getValue() != null)
-            {
-                stringValue = entry.getValue().toString();
-            }
-            ta[i] = new TagAttributeImpl(location, "", entry.getKey(), entry.getKey(), stringValue);
-            i++;
         }        
         mngr.pushTag(new Tag(location, taglibURI, tagName, "oamf:"+tagName, new TagAttributesImpl(ta)));
+        
+        if (tagContainParams && paramsMap != null)
+        {
+            for (Map.Entry<String, Object> entry : paramsMap.entrySet())
+            {
+                TagAttribute[] tap = new TagAttribute[2];
+                String stringValue = null;
+                if (entry.getValue() instanceof ValueExpression)
+                {
+                    stringValue = ((ValueExpression)entry.getValue()).getExpressionString();
+                }
+                else if (entry.getValue() instanceof MethodExpression)
+                {
+                    stringValue = ((MethodExpression)entry.getValue()).getExpressionString();
+                }
+                else if (entry.getValue() != null)
+                {
+                    stringValue = entry.getValue().toString();
+                }
+                tap[0] = new TagAttributeImpl(location, "", "name", "name", entry.getKey());
+                tap[1] = new TagAttributeImpl(location, "", "value", "value", stringValue);
+                mngr.pushTag(new Tag(location, UILibrary.NAMESPACE, "param", "oamf:param", new TagAttributesImpl(tap)));
+                mngr.popTag();
+            }
+        }
         mngr.popTag();
         mngr.popNamespace(prefix);
         

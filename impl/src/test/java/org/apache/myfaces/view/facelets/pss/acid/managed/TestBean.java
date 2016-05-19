@@ -34,9 +34,12 @@ public class TestBean
 {
 
     private List<ValueHolder> values = new ArrayList<ValueHolder>();
+    
+    private String param2;
 
     public TestBean()
     {
+        param2 = "value2";
     }
     
     @PostConstruct
@@ -61,6 +64,22 @@ public class TestBean
     public void setValues(List<ValueHolder> values)
     {
         this.values = values;
+    }
+
+    /**
+     * @return the param2
+     */
+    public String getParam2()
+    {
+        return param2;
+    }
+
+    /**
+     * @param param2 the param2 to set
+     */
+    public void setParam2(String param2)
+    {
+        this.param2 = param2;
     }
 
     

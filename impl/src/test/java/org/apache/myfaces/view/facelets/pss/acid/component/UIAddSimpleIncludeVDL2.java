@@ -78,6 +78,11 @@ public class UIAddSimpleIncludeVDL2 extends UIComponentBase implements
 
             Map<String, Object> attributes = new HashMap<String, Object>();
             attributes.put("src", "/addSimpleIncludeVDL_2_1.xhtml");
+            Map<String, Object> paramsMap = new HashMap<String, Object>();
+            paramsMap.put("param1", "value1");
+            paramsMap.put("param2", facesContext.getApplication().getExpressionFactory().createValueExpression(
+                    facesContext.getELContext(), "#{testBean.param2}" ,String.class));
+            attributes.put("params", paramsMap);
             UIComponent component = vdl.createComponent(facesContext, 
                 "http://java.sun.com/jsf/facelets", 
                 "include", attributes);
