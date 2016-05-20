@@ -21,10 +21,16 @@ package org.apache.myfaces.view.impl;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.config.ManagedBeanDestroyer;
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.annotation.LifecycleProvider;
+import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.myfaces.shared.util.SubKeyMap;
 import org.apache.myfaces.spi.ViewScopeProvider;
 
@@ -45,6 +51,8 @@ public class DefaultViewScopeHandler extends ViewScopeProvider
     static final char SEPARATOR_CHAR = '.';
     
     private final AtomicLong _count;
+    
+    private ManagedBeanDestroyer _mbDestroyer;
     
     public DefaultViewScopeHandler()
     {
@@ -93,20 +101,43 @@ public class DefaultViewScopeHandler extends ViewScopeProvider
     
     public void onSessionDestroyed()
     {
-        // TODO: Implement @PreDestroy? In JSF 2.0 this part was not present, 
-        // but in theory we should do it here.
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext.getExternalContext().getSession(false) != null)
+        {
+            ExternalContext external = facesContext.getExternalContext();
+            Map<String, Object> sessionMap = external.getSessionMap();
+            String prefix = VIEW_SCOPE_PREFIX_MAP + SEPARATOR_CHAR;
+            Set<String> viewScopeIdSet = new HashSet<String>();
+            for (Map.Entry<String,Object> entry: sessionMap.entrySet())
+            {
+                if (entry.getKey() != null && 
+                    entry.getKey().startsWith(prefix))
+                {
+                    String viewScopeId = entry.getKey().substring(prefix.length(), 
+                            entry.getKey().indexOf(SEPARATOR_CHAR, prefix.length()));
+                    viewScopeIdSet.add(viewScopeId);
+                }
+            }
+            if (!viewScopeIdSet.isEmpty())
+            {
+                for (String viewScopeId : viewScopeIdSet )
+                {
+                    this.destroyViewScopeMap(facesContext, viewScopeId);
+                }
+            }
+        }
     }
     
     public Map<String, Object> createViewScopeMap(FacesContext facesContext, String viewScopeId)
     {
-        String fullToken = VIEW_SCOPE_PREFIX_MAP + SEPARATOR_CHAR + viewScopeId;
+        String fullToken = VIEW_SCOPE_PREFIX_MAP + SEPARATOR_CHAR + viewScopeId + SEPARATOR_CHAR;
         Map<String, Object> map = _createSubKeyMap(facesContext, fullToken);
         return map;
     }
     
     public Map<String, Object> restoreViewScopeMap(FacesContext facesContext, String viewScopeId)
     {
-        String fullToken = VIEW_SCOPE_PREFIX_MAP + SEPARATOR_CHAR + viewScopeId;
+        String fullToken = VIEW_SCOPE_PREFIX_MAP + SEPARATOR_CHAR + viewScopeId + SEPARATOR_CHAR;
         Map<String, Object> map = _createSubKeyMap(facesContext, fullToken);
         return map;
     }
@@ -151,9 +182,29 @@ public class DefaultViewScopeHandler extends ViewScopeProvider
     {
         if (facesContext.getExternalContext().getSession(false) != null)
         {        
-            String fullToken = VIEW_SCOPE_PREFIX_MAP + SEPARATOR_CHAR + viewScopeId;
+            String fullToken = VIEW_SCOPE_PREFIX_MAP + SEPARATOR_CHAR + viewScopeId + SEPARATOR_CHAR;
             Map<String, Object> map = _createSubKeyMap(facesContext, fullToken);
+            
+            ManagedBeanDestroyer mbDestroyer = getManagedBeanDestroyer(facesContext.getExternalContext());
+            for (Map.Entry<String,Object> entry : map.entrySet())
+            {
+                mbDestroyer.destroy(entry.getKey(), entry.getValue());
+            }
+            
             map.clear();
         }
+    }
+    
+    protected ManagedBeanDestroyer getManagedBeanDestroyer(ExternalContext externalContext)
+    {
+        if (_mbDestroyer == null)
+        {
+            RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
+            LifecycleProvider lifecycleProvider = LifecycleProviderFactory
+                    .getLifecycleProviderFactory(externalContext).getLifecycleProvider(externalContext);
+
+            _mbDestroyer = new ManagedBeanDestroyer(lifecycleProvider, runtimeConfig);
+        }
+        return _mbDestroyer;
     }
 }
