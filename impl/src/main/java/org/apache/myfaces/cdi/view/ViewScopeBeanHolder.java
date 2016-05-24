@@ -158,7 +158,7 @@ public class ViewScopeBeanHolder implements Serializable
                         ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
                         facesContext = new StartupFacesContextImpl(externalContext, 
                                 (ReleaseableExternalContext) externalContext, exceptionHandler, false);
-                        ViewScopeContextImpl.destroyAllActive(contextualStorage);
+                        ViewScopeContextImpl.destroyAllActive(contextualStorage, facesContext);
                     }
                     finally
                     {
@@ -167,7 +167,7 @@ public class ViewScopeBeanHolder implements Serializable
                 }
                 else
                 {
-                    ViewScopeContextImpl.destroyAllActive(contextualStorage);
+                    ViewScopeContextImpl.destroyAllActive(contextualStorage, facesContext);
                 }
             }
             finally
@@ -206,7 +206,7 @@ public class ViewScopeBeanHolder implements Serializable
                             (ReleaseableExternalContext) externalContext, exceptionHandler, false);
                     for (ViewScopeContextualStorage contextualStorage : oldWindowContextStorages.values())
                     {
-                        ViewScopeContextImpl.destroyAllActive(contextualStorage);
+                        ViewScopeContextImpl.destroyAllActive(contextualStorage, facesContext);
                     }
                 }
                 finally

@@ -69,14 +69,35 @@ public class ViewScopeCDIMap implements Map<String, Object>
             getContextualStorage(beanManager, _viewScopeId);
     }
     
+    private ViewScopeContextualStorage getStorage()
+    {
+        if (storage != null && !storage.isActive())
+        {
+            storage = null;
+        }
+        if (storage == null)
+        {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            BeanManager beanManager = CDIUtils.
+                getBeanManager(facesContext.getExternalContext());
+
+            ViewScopeBeanHolder bean = CDIUtils.lookup(
+                beanManager, ViewScopeBeanHolder.class);
+            
+            storage = bean.
+                getContextualStorage(beanManager, _viewScopeId);
+        }
+        return storage;
+    }
+    
     private Map<String, Object> getNameBeanKeyMap()
     {
-        return storage.getNameBeanKeyMap();
+        return getStorage().getNameBeanKeyMap();
     }
     
     private Map<Object, ContextualInstanceInfo<?>> getCreationalContextInstances()
     {
-        return storage.getStorage();
+        return getStorage().getStorage();
     }
     
     public String getViewScopeId()
@@ -153,7 +174,37 @@ public class ViewScopeCDIMap implements Map<String, Object>
 
     public void clear()
     {
-        ViewScopeContextImpl.destroyAllActive(storage);
+        boolean destroyed = false;
+        // If the scope was already destroyed through an invalidateSession(), the storage instance
+        // that is holding this map could be obsolete, so we need to grab the right instance from
+        // the bean holder.
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext != null)
+        {
+            BeanManager beanManager = CDIUtils.
+                getBeanManager(facesContext.getExternalContext());
+
+            if (beanManager != null)
+            {
+                ViewScopeBeanHolder bean = CDIUtils.lookup(
+                    beanManager, ViewScopeBeanHolder.class);
+                if (bean != null)
+                {
+                    ViewScopeContextualStorage st = bean.
+                        getContextualStorage(beanManager, _viewScopeId);
+                    if (st != null)
+                    {
+                        ViewScopeContextImpl.destroyAllActive(st);
+                        storage = null;
+                        destroyed = true;
+                    }
+                }
+            }
+        }
+        if (!destroyed)
+        {
+            ViewScopeContextImpl.destroyAllActive(storage);
+        }
     }
 
     public Set<String> keySet()

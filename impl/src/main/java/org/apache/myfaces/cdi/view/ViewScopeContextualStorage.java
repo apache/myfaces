@@ -45,6 +45,8 @@ public class ViewScopeContextualStorage implements Serializable
     private final Map<String, Object> nameBeanKeyMap;
     
     private final BeanManager beanManager;
+    
+    private transient volatile boolean deactivated;
 
     /**
      * @param beanManager is needed for serialisation
@@ -56,6 +58,7 @@ public class ViewScopeContextualStorage implements Serializable
         this.beanManager = beanManager;
         contextualInstances = new HashMap<Object, ContextualInstanceInfo<?>>();
         nameBeanKeyMap = new HashMap<String, Object>();
+        deactivated = false;
     }
 
     /**
@@ -118,5 +121,15 @@ public class ViewScopeContextualStorage implements Serializable
     public Contextual<?> getBean(Object beanKey)
     {
         return beanManager.getPassivationCapableBean((String) beanKey);
+    }
+    
+    public boolean isActive()
+    {
+        return !deactivated;
+    }
+    
+    public void deactivate()
+    {
+        deactivated = true;
     }
 }
