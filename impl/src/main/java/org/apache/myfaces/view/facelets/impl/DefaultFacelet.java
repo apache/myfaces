@@ -104,7 +104,7 @@ final class DefaultFacelet extends AbstractFacelet
         _faceletId = faceletId;
         _createTime = System.currentTimeMillis();
         _refreshPeriod = _factory.getRefreshPeriod();
-        _relativePaths = new WeakHashMap<String, URL>();
+        _relativePaths = Collections.synchronizedMap(new WeakHashMap());
         _isBuildingCompositeComponentMetadata = false;
         _encodingHandler = (root instanceof EncodingHandler);
     }
@@ -120,7 +120,7 @@ final class DefaultFacelet extends AbstractFacelet
         _faceletId = faceletId;
         _createTime = System.currentTimeMillis();
         _refreshPeriod = _factory.getRefreshPeriod();
-        _relativePaths = new WeakHashMap<String, URL>();
+        _relativePaths = Collections.synchronizedMap(new WeakHashMap());
         _isBuildingCompositeComponentMetadata = isBuildingCompositeComponentMetadata;
         _encodingHandler = (root instanceof EncodingHandler);
     }    
