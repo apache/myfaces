@@ -27,6 +27,7 @@ import java.util.Iterator;
 
 import javax.el.ValueExpression;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
@@ -341,8 +342,9 @@ public class UISelectMany extends UIInput
             return;
         }
 
-        // run the validators only if there are item values to validate
-        if (hasValues)
+        // run the validators if there are item values to validate, or 
+        // if we are required to validate empty fields
+        if (hasValues  || shouldValidateEmptyFields(context))
         {
             _ComponentUtils.callValidators(context, this, convertedValue);
         }
@@ -441,5 +443,46 @@ public class UISelectMany extends UIInput
                 return null;
             }
         }
+    }
+
+    // Copied from javax.faces.component.UIInput
+    private boolean shouldValidateEmptyFields(FacesContext context)
+    {
+        ExternalContext ec = context.getExternalContext();
+        Boolean validateEmptyFields = (Boolean) ec.getApplicationMap().get(VALIDATE_EMPTY_FIELDS_PARAM_NAME);
+
+        if (validateEmptyFields == null)
+        {
+             String param = ec.getInitParameter(VALIDATE_EMPTY_FIELDS_PARAM_NAME);
+
+             // null means the same as auto.
+             if (param == null)
+             {
+                 param = "auto";
+             }
+             else
+             {
+                 // The environment variables are case insensitive.
+                 param = param.toLowerCase();
+             }
+
+             if (param.equals("auto") && _ExternalSpecifications.isBeanValidationAvailable())
+             {
+                 validateEmptyFields = true;
+             }
+             else if (param.equals("true"))
+             {
+                 validateEmptyFields = true;
+             }
+             else
+             {
+                 validateEmptyFields = false;
+             }
+
+             // cache the parsed value
+             ec.getApplicationMap().put(VALIDATE_EMPTY_FIELDS_PARAM_NAME, validateEmptyFields);
+        }
+
+        return validateEmptyFields;
     }
 }
