@@ -291,7 +291,6 @@ class _ComponentUtils
                     FacesMessage facesMessage = e.getFacesMessage();
                     if (facesMessage != null)
                     {
-                        facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
                         context.addMessage(input.getClientId(context), facesMessage);
                     }
                     Collection<FacesMessage> facesMessages = e.getFacesMessages();
@@ -299,7 +298,6 @@ class _ComponentUtils
                     {
                         for (FacesMessage message : facesMessages)
                         {
-                            message.setSeverity(FacesMessage.SEVERITY_ERROR);
                             context.addMessage(input.getClientId(context), message);
                         }
                     }
@@ -333,7 +331,6 @@ class _ComponentUtils
                         FacesMessage facesMessage = ((ValidatorException)cause).getFacesMessage();
                         if (facesMessage != null)
                         {
-                            facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
                             context.addMessage(input.getClientId(context), facesMessage);
                         }
                         Collection<FacesMessage> facesMessages = ((ValidatorException)cause).getFacesMessages();
@@ -341,7 +338,6 @@ class _ComponentUtils
                         {
                             for (FacesMessage message : facesMessages)
                             {
-                                message.setSeverity(FacesMessage.SEVERITY_ERROR);
                                 context.addMessage(input.getClientId(context), message);
                             }
                         }
