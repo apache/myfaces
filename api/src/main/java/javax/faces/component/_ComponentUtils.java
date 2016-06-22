@@ -171,7 +171,6 @@ class _ComponentUtils
                     FacesMessage facesMessage = e.getFacesMessage();
                     if (facesMessage != null)
                     {
-                        facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
                         context.addMessage(input.getClientId(context), facesMessage);
                     }
                 }
@@ -202,7 +201,6 @@ class _ComponentUtils
                         FacesMessage facesMessage = ((ValidatorException)cause).getFacesMessage();
                         if (facesMessage != null)
                         {
-                            facesMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
                             context.addMessage(input.getClientId(context), facesMessage);
                         }
                     }
