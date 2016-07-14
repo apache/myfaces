@@ -56,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.event.PhaseId;
 
 
 /**
@@ -1921,6 +1922,8 @@ public abstract class UIComponentBase extends UIComponent
             return stateObj;
         }
     }
+    
+    private static final int FULL_STATE_ARRAY_SIZE = 10;
 
     /**
      * Invoked after the render phase has completed, this method returns an object which can be passed to the
@@ -1981,22 +1984,45 @@ public abstract class UIComponentBase extends UIComponent
                 return null;
             }
             
-            if ((_capabilities & FLAG_IS_RENDERER_TYPE_SET) != 0)
+            Object transientState = null;
+            if (!context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE))
             {
-                return new Object[] {facesListenersSaved, stateHelperSaved, behaviorsMapSaved,
-                                    systemEventListenerClassMapSaved, 
-                                    _rendererType};
+                transientState = saveTransientState(context);
+            }
+            
+            if (transientState != null)
+            {
+                if ((_capabilities & FLAG_IS_RENDERER_TYPE_SET) != 0)
+                {
+                    return new Object[] {facesListenersSaved, stateHelperSaved, behaviorsMapSaved,
+                                        systemEventListenerClassMapSaved, transientState,
+                                        _rendererType};
+                }
+                else
+                {
+                    return new Object[] {facesListenersSaved, stateHelperSaved, behaviorsMapSaved,
+                        systemEventListenerClassMapSaved, transientState};
+                }
             }
             else
             {
-                return new Object[] {facesListenersSaved, stateHelperSaved, behaviorsMapSaved,
-                    systemEventListenerClassMapSaved};
+                if ((_capabilities & FLAG_IS_RENDERER_TYPE_SET) != 0)
+                {
+                    return new Object[] {facesListenersSaved, stateHelperSaved, behaviorsMapSaved,
+                                        systemEventListenerClassMapSaved, null,
+                                        _rendererType};
+                }
+                else
+                {
+                    return new Object[] {facesListenersSaved, stateHelperSaved, behaviorsMapSaved,
+                        systemEventListenerClassMapSaved};
+                }
             }
         }
         else
         {
             //Full
-            Object values[] = new Object[9];
+            Object values[] = new Object[FULL_STATE_ARRAY_SIZE];
             values[0] = saveFacesListenersList(context);
             StateHelper stateHelper = getStateHelper(false);
             if (stateHelper != null)
@@ -2010,6 +2036,10 @@ public abstract class UIComponentBase extends UIComponent
             values[6] = _markCreated;
             values[7] = _rendererType;
             values[8] = _capabilities;
+            if (!context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE))
+            {
+                values[9] = saveTransientState(context);
+            }
             //values[8] = _isRendererTypeSet;
             //values[9] = _addedByHandler;
             //values[10] = _facetCreatedUIPanel;
@@ -2048,7 +2078,7 @@ public abstract class UIComponentBase extends UIComponent
         
         Object values[] = (Object[]) state;
         
-        if ( values.length == 9 && initialStateMarked())
+        if ( values.length == FULL_STATE_ARRAY_SIZE && initialStateMarked())
         {
             //Delta mode is active, but we are restoring a full state.
             //we need to clear the initial state, to restore state without
@@ -2066,7 +2096,7 @@ public abstract class UIComponentBase extends UIComponent
                         ((_AttachedDeltaWrapper) values[0]).getWrappedStateObject());
             //}
         }
-        else if (values[0] != null || (values.length == 9))
+        else if (values[0] != null || (values.length == FULL_STATE_ARRAY_SIZE))
         {
             //Full
             _facesListeners = (_DeltaList<FacesListener>)
@@ -2079,7 +2109,7 @@ public abstract class UIComponentBase extends UIComponent
         
         getStateHelper().restoreState(context, values[1]);
         
-        if (values.length == 9)
+        if (values.length == FULL_STATE_ARRAY_SIZE)
         {
             _id = (String) values[4];
             _clientId = (String) values[5];
@@ -2090,21 +2120,28 @@ public abstract class UIComponentBase extends UIComponent
             //_addedByHandler = (Boolean) values[9];
             //_facetCreatedUIPanel = (Boolean) values[10];
         }
-        else if (values.length == 5)
+        else if (values.length == 6)
         {
-            _rendererType = (String) values[4];
+            restoreTransientState(context, values[4]);
+            _rendererType = (String) values[5];
             //_isRendererTypeSet = true;
             _capabilities |= FLAG_IS_RENDERER_TYPE_SET;
         }
-
+        else if (values.length == 5)
+        {
+            restoreTransientState(context, values[4]);
+        }
+        
+        
         // rendererType needs to be restored before SystemEventListener,
         // otherwise UIComponent.getCurrentComponent(context).getRenderer(context)
         // will not work correctly
-        if (values.length == 9)
+        if (values.length == FULL_STATE_ARRAY_SIZE)
         {
             //Full restore
             restoreFullBehaviorsMap(context, values[2]);
             restoreFullSystemEventListenerClassMap(context, values[3]);
+            restoreTransientState(context, values[9]);
         }
         else
         {
