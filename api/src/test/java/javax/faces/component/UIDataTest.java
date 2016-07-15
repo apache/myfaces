@@ -18,7 +18,11 @@
  */
 package javax.faces.component;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,6 +42,7 @@ import javax.faces.event.AbortProcessingException;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.render.Renderer;
+import static junit.framework.TestCase.assertEquals;
 
 import org.apache.myfaces.Assert;
 import org.apache.myfaces.TestRunner;
@@ -624,7 +629,7 @@ public class UIDataTest extends AbstractJsfTestCase
         }
         
     }
-    
+        
     public void testCollectionDataModel() throws Exception
     {
         SimpleCollection<RowData> model = new SimpleCollection<RowData>();
@@ -825,4 +830,319 @@ public class UIDataTest extends AbstractJsfTestCase
             fail();
         }
     }   
+    
+    
+    /**
+     * Test state save and restore cycle taking in consideration portlet case.
+     * 
+     * In portlets, saveState() could be called on INVOKE_APPLICATION phase and
+     * restoreState() could be called in RENDER_RESPONSE phase.
+     * 
+     * This test is active when PSS is disabled.
+     * 
+     * @throws Exception 
+     */
+    public void testSaveAndRestorePortletLifecycleWithoutPss1() throws Exception
+    {
+        List<RowData> model = new ArrayList<RowData>();
+        model.add(new RowData("text1","style1"));
+        model.add(new RowData("text2","style2"));
+        model.add(new RowData("text3","style3"));
+        model.add(new RowData("text4","style4"));
+        
+        //Put on request map to be resolved later
+        request.setAttribute("list", model);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        createSimpleTable(root);
+        UIData table = (UIData) root.getChildren().get(0);
+        UIColumn column = (UIColumn) table.getChildren().get(0);
+        UIInput text = (UIInput) column.getChildren().get(0);
+        
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+        
+        //Check the value expressions are working and change the component state 
+        for (int i = 0; i < model.size(); i++)
+        {
+            RowData rowData = model.get(i); 
+            table.setRowIndex(i);
+            assertEquals(rowData.getText(), text.getValue());
+            text.setSubmittedValue("value"+(i+1));
+            //text.getAttributes().put("style", rowData.getStyle());
+        }
+        
+        //Reset row index
+        table.setRowIndex(-1);
+        
+        facesContext.setCurrentPhaseId(PhaseId.INVOKE_APPLICATION);
+        
+        Object state = table.saveState(facesContext);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(state);
+        oos.flush();
+        baos.flush();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        Object restoredState = (Object) ois.readObject();
+        oos.close();
+        ois.close();
+        
+        facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
+        
+        facesContext.setViewRoot(new UIViewRoot());
+        root = facesContext.getViewRoot();
+        createSimpleTable(root);
+        table = (UIData) root.getChildren().get(0);
+        column = (UIColumn) table.getChildren().get(0);
+        text = (UIInput) column.getChildren().get(0);
+        
+        table.restoreState(facesContext, restoredState);
+
+        //Check the values were not lost
+        for (int i = 0; i < model.size(); i++)
+        {
+            RowData rowData = model.get(i); 
+            table.setRowIndex(i);
+            assertEquals("value"+(i+1), text.getSubmittedValue());
+            //assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
+        }
+    }
+    
+    private void createSimpleTable(UIViewRoot root)
+    {
+        createSimpleTable(root, false);
+    }
+    
+    private void createSimpleTable(UIViewRoot root, boolean rowStatePreserved)
+    {
+        UIData table = new UIData();
+        UIColumn column = new UIColumn();
+        UIInput text = new UIInput();
+        
+        //This is only required if markInitiaState fix is not used 
+        root.setId(root.createUniqueId());
+        table.setId(root.createUniqueId());
+        column.setId(root.createUniqueId());
+        text.setId(root.createUniqueId());
+        
+        table.setVar("row");
+        if (rowStatePreserved)
+        {
+            table.setRowStatePreserved(true);
+        }
+        table.setValueExpression("value", application.
+                getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(),"#{list}",List.class));
+        
+        text.setValueExpression("value", application.
+                getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(),"#{row.text}",String.class));
+        
+        root.getChildren().add(table);
+        table.getChildren().add(column);
+        column.getChildren().add(text);
+    }
+    
+    /**
+     * Test state save and restore cycle taking in consideration portlet case.
+     * 
+     * In portlets, saveState() could be called on INVOKE_APPLICATION phase and
+     * restoreState() could be called in RENDER_RESPONSE phase.
+     * 
+     * This test is active when PSS is enabled.
+     * 
+     * @throws Exception 
+     */
+    public void testSaveAndRestorePortletLifecycleWithPss1() throws Exception
+    {
+        facesContext.getRenderKit().addRenderer("javax.faces.Data", "javax.faces.Table",new Renderer(){});
+        
+        List<RowData> model = new ArrayList<RowData>();
+        model.add(new RowData("text1","style1"));
+        model.add(new RowData("text2","style2"));
+        model.add(new RowData("text3","style3"));
+        model.add(new RowData("text4","style4"));
+        
+        //Put on request map to be resolved later
+        request.setAttribute("list", model);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        createSimpleTable(root);
+        UIData table = (UIData) root.getChildren().get(0);
+        UIColumn column = (UIColumn) table.getChildren().get(0);
+        UIInput text = (UIInput) column.getChildren().get(0);
+        
+        //Simulate markInitialState call.
+        facesContext.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+        root.markInitialState();
+        table.markInitialState();
+        column.markInitialState();
+        text.markInitialState();
+        facesContext.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);        
+        
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+        
+        //Check the value expressions are working and change the component state 
+        for (int i = 0; i < model.size(); i++)
+        {
+            RowData rowData = model.get(i); 
+            table.setRowIndex(i);
+            assertEquals(rowData.getText(), text.getValue());
+            text.setSubmittedValue("value"+(i+1));
+            //text.getAttributes().put("style", rowData.getStyle());
+        }
+        
+        //Reset row index
+        table.setRowIndex(-1);
+        
+        facesContext.setCurrentPhaseId(PhaseId.INVOKE_APPLICATION);
+        
+        Object state = table.saveState(facesContext);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(state);
+        oos.flush();
+        baos.flush();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        Object restoredState = (Object) ois.readObject();
+        oos.close();
+        ois.close();
+        
+        facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
+        
+        facesContext.setViewRoot(new UIViewRoot());
+        root = facesContext.getViewRoot();
+        root.setRenderKitId("HTML_BASIC");
+        
+        createSimpleTable(root);
+        table = (UIData) root.getChildren().get(0);
+        column = (UIColumn) table.getChildren().get(0);
+        text = (UIInput) column.getChildren().get(0);
+        
+        //Simulate markInitialState call.
+        facesContext.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+        root.markInitialState();
+        table.markInitialState();
+        column.markInitialState();
+        text.markInitialState();
+        facesContext.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);        
+        
+        table.restoreState(facesContext, restoredState);
+
+        //Check the values were not lost
+        for (int i = 0; i < model.size(); i++)
+        {
+            RowData rowData = model.get(i); 
+            table.setRowIndex(i);
+            assertEquals("value"+(i+1), text.getSubmittedValue());
+            //assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
+        }
+        
+    }
+    
+    /**
+     * Test state save and restore cycle taking in consideration portlet case.
+     * 
+     * In portlets, saveState() could be called on INVOKE_APPLICATION phase and
+     * restoreState() could be called in RENDER_RESPONSE phase.
+     * 
+     * This test is active when PSS is enabled.
+     * 
+     * @throws Exception 
+     */
+    public void testSaveAndRestorePortletLifecycleWithPss2() throws Exception
+    {
+        facesContext.getRenderKit().addRenderer("javax.faces.Data", "javax.faces.Table",new Renderer(){});
+        
+        List<RowData> model = new ArrayList<RowData>();
+        model.add(new RowData("text1","style1"));
+        model.add(new RowData("text2","style2"));
+        model.add(new RowData("text3","style3"));
+        model.add(new RowData("text4","style4"));
+        
+        //Put on request map to be resolved later
+        request.setAttribute("list", model);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        createSimpleTable(root, true);
+        UIData table = (UIData) root.getChildren().get(0);
+        UIColumn column = (UIColumn) table.getChildren().get(0);
+        UIInput text = (UIInput) column.getChildren().get(0);
+        
+        //Simulate markInitialState call.
+        facesContext.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+        root.markInitialState();
+        table.markInitialState();
+        column.markInitialState();
+        text.markInitialState();
+        facesContext.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);        
+        
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+        
+        //Check the value expressions are working and change the component state 
+        for (int i = 0; i < model.size(); i++)
+        {
+            RowData rowData = model.get(i); 
+            table.setRowIndex(i);
+            assertEquals(rowData.getText(), text.getValue());
+            text.setSubmittedValue("value"+(i+1));
+            text.getTransientStateHelper().putTransient("key", "value"+(i+1));
+            //text.getAttributes().put("style", rowData.getStyle());
+        }
+        
+        //Reset row index
+        table.setRowIndex(-1);
+        
+        facesContext.setCurrentPhaseId(PhaseId.INVOKE_APPLICATION);
+        
+        Object state = table.saveState(facesContext);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(state);
+        oos.flush();
+        baos.flush();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        Object restoredState = (Object) ois.readObject();
+        oos.close();
+        ois.close();
+        
+        facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
+        
+        facesContext.setViewRoot(new UIViewRoot());
+        root = facesContext.getViewRoot();
+        root.setRenderKitId("HTML_BASIC");
+        
+        createSimpleTable(root, true);
+        table = (UIData) root.getChildren().get(0);
+        column = (UIColumn) table.getChildren().get(0);
+        text = (UIInput) column.getChildren().get(0);
+        
+        //Simulate markInitialState call.
+        facesContext.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+        root.markInitialState();
+        table.markInitialState();
+        column.markInitialState();
+        text.markInitialState();
+        facesContext.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);        
+        
+        table.restoreState(facesContext, restoredState);
+
+        //Check the values were not lost
+        for (int i = 0; i < model.size(); i++)
+        {
+            RowData rowData = model.get(i); 
+            table.setRowIndex(i);
+            assertEquals("value"+(i+1), text.getSubmittedValue());
+            assertEquals("value"+(i+1), text.getTransientStateHelper().getTransient("key"));
+            //assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
+        }
+        
+    }
+
 }

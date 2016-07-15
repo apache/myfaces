@@ -104,6 +104,10 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
     private transient FacesContext _facesContext;
     
+    static final Integer RESET_MODE_OFF = 0;
+    static final Integer RESET_MODE_SOFT = 1;
+    static final Integer RESET_MODE_HARD = 2;    
+    
     public UIRepeat()
     {
         setRendererType("facelets.ui.Repeat");
@@ -689,6 +693,11 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     public int getIndex()
     {
         return _index;
+    }
+    
+    public void setRowIndex(int index)
+    {
+        _setIndex(index);
     }
     
     private void _setIndex(int index)
@@ -1495,56 +1504,122 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         super.queueEvent(new IndexedEvent(this, event, _index));
     }
 
-    // -=Leonardo Uribe=- At the moment I haven't found any use case that
-    // require to store the rowStates in the component state, mostly
-    // because EditableValueHolder instances render the value into the
-    // client and then this value are taken back at the beginning of the
-    // next request. So, I just let this code in comments just in case
-    // somebody founds an issue with this.  
-    /* 
-    @SuppressWarnings("unchecked")
     @Override
-    public void restoreState(FacesContext facesContext, Object state)
+    public void restoreState(FacesContext context, Object state)
     {
         if (state == null)
         {
             return;
         }
         
-        Object[] values = (Object[])state;
-        super.restoreState(facesContext,values[0]);
-        if (values[1] == null)
+        Object values[] = (Object[]) state;
+        super.restoreState(context, values[0]);
+        //Object restoredRowStates = UIComponentBase.restoreAttachedState(context, values[1]);
+        /*
+        if (restoredRowStates == null)
         {
-            _rowStates.clear();
+            if (!_rowDeltaStates.isEmpty())
+            {
+                _rowDeltaStates.clear();
+            }
         }
         else
         {
-            _rowStates = (Map<String, Collection<Object[]>>) restoreAttachedState(facesContext, values[1]);
+            _rowDeltaStates = (Map<String, Map<String, Object> >) restoredRowStates;
+        }*/
+        if (values.length > 2)
+        {
+            Object rs = UIComponentBase.restoreAttachedState(context, values[2]);
+            if (rs == null)
+            {
+                if (!_rowStates.isEmpty())
+                {
+                    _rowStates.clear();
+                }
+            }
+            else
+            {
+                _rowStates = (Map<String, Collection<Object[]> >) rs;
+            }
         }
     }
 
     @Override
-    public Object saveState(FacesContext facesContext)
+    public Object saveState(FacesContext context)
     {
+        if (context.getViewRoot() != null)
+        {
+            if (context.getViewRoot().getAttributes().get("oam.view.resetSaveStateMode") == RESET_MODE_SOFT)
+            {
+                _dataModelMap.clear();
+                _isValidChilds=true;
+                //_rowTransientStates.clear();
+            }
+            if (context.getViewRoot().getAttributes().get("oam.view.resetSaveStateMode") == RESET_MODE_HARD)
+            {
+                _dataModelMap.clear();
+                _isValidChilds=true;
+                //_rowTransientStates.clear();
+                _rowStates.clear();
+                //_rowDeltaStates.clear();
+            }
+        }
         if (initialStateMarked())
         {
-            Object parentSaved = super.saveState(facesContext);
-            if (parentSaved == null && _rowStates.isEmpty())
+            Object parentSaved = super.saveState(context);
+            if (!context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE))
             {
-                //No values
-                return null;
-            }   
-            return new Object[]{parentSaved, saveAttachedState(facesContext, _rowStates)};
+                if (parentSaved == null /*&&_rowDeltaStates.isEmpty()*/ && _rowStates.isEmpty())
+                {
+                    return null;
+                }
+                else
+                {
+                    Object values[] = new Object[3];
+                    values[0] = super.saveState(context);
+                    //values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
+                    values[1] = null;
+                    values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
+                    return values;
+                }
+            }
+            else
+            {
+                if (parentSaved == null /*&&_rowDeltaStates.isEmpty()*/)
+                {
+                    return null;
+                }
+                else
+                {
+                    Object values[] = new Object[2];
+                    values[0] = super.saveState(context);
+                    //values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
+                    values[1] = null;
+                    return values; 
+                }
+            }
         }
         else
         {
-            Object[] values = new Object[2];
-            values[0] = super.saveState(facesContext);
-            values[1] = saveAttachedState(facesContext, _rowStates);
-            return values;
-        } 
+            if (!context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE))
+            {
+                Object values[] = new Object[3];
+                values[0] = super.saveState(context);
+                //values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
+                values[1] = null;
+                values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
+                return values; 
+            }
+            else
+            {
+                Object values[] = new Object[2];
+                values[0] = super.saveState(context);
+                //values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
+                values[1] = null;
+                return values;
+            }
+        }
     }
-    */
     
     @Override
     public void encodeBegin(FacesContext context) throws IOException

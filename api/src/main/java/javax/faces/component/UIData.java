@@ -19,6 +19,7 @@
 package javax.faces.component;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -271,7 +272,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
     };
 
-    private static class EditableValueHolderState
+    private static class EditableValueHolderState implements Serializable
     {
         private final Object _value;
         private final boolean _localValueSet;
@@ -1471,7 +1472,37 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         else
         {
             _rowDeltaStates = (Map<String, Map<String, Object> >) restoredRowStates;
-        } 
+        }
+        if (values.length > 2)
+        {
+            Object rs = UIComponentBase.restoreAttachedState(context, values[2]);
+            if (rs == null)
+            {
+                if (!_rowStates.isEmpty())
+                {
+                    _rowStates.clear();
+                }
+            }
+            else
+            {
+                _rowStates = (Map<String, Object>) rs;
+            }
+        }
+        if (values.length > 3)
+        {
+            Object rs = UIComponentBase.restoreAttachedState(context, values[3]);
+            if (rs == null)
+            {
+                if (!_rowTransientStates.isEmpty())
+                {
+                    _rowTransientStates.clear();
+                }
+            }
+            else
+            {
+                _rowTransientStates = (Map<String, Map<String, Object> >) rs;
+            }
+        }
     }
 
     @Override
@@ -1497,24 +1528,55 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         if (initialStateMarked())
         {
             Object parentSaved = super.saveState(context);
-            if (parentSaved == null &&_rowDeltaStates.isEmpty())
+            if (!context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE))
             {
-                return null;
+                if (parentSaved == null &&_rowDeltaStates.isEmpty() && _rowStates.isEmpty())
+                {
+                    return null;
+                }
+                else
+                {
+                    Object values[] = new Object[4];
+                    values[0] = super.saveState(context);
+                    values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
+                    values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
+                    values[3] = UIComponentBase.saveAttachedState(context, _rowTransientStates);
+                    return values;
+                }
+            }
+            else
+            {
+                if (parentSaved == null &&_rowDeltaStates.isEmpty())
+                {
+                    return null;
+                }
+                else
+                {
+                    Object values[] = new Object[2];
+                    values[0] = super.saveState(context);
+                    values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
+                    return values; 
+                }
+            }
+        }
+        else
+        {
+            if (!context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE))
+            {
+                Object values[] = new Object[4];
+                values[0] = super.saveState(context);
+                values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
+                values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
+                values[3] = UIComponentBase.saveAttachedState(context, _rowTransientStates);
+                return values; 
             }
             else
             {
                 Object values[] = new Object[2];
                 values[0] = super.saveState(context);
                 values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
-                return values; 
+                return values;
             }
-        }
-        else
-        {
-            Object values[] = new Object[2];
-            values[0] = super.saveState(context);
-            values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
-            return values;
         }
     }
 
