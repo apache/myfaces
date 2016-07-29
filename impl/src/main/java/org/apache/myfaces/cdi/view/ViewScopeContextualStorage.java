@@ -28,6 +28,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.inject.spi.Bean;
+import javax.faces.context.FacesContext;
+import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 
 /**
@@ -44,7 +46,7 @@ public class ViewScopeContextualStorage implements Serializable
     
     private final Map<String, Object> nameBeanKeyMap;
     
-    private final BeanManager beanManager;
+    private transient BeanManager beanManager;
     
     private transient volatile boolean deactivated;
 
@@ -118,8 +120,12 @@ public class ViewScopeContextualStorage implements Serializable
      * Restores the Bean from its beanKey.
      * @see #getBeanKey(javax.enterprise.context.spi.Contextual)
      */
-    public Contextual<?> getBean(Object beanKey)
+    public Contextual<?> getBean(FacesContext context, Object beanKey)
     {
+        if (beanManager == null)
+        {
+            beanManager = CDIUtils.getBeanManager(context.getExternalContext());
+        }
         return beanManager.getPassivationCapableBean((String) beanKey);
     }
     
