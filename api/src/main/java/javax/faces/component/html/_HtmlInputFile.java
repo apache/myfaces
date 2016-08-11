@@ -19,6 +19,7 @@
 package javax.faces.component.html;
 
 import javax.faces.component.UIInput;
+import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
@@ -73,5 +74,83 @@ abstract class _HtmlInputFile extends UIInput
    */
   @JSFProperty
   public abstract String getAutocomplete();
+
+    protected void validateValue(FacesContext context, Object convertedValue)
+    {
+        if (!isValid())
+        {
+            return;
+        }
+
+        // If our value is empty, check the required property
+        boolean isEmpty = isEmptyValue(convertedValue); 
+
+        if (isRequired() && isEmpty)
+        {
+            if (getRequiredMessage() != null)
+            {
+                String requiredMessage = getRequiredMessage();
+                context.addMessage(this.getClientId(context), new javax.faces.application.FacesMessage(
+                        javax.faces.application.FacesMessage.SEVERITY_ERROR,
+                    requiredMessage, requiredMessage));
+            }
+            else
+            {
+                _MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID,
+                    new Object[] { _MessageUtils.getLabel(context, this) });
+            }
+            setValid(false);
+            return;
+        }
+
+        if (!isEmpty)
+        {
+            super.validateValue(context, convertedValue);
+        }
+    }
+    
+    private static boolean isEmptyValue(Object value)
+    {
+        if (value == null)
+        {
+            return true;
+        }
+        else if (value instanceof String)
+        {
+            if ( ((String)value).trim().length() <= 0 )
+            {
+                return true;
+            }
+        }
+        else if (value instanceof java.util.Collection)
+        {
+            if ( ((java.util.Collection)value).isEmpty())
+            {
+                return true;
+            }
+        }
+        else if (value.getClass().isArray())
+        {
+            if (java.lang.reflect.Array.getLength(value) <= 0)
+            {
+                return true;
+            }
+        }
+        else if (value instanceof java.util.Map)
+        {
+            if ( ((java.util.Map)value).isEmpty())
+            {
+                return true;
+            }
+        }
+        else if (value instanceof javax.servlet.http.Part) 
+        {
+            if (((javax.servlet.http.Part)value).getSize() <= 0) 
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
