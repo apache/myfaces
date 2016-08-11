@@ -35,6 +35,7 @@ import javax.faces.component.UIInput;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlCommandButton;
+import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
@@ -85,6 +86,8 @@ public class CompositeComponentAttributeTestCase extends FaceletTestCase
         Assert.assertNotNull(text1);
         HtmlCommandButton button1 = (HtmlCommandButton) facet1.findComponent("button");
         Assert.assertNotNull(button1);
+        HtmlInputText input1 = (HtmlInputText) facet1.findComponent("input");
+        Assert.assertNotNull(input1);
         
         compositeComponent1.pushComponentToEL(facesContext, compositeComponent1);
         facet1.pushComponentToEL(facesContext, facet1);
@@ -95,6 +98,9 @@ public class CompositeComponentAttributeTestCase extends FaceletTestCase
         Assert.assertEquals(bean.getStyle(), text1.getStyle());
         
         Assert.assertEquals(bean.getJavaProperty(), text1.getValue());
+        
+        Assert.assertEquals(bean.getValue(), input1.getValue());
+        Assert.assertEquals(true, input1.isRequired());
         
         text1.popComponentFromEL(facesContext);
         button1.pushComponentToEL(facesContext,  button1);

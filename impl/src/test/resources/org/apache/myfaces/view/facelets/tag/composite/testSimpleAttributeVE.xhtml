@@ -22,7 +22,9 @@
 </head>
 <body>
 <h:panelGroup id="testGroup1">
-<testComposite:simpleAttributeVE style="#{bean.style}" styleClass="#{bean.styleClass}" javaProperty="#{bean.javaProperty}" customMethod="#{bean.doSomethingFunny}">
+<testComposite:simpleAttributeVE style="#{bean.style}" styleClass="#{bean.styleClass}" 
+                                 javaProperty="#{bean.javaProperty}" customMethod="#{bean.doSomethingFunny}"
+                                 value="#{bean.value}" required="true">
 </testComposite:simpleAttributeVE>
 </h:panelGroup>
 </body>

@@ -28,6 +28,7 @@ import javax.faces.validator.ValidatorException;
 
 public class MockAttributeBean
 {
+    private String value = "value1";
 
     public String getStyle()
     {
@@ -52,6 +53,11 @@ public class MockAttributeBean
     public String doSomeAction()
     {
         return "someAction";
+    }
+    
+    public String getValue()
+    {
+        return value;
     }
     
     private boolean actionListener1Called = false;

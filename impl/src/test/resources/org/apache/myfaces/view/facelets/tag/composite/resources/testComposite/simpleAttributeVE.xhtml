@@ -25,10 +25,13 @@
     <composite:attribute name="style" default="background:red"/>
     <composite:attribute name="styleClass" />
     <composite:attribute name="customMethod" method-signature="String doSomething(String)"/>
+    <composite:attribute name="required" type="java.lang.Boolean"/>
+    <composite:attribute name="value"/>
 </composite:interface>
 <composite:implementation>
     <h:outputText id="text" value="#{cc.javaProperty}" style="#{cc.attrs.style}" styleClass="#{cc.attrs.styleClass}"/>
     <h:commandButton id="button" action="#{cc.attrs.customMethod}"/>
+    <h:inputText id="input" required="#{cc.attrs.required}" value="#{cc.attrs.value}"/>
 </composite:implementation>
 </body>
 </html>
