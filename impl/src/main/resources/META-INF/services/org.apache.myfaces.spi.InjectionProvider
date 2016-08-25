@@ -1,3 +1,2 @@
 org.apache.myfaces.spi.impl.CDIAnnotationDelegateInjectionProvider
-org.apache.myfaces.spi.impl.TomcatAnnotationInjectionProvider
 org.apache.myfaces.spi.impl.Tomcat7AnnotationInjectionProvider

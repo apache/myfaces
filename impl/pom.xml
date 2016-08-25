@@ -41,7 +41,7 @@
     </scm>
     
     <properties>
-        <openwebbeans.version>1.2.1</openwebbeans.version>
+        <openwebbeans.version>1.2.8</openwebbeans.version>
     </properties>
     
     <build>
@@ -750,9 +750,9 @@
                                     javax.naming,
                                     javax.persistence;version="[1.0.0, 2.1)";resolution:=optional,
                                     javax.portlet;version="[1.0.0, 2.1)";resolution:=optional,
-                                    javax.servlet;version="[2.5.0, 4.0)",
-                                    javax.servlet.http;version="[2.5.0, 4.0)",
-                                    javax.servlet.jsp;version="[2.1.0, 3.1)",
+                                    javax.servlet;version="[3.0.0, 4.0)",
+                                    javax.servlet.http;version="[3.0.0, 4.0)",
+                                    javax.servlet.jsp;version="[2.2.0, 3.1)",
                                     javax.servlet.jsp.jstl.core;version="[1.1.2, 2.0.0)",
                                     javax.servlet.jsp.tagext;version="[2.1.0, 3.1)",
                                     javax.servlet.annotation;version="[2.5.0, 4.0)";resolution:=optional,
@@ -1098,38 +1098,6 @@
             </pluginRepositories>
         </profile>
 
-        <profile>
-            <id>ee5</id>
-            <dependencies>
-                <!-- disable Servlet 3.0 -->
-                <dependency>
-                    <groupId>org.apache.geronimo.specs</groupId>
-                    <artifactId>geronimo-servlet_3.0_spec</artifactId>
-                    <scope>test</scope> <!-- just to make it go away -->
-                </dependency>
-
-                <!-- and enable Servlet 2.5 -->
-                <dependency>
-                    <groupId>org.apache.geronimo.specs</groupId>
-                    <artifactId>geronimo-servlet_2.5_spec</artifactId>
-                </dependency>
-            </dependencies>
-
-            <build>
-                <plugins>
-                  <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                      <excludes>
-                         <exclude>src/main/java/org/apache/myfaces/ee6</exclude>
-                      </excludes>
-                    </configuration>
-                  </plugin>
-                </plugins>
-            </build>
-        </profile>
-
     </profiles>
 
     
@@ -1175,7 +1143,7 @@
         <!-- JSP 2.1 -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jsp_2.1_spec</artifactId>
+            <artifactId>geronimo-jsp_2.2_spec</artifactId>
         </dependency>
 
         <!-- JSTL 1.2 -->
@@ -1224,7 +1192,7 @@
 		<!-- CDI -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jcdi_1.0_spec</artifactId>
+            <artifactId>geronimo-jcdi_1.1_spec</artifactId>
         </dependency>		
 
         <!-- builder-annotations like @JSFWebConfigParam -->
@@ -1253,13 +1221,6 @@
         <dependency>
             <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>
-        </dependency>
-
-        <!-- tomcat 6.0.x support (LifecycleProvider) -->
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>catalina</artifactId>
-            <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
         </dependency>
 
         <!-- tomcat 7 support (LifecycleProvider) -->

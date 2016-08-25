@@ -60,13 +60,13 @@
         
         <plugins>
 
-            <!-- JDK 1.5 -->
+            <!-- JDK 1.8 -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
 
@@ -359,14 +359,6 @@
 
             <!-- SPEC DEPENDENCIES -->
 
-            <!-- Servlet 2.5 (for ee5 compat compile) -->
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-servlet_2.5_spec</artifactId>
-                <version>1.2</version>
-                <scope>provided</scope>
-            </dependency>
-
             <!-- Servlet 3.0 (for ee6) -->
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
@@ -375,17 +367,17 @@
                 <scope>provided</scope>
             </dependency>
 
-            <!-- JSP 2.1 -->
+            <!-- JSP 2.2 -->
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-jsp_2.1_spec</artifactId>
-                <version>1.0.1</version>
+                <artifactId>geronimo-jsp_2.2_spec</artifactId>
+                <version>1.2</version>
                 <scope>provided</scope>
                 <exclusions>
                     <!-- we want to use el 2.2 -->
                     <exclusion>
                           <groupId>org.apache.geronimo.specs</groupId>
-                          <artifactId>geronimo-el_1.0_spec</artifactId>
+                          <artifactId>geronimo-el_2.2_spec</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -456,7 +448,7 @@
             <!-- CDI 1.0 -->
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-jcdi_1.0_spec</artifactId>
+                <artifactId>geronimo-jcdi_1.1_spec</artifactId>
                 <version>1.0</version>
 				<scope>provided</scope>
 				<!-- MYFACES-3917 set compile/optional, clashes 
@@ -515,15 +507,6 @@
 
             <!-- SPI DEPENDENCIES (compile + optional) -->
 
-            <!-- tomcat 6.0.x support (LifecycleProvider) -->
-            <dependency>
-                <groupId>org.apache.tomcat</groupId>
-                <artifactId>catalina</artifactId>
-                <version>6.0.29</version>
-                <scope>compile</scope>
-                <optional>true</optional>
-            </dependency>
-
             <!-- tomcat 7 support (LifecycleProvider) -->
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
@@ -541,7 +524,6 @@
                 <scope>compile</scope>
                 <optional>true</optional>
             </dependency>
-
 
             <!-- TEST DEPENDENCIES -->
 

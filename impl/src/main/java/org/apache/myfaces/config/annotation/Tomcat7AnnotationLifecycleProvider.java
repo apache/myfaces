@@ -39,7 +39,7 @@ public class Tomcat7AnnotationLifecycleProvider implements
         DiscoverableLifecycleProvider, LifecycleProvider2
 {
 
-    private static Logger log = Logger.getLogger(TomcatAnnotationLifecycleProvider.class.getName());
+    private static Logger log = Logger.getLogger(Tomcat7AnnotationLifecycleProvider.class.getName());
     
     private WeakHashMap<ClassLoader, InstanceManager> instanceManagers = null;
 
