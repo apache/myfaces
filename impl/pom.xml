@@ -41,7 +41,7 @@
     </scm>
     
     <properties>
-        <openwebbeans.version>1.2.8</openwebbeans.version>
+        <openwebbeans.version>1.6.3</openwebbeans.version>
     </properties>
     
     <build>
@@ -1169,10 +1169,10 @@
             <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
         </dependency>
         
-        <!-- annotations 1.0 (javax.annotation.*) -->
+        <!-- annotations 1.2 (javax.annotation.*) -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-annotation_1.0_spec</artifactId>
+            <artifactId>geronimo-annotation_1.2_spec</artifactId>
         </dependency>
 
         <!-- jpa 3.0 - needed in AllAnnotationLifecycleProvider -->
@@ -1289,7 +1289,7 @@
         <!-- Openwebbeans for CDI Test -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-interceptor_1.1_spec</artifactId>
+            <artifactId>geronimo-interceptor_1.2_spec</artifactId>
             <version>1.0</version>
             <scope>test</scope>
         </dependency>
@@ -1323,12 +1323,13 @@
             <version>${openwebbeans.version}</version>
             <scope>test</scope>
         </dependency>
+		<!--
         <dependency>
             <groupId>org.apache.openwebbeans</groupId>
             <artifactId>openwebbeans-clustering</artifactId>
             <version>${openwebbeans.version}</version>
             <scope>test</scope>
-        </dependency>
+        </dependency>-->
         
         <dependency>
             <groupId>org.apache.bval</groupId>

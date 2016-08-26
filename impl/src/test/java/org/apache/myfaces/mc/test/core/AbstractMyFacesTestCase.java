@@ -346,7 +346,7 @@ public abstract class AbstractMyFacesTestCase
     
     protected AbstractFacesInitializer createFacesInitializer()
     {
-        return new JUnitFacesInitializer(this);
+        return new JUnitNoCDIFacesInitializer(this);
     }
     
     protected void setUpMyFaces() throws Exception
@@ -1472,6 +1472,22 @@ public abstract class AbstractMyFacesTestCase
             return testCase;
         }
 
+    }
+    
+    protected class JUnitNoCDIFacesInitializer extends JUnitFacesInitializer
+    {
+
+        public JUnitNoCDIFacesInitializer(AbstractMyFacesTestCase testCase)
+        {
+            super(testCase);
+        }
+
+        @Override
+        protected void initCDIIntegration(ServletContext servletContext, ExternalContext externalContext)
+        {
+            //super.initCDIIntegration(servletContext, externalContext);
+        }
+        
     }
     
     protected static class SharedFacesConfiguration
