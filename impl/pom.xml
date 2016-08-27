@@ -1200,6 +1200,12 @@
             <groupId>org.apache.myfaces.buildtools</groupId>
             <artifactId>myfaces-builder-annotations</artifactId>
         </dependency>
+		
+		<!-- Websockets -->
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-websocket-api</artifactId>
+		</dependency>
 
         <!-- commons dependencies -->
         <dependency>

@@ -465,7 +465,17 @@
                 <version>1.0</version>
                 <scope>compile</scope>
                 <optional>true</optional>
-            </dependency>            
+            </dependency>
+
+			<!-- JSR356 Websockets -->
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-websocket-api</artifactId>
+				<version>7.0.53</version>
+                <scope>compile</scope>
+                <optional>true</optional>
+			</dependency>
+            
             <!-- UTILITY DEPENDENCIES -->
 
             <!-- builder-annotations like @JSFWebConfigParam -->
