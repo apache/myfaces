@@ -1567,7 +1567,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         if (initialStateMarked())
         {
             Object parentSaved = super.saveState(context);
-            if (!PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
+            if (context.getCurrentPhaseId() != null && 
+                !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
             {
                 if (parentSaved == null /*&&_rowDeltaStates.isEmpty()*/ && _rowStates.isEmpty())
                 {
@@ -1601,7 +1602,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         }
         else
         {
-            if (!PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
+            if (context.getCurrentPhaseId() != null && 
+                !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
             {
                 Object values[] = new Object[3];
                 values[0] = super.saveState(context);

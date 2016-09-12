@@ -1528,7 +1528,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         if (initialStateMarked())
         {
             Object parentSaved = super.saveState(context);
-            if (!PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
+            if (context.getCurrentPhaseId() != null && 
+                !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
             {
                 if (parentSaved == null &&_rowDeltaStates.isEmpty() && _rowStates.isEmpty())
                 {
@@ -1561,7 +1562,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
         else
         {
-            if (!PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
+            if (context.getCurrentPhaseId() != null && 
+                !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
             {
                 Object values[] = new Object[4];
                 values[0] = super.saveState(context);
