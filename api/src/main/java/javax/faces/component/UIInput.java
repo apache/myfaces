@@ -80,6 +80,12 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * Submitted values are decoded as null values instead empty strings.
      * 
      * <p>Note this param is ignored for components extending from UISelectOne/UISelectMany.</p>
+     *
+     * <p>Additionally, this parameter has no effect when EL 3.0 is used, due to an issue in the EL 3.0 specification. 
+     * When EL 3.0 is used, a custom ELResolver is needed - in addition to this parameter - to enable the behavior 
+     * described by this parameter. More information about this issue, as well as an example ELResolver, can be found 
+     * here: <a href="https://java.net/jira/browse/JAVASERVERFACES_SPEC_PUBLIC-1203">JAVASERVERFACES_SPEC_PUBLIC-1203
+     * </a></p>
      **/
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0", group="validation")
     private static final String EMPTY_VALUES_AS_NULL_PARAM_NAME
