@@ -805,4 +805,21 @@ public abstract class ExternalContext
         
         return ctx.getApplicationContextPath();
     }
+    
+    /**
+     * 
+     * @param url
+     * @return 
+     */
+    public String encodeWebsocketURL(String url)
+    {
+        ExternalContext ctx = _MyFacesExternalContextHelper.firstInstance.get();
+        
+        if (ctx == null)
+        {
+            throw new UnsupportedOperationException();
+        }
+        
+        return ctx.encodeWebsocketURL(url);
+    }
 }

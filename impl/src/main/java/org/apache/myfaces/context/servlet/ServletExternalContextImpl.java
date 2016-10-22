@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.Principal;
@@ -35,6 +37,7 @@ import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
+import javax.faces.application.ViewHandler;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import javax.faces.context.FlashFactory;
@@ -52,6 +55,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.myfaces.shared.context.flash.FlashImpl;
+import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.util.EnumerationIterator;
 
 /**
@@ -383,6 +387,36 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     public String encodeRedirectURL(String baseUrl, Map<String,List<String>> parameters)
     {
         return _httpServletResponse.encodeRedirectURL(encodeURL(baseUrl, parameters));
+    }
+
+    @Override
+    public String encodeWebsocketURL(String baseUrl)
+    {
+        Integer port = WebConfigParamUtils.getIntegerInitParameter(
+                _currentFacesContext.getExternalContext(), ViewHandler.WEBSOCKET_PORT);
+        port = (port == 0) ? null : port;
+        if (port != null && 
+            !port.equals(_currentFacesContext.getExternalContext().getRequestServerPort()))
+        {
+            String scheme = _currentFacesContext.getExternalContext().getRequestScheme();
+            String serverName = _currentFacesContext.getExternalContext().getRequestServerName();
+            String url;
+            try
+            {
+                url = new URL(scheme, serverName, port, baseUrl).toExternalForm();
+                url = url.replaceFirst("http", "ws");
+                return ((HttpServletResponse) _servletResponse).encodeURL(url);
+            }
+            catch (MalformedURLException ex)
+            {
+                //If cannot build the url, return the base one unchanged
+                return baseUrl;
+            }
+        }
+        else
+        {
+            return baseUrl;
+        }
     }
 
     @Override

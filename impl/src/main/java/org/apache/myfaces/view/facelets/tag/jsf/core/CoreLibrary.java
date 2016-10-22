@@ -116,5 +116,8 @@ public final class CoreLibrary extends AbstractTagLibrary
         this.addComponent("viewParam", UIViewParameter.COMPONENT_TYPE, null);
 
         this.addComponent("verbatim", "javax.faces.HtmlOutputText", "javax.faces.Text", VerbatimHandler.class);
+        
+        this.addComponent("websocket", "org.apache.myfaces.WebsocketComponent", 
+                "org.apache.myfaces.WebsocketComponent", WebsocketHandler.class);
     }
 }

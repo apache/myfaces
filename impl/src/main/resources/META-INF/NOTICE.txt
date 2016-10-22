@@ -12,3 +12,6 @@ for the purpose of implementing Facelets PDL for JSF 2.0 support.
 This software also includes code from Grails Licensed under Apache License, 
 Version 2.0 (org.apache.myfaces.shared.util.StreamCharBuffer)
 Copyright 2009 the original author or authors. Lari Hotari, Sagire Software Oy
+
+This software also includes code from Omnifaces (http://github.com/omnifaces)
+for the purpose of implementing f:websocket tag.

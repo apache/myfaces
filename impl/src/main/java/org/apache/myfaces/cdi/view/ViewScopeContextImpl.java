@@ -125,7 +125,15 @@ public class ViewScopeContextImpl implements Context
     public boolean isActive()
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        return facesContext.getViewRoot() != null;
+        if (facesContext != null)
+        {
+            return facesContext.getViewRoot() != null;
+        }
+        else
+        {
+            // No FacesContext means no view scope active.
+            return false;
+        }
     }
 
     public <T> T get(Contextual<T> bean)

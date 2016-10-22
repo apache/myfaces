@@ -18,13 +18,19 @@
  */
 package org.apache.myfaces.cdi.util;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.Set;
+import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.spi.Context;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.context.ExternalContext;
+import javax.faces.view.ViewScoped;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 
 /**
@@ -60,4 +66,104 @@ public class CDIUtils
         return dao;
 
     }
+    
+    /**
+     * {@inheritDoc}
+     *
+     * @see Beans#resolve(Class, Annotation...)
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Bean<T> resolve(BeanManager beanManager, Class<T> beanClass, Annotation... qualifiers)
+    {
+        Set<Bean<?>> beans = beanManager.getBeans(beanClass, qualifiers);
+
+        for (Bean<?> bean : beans)
+        {
+            if (bean.getBeanClass() == beanClass)
+            {
+                return (Bean<T>) beanManager.resolve(Collections.<Bean<?>>singleton(bean));
+            }
+        }
+
+        return (Bean<T>) beanManager.resolve(beans);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see Beans#getInstance(Class, boolean, Annotation...)
+     */
+    public static <T> T getInstance(BeanManager beanManager, Class<T> beanClass, 
+            boolean create, Annotation... qualifiers)
+    {
+        try
+        {
+            Bean<T> bean = resolve(beanManager, beanClass, qualifiers);
+            return (bean != null) ? getInstance(beanManager, bean, create) : null;
+        }
+        catch (ContextNotActiveException e)
+        {
+            return null;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see Beans#getInstance(Bean, boolean)
+     */
+    public static <T> T getInstance(BeanManager beanManager, Bean<T> bean, boolean create)
+    {
+        Context context = beanManager.getContext(bean.getScope());
+
+        if (create)
+        {
+            return context.get(bean, beanManager.createCreationalContext(bean));
+        }
+        else
+        {
+            return context.get(bean);
+        }
+    }
+    
+    public static boolean isSessionScopeActive(BeanManager beanManager)
+    {
+        try 
+        {
+            Context ctx = beanManager.getContext(SessionScoped.class);
+            return ctx != null;
+        }
+        catch (ContextNotActiveException ex)
+        {
+            //No op
+        }
+        catch (Exception ex)
+        {
+            // Sometimes on startup time, since there is no active request context, trying to grab session scope
+            // throws NullPointerException.
+            //No op
+        }
+        return false;
+    }
+    
+    public static boolean isViewScopeActive(BeanManager beanManager)
+    {
+        try 
+        {
+            Context ctx = beanManager.getContext(ViewScoped.class);
+            return ctx != null;
+        }
+        catch (ContextNotActiveException ex)
+        {
+            //No op
+        }
+        catch (Exception ex)
+        {
+            // Sometimes on startup time, since there is no active request context, trying to grab session scope
+            // throws NullPointerException.
+            //No op
+        }
+        return false;
+    }
+        
 }

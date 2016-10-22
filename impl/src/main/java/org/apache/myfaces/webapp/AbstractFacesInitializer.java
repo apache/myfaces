@@ -59,6 +59,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.push.PushContext;
+import javax.websocket.DeploymentException;
+import javax.websocket.server.ServerContainer;
+import javax.websocket.server.ServerEndpointConfig;
+import org.apache.myfaces.push.EndpointImpl;
+import org.apache.myfaces.push.WebsocketConfigurator;
+import org.apache.myfaces.push.WebsocketFacesInit;
 import org.apache.myfaces.shared.context.ExceptionHandlerImpl;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.ServiceProviderFinder;
@@ -193,6 +200,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             _createEagerBeans(facesContext);
 
             _dispatchApplicationEvent(servletContext, PostConstructApplicationEvent.class);
+            
+            initWebsocketIntegration(servletContext, externalContext);
 
             if ( (facesContext.isProjectStage(ProjectStage.Development) || 
                   facesContext.isProjectStage(ProjectStage.Production)) &&
@@ -367,6 +376,11 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         
         // clear the cache of MetaRulesetImpl in order to prevent a memory leak
         MetaRulesetImpl.clearMetadataTargetCache();
+        
+        if (facesContext.getExternalContext().getApplicationMap().containsKey("org.apache.myfaces.push"))
+        {
+            WebsocketFacesInit.clearWebsocketSessionLRUCache(facesContext.getExternalContext());
+        }
         
         // clear UIViewParameter default renderer map
         try
@@ -718,6 +732,46 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                 }
             }
             injectedBeanStorage.clear();
+        }
+    }
+    
+    protected void initWebsocketIntegration(
+            ServletContext servletContext, ExternalContext externalContext)
+    {
+        Boolean b = WebConfigParamUtils.getBooleanInitParameter(externalContext, 
+                PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME);
+        
+        if (Boolean.TRUE.equals(b))
+        {
+            // According to https://tyrus.java.net/documentation/1.13/index/deployment.html section 3.2
+            // we can create a websocket programmatically, getting ServerContainer instance from this location
+            final ServerContainer serverContainer = (ServerContainer) 
+                    servletContext.getAttribute("javax.websocket.server.ServerContainer");
+
+            if (serverContainer != null)
+            {
+                try 
+                {
+                    serverContainer.addEndpoint(ServerEndpointConfig.Builder
+                            .create(EndpointImpl.class, EndpointImpl.JAVAX_FACES_PUSH_PATH)
+                            .configurator(new WebsocketConfigurator(externalContext)).build());
+                    
+                    //Init LRU cache
+                    WebsocketFacesInit.initWebsocketSessionLRUCache(externalContext);
+                    
+                    externalContext.getApplicationMap().put("org.apache.myfaces.push", "true");
+                }
+                catch (DeploymentException e)
+                {
+                    log.log(Level.INFO, "Exception on Initialize Websocket Endpoint: ", e);
+                }
+            }
+            else
+            {
+                log.log(Level.INFO, "f:websocket support enabled but cannot found websocket ServerContainer instance "+
+                        "on current context. If websocket library is available, please include a FakeEndpoint instance "
+                        + "into your code to force enable it (Tyrus users).");
+            }
         }
     }
 }

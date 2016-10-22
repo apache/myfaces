@@ -3,3 +3,4 @@ org.apache.myfaces.flow.cdi.FlowBuilderCDIExtension
 org.apache.myfaces.flow.cdi.FlowScopeCDIExtension
 org.apache.myfaces.cdi.dependent.DependentBeanExtension
 org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension
+org.apache.myfaces.push.cdi.PushContextCDIExtension
