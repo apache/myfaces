@@ -227,4 +227,233 @@ if (!jsf.util) {
     }
 }
 
+if (!jsf.push) {
 
+  /**
+  * @namespace jsf.push
+  */
+  jsf.push = new function() {
+
+    // "Constant" fields ----------------------------------------------------------------------------------------------
+    var URL_PROTOCOL = window.location.protocol.replace("http", "ws") + "//";
+    var RECONNECT_INTERVAL = 500;
+    var MAX_RECONNECT_ATTEMPTS = 25;
+    var REASON_EXPIRED = "Expired";
+
+    // Private static fields ------------------------------------------------------------------------------------------
+
+    /* socket map by token */
+    var sockets = {};
+    /* component attributes by clientId */
+    var components = {};
+    /* client ids by token (share websocket connection) */
+    var clientIdsByTokens = {}; 
+    var self = {};
+
+    // Private constructor functions ----------------------------------------------------------------------------------
+    /**
+     * Creates a reconnecting web socket. When the web socket successfully connects on first attempt, then it will
+     * automatically reconnect on timeout with cumulative intervals of 500ms with a maximum of 25 attempts (~3 minutes).
+     * The <code>onclose</code> function will be called with the error code of the last attempt.
+     * @constructor
+     * @param {string} channelToken the channel token associated with this websocket connection
+     * @param {string} url The URL of the web socket 
+     * @param {string} channel The name of the web socket channel.
+     */
+    function Socket(channelToken, url, channel) {
+
+        // Private fields -----------------------------------------------------------------------------------------
+
+        var socket;
+        var reconnectAttempts;
+        var self = this;
+
+        // Public functions ---------------------------------------------------------------------------------------
+
+        /**
+         * Opens the reconnecting web socket.
+         */
+        self.open = function() {
+            if (socket && socket.readyState == 1) {
+                return;
+            }
+
+            socket = new WebSocket(url);
+
+            socket.onopen = function(event) {
+                if (reconnectAttempts == null) {
+                    var clientIds = clientIdsByTokens[channelToken];
+                    for (var i = clientIds.length - 1; i >= 0; i--){
+                        var socketClientId = clientIds[i];
+                        components[socketClientId]['onopen'](channel);
+                    }
+                }
+                reconnectAttempts = 0;
+            }
+
+            socket.onmessage = function(event) {
+                var message = JSON.parse(event.data);
+                for (var i = clientIdsByTokens[channelToken].length - 1; i >= 0; i--){
+                    var socketClientId = clientIdsByTokens[channelToken][i];
+                    if(document.getElementById(socketClientId)) {
+                        try{
+                            components[socketClientId]['onmessage'](message, channel, event);
+                        }catch(e){
+                            //Ignore
+                        }
+                        var behaviors = components[socketClientId]['behaviors'];
+                        var functions = behaviors[message];
+                        if (functions && functions.length) {
+                            for (var j = 0; j < functions.length; j++) {
+                                try{
+                                    functions[j](null);
+                                }catch(e){
+                                    //Ignore
+                                }
+                            }
+                        }
+                    } else {
+                        clientIdsByTokens[channelToken].splice(i,1);
+                    }
+                }
+                if (clientIdsByTokens[channelToken].length == 0){
+                    //tag dissapeared
+                    self.close();
+                }
+                
+            }
+
+            socket.onclose = function(event) {
+                if (!socket
+                    || (event.code == 1000 && event.reason == REASON_EXPIRED) 
+                    || (event.code == 1008) 
+                    || (reconnectAttempts == null) 
+                    || (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS))
+                {
+                    var clientIds = clientIdsByTokens[channelToken];
+                    for (var i = clientIds.length - 1; i >= 0; i--){
+                        var socketClientId = clientIds[i];
+                        components[socketClientId]['onclose'](event.code, channel, event);
+                    }
+                }
+                else {
+                    setTimeout(self.open, RECONNECT_INTERVAL * reconnectAttempts++);
+                }
+            }
+        }
+
+        /**
+         * Closes the reconnecting web socket.
+         */
+        self.close = function() {
+            if (socket) {
+                var s = socket;
+                socket = null;
+                s.close();
+            }
+        }
+
+    }
+
+    // Public static functions ----------------------------------------------------------------------------------------
+
+    /**
+     * 
+     * @param {function} onopen The function to be invoked when the web socket is opened.
+     * @param {function} onmessage The function to be invoked when a message is received.
+     * @param {function} onclose The function to be invoked when the web socket is closed.
+     * @param {boolean} autoconnect Whether or not to immediately open the socket. Defaults to <code>false</code>.
+     */
+    this.init = function(socketClientId, uri, onopen, onmessage, onclose, behaviorScripts, autoconnect) {
+            
+        onclose = resolveFunction(onclose);
+        var channel = uri.split(/\?/)[0];
+
+        if (!window.WebSocket) { // IE6-9.
+            onclose(-1, channel);
+            return;
+        }
+                
+        var channelToken = uri.substr(uri.indexOf('?')+1);
+        
+        if (!components[socketClientId]) {
+            components[socketClientId] = {
+                'channelToken': channelToken,
+                'onopen': resolveFunction(onopen), 
+                'onmessage' : resolveFunction(onmessage),
+                'onclose': onclose, 
+                'behaviors': behaviorScripts, 
+                'autoconnect': autoconnect};
+            if (!clientIdsByTokens[channelToken]) {
+                clientIdsByTokens[channelToken] = [];
+            } 
+            clientIdsByTokens[channelToken].push(socketClientId);
+            if (!sockets[channelToken]){
+                sockets[channelToken] = new Socket(channelToken,
+                                    getBaseURL(uri), channel);
+            }
+        }
+
+        if (autoconnect) {
+            this.open(socketClientId);
+        }
+    }
+
+    /**
+     * Open the web socket on the given channel.
+     * @param {string} channel The name of the web socket channel.
+     * @throws {Error} When channel is unknown.
+     */
+    this.open = function(socketClientId) {
+        getSocket(components[socketClientId]['channelToken']).open();
+    }
+
+    /**
+     * Close the web socket on the given channel.
+     * @param {string} channel The name of the web socket channel.
+     * @throws {Error} When channel is unknown.
+     */
+    this.close = function(socketClientId) {
+        getSocket(components[socketClientId]['channelToken']).close();
+    }
+
+    // Private static functions ---------------------------------------------------------------------------------------
+
+    /**
+     * 
+     */
+    function getBaseURL(url) {
+        if (url.indexOf("://") < 0)
+        {
+            var base = window.location.hostname+":"+window.location.port
+            return URL_PROTOCOL + base + url;
+        }else
+        {
+            return url;
+        }
+    }
+
+    /**
+     * Get socket associated with given channelToken.
+     * @param {string} channelToken The name of the web socket channelToken.
+     * @return {Socket} Socket associated with given channelToken.
+     * @throws {Error} When channelToken is unknown, you may need to initialize 
+     *                 it first via <code>init()</code> function.
+     */
+    function getSocket(channelToken) {
+        var socket = sockets[channelToken];
+        if (socket) {
+            return socket;
+        } else {
+            throw new Error("Unknown channelToken: " + channelToken);
+        }
+    }
+        
+    function resolveFunction(fn) {
+        return (typeof fn !== "function") && (fn = window[fn] || function(){}), fn;
+    }
+    // Expose self to public ------------------------------------------------------------------------------------------
+
+    //return self;
+  }
+}
