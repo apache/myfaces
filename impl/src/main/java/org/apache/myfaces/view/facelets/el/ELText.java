@@ -699,6 +699,7 @@ public class ELText
         int len = ca.length;
         char c = 0;
         int str = 0;
+        int nest = 0;
         while (i < len)
         {
             c = ca[i];
@@ -717,7 +718,15 @@ public class ELText
                     str = c;
                 }
             }
-            else if (str == 0 && ('}' == c))
+            else if ('{' == c && str == 0)
+            {
+                ++nest;
+            }
+            else if ('}' == c && str == 0 && nest > 1)
+            {
+                --nest;
+            }
+            else if (str == 0 && ('}' == c && nest == 1))
             {
                 return i - s + 1;
             }
