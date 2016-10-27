@@ -66,6 +66,7 @@ import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder;
 import org.apache.myfaces.shared.renderkit.html.util.OutcomeTargetUtils;
+import org.apache.myfaces.shared.util.StringUtils;
 
 public final class HtmlRendererUtils
 {
@@ -291,7 +292,20 @@ public final class HtmlRendererUtils
                     if (clientBehaviorList != null
                             && !clientBehaviorList.isEmpty())
                     {
-                        String clientId = paramMap.get("javax.faces.source");
+                        String sourceId = paramMap.get("javax.faces.source");
+                        String componentClientId = component.getClientId(facesContext);
+                        String clientId = sourceId;
+                        if (sourceId.startsWith(componentClientId) &&
+                            sourceId.length() > componentClientId.length())
+                        {
+                            String item = sourceId.substring(componentClientId.length()+1);
+                            // If is item it should be an integer number, otherwise it can be related to a child 
+                            // component, because that could conflict with the clientId naming convention.
+                            if (StringUtils.isInteger(item))
+                            {
+                                clientId = componentClientId;
+                            }
+                        }
                         if (component.getClientId(facesContext).equals(clientId))
                         {
                             if (clientBehaviorList instanceof RandomAccess)
