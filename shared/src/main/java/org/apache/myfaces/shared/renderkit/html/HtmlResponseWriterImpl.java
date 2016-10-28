@@ -435,7 +435,12 @@ public class HtmlResponseWriterImpl
                     // same here. After all, it is resposibility of the one who set the passthrough
                     // attribute to do the proper encoding in cases when a URI is provided. However,
                     // that does not means the attribute should not be encoded as other attributes.
-                    encodeAndWriteAttribute(key, value);
+                    // According to tests done, if passthrough attribute is null, the attribute must not
+                    // be rendered.
+                    if (value != null)
+                    {
+                        encodeAndWriteAttribute(key, value);
+                    }
                 }
             }
 
