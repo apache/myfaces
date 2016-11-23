@@ -29,6 +29,7 @@ import javax.faces.component.ValueHolder;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlOutputLabel;
+import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
@@ -240,7 +241,9 @@ public class HtmlLabelRenderer extends HtmlRenderer
 
     protected String getClientId(FacesContext facesContext, UIComponent uiComponent, String forAttr)
     {
-        return RendererUtils.getClientId(facesContext, uiComponent, forAttr);
+        //return RendererUtils.getClientId(facesContext, uiComponent, forAttr);
+        return facesContext.getApplication().getSearchExpressionHandler().resolveClientId(
+                SearchExpressionContext.createSearchExpressionContext(facesContext, uiComponent), forAttr);
     }
 
     @Override

@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
+import javax.faces.component.search.SearchExpressionResolver;
 import javax.faces.context.ExternalContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
@@ -121,6 +122,8 @@ public class RuntimeConfig
     private Map<String, Integer> _idByNamespace = new HashMap<String, Integer>();
     
     private List<ViewPoolMapping> _viewPoolMappings = new ArrayList<ViewPoolMapping>();
+    
+    private List<SearchExpressionResolver> _searchExpressionResolvers = new ArrayList<SearchExpressionResolver>();
 
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
@@ -583,5 +586,19 @@ public class RuntimeConfig
     public void addViewPoolMapping(ViewPoolMapping mapping)
     {
         _viewPoolMappings.add(mapping);
+    }
+    
+    public void addApplicationSearchExpressionResolver(SearchExpressionResolver resolver)
+    {
+        if (_searchExpressionResolvers == null)
+        {
+            _searchExpressionResolvers = new ArrayList<SearchExpressionResolver>();
+        }
+        _searchExpressionResolvers.add(resolver);
+    }
+
+    public List<SearchExpressionResolver> getApplicationSearchExpressionResolvers()
+    {
+        return _searchExpressionResolvers;
     }
 }

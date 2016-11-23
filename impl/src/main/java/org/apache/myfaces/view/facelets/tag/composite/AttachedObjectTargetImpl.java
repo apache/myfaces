@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
+import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.AttachedObjectTarget;
 
@@ -68,28 +69,35 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
         if (targetsArray.length > 0)
         {
             List<UIComponent> targetsList = new ArrayList<UIComponent>(targetsArray.length);
-            final char separatorChar = facesContext.getNamingContainerSeparatorChar();
+            //final char separatorChar = facesContext.getNamingContainerSeparatorChar();
             UIComponent facetBase = topLevelComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME);
             for (String target : targetsArray)
             {
-                //UIComponent innerComponent = topLevelComponent.findComponent(
-                //        topLevelComponent.getId() + UINamingContainer.getSeparatorChar(facesContext) + target);
-                int separator = target.indexOf(separatorChar);
-                UIComponent innerComponent = null;
-                if (separator == -1)
-                {
-                    innerComponent = ComponentSupport.findComponentChildOrFacetFrom(
-                            facetBase, target, null);
-                }
-                else
-                {
-                    innerComponent = ComponentSupport.findComponentChildOrFacetFrom(
-                            facetBase, target.substring(0,separator), target);
-                }
+                //int separator = target.indexOf(separatorChar);
+                //UIComponent innerComponent = null;
+                List<UIComponent> resultList;
+                //if (separator == -1)
+                //{
+                    //innerComponent = ComponentSupport.findComponentChildOrFacetFrom(
+                    //        facetBase, target, null);
+                    resultList = facesContext.getApplication().getSearchExpressionHandler().
+                            findComponentFromExpression(SearchExpressionContext.createSearchExpressionContext(
+                                    facesContext, facetBase), facetBase, target);
+                //}
+                //else
+                //{
+                    //innerComponent = ComponentSupport.findComponentChildOrFacetFrom(
+                    //        facetBase, target.substring(0,separator), target);
+                //    resultList = facesContext.getApplication().getSearchExpressionHandler().
+                //            findComponentFromExpression(SearchExpressionContext.createSearchExpressionContext(
+                //                    facesContext, facetBase), facetBase, target.substring(0,separator));
+                //}
                 
-                if (innerComponent != null)
+                //if (innerComponent != null)
+                if (resultList != null)
                 {
-                    targetsList.add(innerComponent);
+                    targetsList.addAll(resultList);
+                    //targetsList.add(innerComponent);
                 }
             }
             return targetsList;
@@ -103,8 +111,6 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
             String name = getName();
             if (name != null)
             {
-                //UIComponent innerComponent = topLevelComponent.findComponent(
-                //        topLevelComponent.getId() + UINamingContainer.getSeparatorChar(facesContext) + getName());
                 UIComponent innerComponent = ComponentSupport.findComponentChildOrFacetFrom(
                         topLevelComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME),
                         name, null);

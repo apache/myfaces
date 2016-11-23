@@ -20,34 +20,51 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
 
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.html.HtmlOutputLabel;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.apache.myfaces.application.ApplicationImpl;
+import org.apache.myfaces.application.ApplicationImplJsfTest;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import org.junit.Test;
 
-public class HtmlLabelRendererTest extends AbstractJsfTestCase
+public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
 {
     private MockResponseWriter writer;
     private HtmlOutputLabel label;
     
-    public HtmlLabelRendererTest(String name)
+    public HtmlLabelRendererTest()
     {
-        super(name);
     }
     
-    public static Test suite() {
-        return new TestSuite(HtmlLabelRendererTest.class);
+    @Override
+    protected void setFactories() throws Exception
+    {
+        super.setFactories();
+        
+        FactoryFinder.setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY,
+                "org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory");
+        FactoryFinder.setFactory(FactoryFinder.FACELET_CACHE_FACTORY,
+                "org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl");
+        FactoryFinder.setFactory(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY,
+                "org.apache.myfaces.component.search.SearchExpressionContextFactoryImpl");
+        FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,
+                "org.apache.myfaces.application.ApplicationFactoryImpl");
     }
     
     public void setUp() throws Exception {
+        
         super.setUp();
         label = new HtmlOutputLabel();
         writer = new MockResponseWriter(new StringWriter(), null, null);
@@ -59,6 +76,11 @@ public class HtmlLabelRendererTest extends AbstractJsfTestCase
                 label.getRendererType(),
                 new HtmlLabelRenderer());
         facesContext.getAttributes().put("org.apache.myfaces.RENDERED_JSF_JS", Boolean.TRUE);
+        
+        
+        //Application _testApplication = new ApplicationImplJsfTest.TestApplicationWrapper(new ApplicationImpl());
+        //facesContext.setApplication(_testApplication);
+        //facesContext.getApplication().setSearchExpressionHandler(new SearchExpressionHandlerImpl());
     }
     
     public void tearDown() throws Exception {
@@ -67,6 +89,7 @@ public class HtmlLabelRendererTest extends AbstractJsfTestCase
         label = null;
     }
 
+    @Test
     public void testHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = {
@@ -115,6 +138,7 @@ public class HtmlLabelRendererTest extends AbstractJsfTestCase
         return ((StringWriter) writer.getWriter()).toString();
     }
     
+    @Test
     public void testEscapeUntouched() throws IOException
     {
         label.setId("labelId");
@@ -127,6 +151,7 @@ public class HtmlLabelRendererTest extends AbstractJsfTestCase
         assertEquals("<label id=\"labelId\">&lt;span class=&quot;required&quot;&gt;field label&lt;/span&gt;</label>", page);
     }
 
+    @Test
     public void testEscapeSetToFalse() throws IOException
     {
         label.setId("labelId");
@@ -143,6 +168,7 @@ public class HtmlLabelRendererTest extends AbstractJsfTestCase
     /**
      * Components that render client behaviors should always render "id" and "name" attribute
      */
+    @Test
     public void testClientBehaviorHolderRendersIdAndName() 
     {
         label.addClientBehavior("keypress", new AjaxBehavior());

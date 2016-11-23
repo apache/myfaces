@@ -76,6 +76,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     private List<String> flashFactories = new ArrayList<String>();
     private List<String> clientWindowFactories = new ArrayList<String>();
     private List<String> flowHandlerFactories = new ArrayList<String>();
+    private List<String> searchExpressionContextFactories = new ArrayList<String>();
     
     private String defaultRenderKitId;
     private String messageBundle;
@@ -130,7 +131,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     private List <String> resourceResolvers = new ArrayList<String>();
     
     private List<ViewPoolMapping> viewPoolMappings = new ArrayList<ViewPoolMapping>();
-    
+        
     // Unmodifiable list/maps to avoid modifications
     private transient List<String> umapplicationFactories;
     private transient List<String> umexceptionHandlerFactories;
@@ -146,6 +147,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     private transient List<String> umflashFactories;
     private transient List<String> umclientWindowFactories;
     private transient List<String> umflowHandlerFactories;
+    private transient List<String> umsearchExpressionContextFactories;
     private transient List<Behavior> umbehaviors;
     private transient List<String> umactionListeners;
     private transient List<String> umelResolvers;
@@ -193,6 +195,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
             flashFactories.addAll(factory.getFlashFactory());
             clientWindowFactories.addAll(factory.getClientWindowFactory());
             flowHandlerFactories.addAll(factory.getFlowHandlerFactory());
+            searchExpressionContextFactories.addAll(factory.getSearchExpressionContextFactory());
         }
 
         components.putAll(config.getComponents());
@@ -1043,4 +1046,21 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         }
         return umviewPoolMappings;
     }
+    
+    @Override
+    public void feedSearchExpressionContextFactory(String factoryClassName)
+    {
+        searchExpressionContextFactories.add(factoryClassName);
+    }
+
+    @Override
+    public Collection<String> getSearchExpressionContextFactoryIterator()
+    {
+        if (umsearchExpressionContextFactories == null)
+        {
+            umsearchExpressionContextFactories = Collections.unmodifiableList(searchExpressionContextFactories);
+        }
+        return umsearchExpressionContextFactories;
+    }
+    
 }

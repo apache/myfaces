@@ -41,6 +41,7 @@ public class FactoryImpl extends org.apache.myfaces.config.element.Factory imple
     private List<String> flowHandlerFactories = new ArrayList<String>();
     private List<String> flashFactories = new ArrayList<String>();
     private List<String> clientWindowFactories = new ArrayList<String>();
+    private List<String> searchExpressionContextFactories = new ArrayList<String>();
 
     public void addApplicationFactory(String factory)
     {
@@ -185,4 +186,16 @@ public class FactoryImpl extends org.apache.myfaces.config.element.Factory imple
     {
         return clientWindowFactories;
     }
+    
+    public void addSearchExpressionContextFactory(String factory)
+    {
+        searchExpressionContextFactories.add(factory);
+    }
+    
+    @Override
+    public List<String> getSearchExpressionContextFactory()
+    {
+        return clientWindowFactories;
+    }
+
 }

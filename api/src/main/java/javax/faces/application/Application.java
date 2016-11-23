@@ -34,6 +34,8 @@ import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
 import javax.faces.component.behavior.Behavior;
+import javax.faces.component.search.SearchExpressionHandler;
+import javax.faces.component.search.SearchExpressionResolver;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.el.MethodBinding;
@@ -1250,5 +1252,58 @@ public abstract class Application
         }
         throw new UnsupportedOperationException();
 
+    }
+    
+    public void addSearchExpressionResolver(SearchExpressionResolver resolver)
+    {
+        // The following concrete methods were added for JSF 1.2.  They supply default 
+        // implementations that throw UnsupportedOperationException.  
+        // This allows old Application implementations to still work.
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            application.addSearchExpressionResolver(resolver);
+            return;
+        }
+        throw new UnsupportedOperationException();
+    }
+    
+    public SearchExpressionResolver getSearchExpressionResolver()
+    {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            return application.getSearchExpressionResolver();
+        }
+        throw new UnsupportedOperationException();
+    }
+    
+    /**
+     * @since 2.3
+     * @return 
+     */
+    public SearchExpressionHandler getSearchExpressionHandler()
+    {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            return application.getSearchExpressionHandler();
+        }
+        throw new UnsupportedOperationException();
+    }
+    
+    /**
+     * @since 2.3
+     * @param searchExpressionHandler 
+     */
+    public void setSearchExpressionHandler(SearchExpressionHandler searchExpressionHandler)
+    {
+        Application application = getMyfacesApplicationInstance();
+        if (application != null)
+        {
+            application.setSearchExpressionHandler(searchExpressionHandler);
+            return;
+        }
+        throw new UnsupportedOperationException();
     }
 }

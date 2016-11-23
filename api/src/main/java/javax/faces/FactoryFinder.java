@@ -47,6 +47,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.component.search.SearchExpressionContextFactory;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -67,6 +68,8 @@ public final class FactoryFinder
     public static final String FLASH_FACTORY = "javax.faces.context.FlashFactory";
     public static final String FLOW_HANDLER_FACTORY = "javax.faces.flow.FlowHandlerFactory";
     public static final String CLIENT_WINDOW_FACTORY = "javax.faces.lifecycle.ClientWindowFactory";
+    public static final String SEARCH_EXPRESSION_CONTEXT_FACTORY = 
+            "javax.faces.component.search.SearchExpressionContextFactory";
 
     /**
      * used as a monitor for itself and _factories. Maps in this map are used as monitors for themselves and the
@@ -112,6 +115,7 @@ public final class FactoryFinder
         VALID_FACTORY_NAMES.add(FLASH_FACTORY);
         VALID_FACTORY_NAMES.add(FLOW_HANDLER_FACTORY);
         VALID_FACTORY_NAMES.add(CLIENT_WINDOW_FACTORY);
+        VALID_FACTORY_NAMES.add(SEARCH_EXPRESSION_CONTEXT_FACTORY);
         
         ABSTRACT_FACTORY_CLASSES.put(APPLICATION_FACTORY, ApplicationFactory.class);
         ABSTRACT_FACTORY_CLASSES.put(EXCEPTION_HANDLER_FACTORY, ExceptionHandlerFactory.class);
@@ -127,6 +131,7 @@ public final class FactoryFinder
         ABSTRACT_FACTORY_CLASSES.put(FLASH_FACTORY, FlashFactory.class);
         ABSTRACT_FACTORY_CLASSES.put(FLOW_HANDLER_FACTORY, FlowHandlerFactory.class);
         ABSTRACT_FACTORY_CLASSES.put(CLIENT_WINDOW_FACTORY, ClientWindowFactory.class);
+        ABSTRACT_FACTORY_CLASSES.put(SEARCH_EXPRESSION_CONTEXT_FACTORY, SearchExpressionContextFactory.class);
         try
         {
             ClassLoader classLoader;

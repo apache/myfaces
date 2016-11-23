@@ -74,7 +74,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
      * 
      * @author Jakob Korherr
      */
-    private class TestApplicationWrapper extends ApplicationWrapper
+    public static class TestApplicationWrapper extends ApplicationWrapper
     {
         
         private ApplicationImpl _applicationImpl;

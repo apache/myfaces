@@ -62,6 +62,8 @@ import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.Behavior;
 import javax.faces.component.behavior.ClientBehaviorBase;
+import javax.faces.component.search.SearchExpressionHandler;
+import javax.faces.component.search.SearchExpressionResolver;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.DateTimeConverter;
@@ -94,6 +96,20 @@ import org.apache.myfaces.application.cdi.ConverterWrapper;
 import org.apache.myfaces.cdi.util.ExternalArtifactResolver;
 import org.apache.myfaces.application.cdi.ValidatorWrapper;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.component.search.AllSearchExpressionResolver;
+import org.apache.myfaces.component.search.ChildSearchExpressionResolver;
+import org.apache.myfaces.component.search.CompositeComponentParentSearchExpressionResolver;
+import org.apache.myfaces.component.search.CompositeSearchExpressionResolver;
+import org.apache.myfaces.component.search.FormSearchExpressionResolver;
+import org.apache.myfaces.component.search.IdSearchExpressionResolver;
+import org.apache.myfaces.component.search.NamingContainerSearchExpressionResolver;
+import org.apache.myfaces.component.search.NextSearchExpressionResolver;
+import org.apache.myfaces.component.search.NoneSearchExpressionResolver;
+import org.apache.myfaces.component.search.ParentSearchExpressionResolver;
+import org.apache.myfaces.component.search.PreviousSearchExpressionResolver;
+import org.apache.myfaces.component.search.RootSearchExpressionResolver;
+import org.apache.myfaces.component.search.SearchExpressionHandlerImpl;
+import org.apache.myfaces.component.search.ThisSearchExpressionResolver;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.Property;
 import org.apache.myfaces.config.element.ResourceBundle;
@@ -233,6 +249,10 @@ public class ApplicationImpl extends Application
     
     private final ExternalArtifactResolver _externalArtifactResolver;
     
+    private SearchExpressionHandler _searchExpressionHandler;
+    
+    private SearchExpressionResolver _searchExpressionResolver;
+    
     /**
      * Represents semantic null in _componentClassMap. 
      */
@@ -276,6 +296,7 @@ public class ApplicationImpl extends Application
         _elContextListeners = new ArrayList<ELContextListener>();
         _resourceHandler = new ResourceHandlerImpl();
         _flowHandler = new FlowHandlerImpl();
+        _searchExpressionHandler = new SearchExpressionHandlerImpl();
         _runtimeConfig = runtimeConfig;
 
         if (log.isLoggable(Level.FINEST))
@@ -2873,5 +2894,77 @@ public class ApplicationImpl extends Application
                                      : Boolean.parseBoolean(configParam);
         }
         return _lazyLoadConfigObjects;
+    }
+    
+    
+    @Override
+    public final void setSearchExpressionHandler(SearchExpressionHandler searchExpressionHandler)
+    {
+        checkNull(searchExpressionHandler, "searchExpressionHandler");
+
+        if(isFirstRequestProcessed())
+        {
+            throw new IllegalStateException(
+                    "setFlowHandler may not be executed after a lifecycle request has been completed");
+        }
+        _searchExpressionHandler = searchExpressionHandler;
+    }
+
+    @Override
+    public final SearchExpressionHandler getSearchExpressionHandler()
+    {
+        return _searchExpressionHandler;
+    }
+
+    @Override
+    public SearchExpressionResolver getSearchExpressionResolver()
+    {
+        // we don't need synchronization here since it is ok to have multiple
+        // instances of the elresolver
+        if (_searchExpressionResolver == null)
+        {
+            _searchExpressionResolver = createSearchExpressionResolver();
+        }
+        return _searchExpressionResolver;
+    }
+    
+    private SearchExpressionResolver createSearchExpressionResolver()
+    {
+        // Chain of responsibility pattern
+        CompositeSearchExpressionResolver baseResolver = new CompositeSearchExpressionResolver();
+        
+        for (SearchExpressionResolver child : getRuntimeConfig().getApplicationSearchExpressionResolvers())
+        {
+            baseResolver.add(child);
+        }
+        
+        baseResolver.add(new ThisSearchExpressionResolver());
+        baseResolver.add(new ParentSearchExpressionResolver());
+        baseResolver.add(new ChildSearchExpressionResolver());
+        baseResolver.add(new CompositeComponentParentSearchExpressionResolver());
+        baseResolver.add(new FormSearchExpressionResolver());
+        baseResolver.add(new NamingContainerSearchExpressionResolver());
+        baseResolver.add(new NextSearchExpressionResolver());
+        baseResolver.add(new NoneSearchExpressionResolver());
+        baseResolver.add(new PreviousSearchExpressionResolver());
+        baseResolver.add(new RootSearchExpressionResolver());
+        baseResolver.add(new IdSearchExpressionResolver());
+        baseResolver.add(new AllSearchExpressionResolver());
+        
+        return baseResolver;
+    }
+
+    @Override
+    public void addSearchExpressionResolver(SearchExpressionResolver resolver)
+    {
+        if (isFirstRequestProcessed())
+        {
+            throw new IllegalStateException(
+                    "It is illegal to add a search expression resolver after the first request is processed");
+        }
+        if (resolver != null)
+        {
+            _runtimeConfig.addApplicationSearchExpressionResolver(resolver);
+        }
     }
 }

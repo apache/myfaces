@@ -83,4 +83,13 @@ public abstract class Factory implements Serializable
     {
         return Collections.emptyList();
     }
+    
+    /**
+     * @since 2.3
+     * @return 
+     */
+    public List<String> getSearchExpressionContextFactory()
+    {
+        return Collections.emptyList();
+    }
 }

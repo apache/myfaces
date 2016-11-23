@@ -19,10 +19,12 @@
 package org.apache.myfaces.shared.renderkit.html;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,6 +35,9 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlMessages;
+import javax.faces.component.search.SearchExpressionContext;
+import javax.faces.component.search.SearchExpressionHandler;
+import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
@@ -70,9 +75,11 @@ public abstract class HtmlMessagesRendererBase
     {
         // check the for attribute
         String forAttr = getFor(messages);
-        UIComponent forComponent = null;
+        //UIComponent forComponent = null;
+        String clientId = null;
         if(forAttr != null && !"".equals(forAttr))
         {
+            /*
             forComponent = messages.findComponent(forAttr);
             if (forComponent == null)
             {
@@ -82,11 +89,27 @@ public abstract class HtmlMessagesRendererBase
                         + "'). If the provided id was correct, wrap the message and its "
                         + "component into an h:panelGroup or h:panelGrid.");
                 return;
+            }*/
+            SearchExpressionHandler searchExpressionHandler = 
+                    facesContext.getApplication().getSearchExpressionHandler();
+            Set<SearchExpressionHint> expressionHints = new HashSet<SearchExpressionHint>();
+            expressionHints.add(SearchExpressionHint.IGNORE_NO_RESULT);
+            clientId = searchExpressionHandler.resolveClientId(
+                    SearchExpressionContext.createSearchExpressionContext(
+                            facesContext, messages, expressionHints, null), forAttr);
+            if (clientId == null)
+            {
+                log.severe("Could not render Message. Unable to find component '" 
+                        + forAttr + "' (calling findComponent on component '" 
+                        + clientId
+                        + "'). If the provided id was correct, wrap the message and its " 
+                        + "component into an h:panelGroup or h:panelGrid.");
+                return;
             }
         }
         
         MessagesIterator messagesIterator = new MessagesIterator(facesContext,
-                isGlobalOnly(messages), isRedisplay(messages), forComponent);
+                isGlobalOnly(messages), isRedisplay(messages), clientId);
 
         if (messagesIterator.hasNext())
         {
@@ -472,13 +495,13 @@ public abstract class HtmlMessagesRendererBase
         private Object _next;
 
         public MessagesIterator(FacesContext facesContext, boolean globalOnly, boolean redisplay,
-                UIComponent forComponent)
+                String clientId)
         {
             _facesContext = facesContext;
             // The for attribute is mutually exclusive with globalOnly and take precedence if used.
-            if(forComponent != null)
+            if(clientId != null)
             {
-                _clientId = forComponent.getClientId(facesContext);
+                _clientId = clientId;
                 _componentMessagesIterator = facesContext.getMessages(_clientId);
                 _globalMessagesIterator = org.apache.myfaces.shared.util.NullIterator.instance();
                 _clientIdsWithMessagesIterator = org.apache.myfaces.shared.util.NullIterator.instance();

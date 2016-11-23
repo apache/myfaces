@@ -53,6 +53,7 @@ public abstract class ServiceProviderFinder
         FactoryFinder.TAG_HANDLER_DELEGATE_FACTORY,
         FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY,
         FactoryFinder.VISIT_CONTEXT_FACTORY,
+        FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY,
         "org.apache.myfaces.spi.AnnotationProvider",
         "org.apache.myfaces.spi.AnnotationProviderFactory",
         "org.apache.myfaces.spi.FaceletConfigResourceProvider",

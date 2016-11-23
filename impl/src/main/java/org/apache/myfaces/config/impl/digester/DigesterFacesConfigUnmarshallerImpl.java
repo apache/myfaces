@@ -125,6 +125,8 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallMethod("faces-config/factory/partial-view-context-factory", "addPartialViewContextFactory", 0);
         digester.addCallMethod("faces-config/factory/tag-handler-delegate-factory", "addTagHandlerDelegateFactory", 0);
         digester.addCallMethod("faces-config/factory/visit-context-factory", "addVisitContextFactory", 0);
+        digester.addCallMethod("faces-config/factory/search-expression-context-factory", 
+                "addSearchExpressionContextFactory", 0);
         // 2.0 specific end
         
         digester.addObjectCreate("faces-config/application/resource-library-contracts/contract-mapping", 

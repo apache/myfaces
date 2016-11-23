@@ -19,9 +19,11 @@
 package org.apache.myfaces.shared.renderkit.html;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.faces.application.FacesMessage;
@@ -31,6 +33,9 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlMessage;
+import javax.faces.component.search.SearchExpressionContext;
+import javax.faces.component.search.SearchExpressionHandler;
+import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
@@ -82,8 +87,26 @@ public abstract class HtmlMessageRendererBase
             return;
         }
 
-        UIComponent forComponent = message.findComponent(forAttr);
-        if (forComponent == null)
+        //UIComponent forComponent = message.findComponent(forAttr);
+        //UIComponent forComponent = message.findComponent(forAttr);
+        //if (forComponent == null)
+        //{
+        //    log.severe("Could not render Message. Unable to find component '" 
+        //            + forAttr + "' (calling findComponent on component '" 
+        //            + message.getClientId(facesContext) 
+        //            + "'). If the provided id was correct, wrap the message and its " 
+        //            + "component into an h:panelGroup or h:panelGrid.");
+        //    return;
+        //}
+
+        //String clientId = forComponent.getClientId(facesContext);
+        SearchExpressionHandler searchExpressionHandler = facesContext.getApplication().getSearchExpressionHandler();
+        Set<SearchExpressionHint> expressionHints = new HashSet<SearchExpressionHint>();
+        expressionHints.add(SearchExpressionHint.IGNORE_NO_RESULT);
+        String clientId = searchExpressionHandler.resolveClientId(
+                SearchExpressionContext.createSearchExpressionContext(
+                        facesContext, message, expressionHints, null), forAttr);
+        if (clientId == null)
         {
             log.severe("Could not render Message. Unable to find component '" 
                     + forAttr + "' (calling findComponent on component '" 
@@ -92,8 +115,6 @@ public abstract class HtmlMessageRendererBase
                     + "component into an h:panelGroup or h:panelGrid.");
             return;
         }
-
-        String clientId = forComponent.getClientId(facesContext);
 
         Iterator<FacesMessage> messageIterator = facesContext.getMessages(clientId);
         if (!messageIterator.hasNext())

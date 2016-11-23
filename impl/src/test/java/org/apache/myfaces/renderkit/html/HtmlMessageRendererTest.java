@@ -19,22 +19,22 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
+import javax.faces.FactoryFinder;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.html.HtmlForm;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlMessage;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import static org.junit.Assert.fail;
+import org.junit.Test;
 
-public class HtmlMessageRendererTest extends AbstractJsfTestCase
+public class HtmlMessageRendererTest extends  AbstractJsfConfigurableMockTestCase
 {
     private static final String ERROR_CLASS = "errorClass";
     private static final String WARN_CLASS = "warnClass";
@@ -45,13 +45,24 @@ public class HtmlMessageRendererTest extends AbstractJsfTestCase
     private HtmlForm form;
     private HtmlInputText inputText;
 
-    public HtmlMessageRendererTest(String name)
+    public HtmlMessageRendererTest()
     {
-        super(name);
+        
     }
     
-    public static Test suite() {
-        return new TestSuite(HtmlMessageRendererTest.class);
+    @Override
+    protected void setFactories() throws Exception
+    {
+        super.setFactories();
+        
+        FactoryFinder.setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY,
+                "org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory");
+        FactoryFinder.setFactory(FactoryFinder.FACELET_CACHE_FACTORY,
+                "org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl");
+        FactoryFinder.setFactory(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY,
+                "org.apache.myfaces.component.search.SearchExpressionContextFactoryImpl");
+        FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,
+                "org.apache.myfaces.application.ApplicationFactoryImpl");
     }
 
     public void setUp() throws Exception
@@ -94,7 +105,8 @@ public class HtmlMessageRendererTest extends AbstractJsfTestCase
     {
         super.tearDown();
     }    
-    
+
+    @Test
     public void testHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = {
@@ -136,6 +148,7 @@ public class HtmlMessageRendererTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testRenderSpanOnlyWhenNecessary() throws Exception
     {
         facesContext.addMessage(inputText.getClientId(), new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
@@ -146,6 +159,7 @@ public class HtmlMessageRendererTest extends AbstractJsfTestCase
         System.out.println(output);
     }
     
+    @Test
     public void testHtmlPropertyPassTruNotRendered() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();

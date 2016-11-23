@@ -136,6 +136,7 @@ import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
 import org.apache.myfaces.cdi.dependent.BeanEntry;
+import org.apache.myfaces.component.search.SearchExpressionContextFactoryImpl;
 import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
@@ -189,6 +190,8 @@ public class FacesConfigurator
     private static final String DEFAULT_FLASH_FACTORY = ServletFlashFactoryImpl.class.getName();
     private static final String DEFAULT_CLIENT_WINDOW_FACTORY = ClientWindowFactoryImpl.class.getName();
     private static final String DEFAULT_FLOW_FACTORY = FlowHandlerFactoryImpl.class.getName();
+    private static final String DEFAULT_SEARCH_EXPRESSION_CONTEXT_FACTORY = 
+            SearchExpressionContextFactoryImpl.class.getName();
     private static final String DEFAULT_FACES_CONFIG = "/WEB-INF/faces-config.xml";
 
     private static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
@@ -676,6 +679,9 @@ public class FacesConfigurator
                 DEFAULT_CLIENT_WINDOW_FACTORY);
         setFactories(FactoryFinder.FLOW_HANDLER_FACTORY, dispenser.getFlowHandlerFactoryIterator(),
                 DEFAULT_FLOW_FACTORY);
+        setFactories(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY, 
+                dispenser.getSearchExpressionContextFactoryIterator(),
+                DEFAULT_SEARCH_EXPRESSION_CONTEXT_FACTORY);
     }
 
     private void setFactories(String factoryName, Collection<String> factories, String defaultFactory)

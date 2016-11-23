@@ -40,6 +40,7 @@ import javax.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.ViewHandlerImpl;
+import org.apache.myfaces.component.search.SearchExpressionContextFactoryImpl;
 import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.FacesConfigUnmarshaller;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -156,6 +157,8 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
                 MockVisitContextFactory.class.getName());
         FactoryFinder.setFactory(FactoryFinder.FACELET_CACHE_FACTORY,
                 FaceletCacheFactoryImpl.class.getName());
+        FactoryFinder.setFactory(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY,
+                SearchExpressionContextFactoryImpl.class.getName());
     }
     
     @Override

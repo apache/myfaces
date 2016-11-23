@@ -19,24 +19,25 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
+import javax.faces.FactoryFinder;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.html.HtmlMessages;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import org.junit.Test;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class HtmlMessagesRendererTest extends AbstractJsfTestCase
+public class HtmlMessagesRendererTest extends AbstractJsfConfigurableMockTestCase
 {
     private static final String ERROR_CLASS = "errorClass";
     private static final String WARN_CLASS = "warnClass";
@@ -45,13 +46,23 @@ public class HtmlMessagesRendererTest extends AbstractJsfTestCase
     private HtmlMessages messages;
     private MockResponseWriter writer;
 
-    public HtmlMessagesRendererTest(String name)
+    public HtmlMessagesRendererTest()
     {
-        super(name);
     }
     
-    public static Test suite() {
-        return new TestSuite(HtmlMessagesRendererTest.class);
+    @Override
+    protected void setFactories() throws Exception
+    {
+        super.setFactories();
+        
+        FactoryFinder.setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY,
+                "org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory");
+        FactoryFinder.setFactory(FactoryFinder.FACELET_CACHE_FACTORY,
+                "org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl");
+        FactoryFinder.setFactory(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY,
+                "org.apache.myfaces.component.search.SearchExpressionContextFactoryImpl");
+        FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,
+                "org.apache.myfaces.application.ApplicationFactoryImpl");
     }
 
     public void setUp() throws Exception
@@ -77,7 +88,8 @@ public class HtmlMessagesRendererTest extends AbstractJsfTestCase
         messages = null;
         writer = null;
     }
-    
+
+    @Test
     public void testHtmlPropertyPassTru() throws Exception
     {
         HtmlRenderedAttr[] attrs = {
@@ -119,6 +131,7 @@ public class HtmlMessagesRendererTest extends AbstractJsfTestCase
         }
     }
     
+    @Test
     public void testRenderSpanOnlyWhenNecessary1() throws Exception
     {
         facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
@@ -129,6 +142,7 @@ public class HtmlMessagesRendererTest extends AbstractJsfTestCase
         assertTrue(!output.contains("span"));
     }
     
+    @Test
     public void testRenderSpanOnlyWhenNecessary2() throws Exception
     {
         facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
@@ -140,6 +154,7 @@ public class HtmlMessagesRendererTest extends AbstractJsfTestCase
         assertTrue(!output.contains("span"));
     }
     
+    @Test
     public void testRenderSpanOnlyWhenNecessary3() throws Exception
     {
         facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_WARN, "warnSumary", "detailWarnSummary"));
@@ -155,6 +170,7 @@ public class HtmlMessagesRendererTest extends AbstractJsfTestCase
      * It should output the class on li
      * @throws Exception
      */
+    @Test
     public void testRenderSpanOnlyWhenNecessary4() throws Exception
     {
         facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_FATAL, "fatalSumary", "detailFatalSummary"));
@@ -172,6 +188,7 @@ public class HtmlMessagesRendererTest extends AbstractJsfTestCase
      * It should output the class on td
      * @throws Exception
      */
+    @Test
     public void testRenderSpanOnlyWhenNecessary5() throws Exception
     {
         facesContext.addMessage("test1", new FacesMessage(FacesMessage.SEVERITY_FATAL, "fatalSumary", "detailFatalSummary"));
@@ -186,6 +203,7 @@ public class HtmlMessagesRendererTest extends AbstractJsfTestCase
         assertTrue(!output.contains("span"));
     }
     
+    @Test
     public void testHtmlPropertyPassTruNotRendered() throws Exception
     {
         HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateAttrsNotRenderedForReadOnly();

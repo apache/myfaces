@@ -109,6 +109,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
         FACTORY_NAMES.add(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.VISIT_CONTEXT_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
+        FACTORY_NAMES.add(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY);
     }
     
     /**
@@ -282,6 +283,10 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     else if(factoryName.equals(FactoryFinder.FACELET_CACHE_FACTORY)) 
                     {
                         factory.addFaceletCacheFactory(className);
+                    }
+                    else if(factoryName.equals(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY)) 
+                    {
+                        factory.addSearchExpressionContextFactory(className);
                     }
                     else
                     {
