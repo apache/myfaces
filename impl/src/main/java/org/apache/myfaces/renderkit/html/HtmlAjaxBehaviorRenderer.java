@@ -469,7 +469,17 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
             }
             else
             {
-                retVal.append(strVal);
+                // @this should be resolved server side, because there are cases like in h:selectOneRadio where
+                // the id of the tag is not a clientId. @this could be valid to be resolve in the client if 
+                // jsf.ajax.request(...) is called manually (without f:ajax intervention)
+                if (strVal.equalsIgnoreCase("@this"))
+                {
+                    retVal.append(context.getComponent().getClientId(context.getFacesContext()));
+                }
+                else
+                {
+                    retVal.append(strVal);
+                }
             }
             if (cnt < size)
             {
