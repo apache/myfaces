@@ -21,6 +21,7 @@ package org.apache.myfaces.component.search;
 
 import java.util.List;
 import javax.faces.component.UIComponent;
+import javax.faces.component.search.Markup;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchKeywordContext;
 import javax.faces.component.search.SearchExpressionResolver;
@@ -40,14 +41,27 @@ public class NextSearchExpressionResolver extends SearchExpressionResolver
             UIComponent parent = last.getParent();
             if (parent.getChildCount() > 1) 
             {
-                    List<UIComponent> children = parent.getChildren();
-                    int index = children.indexOf(last);
+                List<UIComponent> children = parent.getChildren();
+                int index = children.indexOf(last);
 
-                    if (index < parent.getChildCount() - 1)
+                if (index < parent.getChildCount() - 1)
+                {
+                    int nextIndex = -1;
+                    do
+                    {
+                        index++;
+                        if(!(children.get(index) instanceof Markup))
+                        {
+                            nextIndex = index;
+                        }
+                    } while (nextIndex == -1 && index < parent.getChildCount() - 1);
+                    
+                    if (nextIndex != -1)
                     {
                         expressionContext.invokeContextCallback(expressionContext.getFacesContext(), 
-                                children.get(index + 1));
+                                children.get(nextIndex));
                     }
+                }
             }
             expressionContext.setCommandResolved(true);
         }
@@ -60,13 +74,13 @@ public class NextSearchExpressionResolver extends SearchExpressionResolver
     }
 
     @Override
-    public boolean isPassthroughKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isPassthrough(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return false;
     }
     
     @Override
-    public boolean isLeafKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return false;
     }

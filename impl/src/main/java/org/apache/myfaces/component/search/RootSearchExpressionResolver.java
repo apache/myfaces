@@ -41,6 +41,11 @@ public class RootSearchExpressionResolver extends SearchExpressionResolver
         }
     }
 
+    public String getKeyword()
+    {
+        return ROOT_KEYWORD;
+    }
+
     @Override
     public boolean matchKeyword(SearchExpressionContext searchExpressionContext, String keyword)
     {
@@ -48,13 +53,13 @@ public class RootSearchExpressionResolver extends SearchExpressionResolver
     }
 
     @Override
-    public boolean isPassthroughKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isPassthrough(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return false;
     }
     
     @Override
-    public boolean isLeafKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return false;
     }

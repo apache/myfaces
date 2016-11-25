@@ -65,7 +65,9 @@ public class HtmlOutcomeTargetButtonClientBehaviorRendererTest extends AbstractC
     @Override
     protected UIComponent createComponentToTest()
     {
-        return new HtmlOutcomeTargetButton();
+        HtmlOutcomeTargetButton button = new HtmlOutcomeTargetButton();
+        button.setOutcome("role");
+        return button;
     }
 
     @Override

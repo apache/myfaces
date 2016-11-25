@@ -21,14 +21,16 @@ package org.apache.myfaces.view.facelets.tag.composite;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-
+import java.util.Set;
 import javax.el.ValueExpression;
+import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
 import javax.faces.component.search.SearchExpressionContext;
+import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
 import javax.faces.view.AttachedObjectTarget;
-
 import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
@@ -68,39 +70,19 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
         
         if (targetsArray.length > 0)
         {
-            List<UIComponent> targetsList = new ArrayList<UIComponent>(targetsArray.length);
-            //final char separatorChar = facesContext.getNamingContainerSeparatorChar();
             UIComponent facetBase = topLevelComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME);
+            
+            CollectComponentListCallback callback = new CollectComponentListCallback(targetsArray.length);
             for (String target : targetsArray)
             {
-                //int separator = target.indexOf(separatorChar);
-                //UIComponent innerComponent = null;
-                List<UIComponent> resultList;
-                //if (separator == -1)
-                //{
-                    //innerComponent = ComponentSupport.findComponentChildOrFacetFrom(
-                    //        facetBase, target, null);
-                    resultList = facesContext.getApplication().getSearchExpressionHandler().
-                            findComponentFromExpression(SearchExpressionContext.createSearchExpressionContext(
-                                    facesContext, facetBase), facetBase, target);
-                //}
-                //else
-                //{
-                    //innerComponent = ComponentSupport.findComponentChildOrFacetFrom(
-                    //        facetBase, target.substring(0,separator), target);
-                //    resultList = facesContext.getApplication().getSearchExpressionHandler().
-                //            findComponentFromExpression(SearchExpressionContext.createSearchExpressionContext(
-                //                    facesContext, facetBase), facetBase, target.substring(0,separator));
-                //}
-                
-                //if (innerComponent != null)
-                if (resultList != null)
-                {
-                    targetsList.addAll(resultList);
-                    //targetsList.add(innerComponent);
-                }
+                Set<SearchExpressionHint> expressionHints = new HashSet<SearchExpressionHint>(2);
+                expressionHints.add(SearchExpressionHint.RESOLVE_COMPONENT_LIST);
+                SearchExpressionContext searchContext = SearchExpressionContext.createSearchExpressionContext(
+                                    facesContext, facetBase, expressionHints, null);
+                facesContext.getApplication().getSearchExpressionHandler()
+                        .resolveComponents(searchContext, target, callback);
             }
-            return targetsList;
+            return callback.getList();
         }
         else
         {
@@ -142,5 +124,29 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
     public void setTargets(ValueExpression ve)
     {
         _targets = ve;
+    }
+    
+    private static class CollectComponentListCallback implements ContextCallback
+    {
+        private List<UIComponent> list = null;
+
+        public CollectComponentListCallback(int size)
+        {
+            list = new ArrayList<UIComponent>(size);
+        }
+
+        @Override
+        public void invokeContextCallback(FacesContext context, UIComponent target)
+        {
+            getList().add(target);
+        }
+
+        /**
+         * @return the list
+         */
+        public List<UIComponent> getList()
+        {
+            return list;
+        }
     }
 }

@@ -69,7 +69,7 @@ public class ChildSearchExpressionResolver extends SearchExpressionResolver
                         {
                             count++;
                         }
-                        if (count == childNumber)
+                        if (count == childNumber + 1)
                         {
                             expressionContext.invokeContextCallback(expressionContext.getFacesContext(), 
                                     last.getChildren().get(childNumber));
@@ -99,6 +99,11 @@ public class ChildSearchExpressionResolver extends SearchExpressionResolver
         }
     }
     
+    public String getKeyword()
+    {
+        return CHILD_KEYWORD;
+    }
+
     @Override
     public boolean matchKeyword(SearchExpressionContext searchExpressionContext, String command)
     {
@@ -127,12 +132,12 @@ public class ChildSearchExpressionResolver extends SearchExpressionResolver
     }
 
     @Override
-    public boolean isPassthroughKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isPassthrough(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return false;
     }
     
-    public boolean isLeafKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return false;
     }

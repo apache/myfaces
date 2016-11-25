@@ -28,11 +28,20 @@ public enum SearchExpressionHint
     IGNORE_NO_RESULT,
 
     PARENT_FALLBACK,
-    
+
+    /**
+     * Indicate the algorithm is extracting client ids from expressions.
+     */
     RESOLVE_CLIENT_ID,
     
+    /**
+     * Indicate that the method is collecting a list of real UIComponent instances.
+     */
     RESOLVE_COMPONENT_LIST,
     
-    RESOLVE_AJAX
+    /**
+     * Indicate that some expressions can be resolved on the client side.
+     */
+    EXECUTE_CLIENT_SIDE
 
 }

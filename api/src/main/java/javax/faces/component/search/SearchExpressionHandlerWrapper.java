@@ -67,4 +67,35 @@ public abstract class SearchExpressionHandlerWrapper extends SearchExpressionHan
         getWrapped().applyKeyword(searchExpressionContext, last, command, topCallback);
     }
 
+    @Override
+    public boolean isValidExpression(SearchExpressionContext searchExpressionContext, String expression)
+    {
+        return getWrapped().isValidExpression(searchExpressionContext, expression);
+    }
+
+    @Override
+    public boolean isPassthroughExpression(SearchExpressionContext searchExpressionContext, String expression)
+    {
+        return getWrapped().isPassthroughExpression(searchExpressionContext, expression);
+    }
+
+    @Override
+    public String[] splitExpressions(String expressions)
+    {
+        return getWrapped().splitExpressions(expressions);
+    }
+
+    @Override
+    public void resolveComponents(
+            SearchExpressionContext searchExpressionContext, String expressions, ContextCallback callback)
+    {
+        getWrapped().resolveComponents(searchExpressionContext, expressions, callback);
+    }
+
+    @Override
+    public String resolveClientId(SearchExpressionContext searchExpressionContext, String expressions)
+    {
+        return getWrapped().resolveClientId(searchExpressionContext, expressions);
+    }
+
 }

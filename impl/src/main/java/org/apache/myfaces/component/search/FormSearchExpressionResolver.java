@@ -66,10 +66,10 @@ public class FormSearchExpressionResolver extends SearchExpressionResolver
     }
 
     @Override
-    public boolean isPassthroughKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isPassthrough(SearchExpressionContext searchExpressionContext, String keyword)
     {
         if (searchExpressionContext.getExpressionHints() != null &&
-            searchExpressionContext.getExpressionHints().contains(SearchExpressionHint.RESOLVE_AJAX))
+            searchExpressionContext.getExpressionHints().contains(SearchExpressionHint.EXECUTE_CLIENT_SIDE))
         {
             return true;
         }
@@ -80,7 +80,7 @@ public class FormSearchExpressionResolver extends SearchExpressionResolver
     }
     
     @Override
-    public boolean isLeafKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return false;
     }

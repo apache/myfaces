@@ -27,7 +27,7 @@ import javax.faces.component.UIComponent;
 public abstract class SearchExpressionResolver
 {
     
-    public abstract void resolve(SearchKeywordContext keywordContext, UIComponent last, String keyword);
+    public abstract void resolve(SearchKeywordContext keywordContext, UIComponent last, String command);
     
     /**
      * Check if the keyword can be resolved by the current resolver
@@ -36,7 +36,7 @@ public abstract class SearchExpressionResolver
      * @param keyword
      * @return 
      */
-    public abstract boolean matchKeyword(SearchExpressionContext searchExpressionContext, String keyword);
+    public abstract boolean matchKeyword(SearchExpressionContext searchExpressionContext, String command);
     
     /**
      * A passthrough keyword is a keyword that according to the context does not require to be resolved on the server,
@@ -46,7 +46,7 @@ public abstract class SearchExpressionResolver
      * @param keyword
      * @return 
      */
-    public boolean isPassthroughKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isPassthrough(SearchExpressionContext searchExpressionContext, String command)
     {
         return false;
     }
@@ -59,7 +59,7 @@ public abstract class SearchExpressionResolver
      * @param keyword
      * @return 
      */
-    public boolean isLeafKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isLeaf(SearchExpressionContext searchExpressionContext, String command)
     {
         return false;
     }

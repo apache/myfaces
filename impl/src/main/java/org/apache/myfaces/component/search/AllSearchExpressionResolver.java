@@ -47,6 +47,11 @@ public class AllSearchExpressionResolver extends SearchExpressionResolver
         }
     }
     
+    public String getKeyword()
+    {
+        return ALL_KEYWORD;
+    }
+
     @Override
     public boolean matchKeyword(SearchExpressionContext searchExpressionContext, String keyword)
     {
@@ -54,12 +59,12 @@ public class AllSearchExpressionResolver extends SearchExpressionResolver
     }
 
     @Override
-    public boolean isPassthroughKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isPassthrough(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return false;
     }
     
-    public boolean isLeafKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return true;
     }

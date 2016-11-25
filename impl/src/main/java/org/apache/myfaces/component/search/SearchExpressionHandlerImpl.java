@@ -414,7 +414,8 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                     if (parent != null)
                     {
                         target = parent.findComponent(expression);
-                        if (target == null)
+                        if (target == null && !searchExpressionContext.getExpressionHints().contains(
+                                SearchExpressionHint.RESOLVE_COMPONENT_LIST))
                         {
                             contextClientId = parent.getClientId(facesContext);
                             // If no component is found,
@@ -499,7 +500,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 
             // If the keyword is @child, @composite, @form, @namingcontainer, @next, @none, @parent, @previous,
             // @root, @this ,  all commands change the source to be applied the action
-            passthrough = facesContext.getApplication().getSearchExpressionResolver().isPassthroughKeyword(
+            passthrough = facesContext.getApplication().getSearchExpressionResolver().isPassthrough(
                     searchExpressionContext, command);
             
             if (passthrough)
@@ -554,7 +555,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                     searchExpressionContext, command);
             if (remaining != null)
             {
-                if (facesContext.getApplication().getSearchExpressionResolver().isLeafKeyword(
+                if (facesContext.getApplication().getSearchExpressionResolver().isLeaf(
                     searchExpressionContext, command))
                 {
                     isValid = false;
@@ -812,217 +813,4 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         return tokens.toArray(new String[tokens.size()]);
     }
     
-    public List<UIComponent> findComponentFromExpression(SearchExpressionContext searchExpressionContext, 
-            UIComponent source, String topExpression)
-    {
-        // Command pattern to apply the keyword or command to the base and then invoke the callback
-        FacesContext facesContext = searchExpressionContext.getFacesContext();
-        UIComponent currentBase = source;
-        List<UIComponent> responseList = null;
-
-        searchExpressionContext.getExpressionHints().add(SearchExpressionHint.RESOLVE_COMPONENT_LIST);
-
-        //Step 1: find base        
-        //  Case ':' (root)
-        char separatorChar = facesContext.getNamingContainerSeparatorChar();
-        if (topExpression.charAt(0) == separatorChar)
-        {
-            UIComponent findBase;
-            findBase = SearchComponentUtils.getRootComponent(currentBase);
-            return facesContext.getApplication().getSearchExpressionHandler().findComponentFromExpression(
-                    searchExpressionContext, findBase, topExpression.substring(1));
-        }
-
-        //Step 2: Once you have a base where you can start, apply an expression 
-        if (topExpression.charAt(0) == KEYWORD_PREFIX.charAt(0))
-        {
-            // A keyword means apply a command over the current source using an expression and the result must be
-            // feedback into the algorithm.
-            final UIComponent base = currentBase;
-
-            String command = extractKeyword(topExpression, 1, separatorChar);
-            final String remaining = 
-                    command.length()+1 < topExpression.length() ? 
-                        topExpression.substring(1+command.length()+1) : null;
-            
-            final SearchExpressionHandler currentInstance = 
-                    facesContext.getApplication().getSearchExpressionHandler();
-
-            // If the keyword is @child, @composite, @form, @namingcontainer, @next, @none, @parent, @previous,
-            // @root, @this ,  all commands change the source to be applied the action
-            if (remaining != null)
-            {
-                List<UIComponent> resp = this.applyKeyword(searchExpressionContext, base, command);
-                if (resp != null)
-                {
-                    for (UIComponent target : resp)
-                    {
-                        List<UIComponent> list = currentInstance.findComponentFromExpression(
-                                searchExpressionContext, target, remaining);
-                        if (list != null)
-                        {
-                            if (responseList == null)
-                            {
-                                responseList = list;
-                            }
-                            else
-                            {
-                                responseList.addAll(list);
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                List<UIComponent> resp = this.applyKeyword(searchExpressionContext, base, command);
-                if (resp != null)
-                {
-                    if (responseList == null)
-                    {
-                        responseList = resp;
-                    }
-                    else
-                    {
-                        responseList.addAll(resp);
-                    }
-                }
-            }
-        }
-        else
-        {
-
-            //Split expression into tokens and apply loop
-            String nextExpression = null;
-            String expression;
-            if (topExpression.indexOf(":@") > 0)
-            {
-                int idx = topExpression.indexOf(":@");
-                nextExpression = topExpression.substring(idx+1);
-                expression = topExpression.substring(0,idx);
-            }
-            else
-            {
-                expression = topExpression;
-            }
-
-            // Use findComponent(...) passing the expression provided
-            UIComponent target = currentBase.findComponent(expression);
-            if (target == null)
-            {
-                // If no component is found ...
-                // First try to find the base component.
-
-                // Extract the base id from the expression string
-                int idx = expression.indexOf(separatorChar);
-                String base = idx > 0 ? expression.substring(0, idx) : expression;
-
-                // From the context component clientId, check if the base is part of the clientId
-                String contextClientId = currentBase.getClientId(facesContext);
-                int startCommon = contextClientId.lastIndexOf(base+facesContext.getNamingContainerSeparatorChar());
-                if (startCommon >= 0 
-                    && (startCommon == 0 || contextClientId.charAt(startCommon-1) == separatorChar )
-                    && (startCommon+base.length() <= contextClientId.length()-1 || 
-                        contextClientId.charAt(startCommon+base.length()+1) == separatorChar )) 
-                {
-                    // If there is a match, try to find a the first parent component whose id is equals to
-                    // the base id
-                    UIComponent parent = currentBase;
-                    while (parent != null )
-                    {
-                        if (base.equals(parent.getId()) && parent instanceof NamingContainer)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            parent = parent.getParent();
-                        }
-                    }
-
-                    // if a base component is found ...
-                    if (parent != null)
-                    {
-                        target = parent.findComponent(expression);
-                        /*
-                        if (target == null)
-                        {
-                            contextClientId = parent.getClientId(facesContext);
-                            // If no component is found,
-                            String targetClientId = contextClientId.substring(0, startCommon+base.length()) + 
-                                    expression.substring(base.length());
-
-                            final SearchExpressionHandler currentHandler = 
-                                    facesContext.getApplication().getSearchExpressionHandler();
-
-                            if (nextExpression != null)
-                            {
-                                final String childExpression = nextExpression;
-
-                                parent.invokeOnComponent(facesContext, targetClientId, new ContextCallback(){
-                                    public void invokeContextCallback(FacesContext context, UIComponent target)
-                                    {
-                                        currentHandler.invokeOnComponentFromExpression(
-                                                searchExpressionContext, target, childExpression, topCallback);
-                                    }
-                                });
-                            }
-                            else
-                            {
-                                parent.invokeOnComponent(facesContext, targetClientId, topCallback);
-                            }
-                            return;
-                        }*/
-                    }
-                }
-            }
-            if (target != null)
-            {
-                currentBase = target;
-            }
-            if (currentBase != null)
-            {
-                if (responseList == null)
-                {
-                    responseList = new ArrayList<UIComponent>();
-                }
-                responseList.add(currentBase);
-            }
-        }
-        return responseList;
-    }
-
-    public List<UIComponent> applyKeyword(SearchExpressionContext searchExpressionContext, UIComponent last, 
-                             String command)
-    {
-        Set<SearchExpressionHint> hints = searchExpressionContext.getExpressionHints();
-        CollectComponentCallback callback = new CollectComponentCallback();
-        searchExpressionContext.getFacesContext().getApplication().getSearchExpressionHandler().applyKeyword(
-                searchExpressionContext, last, command, callback);
-        return callback.getList();
-    }
-    
-    private static class CollectComponentCallback implements ContextCallback
-    {
-        private List<UIComponent> list = null;
-
-        @Override
-        public void invokeContextCallback(FacesContext context, UIComponent target)
-        {
-            if (getList() == null)
-            {
-                list = new ArrayList<UIComponent>(2);
-            }
-            getList().add(target);
-        }
-
-        /**
-         * @return the list
-         */
-        public List<UIComponent> getList()
-        {
-            return list;
-        }
-        
-    }
 }

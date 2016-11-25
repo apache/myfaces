@@ -21,8 +21,10 @@ package org.apache.myfaces.renderkit.html;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.RandomAccess;
+import java.util.Set;
 
 import javax.faces.FacesException;
 import javax.faces.component.ActionSource;
@@ -31,6 +33,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorContext;
+import javax.faces.component.search.SearchExpressionContext;
+import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.PhaseId;
@@ -462,6 +466,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         strVal = strVal.trim();
         if (!EMPTY.equals(strVal))
         {
+            /*
             if (!strVal.startsWith(IDENTIFYER_MARKER))
             {
                 String componentId = getComponentId(context, strVal);
@@ -470,7 +475,16 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
             else
             {
                 retVal.append(strVal);
-            }
+            }*/
+            Set<SearchExpressionHint> expressionHints = new HashSet<SearchExpressionHint>();
+            expressionHints.add(SearchExpressionHint.RESOLVE_CLIENT_ID);
+            expressionHints.add(SearchExpressionHint.EXECUTE_CLIENT_SIDE);
+            SearchExpressionContext searchExpressionContext = 
+                    SearchExpressionContext.createSearchExpressionContext(context.getFacesContext(), 
+                            context.getComponent(), expressionHints, null);
+            String clientId = context.getFacesContext().getApplication().getSearchExpressionHandler().resolveClientId(
+                    searchExpressionContext, strVal);
+            retVal.append(clientId);
             if (cnt < size)
             {
                 retVal.append(BLANK);

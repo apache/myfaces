@@ -86,31 +86,35 @@ public class CompositeSearchExpressionResolver extends SearchExpressionResolver
     }
 
     @Override
-    public boolean isPassthroughKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isPassthrough(SearchExpressionContext searchExpressionContext, String keyword)
     {
         int sz = this.size;
         for (int i = 0; i < sz; i++) 
         {
             if (this.resolvers[i].matchKeyword(searchExpressionContext, keyword))
             {
-                return this.resolvers[i].isPassthroughKeyword(searchExpressionContext, keyword);
+                return this.resolvers[i].isPassthrough(searchExpressionContext, keyword);
             }
         }
         return false;
     }
     
     @Override
-    public boolean isLeafKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword)
     {
         int sz = this.size;
         for (int i = 0; i < sz; i++) 
         {
             if (this.resolvers[i].matchKeyword(searchExpressionContext, keyword))
             {
-                return this.resolvers[i].isLeafKeyword(searchExpressionContext, keyword);
+                return this.resolvers[i].isLeaf(searchExpressionContext, keyword);
             }
         }
         return false;
     }
 
+    public String getKeyword()
+    {
+        return null;
+    }
 }

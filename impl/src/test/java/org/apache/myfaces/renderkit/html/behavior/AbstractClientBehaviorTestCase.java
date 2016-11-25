@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html.behavior;
 
+import javax.faces.FactoryFinder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.AjaxBehavior;
@@ -26,9 +27,8 @@ import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.shared.util.FastWriter;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.config.ConfigParser;
-import org.apache.myfaces.test.mock.MockFacesContext22;
+import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -36,7 +36,7 @@ import org.junit.Test;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public abstract class AbstractClientBehaviorTestCase extends AbstractJsfTestCase
+public abstract class AbstractClientBehaviorTestCase extends FaceletTestCase
 {
     protected ResponseWriter writer;
     protected FastWriter outputWriter; 
@@ -47,6 +47,21 @@ public abstract class AbstractClientBehaviorTestCase extends AbstractJsfTestCase
     protected abstract HtmlRenderedClientEventAttr[] getClientBehaviorHtmlRenderedAttributes();
     
     protected abstract UIComponent createComponentToTest();
+    
+    @Override
+    protected void setFactories() throws Exception
+    {
+        super.setFactories();
+        
+        FactoryFinder.setFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY,
+                "org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory");
+        FactoryFinder.setFactory(FactoryFinder.FACELET_CACHE_FACTORY,
+                "org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl");
+        FactoryFinder.setFactory(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY,
+                "org.apache.myfaces.component.search.SearchExpressionContextFactoryImpl");
+        FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,
+                "org.apache.myfaces.application.ApplicationFactoryImpl");
+    }
 
     @Override
     protected void setUpJSFObjects() throws Exception
@@ -70,7 +85,8 @@ public abstract class AbstractClientBehaviorTestCase extends AbstractJsfTestCase
         super.setUpRenderKit();
         parser = new ConfigParser();
         parser.parse(parser.getPlatformURLs());
-        //parser.parse(this.getClass().getResource("/META-INF/faces-config.xml"));        
+        //parser.parse(this.getClass().getResource("/META-INF/faces-config.xml"));    
+        request.setServletPath("/test");
     }
 
     /**

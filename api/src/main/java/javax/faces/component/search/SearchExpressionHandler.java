@@ -62,12 +62,6 @@ public abstract class SearchExpressionHandler
     
     public abstract String[] splitExpressions(String expressions);
     
-    public abstract List<UIComponent> findComponentFromExpression(SearchExpressionContext searchExpressionContext, 
-            UIComponent source, String topExpression);
-
-    public abstract List<UIComponent> applyKeyword(SearchExpressionContext searchExpressionContext, UIComponent last, 
-                             String command);
-
     public abstract boolean isPassthroughExpression(SearchExpressionContext searchExpressionContext, String expression);
     
     public abstract boolean isValidExpression(SearchExpressionContext searchExpressionContext, String expression);
