@@ -24,12 +24,12 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.search.Markup;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchKeywordContext;
-import javax.faces.component.search.SearchExpressionResolver;
+import javax.faces.component.search.SearchKeywordResolver;
 
 /**
  *
  */
-public class NextSearchExpressionResolver extends SearchExpressionResolver
+public class NextSearchKeywordResolver extends SearchKeywordResolver
 {
     public static final String NEXT_KEYWORD = "next";
 

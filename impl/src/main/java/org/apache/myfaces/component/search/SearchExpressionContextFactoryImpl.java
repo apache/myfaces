@@ -36,15 +36,21 @@ public class SearchExpressionContextFactoryImpl extends SearchExpressionContextF
 
     @Override
     public SearchExpressionContext getSearchExpressionContext(
-            FacesContext context, UIComponent source, 
+            FacesContext context, UIComponent source,
             Set<SearchExpressionHint> expressionHints, Set<VisitHint> visitHints)
     {
         SearchExpressionContextImpl searchExpressionContext = new SearchExpressionContextImpl(context);
         searchExpressionContext.setSource(source);
-        searchExpressionContext.setExpressionHints(expressionHints == null ? 
+        searchExpressionContext.setExpressionHints(expressionHints == null ?
                 new HashSet<SearchExpressionHint>(2) : expressionHints);
         searchExpressionContext.setVisitHints(visitHints);
         return searchExpressionContext;
     }
-    
+
+    @Override
+    public SearchExpressionContextFactory getWrapped()
+    {
+        return null;
+    }
+
 }

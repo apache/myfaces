@@ -35,7 +35,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
 import javax.faces.component.behavior.Behavior;
 import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchExpressionResolver;
+import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.el.MethodBinding;
@@ -1254,7 +1254,7 @@ public abstract class Application
 
     }
     
-    public void addSearchExpressionResolver(SearchExpressionResolver resolver)
+    public void addSearchExpressionResolver(SearchKeywordResolver resolver)
     {
         // The following concrete methods were added for JSF 1.2.  They supply default 
         // implementations that throw UnsupportedOperationException.  
@@ -1268,7 +1268,7 @@ public abstract class Application
         throw new UnsupportedOperationException();
     }
     
-    public SearchExpressionResolver getSearchExpressionResolver()
+    public SearchKeywordResolver getSearchExpressionResolver()
     {
         Application application = getMyfacesApplicationInstance();
         if (application != null)

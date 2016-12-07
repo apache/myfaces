@@ -24,7 +24,7 @@ import javax.faces.component.UIComponent;
 /**
  *
  */
-public abstract class SearchExpressionResolver
+public abstract class SearchKeywordResolver
 {
     
     public abstract void resolve(SearchKeywordContext keywordContext, UIComponent last, String command);

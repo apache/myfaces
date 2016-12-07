@@ -19,36 +19,59 @@
 
 package org.apache.myfaces.component.search;
 
+import java.util.List;
 import javax.faces.component.UIComponent;
+import javax.faces.component.search.Markup;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchKeywordContext;
-import javax.faces.component.search.SearchExpressionResolver;
+import javax.faces.component.search.SearchKeywordResolver;
 
 /**
  *
  */
-public class ParentSearchExpressionResolver extends SearchExpressionResolver
+public class PreviousSearchKeywordResolver extends SearchKeywordResolver
 {
-    public static final String PARENT_KEYWORD = "parent";
+    public static final String PREVIOUS_KEYWORD = "previous";
 
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
     {
-        if (command != null && command.equalsIgnoreCase(PARENT_KEYWORD))
+        if (command != null && command.equalsIgnoreCase(PREVIOUS_KEYWORD))
         {
-            expressionContext.invokeContextCallback(expressionContext.getFacesContext(), last.getParent());
+            UIComponent parent = last.getParent();
+
+            if (parent.getChildCount() > 1)
+            {
+                List<UIComponent> children = parent.getChildren();
+                int index = children.indexOf(last);
+
+                if (index > 0)
+                {
+                    int nextIndex = -1;
+                    do
+                    {
+                        index--;
+                        if(!(children.get(index) instanceof Markup))
+                        {
+                            nextIndex = index;
+                        }
+                    } while (nextIndex == -1 && index > 0);
+                    
+                    if (nextIndex != -1)
+                    {
+                        expressionContext.invokeContextCallback(
+                                expressionContext.getFacesContext(), children.get(nextIndex));
+                    }
+                }
+            }
+            expressionContext.setCommandResolved(true);
         }
     }
     
-    public String getKeyword()
-    {
-        return PARENT_KEYWORD;
-    }
-
     @Override
     public boolean matchKeyword(SearchExpressionContext searchExpressionContext, String keyword)
     {
-        return PARENT_KEYWORD.equalsIgnoreCase(keyword);
+        return PREVIOUS_KEYWORD.equalsIgnoreCase(keyword);
     }
 
     @Override

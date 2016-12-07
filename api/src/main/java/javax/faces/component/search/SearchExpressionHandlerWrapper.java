@@ -29,7 +29,6 @@ import javax.faces.component.UIComponent;
 public abstract class SearchExpressionHandlerWrapper extends SearchExpressionHandler
         implements FacesWrapper<SearchExpressionHandler>
 {
-
     @Override
     public abstract SearchExpressionHandler getWrapped();
 
@@ -40,28 +39,28 @@ public abstract class SearchExpressionHandlerWrapper extends SearchExpressionHan
     }
 
     @Override
-    public void resolveComponent(SearchExpressionContext searchExpressionContext, 
+    public void resolveComponent(SearchExpressionContext searchExpressionContext,
             String expression, ContextCallback callback)
     {
         getWrapped().resolveComponent(searchExpressionContext, expression, callback);
     }
 
     @Override
-    public void invokeOnComponentFromExpression(SearchExpressionContext searchExpressionContext, 
+    public void invokeOnComponentFromExpression(SearchExpressionContext searchExpressionContext,
             UIComponent last, String expression, ContextCallback topCallback)
     {
         getWrapped().invokeOnComponentFromExpression(searchExpressionContext, last, expression, topCallback);
     }
 
     @Override
-    public void invokeOnComponentFromExpressions(SearchExpressionContext searchExpressionContext, 
+    public void invokeOnComponentFromExpressions(SearchExpressionContext searchExpressionContext,
             UIComponent last, String[] expressions, ContextCallback topCallback)
     {
         getWrapped().invokeOnComponentFromExpressions(searchExpressionContext, last, expressions, topCallback);
     }
 
     @Override
-    public void applyKeyword(SearchExpressionContext searchExpressionContext, 
+    public void applyKeyword(SearchExpressionContext searchExpressionContext,
             UIComponent last, String command, ContextCallback topCallback)
     {
         getWrapped().applyKeyword(searchExpressionContext, last, command, topCallback);

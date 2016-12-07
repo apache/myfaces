@@ -22,24 +22,24 @@ package org.apache.myfaces.component.search;
 import javax.faces.component.UIComponent;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchKeywordContext;
-import javax.faces.component.search.SearchExpressionResolver;
+import javax.faces.component.search.SearchKeywordResolver;
 
 /**
  *
  */
-public class CompositeSearchExpressionResolver extends SearchExpressionResolver
+public class CompositeSearchKeywordResolver extends SearchKeywordResolver
 {
     private int size;
 
-    private SearchExpressionResolver[] resolvers;
+    private SearchKeywordResolver[] resolvers;
     
-    public CompositeSearchExpressionResolver()
+    public CompositeSearchKeywordResolver()
     {
         this.size = 0;
-        this.resolvers = new SearchExpressionResolver[2];
+        this.resolvers = new SearchKeywordResolver[2];
     }
     
-    public void add(SearchExpressionResolver elResolver) 
+    public void add(SearchKeywordResolver elResolver) 
     {
         if (elResolver == null) 
         {
@@ -48,7 +48,7 @@ public class CompositeSearchExpressionResolver extends SearchExpressionResolver
 
         if (this.size >= this.resolvers.length) 
         {
-            SearchExpressionResolver[] nr = new SearchExpressionResolver[this.size * 2];
+            SearchKeywordResolver[] nr = new SearchKeywordResolver[this.size * 2];
             System.arraycopy(this.resolvers, 0, nr, 0, this.size);
             this.resolvers = nr;
         }

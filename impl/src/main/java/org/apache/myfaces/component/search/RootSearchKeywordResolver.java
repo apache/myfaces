@@ -20,63 +20,42 @@
 package org.apache.myfaces.component.search;
 
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
 import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.component.search.SearchKeywordContext;
-import javax.faces.component.search.SearchExpressionResolver;
+import javax.faces.component.search.SearchKeywordResolver;
 
 /**
  *
  */
-public class FormSearchExpressionResolver extends SearchExpressionResolver
+public class RootSearchKeywordResolver extends SearchKeywordResolver
 {
-    public static final String FORM_KEYWORD = "form";
+    public static final String ROOT_KEYWORD = "root";
 
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
     {
-        if (command != null && command.equalsIgnoreCase(FORM_KEYWORD))
+        if (command != null && command.equalsIgnoreCase(ROOT_KEYWORD))
         {
-            expressionContext.invokeContextCallback(expressionContext.getFacesContext(), closest(UIForm.class, last));
+            expressionContext.invokeContextCallback(expressionContext.getFacesContext(), 
+                    expressionContext.getFacesContext().getViewRoot());
         }
     }
-    
-    private static <T> T closest(Class<T> type, UIComponent base) 
+
+    public String getKeyword()
     {
-        UIComponent parent = base.getParent();
+        return ROOT_KEYWORD;
+    }
 
-        while (parent != null) 
-        {
-            if (type.isAssignableFrom(parent.getClass())) 
-            {
-                return (T) parent;
-            }
-
-            parent = parent.getParent();
-        }
-
-        return null;
-    }    
-    
     @Override
     public boolean matchKeyword(SearchExpressionContext searchExpressionContext, String keyword)
     {
-        return FORM_KEYWORD.equalsIgnoreCase(keyword);
+        return ROOT_KEYWORD.equalsIgnoreCase(keyword);
     }
 
     @Override
     public boolean isPassthrough(SearchExpressionContext searchExpressionContext, String keyword)
     {
-        if (searchExpressionContext.getExpressionHints() != null &&
-            searchExpressionContext.getExpressionHints().contains(SearchExpressionHint.EXECUTE_CLIENT_SIDE))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return false;
     }
     
     @Override

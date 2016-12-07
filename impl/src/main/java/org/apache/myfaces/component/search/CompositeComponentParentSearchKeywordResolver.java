@@ -19,59 +19,40 @@
 
 package org.apache.myfaces.component.search;
 
-import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchKeywordContext;
-import javax.faces.component.search.SearchExpressionResolver;
+import javax.faces.component.search.SearchKeywordResolver;
 
 /**
  *
  */
-public class NamingContainerSearchExpressionResolver extends SearchExpressionResolver
+public class CompositeComponentParentSearchKeywordResolver extends SearchKeywordResolver
 {
-    public static final String NAMING_CONTAINER_KEYWORD = "namingcontainer";
+    public static final String COMPOSITE_KEYWORD = "composite";
 
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
     {
-        if (command != null && command.equalsIgnoreCase(NAMING_CONTAINER_KEYWORD))
+        if (command != null && command.equalsIgnoreCase(COMPOSITE_KEYWORD))
         {
             expressionContext.invokeContextCallback(expressionContext.getFacesContext(), 
-                    (UIComponent) closest(NamingContainer.class, last));
+                    UIComponent.getCompositeComponentParent(last));
         }
-    }
-    
-    private static <T> T closest(Class<T> type, UIComponent base) 
-    {
-        UIComponent parent = base.getParent();
-
-        while (parent != null) 
-        {
-            if (type.isAssignableFrom(parent.getClass())) 
-            {
-                return (T) parent;
-            }
-
-            parent = parent.getParent();
-        }
-
-        return null;
     }
     
     @Override
     public boolean matchKeyword(SearchExpressionContext searchExpressionContext, String keyword)
     {
-        return NAMING_CONTAINER_KEYWORD.equalsIgnoreCase(keyword);
+        return COMPOSITE_KEYWORD.equalsIgnoreCase(keyword);
     }
 
     @Override
     public boolean isPassthrough(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return false;
-    }
+    } 
     
-    @Override
     public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return false;

@@ -63,7 +63,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.Behavior;
 import javax.faces.component.behavior.ClientBehaviorBase;
 import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchExpressionResolver;
+import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.DateTimeConverter;
@@ -96,20 +96,20 @@ import org.apache.myfaces.application.cdi.ConverterWrapper;
 import org.apache.myfaces.cdi.util.ExternalArtifactResolver;
 import org.apache.myfaces.application.cdi.ValidatorWrapper;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.component.search.AllSearchExpressionResolver;
-import org.apache.myfaces.component.search.ChildSearchExpressionResolver;
-import org.apache.myfaces.component.search.CompositeComponentParentSearchExpressionResolver;
-import org.apache.myfaces.component.search.CompositeSearchExpressionResolver;
-import org.apache.myfaces.component.search.FormSearchExpressionResolver;
-import org.apache.myfaces.component.search.IdSearchExpressionResolver;
-import org.apache.myfaces.component.search.NamingContainerSearchExpressionResolver;
-import org.apache.myfaces.component.search.NextSearchExpressionResolver;
-import org.apache.myfaces.component.search.NoneSearchExpressionResolver;
-import org.apache.myfaces.component.search.ParentSearchExpressionResolver;
-import org.apache.myfaces.component.search.PreviousSearchExpressionResolver;
-import org.apache.myfaces.component.search.RootSearchExpressionResolver;
+import org.apache.myfaces.component.search.AllSearchKeywordResolver;
+import org.apache.myfaces.component.search.ChildSearchKeywordResolver;
+import org.apache.myfaces.component.search.CompositeComponentParentSearchKeywordResolver;
+import org.apache.myfaces.component.search.CompositeSearchKeywordResolver;
+import org.apache.myfaces.component.search.FormSearchKeywordResolver;
+import org.apache.myfaces.component.search.IdSearchKeywordResolver;
+import org.apache.myfaces.component.search.NamingContainerSearchKeywordResolver;
+import org.apache.myfaces.component.search.NextSearchKeywordResolver;
+import org.apache.myfaces.component.search.NoneSearchKeywordResolver;
+import org.apache.myfaces.component.search.ParentSearchKeywordResolver;
+import org.apache.myfaces.component.search.PreviousSearchKeywordResolver;
+import org.apache.myfaces.component.search.RootSearchKeywordResolver;
 import org.apache.myfaces.component.search.SearchExpressionHandlerImpl;
-import org.apache.myfaces.component.search.ThisSearchExpressionResolver;
+import org.apache.myfaces.component.search.ThisSearchKeywordResolver;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.Property;
 import org.apache.myfaces.config.element.ResourceBundle;
@@ -251,7 +251,7 @@ public class ApplicationImpl extends Application
     
     private SearchExpressionHandler _searchExpressionHandler;
     
-    private SearchExpressionResolver _searchExpressionResolver;
+    private SearchKeywordResolver _searchExpressionResolver;
     
     /**
      * Represents semantic null in _componentClassMap. 
@@ -2917,7 +2917,7 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public SearchExpressionResolver getSearchExpressionResolver()
+    public SearchKeywordResolver getSearchExpressionResolver()
     {
         // we don't need synchronization here since it is ok to have multiple
         // instances of the elresolver
@@ -2928,34 +2928,34 @@ public class ApplicationImpl extends Application
         return _searchExpressionResolver;
     }
     
-    private SearchExpressionResolver createSearchExpressionResolver()
+    private SearchKeywordResolver createSearchExpressionResolver()
     {
         // Chain of responsibility pattern
-        CompositeSearchExpressionResolver baseResolver = new CompositeSearchExpressionResolver();
+        CompositeSearchKeywordResolver baseResolver = new CompositeSearchKeywordResolver();
         
-        for (SearchExpressionResolver child : getRuntimeConfig().getApplicationSearchExpressionResolvers())
+        for (SearchKeywordResolver child : getRuntimeConfig().getApplicationSearchExpressionResolvers())
         {
             baseResolver.add(child);
         }
         
-        baseResolver.add(new ThisSearchExpressionResolver());
-        baseResolver.add(new ParentSearchExpressionResolver());
-        baseResolver.add(new ChildSearchExpressionResolver());
-        baseResolver.add(new CompositeComponentParentSearchExpressionResolver());
-        baseResolver.add(new FormSearchExpressionResolver());
-        baseResolver.add(new NamingContainerSearchExpressionResolver());
-        baseResolver.add(new NextSearchExpressionResolver());
-        baseResolver.add(new NoneSearchExpressionResolver());
-        baseResolver.add(new PreviousSearchExpressionResolver());
-        baseResolver.add(new RootSearchExpressionResolver());
-        baseResolver.add(new IdSearchExpressionResolver());
-        baseResolver.add(new AllSearchExpressionResolver());
+        baseResolver.add(new ThisSearchKeywordResolver());
+        baseResolver.add(new ParentSearchKeywordResolver());
+        baseResolver.add(new ChildSearchKeywordResolver());
+        baseResolver.add(new CompositeComponentParentSearchKeywordResolver());
+        baseResolver.add(new FormSearchKeywordResolver());
+        baseResolver.add(new NamingContainerSearchKeywordResolver());
+        baseResolver.add(new NextSearchKeywordResolver());
+        baseResolver.add(new NoneSearchKeywordResolver());
+        baseResolver.add(new PreviousSearchKeywordResolver());
+        baseResolver.add(new RootSearchKeywordResolver());
+        baseResolver.add(new IdSearchKeywordResolver());
+        baseResolver.add(new AllSearchKeywordResolver());
         
         return baseResolver;
     }
 
     @Override
-    public void addSearchExpressionResolver(SearchExpressionResolver resolver)
+    public void addSearchExpressionResolver(SearchKeywordResolver resolver)
     {
         if (isFirstRequestProcessed())
         {

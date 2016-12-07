@@ -30,11 +30,8 @@ import javax.faces.context.FacesContext;
 public abstract class SearchExpressionContextFactory implements FacesWrapper<SearchExpressionContextFactory>
 {
     public abstract SearchExpressionContext getSearchExpressionContext(
-            FacesContext context,  UIComponent source,  
+            FacesContext context,  UIComponent source,
             Set<SearchExpressionHint> expressionHints, Set<VisitHint> visitHints);
-    
-    public SearchExpressionContextFactory getWrapped()
-    {
-        return null;
-    }
+
+    public abstract SearchExpressionContextFactory getWrapped();
 }

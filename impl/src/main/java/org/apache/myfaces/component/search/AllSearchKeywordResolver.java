@@ -22,12 +22,12 @@ package org.apache.myfaces.component.search;
 import javax.faces.component.UIComponent;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchKeywordContext;
-import javax.faces.component.search.SearchExpressionResolver;
+import javax.faces.component.search.SearchKeywordResolver;
 
 /**
  *
  */
-public class AllSearchExpressionResolver extends SearchExpressionResolver
+public class AllSearchKeywordResolver extends SearchKeywordResolver
 {
     public static final String ALL_KEYWORD = "all";
 

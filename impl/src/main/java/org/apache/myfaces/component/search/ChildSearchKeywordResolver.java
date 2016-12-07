@@ -26,12 +26,12 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.search.Markup;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchKeywordContext;
-import javax.faces.component.search.SearchExpressionResolver;
+import javax.faces.component.search.SearchKeywordResolver;
 
 /**
  *
  */
-public class ChildSearchExpressionResolver extends SearchExpressionResolver
+public class ChildSearchKeywordResolver extends SearchKeywordResolver
 {
 
     public static final String CHILD_KEYWORD = "child";

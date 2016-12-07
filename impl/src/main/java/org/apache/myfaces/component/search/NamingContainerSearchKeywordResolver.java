@@ -19,31 +19,50 @@
 
 package org.apache.myfaces.component.search;
 
+import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchKeywordContext;
-import javax.faces.component.search.SearchExpressionResolver;
+import javax.faces.component.search.SearchKeywordResolver;
 
 /**
  *
  */
-public class NoneSearchExpressionResolver extends SearchExpressionResolver
+public class NamingContainerSearchKeywordResolver extends SearchKeywordResolver
 {
-    public static final String NONE_KEYWORD = "none";
+    public static final String NAMING_CONTAINER_KEYWORD = "namingcontainer";
 
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
     {
-        if (command != null && command.equalsIgnoreCase(NONE_KEYWORD))
+        if (command != null && command.equalsIgnoreCase(NAMING_CONTAINER_KEYWORD))
         {
-            expressionContext.setCommandResolved(true);
+            expressionContext.invokeContextCallback(expressionContext.getFacesContext(), 
+                    (UIComponent) closest(NamingContainer.class, last));
         }
+    }
+    
+    private static <T> T closest(Class<T> type, UIComponent base) 
+    {
+        UIComponent parent = base.getParent();
+
+        while (parent != null) 
+        {
+            if (type.isAssignableFrom(parent.getClass())) 
+            {
+                return (T) parent;
+            }
+
+            parent = parent.getParent();
+        }
+
+        return null;
     }
     
     @Override
     public boolean matchKeyword(SearchExpressionContext searchExpressionContext, String keyword)
     {
-        return NONE_KEYWORD.equalsIgnoreCase(keyword);
+        return NAMING_CONTAINER_KEYWORD.equalsIgnoreCase(keyword);
     }
 
     @Override
@@ -55,7 +74,7 @@ public class NoneSearchExpressionResolver extends SearchExpressionResolver
     @Override
     public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword)
     {
-        return true;
+        return false;
     }
 
 }

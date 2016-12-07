@@ -22,28 +22,28 @@ package org.apache.myfaces.component.search;
 import javax.faces.component.UIComponent;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchKeywordContext;
-import javax.faces.component.search.SearchExpressionResolver;
+import javax.faces.component.search.SearchKeywordResolver;
 
 /**
  *
  */
-public class ThisSearchExpressionResolver extends SearchExpressionResolver
+public class NoneSearchKeywordResolver extends SearchKeywordResolver
 {
-    public static final String THIS_KEYWORD = "this";
+    public static final String NONE_KEYWORD = "none";
 
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
     {
-        if (command != null && command.equalsIgnoreCase(THIS_KEYWORD))
+        if (command != null && command.equalsIgnoreCase(NONE_KEYWORD))
         {
-            expressionContext.invokeContextCallback(expressionContext.getFacesContext(), last);
+            expressionContext.setCommandResolved(true);
         }
     }
-
+    
     @Override
     public boolean matchKeyword(SearchExpressionContext searchExpressionContext, String keyword)
     {
-        return THIS_KEYWORD.equalsIgnoreCase(keyword);
+        return NONE_KEYWORD.equalsIgnoreCase(keyword);
     }
 
     @Override
@@ -51,10 +51,11 @@ public class ThisSearchExpressionResolver extends SearchExpressionResolver
     {
         return false;
     }
-
+    
     @Override
     public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword)
     {
-        return false;
+        return true;
     }
+
 }

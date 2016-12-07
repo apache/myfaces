@@ -19,59 +19,31 @@
 
 package org.apache.myfaces.component.search;
 
-import java.util.List;
 import javax.faces.component.UIComponent;
-import javax.faces.component.search.Markup;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchKeywordContext;
-import javax.faces.component.search.SearchExpressionResolver;
+import javax.faces.component.search.SearchKeywordResolver;
 
 /**
  *
  */
-public class PreviousSearchExpressionResolver extends SearchExpressionResolver
+public class ThisSearchKeywordResolver extends SearchKeywordResolver
 {
-    public static final String PREVIOUS_KEYWORD = "previous";
+    public static final String THIS_KEYWORD = "this";
 
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
     {
-        if (command != null && command.equalsIgnoreCase(PREVIOUS_KEYWORD))
+        if (command != null && command.equalsIgnoreCase(THIS_KEYWORD))
         {
-            UIComponent parent = last.getParent();
-
-            if (parent.getChildCount() > 1)
-            {
-                List<UIComponent> children = parent.getChildren();
-                int index = children.indexOf(last);
-
-                if (index > 0)
-                {
-                    int nextIndex = -1;
-                    do
-                    {
-                        index--;
-                        if(!(children.get(index) instanceof Markup))
-                        {
-                            nextIndex = index;
-                        }
-                    } while (nextIndex == -1 && index > 0);
-                    
-                    if (nextIndex != -1)
-                    {
-                        expressionContext.invokeContextCallback(
-                                expressionContext.getFacesContext(), children.get(nextIndex));
-                    }
-                }
-            }
-            expressionContext.setCommandResolved(true);
+            expressionContext.invokeContextCallback(expressionContext.getFacesContext(), last);
         }
     }
-    
+
     @Override
     public boolean matchKeyword(SearchExpressionContext searchExpressionContext, String keyword)
     {
-        return PREVIOUS_KEYWORD.equalsIgnoreCase(keyword);
+        return THIS_KEYWORD.equalsIgnoreCase(keyword);
     }
 
     @Override
@@ -79,11 +51,10 @@ public class PreviousSearchExpressionResolver extends SearchExpressionResolver
     {
         return false;
     }
-    
+
     @Override
     public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return false;
     }
-
 }

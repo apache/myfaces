@@ -74,7 +74,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     /*if an attached behavior triggers an ajax request this request param must be added*/
     private static final String BEHAVIOR_EVENT = "javax.faces.behavior.event";
     private static final String IDENTIFYER_MARKER = "@";
-    
+
     private static final String AJAX_SB = "oam.renderkit.AJAX_SB";
     private static final String AJAX_PARAM_SB = "oam.renderkit.AJAX_PARAM_SB";
 
@@ -110,12 +110,12 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     private final void dispatchBehaviorEvent(UIComponent component, AjaxBehavior ajaxBehavior)
     {
         AjaxBehaviorEvent event = new AjaxBehaviorEvent(component, ajaxBehavior);
-        
+
         boolean isImmediate = false;
         if (ajaxBehavior.isImmediateSet())
         {
             isImmediate = ajaxBehavior.isImmediate();
-        }            
+        }
         else
         {
             isImmediate = isComponentImmediate(component);
@@ -231,7 +231,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         }
 
         String sourceId = null;
-        if (context.getSourceId() == null) 
+        if (context.getSourceId() == null)
         {
             sourceId = AJAX_VAL_THIS;
         }
@@ -242,7 +242,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
             paramBuffer.append(context.getSourceId());
             paramBuffer.append('\'');
             sourceId = paramBuffer.toString();
-            
+
             if (!context.getSourceId().trim().equals(
                 context.getComponent().getClientId(context.getFacesContext())))
             {
@@ -260,7 +260,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
                 }
                 if (instance == null && executes == null)
                 {
-                    // set the clientId of the component so the behavior can be decoded later, 
+                    // set the clientId of the component so the behavior can be decoded later,
                     // otherwise the behavior will fail
                     List<String> list = new ArrayList<String>();
                     list.add(context.getComponent().getClientId(context.getFacesContext()));
@@ -319,7 +319,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
              * see ClientBehaviorContext.html of the spec
              * the param list has to be added in the post back
              */
-            // params are in 99% RamdonAccess instace created in 
+            // params are in 99% RamdonAccess instace created in
             // HtmlRendererUtils.getClientBehaviorContextParameters(Map<String, String>)
             if (params instanceof RandomAccess)
             {
@@ -349,7 +349,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         paramBuffer.append(event);
         paramBuffer.append(QUOTE);
         parameterList.add(paramBuffer.toString());
-        
+
         /**
          * I assume here for now that the options are the same which also
          * can be sent via the options attribute to javax.faces.ajax
@@ -409,7 +409,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         return retVal;
     }
 
-    private final String mapToString(ClientBehaviorContext context, StringBuilder retVal, 
+    private final String mapToString(ClientBehaviorContext context, StringBuilder retVal,
             String target, Collection<String> dataHolder)
     {
         //Clear buffer
@@ -428,10 +428,10 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
             retVal.append(QUOTE);
 
             int cnt = 0;
-            
-            // perf: dataHolder is a Collection : ajaxBehaviour.getExecute() 
+
+            // perf: dataHolder is a Collection : ajaxBehaviour.getExecute()
             // and ajaxBehaviour.getRender() API
-            // In most cases comes here a ArrayList, because 
+            // In most cases comes here a ArrayList, because
             // javax.faces.component.behavior.AjaxBehavior.getCollectionFromSpaceSplitString
             // creates it.
             if (dataHolder instanceof RandomAccess)
@@ -477,10 +477,9 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
                 retVal.append(strVal);
             }*/
             Set<SearchExpressionHint> expressionHints = new HashSet<SearchExpressionHint>();
-            expressionHints.add(SearchExpressionHint.RESOLVE_CLIENT_ID);
             expressionHints.add(SearchExpressionHint.EXECUTE_CLIENT_SIDE);
-            SearchExpressionContext searchExpressionContext = 
-                    SearchExpressionContext.createSearchExpressionContext(context.getFacesContext(), 
+            SearchExpressionContext searchExpressionContext =
+                    SearchExpressionContext.createSearchExpressionContext(context.getFacesContext(),
                             context.getComponent(), expressionHints, null);
             String clientId = context.getFacesContext().getApplication().getSearchExpressionHandler().resolveClientId(
                     searchExpressionContext, strVal);

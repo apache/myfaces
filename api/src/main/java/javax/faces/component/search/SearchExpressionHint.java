@@ -22,18 +22,13 @@ package javax.faces.component.search;
 /**
  *
  */
-public enum SearchExpressionHint 
+public enum SearchExpressionHint
 {
-    
+
     IGNORE_NO_RESULT,
 
     PARENT_FALLBACK,
 
-    /**
-     * Indicate the algorithm is extracting client ids from expressions.
-     */
-    RESOLVE_CLIENT_ID,
-    
     /**
      * Indicate that the method is collecting a list of real UIComponent instances.
      */

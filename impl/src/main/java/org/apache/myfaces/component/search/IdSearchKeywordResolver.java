@@ -26,7 +26,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.component.search.SearchKeywordContext;
-import javax.faces.component.search.SearchExpressionResolver;
+import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
@@ -35,7 +35,7 @@ import javax.faces.context.FacesContext;
 /**
  *
  */
-public class IdSearchExpressionResolver extends SearchExpressionResolver
+public class IdSearchKeywordResolver extends SearchKeywordResolver
 {
 
     public static final String ID_KEYWORD = "id";

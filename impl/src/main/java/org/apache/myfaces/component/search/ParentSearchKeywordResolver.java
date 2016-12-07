@@ -22,37 +22,42 @@ package org.apache.myfaces.component.search;
 import javax.faces.component.UIComponent;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchKeywordContext;
-import javax.faces.component.search.SearchExpressionResolver;
+import javax.faces.component.search.SearchKeywordResolver;
 
 /**
  *
  */
-public class CompositeComponentParentSearchExpressionResolver extends SearchExpressionResolver
+public class ParentSearchKeywordResolver extends SearchKeywordResolver
 {
-    public static final String COMPOSITE_KEYWORD = "composite";
+    public static final String PARENT_KEYWORD = "parent";
 
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
     {
-        if (command != null && command.equalsIgnoreCase(COMPOSITE_KEYWORD))
+        if (command != null && command.equalsIgnoreCase(PARENT_KEYWORD))
         {
-            expressionContext.invokeContextCallback(expressionContext.getFacesContext(), 
-                    UIComponent.getCompositeComponentParent(last));
+            expressionContext.invokeContextCallback(expressionContext.getFacesContext(), last.getParent());
         }
     }
     
+    public String getKeyword()
+    {
+        return PARENT_KEYWORD;
+    }
+
     @Override
     public boolean matchKeyword(SearchExpressionContext searchExpressionContext, String keyword)
     {
-        return COMPOSITE_KEYWORD.equalsIgnoreCase(keyword);
+        return PARENT_KEYWORD.equalsIgnoreCase(keyword);
     }
 
     @Override
     public boolean isPassthrough(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return false;
-    } 
+    }
     
+    @Override
     public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return false;
