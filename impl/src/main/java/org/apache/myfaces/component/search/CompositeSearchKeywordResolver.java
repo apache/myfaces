@@ -32,21 +32,21 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver
     private int size;
 
     private SearchKeywordResolver[] resolvers;
-    
+
     public CompositeSearchKeywordResolver()
     {
         this.size = 0;
         this.resolvers = new SearchKeywordResolver[2];
     }
-    
-    public void add(SearchKeywordResolver elResolver) 
+
+    public void add(SearchKeywordResolver elResolver)
     {
-        if (elResolver == null) 
+        if (elResolver == null)
         {
             throw new NullPointerException();
         }
 
-        if (this.size >= this.resolvers.length) 
+        if (this.size >= this.resolvers.length)
         {
             SearchKeywordResolver[] nr = new SearchKeywordResolver[this.size * 2];
             System.arraycopy(this.resolvers, 0, nr, 0, this.size);
@@ -60,22 +60,21 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver
     {
         context.setCommandResolved(false);
         int sz = this.size;
-        Object result = null;
-        for (int i = 0; i < sz; i++) 
+        for (int i = 0; i < sz; i++)
         {
             this.resolvers[i].resolve(context, last, command);
-            if (context.isCommandResolved()) 
+            if (context.isCommandResolved())
             {
                 return;
             }
         }
     }
-    
+
     @Override
     public boolean matchKeyword(SearchExpressionContext searchExpressionContext, String keyword)
     {
         int sz = this.size;
-        for (int i = 0; i < sz; i++) 
+        for (int i = 0; i < sz; i++)
         {
             if (this.resolvers[i].matchKeyword(searchExpressionContext, keyword))
             {
@@ -89,7 +88,7 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver
     public boolean isPassthrough(SearchExpressionContext searchExpressionContext, String keyword)
     {
         int sz = this.size;
-        for (int i = 0; i < sz; i++) 
+        for (int i = 0; i < sz; i++)
         {
             if (this.resolvers[i].matchKeyword(searchExpressionContext, keyword))
             {
@@ -98,12 +97,12 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver
         }
         return false;
     }
-    
+
     @Override
     public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword)
     {
         int sz = this.size;
-        for (int i = 0; i < sz; i++) 
+        for (int i = 0; i < sz; i++)
         {
             if (this.resolvers[i].matchKeyword(searchExpressionContext, keyword))
             {
@@ -111,10 +110,5 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver
             }
         }
         return false;
-    }
-
-    public String getKeyword()
-    {
-        return null;
     }
 }
