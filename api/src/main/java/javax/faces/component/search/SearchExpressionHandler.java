@@ -35,35 +35,32 @@ public abstract class SearchExpressionHandler
     protected static final String KEYWORD_PREFIX = "@";
 
     public abstract String resolveClientId(SearchExpressionContext searchExpressionContext, String expressions);
-    
+
     public abstract List<String> resolveClientIds(
             SearchExpressionContext searchExpressionContext, String expressions);
-    
-    public abstract void resolveComponent(SearchExpressionContext searchExpressionContext, String expression, 
+
+    public abstract void resolveComponent(SearchExpressionContext searchExpressionContext, String expression,
             ContextCallback callback);
 
-    public abstract void resolveComponents(SearchExpressionContext searchExpressionContext, String expressions, 
+    public abstract void resolveComponents(SearchExpressionContext searchExpressionContext, String expressions,
             ContextCallback callback);
-    
-    public abstract void invokeOnComponentFromExpression(SearchExpressionContext searchExpressionContext,
+
+    public abstract void invokeOnComponent(SearchExpressionContext searchExpressionContext,
             UIComponent last, String expression, ContextCallback topCallback);
 
-    public void invokeOnComponentFromExpressions(SearchExpressionContext searchExpressionContext,
+    public void invokeOnComponent(SearchExpressionContext searchExpressionContext,
             UIComponent last, String[] expressions, ContextCallback topCallback)
     {
         for (String expression : expressions)
         {
-            invokeOnComponentFromExpression(searchExpressionContext, last, expression, topCallback);
+            invokeOnComponent(searchExpressionContext, last, expression, topCallback);
         }
     }
-    
-    public abstract void applyKeyword(SearchExpressionContext searchExpressionContext, UIComponent last, 
-                             String command, ContextCallback topCallback);
-    
+
     public abstract String[] splitExpressions(String expressions);
-    
+
     public abstract boolean isPassthroughExpression(SearchExpressionContext searchExpressionContext, String expression);
-    
+
     public abstract boolean isValidExpression(SearchExpressionContext searchExpressionContext, String expression);
-    
+
 }

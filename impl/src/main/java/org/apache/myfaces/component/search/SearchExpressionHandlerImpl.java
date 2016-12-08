@@ -52,7 +52,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         }
         else
         {
-            handler.invokeOnComponentFromExpression(
+            handler.invokeOnComponent(
                     searchExpressionContext, searchExpressionContext.getSource(), expression, callback);
 
             if (!callback.isClientIdFound() && hints != null && hints.contains(SearchExpressionHint.PARENT_FALLBACK))
@@ -118,7 +118,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
             }
             else
             {
-                handler.invokeOnComponentFromExpression(
+                handler.invokeOnComponent(
                         searchExpressionContext, searchExpressionContext.getSource(), expression, callback);
             }
         }
@@ -182,7 +182,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         SingleInvocationCallback checkCallback = new SingleInvocationCallback(callback);
         Set<SearchExpressionHint> hints = searchExpressionContext.getExpressionHints();
-        facesContext.getApplication().getSearchExpressionHandler().invokeOnComponentFromExpression(
+        facesContext.getApplication().getSearchExpressionHandler().invokeOnComponent(
                 searchExpressionContext, searchExpressionContext.getSource(), expression, checkCallback);
 
         if (!checkCallback.isInvoked() && hints != null && hints.contains(SearchExpressionHint.PARENT_FALLBACK))
@@ -247,7 +247,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         for (String expression :
                 facesContext.getApplication().getSearchExpressionHandler().splitExpressions(expressions))
         {
-            facesContext.getApplication().getSearchExpressionHandler().invokeOnComponentFromExpression(
+            facesContext.getApplication().getSearchExpressionHandler().invokeOnComponent(
                     searchExpressionContext, searchExpressionContext.getSource(), expression, checkCallback);
         }
         // ...
@@ -301,7 +301,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         }
     }
 
-    public void invokeOnComponentFromExpression(final SearchExpressionContext searchExpressionContext,
+    public void invokeOnComponent(final SearchExpressionContext searchExpressionContext,
             UIComponent source, String topExpression, ContextCallback topCallback)
     {
         // Command pattern to apply the keyword or command to the base and then invoke the callback
@@ -316,7 +316,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         {
             UIComponent findBase;
             findBase = SearchComponentUtils.getRootComponent(currentBase);
-            facesContext.getApplication().getSearchExpressionHandler().invokeOnComponentFromExpression(
+            facesContext.getApplication().getSearchExpressionHandler().invokeOnComponent(
                     searchExpressionContext, findBase, topExpression.substring(1), topCallback);
             return;
         }
@@ -346,7 +346,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                         @Override
                         public void invokeContextCallback(FacesContext facesContext, UIComponent target)
                         {
-                            currentInstance.invokeOnComponentFromExpression(
+                            currentInstance.invokeOnComponent(
                                     searchExpressionContext, target, remaining, parentCallback);
                         }
                     });
@@ -430,7 +430,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                                 parent.invokeOnComponent(facesContext, targetClientId, new ContextCallback(){
                                     public void invokeContextCallback(FacesContext context, UIComponent target)
                                     {
-                                        currentHandler.invokeOnComponentFromExpression(
+                                        currentHandler.invokeOnComponent(
                                                 searchExpressionContext, target, childExpression, topCallback);
                                     }
                                 });
