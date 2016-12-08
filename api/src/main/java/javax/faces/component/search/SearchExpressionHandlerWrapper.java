@@ -66,13 +66,6 @@ public abstract class SearchExpressionHandlerWrapper extends SearchExpressionHan
     }
 
     @Override
-    public void invokeOnComponent(SearchExpressionContext searchExpressionContext,
-            UIComponent last, String[] expressions, ContextCallback topCallback)
-    {
-        getWrapped().invokeOnComponent(searchExpressionContext, last, expressions, topCallback);
-    }
-
-    @Override
     public boolean isValidExpression(SearchExpressionContext searchExpressionContext, String expression)
     {
         return getWrapped().isValidExpression(searchExpressionContext, expression);
@@ -88,6 +81,12 @@ public abstract class SearchExpressionHandlerWrapper extends SearchExpressionHan
     public String[] splitExpressions(String expressions)
     {
         return getWrapped().splitExpressions(expressions);
+    }
+
+    @Override
+    public char[] getExpressionSeperatorChars()
+    {
+        return getWrapped().getExpressionSeperatorChars();
     }
 
 }

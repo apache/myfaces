@@ -53,6 +53,8 @@ import javax.faces.application.ProjectStage;
 import javax.faces.application.ResourceHandler;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
+import javax.faces.component.search.SearchExpressionHandler;
+import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.el.PropertyResolver;
@@ -754,6 +756,10 @@ public class FacesConfigurator
                 dispenser.getViewHandlerIterator(),
                 application.getViewHandler()));
         
+        application.setSearchExpressionHandler(ClassUtils.buildApplicationObject(SearchExpressionHandler.class,
+                dispenser.getSearchExpressionHandlerIterator(),
+                application.getSearchExpressionHandler()));
+        
         RuntimeConfig runtimeConfig = getRuntimeConfig();
         
         for (SystemEventListener systemEventListener : dispenser.getSystemEventListeners())
@@ -1059,6 +1065,14 @@ public class FacesConfigurator
                 log.log(Level.SEVERE, "Error while injecting ELResolver", e);
             }
             runtimeConfig.addFacesConfigElResolver(elResolver);
+        }
+        
+        for (String className : dispenser.getSearchKeywordResolvers())
+        {
+            SearchKeywordResolver searchKeywordResolver = (SearchKeywordResolver) ClassUtils.newInstance(
+                    className, SearchKeywordResolver.class);
+            
+            runtimeConfig.addApplicationSearchExpressionResolver(searchKeywordResolver);
         }
 
         runtimeConfig.setFacesVersion(dispenser.getFacesVersion());

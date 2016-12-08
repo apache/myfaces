@@ -107,6 +107,8 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     private List<String> viewHandlers = new ArrayList<String>();
     private List<String> defaultValidatorIds = new ArrayList<String>();
     private List<String> defaultAnnotatedValidatorIds = new ArrayList<String>();
+    private List<String> searchExpressionHandlers = new ArrayList<String>();
+    private List<String> searchKeywordResolvers = new ArrayList<String>();
     
     private List<ManagedBean> managedBeans = new ArrayList<ManagedBean>();
     
@@ -158,6 +160,8 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     private transient List<String> umstateManagers;
     private transient List<String> umvariableResolver;
     private transient List<String> umviewHandlers;
+    private transient List<String> umsearchExpressionHandlers;
+    private transient List<String> umsearchKeywordResolvers;
     private transient List<ManagedBean> ummanagedBeans;
     private transient List<NavigationRule> umnavigationRules;
     private transient List<ResourceBundle> umresourceBundles;
@@ -235,6 +239,8 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
             resourceBundles.addAll(application.getResourceBundle());
             elResolvers.addAll(application.getElResolver());
             resourceLibraryContractMappings.addAll(application.getResourceLibraryContractMappings());
+            searchExpressionHandlers.addAll(application.getSearchExpressionHandler());
+            searchKeywordResolvers.addAll(application.getSearchKeywordResolver());
 
             // Jsf 2.0 spec section 3.5.3 says this: 
             // ".... Any configuration resource that declares a list of default 
@@ -1063,4 +1069,24 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         return umsearchExpressionContextFactories;
     }
     
+    @Override
+    public Collection<String> getSearchKeywordResolvers()
+    {
+        if (umsearchKeywordResolvers == null)
+        {
+            umsearchKeywordResolvers = Collections.unmodifiableList(searchKeywordResolvers);
+        }
+        return umsearchKeywordResolvers;
+    }    
+    
+    @Override
+    public Collection<String> getSearchExpressionHandlerIterator()
+    {
+        if (umsearchExpressionHandlers == null)
+        {
+            umsearchExpressionHandlers = Collections.unmodifiableList(searchExpressionHandlers);
+        }
+        return umsearchExpressionHandlers;
+    }
+
 }

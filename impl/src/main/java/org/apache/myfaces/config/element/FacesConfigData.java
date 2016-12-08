@@ -311,4 +311,23 @@ public abstract class FacesConfigData implements Serializable
     {
         return Collections.emptyList();
     }
+    
+    /**
+     * @since 2.3
+     * @return 
+     */
+    public Collection<String> getSearchKeywordResolvers()
+    {
+        return Collections.emptyList();
+    }
+    
+    /**
+     * @since 2.3
+     * @return 
+     */
+    public Collection<String> getSearchExpressionHandlerIterator()
+    {
+        return Collections.emptyList();
+    }
+            
 }

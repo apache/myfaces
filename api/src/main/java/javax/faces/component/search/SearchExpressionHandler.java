@@ -48,19 +48,15 @@ public abstract class SearchExpressionHandler
     public abstract void invokeOnComponent(SearchExpressionContext searchExpressionContext,
             UIComponent last, String expression, ContextCallback topCallback);
 
-    public void invokeOnComponent(SearchExpressionContext searchExpressionContext,
-            UIComponent last, String[] expressions, ContextCallback topCallback)
-    {
-        for (String expression : expressions)
-        {
-            invokeOnComponent(searchExpressionContext, last, expression, topCallback);
-        }
-    }
-
     public abstract String[] splitExpressions(String expressions);
 
     public abstract boolean isPassthroughExpression(SearchExpressionContext searchExpressionContext, String expression);
 
     public abstract boolean isValidExpression(SearchExpressionContext searchExpressionContext, String expression);
+    
+    public char[] getExpressionSeperatorChars()
+    {
+        return EXPRESSION_SEPARATOR_CHARS;
+    }
 
 }

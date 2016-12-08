@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import javax.faces.FacesException;
 import javax.faces.component.ContextCallback;
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
@@ -302,12 +303,12 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     }
 
     public void invokeOnComponent(final SearchExpressionContext searchExpressionContext,
-            UIComponent source, String topExpression, ContextCallback topCallback)
+            UIComponent last, String topExpression, ContextCallback topCallback)
     {
         // Command pattern to apply the keyword or command to the base and then invoke the callback
         FacesContext facesContext = searchExpressionContext.getFacesContext();
 
-        UIComponent currentBase = source;
+        UIComponent currentBase = last;
 
         //Step 1: find base
         //  Case ':' (root)
@@ -339,9 +340,14 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 
             // If the keyword is @child, @composite, @form, @namingcontainer, @next, @none, @parent, @previous,
             // @root, @this ,  all commands change the source to be applied the action
+            
             if (remaining != null)
             {
-                this.applyKeyword(searchExpressionContext, base, command, new ContextCallback()
+                if (facesContext.getApplication().getSearchKeywordResolver().isLeaf(searchExpressionContext, command))
+                {
+                    throw new FacesException("Expression cannot have keywords or ids at the right side: "+command);
+                }
+                this.applyKeyword(searchExpressionContext, base, command, remaining, new ContextCallback()
                     {
                         @Override
                         public void invokeContextCallback(FacesContext facesContext, UIComponent target)
@@ -354,7 +360,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
             else
             {
                 // Command completed, apply parent callback
-                this.applyKeyword(searchExpressionContext, base, command, parentCallback);
+                this.applyKeyword(searchExpressionContext, base, command, null, parentCallback);
             }
         }
         else
@@ -455,13 +461,14 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         }
     }
 
-    public void applyKeyword(SearchExpressionContext searchExpressionContext, UIComponent last,
-                             String command, ContextCallback topCallback)
+    protected void applyKeyword(SearchExpressionContext searchExpressionContext, UIComponent last,
+                             String command, String remainingExpression, ContextCallback topCallback)
     {
         // take the command and resolve it using the chain of responsibility pattern.
         SearchKeywordContext searchContext = new SearchKeywordContext(searchExpressionContext.getFacesContext());
         searchContext.setSearchExpressionContext(searchExpressionContext);
         searchContext.setTopCallback(topCallback);
+        searchContext.setRemainingExpression(remainingExpression);
         searchExpressionContext.getFacesContext().getApplication()
                 .getSearchKeywordResolver().resolve(searchContext, last, command);
     }

@@ -36,6 +36,8 @@ public class SearchKeywordContext
     
     private final FacesContext facesContext;
     
+    private String remainingExpression;
+    
     public SearchKeywordContext(FacesContext facesContext)
     {
         this.facesContext = facesContext;
@@ -107,6 +109,22 @@ public class SearchKeywordContext
     public void setSearchExpressionContext(SearchExpressionContext searchExpressionContext)
     {
         this.searchExpressionContext = searchExpressionContext;
+    }
+
+    /**
+     * @return the remainingExpression
+     */
+    public String getRemainingExpression()
+    {
+        return remainingExpression;
+    }
+
+    /**
+     * @param remainingExpression the remainingExpression to set
+     */
+    public void setRemainingExpression(String remainingExpression)
+    {
+        this.remainingExpression = remainingExpression;
     }
 
 }

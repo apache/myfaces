@@ -125,10 +125,13 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallMethod("faces-config/factory/partial-view-context-factory", "addPartialViewContextFactory", 0);
         digester.addCallMethod("faces-config/factory/tag-handler-delegate-factory", "addTagHandlerDelegateFactory", 0);
         digester.addCallMethod("faces-config/factory/visit-context-factory", "addVisitContextFactory", 0);
+        // 2.0 specific end
+        // 2.3 specific start
         digester.addCallMethod("faces-config/factory/search-expression-context-factory", 
                 "addSearchExpressionContextFactory", 0);
-        // 2.0 specific end
-        
+        digester.addCallMethod("faces-config/application/search-expression-handler", "addSearchExpressionHandler", 0);
+        digester.addCallMethod("faces-config/application/search-keyword-resolver", "addSearchKeywordResolver", 0);
+        // 2.3 specific end
         digester.addObjectCreate("faces-config/application/resource-library-contracts/contract-mapping", 
             ContractMappingImpl.class);
         digester.addSetNext("faces-config/application/resource-library-contracts/contract-mapping", 
@@ -327,16 +330,12 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addCallMethod("faces-config/faces-config-extension/facelets-processing/file-extension",
                                "setFileExtension", 0);
         digester.addCallMethod("faces-config/faces-config-extension/facelets-processing/process-as", "setProcessAs", 0);
-
         // 2.1 facelets-processing end
-        
+
         //MyFaces specific facelets-processing instruction.
         digester.addCallMethod("faces-config/faces-config-extension/facelets-processing/oam-compress-spaces", 
                 "setOamCompressSpaces", 0);
-        
         addFacesFlowRules(externalContext);
-        
-        
     }
     
     private void addNavigationRules(ExternalContext externalContext, String prefix, String method)

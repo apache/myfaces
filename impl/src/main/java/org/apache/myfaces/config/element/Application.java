@@ -62,4 +62,8 @@ public abstract class Application implements Serializable
     public abstract boolean isDefaultValidatorsPresent();
 
     public abstract List<ContractMapping> getResourceLibraryContractMappings();
+    
+    public abstract List<String> getSearchKeywordResolver();
+    
+    public abstract List<String> getSearchExpressionHandler();
 }

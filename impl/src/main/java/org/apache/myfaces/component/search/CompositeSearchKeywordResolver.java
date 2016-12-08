@@ -62,10 +62,13 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver
         int sz = this.size;
         for (int i = 0; i < sz; i++)
         {
-            this.resolvers[i].resolve(context, last, command);
-            if (context.isCommandResolved())
+            if (this.resolvers[i].matchKeyword(context.getSearchExpressionContext(), command))
             {
-                return;
+                this.resolvers[i].resolve(context, last, command);
+                if (context.isCommandResolved())
+                {
+                    return;
+                }
             }
         }
     }

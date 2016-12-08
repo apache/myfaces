@@ -49,6 +49,8 @@ public class ApplicationImpl extends org.apache.myfaces.config.element.Applicati
             = new ArrayList<org.apache.myfaces.config.element.SystemEventListener>();
     private final List<ContractMapping> resourceLibraryContractMappings 
             = new ArrayList<ContractMapping>();
+    private final List<String> searchKeywordResolver = new ArrayList<String>();
+    private final List<String> searchExpressionHandler = new ArrayList<String>();
     
     private boolean defaultValidatorsPresent = false;
     
@@ -222,4 +224,27 @@ public class ApplicationImpl extends org.apache.myfaces.config.element.Applicati
     {
         resourceLibraryContractMappings.add(mapping);
     }
+
+    @Override
+    public List<String> getSearchKeywordResolver()
+    {
+        return searchKeywordResolver;
+    }
+    
+    public void addSearchKeywordResolver(String handler)
+    {
+        searchKeywordResolver.add(handler);
+    }
+
+    @Override
+    public List<String> getSearchExpressionHandler()
+    {
+        return searchExpressionHandler;
+    }
+    
+    public void addSearchExpressionHandlerHandler(String handler)
+    {
+        searchExpressionHandler.add(handler);
+    }
+
 }
