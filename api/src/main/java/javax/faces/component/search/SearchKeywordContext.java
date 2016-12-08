@@ -49,11 +49,11 @@ public class SearchKeywordContext
         return facesContext;
     }
     
-    public void invokeContextCallback(FacesContext context, UIComponent target)
+    public void invokeContextCallback(UIComponent target)
     {
         try
         {
-            this.getTopCallback().invokeContextCallback(context, target);
+            this.getTopCallback().invokeContextCallback(facesContext, target);
         }
         finally
         {

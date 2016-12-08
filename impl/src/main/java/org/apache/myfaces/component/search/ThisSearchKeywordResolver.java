@@ -36,7 +36,7 @@ public class ThisSearchKeywordResolver extends SearchKeywordResolver
     {
         if (command != null && command.equalsIgnoreCase(THIS_KEYWORD))
         {
-            expressionContext.invokeContextCallback(expressionContext.getFacesContext(), last);
+            expressionContext.invokeContextCallback(last);
         }
     }
 

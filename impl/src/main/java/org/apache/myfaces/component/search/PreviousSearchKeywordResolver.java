@@ -59,8 +59,7 @@ public class PreviousSearchKeywordResolver extends SearchKeywordResolver
                     
                     if (nextIndex != -1)
                     {
-                        expressionContext.invokeContextCallback(
-                                expressionContext.getFacesContext(), children.get(nextIndex));
+                        expressionContext.invokeContextCallback(children.get(nextIndex));
                     }
                 }
             }

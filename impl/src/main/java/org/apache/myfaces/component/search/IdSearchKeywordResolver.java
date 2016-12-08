@@ -70,8 +70,7 @@ public class IdSearchKeywordResolver extends SearchKeywordResolver
                             {
                                 if (targetId.equals(target.getId()))
                                 {
-                                    expressionContext.invokeContextCallback(
-                                            expressionContext.getFacesContext(), target);
+                                    expressionContext.invokeContextCallback(target);
                                     return VisitResult.COMPLETE;
                                 }
                                 else

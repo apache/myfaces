@@ -36,7 +36,7 @@ public class ParentSearchKeywordResolver extends SearchKeywordResolver
     {
         if (command != null && command.equalsIgnoreCase(PARENT_KEYWORD))
         {
-            expressionContext.invokeContextCallback(expressionContext.getFacesContext(), last.getParent());
+            expressionContext.invokeContextCallback(last.getParent());
         }
     }
     

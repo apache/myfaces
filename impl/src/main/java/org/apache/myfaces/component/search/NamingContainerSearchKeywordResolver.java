@@ -37,8 +37,7 @@ public class NamingContainerSearchKeywordResolver extends SearchKeywordResolver
     {
         if (command != null && command.equalsIgnoreCase(NAMING_CONTAINER_KEYWORD))
         {
-            expressionContext.invokeContextCallback(expressionContext.getFacesContext(), 
-                    (UIComponent) closest(NamingContainer.class, last));
+            expressionContext.invokeContextCallback((UIComponent) closest(NamingContainer.class, last));
         }
     }
     

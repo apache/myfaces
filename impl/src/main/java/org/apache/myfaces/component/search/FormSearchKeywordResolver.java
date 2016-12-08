@@ -38,7 +38,7 @@ public class FormSearchKeywordResolver extends SearchKeywordResolver
     {
         if (command != null && command.equalsIgnoreCase(FORM_KEYWORD))
         {
-            expressionContext.invokeContextCallback(expressionContext.getFacesContext(), closest(UIForm.class, last));
+            expressionContext.invokeContextCallback(closest(UIForm.class, last));
         }
     }
     

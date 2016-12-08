@@ -44,7 +44,7 @@ public class AllSearchKeywordResolver extends SearchKeywordResolver
                 parent = parent.getParent();
             }
 
-            expressionContext.invokeContextCallback(expressionContext.getFacesContext(), parent);
+            expressionContext.invokeContextCallback(parent);
         }
     }
     

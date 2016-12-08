@@ -36,8 +36,7 @@ public class RootSearchKeywordResolver extends SearchKeywordResolver
     {
         if (command != null && command.equalsIgnoreCase(ROOT_KEYWORD))
         {
-            expressionContext.invokeContextCallback(expressionContext.getFacesContext(), 
-                    expressionContext.getFacesContext().getViewRoot());
+            expressionContext.invokeContextCallback(expressionContext.getFacesContext().getViewRoot());
         }
     }
 

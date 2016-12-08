@@ -71,8 +71,7 @@ public class ChildSearchKeywordResolver extends SearchKeywordResolver
                         }
                         if (count == childNumber + 1)
                         {
-                            expressionContext.invokeContextCallback(expressionContext.getFacesContext(), 
-                                    last.getChildren().get(childNumber));
+                            expressionContext.invokeContextCallback(last.getChildren().get(childNumber));
                             break;
                         }
                     }

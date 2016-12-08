@@ -36,8 +36,7 @@ public class CompositeComponentParentSearchKeywordResolver extends SearchKeyword
     {
         if (command != null && command.equalsIgnoreCase(COMPOSITE_KEYWORD))
         {
-            expressionContext.invokeContextCallback(expressionContext.getFacesContext(), 
-                    UIComponent.getCompositeComponentParent(last));
+            expressionContext.invokeContextCallback(UIComponent.getCompositeComponentParent(last));
         }
     }
     
