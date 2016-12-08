@@ -463,7 +463,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         searchContext.setSearchExpressionContext(searchExpressionContext);
         searchContext.setTopCallback(topCallback);
         searchExpressionContext.getFacesContext().getApplication()
-                .getSearchExpressionResolver().resolve(searchContext, last, command);
+                .getSearchKeywordResolver().resolve(searchContext, last, command);
     }
 
     public boolean isPassthroughExpression(SearchExpressionContext searchExpressionContext, String topExpression)
@@ -498,7 +498,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 
             // If the keyword is @child, @composite, @form, @namingcontainer, @next, @none, @parent, @previous,
             // @root, @this ,  all commands change the source to be applied the action
-            passthrough = facesContext.getApplication().getSearchExpressionResolver().isPassthrough(
+            passthrough = facesContext.getApplication().getSearchKeywordResolver().isPassthrough(
                     searchExpressionContext, command);
 
             if (passthrough)
@@ -549,11 +549,11 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 
             // If the keyword is @child, @composite, @form, @namingcontainer, @next, @none, @parent, @previous,
             // @root, @this ,  all commands change the source to be applied the action
-            isValid = facesContext.getApplication().getSearchExpressionResolver().matchKeyword(
+            isValid = facesContext.getApplication().getSearchKeywordResolver().matchKeyword(
                     searchExpressionContext, command);
             if (remaining != null)
             {
-                if (facesContext.getApplication().getSearchExpressionResolver().isLeaf(
+                if (facesContext.getApplication().getSearchKeywordResolver().isLeaf(
                     searchExpressionContext, command))
                 {
                     isValid = false;

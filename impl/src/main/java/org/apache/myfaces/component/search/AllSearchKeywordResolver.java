@@ -21,6 +21,7 @@ package org.apache.myfaces.component.search;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.search.SearchExpressionContext;
+import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.component.search.SearchKeywordContext;
 import javax.faces.component.search.SearchKeywordResolver;
 
@@ -61,7 +62,15 @@ public class AllSearchKeywordResolver extends SearchKeywordResolver
     @Override
     public boolean isPassthrough(SearchExpressionContext searchExpressionContext, String keyword)
     {
-        return false;
+        if (searchExpressionContext.getExpressionHints() != null &&
+            searchExpressionContext.getExpressionHints().contains(SearchExpressionHint.EXECUTE_CLIENT_SIDE))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     
     public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword)

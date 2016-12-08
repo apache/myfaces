@@ -2917,7 +2917,7 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public SearchKeywordResolver getSearchExpressionResolver()
+    public SearchKeywordResolver getSearchKeywordResolver()
     {
         // we don't need synchronization here since it is ok to have multiple
         // instances of the elresolver
@@ -2955,7 +2955,7 @@ public class ApplicationImpl extends Application
     }
 
     @Override
-    public void addSearchExpressionResolver(SearchKeywordResolver resolver)
+    public void addSearchKeywordResolver(SearchKeywordResolver resolver)
     {
         if (isFirstRequestProcessed())
         {

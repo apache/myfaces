@@ -1254,7 +1254,7 @@ public abstract class Application
 
     }
     
-    public void addSearchExpressionResolver(SearchKeywordResolver resolver)
+    public void addSearchKeywordResolver(SearchKeywordResolver resolver)
     {
         // The following concrete methods were added for JSF 1.2.  They supply default 
         // implementations that throw UnsupportedOperationException.  
@@ -1262,18 +1262,18 @@ public abstract class Application
         Application application = getMyfacesApplicationInstance();
         if (application != null)
         {
-            application.addSearchExpressionResolver(resolver);
+            application.addSearchKeywordResolver(resolver);
             return;
         }
         throw new UnsupportedOperationException();
     }
     
-    public SearchKeywordResolver getSearchExpressionResolver()
+    public SearchKeywordResolver getSearchKeywordResolver()
     {
         Application application = getMyfacesApplicationInstance();
         if (application != null)
         {
-            return application.getSearchExpressionResolver();
+            return application.getSearchKeywordResolver();
         }
         throw new UnsupportedOperationException();
     }
