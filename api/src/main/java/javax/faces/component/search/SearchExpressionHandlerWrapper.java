@@ -33,6 +33,12 @@ public abstract class SearchExpressionHandlerWrapper extends SearchExpressionHan
     public abstract SearchExpressionHandler getWrapped();
 
     @Override
+    public String resolveClientId(SearchExpressionContext searchExpressionContext, String expression)
+    {
+        return getWrapped().resolveClientId(searchExpressionContext, expression);
+    }
+
+    @Override
     public List<String> resolveClientIds(SearchExpressionContext searchExpressionContext, String expressions)
     {
         return getWrapped().resolveClientIds(searchExpressionContext, expressions);
@@ -43,6 +49,13 @@ public abstract class SearchExpressionHandlerWrapper extends SearchExpressionHan
             String expression, ContextCallback callback)
     {
         getWrapped().resolveComponent(searchExpressionContext, expression, callback);
+    }
+
+    @Override
+    public void resolveComponents(
+            SearchExpressionContext searchExpressionContext, String expressions, ContextCallback callback)
+    {
+        getWrapped().resolveComponents(searchExpressionContext, expressions, callback);
     }
 
     @Override
@@ -75,19 +88,6 @@ public abstract class SearchExpressionHandlerWrapper extends SearchExpressionHan
     public String[] splitExpressions(String expressions)
     {
         return getWrapped().splitExpressions(expressions);
-    }
-
-    @Override
-    public void resolveComponents(
-            SearchExpressionContext searchExpressionContext, String expressions, ContextCallback callback)
-    {
-        getWrapped().resolveComponents(searchExpressionContext, expressions, callback);
-    }
-
-    @Override
-    public String resolveClientId(SearchExpressionContext searchExpressionContext, String expressions)
-    {
-        return getWrapped().resolveClientId(searchExpressionContext, expressions);
     }
 
 }

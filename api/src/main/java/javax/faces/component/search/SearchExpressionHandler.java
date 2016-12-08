@@ -34,7 +34,7 @@ public abstract class SearchExpressionHandler
     };
     protected static final String KEYWORD_PREFIX = "@";
 
-    public abstract String resolveClientId(SearchExpressionContext searchExpressionContext, String expressions);
+    public abstract String resolveClientId(SearchExpressionContext searchExpressionContext, String expression);
 
     public abstract List<String> resolveClientIds(
             SearchExpressionContext searchExpressionContext, String expressions);
