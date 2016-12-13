@@ -60,6 +60,13 @@ public abstract class SearchExpressionHandlerWrapper extends SearchExpressionHan
 
     @Override
     public void invokeOnComponent(SearchExpressionContext searchExpressionContext,
+            String expression, ContextCallback topCallback)
+    {
+        getWrapped().invokeOnComponent(searchExpressionContext, expression, topCallback);
+    }
+    
+    @Override
+    public void invokeOnComponent(SearchExpressionContext searchExpressionContext,
             UIComponent last, String expression, ContextCallback topCallback)
     {
         getWrapped().invokeOnComponent(searchExpressionContext, last, expression, topCallback);

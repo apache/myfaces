@@ -45,6 +45,11 @@ public abstract class SearchExpressionHandler
     public abstract void resolveComponents(SearchExpressionContext searchExpressionContext, String expressions,
             ContextCallback callback);
 
+    public void invokeOnComponent(SearchExpressionContext searchExpressionContext,
+            String expressions, ContextCallback topCallback) {
+        invokeOnComponent(searchExpressionContext, searchExpressionContext.getSource(), expressions, topCallback);
+    }
+
     public abstract void invokeOnComponent(SearchExpressionContext searchExpressionContext,
             UIComponent last, String expression, ContextCallback topCallback);
 
