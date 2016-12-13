@@ -36,35 +36,32 @@ public class PreviousSearchKeywordResolver extends SearchKeywordResolver
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
-        if (command != null && command.equalsIgnoreCase(PREVIOUS_KEYWORD))
+        UIComponent parent = previous.getParent();
+
+        if (parent.getChildCount() > 1)
         {
-            UIComponent parent = previous.getParent();
+            List<UIComponent> children = parent.getChildren();
+            int index = children.indexOf(previous);
 
-            if (parent.getChildCount() > 1)
+            if (index > 0)
             {
-                List<UIComponent> children = parent.getChildren();
-                int index = children.indexOf(previous);
-
-                if (index > 0)
+                int nextIndex = -1;
+                do
                 {
-                    int nextIndex = -1;
-                    do
+                    index--;
+                    if(!(children.get(index) instanceof Markup))
                     {
-                        index--;
-                        if(!(children.get(index) instanceof Markup))
-                        {
-                            nextIndex = index;
-                        }
-                    } while (nextIndex == -1 && index > 0);
-                    
-                    if (nextIndex != -1)
-                    {
-                        expressionContext.invokeContextCallback(children.get(nextIndex));
+                        nextIndex = index;
                     }
+                } while (nextIndex == -1 && index > 0);
+
+                if (nextIndex != -1)
+                {
+                    expressionContext.invokeContextCallback(children.get(nextIndex));
                 }
             }
-            expressionContext.setCommandResolved(true);
         }
+        expressionContext.setCommandResolved(true);
     }
     
     @Override

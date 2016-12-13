@@ -36,10 +36,7 @@ public class FormSearchKeywordResolver extends SearchKeywordResolver
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
-        if (command != null && command.equalsIgnoreCase(FORM_KEYWORD))
-        {
-            expressionContext.invokeContextCallback(closest(UIForm.class, previous));
-        }
+        expressionContext.invokeContextCallback(closest(UIForm.class, previous));
     }
     
     private static <T> T closest(Class<T> type, UIComponent base) 

@@ -45,41 +45,37 @@ public class IdSearchKeywordResolver extends SearchKeywordResolver
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
-        if (command != null && command.length() > 4
-                && command.substring(0, 2).equalsIgnoreCase(ID_KEYWORD) && command.charAt(2) == '(')
+        final String targetId = extractId(command);
+        if (expressionContext.getSearchExpressionContext().getExpressionHints() != null
+                && expressionContext.getSearchExpressionContext().getExpressionHints().contains(
+                        SearchExpressionHint.RESOLVE_COMPONENT_LIST))
         {
-            final String targetId = extractId(command);
-            if (expressionContext.getSearchExpressionContext().getExpressionHints() != null
-                    && expressionContext.getSearchExpressionContext().getExpressionHints().contains(
-                            SearchExpressionHint.RESOLVE_COMPONENT_LIST))
-            {
-                // Avoid visit tree because in this case we need real component instances.
-                // This means components inside UIData will not be scanned. 
-                withId(expressionContext.getFacesContext(), targetId, previous, expressionContext.getTopCallback());
-                expressionContext.setCommandResolved(true);
-            }
-            else
-            {
-                previous.visitTree(
-                        VisitContext.createVisitContext(expressionContext.getFacesContext(), null,
-                                expressionContext.getSearchExpressionContext().getVisitHints()),
-                        new VisitCallback()
+            // Avoid visit tree because in this case we need real component instances.
+            // This means components inside UIData will not be scanned. 
+            withId(expressionContext.getFacesContext(), targetId, previous, expressionContext.getTopCallback());
+            expressionContext.setCommandResolved(true);
+        }
+        else
+        {
+            previous.visitTree(
+                    VisitContext.createVisitContext(expressionContext.getFacesContext(), null,
+                            expressionContext.getSearchExpressionContext().getVisitHints()),
+                    new VisitCallback()
+                    {
+                        @Override
+                        public VisitResult visit(VisitContext context, UIComponent target)
                         {
-                            @Override
-                            public VisitResult visit(VisitContext context, UIComponent target)
+                            if (targetId.equals(target.getId()))
                             {
-                                if (targetId.equals(target.getId()))
-                                {
-                                    expressionContext.invokeContextCallback(target);
-                                    return VisitResult.COMPLETE;
-                                }
-                                else
-                                {
-                                    return VisitResult.ACCEPT;
-                                }
+                                expressionContext.invokeContextCallback(target);
+                                return VisitResult.COMPLETE;
                             }
-                        });
-            }
+                            else
+                            {
+                                return VisitResult.ACCEPT;
+                            }
+                        }
+                    });
         }
     }
 
@@ -130,11 +126,6 @@ public class IdSearchKeywordResolver extends SearchKeywordResolver
                 withId(context, id, child, callback);
             }
         }
-    }
-    
-    public String getKeyword()
-    {
-        return ID_KEYWORD;
     }
     
     @Override

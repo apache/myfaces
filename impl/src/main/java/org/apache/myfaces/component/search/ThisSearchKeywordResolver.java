@@ -34,10 +34,7 @@ public class ThisSearchKeywordResolver extends SearchKeywordResolver
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
-        if (command != null && command.equalsIgnoreCase(THIS_KEYWORD))
-        {
-            expressionContext.invokeContextCallback(previous);
-        }
+        expressionContext.invokeContextCallback(previous);
     }
 
     @Override

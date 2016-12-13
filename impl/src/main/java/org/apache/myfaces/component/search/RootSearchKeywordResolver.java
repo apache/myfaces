@@ -34,15 +34,7 @@ public class RootSearchKeywordResolver extends SearchKeywordResolver
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
-        if (command != null && command.equalsIgnoreCase(ROOT_KEYWORD))
-        {
-            expressionContext.invokeContextCallback(expressionContext.getFacesContext().getViewRoot());
-        }
-    }
-
-    public String getKeyword()
-    {
-        return ROOT_KEYWORD;
+        expressionContext.invokeContextCallback(expressionContext.getFacesContext().getViewRoot());
     }
 
     @Override

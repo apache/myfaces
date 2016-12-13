@@ -35,22 +35,14 @@ public class AllSearchKeywordResolver extends SearchKeywordResolver
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
-        if (command != null && command.equalsIgnoreCase(ALL_KEYWORD))
+        UIComponent parent = previous.getParent();
+
+        while (parent.getParent() != null)
         {
-            UIComponent parent = previous.getParent();
-
-            while (parent.getParent() != null)
-            {
-                parent = parent.getParent();
-            }
-
-            expressionContext.invokeContextCallback(parent);
+            parent = parent.getParent();
         }
-    }
-    
-    public String getKeyword()
-    {
-        return ALL_KEYWORD;
+
+        expressionContext.invokeContextCallback(parent);
     }
 
     @Override
@@ -72,7 +64,8 @@ public class AllSearchKeywordResolver extends SearchKeywordResolver
             return false;
         }
     }
-    
+
+    @Override
     public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return true;

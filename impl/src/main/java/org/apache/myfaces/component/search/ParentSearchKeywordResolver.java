@@ -34,15 +34,7 @@ public class ParentSearchKeywordResolver extends SearchKeywordResolver
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
-        if (command != null && command.equalsIgnoreCase(PARENT_KEYWORD))
-        {
-            expressionContext.invokeContextCallback(previous.getParent());
-        }
-    }
-    
-    public String getKeyword()
-    {
-        return PARENT_KEYWORD;
+        expressionContext.invokeContextCallback(previous.getParent());
     }
 
     @Override

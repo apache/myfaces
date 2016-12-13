@@ -36,34 +36,31 @@ public class NextSearchKeywordResolver extends SearchKeywordResolver
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
-        if (command != null && command.equalsIgnoreCase(NEXT_KEYWORD))
+        UIComponent parent = previous.getParent();
+        if (parent.getChildCount() > 1) 
         {
-            UIComponent parent = previous.getParent();
-            if (parent.getChildCount() > 1) 
-            {
-                List<UIComponent> children = parent.getChildren();
-                int index = children.indexOf(previous);
+            List<UIComponent> children = parent.getChildren();
+            int index = children.indexOf(previous);
 
-                if (index < parent.getChildCount() - 1)
+            if (index < parent.getChildCount() - 1)
+            {
+                int nextIndex = -1;
+                do
                 {
-                    int nextIndex = -1;
-                    do
+                    index++;
+                    if(!(children.get(index) instanceof Markup))
                     {
-                        index++;
-                        if(!(children.get(index) instanceof Markup))
-                        {
-                            nextIndex = index;
-                        }
-                    } while (nextIndex == -1 && index < parent.getChildCount() - 1);
-                    
-                    if (nextIndex != -1)
-                    {
-                        expressionContext.invokeContextCallback(children.get(nextIndex));
+                        nextIndex = index;
                     }
+                } while (nextIndex == -1 && index < parent.getChildCount() - 1);
+
+                if (nextIndex != -1)
+                {
+                    expressionContext.invokeContextCallback(children.get(nextIndex));
                 }
             }
-            expressionContext.setCommandResolved(true);
         }
+        expressionContext.setCommandResolved(true);
     }
     
     @Override

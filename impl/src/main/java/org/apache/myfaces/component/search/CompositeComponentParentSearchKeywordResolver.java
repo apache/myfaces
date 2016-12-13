@@ -34,10 +34,7 @@ public class CompositeComponentParentSearchKeywordResolver extends SearchKeyword
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
-        if (command != null && command.equalsIgnoreCase(COMPOSITE_KEYWORD))
-        {
-            expressionContext.invokeContextCallback(UIComponent.getCompositeComponentParent(previous));
-        }
+        expressionContext.invokeContextCallback(UIComponent.getCompositeComponentParent(previous));
     }
     
     @Override
@@ -52,6 +49,7 @@ public class CompositeComponentParentSearchKeywordResolver extends SearchKeyword
         return false;
     } 
     
+    @Override
     public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return false;

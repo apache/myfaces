@@ -41,66 +41,57 @@ public class ChildSearchKeywordResolver extends SearchKeywordResolver
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
-        if (command != null && command.length() > 6 && 
-                command.substring(0, CHILD_KEYWORD.length()).equalsIgnoreCase(CHILD_KEYWORD))
+        try
         {
-            try
+            Matcher matcher = PATTERN.matcher(command);
+
+            if (matcher.matches())
             {
-                Matcher matcher = PATTERN.matcher(command);
 
-                if (matcher.matches())
+                int childNumber = Integer.parseInt(matcher.group(1));
+
+                if (childNumber + 1 > previous.getChildCount())
                 {
-
-                    int childNumber = Integer.parseInt(matcher.group(1));
-
-                    if (childNumber + 1 > previous.getChildCount())
-                    {
-                        throw new FacesException("Component with clientId \""
-                                + previous.getClientId(expressionContext.getFacesContext()) 
-                                + "\" has fewer children as \"" + 
-                                  childNumber + "\". Expression: \"" + command + "\"");
-                    }
-
-                    List<UIComponent> list = previous.getChildren();
-                    int count = 0;
-                    for (int i = 0; i < previous.getChildCount(); i++)
-                    {
-                        if (! (list.get(i) instanceof Markup))
-                        {
-                            count++;
-                        }
-                        if (count == childNumber + 1)
-                        {
-                            expressionContext.invokeContextCallback(previous.getChildren().get(childNumber));
-                            break;
-                        }
-                    }
-                    if (count < childNumber)
-                    {
-                        throw new FacesException("Component with clientId \""
-                                + previous.getClientId(expressionContext.getFacesContext()) 
-                                + "\" has fewer children as \"" + 
-                                  childNumber + "\". Expression: \"" + command + "\"");
-                    }
-                }
-                else
-                {
-                    throw new FacesException(
-                            "Expression does not match following pattern @child(n). Expression: \"" + command + "\"");
+                    throw new FacesException("Component with clientId \""
+                            + previous.getClientId(expressionContext.getFacesContext()) 
+                            + "\" has fewer children as \"" + 
+                              childNumber + "\". Expression: \"" + command + "\"");
                 }
 
+                List<UIComponent> list = previous.getChildren();
+                int count = 0;
+                for (int i = 0; i < previous.getChildCount(); i++)
+                {
+                    if (! (list.get(i) instanceof Markup))
+                    {
+                        count++;
+                    }
+                    if (count == childNumber + 1)
+                    {
+                        expressionContext.invokeContextCallback(previous.getChildren().get(childNumber));
+                        break;
+                    }
+                }
+                if (count < childNumber)
+                {
+                    throw new FacesException("Component with clientId \""
+                            + previous.getClientId(expressionContext.getFacesContext()) 
+                            + "\" has fewer children as \"" + 
+                              childNumber + "\". Expression: \"" + command + "\"");
+                }
             }
-            catch (Exception e)
+            else
             {
                 throw new FacesException(
-                        "Expression does not match following pattern @child(n). Expression: \"" + command + "\"", e);
+                        "Expression does not match following pattern @child(n). Expression: \"" + command + "\"");
             }
+
         }
-    }
-    
-    public String getKeyword()
-    {
-        return CHILD_KEYWORD;
+        catch (Exception e)
+        {
+            throw new FacesException(
+                    "Expression does not match following pattern @child(n). Expression: \"" + command + "\"", e);
+        }
     }
 
     @Override
@@ -136,6 +127,7 @@ public class ChildSearchKeywordResolver extends SearchKeywordResolver
         return false;
     }
     
+    @Override
     public boolean isLeaf(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return false;
