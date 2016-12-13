@@ -39,7 +39,7 @@ public class ChildSearchKeywordResolver extends SearchKeywordResolver
     private static final Pattern PATTERN = Pattern.compile("child\\((\\d+)\\)");
 
     @Override
-    public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
+    public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
         if (command != null && command.length() > 6 && 
                 command.substring(0, CHILD_KEYWORD.length()).equalsIgnoreCase(CHILD_KEYWORD))
@@ -53,17 +53,17 @@ public class ChildSearchKeywordResolver extends SearchKeywordResolver
 
                     int childNumber = Integer.parseInt(matcher.group(1));
 
-                    if (childNumber + 1 > last.getChildCount())
+                    if (childNumber + 1 > previous.getChildCount())
                     {
                         throw new FacesException("Component with clientId \""
-                                + last.getClientId(expressionContext.getFacesContext()) 
+                                + previous.getClientId(expressionContext.getFacesContext()) 
                                 + "\" has fewer children as \"" + 
                                   childNumber + "\". Expression: \"" + command + "\"");
                     }
 
-                    List<UIComponent> list = last.getChildren();
+                    List<UIComponent> list = previous.getChildren();
                     int count = 0;
-                    for (int i = 0; i < last.getChildCount(); i++)
+                    for (int i = 0; i < previous.getChildCount(); i++)
                     {
                         if (! (list.get(i) instanceof Markup))
                         {
@@ -71,14 +71,14 @@ public class ChildSearchKeywordResolver extends SearchKeywordResolver
                         }
                         if (count == childNumber + 1)
                         {
-                            expressionContext.invokeContextCallback(last.getChildren().get(childNumber));
+                            expressionContext.invokeContextCallback(previous.getChildren().get(childNumber));
                             break;
                         }
                     }
                     if (count < childNumber)
                     {
                         throw new FacesException("Component with clientId \""
-                                + last.getClientId(expressionContext.getFacesContext()) 
+                                + previous.getClientId(expressionContext.getFacesContext()) 
                                 + "\" has fewer children as \"" + 
                                   childNumber + "\". Expression: \"" + command + "\"");
                     }

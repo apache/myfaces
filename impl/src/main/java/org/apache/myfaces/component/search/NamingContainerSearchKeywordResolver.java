@@ -33,11 +33,11 @@ public class NamingContainerSearchKeywordResolver extends SearchKeywordResolver
     public static final String NAMING_CONTAINER_KEYWORD = "namingcontainer";
 
     @Override
-    public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
+    public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
         if (command != null && command.equalsIgnoreCase(NAMING_CONTAINER_KEYWORD))
         {
-            expressionContext.invokeContextCallback((UIComponent) closest(NamingContainer.class, last));
+            expressionContext.invokeContextCallback((UIComponent) closest(NamingContainer.class, previous));
         }
     }
     

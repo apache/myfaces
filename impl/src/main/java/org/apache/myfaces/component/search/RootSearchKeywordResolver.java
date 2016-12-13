@@ -32,7 +32,7 @@ public class RootSearchKeywordResolver extends SearchKeywordResolver
     public static final String ROOT_KEYWORD = "root";
 
     @Override
-    public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
+    public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
         if (command != null && command.equalsIgnoreCase(ROOT_KEYWORD))
         {

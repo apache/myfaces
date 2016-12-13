@@ -52,7 +52,7 @@ public abstract class SearchExpressionHandler
     }
 
     public abstract void invokeOnComponent(SearchExpressionContext searchExpressionContext,
-            UIComponent last, String expression, ContextCallback topCallback);
+            UIComponent previous, String expression, ContextCallback topCallback);
 
     public abstract String[] splitExpressions(String expressions);
 

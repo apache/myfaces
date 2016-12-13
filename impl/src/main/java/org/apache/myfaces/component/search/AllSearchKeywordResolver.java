@@ -33,11 +33,11 @@ public class AllSearchKeywordResolver extends SearchKeywordResolver
     public static final String ALL_KEYWORD = "all";
 
     @Override
-    public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
+    public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
         if (command != null && command.equalsIgnoreCase(ALL_KEYWORD))
         {
-            UIComponent parent = last.getParent();
+            UIComponent parent = previous.getParent();
 
             while (parent.getParent() != null)
             {

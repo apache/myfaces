@@ -56,7 +56,7 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver
     }
 
     @Override
-    public void resolve(SearchKeywordContext context, UIComponent last, String command)
+    public void resolve(SearchKeywordContext context, UIComponent previous, String command)
     {
         context.setCommandResolved(false);
         int sz = this.size;
@@ -64,7 +64,7 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver
         {
             if (this.resolvers[i].matchKeyword(context.getSearchExpressionContext(), command))
             {
-                this.resolvers[i].resolve(context, last, command);
+                this.resolvers[i].resolve(context, previous, command);
                 if (context.isCommandResolved())
                 {
                     return;

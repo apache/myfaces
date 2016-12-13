@@ -32,11 +32,11 @@ public class ThisSearchKeywordResolver extends SearchKeywordResolver
     public static final String THIS_KEYWORD = "this";
 
     @Override
-    public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
+    public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
         if (command != null && command.equalsIgnoreCase(THIS_KEYWORD))
         {
-            expressionContext.invokeContextCallback(last);
+            expressionContext.invokeContextCallback(previous);
         }
     }
 

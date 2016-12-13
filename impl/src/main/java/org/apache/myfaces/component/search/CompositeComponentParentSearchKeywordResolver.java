@@ -32,11 +32,11 @@ public class CompositeComponentParentSearchKeywordResolver extends SearchKeyword
     public static final String COMPOSITE_KEYWORD = "composite";
 
     @Override
-    public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
+    public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
         if (command != null && command.equalsIgnoreCase(COMPOSITE_KEYWORD))
         {
-            expressionContext.invokeContextCallback(UIComponent.getCompositeComponentParent(last));
+            expressionContext.invokeContextCallback(UIComponent.getCompositeComponentParent(previous));
         }
     }
     

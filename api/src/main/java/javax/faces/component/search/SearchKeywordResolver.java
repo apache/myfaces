@@ -27,7 +27,7 @@ import javax.faces.component.UIComponent;
 public abstract class SearchKeywordResolver
 {
     
-    public abstract void resolve(SearchKeywordContext keywordContext, UIComponent last, String command);
+    public abstract void resolve(SearchKeywordContext keywordContext, UIComponent previous, String command);
     
     /**
      * Check if the keyword can be resolved by the current resolver

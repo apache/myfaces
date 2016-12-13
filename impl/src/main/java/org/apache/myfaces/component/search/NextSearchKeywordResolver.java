@@ -34,15 +34,15 @@ public class NextSearchKeywordResolver extends SearchKeywordResolver
     public static final String NEXT_KEYWORD = "next";
 
     @Override
-    public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
+    public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
         if (command != null && command.equalsIgnoreCase(NEXT_KEYWORD))
         {
-            UIComponent parent = last.getParent();
+            UIComponent parent = previous.getParent();
             if (parent.getChildCount() > 1) 
             {
                 List<UIComponent> children = parent.getChildren();
-                int index = children.indexOf(last);
+                int index = children.indexOf(previous);
 
                 if (index < parent.getChildCount() - 1)
                 {

@@ -34,11 +34,11 @@ public class FormSearchKeywordResolver extends SearchKeywordResolver
     public static final String FORM_KEYWORD = "form";
 
     @Override
-    public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
+    public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
         if (command != null && command.equalsIgnoreCase(FORM_KEYWORD))
         {
-            expressionContext.invokeContextCallback(closest(UIForm.class, last));
+            expressionContext.invokeContextCallback(closest(UIForm.class, previous));
         }
     }
     

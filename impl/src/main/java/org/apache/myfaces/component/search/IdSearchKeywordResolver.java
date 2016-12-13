@@ -43,7 +43,7 @@ public class IdSearchKeywordResolver extends SearchKeywordResolver
     private static final Pattern PATTERN = Pattern.compile("id\\((\\w+)\\)");
 
     @Override
-    public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
+    public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
         if (command != null && command.length() > 4
                 && command.substring(0, 2).equalsIgnoreCase(ID_KEYWORD) && command.charAt(2) == '(')
@@ -55,12 +55,12 @@ public class IdSearchKeywordResolver extends SearchKeywordResolver
             {
                 // Avoid visit tree because in this case we need real component instances.
                 // This means components inside UIData will not be scanned. 
-                withId(expressionContext.getFacesContext(), targetId, last, expressionContext.getTopCallback());
+                withId(expressionContext.getFacesContext(), targetId, previous, expressionContext.getTopCallback());
                 expressionContext.setCommandResolved(true);
             }
             else
             {
-                last.visitTree(
+                previous.visitTree(
                         VisitContext.createVisitContext(expressionContext.getFacesContext(), null,
                                 expressionContext.getSearchExpressionContext().getVisitHints()),
                         new VisitCallback()

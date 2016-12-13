@@ -40,6 +40,7 @@ import javax.faces.context.FacesContext;
 public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 {
 
+    @Override
     public String resolveClientId(SearchExpressionContext searchExpressionContext, String expression)
     {
         FacesContext facesContext = searchExpressionContext.getFacesContext();
@@ -101,6 +102,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         }
     }
 
+    @Override
     public List<String> resolveClientIds(SearchExpressionContext searchExpressionContext,
             String expressions)
     {
@@ -177,6 +179,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         }
     }
 
+    @Override
     public void resolveComponent(SearchExpressionContext searchExpressionContext, String expression,
         ContextCallback callback)
     {
@@ -239,6 +242,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         }
     }
 
+    @Override
     public void resolveComponents(SearchExpressionContext searchExpressionContext, String expressions,
         ContextCallback callback)
     {
@@ -302,13 +306,14 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         }
     }
 
+    @Override
     public void invokeOnComponent(final SearchExpressionContext searchExpressionContext,
-            UIComponent last, String topExpression, ContextCallback topCallback)
+            UIComponent previous, String topExpression, ContextCallback topCallback)
     {
         // Command pattern to apply the keyword or command to the base and then invoke the callback
         FacesContext facesContext = searchExpressionContext.getFacesContext();
 
-        UIComponent currentBase = last;
+        UIComponent currentBase = previous;
 
         //Step 1: find base
         //  Case ':' (root)
@@ -473,6 +478,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                 .getSearchKeywordResolver().resolve(searchContext, last, command);
     }
 
+    @Override
     public boolean isPassthroughExpression(SearchExpressionContext searchExpressionContext, String topExpression)
     {
         FacesContext facesContext = searchExpressionContext.getFacesContext();
@@ -607,105 +613,6 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         return isValid;
     }
 
-    private static String[] splitSingleExpression(String value)
-    {
-        if (value == null)
-        {
-            return null;
-        }
-
-        List<String> tokens = new ArrayList<String>();
-        StringBuilder buffer = new StringBuilder();
-
-        int parenthesesCounter = 0;
-
-        char[] charArray = value.toCharArray();
-
-        for (int i = 0; i < charArray.length; i++)
-        {
-            char c = charArray[i];
-            if (c == '(')
-            {
-                parenthesesCounter++;
-            }
-
-            if (c == ')')
-            {
-                parenthesesCounter--;
-            }
-
-            if (parenthesesCounter == 0)
-            {
-                boolean isSeparator = false;
-
-                if (c == ':')
-                {
-                    for (int j = i+1; j < charArray.length; j++)
-                    {
-                        if (charArray[j] == '@')
-                        {
-                            isSeparator = true;
-                            break;
-                        }
-                        else if (Character.isAlphabetic(charArray[j]))
-                        {
-                            //Different char than @
-                            break;
-                        }
-                    }
-                }
-
-                if (isSeparator)
-                {
-                    // lets add token inside buffer to our tokens
-                    tokens.add(buffer.toString());
-                    // now we need to clear buffer
-                    buffer.delete(0, buffer.length());
-                }
-                else
-                {
-                    buffer.append(c);
-                }
-            }
-            else
-            {
-                buffer.append(c);
-            }
-        }
-
-        // lets not forget about part after the separator
-        tokens.add(buffer.toString());
-
-        return tokens.toArray(new String[tokens.size()]);
-    }
-
-    private static class ComponentExistsContextCallback implements ContextCallback
-    {
-        private boolean found;
-
-        /**
-         * @return the found
-         */
-        public boolean isFound()
-        {
-            return found;
-        }
-
-        /**
-         * @param found the found to set
-         */
-        public void setFound(boolean found)
-        {
-            this.found = found;
-        }
-
-        @Override
-        public void invokeContextCallback(FacesContext context, UIComponent target)
-        {
-            found = true;
-        }
-    }
-
     private static String extractKeyword(String expression, int startIndex, char separatorChar)
     {
         int parenthesesCounter = -1;
@@ -750,6 +657,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         }
     }
 
+    @Override
     public String[] splitExpressions(String expressions)
     {
         // split expressions by blank or comma (and ignore blank and commas inside brackets)

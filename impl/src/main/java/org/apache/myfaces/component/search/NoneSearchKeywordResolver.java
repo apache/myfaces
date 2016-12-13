@@ -33,7 +33,7 @@ public class NoneSearchKeywordResolver extends SearchKeywordResolver
     public static final String NONE_KEYWORD = "none";
 
     @Override
-    public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
+    public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
         if (command != null && command.equalsIgnoreCase(NONE_KEYWORD))
         {

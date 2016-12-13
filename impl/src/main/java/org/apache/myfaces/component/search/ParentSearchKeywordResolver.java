@@ -32,11 +32,11 @@ public class ParentSearchKeywordResolver extends SearchKeywordResolver
     public static final String PARENT_KEYWORD = "parent";
 
     @Override
-    public void resolve(SearchKeywordContext expressionContext, UIComponent last, String command)
+    public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
         if (command != null && command.equalsIgnoreCase(PARENT_KEYWORD))
         {
-            expressionContext.invokeContextCallback(last.getParent());
+            expressionContext.invokeContextCallback(previous.getParent());
         }
     }
     
