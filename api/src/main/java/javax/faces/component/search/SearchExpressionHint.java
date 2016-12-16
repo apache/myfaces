@@ -32,7 +32,9 @@ public enum SearchExpressionHint
     /**
      * Indicate that the method is collecting a list of real UIComponent instances.
      */
-    RESOLVE_COMPONENT_LIST,
+    SKIP_VIRTUAL_COMPONENTS,
+    
+    RESOLVE_SINGLE_COMPONENT,
     
     /**
      * Indicate that some expressions can be resolved on the client side.

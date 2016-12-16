@@ -76,7 +76,7 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
             for (String target : targetsArray)
             {
                 Set<SearchExpressionHint> expressionHints = new HashSet<SearchExpressionHint>(2);
-                expressionHints.add(SearchExpressionHint.RESOLVE_COMPONENT_LIST);
+                expressionHints.add(SearchExpressionHint.SKIP_VIRTUAL_COMPONENTS);
                 SearchExpressionContext searchContext = SearchExpressionContext.createSearchExpressionContext(
                                     facesContext, facetBase, expressionHints, null);
                 facesContext.getApplication().getSearchExpressionHandler()

@@ -27,15 +27,15 @@
 <h:body>
     <h:panelGrid columns="1">
         <h:form id="mainForm">
-            
+
             <h:outputLabel id="labelName" for="name" value="Name: "/>
             <div>
             <h:inputText id="name" value="NAME"/>
             </div>
             <h:message id="msgName" for="name"/>
-            
+
             <h:outputText id="showName" value="showName"/>
-            
+
             <h:dataTable id="table" value="#{searchBean.model}" var="row">
                 <h:column>
                     <h:outputText id="baseText" value="#{row.text}"/>
@@ -49,7 +49,11 @@
                     </h:dataTable>
                 </h:column>
             </h:dataTable>
-            
+
+        </h:form>
+
+        <h:form id="otherForm">
+            <h:inputText id="name" value="NAME"/>
         </h:form>
     </h:panelGrid>
 </h:body>

@@ -48,7 +48,7 @@ public class IdSearchKeywordResolver extends SearchKeywordResolver
         final String targetId = extractId(command);
         if (expressionContext.getSearchExpressionContext().getExpressionHints() != null
                 && expressionContext.getSearchExpressionContext().getExpressionHints().contains(
-                        SearchExpressionHint.RESOLVE_COMPONENT_LIST))
+                        SearchExpressionHint.SKIP_VIRTUAL_COMPONENTS))
         {
             // Avoid visit tree because in this case we need real component instances.
             // This means components inside UIData will not be scanned. 
@@ -68,7 +68,15 @@ public class IdSearchKeywordResolver extends SearchKeywordResolver
                             if (targetId.equals(target.getId()))
                             {
                                 expressionContext.invokeContextCallback(target);
-                                return VisitResult.COMPLETE;
+                                
+                                if (expressionContext.getSearchExpressionContext().getExpressionHints() != null
+                                        && expressionContext.getSearchExpressionContext().getExpressionHints().contains(
+                                                SearchExpressionHint.RESOLVE_SINGLE_COMPONENT))
+                                {
+                                    return VisitResult.COMPLETE;
+                                }
+                                
+                                return VisitResult.ACCEPT;
                             }
                             else
                             {

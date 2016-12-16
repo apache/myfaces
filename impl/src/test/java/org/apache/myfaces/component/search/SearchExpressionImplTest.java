@@ -19,6 +19,7 @@
 
 package org.apache.myfaces.component.search;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -148,6 +149,62 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
         });
        
         processRemainingPhases();
+    }
+    
+    @Test
+    public void testResolveComponent() throws Exception
+    {
+        startViewRequest("/search1.xhtml");
+        processLifecycleExecute();
+        executeBeforeRender();
+        executeBuildViewCycle();
+
+        SearchExpressionContext searchContext = 
+                SearchExpressionContext.createSearchExpressionContext(facesContext, facesContext.getViewRoot());
+
+        CollectComponentsCallback callback = new CollectComponentsCallback();
+        facesContext.getApplication().getSearchExpressionHandler().resolveComponent(
+                searchContext, "@id(name)", callback);
+        
+        Assert.assertEquals(1, callback.getComponents().size());
+        
+        processRemainingPhases();
+    }
+    
+    @Test
+    public void testResolveComponents() throws Exception
+    {
+        startViewRequest("/search1.xhtml");
+        processLifecycleExecute();
+        executeBeforeRender();
+        executeBuildViewCycle();
+
+        SearchExpressionContext searchContext = 
+                SearchExpressionContext.createSearchExpressionContext(facesContext, facesContext.getViewRoot());
+
+        CollectComponentsCallback callback = new CollectComponentsCallback();
+        facesContext.getApplication().getSearchExpressionHandler().resolveComponents(
+                searchContext, "@id(name)", callback);
+        
+        Assert.assertEquals(2, callback.getComponents().size());
+        
+        processRemainingPhases();
+    }
+    
+    class CollectComponentsCallback implements ContextCallback
+    {
+        private ArrayList<UIComponent> components = new ArrayList<>();
+        
+        @Override
+        public void invokeContextCallback(FacesContext context, UIComponent target)
+        {
+            components.add(target);
+        }
+        
+        public ArrayList<UIComponent> getComponents()
+        {
+            return components;
+        }
     }
     
     @Test

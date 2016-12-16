@@ -21,6 +21,7 @@ package org.apache.myfaces.component.search;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.faces.FacesException;
@@ -40,13 +41,28 @@ import javax.faces.context.FacesContext;
 public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 {
 
+    protected Set<SearchExpressionHint> addHint(Set<SearchExpressionHint> hints, SearchExpressionHint hint)
+    {
+        // already available
+        if (hints.contains(hint))
+        {
+            return hints;
+        }
+        
+        Set<SearchExpressionHint> newHints = new HashSet<SearchExpressionHint>(hints);
+        newHints.add(hint);
+
+        return newHints;
+    }
+    
     @Override
     public String resolveClientId(SearchExpressionContext searchExpressionContext, String expression)
     {
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         UIComponent source = searchExpressionContext.getSource();
         CollectClientIdCallback callback = new CollectClientIdCallback();
-        Set<SearchExpressionHint> hints = searchExpressionContext.getExpressionHints();
+        Set<SearchExpressionHint> hints = addHint(searchExpressionContext.getExpressionHints(),
+                SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
         if (handler.isPassthroughExpression(searchExpressionContext, expression))
         {
@@ -185,7 +201,8 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     {
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         SingleInvocationCallback checkCallback = new SingleInvocationCallback(callback);
-        Set<SearchExpressionHint> hints = searchExpressionContext.getExpressionHints();
+        Set<SearchExpressionHint> hints = addHint(searchExpressionContext.getExpressionHints(),
+                SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
         facesContext.getApplication().getSearchExpressionHandler().invokeOnComponent(
                 searchExpressionContext, searchExpressionContext.getSource(), expression, checkCallback);
 
@@ -424,7 +441,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                     {
                         target = parent.findComponent(expression);
                         if (target == null && !searchExpressionContext.getExpressionHints().contains(
-                                SearchExpressionHint.RESOLVE_COMPONENT_LIST))
+                                SearchExpressionHint.SKIP_VIRTUAL_COMPONENTS))
                         {
                             contextClientId = parent.getClientId(facesContext);
                             // If no component is found,
