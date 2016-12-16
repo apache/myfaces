@@ -111,8 +111,8 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         CollectClientIdsCallback callback = new CollectClientIdsCallback();
         Set<SearchExpressionHint> hints = searchExpressionContext.getExpressionHints();
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
-        for (String expression :
-                facesContext.getApplication().getSearchExpressionHandler().splitExpressions(expressions))
+        for (String expression : facesContext.getApplication().getSearchExpressionHandler().splitExpressions(
+                        facesContext, expressions))
         {
             if (handler.isPassthroughExpression(searchExpressionContext, expression))
             {
@@ -249,8 +249,8 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         MultipleInvocationCallback checkCallback = new MultipleInvocationCallback(callback);
         Set<SearchExpressionHint> hints = searchExpressionContext.getExpressionHints();
-        for (String expression :
-                facesContext.getApplication().getSearchExpressionHandler().splitExpressions(expressions))
+        for (String expression : facesContext.getApplication().getSearchExpressionHandler().splitExpressions(
+                facesContext, expressions))
         {
             facesContext.getApplication().getSearchExpressionHandler().invokeOnComponent(
                     searchExpressionContext, searchExpressionContext.getSource(), expression, checkCallback);
@@ -658,7 +658,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     }
 
     @Override
-    public String[] splitExpressions(String expressions)
+    public String[] splitExpressions(FacesContext context, String expressions)
     {
         // split expressions by blank or comma (and ignore blank and commas inside brackets)
         String[] splittedExpressions = split(expressions, EXPRESSION_SEPARATOR_CHARS);

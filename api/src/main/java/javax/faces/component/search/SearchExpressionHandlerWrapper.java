@@ -22,6 +22,7 @@ import java.util.List;
 import javax.faces.FacesWrapper;
 import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -85,15 +86,15 @@ public abstract class SearchExpressionHandlerWrapper extends SearchExpressionHan
     }
 
     @Override
-    public String[] splitExpressions(String expressions)
+    public String[] splitExpressions(FacesContext context, String expressions)
     {
-        return getWrapped().splitExpressions(expressions);
+        return getWrapped().splitExpressions(context, expressions);
     }
 
     @Override
-    public char[] getExpressionSeperatorChars()
+    public char[] getExpressionSeperatorChars(FacesContext context)
     {
-        return getWrapped().getExpressionSeperatorChars();
+        return getWrapped().getExpressionSeperatorChars(context);
     }
 
 }

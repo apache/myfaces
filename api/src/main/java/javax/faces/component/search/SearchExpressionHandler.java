@@ -21,6 +21,7 @@ package javax.faces.component.search;
 import java.util.List;
 import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -54,13 +55,13 @@ public abstract class SearchExpressionHandler
     public abstract void invokeOnComponent(SearchExpressionContext searchExpressionContext,
             UIComponent previous, String expression, ContextCallback topCallback);
 
-    public abstract String[] splitExpressions(String expressions);
+    public abstract String[] splitExpressions(FacesContext context, String expressions);
 
     public abstract boolean isPassthroughExpression(SearchExpressionContext searchExpressionContext, String expression);
 
     public abstract boolean isValidExpression(SearchExpressionContext searchExpressionContext, String expression);
     
-    public char[] getExpressionSeperatorChars()
+    public char[] getExpressionSeperatorChars(FacesContext context)
     {
         return EXPRESSION_SEPARATOR_CHARS;
     }
