@@ -40,10 +40,12 @@ import javax.faces.render.RenderKitFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import org.apache.myfaces.cdi.faces.FacesScopeProvider;
 
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.ReleaseableFacesContextFactory;
 import org.apache.myfaces.shared.util.NullIterator;
+import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -132,6 +134,10 @@ public class FacesContextImpl extends FacesContextImplBase
     public final void release()
     {
         assertNotReleased();
+        if (ExternalSpecifications.isCDIAvailable(getExternalContext()))
+        {
+            FacesScopeProvider.destroyBeans(this);
+        }
 
         _messages = null;
         _orderedMessages = null;

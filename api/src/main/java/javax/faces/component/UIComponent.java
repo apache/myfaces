@@ -185,7 +185,7 @@ public abstract class UIComponent
      * @since 2.2
      * @return 
      */
-    public final Map<String,Object> getPassThroughAttributes()
+    public Map<String,Object> getPassThroughAttributes()
     {
         return getPassThroughAttributes(true);
     }
@@ -1118,7 +1118,7 @@ public abstract class UIComponent
         return _stateHelper;
     }
 
-    public final TransientStateHelper getTransientStateHelper()
+    public TransientStateHelper getTransientStateHelper()
     {
         return getTransientStateHelper(true);
     }
@@ -1147,7 +1147,7 @@ public abstract class UIComponent
     }
 
     @SuppressWarnings("unchecked")
-    public final void popComponentFromEL(FacesContext context)
+    public void popComponentFromEL(FacesContext context)
     {
         Map<Object, Object> contextAttributes = context.getAttributes();
 
@@ -1264,7 +1264,7 @@ public abstract class UIComponent
     }
 
     @SuppressWarnings("unchecked")
-    public final void pushComponentToEL(FacesContext context, UIComponent component)
+    public void pushComponentToEL(FacesContext context, UIComponent component)
     {
         if (component == null)
         {
