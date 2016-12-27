@@ -21,107 +21,56 @@ package javax.faces.component.search;
 
 import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
 
 /**
  *
  */
 public class SearchKeywordContext
 {
-    private SearchExpressionContext searchExpressionContext;
-    
-    private ContextCallback topCallback;
-    
+ 
+    private final SearchExpressionContext searchExpressionContext;
+    private final ContextCallback callback;
+
     private boolean commandResolved;
-    
-    private final FacesContext facesContext;
-    
     private String remainingExpression;
-    
-    public SearchKeywordContext(FacesContext facesContext)
+
+    public SearchKeywordContext(SearchExpressionContext searchExpressionContext, ContextCallback callback)
     {
-        this.facesContext = facesContext;
+        this.searchExpressionContext = searchExpressionContext;
+        this.callback = callback;
     }
 
-    /**
-     * @return the facesContext
-     */
-    public FacesContext getFacesContext()
-    {
-        return facesContext;
-    }
-    
     public void invokeContextCallback(UIComponent target)
     {
-        try
-        {
-            this.getTopCallback().invokeContextCallback(facesContext, target);
-        }
-        finally
-        {
-            this.setCommandResolved(true);
-        }
+        commandResolved = true;
+        callback.invokeContextCallback(searchExpressionContext.getFacesContext(), target);
     }
 
-    /**
-     * @return the topCallback
-     */
-    public ContextCallback getTopCallback()
-    {
-        return topCallback;
-    }
-
-    /**
-     * @return the commandResolved
-     */
-    public boolean isCommandResolved()
-    {
-        return commandResolved;
-    }
-
-    /**
-     * @param commandResolved the commandResolved to set
-     */
-    public void setCommandResolved(boolean commandResolved)
-    {
-        this.commandResolved = commandResolved;
-    }
-
-    /**
-     * @param topCallback the topCallback to set
-     */
-    public void setTopCallback(ContextCallback topCallback)
-    {
-        this.topCallback = topCallback;
-    }
-
-    /**
-     * @return the searchExpressionContext
-     */
     public SearchExpressionContext getSearchExpressionContext()
     {
         return searchExpressionContext;
     }
 
-    /**
-     * @param searchExpressionContext the searchExpressionContext to set
-     */
-    public void setSearchExpressionContext(SearchExpressionContext searchExpressionContext)
+    public ContextCallback getCallback()
     {
-        this.searchExpressionContext = searchExpressionContext;
+        return callback;
     }
 
-    /**
-     * @return the remainingExpression
-     */
+    public boolean isCommandResolved()
+    {
+        return commandResolved;
+    }
+
+    public void setCommandResolved(boolean commandResolved)
+    {
+        this.commandResolved = commandResolved;
+    }
+
     public String getRemainingExpression()
     {
         return remainingExpression;
     }
 
-    /**
-     * @param remainingExpression the remainingExpression to set
-     */
     public void setRemainingExpression(String remainingExpression)
     {
         this.remainingExpression = remainingExpression;

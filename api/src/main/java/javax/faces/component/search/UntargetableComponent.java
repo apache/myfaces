@@ -22,6 +22,6 @@ package javax.faces.component.search;
 /**
  * Components implementing this interface are ignored by @child(n) search keyword.
  */
-public interface Markup
+public interface UntargetableComponent
 {    
 }
