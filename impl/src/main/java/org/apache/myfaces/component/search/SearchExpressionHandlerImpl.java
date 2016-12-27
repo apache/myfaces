@@ -21,9 +21,7 @@ package org.apache.myfaces.component.search;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.faces.FacesException;
 import javax.faces.component.ContextCallback;
 import javax.faces.component.NamingContainer;
@@ -41,45 +39,51 @@ import javax.faces.context.FacesContext;
 public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 {
 
-    protected Set<SearchExpressionHint> addHint(Set<SearchExpressionHint> hints, SearchExpressionHint hint)
+    protected void addHint(SearchExpressionContext searchExpressionContext, SearchExpressionHint hint)
     {
         // already available
-        if (hints.contains(hint))
+        if (!searchExpressionContext.getExpressionHints().contains(hint))
         {
-            return hints;
+            searchExpressionContext.getExpressionHints().add(hint);
+        }
+    }
+    
+    protected boolean isHintSet(SearchExpressionContext searchExpressionContext, SearchExpressionHint hint)
+    {
+        if (searchExpressionContext.getExpressionHints() == null)
+        {
+            return false;
         }
         
-        Set<SearchExpressionHint> newHints = new HashSet<SearchExpressionHint>(hints);
-        newHints.add(hint);
-
-        return newHints;
+        return searchExpressionContext.getExpressionHints().contains(hint);
     }
     
     @Override
     public String resolveClientId(SearchExpressionContext searchExpressionContext, String expression)
     {
         FacesContext facesContext = searchExpressionContext.getFacesContext();
-        UIComponent source = searchExpressionContext.getSource();
-        CollectClientIdCallback callback = new CollectClientIdCallback();
-        Set<SearchExpressionHint> hints = addHint(searchExpressionContext.getExpressionHints(),
-                SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
+        
+        addHint(searchExpressionContext, SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
+
         if (handler.isPassthroughExpression(searchExpressionContext, expression))
         {
             return expression;
         }
         else
         {
+            CollectClientIdCallback callback = new CollectClientIdCallback();
+            
             handler.invokeOnComponent(
                     searchExpressionContext, searchExpressionContext.getSource(), expression, callback);
 
-            if (!callback.isClientIdFound() && hints != null && hints.contains(SearchExpressionHint.PARENT_FALLBACK))
+            if (!callback.isClientIdFound() && isHintSet(searchExpressionContext, SearchExpressionHint.PARENT_FALLBACK))
             {
-                callback.invokeContextCallback(facesContext, source.getParent());
+                callback.invokeContextCallback(facesContext, searchExpressionContext.getSource().getParent());
             }
             if (!callback.isClientIdFound())
             {
-                if (hints != null && hints.contains(SearchExpressionHint.IGNORE_NO_RESULT))
+                if (isHintSet(searchExpressionContext, SearchExpressionHint.IGNORE_NO_RESULT))
                 {
                     //Ignore
                 }
@@ -123,10 +127,10 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
             String expressions)
     {
         FacesContext facesContext = searchExpressionContext.getFacesContext();
-        UIComponent source = searchExpressionContext.getSource();
-        CollectClientIdsCallback callback = new CollectClientIdsCallback();
-        Set<SearchExpressionHint> hints = searchExpressionContext.getExpressionHints();
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
+
+        CollectClientIdsCallback callback = new CollectClientIdsCallback();
+
         for (String expression : facesContext.getApplication().getSearchExpressionHandler().splitExpressions(
                         facesContext, expressions))
         {
@@ -141,13 +145,13 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                         searchExpressionContext, searchExpressionContext.getSource(), expression, callback);
             }
         }
-        if (!callback.isClientIdFound() && hints != null && hints.contains(SearchExpressionHint.PARENT_FALLBACK))
+        if (!callback.isClientIdFound() && isHintSet(searchExpressionContext, SearchExpressionHint.PARENT_FALLBACK))
         {
-            callback.invokeContextCallback(facesContext, source.getParent());
+            callback.invokeContextCallback(facesContext, searchExpressionContext.getSource().getParent());
         }
         if (!callback.isClientIdFound())
         {
-            if (hints != null && hints.contains(SearchExpressionHint.IGNORE_NO_RESULT))
+            if (isHintSet(searchExpressionContext, SearchExpressionHint.IGNORE_NO_RESULT))
             {
                 //Ignore
             }
@@ -201,18 +205,19 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     {
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         SingleInvocationCallback checkCallback = new SingleInvocationCallback(callback);
-        Set<SearchExpressionHint> hints = addHint(searchExpressionContext.getExpressionHints(),
-                SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
+        
+        addHint(searchExpressionContext, SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
+
         facesContext.getApplication().getSearchExpressionHandler().invokeOnComponent(
                 searchExpressionContext, searchExpressionContext.getSource(), expression, checkCallback);
 
-        if (!checkCallback.isInvoked() && hints != null && hints.contains(SearchExpressionHint.PARENT_FALLBACK))
+        if (!checkCallback.isInvoked() && isHintSet(searchExpressionContext, SearchExpressionHint.PARENT_FALLBACK))
         {
             checkCallback.invokeContextCallback(facesContext, searchExpressionContext.getSource().getParent());
         }
         if (!checkCallback.isInvoked())
         {
-            if (hints != null && hints.contains(SearchExpressionHint.IGNORE_NO_RESULT))
+            if (isHintSet(searchExpressionContext, SearchExpressionHint.IGNORE_NO_RESULT))
             {
                 //Ignore
             }
@@ -264,22 +269,23 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         ContextCallback callback)
     {
         FacesContext facesContext = searchExpressionContext.getFacesContext();
+        SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
+        
         MultipleInvocationCallback checkCallback = new MultipleInvocationCallback(callback);
-        Set<SearchExpressionHint> hints = searchExpressionContext.getExpressionHints();
-        for (String expression : facesContext.getApplication().getSearchExpressionHandler().splitExpressions(
-                facesContext, expressions))
+
+        for (String expression : handler.splitExpressions(facesContext, expressions))
         {
-            facesContext.getApplication().getSearchExpressionHandler().invokeOnComponent(
-                    searchExpressionContext, searchExpressionContext.getSource(), expression, checkCallback);
+            handler.invokeOnComponent(searchExpressionContext, searchExpressionContext.getSource(),
+                    expression, checkCallback);
         }
         // ...
-        if (!checkCallback.isInvoked() && hints != null && hints.contains(SearchExpressionHint.PARENT_FALLBACK))
+        if (!checkCallback.isInvoked() && isHintSet(searchExpressionContext, SearchExpressionHint.PARENT_FALLBACK))
         {
             checkCallback.invokeContextCallback(facesContext, searchExpressionContext.getSource().getParent());
         }
         if (!checkCallback.isInvoked())
         {
-            if (hints != null && hints.contains(SearchExpressionHint.IGNORE_NO_RESULT))
+            if (isHintSet(searchExpressionContext, SearchExpressionHint.IGNORE_NO_RESULT))
             {
                 //Ignore
             }
