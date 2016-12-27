@@ -21,7 +21,7 @@ package org.apache.myfaces.component.search;
 
 import java.util.List;
 import javax.faces.component.UIComponent;
-import javax.faces.component.search.Markup;
+import javax.faces.component.search.UntargetableComponent;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchKeywordContext;
 import javax.faces.component.search.SearchKeywordResolver;
@@ -48,7 +48,7 @@ public class NextSearchKeywordResolver extends SearchKeywordResolver
                 do
                 {
                     index++;
-                    if(!(children.get(index) instanceof Markup))
+                    if(!(children.get(index) instanceof UntargetableComponent))
                     {
                         nextIndex = index;
                     }

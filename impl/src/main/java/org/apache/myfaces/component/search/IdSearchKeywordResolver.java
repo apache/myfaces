@@ -45,6 +45,8 @@ public class IdSearchKeywordResolver extends SearchKeywordResolver
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
     {
+        FacesContext facesContext = expressionContext.getSearchExpressionContext().getFacesContext();
+        
         final String targetId = extractId(command);
         if (expressionContext.getSearchExpressionContext().getExpressionHints() != null
                 && expressionContext.getSearchExpressionContext().getExpressionHints().contains(
@@ -52,13 +54,13 @@ public class IdSearchKeywordResolver extends SearchKeywordResolver
         {
             // Avoid visit tree because in this case we need real component instances.
             // This means components inside UIData will not be scanned. 
-            withId(expressionContext.getFacesContext(), targetId, previous, expressionContext.getTopCallback());
+            withId(facesContext, targetId, previous, expressionContext.getCallback());
             expressionContext.setCommandResolved(true);
         }
         else
         {
             previous.visitTree(
-                    VisitContext.createVisitContext(expressionContext.getFacesContext(), null,
+                    VisitContext.createVisitContext(facesContext, null,
                             expressionContext.getSearchExpressionContext().getVisitHints()),
                     new VisitCallback()
                     {

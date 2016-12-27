@@ -23,7 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
-import javax.faces.component.search.Markup;
+import javax.faces.component.search.UntargetableComponent;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchKeywordContext;
 import javax.faces.component.search.SearchKeywordResolver;
@@ -53,7 +53,7 @@ public class ChildSearchKeywordResolver extends SearchKeywordResolver
                 if (childNumber + 1 > previous.getChildCount())
                 {
                     throw new FacesException("Component with clientId \""
-                            + previous.getClientId(expressionContext.getFacesContext()) 
+                            + previous.getClientId(expressionContext.getSearchExpressionContext().getFacesContext()) 
                             + "\" has fewer children as \"" + 
                               childNumber + "\". Expression: \"" + command + "\"");
                 }
@@ -62,7 +62,7 @@ public class ChildSearchKeywordResolver extends SearchKeywordResolver
                 int count = 0;
                 for (int i = 0; i < previous.getChildCount(); i++)
                 {
-                    if (! (list.get(i) instanceof Markup))
+                    if (! (list.get(i) instanceof UntargetableComponent))
                     {
                         count++;
                     }
@@ -75,7 +75,7 @@ public class ChildSearchKeywordResolver extends SearchKeywordResolver
                 if (count < childNumber)
                 {
                     throw new FacesException("Component with clientId \""
-                            + previous.getClientId(expressionContext.getFacesContext()) 
+                            + previous.getClientId(expressionContext.getSearchExpressionContext().getFacesContext()) 
                             + "\" has fewer children as \"" + 
                               childNumber + "\". Expression: \"" + command + "\"");
                 }

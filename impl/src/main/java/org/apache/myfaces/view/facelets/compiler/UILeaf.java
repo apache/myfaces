@@ -33,7 +33,7 @@ import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.UniqueIdVendor;
-import javax.faces.component.search.Markup;
+import javax.faces.component.search.UntargetableComponent;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.context.FacesContext;
@@ -48,7 +48,7 @@ import javax.faces.view.Location;
 import org.apache.commons.collections.iterators.EmptyIterator;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
-class UILeaf extends UIComponent implements Markup, Map<String, Object>
+class UILeaf extends UIComponent implements UntargetableComponent, Map<String, Object>
 {
     //-------------- START TAKEN FROM UIComponentBase ----------------
     private static final String _STRING_BUILDER_KEY

@@ -493,9 +493,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                              String command, String remainingExpression, ContextCallback topCallback)
     {
         // take the command and resolve it using the chain of responsibility pattern.
-        SearchKeywordContext searchContext = new SearchKeywordContext(searchExpressionContext.getFacesContext());
-        searchContext.setSearchExpressionContext(searchExpressionContext);
-        searchContext.setTopCallback(topCallback);
+        SearchKeywordContext searchContext = new SearchKeywordContext(searchExpressionContext, topCallback);
         searchContext.setRemainingExpression(remainingExpression);
         searchExpressionContext.getFacesContext().getApplication()
                 .getSearchKeywordResolver().resolve(searchContext, last, command);
