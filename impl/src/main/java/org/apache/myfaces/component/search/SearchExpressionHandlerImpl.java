@@ -530,7 +530,8 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
             }
             if (currentBase != null)
             {
-                if (isHintSet(searchExpressionContext, SearchExpressionHint.UNWRAP_COMPOSITE_COMPONENT)) {
+                if (isHintSet(searchExpressionContext, SearchExpressionHint.UNWRAP_COMPOSITE_COMPONENT))
+                {
                     unwrapCompositeComponent(facesContext, target, topCallback);
                 }
                 else
@@ -548,14 +549,16 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         SearchKeywordContext searchContext;
         
         if (isHintSet(searchExpressionContext, SearchExpressionHint.UNWRAP_COMPOSITE_COMPONENT)
-                && remainingExpression == null) {
-            
-            ContextCallback wrapperCallback = new ContextCallback() {
+                && remainingExpression == null)
+        {
+            ContextCallback wrapperCallback = new ContextCallback()
+            {
                 @Override
-                public void invokeContextCallback(FacesContext context, UIComponent target) {
-                    unwrapCompositeComponent(context, target, topCallback)
+                public void invokeContextCallback(FacesContext context, UIComponent target)
+                {
+                    unwrapCompositeComponent(context, target, topCallback);
                 }
-            }
+            };
                     
             searchContext = new SearchKeywordContext(searchExpressionContext, wrapperCallback);
         }
@@ -815,7 +818,8 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                 {
                     // lets add token inside buffer to our tokens
                     String bufferString = buffer.toString().trim();
-                    if (bufferString.length() > 0) {
+                    if (bufferString.length() > 0)
+                    {
                         tokens.add(bufferString);
                     }
                     // now we need to clear buffer
@@ -838,7 +842,8 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         return tokens.toArray(new String[tokens.size()]);
     }
 
-    private static final Set<SearchExpressionHint> unwrapCompositeComponentHints = new HashSet<>(Arrays.asList(
+    private static final Set<SearchExpressionHint> UNWRAP_COMPOSITE_COMPONENT_HINTS =
+            new HashSet<SearchExpressionHint>(Arrays.asList(
                     SearchExpressionHint.SKIP_VIRTUAL_COMPONENTS,
                     SearchExpressionHint.UNWRAP_COMPOSITE_COMPONENT));
     
@@ -853,12 +858,13 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
             List<AttachedObjectTarget> targets = (List<AttachedObjectTarget>) info.getBeanDescriptor()
                     .getValue(AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY);
 
-            for (AttachedObjectTarget target : targets) {
-                if (target instanceof EditableValueHolderAttachedObjectTarget) {
- 
+            for (AttachedObjectTarget target : targets)
+            {
+                if (target instanceof EditableValueHolderAttachedObjectTarget)
+                {
                     SearchExpressionContext searchExpressionContext =
                             SearchExpressionContext.createSearchExpressionContext(facesContext, composite,
-                                    unwrapCompositeComponentHints, null);
+                                    UNWRAP_COMPOSITE_COMPONENT_HINTS, null);
                     facesContext.getApplication().getSearchExpressionHandler().resolveComponent(
                             searchExpressionContext, target.getName(), callback);
                     resolved = true;
@@ -866,7 +872,8 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
             }
         }
 
-        if (!resolved) {
+        if (!resolved)
+        {
             callback.invokeContextCallback(facesContext, composite);
         }
     }
