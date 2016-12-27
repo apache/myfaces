@@ -96,7 +96,7 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
         Assert.assertEquals(componentId, "mainForm:showName");
 
         componentId = facesContext.getApplication().getSearchExpressionHandler().resolveClientIds(
-                searchContext, "@namingcontainer:showName").get(0);
+                searchContext, " @namingcontainer:showName ").get(0);
         Assert.assertEquals(componentId, "mainForm:showName");
 
         UIOutput name = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:name");
@@ -147,6 +147,19 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
                 //System.out.println(componentId);
             }
         });
+        
+        facesContext.getViewRoot().invokeOnComponent(facesContext, "mainForm:table:3:baseText", 
+                new ContextCallback()
+        {
+            @Override
+            public void invokeContextCallback(FacesContext context, UIComponent target)
+            {
+                SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
+                SearchExpressionContext searchContext = 
+                        SearchExpressionContext.createSearchExpressionContext(context, target);
+                Assert.assertEquals(handler.resolveClientId(searchContext, "@next"), "mainForm:table:3:nestedText");
+            }
+        });
        
         processRemainingPhases();
     }
@@ -184,7 +197,7 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
 
         CollectComponentsCallback callback = new CollectComponentsCallback();
         facesContext.getApplication().getSearchExpressionHandler().resolveComponents(
-                searchContext, "@id(name)", callback);
+                searchContext, " @id(name)   @none  ", callback);
         
         Assert.assertEquals(2, callback.getComponents().size());
         
@@ -302,14 +315,14 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
         Assert.assertTrue(handler.isValidExpression(searchContext, "mainForm:showName"));
         Assert.assertTrue(handler.isValidExpression(searchContext, "mainForm:table:3:nested:1:nestedText"));
         Assert.assertTrue(handler.isValidExpression(searchContext, "mainForm:table:3:baseText"));
-        Assert.assertTrue(handler.isValidExpression(searchContext, "mainForm:table:0:baseText"));
+        Assert.assertTrue(handler.isValidExpression(searchContext, " mainForm:table:0:baseText"));
         Assert.assertTrue(handler.isValidExpression(searchContext, "mainForm:table:3:nested:0:nestedText"));
         Assert.assertTrue(handler.isValidExpression(searchContext, "mainForm:table:3:nested"));
         Assert.assertTrue(handler.isValidExpression(searchContext, "mainForm:table:1:nested:0:nestedText"));
         
         Assert.assertTrue(handler.isValidExpression(searchContext, "@this"));
         Assert.assertTrue(handler.isValidExpression(searchContext, "@this:@parent:showName"));
-        Assert.assertTrue(handler.isValidExpression(searchContext, "@parent:showName:@parent:showName"));
+        Assert.assertTrue(handler.isValidExpression(searchContext, "@parent:showName:@parent:showName "));
         Assert.assertTrue(handler.isValidExpression(searchContext, "@form:showName"));
         Assert.assertTrue(handler.isValidExpression(searchContext, "@namingcontainer:showName"));
         Assert.assertTrue(handler.isValidExpression(searchContext, "@previous"));

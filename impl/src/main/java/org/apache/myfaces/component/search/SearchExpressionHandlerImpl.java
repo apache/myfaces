@@ -61,6 +61,15 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     @Override
     public String resolveClientId(SearchExpressionContext searchExpressionContext, String expression)
     {
+        if (expression == null)
+        {
+            expression = "";
+        }
+        else
+        {
+            expression = expression.trim();
+        }
+        
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
         
@@ -123,16 +132,23 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     }
 
     @Override
-    public List<String> resolveClientIds(SearchExpressionContext searchExpressionContext,
-            String expressions)
+    public List<String> resolveClientIds(SearchExpressionContext searchExpressionContext, String expressions)
     {
+        if (expressions == null)
+        {
+            expressions = "";
+        }
+        else
+        {
+            expressions = expressions.trim();
+        }
+        
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
 
         CollectClientIdsCallback callback = new CollectClientIdsCallback();
 
-        for (String expression : facesContext.getApplication().getSearchExpressionHandler().splitExpressions(
-                        facesContext, expressions))
+        for (String expression : handler.splitExpressions(facesContext, expressions))
         {
             if (handler.isPassthroughExpression(searchExpressionContext, expression))
             {
@@ -203,6 +219,15 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     public void resolveComponent(SearchExpressionContext searchExpressionContext, String expression,
         ContextCallback callback)
     {
+        if (expression == null)
+        {
+            expression = "";
+        }
+        else
+        {
+            expression = expression.trim();
+        }
+        
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         SingleInvocationCallback checkCallback = new SingleInvocationCallback(callback);
         
@@ -266,8 +291,17 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 
     @Override
     public void resolveComponents(SearchExpressionContext searchExpressionContext, String expressions,
-        ContextCallback callback)
+            ContextCallback callback)
     {
+        if (expressions == null)
+        {
+            expressions = "";
+        }
+        else
+        {
+            expressions = expressions.trim();
+        }
+        
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
         
@@ -333,9 +367,20 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     public void invokeOnComponent(final SearchExpressionContext searchExpressionContext,
             UIComponent previous, String topExpression, ContextCallback topCallback)
     {
+        if (topExpression == null)
+        {
+            topExpression = "";
+        }
+        else
+        {
+            topExpression = topExpression.trim();
+        }
+        
         // Command pattern to apply the keyword or command to the base and then invoke the callback
         FacesContext facesContext = searchExpressionContext.getFacesContext();
 
+        SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
+        
         UIComponent currentBase = previous;
 
         //Step 1: find base
@@ -345,8 +390,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         {
             UIComponent findBase;
             findBase = SearchComponentUtils.getRootComponent(currentBase);
-            facesContext.getApplication().getSearchExpressionHandler().invokeOnComponent(
-                    searchExpressionContext, findBase, topExpression.substring(1), topCallback);
+            handler.invokeOnComponent(searchExpressionContext, findBase, topExpression.substring(1), topCallback);
             return;
         }
 
@@ -363,8 +407,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                         topExpression.substring(1+command.length()+1) : null;
 
             final ContextCallback parentCallback = topCallback;
-            final SearchExpressionHandler currentInstance =
-                    facesContext.getApplication().getSearchExpressionHandler();
+
 
             // If the keyword is @child, @composite, @form, @namingcontainer, @next, @none, @parent, @previous,
             // @root, @this ,  all commands change the source to be applied the action
@@ -380,7 +423,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                         @Override
                         public void invokeContextCallback(FacesContext facesContext, UIComponent target)
                         {
-                            currentInstance.invokeOnComponent(
+                            handler.invokeOnComponent(
                                     searchExpressionContext, target, remaining, parentCallback);
                         }
                     });
@@ -454,9 +497,6 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                             String targetClientId = contextClientId.substring(0, startCommon+base.length()) +
                                     expression.substring(base.length());
 
-                            final SearchExpressionHandler currentHandler =
-                                    facesContext.getApplication().getSearchExpressionHandler();
-
                             if (nextExpression != null)
                             {
                                 final String childExpression = nextExpression;
@@ -464,7 +504,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                                 parent.invokeOnComponent(facesContext, targetClientId, new ContextCallback(){
                                     public void invokeContextCallback(FacesContext context, UIComponent target)
                                     {
-                                        currentHandler.invokeOnComponent(
+                                        handler.invokeOnComponent(
                                                 searchExpressionContext, target, childExpression, topCallback);
                                     }
                                 });
@@ -502,6 +542,15 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     @Override
     public boolean isPassthroughExpression(SearchExpressionContext searchExpressionContext, String topExpression)
     {
+        if (topExpression == null)
+        {
+            topExpression = "";
+        }
+        else
+        {
+            topExpression = topExpression.trim();
+        }
+        
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         // Command pattern to apply the keyword or command to the base and then invoke the callback
         boolean passthrough = false;
@@ -555,6 +604,15 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 
     public boolean isValidExpression(SearchExpressionContext searchExpressionContext, String topExpression)
     {
+        if (topExpression == null)
+        {
+            topExpression = "";
+        }
+        else
+        {
+            topExpression = topExpression.trim();
+        }
+        
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         // Command pattern to apply the keyword or command to the base and then invoke the callback
         boolean isValid = true;
@@ -726,7 +784,10 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                 if (isSeparator)
                 {
                     // lets add token inside buffer to our tokens
-                    tokens.add(buffer.toString());
+                    String bufferAsString = buffer.toString().trim();
+                    if (bufferAsString.length() > 0) {
+                        tokens.add(bufferAsString);
+                    }
                     // now we need to clear buffer
                     buffer.delete(0, buffer.length());
                 }
