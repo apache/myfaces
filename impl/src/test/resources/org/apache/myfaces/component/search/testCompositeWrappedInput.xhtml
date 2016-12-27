@@ -22,9 +22,8 @@
 </head>
 <body>
 <h:form id="testForm1">
-<testComposite:compositeActionSource id="myComposite">
-    <f:actionListener for="button2" binding="#{helloWorldBean.actionListener}"/>
-</testComposite:compositeActionSource>
+    <testComposite:wrappedInput id="myComposite" />
+    <testComposite:wrappedWrappedInput id="myWrappedComposite" />
 </h:form>
 </body>
 </html>

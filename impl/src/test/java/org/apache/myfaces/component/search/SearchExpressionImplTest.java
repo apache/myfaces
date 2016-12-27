@@ -394,4 +394,48 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
         
     }
     
+    @Test
+    public void testCompositeComponentWrappedInput() throws Exception
+    {
+        startViewRequest("/testCompositeWrappedInput.xhtml");
+        processLifecycleExecute();
+        executeBeforeRender();
+        executeBuildViewCycle();
+
+        Assert.assertNotNull(
+                facesContext.getViewRoot().findComponent("testForm1"));
+        Assert.assertNotNull(
+                facesContext.getViewRoot().findComponent(":testForm1:myComposite"));
+        Assert.assertTrue(
+                UIComponent.isCompositeComponent(facesContext.getViewRoot().findComponent(":testForm1:myComposite")));
+        Assert.assertNotNull(
+                facesContext.getViewRoot().findComponent(":testForm1:myComposite:myComposite"));
+        
+        final SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
+        
+        final Set<SearchExpressionHint> expressionHints = new HashSet<>();
+        expressionHints.add(SearchExpressionHint.UNWRAP_COMPOSITE_COMPONENT);
+
+        SearchExpressionContext searchContext = SearchExpressionContext.createSearchExpressionContext(facesContext,
+                facesContext.getViewRoot(), expressionHints, null);
+        Assert.assertEquals("testForm1:myComposite:myInput",
+                handler.resolveClientId(searchContext, ":testForm1:myComposite"));
+        
+        handler.resolveComponent(searchContext, "testForm1", new ContextCallback() {
+
+            @Override
+            public void invokeContextCallback(FacesContext context, UIComponent target) {                
+                SearchExpressionContext innerSearchContext =
+                        SearchExpressionContext.createSearchExpressionContext(facesContext,
+                                target, expressionHints, null);
+                
+                Assert.assertEquals("testForm1:myComposite:myInput", handler.resolveClientId(innerSearchContext, "@child(0)"));
+                Assert.assertEquals("testForm1:myWrappedComposite:wrappedWrapped:myInput", handler.resolveClientId(innerSearchContext, "@child(1)"));
+            }
+        });
+        
+        
+        searchContext = SearchExpressionContext.createSearchExpressionContext(facesContext, facesContext.getViewRoot());
+        Assert.assertEquals("testForm1:myComposite", handler.resolveClientId(searchContext, ":testForm1:myComposite"));
+    }
 }

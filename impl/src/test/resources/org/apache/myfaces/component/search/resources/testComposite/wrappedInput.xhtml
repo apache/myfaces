@@ -17,14 +17,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:composite="http://java.sun.com/jsf/composite"
 	xmlns:testComposite="http://java.sun.com/jsf/composite/testComposite">
 <head>
 </head>
 <body>
-<h:form id="testForm1">
-<testComposite:compositeActionSource id="myComposite">
-    <f:actionListener for="button2" binding="#{helloWorldBean.actionListener}"/>
-</testComposite:compositeActionSource>
-</h:form>
+<composite:interface>
+     <composite:editableValueHolder name="myInput" />
+</composite:interface>
+<composite:implementation>
+<h:panelGroup id="panel">
+    <h:inputText id="myInput" />
+</h:panelGroup>
+</composite:implementation>
 </body>
 </html>
