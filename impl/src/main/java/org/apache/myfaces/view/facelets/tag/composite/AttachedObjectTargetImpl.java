@@ -76,11 +76,12 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
         {
             UIComponent facetBase = topLevelComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME);
             
+            SearchExpressionContext searchContext = SearchExpressionContext.createSearchExpressionContext(
+                                facesContext, facetBase, EXPRESSION_HINTS, null);
+            
             CollectComponentListCallback callback = new CollectComponentListCallback(targetsArray.length);
             for (String target : targetsArray)
             {
-                SearchExpressionContext searchContext = SearchExpressionContext.createSearchExpressionContext(
-                                    facesContext, facetBase, EXPRESSION_HINTS, null);
                 facesContext.getApplication().getSearchExpressionHandler()
                         .resolveComponents(searchContext, target, callback);
             }
