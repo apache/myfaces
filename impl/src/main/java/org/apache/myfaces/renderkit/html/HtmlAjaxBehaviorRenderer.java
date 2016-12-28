@@ -475,7 +475,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     }
 
     private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
-            EnumSet.of(SearchExpressionHint.EXECUTE_CLIENT_SIDE, SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
+            EnumSet.of(SearchExpressionHint.RESOLVE_CLIENT_SIDE, SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
     
     public void build(ClientBehaviorContext context,
             int size, StringBuilder retVal, int cnt,

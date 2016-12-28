@@ -377,7 +377,7 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
         Assert.assertFalse(handler.isPassthroughExpression(searchContext, "!whoNows"));
         
         Set<SearchExpressionHint> expressionHints = new HashSet<SearchExpressionHint>();
-        expressionHints.add(SearchExpressionHint.EXECUTE_CLIENT_SIDE);
+        expressionHints.add(SearchExpressionHint.RESOLVE_CLIENT_SIDE);
         SearchExpressionContext searchContextWithAjaxResolve = 
                 SearchExpressionContext.createSearchExpressionContext(facesContext, null, expressionHints, null);
         

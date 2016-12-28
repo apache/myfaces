@@ -48,7 +48,7 @@ public class NoneSearchKeywordResolver extends SearchKeywordResolver
     public boolean isPassthrough(SearchExpressionContext searchExpressionContext, String keyword)
     {
         if (searchExpressionContext.getExpressionHints() != null &&
-            searchExpressionContext.getExpressionHints().contains(SearchExpressionHint.EXECUTE_CLIENT_SIDE))
+            searchExpressionContext.getExpressionHints().contains(SearchExpressionHint.RESOLVE_CLIENT_SIDE))
         {
             return true;
         }
