@@ -66,14 +66,12 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     @Override
     public String resolveClientId(SearchExpressionContext searchExpressionContext, String expression)
     {
-        if (expression == null)
+        if (expression == null || expression.trim().isEmpty())
         {
-            expression = "";
+            return null;
         }
-        else
-        {
-            expression = expression.trim();
-        }
+
+        expression = expression.trim();
         
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
@@ -139,14 +137,12 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     @Override
     public List<String> resolveClientIds(SearchExpressionContext searchExpressionContext, String expressions)
     {
-        if (expressions == null)
+        if (expressions == null || expressions.trim().isEmpty())
         {
-            expressions = "";
+            return Collections.emptyList();
         }
-        else
-        {
-            expressions = expressions.trim();
-        }
+ 
+        expressions = expressions.trim();
         
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
@@ -224,22 +220,22 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     public void resolveComponent(SearchExpressionContext searchExpressionContext, String expression,
         ContextCallback callback)
     {
-        if (expression == null)
+        if (expression == null || expression.trim().isEmpty())
         {
-            expression = "";
-        }
-        else
-        {
-            expression = expression.trim();
+            return;
         }
         
+        expression = expression.trim();
+        
         FacesContext facesContext = searchExpressionContext.getFacesContext();
+        SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
+
         SingleInvocationCallback checkCallback = new SingleInvocationCallback(callback);
         
         addHint(searchExpressionContext, SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
 
-        facesContext.getApplication().getSearchExpressionHandler().invokeOnComponent(
-                searchExpressionContext, searchExpressionContext.getSource(), expression, checkCallback);
+        handler.invokeOnComponent(searchExpressionContext, searchExpressionContext.getSource(),
+                expression, checkCallback);
 
         if (!checkCallback.isInvoked() && isHintSet(searchExpressionContext, SearchExpressionHint.PARENT_FALLBACK))
         {
@@ -298,14 +294,12 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     public void resolveComponents(SearchExpressionContext searchExpressionContext, String expressions,
             ContextCallback callback)
     {
-        if (expressions == null)
+        if (expressions == null || expressions.trim().isEmpty())
         {
-            expressions = "";
+            return;
         }
-        else
-        {
-            expressions = expressions.trim();
-        }
+        
+        expressions = expressions.trim();
         
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
@@ -372,14 +366,12 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     public void invokeOnComponent(final SearchExpressionContext searchExpressionContext,
             UIComponent previous, String topExpression, ContextCallback topCallback)
     {
-        if (topExpression == null)
+        if (topExpression == null || topExpression.trim().isEmpty())
         {
-            topExpression = "";
+            return;
         }
-        else
-        {
-            topExpression = topExpression.trim();
-        }
+
+        topExpression = topExpression.trim();
         
         // Command pattern to apply the keyword or command to the base and then invoke the callback
         FacesContext facesContext = searchExpressionContext.getFacesContext();
@@ -636,14 +628,12 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 
     public boolean isValidExpression(SearchExpressionContext searchExpressionContext, String topExpression)
     {
-        if (topExpression == null)
+        if (topExpression == null || topExpression.trim().isEmpty())
         {
-            topExpression = "";
+            return true;
         }
-        else
-        {
-            topExpression = topExpression.trim();
-        }
+
+        topExpression = topExpression.trim();
         
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         // Command pattern to apply the keyword or command to the base and then invoke the callback

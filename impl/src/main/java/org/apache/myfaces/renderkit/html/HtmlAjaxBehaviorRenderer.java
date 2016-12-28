@@ -430,6 +430,8 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
 
             int cnt = 0;
 
+            SearchExpressionContext searchExpressionContext = null;
+            
             // perf: dataHolder is a Collection : ajaxBehaviour.getExecute()
             // and ajaxBehaviour.getRender() API
             // In most cases comes here a ArrayList, because
@@ -440,16 +442,28 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
                 List<String> list = (List<String>) dataHolder;
                 for (; cnt  < executeSize; cnt++)
                 {
+                    if (searchExpressionContext == null)
+                    {
+                        searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
+                                context.getFacesContext(), context.getComponent(), EXPRESSION_HINTS, null);
+                    }
+                    
                     String strVal = list.get(cnt);
-                    build(context, executeSize, retVal, cnt, strVal);
+                    build(context, executeSize, retVal, cnt, strVal, searchExpressionContext);
                 }
             }
             else
             {
                 for (String strVal : dataHolder)
                 {
+                    if (searchExpressionContext == null)
+                    {
+                        searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
+                                context.getFacesContext(), context.getComponent(), EXPRESSION_HINTS, null);
+                    }
+                    
                     cnt++;
-                    build(context, executeSize, retVal, cnt, strVal);
+                    build(context, executeSize, retVal, cnt, strVal, searchExpressionContext);
                 }
             }
 
@@ -465,7 +479,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     
     public void build(ClientBehaviorContext context,
             int size, StringBuilder retVal, int cnt,
-            String strVal)
+            String strVal, SearchExpressionContext searchExpressionContext)
     {
         strVal = strVal.trim();
         if (!EMPTY.equals(strVal))
@@ -480,9 +494,6 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
             {
                 retVal.append(strVal);
             }*/
-            SearchExpressionContext searchExpressionContext =
-                    SearchExpressionContext.createSearchExpressionContext(context.getFacesContext(),
-                            context.getComponent(), EXPRESSION_HINTS, null);
             SearchExpressionHandler handler = context.getFacesContext().getApplication().getSearchExpressionHandler();
             String clientId = handler.resolveClientId(searchExpressionContext, strVal);
             retVal.append(clientId);
@@ -493,7 +504,8 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         }
     }
 
-    private final String getComponentId(ClientBehaviorContext context, String id)
+    /*
+    private String getComponentId(ClientBehaviorContext context, String id)
     {
 
         UIComponent contextComponent = context.getComponent();
@@ -509,8 +521,9 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         }
         throw new FacesException("Component with id:" + id + " not found");
     }
+    */
 
-    private final void assertBehavior(ClientBehavior behavior)
+    private void assertBehavior(ClientBehavior behavior)
     {
         if (!(behavior instanceof AjaxBehavior))
         {

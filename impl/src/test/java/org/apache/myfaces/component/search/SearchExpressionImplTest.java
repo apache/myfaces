@@ -238,6 +238,8 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
         String clientId = handler.resolveClientId(searchContextWithParentFallback, "@none");
         Assert.assertNotNull(clientId);
         
+        Assert.assertNull(handler.resolveClientId(searchContextWithParentFallback, " "));
+        
         expressionHints = new HashSet<SearchExpressionHint>();
         expressionHints.add(SearchExpressionHint.IGNORE_NO_RESULT);
         SearchExpressionContext searchContextWithIgnoreNoResult = 
@@ -320,6 +322,7 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
         Assert.assertTrue(handler.isValidExpression(searchContext, "mainForm:table:3:nested"));
         Assert.assertTrue(handler.isValidExpression(searchContext, "mainForm:table:1:nested:0:nestedText"));
         
+        Assert.assertTrue(handler.isValidExpression(searchContext, " "));
         Assert.assertTrue(handler.isValidExpression(searchContext, "@this"));
         Assert.assertTrue(handler.isValidExpression(searchContext, "@this:@parent:showName"));
         Assert.assertTrue(handler.isValidExpression(searchContext, "@parent:showName:@parent:showName "));
