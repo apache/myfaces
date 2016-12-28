@@ -21,7 +21,7 @@ package org.apache.myfaces.renderkit.html;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.RandomAccess;
 import java.util.Set;
@@ -34,6 +34,7 @@ import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.search.SearchExpressionContext;
+import javax.faces.component.search.SearchExpressionHandler;
 import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
@@ -459,6 +460,9 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
 
     }
 
+    private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
+            EnumSet.of(SearchExpressionHint.EXECUTE_CLIENT_SIDE, SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
+    
     public void build(ClientBehaviorContext context,
             int size, StringBuilder retVal, int cnt,
             String strVal)
@@ -476,13 +480,11 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
             {
                 retVal.append(strVal);
             }*/
-            Set<SearchExpressionHint> expressionHints = new HashSet<SearchExpressionHint>();
-            expressionHints.add(SearchExpressionHint.EXECUTE_CLIENT_SIDE);
             SearchExpressionContext searchExpressionContext =
                     SearchExpressionContext.createSearchExpressionContext(context.getFacesContext(),
-                            context.getComponent(), expressionHints, null);
-            String clientId = context.getFacesContext().getApplication().getSearchExpressionHandler().resolveClientId(
-                    searchExpressionContext, strVal);
+                            context.getComponent(), EXPRESSION_HINTS, null);
+            SearchExpressionHandler handler = context.getFacesContext().getApplication().getSearchExpressionHandler();
+            String clientId = handler.resolveClientId(searchExpressionContext, strVal);
             retVal.append(clientId);
             if (cnt < size)
             {

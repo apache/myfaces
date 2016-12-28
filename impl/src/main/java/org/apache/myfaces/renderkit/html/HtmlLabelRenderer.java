@@ -19,8 +19,10 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,6 +32,7 @@ import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlOutputLabel;
 import javax.faces.component.search.SearchExpressionContext;
+import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
@@ -239,11 +242,17 @@ public class HtmlLabelRenderer extends HtmlRenderer
 
     }
 
+    private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
+            EnumSet.of(SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
+    
     protected String getClientId(FacesContext facesContext, UIComponent uiComponent, String forAttr)
     {
+        SearchExpressionContext searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
+                facesContext, uiComponent, EXPRESSION_HINTS, null);
+        
         //return RendererUtils.getClientId(facesContext, uiComponent, forAttr);
         return facesContext.getApplication().getSearchExpressionHandler().resolveClientId(
-                SearchExpressionContext.createSearchExpressionContext(facesContext, uiComponent), forAttr);
+                searchExpressionContext, forAttr);
     }
 
     @Override

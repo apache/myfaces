@@ -21,9 +21,8 @@ package org.apache.myfaces.component.search;
 
 import java.beans.BeanInfo;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import javax.faces.FacesException;
@@ -842,10 +841,9 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         return tokens.toArray(new String[tokens.size()]);
     }
 
-    private static final Set<SearchExpressionHint> UNWRAP_COMPOSITE_COMPONENT_HINTS =
-            new HashSet<SearchExpressionHint>(Arrays.asList(
-                    SearchExpressionHint.SKIP_VIRTUAL_COMPONENTS,
-                    SearchExpressionHint.UNWRAP_COMPOSITE_COMPONENT));
+    private static final Set<SearchExpressionHint> UNWRAP_COMPOSITE_COMPONENT_HINTS = EnumSet.of(
+            SearchExpressionHint.SKIP_VIRTUAL_COMPONENTS,
+            SearchExpressionHint.UNWRAP_COMPOSITE_COMPONENT);
     
     protected void unwrapCompositeComponent(FacesContext facesContext, UIComponent composite,
             ContextCallback callback)

@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.tag.composite;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import javax.el.ValueExpression;
@@ -63,6 +63,10 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
         return null;
     }
 
+    private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
+            EnumSet.of(SearchExpressionHint.SKIP_VIRTUAL_COMPONENTS);
+    
+    @Override
     public List<UIComponent> getTargets(UIComponent topLevelComponent)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -75,10 +79,8 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
             CollectComponentListCallback callback = new CollectComponentListCallback(targetsArray.length);
             for (String target : targetsArray)
             {
-                Set<SearchExpressionHint> expressionHints = new HashSet<SearchExpressionHint>(2);
-                expressionHints.add(SearchExpressionHint.SKIP_VIRTUAL_COMPONENTS);
                 SearchExpressionContext searchContext = SearchExpressionContext.createSearchExpressionContext(
-                                    facesContext, facetBase, expressionHints, null);
+                                    facesContext, facetBase, EXPRESSION_HINTS, null);
                 facesContext.getApplication().getSearchExpressionHandler()
                         .resolveComponents(searchContext, target, callback);
             }
