@@ -39,7 +39,7 @@ public enum SearchExpressionHint
     /**
      * Indicate that some expressions can be resolved on the client side.
      */
-    EXECUTE_CLIENT_SIDE,
+    RESOLVE_CLIENT_SIDE,
     
     UNWRAP_COMPOSITE_COMPONENT
 
