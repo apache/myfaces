@@ -66,12 +66,14 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     @Override
     public String resolveClientId(SearchExpressionContext searchExpressionContext, String expression)
     {
-        if (expression == null || expression.trim().isEmpty())
+        if (expression == null)
         {
-            return null;
+            expression = "";
         }
-
-        expression = expression.trim();
+        else
+        {
+            expression = expression.trim();
+        }
         
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
@@ -86,8 +88,11 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         {
             CollectClientIdCallback callback = new CollectClientIdCallback();
             
-            handler.invokeOnComponent(
-                    searchExpressionContext, searchExpressionContext.getSource(), expression, callback);
+            if (!expression.isEmpty())
+            {
+                handler.invokeOnComponent(
+                        searchExpressionContext, searchExpressionContext.getSource(), expression, callback);
+            }
 
             if (!callback.isClientIdFound() && isHintSet(searchExpressionContext, SearchExpressionHint.PARENT_FALLBACK))
             {
@@ -137,31 +142,37 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     @Override
     public List<String> resolveClientIds(SearchExpressionContext searchExpressionContext, String expressions)
     {
-        if (expressions == null || expressions.trim().isEmpty())
+        if (expressions == null)
         {
-            return Collections.emptyList();
+            expressions = "";
         }
- 
-        expressions = expressions.trim();
+        else
+        {
+            expressions = expressions.trim();
+        }
         
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
 
         CollectClientIdsCallback callback = new CollectClientIdsCallback();
 
-        for (String expression : handler.splitExpressions(facesContext, expressions))
+        if (!expressions.isEmpty())
         {
-            if (handler.isPassthroughExpression(searchExpressionContext, expression))
+            for (String expression : handler.splitExpressions(facesContext, expressions))
             {
-                // It will be resolved in the client, just add the expression.
-                callback.addClientId(expression);
-            }
-            else
-            {
-                handler.invokeOnComponent(
-                        searchExpressionContext, searchExpressionContext.getSource(), expression, callback);
+                if (handler.isPassthroughExpression(searchExpressionContext, expression))
+                {
+                    // It will be resolved in the client, just add the expression.
+                    callback.addClientId(expression);
+                }
+                else
+                {
+                    handler.invokeOnComponent(
+                            searchExpressionContext, searchExpressionContext.getSource(), expression, callback);
+                }
             }
         }
+
         if (!callback.isClientIdFound() && isHintSet(searchExpressionContext, SearchExpressionHint.PARENT_FALLBACK))
         {
             callback.invokeContextCallback(facesContext, searchExpressionContext.getSource().getParent());
@@ -220,22 +231,27 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     public void resolveComponent(SearchExpressionContext searchExpressionContext, String expression,
         ContextCallback callback)
     {
-        if (expression == null || expression.trim().isEmpty())
+        if (expression == null)
         {
-            return;
+            expression = "";
         }
-        
-        expression = expression.trim();
+        else
+        {
+            expression = expression.trim();
+        }
         
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
-
+        
         SingleInvocationCallback checkCallback = new SingleInvocationCallback(callback);
         
         addHint(searchExpressionContext, SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
 
-        handler.invokeOnComponent(searchExpressionContext, searchExpressionContext.getSource(),
-                expression, checkCallback);
+        if (!expression.isEmpty())
+        {
+            handler.invokeOnComponent(searchExpressionContext, searchExpressionContext.getSource(),
+                    expression, checkCallback);
+        }
 
         if (!checkCallback.isInvoked() && isHintSet(searchExpressionContext, SearchExpressionHint.PARENT_FALLBACK))
         {
@@ -294,23 +310,29 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     public void resolveComponents(SearchExpressionContext searchExpressionContext, String expressions,
             ContextCallback callback)
     {
-        if (expressions == null || expressions.trim().isEmpty())
+        if (expressions == null)
         {
-            return;
+            expressions = "";
         }
-        
-        expressions = expressions.trim();
+        else
+        {
+            expressions = expressions.trim();
+        }
         
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
         
         MultipleInvocationCallback checkCallback = new MultipleInvocationCallback(callback);
 
-        for (String expression : handler.splitExpressions(facesContext, expressions))
+        if (!expressions.isEmpty())
         {
-            handler.invokeOnComponent(searchExpressionContext, searchExpressionContext.getSource(),
-                    expression, checkCallback);
+            for (String expression : handler.splitExpressions(facesContext, expressions))
+            {
+                handler.invokeOnComponent(searchExpressionContext, searchExpressionContext.getSource(),
+                        expression, checkCallback);
+            }
         }
+
         // ...
         if (!checkCallback.isInvoked() && isHintSet(searchExpressionContext, SearchExpressionHint.PARENT_FALLBACK))
         {
@@ -366,12 +388,14 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     public void invokeOnComponent(final SearchExpressionContext searchExpressionContext,
             UIComponent previous, String topExpression, ContextCallback topCallback)
     {
-        if (topExpression == null || topExpression.trim().isEmpty())
+        if (topExpression == null)
         {
-            return;
+            topExpression = "";
         }
-
-        topExpression = topExpression.trim();
+        else
+        {
+            topExpression = topExpression.trim();
+        }
         
         // Command pattern to apply the keyword or command to the base and then invoke the callback
         FacesContext facesContext = searchExpressionContext.getFacesContext();
@@ -566,14 +590,12 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     @Override
     public boolean isPassthroughExpression(SearchExpressionContext searchExpressionContext, String topExpression)
     {
-        if (topExpression == null)
+        if (topExpression == null || topExpression.trim().isEmpty())
         {
-            topExpression = "";
+            return false;
         }
-        else
-        {
-            topExpression = topExpression.trim();
-        }
+
+        topExpression = topExpression.trim();
         
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         // Command pattern to apply the keyword or command to the base and then invoke the callback

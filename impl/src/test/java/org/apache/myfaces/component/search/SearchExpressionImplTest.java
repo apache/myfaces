@@ -238,7 +238,7 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
         String clientId = handler.resolveClientId(searchContextWithParentFallback, "@none");
         Assert.assertNotNull(clientId);
         
-        Assert.assertNull(handler.resolveClientId(searchContextWithParentFallback, " "));
+        Assert.assertNotNull(handler.resolveClientId(searchContextWithParentFallback, " "));
         
         expressionHints = new HashSet<SearchExpressionHint>();
         expressionHints.add(SearchExpressionHint.IGNORE_NO_RESULT);
