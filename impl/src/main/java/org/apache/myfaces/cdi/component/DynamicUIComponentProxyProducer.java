@@ -24,6 +24,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import static java.util.Arrays.asList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
@@ -141,6 +142,9 @@ public class DynamicUIComponentProxyProducer implements Bean<UIComponent>, Seria
         return true;
     }
 
+    private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
+            EnumSet.of(SearchExpressionHint.SKIP_VIRTUAL_COMPONENTS, SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
+    
     @Override
     public UIComponent create(CreationalContext<UIComponent> creationalContext) 
     {        
@@ -155,10 +159,8 @@ public class DynamicUIComponentProxyProducer implements Bean<UIComponent>, Seria
             refComponent = refComponent == null ? facesContext.getViewRoot() : refComponent;
             
             SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
-            Set<SearchExpressionHint> hints = new HashSet<SearchExpressionHint>();
-            hints.add(SearchExpressionHint.SKIP_VIRTUAL_COMPONENTS);
             SearchExpressionContext searchContext = SearchExpressionContext.createSearchExpressionContext(
-                    facesContext, refComponent, hints, null);
+                    facesContext, refComponent, EXPRESSION_HINTS, null);
             FindComponentCallback callback = new FindComponentCallback();
             handler.resolveComponent(searchContext, typeInfo.getExpression(), callback);
             return callback.getComponent();
