@@ -27,8 +27,6 @@ public enum SearchExpressionHint
 
     IGNORE_NO_RESULT,
 
-    PARENT_FALLBACK,
-
     /**
      * Indicate that the method is collecting a list of real UIComponent instances.
      */
@@ -39,8 +37,6 @@ public enum SearchExpressionHint
     /**
      * Indicate that some expressions can be resolved on the client side.
      */
-    RESOLVE_CLIENT_SIDE,
-    
-    UNWRAP_COMPOSITE_COMPONENT
+    RESOLVE_CLIENT_SIDE
 
 }

@@ -30,19 +30,21 @@ public class SearchKeywordContext
  
     private final SearchExpressionContext searchExpressionContext;
     private final ContextCallback callback;
+    private final String remainingExpression;
+    
+    private boolean keywordResolved;
 
-    private boolean commandResolved;
-    private String remainingExpression;
-
-    public SearchKeywordContext(SearchExpressionContext searchExpressionContext, ContextCallback callback)
+    public SearchKeywordContext(SearchExpressionContext searchExpressionContext, ContextCallback callback, 
+            String remainingExpression)
     {
         this.searchExpressionContext = searchExpressionContext;
         this.callback = callback;
+        this.remainingExpression = remainingExpression;
     }
 
     public void invokeContextCallback(UIComponent target)
     {
-        commandResolved = true;
+        keywordResolved = true;
         callback.invokeContextCallback(searchExpressionContext.getFacesContext(), target);
     }
 
@@ -56,24 +58,18 @@ public class SearchKeywordContext
         return callback;
     }
 
-    public boolean isCommandResolved()
+    public boolean isKeywordResolved()
     {
-        return commandResolved;
+        return keywordResolved;
     }
 
-    public void setCommandResolved(boolean commandResolved)
+    public void setKeywordResolved(boolean keywordResolved)
     {
-        this.commandResolved = commandResolved;
+        this.keywordResolved = keywordResolved;
     }
 
     public String getRemainingExpression()
     {
         return remainingExpression;
     }
-
-    public void setRemainingExpression(String remainingExpression)
-    {
-        this.remainingExpression = remainingExpression;
-    }
-
 }
