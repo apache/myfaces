@@ -56,16 +56,16 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver
     }
 
     @Override
-    public void resolve(SearchKeywordContext context, UIComponent previous, String command)
+    public void resolve(SearchKeywordContext context, UIComponent current, String keyword)
     {
-        context.setCommandResolved(false);
+        context.setKeywordResolved(false);
         int sz = this.size;
         for (int i = 0; i < sz; i++)
         {
-            if (this.resolvers[i].matchKeyword(context.getSearchExpressionContext(), command))
+            if (this.resolvers[i].isResolverForKeyword(context.getSearchExpressionContext(), keyword))
             {
-                this.resolvers[i].resolve(context, previous, command);
-                if (context.isCommandResolved())
+                this.resolvers[i].resolve(context, current, keyword);
+                if (context.isKeywordResolved())
                 {
                     return;
                 }
@@ -74,12 +74,12 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver
     }
 
     @Override
-    public boolean matchKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String keyword)
     {
         int sz = this.size;
         for (int i = 0; i < sz; i++)
         {
-            if (this.resolvers[i].matchKeyword(searchExpressionContext, keyword))
+            if (this.resolvers[i].isResolverForKeyword(searchExpressionContext, keyword))
             {
                 return true;
             }
@@ -93,7 +93,7 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver
         int sz = this.size;
         for (int i = 0; i < sz; i++)
         {
-            if (this.resolvers[i].matchKeyword(searchExpressionContext, keyword))
+            if (this.resolvers[i].isResolverForKeyword(searchExpressionContext, keyword))
             {
                 return this.resolvers[i].isPassthrough(searchExpressionContext, keyword);
             }
@@ -107,7 +107,7 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver
         int sz = this.size;
         for (int i = 0; i < sz; i++)
         {
-            if (this.resolvers[i].matchKeyword(searchExpressionContext, keyword))
+            if (this.resolvers[i].isResolverForKeyword(searchExpressionContext, keyword))
             {
                 return this.resolvers[i].isLeaf(searchExpressionContext, keyword);
             }

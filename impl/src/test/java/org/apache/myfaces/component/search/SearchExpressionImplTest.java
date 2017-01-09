@@ -228,24 +228,16 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
         executeBeforeRender();
         executeBuildViewCycle();
         
-        UIOutput out = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:showName");
-        Set<SearchExpressionHint> expressionHints = new HashSet<SearchExpressionHint>();
-        expressionHints.add(SearchExpressionHint.PARENT_FALLBACK);
-        SearchExpressionContext searchContextWithParentFallback = 
-                SearchExpressionContext.createSearchExpressionContext(facesContext, out, expressionHints, null);
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
         
-        String clientId = handler.resolveClientId(searchContextWithParentFallback, "@none");
-        Assert.assertNotNull(clientId);
-        
-        Assert.assertNotNull(handler.resolveClientId(searchContextWithParentFallback, " "));
-        
-        expressionHints = new HashSet<SearchExpressionHint>();
+        UIOutput out = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:showName");
+        Set<SearchExpressionHint> expressionHints = new HashSet<SearchExpressionHint>();
+
         expressionHints.add(SearchExpressionHint.IGNORE_NO_RESULT);
         SearchExpressionContext searchContextWithIgnoreNoResult = 
                 SearchExpressionContext.createSearchExpressionContext(facesContext, out, expressionHints, null);
         
-        clientId = handler.resolveClientId(searchContextWithIgnoreNoResult, "@none");
+        String clientId = handler.resolveClientId(searchContextWithIgnoreNoResult, "@none");
         Assert.assertNull(clientId);
         
         SearchExpressionContext searchContext = 
@@ -270,22 +262,15 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
         executeBeforeRender();
         executeBuildViewCycle();
         
-        UIOutput out = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:showName");
-        Set<SearchExpressionHint> expressionHints = new HashSet<SearchExpressionHint>();
-        expressionHints.add(SearchExpressionHint.PARENT_FALLBACK);
-        SearchExpressionContext searchContextWithParentFallback = 
-                SearchExpressionContext.createSearchExpressionContext(facesContext, out, expressionHints, null);
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
         
-        List<String> clientId = handler.resolveClientIds(searchContextWithParentFallback, "@none");
-        Assert.assertNotNull(clientId.get(0));
-        
-        expressionHints = new HashSet<SearchExpressionHint>();
+        UIOutput out = (UIOutput) facesContext.getViewRoot().findComponent("mainForm:showName");
+        Set<SearchExpressionHint> expressionHints = new HashSet<SearchExpressionHint>();
         expressionHints.add(SearchExpressionHint.IGNORE_NO_RESULT);
         SearchExpressionContext searchContextWithIgnoreNoResult = 
                 SearchExpressionContext.createSearchExpressionContext(facesContext, out, expressionHints, null);
         
-        clientId = handler.resolveClientIds(searchContextWithIgnoreNoResult, "@none");
+        List<String> clientId = handler.resolveClientIds(searchContextWithIgnoreNoResult, "@none");
         Assert.assertTrue(clientId.isEmpty());
         
         SearchExpressionContext searchContext = 
@@ -395,50 +380,5 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
         executeBuildViewCycle();
         
         
-    }
-    
-    @Test
-    public void testCompositeComponentWrappedInput() throws Exception
-    {
-        startViewRequest("/testCompositeWrappedInput.xhtml");
-        processLifecycleExecute();
-        executeBeforeRender();
-        executeBuildViewCycle();
-
-        Assert.assertNotNull(
-                facesContext.getViewRoot().findComponent("testForm1"));
-        Assert.assertNotNull(
-                facesContext.getViewRoot().findComponent(":testForm1:myComposite"));
-        Assert.assertTrue(
-                UIComponent.isCompositeComponent(facesContext.getViewRoot().findComponent(":testForm1:myComposite")));
-        Assert.assertNotNull(
-                facesContext.getViewRoot().findComponent(":testForm1:myComposite:myComposite"));
-        
-        final SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
-        
-        final Set<SearchExpressionHint> expressionHints = new HashSet<>();
-        expressionHints.add(SearchExpressionHint.UNWRAP_COMPOSITE_COMPONENT);
-
-        SearchExpressionContext searchContext = SearchExpressionContext.createSearchExpressionContext(facesContext,
-                facesContext.getViewRoot(), expressionHints, null);
-        Assert.assertEquals("testForm1:myComposite:myInput",
-                handler.resolveClientId(searchContext, ":testForm1:myComposite"));
-        
-        handler.resolveComponent(searchContext, "testForm1", new ContextCallback() {
-
-            @Override
-            public void invokeContextCallback(FacesContext context, UIComponent target) {                
-                SearchExpressionContext innerSearchContext =
-                        SearchExpressionContext.createSearchExpressionContext(facesContext,
-                                target, expressionHints, null);
-                
-                Assert.assertEquals("testForm1:myComposite:myInput", handler.resolveClientId(innerSearchContext, "@child(0)"));
-                Assert.assertEquals("testForm1:myWrappedComposite:wrappedWrapped:myInput", handler.resolveClientId(innerSearchContext, "@child(1)"));
-            }
-        });
-        
-        
-        searchContext = SearchExpressionContext.createSearchExpressionContext(facesContext, facesContext.getViewRoot());
-        Assert.assertEquals("testForm1:myComposite", handler.resolveClientId(searchContext, ":testForm1:myComposite"));
     }
 }

@@ -39,28 +39,28 @@ public class ChildSearchKeywordResolver extends SearchKeywordResolver
     private static final Pattern PATTERN = Pattern.compile("child\\((\\d+)\\)");
 
     @Override
-    public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
+    public void resolve(SearchKeywordContext expressionContext, UIComponent current, String keyword)
     {
         try
         {
-            Matcher matcher = PATTERN.matcher(command);
+            Matcher matcher = PATTERN.matcher(keyword);
 
             if (matcher.matches())
             {
 
                 int childNumber = Integer.parseInt(matcher.group(1));
 
-                if (childNumber + 1 > previous.getChildCount())
+                if (childNumber + 1 > current.getChildCount())
                 {
                     throw new FacesException("Component with clientId \""
-                            + previous.getClientId(expressionContext.getSearchExpressionContext().getFacesContext()) 
+                            + current.getClientId(expressionContext.getSearchExpressionContext().getFacesContext()) 
                             + "\" has fewer children as \"" + 
-                              childNumber + "\". Expression: \"" + command + "\"");
+                              childNumber + "\". Expression: \"" + keyword + "\"");
                 }
 
-                List<UIComponent> list = previous.getChildren();
+                List<UIComponent> list = current.getChildren();
                 int count = 0;
-                for (int i = 0; i < previous.getChildCount(); i++)
+                for (int i = 0; i < current.getChildCount(); i++)
                 {
                     if (! (list.get(i) instanceof UntargetableComponent))
                     {
@@ -68,34 +68,34 @@ public class ChildSearchKeywordResolver extends SearchKeywordResolver
                     }
                     if (count == childNumber + 1)
                     {
-                        expressionContext.invokeContextCallback(previous.getChildren().get(childNumber));
+                        expressionContext.invokeContextCallback(current.getChildren().get(childNumber));
                         break;
                     }
                 }
                 if (count < childNumber)
                 {
                     throw new FacesException("Component with clientId \""
-                            + previous.getClientId(expressionContext.getSearchExpressionContext().getFacesContext()) 
+                            + current.getClientId(expressionContext.getSearchExpressionContext().getFacesContext()) 
                             + "\" has fewer children as \"" + 
-                              childNumber + "\". Expression: \"" + command + "\"");
+                              childNumber + "\". Expression: \"" + keyword + "\"");
                 }
             }
             else
             {
                 throw new FacesException(
-                        "Expression does not match following pattern @child(n). Expression: \"" + command + "\"");
+                        "Expression does not match following pattern @child(n). Expression: \"" + keyword + "\"");
             }
 
         }
         catch (Exception e)
         {
             throw new FacesException(
-                    "Expression does not match following pattern @child(n). Expression: \"" + command + "\"", e);
+                    "Expression does not match following pattern @child(n). Expression: \"" + keyword + "\"", e);
         }
     }
 
     @Override
-    public boolean matchKeyword(SearchExpressionContext searchExpressionContext, String command)
+    public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String command)
     {
         if (command != null && command.length() > 6 && 
                 command.substring(0, CHILD_KEYWORD.length()).equalsIgnoreCase(CHILD_KEYWORD))

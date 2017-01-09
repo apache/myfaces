@@ -19,12 +19,9 @@
 
 package org.apache.myfaces.component.search;
 
-import java.beans.BeanInfo;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 import javax.faces.FacesException;
 import javax.faces.component.ContextCallback;
 import javax.faces.component.NamingContainer;
@@ -35,8 +32,6 @@ import javax.faces.component.search.SearchExpressionHandler;
 import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.component.search.SearchKeywordContext;
 import javax.faces.context.FacesContext;
-import javax.faces.view.AttachedObjectTarget;
-import javax.faces.view.EditableValueHolderAttachedObjectTarget;
 
 /**
  *
@@ -94,10 +89,6 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                         searchExpressionContext, searchExpressionContext.getSource(), expression, callback);
             }
 
-            if (!callback.isClientIdFound() && isHintSet(searchExpressionContext, SearchExpressionHint.PARENT_FALLBACK))
-            {
-                callback.invokeContextCallback(facesContext, searchExpressionContext.getSource().getParent());
-            }
             if (!callback.isClientIdFound())
             {
                 if (isHintSet(searchExpressionContext, SearchExpressionHint.IGNORE_NO_RESULT))
@@ -173,10 +164,6 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
             }
         }
 
-        if (!callback.isClientIdFound() && isHintSet(searchExpressionContext, SearchExpressionHint.PARENT_FALLBACK))
-        {
-            callback.invokeContextCallback(facesContext, searchExpressionContext.getSource().getParent());
-        }
         if (!callback.isClientIdFound())
         {
             if (isHintSet(searchExpressionContext, SearchExpressionHint.IGNORE_NO_RESULT))
@@ -253,10 +240,6 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                     expression, checkCallback);
         }
 
-        if (!checkCallback.isInvoked() && isHintSet(searchExpressionContext, SearchExpressionHint.PARENT_FALLBACK))
-        {
-            checkCallback.invokeContextCallback(facesContext, searchExpressionContext.getSource().getParent());
-        }
         if (!checkCallback.isInvoked())
         {
             if (isHintSet(searchExpressionContext, SearchExpressionHint.IGNORE_NO_RESULT))
@@ -333,11 +316,6 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
             }
         }
 
-        // ...
-        if (!checkCallback.isInvoked() && isHintSet(searchExpressionContext, SearchExpressionHint.PARENT_FALLBACK))
-        {
-            checkCallback.invokeContextCallback(facesContext, searchExpressionContext.getSource().getParent());
-        }
         if (!checkCallback.isInvoked())
         {
             if (isHintSet(searchExpressionContext, SearchExpressionHint.IGNORE_NO_RESULT))
@@ -545,14 +523,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
             }
             if (currentBase != null)
             {
-                if (isHintSet(searchExpressionContext, SearchExpressionHint.UNWRAP_COMPOSITE_COMPONENT))
-                {
-                    unwrapCompositeComponent(facesContext, target, topCallback);
-                }
-                else
-                {
-                    topCallback.invokeContextCallback(facesContext, currentBase);
-                }
+                topCallback.invokeContextCallback(facesContext, currentBase);
             }
         }
     }
@@ -561,28 +532,9 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     protected void applyKeyword(SearchExpressionContext searchExpressionContext, UIComponent last,
                              String command, String remainingExpression, ContextCallback topCallback)
     {
-        SearchKeywordContext searchContext;
-        
-        if (isHintSet(searchExpressionContext, SearchExpressionHint.UNWRAP_COMPOSITE_COMPONENT)
-                && remainingExpression == null)
-        {
-            ContextCallback wrapperCallback = new ContextCallback()
-            {
-                @Override
-                public void invokeContextCallback(FacesContext context, UIComponent target)
-                {
-                    unwrapCompositeComponent(context, target, topCallback);
-                }
-            };
-                    
-            searchContext = new SearchKeywordContext(searchExpressionContext, wrapperCallback);
-        }
-        else
-        {
-            searchContext = new SearchKeywordContext(searchExpressionContext, topCallback);
-        }
+        SearchKeywordContext searchContext =
+                new SearchKeywordContext(searchExpressionContext, topCallback, remainingExpression);
 
-        searchContext.setRemainingExpression(remainingExpression);
         searchExpressionContext.getFacesContext().getApplication()
                 .getSearchKeywordResolver().resolve(searchContext, last, command);
     }
@@ -685,7 +637,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 
             // If the keyword is @child, @composite, @form, @namingcontainer, @next, @none, @parent, @previous,
             // @root, @this ,  all commands change the source to be applied the action
-            isValid = facesContext.getApplication().getSearchKeywordResolver().matchKeyword(
+            isValid = facesContext.getApplication().getSearchKeywordResolver().isResolverForKeyword(
                     searchExpressionContext, command);
             if (remaining != null)
             {
@@ -853,38 +805,4 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         return tokens.toArray(new String[tokens.size()]);
     }
 
-    private static final Set<SearchExpressionHint> UNWRAP_COMPOSITE_COMPONENT_HINTS = EnumSet.of(
-            SearchExpressionHint.SKIP_VIRTUAL_COMPONENTS,
-            SearchExpressionHint.UNWRAP_COMPOSITE_COMPONENT);
-    
-    protected void unwrapCompositeComponent(FacesContext facesContext, UIComponent composite,
-            ContextCallback callback)
-    {
-        boolean resolved = false;
-        
-        if (UIComponent.isCompositeComponent(composite))
-        {
-            BeanInfo info = (BeanInfo) composite.getAttributes().get(UIComponent.BEANINFO_KEY);
-            List<AttachedObjectTarget> targets = (List<AttachedObjectTarget>) info.getBeanDescriptor()
-                    .getValue(AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY);
-
-            for (AttachedObjectTarget target : targets)
-            {
-                if (target instanceof EditableValueHolderAttachedObjectTarget)
-                {
-                    SearchExpressionContext searchExpressionContext =
-                            SearchExpressionContext.createSearchExpressionContext(facesContext, composite,
-                                    UNWRAP_COMPOSITE_COMPONENT_HINTS, null);
-                    facesContext.getApplication().getSearchExpressionHandler().resolveComponent(
-                            searchExpressionContext, target.getName(), callback);
-                    resolved = true;
-                }
-            }
-        }
-
-        if (!resolved)
-        {
-            callback.invokeContextCallback(facesContext, composite);
-        }
-    }
 }

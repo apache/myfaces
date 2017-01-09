@@ -32,14 +32,14 @@ public class RootSearchKeywordResolver extends SearchKeywordResolver
     public static final String ROOT_KEYWORD = "root";
 
     @Override
-    public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
+    public void resolve(SearchKeywordContext expressionContext, UIComponent current, String keyword)
     {
         expressionContext.invokeContextCallback(
                 expressionContext.getSearchExpressionContext().getFacesContext().getViewRoot());
     }
 
     @Override
-    public boolean matchKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return ROOT_KEYWORD.equalsIgnoreCase(keyword);
     }

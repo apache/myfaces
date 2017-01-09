@@ -43,23 +43,23 @@ public class IdSearchKeywordResolver extends SearchKeywordResolver
     private static final Pattern PATTERN = Pattern.compile("id\\((\\w+)\\)");
 
     @Override
-    public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
+    public void resolve(SearchKeywordContext expressionContext, UIComponent current, String keyword)
     {
         FacesContext facesContext = expressionContext.getSearchExpressionContext().getFacesContext();
         
-        final String targetId = extractId(command);
+        final String targetId = extractId(keyword);
         if (expressionContext.getSearchExpressionContext().getExpressionHints() != null
                 && expressionContext.getSearchExpressionContext().getExpressionHints().contains(
                         SearchExpressionHint.SKIP_VIRTUAL_COMPONENTS))
         {
             // Avoid visit tree because in this case we need real component instances.
             // This means components inside UIData will not be scanned. 
-            withId(facesContext, targetId, previous, expressionContext.getCallback());
-            expressionContext.setCommandResolved(true);
+            withId(facesContext, targetId, current, expressionContext.getCallback());
+            expressionContext.setKeywordResolved(true);
         }
         else
         {
-            previous.visitTree(
+            current.visitTree(
                     VisitContext.createVisitContext(facesContext, null,
                             expressionContext.getSearchExpressionContext().getVisitHints()),
                     new VisitCallback()
@@ -139,7 +139,7 @@ public class IdSearchKeywordResolver extends SearchKeywordResolver
     }
     
     @Override
-    public boolean matchKeyword(SearchExpressionContext searchExpressionContext, String command)
+    public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String command)
     {
         if (command != null && command.length() > 6 && 
                 command.substring(0, ID_KEYWORD.length()).equalsIgnoreCase(ID_KEYWORD))

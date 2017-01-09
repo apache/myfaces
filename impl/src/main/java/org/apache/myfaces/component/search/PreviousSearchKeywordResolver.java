@@ -34,14 +34,14 @@ public class PreviousSearchKeywordResolver extends SearchKeywordResolver
     public static final String PREVIOUS_KEYWORD = "previous";
 
     @Override
-    public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
+    public void resolve(SearchKeywordContext expressionContext, UIComponent current, String keyword)
     {
-        UIComponent parent = previous.getParent();
+        UIComponent parent = current.getParent();
 
         if (parent.getChildCount() > 1)
         {
             List<UIComponent> children = parent.getChildren();
-            int index = children.indexOf(previous);
+            int index = children.indexOf(current);
 
             if (index > 0)
             {
@@ -61,11 +61,11 @@ public class PreviousSearchKeywordResolver extends SearchKeywordResolver
                 }
             }
         }
-        expressionContext.setCommandResolved(true);
+        expressionContext.setKeywordResolved(true);
     }
     
     @Override
-    public boolean matchKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return PREVIOUS_KEYWORD.equalsIgnoreCase(keyword);
     }

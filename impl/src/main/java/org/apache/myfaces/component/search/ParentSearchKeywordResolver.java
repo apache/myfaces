@@ -32,13 +32,13 @@ public class ParentSearchKeywordResolver extends SearchKeywordResolver
     public static final String PARENT_KEYWORD = "parent";
 
     @Override
-    public void resolve(SearchKeywordContext expressionContext, UIComponent previous, String command)
+    public void resolve(SearchKeywordContext expressionContext, UIComponent current, String keyword)
     {
-        expressionContext.invokeContextCallback(previous.getParent());
+        expressionContext.invokeContextCallback(current.getParent());
     }
 
     @Override
-    public boolean matchKeyword(SearchExpressionContext searchExpressionContext, String keyword)
+    public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String keyword)
     {
         return PARENT_KEYWORD.equalsIgnoreCase(keyword);
     }
