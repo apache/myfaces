@@ -91,30 +91,20 @@ public class IdSearchKeywordResolver extends SearchKeywordResolver
 
     protected String extractId(String expression)
     {
-        try
+        Matcher matcher = PATTERN.matcher(expression);
+        if (matcher.matches())
         {
-            Matcher matcher = PATTERN.matcher(expression);
-            if (matcher.matches())
-            {
-                return matcher.group(1);
-            }
-            else
-            {
-                throw new FacesException("Expression does not match following pattern @id(id). Expression: \""
-                        + expression + "\"");
-            }
-
+            return matcher.group(1);
         }
-        catch (Exception e)
+        else
         {
             throw new FacesException("Expression does not match following pattern @id(id). Expression: \""
-                    + expression + "\"", e);
+                    + expression + "\"");
         }
     }
 
     private static void withId(FacesContext context, String id, UIComponent base, ContextCallback callback)
     {
-
         if (id.equals(base.getId()))
         {
             callback.invokeContextCallback(context, base);
@@ -141,23 +131,15 @@ public class IdSearchKeywordResolver extends SearchKeywordResolver
     @Override
     public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String command)
     {
-        if (command != null && command.length() > 6 && 
-                command.substring(0, ID_KEYWORD.length()).equalsIgnoreCase(ID_KEYWORD))
+        if (command.length() > 6 && command.substring(0, ID_KEYWORD.length()).equalsIgnoreCase(ID_KEYWORD))
         {
-            try
-            {
-                Matcher matcher = PATTERN.matcher(command);
+            Matcher matcher = PATTERN.matcher(command);
 
-                if (matcher.matches())
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+            if (matcher.matches())
+            {
+                return true;
             }
-            catch (Exception e)
+            else
             {
                 return false;
             }

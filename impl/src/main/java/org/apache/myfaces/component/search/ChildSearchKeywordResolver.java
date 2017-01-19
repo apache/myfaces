@@ -41,79 +41,61 @@ public class ChildSearchKeywordResolver extends SearchKeywordResolver
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent current, String keyword)
     {
-        try
+        Matcher matcher = PATTERN.matcher(keyword);
+
+        if (matcher.matches())
         {
-            Matcher matcher = PATTERN.matcher(keyword);
+            int childNumber = Integer.parseInt(matcher.group(1));
 
-            if (matcher.matches())
+            if (childNumber + 1 > current.getChildCount())
             {
-
-                int childNumber = Integer.parseInt(matcher.group(1));
-
-                if (childNumber + 1 > current.getChildCount())
-                {
-                    throw new FacesException("Component with clientId \""
-                            + current.getClientId(expressionContext.getSearchExpressionContext().getFacesContext()) 
-                            + "\" has fewer children as \"" + 
-                              childNumber + "\". Expression: \"" + keyword + "\"");
-                }
-
-                List<UIComponent> list = current.getChildren();
-                int count = 0;
-                for (int i = 0; i < current.getChildCount(); i++)
-                {
-                    if (! (list.get(i) instanceof UntargetableComponent))
-                    {
-                        count++;
-                    }
-                    if (count == childNumber + 1)
-                    {
-                        expressionContext.invokeContextCallback(current.getChildren().get(childNumber));
-                        break;
-                    }
-                }
-                if (count < childNumber)
-                {
-                    throw new FacesException("Component with clientId \""
-                            + current.getClientId(expressionContext.getSearchExpressionContext().getFacesContext()) 
-                            + "\" has fewer children as \"" + 
-                              childNumber + "\". Expression: \"" + keyword + "\"");
-                }
-            }
-            else
-            {
-                throw new FacesException(
-                        "Expression does not match following pattern @child(n). Expression: \"" + keyword + "\"");
+                throw new FacesException("Component with clientId \""
+                        + current.getClientId(expressionContext.getSearchExpressionContext().getFacesContext()) 
+                        + "\" has fewer children as \"" + 
+                          childNumber + "\". Expression: \"" + keyword + "\"");
             }
 
+            List<UIComponent> list = current.getChildren();
+            int count = 0;
+            for (int i = 0; i < current.getChildCount(); i++)
+            {
+                if (! (list.get(i) instanceof UntargetableComponent))
+                {
+                    count++;
+                }
+                if (count == childNumber + 1)
+                {
+                    expressionContext.invokeContextCallback(current.getChildren().get(childNumber));
+                    break;
+                }
+            }
+            if (count < childNumber)
+            {
+                throw new FacesException("Component with clientId \""
+                        + current.getClientId(expressionContext.getSearchExpressionContext().getFacesContext()) 
+                        + "\" has fewer children as \"" + 
+                          childNumber + "\". Expression: \"" + keyword + "\"");
+            }
         }
-        catch (Exception e)
+        else
         {
             throw new FacesException(
-                    "Expression does not match following pattern @child(n). Expression: \"" + keyword + "\"", e);
+                    "Expression does not match following pattern @child(n). Expression: \"" + keyword + "\"");
         }
     }
 
     @Override
     public boolean isResolverForKeyword(SearchExpressionContext searchExpressionContext, String command)
     {
-        if (command != null && command.length() > 6 && 
-                command.substring(0, CHILD_KEYWORD.length()).equalsIgnoreCase(CHILD_KEYWORD))
+        if (command.length() > 6 && command.substring(0, CHILD_KEYWORD.length()).equalsIgnoreCase(CHILD_KEYWORD))
         {
-            try
-            {
-                Matcher matcher = PATTERN.matcher(command);
+            Matcher matcher = PATTERN.matcher(command);
 
-                if (matcher.matches())
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+            if (matcher.matches())
+            {
+                return true;
             }
-            catch (Exception e)
+            else
             {
                 return false;
             }
