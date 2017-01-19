@@ -21,14 +21,9 @@ package org.apache.myfaces.view.facelets.tag.composite;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 import javax.el.ValueExpression;
-import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
 import javax.faces.view.AttachedObjectTarget;
 import org.apache.myfaces.shared.util.StringUtils;
@@ -63,9 +58,6 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
         return null;
     }
 
-    private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
-            EnumSet.of(SearchExpressionHint.SKIP_VIRTUAL_COMPONENTS);
-    
     @Override
     public List<UIComponent> getTargets(UIComponent topLevelComponent)
     {
@@ -74,18 +66,32 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
         
         if (targetsArray.length > 0)
         {
+            List<UIComponent> targetsList = new ArrayList<UIComponent>(targetsArray.length);
+            final char separatorChar = facesContext.getNamingContainerSeparatorChar();
             UIComponent facetBase = topLevelComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME);
-            
-            SearchExpressionContext searchContext = SearchExpressionContext.createSearchExpressionContext(
-                                facesContext, facetBase, EXPRESSION_HINTS, null);
-            
-            CollectComponentListCallback callback = new CollectComponentListCallback(targetsArray.length);
             for (String target : targetsArray)
             {
-                facesContext.getApplication().getSearchExpressionHandler()
-                        .resolveComponents(searchContext, target, callback);
+                //UIComponent innerComponent = topLevelComponent.findComponent(
+                //        topLevelComponent.getId() + UINamingContainer.getSeparatorChar(facesContext) + target);
+                int separator = target.indexOf(separatorChar);
+                UIComponent innerComponent = null;
+                if (separator == -1)
+                {
+                    innerComponent = ComponentSupport.findComponentChildOrFacetFrom(
+                            facetBase, target, null);
+                }
+                else
+                {
+                    innerComponent = ComponentSupport.findComponentChildOrFacetFrom(
+                            facetBase, target.substring(0,separator), target);
+                }
+                
+                if (innerComponent != null)
+                {
+                    targetsList.add(innerComponent);
+                }
             }
-            return callback.getList();
+            return targetsList;
         }
         else
         {
@@ -96,6 +102,8 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
             String name = getName();
             if (name != null)
             {
+                //UIComponent innerComponent = topLevelComponent.findComponent(
+                //        topLevelComponent.getId() + UINamingContainer.getSeparatorChar(facesContext) + getName());
                 UIComponent innerComponent = ComponentSupport.findComponentChildOrFacetFrom(
                         topLevelComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME),
                         name, null);
@@ -127,29 +135,5 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
     public void setTargets(ValueExpression ve)
     {
         _targets = ve;
-    }
-    
-    private static class CollectComponentListCallback implements ContextCallback
-    {
-        private List<UIComponent> list = null;
-
-        public CollectComponentListCallback(int size)
-        {
-            list = new ArrayList<UIComponent>(size);
-        }
-
-        @Override
-        public void invokeContextCallback(FacesContext context, UIComponent target)
-        {
-            getList().add(target);
-        }
-
-        /**
-         * @return the list
-         */
-        public List<UIComponent> getList()
-        {
-            return list;
-        }
     }
 }

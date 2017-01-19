@@ -371,6 +371,7 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
         Assert.assertFalse(handler.isPassthroughExpression(searchContextWithAjaxResolve, "@form:@child(0)"));
     }
 
+    /*
     @Test
     public void testCompositeComponentExpression() throws Exception
     {
@@ -380,5 +381,5 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
         executeBuildViewCycle();
         
         
-    }
+    }*/
 }
