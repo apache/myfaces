@@ -102,7 +102,8 @@ $innersource
 ## TODO: this condition should be checked for parent components
 ## and csv implements
 #if ($component.implements)
-#if ($component.implements == "javax.faces.component.behavior.ClientBehaviorHolder")
+#if ( ($component.implements == "javax.faces.component.behavior.ClientBehaviorHolder")
+     && (${utils.getClassFromFullClass($component.className)} != "UIWebsocket"))
     static private final java.util.Collection<String> CLIENT_EVENTS_LIST = 
         java.util.Collections.unmodifiableCollection(
             java.util.Arrays.asList(

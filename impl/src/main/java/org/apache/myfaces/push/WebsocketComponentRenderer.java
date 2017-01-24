@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIWebsocket;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.context.FacesContext;
@@ -47,8 +48,8 @@ import org.apache.myfaces.shared.renderkit.html.HTML;
  */
 @JSFRenderer(
         renderKitId = "HTML_BASIC",
-        family = "javax.faces.Output",
-        type = "org.apache.myfaces.WebsocketComponent")
+        family = "javax.faces.Script",
+        type = "javax.faces.Websocket")
 @ListenerFor(systemEventClass = PostAddToViewEvent.class)
 public class WebsocketComponentRenderer extends Renderer implements ComponentSystemEventListener
 {
@@ -59,14 +60,14 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         if (event instanceof PostAddToViewEvent)
         {
             FacesContext facesContext = FacesContext.getCurrentInstance();
-            WebsocketComponent component = (WebsocketComponent) event.getComponent();
+            UIWebsocket component = (UIWebsocket) event.getComponent();
             WebsocketInit initComponent = (WebsocketInit) facesContext.getViewRoot().findComponent(
-                    component.getInitComponentId());
+                    (String) component.getAttributes().get("initComponentId"));
             if (initComponent == null)
             {
                 initComponent = (WebsocketInit) facesContext.getApplication().createComponent(facesContext,
                         "org.apache.myfaces.WebsocketInit", "org.apache.myfaces.WebsocketInit");
-                initComponent.setId(component.getInitComponentId());
+                initComponent.setId((String) component.getAttributes().get("initComponentId"));
                 facesContext.getViewRoot().addComponentResource(facesContext,
                         initComponent, "body");
             }
@@ -100,10 +101,10 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
     {
         super.encodeEnd(facesContext, c); //check for NP
 
-        WebsocketComponent component = (WebsocketComponent) c;
+        UIWebsocket component = (UIWebsocket) c;
 
         WebsocketInit init = (WebsocketInit) facesContext.getViewRoot().findComponent(
-                component.getInitComponentId());
+                (String) component.getAttributes().get("initComponentId"));
 
         ResponseWriter writer = facesContext.getResponseWriter();
 
@@ -214,12 +215,12 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         {
             HtmlBufferResponseWriterWrapper buffwriter = (HtmlBufferResponseWriterWrapper) 
                     facesContext.getResponseWriter();
-            init.getWebsocketComponentMarkupList().add(writer.toString());
+            init.getUIWebsocketMarkupList().add(writer.toString());
             facesContext.setResponseWriter(buffwriter.getInitialWriter());
         }
     }
     
-    private String getBehaviorScripts(FacesContext facesContext, WebsocketComponent component)
+    private String getBehaviorScripts(FacesContext facesContext, UIWebsocket component)
     {
         Map<String, List<ClientBehavior>> clientBehaviorsByEvent = component.getClientBehaviors();
 

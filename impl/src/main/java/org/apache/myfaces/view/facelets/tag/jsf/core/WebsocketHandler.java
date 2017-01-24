@@ -20,13 +20,13 @@
 package org.apache.myfaces.view.facelets.tag.jsf.core;
 
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIWebsocket;
 import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.push.WebsocketComponent;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
@@ -51,50 +51,13 @@ public class WebsocketHandler extends ComponentHandler/* implements RelocatableR
         _channel = getRequiredAttribute("channel");
     }
 
-    /*
-    public UIComponent findChildByTagId(FaceletContext ctx, UIComponent parent,
-            String id)
-    {
-        //Script with no target and no relocation is possible
-        UIComponent c = ComponentSupport.findChildByTagId(parent, id);
-        if (c == null)
-        {
-            UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
-            
-            if (root.getFacetCount() > 0)
-            {
-                Iterator<UIComponent> itr = root.getFacets().values().iterator();
-                while (itr.hasNext() && c == null)
-                {
-                    UIComponent facet = itr.next();
-                    c = ComponentSupport.findChildByTagId(facet, id);
-                }
-            }
-            return c;
-        }
-        else
-        {
-            return c;
-        }
-    }*/
-
-
     @Override
     public void onComponentCreated(FaceletContext ctx, UIComponent c,
             UIComponent parent)
     {
-        /*
-        UIComponent parentCompositeComponent
-                = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
-        if (parentCompositeComponent != null)
-        {
-            c.getAttributes().put(CompositeComponentELUtils.LOCATION_KEY,
-                    parentCompositeComponent.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY));
-        }*/
-        
-        WebsocketComponent component = (WebsocketComponent) c;
-        component.setInitComponentId(ComponentSupport.getViewRoot(ctx, parent).createUniqueId()+"_wsinit");
+        UIWebsocket component = (UIWebsocket) c;
+        component.getAttributes().put("initComponentId", 
+                ComponentSupport.getViewRoot(ctx, parent).createUniqueId()+"_wsinit");
     }
-
     
 }

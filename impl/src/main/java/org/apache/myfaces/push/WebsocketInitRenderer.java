@@ -45,7 +45,7 @@ public class WebsocketInitRenderer extends Renderer
   
         ResponseWriter writer = facesContext.getResponseWriter();
         // If two websocket share the same channel and scope, share init.
-        for (Iterator it = init.getWebsocketComponentMarkupList().iterator(); it.hasNext();)
+        for (Iterator it = init.getUIWebsocketMarkupList().iterator(); it.hasNext();)
         {
             String markup = (String) it.next();
             writer.write(markup);
