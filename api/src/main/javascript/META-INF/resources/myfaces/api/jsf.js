@@ -364,10 +364,9 @@ if (!jsf.push) {
      * @param {function} onclose The function to be invoked when the web socket is closed.
      * @param {boolean} autoconnect Whether or not to immediately open the socket. Defaults to <code>false</code>.
      */
-    this.init = function(socketClientId, uri, onopen, onmessage, onclose, behaviorScripts, autoconnect) {
+    this.init = function(socketClientId, uri, channel, onopen, onmessage, onclose, behaviorScripts, autoconnect) {
             
         onclose = resolveFunction(onclose);
-        var channel = uri.split(/\?/)[0];
 
         if (!window.WebSocket) { // IE6-9.
             onclose(-1, channel);
