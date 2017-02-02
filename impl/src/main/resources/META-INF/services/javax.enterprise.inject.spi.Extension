@@ -7,3 +7,4 @@ org.apache.myfaces.push.cdi.PushContextCDIExtension
 org.apache.myfaces.cdi.faces.FacesScopeContextExtension
 org.apache.myfaces.cdi.viewTransient.ViewTransientScopeContextExtension
 org.apache.myfaces.cdi.component.ComponentBindingExtension
+org.apache.myfaces.cdi.bean.ManagedPropertyExtension
