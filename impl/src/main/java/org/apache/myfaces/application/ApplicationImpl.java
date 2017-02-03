@@ -46,6 +46,7 @@ import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
+import javax.faces.FacesWrapper;
 import javax.faces.application.Application;
 import javax.faces.application.NavigationHandler;
 import javax.faces.application.ProjectStage;
@@ -67,6 +68,7 @@ import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.DateTimeConverter;
+import javax.faces.convert.FacesConverter;
 import javax.faces.el.MethodBinding;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.ReferenceSyntaxException;
@@ -85,6 +87,7 @@ import javax.faces.render.ClientBehaviorRenderer;
 import javax.faces.render.RenderKit;
 import javax.faces.render.Renderer;
 import javax.faces.render.RendererWrapper;
+import javax.faces.validator.FacesValidator;
 import javax.faces.validator.Validator;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.naming.Context;
@@ -96,6 +99,8 @@ import org.apache.myfaces.application.cdi.ConverterWrapper;
 import org.apache.myfaces.cdi.util.ExternalArtifactResolver;
 import org.apache.myfaces.application.cdi.ValidatorWrapper;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.cdi.converter.FacesConverterCDIWrapper;
+import org.apache.myfaces.cdi.validator.FacesValidatorCDIWrapper;
 import org.apache.myfaces.component.search.AllSearchKeywordResolver;
 import org.apache.myfaces.component.search.ChildSearchKeywordResolver;
 import org.apache.myfaces.component.search.CompositeComponentParentSearchKeywordResolver;
@@ -243,6 +248,12 @@ public class ApplicationImpl extends Application
     
     private List<Class<? extends Converter>> _noArgConstructorConverterClasses 
             = new CopyOnWriteArrayList<Class<? extends Converter>>();
+    
+    private Map<Class<? extends Converter>, Boolean> _cdiManagedConverterMap
+            = new ConcurrentHashMap<Class<? extends Converter>, Boolean>();
+    
+    private Map<Class<? extends Validator>, Boolean> _cdiManagedValidatorMap
+            = new ConcurrentHashMap<Class<? extends Validator>, Boolean>();
     
     /** Value of javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE parameter */
     private boolean _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = false; 
@@ -613,7 +624,8 @@ public class ApplicationImpl extends Application
                 // SystemEventListenerHolder.getListenersForEventClass(java.lang.Class) on it, passing the
                 // systemEventClass
                 // argument. If the list is not empty, perform algorithm traverseListenerList on the list.
-                event = _traverseListenerList(holder.getListenersForEventClass(systemEventClass), systemEventClass,
+                event = _ApplicationUtils._traverseListenerList(
+                        holder.getListenersForEventClass(systemEventClass), systemEventClass,
                                               source, event);
             }
             
@@ -621,7 +633,8 @@ public class ApplicationImpl extends Application
             if (uiViewRoot != null)
             {
                 //Call listeners on view level
-                event = _traverseListenerListWithCopy(uiViewRoot.getViewListenersForEventClass(systemEventClass), 
+                event = _ApplicationUtils._traverseListenerListWithCopy(
+                        uiViewRoot.getViewListenersForEventClass(systemEventClass), 
                         systemEventClass, source, event);
             }
 
@@ -1554,13 +1567,40 @@ public class ApplicationImpl extends Application
             throw new FacesException("Could not find any registered converter-class by converterId : " + converterId);
         }
 
+        if (!_cdiManagedConverterMap.containsKey(converterClass))
+        {
+            FacesConverter annotation = converterClass.getAnnotation(FacesConverter.class);
+            if (annotation != null && annotation.managed())
+            {
+                _cdiManagedConverterMap.put(converterClass, true);
+            }
+            else
+            {
+                _cdiManagedConverterMap.put(converterClass, false);
+            }
+        }
+        
         try
         {
-            final Converter converter = createConverterInstance(converterClass);
-
-            setConverterProperties(converterClass, converter);
+            Converter converter = null;
             
-            _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), converter);
+            if (Boolean.TRUE.equals(_cdiManagedConverterMap.get(converterClass)))
+            {
+                converter = new FacesConverterCDIWrapper(converterClass, null, converterId);
+                
+                setConverterProperties(converterClass, ((FacesWrapper<Converter>)converter).getWrapped());
+
+                _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), 
+                        ((FacesWrapper<Converter>)converter).getWrapped());
+            }
+            else
+            {
+                converter = createConverterInstance(converterClass);
+
+                setConverterProperties(converterClass, converter);
+
+                _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), converter);
+            }
 
             return converter;
         }
@@ -1650,39 +1690,62 @@ public class ApplicationImpl extends Application
                     _converterTargetClassToConverterClassMap.remove(targetClass);
                 }
                 
+                boolean managed = false;
+                if (!_cdiManagedConverterMap.containsKey(converterClass))
+                {
+                    FacesConverter annotation = converterClass.getAnnotation(FacesConverter.class);
+                    if (annotation != null && annotation.managed())
+                    {
+                        _cdiManagedConverterMap.put(converterClass, true);
+                    }
+                    else
+                    {
+                        _cdiManagedConverterMap.put(converterClass, false);
+                    }
+                }
+                
                 Converter converter = null;
                 
-                // check cached constructor information
-                if (!_noArgConstructorConverterClasses.contains(converterClass))
+                if (Boolean.TRUE.equals(_cdiManagedConverterMap.get(converterClass)))
                 {
-                    // the converter class either supports the one-arg constructor
-                    // or has never been processed before
-                    try
-                    {
-                        // look for a constructor that takes a single Class object
-                        // See JSF 1.2 javadoc for Converter
-                        Constructor<? extends Converter> constructor = converterClass
-                                .getConstructor(new Class[] { Class.class });
-
-                        converter = constructor.newInstance(new Object[] { targetClass });
-                    }
-                    catch (Exception e)
-                    {
-                        // the constructor does not exist
-                        // add the class to the no-arg constructor classes cache
-                        _noArgConstructorConverterClasses.add(converterClass);
-                        
-                        // use no-arg constructor
-                        converter = createConverterInstance(converterClass);
-                    }
+                    converter = new FacesConverterCDIWrapper(converterClass, targetClass, null);
+                    
+                    setConverterProperties(converterClass, ((FacesWrapper<Converter>)converter).getWrapped());
                 }
                 else
                 {
-                    // use no-arg constructor
-                    converter = createConverterInstance(converterClass);
-                }
+                    // check cached constructor information
+                    if (!_noArgConstructorConverterClasses.contains(converterClass))
+                    {
+                        // the converter class either supports the one-arg constructor
+                        // or has never been processed before
+                        try
+                        {
+                            // look for a constructor that takes a single Class object
+                            // See JSF 1.2 javadoc for Converter
+                            Constructor<? extends Converter> constructor = converterClass
+                                    .getConstructor(new Class[] { Class.class });
 
-                setConverterProperties(converterClass, converter);
+                            converter = constructor.newInstance(new Object[] { targetClass });
+                        }
+                        catch (Exception e)
+                        {
+                            // the constructor does not exist
+                            // add the class to the no-arg constructor classes cache
+                            _noArgConstructorConverterClasses.add(converterClass);
+
+                            // use no-arg constructor
+                            converter = createConverterInstance(converterClass);
+                        }
+                    }
+                    else
+                    {
+                        // use no-arg constructor
+                        converter = createConverterInstance(converterClass);
+                    }
+                    
+                    setConverterProperties(converterClass, converter);
+                }
 
                 return converter;
             }
@@ -2044,12 +2107,37 @@ public class ApplicationImpl extends Application
             log.severe(message);
             throw new FacesException(message);
         }
+        
+        if (!_cdiManagedValidatorMap.containsKey(validatorClass))
+        {
+            FacesValidator annotation = validatorClass.getAnnotation(FacesValidator.class);
+            if (annotation != null && annotation.managed())
+            {
+                _cdiManagedValidatorMap.put(validatorClass, true);
+            }
+            else
+            {
+                _cdiManagedValidatorMap.put(validatorClass, false);
+            }
+        }
 
         try
         {
-            Validator validator = createValidatorInstance(validatorClass);
+            Validator validator = null;
             
-            _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), validator);
+            if (Boolean.TRUE.equals(_cdiManagedValidatorMap.get(validatorClass)))
+            {
+                validator = new FacesValidatorCDIWrapper(validatorClass, validatorId);
+                
+                _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), 
+                        ((FacesWrapper<Validator>)validator).getWrapped());
+            }
+            else
+            {
+                validator = createValidatorInstance(validatorClass);
+        
+                _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), validator);
+            }
             
             return validator;
         }
@@ -2171,41 +2259,6 @@ public class ApplicationImpl extends Application
         {
             throw new NullPointerException("String " + paramName + " cannot be empty.");
         }
-    }
-
-    private static SystemEvent _createEvent(Class<? extends SystemEvent> systemEventClass, Object source,
-                                            SystemEvent event)
-    {
-        if (event == null)
-        {
-            try
-            {
-                Constructor<?>[] constructors = systemEventClass.getConstructors();
-                Constructor<? extends SystemEvent> constructor = null;
-                for (Constructor<?> c : constructors)
-                {
-                    if (c.getParameterTypes().length == 1)
-                    {
-                        // Safe cast, since the constructor belongs
-                        // to a class of type SystemEvent
-                        constructor = (Constructor<? extends SystemEvent>) c;
-                        break;
-                    }
-                }
-                if (constructor != null)
-                {
-                    event = constructor.newInstance(source);
-                }
-
-            }
-            catch (Exception e)
-            {
-                throw new FacesException("Couldn't instanciate system event of type " + 
-                        systemEventClass.getName(), e);
-            }
-        }
-
-        return event;
     }
 
     private void _handleAnnotations(FacesContext context, Object inspected, UIComponent component)
@@ -2584,136 +2637,6 @@ public class ApplicationImpl extends Application
         }
     }
 
-    private static SystemEvent _traverseListenerList(List<? extends SystemEventListener> listeners,
-                                                     Class<? extends SystemEvent> systemEventClass, Object source,
-                                                     SystemEvent event)
-    {
-        if (listeners != null && !listeners.isEmpty())
-        {
-            // perf: org.apache.myfaces.application.ApplicationImpl.
-            //    SystemListenerEntry.getSpecificSourceListenersNotNull(Class<?>)
-            // or javax.faces.component.UIComponent.subscribeToEvent(
-            //      Class<? extends SystemEvent>, ComponentSystemEventListener)
-            // creates a ArrayList:
-            for (int i  = 0, size = listeners.size(); i < size; i++)
-            {
-                SystemEventListener listener = listeners.get(i);
-                // Call SystemEventListener.isListenerForSource(java.lang.Object), passing the source argument.
-                // If this returns false, take no action on the listener.
-                if (listener.isListenerForSource(source))
-                {
-                    // Otherwise, if the event to be passed to the listener instances has not yet been constructed,
-                    // construct the event, passing source as the argument to the one-argument constructor that takes
-                    // an Object. This same event instance must be passed to all listener instances.
-                    event = _createEvent(systemEventClass, source, event);
-
-                    // Call SystemEvent.isAppropriateListener(javax.faces.event.FacesListener), passing the listener
-                    // instance as the argument. If this returns false, take no action on the listener.
-                    if (event.isAppropriateListener(listener))
-                    {
-                        // Call SystemEvent.processListener(javax.faces.event.FacesListener), passing the listener
-                        // instance.
-                        event.processListener(listener);
-                    }
-                }
-            }
-        }
-
-        return event;
-    }
-    
-    private static SystemEvent _traverseListenerListWithCopy(List<? extends SystemEventListener> listeners,
-            Class<? extends SystemEvent> systemEventClass, Object source,
-            SystemEvent event)
-    {
-        if (listeners != null && !listeners.isEmpty())
-        {
-            List<SystemEventListener> listenersCopy = new ArrayList<SystemEventListener>();
-            int processedListenerIndex = 0;
-            
-            for (int i = 0; i < listeners.size(); i++)
-            {
-                listenersCopy.add(listeners.get(i));
-            }
-            
-            // If the inner for is succesful, processedListenerIndex == listenersCopy.size()
-            // and the loop will be complete.
-            while (processedListenerIndex < listenersCopy.size())
-            {                
-                for (; processedListenerIndex < listenersCopy.size(); processedListenerIndex++ )
-                {
-                    SystemEventListener listener = listenersCopy.get(processedListenerIndex);
-                    // Call SystemEventListener.isListenerForSource(java.lang.Object), passing the source argument.
-                    // If this returns false, take no action on the listener.
-                    if (listener.isListenerForSource(source))
-                    {
-                        // Otherwise, if the event to be passed to the listener instances has not yet been constructed,
-                        // construct the event, passing source as the argument
-                        // to the one-argument constructor that takes
-                        // an Object. This same event instance must be passed to all listener instances.
-                        event = _createEvent(systemEventClass, source, event);
-    
-                        // Call SystemEvent.isAppropriateListener(javax.faces.event.FacesListener), passing the listener
-                        // instance as the argument. If this returns false, take no action on the listener.
-                        if (event.isAppropriateListener(listener))
-                        {
-                            // Call SystemEvent.processListener(javax.faces.event.FacesListener), passing the listener
-                            // instance.
-                            event.processListener(listener);
-                        }
-                    }
-                }
-                
-                boolean listChanged = false;
-                if (listeners.size() == listenersCopy.size())
-                {
-                    for (int i = 0; i < listenersCopy.size(); i++)
-                    {
-                        if (listenersCopy.get(i) != listeners.get(i))
-                        {
-                            listChanged = true;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    listChanged = true;
-                }
-                
-                if (listChanged)
-                {
-                    for (int i = 0; i < listeners.size(); i++)
-                    {
-                        SystemEventListener listener = listeners.get(i);
-                        
-                        // check if listenersCopy.get(i) is valid
-                        if (i < listenersCopy.size())
-                        {
-                            // The normal case is a listener was added, 
-                            // so as heuristic, check first
-                            // if we can find it at the same location
-                            if (!listener.equals(listenersCopy.get(i)) &&
-                                !listenersCopy.contains(listener))
-                            {
-                                listenersCopy.add(listener);
-                            }
-                        }
-                        else
-                        {
-                            if (!listenersCopy.contains(listener))
-                            {
-                                listenersCopy.add(listener);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return event;
-    }
-
     /**
      * Method to handle determining if the first request has 
      * been handled by the associated LifecycleImpl.
@@ -2799,10 +2722,11 @@ public class ApplicationImpl extends Application
         {
             if (source != null && _sourceClassMap != null)
             {
-                event = _traverseListenerList(_sourceClassMap.get(classSource), systemEventClass, source, event);
+                event = _ApplicationUtils._traverseListenerList(
+                        _sourceClassMap.get(classSource), systemEventClass, source, event);
             }
 
-            _traverseListenerList(_lstSystemEventListener, systemEventClass, source, event);
+            _ApplicationUtils._traverseListenerList(_lstSystemEventListener, systemEventClass, source, event);
         }
 
         private void addListenerNoDuplicate(List<SystemEventListener> listeners, SystemEventListener listener)

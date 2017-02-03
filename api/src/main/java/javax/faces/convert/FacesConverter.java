@@ -23,13 +23,15 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import javax.inject.Qualifier;
 
 /**
  * @since 2.0
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Inherited
+@Qualifier
 public @interface FacesConverter
 {
     /**
@@ -44,4 +46,6 @@ public @interface FacesConverter
      * @return
      */
     public String value() default "";
+    
+    public boolean managed() default false;
 }
