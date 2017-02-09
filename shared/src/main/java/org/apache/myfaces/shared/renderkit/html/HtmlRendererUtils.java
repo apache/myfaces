@@ -53,6 +53,7 @@ import javax.faces.component.html.HtmlMessages;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.context.PartialViewContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
@@ -284,7 +285,7 @@ public final class HtmlRendererUtils
                 Map<String, String> paramMap = facesContext
                         .getExternalContext().getRequestParameterMap();
                 String behaviorEventName = paramMap
-                        .get("javax.faces.behavior.event");
+                        .get(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME);
                 if (behaviorEventName != null)
                 {
                     List<ClientBehavior> clientBehaviorList = clientBehaviors
@@ -292,7 +293,7 @@ public final class HtmlRendererUtils
                     if (clientBehaviorList != null
                             && !clientBehaviorList.isEmpty())
                     {
-                        String sourceId = paramMap.get("javax.faces.source");
+                        String sourceId = paramMap.get(ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME);
                         String componentClientId = component.getClientId(facesContext);
                         String clientId = sourceId;
                         if (sourceId.startsWith(componentClientId) &&
@@ -1580,13 +1581,13 @@ public final class HtmlRendererUtils
             String clientId)
     {
         Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
-        String sourceId = params.get("javax.faces.source");
+        String sourceId = params.get(ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME);
         if (sourceId == null || !sourceId.equals(clientId))
         {
             return false;
         }
         boolean partialOrBehaviorSubmit = false;
-        String behaviorEvent = params.get("javax.faces.behavior.event");
+        String behaviorEvent = params.get(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME);
         if (behaviorEvent != null)
         {
             partialOrBehaviorSubmit = ClientBehaviorEvents.ACTION.equals(behaviorEvent);
@@ -1595,7 +1596,7 @@ public final class HtmlRendererUtils
                 return partialOrBehaviorSubmit;
             }
         }
-        String partialEvent = params.get("javax.faces.partial.event");
+        String partialEvent = params.get(PartialViewContext.PARTIAL_EVENT_PARAM_NAME);
         if (partialEvent != null)
         {
             partialOrBehaviorSubmit = ClientBehaviorEvents.CLICK.equals(partialEvent);

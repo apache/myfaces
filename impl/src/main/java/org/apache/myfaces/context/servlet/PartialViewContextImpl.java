@@ -32,6 +32,7 @@ import javax.faces.FactoryFinder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
+import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.html.HtmlBody;
 import javax.faces.component.html.HtmlHead;
 import javax.faces.component.visit.VisitCallback;
@@ -64,8 +65,6 @@ public class PartialViewContextImpl extends PartialViewContext
     private static final String PARTIAL_AJAX = "partial/ajax";
     private static final String PARTIAL_AJAX_REQ = "javax.faces.partial.ajax";
     private static final String PARTIAL_PROCESS = "partial/process";
-    private static final String SOURCE_PARAM_NAME = "javax.faces.source";
-    private static final String JAVAX_FACES_REQUEST = "javax.faces.request";
 
     /**
      * Internal extension for
@@ -258,7 +257,7 @@ public class PartialViewContextImpl extends PartialViewContext
                 // with, e.g., a button).
 
                 String source = _facesContext.getExternalContext().getRequestParameterMap().get
-                        (PartialViewContextImpl.SOURCE_PARAM_NAME);
+                        (ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME);
 
                 if (source != null)
                 {

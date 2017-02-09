@@ -53,7 +53,17 @@ public abstract class ResourceHandler
      * @since 2.2
      */
     public static final String WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME = "javax.faces.WEBAPP_RESOURCES_DIRECTORY";
-     
+
+    /**
+     * @since 2.3
+     */
+    public static final String JSF_SCRIPT_RESOURCE_NAME = "jsf.js";
+
+    /**
+     * @since 2.3
+     */
+    public static final String JSF_SCRIPT_LIBRARY_NAME = "javax.faces";
+
     public abstract Resource createResource(String resourceName);
     
     public abstract Resource createResource(String resourceName, String libraryName);

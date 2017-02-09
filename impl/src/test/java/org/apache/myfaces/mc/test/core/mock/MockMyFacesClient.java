@@ -26,11 +26,13 @@ import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIForm;
 import javax.faces.component.UIInput;
+import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
+import javax.faces.context.PartialViewContext;
 import javax.faces.render.ResponseStateManager;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -225,12 +227,12 @@ public class MockMyFacesClient
         boolean submit, boolean resetValues)
     {
         parameters.put("javax.faces.partial.ajax", "true");
-        parameters.put("javax.faces.behavior.event", event);
-        parameters.put("javax.faces.partial.event", "action".equals(event) ? "click" : event);
+        parameters.put(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME, event);
+        parameters.put(PartialViewContext.PARTIAL_EVENT_PARAM_NAME, "action".equals(event) ? "click" : event);
         applyStateFromPreviousRequest();
         //parameters.put(ResponseStateManager.VIEW_STATE_PARAM, 
         //    facesContext.getApplication().getStateManager().getViewState(facesContext));
-        parameters.put("javax.faces.source", source);
+        parameters.put(ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME, source);
         if (execute == null)
         {
             parameters.put("javax.faces.partial.execute", source);

@@ -71,11 +71,6 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     private static final String L_PAREN = "(";
     private static final String R_PAREN = ")";
 
-    /*if this marker is present in the request we have to dispatch a behavior event*/
-    /*if an attached behavior triggers an ajax request this request param must be added*/
-    private static final String BEHAVIOR_EVENT = "javax.faces.behavior.event";
-    private static final String IDENTIFYER_MARKER = "@";
-
     private static final String AJAX_SB = "oam.renderkit.AJAX_SB";
     private static final String AJAX_PARAM_SB = "oam.renderkit.AJAX_PARAM_SB";
 
@@ -343,7 +338,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         //parameterList.add(QUOTE + BEHAVIOR_EVENT + QUOTE + COLON + QUOTE + event + QUOTE);
         paramBuffer.setLength(0);
         paramBuffer.append(QUOTE);
-        paramBuffer.append(BEHAVIOR_EVENT);
+        paramBuffer.append(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME);
         paramBuffer.append(QUOTE);
         paramBuffer.append(COLON);
         paramBuffer.append(QUOTE);

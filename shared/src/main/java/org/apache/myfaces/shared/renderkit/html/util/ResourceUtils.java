@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.faces.FacesWrapper;
 
 import javax.faces.application.Resource;
+import javax.faces.application.ResourceHandler;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -38,7 +39,9 @@ import org.apache.myfaces.shared.resource.ContractResource;
  */
 public class ResourceUtils
 {
+    @Deprecated //Use the one from JSF 2.3 ResourceHandler
     public final static String JAVAX_FACES_LIBRARY_NAME = "javax.faces";
+    @Deprecated //Use the one from JSF 2.3 ResourceHandler
     public final static String JSF_JS_RESOURCE_NAME = "jsf.js";
 
     public final static String MYFACES_JS_RESOURCE_NAME = "oamSubmit.js";
@@ -115,8 +118,8 @@ public class ResourceUtils
     {
         getRenderedScriptResources(facesContext).put(
                 libraryName != null ? libraryName+'/'+resourceName : resourceName, Boolean.TRUE);
-        if (JAVAX_FACES_LIBRARY_NAME.equals(libraryName) &&
-            JSF_JS_RESOURCE_NAME.equals(resourceName))
+        if (ResourceHandler.JSF_SCRIPT_LIBRARY_NAME.equals(libraryName) &&
+            ResourceHandler.JSF_SCRIPT_RESOURCE_NAME.equals(resourceName))
         {
             // If we are calling this method, it is expected myfaces core is being used as runtime and note
             // oamSubmit script is included inside jsf.js, so mark this one too.
@@ -181,7 +184,8 @@ public class ResourceUtils
         
         // Check first if we have lucky, we are using myfaces and the script has
         // been previously rendered
-        if (isRenderedScript(facesContext, JAVAX_FACES_LIBRARY_NAME, JSF_JS_RESOURCE_NAME))
+        if (isRenderedScript(facesContext, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME,
+                ResourceHandler.JSF_SCRIPT_RESOURCE_NAME))
         {
             facesContext.getAttributes().put(RENDERED_JSF_JS, Boolean.TRUE);
             return;
@@ -216,16 +220,17 @@ public class ResourceUtils
             //Use more compatible way.
             UIComponent outputScript = facesContext.getApplication().
                     createComponent(facesContext, JAVAX_FACES_OUTPUT_COMPONENT_TYPE, DEFAULT_SCRIPT_RENDERER_TYPE);
-            outputScript.getAttributes().put(JSFAttr.NAME_ATTR, JSF_JS_RESOURCE_NAME);
-            outputScript.getAttributes().put(JSFAttr.LIBRARY_ATTR, JAVAX_FACES_LIBRARY_NAME);
+            outputScript.getAttributes().put(JSFAttr.NAME_ATTR, ResourceHandler.JSF_SCRIPT_RESOURCE_NAME);
+            outputScript.getAttributes().put(JSFAttr.LIBRARY_ATTR, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME);
             outputScript.encodeAll(facesContext);
         }
         else
         {
             //Fast shortcut, don't create component instance and do what HtmlScriptRenderer do.
             Resource resource = facesContext.getApplication().getResourceHandler().createResource(
-                    JSF_JS_RESOURCE_NAME, JAVAX_FACES_LIBRARY_NAME);
-            markScriptAsRendered(facesContext, JAVAX_FACES_LIBRARY_NAME, JSF_JS_RESOURCE_NAME);
+                    ResourceHandler.JSF_SCRIPT_RESOURCE_NAME, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME);
+            markScriptAsRendered(facesContext, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME,
+                    ResourceHandler.JSF_SCRIPT_RESOURCE_NAME);
             writer.startElement(HTML.SCRIPT_ELEM, null);
             writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
             writer.writeURIAttribute(HTML.SRC_ATTR, resource.getRequestPath(), null);

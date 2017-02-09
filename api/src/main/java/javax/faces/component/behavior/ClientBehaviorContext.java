@@ -28,6 +28,15 @@ import javax.faces.context.FacesContext;
  */
 public abstract class ClientBehaviorContext
 {
+    /**
+     * @since 2.3
+     */
+    public static final String BEHAVIOR_SOURCE_PARAM_NAME = "javax.faces.source";
+
+    /**
+     * @since 2.3
+     */
+    public static final String BEHAVIOR_EVENT_PARAM_NAME = "javax.faces.behavior.event";
 
     public static ClientBehaviorContext createClientBehaviorContext(FacesContext context,
                                                                     UIComponent component,

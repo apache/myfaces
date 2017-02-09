@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import javax.faces.application.ProjectStage;
+import javax.faces.application.ResourceHandler;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
@@ -153,9 +154,9 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     {
         //handle jsf.js
         final boolean javaxFacesLib = libraryName != null &&
-        ResourceUtils.JAVAX_FACES_LIBRARY_NAME.equals(libraryName);
+                ResourceHandler.JSF_SCRIPT_LIBRARY_NAME.equals(libraryName);
         final boolean javaxFaces = javaxFacesLib &&
-                ResourceUtils.JSF_JS_RESOURCE_NAME.equals(resourceName);
+                ResourceHandler.JSF_SCRIPT_RESOURCE_NAME.equals(resourceName);
 
         if (javaxFaces)
         {

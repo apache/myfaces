@@ -37,6 +37,12 @@ public abstract class PartialViewContext
      */
     public static final java.lang.String RESET_VALUES_PARAM_NAME = "javax.faces.partial.resetValues";
     
+    /**
+     * @since 2.3
+     */
+    public static final String PARTIAL_EVENT_PARAM_NAME =
+          "javax.faces.partial.event";
+    
     public abstract Collection<String> getExecuteIds();
     
     public abstract PartialResponseWriter getPartialResponseWriter();

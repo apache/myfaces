@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.el.MethodExpression;
+import javax.faces.application.ResourceHandler;
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UniqueIdVendor;
@@ -47,7 +48,6 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
-import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
@@ -278,8 +278,8 @@ public class AjaxHandler extends TagHandler implements
         {
             UIComponent outputScript = facesContext.getApplication().
                 createComponent(facesContext, "javax.faces.Output", "javax.faces.resource.Script");
-            outputScript.getAttributes().put(JSFAttr.NAME_ATTR, ResourceUtils.JSF_JS_RESOURCE_NAME);
-            outputScript.getAttributes().put(JSFAttr.LIBRARY_ATTR, ResourceUtils.JAVAX_FACES_LIBRARY_NAME);
+            outputScript.getAttributes().put(JSFAttr.NAME_ATTR, ResourceHandler.JSF_SCRIPT_RESOURCE_NAME);
+            outputScript.getAttributes().put(JSFAttr.LIBRARY_ATTR, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME);
             outputScript.getAttributes().put(JSFAttr.TARGET_ATTR, "head");
 
             //AbstractFaceletContext actx = (AbstractFaceletContext) ctx;

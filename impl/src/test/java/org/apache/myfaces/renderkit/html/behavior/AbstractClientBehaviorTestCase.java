@@ -22,6 +22,7 @@ import javax.faces.FactoryFinder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.AjaxBehavior;
+import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.ResponseWriter;
 
@@ -165,7 +166,7 @@ public abstract class AbstractClientBehaviorTestCase extends FaceletTestCase
             int endPropIndex = output.indexOf('"' , startPropIndex );
             String propertyValue = output.substring(startPropIndex, endPropIndex);
             Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains("jsf.ajax.request("));
-            Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains("javax.faces.behavior.event"));
+            Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME));
             Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains(attr.getClientEvent()));
             return endPropIndex + 1;
         }
@@ -217,7 +218,7 @@ public abstract class AbstractClientBehaviorTestCase extends FaceletTestCase
             String propertyValue = output.substring(startPropIndex, endPropIndex);
             Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.startsWith("jsf.util.chain("));
             Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains("jsf.ajax.request("));
-            Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains("javax.faces.behavior.event"));
+            Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME));
             Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains(attr.getClientEvent()));
             Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains(value));
             return endPropIndex + 1;
