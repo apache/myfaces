@@ -35,6 +35,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.event.PostAddToViewEvent;
+import javax.faces.event.PostRenderViewEvent;
 import javax.faces.event.PreRenderViewEvent;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
@@ -148,6 +149,11 @@ public final class EventHandler extends TagHandler
             {
                 viewRoot.subscribeToEvent(eventClass, new Listener(methodExpOneArg, methodExpZeroArg));
             }
+        }
+        else if (eventClass == PostRenderViewEvent.class)
+        {
+            UIViewRoot viewRoot = ComponentSupport.getViewRoot(ctx, parent);
+            viewRoot.subscribeToEvent(eventClass, new Listener(methodExpOneArg, methodExpZeroArg));
         }
         else
         {

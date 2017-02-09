@@ -31,6 +31,7 @@ import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
+import javax.faces.event.PostRenderViewEvent;
 import javax.faces.event.PreRenderViewEvent;
 import javax.faces.view.ViewDeclarationLanguage;
 
@@ -114,7 +115,9 @@ class RenderResponseExecutor extends PhaseExecutor
             }
 
             viewHandler.renderView(facesContext, root);
-            
+
+            application.publishEvent(facesContext, PostRenderViewEvent.class, root);
+
             // log all unhandled FacesMessages, don't swallow them
             // perf: org.apache.myfaces.context.servlet.FacesContextImpl.getMessageList() creates
             // new Collections.unmodifiableList with every invocation->  call it only once

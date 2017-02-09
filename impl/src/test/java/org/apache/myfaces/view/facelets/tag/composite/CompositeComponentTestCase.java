@@ -33,6 +33,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlCommandLink;
 import javax.faces.component.html.HtmlGraphicImage;
 import javax.faces.component.html.HtmlOutputText;
+import javax.faces.event.PostRenderViewEvent;
 import javax.faces.event.PreRenderViewEvent;
 
 import org.apache.myfaces.config.NamedEventManager;
@@ -790,6 +791,10 @@ public class CompositeComponentTestCase extends FaceletTestCase
         application.publishEvent(facesContext, PreRenderViewEvent.class, root);
         
         Assert.assertTrue("preRenderViewCallback should be called", (Boolean) compositeComponent1.getAttributes().get("preRenderViewCallback"));
+        
+        application.publishEvent(facesContext, PostRenderViewEvent.class, root);
+        
+        Assert.assertTrue("postRenderViewCallback should be called", (Boolean) compositeComponent1.getAttributes().get("postRenderViewCallback"));
         
         /*
         StringWriter sw = new StringWriter();

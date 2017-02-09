@@ -24,6 +24,7 @@ import java.util.LinkedList;
 
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.PostAddToViewEvent;
+import javax.faces.event.PostRenderViewEvent;
 import javax.faces.event.PostValidateEvent;
 import javax.faces.event.PreRenderComponentEvent;
 import javax.faces.event.PreRenderViewEvent;
@@ -33,11 +34,8 @@ import javax.faces.event.PreValidateEvent;
  * The NamedEventManager class is used to keep map a short name to ComponentSystemEvent classes
  * annotated with @NamedEvent.
  */
-
 public class NamedEventManager
 {
-    //private static final NamedEventManager instance = new NamedEventManager();
-    
     private HashMap<String, Collection<Class<? extends ComponentSystemEvent>>> events;
     
     public NamedEventManager ()
@@ -46,18 +44,14 @@ public class NamedEventManager
         
         // Special spec-defined values.
         
-        addNamedEvent ("postAddToView", PostAddToViewEvent.class);
-        addNamedEvent ("preRenderView", PreRenderViewEvent.class);
-        addNamedEvent ("preRenderComponent", PreRenderComponentEvent.class);
-        addNamedEvent ("preValidate", PreValidateEvent.class);
-        addNamedEvent ("postValidate", PostValidateEvent.class);
+        addNamedEvent("postAddToView", PostAddToViewEvent.class);
+        addNamedEvent("preRenderView", PreRenderViewEvent.class);
+        addNamedEvent("preRenderComponent", PreRenderComponentEvent.class);
+        addNamedEvent("preValidate", PreValidateEvent.class);
+        addNamedEvent("postValidate", PostValidateEvent.class);
+        addNamedEvent("postRenderView", PostRenderViewEvent.class);
     }
-    
-    //public static NamedEventManager getInstance ()
-    //{
-    //    return instance;
-    //}
-    
+
     /**
      * Registers a named event.
      * 
@@ -65,8 +59,7 @@ public class NamedEventManager
      *        attribute.
      * @param cls the event class to register.
      */
-    
-    public void addNamedEvent (String shortName, Class<? extends ComponentSystemEvent> cls)
+    public void addNamedEvent(String shortName, Class<? extends ComponentSystemEvent> cls)
     {
         String key = shortName;
         Collection<Class<? extends ComponentSystemEvent>> eventList;
@@ -99,10 +92,9 @@ public class NamedEventManager
      * @return a Collection of Class objects containing the system event classes registered to
      *         the given short name.
      */
-    
-    public Collection<Class<? extends ComponentSystemEvent>> getNamedEvent (String shortName)
+    public Collection<Class<? extends ComponentSystemEvent>> getNamedEvent(String shortName)
     {
-        return events.get (shortName);
+        return events.get(shortName);
     }
     
     /**
@@ -111,8 +103,7 @@ public class NamedEventManager
      * @param cls the class to find the short name for.
      * @return a String containing the short name for the given class.
      */
-    
-    private String getFixedName (Class<? extends ComponentSystemEvent> cls)
+    private String getFixedName(Class<? extends ComponentSystemEvent> cls)
     {
         StringBuilder result = new StringBuilder();
         String className;
@@ -123,20 +114,20 @@ public class NamedEventManager
         
         // Strip the trailing "event" off the class name if present.
         
-        if (className.toLowerCase().endsWith ("event"))
+        if (className.toLowerCase().endsWith("event"))
         {
-            className = className.substring (0, result.length() - 5);
+            className = className.substring(0, result.length() - 5);
         }
         
         // Prepend the package name.
         
         if (cls.getPackage() != null)
         {
-            result.append (cls.getPackage().getName());
-            result.append ('.');
+            result.append(cls.getPackage().getName());
+            result.append('.');
         }
         
-        result.append (className);
+        result.append(className);
         
         return result.toString();
     }
