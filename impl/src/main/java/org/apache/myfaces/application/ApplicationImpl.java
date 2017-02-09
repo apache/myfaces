@@ -625,8 +625,8 @@ public class ApplicationImpl extends Application
                 // systemEventClass
                 // argument. If the list is not empty, perform algorithm traverseListenerList on the list.
                 event = _ApplicationUtils._traverseListenerList(
-                        holder.getListenersForEventClass(systemEventClass), systemEventClass,
-                                              source, event);
+                        facesContext, holder.getListenersForEventClass(systemEventClass),
+                        systemEventClass, source, event);
             }
             
             UIViewRoot uiViewRoot = facesContext.getViewRoot();
@@ -634,14 +634,14 @@ public class ApplicationImpl extends Application
             {
                 //Call listeners on view level
                 event = _ApplicationUtils._traverseListenerListWithCopy(
-                        uiViewRoot.getViewListenersForEventClass(systemEventClass), 
+                        facesContext, uiViewRoot.getViewListenersForEventClass(systemEventClass), 
                         systemEventClass, source, event);
             }
 
             SystemListenerEntry systemListenerEntry = _systemEventListenerClassMap.get(systemEventClass);
             if (systemListenerEntry != null)
             {
-                systemListenerEntry.publish(systemEventClass, sourceBaseType, source, event);
+                systemListenerEntry.publish(facesContext, systemEventClass, sourceBaseType, source, event);
             }
         }
         catch (AbortProcessingException e)
@@ -2717,16 +2717,17 @@ public class ApplicationImpl extends Application
             }
         }
 
-        public void publish(Class<? extends SystemEvent> systemEventClass, Class<?> classSource, Object source,
-                            SystemEvent event)
+        public void publish(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass,
+                Class<?> classSource, Object source, SystemEvent event)
         {
             if (source != null && _sourceClassMap != null)
             {
-                event = _ApplicationUtils._traverseListenerList(
-                        _sourceClassMap.get(classSource), systemEventClass, source, event);
+                event = _ApplicationUtils._traverseListenerList(facesContext, _sourceClassMap.get(classSource),
+                        systemEventClass, source, event);
             }
 
-            _ApplicationUtils._traverseListenerList(_lstSystemEventListener, systemEventClass, source, event);
+            _ApplicationUtils._traverseListenerList(facesContext, _lstSystemEventListener,
+                    systemEventClass, source, event);
         }
 
         private void addListenerNoDuplicate(List<SystemEventListener> listeners, SystemEventListener listener)

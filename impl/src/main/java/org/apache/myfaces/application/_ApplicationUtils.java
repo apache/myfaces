@@ -23,6 +23,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.FacesException;
+import javax.faces.context.FacesContext;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 
@@ -33,8 +34,8 @@ import javax.faces.event.SystemEventListener;
 class _ApplicationUtils
 {
     
-    static SystemEvent _createEvent(Class<? extends SystemEvent> systemEventClass, Object source,
-                                            SystemEvent event)
+    static SystemEvent _createEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass,
+            Object source, SystemEvent event)
     {
         if (event == null)
         {
@@ -42,9 +43,11 @@ class _ApplicationUtils
             {
                 Constructor<?>[] constructors = systemEventClass.getConstructors();
                 Constructor<? extends SystemEvent> constructor = null;
+             
+                // try to lookup the new 2 parameter constructor
                 for (Constructor<?> c : constructors)
                 {
-                    if (c.getParameterTypes().length == 1)
+                    if (c.getParameterTypes().length == 2)
                     {
                         // Safe cast, since the constructor belongs
                         // to a class of type SystemEvent
@@ -54,9 +57,27 @@ class _ApplicationUtils
                 }
                 if (constructor != null)
                 {
-                    event = constructor.newInstance(source);
+                    event = constructor.newInstance(facesContext, source);
                 }
-
+                
+                // try to lookup the old 1 parameter constructor
+                if (constructor == null)
+                {
+                    for (Constructor<?> c : constructors)
+                    {
+                        if (c.getParameterTypes().length == 1)
+                        {
+                            // Safe cast, since the constructor belongs
+                            // to a class of type SystemEvent
+                            constructor = (Constructor<? extends SystemEvent>) c;
+                            break;
+                        }
+                    }
+                    if (constructor != null)
+                    {
+                        event = constructor.newInstance(source);
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -68,7 +89,7 @@ class _ApplicationUtils
         return event;
     }
 
-    static SystemEvent _traverseListenerList(List<? extends SystemEventListener> listeners,
+    static SystemEvent _traverseListenerList(FacesContext facesContext, List<? extends SystemEventListener> listeners,
                                                      Class<? extends SystemEvent> systemEventClass, Object source,
                                                      SystemEvent event)
     {
@@ -89,7 +110,7 @@ class _ApplicationUtils
                     // Otherwise, if the event to be passed to the listener instances has not yet been constructed,
                     // construct the event, passing source as the argument to the one-argument constructor that takes
                     // an Object. This same event instance must be passed to all listener instances.
-                    event = _ApplicationUtils._createEvent(systemEventClass, source, event);
+                    event = _createEvent(facesContext, systemEventClass, source, event);
 
                     // Call SystemEvent.isAppropriateListener(javax.faces.event.FacesListener), passing the listener
                     // instance as the argument. If this returns false, take no action on the listener.
@@ -106,7 +127,8 @@ class _ApplicationUtils
         return event;
     }
     
-    static SystemEvent _traverseListenerListWithCopy(List<? extends SystemEventListener> listeners,
+    static SystemEvent _traverseListenerListWithCopy(FacesContext facesContext,
+            List<? extends SystemEventListener> listeners,
             Class<? extends SystemEvent> systemEventClass, Object source,
             SystemEvent event)
     {
@@ -135,7 +157,7 @@ class _ApplicationUtils
                         // construct the event, passing source as the argument
                         // to the one-argument constructor that takes
                         // an Object. This same event instance must be passed to all listener instances.
-                        event = _ApplicationUtils._createEvent(systemEventClass, source, event);
+                        event = _createEvent(facesContext, systemEventClass, source, event);
     
                         // Call SystemEvent.isAppropriateListener(javax.faces.event.FacesListener), passing the listener
                         // instance as the argument. If this returns false, take no action on the listener.
