@@ -18,6 +18,8 @@
  */
 package javax.faces.event;
 
+import javax.faces.context.FacesContext;
+
 /**
  * @since 2.0
  */
@@ -26,6 +28,14 @@ public class ExceptionQueuedEvent extends SystemEvent
     public ExceptionQueuedEvent(ExceptionQueuedEventContext eventContext)
     {
         super(eventContext);
+    }
+
+    /**
+     * @since 2.3
+     */
+    public ExceptionQueuedEvent(FacesContext facesContext, ExceptionQueuedEventContext eventContext)
+    {
+        super(facesContext, eventContext);
     }
     
     public ExceptionQueuedEventContext getContext()

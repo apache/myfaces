@@ -18,6 +18,8 @@
  */
 package javax.faces.event;
 
+import javax.faces.context.FacesContext;
+
 /**
  * A system event which is dispatched after the construction
  * of a custom scope
@@ -32,6 +34,14 @@ public class PostConstructCustomScopeEvent extends SystemEvent
         super(source);
     }
 
+    /**
+     * @since 2.3
+     */
+    public PostConstructCustomScopeEvent(FacesContext facesContext, ScopeContext source)
+    {
+        super(facesContext, source);
+    }
+    
     /**
      * @return the source as scope context representation for this event
      */

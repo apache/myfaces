@@ -19,6 +19,7 @@
 package javax.faces.event;
 
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 
 /**
  * 
@@ -29,6 +30,11 @@ public abstract class ComponentSystemEvent extends SystemEvent
     public ComponentSystemEvent(UIComponent component)
     {
         super(component);
+    }
+    
+    public ComponentSystemEvent(FacesContext facesContext, UIComponent component)
+    {
+        super(facesContext, component);
     }
 
     public UIComponent getComponent()

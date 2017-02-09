@@ -18,6 +18,7 @@
  */
 package javax.faces.event;
 
+import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 
 public class PreRemoveFlashValueEvent extends SystemEvent
@@ -26,6 +27,14 @@ public class PreRemoveFlashValueEvent extends SystemEvent
     public PreRemoveFlashValueEvent(String key)
     {
         super(key == null ? Flash.NULL_VALUE : key);
+    }
+
+    /**
+     * @since 2.3
+     */
+    public PreRemoveFlashValueEvent(FacesContext facesContext, String key)
+    {
+        super(facesContext, key == null ? Flash.NULL_VALUE : key);
     }
 
     public String getKey()

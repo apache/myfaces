@@ -19,6 +19,7 @@
 package javax.faces.event;
 
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 
 /**
  * @since 2.0
@@ -31,5 +32,13 @@ public class PreRenderComponentEvent extends ComponentSystemEvent
     public PreRenderComponentEvent(UIComponent component)
     {
         super(component);
+    }
+    
+    /**
+     * @since 2.3
+     */
+    public PreRenderComponentEvent(FacesContext facesContext, UIComponent component)
+    {
+        super(facesContext, component);
     }
 }

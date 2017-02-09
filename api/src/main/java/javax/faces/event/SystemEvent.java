@@ -19,15 +19,24 @@
 package javax.faces.event;
 
 import java.util.EventObject;
+import javax.faces.context.FacesContext;
 
 /**
  * @since 2.0
  */
 public abstract class SystemEvent extends EventObject
 {
+    private transient FacesContext facesContext;
+    
     public SystemEvent(Object source)
     {
         super(source);
+    }
+    
+    public SystemEvent(FacesContext facesContext, Object source)
+    {
+        super(source);
+        this.facesContext = facesContext;
     }
 
     public boolean isAppropriateListener(FacesListener listener)
@@ -38,5 +47,17 @@ public abstract class SystemEvent extends EventObject
     public void processListener(FacesListener listener)
     {
         ((SystemEventListener) listener).processEvent(this);
+    }
+    
+    /**
+     * @since 2.3
+     */
+    public FacesContext getFacesContext()
+    {
+        if (facesContext == null)
+        {
+            facesContext = FacesContext.getCurrentInstance();
+        }
+        return facesContext;
     }
 }

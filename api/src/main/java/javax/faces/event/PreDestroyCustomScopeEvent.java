@@ -18,6 +18,8 @@
  */
 package javax.faces.event;
 
+import javax.faces.context.FacesContext;
+
 /**
  * A system event which is dispathed prior to the destruction of a custom scope
  */
@@ -30,6 +32,14 @@ public class PreDestroyCustomScopeEvent extends SystemEvent
         super(source);
     }
 
+    /**
+     * @since 2.3
+     */
+    public PreDestroyCustomScopeEvent(FacesContext facesContext, ScopeContext source)
+    {
+        super(facesContext, source);
+    }
+    
     /**
      * @return the source as scope context representation for this event
      */

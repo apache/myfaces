@@ -19,6 +19,7 @@
 package javax.faces.event;
 
 import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
 
 /**
  * @since 2.0
@@ -31,5 +32,13 @@ public class PreDestroyViewMapEvent extends ComponentSystemEvent
     public PreDestroyViewMapEvent(UIViewRoot root)
     {
         super(root);
+    }
+    
+    /**
+     * @since 2.3
+     */
+    public PreDestroyViewMapEvent(FacesContext facesContext, UIViewRoot root)
+    {
+        super(facesContext, root);
     }
 }

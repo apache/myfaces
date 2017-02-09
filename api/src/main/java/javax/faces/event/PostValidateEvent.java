@@ -19,6 +19,7 @@
 package javax.faces.event;
 
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 
 /**
  * @since 2.0
@@ -29,6 +30,14 @@ public class PostValidateEvent extends ComponentSystemEvent
      * @param component
      */
     public PostValidateEvent(UIComponent component)
+    {
+        super(component);
+    }
+
+    /**
+     * @since 2.3
+     */
+    public PostValidateEvent(FacesContext facesContext, UIComponent component)
     {
         super(component);
     }

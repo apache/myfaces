@@ -19,6 +19,7 @@
 package javax.faces.event;
 
 import java.util.Map;
+import javax.faces.context.FacesContext;
 
 public class PreClearFlashEvent extends SystemEvent
 {
@@ -28,4 +29,11 @@ public class PreClearFlashEvent extends SystemEvent
         super(source);
     }
 
+    /**
+     * @since 2.3
+     */
+    public PreClearFlashEvent(FacesContext facesContext, Map<String,Object> source)
+    {
+        super(facesContext, source);
+    }
 }

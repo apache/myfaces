@@ -19,6 +19,7 @@
 package javax.faces.event;
 
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 
 /**
  * @since 2.0
@@ -33,6 +34,14 @@ public class PreRemoveFromViewEvent extends ComponentSystemEvent
         super(component);
     }
 
+    /**
+     * @since 2.3
+     */
+    public PreRemoveFromViewEvent(FacesContext facesContext, UIComponent component)
+    {
+        super(facesContext, component);
+    }
+    
     /**
      * {@inheritDoc}
      */

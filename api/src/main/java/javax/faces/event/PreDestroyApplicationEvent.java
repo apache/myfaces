@@ -19,6 +19,7 @@
 package javax.faces.event;
 
 import javax.faces.application.Application;
+import javax.faces.context.FacesContext;
 
 /**
  * @since 2.0
@@ -33,6 +34,14 @@ public class PreDestroyApplicationEvent extends SystemEvent
         super(application);
     }
 
+    /**
+     * @since 2.3
+     */
+    public PreDestroyApplicationEvent(FacesContext facesContext, Application application)
+    {
+        super(facesContext, application);
+    }
+    
     /**
      * @return the application object tied to this event
      */

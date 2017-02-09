@@ -19,6 +19,7 @@
 package javax.faces.event;
 
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 
 /**
  * @since 2.0
@@ -31,6 +32,14 @@ public class PostAddToViewEvent extends ComponentSystemEvent
     public PostAddToViewEvent(UIComponent component)
     {
         super(component);
+    }
+    
+    /**
+     * @since 2.3
+     */
+    public PostAddToViewEvent(FacesContext facesContext, UIComponent component)
+    {
+        super(facesContext, component);
     }
 
     /**

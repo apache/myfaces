@@ -19,6 +19,7 @@
 package javax.faces.event;
 
 import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
 
 /**
  * @since 2.0
@@ -31,5 +32,13 @@ public class PreRenderViewEvent extends ComponentSystemEvent
     public PreRenderViewEvent(UIViewRoot root)
     {
         super(root);
+    }
+    
+    /**
+     * @since 2.3
+     */
+    public PreRenderViewEvent(FacesContext facesContext, UIViewRoot root)
+    {
+        super(facesContext, root);
     }
 }

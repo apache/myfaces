@@ -18,6 +18,7 @@
  */
 package javax.faces.event;
 
+import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 
 public class PostPutFlashValueEvent extends SystemEvent
@@ -28,6 +29,14 @@ public class PostPutFlashValueEvent extends SystemEvent
         super(key == null ? Flash.NULL_VALUE : key);
     }
 
+    /**
+     * @since 2.3
+     */
+    public PostPutFlashValueEvent(FacesContext facesContext, String key)
+    {
+        super(facesContext, key == null ? Flash.NULL_VALUE : key);
+    }
+    
     public String getKey()
     {
         return getSource().toString();
