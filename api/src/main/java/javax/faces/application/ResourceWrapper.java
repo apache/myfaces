@@ -32,6 +32,18 @@ import javax.faces.context.FacesContext;
 public abstract class ResourceWrapper extends Resource
     implements FacesWrapper<Resource>
 {
+    private Resource delegate;
+
+    @Deprecated
+    public ResourceWrapper()
+    {
+    }
+
+    public ResourceWrapper(Resource delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     @Override
     public InputStream getInputStream() throws IOException
     {
@@ -62,7 +74,10 @@ public abstract class ResourceWrapper extends Resource
         return getWrapped().userAgentNeedsUpdate(context);
     }
     
-    public abstract Resource getWrapped();
+    public Resource getWrapped()
+    {
+        return delegate;
+    }
 
     @Override
     public void setResourceName(String resourceName)

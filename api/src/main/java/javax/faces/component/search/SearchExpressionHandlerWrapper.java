@@ -30,8 +30,18 @@ import javax.faces.context.FacesContext;
 public abstract class SearchExpressionHandlerWrapper extends SearchExpressionHandler
         implements FacesWrapper<SearchExpressionHandler>
 {
+    private SearchExpressionHandler delegate;
+
+    public SearchExpressionHandlerWrapper(SearchExpressionHandler delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     @Override
-    public abstract SearchExpressionHandler getWrapped();
+    public SearchExpressionHandler getWrapped()
+    {
+        return delegate;
+    }
 
     @Override
     public String resolveClientId(SearchExpressionContext searchExpressionContext, String expression)

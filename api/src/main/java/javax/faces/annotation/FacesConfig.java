@@ -17,29 +17,30 @@
  * under the License.
  */
 
-package javax.faces.push;
+package javax.faces.annotation;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Future;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import javax.enterprise.util.Nonbinding;
+import javax.inject.Qualifier;
 
 /**
  *
  */
-public interface PushContext extends Serializable
+@Qualifier
+@Target(value=ElementType.TYPE)
+@Retention(value=RetentionPolicy.RUNTIME)
+public @interface FacesConfig
 {
     
-    public static final String ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME = "javax.faces.ENABLE_WEBSOCKET_ENDPOINT";
-    
-    public static final String WEBSOCKET_ENDPOINT_PORT_PARAM_NAME = "javax.faces.WEBSOCKET_ENDPOINT_PORT";
-    
-    public static final String URI_PREFIX = "/javax.faces.push";
-    
-    public Set<Future<Void>> send(Object message);
-            
-    public <S extends Serializable> Set<Future<Void>> send(Object message, S user);  
-    
-    public <S extends Serializable> Map<S, Set<Future<Void>>> send(Object message, Collection<S> users);
+    @Nonbinding Version version() default Version.JSF_2_3;
+
+    public static enum Version 
+    {
+        JSF_2_2,
+        JSF_2_3,
+        CURRENT
+    }
 }

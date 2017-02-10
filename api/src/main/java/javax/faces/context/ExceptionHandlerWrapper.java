@@ -29,6 +29,18 @@ import javax.faces.event.SystemEvent;
  */
 public abstract class ExceptionHandlerWrapper extends ExceptionHandler implements FacesWrapper<ExceptionHandler>
 {
+    private ExceptionHandler delegate;
+
+    @Deprecated
+    public ExceptionHandlerWrapper()
+    {
+    }
+
+    public ExceptionHandlerWrapper(ExceptionHandler delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     @Override
     public ExceptionQueuedEvent getHandledExceptionQueuedEvent()
     {
@@ -53,7 +65,10 @@ public abstract class ExceptionHandlerWrapper extends ExceptionHandler implement
         return getWrapped().getUnhandledExceptionQueuedEvents();
     }
 
-    public abstract ExceptionHandler getWrapped();
+    public ExceptionHandler getWrapped()
+    {
+        return delegate;
+    }
 
     @Override
     public void handle() throws FacesException

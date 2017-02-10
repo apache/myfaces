@@ -30,6 +30,17 @@ import javax.faces.convert.ConverterException;
  */
 public abstract class RendererWrapper extends Renderer implements FacesWrapper<Renderer>
 {
+    private Renderer delegate;
+
+    @Deprecated
+    public RendererWrapper()
+    {
+    }
+
+    public RendererWrapper(Renderer delegate)
+    {
+        this.delegate = delegate;
+    }
 
     public void decode(FacesContext context, UIComponent component)
     {
@@ -67,5 +78,8 @@ public abstract class RendererWrapper extends Renderer implements FacesWrapper<R
         return getWrapped().getConvertedValue(context, component, submittedValue);
     }
     
-    public abstract Renderer getWrapped();
+    public Renderer getWrapped()
+    {
+        return delegate;
+    }
 }

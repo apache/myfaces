@@ -55,7 +55,7 @@ public class WebsocketEvent implements Serializable
         return user;
     }
 
-    public CloseReason.CloseCode getCode()
+    public CloseReason.CloseCode getCloseCode()
     {
         return code;
     }

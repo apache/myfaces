@@ -29,6 +29,18 @@ import javax.faces.context.FacesContext;
 public abstract class ResourceHandlerWrapper extends ResourceHandler
     implements FacesWrapper<ResourceHandler>
 {
+    private ResourceHandler delegate;
+
+    @Deprecated
+    public ResourceHandlerWrapper()
+    {
+    }
+
+    public ResourceHandlerWrapper(ResourceHandler delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     @Override
     public Resource createResource(String resourceName)
     {
@@ -89,5 +101,8 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler
         return getWrapped().isResourceURL(url);
     }
     
-    public abstract ResourceHandler getWrapped();
+    public ResourceHandler getWrapped()
+    {
+        return delegate;
+    }
 }

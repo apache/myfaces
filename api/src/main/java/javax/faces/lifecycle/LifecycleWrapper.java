@@ -25,6 +25,17 @@ import javax.faces.event.PhaseListener;
 
 public abstract class LifecycleWrapper extends Lifecycle implements FacesWrapper<Lifecycle>
 {
+    private Lifecycle delegate;
+
+    @Deprecated
+    public LifecycleWrapper()
+    {
+    }
+
+    public LifecycleWrapper(Lifecycle delegate)
+    {
+        this.delegate = delegate;
+    }
     
     public void render(FacesContext context) throws FacesException
     {
@@ -56,6 +67,9 @@ public abstract class LifecycleWrapper extends Lifecycle implements FacesWrapper
         getWrapped().addPhaseListener(listener);
     }
     
-    public abstract Lifecycle getWrapped();
+    public Lifecycle getWrapped()
+    {
+        return delegate;
+    }
     
 }

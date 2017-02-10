@@ -41,11 +41,19 @@ import javax.faces.lifecycle.ClientWindow;
 public abstract class ExternalContextWrapper extends ExternalContext implements FacesWrapper<ExternalContext>
 {
 
+    private ExternalContext delegate;
+    
     /**
      *
      */
+    @Deprecated
     public ExternalContextWrapper()
     {
+    }
+
+    public ExternalContextWrapper(ExternalContext delegate)
+    {
+        this.delegate = delegate;
     }
 
     @Override
@@ -348,7 +356,10 @@ public abstract class ExternalContextWrapper extends ExternalContext implements 
         return getWrapped().getUserPrincipal();
     }
 
-    public abstract ExternalContext getWrapped();
+    public ExternalContext getWrapped()
+    {
+        return delegate;
+    }
 
     @Override
     public void invalidateSession()

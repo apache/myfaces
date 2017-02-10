@@ -25,10 +25,22 @@ import javax.faces.FacesWrapper;
  */
 public abstract class FlashFactory implements FacesWrapper<FlashFactory>
 {
+    private FlashFactory delegate;
+
+    @Deprecated
+    public FlashFactory()
+    {
+    }
+
+    public FlashFactory(FlashFactory delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     public abstract Flash getFlash(boolean create);
     
     public FlashFactory getWrapped()
     {
-        return null;
+        return delegate;
     }
 }

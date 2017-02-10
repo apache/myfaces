@@ -30,6 +30,7 @@ import javax.faces.context.FacesContext;
  */
 public abstract class VisitContextWrapper extends VisitContext implements FacesWrapper<VisitContext>
 {
+    private VisitContext delegate;
 
     /**
      * 
@@ -37,6 +38,11 @@ public abstract class VisitContextWrapper extends VisitContext implements FacesW
     public VisitContextWrapper()
     {
         
+    }
+
+    public VisitContextWrapper(VisitContext delegate)
+    {
+        this.delegate = delegate;
     }
 
     /**
@@ -75,7 +81,10 @@ public abstract class VisitContextWrapper extends VisitContext implements FacesW
         return getWrapped().getSubtreeIdsToVisit(component);
     }
     
-    public abstract VisitContext getWrapped();
+    public VisitContext getWrapped()
+    {
+        return delegate;
+    }
 
     /**
      * {@inheritDoc}

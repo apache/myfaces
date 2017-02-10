@@ -37,6 +37,18 @@ import javax.faces.render.RenderKit;
  */
 public abstract class FacesContextWrapper extends FacesContext implements FacesWrapper<FacesContext>
 {
+    private FacesContext delegate;
+
+    @Deprecated
+    public FacesContextWrapper()
+    {
+    }
+
+    public FacesContextWrapper(FacesContext delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     @Override
     public void addMessage(String clientId, FacesMessage message)
     {
@@ -163,7 +175,10 @@ public abstract class FacesContextWrapper extends FacesContext implements FacesW
         return getWrapped().getViewRoot();
     }
 
-    public abstract FacesContext getWrapped();
+    public FacesContext getWrapped()
+    {
+        return delegate;
+    }
 
     @Override
     public boolean isPostback()

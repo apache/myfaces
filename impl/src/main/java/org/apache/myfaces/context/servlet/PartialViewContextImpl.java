@@ -102,6 +102,7 @@ public class PartialViewContextImpl extends PartialViewContext
     private PartialResponseWriter _partialResponseWriter = null;
     private VisitContextFactory _visitContextFactory = null;
     private Boolean _resetValues = null;
+    private List<String> _evalScripts = new ArrayList<String>();
 
     public PartialViewContextImpl(FacesContext context)
     {
@@ -388,6 +389,12 @@ public class PartialViewContextImpl extends PartialViewContext
             }
         }
         return _partialResponseWriter;
+    }
+
+    @Override
+    public List<String> getEvalScripts()
+    {
+        return _evalScripts;
     }
 
     /**

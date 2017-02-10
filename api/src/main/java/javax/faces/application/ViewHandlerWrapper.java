@@ -37,6 +37,17 @@ import javax.faces.view.ViewDeclarationLanguage;
 public abstract class ViewHandlerWrapper extends ViewHandler
     implements FacesWrapper<ViewHandler>
 {
+    private ViewHandler delegate;
+
+    @Deprecated
+    public ViewHandlerWrapper()
+    {
+    }
+
+    public ViewHandlerWrapper(ViewHandler delegate)
+    {
+        this.delegate = delegate;
+    }
 
     @Override
     public String calculateCharacterEncoding(FacesContext context)
@@ -50,7 +61,10 @@ public abstract class ViewHandlerWrapper extends ViewHandler
         getWrapped().initView(context);
     }
 
-    public abstract ViewHandler getWrapped();
+    public ViewHandler getWrapped()
+    {
+        return delegate;
+    }
 
     @Override
     public void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException
@@ -149,6 +163,12 @@ public abstract class ViewHandlerWrapper extends ViewHandler
     public void addProtectedView(String urlPattern)
     {
         getWrapped().addProtectedView(urlPattern);
+    }
+
+    @Override
+    public String getWebsocketURL(FacesContext context, String channelAndToken)
+    {
+        return getWrapped().getWebsocketURL(context, channelAndToken);
     }
 
 }

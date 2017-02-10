@@ -19,6 +19,7 @@
 package javax.faces.event;
 
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -29,6 +30,17 @@ public class ValueChangeEvent extends FacesEvent
     // FIELDS
     private Object _oldValue;
     private Object _newValue;
+
+    public ValueChangeEvent(FacesContext facesContext, UIComponent uiComponent, Object oldValue, Object newValue)
+    {
+        super(facesContext, uiComponent);
+        if (uiComponent == null)
+        {
+            throw new IllegalArgumentException("uiComponent");
+        }
+        _oldValue = oldValue;
+        _newValue = newValue;
+    }
 
     // CONSTRUCTORS
     public ValueChangeEvent(UIComponent uiComponent, Object oldValue, Object newValue)

@@ -27,11 +27,25 @@ import javax.faces.context.FacesContext;
 public abstract class FlowHandlerFactoryWrapper extends FlowHandlerFactory
     implements FacesWrapper<FlowHandlerFactory>
 {
+    private FlowHandlerFactory delegate;
+
+    @Deprecated
+    public FlowHandlerFactoryWrapper()
+    {
+    }
+
+    public FlowHandlerFactoryWrapper(FlowHandlerFactory delegate)
+    {
+        this.delegate = delegate;
+    }
     
     public FlowHandler createFlowHandler(FacesContext context)
     {
         return getWrapped().createFlowHandler(context);
     }
     
-    public abstract FlowHandlerFactory getWrapped();
+    public FlowHandlerFactory getWrapped()
+    {
+        return delegate;
+    }
 }

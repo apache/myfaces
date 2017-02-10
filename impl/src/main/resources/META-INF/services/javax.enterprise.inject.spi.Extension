@@ -10,3 +10,4 @@ org.apache.myfaces.cdi.component.ComponentBindingExtension
 org.apache.myfaces.cdi.bean.ManagedPropertyExtension
 org.apache.myfaces.cdi.converter.FacesConverterExtension
 org.apache.myfaces.cdi.validator.FacesValidatorExtension
+org.apache.myfaces.cdi.behavior.FacesBehaviorExtension

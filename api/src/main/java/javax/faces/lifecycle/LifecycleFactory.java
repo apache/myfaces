@@ -30,6 +30,18 @@ public abstract class LifecycleFactory implements
 {
     public static final java.lang.String DEFAULT_LIFECYCLE = "DEFAULT";
 
+    private LifecycleFactory delegate;
+
+    @Deprecated
+    public LifecycleFactory()
+    {
+    }
+
+    public LifecycleFactory(LifecycleFactory delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     public abstract void addLifecycle(String lifecycleId,
                                       Lifecycle lifecycle);
 
@@ -49,6 +61,6 @@ public abstract class LifecycleFactory implements
      */
     public LifecycleFactory getWrapped()
     {
-        return null;
+        return delegate;
     }    
 }

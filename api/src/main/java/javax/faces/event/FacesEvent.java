@@ -22,6 +22,7 @@ package javax.faces.event;
 import java.util.EventObject;
 
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -29,7 +30,15 @@ import javax.faces.component.UIComponent;
 public abstract class FacesEvent extends EventObject
 {
     private PhaseId _phaseId;
+    
+    private transient FacesContext facesContext;
 
+    public FacesEvent(FacesContext facesContext, UIComponent uiComponent)
+    {
+        this(uiComponent);
+        this.facesContext = facesContext;
+    }
+    
     public FacesEvent(UIComponent uiComponent)
     {
         super(uiComponent);
@@ -67,5 +76,14 @@ public abstract class FacesEvent extends EventObject
             throw new IllegalArgumentException("phaseId");
         }
         _phaseId = phaseId;
+    }
+    
+    public FacesContext getFacesContext()
+    {
+        if (facesContext == null)
+        {
+            facesContext = FacesContext.getCurrentInstance();
+        }
+        return facesContext;
     }
 }

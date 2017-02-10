@@ -25,10 +25,22 @@ import javax.faces.FacesWrapper;
  */
 public abstract class PartialViewContextFactory implements FacesWrapper<PartialViewContextFactory>
 {
+    private PartialViewContextFactory delegate;
+
+    @Deprecated
+    public PartialViewContextFactory()
+    {
+    }
+
+    public PartialViewContextFactory(PartialViewContextFactory delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     public abstract PartialViewContext getPartialViewContext(FacesContext context);
     
     public PartialViewContextFactory getWrapped()
     {
-        return null;
+        return delegate;
     }
 }

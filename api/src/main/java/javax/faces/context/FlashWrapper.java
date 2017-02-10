@@ -28,6 +28,17 @@ import javax.faces.FacesWrapper;
  */
 public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash>
 {
+    private Flash delegate;
+
+    @Deprecated
+    public FlashWrapper()
+    {
+    }
+
+    public FlashWrapper(Flash delegate)
+    {
+        this.delegate = delegate;
+    }
 
     @Override
     public boolean isKeepMessages()
@@ -137,5 +148,8 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash>
         return getWrapped().entrySet();
     }
     
-    public abstract Flash getWrapped();
+    public Flash getWrapped()
+    {
+        return delegate;
+    }
 }

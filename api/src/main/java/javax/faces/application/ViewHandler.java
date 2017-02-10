@@ -420,13 +420,12 @@ public abstract class ViewHandler
      * @since 2.3
      * @param context
      * @param channel
-     * @param channelToken
      * @return 
      */
-    public String getWebsocketURL(FacesContext context, String channel, String channelToken)
+    public String getWebsocketURL(FacesContext context, String channelAndToken)
     {
         String url = context.getExternalContext().getRequestContextPath() + 
-                "/javax.faces.push/"+channel+"?"+channelToken;
+                "/javax.faces.push/"+channelAndToken;
         return url;
     }
 }

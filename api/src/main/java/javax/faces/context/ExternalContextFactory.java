@@ -26,11 +26,23 @@ import javax.faces.FacesWrapper;
  */
 public abstract class ExternalContextFactory implements FacesWrapper<ExternalContextFactory>
 {
+    private ExternalContextFactory delegate;
+
+    @Deprecated
+    public ExternalContextFactory()
+    {
+    }
+
+    public ExternalContextFactory(ExternalContextFactory delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     public abstract ExternalContext getExternalContext(Object context, Object request, Object response)
             throws FacesException;
 
     public ExternalContextFactory getWrapped()
     {
-        return null;
+        return delegate;
     }
 }

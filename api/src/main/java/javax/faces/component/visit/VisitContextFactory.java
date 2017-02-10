@@ -29,10 +29,21 @@ import javax.faces.context.FacesContext;
  */
 public abstract class VisitContextFactory implements FacesWrapper<VisitContextFactory>
 {
+    private VisitContextFactory delegate;
+
+    public VisitContextFactory()
+    {
+    }
+
+    public VisitContextFactory(VisitContextFactory delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     public abstract VisitContext getVisitContext(FacesContext context, Collection<String> ids, Set<VisitHint> hints);
 
     public VisitContextFactory getWrapped()
     {
-        return null;
+        return delegate;
     }
 }

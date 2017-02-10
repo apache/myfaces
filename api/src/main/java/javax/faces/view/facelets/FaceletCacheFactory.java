@@ -25,12 +25,23 @@ import javax.faces.FacesWrapper;
  */
 public abstract class FaceletCacheFactory implements FacesWrapper<FaceletCacheFactory>
 {
+    private FaceletCacheFactory delegate;
+
+    @Deprecated
+    public FaceletCacheFactory()
+    {
+    }
+
+    public FaceletCacheFactory(FaceletCacheFactory delegate)
+    {
+        this.delegate = delegate;
+    }
 
     public abstract FaceletCache getFaceletCache();
 
     public FaceletCacheFactory getWrapped()
     {
-        return null;
+        return delegate;
     }
 
 }

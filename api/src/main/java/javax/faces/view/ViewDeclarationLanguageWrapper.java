@@ -34,6 +34,17 @@ import javax.faces.context.FacesContext;
 public abstract class ViewDeclarationLanguageWrapper extends ViewDeclarationLanguage 
     implements FacesWrapper<ViewDeclarationLanguage>
 {
+    private ViewDeclarationLanguage delegate;
+
+    @Deprecated
+    public ViewDeclarationLanguageWrapper()
+    {
+    }
+
+    public ViewDeclarationLanguageWrapper(ViewDeclarationLanguage delegate)
+    {
+        this.delegate = delegate;
+    }
 
     public void buildView(FacesContext context, UIViewRoot view) throws IOException
     {
@@ -107,5 +118,8 @@ public abstract class ViewDeclarationLanguageWrapper extends ViewDeclarationLang
         return getWrapped().calculateResourceLibraryContracts(context, viewId);
     }
     
-    public abstract ViewDeclarationLanguage getWrapped();
+    public ViewDeclarationLanguage getWrapped()
+    {
+        return delegate;
+    }
 }

@@ -28,13 +28,21 @@ import javax.faces.event.PhaseId;
  */
 public abstract class PartialViewContextWrapper extends PartialViewContext implements FacesWrapper<PartialViewContext>
 {
+    private PartialViewContext delegate;
+    
     /**
      * 
      */
+    @Deprecated
     public PartialViewContextWrapper()
     {
     }
 
+    public PartialViewContextWrapper(PartialViewContext delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     @Override
     public Collection<String> getExecuteIds()
     {
@@ -53,7 +61,10 @@ public abstract class PartialViewContextWrapper extends PartialViewContext imple
         return getWrapped().getRenderIds();
     }
 
-    public abstract PartialViewContext getWrapped();
+    public PartialViewContext getWrapped()
+    {
+        return delegate;
+    }
 
     @Override
     public boolean isAjaxRequest()
@@ -115,5 +126,9 @@ public abstract class PartialViewContextWrapper extends PartialViewContext imple
     {
         getWrapped().setPartialRequest(isPartialRequest);
     }
-    
+ 
+    public java.util.List<java.lang.String> getEvalScripts()
+    {
+        return getWrapped().getEvalScripts();
+    }
 }

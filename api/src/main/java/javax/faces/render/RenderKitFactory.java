@@ -30,6 +30,18 @@ public abstract class RenderKitFactory implements
 {
     public static final String HTML_BASIC_RENDER_KIT = "HTML_BASIC";
 
+    private RenderKitFactory delegate;
+
+    @Deprecated
+    public RenderKitFactory()
+    {
+    }
+
+    public RenderKitFactory(RenderKitFactory delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     public abstract void addRenderKit(String renderKitId,
                                       RenderKit renderKit);
 
@@ -50,6 +62,6 @@ public abstract class RenderKitFactory implements
      */
     public RenderKitFactory getWrapped()
     {
-        return null;
+        return delegate;
     }
 }

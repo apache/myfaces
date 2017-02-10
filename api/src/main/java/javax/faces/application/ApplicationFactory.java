@@ -25,6 +25,18 @@ import javax.faces.FacesWrapper;
  */
 public abstract class ApplicationFactory implements FacesWrapper<ApplicationFactory>
 {
+    private ApplicationFactory delegate;
+
+    @Deprecated
+    public ApplicationFactory()
+    {
+    }
+
+    public ApplicationFactory(ApplicationFactory delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     public abstract Application getApplication();
     
     /**
@@ -39,7 +51,7 @@ public abstract class ApplicationFactory implements FacesWrapper<ApplicationFact
      */
     public ApplicationFactory getWrapped()
     {
-        return null;
+        return delegate;
     }
     
     public abstract void setApplication(Application application);

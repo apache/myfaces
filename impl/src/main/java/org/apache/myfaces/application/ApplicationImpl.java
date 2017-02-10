@@ -62,7 +62,9 @@ import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.Behavior;
+import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorBase;
+import javax.faces.component.behavior.FacesBehavior;
 import javax.faces.component.search.SearchExpressionHandler;
 import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.context.FacesContext;
@@ -99,6 +101,8 @@ import org.apache.myfaces.application.cdi.ConverterWrapper;
 import org.apache.myfaces.cdi.util.ExternalArtifactResolver;
 import org.apache.myfaces.application.cdi.ValidatorWrapper;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.cdi.behavior.FacesBehaviorCDIWrapper;
+import org.apache.myfaces.cdi.behavior.FacesClientBehaviorCDIWrapper;
 import org.apache.myfaces.cdi.converter.FacesConverterCDIWrapper;
 import org.apache.myfaces.cdi.validator.FacesValidatorCDIWrapper;
 import org.apache.myfaces.component.search.AllSearchKeywordResolver;
@@ -254,6 +258,9 @@ public class ApplicationImpl extends Application
     
     private Map<Class<? extends Validator>, Boolean> _cdiManagedValidatorMap
             = new ConcurrentHashMap<Class<? extends Validator>, Boolean>();
+    
+    private Map<Class<? extends Behavior>, Boolean> _cdiManagedBehaviorMap
+            = new ConcurrentHashMap<Class<? extends Behavior>, Boolean>();
     
     /** Value of javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE parameter */
     private boolean _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = false; 
@@ -1226,21 +1233,64 @@ public class ApplicationImpl extends Application
             throw new FacesException("Could not find any registered behavior-class for behaviorId : " + behaviorId);
         }
         
+        if (!_cdiManagedBehaviorMap.containsKey(behaviorClass))
+        {
+            FacesBehavior annotation = behaviorClass.getAnnotation(FacesBehavior.class);
+            if (annotation != null && annotation.managed())
+            {
+                _cdiManagedBehaviorMap.put(behaviorClass, true);
+            }
+            else
+            {
+                _cdiManagedBehaviorMap.put(behaviorClass, false);
+            }
+        }
+        
         try
         {
-            Behavior behavior = behaviorClass.newInstance();
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            _handleAttachedResourceDependencyAnnotations(facesContext, behavior);
-
-            if (behavior instanceof ClientBehaviorBase)
+            Behavior behavior = null;
+            if (Boolean.TRUE.equals(_cdiManagedBehaviorMap.get(behaviorClass)))
             {
-              ClientBehaviorBase clientBehavior = (ClientBehaviorBase) behavior;
-              String renderType = clientBehavior.getRendererType();
-              if (renderType != null)
-              {
-                ClientBehaviorRenderer cbr = facesContext.getRenderKit().getClientBehaviorRenderer(renderType);
-                _handleAttachedResourceDependencyAnnotations(facesContext, cbr);
-              }
+                if (ClientBehavior.class.isAssignableFrom(behaviorClass))
+                {
+                    behavior = new FacesClientBehaviorCDIWrapper((Class<ClientBehavior>)behaviorClass, behaviorId);
+                }
+                else
+                {
+                    behavior = new FacesBehaviorCDIWrapper(behaviorClass, behaviorId);
+                }
+                Behavior innerBehavior = ((FacesWrapper<Behavior>)behavior).getWrapped();
+
+                FacesContext facesContext = FacesContext.getCurrentInstance();
+                _handleAttachedResourceDependencyAnnotations(facesContext, innerBehavior);
+
+                if (innerBehavior instanceof ClientBehaviorBase)
+                {
+                  ClientBehaviorBase clientBehavior = (ClientBehaviorBase) innerBehavior;
+                  String renderType = clientBehavior.getRendererType();
+                  if (renderType != null)
+                  {
+                    ClientBehaviorRenderer cbr = facesContext.getRenderKit().getClientBehaviorRenderer(renderType);
+                    _handleAttachedResourceDependencyAnnotations(facesContext, cbr);
+                  }
+                }
+            }
+            else
+            {
+                behavior = behaviorClass.newInstance();
+                FacesContext facesContext = FacesContext.getCurrentInstance();
+                _handleAttachedResourceDependencyAnnotations(facesContext, behavior);
+
+                if (behavior instanceof ClientBehaviorBase)
+                {
+                  ClientBehaviorBase clientBehavior = (ClientBehaviorBase) behavior;
+                  String renderType = clientBehavior.getRendererType();
+                  if (renderType != null)
+                  {
+                    ClientBehaviorRenderer cbr = facesContext.getRenderKit().getClientBehaviorRenderer(renderType);
+                    _handleAttachedResourceDependencyAnnotations(facesContext, cbr);
+                  }
+                }
             }
 
             return behavior;

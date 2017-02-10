@@ -29,6 +29,18 @@ import java.io.Writer;
  */
 public abstract class ResponseWriterWrapper extends ResponseWriter implements FacesWrapper<ResponseWriter>
 {
+    private ResponseWriter delegate;
+
+    @Deprecated
+    public ResponseWriterWrapper()
+    {
+    }
+
+    public ResponseWriterWrapper(ResponseWriter delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     @Override
     public ResponseWriter cloneWithWriter(Writer writer)
     {

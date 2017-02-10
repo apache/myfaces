@@ -29,6 +29,17 @@ import javax.faces.context.FacesContext;
 public abstract class ClientWindowWrapper extends ClientWindow 
     implements FacesWrapper<ClientWindow>
 {
+    private ClientWindow delegate;
+
+    public ClientWindowWrapper(ClientWindow delegate)
+    {
+        this.delegate = delegate;
+    }
+
+    @Deprecated
+    public ClientWindowWrapper()
+    {
+    }
 
     public void decode(FacesContext context)
     {
@@ -60,6 +71,9 @@ public abstract class ClientWindowWrapper extends ClientWindow
         getWrapped().enableClientWindowRenderMode(context);
     }
     
-    public abstract ClientWindow getWrapped();
+    public ClientWindow getWrapped()
+    {
+        return delegate;
+    }
 
 }

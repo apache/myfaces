@@ -25,6 +25,18 @@ import javax.faces.FacesWrapper;
  */
 public abstract class ExceptionHandlerFactory implements FacesWrapper<ExceptionHandlerFactory>
 {
+    private ExceptionHandlerFactory delegate;
+
+    @Deprecated
+    public ExceptionHandlerFactory()
+    {
+    }
+
+    public ExceptionHandlerFactory(ExceptionHandlerFactory delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     public abstract ExceptionHandler getExceptionHandler();
 
     /**
@@ -38,6 +50,6 @@ public abstract class ExceptionHandlerFactory implements FacesWrapper<ExceptionH
      */
     public ExceptionHandlerFactory getWrapped()
     {
-        return null;
+        return delegate;
     }
 }

@@ -25,17 +25,24 @@ import javax.faces.FacesWrapper;
  */
 public abstract class ViewDeclarationLanguageFactory implements FacesWrapper<ViewDeclarationLanguageFactory>
 {
+    private ViewDeclarationLanguageFactory delegate;
     /**
      * 
      */
+    @Deprecated
     public ViewDeclarationLanguageFactory()
     {
+    }
+
+    public ViewDeclarationLanguageFactory(ViewDeclarationLanguageFactory delegate)
+    {
+        this.delegate = delegate;
     }
     
     public abstract ViewDeclarationLanguage getViewDeclarationLanguage(String viewId);
 
     public ViewDeclarationLanguageFactory getWrapped()
     {
-        return null;
+        return delegate;
     }
 }

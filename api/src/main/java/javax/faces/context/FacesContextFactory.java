@@ -27,6 +27,18 @@ import javax.faces.lifecycle.Lifecycle;
  */
 public abstract class FacesContextFactory implements FacesWrapper<FacesContextFactory>
 {
+    private FacesContextFactory delegate;
+
+    @Deprecated
+    public FacesContextFactory()
+    {
+    }
+
+    public FacesContextFactory(FacesContextFactory delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     public abstract FacesContext getFacesContext(Object context, Object request, Object response, Lifecycle lifecycle)
             throws FacesException;
 
@@ -41,6 +53,6 @@ public abstract class FacesContextFactory implements FacesWrapper<FacesContextFa
      */
     public FacesContextFactory getWrapped()
     {
-        return null;
+        return delegate;
     }
 }

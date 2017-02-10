@@ -108,6 +108,10 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
                     try
                     {
                         wrappedFacesContext.setWrapperAsCurrentFacesContext();
+                        if (event instanceof ViewActionEvent)
+                        {
+                            ((ViewActionEvent) event).setFacesContext(wrappedFacesContext);
+                        }
 
                         MethodBinding mb = getActionListener();
                         if (mb != null)
@@ -175,7 +179,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
             return;
         }
         
-        ActionEvent evt = new ActionEvent(this);
+        ActionEvent evt = new ViewActionEvent(this);
         String phase = getPhase();
         PhaseId phaseId = (phase != null) ? PhaseId.phaseIdValueOf(phase) :
             isImmediate() ? PhaseId.APPLY_REQUEST_VALUES : PhaseId.INVOKE_APPLICATION;
@@ -324,6 +328,36 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
     public String getFamily()
     {
         return COMPONENT_FAMILY;
+    }
+    
+    private static class ViewActionEvent extends ActionEvent
+    {
+        private transient FacesContext facesContext;
+
+        public ViewActionEvent(FacesContext facesContext, UIComponent uiComponent)
+        {
+            super(facesContext, uiComponent);
+            this.facesContext = facesContext;
+        }
+
+        public ViewActionEvent(UIComponent uiComponent)
+        {
+            super(uiComponent);
+        }
+        
+        public FacesContext getFacesContext()
+        {
+            if (facesContext != null)
+            {
+                return facesContext;
+            }
+            return super.getFacesContext();
+        }
+        
+        void setFacesContext(FacesContext facesContext)
+        {
+            this.facesContext = facesContext;
+        }
     }
     
     private static class ViewActionFacesContextWrapper extends FacesContextWrapper

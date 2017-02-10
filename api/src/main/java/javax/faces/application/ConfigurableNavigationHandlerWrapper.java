@@ -31,6 +31,17 @@ import javax.faces.flow.Flow;
 public abstract class ConfigurableNavigationHandlerWrapper extends ConfigurableNavigationHandler
     implements FacesWrapper<ConfigurableNavigationHandler>
 {
+    private ConfigurableNavigationHandler delegate;
+
+    @Deprecated
+    public ConfigurableNavigationHandlerWrapper()
+    {
+    }
+
+    public ConfigurableNavigationHandlerWrapper(ConfigurableNavigationHandler delegate)
+    {
+        this.delegate = delegate;
+    }
 
     @Override
     public NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome)
@@ -75,5 +86,8 @@ public abstract class ConfigurableNavigationHandlerWrapper extends ConfigurableN
         return getWrapped().getNavigationCase(context, fromAction, outcome, toFlowDocumentId);
     }
 
-    public abstract ConfigurableNavigationHandler getWrapped();
+    public ConfigurableNavigationHandler getWrapped()
+    {
+        return delegate;
+    }
 }

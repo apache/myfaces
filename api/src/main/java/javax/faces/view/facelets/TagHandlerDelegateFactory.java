@@ -25,6 +25,18 @@ import javax.faces.FacesWrapper;
  */
 public abstract class TagHandlerDelegateFactory implements FacesWrapper<TagHandlerDelegateFactory>
 {
+    private TagHandlerDelegateFactory delegate;
+
+    @Deprecated
+    public TagHandlerDelegateFactory()
+    {
+    }
+
+    public TagHandlerDelegateFactory(TagHandlerDelegateFactory delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     public abstract TagHandlerDelegate createBehaviorHandlerDelegate(BehaviorHandler owner);
     
     public abstract TagHandlerDelegate createComponentHandlerDelegate(ComponentHandler owner);
@@ -39,6 +51,6 @@ public abstract class TagHandlerDelegateFactory implements FacesWrapper<TagHandl
      */
     public TagHandlerDelegateFactory getWrapped()
     {
-        return null;
+        return delegate;
     }
 }

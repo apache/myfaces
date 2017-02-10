@@ -20,6 +20,7 @@ package javax.faces.event;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.Behavior;
+import javax.faces.context.FacesContext;
 
 /**
  * @since 2.0
@@ -27,6 +28,16 @@ import javax.faces.component.behavior.Behavior;
 public abstract class BehaviorEvent extends FacesEvent
 {
     private Behavior _behavior;
+
+    public BehaviorEvent(FacesContext facesContext, UIComponent uiComponent, Behavior behavior)
+    {
+        super(facesContext, uiComponent);
+        if (behavior == null)
+        {
+            throw new IllegalArgumentException("behavior");
+        }
+        _behavior = behavior;
+    }
     
     public BehaviorEvent(UIComponent component, Behavior behavior) 
     {

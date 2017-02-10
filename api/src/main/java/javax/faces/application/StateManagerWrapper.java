@@ -29,8 +29,22 @@ import javax.faces.FacesWrapper;
  */
 public abstract class StateManagerWrapper extends StateManager implements FacesWrapper<StateManager>
 {
+    private StateManager delegate;
 
-    public abstract StateManager getWrapped();
+    @Deprecated
+    public StateManagerWrapper()
+    {
+    }
+
+    public StateManagerWrapper(StateManager delegate)
+    {
+        this.delegate = delegate;
+    }
+
+    public StateManager getWrapped()
+    {
+        return delegate;
+    }
 
     @SuppressWarnings("deprecation")
     @Override

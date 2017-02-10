@@ -27,10 +27,21 @@ import javax.faces.context.FacesContext;
  */
 public abstract class ClientWindowFactory implements FacesWrapper<ClientWindowFactory>
 {
+    private ClientWindowFactory delegate;
+
+    @Deprecated
+    public ClientWindowFactory()
+    {
+    }
+
+    public ClientWindowFactory(ClientWindowFactory delegate)
+    {
+        this.delegate = delegate;
+    }
 
     public ClientWindowFactory getWrapped()
     {
-        return null;
+        return delegate;
     }
     
     public abstract ClientWindow getClientWindow(FacesContext context);

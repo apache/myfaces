@@ -31,9 +31,18 @@ import javax.faces.context.FacesContext;
 public abstract class NavigationCaseWrapper extends NavigationCase
     implements FacesWrapper<NavigationCase>
 {
+    private NavigationCase delegate;
+    
+    @Deprecated
     public NavigationCaseWrapper()
     {
         super(null, null, null, null, null, null, false, false);
+    }
+
+    public NavigationCaseWrapper(NavigationCase delegate)
+    {
+        this();
+        this.delegate = delegate;
     }
 
     public boolean equals(Object o)
@@ -121,5 +130,8 @@ public abstract class NavigationCaseWrapper extends NavigationCase
         return getWrapped().toString();
     }
     
-    public abstract NavigationCase getWrapped();
+    public NavigationCase getWrapped()
+    {
+        return delegate;
+    }
 }

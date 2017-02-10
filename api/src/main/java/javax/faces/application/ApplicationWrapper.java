@@ -52,9 +52,17 @@ import javax.faces.validator.Validator;
 @SuppressWarnings("deprecation")
 public abstract class ApplicationWrapper extends Application implements FacesWrapper<Application>
 {
+    private Application delegate;
+
+    @Deprecated
     public ApplicationWrapper()
     {
         
+    }
+    
+    public ApplicationWrapper(Application delegate)
+    {
+        this.delegate = delegate;
     }
     
     @Override
@@ -324,7 +332,10 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
         return getWrapped().getViewHandler();
     }
 
-    public abstract Application getWrapped();
+    public Application getWrapped()
+    {
+        return delegate;
+    }
 
     @Override
     public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass,

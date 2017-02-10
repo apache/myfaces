@@ -19,6 +19,7 @@
 package javax.faces.event;
 
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -26,6 +27,15 @@ import javax.faces.component.UIComponent;
 public class ActionEvent extends FacesEvent
 {
     private static final long serialVersionUID = 3693030212414392259L;
+
+    public ActionEvent(FacesContext facesContext, UIComponent uiComponent)
+    {
+        super(facesContext, uiComponent);
+        if (uiComponent == null)
+        {
+            throw new IllegalArgumentException("uiComponent");
+        }
+    }
 
     public ActionEvent(UIComponent uiComponent)
     {

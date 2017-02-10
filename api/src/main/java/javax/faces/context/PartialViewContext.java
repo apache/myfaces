@@ -73,4 +73,9 @@ public abstract class PartialViewContext
     {
         return false;
     }
+    
+    public java.util.List<java.lang.String> getEvalScripts()
+    {
+        return null;
+    }
 }

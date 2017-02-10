@@ -19,6 +19,7 @@
 
 package javax.faces.component;
 
+import java.io.Serializable;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
@@ -45,7 +46,7 @@ abstract class _UIWebsocket extends UIOutput implements ClientBehaviorHolder
     public abstract String getScope();
     
     @JSFProperty
-    public abstract String getUser();
+    public abstract Serializable getUser();
     
     @JSFProperty
     public abstract String getOnopen();

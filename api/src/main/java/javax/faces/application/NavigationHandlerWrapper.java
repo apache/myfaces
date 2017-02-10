@@ -29,6 +29,17 @@ public abstract class NavigationHandlerWrapper extends NavigationHandler
     implements FacesWrapper<NavigationHandler>
 {
 
+    private NavigationHandler delegate;
+
+    public NavigationHandlerWrapper()
+    {
+    }
+
+    public NavigationHandlerWrapper(NavigationHandler delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     @Override
     public void handleNavigation(FacesContext context, String fromAction, String outcome)
     {
@@ -44,5 +55,8 @@ public abstract class NavigationHandlerWrapper extends NavigationHandler
         getWrapped().handleNavigation(context, fromAction, outcome, toFlowDocumentId);
     }
     
-    public abstract NavigationHandler getWrapped();
+    public NavigationHandler getWrapped()
+    {
+        return delegate;
+    }
 }

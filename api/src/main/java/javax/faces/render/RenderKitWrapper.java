@@ -39,6 +39,18 @@ import java.util.Iterator;
  */
 public abstract class RenderKitWrapper extends RenderKit implements FacesWrapper<RenderKit>
 {
+    private RenderKit delegate;
+
+    @Deprecated
+    public RenderKitWrapper()
+    {
+    }
+
+    public RenderKitWrapper(RenderKit delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     @Override
     public void addClientBehaviorRenderer(String type, ClientBehaviorRenderer renderer)
     {
@@ -93,7 +105,10 @@ public abstract class RenderKitWrapper extends RenderKit implements FacesWrapper
     }
 
     /** {@inheritDoc} */
-    public abstract RenderKit getWrapped();
+    public RenderKit getWrapped()
+    {
+        return delegate;
+    }
 
     /** {@inheritDoc} */
     @Override
