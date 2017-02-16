@@ -47,6 +47,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.event.ListenerFor;
 import javax.faces.event.ListenersFor;
 import javax.faces.event.NamedEvent;
+import javax.faces.model.FacesDataModel;
 import javax.faces.render.FacesBehaviorRenderer;
 import javax.faces.render.FacesRenderer;
 import javax.faces.render.Renderer;
@@ -86,6 +87,7 @@ import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
         FacesConverter.class,
         FacesRenderer.class,
         FacesValidator.class,
+        FacesDataModel.class,
         ListenerFor.class,
         ListenersFor.class,
         ManagedBean.class,

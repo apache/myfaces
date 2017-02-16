@@ -33,6 +33,8 @@ import javax.faces.FacesException;
 import javax.faces.FacesWrapper;
 import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.Behavior;
+import javax.faces.component.search.SearchExpressionHandler;
+import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.el.MethodBinding;
@@ -460,6 +462,30 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     public FlowHandler getFlowHandler()
     {
         return getWrapped().getFlowHandler();
+    }
+
+    @Override
+    public void setSearchExpressionHandler(SearchExpressionHandler searchExpressionHandler)
+    {
+        getWrapped().setSearchExpressionHandler(searchExpressionHandler);
+    }
+
+    @Override
+    public SearchExpressionHandler getSearchExpressionHandler()
+    {
+        return getWrapped().getSearchExpressionHandler();
+    }
+
+    @Override
+    public SearchKeywordResolver getSearchKeywordResolver()
+    {
+        return getWrapped().getSearchKeywordResolver();
+    }
+
+    @Override
+    public void addSearchKeywordResolver(SearchKeywordResolver resolver)
+    {
+        getWrapped().addSearchKeywordResolver(resolver);
     }
 
 }

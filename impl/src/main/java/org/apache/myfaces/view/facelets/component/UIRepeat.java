@@ -56,6 +56,8 @@ import javax.faces.render.Renderer;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.cdi.model.DataModelBuilderProxy;
+import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
  *  
@@ -204,25 +206,41 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         {
             return (DataModel) value;
         }
-        else if (value instanceof List)
-        {
-            return new ListDataModel((List<?>) value);
-        }
-        else if (OBJECT_ARRAY_CLASS.isAssignableFrom(value.getClass()))
-        {
-            return new ArrayDataModel((Object[]) value);
-        }
-        else if (value instanceof ResultSet)
-        {
-            return new ResultSetDataModel((ResultSet) value);
-        }
-        else if (value instanceof Collection)
-        {
-            return new CollectionDataModel((Collection) value);
-        }
         else
         {
-            return new ScalarDataModel(value);
+            DataModel dataModel = null;
+            if (ExternalSpecifications.isCDIAvailable(getFacesContext().getExternalContext()))
+            {
+                dataModel = (new DataModelBuilderProxy()).createDataModel(
+                        getFacesContext(), value.getClass(), value);
+            }
+            if (dataModel == null)
+            {
+                if (value instanceof List)
+                {
+                    return new ListDataModel((List<?>) value);
+                }
+                else if (OBJECT_ARRAY_CLASS.isAssignableFrom(value.getClass()))
+                {
+                    return new ArrayDataModel((Object[]) value);
+                }
+                else if (value instanceof ResultSet)
+                {
+                    return new ResultSetDataModel((ResultSet) value);
+                }
+                else if (value instanceof Collection)
+                {
+                    return new CollectionDataModel((Collection) value);
+                }
+                else
+                {
+                    return new ScalarDataModel(value);
+                }
+            }
+            else
+            {
+                return dataModel;
+            }
         }
     }
     

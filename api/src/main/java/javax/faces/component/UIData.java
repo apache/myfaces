@@ -20,6 +20,8 @@ package javax.faces.component;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -121,6 +123,31 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     public static final String COMPONENT_FAMILY = "javax.faces.Data";
     public static final String COMPONENT_TYPE = "javax.faces.Data"; // for unit tests
 
+    private static final String DATAMODEL_BUILDER_CLASS_NAME = "org.apache.myfaces.cdi.model.DataModelBuilderProxy";
+    private static final Class<?> DATAMODEL_BUILDER_CLASS;
+    private static final Method DATAMODEL_BUILDER_CREATE_DATAMODEL_METHOD;
+    
+    static
+    {
+        Class<?> dataModelBuilderClass = null;
+        Method createDataModelMethod = null;
+        try
+        {
+            dataModelBuilderClass = _ClassUtils.classForName(DATAMODEL_BUILDER_CLASS_NAME);
+            if (dataModelBuilderClass != null)
+            {
+                createDataModelMethod = dataModelBuilderClass.getMethod("createDataModel",
+                        new Class[]{FacesContext.class, Class.class, Object.class});
+            }
+        }
+        catch(Exception e)
+        {
+            //No Op
+        }
+        DATAMODEL_BUILDER_CLASS = dataModelBuilderClass;
+        DATAMODEL_BUILDER_CREATE_DATAMODEL_METHOD = createDataModelMethod;
+    }
+    
     private static final String FOOTER_FACET_NAME = "footer";
     private static final String HEADER_FACET_NAME = "header";
     private static final Class<Object[]> OBJECT_ARRAY_CLASS = Object[].class;
@@ -2084,29 +2111,65 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             return (DataModel) value;
         }
-        else if (value instanceof List)
-        {
-            return new ListDataModel((List<?>) value);
-        }
-        else if (OBJECT_ARRAY_CLASS.isAssignableFrom(value.getClass()))
-        {
-            return new ArrayDataModel((Object[]) value);
-        }
-        else if (value instanceof ResultSet)
-        {
-            return new ResultSetDataModel((ResultSet) value);
-        }
-        else if (value instanceof Result)
-        {
-            return new ResultDataModel((Result) value);
-        }
-        else if (value instanceof Collection)
-        {
-            return new CollectionDataModel((Collection) value);
-        }
         else
         {
-            return new ScalarDataModel(value);
+            DataModel dataModel = null;
+            if (DATAMODEL_BUILDER_CLASS != null && value != null)
+            {
+                try
+                {
+                    Object dataModelBuilderProxy = DATAMODEL_BUILDER_CLASS.newInstance();
+                    dataModel = (DataModel) DATAMODEL_BUILDER_CREATE_DATAMODEL_METHOD.invoke(dataModelBuilderProxy, 
+                            getFacesContext(), value.getClass(), value);
+                }
+                catch (InstantiationException ex)
+                {
+                    //No op
+                } 
+                catch (IllegalAccessException ex)
+                {
+                    //No op
+                }
+                catch (IllegalArgumentException ex)
+                {
+                    //No op
+                }
+                catch (InvocationTargetException ex)
+                {
+                    //No op
+                }
+            }
+            if (dataModel == null)
+            {
+                if (value instanceof List)
+                {
+                    return new ListDataModel((List<?>) value);
+                }
+                else if (OBJECT_ARRAY_CLASS.isAssignableFrom(value.getClass()))
+                {
+                    return new ArrayDataModel((Object[]) value);
+                }
+                else if (value instanceof ResultSet)
+                {
+                    return new ResultSetDataModel((ResultSet) value);
+                }
+                else if (value instanceof Result)
+                {
+                    return new ResultDataModel((Result) value);
+                }
+                else if (value instanceof Collection)
+                {
+                    return new CollectionDataModel((Collection) value);
+                }
+                else
+                {
+                    return new ScalarDataModel(value);
+                }
+            }
+            else
+            {
+                return dataModel;
+            }
         }
     }
 
