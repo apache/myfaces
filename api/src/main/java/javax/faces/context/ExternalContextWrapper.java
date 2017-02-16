@@ -510,4 +510,10 @@ public abstract class ExternalContextWrapper extends ExternalContext implements 
     {
         return getWrapped().getApplicationContextPath();
     }
+
+    @Override
+    public String encodeWebsocketURL(String url)
+    {
+        return getWrapped().encodeWebsocketURL(url);
+    }
 }
