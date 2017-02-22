@@ -28,6 +28,7 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.ViewPoolParameter;
 import org.apache.myfaces.shared.util.ViewProtectionUtils;
+import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.pool.ViewPool;
 import org.apache.myfaces.view.facelets.pool.ViewPoolFactory;
 
@@ -75,6 +76,14 @@ public class ViewPoolFactoryImpl extends ViewPoolFactory
         }
         if (defaultViewPool != null)
         {
+            // The default view pool applies to all views that does not have any view pool mapping,
+            // but only when oamEnableViewPool is set, so we need a check here when it is not to avoid
+            // use view pool on all views when only alwaysRecompile is set to true.
+            Boolean enableViewPool = (Boolean) root.getAttributes().get(ViewPoolProcessor.ENABLE_VIEW_POOL);
+            if (enableViewPool == null)
+            {
+                return null;
+            }
             return defaultViewPool;
         }
         return null;
