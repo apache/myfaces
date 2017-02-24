@@ -268,6 +268,16 @@ public class ELText
                 // expression belongs to.
                 if ((this.capabilities & EL_CC) != 0)
                 {
+                    UIComponent cc = actx.getFaceletCompositionContext().getCompositeComponentFromStack();
+                    if (cc != null)
+                    {
+                        Location location = (Location) cc.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY);
+                        if (location != null)
+                        {
+                            return new ELTextVariable(((LocationValueExpression)cached.ve).apply(
+                                    actx.getFaceletCompositionContext().getCompositeComponentLevel(), location));
+                        }
+                    }
                     return new ELTextVariable(((LocationValueExpression)cached.ve).apply(
                             actx.getFaceletCompositionContext().getCompositeComponentLevel()));
                 }

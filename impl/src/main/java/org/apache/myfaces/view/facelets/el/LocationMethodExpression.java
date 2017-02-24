@@ -91,6 +91,18 @@ public class LocationMethodExpression extends MethodExpression
         }
     }
     
+    public LocationMethodExpression apply(int newCCLevel, Location newLocation)
+    {
+        if(this.ccLevel == newCCLevel && this.location.getPath().equals(newLocation.getPath()))
+        {
+            return this;
+        }
+        else
+        {
+            return new LocationMethodExpression(newLocation, this.delegate, newCCLevel);
+        }
+    }
+    
     @Override
     public MethodInfo getMethodInfo(ELContext context)
     {

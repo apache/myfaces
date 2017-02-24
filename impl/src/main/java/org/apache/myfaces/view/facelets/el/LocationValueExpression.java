@@ -96,6 +96,18 @@ public class LocationValueExpression extends ValueExpression
         }
     }
     
+    public LocationValueExpression apply(int newCCLevel, Location newLocation)
+    {
+        if(this.ccLevel == newCCLevel && this.location.getPath().equals(newLocation.getPath()))
+        {
+            return this;
+        }
+        else
+        {
+            return new LocationValueExpression(newLocation, this.delegate, newCCLevel);
+        }
+    }
+    
     @Override
     public Class<?> getExpectedType()
     {
