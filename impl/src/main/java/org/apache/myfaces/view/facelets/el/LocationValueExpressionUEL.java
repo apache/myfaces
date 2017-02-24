@@ -62,6 +62,18 @@ public class LocationValueExpressionUEL extends LocationValueExpression
         }
     }
     
+    public LocationValueExpression apply(int newCCLevel, Location newLocation)
+    {
+        if(this.ccLevel == newCCLevel && this.location.getPath().equals(newLocation.getPath()))
+        {
+            return this;
+        }
+        else
+        {
+            return new LocationValueExpressionUEL(newLocation, this.delegate, newCCLevel);
+        }
+    }
+    
     @Override
     public ValueReference getValueReference(ELContext context)
     {

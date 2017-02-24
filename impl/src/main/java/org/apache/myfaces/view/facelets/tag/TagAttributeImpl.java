@@ -24,6 +24,7 @@ import javax.el.ELException;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
+import javax.faces.component.UIComponent;
 import javax.faces.view.Location;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
@@ -220,6 +221,17 @@ public final class TagAttributeImpl extends TagAttribute
                     if ((this.capabilities & EL_CC) != 0 &&
                         localCachedExpression[(i*3)+2] instanceof LocationMethodExpression)
                     {
+                        UIComponent cc = actx.getFaceletCompositionContext().getCompositeComponentFromStack();
+                        if (cc != null)
+                        {
+                            Location location = (Location) cc.getAttributes().get(
+                                    CompositeComponentELUtils.LOCATION_KEY);
+                            if (location != null)
+                            {
+                                return ((LocationMethodExpression)localCachedExpression[(i*3)+2]).apply(
+                                        actx.getFaceletCompositionContext().getCompositeComponentLevel(), location);
+                            }
+                        }
                         return ((LocationMethodExpression)localCachedExpression[(i*3)+2]).apply(
                                 actx.getFaceletCompositionContext().getCompositeComponentLevel());
                     }
@@ -287,7 +299,18 @@ public final class TagAttributeImpl extends TagAttribute
                 // (see MYFACES-2561 for details)
                 if ((this.capabilities & EL_CC) != 0)
                 {
-                    methodExpression = new LocationMethodExpression(getLocation(), methodExpression, 
+                    Location currentLocation = getLocation();
+                    Location ccLocation = (Location) actx.getFaceletCompositionContext().
+                            getCompositeComponentFromStack().getAttributes().get(
+                                    CompositeComponentELUtils.LOCATION_KEY);
+                    if (ccLocation != null && !ccLocation.getPath().equals(currentLocation.getPath()))
+                    {
+                        // #{cc} from a template called from inside a composite component, disable caching on 
+                        // this expression. The reason is we need to change the Location object used as
+                        // reference as the one in the stack, and that depends on the template hierarchy.
+                        currentLocation = ccLocation;
+                    }
+                    methodExpression = new LocationMethodExpression(currentLocation, methodExpression, 
                             actx.getFaceletCompositionContext().getCompositeComponentLevel());
                 }
             }
@@ -462,6 +485,17 @@ public final class TagAttributeImpl extends TagAttribute
                 // If #{cc} recalculate the composite component level
                 if ((this.capabilities & EL_CC) != 0)
                 {
+                    UIComponent cc = actx.getFaceletCompositionContext().getCompositeComponentFromStack();
+                    if (cc != null)
+                    {
+                        Location location = (Location) cc.getAttributes().get(
+                                CompositeComponentELUtils.LOCATION_KEY);
+                        if (location != null)
+                        {
+                            return ((LocationValueExpression)localCachedExpression[1]).apply(
+                                    actx.getFaceletCompositionContext().getCompositeComponentLevel(), location);
+                        }
+                    }
                     return ((LocationValueExpression)localCachedExpression[1]).apply(
                             actx.getFaceletCompositionContext().getCompositeComponentLevel());
                 }
@@ -472,6 +506,17 @@ public final class TagAttributeImpl extends TagAttribute
                 // If #{cc} recalculate the composite component level
                 if ((this.capabilities & EL_CC) != 0)
                 {
+                    UIComponent cc = actx.getFaceletCompositionContext().getCompositeComponentFromStack();
+                    if (cc != null)
+                    {
+                        Location location = (Location) cc.getAttributes().get(
+                                CompositeComponentELUtils.LOCATION_KEY);
+                        if (location != null)
+                        {
+                            return ((LocationValueExpression)localCachedExpression[1]).apply(
+                                    actx.getFaceletCompositionContext().getCompositeComponentLevel(), location);
+                        }
+                    }
                     return ((LocationValueExpression)localCachedExpression[1]).apply(
                             actx.getFaceletCompositionContext().getCompositeComponentLevel());
                 }
@@ -515,14 +560,30 @@ public final class TagAttributeImpl extends TagAttribute
             // (see MYFACES-2561 for details)
             if ((this.capabilities & EL_CC) != 0)
             {
+                // In MYFACES-4099 it was found that #{cc} could happen outside a composite component. In that
+                // case, getLocation() will point to the template. To solve the problem, it is better to get
+                // the location of the composite component from the stack directly, but only when the path
+                // is different.
+                Location currentLocation = getLocation();
+                Location ccLocation = (Location) actx.getFaceletCompositionContext().
+                        getCompositeComponentFromStack().getAttributes().get(
+                                CompositeComponentELUtils.LOCATION_KEY);
+                if (ccLocation != null && !ccLocation.getPath().equals(currentLocation.getPath()))
+                {
+                    // #{cc} from a template called from inside a composite component, disable caching on 
+                    // this expression. The reason is we need to change the Location object used as
+                    // reference as the one in the stack, and that depends on the template hierarchy.
+                    //cacheable = false;
+                    currentLocation = ccLocation;
+                }
                 if (ExternalSpecifications.isUnifiedELAvailable())
                 {
-                    valueExpression = new LocationValueExpressionUEL(getLocation(), valueExpression, 
+                    valueExpression = new LocationValueExpressionUEL(currentLocation, valueExpression, 
                             actx.getFaceletCompositionContext().getCompositeComponentLevel());
                 }
                 else
                 {
-                    valueExpression = new LocationValueExpression(getLocation(), valueExpression, 
+                    valueExpression = new LocationValueExpression(currentLocation, valueExpression, 
                             actx.getFaceletCompositionContext().getCompositeComponentLevel());
                 }
             }
