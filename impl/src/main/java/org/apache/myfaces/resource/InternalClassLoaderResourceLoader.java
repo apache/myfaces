@@ -20,9 +20,11 @@ package org.apache.myfaces.resource;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Iterator;
 
 import javax.faces.application.ProjectStage;
 import javax.faces.application.ResourceHandler;
+import javax.faces.application.ResourceVisitOption;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
@@ -33,6 +35,7 @@ import org.apache.myfaces.shared.resource.ResourceMetaImpl;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.shared.resource.ClassLoaderResourceLoaderIterator;
 
 /**
  * A resource loader implementation which loads resources from the thread ClassLoader.
@@ -258,4 +261,19 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
         return false;
     }
 
+    @Override
+    public Iterator<String> iterator(FacesContext facesContext, String path, 
+            int maxDepth, ResourceVisitOption... options)
+    {
+        String basePath = path;
+        
+        if (getPrefix() != null)
+        {
+            basePath = getPrefix() + '/' + (path.startsWith("/") ? path.substring(1) : path);
+        }
+
+        URL url = getClassLoader().getResource(basePath);
+
+        return new ClassLoaderResourceLoaderIterator(url, basePath, maxDepth, options);
+    }
 }

@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import org.apache.myfaces.shared.util.StringUtils;
 
 public class ResourceLoaderUtils
 {
@@ -134,4 +135,28 @@ public class ResourceLoaderUtils
 
         return modified;
     }
+    
+    public static int getDepth(String path)
+    {
+        int depth = 0;
+        String [] paths = StringUtils.splitShortString(path, '/');
+        if (paths == null)
+        {
+            return 0;
+        }
+        for (String p : paths)
+        {
+            if (p != null && p.length() > 0)
+            {
+                depth++;
+            }
+        }
+        return depth;
+    }
+
+    public static boolean isDirectory(String path)
+    {
+        return path.startsWith("/") && path.endsWith("/");
+    }
+    
 }

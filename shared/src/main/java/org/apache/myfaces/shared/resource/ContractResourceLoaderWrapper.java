@@ -21,7 +21,10 @@ package org.apache.myfaces.shared.resource;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Comparator;
+import java.util.Iterator;
 import javax.faces.FacesWrapper;
+import javax.faces.application.ResourceVisitOption;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -127,6 +130,13 @@ public abstract class ContractResourceLoaderWrapper extends ContractResourceLoad
     public boolean resourceExists(ResourceMeta resourceMeta)
     {
         return getWrapped().resourceExists(resourceMeta);
+    }
+
+    @Override
+    public Iterator<String> iterator(FacesContext facesContext, String path, 
+            int maxDepth, ResourceVisitOption... options)
+    {
+        return getWrapped().iterator(facesContext, path, maxDepth, options);
     }
 
 }

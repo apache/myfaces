@@ -24,8 +24,10 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Pattern;
+import javax.faces.application.ResourceVisitOption;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.shared.resource.ContractResourceLoader;
+import org.apache.myfaces.shared.resource.ExternalContextResourceLoaderIterator;
 import org.apache.myfaces.shared.resource.ResourceMeta;
 import org.apache.myfaces.shared.resource.ResourceMetaImpl;
 
@@ -215,4 +217,17 @@ public class ExternalContextContractResourceLoader extends ContractResourceLoade
         return false;
     }
     
+    @Override
+    public Iterator<String> iterator(FacesContext facesContext, 
+            String path, int maxDepth, ResourceVisitOption... options)
+    {
+        String basePath = path;
+        
+        if (getPrefix() != null)
+        {
+            basePath = getPrefix() + '/' + (path.startsWith("/") ? path.substring(1) : path);
+        }
+        
+        return new ExternalContextResourceLoaderIterator(facesContext, basePath, maxDepth, options);
+    }
 }

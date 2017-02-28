@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Pattern;
+import javax.faces.application.ResourceVisitOption;
 
 import javax.faces.context.FacesContext;
 
@@ -215,4 +216,20 @@ public class ExternalContextResourceLoader extends ResourceLoader
         }
         return false;
     }
+
+    @Override
+    public Iterator<String> iterator(FacesContext facesContext, 
+            String path, int maxDepth, ResourceVisitOption... options)
+    {
+        String basePath = path;
+        
+        if (getPrefix() != null)
+        {
+            basePath = getPrefix() + '/' + (path.startsWith("/") ? path.substring(1) : path);
+        }
+        
+        return new ExternalContextResourceLoaderIterator(facesContext, basePath, maxDepth, options);
+    }
+    
+    
 }

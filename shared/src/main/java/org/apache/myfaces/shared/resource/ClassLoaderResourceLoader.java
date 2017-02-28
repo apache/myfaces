@@ -18,8 +18,13 @@
  */
 package org.apache.myfaces.shared.resource;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Iterator;
+import javax.faces.application.ResourceVisitOption;
+import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.shared.util.ClassUtils;
 
@@ -68,6 +73,14 @@ public class ClassLoaderResourceLoader extends ResourceLoader
             return false;
         }
     };*/
+    
+    private FileFilter _resourceFileFilter = new FileFilter()
+    {
+        public boolean accept(File pathname)
+        {
+            return true;
+        }
+    };    
     
     public ClassLoaderResourceLoader(String prefix)
     {
@@ -491,22 +504,20 @@ public class ClassLoaderResourceLoader extends ResourceLoader
         return false;
     }
     
-    /**
-     * <p>Determines whether the given URL resource protocol refers to a JAR file. Note that
-     * BEA WebLogic and IBM WebSphere don't use the "jar://" protocol for some reason even
-     * though you can treat these resources just like normal JAR files, i.e. you can ignore
-     * the difference between these protocols after this method has returned.</p>
-     *
-     * @param protocol the URL resource protocol you want to check
-     *
-     * @return <code>true</code> if the given URL resource protocol refers to a JAR file,
-     *          <code>false</code> otherwise
-     */
-    /*
-    private static boolean isJarResourceProtocol(String protocol)
+    @Override
+    public Iterator<String> iterator(FacesContext facesContext, String path, 
+            int maxDepth, ResourceVisitOption... options)
     {
-        // Websphere uses the protocol "wsjar://" and Weblogic uses the protocol "zip://".
-        return "jar".equals(protocol) || "wsjar".equals(protocol) || "zip".equals(protocol); 
-    }*/
+        String basePath = path;
+        
+        if (getPrefix() != null)
+        {
+            basePath = getPrefix() + '/' + (path.startsWith("/") ? path.substring(1) : path);
+        }
 
+        URL url = getClassLoader().getResource(basePath);
+
+        return new ClassLoaderResourceLoaderIterator(url, basePath, maxDepth, options);
+    }
+    
 }

@@ -20,6 +20,10 @@ package org.apache.myfaces.resource;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Iterator;
+import javax.faces.application.ResourceVisitOption;
+import javax.faces.context.FacesContext;
+import org.apache.myfaces.shared.resource.ClassLoaderResourceLoaderIterator;
 import org.apache.myfaces.shared.resource.ContractResourceLoader;
 import org.apache.myfaces.shared.resource.ResourceMeta;
 import org.apache.myfaces.shared.resource.ResourceMetaImpl;
@@ -155,6 +159,22 @@ public class ClassLoaderContractResourceLoader extends ContractResourceLoader
             }
         }
         return false;
+    }
+    
+    @Override
+    public Iterator<String> iterator(FacesContext facesContext, String path, 
+            int maxDepth, ResourceVisitOption... options)
+    {
+        String basePath = path;
+        
+        if (getPrefix() != null)
+        {
+            basePath = getPrefix() + '/' + (path.startsWith("/") ? path.substring(1) : path);
+        }
+
+        URL url = getClassLoader().getResource(basePath);
+
+        return new ClassLoaderResourceLoaderIterator(url, basePath, maxDepth, options);
     }
 
 }

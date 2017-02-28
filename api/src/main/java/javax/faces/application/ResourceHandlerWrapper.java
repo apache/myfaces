@@ -19,6 +19,7 @@
 package javax.faces.application;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
@@ -104,5 +105,18 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler
     public ResourceHandler getWrapped()
     {
         return delegate;
+    }
+
+    @Override
+    public Stream<String> getViewResources(
+            FacesContext facesContext, String path, int maxDepth, ResourceVisitOption... options)
+    {
+        return getWrapped().getViewResources(facesContext, path, maxDepth, options);
+    }
+
+    @Override
+    public Stream<String> getViewResources(FacesContext facesContext, String path, ResourceVisitOption... options)
+    {
+        return getWrapped().getViewResources(facesContext, path, options);
     }
 }

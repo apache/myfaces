@@ -19,6 +19,7 @@
 package javax.faces.application;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
 import javax.faces.context.FacesContext;
 
@@ -108,5 +109,17 @@ public abstract class ResourceHandler
             throw new NullPointerException();
         }
         return url.contains(RESOURCE_IDENTIFIER);
+    }
+    
+    public Stream<java.lang.String> getViewResources(
+            FacesContext facesContext, String path, ResourceVisitOption... options)
+    {
+        return getViewResources(facesContext, path, Integer.MAX_VALUE, options);
+    }
+    
+    public Stream<java.lang.String> getViewResources(FacesContext facesContext, 
+            String path, int maxDepth, ResourceVisitOption... options)
+    {
+        return null;
     }
 }

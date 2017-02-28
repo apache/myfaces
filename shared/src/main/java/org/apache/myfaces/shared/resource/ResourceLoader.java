@@ -21,6 +21,9 @@ package org.apache.myfaces.shared.resource;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Comparator;
+import java.util.Iterator;
+import javax.faces.application.ResourceVisitOption;
+import javax.faces.context.FacesContext;
 
 /**
  * Base class for resource loaders.  Resource loaders can lookup resources 
@@ -81,6 +84,12 @@ public abstract class ResourceLoader
     {
         return (getResourceURL(resourceId) != null);
     }*/
+    
+    public Iterator<String> iterator(FacesContext facesContext, 
+            String path, int maxDepth, ResourceVisitOption... options)
+    {
+        return null;
+    }
     
     private Comparator<String> _versionComparator = null;
 
