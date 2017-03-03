@@ -40,17 +40,29 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+import javax.faces.application.ResourceVisitOption;
+import javax.faces.application.ViewHandler;
+import javax.faces.view.ViewDeclarationLanguage;
 import org.apache.myfaces.shared.resource.ContractResource;
 import org.apache.myfaces.shared.resource.ContractResourceLoader;
 import org.apache.myfaces.shared.resource.ResourceCachedInfo;
+import org.apache.myfaces.util.SkipMatchIterator;
 
 /**
  * DOCUMENT ME!
@@ -96,6 +108,10 @@ public class ResourceHandlerImpl extends ResourceHandler
     private int _resourceBufferSize = -1;
     
     private String[] _excludedResourceExtensions;
+    
+    private static final String[] FACELETS_VIEW_MAPPINGS_PARAM = {ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME,
+            "facelets.VIEW_MAPPINGS"};
+    private Set<String> _viewSuffixes = null;
 
     @Override
     public Resource createResource(String resourceName)
@@ -1726,4 +1742,131 @@ public class ResourceHandlerImpl extends ResourceHandler
         return resource;
     }
 
+    public Stream<java.lang.String> getViewResources(FacesContext facesContext, 
+            String path, int maxDepth, ResourceVisitOption... options)   
+    {
+        final String localePrefix = getLocalePrefixForLocateResource(facesContext);
+        final List<String> contracts = facesContext.getResourceLibraryContracts(); 
+        String contractPreferred = getContractNameForLocateResource(facesContext);
+
+        boolean topLevelViewOnly = false;
+        
+        if (this._viewSuffixes == null)
+        {
+            this._viewSuffixes = loadSuffixes(facesContext.getExternalContext());
+        }
+        
+        if (options != null)
+        {
+            for (ResourceVisitOption option : options)
+            {
+                if (ResourceVisitOption.TOP_LEVEL_VIEWS_ONLY.equals(option))
+                {
+                    topLevelViewOnly = true;
+                }
+            }
+        }
+        Iterator it = null;
+        if (topLevelViewOnly)
+        {
+            it = new FilterTopLevelViewResourceIterator(new ViewResourceIterator(facesContext, 
+                    getResourceHandlerSupport(), localePrefix, contracts,
+                    contractPreferred, path, maxDepth, options), facesContext, _viewSuffixes);
+        }
+        else
+        {
+            it = new ViewResourceIterator(facesContext, getResourceHandlerSupport(), localePrefix, contracts,
+                contractPreferred, path, maxDepth, options);
+        }
+        
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(it,Spliterator.DISTINCT), false);
+    }
+    
+    private Set<String> loadSuffixes (ExternalContext context)
+    {
+        Set<String> result = new HashSet<String>();
+        String definedSuffixes = WebConfigParamUtils.getStringInitParameter(context, 
+                ViewHandler.DEFAULT_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_SUFFIX);
+        StringTokenizer tokenizer;
+        
+        if (definedSuffixes == null) 
+        {
+            definedSuffixes = ViewHandler.DEFAULT_SUFFIX;
+        }
+        
+        // This is a space-separated list of suffixes, so parse them out.
+        
+        tokenizer = new StringTokenizer (definedSuffixes, " ");
+        
+        while (tokenizer.hasMoreTokens()) 
+        {
+            result.add (tokenizer.nextToken());
+        }
+        
+        String faceletSuffix = WebConfigParamUtils.getStringInitParameter(context, 
+                ViewHandler.FACELETS_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_FACELETS_SUFFIX);
+        
+        if (faceletSuffix != null)
+        {
+            result.add(faceletSuffix.trim());
+        }
+        
+        String faceletViewMappings = WebConfigParamUtils.getStringInitParameter(context, FACELETS_VIEW_MAPPINGS_PARAM);
+        
+        if (faceletViewMappings != null)
+        {
+            tokenizer = new StringTokenizer(faceletViewMappings, ";");
+            while (tokenizer.hasMoreTokens()) 
+            {
+                result.add (tokenizer.nextToken());
+            }
+        }
+        
+        return result;
+    }    
+    
+    private static class FilterTopLevelViewResourceIterator extends SkipMatchIterator<String>
+    {
+        private FacesContext facesContext;
+        private Set<String> validSuffixes;
+
+        public FilterTopLevelViewResourceIterator(Iterator<String> delegate, FacesContext facesContext,
+                Set<String> validSuffixes)
+        {
+            super(delegate);
+            this.facesContext = facesContext;
+            this.validSuffixes = validSuffixes;
+        }
+
+        @Override
+        protected boolean match(String value)
+        {
+            String viewId = (String) value;
+            ViewDeclarationLanguage vdl = facesContext.getApplication().getViewHandler()
+                    .getViewDeclarationLanguage(facesContext, viewId);
+            if (vdl != null && vdl.viewExists(facesContext, viewId))
+            {
+                boolean matchSuffix = false;
+                for (String suffix : validSuffixes)
+                {
+                    if (suffix != null && suffix.length() > 0 && viewId.endsWith(suffix))
+                    {
+                        matchSuffix = true;
+                        break;
+                    }
+                }
+                if (matchSuffix)
+                {
+                    //There is view, do not match
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            // It is another resource file, skip
+            return true;
+        }
+    }
 }

@@ -322,7 +322,14 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     {
         if (_strategy.handles(viewId))
         {
-            return _resourceResolver.resolveUrl(viewId) != null;
+            if (_resourceResolver instanceof DefaultResourceResolver)
+            {
+                return ((DefaultResourceResolver)_resourceResolver).resolveUrl(facesContext, viewId) != null;
+            }
+            else
+            {
+                return _resourceResolver.resolveUrl(viewId) != null;
+            }
         }
         return false;
     }

@@ -18,9 +18,12 @@
  */
 package org.apache.myfaces.application.contracts;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import javax.faces.application.ProjectStage;
+import javax.faces.application.ResourceVisitOption;
 import javax.faces.application.StateManager;
 import javax.faces.component.UICommand;
 
@@ -187,4 +190,103 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         
         endRequest();
     }    
+
+    @Test
+    public void testGetViewResourcesYellow()
+    {
+        startViewRequest("/view_1.xhtml");
+        processLifecycleExecute();        
+        
+        Stream<String> stream = facesContext.getApplication().getResourceHandler().getViewResources(
+                facesContext, "/", Integer.MAX_VALUE);
+        boolean hasYellowPage = false;
+        boolean hasBluePage = false;
+        boolean hasRedPage = false;
+        for (Iterator<String> it = stream.iterator(); it.hasNext() ;)
+        {
+            String s = it.next();
+            if (s.contains("yellowPage.xhtml"))
+            {
+                hasYellowPage = true;
+            }
+            if (s.contains("bluePage.xhtml"))
+            {
+                hasBluePage = true;
+            }
+            if (s.contains("redPage.xhtml"))
+            {
+                hasRedPage = true;
+            }
+        }
+        Assert.assertTrue(hasYellowPage);
+        Assert.assertFalse(hasBluePage);
+        Assert.assertFalse(hasRedPage);
+    }
+
+    
+    @Test
+    public void testGetViewResourcesBlue()
+    {
+        startViewRequest("/view_2.xhtml");
+        processLifecycleExecute();        
+        
+        Stream<String> stream = facesContext.getApplication().getResourceHandler().getViewResources(
+                facesContext, "/", Integer.MAX_VALUE);
+        boolean hasYellowPage = false;
+        boolean hasBluePage = false;
+        boolean hasRedPage = false;
+        for (Iterator<String> it = stream.iterator(); it.hasNext() ;)
+        {
+            String s = it.next();
+            if (s.contains("yellowPage.xhtml"))
+            {
+                hasYellowPage = true;
+            }
+            if (s.contains("bluePage.xhtml"))
+            {
+                hasBluePage = true;
+            }
+            if (s.contains("redPage.xhtml"))
+            {
+                hasRedPage = true;
+            }
+        }
+        Assert.assertFalse(hasYellowPage);
+        Assert.assertTrue(hasBluePage);
+        Assert.assertFalse(hasRedPage);
+    }
+
+    @Test
+    public void testGetTopLevelViewResourcesBlue()
+    {
+        startViewRequest("/view_2.xhtml");
+        processLifecycleExecute();        
+        
+        Stream<String> stream = facesContext.getApplication().getResourceHandler().getViewResources(
+                facesContext, "/", Integer.MAX_VALUE, ResourceVisitOption.TOP_LEVEL_VIEWS_ONLY);
+        boolean hasYellowPage = false;
+        boolean hasBluePage = false;
+        boolean hasRedPage = false;
+        for (Iterator<String> it = stream.iterator(); it.hasNext() ;)
+        {
+            String s = it.next();
+            if (s.contains("yellowPage.xhtml"))
+            {
+                hasYellowPage = true;
+            }
+            if (s.contains("bluePage.xhtml"))
+            {
+                hasBluePage = true;
+            }
+            if (s.contains("redPage.xhtml"))
+            {
+                hasRedPage = true;
+            }
+            System.out.println(s);
+        }
+        Assert.assertFalse(hasYellowPage);
+        Assert.assertTrue(hasBluePage);
+        Assert.assertFalse(hasRedPage);
+    }
+
 }

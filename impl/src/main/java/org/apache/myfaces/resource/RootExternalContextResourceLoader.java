@@ -21,8 +21,10 @@ package org.apache.myfaces.resource;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
+import javax.faces.application.ResourceHandler;
 import javax.faces.application.ResourceVisitOption;
 
 import javax.faces.context.FacesContext;
@@ -30,6 +32,8 @@ import org.apache.myfaces.shared.resource.ExternalContextResourceLoaderIterator;
 import org.apache.myfaces.shared.resource.ResourceLoader;
 import org.apache.myfaces.shared.resource.ResourceMeta;
 import org.apache.myfaces.shared.resource.ResourceMetaImpl;
+import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.SkipMatchIterator;
 
 /**
  * A resource loader implementation which loads resources from the webapp root.
@@ -38,22 +42,29 @@ import org.apache.myfaces.shared.resource.ResourceMetaImpl;
  */
 public class RootExternalContextResourceLoader extends ResourceLoader
 {
+    private static final String CONTRACTS = "contracts";
+    
+    private String contractsDirectory = null;
 
     public RootExternalContextResourceLoader()
     {
         super("");
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        contractsDirectory = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(), 
+                ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, CONTRACTS);
+        contractsDirectory = contractsDirectory.startsWith("/") ? contractsDirectory : '/'+contractsDirectory;
     }
 
     protected Set<String> getResourcePaths(String path)
     {
-        if (path.startsWith("/"))
+        String correctedPath = path.startsWith("/") ? path : '/' + path;
+        
+        if (correctedPath.startsWith(contractsDirectory))
         {
-            return FacesContext.getCurrentInstance().getExternalContext().getResourcePaths(path);
+            // Resources under this directory should be accesed by other ContractResourceLoader
+            return Collections.emptySet();
         }
-        else
-        {
-            return FacesContext.getCurrentInstance().getExternalContext().getResourcePaths('/' + path);
-        }
+        return FacesContext.getCurrentInstance().getExternalContext().getResourcePaths(correctedPath);
     }
 
     @Override
@@ -73,15 +84,15 @@ public class RootExternalContextResourceLoader extends ResourceLoader
     {
         try
         {
-            if (resourceId.startsWith("/"))
+            String correctedResourceId = resourceId.startsWith("/") ? resourceId : "/"+resourceId;
+            if (correctedResourceId.startsWith(contractsDirectory))
             {
-                return FacesContext.getCurrentInstance().getExternalContext().getResource(
-                    resourceId);
+                return null;
             }
             else
             {
                 return FacesContext.getCurrentInstance().getExternalContext().getResource(
-                    '/' + resourceId);
+                    correctedResourceId);
             }
         }
         catch (MalformedURLException e)
@@ -105,8 +116,13 @@ public class RootExternalContextResourceLoader extends ResourceLoader
     @Override
     public InputStream getResourceInputStream(ResourceMeta resourceMeta)
     {
-        return FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream(
-            '/' + resourceMeta.getResourceIdentifier());
+        String resourceId = resourceMeta.getResourceIdentifier();
+        String correctedResourceId = resourceId.startsWith("/") ? resourceId : "/"+resourceId;
+        if (correctedResourceId.startsWith(contractsDirectory))
+        {
+            return null;
+        }
+        return FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream(correctedResourceId);
     }
 
     @Override
@@ -134,6 +150,25 @@ public class RootExternalContextResourceLoader extends ResourceLoader
             basePath = getPrefix() + '/' + (path.startsWith("/") ? path.substring(1) : path);
         }
         
-        return new ExternalContextResourceLoaderIterator(facesContext, basePath, maxDepth, options);
+        return new RootExternalContextResourceLoaderIterator(
+                new ExternalContextResourceLoaderIterator(facesContext, basePath, maxDepth, options), 
+                    contractsDirectory);
+    }
+    
+    private static class RootExternalContextResourceLoaderIterator extends SkipMatchIterator<String>
+    {
+        private String contractsDirectory;
+        
+        public RootExternalContextResourceLoaderIterator(Iterator delegate, String contractsDirectory)
+        {
+            super(delegate);
+            this.contractsDirectory = contractsDirectory;
+        }
+
+        @Override
+        protected boolean match(String instance)
+        {
+            return instance.startsWith(contractsDirectory);
+        }
     }
 }

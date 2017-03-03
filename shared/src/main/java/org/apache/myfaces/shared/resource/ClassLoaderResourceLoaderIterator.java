@@ -52,32 +52,35 @@ public class ClassLoaderResourceLoaderIterator implements Iterator<String>
             // ResourceLoader
             delegate = null;
         }
-        
-        if (url.getProtocol().equals("file"))
+        else
         {
-            try
+            if (url.getProtocol().equals("file"))
             {
-                File directory = new File(url.toURI());
-                delegate = new FileDepthIterator(directory, basePath, maxDepth, options);
-            }
-            catch (URISyntaxException e)
-            {
-                Logger log = Logger.getLogger(ClassLoaderResourceLoader.class.getName()); 
-                if (log.isLoggable(Level.WARNING))
+                try
                 {
-                    log.log(Level.WARNING, "url "+url.toString()+" cannot be translated to uri: "+e.getMessage(), e);
+                    File directory = new File(url.toURI());
+                    delegate = new FileDepthIterator(directory, basePath, maxDepth, options);
+                }
+                catch (URISyntaxException e)
+                {
+                    Logger log = Logger.getLogger(ClassLoaderResourceLoader.class.getName()); 
+                    if (log.isLoggable(Level.WARNING))
+                    {
+                        log.log(Level.WARNING, "url "+url.toString()+" cannot be translated to uri: "
+                                +e.getMessage(), e);
+                    }
+                }
+            }
+            else if (isJarResourceProtocol(url.getProtocol()))
+            {
+                url = getClassLoader().getResource(basePath);
+
+                if (url != null)
+                {
+                    delegate = new JarDepthIterator(url, basePath, maxDepth, options);
                 }
             }
         }
-        else if (isJarResourceProtocol(url.getProtocol()))
-        {
-            url = getClassLoader().getResource(basePath);
-
-            if (url != null)
-            {
-                delegate = new JarDepthIterator(url, basePath, maxDepth, options);
-            }
-        }        
     }
 
     @Override
