@@ -18,6 +18,7 @@
  */
 package javax.faces.view;
 
+import java.util.Collections;
 import javax.faces.FacesWrapper;
 
 /**
@@ -44,5 +45,21 @@ public abstract class ViewDeclarationLanguageFactory implements FacesWrapper<Vie
     public ViewDeclarationLanguageFactory getWrapped()
     {
         return delegate;
+    }
+    
+    /**
+     * @since 2.3
+     * @return 
+     */
+    public java.util.List<ViewDeclarationLanguage> getAllViewDeclarationLanguages()
+    {
+        if (getWrapped() == null)
+        {
+            return Collections.emptyList();
+        }
+        else
+        {
+            return getWrapped().getAllViewDeclarationLanguages();
+        }
     }
 }

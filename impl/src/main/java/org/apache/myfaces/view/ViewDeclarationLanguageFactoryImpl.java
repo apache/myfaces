@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.view;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,6 +57,8 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
     private volatile boolean _initialized;
     private volatile ViewDeclarationLanguageStrategy[] _supportedLanguages;
     
+    private volatile List<ViewDeclarationLanguage> _supportedVDLs = null;
+    
     /**
      * 
      */
@@ -82,6 +87,21 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
         }
         
         return null;
+    }
+
+    @Override
+    public List<ViewDeclarationLanguage> getAllViewDeclarationLanguages()
+    {
+        if (_supportedVDLs == null)
+        {
+            List<ViewDeclarationLanguage> list = new ArrayList<ViewDeclarationLanguage>();
+            for (ViewDeclarationLanguageStrategy strategy : _supportedLanguages)
+            {        
+                list.add(strategy.getViewDeclarationLanguage());
+            }
+            _supportedVDLs = Collections.unmodifiableList(list);
+        }
+        return _supportedVDLs;
     }
     
     /**
