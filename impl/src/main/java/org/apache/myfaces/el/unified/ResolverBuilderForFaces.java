@@ -37,6 +37,7 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.FlashELResolver;
 import org.apache.myfaces.el.unified.resolver.CompositeComponentELResolver;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
+import org.apache.myfaces.el.unified.resolver.ImportConstantsELResolver;
 import org.apache.myfaces.el.unified.resolver.ImportHandlerResolver;
 import org.apache.myfaces.el.unified.resolver.ManagedBeanResolver;
 import org.apache.myfaces.el.unified.resolver.ResourceBundleResolver;
@@ -104,6 +105,7 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
         list.add(new ResourceResolver());
         list.add(new ResourceBundleELResolver());
         list.add(new ResourceBundleResolver());
+        list.add(new ImportConstantsELResolver());
         
         if (STATIC_FIELD_EL_RESOLVER_CLASS != null &&
             GET_STREAM_EL_RESOLVER_METHOD != null)

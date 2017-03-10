@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIImportConstants;
 import javax.faces.component.UIViewAction;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
@@ -147,4 +148,57 @@ public abstract class ViewMetadata
         UIComponent metadataFacet = root.getFacet(UIViewRoot.METADATA_FACET_NAME);
         return metadataFacet != null ? metadataFacet.getChildCount() > 0 : false;
     }
+    
+    /**
+     * @since 2.3
+     * @param root
+     * @return 
+     */
+    public static Collection<UIImportConstants> getImportConstants(UIViewRoot root)
+    {
+        LinkedList<UIImportConstants> result = null;
+        UIComponent metadataFacet = root.getFacet (UIViewRoot.METADATA_FACET_NAME);
+        Iterator<UIComponent> children;
+        
+        if (metadataFacet == null)
+        {
+             // No metadata, so return an empty collection.
+             
+             return Collections.emptyList();
+        }
+        
+        // Iterate over all the children, keep only the view parameters.
+        
+        if (metadataFacet.getChildCount() > 0)
+        {
+            children = metadataFacet.getChildren().iterator();
+            
+            while (children.hasNext())
+            {
+                 UIComponent component = children.next();
+                 
+                 if (result == null)
+                 {
+                     result = new LinkedList<UIImportConstants>();
+                 }
+                 
+                 if (component instanceof UIImportConstants)
+                 {
+                      result.add ((UIImportConstants) component);
+                 }
+            }
+        }
+        
+        // TODO: does this need to be immutable?  Spec does not indicate either
+        // way.
+        if (result == null)
+        {
+            return Collections.emptyList();
+        }
+        else
+        {
+            return Collections.unmodifiableCollection (result);
+        }
+    }
+
 }

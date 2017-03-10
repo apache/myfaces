@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf.core;
 
+import javax.faces.component.UIImportConstants;
 import javax.faces.component.UIParameter;
 import javax.faces.component.UISelectItem;
 import javax.faces.component.UISelectItems;
@@ -114,6 +115,8 @@ public final class CoreLibrary extends AbstractTagLibrary
         this.addComponent("viewAction", UIViewAction.COMPONENT_TYPE, null);
         
         this.addComponent("viewParam", UIViewParameter.COMPONENT_TYPE, null);
+        
+        this.addComponent("importConstants", UIImportConstants.COMPONENT_TYPE, null);
 
         this.addComponent("verbatim", "javax.faces.HtmlOutputText", "javax.faces.Text", VerbatimHandler.class);
         
