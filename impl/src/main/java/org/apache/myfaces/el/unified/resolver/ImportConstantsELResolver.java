@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import static java.util.logging.Level.FINE;
 import java.util.logging.Logger;
 import javax.el.ELContext;
@@ -50,6 +51,8 @@ public final class ImportConstantsELResolver extends ELResolver
     private static final String ERROR_FIELD_ACCESS = "Cannot access constant field '%s' of type '%s'.";
 
     private static final String IMPORT_CONSTANTS = "oam.importConstants";
+    
+    private Map<String, Map<String, Object> > constantsTypeMap = new ConcurrentHashMap<String, Map<String, Object> >();
 
     @Override
     public Object getValue(final ELContext context, final Object base,
@@ -117,7 +120,12 @@ public final class ImportConstantsELResolver extends ELResolver
             String type = importConstantsMap.get((String)property);
             if (type != null)
             {
-                Map<String, Object> constantsMap = collectConstants(type);
+                Map<String, Object> constantsMap = constantsTypeMap.get(type);
+                if (constantsMap == null)
+                {
+                    constantsMap = collectConstants(type);
+                    constantsTypeMap.put(type, constantsMap);
+                }
                 if (constantsMap != null && !constantsMap.isEmpty())
                 {
                     context.setPropertyResolved(true);
