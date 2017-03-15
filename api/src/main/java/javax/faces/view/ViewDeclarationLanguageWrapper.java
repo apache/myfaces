@@ -22,8 +22,10 @@ import java.beans.BeanInfo;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import javax.faces.FacesWrapper;
 import javax.faces.application.Resource;
+import javax.faces.application.ViewVisitOption;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
@@ -122,4 +124,17 @@ public abstract class ViewDeclarationLanguageWrapper extends ViewDeclarationLang
     {
         return delegate;
     }
+
+    @Override
+    public Stream<String> getViews(FacesContext facesContext, String path, int maxDepth, ViewVisitOption... options)
+    {
+        return getWrapped().getViews(facesContext, path, maxDepth, options);
+    }
+
+    @Override
+    public Stream<String> getViews(FacesContext facesContext, String path, ViewVisitOption... options)
+    {
+        return getWrapped().getViews(facesContext, path, options);
+    }
+    
 }

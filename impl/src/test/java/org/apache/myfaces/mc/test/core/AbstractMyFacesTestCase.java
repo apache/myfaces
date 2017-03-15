@@ -106,7 +106,8 @@ public abstract class AbstractMyFacesTestCase
     private static final Class<?> PHASE_EXECUTOR_CLASS;
     private static final Class<?> PHASE_MANAGER_CLASS;
     
-    static {
+    static 
+    {
         Class<?> phaseExecutorClass = null;
         Class<?> phaseManagerClass = null;
         try

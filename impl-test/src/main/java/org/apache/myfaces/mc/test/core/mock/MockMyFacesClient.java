@@ -197,31 +197,46 @@ public class MockMyFacesClient
     {
         ajax(source, event, execute, render, submit, false);
     }
+    
+    public void ajax(String sourceClientId, String event, String execute, String render, boolean submit) 
+            throws Exception
+    {
+        ajax(sourceClientId, event, execute, render, submit, false);
+    }    
             
     public void ajax(UIComponent source, String event, String execute, String render, 
         boolean submit, boolean resetValues)
     {
         testCase.processRemainingPhases();
-        this.internalAjax(source, event, execute, render, submit, resetValues);
+        this.internalAjax(source.getClientId(testCase.getFacesContext()), event, execute, render, submit, resetValues);
         String viewId = testCase.getFacesContext().getViewRoot().getViewId();
         testCase.endRequest();
         testCase.startViewRequest(viewId);
     }
     
-    protected void internalAjax(UIComponent source, String event, String execute, String render, 
+    public void ajax(String sourceClientId, String event, String execute, String render, 
         boolean submit, boolean resetValues)
     {
-        final FacesContext facesContext = testCase.getFacesContext();
+        testCase.processRemainingPhases();
+        this.internalAjax(sourceClientId, event, execute, render, submit, resetValues);
+        String viewId = testCase.getFacesContext().getViewRoot().getViewId();
+        testCase.endRequest();
+        testCase.startViewRequest(viewId);
+    }
+    
+    protected void internalAjax(String source, String event, String execute, String render, 
+        boolean submit, boolean resetValues)
+    {
         parameters.put("javax.faces.partial.ajax", "true");
         parameters.put(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME, event);
         parameters.put(PartialViewContext.PARTIAL_EVENT_PARAM_NAME, "action".equals(event) ? "click" : event);
         applyStateFromPreviousRequest();
         //parameters.put(ResponseStateManager.VIEW_STATE_PARAM, 
         //    facesContext.getApplication().getStateManager().getViewState(facesContext));
-        parameters.put(ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME, source.getClientId(facesContext));
+        parameters.put(ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME, source);
         if (execute == null)
         {
-            parameters.put("javax.faces.partial.execute", source.getClientId(facesContext));
+            parameters.put("javax.faces.partial.execute", source);
         }
         else
         {
@@ -234,8 +249,8 @@ public class MockMyFacesClient
         
         if (submit)
         {
-            parameters.put(source.getClientId(facesContext)+"_SUBMIT", "1");
-            parameters.put(source.getClientId(facesContext), source.getClientId(facesContext));
+            parameters.put(source+"_SUBMIT", "1");
+            parameters.put(source, source);
         }
         
         if (resetValues)

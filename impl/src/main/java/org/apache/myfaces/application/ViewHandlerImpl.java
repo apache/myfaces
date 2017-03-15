@@ -31,12 +31,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
+import javax.faces.application.ViewVisitOption;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
@@ -558,4 +560,25 @@ public class ViewHandlerImpl extends ViewHandler
         }
         return _viewHandlerSupport;
     }
+
+    @Override
+    public Stream<String> getViews(FacesContext facesContext, String path, int maxDepth, ViewVisitOption... options)
+    {
+        Stream concatenatedStream = null;
+        for (ViewDeclarationLanguage vdl : _vdlFactory.getAllViewDeclarationLanguages())
+        {
+            Stream stream = vdl.getViews(facesContext, path, maxDepth, options);
+            if (concatenatedStream == null)
+            {
+                concatenatedStream = stream;
+            }
+            else
+            {
+                concatenatedStream = Stream.concat(concatenatedStream, stream);
+            }
+        }
+        return concatenatedStream == null ? Stream.empty() : concatenatedStream;
+    }
+    
+    
 }

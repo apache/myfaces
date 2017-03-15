@@ -50,4 +50,13 @@ public interface ViewDeclarationLanguageStrategy
      *         should be used to handle the specified view identifier, <code>false</code> otherwise
      */
     public boolean handles(String viewId);
+    
+    /**
+     * Return a string that can be used as a outcome for the viewId, usually removing the extension.
+     * 
+     * @since 2.3
+     * @param viewId
+     * @return 
+     */
+    public String getMinimalImplicitOutcome(String viewId);
 }

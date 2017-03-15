@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.faces.FacesException;
 import javax.faces.FacesWrapper;
@@ -169,6 +170,18 @@ public abstract class ViewHandlerWrapper extends ViewHandler
     public String getWebsocketURL(FacesContext context, String channelAndToken)
     {
         return getWrapped().getWebsocketURL(context, channelAndToken);
+    }
+    
+    @Override
+    public Stream<String> getViews(FacesContext facesContext, String path, int maxDepth, ViewVisitOption... options)
+    {
+        return getWrapped().getViews(facesContext, path, maxDepth, options);
+    }
+
+    @Override
+    public Stream<String> getViews(FacesContext facesContext, String path, ViewVisitOption... options)
+    {
+        return getWrapped().getViews(facesContext, path, options);
     }
 
 }

@@ -59,6 +59,12 @@ public class MockViewDeclarationLanguageFactory extends ViewDeclarationLanguageF
                 _language = new MockFaceletViewDeclarationLanguage(FacesContext.getCurrentInstance());
             }
             return _language;
-        }    
+        }
+        
+        @Override
+        public String getMinimalImplicitOutcome(String viewId)
+        {
+            return viewId.substring(0, viewId.lastIndexOf("."));
+        }
     }
 }

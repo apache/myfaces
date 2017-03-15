@@ -22,6 +22,7 @@ import javax.faces.FactoryFinder;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitContextFactory;
 import javax.faces.context.FacesContext;
+import javax.faces.render.RenderKitFactory;
 import org.apache.myfaces.shared.view.ViewDeclarationLanguageBase;
 
 /**
@@ -38,6 +39,8 @@ public abstract class FaceletViewDeclarationLanguageBase extends ViewDeclaration
     private static final String DYNAMIC_COMPONENT_NEEDS_REFRESH = "oam.vf.DC_NEEDS_REFRESH";
     
     private VisitContextFactory _visitContextFactory = null;
+    
+    private RenderKitFactory _renderKitFactory = null;
 
     protected VisitContextFactory getVisitContextFactory()
     {
@@ -87,5 +90,14 @@ public abstract class FaceletViewDeclarationLanguageBase extends ViewDeclaration
     {
         context.getAttributes().put(DYNAMIC_COMPONENT_NEEDS_REFRESH, Boolean.FALSE);
     }
-    
+ 
+    protected RenderKitFactory getRenderKitFactory()
+    {
+        if (_renderKitFactory == null)
+        {
+            _renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+        }
+        return _renderKitFactory;
+    }
+
 }

@@ -91,6 +91,7 @@ import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.MockWebContainer;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
+import static org.apache.myfaces.webapp.AbstractFacesInitializer.CDI_BEAN_MANAGER_INSTANCE;
 import org.apache.myfaces.webapp.FacesInitializer;
 import org.apache.myfaces.webapp.StartupServletContextListener;
 import org.junit.runners.model.FrameworkMethod;
@@ -105,7 +106,8 @@ public class AbstractJsfTestContainer
     private static final Class<?> PHASE_EXECUTOR_CLASS;
     private static final Class<?> PHASE_MANAGER_CLASS;
     
-    static {
+    static 
+    {
         Class<?> phaseExecutorClass = null;
         Class<?> phaseManagerClass = null;
         try
@@ -1601,7 +1603,96 @@ public class AbstractJsfTestContainer
         {
             return testCase;
         }
+        
+        private static final String CDI_SERVLET_CONTEXT_BEAN_MANAGER_ATTRIBUTE = 
+            "javax.enterprise.inject.spi.BeanManager";
 
+        protected void initCDIIntegration(
+                ServletContext servletContext, ExternalContext externalContext)
+        {
+            // Lookup bean manager and put it into an application scope attribute to 
+            // access it later. Remember the trick here is do not call any CDI api 
+            // directly, so if no CDI api is on the classpath no exception will be thrown.
+
+            // Try with servlet context
+            Object beanManager = servletContext.getAttribute(
+                CDI_SERVLET_CONTEXT_BEAN_MANAGER_ATTRIBUTE);
+            if (beanManager == null)
+            {
+                beanManager = lookupBeanManagerFromJndi();
+            }
+            if (beanManager != null)
+            {
+                externalContext.getApplicationMap().put(CDI_BEAN_MANAGER_INSTANCE,
+                    beanManager);
+            }
+        }
+
+        /**
+         * Try to lookup the CDI BeanManager from JNDI.
+         * We do all this via reflection to not blow up if CDI is not available.
+         */
+        private Object lookupBeanManagerFromJndi()
+        {
+            Object beanManager = null;
+            // Use reflection to avoid restricted API in GAE
+            Class icclazz = null;
+            Method lookupMethod = null;
+            try
+            {
+                icclazz = ClassUtils.simpleClassForName("javax.naming.InitialContext");
+                if (icclazz != null)
+                {
+                    lookupMethod = icclazz.getMethod("doLookup", String.class);
+                }
+            }
+            catch (Throwable t)
+            {
+                //
+            }
+            if (lookupMethod != null)
+            {
+                // Try with JNDI
+                try
+                {
+                    // in an application server
+                    //beanManager = InitialContext.doLookup("java:comp/BeanManager");
+                    beanManager = lookupMethod.invoke(icclazz, "java:comp/BeanManager");
+                }
+                catch (Exception e)
+                {
+                    // silently ignore
+                }
+                catch (NoClassDefFoundError e)
+                {
+                    //On Google App Engine, javax.naming.Context is a restricted class.
+                    //In that case, NoClassDefFoundError is thrown. stageName needs to be configured
+                    //below by context parameter.
+                }
+
+                if (beanManager == null)
+                {
+                    try
+                    {
+                        // in a servlet container
+                        //beanManager = InitialContext.doLookup("java:comp/env/BeanManager");
+                        beanManager = lookupMethod.invoke(icclazz, "java:comp/env/BeanManager");
+                    }
+                    catch (Exception e)
+                    {
+                        // silently ignore
+                    }
+                    catch (NoClassDefFoundError e)
+                    {
+                        //On Google App Engine, javax.naming.Context is a restricted class.
+                        //In that case, NoClassDefFoundError is thrown. stageName needs to be configured
+                        //below by context parameter.
+                    }
+                }
+            }
+
+            return beanManager;
+        }
     }
     
     protected static class SharedFacesConfiguration

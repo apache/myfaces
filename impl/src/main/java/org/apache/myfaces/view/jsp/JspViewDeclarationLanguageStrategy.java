@@ -18,7 +18,12 @@
  */
 package org.apache.myfaces.view.jsp;
 
+import java.util.LinkedList;
+import java.util.StringTokenizer;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 
@@ -31,15 +36,21 @@ import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 public class JspViewDeclarationLanguageStrategy implements ViewDeclarationLanguageStrategy
 {
     private ViewDeclarationLanguage _language;
-    //private LinkedList<String> _suffixes;
+    private LinkedList<String> _suffixes;
+    
+    /**
+     * 
+     */
+    @JSFWebConfigParam(defaultValue=".jsp", since="2.3", group="viewhandler")
+    public static final String JSP_SUFFIX_PARAM_NAME = "org.apache.myfaces.JSP_SUFFIX";
+    public static final String JSP_SUFFIX_DEFAULT = ".jsp";
     
     public JspViewDeclarationLanguageStrategy()
     {
-        // TODO: IMPLEMENT HERE
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        _language = new JspViewDeclarationLanguage(facesContext, this);
         
-        _language = new JspViewDeclarationLanguage();
-        
-        //_suffixes = loadSuffixes (FacesContext.getCurrentInstance().getExternalContext());
+        _suffixes = loadSuffixes (facesContext.getExternalContext());
     }
     
     /**
@@ -55,37 +66,50 @@ public class JspViewDeclarationLanguageStrategy implements ViewDeclarationLangua
      */
     public boolean handles(String viewId)
     {
-        return true;
-        /*
-        for (String suffix : _suffixes) {
-            if (viewId.endsWith (suffix)) {
+        for (String suffix : _suffixes)
+        {
+            if (viewId != null && viewId.endsWith (suffix)) 
+            {
                 return true;
             }
         }
         
         return false;
-        */
     }
     
-    /*
-    private LinkedList<String> loadSuffixes (ExternalContext context) {
+    static LinkedList<String> loadSuffixes (ExternalContext context) 
+    {
         LinkedList<String> result = new LinkedList<String>();
-        String definedSuffixes = context.getInitParameter (ViewHandler.DEFAULT_SUFFIX_PARAM_NAME);
+        String definedSuffixes = context.getInitParameter (JSP_SUFFIX_PARAM_NAME);
         StringTokenizer tokenizer;
         
-        if (definedSuffixes == null) {
-            definedSuffixes = ViewHandler.DEFAULT_SUFFIX;
+        if (definedSuffixes == null) 
+        {
+            definedSuffixes = JSP_SUFFIX_DEFAULT;
         }
         
         // This is a space-separated list of suffixes, so parse them out.
         
         tokenizer = new StringTokenizer (definedSuffixes, " ");
         
-        while (tokenizer.hasMoreTokens()) {
+        while (tokenizer.hasMoreTokens()) 
+        {
             result.add (tokenizer.nextToken());
         }
         
         return result;
     }
-    */
+
+    @Override
+    public String getMinimalImplicitOutcome(String viewId)
+    {
+        for (String suffix : _suffixes) 
+        {
+            if (viewId != null && viewId.endsWith(suffix))
+            {
+                return viewId.substring(0, viewId.length()-suffix.length());
+            }
+        }
+        return viewId;
+    }
 }

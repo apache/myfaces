@@ -19,11 +19,14 @@
 package org.apache.myfaces.view.jsp;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import javax.faces.FacesException;
+import javax.faces.application.ViewVisitOption;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -37,6 +40,7 @@ import javax.servlet.jsp.jstl.core.Config;
 import org.apache.myfaces.application.jsp.ServletViewResponseWrapper;
 import org.apache.myfaces.application.viewstate.StateCacheUtils;
 import org.apache.myfaces.shared.view.JspViewDeclarationLanguageBase;
+import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.core.CoreLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.html.HtmlLibrary;
@@ -61,6 +65,8 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
     public static final String[] FACELETS_ONLY_F_TAGS = {"ajax", "event", "metadata"};
     public static final String[] FACELETS_ONLY_H_TAGS = {"outputScript", "outputStylesheet",
                                                          "head", "body", "button", "link"};
+
+    private final ViewDeclarationLanguageStrategy _strategy;
     
     /**
      * 
@@ -71,6 +77,13 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
         {
             log.finest("New JspViewDeclarationLanguage instance created");
         }
+        
+        _strategy = new JspViewDeclarationLanguageStrategy();
+    }
+
+    public JspViewDeclarationLanguage(FacesContext facesContext, ViewDeclarationLanguageStrategy strategy)
+    {
+        this._strategy = strategy;
     }
 
     /**
@@ -231,6 +244,28 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
         {
             throw new FacesException(ioe);
         }
+    }
+
+    public boolean viewExists(FacesContext facesContext, String viewId)
+    {
+        if (_strategy.handles(viewId))
+        {
+            return super.viewExists(facesContext, viewId);
+        }
+        return false;
+    }
+    
+    @Override
+    public Stream<String> getViews(FacesContext facesContext, String path, int maxDepth, ViewVisitOption... options)
+    {
+        Stream<String> stream = super.getViews(facesContext, path, maxDepth, options);
+        stream = stream.filter(f -> _strategy.handles(f));
+        if (options != null &&
+            Arrays.binarySearch(options, ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME) >= 0)
+        {
+            stream = stream.map(f -> _strategy.getMinimalImplicitOutcome(f));
+        }
+        return stream;
     }
 
 }

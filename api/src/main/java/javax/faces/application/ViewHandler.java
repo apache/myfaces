@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.faces.FacesException;
 import javax.faces.component.UIViewRoot;
@@ -428,4 +429,34 @@ public abstract class ViewHandler
                 "/javax.faces.push/"+channelAndToken;
         return url;
     }
+    
+    /**
+     * @since 2.3
+     * @param facesContext
+     * @param path
+     * @param maxDepth
+     * @param options
+     * @return 
+     */
+    public Stream<java.lang.String> getViews(FacesContext facesContext, String path, ViewVisitOption... options)
+    {
+        return getViews(facesContext, path, Integer.MAX_VALUE, options);
+    }
+    
+    
+    /**
+     * 
+     * @since 2.3
+     * @param facesContext
+     * @param path
+     * @param maxDepth
+     * @param options
+     * @return 
+     */
+    public Stream<java.lang.String> getViews(FacesContext facesContext, String path, 
+            int maxDepth, ViewVisitOption... options)
+    {
+        return Stream.empty();
+    }
+
 }

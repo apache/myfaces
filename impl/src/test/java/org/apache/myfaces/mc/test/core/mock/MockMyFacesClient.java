@@ -198,7 +198,8 @@ public class MockMyFacesClient
         ajax(source, event, execute, render, submit, false);
     }
     
-    public void ajax(String sourceClientId, String event, String execute, String render, boolean submit) throws Exception
+    public void ajax(String sourceClientId, String event, String execute, String render, boolean submit) 
+            throws Exception
     {
         ajax(sourceClientId, event, execute, render, submit, false);
     }    

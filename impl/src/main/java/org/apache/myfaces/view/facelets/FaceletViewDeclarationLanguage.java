@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -42,12 +44,12 @@ import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 import javax.faces.FacesException;
 import javax.faces.FacesWrapper;
-import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
+import javax.faces.application.ViewVisitOption;
 import javax.faces.component.ActionSource2;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
@@ -69,7 +71,6 @@ import javax.faces.event.PostRestoreStateEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
 import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 import javax.faces.validator.MethodExpressionValidator;
 import javax.faces.validator.Validator;
@@ -268,8 +269,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
     private StateManagementStrategy _stateMgmtStrategy;
     
-    private RenderKitFactory _renderKitFactory = null;
-
     private boolean _partialStateSaving;
 
     private boolean _refreshTransientBuildOnPSS;
@@ -2938,12 +2937,18 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         return createdComponent;
     }
     
-    protected RenderKitFactory getRenderKitFactory()
+    @Override
+    public Stream<String> getViews(FacesContext facesContext, String path, int maxDepth, ViewVisitOption... options)
     {
-        if (_renderKitFactory == null)
+        Stream<String> stream = super.getViews(facesContext, path, maxDepth, options);
+        stream = stream.filter(f -> _strategy.handles(f));
+        
+        if (options != null &&
+            Arrays.binarySearch(options, ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME) >= 0)
         {
-            _renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+            stream = stream.map(f -> _strategy.getMinimalImplicitOutcome(f));
         }
-        return _renderKitFactory;
+        return stream;
     }
+    
 }

@@ -25,8 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import javax.faces.application.Resource;
+import javax.faces.application.ResourceVisitOption;
+import javax.faces.application.ViewVisitOption;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
@@ -133,5 +136,43 @@ public abstract class ViewDeclarationLanguage
                                                       String viewId)
     {
         return null;
+    }
+    
+    /**
+     * @since 2.3
+     * @param facesContext
+     * @param path
+     * @param maxDepth
+     * @param options
+     * @return 
+     */
+    public Stream<java.lang.String> getViews(FacesContext facesContext, String path, ViewVisitOption... options)
+    {
+        return getViews(facesContext, path, Integer.MAX_VALUE, options);
+    }
+    
+    
+    /**
+     * 
+     * @since 2.3
+     * @param facesContext
+     * @param path
+     * @param maxDepth
+     * @param options
+     * @return 
+     */
+    public Stream<java.lang.String> getViews(FacesContext facesContext, String path, 
+            int maxDepth, ViewVisitOption... options)
+    {
+        // Here by default we follow what spec javadoc says
+        // "...This method works as if invoking it were equivalent to evaluating the expression:
+        //     getViewResources(facesContext, start, Integer.MAX_VALUE, options) ..."
+        // The problem here is ViewVisitOption != ResourceVisitOption. But whatever return
+        // getViews must always have TOP_LEVEL_VIEWS_ONLY, because otherwise it will return 
+        // everything (css, js, ...). There is ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME,
+        // but this is a filter on top of the stream.
+        
+        return facesContext.getApplication().getResourceHandler().getViewResources(
+                facesContext, path, maxDepth, ResourceVisitOption.TOP_LEVEL_VIEWS_ONLY);
     }
 }

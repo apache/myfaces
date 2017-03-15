@@ -159,4 +159,17 @@ public class FaceletViewDeclarationLanguageStrategy implements ViewDeclarationLa
 
         return mappings;
     }
+
+    @Override
+    public String getMinimalImplicitOutcome(String viewId)
+    {
+        if (viewId != null && viewId.endsWith(_extension))
+        {
+            return viewId.substring(0, viewId.length()-_extension.length());
+        }
+        else
+        {
+            return viewId;
+        }
+    }
 }

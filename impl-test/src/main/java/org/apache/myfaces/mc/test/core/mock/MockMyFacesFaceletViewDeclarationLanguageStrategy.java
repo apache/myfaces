@@ -157,4 +157,10 @@ public class MockMyFacesFaceletViewDeclarationLanguageStrategy implements ViewDe
 
         return mappings;
     }
+    
+    @Override
+    public String getMinimalImplicitOutcome(String viewId)
+    {
+        return viewId.substring(0, viewId.lastIndexOf("."));
+    }
 }

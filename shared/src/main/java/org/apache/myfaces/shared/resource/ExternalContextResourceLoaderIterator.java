@@ -53,7 +53,21 @@ public class ExternalContextResourceLoaderIterator implements Iterator<String>
         }
         else
         {
-            stack.addAll(paths);
+            for (String p : paths)
+            {
+                if (p.startsWith("/WEB-INF"))
+                {
+                    // skip
+                }
+                else if (p.startsWith("/META-INF"))
+                {
+                    // skip
+                }
+                else
+                {
+                    stack.add(p);
+                }
+            }
         }
     }
 
