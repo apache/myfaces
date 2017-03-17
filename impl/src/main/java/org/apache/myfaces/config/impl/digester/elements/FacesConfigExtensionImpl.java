@@ -21,6 +21,7 @@ package org.apache.myfaces.config.impl.digester.elements;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.apache.myfaces.config.element.FaceletsTemplateMapping;
 import org.apache.myfaces.config.element.ViewPoolMapping;
 
 /**
@@ -41,6 +42,9 @@ public class FacesConfigExtensionImpl extends org.apache.myfaces.config.element.
     private List<ViewPoolMapping> viewPoolMappings;
     private transient List<ViewPoolMapping> unmodifiableViewPoolMappings;
 
+    private List<FaceletsTemplateMapping> faceletsTemplateMappings;
+    private transient List<FaceletsTemplateMapping> unmodifiableFaceletsTemplateMappings;
+    
     @Override
     public List<org.apache.myfaces.config.element.FaceletsProcessing> getFaceletsProcessingList()
     {
@@ -74,5 +78,29 @@ public class FacesConfigExtensionImpl extends org.apache.myfaces.config.element.
             viewPoolMappings = new ArrayList<ViewPoolMapping>();
         }
         viewPoolMappings.add(mapping);
+    }
+    
+    @Override
+    public List<FaceletsTemplateMapping> getFaceletsTemplateMappings()
+    {
+        if (faceletsTemplateMappings == null)
+        {
+            return Collections.emptyList();
+        }
+        if (unmodifiableFaceletsTemplateMappings == null)
+        {
+            unmodifiableFaceletsTemplateMappings = 
+                Collections.unmodifiableList(faceletsTemplateMappings);
+        }
+        return unmodifiableFaceletsTemplateMappings;
+    }
+    
+    public void addFaceletsTemplateMapping(FaceletsTemplateMapping mapping)
+    {
+        if (faceletsTemplateMappings == null)
+        {
+            faceletsTemplateMappings = new ArrayList<FaceletsTemplateMapping>();
+        }
+        faceletsTemplateMappings.add(mapping);
     }
 }

@@ -40,6 +40,7 @@ import org.apache.myfaces.config.element.Application;
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.ContractMapping;
 import org.apache.myfaces.config.element.Converter;
+import org.apache.myfaces.config.element.FaceletsTemplateMapping;
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.element.FacesFlowDefinition;
 import org.apache.myfaces.config.element.Factory;
@@ -133,6 +134,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     private List <String> resourceResolvers = new ArrayList<String>();
     
     private List<ViewPoolMapping> viewPoolMappings = new ArrayList<ViewPoolMapping>();
+    private List<FaceletsTemplateMapping> faceletsTemplateMappings = new ArrayList<FaceletsTemplateMapping>();
         
     // Unmodifiable list/maps to avoid modifications
     private transient List<String> umapplicationFactories;
@@ -174,6 +176,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     private transient List<FaceletTagLibrary> umfaceletTagLibraries;
     private transient List <String> umresourceResolvers;
     private transient List<ViewPoolMapping> umviewPoolMappings;
+    private transient List<FaceletsTemplateMapping> umfaceletsTemplateMappings;
     
     /**
      * Add another unmarshalled faces config object.
@@ -336,6 +339,10 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         for (FacesConfigExtension extension : config.getFacesConfigExtensions())
         {
             viewPoolMappings.addAll(extension.getViewPoolMappings());
+        }
+        for (FacesConfigExtension extension : config.getFacesConfigExtensions())
+        {
+            faceletsTemplateMappings.addAll(extension.getFaceletsTemplateMappings());
         }
     }
 
@@ -1089,4 +1096,13 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         return umsearchExpressionHandlers;
     }
 
+    @Override
+    public Collection<FaceletsTemplateMapping> getFaceletsTemplateMappings()
+    {
+        if (umfaceletsTemplateMappings == null)
+        {
+            umfaceletsTemplateMappings = Collections.unmodifiableList(faceletsTemplateMappings);
+        }
+        return umfaceletsTemplateMappings;
+    }
 }

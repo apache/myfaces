@@ -19,30 +19,16 @@
 package org.apache.myfaces.config.element;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
 
 /**
- * 
- * @author Leonardo Uribe
- * @since 2.1.0
+ *
  */
-public abstract class FacesConfigExtension implements Serializable
+public abstract class FaceletsTemplateMapping implements Serializable
 {
-    public abstract List<FaceletsProcessing> getFaceletsProcessingList();
+// <facelets-template-mapping>
+//   <url-pattern>/templates/*</url-pattern>
+// </facelets-template-mapping>
     
-    /**
-     * @since 2.2.0
-     * @return 
-     */
-    public List<ViewPoolMapping> getViewPoolMappings()
-    {
-        return Collections.emptyList();
-    }
-
-    public List<FaceletsTemplateMapping> getFaceletsTemplateMappings()
-    {
-        return Collections.emptyList();
-    }
+    public abstract String getUrlPattern();
     
 }

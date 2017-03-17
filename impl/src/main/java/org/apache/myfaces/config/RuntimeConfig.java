@@ -41,6 +41,7 @@ import javax.faces.el.VariableResolver;
 import org.apache.commons.collections.Predicate;
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.FaceletsProcessing;
+import org.apache.myfaces.config.element.FaceletsTemplateMapping;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.ResourceBundle;
@@ -123,7 +124,11 @@ public class RuntimeConfig
     
     private List<ViewPoolMapping> _viewPoolMappings = new ArrayList<ViewPoolMapping>();
     
+    private List<FaceletsTemplateMapping> _faceletsTemplateMappings = new ArrayList<FaceletsTemplateMapping>();
+    
     private List<SearchKeywordResolver> _searchExpressionResolvers = new ArrayList<SearchKeywordResolver>();
+    
+    private List<String> _faceletTemplates = new ArrayList<String>();
 
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
@@ -150,6 +155,7 @@ public class RuntimeConfig
         _resourceLibraryContracts.clear();
         _injectedObjects.clear();
         _faceletTagLibraries.clear();
+        _faceletTemplates.clear();
         
         _resourceBundles.clear();
         if (facesConfigElResolvers != null)
@@ -167,6 +173,7 @@ public class RuntimeConfig
         _namespaceById = new HashMap<Integer, String>();
         _idByNamespace = new HashMap<String, Integer>();
         _viewPoolMappings.clear();
+        _faceletsTemplateMappings.clear();
     }
 
     /**
@@ -600,5 +607,15 @@ public class RuntimeConfig
     public List<SearchKeywordResolver> getApplicationSearchExpressionResolvers()
     {
         return _searchExpressionResolvers;
+    }
+    
+    public List<FaceletsTemplateMapping> getFaceletsTemplateMappings()
+    {
+        return _faceletsTemplateMappings;
+    }
+    
+    public void addFaceletsTemplateMapping(FaceletsTemplateMapping mapping)
+    {
+        _faceletsTemplateMappings.add(mapping);
     }
 }

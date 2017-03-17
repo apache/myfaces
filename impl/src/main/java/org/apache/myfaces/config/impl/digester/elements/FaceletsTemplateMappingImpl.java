@@ -16,33 +16,37 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.config.element;
+package org.apache.myfaces.config.impl.digester.elements;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
+import org.apache.myfaces.config.element.FaceletsTemplateMapping;
 
 /**
- * 
- * @author Leonardo Uribe
- * @since 2.1.0
+ *
  */
-public abstract class FacesConfigExtension implements Serializable
+public class FaceletsTemplateMappingImpl extends FaceletsTemplateMapping implements Serializable
 {
-    public abstract List<FaceletsProcessing> getFaceletsProcessingList();
     
-    /**
-     * @since 2.2.0
-     * @return 
-     */
-    public List<ViewPoolMapping> getViewPoolMappings()
+    private String urlPattern;
+    
+    public FaceletsTemplateMappingImpl()
     {
-        return Collections.emptyList();
     }
 
-    public List<FaceletsTemplateMapping> getFaceletsTemplateMappings()
+    /**
+     * @return the urlPattern
+     */
+    public String getUrlPattern()
     {
-        return Collections.emptyList();
+        return urlPattern;
     }
-    
+
+    /**
+     * @param urlPattern the urlPattern to set
+     */
+    public void setUrlPattern(String urlPattern)
+    {
+        this.urlPattern = urlPattern;
+    }
+
 }

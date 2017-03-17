@@ -135,6 +135,7 @@ import org.apache.myfaces.view.facelets.tag.composite.CreateDynamicCompositeComp
 import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionActionListener;
 import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionValidator;
 import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionValueChangeListener;
+import org.apache.myfaces.view.facelets.util.FaceletsTemplateMappingUtils;
 import org.apache.myfaces.view.facelets.util.FaceletsViewDeclarationLanguageUtils;
 
 /**
@@ -2941,8 +2942,9 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     public Stream<String> getViews(FacesContext facesContext, String path, int maxDepth, ViewVisitOption... options)
     {
         Stream<String> stream = super.getViews(facesContext, path, maxDepth, options);
-        stream = stream.filter(f -> _strategy.handles(f));
-        
+        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(facesContext.getExternalContext());
+            stream = stream.filter(f -> (_strategy.handles(f) && 
+                    !FaceletsTemplateMappingUtils.matchTemplate(runtimeConfig, f) ) );
         if (options != null &&
             Arrays.binarySearch(options, ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME) >= 0)
         {

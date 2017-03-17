@@ -329,5 +329,15 @@ public abstract class FacesConfigData implements Serializable
     {
         return Collections.emptyList();
     }
-            
+
+    /**
+     * 
+     * @since 2.3
+     * @return 
+     */
+    public Collection<FaceletsTemplateMapping> getFaceletsTemplateMappings()
+    {
+        return Collections.emptyList();
+    }
+
 }

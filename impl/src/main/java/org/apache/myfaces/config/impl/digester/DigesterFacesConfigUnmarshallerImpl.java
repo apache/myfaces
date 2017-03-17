@@ -457,6 +457,15 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         digester.addSetNext("faces-config/faces-config-extension/view-pool-mapping/parameter", "addParameter");
         digester.addCallMethod("faces-config/faces-config-extension/view-pool-mapping/parameter/name", "setName", 0);
         digester.addCallMethod("faces-config/faces-config-extension/view-pool-mapping/parameter/value", "setValue", 0);
+        
+        //Facelets Template Mapping config
+        digester.addObjectCreate("faces-config/faces-config-extension/facelets-template-mapping", 
+            FaceletsTemplateMappingImpl.class);
+        digester.addSetNext("faces-config/faces-config-extension/facelets-template-mapping", 
+            "addFaceletsTemplateMapping");
+        digester.addCallMethod(
+                        "faces-config/faces-config-extension/facelets-template-mapping/url-pattern", 
+                        "setUrlPattern", 0);
     }
 
     private void postProcessFacesConfig(String systemId, FacesConfigImpl config)
