@@ -88,7 +88,7 @@
 
         <dependency>
             <groupId>org.apache.myfaces.test</groupId>
-            <artifactId>myfaces-test22</artifactId>
+            <artifactId>myfaces-test23</artifactId>
         </dependency>
         
         <dependency>
