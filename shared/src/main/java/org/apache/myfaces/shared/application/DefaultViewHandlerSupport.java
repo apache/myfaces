@@ -33,7 +33,6 @@ import javax.faces.view.ViewDeclarationLanguage;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 import org.apache.myfaces.shared.util.ConcurrentLRUCache;
-import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.shared.util.ViewProtectionUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
@@ -120,10 +119,18 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             // considered invalid, because jsp vdl will use RequestDispatcher and cause
             // a loop that ends in a exception. Note in portlet mode the view
             // could be encoded as a query param, so the viewId could be valid.
-            if (viewId != null && viewId.equals(mapping.getPrefix()) &&
-                !ExternalContextUtils.isPortlet(context.getExternalContext()))
+            //if (viewId != null && viewId.equals(mapping.getPrefix()) &&
+            //    !ExternalContextUtils.isPortlet(context.getExternalContext()))
+            //{
+            //    throw new InvalidViewIdException();
+            //}
+            
+            // In JSF 2.3 some changes were done in the VDL to avoid the jsp vdl
+            // RequestDispatcher redirection (only accept viewIds with jsp extension).
+            // If we have this case
+            if (viewId != null && viewId.equals(mapping.getPrefix()))
             {
-                throw new InvalidViewIdException();
+                viewId = handleSuffixMapping(context, viewId+".jsf");
             }
         }
         else if (mapping.getUrlPattern().startsWith(viewId))
@@ -161,10 +168,18 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
                 // considered invalid, because jsp vdl will use RequestDispatcher and cause
                 // a loop that ends in a exception. Note in portlet mode the view
                 // could be encoded as a query param, so the viewId could be valid.
-                if (viewId.equals(mapping.getPrefix()) &&
-                    !ExternalContextUtils.isPortlet(context.getExternalContext()))
+                //if (viewId.equals(mapping.getPrefix()) &&
+                //    !ExternalContextUtils.isPortlet(context.getExternalContext()))
+                //{
+                //    throw new InvalidViewIdException();
+                //}
+            
+                // In JSF 2.3 some changes were done in the VDL to avoid the jsp vdl
+                // RequestDispatcher redirection (only accept viewIds with jsp extension).
+                // If we have this case
+                if (viewId != null && viewId.equals(mapping.getPrefix()))
                 {
-                    throw new InvalidViewIdException();
+                    viewId = handleSuffixMapping(context, viewId+".jsf");
                 }
 
                 return (checkResourceExists(context,viewId) ? viewId : null);
@@ -203,61 +218,84 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         {
             builder.append(contextPath);
         }
-        if (mapping != null)
+        
+        // In JSF 2.3 we could have cases where the viewId can be bound to an url-pattern that is not
+        // prefix or suffix, but exact mapping. In this part we need to take the viewId and check if
+        // the viewId is bound or not with a mapping.
+        String prefixedExactMappingViewId = calculatePrefixedExactMapping(context, viewId);
+        boolean prefixedExactMappingFound = false;
+        if (prefixedExactMappingViewId != null && prefixedExactMappingViewId.length() > 0)
         {
-            if (mapping.isExtensionMapping())
+            FacesServletMapping alternateMapping = FacesServletMappingUtils.
+                    calculateFacesServletMappingFromPrefixedExactMappingViewId(context, prefixedExactMappingViewId);
+            if (alternateMapping != null)
             {
-                //See JSF 2.0 section 7.5.2 
-                String[] contextSuffixes = _initialized ? _contextSuffixes : getContextSuffix(context); 
-                boolean founded = false;
-                for (String contextSuffix : contextSuffixes)
+                mapping = alternateMapping;
+                prefixedExactMappingFound = true;
+            }
+        }
+        if (prefixedExactMappingFound)
+        {
+            builder.append(mapping.getPrefix());
+        }
+        else
+        {
+            if (mapping != null)
+            {
+                if (mapping.isExtensionMapping())
                 {
-                    if (viewId.endsWith(contextSuffix))
+                    //See JSF 2.0 section 7.5.2 
+                    String[] contextSuffixes = _initialized ? _contextSuffixes : getContextSuffix(context); 
+                    boolean founded = false;
+                    for (String contextSuffix : contextSuffixes)
                     {
-                        builder.append(viewId.substring(0, viewId.indexOf(contextSuffix)));
-                        builder.append(mapping.getExtension());
-                        founded = true;
-                        break;
+                        if (viewId.endsWith(contextSuffix))
+                        {
+                            builder.append(viewId.substring(0, viewId.indexOf(contextSuffix)));
+                            builder.append(mapping.getExtension());
+                            founded = true;
+                            break;
+                        }
+                    }
+                    if (!founded)
+                    {   
+                        //See JSF 2.0 section 7.5.2
+                        // - If the argument viewId has an extension, and this extension is mapping, 
+                        // the result is contextPath + viewId
+                        //
+                        // -= Leonardo Uribe =- It is evident that when the page is generated, the derived 
+                        // viewId will end with the 
+                        // right contextSuffix, and a navigation entry on faces-config.xml should use such id,
+                        // this is just a workaroud
+                        // for usability. There is a potential risk that change the mapping in a webapp make 
+                        // the same application fail,
+                        // so use viewIds ending with mapping extensions is not a good practice.
+                        if (viewId.endsWith(mapping.getExtension()))
+                        {
+                            builder.append(viewId);
+                        }
+                        else if(viewId.lastIndexOf('.') != -1 )
+                        {
+                            builder.append(viewId.substring(0, viewId.lastIndexOf('.')));
+                            builder.append(contextSuffixes[0]);
+                        }
+                        else
+                        {
+                            builder.append(viewId);
+                            builder.append(contextSuffixes[0]);
+                        }
                     }
                 }
-                if (!founded)
-                {   
-                    //See JSF 2.0 section 7.5.2
-                    // - If the argument viewId has an extension, and this extension is mapping, 
-                    // the result is contextPath + viewId
-                    //
-                    // -= Leonardo Uribe =- It is evident that when the page is generated, the derived 
-                    // viewId will end with the 
-                    // right contextSuffix, and a navigation entry on faces-config.xml should use such id,
-                    // this is just a workaroud
-                    // for usability. There is a potential risk that change the mapping in a webapp make 
-                    // the same application fail,
-                    // so use viewIds ending with mapping extensions is not a good practice.
-                    if (viewId.endsWith(mapping.getExtension()))
-                    {
-                        builder.append(viewId);
-                    }
-                    else if(viewId.lastIndexOf('.') != -1 )
-                    {
-                        builder.append(viewId.substring(0, viewId.lastIndexOf('.')));
-                        builder.append(contextSuffixes[0]);
-                    }
-                    else
-                    {
-                        builder.append(viewId);
-                        builder.append(contextSuffixes[0]);
-                    }
+                else
+                {
+                    builder.append(mapping.getPrefix());
+                    builder.append(viewId);
                 }
             }
             else
             {
-                builder.append(mapping.getPrefix());
                 builder.append(viewId);
             }
-        }
-        else
-        {
-            builder.append(viewId);
         }
         
         //JSF 2.2 check view protection.
@@ -285,6 +323,22 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         }
         return calculatedActionURL;
     }
+    
+    private String calculatePrefixedExactMapping(FacesContext context, String viewId)
+    {
+        String[] contextSuffixes = _initialized ? _contextSuffixes : getContextSuffix(context); 
+        String prefixedExactMapping = null;
+        for (String contextSuffix : contextSuffixes)
+        {
+            if (viewId.endsWith(contextSuffix))
+            {
+                prefixedExactMapping = viewId.substring(0, viewId.length() - contextSuffix.length());
+                break;
+            }
+        }
+        return prefixedExactMapping == null ? viewId : prefixedExactMapping;
+    }
+            
 
     /**
      * Read the web.xml file that is in the classpath and parse its internals to
@@ -299,7 +353,8 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         if (mapping == null)
         {
             ExternalContext externalContext = context.getExternalContext();
-            mapping = calculateFacesServletMapping(externalContext.getRequestServletPath(),
+            mapping = FacesServletMappingUtils.calculateFacesServletMapping(
+                    context, externalContext.getRequestServletPath(),
                     externalContext.getRequestPathInfo());
 
             attributes.put(CACHED_SERVLET_MAPPING, mapping);
@@ -316,6 +371,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
      * @param pathInfo    The pathInfo of the current request
      * @return the mapping of the FacesServlet in the web.xml configuration file
      */
+    @Deprecated
     protected static FacesServletMapping calculateFacesServletMapping(
         String servletPath, String pathInfo)
     {

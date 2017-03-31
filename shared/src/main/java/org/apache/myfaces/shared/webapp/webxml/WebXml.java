@@ -224,6 +224,11 @@ public class WebXml
         this._delegateFacesServlet = delegateFacesServlet;
     }
     
+    public String getDelegateFacesServlet()
+    {
+        return this._delegateFacesServlet;
+    }
+    
     /**
      * Sets if, the web.xml contains an error-page entry
      * @param errorPagePresent

@@ -61,6 +61,12 @@ public final class FacesServlet implements Servlet
      */
     @JSFWebConfigParam(since="1.1")
     public static final String LIFECYCLE_ID_ATTR = "javax.faces.LIFECYCLE_ID";
+    
+    /**
+     * Disable automatic FacesServlet xhtml mapping.
+     */
+    @JSFWebConfigParam(since="2.3")
+    public static final String DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME = "javax.faces.DISABLE_FACESSERVLET_TO_XHTML";
 
     private static final String SERVLET_INFO = "FacesServlet of the MyFaces API implementation";
     

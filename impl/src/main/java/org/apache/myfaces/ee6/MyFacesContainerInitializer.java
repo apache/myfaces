@@ -130,6 +130,7 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
     private static final String FACES_CONFIG_RESOURCE = "/WEB-INF/faces-config.xml";
     private static final Logger log = Logger.getLogger(MyFacesContainerInitializer.class.getName());
     private static final String[] FACES_SERVLET_MAPPINGS = { "/faces/*", "*.jsf", "*.faces" };
+    private static final String[] FACES_SERVLET_FULL_MAPPINGS = { "/faces/*", "*.jsf", "*.faces", "*.xhtml" };
     private static final String FACES_SERVLET_NAME = "FacesServlet";
     private static final Class<? extends Servlet> FACES_SERVLET_CLASS = FacesServlet.class;
     private static final Class<?> DELEGATED_FACES_SERVLET_CLASS = DelegatedFacesServlet.class;
@@ -173,7 +174,8 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
             ServletRegistration.Dynamic servlet = servletContext.addServlet(FACES_SERVLET_NAME, FACES_SERVLET_CLASS);
 
             //try to add typical JSF mappings
-            String[] mappings = FACES_SERVLET_MAPPINGS;
+            String[] mappings = isAutomaticXhtmlMappingDisabled(servletContext) ? 
+                        FACES_SERVLET_MAPPINGS : FACES_SERVLET_FULL_MAPPINGS;
             Set<String> conflictMappings = servlet.addMapping(mappings);
             if (conflictMappings != null && !conflictMappings.isEmpty())
             {
@@ -243,6 +245,25 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
         }
     }
     
+    private boolean isAutomaticXhtmlMappingDisabled(ServletContext servletContext)
+    {
+        try
+        {
+            String xhtmlMappingDisabled = servletContext.getInitParameter(
+                    FacesServlet.DISABLE_FACESSERVLET_TO_XHTML_PARAM_NAME);
+
+            if (xhtmlMappingDisabled == null)
+            {
+                xhtmlMappingDisabled = "false";
+            }
+            return "true".equalsIgnoreCase(xhtmlMappingDisabled);
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
+
     /**
      * Checks if /WEB-INF/faces-config.xml is present.
      * @return
