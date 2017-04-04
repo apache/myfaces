@@ -107,6 +107,14 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler
         return delegate;
     }
 
+    /**
+     * @since 2.3
+     * @param facesContext
+     * @param path
+     * @param maxDepth
+     * @param options
+     * @return 
+     */
     @Override
     public Stream<String> getViewResources(
             FacesContext facesContext, String path, int maxDepth, ResourceVisitOption... options)
@@ -114,9 +122,41 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler
         return getWrapped().getViewResources(facesContext, path, maxDepth, options);
     }
 
+    /**
+     * @since 2.3
+     * @param facesContext
+     * @param path
+     * @param options
+     * @return 
+     */
     @Override
     public Stream<String> getViewResources(FacesContext facesContext, String path, ResourceVisitOption... options)
     {
         return getWrapped().getViewResources(facesContext, path, options);
+    }
+
+    /**
+     * @since 2.3
+     * @param facesContext
+     * @param resourceName
+     * @param libraryName 
+     */
+    @Override
+    public void markResourceRendered(FacesContext facesContext, String resourceName, String libraryName)
+    {
+        getWrapped().markResourceRendered(facesContext, resourceName, libraryName);
+    }
+
+    /**
+     * @since 2.3
+     * @param facesContext
+     * @param resourceName
+     * @param libraryName
+     * @return 
+     */
+    @Override
+    public boolean isResourceRendered(FacesContext facesContext, String resourceName, String libraryName)
+    {
+        return getWrapped().isResourceRendered(facesContext, resourceName, libraryName);
     }
 }

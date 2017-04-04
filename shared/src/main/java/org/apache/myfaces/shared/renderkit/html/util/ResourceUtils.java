@@ -19,8 +19,6 @@
 package org.apache.myfaces.shared.renderkit.html.util;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import javax.faces.FacesWrapper;
 
 import javax.faces.application.Resource;
@@ -61,9 +59,6 @@ public class ResourceUtils
     public final static String JSF_MYFACES_JSFJS_EXPERIMENTAL = "jsf-experimental.js";
     public final static String JSF_MYFACES_JSFJS_LEGACY = "jsf-legacy.js";
 
-    private final static String RENDERED_STYLESHEET_RESOURCES_SET = 
-        "org.apache.myfaces.RENDERED_STYLESHEET_RESOURCES_SET";
-    private final static String RENDERED_SCRIPT_RESOURCES_SET = "org.apache.myfaces.RENDERED_SCRIPT_RESOURCES_SET";
     private final static String RENDERED_JSF_JS = "org.apache.myfaces.RENDERED_JSF_JS";
     public final static String HEAD_TARGET = "head";
     public final static String BODY_TARGET = "body";
@@ -74,76 +69,28 @@ public class ResourceUtils
     public static final String DEFAULT_SCRIPT_RENDERER_TYPE = "javax.faces.resource.Script";
     public static final String DEFAULT_STYLESHEET_RENDERER_TYPE = "javax.faces.resource.Stylesheet";
 
-    /**
-     * Return a set of already rendered resources by this renderer on the current
-     * request. 
-     * 
-     * @param facesContext
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    private static Map<String, Boolean> getRenderedStylesheetResources(FacesContext facesContext)
-    {
-        Map<String, Boolean> map = (Map<String, Boolean>) facesContext.getAttributes().get(
-                RENDERED_STYLESHEET_RESOURCES_SET);
-        if (map == null)
-        {
-            map = new HashMap<String, Boolean>();
-            facesContext.getAttributes().put(RENDERED_STYLESHEET_RESOURCES_SET,map);
-        }
-        return map;
-    }
-    
-    /**
-     * Return a set of already rendered resources by this renderer on the current
-     * request. 
-     * 
-     * @param facesContext
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    private static Map<String, Boolean> getRenderedScriptResources(FacesContext facesContext)
-    {
-        Map<String, Boolean> map = (Map<String, Boolean>) facesContext.getAttributes().get(
-                RENDERED_SCRIPT_RESOURCES_SET);
-        if (map == null)
-        {
-            map = new HashMap<String, Boolean>();
-            facesContext.getAttributes().put(RENDERED_SCRIPT_RESOURCES_SET,map);
-        }
-        return map;
-    }
-    
     public static void markScriptAsRendered(FacesContext facesContext, String libraryName, String resourceName)
     {
-        getRenderedScriptResources(facesContext).put(
-                libraryName != null ? libraryName+'/'+resourceName : resourceName, Boolean.TRUE);
-        if (ResourceHandler.JSF_SCRIPT_LIBRARY_NAME.equals(libraryName) &&
-            ResourceHandler.JSF_SCRIPT_RESOURCE_NAME.equals(resourceName))
-        {
-            // If we are calling this method, it is expected myfaces core is being used as runtime and note
-            // oamSubmit script is included inside jsf.js, so mark this one too.
-            getRenderedScriptResources(facesContext).put(
-                    MYFACES_LIBRARY_NAME+'/'+MYFACES_JS_RESOURCE_NAME, Boolean.TRUE);
-        }
+        facesContext.getApplication().getResourceHandler().markResourceRendered(
+                facesContext, resourceName, libraryName);
     }
     
     public static void markStylesheetAsRendered(FacesContext facesContext, String libraryName, String resourceName)
     {
-        getRenderedStylesheetResources(facesContext).put(
-                libraryName != null ? libraryName+'/'+resourceName : resourceName, Boolean.TRUE);
+        facesContext.getApplication().getResourceHandler().markResourceRendered(
+                facesContext, resourceName, libraryName);
     }
     
     public static boolean isRenderedScript(FacesContext facesContext, String libraryName, String resourceName)
     {
-        return getRenderedScriptResources(facesContext).containsKey(
-                libraryName != null ? libraryName+'/'+resourceName : resourceName);
+        return facesContext.getApplication().getResourceHandler().isResourceRendered(
+                facesContext, resourceName, libraryName);
     }
     
     public static boolean isRenderedStylesheet(FacesContext facesContext, String libraryName, String resourceName)
     {
-        return getRenderedStylesheetResources(facesContext).containsKey(
-                libraryName != null ? libraryName+'/'+resourceName : resourceName);
+        return facesContext.getApplication().getResourceHandler().isResourceRendered(
+                facesContext, resourceName, libraryName);
     }
     
     public static void writeScriptInline(FacesContext facesContext, ResponseWriter writer, String libraryName, 

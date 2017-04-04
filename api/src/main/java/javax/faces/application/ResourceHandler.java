@@ -19,6 +19,8 @@
 package javax.faces.application;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import javax.faces.context.FacesContext;
@@ -64,6 +66,12 @@ public abstract class ResourceHandler
      * @since 2.3
      */
     public static final String JSF_SCRIPT_LIBRARY_NAME = "javax.faces";
+    
+    private final static String MYFACES_JS_RESOURCE_NAME = "oamSubmit.js";
+    private final static String MYFACES_JS_RESOURCE_NAME_UNCOMPRESSED = "oamSubmit-uncompressed.js";
+    private final static String RENDERED_RESOURCES_SET = "org.apache.myfaces.RENDERED_RESOURCES_SET";
+    private final static String MYFACES_LIBRARY_NAME = "org.apache.myfaces";
+    private final static String RENDERED_MYFACES_JS = "org.apache.myfaces.RENDERED_MYFACES_JS";
 
     public abstract Resource createResource(String resourceName);
     
@@ -111,15 +119,85 @@ public abstract class ResourceHandler
         return url.contains(RESOURCE_IDENTIFIER);
     }
     
+    /**
+     * @since 2.3
+     * @param facesContext
+     * @param path
+     * @param options
+     * @return 
+     */
     public Stream<java.lang.String> getViewResources(
             FacesContext facesContext, String path, ResourceVisitOption... options)
     {
         return getViewResources(facesContext, path, Integer.MAX_VALUE, options);
     }
     
+    /**
+     * @since 2.3
+     * @param facesContext
+     * @param path
+     * @param maxDepth
+     * @param options
+     * @return 
+     */
     public Stream<java.lang.String> getViewResources(FacesContext facesContext, 
             String path, int maxDepth, ResourceVisitOption... options)
     {
         return null;
     }
+    
+    /**
+     * @since 2.3
+     * @param facesContext
+     * @param resourceName
+     * @param libraryName
+     * @return 
+     */
+    public boolean isResourceRendered(FacesContext facesContext, String resourceName, String libraryName)
+    {
+        return getRenderedResources(facesContext).containsKey(
+                libraryName != null ? libraryName+'/'+resourceName : resourceName);
+    }
+    
+    /**
+     * @since 2.3
+     * @param context
+     * @param resourceName
+     * @param libraryName 
+     */
+    public void markResourceRendered(FacesContext facesContext, String resourceName, String libraryName)
+    {
+        getRenderedResources(facesContext).put(
+                libraryName != null ? libraryName+'/'+resourceName : resourceName, Boolean.TRUE);
+        if (ResourceHandler.JSF_SCRIPT_LIBRARY_NAME.equals(libraryName) &&
+            ResourceHandler.JSF_SCRIPT_RESOURCE_NAME.equals(resourceName))
+        {
+            // If we are calling this method, it is expected myfaces core is being used as runtime and note
+            // oamSubmit script is included inside jsf.js, so mark this one too.
+            getRenderedResources(facesContext).put(
+                    MYFACES_LIBRARY_NAME+'/'+MYFACES_JS_RESOURCE_NAME, Boolean.TRUE);
+        }
+    }
+    
+    /**
+     * Return a set of already rendered resources by this renderer on the current
+     * request. 
+     * 
+     * @param facesContext
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private static Map<String, Boolean> getRenderedResources(FacesContext facesContext)
+    {
+        Map<String, Boolean> map = (Map<String, Boolean>) facesContext.getAttributes().get(
+                RENDERED_RESOURCES_SET);
+        if (map == null)
+        {
+            map = new HashMap<String, Boolean>();
+            facesContext.getAttributes().put(RENDERED_RESOURCES_SET,map);
+        }
+        return map;
+    }
+    
+    
 }
