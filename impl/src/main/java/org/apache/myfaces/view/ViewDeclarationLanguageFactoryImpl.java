@@ -92,6 +92,11 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
     @Override
     public List<ViewDeclarationLanguage> getAllViewDeclarationLanguages()
     {
+        if (!_initialized)
+        {
+            initialize();
+        }
+        
         if (_supportedVDLs == null)
         {
             List<ViewDeclarationLanguage> list = new ArrayList<ViewDeclarationLanguage>();

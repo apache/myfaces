@@ -213,7 +213,7 @@ public class FacesServletMappingUtils
         }
     }
     
-    private static boolean isFacesServlet(FacesContext facesContext, String servletClassName)
+    public static boolean isFacesServlet(FacesContext facesContext, String servletClassName)
     {
         Class servletClass = org.apache.myfaces.shared.util.ClassUtils.simpleClassForName(
                 servletClassName);
