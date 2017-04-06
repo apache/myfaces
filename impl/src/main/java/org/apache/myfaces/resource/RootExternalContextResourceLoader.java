@@ -44,7 +44,11 @@ public class RootExternalContextResourceLoader extends ResourceLoader
 {
     private static final String CONTRACTS = "contracts";
     
+    private static final String RESOURCES = "resources";
+    
     private String contractsDirectory = null;
+    
+    private String resourcesDirectory = null;
 
     public RootExternalContextResourceLoader()
     {
@@ -53,13 +57,17 @@ public class RootExternalContextResourceLoader extends ResourceLoader
         contractsDirectory = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(), 
                 ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, CONTRACTS);
         contractsDirectory = contractsDirectory.startsWith("/") ? contractsDirectory : '/'+contractsDirectory;
+        
+        resourcesDirectory = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(), 
+            ResourceHandler.WEBAPP_RESOURCES_DIRECTORY_PARAM_NAME, RESOURCES);
+        resourcesDirectory = resourcesDirectory.startsWith("/") ? resourcesDirectory : '/'+resourcesDirectory;
     }
 
     protected Set<String> getResourcePaths(String path)
     {
         String correctedPath = path.startsWith("/") ? path : '/' + path;
         
-        if (correctedPath.startsWith(contractsDirectory))
+        if (correctedPath.startsWith(contractsDirectory) || correctedPath.startsWith(resourcesDirectory))
         {
             // Resources under this directory should be accesed by other ContractResourceLoader
             return Collections.emptySet();
@@ -85,7 +93,8 @@ public class RootExternalContextResourceLoader extends ResourceLoader
         try
         {
             String correctedResourceId = resourceId.startsWith("/") ? resourceId : "/"+resourceId;
-            if (correctedResourceId.startsWith(contractsDirectory))
+            if (correctedResourceId.startsWith(contractsDirectory) || 
+                correctedResourceId.startsWith(resourcesDirectory))
             {
                 return null;
             }
@@ -118,7 +127,7 @@ public class RootExternalContextResourceLoader extends ResourceLoader
     {
         String resourceId = resourceMeta.getResourceIdentifier();
         String correctedResourceId = resourceId.startsWith("/") ? resourceId : "/"+resourceId;
-        if (correctedResourceId.startsWith(contractsDirectory))
+        if (correctedResourceId.startsWith(contractsDirectory) ||  correctedResourceId.startsWith(resourcesDirectory))
         {
             return null;
         }
@@ -152,23 +161,26 @@ public class RootExternalContextResourceLoader extends ResourceLoader
         
         return new RootExternalContextResourceLoaderIterator(
                 new ExternalContextResourceLoaderIterator(facesContext, basePath, maxDepth, options), 
-                    contractsDirectory);
+                    this.contractsDirectory, this.resourcesDirectory);
     }
     
     private static class RootExternalContextResourceLoaderIterator extends SkipMatchIterator<String>
     {
         private String contractsDirectory;
+        private String resourcesDirectory;
         
-        public RootExternalContextResourceLoaderIterator(Iterator delegate, String contractsDirectory)
+        public RootExternalContextResourceLoaderIterator(Iterator delegate, String contractsDirectory, 
+                String resourcesDirectory)
         {
             super(delegate);
             this.contractsDirectory = contractsDirectory;
+            this.resourcesDirectory = resourcesDirectory;
         }
 
         @Override
         protected boolean match(String instance)
         {
-            return instance.startsWith(contractsDirectory);
+            return instance.startsWith(contractsDirectory) || instance.startsWith(resourcesDirectory);
         }
     }
 }
