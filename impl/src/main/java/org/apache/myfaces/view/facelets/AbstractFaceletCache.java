@@ -84,7 +84,7 @@ public abstract class AbstractFaceletCache<V> extends FaceletCache<V>
             throw new NullPointerException("viewMetadataFaceletFactory is null");
         }
         _compositeComponentMetadataFaceletFactory = compositeComponentMetadataFaceletFactory;
-        setMemberFactories(faceletFactory, viewMetadataFaceletFactory);
+        setCacheFactories(faceletFactory, viewMetadataFaceletFactory);
     }
     
     /**
@@ -95,4 +95,17 @@ public abstract class AbstractFaceletCache<V> extends FaceletCache<V>
     {
         return _compositeComponentMetadataFaceletFactory;
     }    
+    
+    /**
+     * @since 2.3
+     * @param faceletFactory
+     * @param viewMetadataFaceletFactory 
+     */
+    public void setCacheFactories(FaceletCache.MemberFactory<V> faceletFactory, 
+            FaceletCache.MemberFactory<V> viewMetadataFaceletFactory,
+            FaceletCache.MemberFactory<V> compositeComponentMetadataFaceletFactory)
+    {
+        this.setMemberFactories(faceletFactory, viewMetadataFaceletFactory, compositeComponentMetadataFaceletFactory);
+    }
+
 }

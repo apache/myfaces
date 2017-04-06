@@ -67,4 +67,15 @@ public abstract class FaceletCache<V>
     {
         V newInstance(URL key) throws IOException;
     }
+    
+    /**
+     * @since 2.3
+     * @param faceletFactory
+     * @param viewMetadataFaceletFactory 
+     */
+    public void setCacheFactories(FaceletCache.MemberFactory<V> faceletFactory, 
+            FaceletCache.MemberFactory<V> viewMetadataFaceletFactory)
+    {
+        this.setMemberFactories(faceletFactory, viewMetadataFaceletFactory);
+    }
 }

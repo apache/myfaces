@@ -20,7 +20,6 @@ package org.apache.myfaces.view.facelets.impl;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
@@ -147,12 +146,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
             try
             {
-                Method setMemberFactoriesMethod = AbstractFaceletCache.class.getDeclaredMethod("setMemberFactories",
-                        new Class[]{FaceletCache.MemberFactory.class, FaceletCache.MemberFactory.class, 
-                                    FaceletCache.MemberFactory.class});
-                setMemberFactoriesMethod.setAccessible(true);
-                setMemberFactoriesMethod.invoke(_faceletCache, faceletFactory, viewMetadataFaceletFactory, 
-                    compositeComponentMetadataFaceletFactory);
+                _abstractFaceletCache.setCacheFactories(faceletFactory, 
+                        viewMetadataFaceletFactory, compositeComponentMetadataFaceletFactory);
             } 
             catch (Exception e)
             {
@@ -170,10 +165,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
             // the code first check for "suppressAccessChecks" permission).
             try
             {
-                Method setMemberFactoriesMethod = FaceletCache.class.getDeclaredMethod("setMemberFactories",
-                        new Class[]{FaceletCache.MemberFactory.class, FaceletCache.MemberFactory.class});
-                setMemberFactoriesMethod.setAccessible(true);
-                setMemberFactoriesMethod.invoke(_faceletCache, faceletFactory, viewMetadataFaceletFactory);
+                _faceletCache.setCacheFactories(faceletFactory, viewMetadataFaceletFactory);
             } 
             catch (Exception e)
             {
