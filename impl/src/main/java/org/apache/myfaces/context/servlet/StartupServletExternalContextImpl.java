@@ -45,11 +45,13 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
     public static final String EXCEPTION_TEXT = "This method is not supported during ";
     
     private boolean _startup;
+    private ServletContext _servletContext;
     
     public StartupServletExternalContextImpl(final ServletContext servletContext,
             boolean startup)
     {
         super(servletContext);
+        _servletContext = servletContext;
         _startup = startup;
     }
     
@@ -103,7 +105,7 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
     @Override
     public String getRequestContextPath()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        return _servletContext.getContextPath();
     }
 
     @Override
@@ -163,13 +165,13 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
     @Override
     public String getRequestPathInfo()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        return "";
     }
 
     @Override
     public String getRequestServletPath()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        return "";
     }
 
     @Override

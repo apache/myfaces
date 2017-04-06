@@ -27,6 +27,8 @@ import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
+import org.apache.myfaces.shared.application.FacesServletMappingUtils;
+import org.apache.myfaces.shared.context.ExceptionHandlerImpl;
 import org.apache.myfaces.shared.util.StateUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.cdi.dependent.BeanEntry;
@@ -59,14 +61,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.application.ViewVisitOption;
 import javax.faces.push.PushContext;
+import javax.servlet.ServletRegistration;
 import javax.websocket.DeploymentException;
 import javax.websocket.server.ServerContainer;
 import javax.websocket.server.ServerEndpointConfig;
 import org.apache.myfaces.push.EndpointImpl;
 import org.apache.myfaces.push.WebsocketConfigurator;
 import org.apache.myfaces.push.WebsocketFacesInit;
-import org.apache.myfaces.shared.context.ExceptionHandlerImpl;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.ServiceProviderFinder;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
@@ -111,6 +114,14 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     @JSFWebConfigParam(expectedValues="true, auto, false", defaultValue="auto")
     public static final String INIT_PARAM_LOG_WEB_CONTEXT_PARAMS = "org.apache.myfaces.LOG_WEB_CONTEXT_PARAMS";
     public static final String INIT_PARAM_LOG_WEB_CONTEXT_PARAMS_DEFAULT ="auto";
+    
+    /**
+     * This parameter enables automatic extensionless mapping for all JSF views.
+     */
+    @JSFWebConfigParam(since="2.3", expectedValues = "true, false", defaultValue = "false")
+    public static final String INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING = 
+            "org.apache.myfaces.AUTOMATIC_EXTENSIONLESS_MAPPING";
+    public static final boolean INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT = false;
     
     public static final String CDI_BEAN_MANAGER_INSTANCE = "oam.cdi.BEAN_MANAGER_INSTANCE";
     
@@ -218,6 +229,14 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             
             //Start ViewPoolProcessor if necessary
             ViewPoolProcessor.initialize(facesContext);
+            
+            Boolean automaticExtensionlessMapping = WebConfigParamUtils.getBooleanInitParameter(
+                    externalContext, INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING, 
+                    INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT);
+            if (Boolean.TRUE.equals(automaticExtensionlessMapping))
+            {
+                initAutomaticExtensionlessMapping(facesContext, servletContext);
+            }
 
             // print out a very prominent log message if the project stage is != Production
             if (!facesContext.isProjectStage(ProjectStage.Production) &&
@@ -773,5 +792,41 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                         + "into your code to force enable it (Tyrus users).");
             }
         }
+    }
+    
+    /**
+     * 
+     * @since 2.3
+     * @param facesContext 
+     */
+    protected void initAutomaticExtensionlessMapping(FacesContext facesContext, ServletContext servletContext)
+    {
+        final ServletRegistration facesServletRegistration = getFacesServletRegistration(facesContext, servletContext); 
+        if (facesServletRegistration != null)
+        {
+            facesContext.getApplication().getViewHandler().getViews(facesContext, "/", 
+                    ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME).forEach(s -> {
+                        facesServletRegistration.addMapping(s);
+                    });
+        }
+    }
+    
+    private ServletRegistration getFacesServletRegistration(FacesContext facesContext, 
+            ServletContext servletContext)
+    {
+        ServletRegistration facesServletRegistration = null;
+        Map<String, ? extends ServletRegistration> map = servletContext.getServletRegistrations();
+        if (map != null)
+        {
+            for (Map.Entry<String, ? extends ServletRegistration> entry : map.entrySet())
+            {
+                if (FacesServletMappingUtils.isFacesServlet(facesContext, entry.getValue().getClassName()))
+                {
+                    facesServletRegistration = entry.getValue();
+                    break;
+                }
+            }
+        }
+        return facesServletRegistration;
     }
 }
