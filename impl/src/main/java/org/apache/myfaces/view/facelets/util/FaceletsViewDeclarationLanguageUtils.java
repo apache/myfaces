@@ -19,7 +19,12 @@
 package org.apache.myfaces.view.facelets.util;
 
 import java.util.ArrayList;
+import java.util.List;
 import javax.faces.FacesException;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
+import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.util.ClassUtils;
 
 /**
@@ -97,5 +102,53 @@ public class FaceletsViewDeclarationLanguageUtils
         return params.toArray(new Class[params.size()]);
     }
 
+    /**
+     * Called on restoreView(...) to mark resources as rendered.
+     * 
+     * @since 2.3
+     * @param facesContext
+     * @param view 
+     */
+    public static void markRenderedResources(FacesContext facesContext, UIViewRoot view)
+    {
+        markRenderedResources(facesContext, view, view.getComponentResources(facesContext, "head"));
+        markRenderedResources(facesContext, view, view.getComponentResources(facesContext, "body"));
+    }
 
+    private static void markRenderedResources(FacesContext facesContext, UIViewRoot view, 
+            List<UIComponent> componentResources)
+    {
+        if (componentResources != null)
+        {
+            for (UIComponent component : componentResources)
+            {
+                if ("javax.faces.resource.Script".equals(component.getRendererType()) ||
+                    "javax.faces.resource.Stylesheet".equals(component.getRendererType()))
+                {
+                    String resourceName = (String) component.getAttributes().get(JSFAttr.NAME_ATTR);
+                    String libraryName = (String) component.getAttributes().get(JSFAttr.LIBRARY_ATTR);
+                    
+                    if (resourceName == null)
+                    {
+                        continue;
+                    }
+                    if ("".equals(resourceName))
+                    {
+                        continue;
+                    }
+                    
+                    String additionalQueryParams = null;
+                    int index = resourceName.indexOf('?');
+                    if (index >= 0)
+                    {
+                        additionalQueryParams = resourceName.substring(index + 1);
+                        resourceName = resourceName.substring(0, index);
+                    }
+                    
+                    facesContext.getApplication().getResourceHandler().markResourceRendered(
+                            facesContext, resourceName, libraryName);
+                }
+            }
+        }
+    }
 }

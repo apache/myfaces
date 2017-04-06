@@ -81,7 +81,7 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesRequestTestCas
         
         String text = getRenderedContent(facesContext);
         // the inclusion should trigger update head
-        Assert.assertTrue(text.contains("update id=\"javax.faces.ViewHead\""));
+        Assert.assertTrue(text.contains("update id=\"javax.faces.Resource\""));
         Assert.assertTrue(text.contains("alert(\"script2\");"));
         //System.out.println(text);
         endRequest();
@@ -102,7 +102,7 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesRequestTestCas
         
         String text = getRenderedContent(facesContext);
         // the inclusion should trigger update head
-        Assert.assertTrue(text.contains("update id=\"javax.faces.ViewHead\""));
+        Assert.assertTrue(text.contains("update id=\"javax.faces.Resource\""));
         Assert.assertTrue(text.contains("alert(\"script3\");"));
         Assert.assertTrue(text.contains("link rel=\"stylesheet\" type=\"text/css\" href=\"/test/faces/javax.faces.resource/style3.css\""));
         //System.out.println(text);

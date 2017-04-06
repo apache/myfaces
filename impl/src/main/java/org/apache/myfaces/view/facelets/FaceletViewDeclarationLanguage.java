@@ -2140,14 +2140,17 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             {
                 throw new FacesException ("unable to create view \"" + viewId + "\"", e);
             }
+            FaceletsViewDeclarationLanguageUtils.markRenderedResources(context, view);
             return view;
         }
         else
         {
-            return super.restoreView(context, viewId);
+            UIViewRoot root = super.restoreView(context, viewId);
+            FaceletsViewDeclarationLanguageUtils.markRenderedResources(context, root);
+            return root;
         }
     }
-
+    
     /**
      * {@inheritDoc}
      */

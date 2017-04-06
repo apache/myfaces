@@ -54,6 +54,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
     P_VIEWROOT:"javax.faces.ViewRoot",
     P_VIEWHEAD:"javax.faces.ViewHead",
     P_VIEWBODY:"javax.faces.ViewBody",
+    P_RESOURCE:"javax.faces.Resource",
 
     /**
      * uses response to start Html element replacement
@@ -436,7 +437,10 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                         pushOpRes(context, resultNode);
                     }
                     break;
-
+                case this.P_RESOURCE:
+                    
+                    this._addResourceToHead(request,context,cDataBlock);
+                    break;
                 default:
                     resultNode = this.replaceHtmlItem(request, context, node.getAttribute('id'), cDataBlock);
                     if (resultNode) {
@@ -531,6 +535,15 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         _Dom.runScripts(newHead, true);
 
         return doc;
+    },
+    
+    _addResourceToHead:function (request, context, newData) {
+        var lastHeadChildTag = document.getElementsByTagName("head")[0].lastChild;
+
+        var replacementFragment = this._Dom.insertAfter(lastHeadChildTag, newData);
+        if (replacementFragment) {
+            this._pushOperationResult(context, replacementFragment);
+        }
     },
 
     /**

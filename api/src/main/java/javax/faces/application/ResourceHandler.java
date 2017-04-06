@@ -189,15 +189,14 @@ public abstract class ResourceHandler
     @SuppressWarnings("unchecked")
     private static Map<String, Boolean> getRenderedResources(FacesContext facesContext)
     {
-        Map<String, Boolean> map = (Map<String, Boolean>) facesContext.getAttributes().get(
-                RENDERED_RESOURCES_SET);
+        Map<String, Boolean> map = (Map<String, Boolean>) facesContext.getViewRoot().getTransientStateHelper()
+                .getTransient(RENDERED_RESOURCES_SET);
         if (map == null)
         {
             map = new HashMap<String, Boolean>();
-            facesContext.getAttributes().put(RENDERED_RESOURCES_SET,map);
+            facesContext.getViewRoot().getTransientStateHelper().putTransient(RENDERED_RESOURCES_SET,map);
         }
         return map;
     }
-    
-    
+
 }

@@ -39,12 +39,10 @@ import javax.faces.view.Location;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.context.RequestViewContext;
-import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
@@ -92,8 +90,7 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
                 // was propagated to relocate this resource, means the header must be refreshed.
                 // Note ajax request does not occur on non postback requests.
                 
-                if (!ExternalContextUtils.isPortlet(facesContext.getExternalContext()) &&
-                    facesContext.getPartialViewContext().isAjaxRequest())
+                if (facesContext.getPartialViewContext().isAjaxRequest())
                 {
                     boolean isBuildingInitialState = facesContext.getAttributes().
                         containsKey(IS_BUILDING_INITIAL_STATE);
@@ -102,16 +99,13 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
                         !isBuildingInitialState ||
                         (isBuildingInitialState && 
                                 FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext));
-                    if (isPostAddToViewEventAfterBuildInitialState &&                    
-                        MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).
-                            isStrictJsf2RefreshTargetAjax())
+                    if (isPostAddToViewEventAfterBuildInitialState)
                     {
                         //!(component.getParent() instanceof ComponentResourceContainer)
                         RequestViewContext requestViewContext = RequestViewContext.getCurrentInstance(facesContext);
-                        requestViewContext.setRenderTarget("head", true);
+                        requestViewContext.setRenderTarget("head", true, component);
                     }
                 }
-
                 facesContext.getViewRoot().addComponentResource(facesContext,
                         component, target);
             }

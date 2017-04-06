@@ -313,13 +313,16 @@ public class MyfacesConfig
     public final static boolean INIT_PARAM_DEBUG_PHASE_LISTENER_DEFAULT = false;
     
     /**
-     * Detect if a target (usually head) should be update for the current view in an ajax render 
+     * DEPRECATED: No longer used in JSF 2.3, because PartialViewContext now contemplates update resources
+     * in ajax request. Detect if a target (usually head) should be update for the current view in an ajax render 
      * operation. This is activated if a css or js resource is added dynamically by effect of a refresh 
      * (c:if, ui:include src="#{...}" or a manipulation of the tree). This ensures ajax updates of content 
      * using ui:include will be consistent. Note this behavior is a myfaces specific extension, so to 
      * ensure strict compatibility with the spec, set this param to false (default false).
+     * 
+     * @deprecated 
      */
-    @JSFWebConfigParam(since="2.0.10", expectedValues="true, false", defaultValue="false")
+    @JSFWebConfigParam(since="2.0.10", expectedValues="true, false", defaultValue="false",deprecated = true)
     public final static String INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX = 
         "org.apache.myfaces.STRICT_JSF_2_REFRESH_TARGET_AJAX";
     public final static boolean INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX_DEFAULT = false;

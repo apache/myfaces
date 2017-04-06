@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,12 +51,12 @@ import javax.faces.lifecycle.ClientWindow;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.view.ViewMetadata;
+import org.apache.myfaces.application.ResourceHandlerImpl;
 
 import org.apache.myfaces.context.PartialResponseWriterImpl;
 import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
-import org.apache.myfaces.shared.config.MyfacesConfig;
-import org.apache.myfaces.shared.util.ExternalContextUtils;
+import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.util.StringUtils;
 
 public class PartialViewContextImpl extends PartialViewContext
@@ -503,7 +504,18 @@ public class PartialViewContextImpl extends PartialViewContext
                     }
                     else
                     {
-                        List<UIComponent> updatedComponents = null;
+                        // In JSF 2.3 it was added javax.faces.Resource as an update target to add scripts or
+                        // stylesheets inside <head> tag. In that sense 
+                        // org.apache.myfaces.STRICT_JSF_2_REFRESH_TARGET_AJAX web config param, which was a 
+                        // workaround for dynamic refresh can be deprecated.
+                        
+                        List<UIComponent> updatedComponents = new ArrayList<UIComponent>();
+                        RequestViewContext rvc = RequestViewContext.getCurrentInstance(_facesContext);
+                        processRenderResource(_facesContext, writer, rvc, updatedComponents, "head");
+                        processRenderResource(_facesContext, writer, rvc, updatedComponents, "body");
+                        processRenderResource(_facesContext, writer, rvc, updatedComponents, "form");
+                        
+                        /*
                         if (!ExternalContextUtils.isPortlet(_facesContext.getExternalContext()) &&
                                 MyfacesConfig.getCurrentInstance(externalContext).isStrictJsf2RefreshTargetAjax())
                         {
@@ -538,7 +550,7 @@ public class PartialViewContextImpl extends PartialViewContext
                                     updatedComponents.add(body);
                                 }
                             }
-                        }
+                        }*/
 
                         VisitContext visitCtx = getVisitContextFactory().getVisitContext(
                                 _facesContext, renderIds, PARTIAL_RENDER_HINTS);
@@ -546,6 +558,15 @@ public class PartialViewContextImpl extends PartialViewContext
                                            new PhaseAwareVisitCallback(_facesContext, phaseId, updatedComponents));
                     }
                 }
+                else
+                {
+                    List<UIComponent> updatedComponents = new ArrayList<UIComponent>();
+                    RequestViewContext rvc = RequestViewContext.getCurrentInstance(_facesContext);
+                    processRenderResource(_facesContext, writer, rvc, updatedComponents, "head");
+                    processRenderResource(_facesContext, writer, rvc, updatedComponents, "body");
+                    processRenderResource(_facesContext, writer, rvc, updatedComponents, "form");
+                }
+                /*
                 else if (!ExternalContextUtils.isPortlet(_facesContext.getExternalContext()) &&
                         MyfacesConfig.getCurrentInstance(externalContext).isStrictJsf2RefreshTargetAjax())
                 {
@@ -570,7 +591,7 @@ public class PartialViewContextImpl extends PartialViewContext
                             writer.endUpdate();
                         }
                     }
-                }
+                }*/
             }
 
             // invoke encodeAll() on every UIViewParameter in the view to 
@@ -647,22 +668,85 @@ public class PartialViewContextImpl extends PartialViewContext
         }
 
     }
+    
+    private void processRenderResource(FacesContext facesContext, PartialResponseWriter writer, RequestViewContext rvc, 
+            List<UIComponent> updatedComponents, String target) throws IOException
+    {
+        if (rvc.isRenderTarget(target))
+        {
+            List<UIComponent> list = rvc.getRenderTargetComponentList(target);
+            if (list != null && !list.isEmpty())
+            {
+                writer.startUpdate("javax.faces.Resource");
+                for (UIComponent component : list)
+                {
+                    boolean resourceRendered = false;
+                    if ("javax.faces.resource.Script".equals(component.getRendererType()) ||
+                        "javax.faces.resource.Stylesheet".equals(component.getRendererType()))
+                    {
+                        String resourceName = (String) 
+                                component.getAttributes().get(JSFAttr.NAME_ATTR);
+                        String libraryName = (String) 
+                                component.getAttributes().get(JSFAttr.LIBRARY_ATTR);
+
+                        if (resourceName == null)
+                        {
+                            // No resource, render all
+                            component.encodeAll(facesContext);
+                            continue;
+                        }
+                        if ("".equals(resourceName))
+                        {
+                            // No resource, render all
+                            component.encodeAll(facesContext);
+                            continue;
+                        }
+
+                        String additionalQueryParams = null;
+                        int index = resourceName.indexOf('?');
+                        if (index >= 0)
+                        {
+                            additionalQueryParams = resourceName.substring(index + 1);
+                            resourceName = resourceName.substring(0, index);
+                        }
+                        // Is resource, render only if it has not been rendered before.
+                        if (!_facesContext.getApplication().getResourceHandler().isResourceRendered(
+                                _facesContext, resourceName, libraryName))
+                        {
+                            component.encodeAll(facesContext);
+                        }
+                    }
+                    else
+                    {
+                        component.encodeAll(facesContext);
+                    }
+                    if (!resourceRendered)
+                    {
+                        if (updatedComponents == null)
+                        {
+                            updatedComponents = new ArrayList<UIComponent>();
+                        }
+                        updatedComponents.add(component);
+                    }
+                }
+                writer.endUpdate();
+            }
+        }
+    }
 
     private void processRenderAll(UIViewRoot viewRoot, PartialResponseWriter writer) throws IOException
     {
-        //java.util.Iterator<UIComponent> iter = viewRoot.getFacetsAndChildren();
+        // Before render all we need to clear rendered resources set to be sure every component resource is
+        // rendered. Remember renderAll means the whole page is replaced, so everything inside <head> is replaced.
+        // and there is no way to diff between the old and the new content of <head>.
+        Map<String, Boolean> map = (Map) viewRoot.getTransientStateHelper().getTransient(
+                ResourceHandlerImpl.RENDERED_RESOURCES_SET);
+        if (map != null)
+        {
+            map.clear();
+        }
+        
         writer.startUpdate(PartialResponseWriter.RENDER_ALL_MARKER);
-        //while (iter.hasNext()) 
-        //{ 
-        //UIComponent comp = iter.next();
-
-        //TODO: Do not check for a specific instance,
-        //just render all children.
-        //if (comp instanceof javax.faces.component.html.HtmlBody)
-        //{
-        //comp.encodeAll (_facesContext);
-        //}
-        //}
         for (int i = 0, childCount = viewRoot.getChildCount(); i < childCount; i++)
         {
             UIComponent comp = viewRoot.getChildren().get(i);

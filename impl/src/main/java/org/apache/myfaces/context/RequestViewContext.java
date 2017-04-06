@@ -18,9 +18,11 @@
  */
 package org.apache.myfaces.context;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -54,6 +56,7 @@ public class RequestViewContext
     private RequestViewMetadata requestViewMetadata;
     
     private Map<String, Boolean> renderTargetMap = null;
+    private Map<String, List<UIComponent>> renderTargetMapComponents = null;
     
     public RequestViewContext()
     {
@@ -169,13 +172,37 @@ public class RequestViewContext
         return false;
     }
     
-    public void setRenderTarget(String target, boolean value)
+    public void setRenderTarget(String target, boolean value, UIComponent component)
     {
         if (renderTargetMap == null)
         {
             renderTargetMap = new HashMap<String, Boolean>(8);
         }
         renderTargetMap.put(target, value);
+        if (renderTargetMapComponents == null)
+        {
+            renderTargetMapComponents = new HashMap<String, List<UIComponent>>(8);
+        }
+        List<UIComponent> componentList = renderTargetMapComponents.get(target);
+        if (componentList == null)
+        {
+            componentList = new ArrayList<UIComponent>(8);
+            renderTargetMapComponents.put(target, componentList);
+        }
+        if (!componentList.contains(component))
+        {
+            componentList.add(component);
+        }
+    }
+    
+    public List<UIComponent> getRenderTargetComponentList(String target)
+    {
+        if (renderTargetMapComponents == null)
+        {
+            return Collections.emptyList();
+        }
+        List<UIComponent> list = renderTargetMapComponents.get(target);
+        return list != null ? list : Collections.emptyList();
     }
     
     /**
