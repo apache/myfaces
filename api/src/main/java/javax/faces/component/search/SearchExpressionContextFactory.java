@@ -29,6 +29,17 @@ import javax.faces.context.FacesContext;
  */
 public abstract class SearchExpressionContextFactory implements FacesWrapper<SearchExpressionContextFactory>
 {
+    private SearchExpressionContextFactory delegate;
+
+    public SearchExpressionContextFactory()
+    {
+    }
+
+    public SearchExpressionContextFactory(SearchExpressionContextFactory delegate)
+    {
+        this.delegate = delegate;
+    }
+    
     public abstract SearchExpressionContext getSearchExpressionContext(
             FacesContext context,  UIComponent source,
             Set<SearchExpressionHint> expressionHints, Set<VisitHint> visitHints);

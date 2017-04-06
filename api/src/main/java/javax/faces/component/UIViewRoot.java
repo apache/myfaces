@@ -711,6 +711,22 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         }
         return facet.getChildren();
     }
+    
+    /**
+     * @since 2.3
+     * @param context
+     * @return 
+     */
+    public List<UIComponent> getComponentResources(FacesContext context)
+    {
+        List<UIComponent> componentResources = new ArrayList<UIComponent>();
+        
+        componentResources.addAll(_getComponentResources(context, "head"));
+        componentResources.addAll(_getComponentResources(context, "body"));
+        componentResources.addAll(_getComponentResources(context, "form"));
+        
+        return Collections.unmodifiableList(componentResources);
+    }
 
     @Override
     public String getFamily()
