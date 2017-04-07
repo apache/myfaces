@@ -48,6 +48,7 @@ import javax.faces.event.PreValidateEvent;
 import javax.faces.model.ArrayDataModel;
 import javax.faces.model.CollectionDataModel;
 import javax.faces.model.DataModel;
+import javax.faces.model.IterableDataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.ResultDataModel;
 import javax.faces.model.ResultSetDataModel;
@@ -2156,6 +2157,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 else if (value instanceof Result)
                 {
                     return new ResultDataModel((Result) value);
+                }
+                else if (value instanceof Iterable)
+                {
+                    return new IterableDataModel<>((Iterable<?>) value);
+                } 
+                else if (value instanceof Map) 
+                {
+                    return new IterableDataModel<>(((Map<?, ?>) value).entrySet());
                 }
                 else if (value instanceof Collection)
                 {

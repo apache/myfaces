@@ -49,6 +49,7 @@ import javax.faces.event.PhaseId;
 import javax.faces.model.ArrayDataModel;
 import javax.faces.model.CollectionDataModel;
 import javax.faces.model.DataModel;
+import javax.faces.model.IterableDataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.ResultSetDataModel;
 import javax.faces.model.ScalarDataModel;
@@ -227,6 +228,14 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 else if (value instanceof ResultSet)
                 {
                     return new ResultSetDataModel((ResultSet) value);
+                }
+                else if (value instanceof Iterable)
+                {
+                    return new IterableDataModel<>((Iterable<?>) value);
+                } 
+                else if (value instanceof Map) 
+                {
+                    return new IterableDataModel<>(((Map<?, ?>) value).entrySet());
                 }
                 else if (value instanceof Collection)
                 {
