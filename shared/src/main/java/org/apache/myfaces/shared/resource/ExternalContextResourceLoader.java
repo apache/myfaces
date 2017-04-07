@@ -79,7 +79,11 @@ public class ExternalContextResourceLoader extends ResourceLoader
             // are found, let resourceVersion remain null.
             for (String resourcePath : resourcePaths)
             {
-                String version = resourcePath.substring(path.length());
+                String version = "";
+                if (path.length() < resourcePath.length()) 
+                {
+                    version = resourcePath.substring(path.length());
+                }
 
                 if (RESOURCE_VERSION_CHECKER.matcher(version).matches())
                 {
