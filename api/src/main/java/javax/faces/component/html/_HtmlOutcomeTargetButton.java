@@ -51,4 +51,15 @@ _TabindexProperty, _AltProperty, _RoleProperty
    */
   @JSFProperty
   public abstract String getImage(); 
+  
+  /**
+   * When true, this element cannot receive focus.
+   *
+   * @since 2.3
+   * @return  the new disabled value
+   */
+  @JSFProperty
+  (defaultValue = "false")
+  public abstract boolean isDisabled();
+
 }
