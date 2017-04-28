@@ -732,10 +732,25 @@ public class HtmlTableRendererBase extends HtmlRenderer
     protected void renderRowStyle(FacesContext facesContext, ResponseWriter writer, 
             UIData uiData, Styles styles, int rowStyleIndex) throws IOException
     {
-        if(styles.hasRowStyle())
+        String rowClass = null;
+        if (uiData instanceof HtmlDataTable)
         {
-            String rowStyle = styles.getRowStyle(rowStyleIndex);
-            writer.writeAttribute(HTML.CLASS_ATTR, rowStyle, null);
+            rowClass = ((HtmlDataTable) uiData).getRowClass();
+        }
+        if (styles.hasRowStyle()) 
+        {
+            if (rowClass == null) 
+            {
+                rowClass = styles.getRowStyle(rowStyleIndex);
+            }
+            else
+            {
+                rowClass = rowClass+" "+styles.getRowStyle(rowStyleIndex);
+            }
+        }
+        if (rowClass != null)
+        {
+            writer.writeAttribute(HTML.CLASS_ATTR, rowClass, null);
         }
     }
 

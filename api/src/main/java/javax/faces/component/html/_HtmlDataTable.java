@@ -184,4 +184,10 @@ abstract class _HtmlDataTable extends UIData
   @JSFExclude
   public abstract UIComponent getCaption();
   
+  /**
+   * @since 2.3
+   * @return 
+   */
+  @JSFProperty
+  public abstract String getRowClass();
 }
