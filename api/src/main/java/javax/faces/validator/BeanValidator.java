@@ -24,6 +24,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -114,9 +115,20 @@ public class BeanValidator implements Validator, PartialStateHolder
      */
     public static final String EMPTY_VALIDATION_GROUPS_PATTERN = "^[\\W,]*$";
     
+    /**
+     * Enable f:validateWholeBean use.
+     */
+    @JSFWebConfigParam(since="2.3", defaultValue = "false", expectedValues = "true, false", group="validation")
+    public static final String ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME = 
+            "javax.faces.validator.ENABLE_VALIDATE_WHOLE_BEAN";
+    
     private static final Class<?>[] DEFAULT_VALIDATION_GROUPS_ARRAY = new Class<?>[] { Default.class };
 
     private static final String DEFAULT_VALIDATION_GROUP_NAME = "javax.validation.groups.Default";
+    
+    private static final String CANDIDATE_COMPONENT_VALUES_MAP = "oam.WBV.candidatesMap";
+    
+    private static final String BEAN_VALIDATION_FAILED = "oam.WBV.validationFailed";
 
     private String validationGroups;
 
@@ -189,6 +201,21 @@ public class BeanValidator implements Validator, PartialStateHolder
         // Note that validationGroupsArray was initialized when createValidator was called
         Class[] validationGroupsArray = this.validationGroupsArray;
 
+        // JSF 2.3: If the ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME application parameter is enabled and this Validator 
+        // instance has validation groups other than or in addition to the Default group
+        boolean containsOtherValidationGroup = false;
+        if (validationGroupsArray != null && validationGroupsArray.length > 0)
+        {
+            for (Class<?> clazz : validationGroupsArray)
+            {
+                if (!Default.class.equals(clazz))
+                {
+                    containsOtherValidationGroup = true;
+                    break;
+                }
+            }
+        }
+        
         // Delegate to Bean Validation.
         Set constraintViolations = validator.validateValue(valueBaseClass, valueProperty, value, validationGroupsArray);
         if (!constraintViolations.isEmpty())
@@ -202,8 +229,59 @@ public class BeanValidator implements Validator, PartialStateHolder
                 FacesMessage msg = _MessageUtils.getErrorMessage(context, MESSAGE_ID, args);
                 messages.add(msg);
             }
+            
+            if (isValidateWholeBeanEnabled(context) && containsOtherValidationGroup)
+            {
+                // JSF 2.3: record the fact that this field failed validation so that any <f:validateWholeBean /> 
+                // component later in the tree is able to skip class-level validation for the bean for which this 
+                // particular field is a property. Regardless of whether or not 
+                // ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME is set, throw the new exception.            
+                context.getViewRoot().getTransientStateHelper().putTransient(BEAN_VALIDATION_FAILED, Boolean.TRUE);
+            }
+            
             throw new ValidatorException(messages);
         }
+        else
+        {
+            
+            // JSF 2.3: If the returned Set is empty, the ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME application parameter
+            // is enabled and this Validator instance has validation groups other than or in addition to the 
+            // Default group
+            if (isValidateWholeBeanEnabled(context) && containsOtherValidationGroup)
+            {
+                // record the fact that this field passed validation so that any <f:validateWholeBean /> component 
+                // later in the tree is able to allow class-level validation for the bean for which this particular 
+                // field is a property.
+                
+                Map<String, Object> candidatesMap = (Map<String, Object>) context.getViewRoot()
+                        .getTransientStateHelper().getTransient(CANDIDATE_COMPONENT_VALUES_MAP);
+                if (candidatesMap == null)
+                {
+                    candidatesMap = new LinkedHashMap<String, Object>();
+                    context.getViewRoot().getTransientStateHelper().putTransient(
+                            CANDIDATE_COMPONENT_VALUES_MAP, candidatesMap);
+                }
+                candidatesMap.put(component.getClientId(context), value);
+            }
+        }
+    }
+    
+    private boolean isValidateWholeBeanEnabled(FacesContext facesContext)
+    {
+        Boolean value = (Boolean) facesContext.getAttributes().get(ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME);
+        if (value == null)
+        {
+            String enabled = facesContext.getExternalContext().getInitParameter(ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME);
+            if (enabled == null)
+            {
+                value = Boolean.FALSE;
+            }
+            else
+            {
+                value = Boolean.valueOf(enabled);
+            }
+        }
+        return Boolean.TRUE.equals(value);
     }
 
     private javax.validation.Validator createValidator(final ValidatorFactory validatorFactory, FacesContext context)

@@ -32,6 +32,7 @@ import javax.faces.validator.LengthValidator;
 import javax.faces.validator.LongRangeValidator;
 import javax.faces.validator.RegexValidator;
 import javax.faces.validator.RequiredValidator;
+import org.apache.myfaces.component.validate.ValidateWholeBeanComponent;
 
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 
@@ -119,6 +120,8 @@ public final class CoreLibrary extends AbstractTagLibrary
         this.addComponent("importConstants", UIImportConstants.COMPONENT_TYPE, null);
 
         this.addComponent("verbatim", "javax.faces.HtmlOutputText", "javax.faces.Text", VerbatimHandler.class);
+        
+        this.addComponent("validateWholeBean", ValidateWholeBeanComponent.COMPONENT_TYPE, null);
         
         this.addComponent("websocket", "javax.faces.Websocket", 
                 "javax.faces.Websocket", WebsocketHandler.class);
