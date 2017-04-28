@@ -204,7 +204,7 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
      */
     public void testDisabledAttribute() 
     {
-        outcomeTargetButton.getAttributes().put(JSFAttr.DISABLED_ATTR, "true");
+        outcomeTargetButton.getAttributes().put(JSFAttr.DISABLED_ATTR, Boolean.TRUE);
         try 
         {
             outcomeTargetButton.encodeAll(facesContext);
