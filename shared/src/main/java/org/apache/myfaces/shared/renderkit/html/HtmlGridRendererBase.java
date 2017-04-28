@@ -335,9 +335,25 @@ public class HtmlGridRendererBase
                         
                         //start of new/next row
                         writer.startElement(HTML.TR_ELEM, null); // component);
-                        if (rowClassIndex < rowClassesCount)
+                        String rowClass = null;
+                        if (component instanceof HtmlPanelGrid)
                         {
-                            writer.writeAttribute(HTML.CLASS_ATTR, rowClassesArray[rowClassIndex], null);
+                            rowClass = ((HtmlPanelGrid) component).getRowClass();
+                        }
+                        if (rowClassIndex < rowClassesCount) 
+                        {
+                            if (rowClass == null) 
+                            {
+                                rowClass = rowClassesArray[rowClassIndex];
+                            }
+                            else
+                            {
+                                rowClass = rowClass+" "+rowClassesArray[rowClassIndex];
+                            }
+                        }
+                        if (rowClass != null)
+                        {
+                            writer.writeAttribute(HTML.CLASS_ATTR, rowClass, null);
                         }
                         rowStarted = true;
                         rowClassIndex++;

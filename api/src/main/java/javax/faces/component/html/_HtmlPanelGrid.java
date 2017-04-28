@@ -178,4 +178,11 @@ _StyleProperties, _UniversalProperties, _RoleProperty
   @JSFProperty
   public abstract String getCaptionStyle();
 
+  /**
+   * @since 2.3
+   * @return 
+   */
+  @JSFProperty
+  public abstract String getRowClass();
+
 }
