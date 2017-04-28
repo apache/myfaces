@@ -672,9 +672,25 @@ public class HtmlTableRendererBase extends HtmlRenderer
         {
             writer.startElement(HTML.TD_ELEM, null); // uiData);
         }
-        if (styles.hasColumnStyle())
+        String styleClass = null;
+        if (component instanceof HtmlColumn) 
         {
-            writer.writeAttribute(HTML.CLASS_ATTR, styles.getColumnStyle(columnStyleIndex), null);
+            styleClass = ((HtmlColumn) component).getStyleClass();
+        }
+        if (styles.hasColumnStyle()) 
+        {
+            if (styleClass == null) 
+            {
+                styleClass = styles.getColumnStyle(columnStyleIndex);
+            }
+            else
+            {
+                styleClass = styleClass+" "+styles.getColumnStyle(columnStyleIndex);
+            }
+        }
+        if (styleClass != null)
+        {
+            writer.writeAttribute(HTML.CLASS_ATTR, styleClass, null);
         }
         //RendererUtils.renderChild(facesContext, component);
         component.encodeAll(facesContext);

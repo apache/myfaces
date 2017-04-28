@@ -80,4 +80,11 @@ abstract class _HtmlColumn extends UIColumn
   {
       return super.isRendered();
   }
+  
+  /**
+   * @since 2.3
+   * @return 
+   */
+  @JSFProperty
+  public abstract String getStyleClass();
 }
