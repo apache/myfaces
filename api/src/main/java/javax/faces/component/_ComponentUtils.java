@@ -92,6 +92,21 @@ class _ComponentUtils
         }
         return null;
     }
+    
+    static UIForm findParentUIForm(UIComponent component)
+    {
+        UIComponent parent = component.getParent();
+
+        while (parent != null)
+        {
+            if (parent instanceof UIForm)
+            {
+                return (UIForm) parent;
+            }
+            parent = parent.getParent();
+        }
+        return null;
+    }
 
     static UniqueIdVendor findParentUniqueIdVendor(UIComponent component)
     {

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +33,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import javax.faces.FacesException;
 import javax.faces.component.EditableValueHolder;
@@ -51,6 +53,10 @@ import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlDataTable;
 import javax.faces.component.html.HtmlMessages;
 import javax.faces.component.html.HtmlPanelGrid;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitHint;
+import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
@@ -92,6 +98,7 @@ public final class HtmlRendererUtils
             + "  Consider setting read-only to true instead"
             + " or resetting the disabled value back to false prior to form submission.";
     public static final String STR_EMPTY = "";
+    public static final Pattern GROUP_INDEXED_ID_CHECKER = Pattern.compile("^.*\\d$");
 
     private HtmlRendererUtils()
     {
@@ -256,7 +263,37 @@ public final class HtmlRendererUtils
         {
             return;
         }
+        
         Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
+        if (component instanceof UISelectOne)
+        {
+            String group = ((UISelectOne) component).getGroup();
+            if (group != null && group.length() > 0)
+            {
+                FormInfo formInfo = RendererUtils.findNestingForm(component, facesContext);
+                String fullGroupId = formInfo.getFormName()+
+                        facesContext.getNamingContainerSeparatorChar()+group;
+                if (paramMap.containsKey(fullGroupId))
+                {
+                    String submittedValue = (String) paramMap.get(fullGroupId);
+                    String expectedStart = component.getClientId(facesContext)+
+                            facesContext.getNamingContainerSeparatorChar();
+                    if (submittedValue.startsWith(expectedStart))
+                    {
+                        SelectOneGroupSetSubmittedValueCallback callback = 
+                                new SelectOneGroupSetSubmittedValueCallback(group,
+                                        submittedValue.substring(expectedStart.length()),
+                                        component.getClientId(facesContext),
+                                        component.getValueExpression("value") != null);
+                        formInfo.getForm().visitTree(
+                                VisitContext.createVisitContext(facesContext, null, FIND_SELECT_LIST_HINTS), callback);
+                        //((EditableValueHolder) component).setSubmittedValue(
+                        //        submittedValue.substring(expectedStart.length()));
+                    }
+                }
+                return;
+            }
+        }
         String clientId = component.getClientId(facesContext);
         if (paramMap.containsKey(clientId))
         {
@@ -267,6 +304,77 @@ public final class HtmlRendererUtils
         {
             //see reason for this action at decodeUISelectMany
             ((EditableValueHolder) component).setSubmittedValue(STR_EMPTY);
+        }
+    }
+    
+    private static final  Set<VisitHint> FIND_SELECT_LIST_HINTS = 
+        Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED));
+    
+    private static class SelectOneGroupSetSubmittedValueCallback implements VisitCallback
+    {
+        private String group;
+        private String submittedValue;
+        private String submittedClientId;
+        private boolean sourceComponentHasValueVE;
+        private boolean submittedValueSet;
+
+        public SelectOneGroupSetSubmittedValueCallback(String group, String submittedValue, String submittedClientId,
+                boolean sourceComponentHasValueVE)
+        {
+            this.group = group;
+            this.submittedValue = submittedValue;
+            this.submittedClientId = submittedClientId;
+            this.sourceComponentHasValueVE = sourceComponentHasValueVE;
+            this.submittedValueSet = false;
+        }
+
+        @Override
+        public VisitResult visit(VisitContext context, UIComponent target)
+        {
+            if (target instanceof UISelectOne)
+            {
+                UISelectOne component = (UISelectOne) target;
+                String targetGroup = component.getGroup();
+                if (group.equals(targetGroup))
+                {
+                    if (this.sourceComponentHasValueVE)
+                    {
+                        // dataTable case or original case. Set submittedValue on that component and
+                        // in the others ones of the group empty.
+                        if (submittedClientId.equals(component.getClientId(context.getFacesContext())))
+                        {
+                            component.setSubmittedValue(submittedValue);
+                        }
+                        else
+                        {
+                            component.resetValue();
+                        }
+                    }
+                    else
+                    {
+                        // Find the first component with "value" VE set and set the submitted value there.
+                        // For all other components set as submitted value empty.
+                        if (!this.submittedValueSet)
+                        {
+                            if (component.getValueExpression("value") != null)
+                            {
+                                component.setSubmittedValue(submittedValue);
+                                this.submittedValueSet = true;
+                            }
+                            else
+                            {
+                                component.resetValue();
+                            }
+                        }
+                        else
+                        {
+                            component.resetValue();
+                        }
+                    }
+                    return VisitResult.REJECT;
+                }
+            }
+            return VisitResult.ACCEPT;
         }
     }
 

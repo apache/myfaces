@@ -21,10 +21,13 @@ package javax.faces.component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import javax.el.ValueExpression;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
-
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 
@@ -102,4 +105,20 @@ public class UISelectOne extends UIInput
                 new Object[] {_MessageUtils.getLabel(context, this) });
         setValid(false);
     }
+
+    public String getGroup()
+    {
+        return (String) getStateHelper().eval(PropertyKeys.group);
+    }
+    
+    public void setGroup(String group)
+    {
+        getStateHelper().put(PropertyKeys.group, group ); 
+    }
+    
+    enum PropertyKeys
+    {
+        group
+    }
+    
 }
