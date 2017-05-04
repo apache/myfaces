@@ -21,6 +21,7 @@ package javax.faces.component.html;
 import javax.faces.component.UISelectOne;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
  * Allow the user to choose one option from a set of options.
@@ -77,4 +78,11 @@ _LabelProperty, _RoleProperty
    */
   public abstract String getLayout();
 
+  /**
+   * 
+   * @since 2.3
+   * @return 
+   */
+  @JSFProperty
+  public abstract String getGroup();
 }

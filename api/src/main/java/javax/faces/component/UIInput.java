@@ -85,6 +85,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
     private static final String EMPTY_VALUES_AS_NULL_PARAM_NAME
             = "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
 
+    public static final String ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE 
+            = "javax.faces.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE";
+    
     // our own, cached key
     private static final String MYFACES_EMPTY_VALUES_AS_NULL_PARAM_NAME =
       "org.apache.myfaces.UIInput.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
@@ -549,6 +552,44 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
         return validateEmptyFields;
     }
+    
+    private boolean shouldAlwaysPerformValidationWhenRequiredTrue(FacesContext context)
+    {
+        ExternalContext ec = context.getExternalContext();
+        Boolean alwaysPerformValidationWhenRequiredTrue = (Boolean) ec.getApplicationMap().get(
+                ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE);
+
+        if (alwaysPerformValidationWhenRequiredTrue == null)
+        {
+             String param = ec.getInitParameter(ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE);
+
+             // null means the same as auto.
+             if (param == null)
+             {
+                 param = "false";
+             }
+             else
+             {
+                 // The environment variables are case insensitive.
+                 param = param.toLowerCase();
+             }
+
+             if (param.equals("true"))
+             {
+                 alwaysPerformValidationWhenRequiredTrue = true;
+             }
+             else
+             {
+                 alwaysPerformValidationWhenRequiredTrue = false;
+             }
+
+             // cache the parsed value
+             ec.getApplicationMap().put(ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE, 
+                     alwaysPerformValidationWhenRequiredTrue);
+        }
+
+        return alwaysPerformValidationWhenRequiredTrue;
+    }
 
     /**
      * Determine whether the new value is valid, and queue a ValueChangeEvent if necessary.
@@ -581,7 +622,14 @@ public class UIInput extends UIOutput implements EditableValueHolder
         Object submittedValue = getSubmittedValue();
         if (submittedValue == null)
         {
-            return;
+            if (isRequired() && shouldAlwaysPerformValidationWhenRequiredTrue(context))
+            {
+                // continue
+            }
+            else
+            {
+                return;
+            }
         }
 
         // Begin new JSF 2.0 requirement (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
