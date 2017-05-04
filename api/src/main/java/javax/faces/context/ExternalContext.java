@@ -182,8 +182,7 @@ public abstract class ExternalContext
 
     public abstract String getInitParameter(String name);
 
-    // FIXME: Notify EG about generic usage
-    public abstract Map getInitParameterMap();
+    public abstract Map<String,String> getInitParameterMap();
 
     /**
      * @since JSF 2.0
