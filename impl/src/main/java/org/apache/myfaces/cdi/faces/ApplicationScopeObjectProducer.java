@@ -52,7 +52,7 @@ public class ApplicationScopeObjectProducer
    @Produces
    @InitParameterMap
    @ApplicationScoped
-   public Map<String, Object> getInitParameterMap()
+   public Map<String, String> getInitParameterMap()
    {
        return FacesContext.getCurrentInstance().getExternalContext().getInitParameterMap();
    }
