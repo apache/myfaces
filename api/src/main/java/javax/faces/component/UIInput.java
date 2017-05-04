@@ -82,9 +82,13 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * <p>Note this param is ignored for components extending from UISelectOne/UISelectMany.</p>
      **/
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0", group="validation")
-    private static final String EMPTY_VALUES_AS_NULL_PARAM_NAME
+    public static final String EMPTY_STRING_AS_NULL_PARAM_NAME
             = "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
 
+    /**
+     * If set to true, validation is always performed when required is true.
+     */
+    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.3", group="validation")
     public static final String ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE 
             = "javax.faces.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE";
     
@@ -492,7 +496,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         if (interpretEmptyStringAsNull == null)
         {
             // parses the web.xml to get the "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL" value
-            String param = ec.getInitParameter(EMPTY_VALUES_AS_NULL_PARAM_NAME);
+            String param = ec.getInitParameter(EMPTY_STRING_AS_NULL_PARAM_NAME);
 
             // evaluate the param
             interpretEmptyStringAsNull = "true".equalsIgnoreCase(param);
