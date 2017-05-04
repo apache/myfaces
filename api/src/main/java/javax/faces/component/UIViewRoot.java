@@ -39,6 +39,7 @@ import javax.faces.application.ProjectStage;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 import javax.faces.event.AbortProcessingException;
@@ -61,6 +62,7 @@ import javax.faces.webapp.FacesServlet;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 /**
  * Creates a JSF View, which is a container that holds all of the components that are part of the view.
@@ -81,6 +83,13 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     public static final String METADATA_FACET_NAME = "javax_faces_metadata";
     public static final String UNIQUE_ID_PREFIX = "j_id";
     public static final String VIEW_PARAMETERS_KEY = "javax.faces.component.VIEW_PARAMETERS_KEY";
+    
+    /**
+     * @since 2.3
+     */
+    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.3")
+    public static final String VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME
+            = "javax.faces.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS";
 
     private transient Logger logger = null;
 
@@ -1050,6 +1059,11 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                                 _getLogger().log(Level.SEVERE, "An Exception occured while processing the " +
                                                          "beforePhase method of PhaseListener " + phaseListener +
                                                          " in Phase " + phaseId, t);
+                                if (shouldViewRootPhaseListenerQueuesExceptions(context))
+                                {
+                                    publishException (context, t, phaseId, 
+                                            ExceptionQueuedEventContext.IN_BEFORE_PHASE_KEY);
+                                }
                                 return context.getResponseComplete() ||
                                         (context.getRenderResponse() && !PhaseId.RENDER_RESPONSE.equals(phaseId));
                             }
@@ -1088,6 +1102,11 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                                 logger.log(Level.SEVERE, "An Exception occured while processing the " +
                                                          "afterPhase method of PhaseListener " + phaseListener +
                                                          " in Phase " + phaseId, t);
+                                if (shouldViewRootPhaseListenerQueuesExceptions(context))
+                                {
+                                    publishException (context, t, phaseId, 
+                                            ExceptionQueuedEventContext.IN_AFTER_PHASE_KEY);
+                                }
                             }
                         }
                     }
@@ -1950,4 +1969,51 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             return VisitResult.ACCEPT;
         }
     }
+    
+    private void publishException (FacesContext facesContext, Throwable e, PhaseId phaseId, String key)
+    {
+        ExceptionQueuedEventContext context = new ExceptionQueuedEventContext (facesContext, e, null, phaseId);
+        
+        context.getAttributes().put (key, Boolean.TRUE);
+        
+        facesContext.getApplication().publishEvent (facesContext, ExceptionQueuedEvent.class, context);
+    }
+    
+    private boolean shouldViewRootPhaseListenerQueuesExceptions(FacesContext context)
+    {
+        ExternalContext ec = context.getExternalContext();
+        Boolean alwaysPerformValidationWhenRequiredTrue = (Boolean) ec.getApplicationMap().get(
+                VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME);
+
+        if (alwaysPerformValidationWhenRequiredTrue == null)
+        {
+             String param = ec.getInitParameter(VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME);
+
+             // null means the same as auto.
+             if (param == null)
+             {
+                 param = "false";
+             }
+             else
+             {
+                 // The environment variables are case insensitive.
+                 param = param.toLowerCase();
+             }
+
+             if (param.equals("true"))
+             {
+                 alwaysPerformValidationWhenRequiredTrue = true;
+             }
+             else
+             {
+                 alwaysPerformValidationWhenRequiredTrue = false;
+             }
+
+             // cache the parsed value
+             ec.getApplicationMap().put(VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME, 
+                     alwaysPerformValidationWhenRequiredTrue);
+        }
+
+        return alwaysPerformValidationWhenRequiredTrue;
+    }    
 }
