@@ -101,24 +101,21 @@ public final class ConvertDateTimeHandler extends ConverterHandler
         {
             c.setLocale(ComponentSupport.getLocale(ctx, this.locale));
         }
+        if (this.type != null)
+        {
+            c.setType(this.type.getValue(ctx));
+        }
         if (this.pattern != null)
         {
             c.setPattern(this.pattern.getValue(ctx));
         }
-        else
+        if (this.dateStyle != null)
         {
-            if (this.type != null)
-            {
-                c.setType(this.type.getValue(ctx));
-            }
-            if (this.dateStyle != null)
-            {
-                c.setDateStyle(this.dateStyle.getValue(ctx));
-            }
-            if (this.timeStyle != null)
-            {
-                c.setTimeStyle(this.timeStyle.getValue(ctx));
-            }
+            c.setDateStyle(this.dateStyle.getValue(ctx));
+        }
+        if (this.timeStyle != null)
+        {
+            c.setTimeStyle(this.timeStyle.getValue(ctx));
         }
 
         if (this.timeZone != null)

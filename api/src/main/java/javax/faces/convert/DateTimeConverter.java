@@ -21,6 +21,16 @@ package javax.faces.convert;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalQuery;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -63,6 +73,13 @@ public class DateTimeConverter
     private static final String TYPE_DATE = "date";
     private static final String TYPE_TIME = "time";
     private static final String TYPE_BOTH = "both";
+    private static final String TYPE_LOCAL_DATE = "localDate";
+    private static final String TYPE_LOCAL_TIME = "localTime";
+    private static final String TYPE_LOCAL_DATE_TIME = "localDateTime";
+    private static final String TYPE_OFFSET_TIME = "offsetTime";
+    private static final String TYPE_OFFSET_DATE_TIME = "offsetDateTime";
+    private static final String TYPE_ZONED_DATE_TIME = "zonedDateTime";
+            
     private static final String STYLE_DEFAULT = "default";
     private static final String STYLE_MEDIUM = "medium";
     private static final String STYLE_SHORT = "short";
@@ -100,37 +117,96 @@ public class DateTimeConverter
             value = value.trim();
             if (value.length() > 0)
             {
-                DateFormat format = getDateFormat();
-                TimeZone tz = getTimeZone();
-                if( tz != null )
+                if (isJava8DateTimeFormatter())
                 {
-                    format.setTimeZone(tz);
+                    DateTimeFormatter format = getDateTimeFormatter();
+                    try
+                    {
+                        TemporalQuery tq = getTemporalQuery();
+                        if (tq != null)
+                        {
+                            return format.parse(value, tq);
+                        }
+                        else
+                        {
+                            return format.parse(value);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        String type = getType();
+                        TemporalAccessor currentDate;
+                        if (TYPE_LOCAL_DATE.equals(type) || TYPE_LOCAL_DATE_TIME.equals(type) 
+                                || TYPE_LOCAL_TIME.equals(type))
+                        {
+                            currentDate = LocalDateTime.now();
+                        }
+                        else if (TYPE_OFFSET_TIME.equals(type) || TYPE_OFFSET_DATE_TIME.equals(type))
+                        {
+                            currentDate = OffsetDateTime.now();
+                        }
+                        else
+                        {
+                            currentDate = ZonedDateTime.now();
+                        }
+                        Object[] args = new Object[]{value,
+                                format.format(currentDate),_MessageUtils.getLabel(facesContext, uiComponent)};
+
+                        if(type.equals(TYPE_LOCAL_DATE))
+                        {
+                            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, DATE_ID, args));
+                        }
+                        else if (type.equals(TYPE_LOCAL_TIME) || type.equals(TYPE_OFFSET_TIME))
+                        {
+                            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, TIME_ID, args));
+                        }
+                        else if (type.equals(TYPE_LOCAL_DATE_TIME) || type.equals(TYPE_OFFSET_DATE_TIME) 
+                                || type.equals(TYPE_ZONED_DATE_TIME))
+                        {
+                            throw new ConverterException(
+                                    _MessageUtils.getErrorMessage(facesContext, DATETIME_ID, args));
+                        }
+                        else
+                        {
+                            throw new ConverterException("invalid type '" + _type + "'");
+                        }
+                    }
                 }
-                try
+                else
                 {
-                    return format.parse(value);
-                }
-                catch (ParseException e)
-                {
-                    String type = getType();
-                    Object[] args = new Object[]{value,
-                            format.format(new Date()),_MessageUtils.getLabel(facesContext, uiComponent)};
-                    
-                    if(type.equals(TYPE_DATE))
+                    DateFormat format = getDateFormat();
+                    TimeZone tz = getTimeZone();
+                    if( tz != null )
                     {
-                        throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, DATE_ID, args));
+                        format.setTimeZone(tz);
                     }
-                    else if (type.equals(TYPE_TIME))
+                    try
                     {
-                        throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, TIME_ID, args));
+                        return format.parse(value);
                     }
-                    else if (type.equals(TYPE_BOTH))
+                    catch (ParseException e)
                     {
-                        throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, DATETIME_ID, args));
-                    }
-                    else
-                    {
-                        throw new ConverterException("invalid type '" + _type + "'");
+                        String type = getType();
+                        Object[] args = new Object[]{value,
+                                format.format(new Date()),_MessageUtils.getLabel(facesContext, uiComponent)};
+
+                        if(type.equals(TYPE_DATE))
+                        {
+                            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, DATE_ID, args));
+                        }
+                        else if (type.equals(TYPE_TIME))
+                        {
+                            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, TIME_ID, args));
+                        }
+                        else if (type.equals(TYPE_BOTH))
+                        {
+                            throw new ConverterException(
+                                    _MessageUtils.getErrorMessage(facesContext, DATETIME_ID, args));
+                        }
+                        else
+                        {
+                            throw new ConverterException("invalid type '" + _type + "'");
+                        }
                     }
                 }
             }
@@ -158,20 +234,41 @@ public class DateTimeConverter
             return (String)value;
         }
 
-        DateFormat format = getDateFormat();
-        TimeZone tz = getTimeZone(); 
-        if (tz != null)
+        if (isJava8DateTimeFormatter())
         {
-            format.setTimeZone(tz);
+            DateTimeFormatter format = getDateTimeFormatter();
+            
+            if (value instanceof TemporalAccessor)
+            {
+                try
+                {
+                    return format.format((TemporalAccessor) value);
+                }
+                catch (Exception e)
+                {
+                    throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID,
+                            new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
+                }
+            }
+            return null;
         }
-        try
-        {
-            return format.format(value);
-        }
-        catch (Exception e)
-        {
-            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID,
-                    new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
+        else
+        {        
+            DateFormat format = getDateFormat();
+            TimeZone tz = getTimeZone(); 
+            if (tz != null)
+            {
+                format.setTimeZone(tz);
+            }
+            try
+            {
+                return format.format(value);
+            }
+            catch (Exception e)
+            {
+                throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID,
+                        new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
+            }
         }
     }
 
@@ -213,6 +310,131 @@ public class DateTimeConverter
         format.setLenient(false);
         return format;
     }
+    
+    private DateTimeFormatter getDateTimeFormatter()
+    {
+        DateTimeFormatter formatter = null;
+        String type = getType();
+        String pattern = getPattern();
+        if (pattern != null && pattern.length() > 0)
+        {
+            Locale locale = getLocale();
+            if (locale == null)
+            {
+                formatter = DateTimeFormatter.ofPattern(pattern);
+            }
+            else
+            {
+                formatter = DateTimeFormatter.ofPattern(pattern, locale);
+            }
+        }
+        else
+        {
+            if (TYPE_LOCAL_DATE.equals(type))
+            {
+                formatter = DateTimeFormatter.ofLocalizedDate(calcFormatStyle(getDateStyle()));
+            }
+            else if (TYPE_LOCAL_DATE_TIME.equals(type) )
+            {
+                String timeStyle = getTimeStyle();
+                if (timeStyle != null && timeStyle.length() > 0)
+                {
+                    formatter = DateTimeFormatter.ofLocalizedDateTime(
+                            calcFormatStyle(getDateStyle()), calcFormatStyle(timeStyle));
+                }
+                else
+                {
+                    formatter = DateTimeFormatter.ofLocalizedDateTime(
+                            calcFormatStyle(getDateStyle()));
+                }
+            }
+            else if (TYPE_LOCAL_TIME.equals(type) )
+            {
+                formatter = DateTimeFormatter.ofLocalizedTime(calcFormatStyle(getTimeStyle()));
+            }
+            else if (TYPE_OFFSET_TIME.equals(type))
+            {
+                formatter = DateTimeFormatter.ISO_OFFSET_TIME;
+            }
+            else if (TYPE_OFFSET_DATE_TIME.equals(type))
+            {
+                formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+            }
+            else if (TYPE_ZONED_DATE_TIME.equals(type))
+            {
+                formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
+            }
+            
+            Locale locale = getLocale();
+            if (locale != null)
+            {
+                formatter = formatter.withLocale(locale);
+            }
+        }
+        return formatter;
+    }
+    
+    /**
+     * According to java8 api, parse() also receives a TemporalQuery parameter that works as a qualifier to decide
+     * how to parse and return the right type of value.
+     * 
+     * @return 
+     */
+    private TemporalQuery getTemporalQuery()
+    {
+        String type = getType();
+        if (TYPE_LOCAL_DATE.equals(type))
+        {
+            return LocalDate::from;
+        }
+        else if (TYPE_LOCAL_DATE_TIME.equals(type) )
+        {
+            return LocalDateTime::from;            
+        }
+        else if (TYPE_LOCAL_TIME.equals(type) )
+        {
+            return LocalTime::from;
+        }
+        else if (TYPE_OFFSET_TIME.equals(type))
+        {
+            return OffsetTime::from;
+        }
+        else if (TYPE_OFFSET_DATE_TIME.equals(type))
+        {
+            return OffsetDateTime::from;
+        }
+        else if (TYPE_ZONED_DATE_TIME.equals(type))
+        {
+            return ZonedDateTime::from;
+        }
+        return null;
+    }
+    
+    private FormatStyle calcFormatStyle(String name)
+    {
+        if (name.equals(STYLE_DEFAULT))
+        {
+            return FormatStyle.MEDIUM;
+        }
+        if (name.equals(STYLE_MEDIUM))
+        {
+            return FormatStyle.MEDIUM;
+        }
+        if (name.equals(STYLE_SHORT))
+        {
+            return FormatStyle.SHORT;
+        }
+        if (name.equals(STYLE_LONG))
+        {
+            return FormatStyle.SHORT;
+        }
+        if (name.equals(STYLE_FULL))
+        {
+            return FormatStyle.FULL;
+        }
+        
+        throw new ConverterException("invalid style '" + name + "'");
+    }
 
     private int calcStyle(String name)
     {
@@ -238,6 +460,24 @@ public class DateTimeConverter
         }
 
         throw new ConverterException("invalid style '" + name + "'");
+    }
+    
+    public boolean isJava8DateTimeFormatter()
+    {
+        String type = getType();
+        if (type != null)
+        {
+            return  TYPE_LOCAL_DATE.equals(type) ||
+                    TYPE_LOCAL_TIME.equals(type) ||
+                    TYPE_LOCAL_DATE_TIME.equals(type) ||
+                    TYPE_OFFSET_TIME.equals(type) ||
+                    TYPE_OFFSET_DATE_TIME.equals(type) ||
+                    TYPE_ZONED_DATE_TIME.equals(type);
+        }
+        else
+        {
+            return false;
+        }
     }
 
     // STATE SAVE/RESTORE
