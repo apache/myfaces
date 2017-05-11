@@ -42,6 +42,7 @@ import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilderBean;
 import org.apache.myfaces.push.cdi.WebsocketSessionBean;
 import org.apache.myfaces.push.cdi.WebsocketViewBean;
 import org.apache.myfaces.shared.renderkit.html.HTML;
+import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**
  *
@@ -83,6 +84,8 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
     {
         ResponseWriter writer = facesContext.getResponseWriter();
 
+        ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
+        
         // Render the tag that will be embedded into the DOM tree that helps to detect if the message
         // must be processed or not and if the connection must be closed.
         writer.startElement(HTML.DIV_ELEM, component);
