@@ -392,14 +392,15 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     @Override
     public String encodeWebsocketURL(String baseUrl)
     {
+        FacesContext facesContext = getCurrentFacesContext();
         Integer port = WebConfigParamUtils.getIntegerInitParameter(
-                _currentFacesContext.getExternalContext(), ViewHandler.WEBSOCKET_PORT);
+                getCurrentFacesContext().getExternalContext(), ViewHandler.WEBSOCKET_PORT);
         port = (port == 0) ? null : port;
         if (port != null && 
-            !port.equals(_currentFacesContext.getExternalContext().getRequestServerPort()))
+            !port.equals(facesContext.getExternalContext().getRequestServerPort()))
         {
-            String scheme = _currentFacesContext.getExternalContext().getRequestScheme();
-            String serverName = _currentFacesContext.getExternalContext().getRequestServerName();
+            String scheme = facesContext.getExternalContext().getRequestScheme();
+            String serverName = facesContext.getExternalContext().getRequestServerName();
             String url;
             try
             {
