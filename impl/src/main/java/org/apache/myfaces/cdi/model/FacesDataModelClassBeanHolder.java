@@ -105,8 +105,40 @@ public class FacesDataModelClassBeanHolder extends DataModelBuilder
     {
         try
         {
-            Constructor constructor = dataModelClass.getConstructor(forClass);
-            return (DataModel) constructor.newInstance(value);
+            Constructor selectedConstructor = null;
+            boolean equalsFound = false;
+            for (Constructor constructor : dataModelClass.getConstructors())
+            {
+                if (constructor.getParameterCount() == 1)
+                {
+                    if (constructor.getParameterTypes()[0].equals(forClass))
+                    {
+                        selectedConstructor = constructor;
+                        equalsFound = true;
+                    }
+                    else if (constructor.getParameterTypes()[0].isAssignableFrom(forClass))
+                    {
+                        if (!equalsFound)
+                        {
+                            selectedConstructor = constructor;
+                        }
+                    }
+                }
+            }
+            
+            Constructor constructor = null;
+            if (selectedConstructor != null)
+            {
+                constructor = selectedConstructor;
+                return (DataModel) constructor.newInstance(value);
+            }
+            else
+            {
+                constructor = dataModelClass.getConstructor();
+                DataModel dm = (DataModel) constructor.newInstance();
+                dm.setWrappedData(value);
+                return dm;
+            }
         } 
         catch (NoSuchMethodException ex)
         {
