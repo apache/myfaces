@@ -592,6 +592,17 @@ public class PartialViewContextImpl extends PartialViewContext
                         }
                     }
                 }*/
+                
+                List<String> evalScripts = pvc.getEvalScripts();
+                if (evalScripts != null && evalScripts.size() > 0)
+                {
+                    for (String script : evalScripts)
+                    {
+                        writer.startEval();
+                        writer.write(script);
+                        writer.endEval();
+                    }
+                }
             }
 
             // invoke encodeAll() on every UIViewParameter in the view to 
