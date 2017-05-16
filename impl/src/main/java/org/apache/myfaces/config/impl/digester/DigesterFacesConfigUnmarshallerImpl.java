@@ -149,6 +149,7 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         // Note there is no client-window-factory, this factory can be set only using SPI.
         digester.addCallMethod("faces-config/factory/flow-handler-factory", "addFlowHandlerFactory", 0);
         // 2.2 specific end
+        digester.addCallMethod("faces-config/factory/client-window-factory", "addClientWindowFactory", 0);
 
         digester.addObjectCreate("faces-config/factory", FactoryImpl.class);
         digester.addSetNext("faces-config/factory", "addFactory");
