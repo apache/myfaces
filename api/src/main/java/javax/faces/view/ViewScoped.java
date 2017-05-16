@@ -30,7 +30,7 @@ import javax.enterprise.context.NormalScope;
  *
  * @since 2.2
  */
-@NormalScope
+@NormalScope(passivating=true)
 @Inherited
 @Documented
 @Target(value={ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
