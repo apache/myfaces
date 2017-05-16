@@ -21,6 +21,10 @@ package org.apache.myfaces.application;
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 
+/**
+ * @deprecated Use org.apache.myfaces.spi.StateCacheProvider instead
+ */
+@Deprecated
 public abstract class StateCacheFactory implements FacesWrapper<StateCacheFactory>
 {
     public abstract StateCache getStateCache(FacesContext facesContext);

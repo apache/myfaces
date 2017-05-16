@@ -36,10 +36,16 @@ import javax.faces.context.ExternalContext;
  */
 public abstract class AnnotationProviderWrapper extends AnnotationProvider implements FacesWrapper<AnnotationProvider>
 {
+    private AnnotationProvider delegate;
 
     public AnnotationProviderWrapper()
     {
         
+    }
+
+    public AnnotationProviderWrapper(AnnotationProvider delegate)
+    {
+        this.delegate = delegate;
     }
 
     public Map<Class<? extends Annotation>,Set<Class<?>>> getAnnotatedClasses(ExternalContext ctx)
@@ -56,4 +62,11 @@ public abstract class AnnotationProviderWrapper extends AnnotationProvider imple
     {
         return getWrapped().getBaseUrls(ctx);
     }
+
+    @Override
+    public AnnotationProvider getWrapped()
+    {
+        return this.delegate;
+    }
+
 }

@@ -21,9 +21,9 @@ package org.apache.myfaces.application.viewstate;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.application.StateCache;
-import org.apache.myfaces.application.StateCacheFactory;
+import org.apache.myfaces.spi.StateCacheProvider;
 
-public class StateCacheFactoryImpl extends StateCacheFactory
+public class StateCacheFactoryImpl extends StateCacheProvider
 {
 
     private StateCache _clientSideStateCache;

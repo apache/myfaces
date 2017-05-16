@@ -30,8 +30,6 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.application.StateCache;
-import org.apache.myfaces.application.StateCacheFactory;
-import org.apache.myfaces.application.viewstate.StateCacheFactoryImpl;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
 import org.apache.myfaces.renderkit.StateTokenProcessor;
@@ -39,6 +37,8 @@ import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.util.StateUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.spi.StateCacheProvider;
+import org.apache.myfaces.spi.StateCacheProviderFactory;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -80,7 +80,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     public static final String INIT_PARAM_AUTOCOMPLETE_OFF_VIEW_STATE = 
             "org.apache.myfaces.AUTOCOMPLETE_OFF_VIEW_STATE";
             
-    private StateCacheFactory _stateCacheFactory;
+    private StateCacheProvider _stateCacheFactory;
     
     private StateTokenProcessor _stateTokenProcessor;
     
@@ -88,7 +88,6 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     
     public HtmlResponseStateManager()
     {
-        _stateCacheFactory = new StateCacheFactoryImpl();
         _stateTokenProcessor = new DefaultStateTokenProcessor();
         _autoCompleteOffViewState = null;
     }
@@ -292,6 +291,12 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
     protected StateCache getStateCache(FacesContext facesContext)
     {
+        if (_stateCacheFactory == null)
+        {
+            _stateCacheFactory = StateCacheProviderFactory
+                    .getStateCacheProviderFactory(facesContext.getExternalContext())
+                    .getStateCacheProvider(facesContext.getExternalContext());
+        }
         return _stateCacheFactory.getStateCache(facesContext);
     }
 
