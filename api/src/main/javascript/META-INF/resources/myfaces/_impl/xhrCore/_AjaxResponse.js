@@ -181,21 +181,34 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             return;
         }
 
-        // Now update the forms that were not replaced but forced to be updated, because contains child ajax tags
-        // we should only update forms with view state hidden field. If by some reason, the form was set to be
-        // updated but the form was replaced, it does not have hidden view state, so later in changeTrace processing the
-        // view state is updated.
+        var updatedForm = this._getUpdatedForm(context, mfInternal._updateForms);
+        if (updatedForm != null) {
+            var baseViewStateField = this._Dom.getNamedElementFromForm(updatedForm, this.P_VIEWSTATE);
+            var viewStateId = baseViewStateField.id;
+            var viewStatePrefix = viewStateId.substring(0,
+                viewStateId.indexOf(this.P_VIEWSTATE)+this.P_VIEWSTATE.length);
+            var viewStateFields = document.getElementsByName(this.P_VIEWSTATE);
+            for (var cnt = viewStateFields.length - 1; cnt >= 0; cnt--) {
+                if (viewStateFields[cnt].id.startsWith(viewStatePrefix)) {
+                    this._setVSTCWForm(context, viewStateFields[cnt].form, mfInternal.appliedViewState, this.P_VIEWSTATE);
+                }
+            }
+        }else{
+            // Now update the forms that were not replaced but forced to be updated, because contains child ajax tags
+            // we should only update forms with view state hidden field. If by some reason, the form was set to be
+            // updated but the form was replaced, it does not have hidden view state, so later in changeTrace processing the
+            // view state is updated.
 
-        //set the viewstates of all outer forms parents of our updated elements
+            //set the viewstates of all outer forms parents of our updated elements
+            _Lang.arrForEach(mfInternal._updateForms, function (elem) {
+                this._setVSTCWForm(context, elem, mfInternal.appliedViewState, this.P_VIEWSTATE);
+            }, 0, this);
 
-        _Lang.arrForEach(mfInternal._updateForms, function (elem) {
-            this._setVSTCWForm(context, elem, mfInternal.appliedViewState, this.P_VIEWSTATE);
-        }, 0, this);
-
-        //set the viewstate of all forms within our updated elements
-        _Lang.arrForEach(mfInternal._updateElems, function (elem) {
-            this._setVSTCWInnerForms(context, elem, mfInternal.appliedViewState, this.P_VIEWSTATE);
-        }, 0, this);
+            //set the viewstate of all forms within our updated elements
+            _Lang.arrForEach(mfInternal._updateElems, function (elem) {
+                this._setVSTCWInnerForms(context, elem, mfInternal.appliedViewState, this.P_VIEWSTATE);
+            }, 0, this);
+        }
     },
 
     fixClientWindows:function (context, theForm) {
@@ -213,18 +226,47 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             }
             return;
         }
-        //set the client window of all outer form of updated elements
+        
+        var updatedForm = this._getUpdatedForm(context, mfInternal._updateForms);
+        if (updatedForm != null) {
+            var baseCWField = this._Dom.getNamedElementFromForm(updatedForm, this.P_CLIENTWINDOW);
+            var cwId = baseCWField.id;
+            var cwPrefix = cwId.substring(0,
+                cwId.indexOf(this.P_CLIENTWINDOW)+this.P_CLIENTWINDOW.length);
+            var cwFields = document.getElementsByName(this.P_CLIENTWINDOW);
+            for (var cnt = cwFields.length - 1; cnt >= 0; cnt--) {
+                if (cwFields[cnt].id.startsWith(cwPrefix)) {
+                    this._setVSTCWForm(context, cwFields[cnt].form, mfInternal.appliedClientWindow, this.P_CLIENTWINDOW);
+                }
+            }
+        } else{
+            //set the client window of all outer form of updated elements
 
-        _Lang.arrForEach(mfInternal._updateForms, function (elem) {
-            this._setVSTCWForm(context, elem, mfInternal.appliedClientWindow, this.P_CLIENTWINDOW);
-        }, 0, this);
+            _Lang.arrForEach(mfInternal._updateForms, function (elem) {
+                this._setVSTCWForm(context, elem, mfInternal.appliedClientWindow, this.P_CLIENTWINDOW);
+            }, 0, this);
 
-        //set the client window of all forms within our updated elements
-        _Lang.arrForEach(mfInternal._updateElems, function (elem) {
-            this._setVSTCWInnerForms(context, elem, mfInternal.appliedClientWindow, this.P_CLIENTWINDOW);
-        }, 0, this);
+            //set the client window of all forms within our updated elements
+            _Lang.arrForEach(mfInternal._updateElems, function (elem) {
+                this._setVSTCWInnerForms(context, elem, mfInternal.appliedClientWindow, this.P_CLIENTWINDOW);
+            }, 0, this);
+        }
     },
 
+
+    _getUpdatedForm:function(context, updateForms) {
+        if (updateForms != null) {
+            for (var i = 0; i < updateForms.length; i++) {
+                var elem = this._Lang.byId(updateForms[i]);
+                if (!elem){
+                    continue;
+                }else{
+                    return elem;
+                }
+            }
+        }
+    },
+    
     /**
      * sets the viewstate element in a given form
      *
@@ -232,7 +274,9 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
      * @param context the current request context
      */
     _setVSTCWForm:function (context, theForm, value, identifier) {
-        theForm = this._Lang.byId(theForm);
+        if (typeof theForm === 'string' || theForm instanceof String) {
+            theForm = this._Lang.byId(theForm);
+        }
         var mfInternal = context._mfInternal;
 
         if (!theForm) return;

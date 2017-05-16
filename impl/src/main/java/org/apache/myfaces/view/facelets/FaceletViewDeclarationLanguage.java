@@ -1929,28 +1929,29 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                         if (end >= 0)
                         {
                             // save state
-                            String stateStr;
-                            if (view.isTransient())
-                            {
-                                // Force state saving
-                                stateMgr.writeState(context, stateObj);
-                                stateStr = stateWriter.getAndResetBuffer();
-                            }
-                            else if (stateObj == null)
-                            {
-                                stateStr = null;
-                            }
-                            else
-                            {
-                                stateMgr.writeState(context, stateObj);
-                                stateStr = stateWriter.getAndResetBuffer();
-                            }
-
                             int start = 0;
 
                             while (end != -1)
                             {
                                 origWriter.write(content, start, end - start);
+                                
+                                String stateStr;
+                                if (view.isTransient())
+                                {
+                                    // Force state saving
+                                    stateMgr.writeState(context, stateObj);
+                                    stateStr = stateWriter.getAndResetBuffer();
+                                }
+                                else if (stateObj == null)
+                                {
+                                    stateStr = null;
+                                }
+                                else
+                                {
+                                    stateMgr.writeState(context, stateObj);
+                                    stateStr = stateWriter.getAndResetBuffer();
+                                }                                
+                                
                                 if (stateStr != null)
                                 {
                                     origWriter.write(stateStr);
