@@ -12,3 +12,4 @@ org.apache.myfaces.cdi.converter.FacesConverterExtension
 org.apache.myfaces.cdi.validator.FacesValidatorExtension
 org.apache.myfaces.cdi.behavior.FacesBehaviorExtension
 org.apache.myfaces.cdi.model.FacesDataModelExtension
+org.apache.myfaces.cdi.config.FacesConfigExtension

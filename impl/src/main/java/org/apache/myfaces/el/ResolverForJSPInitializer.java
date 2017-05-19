@@ -21,6 +21,7 @@ package org.apache.myfaces.el;
 import java.util.Iterator;
 
 import javax.faces.FactoryFinder;
+import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
@@ -55,7 +56,9 @@ public final class ResolverForJSPInitializer implements PhaseListener
             {
                 if (!initialized)
                 {
-                    _resolverBuilder.build(_resolverForJSP);
+                    FacesContext facesContext = event.getFacesContext();
+                    facesContext = (facesContext == null) ? FacesContext.getCurrentInstance() : facesContext;
+                    _resolverBuilder.build(facesContext, _resolverForJSP);
 
                     LifecycleFactory factory = (LifecycleFactory) 
                             FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);

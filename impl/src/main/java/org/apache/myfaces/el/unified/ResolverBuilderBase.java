@@ -24,6 +24,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELResolver;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.faces.annotation.FacesConfig;
 import javax.faces.context.FacesContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
@@ -31,6 +33,8 @@ import javax.faces.el.VariableResolver;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
+import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.convert.PropertyResolverToELResolver;
 import org.apache.myfaces.el.convert.VariableResolverToELResolver;
@@ -219,5 +223,31 @@ public class ResolverBuilderBase
     protected RuntimeConfig getRuntimeConfig()
     {
         return _config;
+    }
+    
+    protected boolean isReplaceImplicitObjectResolverWithCDIResolver(FacesContext facesContext)
+    {
+        BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
+        if (beanManager != null)
+        {
+            FacesConfigBeanHolder holder = CDIUtils.lookup(beanManager, FacesConfigBeanHolder.class);
+            if (holder != null)
+            {
+                FacesConfig.Version version = holder.getFacesConfigVersion();
+                if (version == null)
+                {
+                    return false;
+                }
+                else if (FacesConfig.Version.JSF_2_2.ordinal() < version.ordinal())
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 }

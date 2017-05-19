@@ -411,8 +411,9 @@ public class ApplicationImpl extends Application
 
     private ELResolver createFacesResolver()
     {
+        FacesContext facesContext = getFaceContext();
         boolean supportJSPAndFacesEL = MyfacesConfig.getCurrentInstance(
-                                getFaceContext().getExternalContext()).isSupportJSPAndFacesEL();
+                                facesContext.getExternalContext()).isSupportJSPAndFacesEL();
         CompositeELResolver resolver;
         if (supportJSPAndFacesEL)
         {
@@ -422,7 +423,7 @@ public class ApplicationImpl extends Application
         {
             resolver = new CompositeELResolver();
         }
-        getResolverBuilderForFaces().build(resolver);
+        getResolverBuilderForFaces().build(facesContext, resolver);
         return resolver;
     }
 

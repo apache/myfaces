@@ -23,6 +23,9 @@ import java.util.List;
 
 import javax.el.CompositeELResolver;
 import javax.el.ELResolver;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.faces.context.FacesContext;
+import org.apache.myfaces.cdi.util.CDIUtils;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.FlashELResolver;
@@ -44,13 +47,29 @@ public class ResolverBuilderForJSP extends ResolverBuilderBase implements ELReso
     {
         super(config);
     }
-
+    
     public void build(CompositeELResolver compositeElResolver)
+    {
+        build(FacesContext.getCurrentInstance(), compositeElResolver);
+    }
+
+    public void build(FacesContext facesContext, CompositeELResolver compositeElResolver)
     {
         // add the ELResolvers to a List first to be able to sort them
         List<ELResolver> list = new ArrayList<ELResolver>();
         
-        list.add(ImplicitObjectResolver.makeResolverForJSP());
+        if (isReplaceImplicitObjectResolverWithCDIResolver(facesContext))
+        {
+            //Add CDI ELResolver instead.
+            BeanManager beanManager = CDIUtils.getBeanManager(
+                    FacesContext.getCurrentInstance().getExternalContext());
+            list.add(beanManager.getELResolver());
+        }
+        else
+        {        
+            list.add(ImplicitObjectResolver.makeResolverForJSP());
+        }
+        
         //Flash object is instanceof Map, so it is necessary to resolve
         //before MapELResolver. Better to put this one before
         list.add(new FlashELResolver());        

@@ -19,6 +19,7 @@
 package org.apache.myfaces.el.unified;
 
 import javax.el.CompositeELResolver;
+import javax.faces.context.FacesContext;
 
 /**
  * The ELResolverBuilder is responsible to build the el resolver which is used by the application through
@@ -32,4 +33,6 @@ import javax.el.CompositeELResolver;
 public interface ELResolverBuilder
 {
     void build(CompositeELResolver elResolver);
+    
+    void build(FacesContext facesContext, CompositeELResolver elResolver);
 }

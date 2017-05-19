@@ -31,7 +31,9 @@ import javax.el.ExpressionFactory;
 import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 import javax.el.ResourceBundleELResolver;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.cdi.util.CDIUtils;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.FlashELResolver;
@@ -90,10 +92,27 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
 
     public void build(CompositeELResolver compositeElResolver)
     {
+        build(FacesContext.getCurrentInstance(), compositeElResolver);
+    }
+    
+    public void build(FacesContext facesContext, CompositeELResolver compositeElResolver)
+    {
         // add the ELResolvers to a List first to be able to sort them
         List<ELResolver> list = new ArrayList<ELResolver>();
         
-        list.add(ImplicitObjectResolver.makeResolverForFaces());
+        if (isReplaceImplicitObjectResolverWithCDIResolver(facesContext))
+        {
+            //Add CDI ELResolver instead.
+            //Add CDI ELResolver instead.
+            BeanManager beanManager = CDIUtils.getBeanManager(
+                    FacesContext.getCurrentInstance().getExternalContext());
+            list.add(beanManager.getELResolver());
+        }
+        else
+        {
+            list.add(ImplicitObjectResolver.makeResolverForFaces());
+        }
+            
         list.add(new CompositeComponentELResolver());
 
         addFromRuntimeConfig(list);
@@ -164,5 +183,5 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
         // case, because it always sets propertyResolved to true (per the spec)
         compositeElResolver.add(new ScopedAttributeResolver());
     }
-
+    
 }
