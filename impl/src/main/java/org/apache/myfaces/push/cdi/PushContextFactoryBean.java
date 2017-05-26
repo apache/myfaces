@@ -46,7 +46,7 @@ public class PushContextFactoryBean
         return new PushContextImpl(channel);
     }
     
-    public void close(@Disposes PushContext context) 
+    public void close(@Disposes @Push PushContext context) 
     {
     }
 }
