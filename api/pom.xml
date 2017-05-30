@@ -323,6 +323,7 @@
             <plugin>
                 <groupId>de.berlios.jsunit</groupId>
                 <artifactId>jsunit-maven2-plugin</artifactId>
+                <version>1.3</version>
                 <executions>
                     <!-- TODO currently deactivated -->
                     <!--execution>
