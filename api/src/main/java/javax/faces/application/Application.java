@@ -127,6 +127,9 @@ public abstract class Application
      * @since 2.0
      * 
      * FIXME: Notify EG, this should not be abstract and throw UnsupportedOperationException
+     * 
+     * @param behaviorId
+     * @param behaviorClass 
      */
     public void addBehavior(String behaviorId, String behaviorClass)
     {
@@ -192,9 +195,8 @@ public abstract class Application
 
     /**
      * 
-     * @param validatorId
-     * 
      * @since 2.0
+     * @param validatorId
      */
     public void addDefaultValidatorId(String validatorId)
     {
@@ -368,7 +370,7 @@ public abstract class Application
      * <p>
      * Call the <code>getValue()</code> method on the specified <code>ValueExpression</code>. If it returns a
      * <code>{@link UIComponent}</code> instance, return it as the value of this method. If it does not, instantiate a
-     * new <code>{@linkUIComponent}</code> instance of the specified component type, pass the new component to the
+     * new <code>{@link UIComponent}</code> instance of the specified component type, pass the new component to the
      * <code>setValue()</code> method of the specified <code>ValueExpression</code>, and return it.
      * </p>
      * 
@@ -433,7 +435,7 @@ public abstract class Application
      * <p>
      * To locate an appropriate <code>{@link Converter}</code> class, the following algorithm is performed, stopping as
      * soon as an appropriate <code>{@link Converter}</code> class is found: Locate a <code>{@link Converter}</code>
-     * registered for the target class itself. <Locate a <code>{@link Converter}</code> registered for interfaces that
+     * registered for the target class itself. Locate a <code>{@link Converter}</code> registered for interfaces that
      * are implemented by the target class (directly or indirectly). Locate a <code>{@link Converter}</code> registered
      * for the superclass (if any) of the target class, recursively working up the inheritance hierarchy.
      * </p>
@@ -488,7 +490,7 @@ public abstract class Application
      *        Validator instance
      * 
      * @throws FacesException
-     *             if a <code>{@link Validator}/<code> of the specified id cannot be created
+     *             if a <code>{@link Validator}</code> of the specified id cannot be created
      * @throws NullPointerException
      *             if validatorId is <code>null</code>
      */
@@ -539,7 +541,7 @@ public abstract class Application
 
     /**
      * <p>
-     * Return the default <code>ActionListener</code> to be registered for all <code>ActionSource<3code> components 
+     * Return the default <code>ActionListener</code> to be registered for all <code>ActionSource</code> components 
      * in this appication. If not explicitly set, a default implementation must be provided that performs the 
      * following functions:
      * </p>
@@ -550,23 +552,17 @@ public abstract class Application
      * <li>The <code>processAction()</code> method must next determine the logical 
      * outcome of this event, as follows:</li>
      * 
-     * <ul>
      * <li>If the originating component has a non-<code>null action</code> property, retrieve the <code>
-     *             MethodBinding<code> from the property, and call <code>invoke()</code>
+     *             MethodBinding</code> from the property, and call <code>invoke()</code>
      * on it. Convert the returned value (if any) to a String, and use it as the logical outcome.</li>
      * <li>Otherwise, the logical outcome is null.</li>
-     * </ul>
-     * </ul>
-     * <ul>
-     * <li>The <code>processAction()</code> method must finally retrieve the <code>NavigationHandler<3code> instance 
+     * <li>The <code>processAction()</code> method must finally retrieve the <code>NavigationHandler</code> instance 
      *         for this application and call <code>NavigationHandler.handleNavigation(javax.faces.context.FacesContext, 
      *                                     java.lang.String, java.lang.String)</code> passing:</li>
-     * <ul>
      * <li>the {@link FacesContext} for the current request</li>
      * <li>If there is a <code>MethodBinding</code> instance for the <code>action</code> property of this component, the
      * result of calling {@link MethodBinding#getExpressionString()} on it, null otherwise</li>
      * <li>the logical outcome as determined above</li>
-     * <ul>
      * </ul>
      * <p>
      * Note that the specification for the default <code>ActionListener</code> contiues to call for the use of a
@@ -681,12 +677,12 @@ public abstract class Application
     }
 
     /**
-     * <ul>
      * Return the singleton <code>ELResolver</code> instance to be used for all EL resolution. This is actually an
      * instance of <code>CompositeELResolver</code> that must contain the following ELResolver instances in the
      * following order:
-     * <li><code>ELResolver</code> instances declared using the <el-resolver> element in the application configuration
-     * resources.</li>
+     * <ul>
+     * <li><code>ELResolver</code> instances declared using the &lt;el-resolver&gt; element in the application 
+     * configuration resources.</li>
      * 
      * <li>An <code> implementation</code> that wraps the head of the legacy VariableResolver chain, as per section
      * <code> VariableResolver ChainWrapper</code> in Chapter 5 in the spec document.</li>
@@ -699,7 +695,7 @@ public abstract class Application
      * 
      * <li>The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole
      * purpose of not breaking existing applications that extend <code>{@link Application}</code>.</li>
-     * <ul>
+     * </ul>
      * 
      * @since 1.2
      */
@@ -717,6 +713,7 @@ public abstract class Application
      * <p>
      * Return the <code>ExpressionFactory</code> instance for this application. This instance is used by the convenience
      * method <code>{@link #evaluateExpressionGet(javax.faces.context.FacesContext, java.lang.String, java.lang.Class)}.
+     * </code>
      * </p>
      * 
      * <p>
@@ -730,6 +727,7 @@ public abstract class Application
      * </p>
      * 
      * @since 1.2
+     * @return 
      */
     public ExpressionFactory getExpressionFactory()
     {
@@ -777,7 +775,7 @@ public abstract class Application
      * without exception, save the value and return it.</li>
      * <li>If not found, or any of the previous attempts to discover the enum constant value have failed, log a
      * descriptive error message, assign the value as <code>ProjectStage.Production</code> and return it.</li>
-     * <ul>
+     * </ul>
      * 
      * @since 2.0
      */
@@ -838,7 +836,8 @@ public abstract class Application
      * 
      * <ul>
      * <li>The <code>ResourceHandler</code> implementation is declared in the application configuration resources by
-     * giving the fully qualified class name as the value of the <code><resource-handler></code> element within the
+     * giving the fully qualified class name as the value of the <code>&lt;resource-handler&gt;</code> element 
+     * within the
      * <code>application</code> element.</li>
      * <li>RELEASE_PENDING(edburns) It can also be declared via an annotation as 
      * specified in [287-ConfigAnnotations].</li>
@@ -938,7 +937,7 @@ public abstract class Application
      * <code>systemEventClass</code> argument. If the list is not empty, perform algorithm
      * <code>traverseListenerList</code> on the list.</li>
      * 
-     * <li>If any <code>Application</code> level listeners have been installed by previous calls to </code>{@link
+     * <li>If any <code>Application</code> level listeners have been installed by previous calls to <code>{@link
      * #subscribeToEvent(java.lang.Class, java.lang.Class, SystemEventListener)}</code>, perform algorithm
      * <code>traverseListenerList</code> on the list.</li>
      * 
@@ -949,17 +948,17 @@ public abstract class Application
      * 
      * <p>
      * If the act of invoking the <code>processListener</code> method causes an
-     * </code>{@link javax.faces.event.AbortProcessingException}</code> to be thrown,
+     * <code>{@link javax.faces.event.AbortProcessingException}</code> to be thrown,
      * processing of the listeners must be aborted.
      * </p>
      * 
      * <p>
      * Algorithm <code>traverseListenerList</code>: For each listener in the list,
-     * <p>
+     * </p>
      * 
      * <ul>
      * <li>Call
-     * <code>{@link SystemEventListener#isListenerForSource(java.lang.Object)}<code>, passing the <code>source</code>
+     * <code>{@link SystemEventListener#isListenerForSource(java.lang.Object)}</code>, passing the <code>source</code>
      * argument. If this returns <code>false</code>, take no action on the listener.</li>
      * 
      * <li>Otherwise, if the event to be passed to the listener instances has not yet been constructed, construct the
@@ -967,11 +966,12 @@ public abstract class Application
      * <code>Object</code>. This same event instance must be passed to all listener instances.</li>
      * 
      * <li>Call
-     * <code>{@link SystemEvent#isAppropriateListener(javax.faces.event.FacesListener)}<code>, passing the listener
+     * <code>{@link SystemEvent#isAppropriateListener(javax.faces.event.FacesListener)}</code>, passing the listener
      *         instance as the argument. If this returns <code>false</code>, take no action on the listener.</li>
      * 
      * <li>Call <code>{@link SystemEvent#processListener(javax.faces.event.FacesListener)}</code>, passing the listener
      * instance.</li>
+     * </ul>
      * 
      * @param systemEventClass
      *            - The Class of event that is being published. Must be non-null.
@@ -1072,8 +1072,8 @@ public abstract class Application
     public abstract void setNavigationHandler(NavigationHandler handler);
 
     /**
-     * The recommended way to affect the execution of the EL is to provide an <el-resolver> element at the right place
-     * in the application configuration resources which will be considered in the normal course of expression
+     * The recommended way to affect the execution of the EL is to provide an &lt;el-resolver&gt; element at the right 
+     * place in the application configuration resources which will be considered in the normal course of expression
      * evaluation. This method now will cause the argument resolver to be wrapped inside an implementation of ELResolver
      * and exposed to the EL resolution system as if the user had called addELResolver(javax.el.ELResolver).
      * 
@@ -1124,8 +1124,8 @@ public abstract class Application
     public abstract void setSupportedLocales(Collection<Locale> locales);
 
     /**
-     * The recommended way to affect the execution of the EL is to provide an <el-resolver> element at the right place
-     * in the application configuration resources which will be considered in the normal course of expression
+     * The recommended way to affect the execution of the EL is to provide an &lt;el-resolver&gt; element at the right 
+     * place in the application configuration resources which will be considered in the normal course of expression
      * evaluation. This method now will cause the argument resolver to be wrapped inside an implementation of ELResolver
      * and exposed to the EL resolution system as if the user had called addELResolver(javax.el.ELResolver).
      * 
@@ -1240,7 +1240,7 @@ public abstract class Application
     
     /**
      * @since 2.2
-     * @param newHandler 
+     * @param flowHandler 
      */
     public void setFlowHandler(FlowHandler flowHandler)
     {

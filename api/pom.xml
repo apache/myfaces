@@ -477,6 +477,18 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <tags>
+                                <tag>
+                                    <name>JSFJspTag</name>
+                                    <placement>X</placement>
+                                </tag>
+                                <tag>
+                                    <name>JSFJspAttribute</name>
+                                    <placement>X</placement>
+                                </tag>
+                            </tags>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>attach-javadoc</id>
@@ -720,6 +732,18 @@
             
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <tags>
+                        <tag>
+                            <name>JSFJspTag</name>
+                            <placement>X</placement>
+                        </tag>
+                        <tag>
+                            <name>JSFJspAttribute</name>
+                            <placement>X</placement>
+                        </tag>
+                    </tags>
+                </configuration>
             </plugin>
             
             <plugin>

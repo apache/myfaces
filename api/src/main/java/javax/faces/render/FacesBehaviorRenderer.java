@@ -34,7 +34,7 @@ public @interface FacesBehaviorRenderer
 {
     /**
      * The value of this annotation attribute is taken to be the <i>renderer-type</i> which, in combination with
-     * {@link #componentFamily()} can be used to obtain a reference to an instance of this {@link Renderer} by calling
+     * componentFamily can be used to obtain a reference to an instance of this {@link Renderer} by calling
      * {@link RenderKit#getRenderer(java.lang.String, java.lang.String)}.
      */
     public String rendererType();

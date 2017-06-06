@@ -24,9 +24,9 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 
 /**
  * Handles setting a Converter instance on a ValueHolder. Will wire all attributes set to the Converter instance
- * created/fetched. Uses the "binding" attribute for grabbing instances to apply attributes to. <p/> Will only
+ * created/fetched. Uses the "binding" attribute for grabbing instances to apply attributes to. <p> Will only
  * set/create Converter is the passed UIComponent's parent is null, signifying that it wasn't restored from an existing
- * tree.
+ * tree.</p>
  * 
  * @see javax.faces.webapp.ConverterELTag
  * @see javax.faces.convert.Converter

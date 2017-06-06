@@ -325,8 +325,7 @@ public abstract class FacesContext
 
     /**
      * 
-     * @return
-     * 
+     * @param currentPhaseId 
      * @since 2.0
      */
     public void setCurrentPhaseId(PhaseId currentPhaseId)
@@ -343,8 +342,7 @@ public abstract class FacesContext
 
     /**
      * 
-     * @return
-     * 
+     * @param exceptionHandler 
      * @since 2.0
      */
     public void setExceptionHandler(ExceptionHandler exceptionHandler)
@@ -362,7 +360,6 @@ public abstract class FacesContext
     /**
      * 
      * @param processingEvents
-     * 
      * @since 2.0
      */
     public void setProcessingEvents(boolean processingEvents)

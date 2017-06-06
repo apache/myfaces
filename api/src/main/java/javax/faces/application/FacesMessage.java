@@ -29,25 +29,30 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  *<p>
  * <code>FacesMessage</code> represents a single validation (or other) message, which is typically associated with a
  * particular component in the view. A {@link FacesMessage} instance may be created based on a specific messageId. The
  * specification defines the set of messageIds for which there must be {@link FacesMessage} instances.
  * </p>
  * 
- *<ui>The implementation must take the following steps when creating FacesMessage instances given a messageId: <li>Call
+ * The implementation must take the following steps when creating FacesMessage instances given a messageId: 
+ * <ul>
+ * <li>Call
  * {@link Application#getMessageBundle()}. If <code>non-null</code>, locate the named <code>ResourceBundle</code>, using
- * the <code>Locale</code> from the current {@linkUIViewRoot} and see if it has a value for the argument
+ * the <code>Locale</code> from the current {@link javax.faces.component.UIViewRoot} and see if it has a value for 
+ * the argument
  * <code>messageId</code>. If it does, treat the value as the <code>summary</code> of the {@link FacesMessage}. If it
  * does not, or if {@link Application#getMessageBundle()} returned null, look in the ResourceBundle named by the value
  * of the constant {@link #FACES_MESSAGES} and see if it has a value for the argument messageId. If it does, treat the
  * value as the summary of the <code>FacesMessage</code>. If it does not, there is no initialization information for the
- * <code>FacesMessage</code> instance.</li> <li>In all cases, if a <code>ResourceBundle</code> hit is found for the
+ * <code>FacesMessage</code> instance.</li>
+ * <li>In all cases, if a <code>ResourceBundle</code> hit is found for the
  * <code>{messageId}</code>, look for further hits under the key <code>{messageId}_detail</code>. Use this value, if
- * present, as the <code>detail</code> for the returned <code>FacesMessage</code>.</li> <li>Make sure to perform any
+ * present, as the <code>detail</code> for the returned <code>FacesMessage</code>.</li> 
+ * <li>Make sure to perform any
  * parameter substitution required for the <code>summary</code> and <code>detail</code> of the <code>FacesMessage</code>
- * .</li> </ui>
+ * .</li> 
+ * </ul>
  * 
  */
 public class FacesMessage implements Serializable

@@ -142,7 +142,6 @@ public abstract class ViewDeclarationLanguage
      * @since 2.3
      * @param facesContext
      * @param path
-     * @param maxDepth
      * @param options
      * @return 
      */

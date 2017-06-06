@@ -34,24 +34,9 @@ public abstract class UIComponentTagBase extends Object implements JspTag
 {
     protected static final Logger log = Logger.getLogger("javax.faces.webapp");
     
-    /**
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#addChild(javax.faces.component.UIComponent)
-     * @param child
-     */
-
     protected abstract void addChild(UIComponent child);
 
-    /**
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#addFacet(java.lang.String)
-     * @param name
-     */
-
     protected abstract void addFacet(String name);
-
-    /**
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#getComponentInstance()
-     * @return
-     */
 
     public abstract UIComponent getComponentInstance();
 
@@ -62,21 +47,18 @@ public abstract class UIComponentTagBase extends Object implements JspTag
      * intended to be overridden in subclasses to specify the actual component
      * type to be created.
      *
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#getComponentType()
      * @return a registered component type name, never null.
      */
 
     public abstract String getComponentType();
 
     /**
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#getCreated()
      * @return
      */
 
     public abstract boolean getCreated();
 
     /**
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#getELContext()
      * @return
      */
 
@@ -94,14 +76,12 @@ public abstract class UIComponentTagBase extends Object implements JspTag
     }
 
     /**
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#getFacesContext()
      * @return
      */
 
     protected abstract FacesContext getFacesContext();
 
     /**
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#getIndexOfNextChildTag()
      * @return
      */
 
@@ -116,13 +96,11 @@ public abstract class UIComponentTagBase extends Object implements JspTag
      * will be called passing this value, and this will later affect the
      * type of renderer object returned by UIComponent.getRenderer().
      * 
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#getRendererType()
      * @return
      */
     public abstract String getRendererType();
 
     /**
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#setId(java.lang.String)
      * @param id
      */
 

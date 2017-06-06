@@ -27,8 +27,8 @@ package javax.faces.component;
  * UIComponent#getTransientStateHelper} method.</p>
  * 
  * <p>The values retrieved or saved through 
- * {@link #getTransient(java.io.Serializable)} } or 
- * {@link #putTransient(java.io.Serializable, Object value)} } 
+ * {@link #getTransient(java.lang.Object) } or 
+ * {@link #putTransient(java.lang.Object, java.lang.Object) } 
  * will not be preserved between requests.</p>
  * 
  * @since 2.1
@@ -45,8 +45,7 @@ public interface TransientStateHelper extends TransientStateHolder
     public Object getTransient(Object key);
     
     /**
-     * <p>Performs the same logic as {@link
-     * #getTransient(java.io.Serializable)} } but if no value is found, this
+     * <p>Performs the same logic as {@link #getTransient(java.lang.Object)} but if no value is found, this
      * will return the specified <code>defaultValue</code></p>
 
      * @param key the key for which the value should be returned.

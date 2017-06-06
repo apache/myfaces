@@ -616,7 +616,7 @@ public abstract class UIComponent
      * <li>Component / Facet removed: if the parent isInView = false,
      *     set it to false and all their children or facets,
      *     otherwise take no action</li>
-     * <ul>
+     * </ul>
      * @param isInView
      *
      * @since 2.0

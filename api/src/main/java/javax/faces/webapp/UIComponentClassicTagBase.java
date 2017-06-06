@@ -127,9 +127,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         _facetsAdded = null;
     }
 
-    /**
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentClassicTagBase.html#getCreated()
-     */
     @Override
     public boolean getCreated()
     {
@@ -141,12 +138,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         return _childrenAdded;
     }
 
-    /**
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentClassicTagBase.html#
-     *      getParentUIComponentClassicTagBase(javax.servlet.jsp.PageContext)
-     * @param pageContext
-     * @return
-     */
     public static UIComponentClassicTagBase getParentUIComponentClassicTagBase(PageContext pageContext)
     {
         Stack<UIComponentClassicTagBase> stack = getStack(pageContext);
@@ -156,10 +147,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         return size > 0 ? stack.get(size - 1) : null;
     }
 
-    /**
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentClassicTagBase.html#getFacesJspId()
-     * @return
-     */
     public String getJspId()
     {
         return _jspId;
@@ -240,12 +227,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         checkIfItIsInAnIterator(_jspId);
     }
 
-    /**
-     * @param child
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#addChild(javax.faces.
-     *      _componentInstance.UIComponent)
-     */
-
     @Override
     protected void addChild(UIComponent child)
     {
@@ -257,10 +238,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         _childrenAdded.add(child.getId());
     }
 
-    /**
-     * @param name
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#addFacet(java.lang.String)
-     */
     @Override
     protected void addFacet(String name)
     {
@@ -282,11 +259,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     {
         return _componentInstance;
     }
-
-    /**
-     * @return
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#getFacesContext()
-     */
 
     @Override
     protected FacesContext getFacesContext()
@@ -318,11 +290,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         throw new RuntimeException("FacesContext not found");
     }
 
-    /**
-     * @return
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#getIndexOfNextChildTag()
-     */
-
     @Override
     protected int getIndexOfNextChildTag()
     {
@@ -334,10 +301,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         return _childrenAdded.size();
     }
 
-    /**
-     * @param id
-     * @see http://java.sun.com/javaee/5/docs/api/javax/faces/webapp/UIComponentTagBase.html#setId(java.lang.String)
-     */
     @Override
     public void setId(String id)
     {
@@ -683,19 +646,15 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * <p>
      * Creates a transient UIOutput using the Application, with the following characteristics:
      * </p>
-     * <p/>
      * <p>
      * <code>componentType</code> is <code>javax.faces.HtmlOutputText</code>.
      * </p>
-     * <p/>
      * <p>
      * <code>transient</code> is <code>true</code>.
      * </p>
-     * <p/>
      * <p>
      * <code>escape</code> is <code>false</code>.
      * </p>
-     * <p/>
      * <p>
      * <code>id</code> is <code>FacesContext.getViewRoot().createUniqueId()</code>
      * </p>

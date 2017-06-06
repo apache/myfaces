@@ -60,7 +60,7 @@ public final class Tag
     }
 
     /**
-     * Local name of the tag &lt;my:tag /> would be "tag"
+     * Local name of the tag &lt;my:tag /&gt; would be "tag"
      * 
      * @return local name of the tag
      */
@@ -90,7 +90,7 @@ public final class Tag
     }
 
     /**
-     * Get the qualified name for this tag &lt;my:tag /> would be "my:tag"
+     * Get the qualified name for this tag &lt;my:tag &gt; would be "my:tag"
      * 
      * @return qualified name of the tag
      */

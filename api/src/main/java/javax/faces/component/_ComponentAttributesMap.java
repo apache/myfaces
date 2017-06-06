@@ -37,20 +37,24 @@ import javax.faces.application.Resource;
 import javax.faces.context.FacesContext;
 
 /**
+ * <p>
  * A custom implementation of the Map interface, where get and put calls
  * try to access getter/setter methods of an associated UIComponent before
  * falling back to accessing a real Map object.
- * <p/>
+ * </p>
+ * <p>
  * Some of the behaviours of this class don't really comply with the
  * definitions of the Map class; for example the key parameter to all
  * methods is required to be of type String only, and after clear(),
  * calls to get can return non-null values. However the JSF spec
  * requires that this class behave in the way implemented below. See
  * UIComponent.getAttributes for more details.
- * <p/>
+ * </p>
+ * <p>
  * The term "property" is used here to refer to real javabean properties
  * on the underlying UIComponent, while "attribute" refers to an entry
  * in the associated Map.
+ * </p>
  */
 class _ComponentAttributesMap implements Map<String, Object>, Serializable
 {

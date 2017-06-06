@@ -131,7 +131,8 @@ public abstract class Renderer
      * @return <b>true</b> - if the component takes care of rendering its children. In this case, encodeChildren() ought
      *         to be called by the rendering controller (e.g., the rendering controller could be the method encodeAll()
      *         in UIComponent). In the method encodeChildren(), the component should therefore provide all children
-     *         encode logic. <br/> <b>false</b> - if the component does not take care of rendering its children. In this
+     *         encode logic. <p></p> <b>false</b> - if the component does not take care of rendering its children. 
+     *         In this
      *         case, encodeChildren() should not be called by the rendering controller. Instead, the children-list
      *         should be retrieved and the children should directly be rendered by the rendering controller one by one.
      */

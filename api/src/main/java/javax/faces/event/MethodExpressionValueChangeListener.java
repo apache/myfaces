@@ -27,8 +27,7 @@ import javax.faces.component.StateHolder;
 import javax.faces.context.FacesContext;
 
 /**
- * See Javadoc of <a href="https://javaserverfaces.dev.java.net/nonav/docs/2.0/javadocs/javax/faces/event/
- * MethodExpressionValueChangeListener.html">JSF Specification</a>
+ * 
  */
 public class MethodExpressionValueChangeListener implements ValueChangeListener, StateHolder
 {

@@ -420,7 +420,7 @@ public abstract class ViewHandler
      * 
      * @since 2.3
      * @param context
-     * @param channel
+     * @param channelAndToken
      * @return 
      */
     public String getWebsocketURL(FacesContext context, String channelAndToken)
@@ -434,7 +434,6 @@ public abstract class ViewHandler
      * @since 2.3
      * @param facesContext
      * @param path
-     * @param maxDepth
      * @param options
      * @return 
      */

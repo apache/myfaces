@@ -161,7 +161,7 @@ public abstract class ResourceHandler
     
     /**
      * @since 2.3
-     * @param context
+     * @param facesContext
      * @param resourceName
      * @param libraryName 
      */
