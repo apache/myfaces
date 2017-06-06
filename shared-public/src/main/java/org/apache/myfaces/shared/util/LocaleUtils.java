@@ -102,9 +102,6 @@ public final class LocaleUtils
      *
      * @param name name of the locale
      * @return locale specified by the given String
-     *
-     * @see org.apache.myfaces.taglib.core.ConvertDateTimeTag#setConverterLocale
-     * @see org.apache.myfaces.taglib.core.ConvertNumberTag#setConverterLocale
      */
     public static Locale converterTagLocaleFromString(String name)
     {

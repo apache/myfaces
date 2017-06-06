@@ -719,13 +719,16 @@ public final class StringUtils
     }
 
     /**
-     * Returns the minimum index >= 0, if any
+     * Returns the minimum index &gt;= 0, if any
      *
      * <p>
      * Use to find the first of two characters in a string:<br>
      * <code>minIndex(s.indexOf('/'), indexOf('\'))</code>
      * </p>
      *
+     * @param a
+     * @param b
+     * @return 
      */
     public static int minIndex(int a, int b)
     {

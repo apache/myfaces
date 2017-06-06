@@ -84,7 +84,7 @@ public final class TagUtils
   }
 
   /**
-   * String --> boolean
+   * String --&gt; boolean
    * @param value
    * @return
    */
@@ -105,7 +105,7 @@ public final class TagUtils
   }
 
   /**
-   * String --> int
+   * String --&gt; int
    * @param value
    * @return
    */
@@ -127,7 +127,7 @@ public final class TagUtils
   }
 
   /**
-   * String --> long
+   * String --&gt; long
    * @param value
    * @return
    */
@@ -143,7 +143,7 @@ public final class TagUtils
   }
 
   /**
-   * String --> long
+   * String --&gt; long
    * @param value
    * @return
    */
@@ -160,7 +160,7 @@ public final class TagUtils
   }
 
   /**
-   * String --> long
+   * String --&gt; long
    * @param value
    * @return
    */
@@ -177,13 +177,13 @@ public final class TagUtils
 
   /**
    * These are normally NMTOKEN type in attributes
-   * String --> String[]
+   * String --&gt; String[]
    * @param value
    * @return
    */
   /**
    * These are normally NMTOKEN type in attributes
-   * String --> String[]
+   * String --&gt; String[]
    * @param value
    * @return
    */
@@ -199,7 +199,7 @@ public final class TagUtils
   }
 
   /**
-   *  ISO Date String --> Date
+   *  ISO Date String --&gt; Date
    * @param value
    * @return
    */
@@ -220,7 +220,7 @@ public final class TagUtils
   }
 
   /**
-   * String --> Locale
+   * String --&gt; Locale
    * @param value
    * @return
    */
@@ -239,18 +239,6 @@ public final class TagUtils
 
     return getLocaleInternal(value.toString());
   }
-
-  /**
-   * String --> TimeZone
-   * @param value
-   * @return
-
-  public static TimeZone getTimeZone(
-    String value)
-  {
-    return DateUtils.getSupportedTimeZone(value);
-  }
-   */
 
   public static boolean isValueReference(String expression)
   {

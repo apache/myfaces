@@ -172,10 +172,6 @@ public final class WebConfigParamUtils
      *            the application's external context
      * @param name
      *            the init parameter's name
-     * @param deprecatedName
-     *            the init parameter's deprecated name.
-     * @param defaultValue
-     *            the default value to return in case the parameter was not set
      * 
      * @return the init parameter value as a boolean
      * 
@@ -195,8 +191,6 @@ public final class WebConfigParamUtils
      *            the application's external context
      * @param name
      *            the init parameter's name
-     * @param deprecatedName
-     *            the init parameter's deprecated name.
      * @param defaultValue
      *            the default value to return in case the parameter was not set
      * 
@@ -232,8 +226,6 @@ public final class WebConfigParamUtils
      *            the application's external context
      * @param name
      *            the init parameter's name
-     * @param deprecatedName
-     *            the init parameter's deprecated name.
      * @param defaultValue
      *            the default value to return in case the parameter was not set
      * @param valuesIgnoreCase
@@ -421,10 +413,6 @@ public final class WebConfigParamUtils
      *            the application's external context
      * @param name
      *            the init parameter's name
-     * @param deprecatedName
-     *            the init parameter's deprecated name.
-     * @param defaultValue
-     *            the default value to return in case the parameter was not set
      * 
      * @return the init parameter value as a int
      * 
@@ -444,8 +432,6 @@ public final class WebConfigParamUtils
      *            the application's external context
      * @param name
      *            the init parameter's name
-     * @param deprecatedName
-     *            the init parameter's deprecated name.
      * @param defaultValue
      *            the default value to return in case the parameter was not set
      * 
@@ -547,10 +533,6 @@ public final class WebConfigParamUtils
      *            the application's external context
      * @param name
      *            the init parameter's name
-     * @param deprecatedName
-     *            the init parameter's deprecated name.
-     * @param defaultValue
-     *            the default value to return in case the parameter was not set
      * 
      * @return the init parameter value as a long
      * 
@@ -570,8 +552,6 @@ public final class WebConfigParamUtils
      *            the application's external context
      * @param name
      *            the init parameter's name
-     * @param deprecatedName
-     *            the init parameter's deprecated name.
      * @param defaultValue
      *            the default value to return in case the parameter was not set
      * 

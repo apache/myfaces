@@ -555,7 +555,7 @@ public final class ExternalContextUtils
      * This method handles these types of requests properly and will therefore
      * return null in portal environments.
      * 
-     * @param response
+     * @param ec
      * @return an HttpServletResponse if we have one or null if we do not
      * @since 4.0
      */
