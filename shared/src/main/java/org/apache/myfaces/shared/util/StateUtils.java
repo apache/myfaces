@@ -85,7 +85,7 @@ import org.apache.myfaces.shared.util.serial.SerialFactory;
  * strength jurisdiction policy files from a place like
  * http://java.sun.com/j2se/1.4.2/download.html .</p>
  *
- * @see org.apache.myfaces.webapp.StartupServletContextListener
+ * See org.apache.myfaces.webapp.StartupServletContextListener
  */
 public final class StateUtils
 {

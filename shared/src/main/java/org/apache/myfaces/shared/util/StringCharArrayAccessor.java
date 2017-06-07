@@ -37,7 +37,7 @@ import java.lang.reflect.Field;
  * http://www.cs.umd.edu/~pugh/java/memoryModel/jsr133.pdf
  *
  * @author Lari Hotari, Sagire Software Oy
- * @see org.codehaus.groovy.grails.web.util.StreamCharBuffer
+ * see org.codehaus.groovy.grails.web.util.StreamCharBuffer
  *      file licensed under ASL v2.0 
  *      Copyright 2009 the original author or authors.
  */

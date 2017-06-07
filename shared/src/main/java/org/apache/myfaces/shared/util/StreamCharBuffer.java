@@ -46,12 +46,12 @@ import java.util.Set;
  *
  * <p>
  * StreamCharBuffer keeps the buffer in a linked list of "chunks". The main
- * difference compared to JDK in-memory buffers (StringBuffer, StringBuilder &
+ * difference compared to JDK in-memory buffers (StringBuffer, StringBuilder &amp;
  * StringWriter) is that the buffer can be held in several smaller buffers
  * ("chunks" here). In JDK in-memory buffers, the buffer has to be expanded
  * whenever it gets filled up. The old buffer's data is copied to the new one
  * and the old one is discarded. In StreamCharBuffer, there are several ways to
- * prevent unnecessary allocation & copy operations. The StreamCharBuffer
+ * prevent unnecessary allocation &amp; copy operations. The StreamCharBuffer
  * contains a linked list of different type of chunks: char arrays,
  * java.lang.String chunks and other StreamCharBuffers as sub chunks. A
  * StringChunk is appended to the linked list whenever a java.lang.String of a
@@ -65,14 +65,14 @@ import java.util.Set;
  * java.lang.String in between).
  *
  * for example this line of code in a taglib would just append the buffer
- * returned from the body closure evaluation to the buffer of the taglib:<br>
+ * returned from the body closure evaluation to the buffer of the taglib:</p>
  * <code>
- * out << body()
- * </code><br>
- * other example:<br>
+ * out &lt;&lt; body()
+ * </code><p>
+ * other example:</p>
  * <code>
- * out << g.render(template: '/some/template', model:[somebean: somebean])
- * </code><br>
+ * out &lt;&lt; g.render(template: '/some/template', model:[somebean: somebean])
+ * </code><p>
  * There's no extra java.lang.String generation overhead.
  *
  * </p>
@@ -84,7 +84,7 @@ import java.util.Set;
  *
  * <p>
  * Each {@link #getReader()} call will create a new reader instance that keeps
- * it own state.<br>
+ * it own state.</p><p>
  * There is a alternative method {@link #getReader(boolean)} for creating the
  * reader. When reader is created by calling getReader(true), the reader will
  * remove already read characters from the buffer. In this mode only a single
@@ -92,16 +92,15 @@ import java.util.Set;
  * </p>
  *
  * <p>
- * There's also several other options for reading data:<br>
- * {@link #readAsCharArray()} reads the buffer to a char[] array<br>
- * {@link #readAsString()} reads the buffer and wraps the char[] data as a
- * String<br>
- * {@link #writeTo(Writer)} writes the buffer to a java.io.Writer<br>
- * {@link #toCharArray()} returns the buffer as a char[] array, caches the
- * return value internally so that this method can be called several times.<br>
- * {@link #toString()} returns the buffer as a String, caches the return value
- * internally<br>
- * </p>
+ * There's also several other options for reading data:</p><ul>
+ * <li>{@link #readAsCharArray()} reads the buffer to a char[] array</li>
+ * <li>{@link #readAsString()} reads the buffer and wraps the char[] data as a
+ * String</li>
+ * <li>{@link #writeTo(Writer)} writes the buffer to a java.io.Writer</li>
+ * <li>{@link #toCharArray()} returns the buffer as a char[] array, caches the
+ * return value internally so that this method can be called several times.</li>
+ * <li>{@link #toString()} returns the buffer as a String, caches the return value
+ * internally</li></ul>
  *
  * <p>
  * By using the "connectTo" method, one can connect the buffer directly to a
@@ -116,18 +115,18 @@ import java.util.Set;
  * </p>
  *
  * <p>
- * Main operation principle:<br>
+ * Main operation principle:
  * </p>
  * <p>
- * StreamCharBuffer keeps the buffer in a linked link of "chunks".<br>
+ * StreamCharBuffer keeps the buffer in a linked link of "chunks".
  * The main difference compared to JDK in-memory buffers (StringBuffer,
- * StringBuilder & StringWriter) is that the buffer can be held in several
- * smaller buffers ("chunks" here).<br>
+ * StringBuilder &amp; StringWriter) is that the buffer can be held in several
+ * smaller buffers ("chunks" here).
  * In JDK in-memory buffers, the buffer has to be expanded whenever it gets
  * filled up. The old buffer's data is copied to the new one and the old one is
- * discarded.<br>
+ * discarded.
  * In StreamCharBuffer, there are several ways to prevent unnecessary allocation
- * & copy operations.
+ * &amp; copy operations.
  * </p>
  * <p>
  * There can be several different type of chunks: char arrays (
@@ -156,17 +155,17 @@ import java.util.Set;
  * <p>
  * <p>
  * Growable chunksize: By default, a newly allocated chunk's size will grow
- * based on the total size of all written chunks.<br>
+ * based on the total size of all written chunks.
  * The default growProcent value is 100. If the total size is currently 1024,
- * the newly created chunk will have a internal buffer that's size is 1024.<br>
- * Growable chunksize can be turned off by setting the growProcent to 0.<br>
+ * the newly created chunk will have a internal buffer that's size is 1024.
+ * Growable chunksize can be turned off by setting the growProcent to 0.
  * There's a default maximum chunksize of 1MB by default. The minimum size is
- * the initial chunksize size.<br>
+ * the initial chunksize size.
  * </p>
  *
- * <p>
- * System properties to change default configuration parameters:<br>
+ * 
  * <table>
+ * <caption>System properties to change default configuration parameters</caption>
  * <tr>
  * <th>System Property name</th>
  * <th>Description</th>
@@ -207,17 +206,17 @@ import java.util.Set;
  * <td>256</td>
  * </tr>
  * </table>
- *
+ * <p>
  * Configuration values can also be changed for each instance of
  * StreamCharBuffer individually. Default values are defined with System
  * Properties.
  *
  * </p>
  *
- * @author Lari Hotari, Sagire Software Oy
- * @see org.codehaus.groovy.grails.web.util.StreamCharBuffer
+ * See org.codehaus.groovy.grails.web.util.StreamCharBuffer
  *      file licensed under ASL v2.0 
  *      Copyright 2009 the original author or authors.
+ * Author Lari Hotari, Sagire Software Oy
  */
 public class StreamCharBuffer implements /*Writable,*/CharSequence,
         Externalizable

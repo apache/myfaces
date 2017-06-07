@@ -1083,11 +1083,11 @@ public class MyfacesConfig
      * (see ResponseStateManager.VIEW_STATE_PARAM).
      * Actually this causes duplicate id attributes and thus invalid XHTML pages when multiple forms are rendered on
      * one page. With the {@link #INIT_PARAM_RENDER_VIEWSTATE_ID} context parameter you can tune this behaviour.
-     * <br/>Set it to
+     * <p>Set it to:</p>
      * <ul><li>true - to render JSF 1.2 compliant id attributes (that might cause invalid XHTML), or</li>
      * <li>false - to omit rendering of the id attribute (which is only needed for very special AJAX/Javascript 
      * components)</li></ul>
-     * Default value is: true (for backwards compatibility and JSF 1.2 compliancy) 
+     * <p>Default value is: true (for backwards compatibility and JSF 1.2 compliancy) </p>
      * @return true, if the client state hidden input "javax.faces.ViewState" id attribute should be rendered
      */
     public boolean isRenderViewStateId()
@@ -1140,9 +1140,7 @@ public class MyfacesConfig
     }
 
     /**
-     * Do not use this in renderers directly!
-     * You should use {@link org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils#isJavascriptAllowed}
-     * to determine if javascript is allowed or not.
+     * @deprecated 
      */
     public boolean isAllowJavascript()
     {
@@ -1502,7 +1500,7 @@ public class MyfacesConfig
     }
 
     /**
-     * @param _numberOfViewsInSession the _numberOfViewsInSession to set
+     * @param numberOfViewsInSession the _numberOfViewsInSession to set
      */
     public void setNumberOfViewsInSession(Integer numberOfViewsInSession)
     {
@@ -1518,7 +1516,7 @@ public class MyfacesConfig
     }
 
     /**
-     * @param _numberOfSequentialViewsInSession the _numberOfSequentialViewsInSession to set
+     * @param numberOfSequentialViewsInSession the _numberOfSequentialViewsInSession to set
      */
     public void setNumberOfSequentialViewsInSession(Integer numberOfSequentialViewsInSession)
     {
@@ -1534,7 +1532,7 @@ public class MyfacesConfig
     }
 
     /**
-     * @param _numberOfFlashTokensInSession the _numberOfFlashTokensInSession to set
+     * @param numberOfFlashTokensInSession the _numberOfFlashTokensInSession to set
      */
     public void setNumberOfFlashTokensInSession(Integer numberOfFlashTokensInSession)
     {
@@ -1550,7 +1548,7 @@ public class MyfacesConfig
     }
 
     /**
-     * @param _numberOfFacesFlowClientWindowIdsInSession the _numberOfFacesFlowClientWindowIdsInSession to set
+     * @param numberOfFacesFlowClientWindowIdsInSession the _numberOfFacesFlowClientWindowIdsInSession to set
      */
     public void setNumberOfFacesFlowClientWindowIdsInSession(Integer numberOfFacesFlowClientWindowIdsInSession)
     {

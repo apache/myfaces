@@ -32,15 +32,15 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * A LRU cache implementation based upon ConcurrentHashMap and other techniques to reduce
  * contention and synchronization overhead to utilize multiple CPU cores more effectively.
- * <p/>
+ * <p>
  * Note that the implementation does not follow a true LRU (least-recently-used) eviction
  * strategy. Instead it strives to remove least recently used items but when the initial
  * cleanup does not remove enough items to reach the 'acceptableWaterMark' limit, it can
- * remove more items forcefully regardless of access order.
+ * remove more items forcefully regardless of access order.</p>
  *
- *
+ * See org.apache.solr.util.ConcurrentLRUCache
+ * 
  * @since solr 1.4
- * @see org.apache.solr.util.ConcurrentLRUCache
  */
 public class ConcurrentLRUCache<K, V>
 {

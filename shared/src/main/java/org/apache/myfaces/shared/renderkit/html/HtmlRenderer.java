@@ -100,7 +100,7 @@ public abstract class HtmlRenderer
     /**
      * Returns true if the component should render an ID.  Components
      * that deliver events should always return "true".
-     * @todo Is this a bottleneck?  If so, optimize!
+     * TODO: Is this a bottleneck?  If so, optimize!
      */
     protected boolean shouldRenderId(
       FacesContext context,

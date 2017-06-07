@@ -30,15 +30,17 @@ import java.util.Set;
  *
  * Example : in JSF pages, for dataTable, to remove elements :
  * Backing bean (#{inboxFace}).
+ * <code>
  * public ActionsMap getRemoveEmailUnid(){
  *         return new ActionsMap(){
  *            public void performAction(String unid) {
- *                InboxMailDAO<TInboxMail> dao = getInboxMailDAO();
+ *                InboxMailDAO&lt;TInboxMail&gt; dao = getInboxMailDAO();
  *                TInboxMail email = dao.getByPrimaryKey( unid );
  *                dao.remove( email );
  *            }
  *        };
  *    }
+ * </code>
  * JSF page :
  * &lt;h:selectBooleanCheckbox value="#{inboxFace.removeEmailUnid[email.unid]}"/&gt;
  */

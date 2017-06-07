@@ -156,8 +156,8 @@ public abstract class BiLevelCacheMap implements Map
 
     /**
      * If key is already in cacheL1, the new value will show with a delay,
-     * since merge L2->L1 may not happen immediately. To force the merge sooner,
-     * call <code>size()<code>.
+     * since merge L2-&gt;L1 may not happen immediately. To force the merge sooner,
+     * call <code>size()</code>.
      */
     public Object put(Object key, Object value)
     {
@@ -266,15 +266,15 @@ public abstract class BiLevelCacheMap implements Map
 
     /**
      * Subclasses must implement to have automatic creation of new instances
-     * or alternatively can use <code>put<code> to add new items to the cache.<br>
-     *
+     * or alternatively can use <code>put</code> to add new items to the cache.
+     * <p>
      * Implementing this method is prefered to guarantee that there will be only
      * one instance per key ever created. Calling put() to add items in a multi-
      * threaded situation will require external synchronization to prevent two
      * instances for the same key, which defeats the purpose of this cache
      * (put() is useful when initialization is done during startup and items
      * are not added during execution or when (temporarily) having possibly two
-     * or more instances of the same key is not of concern).<br>
+     * or more instances of the same key is not of concern).</p>
      *
      * @param key lookup key
      * @return new instace for the requested key

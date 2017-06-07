@@ -40,7 +40,7 @@ public class HashMapUtils
      * a HashMap or Hashtable without forcing an expensive increase in internal
      * capacity. Capacity is based on the default load factor of .75.
      * <p>
-     * Usage: <code>Map map = new HashMap(HashMapUtils.calcCapacity(10));<code>
+     * Usage: <code>Map map = new HashMap(HashMapUtils.calcCapacity(10));</code>
      * </p>
      * @param size the number of items that will be put into a HashMap
      * @return initial capacity needed

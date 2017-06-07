@@ -167,7 +167,7 @@ public class WebXml
     }
 
     /**
-     * returns a list of {@see #org.apache.myfaces.shared.webapp.webxml.FilterMapping}s representing a
+     * returns a list of {@link org.apache.myfaces.shared.webapp.webxml.FilterMapping}s representing a
      * extensions filter entry
      */
     public List getFacesExtensionsFilterMappings()

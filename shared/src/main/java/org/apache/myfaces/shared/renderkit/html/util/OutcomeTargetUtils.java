@@ -215,7 +215,7 @@ public class OutcomeTargetUtils
      * @param children
      * @param skipNullValue
      * @param skipUnrendered
-     * @return ArrayList size > 0 if any parameter found
+     * @return ArrayList size &gt; 0 if any parameter found
      */
     public static List<UIParameter> getValidUIParameterChildren(
             FacesContext facesContext, List<UIComponent> children,
@@ -241,7 +241,7 @@ public class OutcomeTargetUtils
      * @param skipUnrendered should UIParameters with isRendered() returning false be skipped
      * @param skipNullName   should UIParameters with a null name be skipped
      *                       (normally true, but in the case of h:outputFormat false)
-     * @return ArrayList size > 0 if any parameter found 
+     * @return ArrayList size &gt; 0 if any parameter found 
      */
     public static List<UIParameter> getValidUIParameterChildren(
             FacesContext facesContext, List<UIComponent> children,

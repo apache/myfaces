@@ -119,7 +119,7 @@ public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguag
     /**
      * Send a source not found to the client. Although it can be considered ok in JSP mode,
      * I think it's pretty lame to have this kind of requirement at VDL level considering VDL 
-     * represents the page --> JSF tree link, not the transport layer required to send a 
+     * represents the page --&gt; JSF tree link, not the transport layer required to send a 
      * SC_NOT_FOUND.
      * 
      * @param context le current FacesContext

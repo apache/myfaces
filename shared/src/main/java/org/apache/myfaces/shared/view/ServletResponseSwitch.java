@@ -28,9 +28,9 @@ import javax.servlet.ServletResponseWrapper;
 /**
  * Implementation of a switching response wrapper to turn 
  * output on and off according to the JSF spec 2.0.
- * <p/>
+ * <p>
  * Fall-back implementation of HttpServletResponseSwitch
- * for non HttpServletResponses.
+ * for non HttpServletResponses.</p>
  */
 public class ServletResponseSwitch extends ServletResponseWrapper implements ResponseSwitch
 {

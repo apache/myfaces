@@ -27,8 +27,8 @@ package org.apache.myfaces.shared.util;
  * {@link #PriorityQueue(int,boolean)} constructor with
  * <code>prepopulate</code> set to <code>true</code>.
  * 
- * @lucene.internal
- * @see org.apache.lucene.util.PriorityQueue
+ * lucene.internal
+ * see org.apache.lucene.util.PriorityQueue
 */
 public abstract class PriorityQueue<T>
 {
@@ -115,9 +115,9 @@ public abstract class PriorityQueue<T>
      * If this method is extended to return a non-null value, then the following
      * usage pattern is recommended:
      * 
-     * <pre>
+     * <code>
      * // extends getSentinelObject() to return a non-null value.
-     * PriorityQueue<MyObject> pq = new MyQueue<MyObject>(numHits);
+     * PriorityQueue&lt;MyObject&gt; pq = new MyQueue&lt;MyObject&gt;(numHits);
      * // save the 'top' element, which is guaranteed to not be null.
      * MyObject pqTop = pq.top();
      * &lt;...&gt;
@@ -125,7 +125,7 @@ public abstract class PriorityQueue<T>
      * // you've verified it is better), it is as simple as:
      * pqTop.change().
      * pqTop = pq.updateTop();
-     * </pre>
+     * </code>
      * 
      * <b>NOTE:</b> if this method returns a non-null value, it will be called by
      * the {@link PriorityQueue#PriorityQueue(int,boolean)} constructor 
@@ -295,7 +295,7 @@ public abstract class PriorityQueue<T>
     }
 
     /** This method returns the internal heap array as Object[].
-     * @lucene.internal
+     *  lucene.internal
      */
     protected final Object[] getHeapArray()
     {

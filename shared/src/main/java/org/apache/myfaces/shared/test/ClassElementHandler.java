@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * @see AbstractClassElementTestCase
+ * See AbstractClassElementTestCase
  */
 
 public class ClassElementHandler extends DefaultHandler

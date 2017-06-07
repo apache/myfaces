@@ -722,9 +722,9 @@ public final class RendererUtils
     }
 
     /**
-     * Call {@link #pushComponentToEL(javax.faces.context.FacesContext,javax.faces.component.UIComponent)}, 
+     * Call {@link UIComponent#pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)}, 
      * reads the isRendered property, call {@link
-     * UIComponent#popComponentFromEL} and returns the value of isRendered.
+     * UIComponent#popComponentFromEL(javax.faces.context.FacesContext)} and returns the value of isRendered.
      */
     public static boolean isRendered(FacesContext facesContext,
             UIComponent uiComponent)
@@ -1087,9 +1087,9 @@ public final class RendererUtils
      * form-families are searched for.
      * Currently those are the Trinidad form family,
      * and the (old) ADF Faces form family.
-     * <p/>
+     * <p>
      * There might be additional form families
-     * which have to be explicitly entered here.
+     * which have to be explicitly entered here.</p>
      *
      * @param uiComponent
      * @param facesContext
@@ -1499,7 +1499,7 @@ public final class RendererUtils
       * Checks for name/library attributes on component and if they are avaliable,
       * creates {@link Resource} and returns it's path suitable for rendering.
       * If component doesn't have name/library gets value for attribute named <code>attributeName</code> 
-      * returns it processed with {@link CoreRenderer#toResourceUri(FacesContext, Object)}
+      * returns it processed with {@link #toResourceUri(javax.faces.context.FacesContext, java.lang.Object)}
       *       
       * @param facesContext a {@link FacesContext}
       * @param component a {@link UIComponent}

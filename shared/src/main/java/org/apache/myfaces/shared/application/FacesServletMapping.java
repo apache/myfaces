@@ -54,7 +54,7 @@ public class FacesServletMapping
     /**
      * Creates a new FacesServletMapping object using extension mapping.
      *
-     * @param path The extension (".jsf", for example) which has been
+     * @param extension The extension (".jsf", for example) which has been
      *             specified in the url-pattern of the FacesServlet mapping.
      * @return a newly created FacesServletMapping
      */

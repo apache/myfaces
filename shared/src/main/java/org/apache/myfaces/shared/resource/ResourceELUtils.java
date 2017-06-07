@@ -24,7 +24,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.Location;
 
 /**
- * Utility class when used in EL Expressions --> #{resource}
+ * Utility class when used in EL Expressions --&gt; #{resource}
  */
 public class ResourceELUtils
 {

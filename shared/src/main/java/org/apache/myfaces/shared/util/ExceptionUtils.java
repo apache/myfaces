@@ -77,8 +77,8 @@ public final class ExceptionUtils
     }
 
     /**
-     * Find a throwable message starting with the last element.<br />
-     * Returns the first throwable message where <code>throwable.getMessage() != null</code> 
+     * Find a throwable message starting with the last element.<p>
+     * Returns the first throwable message where <code>throwable.getMessage() != null</code> </p>
      */
     public static String getExceptionMessage(List throwables)
     {

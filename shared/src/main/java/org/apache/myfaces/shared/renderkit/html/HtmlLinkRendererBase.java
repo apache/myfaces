@@ -759,8 +759,8 @@ public abstract class HtmlLinkRendererBase
     }
 
     /**
-     * find nesting form<br />
-     * need to be overrideable to deal with dummyForm stuff in tomahawk.
+     * find nesting form<p>
+     * need to be overrideable to deal with dummyForm stuff in tomahawk.</p>
      */
     protected FormInfo findNestingForm(UIComponent uiComponent, FacesContext facesContext)
     {
