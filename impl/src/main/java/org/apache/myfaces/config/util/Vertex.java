@@ -179,7 +179,7 @@ public final class Vertex<T> implements Comparable<Vertex<T>>
      * the ordinal they were given during the topological sort.
      *
      * @param o  The other Vertex to compare with
-     * @return -1 if this < o, 0 if this == o, or 1 if this > o
+     * @return -1 if this &lt; o, 0 if this == o, or 1 if this &gt; o
      */
     public int compareTo(final Vertex<T> o)
     {

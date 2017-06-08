@@ -38,9 +38,9 @@ import org.apache.myfaces.view.facelets.tag.MetaTagHandlerImpl;
 
 /**
  * Handles setting a Validator instance on a EditableValueHolder. Will wire all attributes set to the Validator instance
- * created/fetched. Uses the "binding" attribute for grabbing instances to apply attributes to. <p/> Will only
+ * created/fetched. Uses the "binding" attribute for grabbing instances to apply attributes to. <p> Will only
  * set/create Validator is the passed UIComponent's parent is null, signifying that it wasn't restored from an existing
- * tree.
+ * tree.</p>
  * 
  * @deprecated use javax.faces.view.facelets.ValidatorHandler instead
  * @author Jacob Hookom
@@ -73,7 +73,8 @@ public class ValidateHandler extends MetaTagHandlerImpl
 
     /**
      * 
-     * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
+     * See javax.faces.view.facelets.FaceletHandler#apply(
+     *      javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
      */
     public final void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException,
             FaceletException, ELException

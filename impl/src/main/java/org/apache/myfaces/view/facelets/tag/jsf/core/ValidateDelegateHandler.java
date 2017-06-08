@@ -31,8 +31,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 
 /**
  * Register a named Validator instance on the UIComponent associated with the closest parent UIComponent custom
- * action.<p/> See <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/validator.html">tag documentation</a>.
+ * action.
  * 
  * @author Jacob Hookom
  * @version $Id$
@@ -57,8 +56,8 @@ public final class ValidateDelegateHandler extends ValidatorHandler
     /**
      * Uses the specified "validatorId" to get a new Validator instance from the Application.
      * 
-     * @see javax.faces.application.Application#createValidator(java.lang.String)
-     * @see javax.faces.view.facelets.ValidatorHandler#createValidator(javax.faces.view.facelets.FaceletContext)
+     * See javax.faces.application.Application#createValidator(java.lang.String)
+     * See javax.faces.view.facelets.ValidatorHandler#createValidator(javax.faces.view.facelets.FaceletContext)
      */
     protected Validator createValidator(FaceletContext ctx)
     {

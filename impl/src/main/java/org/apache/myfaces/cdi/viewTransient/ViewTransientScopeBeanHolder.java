@@ -105,6 +105,8 @@ public class ViewTransientScopeBeanHolder
      *
      * This method will replace the storageMap and with
      * a new empty one.
+     * 
+     * @param facesContext
      * @return the old storageMap.
      */
     public ContextualStorage forceNewStorage(FacesContext facesContext)

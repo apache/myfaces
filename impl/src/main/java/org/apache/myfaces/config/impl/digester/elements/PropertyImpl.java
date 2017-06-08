@@ -36,10 +36,6 @@ import java.util.List;
  * property names that will be recognized when performing introspection
  * against that class via java.beans.Introspector.
  *
- * <!ELEMENT property        (description*, display-name*, icon*, property-name, property-class,
- * default-value?, suggested-value?, property-extension*)>
- *
- *          <p/>
  */
 public class PropertyImpl extends org.apache.myfaces.config.element.Property implements Serializable
 {

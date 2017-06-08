@@ -35,8 +35,8 @@ import javax.faces.view.facelets.TagAttributes;
  *       Instanciation: from O(n log n) to O(1)
  *       Access: from O(log n) to O(1)
  * 
- * @see org.apache.myfaces.view.facelets.tag.Tag
- * @see org.apache.myfaces.view.facelets.tag.TagAttributeImpl
+ * See org.apache.myfaces.view.facelets.tag.Tag
+ * See org.apache.myfaces.view.facelets.tag.TagAttributeImpl
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -101,7 +101,7 @@ public final class TagAttributesImpl extends TagAttributes
     /**
      * Using no namespace, find the TagAttribute
      * 
-     * @see #get(String, String)
+     * See #get(String, String)
      * @param localName
      *            tag attribute name
      * @return the TagAttribute found, otherwise null
@@ -180,7 +180,7 @@ public final class TagAttributesImpl extends TagAttributes
     /*
      * (non-Javadoc)
      * 
-     * @see java.lang.Object#toString()
+     * See java.lang.Object#toString()
      */
     @Override
     public String toString()

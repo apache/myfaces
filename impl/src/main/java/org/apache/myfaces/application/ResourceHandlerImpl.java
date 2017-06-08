@@ -1892,7 +1892,7 @@ public class ResourceHandlerImpl extends ResourceHandler
 
     /**
      * @since 2.3
-     * @param context
+     * @param facesContext
      * @param resourceName
      * @param libraryName 
      */

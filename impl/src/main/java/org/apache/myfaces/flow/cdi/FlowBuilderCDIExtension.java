@@ -35,8 +35,8 @@ import javax.faces.flow.builder.FlowDefinition;
  * This extension is responsible of scan flow definitions through CDI. For example:
  *
  * <code>
- * @Produces @FlowDefinition
- * public Flow defineFlow(@FlowBuilderParameter FlowBuilder flowBuilder) {...}
+ * &#64;Produces &#64;FlowDefinition
+ * public Flow defineFlow(&#64;FlowBuilderParameter FlowBuilder flowBuilder) {...}
  * </code>
  *
  * @author Leonardo Uribe
@@ -61,7 +61,7 @@ public class FlowBuilderCDIExtension implements Extension
     }
 
     /**
-     * Stores any producer method that is annotated with @FlowDefinition.
+     * Stores any producer method that is annotated with &#64;FlowDefinition.
      */
     <T> void findFlowDefinition(@Observes ProcessProducer<T, Flow> processProducer)
     {

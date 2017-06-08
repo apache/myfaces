@@ -91,7 +91,7 @@ public final class ErrorPageWriter
 
     /**
      * This bean aims to generate the error page html for inclusion on a facelet error page via
-     * <ui:include src="javax.faces.error.xhtml" />. When performing this include the facelet
+     * &lt;ui:include src="javax.faces.error.xhtml" /&gt;. When performing this include the facelet
      * "myfaces-dev-error-include.xhtml" will be included. This facelet references to the ErrorPageBean.
      * This also works for custom error page templates.
      * The bean is added to the ViewMap of the UIViewRoot, which is 
@@ -481,9 +481,9 @@ public final class ErrorPageWriter
 
     /**
      * Handles the given Throwbale in the following way:
-     * If there is no <error-page> entry in web.xml, try to reset the current HttpServletResponse,
+     * If there is no &lt;error-page&gt; entry in web.xml, try to reset the current HttpServletResponse,
      * generate the error page and call responseComplete(). If this fails, rethrow the Exception.
-     * If there is an <error-page> entry in web.xml, save the current UIViewRoot in the RequestMap
+     * If there is an &lt;error-page&gt; entry in web.xml, save the current UIViewRoot in the RequestMap
      * with the key "org.apache.myfaces.error.UIViewRoot" to access it on the error page and
      * rethrow the Exception to let it flow up to FacesServlet.service() and thus be handled by the container.
      * @param facesContext

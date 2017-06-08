@@ -52,18 +52,19 @@ import java.util.logging.Logger;
 
 /**
  * Initialise the MyFaces system.
- * <p/>
+ * <p>
  * This context listener is registered by the JSP TLD file for the standard JSF "f" components. Normally, servlet
  * containers will automatically load and process .tld files at startup time, and therefore register and run this class
  * automatically.
- * <p/>
+ * </p><p>
  * Some very old servlet containers do not do this correctly, so in those cases this listener may be registered manually
  * in web.xml. Registering it twice (ie in both .tld and web.xml) will result in a harmless warning message being
  * generated. Very old versions of MyFaces Core do not register the listener in the .tld file, so those also need a
  * manual entry in web.xml. However all versions since at least 1.1.2 have this entry in the tld.
- * <p/>
+ * </p><p>
  * This listener also delegates all session, request and context events to ManagedBeanDestroyer.
  * Because of that we only need to register one listener in the tld.
+ * </p>
  *
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$

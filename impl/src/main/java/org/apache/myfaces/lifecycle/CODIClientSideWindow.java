@@ -323,7 +323,7 @@ public class CODIClientSideWindow extends ClientWindow
      * @param externalContext current external-context
      * @param url current url
      * @param addRequestParameter flag which indicates if the request params should be added or not
-     * @param addPageParameter flag which indicates if the view params should be added or not {@see ViewParameter}
+     * @param addPageParameter flag which indicates if the view params should be added or not. See ViewParameter
      * @param encodeValues flag which indicates if parameter values should be encoded or not
      * @return url with request-parameters
      */

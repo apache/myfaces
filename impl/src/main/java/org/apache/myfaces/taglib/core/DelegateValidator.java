@@ -33,11 +33,13 @@ import javax.faces.validator.ValidatorException;
  * 
  * When a tag like this is in a jsp page:
  * 
- * <f:validator binding="#{mybean}"/>
+ * <code>
+ * &lt;f:validator binding="#{mybean}"/&gt;
  *  
  *  or
  *  
- * <f:validator validatorId="#{'anyid'}" binding="#{mybean}"/>
+ * &lt;f:validator validatorId="#{'anyid'}" binding="#{mybean}"/&gt;
+ * </code>
  * 
  * The value of mybean could be already on the context, so this
  * converter avoid creating a new variable and use the previous one.

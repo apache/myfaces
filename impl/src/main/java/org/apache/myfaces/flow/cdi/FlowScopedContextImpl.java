@@ -40,17 +40,8 @@ import org.apache.myfaces.flow.FlowReference;
 import org.apache.myfaces.flow.util.FlowUtils;
 
 /**
- * Minimal implementation of FlowScope.
+ * Implementation of FlowScope.
  * 
- * @TODO: We need something better for this part. The problem is the beans
- * are just put under the session map using the old know SubKeyMap hack used
- * in Flash object, but CDI implementations like OWB solves the passivation
- * problem better. The ideal is provide a myfaces specific SPI interface, to
- * allow provide custom implementation of this detail.
- * 
- * @TODO: FlowHandler.transition() method should call this object when the
- * user enter or exit a flow.
- *
  * @author Leonardo Uribe
  */
 @Typed()

@@ -47,8 +47,7 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 /**
  * Register an ValueChangeListener instance on the UIComponent associated with the closest parent UIComponent custom
- * action.<p/> See <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/valueChangeListener.html">tag documentation</a>.
+ * action.
  * 
  * @author Jacob Hookom
  * @version $Id$
@@ -148,7 +147,8 @@ public final class ValueChangeListenerHandler extends TagHandler
     /**
      * See taglib documentation.
      * 
-     * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
+     * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, 
+     * javax.faces.component.UIComponent)
      */
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException

@@ -110,7 +110,6 @@ public abstract class TemplateContext
      * 
      * @since 2.0.8
      * @param key
-     * @return
      */
     public abstract void setParameter(String key, ValueExpression value);
     
@@ -139,7 +138,6 @@ public abstract class TemplateContext
     /**
      * 
      * @since 2.0.8
-     * @return
      */
     public abstract void setAllowCacheELExpressions(boolean cacheELExpressions);
     

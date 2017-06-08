@@ -870,7 +870,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
      * In short words, this method take care of "target" an "attached object".
      * <ul>
      * <li>The "attached object" is instantiated by a tag handler.</li> 
-     * <li>The "target" is an object used as "marker", that exposes a List<UIComponent></li>
+     * <li>The "target" is an object used as "marker", that exposes a List&lt;UIComponent&gt;</li>
      * </ul>
      * This method should be called from some composite component tag handler, after
      * all children of composite component has been applied.

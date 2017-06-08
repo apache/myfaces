@@ -30,8 +30,6 @@ public class AttachedFullStateWrapper implements Serializable
     private Object _wrappedStateObject;
 
     /**
-     * @param clazz
-     *            null means wrappedStateObject is a List of state objects
      * @param wrappedStateObject
      */
     public AttachedFullStateWrapper(Object wrappedStateObject)

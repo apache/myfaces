@@ -19,7 +19,7 @@
 package org.apache.myfaces.view.facelets.el;
 
 /**
- * Utility class when used in EL Expressions --> #{resource}
+ * Utility class when used in EL Expressions --&gt; #{resource}
  * 
  * @author Leonardo Uribe
  */

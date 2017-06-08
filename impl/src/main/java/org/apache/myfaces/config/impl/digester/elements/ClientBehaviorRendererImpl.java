@@ -21,7 +21,7 @@ package org.apache.myfaces.config.impl.digester.elements;
 import java.io.Serializable;
 
 /**
- * Config holder for <client-behavior-renderer> element.
+ * Config holder for &lt;client-behavior-renderer&gt; element.
  */
 
 public class ClientBehaviorRendererImpl

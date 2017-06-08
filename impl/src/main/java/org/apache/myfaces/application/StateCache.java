@@ -100,7 +100,7 @@ public abstract class StateCache<K, V>
      * viewState that can be used by the underlying ResponseStateManager to write the state.
      * 
      * @param facesContext
-     * @param state The state that will be used to derive the token returned.
+     * @param serializedView The state that will be used to derive the token returned.
      * @return A token (usually encoded on javax.faces.ViewState input hidden field) that will be passed to 
      *         ResponseStateManager.writeState or ResponseStateManager.getViewState to be 
      *         output to the client.

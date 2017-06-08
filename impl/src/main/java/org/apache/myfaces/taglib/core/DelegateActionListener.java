@@ -34,12 +34,13 @@ import org.apache.myfaces.shared.util.ClassUtils;
  * This class is used in conjunction with ActionListenerTag. 
  * 
  * When a tag like this is in a jsp page:
- * 
- * <f:actionListener binding="#{mybean}"/>
+ * <code>
+ * &lt;f:actionListener binding="#{mybean}"/&gt;
  *  
  *  or
  *  
- * <f:actionListener type="#{'anyid'}" binding="#{mybean}"/>
+ * &lt;f:actionListener type="#{'anyid'}" binding="#{mybean}"/&gt;
+ * </code>
  * 
  * The value of mybean could be already on the context, so this
  * converter avoid creating a new variable and use the previous one.

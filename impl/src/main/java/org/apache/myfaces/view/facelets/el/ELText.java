@@ -460,7 +460,7 @@ public class ELText
 
     /**
      * Factory method for creating an unvalidated ELText instance. NOTE: All expressions in the passed String are
-     * treated as {@link org.apache.myfaces.view.facelets.el.LiteralValueExpression LiteralValueExpressions}.
+     * treated as {@link org.apache.myfaces.view.facelets.el.LocationValueExpression}.
      * 
      * @param in
      *            String to parse
@@ -486,8 +486,8 @@ public class ELText
 
     /**
      * Factory method for creating a validated ELText instance. When an Expression is hit, it will use the
-     * ExpressionFactory to create a ValueExpression instance, resolving any functions at that time. <p/> Variables and
-     * properties will not be evaluated.
+     * ExpressionFactory to create a ValueExpression instance, resolving any functions at that time. <p> Variables and
+     * properties will not be evaluated.</p>
      * 
      * @param fact
      *            ExpressionFactory to use

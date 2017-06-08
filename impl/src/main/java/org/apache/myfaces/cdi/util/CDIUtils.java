@@ -67,11 +67,6 @@ public class CDIUtils
 
     }
     
-    /**
-     * {@inheritDoc}
-     *
-     * @see Beans#resolve(Class, Annotation...)
-     */
     @SuppressWarnings("unchecked")
     public static <T> Bean<T> resolve(BeanManager beanManager, Class<T> beanClass, Annotation... qualifiers)
     {
@@ -88,11 +83,6 @@ public class CDIUtils
         return (Bean<T>) beanManager.resolve(beans);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see Beans#getInstance(Class, boolean, Annotation...)
-     */
     public static <T> T getInstance(BeanManager beanManager, Class<T> beanClass, 
             boolean create, Annotation... qualifiers)
     {
@@ -107,11 +97,6 @@ public class CDIUtils
         }
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see Beans#getInstance(Bean, boolean)
-     */
     public static <T> T getInstance(BeanManager beanManager, Bean<T> bean, boolean create)
     {
         Context context = beanManager.getContext(bean.getScope());

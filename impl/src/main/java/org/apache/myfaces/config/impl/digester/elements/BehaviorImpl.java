@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 /**
- * Implementation of model for <behavior> element.
+ * Implementation of model for &lt;behavior&gt; element.
  */
 
 public class BehaviorImpl extends org.apache.myfaces.config.element.Behavior implements Serializable

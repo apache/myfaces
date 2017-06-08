@@ -78,21 +78,22 @@ public class ComponentHandler extends MetaTagHandler
      * <ol>
      * <li>First determines this UIComponent's id by calling {@link #getId(FaceletContext) getId(FaceletContext)}.</li>
      * <li>Search the parent for an existing UIComponent of the id we just grabbed</li>
-     * <li>If found, {@link #markForDeletion(UIComponent) mark} its children for deletion.</li>
-     * <li>If <i>not</i> found, call {@link #createComponent(FaceletContext) createComponent}.
+     * <li>If found, markForDeletion(UIComponent) its children for deletion.</li>
+     * <li>If <i>not</i> found, call #createComponent(FaceletContext).
      * <ol>
-     * <li>Only here do we apply {@link ObjectHandler#setAttributes(FaceletContext, Object) attributes}</li>
+     * <li>Only here do we apply ObjectHandler#setAttributes(FaceletContext, Object)</li>
      * <li>Set the UIComponent's id</li>
      * <li>Set the RendererType of this instance</li>
      * </ol>
      * </li>
      * <li>Now apply the nextHandler, passing the UIComponent we've created/found.</li>
      * <li>Now add the UIComponent to the passed parent</li>
-     * <li>Lastly, if the UIComponent already existed (found), then {@link #finalizeForDeletion(UIComponent) finalize}
+     * <li>Lastly, if the UIComponent already existed (found), then #finalizeForDeletion(UIComponent)
      * for deletion.</li>
      * </ol>
      * 
-     * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
+     * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, 
+     *  javax.faces.component.UIComponent)
      * 
      * @throws TagException
      *             if the UIComponent parent is null
@@ -204,11 +205,11 @@ public class ComponentHandler extends MetaTagHandler
 
     /**
      * If the binding attribute was specified, use that in conjuction with our componentType String variable to call
-     * createComponent on the Application, otherwise just pass the componentType String. <p /> If the binding was used,
-     * then set the ValueExpression "binding" on the created UIComponent.
+     * createComponent on the Application, otherwise just pass the componentType String. <p> If the binding was used,
+     * then set the ValueExpression "binding" on the created UIComponent.</p>
      * 
-     * @see Application#createComponent(javax.faces.el.ValueBinding, javax.faces.context.FacesContext, java.lang.String)
-     * @see Application#createComponent(java.lang.String)
+     * See Application#createComponent(javax.faces.el.ValueBinding, javax.faces.context.FacesContext, java.lang.String)
+     * See Application#createComponent(java.lang.String)
      * @param ctx
      *            FaceletContext to use in creating a component
      * @return
@@ -238,7 +239,7 @@ public class ComponentHandler extends MetaTagHandler
     /**
      * If the id TagAttribute was specified, get it's value, otherwise generate a unique id from our tagId.
      * 
-     * @see TagAttribute#getValue(FaceletContext)
+     * See TagAttribute#getValue(FaceletContext)
      * @param ctx
      *            FaceletContext to use
      * @return what should be a unique Id

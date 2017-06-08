@@ -361,9 +361,9 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     /**
      * Return the normalized viewId according to the algorithm specified in 7.5.2 
      * by stripping off any number of occurrences of the prefix mapping from the viewId.
-     * <p/>
+     * <p>
      * For example, both /faces/view.xhtml and /faces/faces/faces/view.xhtml would both return view.xhtml
-     * F 
+     * </p>
      */
     protected String handlePrefixMapping(String viewId, String prefix)
     {
@@ -415,8 +415,9 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     /**
      * Return the viewId with any non-standard suffix stripped off and replaced with
      * the default suffix configured for the specified context.
-     * <p/>
+     * <p>
      * For example, an input parameter of "/foo.jsf" may return "/foo.jsp".
+     * </p>
      */
     protected String handleSuffixMapping(FacesContext context, String requestViewId)
     {

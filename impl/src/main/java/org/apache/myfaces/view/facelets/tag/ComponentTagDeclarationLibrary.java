@@ -48,7 +48,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.myfaces.view.facelets.tag.TagLibrary#containsNamespace(java.lang.String)
+     * See org.apache.myfaces.view.facelets.tag.TagLibrary#containsNamespace(java.lang.String)
      */
     public boolean containsNamespace(String ns)
     {
@@ -58,7 +58,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.myfaces.view.facelets.tag.TagLibrary#containsTagHandler(java.lang.String, java.lang.String)
+     * See org.apache.myfaces.view.facelets.tag.TagLibrary#containsTagHandler(java.lang.String, java.lang.String)
      */
     public boolean containsTagHandler(String ns, String localName)
     {
@@ -80,7 +80,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.myfaces.view.facelets.tag.TagLibrary#createTagHandler(java.lang.String, java.lang.String,
+     * See org.apache.myfaces.view.facelets.tag.TagLibrary#createTagHandler(java.lang.String, java.lang.String,
      * org.apache.myfaces.view.facelets.tag.TagConfig)
      */
     public TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException
@@ -106,7 +106,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.myfaces.view.facelets.tag.TagLibrary#containsFunction(java.lang.String, java.lang.String)
+     * See org.apache.myfaces.view.facelets.tag.TagLibrary#containsFunction(java.lang.String, java.lang.String)
      */
     public boolean containsFunction(String ns, String name)
     {
@@ -116,7 +116,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.myfaces.view.facelets.tag.TagLibrary#createFunction(java.lang.String, java.lang.String)
+     * See org.apache.myfaces.view.facelets.tag.TagLibrary#createFunction(java.lang.String, java.lang.String)
      */
     public Method createFunction(String ns, String name)
     {
@@ -132,10 +132,10 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
     /**
      * Add a ComponentHandler with the specified componentType and rendererType, aliased by the tag name.
      * 
-     * @see ComponentHandler
-     * @see javax.faces.application.Application#createComponent(java.lang.String)
+     * See ComponentHandler
+     * See javax.faces.application.Application#createComponent(java.lang.String)
      * @param name
-     *            name to use, "foo" would be &lt;my:foo />
+     *            name to use, "foo" would be &lt;my:foo /&gt;
      * @param componentType
      *            componentType to use
      * @param rendererType
@@ -156,9 +156,9 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
      * Add a ComponentHandler with the specified componentType and rendererType, aliased by the tag name. The Facelet
      * will be compiled with the specified HandlerType (which must extend AbstractComponentHandler).
      * 
-     * @see AbstractComponentHandler
+     * See AbstractComponentHandler
      * @param name
-     *            name to use, "foo" would be &lt;my:foo />
+     *            name to use, "foo" would be &lt;my:foo /&gt;
      * @param componentType
      *            componentType to use
      * @param rendererType

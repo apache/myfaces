@@ -52,8 +52,6 @@ public class ViewScopeContextualStorage implements Serializable
 
     /**
      * @param beanManager is needed for serialisation
-     * @param concurrent whether the ContextualStorage might get accessed concurrently by different threads
-     * @param passivationCapable whether the storage is for passivation capable Scopes
      */
     public ViewScopeContextualStorage(BeanManager beanManager)
     {

@@ -32,11 +32,11 @@ import javax.faces.event.ValueChangeListener;
  * 
  * When a tag like this is in a jsp page:
  * 
- * <f:valueChangeListener binding="#{mybean}"/>
+ * &lt;f:valueChangeListener binding="#{mybean}"/&gt;
  * 
  * or
  * 
- * <f:valueChangeListener type="#{'anyid'}" binding="#{mybean}"/>
+ * &lt;f:valueChangeListener type="#{'anyid'}" binding="#{mybean}"/&gt;
  * 
  * The value of mybean could be already on the context, so this converter avoid creating a new variable and use the
  * previous one.

@@ -39,14 +39,15 @@ import org.apache.myfaces.view.facelets.tag.MetaTagHandlerImpl;
 
 /**
  * Handles setting a Converter instance on a ValueHolder. Will wire all attributes set to the Converter instance
- * created/fetched. Uses the "binding" attribute for grabbing instances to apply attributes to. <p/> Will only
+ * created/fetched. Uses the "binding" attribute for grabbing instances to apply attributes to. <p> Will only
  * set/create Converter is the passed UIComponent's parent is null, signifying that it wasn't restored from an existing
- * tree.
+ * tree.</p>
+ * 
+ * See javax.faces.webapp.ConverterELTag
+ * See javax.faces.convert.Converter
+ * See javax.faces.component.ValueHolder
  * 
  * @deprecated use javax.faces.view.facelets.ConverterHandler instead
- * @see javax.faces.webapp.ConverterELTag
- * @see javax.faces.convert.Converter
- * @see javax.faces.component.ValueHolder
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -81,15 +82,17 @@ public class ConvertHandler extends MetaTagHandlerImpl
      * <li>Cast to ValueHolder</li>
      * <li>If "binding" attribute was specified, fetch/create and re-bind to expression.</li>
      * <li>Otherwise, call {@link #createConverter(FaceletContext) createConverter}.</li>
-     * <li>Call {@link ObjectHandler#setAttributes(FaceletContext, Object) setAttributes} on Converter instance.</li>
+     * <li>Call {@link #setAttributes(javax.faces.view.facelets.FaceletContext, java.lang.Object)} 
+     * on Converter instance.</li>
      * <li>Set the Converter on the ValueHolder</li>
      * <li>If the ValueHolder has a localValue, convert it and set the value</li>
      * </ol>
      * 
-     * @see ValueHolder
-     * @see Converter
-     * @see #createConverter(FaceletContext)
-     * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
+     * See ValueHolder
+     * See Converter
+     * See #createConverter(FaceletContext)
+     * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext,
+     *          javax.faces.component.UIComponent)
      */
     public final void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException,
             FaceletException, ELException

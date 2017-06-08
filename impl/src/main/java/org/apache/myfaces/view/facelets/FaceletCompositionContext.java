@@ -360,7 +360,7 @@ abstract public class FaceletCompositionContext
      * Used to clean up all unused relocatable components on the root component.
      *
      * @since 2.0.17 2.1.11
-     * @param component
+     * @param root
      *            UIComponent to finalize (root component)
      */
     public void finalizeRelocatableResourcesForDeletion(UIViewRoot root)
@@ -564,7 +564,6 @@ abstract public class FaceletCompositionContext
      * Increment the unique id without construct it.
      * 
      * since 2.1.7, 2.0.13
-     * @return 
      */
     public void incrementUniqueId()
     {
@@ -586,7 +585,6 @@ abstract public class FaceletCompositionContext
      * Call this method to indicate a f:metadata section is about to be processed
      * 
      * since 2.1.7, 2.0.13
-     * @return 
      */
     public void startMetadataSection()
     {
@@ -596,7 +594,6 @@ abstract public class FaceletCompositionContext
      * Call this method to indicate f:metadata section has been already processed
      * 
      * since 2.1.7, 2.0.13
-     * @return 
      */
     public void endMetadataSection()
     {

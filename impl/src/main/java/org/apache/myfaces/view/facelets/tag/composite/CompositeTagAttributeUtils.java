@@ -26,7 +26,7 @@ import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagAttribute;
 
 /**
- * TagAttribute utils for <composite:xxx> TagHandlers.
+ * TagAttribute utils for &lt;composite:xxx&gt; TagHandlers.
  * 
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$

@@ -58,7 +58,6 @@ public class FullVisitContext extends VisitContext
    *
    * @param facesContext the FacesContext for the current request
    * @param hints a the VisitHints for this visit
-   * @param phaseId PhaseId, if any that visit is ocurring under
    * @throws NullPointerException  if {@code facesContext}
    *                               is {@code null}
    * @throws IllegalArgumentException if the phaseId is specified and

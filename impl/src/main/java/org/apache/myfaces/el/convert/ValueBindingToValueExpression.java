@@ -40,8 +40,9 @@ import org.apache.myfaces.shared.util.ClassUtils;
  * 
  * ATTENTION: If you make changes to this class, treat {@link ValueBindingToValueExpression} accordingly.
  * 
+ * See javax.faces.component._ValueBindingToValueExpression
+ * 
  * @author Stan Silvert
- * @see javax.faces.component._ValueBindingToValueExpression
  */
 @SuppressWarnings("deprecation")
 public class ValueBindingToValueExpression extends ValueExpression implements StateHolder

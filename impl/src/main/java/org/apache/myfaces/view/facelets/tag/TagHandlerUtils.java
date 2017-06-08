@@ -68,7 +68,7 @@ public final class TagHandlerUtils
 
     /**
      * From TagHandler:
-     * protected final <T> Iterator<T> findNextByType(Class<T> type)
+     * protected final &lt;T&gt; Iterator&lt;T&gt; findNextByType(Class&lt;T&gt; type)
      *
      * @param type
      * @return

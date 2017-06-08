@@ -34,8 +34,6 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
  * Register a NumberConverter instance on the UIComponent associated with the closest parent UIComponent custom action.
- * <p/> See <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/convertNumber.html">tag documentation</a>.
  * 
  * @author Jacob Hookom
  * @version $Id$
@@ -61,8 +59,9 @@ public final class ConvertNumberHandler extends ConverterHandler
     /**
      * Returns a new NumberConverter
      * 
-     * @see NumberConverter
-     * @see org.apache.myfaces.view.facelets.tag.jsf.ConverterHandler#createConverter(javax.faces.view.facelets.FaceletContext)
+     * See NumberConverter
+     * See org.apache.myfaces.view.facelets.tag.jsf.ConverterHandler#createConverter(
+     * javax.faces.view.facelets.FaceletContext)
      */
     protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException
     {
@@ -72,7 +71,8 @@ public final class ConvertNumberHandler extends ConverterHandler
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.myfaces.view.facelets.tag.ObjectHandler#setAttributes(javax.faces.view.facelets.FaceletContext, java.lang.Object)
+     * See org.apache.myfaces.view.facelets.tag.ObjectHandler#setAttributes(javax.faces.view.facelets.FaceletContext,
+     * java.lang.Object)
      */
     public void setAttributes(FaceletContext ctx, Object obj)
     {

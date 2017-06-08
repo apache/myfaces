@@ -80,7 +80,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.myfaces.view.facelets.tag.TagLibrary#containsNamespace(java.lang.String)
+     * See org.apache.myfaces.view.facelets.tag.TagLibrary#containsNamespace(java.lang.String)
      */
     public boolean containsNamespace(String ns)
     {
@@ -90,7 +90,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.myfaces.view.facelets.tag.TagLibrary#containsTagHandler(java.lang.String, java.lang.String)
+     * See org.apache.myfaces.view.facelets.tag.TagLibrary#containsTagHandler(java.lang.String, java.lang.String)
      */
     public boolean containsTagHandler(String ns, String localName)
     {
@@ -100,7 +100,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.myfaces.view.facelets.tag.TagLibrary#createTagHandler(java.lang.String, java.lang.String,
+     * See org.apache.myfaces.view.facelets.tag.TagLibrary#createTagHandler(java.lang.String, java.lang.String,
      * org.apache.myfaces.view.facelets.tag.TagConfig)
      */
     public TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException
@@ -120,7 +120,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.myfaces.view.facelets.tag.TagLibrary#containsFunction(java.lang.String, java.lang.String)
+     * See org.apache.myfaces.view.facelets.tag.TagLibrary#containsFunction(java.lang.String, java.lang.String)
      */
     public boolean containsFunction(String ns, String name)
     {
@@ -130,7 +130,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.myfaces.view.facelets.tag.TagLibrary#createFunction(java.lang.String, java.lang.String)
+     * See org.apache.myfaces.view.facelets.tag.TagLibrary#createFunction(java.lang.String, java.lang.String)
      */
     public Method createFunction(String ns, String name)
     {
@@ -145,10 +145,10 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /**
      * Add a ComponentHandler with the specified componentType and rendererType, aliased by the tag name.
      * 
-     * @see ComponentHandler
-     * @see javax.faces.application.Application#createComponent(java.lang.String)
+     * See ComponentHandler
+     * See javax.faces.application.Application#createComponent(java.lang.String)
      * @param name
-     *            name to use, "foo" would be &lt;my:foo />
+     *            name to use, "foo" would be &lt;my:foo /&gt;
      * @param componentType
      *            componentType to use
      * @param rendererType
@@ -163,9 +163,10 @@ public abstract class AbstractTagLibrary implements TagLibrary
      * Add a ComponentHandler with the specified componentType and rendererType, aliased by the tag name. The Facelet
      * will be compiled with the specified HandlerType (which must extend AbstractComponentHandler).
      * 
-     * @see AbstractComponentHandler
+     * See AbstractComponentHandler
+     * 
      * @param name
-     *            name to use, "foo" would be &lt;my:foo />
+     *            name to use, "foo" would be &lt;my:foo /&gt;
      * @param componentType
      *            componentType to use
      * @param rendererType
@@ -187,10 +188,10 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /**
      * Add a ConvertHandler for the specified converterId
      * 
-     * @see javax.faces.view.facelets.ConverterHandler
-     * @see javax.faces.application.Application#createConverter(java.lang.String)
+     * See javax.faces.view.facelets.ConverterHandler
+     * See javax.faces.application.Application#createConverter(java.lang.String)
      * @param name
-     *            name to use, "foo" would be &lt;my:foo />
+     *            name to use, "foo" would be &lt;my:foo /&gt;
      * @param converterId
      *            id to pass to Application instance
      */
@@ -202,11 +203,12 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /**
      * Add a ConvertHandler for the specified converterId of a TagHandler type
      * 
-     * @see javax.faces.view.facelets.ConverterHandler
-     * @see javax.faces.view.facelets.ConverterConfig
-     * @see javax.faces.application.Application#createConverter(java.lang.String)
+     * See javax.faces.view.facelets.ConverterHandler
+     * See javax.faces.view.facelets.ConverterConfig
+     * See javax.faces.application.Application#createConverter(java.lang.String)
+     * 
      * @param name
-     *            name to use, "foo" would be &lt;my:foo />
+     *            name to use, "foo" would be &lt;my:foo /&gt;
      * @param converterId
      *            id to pass to Application instance
      * @param type
@@ -220,10 +222,11 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /**
      * Add a ValidateHandler for the specified validatorId
      * 
-     * @see javax.faces.view.facelets.ValidatorHandler
-     * @see javax.faces.application.Application#createValidator(java.lang.String)
+     * See javax.faces.view.facelets.ValidatorHandler
+     * See javax.faces.application.Application#createValidator(java.lang.String)
+     * 
      * @param name
-     *            name to use, "foo" would be &lt;my:foo />
+     *            name to use, "foo" would be &lt;my:foo /&gt;
      * @param validatorId
      *            id to pass to Application instance
      */
@@ -235,11 +238,11 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /**
      * Add a ValidateHandler for the specified validatorId
      * 
-     * @see javax.faces.view.facelets.ValidatorHandler
-     * @see javax.faces.view.facelets.ValidatorConfig
-     * @see javax.faces.application.Application#createValidator(java.lang.String)
+     * See javax.faces.view.facelets.ValidatorHandler
+     * See javax.faces.view.facelets.ValidatorConfig
+     * See javax.faces.application.Application#createValidator(java.lang.String)
      * @param name
-     *            name to use, "foo" would be &lt;my:foo />
+     *            name to use, "foo" would be &lt;my:foo /&gt;
      * @param validatorId
      *            id to pass to Application instance
      * @param type
@@ -253,9 +256,9 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /**
      * Use the specified HandlerType in compiling Facelets. HandlerType must extend TagHandler.
      * 
-     * @see TagHandler
+     * See TagHandler
      * @param name
-     *            name to use, "foo" would be &lt;my:foo />
+     *            name to use, "foo" would be &lt;my:foo /&gt;
      * @param handlerType
      *            must extend TagHandler
      */
@@ -267,9 +270,9 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /**
      * Add a UserTagHandler specified a the URL source.
      * 
-     * @see UserTagHandler
+     * See UserTagHandler
      * @param name
-     *            name to use, "foo" would be &lt;my:foo />
+     *            name to use, "foo" would be &lt;my:foo /&gt;
      * @param source
      *            source where the Facelet (Tag) source is
      */
@@ -295,7 +298,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /**
      * Add a Method to be used as a Function at Compilation.
      * 
-     * @see javax.el.FunctionMapper
+     * See javax.el.FunctionMapper
      * 
      * @param name
      *            (suffix) of function name
@@ -309,8 +312,8 @@ public abstract class AbstractTagLibrary implements TagLibrary
     
     /**
      * @since 2.0
-     * @param behaviorId
-     * @param behaviorClass
+     * @param name
+     * @param behaviorId 
      */
     protected final void addBehavior(String name, String behaviorId)
     {
@@ -319,9 +322,9 @@ public abstract class AbstractTagLibrary implements TagLibrary
     
     /**
      * @since 2.0
+     * @param name
      * @param behaviorId
-     * @param behaviorClass
-     * @param handlerType
+     * @param handlerType 
      */
     protected final void addBehavior(String name, String behaviorId,
             Class<? extends TagHandler> handlerType)

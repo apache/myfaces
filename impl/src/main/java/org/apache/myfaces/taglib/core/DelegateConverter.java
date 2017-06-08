@@ -30,13 +30,13 @@ import javax.faces.convert.ConverterException;
  * This class is used in conjunction with ConverterImplTag. 
  * 
  * When a tag like this is in a jsp page:
- * 
- * <f:converter binding="#{mybean}"/>
+ * <code>
+ * &lt;f:converter binding="#{mybean}"/&gt;
  *  
  *  or
  *  
- * <f:converter converterId="#{'anyid'}" binding="#{mybean}"/>
- * 
+ * &lt;f:converter converterId="#{'anyid'}" binding="#{mybean}"/&gt;
+ * </code>
  * The value of mybean could be already on the context, so this
  * converter avoid creating a new variable and use the previous one.
  * 

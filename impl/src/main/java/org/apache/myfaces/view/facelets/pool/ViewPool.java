@@ -40,7 +40,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
  * <li>The structure of a view usually does not change over application lifetime.</li>
  * <li>The "delta state" or in other words the elements that change in view are
  * small compared with the elements that does not change.</li>
- * <ul>
+ * </ul>
  * <p>
  * The implementation proposed uses a lock free view pool structure with soft or
  * weak references. The lock free view pool ensures fast access and the soft or weak

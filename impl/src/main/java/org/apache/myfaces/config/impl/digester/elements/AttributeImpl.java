@@ -27,17 +27,6 @@ import java.util.List;
 /**
  * @author Martin Marinschek
  * @version $Revision$ $Date$
- *
-     The "attribute" element represents a named, typed, value associated with
-     the parent UIComponent via the generic attributes mechanism.
-
-     Attribute names must be unique within the scope of the parent (or related)
-     component.
-
-     <!ELEMENT attribute       (description*, display-name*, icon*, attribute-name,
-attribute-class, default-value?, suggested-value?, attribute-extension*)>
-
- *          <p/>
  */
 public class AttributeImpl extends org.apache.myfaces.config.element.Attribute implements Serializable
 {

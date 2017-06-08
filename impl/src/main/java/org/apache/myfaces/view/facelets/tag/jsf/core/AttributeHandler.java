@@ -34,11 +34,10 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 
 /**
  * Sets the specified name and attribute on the parent UIComponent. If the "value" specified is not a literal, it will
- * instead set the ValueExpression on the UIComponent. <p /> See <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/attribute.html">tag documentation</a>.
+ * instead set the ValueExpression on the UIComponent. 
  * 
- * @see javax.faces.component.UIComponent#getAttributes()
- * @see javax.faces.component.UIComponent#setValueExpression(java.lang.String, javax.el.ValueExpression)
+ * See javax.faces.component.UIComponent#getAttributes()
+ * See javax.faces.component.UIComponent#setValueExpression(java.lang.String, javax.el.ValueExpression)
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -66,7 +65,8 @@ public final class AttributeHandler extends TagHandler
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
+     * See javax.faces.view.facelets.FaceletHandler#apply(
+     *       javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
      */
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException

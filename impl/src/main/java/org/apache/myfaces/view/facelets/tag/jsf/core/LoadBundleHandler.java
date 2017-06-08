@@ -46,8 +46,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
  * Load a resource bundle localized for the Locale of the current view, and expose it (as a Map) in the request
- * attributes of the current request. <p/> See <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/loadBundle.html">tag documentation</a>.
+ * attributes of the current request. 
  * 
  * @author Jacob Hookom
  * @version $Id$
@@ -220,7 +219,8 @@ public final class LoadBundleHandler extends TagHandler
     /**
      * See taglib documentation.
      * 
-     * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
+     * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, 
+     * javax.faces.component.UIComponent)
      */
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException

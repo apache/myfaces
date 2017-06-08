@@ -37,8 +37,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
  * Register a DateTimeConverter instance on the UIComponent associated with the closest parent UIComponent custom
- * action. <p/> See <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/convertDateTime.html">tag documentation</a>.
+ * action. 
  * 
  * @deprecated use 
  * @author Jacob Hookom
@@ -80,8 +79,8 @@ public final class ConvertDateTimeHandler extends ConverterHandler
     /**
      * Returns a new DateTimeConverter
      * 
-     * @see DateTimeConverter
-     * @see javax.faces.view.facelets.ConverterHandler#createConverter(javax.faces.view.facelets.FaceletContext)
+     * See DateTimeConverter
+     * See javax.faces.view.facelets.ConverterHandler#createConverter(javax.faces.view.facelets.FaceletContext)
      */
     protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException
     {
@@ -92,7 +91,8 @@ public final class ConvertDateTimeHandler extends ConverterHandler
     /**
      * Implements tag spec, see taglib documentation.
      * 
-     * @see org.apache.myfaces.view.facelets.tag.ObjectHandler#setAttributes(javax.faces.view.facelets.FaceletContext, java.lang.Object)
+     * See org.apache.myfaces.view.facelets.tag.ObjectHandler#setAttributes(javax.faces.view.facelets.FaceletContext,
+     * java.lang.Object)
      */
     public void setAttributes(FaceletContext ctx, Object obj)
     {

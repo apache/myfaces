@@ -21,7 +21,7 @@ package org.apache.myfaces.config.element;
 import java.io.Serializable;
 
 /**
- * Model for <behavior> config element.
+ * Model for &lt;behavior&gt; config element.
  */
 
 public abstract class Behavior implements Serializable

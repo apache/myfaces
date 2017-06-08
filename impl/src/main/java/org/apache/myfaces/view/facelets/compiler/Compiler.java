@@ -266,7 +266,7 @@ public abstract class Compiler
     /**
      * 
      * @since 2.1.0
-     * @return
+     * @param faceletsProcessingConfigurations 
      */
     public void setFaceletsProcessingConfigurations(
             Collection<FaceletsProcessing> faceletsProcessingConfigurations)

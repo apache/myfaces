@@ -48,11 +48,9 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 /**
  * Register an ActionListener instance on the UIComponent associated with the closest parent UIComponent custom action.
- * <p/> See <a target="_new"
- * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/actionListener.html">tag documentation</a>.
  * 
- * @see javax.faces.event.ActionListener
- * @see javax.faces.component.ActionSource
+ * See javax.faces.event.ActionListener
+ * See javax.faces.component.ActionSource
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -153,7 +151,8 @@ public final class ActionListenerHandler extends TagHandler
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
+     * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, 
+     * javax.faces.component.UIComponent)
      */
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException

@@ -75,8 +75,10 @@ public class ViewScopeBeanHolder implements Serializable
     /**
      * This method will return the ViewScopeContextualStorage or create a new one
      * if no one is yet assigned to the current windowId.
-     * @param beanManager we need the CDI {@link BeanManager} for serialisation.
-     * @param windowId the windowId for the current browser tab or window.
+     * 
+     * @param beanManager
+     * @param viewScopeId
+     * @return 
      */
     public ViewScopeContextualStorage getContextualStorage(
         BeanManager beanManager, String viewScopeId)

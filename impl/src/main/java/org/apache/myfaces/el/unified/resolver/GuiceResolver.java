@@ -34,19 +34,23 @@ import com.google.inject.Injector;
  * <p>
  * Register this ELResolver in faces-config.xml.
  * </p>
- * 
- * &ltapplication> &ltel-resolver>org.apache.myfaces.el.unified.resolver.GuiceResolver&lt/el-resolver> &lt/application>
- * 
+ * <code>
+ * &lt;application&gt; 
+ * &lt;el-resolver&gt;org.apache.myfaces.el.unified.resolver.GuiceResolver&lt;/el-resolver&gt;
+ * &lt;/application&gt;
+ * </code>
  * <p>
  * Implement and configure a ServletContextListener in web.xml .
  * </p>
- * 
- * &ltlistener> <listener-class>com.your_company.GuiceServletContextListener&lt/listener-class> &lt/listener>
- * 
+ * <code>
+ * &lt;listener&gt; 
+ * &lt;listener-class&gt;com.your_company.GuiceServletContextListener&lt;/listener-class&gt; 
+ * &lt;/listener&gt;
+ * </code>
  * <p>
  * Configure Guice in your ServletContextListener implementation, and place the Injector in application scope.
  * </p>
- * 
+ * <code>
  * public class GuiceServletContextListener implements ServletContextListener {
  * 
  * public void contextInitialized(ServletContextEvent event) { ServletContext ctx = event.getServletContext(); //when on
@@ -56,7 +60,8 @@ import com.google.inject.Injector;
  * public void contextDestroyed(ServletContextEvent event) { ServletContext ctx = event.getServletContext();
  * ctx.removeAttribute(GuiceResolver.KEY); }
  * 
- *}
+ * }
+ * </code>
  * 
  * @author Dennis Byrne
  */

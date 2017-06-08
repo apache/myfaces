@@ -50,8 +50,9 @@ public class SubviewTag extends UIComponentELTag
     }
 
     /**
-     * Creates a UIComponent from the BodyContent If a Subview is included via the <jsp:include> tag the corresponding
-     * jsp is rendered with getServletContext().getRequestDispatcher("includedSite").include(request,response) and it is
+     * Creates a UIComponent from the BodyContent If a Subview is included via the &lt;jsp:include&gt; tag 
+     * the corresponding jsp is rendered with 
+     * getServletContext().getRequestDispatcher("includedSite").include(request,response) and it is
      * possible that something was written to the Response direct. So is is necessary that the content of the wrapped
      * response is added to the componenttree.
      * 

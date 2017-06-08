@@ -27,7 +27,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.Location;
 
 /**
- * Utility class for composite components when used in EL Expressions --> #{cc}
+ * Utility class for composite components when used in EL Expressions --&gt; #{cc}
  * 
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$

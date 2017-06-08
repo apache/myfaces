@@ -32,8 +32,9 @@ import javax.faces.el.MethodNotFoundException;
  * ATTENTION: If you make changes to this class, treat javax.faces.component._MethodExpressionToMethodBinding
  * accordingly.
  * 
+ * See javax.faces.component._MethodExpressionToMethodBinding
+ * 
  * @author Stan Silvert
- * @see javax.faces.component._MethodExpressionToMethodBinding
  */
 public final class MethodExpressionToMethodBinding extends MethodBinding implements StateHolder
 {

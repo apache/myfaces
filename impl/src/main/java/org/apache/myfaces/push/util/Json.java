@@ -35,11 +35,12 @@ import java.util.TimeZone;
 /**
  * A simple JSON encoder.
  *
- * @author Arjan Tijms
- * @author Bauke Scholtz
- * @see org.omnifaces.util.Json version 1.2 file licensed under ASL v2.0 
+ * See org.omnifaces.util.Json version 1.2 file licensed under ASL v2.0 
  *      org.omnifaces.util.Utils
  *      Copyright 2016 OmniFaces and the original author or authors.
+ * 
+ * @author Arjan Tijms
+ * @author Bauke Scholtz
  */
 public final class Json
 {

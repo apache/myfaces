@@ -31,39 +31,40 @@ import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.util.CDataEndEscapeFilterWriter;
 
 /**
- * <p/>
+ * <p>
  * Double buffering partial response writer
  * to take care if embedded CDATA blocks in update delete etc...
- * <p/>
+ * </p><p>
  * According to the spec 13.4.4.1 Writing The Partial Response
  * implementations have to take care to handle nested cdata blocks properly
- * <p/>
+ * </p><p>
  * This means we cannot allow nested CDATA
  * according to the xml spec http://www.w3.org/TR/REC-xml/#sec-cdata-sect
- * everything within a CDATA block is unparsed except for ]]>
- * <p/>
+ * everything within a CDATA block is unparsed except for ]]&gt;
+ * </p><p>
  * Now we have following problem, that CDATA inserts can happen everywhere
  * not only within the CDATA instructions.
- * <p/>
+ * </p><p>
  * What we have to do now is to double buffer CDATA blocks until their end
  * and also!!! parse their content for CDATA embedding and replace it with an escaped end sequence.
- * <p/>
+ * </p><p>
  * Now parsing CDATA embedding is a little bit problematic in case of PPR because
  * it can happen that someone simply adds a CDATA in a javascript string or somewhere else.
  * Because he/she is not aware that we wrap the entire content into CDATA.
  * Simply encoding and decoding of the CDATA is similarly problematic
- * because the browser then chokes on embedded //<![CDATA[ //]]> sections
- * <p/>
- * What we do for now is to simply remove //<![CDATA[ and //]]>
+ * because the browser then chokes on embedded //&lt;![CDATA[ //]]&gt; sections
+ * </p><p>
+ * What we do for now is to simply remove //&lt;![CDATA[ and //]]&gt;
  * and replace all other pending cdatas with their cdata escapes
  * ]]&gt; becomes &lt;![CDATA[]]]]&gt;&lt;![CDATA[&gt;
- * <p/>
+ * </p><p>
  * If this causes problems in corner cases we also can add a second encoding step in
  * case of the cdata Javascript comment removal is not enough to cover all corner cases.
- * <p/>
+ * </p><p>
  * For now I will only implement this in the impl, due to the spec stating
  * that implementations are responsible of the correct CDATA handling!
- *
+ * </p>
+ * 
  * @author Werner Punz (latest modification by $Author$)
  * @version $Revision$ $Date$
  */

@@ -32,8 +32,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 
 /**
  * Register a named Converter instance on the UIComponent associated with the closest parent UIComponent custom action.
- * <p/> See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/converter.html">tag
- * documentation</a>.
  * 
  * @author Jacob Hookom
  * @version $Id$
@@ -59,8 +57,9 @@ public final class ConvertDelegateHandler extends ConverterHandler
     /**
      * Uses the specified "converterId" to pull an instance from the Application
      * 
-     * @see javax.faces.application.Application#createComponent(java.lang.String)
-     * @see org.apache.myfaces.view.facelets.tag.jsf.ConverterHandler#createConverter(javax.faces.view.facelets.FaceletContext)
+     * See javax.faces.application.Application#createComponent(java.lang.String)
+     * See org.apache.myfaces.view.facelets.tag.jsf.ConverterHandler#createConverter(
+     * javax.faces.view.facelets.FaceletContext)
      */
     protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException
     {

@@ -25,9 +25,10 @@ import javax.faces.view.facelets.TagAttribute;
 /**
  * A potential rule for Metadata on the passed MetadataTarget
  * 
+ * See org.apache.myfaces.view.facelets.tag.Metadata
+ * See org.apache.myfaces.view.facelets.tag.MetadataTarget
+ * 
  * @deprecated use javax.faces.view.facelets.MetaRule 
- * @see org.apache.myfaces.view.facelets.tag.Metadata
- * @see org.apache.myfaces.view.facelets.tag.MetadataTarget
  * @author Jacob Hookom
  * @version $Id$
  */

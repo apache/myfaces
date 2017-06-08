@@ -39,9 +39,9 @@ import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 
 /**
  * Handles setting a Converter instance on a ValueHolder. Will wire all attributes set to the Converter instance
- * created/fetched. Uses the "binding" attribute for grabbing instances to apply attributes to. <p/> Will only
+ * created/fetched. Uses the "binding" attribute for grabbing instances to apply attributes to. <p> Will only
  * set/create Converter is the passed UIComponent's parent is null, signifying that it wasn't restored from an existing
- * tree.
+ * tree.</p>
  * 
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -63,15 +63,16 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements V
      * <li>Cast to ValueHolder</li>
      * <li>If "binding" attribute was specified, fetch/create and re-bind to expression.</li>
      * <li>Otherwise, call {@link #createConverter(FaceletContext) createConverter}.</li>
-     * <li>Call {@link ObjectHandler#setAttributes(FaceletContext, Object) setAttributes} on Converter instance.</li>
+     * <li>Call setAttributes(FaceletContext, Object) on Converter instance.</li>
      * <li>Set the Converter on the ValueHolder</li>
      * <li>If the ValueHolder has a localValue, convert it and set the value</li>
      * </ol>
      * 
-     * @see ValueHolder
-     * @see Converter
-     * @see #createConverter(FaceletContext)
-     * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
+     * See ValueHolder
+     * See Converter
+     * See #createConverter(FaceletContext)
+     * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext,
+     *     javax.faces.component.UIComponent)
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException

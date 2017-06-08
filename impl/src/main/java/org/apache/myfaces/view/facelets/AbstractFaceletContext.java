@@ -104,11 +104,11 @@ public abstract class AbstractFaceletContext extends FaceletContext
      * handle the current FaceletFactory instance.
      * 
      * @param parent
-     * @param url
+     * @param resource
      * @throws IOException
      * @throws FaceletException
      * @throws FacesException
-     * @throws ELException
+     * @throws ELException 
      */
     public abstract void applyCompositeComponent(UIComponent parent, Resource resource)
             throws IOException, FaceletException, FacesException, ELException;
@@ -119,6 +119,7 @@ public abstract class AbstractFaceletContext extends FaceletContext
      * according to the conditions specified on jsf 2.0 spec section 10.4.1.1.
      * 
      * @since 2.0
+     * @return 
      */
     public abstract Iterator<AjaxHandler> getAjaxHandlers();
     
@@ -155,6 +156,7 @@ public abstract class AbstractFaceletContext extends FaceletContext
      * on that component later.
      * 
      * @since 2.0.1
+     * @param client 
      */
     public abstract void pushCompositeComponentClient(final TemplateClient client);
 
@@ -164,6 +166,7 @@ public abstract class AbstractFaceletContext extends FaceletContext
      * into account the information there.
      * 
      * @since 2.0.1
+     * @param templateContext 
      */
     public abstract void pushTemplateContext(TemplateContext templateContext);
 
@@ -181,6 +184,13 @@ public abstract class AbstractFaceletContext extends FaceletContext
      * or cc:insertFacet.
      *  
      * @since 2.0.1
+     * @param parent
+     * @param name
+     * @return
+     * @throws IOException
+     * @throws FaceletException
+     * @throws FacesException
+     * @throws ELException 
      */
     public abstract boolean includeCompositeComponentDefinition(UIComponent parent, String name)
         throws IOException, FaceletException, FacesException, ELException;
@@ -210,7 +220,6 @@ public abstract class AbstractFaceletContext extends FaceletContext
      * Pop the passed page context instance onto the stack.
      * 
      * @since 2.0.8
-     * @param client
      */
     public PageContext popPageContext()
     {

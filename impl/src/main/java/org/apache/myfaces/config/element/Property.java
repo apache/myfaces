@@ -24,19 +24,6 @@ import java.util.Collection;
 /**
  * @author Martin Marinschek
  * @version $Revision$ $Date$
- *
-     The "property" element represents a JavaBean property of the Java class
-     represented by our parent element.
-
-     Property names must be unique within the scope of the Java class
-     that is represented by the parent element, and must correspond to
-     property names that will be recognized when performing introspection
-     against that class via java.beans.Introspector.
-
-    <!ELEMENT property        (description*, display-name*, icon*, property-name, property-class,
-default-value?, suggested-value?, property-extension*)>
-
- *          <p/>
  */
 public abstract class Property implements Serializable
 {

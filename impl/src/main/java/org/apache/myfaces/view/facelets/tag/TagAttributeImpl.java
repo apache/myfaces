@@ -127,8 +127,8 @@ public final class TagAttributeImpl extends TagAttribute
      * If literal, return {@link Boolean#getBoolean(java.lang.String) Boolean.getBoolean(java.lang.String)} passing our
      * value, otherwise call {@link #getObject(FaceletContext, Class) getObject(FaceletContext, Class)}.
      * 
-     * @see Boolean#getBoolean(java.lang.String)
-     * @see #getObject(FaceletContext, Class)
+     * See Boolean#getBoolean(java.lang.String)
+     * See #getObject(FaceletContext, Class)
      * @param ctx
      *            FaceletContext to use
      * @return boolean value
@@ -149,8 +149,8 @@ public final class TagAttributeImpl extends TagAttribute
      * If literal, call {@link Integer#parseInt(java.lang.String) Integer.parseInt(String)}, otherwise call
      * {@link #getObject(FaceletContext, Class) getObject(FaceletContext, Class)}.
      * 
-     * @see Integer#parseInt(java.lang.String)
-     * @see #getObject(FaceletContext, Class)
+     * See Integer#parseInt(java.lang.String)
+     * See #getObject(FaceletContext, Class)
      * @param ctx
      *            FaceletContext to use
      * @return int value
@@ -190,9 +190,9 @@ public final class TagAttributeImpl extends TagAttribute
     /**
      * Create a MethodExpression, using this attribute's value as the expression String.
      * 
-     * @see ExpressionFactory#createMethodExpression(javax.el.ELContext, java.lang.String, java.lang.Class,
+     * See ExpressionFactory#createMethodExpression(javax.el.ELContext, java.lang.String, java.lang.Class,
      *      java.lang.Class[])
-     * @see MethodExpression
+     * See MethodExpression
      * @param ctx
      *            FaceletContext to use
      * @param type
@@ -363,7 +363,7 @@ public final class TagAttributeImpl extends TagAttribute
     /**
      * Delegates to getObject with Object.class as a param
      * 
-     * @see #getObject(FaceletContext, Class)
+     * See #getObject(FaceletContext, Class)
      * @param ctx
      *            FaceletContext to use
      * @return Object representation of this attribute's value
@@ -396,7 +396,7 @@ public final class TagAttributeImpl extends TagAttribute
     /**
      * If literal, then return our value, otherwise delegate to getObject, passing String.class.
      * 
-     * @see #getObject(FaceletContext, Class)
+     * See #getObject(FaceletContext, Class)
      * @param ctx
      *            FaceletContext to use
      * @return String value of this attribute
@@ -417,9 +417,9 @@ public final class TagAttributeImpl extends TagAttribute
      * If literal, simply coerce our String literal value using an ExpressionFactory, otherwise create a ValueExpression
      * and evaluate it.
      * 
-     * @see ExpressionFactory#coerceToType(java.lang.Object, java.lang.Class)
-     * @see ExpressionFactory#createValueExpression(javax.el.ELContext, java.lang.String, java.lang.Class)
-     * @see ValueExpression
+     * See ExpressionFactory#coerceToType(java.lang.Object, java.lang.Class)
+     * See ExpressionFactory#createValueExpression(javax.el.ELContext, java.lang.String, java.lang.Class)
+     * See ValueExpression
      * @param ctx
      *            FaceletContext to use
      * @param type
@@ -463,8 +463,8 @@ public final class TagAttributeImpl extends TagAttribute
     /**
      * Create a ValueExpression, using this attribute's literal value and the passed expected type.
      * 
-     * @see ExpressionFactory#createValueExpression(javax.el.ELContext, java.lang.String, java.lang.Class)
-     * @see ValueExpression
+     * See ExpressionFactory#createValueExpression(javax.el.ELContext, java.lang.String, java.lang.Class)
+     * See ValueExpression
      * @param ctx
      *            FaceletContext to use
      * @param type
@@ -629,7 +629,7 @@ public final class TagAttributeImpl extends TagAttribute
     /*
      * (non-Javadoc)
      * 
-     * @see java.lang.Object#toString()
+     * See java.lang.Object#toString()
      */
     public String toString()
     {

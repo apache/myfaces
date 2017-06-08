@@ -74,7 +74,7 @@ public abstract class AnnotationProvider implements FacesWrapper<AnnotationProvi
      * <p>This method could call getBaseUrls() to obtain a list of URL that could be used to indicate jar files of
      * annotations in the classpath.
      * </p>
-     * <p>If the <faces-config> element in the WEB-INF/faces-config.xml file contains metadata-complete attribute 
+     * <p>If the &lt;faces-config&gt; element in the WEB-INF/faces-config.xml file contains metadata-complete attribute 
      * whose value is "true", this method should not be called.
      * </p>
      * 
@@ -89,7 +89,7 @@ public abstract class AnnotationProvider implements FacesWrapper<AnnotationProvi
      * </p>
      * <ol>
      * <li>All resources that match either "META-INF/faces-config.xml" or end with ".facesconfig.xml" directly in 
-     * the "META-INF" directory (considered <code>applicationConfigurationResources)<code></li>
+     * the "META-INF" directory (considered <code>applicationConfigurationResources)</code></li>
      * </ol>
      * 
      * @deprecated 

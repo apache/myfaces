@@ -46,9 +46,9 @@ import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 
 /**
  * Handles setting a Validator instance on a EditableValueHolder. Will wire all attributes set to the Validator instance
- * created/fetched. Uses the "binding" attribute for grabbing instances to apply attributes to. <p/> Will only
+ * created/fetched. Uses the "binding" attribute for grabbing instances to apply attributes to. <p> Will only
  * set/create Validator is the passed UIComponent's parent is null, signifying that it wasn't restored from an existing
- * tree.
+ * tree.</p>
  * 
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
@@ -60,7 +60,7 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
 {
     
     /**
-     * if <f:validateBean> has no children and its disabled attribute is true,
+     * if &lt;f:validateBean&gt; has no children and its disabled attribute is true,
      * its validatorId will be added to the exclusion list stored under
      * this key on the parent UIComponent.
      */

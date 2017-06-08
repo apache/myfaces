@@ -81,7 +81,6 @@ public final class WebsocketApplicationSessionHolder
     /**
      * 
      * @param context
-     * @return 
      */
     public static void initWebsocketSessionLRUCache(ExternalContext context)
     {
@@ -167,7 +166,6 @@ public final class WebsocketApplicationSessionHolder
      * at view expiration time.
      * 
      * @param channelToken
-     * @param session
      * @return 
      */
     public static boolean removeSession(String channelToken)

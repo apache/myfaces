@@ -207,7 +207,7 @@ public class RequestViewContext
     
     /**
      * Scans UIViewRoot facets with added component resources by the effect of
-     * @ResourceDependency annotation, and register the associated inspected classes
+     * ResourceDependency annotation, and register the associated inspected classes
      * so new component resources will not be added to the component tree again and again.
      * 
      * @param facesContext
