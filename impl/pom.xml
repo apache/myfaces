@@ -97,6 +97,7 @@
 
                         <!-- facelets has non-standard APL license -->
                         <exclude>src/main/resources/META-INF/licenses/facelets-LICENSE.txt</exclude>
+						<exclude>src/main/resources/META-INF/licenses/omnifaces-LICENSE.txt</exclude>
                         
                         <!-- services files are trivial config files with no comments -->
                         <exclude>src/test/resources/META-INF/services/org.apache.myfaces.config.annotation.LifecycleProvider</exclude>
