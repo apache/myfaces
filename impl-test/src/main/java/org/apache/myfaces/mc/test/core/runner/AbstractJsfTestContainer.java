@@ -139,7 +139,6 @@ public class AbstractJsfTestContainer
     /**
      * <p>Construct a new instance of this test case.</p>
      *
-     * @param name Name of this test case
      */    
     public AbstractJsfTestContainer(TestClass testClass)
     {
@@ -193,7 +192,6 @@ public class AbstractJsfTestContainer
      * in order to find related factory classes and other resources, but in
      * some selected cases, the default classloader cannot be properly set.
      * 
-     * @throws Exception 
      */
     protected void setUpClassloader()
     {
@@ -215,7 +213,6 @@ public class AbstractJsfTestContainer
      * <li><code>servletContext</code> (<code>MockServletContext</code>)</li>
      * </ul>
      * 
-     * @throws Exception
      */
     protected void setUpServletObjects()
     {
@@ -237,7 +234,6 @@ public class AbstractJsfTestContainer
      * <li>"javax.faces.FACELETS_REFRESH_PERIOD", "-1"</li>
      * </ul>
      * 
-     * @throws Exception
      */
     protected void setUpWebConfigParams()
     {
@@ -354,7 +350,6 @@ public class AbstractJsfTestContainer
     /**
      * setup listeners avaliable in the test environment
      * 
-     * @throws Exception
      */
     protected void setUpServletListeners()
     {
@@ -543,7 +538,6 @@ public class AbstractJsfTestContainer
      * Execute restore view phase.
      * 
      * @param facesContext
-     * @throws Exception
      */
     public void restoreView(FacesContext facesContext)
     {
@@ -557,7 +551,6 @@ public class AbstractJsfTestContainer
      * flags are set, it returns without do any action.
      * 
      * @param facesContext
-     * @throws Exception
      */
     public void applyRequestValues(FacesContext facesContext)
     {
@@ -575,7 +568,6 @@ public class AbstractJsfTestContainer
      * flags are set, it returns without do any action.
      * 
      * @param facesContext
-     * @throws Exception
      */
     public void processValidations(FacesContext facesContext)
     {
@@ -593,7 +585,6 @@ public class AbstractJsfTestContainer
      * flags are set, it returns without do any action.
      * 
      * @param facesContext
-     * @throws Exception
      */
     public void updateModelValues(FacesContext facesContext)
     {
@@ -612,7 +603,6 @@ public class AbstractJsfTestContainer
      * flags are set, it returns without do any action.
      * 
      * @param facesContext
-     * @throws Exception
      */
     public void invokeApplication(FacesContext facesContext)
     {
@@ -1186,7 +1176,6 @@ public class AbstractJsfTestContainer
      * 
      * @param facesContext
      * @param phase
-     * @throws Exception
      */
     protected void executePhase(FacesContext facesContext, PhaseId phase)
     {
