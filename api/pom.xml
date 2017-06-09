@@ -560,7 +560,6 @@
             </activation>
             <build>
                 <plugins>
-				    <!--
                     <plugin>
                         <groupId>org.jvnet</groupId>
                         <artifactId>animal-sniffer</artifactId>
@@ -579,8 +578,7 @@
                                 </configuration>
                             </execution>
                         </executions>
-                    </plugin> 
-                    -->					
+                    </plugin>            
                 </plugins>
             </build>
 
