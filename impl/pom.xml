@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-core-project</artifactId>
-        <version>2.3.0-SNAPSHOT</version>
+        <version>2.3.0-beta</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
@@ -35,9 +35,9 @@
     <url>http://myfaces.apache.org/core23/myfaces-impl</url>
 
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/impl</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/impl</developerConnection>
-        <url>http://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/impl</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.3.0-beta/impl</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.3.0-beta/impl</developerConnection>
+        <url>http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.3.0-beta/impl</url>
     </scm>
     
     <properties>
