@@ -1072,6 +1072,7 @@
             </activation>
             <build>
                 <plugins>
+				    <!--
                     <plugin>
                         <groupId>org.jvnet</groupId>
                         <artifactId>animal-sniffer</artifactId>
@@ -1091,6 +1092,7 @@
                             </execution>
                         </executions>
                     </plugin>
+					-->
                 </plugins>
             </build>
 
