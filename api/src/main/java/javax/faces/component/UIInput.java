@@ -85,6 +85,18 @@ public class UIInput extends UIOutput implements EditableValueHolder
     private static final String EMPTY_VALUES_AS_NULL_PARAM_NAME
             = "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
 
+    /** 
+     * When INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL is enabled, clear required input fields when empty strings 
+     * are submitted on them
+     *
+     * <p>Note this param is only applicable when INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL is enabled.  This 
+     * property addresses an issue wherein values that had previously been populated by the model are re-displayed on 
+     * input fields after empty strings are submitted on those fields.</p>
+     **/
+    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0.25", group="validation")
+    private static final String EMPTY_VALUES_AS_NULL_CLEAR_INPUT_PARAM_NAME
+            = "org.apache.myfaces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL_CLEAR_INPUT";
+
     // our own, cached key
     private static final String MYFACES_EMPTY_VALUES_AS_NULL_PARAM_NAME =
       "org.apache.myfaces.UIInput.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
@@ -544,6 +556,26 @@ public class UIInput extends UIOutput implements EditableValueHolder
         return validateEmptyFields;
     }
 
+     /**
+     * Get the value of context parameter
+     * org.apache.myfaces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL_CLEAR_INPUT from the web.xml
+     * 
+     * @return the value of the context parameter
+     */
+    private boolean shouldInterpretEmptyStringSubmittedValuesAsNullClearInput(FacesContext context)
+    {
+        ExternalContext ec = context.getExternalContext();
+       
+        // parses the web.xml to get the
+        // "org.apache.myfaces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL_CLEAR_INPUT" value
+        String param = ec.getInitParameter(EMPTY_VALUES_AS_NULL_CLEAR_INPUT_PARAM_NAME);
+        
+        // evaluate the param
+        Boolean interpretEmptyStringAsNullClearInput = "true".equalsIgnoreCase(param);
+        
+        return interpretEmptyStringAsNullClearInput;
+    }
+
     /**
      * Determine whether the new value is valid, and queue a ValueChangeEvent if necessary.
      * <p>
@@ -585,6 +617,11 @@ public class UIInput extends UIOutput implements EditableValueHolder
             // https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=671
             setSubmittedValue(null);
             submittedValue = null;
+
+            if(shouldInterpretEmptyStringSubmittedValuesAsNullClearInput(context))
+            {
+                setValue(null);
+            }
         }
         // End new JSF 2.0 requirement (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
 
