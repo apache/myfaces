@@ -66,7 +66,7 @@ public class EndpointImpl extends Endpoint
         // but on the handshake there is. So, everything below should use CDI application scoped
         // beans only.
 
-        if (Boolean.TRUE.equals(session.getUserProperties().get(WebsocketConfigurator.WEBSOCKET_VALID)) &&
+        if (Boolean.TRUE.equals(config.getUserProperties().get(WebsocketConfigurator.WEBSOCKET_VALID)) &&
                 WebsocketApplicationSessionHolder.addOrUpdateSession(channelToken, session))
         {
             session.setMaxIdleTimeout((Long) config.getUserProperties().getOrDefault(
