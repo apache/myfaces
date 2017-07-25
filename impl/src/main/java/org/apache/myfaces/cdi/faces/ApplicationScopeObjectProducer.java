@@ -23,6 +23,7 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.faces.annotation.ApplicationMap;
+import javax.faces.annotation.FlowMap;
 import javax.faces.annotation.InitParameterMap;
 import javax.faces.application.Application;
 import javax.faces.application.ResourceHandler;
@@ -62,5 +63,13 @@ public class ApplicationScopeObjectProducer
    public ResourceHandler getResourceHandler()
    {
       return FacesContext.getCurrentInstance().getApplication().getResourceHandler();
+   }
+
+   @Produces
+   @FlowMap
+   @ApplicationScoped
+   public Map<Object, Object> getFlowMap()
+   {
+      return FacesContext.getCurrentInstance().getApplication().getFlowHandler().getCurrentFlowScope();
    }
 }

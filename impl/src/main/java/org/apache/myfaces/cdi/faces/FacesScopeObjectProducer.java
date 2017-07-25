@@ -29,6 +29,7 @@ import javax.faces.annotation.RequestMap;
 import javax.faces.annotation.RequestParameterMap;
 import javax.faces.annotation.RequestParameterValuesMap;
 import javax.faces.annotation.SessionMap;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
@@ -115,6 +116,13 @@ public class FacesScopeObjectProducer
    public Map<String, Object> getSessionMap()
    {
        return FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+   }
+
+   @Produces
+   @FacesScoped
+   public UIViewRoot getViewRoot() 
+   {
+       return FacesContext.getCurrentInstance().getViewRoot();
    }
    
 }
