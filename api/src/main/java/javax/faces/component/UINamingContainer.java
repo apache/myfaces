@@ -136,6 +136,7 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
     @Override
     public boolean visitTree(VisitContext context, VisitCallback callback)
     {
+        pushComponentToEL(context.getFacesContext(), this);
         boolean isCachedFacesContext = isCachedFacesContext();
         try
         {
@@ -143,63 +144,56 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
             {
                 setCachedFacesContext(context.getFacesContext());
             }
-            
+
             if (!isVisitable(context))
             {
                 return false;
             }
-    
-            pushComponentToEL(context.getFacesContext(), this);
-            try
+
+            VisitResult res = context.invokeVisitCallback(this, callback);
+            switch (res)
             {
-                VisitResult res = context.invokeVisitCallback(this, callback);
-                switch (res)
-                {
-                    //we are done nothing has to be processed anymore
-                    case COMPLETE:
-                        return true;
+                //we are done nothing has to be processed anymore
+                case COMPLETE:
+                    return true;
 
-                    case REJECT:
-                        return false;
+                case REJECT:
+                    return false;
 
-                    //accept
-                    default:
-                        // Take advantage of the fact this is a NamingContainer
-                        // and we can know if there are ids to visit inside it
-                        Collection<String> subtreeIdsToVisit = context.getSubtreeIdsToVisit(this);
+                //accept
+                default:
+                    // Take advantage of the fact this is a NamingContainer
+                    // and we can know if there are ids to visit inside it
+                    Collection<String> subtreeIdsToVisit = context.getSubtreeIdsToVisit(this);
 
-                        if (subtreeIdsToVisit != null && !subtreeIdsToVisit.isEmpty())
+                    if (subtreeIdsToVisit != null && !subtreeIdsToVisit.isEmpty())
+                    {
+                        if (getFacetCount() > 0)
                         {
-                            if (getFacetCount() > 0)
+                            for (UIComponent facet : getFacets().values())
                             {
-                                for (UIComponent facet : getFacets().values())
-                                {
-                                    if (facet.visitTree(context, callback))
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
-                            for (int i = 0, childCount = getChildCount(); i < childCount; i++)
-                            {
-                                UIComponent child = getChildren().get(i);
-                                if (child.visitTree(context, callback))
+                                if (facet.visitTree(context, callback))
                                 {
                                     return true;
                                 }
                             }
                         }
-                        return false;
-                }
-            }
-            finally
-            {
-                //all components must call popComponentFromEl after visiting is finished
-                popComponentFromEL(context.getFacesContext());
+                        for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                        {
+                            UIComponent child = getChildren().get(i);
+                            if (child.visitTree(context, callback))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
             }
         }
         finally
         {
+            //all components must call popComponentFromEl after visiting is finished
+            popComponentFromEL(context.getFacesContext());
             if (!isCachedFacesContext)
             {
                 setCachedFacesContext(null);
