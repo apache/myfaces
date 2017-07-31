@@ -1119,106 +1119,109 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         // override the behavior from UIComponent to visit
         // all children once per "row"
-        
-        //(Boolean) context.getFacesContext().getAttributes().get(SKIP_ITERATION_HINT);
-        Boolean skipIterationHint = context.getHints().contains(VisitHint.SKIP_ITERATION);
-        if (skipIterationHint != null && skipIterationHint.booleanValue())
+
+        boolean skipIterationHint = context.getHints().contains(VisitHint.SKIP_ITERATION);
+        if (skipIterationHint)
         {
             return super.visitTree(context, callback);
         }
-        
-        if (!isVisitable(context)) 
-        {
-            return false;
-        }
-        
-        // save the current index, count aside
-        final int prevIndex = _index;
-        final int prevCount = _count;
-        
-        // validate attributes
-        _validateAttributes();
-        
-        // reset index and save scope values
-        _captureScopeValues();
-        _setIndex(-1);
-        
         // push the Component to EL
         pushComponentToEL(context.getFacesContext(), this);
-        try 
+        try
         {
-            VisitResult res = context.invokeVisitCallback(this, callback);
-            switch (res) 
+            if (!isVisitable(context))
             {
-            // we are done, nothing has to be processed anymore
-            case COMPLETE:
-                return true;
-
-            case REJECT:
                 return false;
+            }
 
-            //accept
-            default:
-                // determine if we need to visit our children
-                // Note that we need to do this check because we are a NamingContainer
-                Collection<String> subtreeIdsToVisit = context
-                        .getSubtreeIdsToVisit(this);
-                boolean doVisitChildren = subtreeIdsToVisit != null
-                        && !subtreeIdsToVisit.isEmpty();
-                if (doVisitChildren)
+            // save the current index, count aside
+            final int prevIndex = _index;
+            final int prevCount = _count;
+
+            // validate attributes
+            _validateAttributes();
+
+            // reset index and save scope values
+            _captureScopeValues();
+            _setIndex(-1);
+
+            try
+            {
+                VisitResult res = context.invokeVisitCallback(this, callback);
+                switch (res)
                 {
-                    // visit the facets of the component
-                    if (getFacetCount() > 0) 
+                // we are done, nothing has to be processed anymore
+                case COMPLETE:
+                    return true;
+
+                case REJECT:
+                    return false;
+
+                //accept
+                default:
+                    // determine if we need to visit our children
+                    // Note that we need to do this check because we are a NamingContainer
+                    Collection<String> subtreeIdsToVisit = context
+                            .getSubtreeIdsToVisit(this);
+                    boolean doVisitChildren = subtreeIdsToVisit != null
+                            && !subtreeIdsToVisit.isEmpty();
+                    if (doVisitChildren)
                     {
-                        for (UIComponent facet : getFacets().values()) 
+                        // visit the facets of the component
+                        if (getFacetCount() > 0)
                         {
-                            if (facet.visitTree(context, callback)) 
+                            for (UIComponent facet : getFacets().values())
                             {
-                                return true;
-                            }
-                        }
-                    }
-                    
-                    // visit the children once per "row"
-                    if (getChildCount() > 0) 
-                    {
-                        int i = getOffset();
-                        int end = getSize();
-                        int step = getStep();
-                        end = (end >= 0) ? i + end : Integer.MAX_VALUE - 1;
-                        _count = 0;
-                        
-                        _setIndex(i);
-                        while (i < end && _isIndexAvailable())
-                        {
-                            for (int j = 0, childCount = getChildCount(); j < childCount; j++)
-                            {
-                                UIComponent child = getChildren().get(j);
-                                if (child.visitTree(context, callback)) 
+                                if (facet.visitTree(context, callback))
                                 {
                                     return true;
                                 }
                             }
-                            
-                            _count++;
-                            i += step;
-                            
+                        }
+
+                        // visit the children once per "row"
+                        if (getChildCount() > 0)
+                        {
+                            int i = getOffset();
+                            int end = getSize();
+                            int step = getStep();
+                            end = (end >= 0) ? i + end : Integer.MAX_VALUE - 1;
+                            _count = 0;
+
                             _setIndex(i);
+                            while (i < end && _isIndexAvailable())
+                            {
+                                for (int j = 0, childCount = getChildCount(); j < childCount; j++)
+                                {
+                                    UIComponent child = getChildren().get(j);
+                                    if (child.visitTree(context, callback))
+                                    {
+                                        return true;
+                                    }
+                                }
+
+                                _count++;
+                                i += step;
+
+                                _setIndex(i);
+                            }
                         }
                     }
+                    return false;
                 }
-                return false;
+            }
+            finally
+            {
+                // restore the previous count, index and scope values
+                _count = prevCount;
+                _setIndex(prevIndex);
+                _restoreScopeValues();
             }
         }
-        finally 
+        finally
         {
             // pop the component from EL
             popComponentFromEL(context.getFacesContext());
-            
-            // restore the previous count, index and scope values
-            _count = prevCount;
-            _setIndex(prevIndex);
-            _restoreScopeValues();
         }
     }
 

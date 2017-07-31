@@ -2216,123 +2216,126 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public boolean visitTree(VisitContext context, VisitCallback callback)
     {
-        if (!isVisitable(context))
-        {
-            return false;
-        }
-
-        boolean isCachedFacesContext = isCachedFacesContext();
-        if (!isCachedFacesContext)
-        {
-            setCachedFacesContext(context.getFacesContext());
-        }
-        // save the current row index
-        int oldRowIndex = getRowIndex();
-        // set row index to -1 to process the facets and to get the rowless clientId
-        setRowIndex(-1);
         // push the Component to EL
         pushComponentToEL(context.getFacesContext(), this);
         try
         {
-            VisitResult visitResult = context.invokeVisitCallback(this,
-                    callback);
-            switch (visitResult)
+            if (!isVisitable(context))
             {
-            //we are done nothing has to be processed anymore
-            case COMPLETE:
-                return true;
-
-            case REJECT:
                 return false;
+            }
 
-                //accept
-            default:
-                // determine if we need to visit our children 
-                Collection<String> subtreeIdsToVisit = context
-                        .getSubtreeIdsToVisit(this);
-                boolean doVisitChildren = subtreeIdsToVisit != null
-                        && !subtreeIdsToVisit.isEmpty();
-                if (doVisitChildren)
+            boolean isCachedFacesContext = isCachedFacesContext();
+            if (!isCachedFacesContext)
+            {
+                setCachedFacesContext(context.getFacesContext());
+            }
+            // save the current row index
+            int oldRowIndex = getRowIndex();
+            // set row index to -1 to process the facets and to get the rowless clientId
+            setRowIndex(-1);
+            try
+            {
+                VisitResult visitResult = context.invokeVisitCallback(this,
+                        callback);
+                switch (visitResult)
                 {
-                    // visit the facets of the component
-                    if (getFacetCount() > 0)
+                //we are done nothing has to be processed anymore
+                case COMPLETE:
+                    return true;
+
+                case REJECT:
+                    return false;
+
+                    //accept
+                default:
+                    // determine if we need to visit our children
+                    Collection<String> subtreeIdsToVisit = context
+                            .getSubtreeIdsToVisit(this);
+                    boolean doVisitChildren = subtreeIdsToVisit != null
+                            && !subtreeIdsToVisit.isEmpty();
+                    if (doVisitChildren)
                     {
-                        for (UIComponent facet : getFacets().values())
+                        // visit the facets of the component
+                        if (getFacetCount() > 0)
                         {
-                            if (facet.visitTree(context, callback))
+                            for (UIComponent facet : getFacets().values())
                             {
-                                return true;
-                            }
-                        }
-                    }
-                    //(Boolean) context.getFacesContext().getAttributes().get(SKIP_ITERATION_HINT);
-                    Boolean skipIterationHint = context.getHints().contains(VisitHint.SKIP_ITERATION);
-                    if (skipIterationHint != null && skipIterationHint.booleanValue())
-                    {
-                        // If SKIP_ITERATION is enabled, do not take into account rows.
-                        for (int i = 0, childCount = getChildCount(); i < childCount; i++ )
-                        {
-                            UIComponent child = getChildren().get(i);
-                            if (child.visitTree(context, callback))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // visit every column directly without visiting its children 
-                        // (the children of every UIColumn will be visited later for 
-                        // every row) and also visit the column's facets
-                        for (int i = 0, childCount = getChildCount(); i < childCount; i++)
-                        {
-                            UIComponent child = getChildren().get(i);
-                            if (child instanceof UIColumn)
-                            {
-                                VisitResult columnResult = context.invokeVisitCallback(child, callback);
-                                if (columnResult == VisitResult.COMPLETE)
+                                if (facet.visitTree(context, callback))
                                 {
                                     return true;
                                 }
-                                if (child.getFacetCount() > 0)
+                            }
+                        }
+                        boolean skipIterationHint = context.getHints().contains(VisitHint.SKIP_ITERATION);
+                        if (skipIterationHint)
+                        {
+                            // If SKIP_ITERATION is enabled, do not take into account rows.
+                            for (int i = 0, childCount = getChildCount(); i < childCount; i++ )
+                            {
+                                UIComponent child = getChildren().get(i);
+                                if (child.visitTree(context, callback))
                                 {
-                                    for (UIComponent facet : child.getFacets().values())
-                                    {
-                                        if (facet.visitTree(context, callback))
-                                        {
-                                            return true;
-                                        }
-                                    }
+                                    return true;
                                 }
                             }
                         }
-                        // iterate over the rows
-                        int rowsToProcess = getRows();
-                        // if getRows() returns 0, all rows have to be processed
-                        if (rowsToProcess == 0)
+                        else
                         {
-                            rowsToProcess = getRowCount();
-                        }
-                        int rowIndex = getFirst();
-                        for (int rowsProcessed = 0; rowsProcessed < rowsToProcess; rowsProcessed++, rowIndex++)
-                        {
-                            setRowIndex(rowIndex);
-                            if (!isRowAvailable())
-                            {
-                                return false;
-                            }
-                            // visit the children of every child of the UIData that is an instance of UIColumn
+                            // visit every column directly without visiting its children
+                            // (the children of every UIColumn will be visited later for
+                            // every row) and also visit the column's facets
                             for (int i = 0, childCount = getChildCount(); i < childCount; i++)
                             {
                                 UIComponent child = getChildren().get(i);
                                 if (child instanceof UIColumn)
                                 {
-                                    for (int j = 0, grandChildCount = child.getChildCount(); j < grandChildCount; j++)
+                                    VisitResult columnResult = context.invokeVisitCallback(child, callback);
+                                    if (columnResult == VisitResult.COMPLETE)
                                     {
-                                        UIComponent grandchild = child.getChildren().get(j);
-                                        if (grandchild.visitTree(context, callback))
+                                        return true;
+                                    }
+                                    if (child.getFacetCount() > 0)
+                                    {
+                                        for (UIComponent facet : child.getFacets().values())
                                         {
-                                            return true;
+                                            if (facet.visitTree(context, callback))
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            // iterate over the rows
+                            int rowsToProcess = getRows();
+                            // if getRows() returns 0, all rows have to be processed
+                            if (rowsToProcess == 0)
+                            {
+                                rowsToProcess = getRowCount();
+                            }
+                            int rowIndex = getFirst();
+                            for (int rowsProcessed = 0; rowsProcessed < rowsToProcess; rowsProcessed++, rowIndex++)
+                            {
+                                setRowIndex(rowIndex);
+                                if (!isRowAvailable())
+                                {
+                                    return false;
+                                }
+                                // visit the children of every child of the UIData that is an instance of UIColumn
+                                for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                                {
+                                    UIComponent child = getChildren().get(i);
+                                    if (child instanceof UIColumn)
+                                    {
+                                        for (int j = 0, grandChildCount = child.getChildCount();
+                                             j < grandChildCount; j++)
+                                        {
+                                            UIComponent grandchild = child.getChildren().get(j);
+                                            if (grandchild.visitTree(context, callback))
+                                            {
+                                                return true;
+                                            }
                                         }
                                     }
                                 }
@@ -2341,18 +2344,21 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                     }
                 }
             }
+            finally
+            {
+                // restore the old row index
+                setRowIndex(oldRowIndex);
+                if (!isCachedFacesContext)
+                {
+                    setCachedFacesContext(null);
+                }
+            }
         }
         finally
         {
-            // pop the component from EL and restore the old row index
+            // pop the component from EL
             popComponentFromEL(context.getFacesContext());
-            setRowIndex(oldRowIndex);
-            if (!isCachedFacesContext)
-            {
-                setCachedFacesContext(null);
-            }
         }
-
         // Return false to allow the visiting to continue
         return false;
     }
