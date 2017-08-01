@@ -29,10 +29,12 @@ import javax.faces.annotation.RequestMap;
 import javax.faces.annotation.RequestParameterMap;
 import javax.faces.annotation.RequestParameterValuesMap;
 import javax.faces.annotation.SessionMap;
+import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
+import javax.inject.Named;
 
 /**
  * This class produces all objects that are bound or related to FacesContext
@@ -42,6 +44,7 @@ public class FacesScopeObjectProducer
 {
     
    @Produces
+   @Named("facesContext")
    @FacesScoped 
    public FacesContext getFacesContext()
    {
@@ -49,6 +52,7 @@ public class FacesScopeObjectProducer
    }
    
    @Produces
+   @Named("externalContext")
    @FacesScoped 
    public ExternalContext getExternalContext()
    {
@@ -56,6 +60,7 @@ public class FacesScopeObjectProducer
    }
    
    @Produces
+   @Named("flash")
    @FacesScoped 
    public Flash getFlash()
    {
@@ -63,6 +68,7 @@ public class FacesScopeObjectProducer
    }
    
    @Produces
+   @Named("header")
    @HeaderMap
    @FacesScoped
    public Map<String, String> getHeaderMap()
@@ -71,6 +77,7 @@ public class FacesScopeObjectProducer
    }
 
    @Produces
+   @Named("headerValues")
    @HeaderValuesMap
    @FacesScoped
    public Map<String, String[]> getHeaderValuesMap()
@@ -79,6 +86,7 @@ public class FacesScopeObjectProducer
    }
 
    @Produces
+   @Named("requestScope")
    @RequestMap
    @FacesScoped
    public Map<String, Object> getRequestMap()
@@ -87,6 +95,7 @@ public class FacesScopeObjectProducer
    }   
    
    @Produces
+   @Named("cookie")
    @RequestCookieMap
    @FacesScoped
    public Map<String, Object> getRequestCookieMap()
@@ -95,6 +104,7 @@ public class FacesScopeObjectProducer
    }
    
    @Produces
+   @Named("param")
    @RequestParameterMap
    @FacesScoped
    public Map<String, String> getRequestParameterMap()
@@ -103,6 +113,7 @@ public class FacesScopeObjectProducer
    }
    
    @Produces
+   @Named("paramValues")
    @RequestParameterValuesMap
    @FacesScoped
    public Map<String, String[]> getRequestParameterValuesMap()
@@ -111,6 +122,7 @@ public class FacesScopeObjectProducer
    }   
 
    @Produces
+   @Named("sessionScope")
    @SessionMap
    @FacesScoped
    public Map<String, Object> getSessionMap()
@@ -119,10 +131,35 @@ public class FacesScopeObjectProducer
    }
 
    @Produces
+   @Named("view")
    @FacesScoped
    public UIViewRoot getViewRoot() 
    {
        return FacesContext.getCurrentInstance().getViewRoot();
+   }
+
+   @Produces
+   @Named("session")
+   @FacesScoped
+   public Object getSession()
+   {
+       return FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+   }
+   
+   @Produces
+   @Named("component")
+   @FacesScoped
+   public UIComponent getComponent() 
+   {
+       return UIComponent.getCurrentComponent(FacesContext.getCurrentInstance());
+   }
+   
+   @Produces
+   @Named("cc")
+   @FacesScoped
+   public UIComponent getCompositeComponent() 
+   {
+       return UIComponent.getCurrentCompositeComponent(FacesContext.getCurrentInstance());
    }
    
 }

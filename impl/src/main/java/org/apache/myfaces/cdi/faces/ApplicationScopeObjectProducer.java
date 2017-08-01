@@ -28,6 +28,7 @@ import javax.faces.annotation.InitParameterMap;
 import javax.faces.application.Application;
 import javax.faces.application.ResourceHandler;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 /**
  *
@@ -36,6 +37,7 @@ public class ApplicationScopeObjectProducer
 {
     
    @Produces
+   @Named("application")
    @ApplicationScoped
    public Application getApplication()
    {
@@ -43,6 +45,7 @@ public class ApplicationScopeObjectProducer
    }
    
    @Produces
+   @Named("applicationScope")
    @ApplicationMap
    @ApplicationScoped
    public Map<String, Object> getApplicationMap()
@@ -51,6 +54,7 @@ public class ApplicationScopeObjectProducer
    }
 
    @Produces
+   @Named("initParam")
    @InitParameterMap
    @ApplicationScoped
    public Map<String, String> getInitParameterMap()
@@ -59,6 +63,7 @@ public class ApplicationScopeObjectProducer
    }
    
    @Produces
+   @Named("resource")
    @ApplicationScoped
    public ResourceHandler getResourceHandler()
    {
@@ -66,6 +71,7 @@ public class ApplicationScopeObjectProducer
    }
 
    @Produces
+   @Named("flowScope")
    @FlowMap
    @ApplicationScoped
    public Map<Object, Object> getFlowMap()

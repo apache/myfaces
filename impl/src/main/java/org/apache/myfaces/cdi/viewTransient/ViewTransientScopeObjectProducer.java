@@ -24,6 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.faces.annotation.ViewMap;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 /**
  * This class produces all objects that are bound or related to FacesContext
@@ -33,6 +34,7 @@ public class ViewTransientScopeObjectProducer
 {
    
    @Produces
+   @Named("viewScope")
    @ViewMap
    @ViewTransientScoped
    public Map<String, Object> getViewMap()
