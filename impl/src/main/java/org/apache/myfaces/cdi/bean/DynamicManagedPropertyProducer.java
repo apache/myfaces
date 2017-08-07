@@ -21,6 +21,7 @@ package org.apache.myfaces.cdi.bean;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import static java.util.Arrays.asList;
 import java.util.Collections;
@@ -55,7 +56,18 @@ public class DynamicManagedPropertyProducer implements Bean<Object>, Serializabl
         this.beanManager = beanManager;
         this.typeInfo = typeInfo;
         types = new HashSet<Type>(asList(typeInfo.getType(), Object.class));
-        beanClass = ClassUtils.simpleClassForName(typeInfo.getType().getTypeName());
+        Type beanType = typeInfo.getType();
+        // Need to check for ParameterizedType to support types such as List<String>
+        if ( beanType instanceof ParameterizedType ) 
+        {
+            beanClass = ClassUtils.simpleClassForName(((ParameterizedType) beanType).getRawType().getTypeName());
+        }
+        else 
+        {
+        // need to use simpleJavaTypeToClass to support Arrays and primitive types
+            beanClass = ClassUtils.simpleJavaTypeToClass(beanType.getTypeName());
+        }
+
     }
     
     @Override

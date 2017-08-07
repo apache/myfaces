@@ -1291,14 +1291,19 @@
 
         <!-- We need a real EL implementation for test ui:param tag,
         because myfaces-test MockExpressionFactory is not designed to
-        handle VariableMapper stuff (see IncludeParamTestCase) -->
+        handle VariableMapper stuff (see IncludeParamTestCase). Needed
+        to update to 7.0.0 for method invocation to work. Later
+        versions cause failures and would require org.apache.el.parser.SKIP_IDENTIFIER_CHECK=true
+        to be set.-->
         <dependency>
             <groupId>org.apache.tomcat</groupId>
-            <artifactId>el-api</artifactId>
+            <artifactId>tomcat-el-api</artifactId>
+            <version>7.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
-            <artifactId>jasper-el</artifactId>
+            <artifactId>tomcat-jasper-el</artifactId>
+            <version>7.0.0</version>
         </dependency>
 
         <!-- Openwebbeans for CDI Test -->
