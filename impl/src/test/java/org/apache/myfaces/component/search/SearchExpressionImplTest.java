@@ -167,6 +167,24 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
        
         processRemainingPhases();
     }
+
+    @Test
+    public void testSearchExpressionIdKeyword() throws Exception
+    {
+        startViewRequest("/search1.xhtml");
+        processLifecycleExecute();
+        executeBeforeRender();
+        executeBuildViewCycle();
+
+        SearchExpressionContext searchContext = 
+                SearchExpressionContext.createSearchExpressionContext(facesContext, facesContext.getViewRoot());
+
+        SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
+
+        Assert.assertEquals("panelGridId", handler.resolveClientId(searchContext, "mainForm:@parent"));
+
+        processRemainingPhases();
+    }
     
     @Test
     public void testResolveComponent() throws Exception

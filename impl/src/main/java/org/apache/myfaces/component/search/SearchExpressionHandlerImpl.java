@@ -380,15 +380,13 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
         
-        UIComponent currentBase = previous;
-
         //Step 1: find base
         //  Case ':' (root)
         char separatorChar = facesContext.getNamingContainerSeparatorChar();
         if (topExpression.charAt(0) == separatorChar)
         {
             UIComponent findBase;
-            findBase = SearchComponentUtils.getRootComponent(currentBase);
+            findBase = SearchComponentUtils.getRootComponent(previous);
             handler.invokeOnComponent(searchExpressionContext, findBase, topExpression.substring(1), topCallback);
             return;
         }
@@ -398,7 +396,6 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         {
             // A keyword means apply a command over the current source using an expression and the result must be
             // feedback into the algorithm.
-            final UIComponent base = currentBase;
 
             String command = extractKeyword(topExpression, 1, separatorChar);
             final String remaining =
@@ -407,17 +404,15 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 
             final ContextCallback parentCallback = topCallback;
 
-
             // If the keyword is @child, @composite, @form, @namingcontainer, @next, @none, @parent, @previous,
             // @root, @this ,  all commands change the source to be applied the action
-            
             if (remaining != null)
             {
                 if (facesContext.getApplication().getSearchKeywordResolver().isLeaf(searchExpressionContext, command))
                 {
                     throw new FacesException("Expression cannot have keywords or ids at the right side: "+command);
                 }
-                this.applyKeyword(searchExpressionContext, base, command, remaining, new ContextCallback()
+                this.applyKeyword(searchExpressionContext, previous, command, remaining, new ContextCallback()
                     {
                         @Override
                         public void invokeContextCallback(FacesContext facesContext, UIComponent target)
@@ -430,7 +425,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
             else
             {
                 // Command completed, apply parent callback
-                this.applyKeyword(searchExpressionContext, base, command, null, parentCallback);
+                this.applyKeyword(searchExpressionContext, previous, command, null, parentCallback);
             }
         }
         else
@@ -451,7 +446,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
             }
 
             // Use findComponent(...) passing the expression provided
-            UIComponent target = currentBase.findComponent(expression);
+            UIComponent target = previous.findComponent(expression);
             if (target == null)
             {
                 // If no component is found ...
@@ -462,7 +457,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                 String base = idx > 0 ? expression.substring(0, idx) : expression;
 
                 // From the context component clientId, check if the base is part of the clientId
-                String contextClientId = currentBase.getClientId(facesContext);
+                String contextClientId = previous.getClientId(facesContext);
                 int startCommon = contextClientId.lastIndexOf(base+facesContext.getNamingContainerSeparatorChar());
                 if (startCommon >= 0
                     && (startCommon == 0 || contextClientId.charAt(startCommon-1) == separatorChar )
@@ -471,7 +466,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                 {
                     // If there is a match, try to find a the first parent component whose id is equals to
                     // the base id
-                    UIComponent parent = currentBase;
+                    UIComponent parent = previous;
                     while (parent != null )
                     {
                         if (base.equals(parent.getId()) && parent instanceof NamingContainer)
@@ -500,7 +495,9 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                             {
                                 final String childExpression = nextExpression;
 
-                                parent.invokeOnComponent(facesContext, targetClientId, new ContextCallback(){
+                                parent.invokeOnComponent(facesContext, targetClientId, new ContextCallback() 
+                                {
+                                    @Override
                                     public void invokeContextCallback(FacesContext context, UIComponent target)
                                     {
                                         handler.invokeOnComponent(
@@ -517,14 +514,22 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                     }
                 }
             }
+
             if (target != null)
             {
-                currentBase = target;
+                if (nextExpression != null)
+                {
+                    handler.invokeOnComponent(searchExpressionContext, target, nextExpression, topCallback);
+                }
+                else
+                {
+                    topCallback.invokeContextCallback(facesContext, target);
+                }
+
+                return;
             }
-            if (currentBase != null)
-            {
-                topCallback.invokeContextCallback(facesContext, currentBase);
-            }
+
+            topCallback.invokeContextCallback(facesContext, previous);
         }
     }
 
@@ -550,8 +555,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         topExpression = topExpression.trim();
         
         FacesContext facesContext = searchExpressionContext.getFacesContext();
-        // Command pattern to apply the keyword or command to the base and then invoke the callback
-        boolean passthrough = false;
+
         //Step 1: find base
         //  Case ':' (root)
         char separatorChar = facesContext.getNamingContainerSeparatorChar();
@@ -579,7 +583,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 
             // If the keyword is @child, @composite, @form, @namingcontainer, @next, @none, @parent, @previous,
             // @root, @this ,  all commands change the source to be applied the action
-            passthrough = facesContext.getApplication().getSearchKeywordResolver().isPassthrough(
+            boolean passthrough = facesContext.getApplication().getSearchKeywordResolver().isPassthrough(
                     searchExpressionContext, command);
 
             if (passthrough)
@@ -600,6 +604,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         }
     }
 
+    @Override
     public boolean isValidExpression(SearchExpressionContext searchExpressionContext, String topExpression)
     {
         if (topExpression == null || topExpression.trim().isEmpty())
