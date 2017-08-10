@@ -651,9 +651,9 @@ public final class HtmlRendererUtils
         boolean componentDisabled = isTrue(component.getAttributes()
                 .get("disabled"));
 
-        for (Iterator it = selectItemList.iterator(); it.hasNext();)
+        for (int i = 0; i < selectItemList.size(); i++)
         {
-            SelectItem selectItem = (SelectItem) it.next();
+            SelectItem selectItem = (SelectItem) selectItemList.get(i);
             if (selectItem instanceof SelectItemGroup)
             {
                 writer.startElement(HTML.OPTGROUP_ELEM, null); // component);
@@ -1184,9 +1184,9 @@ public final class HtmlRendererUtils
     {
         ResponseWriter writer = context.getResponseWriter();
 
-        for (Iterator it = selectItemList.iterator(); it.hasNext();)
+        for (int i = 0; i < selectItemList.size(); i++)
         {
-            SelectItem selectItem = (SelectItem) it.next();
+            SelectItem selectItem = (SelectItem) selectItemList.get(i);
 
             if (selectItem instanceof SelectItemGroup)
             {
