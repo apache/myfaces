@@ -226,8 +226,9 @@ public class PushContextImpl implements PushContext
         if (channelTokens != null && !channelTokens.isEmpty())
         {
             Set<Future<Void>> result = null;
-            for (String channelToken : channelTokens)
+            for (int i = 0; i < channelTokens.size(); i++)
             {
+                String channelToken = channelTokens.get(i);
                 if (result == null)
                 {
                     result = WebsocketApplicationSessionHolder.send(channelToken, message);

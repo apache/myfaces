@@ -20,7 +20,6 @@
 package org.apache.myfaces.push;
 
 import java.io.IOException;
-import java.util.Iterator;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -45,9 +44,9 @@ public class WebsocketInitRenderer extends Renderer
   
         ResponseWriter writer = facesContext.getResponseWriter();
         // If two websocket share the same channel and scope, share init.
-        for (Iterator it = init.getUIWebsocketMarkupList().iterator(); it.hasNext();)
+        for (int i = 0; i < init.getUIWebsocketMarkupList().size(); i++)
         {
-            String markup = (String) it.next();
+            String markup = (String) init.getUIWebsocketMarkupList().get(i);
             writer.write(markup);
         }
     }
