@@ -770,13 +770,13 @@ public final class RendererUtils
      * @param facesContext
      * @return List of SelectItem Objects
      */
-    public static List getSelectItemList(UISelectMany uiSelectMany,
+    public static List<SelectItem> getSelectItemList(UISelectMany uiSelectMany,
             FacesContext facesContext)
     {
         return internalGetSelectItemList(uiSelectMany, facesContext);
     }
 
-    private static List internalGetSelectItemList(UIComponent uiComponent,
+    private static List<SelectItem> internalGetSelectItemList(UIComponent uiComponent,
             FacesContext facesContext)
     {
         /* TODO: Shall we cache the list in a component attribute?
@@ -787,10 +787,9 @@ public final class RendererUtils
         }
          */
 
-        List list = new ArrayList();
+        List<SelectItem> list = new ArrayList<SelectItem>();
 
-        for (Iterator iter = new SelectItemsIterator(uiComponent, facesContext); iter
-                .hasNext();)
+        for (SelectItemsIterator iter = new SelectItemsIterator(uiComponent, facesContext); iter.hasNext();)
         {
             list.add(iter.next());
         }

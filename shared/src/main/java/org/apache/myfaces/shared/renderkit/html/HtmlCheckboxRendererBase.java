@@ -19,7 +19,6 @@
 package org.apache.myfaces.shared.renderkit.html;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -151,11 +150,13 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
 
         int itemNum = 0;
 
-        for (Iterator it = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(
-                selectMany, facesContext)
-                .iterator(); it.hasNext();)
+        
+        List<SelectItem> selectItemList = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(
+                selectMany, facesContext);
+
+        for (int i = 0; i < selectItemList.size(); i++)
         {
-            SelectItem selectItem = (SelectItem) it.next();
+            SelectItem selectItem = (SelectItem) selectItemList.get(i);
             
             itemNum = renderGroupOrItemCheckbox(facesContext, selectMany, 
                                                 selectItem, useSubmittedValues, lookupSet, 
