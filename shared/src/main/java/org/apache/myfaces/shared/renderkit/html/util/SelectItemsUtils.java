@@ -71,7 +71,7 @@ public class SelectItemsUtils
         return list;
     }
     
-public static void renderSelectOptions(FacesContext context,
+    public static void renderSelectOptions(FacesContext context,
             UIComponent component, Converter converter, Set lookupSet,
             List<SelectItemInfo> selectItemList) throws IOException
     {
@@ -81,9 +81,9 @@ public static void renderSelectOptions(FacesContext context,
         boolean componentDisabled = isTrue(component.getAttributes()
                 .get("disabled"));
 
-        for (Iterator<SelectItemInfo> it = selectItemList.iterator(); it.hasNext();)
+        for (int i = 0; i < selectItemList.size(); i++)
         {
-            SelectItemInfo selectItemInfo = it.next();
+            SelectItemInfo selectItemInfo = selectItemList.get(i);
             SelectItem selectItem = selectItemInfo.getItem();
             if (selectItem instanceof SelectItemGroup)
             {

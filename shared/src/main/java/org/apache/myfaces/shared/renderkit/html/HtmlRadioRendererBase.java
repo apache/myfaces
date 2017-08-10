@@ -21,7 +21,6 @@ package org.apache.myfaces.shared.renderkit.html;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -180,10 +179,9 @@ public class HtmlRadioRendererBase
                             facesContext, selectOne);
 
                 int itemNum = 0;
-
-                for (Iterator it = selectItemList.iterator(); it.hasNext(); )
+                for (int i = 0; i < selectItemList.size(); i++)
                 {
-                    SelectItem selectItem = (SelectItem)it.next();
+                    SelectItem selectItem = (SelectItem) selectItemList.get(i);
 
                     itemNum = renderGroupOrItemRadio(facesContext, selectOne,
                                                      selectItem, currentValue,
@@ -223,9 +221,9 @@ public class HtmlRadioRendererBase
 
             int itemNum = 0;
 
-            for (Iterator it = selectItemList.iterator(); it.hasNext(); )
+            for (int i = 0; i < selectItemList.size(); i++)
             {
-                SelectItem selectItem = (SelectItem)it.next();
+                SelectItem selectItem = (SelectItem) selectItemList.get(i);
 
                 itemNum = renderGroupOrItemRadio(facesContext, selectOne,
                                                  selectItem, currentValue,

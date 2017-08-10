@@ -753,13 +753,13 @@ public final class RendererUtils
      * @param facesContext
      * @return List of SelectItem Objects
      */
-    public static List getSelectItemList(UISelectOne uiSelectOne,
+    public static List<SelectItem> getSelectItemList(UISelectOne uiSelectOne,
             FacesContext facesContext)
     {
         return internalGetSelectItemList(uiSelectOne, facesContext);
     }
 
-    public static List getSelectItemList(UISelectMany uiSelectMany)
+    public static List<SelectItem> getSelectItemList(UISelectMany uiSelectMany)
     {
         return internalGetSelectItemList(uiSelectMany,
                 FacesContext.getCurrentInstance());
