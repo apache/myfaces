@@ -888,8 +888,10 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
             boolean isFirstPair = true;
             for (Map.Entry<String, List<String>> pair : paramMap.entrySet())
             {
-                for (String value : pair.getValue())
+                for (int i = 0; i < pair.getValue().size(); i++)
                 {
+                    String value = pair.getValue().get(i);
+                    
                     if (!isFirstPair)
                     {
                         newUrl.append(URL_PARAM_SEPERATOR);
@@ -904,7 +906,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                     newUrl.append(URL_NAME_VALUE_PAIR_SEPERATOR);
                     try
                     {
-                        newUrl.append(URLEncoder.encode(value,getResponseCharacterEncoding()));
+                        newUrl.append(URLEncoder.encode(value, getResponseCharacterEncoding()));
                     }
                     catch (UnsupportedEncodingException e)
                     {
