@@ -20,9 +20,7 @@ package javax.faces.component.behavior;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.RandomAccess;
 
 import javax.faces.component.PartialStateHolder;
@@ -59,76 +57,89 @@ class _DeltaList<T> extends ArrayList<T> implements List<T>, PartialStateHolder,
         super(initialCapacity);
     }
     
+    @Override
     public void add(int index, T element)
     {
         clearInitialState();
         super.add(index, element);
     }
 
+    @Override
     public boolean add(T e)
     {
         clearInitialState();
         return super.add(e);
     }
 
+    @Override
     public boolean addAll(Collection<? extends T> c)
     {
         clearInitialState();
         return super.addAll(c);
     }
 
+    @Override
     public boolean addAll(int index, Collection<? extends T> c)
     {
         clearInitialState();
         return super.addAll(index, c);
     }
 
+    @Override
     public void clear()
     {
         clearInitialState();
         super.clear();
     }
 
+    @Override
     public T remove(int index)
     {
         clearInitialState();
         return super.remove(index);
     }
 
+    @Override
     public boolean remove(Object o)
     {
         clearInitialState();
         return super.remove(o);
     }
 
+    @Override
     public boolean removeAll(Collection<?> c)
     {
         clearInitialState();
         return super.removeAll(c);
     }
 
+    @Override
     public boolean retainAll(Collection<?> c)
     {
         clearInitialState();
         return super.retainAll(c);
     }
 
+    @Override
     public T set(int index, T element)
     {
         clearInitialState();
         return super.set(index, element);
     }
 
+    @Override
     public boolean isTransient()
     {
         return false;
     }
 
+    @Override
     public void setTransient(boolean newTransientValue)
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state)
     {
         if (state == null)
@@ -175,8 +186,8 @@ class _DeltaList<T> extends ArrayList<T> implements List<T>, PartialStateHolder,
             //Restore delegate
             Object[] lst = (Object[]) state;
             
-            clear();
-            ensureCapacity(lst.length);
+            super.clear();
+            super.ensureCapacity(lst.length);
             
             for (int i = 0; i < lst.length; i++)
             {
@@ -189,6 +200,7 @@ class _DeltaList<T> extends ArrayList<T> implements List<T>, PartialStateHolder,
         }
     }
 
+    @Override
     public Object saveState(FacesContext context)
     {
         int size = super.size();
@@ -256,6 +268,7 @@ class _DeltaList<T> extends ArrayList<T> implements List<T>, PartialStateHolder,
         }
     }
 
+    @Override
     public void clearInitialState()
     {
         //Reset delta setting to null
@@ -274,11 +287,13 @@ class _DeltaList<T> extends ArrayList<T> implements List<T>, PartialStateHolder,
         }
     }
 
+    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
+    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;
