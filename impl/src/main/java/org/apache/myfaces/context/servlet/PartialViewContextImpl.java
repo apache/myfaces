@@ -34,8 +34,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.html.HtmlBody;
-import javax.faces.component.html.HtmlHead;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitContextFactory;
@@ -789,50 +787,6 @@ public class PartialViewContextImpl extends PartialViewContext
         _renderAll = null;
         _facesContext = null;
         _released = true;
-    }
-
-    private UIComponent findHeadComponent(UIViewRoot root)
-    {
-        for (UIComponent child : root.getChildren())
-        {
-            if (child instanceof HtmlHead)
-            {
-                return child;
-            }
-            else
-            {
-                for (UIComponent grandchild : child.getChildren())
-                {
-                    if (grandchild instanceof HtmlHead)
-                    {
-                        return grandchild;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    private UIComponent findBodyComponent(UIViewRoot root)
-    {
-        for (UIComponent child : root.getChildren())
-        {
-            if (child instanceof HtmlBody)
-            {
-                return child;
-            }
-            else
-            {
-                for (UIComponent grandchild : child.getChildren())
-                {
-                    if (grandchild instanceof HtmlBody)
-                    {
-                        return grandchild;
-                    }
-                }
-            }
-        }
-        return null;
     }
     
     private VisitContextFactory getVisitContextFactory()
