@@ -55,7 +55,7 @@ public class _DeltaListTest extends AbstractComponentTest
             }
             if (_facesListeners == null)
             {
-                _facesListeners = new _DeltaList<FacesListener>(new ArrayList<FacesListener>());
+                _facesListeners = new _DeltaList<FacesListener>();
             }
             _facesListeners.add(listener);
         }

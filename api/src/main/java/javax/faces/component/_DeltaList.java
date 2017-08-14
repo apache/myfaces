@@ -40,155 +40,80 @@ import javax.faces.context.FacesContext;
  * A facesListener could hold PartialStateHolder instances, so it 
  * is necessary to provide convenient methods to track deltas.
  */
-class _DeltaList<T> implements List<T>, PartialStateHolder, RandomAccess
+class _DeltaList<T> extends ArrayList<T> implements List<T>, PartialStateHolder, RandomAccess
 {
     private static Object[] emptyObjectArray = new Object[]{};
 
-    private List<T> _delegate;
     private boolean _initialStateMarked;
     
     public _DeltaList()
     {
+        super();
     }
     
-    public _DeltaList(List<T> delegate)
+    public _DeltaList(int initialCapacity)
     {
-        _delegate = delegate;
+        super(initialCapacity);
     }
     
     public void add(int index, T element)
     {
         clearInitialState();
-        _delegate.add(index, element);
+        super.add(index, element);
     }
 
     public boolean add(T e)
     {
         clearInitialState();
-        return _delegate.add(e);
+        return super.add(e);
     }
 
     public boolean addAll(Collection<? extends T> c)
     {
         clearInitialState();
-        return _delegate.addAll(c);
+        return super.addAll(c);
     }
 
     public boolean addAll(int index, Collection<? extends T> c)
     {
         clearInitialState();
-        return _delegate.addAll(index, c);
+        return super.addAll(index, c);
     }
 
     public void clear()
     {
         clearInitialState();
-        _delegate.clear();
-    }
-
-    public boolean contains(Object o)
-    {
-        return _delegate.contains(o);
-    }
-
-    public boolean containsAll(Collection<?> c)
-    {
-        return _delegate.containsAll(c);
-    }
-
-    public boolean equals(Object o)
-    {
-        return _delegate.equals(o);
-    }
-
-    public T get(int index)
-    {
-        return _delegate.get(index);
-    }
-
-    public int hashCode()
-    {
-        return _delegate.hashCode();
-    }
-
-    public int indexOf(Object o)
-    {
-        return _delegate.indexOf(o);
-    }
-
-    public boolean isEmpty()
-    {
-        return _delegate.isEmpty();
-    }
-
-    public Iterator<T> iterator()
-    {
-        return _delegate.iterator();
-    }
-
-    public int lastIndexOf(Object o)
-    {
-        return _delegate.lastIndexOf(o);
-    }
-
-    public ListIterator<T> listIterator()
-    {
-        return _delegate.listIterator();
-    }
-
-    public ListIterator<T> listIterator(int index)
-    {
-        return _delegate.listIterator(index);
+        super.clear();
     }
 
     public T remove(int index)
     {
         clearInitialState();
-        return _delegate.remove(index);
+        return super.remove(index);
     }
 
     public boolean remove(Object o)
     {
         clearInitialState();
-        return _delegate.remove(o);
+        return super.remove(o);
     }
 
     public boolean removeAll(Collection<?> c)
     {
         clearInitialState();
-        return _delegate.removeAll(c);
+        return super.removeAll(c);
     }
 
     public boolean retainAll(Collection<?> c)
     {
         clearInitialState();
-        return _delegate.retainAll(c);
+        return super.retainAll(c);
     }
 
     public T set(int index, T element)
     {
         clearInitialState();
-        return _delegate.set(index, element);
-    }
-
-    public int size()
-    {
-        return _delegate == null ? 0 : _delegate.size();
-    }
-
-    public List<T> subList(int fromIndex, int toIndex)
-    {
-        return _delegate.subList(fromIndex, toIndex);
-    }
-
-    public Object[] toArray()
-    {
-        return _delegate.toArray();
-    }
-
-    public <T> T[] toArray(T[] a)
-    {
-        return _delegate.toArray(a);
+        return super.set(index, element);
     }
 
     public boolean isTransient()
@@ -219,19 +144,19 @@ class _DeltaList<T> implements List<T>, PartialStateHolder, RandomAccess
                 if (lst[i] instanceof _AttachedDeltaWrapper)
                 {
                     //Delta
-                    ((StateHolder)_delegate.get(j)).restoreState(context,
+                    ((StateHolder)super.get(j)).restoreState(context,
                             ((_AttachedDeltaWrapper) lst[i]).getWrappedStateObject());
                     j++;
                 }
                 else if (lst[i] != null)
                 {
                     //Full
-                    _delegate.set(j, (T) UIComponentBase.restoreAttachedState(context, lst[i]));
+                    super.set(j, (T) UIComponentBase.restoreAttachedState(context, lst[i]));
                     j++;
                 }
                 else
                 {
-                    _delegate.remove(j);
+                    super.remove(j);
                 }
                 i++;
             }
@@ -246,13 +171,16 @@ class _DeltaList<T> implements List<T>, PartialStateHolder, RandomAccess
         {
             //Restore delegate
             Object[] lst = (Object[]) state;
-            _delegate = new ArrayList<T>(lst.length);
+            
+            clear();
+            ensureCapacity(lst.length);
+
             for (int i = 0; i < lst.length; i++)
             {
                 T value = (T) UIComponentBase.restoreAttachedState(context, lst[i]);
                 if (value != null)
                 {
-                    _delegate.add(value);
+                    super.add(value);
                 }
             }
         }
@@ -260,7 +188,7 @@ class _DeltaList<T> implements List<T>, PartialStateHolder, RandomAccess
 
     public Object saveState(FacesContext context)
     {
-        int size = _delegate.size();
+        int size = super.size();
         if (initialStateMarked())
         {
             Object [] lst = null;
@@ -270,7 +198,7 @@ class _DeltaList<T> implements List<T>, PartialStateHolder, RandomAccess
                 lst = new Object[size];
                 for (int i = 0; i < size; i++)
                 {
-                    Object value = _delegate.get(i);
+                    Object value = super.get(i);
                     if (value instanceof PartialStateHolder)
                     {
                         //Delta
@@ -314,7 +242,7 @@ class _DeltaList<T> implements List<T>, PartialStateHolder, RandomAccess
                 Object [] lst = new Object[size];
                 for (int i = 0; i < size; i++)
                 {
-                    lst[i] = UIComponentBase.saveAttachedState(context, _delegate.get(i));
+                    lst[i] = UIComponentBase.saveAttachedState(context, super.get(i));
                 }
                 return lst;
             }
@@ -331,14 +259,13 @@ class _DeltaList<T> implements List<T>, PartialStateHolder, RandomAccess
         if (_initialStateMarked)
         {
             _initialStateMarked = false;
-            if (_delegate != null)
+
+            for (int i = 0; i < super.size(); i++)
             {
-                for (T value : _delegate)
+                T value = super.get(i);
+                if (value instanceof PartialStateHolder)
                 {
-                    if (value instanceof PartialStateHolder)
-                    {
-                        ((PartialStateHolder)value).clearInitialState();
-                    }
+                    ((PartialStateHolder)value).clearInitialState();
                 }
             }
         }
@@ -352,16 +279,14 @@ class _DeltaList<T> implements List<T>, PartialStateHolder, RandomAccess
     public void markInitialState()
     {
         _initialStateMarked = true;
-        if (_delegate != null)
+
+        int size = super.size();
+        for (int i = 0; i < size; i++)
         {
-            int size = _delegate.size();
-            for (int i = 0; i < size; i++)
+            T value = super.get(i);
+            if (value instanceof PartialStateHolder)
             {
-                T value = _delegate.get(i);
-                if (value instanceof PartialStateHolder)
-                {
-                    ((PartialStateHolder)value).markInitialState();
-                }
+                ((PartialStateHolder)value).markInitialState();
             }
         }
     }

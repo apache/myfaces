@@ -19,34 +19,32 @@
 package javax.faces.component;
 
 import java.io.Serializable;
-import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.RandomAccess;
 
-class _ComponentChildrenList extends AbstractList<UIComponent> implements Serializable, RandomAccess
+class _ComponentChildrenList extends ArrayList<UIComponent> implements Serializable
 {
     private static final long serialVersionUID = -6775078929331154224L;
     private UIComponent _component;
-    private List<UIComponent> _list = new ArrayList<UIComponent>(4);
 
     _ComponentChildrenList(UIComponent component)
     {
+        super(4);
         _component = component;
     }
 
     @Override
     public UIComponent get(int index)
     {
-        return _list.get(index);
+        return super.get(index);
     }
 
     @Override
     public int size()
     {
-        return _list.size();
+        return super.size();
     }
 
     @Override
@@ -54,7 +52,7 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
     {
         checkValue(value);
         removeChildrenFromParent(value);
-        UIComponent child = _list.set(index, value);
+        UIComponent child = super.set(index, value);
         if (child != value)
         {
             updateParent(value);
@@ -73,7 +71,7 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
         checkValue(value);
 
         removeChildrenFromParent(value);
-        boolean res = _list.add(value);
+        boolean res = super.add(value);
         
         updateParent(value);
         
@@ -87,7 +85,7 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
         
         removeChildrenFromParent(value);
         
-        _list.add(index, value);
+        super.add(index, value);
         
         updateParent(value);
     }
@@ -95,7 +93,7 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
     @Override
     public UIComponent remove(int index)
     {
-        UIComponent child = _list.remove(index);
+        UIComponent child = super.remove(index);
         if (child != null)
         {
             childRemoved(child);
@@ -110,12 +108,6 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
         {
             throw new NullPointerException("value");
         }
-        
-        // Not necessary anymore because  
-        //if (!(value instanceof UIComponent))
-        //{
-        //    throw new ClassCastException("value is not a UIComponent");
-        //}
     }
 
     private void childRemoved(UIComponent child)
@@ -164,11 +156,54 @@ class _ComponentChildrenList extends AbstractList<UIComponent> implements Serial
         
         checkValue(value);
 
-        if (_list.remove(value))
+        if (super.remove(value))
         {
             childRemoved((UIComponent)value);
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void clear()
+    {
+        removeRange(0, size());
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends UIComponent> collection)
+    {
+        boolean result = false;
+        Iterator<? extends UIComponent> it = collection.iterator();
+        while (it.hasNext())
+        {
+            if (add(it.next()))
+            {
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public boolean addAll(int location, Collection<? extends UIComponent> collection)
+    {
+        Iterator<? extends UIComponent> it = collection.iterator();
+        while (it.hasNext())
+        {
+            add(location++, it.next());
+        }
+        return !collection.isEmpty();
+    }
+
+    @Override
+    protected void removeRange(int start, int end)
+    {
+        Iterator<?> it = listIterator(start);
+        for (int i = start; i < end; i++)
+        {
+            it.next();
+            it.remove();
+        }
     }
 }

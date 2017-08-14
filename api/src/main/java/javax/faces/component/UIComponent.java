@@ -932,7 +932,7 @@ public abstract class UIComponent
         {
             // how many listeners per event type can single component have? 
             // We use 3 here as expected number, but it is a question 
-            listeners = new _DeltaList<SystemEventListener>(new ArrayList<SystemEventListener>(3));
+            listeners = new _DeltaList<SystemEventListener>(3);
             _systemEventListenerClassMap.put(eventClass, listeners);
         }
 
