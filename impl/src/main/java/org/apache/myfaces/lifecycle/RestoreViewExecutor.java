@@ -180,8 +180,7 @@ class RestoreViewExecutor extends PhaseExecutor
                     {
                         // If the return from ViewHandler.restoreView() is null, throw a ViewExpiredException with an 
                         // appropriate error message.
-                        throw new ViewExpiredException("No saved view state could be found for the view identifier: "
-                                                   + viewId, viewId);
+                        throw new ViewExpiredException("View \"" + viewId + "\" could not be restored.", viewId);
                     }
                 }
                 // If the view is transient (stateless), it is necessary to check the view protection
