@@ -154,6 +154,28 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         getStateHelper().put(PropertyKeys.step, step );
     }
     
+    @JSFProperty
+    public int getBegin()
+    {
+        return (Integer) getStateHelper().eval(PropertyKeys.begin, -1);
+    }
+
+    public void setBegin(int begin)
+    {
+        getStateHelper().put(PropertyKeys.begin, begin );
+    }
+    
+    @JSFProperty
+    public int getEnd()
+    {
+        return (Integer) getStateHelper().eval(PropertyKeys.end, -1);
+    }
+
+    public void setEnd(int end)
+    {
+        getStateHelper().put(PropertyKeys.end, end );
+    }
+    
     @JSFProperty(literalOnly=true)
     public String getVar()
     {
@@ -303,8 +325,15 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     
     private RepeatStatus _getRepeatStatus()
     {
+        int begin = getBegin();
+        if (begin == -1) 
+        {
+            begin = getOffset();
+        }
+        
         return new RepeatStatus(_count == 0, _index + getStep() >= getDataModel().getRowCount(),
-            _count, _index, getOffset(), _end, getStep());
+            _count, _index, begin, _end, getStep());
+        
     }
 
     private void _captureScopeValues()
@@ -851,16 +880,46 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
     private void _validateAttributes() throws FacesException
     {
-        int begin = getOffset();
-        int end = getDataModel().getRowCount();
+        
+        int begin = getBegin();
+        int end = getEnd();
         int size = getSize();
+        int count = getDataModel().getRowCount();
+        int offset = getOffset();
+        if (begin == -1)
+        {
+            if (size >= 0)
+            {
+                end = getOffset() + getSize();
+            }
+        }      
+       
+        if (end == -1 && size == -1) 
+        {
+            if (begin == -1) 
+            {
+                end = getDataModel().getRowCount();
+            } 
+            else 
+            {
+                end = getDataModel().getRowCount() - 1;
+            }
+        }
+        
         int step = getStep();
         boolean sizeIsEnd = false;
 
         if (size == -1)
         {
-            size = end;
-            sizeIsEnd = true;
+            if (begin == -1)
+            {
+                size =  end;
+                sizeIsEnd = true;
+            } 
+            else 
+            {
+                size = end - begin + 1;
+            }     
         }
 
         if (end >= 0)
@@ -870,15 +929,38 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 throw new FacesException("iteration size cannot be less " +
                         "than zero");
             }
-
-            else if (!sizeIsEnd && (begin + size) > end)
+            else if (!sizeIsEnd && (begin == -1) && (offset + size) > end)
             {
                 throw new FacesException("iteration size cannot be greater " +
                         "than collection size");
             }
+            else if (!sizeIsEnd && (begin == -1) && (offset + size) > count)
+            {
+                throw new FacesException("iteration size cannot be greater " +
+                        "than collection size");
+            }
+            else if (!sizeIsEnd && (begin >= 0) && (begin + size) > end+1)
+            {
+                throw new FacesException("iteration size cannot be greater " +
+                        "than collection size");
+            }
+            else if(!sizeIsEnd && (begin >= 0) && (end+1 > count))
+            {
+                throw new FacesException("end cannot be greater " +
+                        "than collection size");
+            }
+            else if(!sizeIsEnd && (begin >= 0) && (begin > count))
+            {
+                throw new FacesException("begin cannot be greater " +
+                        "than collection size");
+            }
         }
-
-        if ((size > -1) && (begin > end))
+        if ((begin >= 0) && (begin > end))
+        {
+            throw new FacesException("begin cannot be greater " +
+                    "end");
+        }
+        if ((size > -1) && (offset > end))
         {
             throw new FacesException("iteration offset cannot be greater " +
                     "than collection size");
@@ -901,8 +983,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     "to zero");
         }
 
-        _end = size;
-        //_step = step;
+        
+        _end = end;
+        
     }
 
     public void process(FacesContext faces, PhaseId phase)
@@ -925,11 +1008,21 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             // has children
             if (getChildCount() > 0)
             {
-                int i = getOffset();
-                int end = getSize();
-                int step = getStep();
-                end = (end >= 0) ? i + end : Integer.MAX_VALUE - 1;
+                int i = getOffset();               
                 
+                int begin = getBegin();
+                int end = getEnd(); 
+                if (begin == -1)
+                {
+                    end = getSize();
+                    end = (end >= 0) ? i + end - 1 : Integer.MAX_VALUE - 1;
+                }
+                
+                if (begin >= 0) 
+                {
+                    i = begin;
+                }
+                int step = getStep();
                 // grab renderer
                 String rendererType = getRendererType();
                 Renderer renderer = null;
@@ -941,7 +1034,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 _count = 0;
                 
                 _setIndex(i);
-                while (i < end && _isIndexAvailable())
+                
+                while (i <= end && _isIndexAvailable())
                 {
 
                     if (PhaseId.RENDER_RESPONSE.equals(phase) && renderer != null)
@@ -1719,5 +1813,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         , varStatus
         , offset
         , step
+        , begin
+        , end
     }
 }
