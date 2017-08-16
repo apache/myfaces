@@ -118,7 +118,7 @@ if (!window.jsf) {
         }
 
     };
-	//jsdoc helper to avoid warnings, we map later 
+	//jsdoc helper to avoid warnings, we map later
 	window.jsf = jsf;
 }
 
@@ -166,8 +166,8 @@ if (!jsf.ajax) {
 		* <ul>
          *     <li> errorData.type : &quot;error&quot;</li>
          *     <li> errorData.status : the error status message</li>
-         *     <li> errorData.serverErrorName : the server error name in case of a server error</li>
-         *     <li> errorData.serverErrorMessage : the server error message in case of a server error</li>
+         *     <li> errorData.errorName : the server error name in case of a server error</li>
+         *     <li> errorData.errorMessage : the server error message in case of a server error</li>
          *     <li> errorData.source  : the issuing source element which triggered the request </li>
          *     <li> eventData.responseCode: the response code (aka http request response code, 401 etc...) </li>
          *     <li> eventData.responseText: the request response text </li>
@@ -247,7 +247,7 @@ if (!jsf.push) {
     /* component attributes by clientId */
     var components = {};
     /* client ids by token (share websocket connection) */
-    var clientIdsByTokens = {}; 
+    var clientIdsByTokens = {};
     var self = {};
 
     // Private constructor functions ----------------------------------------------------------------------------------
@@ -257,7 +257,7 @@ if (!jsf.push) {
      * The <code>onclose</code> function will be called with the error code of the last attempt.
      * @constructor
      * @param {string} channelToken the channel token associated with this websocket connection
-     * @param {string} url The URL of the web socket 
+     * @param {string} url The URL of the web socket
      * @param {string} channel The name of the web socket channel.
      */
     function Socket(channelToken, url, channel) {
@@ -320,14 +320,14 @@ if (!jsf.push) {
                     //tag dissapeared
                     self.close();
                 }
-                
+
             }
 
             socket.onclose = function(event) {
                 if (!socket
-                    || (event.code == 1000 && event.reason == REASON_EXPIRED) 
-                    || (event.code == 1008) 
-                    || (reconnectAttempts == null) 
+                    || (event.code == 1000 && event.reason == REASON_EXPIRED)
+                    || (event.code == 1008)
+                    || (reconnectAttempts == null)
                     || (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS))
                 {
                     var clientIds = clientIdsByTokens[channelToken];
@@ -358,34 +358,34 @@ if (!jsf.push) {
     // Public static functions ----------------------------------------------------------------------------------------
 
     /**
-     * 
+     *
      * @param {function} onopen The function to be invoked when the web socket is opened.
      * @param {function} onmessage The function to be invoked when a message is received.
      * @param {function} onclose The function to be invoked when the web socket is closed.
      * @param {boolean} autoconnect Whether or not to immediately open the socket. Defaults to <code>false</code>.
      */
     this.init = function(socketClientId, uri, channel, onopen, onmessage, onclose, behaviorScripts, autoconnect) {
-            
+
         onclose = resolveFunction(onclose);
 
         if (!window.WebSocket) { // IE6-9.
             onclose(-1, channel);
             return;
         }
-                
+
         var channelToken = uri.substr(uri.indexOf('?')+1);
-        
+
         if (!components[socketClientId]) {
             components[socketClientId] = {
                 'channelToken': channelToken,
-                'onopen': resolveFunction(onopen), 
+                'onopen': resolveFunction(onopen),
                 'onmessage' : resolveFunction(onmessage),
-                'onclose': onclose, 
-                'behaviors': behaviorScripts, 
+                'onclose': onclose,
+                'behaviors': behaviorScripts,
                 'autoconnect': autoconnect};
             if (!clientIdsByTokens[channelToken]) {
                 clientIdsByTokens[channelToken] = [];
-            } 
+            }
             clientIdsByTokens[channelToken].push(socketClientId);
             if (!sockets[channelToken]){
                 sockets[channelToken] = new Socket(channelToken,
@@ -419,7 +419,7 @@ if (!jsf.push) {
     // Private static functions ---------------------------------------------------------------------------------------
 
     /**
-     * 
+     *
      */
     function getBaseURL(url) {
         if (url.indexOf("://") < 0)
@@ -436,7 +436,7 @@ if (!jsf.push) {
      * Get socket associated with given channelToken.
      * @param {string} channelToken The name of the web socket channelToken.
      * @return {Socket} Socket associated with given channelToken.
-     * @throws {Error} When channelToken is unknown, you may need to initialize 
+     * @throws {Error} When channelToken is unknown, you may need to initialize
      *                 it first via <code>init()</code> function.
      */
     function getSocket(channelToken) {
@@ -447,7 +447,7 @@ if (!jsf.push) {
             throw new Error("Unknown channelToken: " + channelToken);
         }
     }
-        
+
     function resolveFunction(fn) {
         return (typeof fn !== "function") && (fn = window[fn] || function(){}), fn;
     }

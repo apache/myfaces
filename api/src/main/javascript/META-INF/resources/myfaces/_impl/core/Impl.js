@@ -475,8 +475,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      * @param {Object} request the request object which comes from the xhr cycle
      * @param {Object} context (Map) the context object being pushed over the xhr cycle keeping additional metadata
      * @param {String} name the error name
-     * @param {String} serverErrorName the server error name in case of a server error
-     * @param {String} serverErrorMessage the server error message in case of a server error
+     * @param {String} errorName the server error name in case of a server error
+     * @param {String} errorMessage the server error message in case of a server error
      * @param {String} caller optional caller reference for extended error messages
      * @param {String} callFunc optional caller Function reference for extended error messages
      *
@@ -489,12 +489,12 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      *
      *
      */
-    sendError:function sendError(/*Object*/request, /*Object*/ context, /*String*/ name, /*String*/ serverErrorName, /*String*/ serverErrorMessage, caller, callFunc) {
+    sendError:function sendError(/*Object*/request, /*Object*/ context, /*String*/ name, /*String*/ errorName, /*String*/ errorMessage, caller, callFunc) {
         var _Lang = myfaces._impl._util._Lang;
         var UNKNOWN = _Lang.getMessage("UNKNOWN");
 
         var eventData = {};
-        //we keep this in a closure because we might reuse it for our serverErrorMessage
+        //we keep this in a closure because we might reuse it for our errorMessage
         var malFormedMessage = function () {
             return (name && name === myfaces._impl.core.Impl.MALFORMEDXML) ? _Lang.getMessage("ERR_MALFORMEDXML") : "";
         };
@@ -504,8 +504,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         eventData.type = this.ERROR;
 
         eventData.status = name || UNKNOWN;
-        eventData.serverErrorName = serverErrorName || UNKNOWN;
-        eventData.serverErrorMessage = serverErrorMessage || UNKNOWN;
+        eventData.errorName = errorName || UNKNOWN;
+        eventData.errorMessage = errorMessage || UNKNOWN;
 
         try {
             eventData.source = context.source || UNKNOWN;
@@ -517,9 +517,9 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         }
         //extended error message only in dev mode
         if (jsf.getProjectStage() === "Development") {
-            eventData.serverErrorMessage = eventData.serverErrorMessage || "";
-            eventData.serverErrorMessage = (caller) ? eventData.serverErrorMessage + "\nCalling class: " + caller : eventData.serverErrorMessage;
-            eventData.serverErrorMessage = (callFunc) ? eventData.serverErrorMessage + "\n Calling function: " + callFunc : eventData.serverErrorMessage;
+            eventData.errorMessage = eventData.errorMessage || "";
+            eventData.errorMessage = (caller) ? eventData.errorMessage + "\nCalling class: " + caller : eventData.errorMessage;
+            eventData.errorMessage = (callFunc) ? eventData.errorMessage + "\n Calling function: " + callFunc : eventData.errorMessage;
         }
 
         /**/
@@ -537,14 +537,14 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             //we remap the function to achieve a better compressability
                     pushMsg = _Lang.hitch(finalMessage, finalMessage.push);
 
-            (serverErrorMessage) ? pushMsg(_Lang.getMessage("MSG_ERROR_MESSAGE") + " " + serverErrorMessage + "\n") : null;
+            (errorMessage) ? pushMsg(_Lang.getMessage("MSG_ERROR_MESSAGE") + " " + errorMessage + "\n") : null;
 
             pushMsg(DIVIDER);
 
             (caller) ? pushMsg("Calling class:" + caller) : null;
             (callFunc) ? pushMsg("Calling function:" + callFunc) : null;
             (name) ? pushMsg(_Lang.getMessage("MSG_ERROR_NAME") + " " + name) : null;
-            (serverErrorName && name != serverErrorName) ? pushMsg("Server error name: " + serverErrorName) : null;
+            (errorName && name != errorName) ? pushMsg("Server error name: " + errorName) : null;
 
             pushMsg(malFormedMessage());
             pushMsg(DIVIDER);
