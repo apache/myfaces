@@ -209,7 +209,6 @@
                         <id>makecoretld</id>
                         <configuration>
                             <xmlFile>META-INF/myfaces_core.tld</xmlFile>
-                            <xmlBaseFile>src/main/conf/META-INF/myfaces_core-base.tld</xmlBaseFile>
                             <templateFile>myfaces_core12.vm</templateFile>
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
@@ -260,7 +259,6 @@
                         <configuration>
                             <outputDirectory>${project.build.directory}/tlddoc-facelets</outputDirectory>
                             <xmlFile>myfaces_facelets_core.tld</xmlFile>
-                            <xmlBaseFile>src/main/conf/META-INF/myfaces_core-base.tld</xmlBaseFile>
                             <templateFile>myfaces_facelet_core20.vm</templateFile>
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
