@@ -45,7 +45,6 @@ import javax.faces.event.FacesListener;
 import javax.faces.render.Renderer;
 
 import javax.faces.view.Location;
-import org.apache.commons.collections.iterators.EmptyIterator;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 class UILeaf extends UIComponent implements UntargetableComponent, Map<String, Object>
@@ -469,7 +468,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
         // Performance: Collections.emptyList() is Singleton,
         // but .iterator() creates new instance of AbstractList$Itr every invocation, because
         // emptyList() extends AbstractList.  Therefore we cannot use Collections.emptyList() here. 
-        return EmptyIterator.INSTANCE;
+        return Collections.emptyIterator();
     }
 
     @Override
