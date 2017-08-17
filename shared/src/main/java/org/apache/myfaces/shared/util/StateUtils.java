@@ -28,6 +28,7 @@ import java.security.AccessController;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Base64;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,7 +46,6 @@ import javax.faces.application.ViewExpiredException;
 import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.serial.SerialFactory;
 
@@ -378,7 +378,7 @@ public final class StateUtils
 
     public static final byte[] encode(byte[] bytes)
     {
-          return new Base64().encode(bytes);
+        return Base64.getEncoder().encode(bytes);
     }
 
     /**
@@ -418,7 +418,7 @@ public final class StateUtils
 
     public static final byte[] decode(byte[] bytes)
     {
-          return new Base64().decode(bytes);
+        return Base64.getDecoder().decode(bytes);
     }
 
     public static final byte[] decompress(byte[] bytes)
@@ -670,7 +670,7 @@ public final class StateUtils
         
         if (ivString != null)
         {
-            iv = new Base64().decode(ivString.getBytes());
+            iv = decode(ivString.getBytes());
         }
         
         return iv;
@@ -906,7 +906,7 @@ public final class StateUtils
         }
         else 
         {
-            bytes = new Base64().decode(secret.getBytes());
+            bytes = decode(secret.getBytes());
         }
         
         return bytes;
@@ -1061,7 +1061,7 @@ public final class StateUtils
         }
         else 
         {
-            bytes = new Base64().decode(secret.getBytes());
+            bytes = decode(secret.getBytes());
         }
         
         return bytes;
