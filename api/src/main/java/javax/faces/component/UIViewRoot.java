@@ -1534,7 +1534,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 //No values
                 return null;
             }
-            else if (parentSaved == null && _viewScope != null && _viewScope.size() == 0
+            else if (parentSaved == null && _viewScope != null && _viewScope.isEmpty()
                 && !(_viewScope instanceof StateHolder) )
             {
                 //Empty view scope, no values

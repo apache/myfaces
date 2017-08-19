@@ -403,7 +403,7 @@ public class BeanValidator implements Validator, PartialStateHolder
             for (String clazz : classes)
             {
                 clazz = clazz.trim();
-                if (!clazz.equals(""))
+                if (!clazz.isEmpty())
                 {
                     Class<?> theClass = null;
                     ClassLoader cl = null;

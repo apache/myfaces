@@ -660,7 +660,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
                 }
             }
         }
-        if (serializableMap == null || serializableMap.size() == 0)
+        if (serializableMap == null || serializableMap.isEmpty())
         {
             return null;
         }

@@ -278,7 +278,7 @@ public class NavigationCase
             builder.append("  ");
             builder.append("<redirect include-view-params=\"");
             builder.append(_includeViewParams);
-            if (_parameters != null && _parameters.size() != 0)
+            if (_parameters != null && !_parameters.isEmpty())
             {
                 builder.append("\">\n");
                 for (Map.Entry<String, List<String>> entry : _parameters.entrySet())

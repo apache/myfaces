@@ -394,7 +394,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
     {
         Map serializableMap = (isInitialStateMarked()) ? _deltas : _fullState;
 
-        if (serializableMap == null || serializableMap.size() == 0)
+        if (serializableMap == null || serializableMap.isEmpty())
         {
             return null;
         }
