@@ -275,7 +275,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             // AND there are currently selected items
             // AND this item (the "no selection option") is not selected
             if (HtmlRendererUtils.isHideNoSelectionOption(uiComponent) && selectItem.isNoSelectionOption() 
-                    && lookupSet.size() != 0 && !checked)
+                    && !lookupSet.isEmpty() && !checked)
             {
                 // do not render this selectItem
                 return itemNum;

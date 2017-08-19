@@ -680,7 +680,7 @@ public final class HtmlRendererUtils
                 // AND this item (the "no selection option") is not selected
                 // (if there is currently no value on UISelectOne, lookupSet contains "")
                 if (hideNoSelectionOption && selectItem.isNoSelectionOption()
-                        && lookupSet.size() != 0
+                        && !lookupSet.isEmpty()
                         && !(lookupSet.size() == 1 && lookupSet.contains(""))
                         && !selected)
                 {
@@ -1413,7 +1413,7 @@ public final class HtmlRendererUtils
         {
             value = (Boolean) fc.getExternalContext().getRequestMap().get(ALLOW_CDATA_SECTION_ON);
         }
-        return value != null && ((Boolean) value).booleanValue();
+        return value != null && value.booleanValue();
     }
 
     public static void allowCdataSection(FacesContext fc, boolean cdataSectionAllowed)
@@ -1944,7 +1944,7 @@ public final class HtmlRendererUtils
         List<ClientBehavior> attachedEventBehaviors = clientBehaviors
                 .get(eventName);
         if (attachedEventBehaviors == null
-                || attachedEventBehaviors.size() == 0)
+                || attachedEventBehaviors.isEmpty())
         {
             target.append(STR_EMPTY);
             return false;
@@ -2390,7 +2390,7 @@ public final class HtmlRendererUtils
 
         List<ClientBehavior> cbl = (clientBehaviors != null) ? clientBehaviors
                 .get(eventName) : null;
-        if (cbl == null || cbl.size() == 0)
+        if (cbl == null || cbl.isEmpty())
         {
             return renderHTMLAttribute(writer, componentProperty, htmlAttrName,
                     attributeValue);
@@ -2464,7 +2464,7 @@ public final class HtmlRendererUtils
         if (((cbl != null) ? cbl.size() : 0) + (attributeValue != null ? 1 : 0)
                 + (serverSideScript != null ? 1 : 0) <= 1)
         {
-            if (cbl == null || cbl.size() == 0)
+            if (cbl == null || cbl.isEmpty())
             {
                 if (attributeValue != null)
                 {

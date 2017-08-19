@@ -115,7 +115,7 @@ public class SelectItemsUtils
                 // AND this item (the "no selection option") is not selected
                 // (if there is currently no value on UISelectOne, lookupSet contains "")
                 if (hideNoSelectionOption && selectItem.isNoSelectionOption()
-                        && lookupSet.size() != 0
+                        && !lookupSet.isEmpty()
                         && !(lookupSet.size() == 1 && lookupSet.contains(""))
                         && !selected)
                 {

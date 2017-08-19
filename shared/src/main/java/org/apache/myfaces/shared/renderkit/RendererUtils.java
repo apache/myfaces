@@ -925,7 +925,7 @@ public final class RendererUtils
         else if (values instanceof Collection)
         {
             Collection col = (Collection) values;
-            if (col.size() == 0)
+            if (col.isEmpty())
             {
                 return Collections.EMPTY_SET;
             }

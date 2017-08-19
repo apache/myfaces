@@ -164,7 +164,7 @@ public class CommonEventUtils
         List<ClientBehavior> cbl = (clientBehaviors != null) ? clientBehaviors
                 .get(eventName) : null;
 
-        if (cbl == null || cbl.size() == 0)
+        if (cbl == null || cbl.isEmpty())
         {
             return HtmlRendererUtils.renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
                     attributeValue);
