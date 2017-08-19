@@ -139,8 +139,8 @@ public class DynamicConverterProducer implements Bean<Converter>, Serializable, 
         catch (Exception ex)
         {
             Logger.getLogger(DynamicConverterProducer.class.getName()).log(
-                    Level.SEVERE, "Could not instantiate converter " + beanClass.getName().toString(), ex);
-            throw new FacesException("Could not instantiate converter: " + beanClass.getName().toString(), ex);
+                    Level.SEVERE, "Could not instantiate converter " + beanClass.getName(), ex);
+            throw new FacesException("Could not instantiate converter: " + beanClass.getName(), ex);
             
         }
         return converter;

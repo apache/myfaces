@@ -136,8 +136,8 @@ public class DynamicValidatorProducer implements Bean<Validator>, Serializable, 
         catch (Exception ex)
         {
             Logger.getLogger(DynamicValidatorProducer.class.getName()).log(
-                    Level.SEVERE, "Could not instantiate converter " + beanClass.getName().toString(), ex);
-            throw new FacesException("Could not instantiate converter: " + beanClass.getName().toString(), ex);
+                    Level.SEVERE, "Could not instantiate converter " + beanClass.getName(), ex);
+            throw new FacesException("Could not instantiate converter: " + beanClass.getName(), ex);
             
         }
         return converter;

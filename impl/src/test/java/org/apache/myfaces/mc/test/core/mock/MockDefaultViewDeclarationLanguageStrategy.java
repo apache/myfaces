@@ -47,6 +47,6 @@ public class MockDefaultViewDeclarationLanguageStrategy
     @Override
     public String getMinimalImplicitOutcome(String viewId)
     {
-        return viewId.substring(0, viewId.lastIndexOf("."));
+        return viewId.substring(0, viewId.lastIndexOf('.'));
     }
 }

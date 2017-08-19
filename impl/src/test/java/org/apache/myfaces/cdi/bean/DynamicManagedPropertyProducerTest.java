@@ -43,7 +43,7 @@ public class DynamicManagedPropertyProducerTest extends AbstractMyFacesCDIReques
         UIOutput out = (UIOutput) facesContext.getViewRoot().findComponent("form1:out1");
         result = out.getValue().toString();
 
-        result = result.substring(0, result.indexOf("@"));
+        result = result.substring(0, result.indexOf('@'));
         result = result.replaceAll("\\s","");
 
         Assert.assertTrue("The value output should have matched: " + expectedValue + " but was : " + result, result.equals(expectedValue));

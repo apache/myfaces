@@ -428,7 +428,7 @@ public class WholeBeanValidator implements Validator
             for (String clazz : classes)
             {
                 clazz = clazz.trim();
-                if (!clazz.equals(""))
+                if (!clazz.isEmpty())
                 {
                     Class<?> theClass = null;
                     ClassLoader cl = null;

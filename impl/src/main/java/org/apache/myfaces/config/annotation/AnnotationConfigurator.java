@@ -322,7 +322,7 @@ public class AnnotationConfigurator
                         new org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl();
                 String beanName = bean.name();
 
-                if ((beanName == null) || beanName.equals(""))
+                if ((beanName == null) || beanName.isEmpty())
                 {
                     int index;
 

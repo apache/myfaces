@@ -136,8 +136,8 @@ public class DynamicBehaviorProducer implements Bean<Behavior>, Serializable, Pa
         catch (Exception ex)
         {
             Logger.getLogger(DynamicBehaviorProducer.class.getName()).log(
-                    Level.SEVERE, "Could not instantiate converter " + beanClass.getName().toString(), ex);
-            throw new FacesException("Could not instantiate converter: " + beanClass.getName().toString(), ex);
+                    Level.SEVERE, "Could not instantiate converter " + beanClass.getName(), ex);
+            throw new FacesException("Could not instantiate converter: " + beanClass.getName(), ex);
             
         }
         return converter;

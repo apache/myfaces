@@ -563,7 +563,7 @@ public class ELText
             buff.setLength(0);
         }
 
-        if (text.size() == 0)
+        if (text.isEmpty())
         {
             return null;
         }
@@ -648,7 +648,7 @@ public class ELText
             buff.setLength(0);
         }
 
-        if (text.size() == 0)
+        if (text.isEmpty())
         {
             return null;
         }

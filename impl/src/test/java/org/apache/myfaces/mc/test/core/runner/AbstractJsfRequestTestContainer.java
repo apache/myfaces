@@ -83,7 +83,7 @@ public class AbstractJsfRequestTestContainer extends AbstractJsfTestContainer
         }
         else
         {
-            int queryIndex = pathInfo.indexOf("?");
+            int queryIndex = pathInfo.indexOf('?');
             if (queryIndex >= 0) 
             {
                 setupRequest(pathInfo.substring(0,queryIndex), pathInfo.substring(queryIndex+1));

@@ -93,7 +93,7 @@ final class TextUnit extends CompilationUnit
     {
         this.flushBufferToConfig(true);
 
-        if (this.children.size() == 0)
+        if (this.children.isEmpty())
         {
             return LEAF;
         }

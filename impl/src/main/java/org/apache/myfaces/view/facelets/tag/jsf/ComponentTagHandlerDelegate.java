@@ -690,7 +690,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         }
         // add all defaultValidators
         Map<String, String> defaultValidators = context.getApplication().getDefaultValidatorInfo();
-        if (defaultValidators != null && defaultValidators.size() != 0)
+        if (defaultValidators != null && !defaultValidators.isEmpty())
         {
             for (Map.Entry<String, String> entry : defaultValidators.entrySet())
             {
