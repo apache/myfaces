@@ -384,7 +384,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         return serializedView;
     }
 
-    public Object getNextViewSequence(FacesContext context)
+    protected Object getNextViewSequence(FacesContext context)
     {
         Object sequence = context.getAttributes().get(RendererUtils.SEQUENCE_PARAM);
         if (sequence == null)
@@ -415,7 +415,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         return sequence;
     }
 
-    public Object nextViewSequence(FacesContext facescontext)
+    protected Object nextViewSequence(FacesContext facescontext)
     {
         Object sequence = getKeyFactory(facescontext).generateKey(facescontext);
         facescontext.getAttributes().put(RendererUtils.SEQUENCE_PARAM, sequence);
@@ -664,6 +664,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 : getSerializedViewFromServletSession(facesContext, viewId, serverStateId);
     }
 
+    @Override
     public Object encodeSerializedState(FacesContext facesContext, Object serializedView)
     {
         return getKeyFactory(facesContext).encode(getNextViewSequence(facesContext));

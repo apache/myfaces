@@ -40,31 +40,33 @@ class CounterKeyFactory extends KeyFactory<Integer>
     {
         ExternalContext externalContext = facesContext.getExternalContext();
         Object sessionObj = externalContext.getSession(true);
-        Integer sequence = null;
+        Integer sequence;
         // synchronized to increase sequence if multiple requests
         // are handled at the same time for the session
         synchronized (sessionObj) 
         {
             Map<String, Object> map = externalContext.getSessionMap();
             sequence = (Integer) map.get(RendererUtils.SEQUENCE_PARAM);
-            if (sequence == null || sequence.intValue() == Integer.MAX_VALUE)
+            if (sequence == null || sequence == Integer.MAX_VALUE)
             {
-                sequence = Integer.valueOf(1);
+                sequence = 1;
             }
             else
             {
-                sequence = Integer.valueOf(sequence.intValue() + 1);
+                sequence = sequence + 1;
             }
             map.put(RendererUtils.SEQUENCE_PARAM, sequence);
         }
         return sequence;
     }
 
+    @Override
     public String encode(Integer sequence)
     {
         return Integer.toString(sequence, Character.MAX_RADIX);
     }
 
+    @Override
     public Integer decode(String serverStateId)
     {
         return Integer.valueOf((String) serverStateId, Character.MAX_RADIX);

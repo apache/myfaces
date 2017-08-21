@@ -53,13 +53,13 @@ class RandomKeyFactory extends KeyFactory<byte[]>
         {
             Map<String, Object> map = externalContext.getSessionMap();
             sequence = (Integer) map.get(RendererUtils.SEQUENCE_PARAM);
-            if (sequence == null || sequence.intValue() == Integer.MAX_VALUE)
+            if (sequence == null || sequence == Integer.MAX_VALUE)
             {
-                sequence = Integer.valueOf(1);
+                sequence = 1;
             }
             else
             {
-                sequence = Integer.valueOf(sequence.intValue() + 1);
+                sequence = sequence + 1;
             }
             map.put(RendererUtils.SEQUENCE_PARAM, sequence);
         }
