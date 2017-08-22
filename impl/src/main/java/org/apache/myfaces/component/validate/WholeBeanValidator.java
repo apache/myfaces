@@ -22,7 +22,6 @@ package org.apache.myfaces.component.validate;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
@@ -63,6 +62,7 @@ import javax.validation.groups.Default;
 import javax.validation.metadata.BeanDescriptor;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.shared.util.MessageUtils;
+import org.apache.myfaces.shared.util.MyFacesObjectInputStream;
 import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
@@ -293,7 +293,7 @@ public class WholeBeanValidator implements Validator
             ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
             try 
             {
-                copy = new ObjectInputStream(bais).readObject();
+                copy = new MyFacesObjectInputStream(bais).readObject();
             }
             catch (ClassNotFoundException e)
             {
