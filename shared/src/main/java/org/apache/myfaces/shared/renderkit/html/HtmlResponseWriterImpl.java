@@ -34,6 +34,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.ContentTypeUtils;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.UnicodeEncoder;
@@ -303,7 +304,12 @@ public class HtmlResponseWriterImpl
 
     public void endDocument() throws IOException
     {
-        _currentWriter.flush();
+        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(
+            FacesContext.getCurrentInstance().getExternalContext());
+        if (myfacesConfig.isEarlyFlushEnabled())
+        {
+            _currentWriter.flush();
+        }
         _facesContext = null;
     }
 
