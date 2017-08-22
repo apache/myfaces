@@ -202,7 +202,6 @@ public final class ClassUtils
         }
     }
 
-
     /**
      * Same as {@link #classForName(String)}, but throws a RuntimeException
      * (FacesException) instead of a ClassNotFoundException.
@@ -213,15 +212,34 @@ public final class ClassUtils
      */
     public static Class simpleClassForName(String type)
     {
+        return simpleClassForName(type, true);
+    }
+
+    /**
+     * Same as {link {@link #simpleClassForName(String)}, but will only
+     * log the exception and rethrow a RunTimeException if logException is true.
+     *
+     * @param type
+     * @param logException - true to log/throw FacesException, false to avoid logging/throwing FacesException
+     * @return the corresponding Class
+     * @throws FacesException if class not found and logException is true
+     */
+    public static Class simpleClassForName(String type, boolean logException)
+    {
+        Class returnClass = null;
         try
         {
-            return classForName(type);
+            returnClass = classForName(type);
         }
         catch (ClassNotFoundException e)
         {
-            log.log(Level.SEVERE, "Class " + type + " not found", e);
-            throw new FacesException(e);
+            if (logException)
+            {
+                log.log(Level.SEVERE, "Class " + type + " not found", e);
+                throw new FacesException(e);
+            }
         }
+        return returnClass;
     }
 
 
