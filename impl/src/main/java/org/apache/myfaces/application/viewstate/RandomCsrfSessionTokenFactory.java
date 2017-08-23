@@ -22,7 +22,8 @@ import java.util.Map;
 import java.util.Random;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import org.apache.commons.codec.binary.Hex;
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
@@ -78,6 +79,6 @@ class RandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
     public String createCryptographicallyStrongTokenFromSession(FacesContext context)
     {
         byte[] key = generateKey(context);
-        return new String(Hex.encodeHex(key));
+        return DatatypeConverter.printHexBinary(key);
     }
 }

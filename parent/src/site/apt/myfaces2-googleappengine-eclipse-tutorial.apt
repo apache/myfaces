@@ -82,8 +82,6 @@ Tutorial : Configuring MyFaces 2 to run on Google App Engine with Eclipse
       
       * lib/commons-beanutils-1.x.x.jar
       
-      * lib/commons-codec-1.x.jar
-      
       * lib/commons-collections-3.x.jar
       
       * lib/commons-digester-x.x.jar (I tested with version 1.8)

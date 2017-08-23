@@ -21,8 +21,8 @@ package org.apache.myfaces.application.viewstate;
 import java.util.Map;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
@@ -110,7 +110,7 @@ class SecureRandomKeyFactory extends KeyFactory<byte[]>
     @Override
     public String encode(byte[] key)
     {
-        return new String(Hex.encodeHex(key));
+        return DatatypeConverter.printHexBinary(key);
     }
 
     @Override
@@ -118,9 +118,9 @@ class SecureRandomKeyFactory extends KeyFactory<byte[]>
     {
         try
         {
-            return Hex.decodeHex(value.toCharArray());
+            return DatatypeConverter.parseHexBinary(value);
         }
-        catch (DecoderException ex)
+        catch (IllegalArgumentException ex)
         {
             // Cannot decode, ignore silently, later it will be handled as
             // ViewExpiredException

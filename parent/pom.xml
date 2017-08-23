@@ -509,13 +509,6 @@
                 <version>3.2.2</version>
                 <scope>compile</scope>
             </dependency>
-              
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>1.10</version>
-                <scope>compile</scope>
-            </dependency>
             
             <dependency>
                 <groupId>commons-beanutils</groupId>

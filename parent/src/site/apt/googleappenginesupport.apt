@@ -43,8 +43,6 @@ Myfaces Core 2.0 on Google App Engine
        
        * commons-beanutils-1.x.x.jar
        
-       * commons-codec-1.x.jar
-       
        * commons-collections-3.x.jar
        
        * commons-digester-x.x.jar
@@ -144,7 +142,6 @@ Myfaces Core 2.0 on Google App Engine
            - appengine-api-1.0-sdk-1.3.0.jar
            - appengine-api-labs-1.3.0.jar
            - commons-beanutils-1.7.0.jar
-           - commons-codec-1.3.jar
            - commons-collections-3.2.jar
            - commons-digester-1.8.jar
            - commons-discovery-0.4.jar
