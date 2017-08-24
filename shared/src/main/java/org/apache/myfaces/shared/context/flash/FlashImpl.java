@@ -47,7 +47,6 @@ import javax.faces.event.PreClearFlashEvent;
 import javax.faces.event.PreRemoveFlashValueEvent;
 import javax.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.shared.config.MyfacesConfig;
-import org.apache.myfaces.shared.util.ServletSpecifications;
 
 /**
  * Implementation of Flash object
@@ -1195,11 +1194,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
         cookie.setMaxAge(-1);
         cookie.setPath(_getCookiePath(externalContext));
         cookie.setSecure(externalContext.isSecure());
-        //cookie.setHttpOnly(true);
-        if (ServletSpecifications.isServlet30Available())
-        {
-            _Servlet30Utils.setCookieHttpOnly(cookie, true);
-        }
+        cookie.setHttpOnly(true);
         return cookie;
     }
 
