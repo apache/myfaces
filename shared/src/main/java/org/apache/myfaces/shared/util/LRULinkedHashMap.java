@@ -16,43 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.context.flash;
+package org.apache.myfaces.shared.util;
 
-import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-/**
- * This class is a wrapper used to deal with concurrency issues when accessing the inner LRUMap.
- */
-class FlashClientWindowTokenCollection implements Serializable
+public class LRULinkedHashMap<K,V> extends LinkedHashMap<K,V>
 {
-    private ClientWindowFlashTokenLRUMap map;
+    private final int capacity;
 
-    public FlashClientWindowTokenCollection(ClientWindowFlashTokenLRUMap map)
+    public LRULinkedHashMap(int capacity)
     {
-        this.map = map;
+        // 1 extra element as add happens before remove (101), and load factor big
+        // enough to avoid triggering resize.  True = keep in access order.
+        super(capacity + 1);
+        this.capacity = capacity;
     }
 
-    public FlashClientWindowTokenCollection()
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<K,V> eldest)
     {
-    }
-    
-    public synchronized void put(String key, String value)
-    {
-        map.put(key, value);
-    }
-    
-    public synchronized String get(String key)
-    {
-        return map.get(key);
-    }
-    
-    public synchronized void remove(String key)
-    {
-        map.remove(key);
-    }
-    
-    public synchronized boolean isEmpty()
-    {
-        return map.isEmpty();
+        return size() > capacity;
     }
 }

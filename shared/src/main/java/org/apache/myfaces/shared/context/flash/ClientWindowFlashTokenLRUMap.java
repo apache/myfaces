@@ -24,50 +24,20 @@ import java.util.Map;
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
-import org.apache.commons.collections.map.LRUMap;
+import org.apache.myfaces.shared.util.LRULinkedHashMap;
 
 /**
  *
  */
-class ClientWindowFlashTokenLRUMap extends LRUMap implements Serializable
+class ClientWindowFlashTokenLRUMap extends LRULinkedHashMap<String, String> implements Serializable
 {
-
-    public ClientWindowFlashTokenLRUMap()
+    public ClientWindowFlashTokenLRUMap(int capacity)
     {
+        super(capacity);
     }
 
-    public ClientWindowFlashTokenLRUMap(int maxSize)
-    {
-        super(maxSize);
-    }
-
-    public ClientWindowFlashTokenLRUMap(int maxSize, boolean scanUntilRemovable)
-    {
-        super(maxSize, scanUntilRemovable);
-    }
-
-    public ClientWindowFlashTokenLRUMap(int maxSize, float loadFactor)
-    {
-        super(maxSize, loadFactor);
-    }
-
-    public ClientWindowFlashTokenLRUMap(int maxSize, float loadFactor, boolean scanUntilRemovable)
-    {
-        super(maxSize, loadFactor, scanUntilRemovable);
-    }
-
-    public ClientWindowFlashTokenLRUMap(Map map)
-    {
-        super(map);
-    }
-
-    public ClientWindowFlashTokenLRUMap(Map map, boolean scanUntilRemovable)
-    {
-        super(map, scanUntilRemovable);
-    }
-    
     @Override
-    protected boolean removeLRU(LinkEntry entry)
+    protected boolean removeEldestEntry(Map.Entry<String, String> eldest)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Flash flash = facesContext.getExternalContext().getFlash();
@@ -92,9 +62,10 @@ class ClientWindowFlashTokenLRUMap extends LRUMap implements Serializable
             }
             if (rf != null)
             {
-                rf.clearFlashMap(facesContext, (String) entry.getKey(), (String) entry.getValue());
+                rf.clearFlashMap(facesContext, (String) eldest.getKey(), (String) eldest.getValue());
             }
         }
-        return super.removeLRU(entry);
+
+        return super.removeEldestEntry(eldest);
     }
 }
