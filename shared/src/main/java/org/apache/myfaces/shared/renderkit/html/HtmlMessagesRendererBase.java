@@ -19,6 +19,7 @@
 package org.apache.myfaces.shared.renderkit.html;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -43,7 +44,6 @@ import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.util.NullIterator;
 
 public abstract class HtmlMessagesRendererBase
         extends HtmlMessageRendererBase
@@ -503,19 +503,19 @@ public abstract class HtmlMessagesRendererBase
             {
                 _clientId = clientId;
                 _componentMessagesIterator = facesContext.getMessages(_clientId);
-                _globalMessagesIterator = org.apache.myfaces.shared.util.NullIterator.instance();
-                _clientIdsWithMessagesIterator = org.apache.myfaces.shared.util.NullIterator.instance();
+                _globalMessagesIterator = Collections.emptyIterator();
+                _clientIdsWithMessagesIterator = Collections.emptyIterator();
             }
             else 
             {
                 if (globalOnly)
                 {
                     _globalMessagesIterator = facesContext.getMessages(null);
-                    _clientIdsWithMessagesIterator = NullIterator.instance();
+                    _clientIdsWithMessagesIterator = Collections.emptyIterator();
                 }
                 else
                 {
-                    _globalMessagesIterator = org.apache.myfaces.shared.util.NullIterator.instance();
+                    _globalMessagesIterator = Collections.emptyIterator();
                     _clientIdsWithMessagesIterator = facesContext.getClientIdsWithMessages();
                 }
                 _componentMessagesIterator = null;
