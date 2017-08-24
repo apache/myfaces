@@ -18,25 +18,23 @@
  */
 package javax.faces.validator;
 
-import java.beans.FeatureDescriptor;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.el.FunctionMapper;
 import javax.el.ValueExpression;
+import javax.el.ValueReference;
 import javax.el.VariableMapper;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
@@ -141,6 +139,7 @@ public class BeanValidator implements Validator, PartialStateHolder
     /**
      * {@inheritDoc}
      */
+    @Override
     public void validate(final FacesContext context, final UIComponent component, final Object value)
             throws ValidatorException
     {
@@ -162,7 +161,7 @@ public class BeanValidator implements Validator, PartialStateHolder
         }
 
         // Obtain a reference to the to-be-validated object and the property name.
-        _ValueReferenceWrapper reference = getValueReference(valueExpression, context);
+        ValueReference reference = getValueReference(valueExpression, context);
         if (reference == null)
         {
             return;
@@ -301,9 +300,6 @@ public class BeanValidator implements Validator, PartialStateHolder
 
     }
 
-    // This boolean is used to make sure that the log isn't trashed with warnings.
-    private static volatile boolean firstValueReferenceWarning = true;
-
     /**
      * Get the ValueReference from the ValueExpression.
      *
@@ -311,40 +307,10 @@ public class BeanValidator implements Validator, PartialStateHolder
      * @param context The FacesContext.
      * @return A ValueReferenceWrapper with the necessary information about the ValueReference.
      */
-    private _ValueReferenceWrapper getValueReference(
+    private ValueReference getValueReference(
             final ValueExpression valueExpression, final FacesContext context)
     {
         ELContext elCtx = context.getELContext();
-        if (_ExternalSpecifications.isUnifiedELAvailable())
-        {
-            // unified el 2.2 is available --> we can use ValueExpression.getValueReference()
-            // we can't access ValueExpression.getValueReference() directly here, because
-            // Class loading would fail in applications with el-api versions prior to 2.2
-            _ValueReferenceWrapper wrapper = _BeanValidatorUELUtils.getUELValueReferenceWrapper(valueExpression, elCtx);
-            if (wrapper != null)
-            {
-                if (wrapper.getProperty() == null)
-                {
-                    // Fix for issue in Glassfish EL-impl-2.2.3
-                    if (firstValueReferenceWarning && log.isLoggable(Level.WARNING))
-                    {
-                        firstValueReferenceWarning = false;
-                        log.warning("ValueReference.getProperty() is null. " +
-                                    "Falling back to classic ValueReference resolving. " +
-                                    "This fallback may hurt performance. " +
-                                    "This may be caused by a bug your EL implementation. " +
-                                    "Glassfish EL-impl-2.2.3 is known for this issue. " +
-                                    "Try switching to a different EL implementation.");
-                    }
-                }
-                else
-                {
-                    return wrapper;
-                }
-            }
-        }
-
-        // get base object and property name the "old-fashioned" way
         return _ValueReferenceResolver.resolve(valueExpression, elCtx);
     }
 
@@ -456,6 +422,7 @@ public class BeanValidator implements Validator, PartialStateHolder
     }
 
     /** {@inheritDoc} */
+    @Override
     public Object saveState(final FacesContext context)
     {
         if (!initialStateMarked())
@@ -478,6 +445,7 @@ public class BeanValidator implements Validator, PartialStateHolder
     }
 
     /** {@inheritDoc} */
+    @Override
     public void restoreState(final FacesContext context, final Object state)
     {
         if (state != null)
@@ -531,30 +499,35 @@ public class BeanValidator implements Validator, PartialStateHolder
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isTransient()
     {
         return isTransient;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setTransient(final boolean isTransient)
     {
         this.isTransient = isTransient;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void clearInitialState()
     {
         _initialStateMarked = false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;
@@ -578,12 +551,14 @@ public class BeanValidator implements Validator, PartialStateHolder
             this.facesContext = facesContext;
         }
 
+        @Override
         public String interpolate(final String s, final Context context)
         {
             Locale locale = facesContext.getViewRoot().getLocale();
             return interpolator.interpolate(s, context, locale);
         }
 
+        @Override
         public String interpolate(final String s, final Context context, final Locale locale)
         {
             return interpolator.interpolate(s, context, locale);
@@ -591,140 +566,31 @@ public class BeanValidator implements Validator, PartialStateHolder
     }
 }
 
-/**
- * This class provides access to the object pointed to by the EL expression.
- *
- * It makes the BeanValidator work when Unified EL is not available.
- */
-final class _ValueReferenceWrapper
+final class _ValueReferenceResolver
 {
-    private final Object base;
-    private final Object property;
-
     /**
-     * Full constructor.
-     *
-     * @param base The object the reference points to.
-     * @param property The property the reference points to.
-     */
-    public _ValueReferenceWrapper(final Object base, final Object property)
-    {
-        this.base = base;
-        this.property = property;
-    }
-
-    /**
-     * The object the reference points to.
-     * @return base.
-     */
-    public Object getBase()
-    {
-        return base;
-    }
-
-    /**
-     * The property the reference points to.
-     * @return property.
-     */
-    public Object getProperty()
-    {
-        return property;
-    }
-}
-
-/**
- * This class inspects the EL expression and returns a ValueReferenceWrapper
- * when Unified EL is not available.
- */
-final class _ValueReferenceResolver extends ELResolver
-{
-    private final ELResolver resolver;
-
-    /**
-     * This is a simple solution to keep track of the resolved objects,
-     * since ELResolver provides no way to know if the current ELResolver
-     * is the last one in the chain. By assigning (and effectively overwriting)
-     * this field, we know that the value after invoking the chain is always
-     * the last one.
-     *
-     * This solution also deals with nested objects (like: #{myBean.prop.prop.prop}.
-     */
-    private _ValueReferenceWrapper lastObject;
-
-    /**
-     * Constructor is only used internally.
-     * @param elResolver An ELResolver from the current ELContext.
-     */
-    _ValueReferenceResolver(final ELResolver elResolver)
-    {
-        this.resolver = elResolver;
-    }
-
-    /**
-     * This method can be used to extract the ValueReferenceWrapper from the given ValueExpression.
+     * This method can be used to extract the ValueReference from the given ValueExpression.
      *
      * @param valueExpression The ValueExpression to resolve.
      * @param elCtx The ELContext, needed to parse and execute the expression.
      * @return The ValueReferenceWrapper.
      */
-    public static _ValueReferenceWrapper resolve(ValueExpression valueExpression, final ELContext elCtx)
+    public static ValueReference resolve(ValueExpression valueExpression, final ELContext elCtx)
     {
-        _ValueReferenceResolver resolver = new _ValueReferenceResolver(elCtx.getELResolver());
-        ELContext elCtxDecorator = new _ELContextDecorator(elCtx, resolver);
+        ValueReference valueReference = valueExpression.getValueReference(elCtx);
         
-        valueExpression.getValue(elCtxDecorator);
-        
-        while (resolver.lastObject.getBase() instanceof CompositeComponentExpressionHolder)
+        while (valueReference != null && valueReference.getBase() instanceof CompositeComponentExpressionHolder)
         {
-            valueExpression = ((CompositeComponentExpressionHolder) resolver.lastObject.getBase())
-                                  .getExpression((String) resolver.lastObject.getProperty());
-            valueExpression.getValue(elCtxDecorator);
+            valueExpression = ((CompositeComponentExpressionHolder) valueReference.getBase())
+                                  .getExpression((String) valueReference.getProperty());
+            if(valueExpression == null)
+            {
+                break;
+            }
+            valueReference = valueExpression.getValueReference(elCtx);
         }
-
-        return resolver.lastObject;
-    }
-
-    /**
-     * This method is the only one that matters. It keeps track of the objects in the EL expression.
-     *
-     * It creates a new ValueReferenceWrapper and assigns it to lastObject.
-     *
-     * @param context The ELContext.
-     * @param base The base object, may be null.
-     * @param property The property, may be null.
-     * @return The resolved value
-     */
-    @Override
-    public Object getValue(final ELContext context, final Object base, final Object property)
-    {
-        lastObject = new _ValueReferenceWrapper(base, property);
-        return resolver.getValue(context, base, property);
-    }
-
-    // ############################ Standard delegating implementations ############################
-    public Class<?> getType(final ELContext ctx, final Object base, final Object property)
-    {
-        return resolver.getType(ctx, base, property);
-    }
-
-    public void setValue(final ELContext ctx, final Object base, final Object property, final Object value)
-    {
-        resolver.setValue(ctx, base, property, value);
-    }
-
-    public boolean isReadOnly(final ELContext ctx, final Object base, final Object property)
-    {
-        return resolver.isReadOnly(ctx, base, property);
-    }
-
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext ctx, final Object base)
-    {
-        return resolver.getFeatureDescriptors(ctx, base);
-    }
-
-    public Class<?> getCommonPropertyType(final ELContext ctx, final Object base)
-    {
-        return resolver.getCommonPropertyType(ctx, base);
+        
+        return valueReference;
     }
 }
 
@@ -760,41 +626,49 @@ final class _ELContextDecorator extends ELContext
     }
 
     // ############################ Standard delegating implementations ############################
+    @Override
     public FunctionMapper getFunctionMapper()
     {
         return ctx.getFunctionMapper();
     }
 
+    @Override
     public VariableMapper getVariableMapper()
     {
         return ctx.getVariableMapper();
     }
 
+    @Override
     public void setPropertyResolved(final boolean resolved)
     {
         ctx.setPropertyResolved(resolved);
     }
 
+    @Override
     public boolean isPropertyResolved()
     {
         return ctx.isPropertyResolved();
     }
 
+    @Override
     public void putContext(final Class key, Object contextObject)
     {
         ctx.putContext(key, contextObject);
     }
 
+    @Override
     public Object getContext(final Class key)
     {
         return ctx.getContext(key);
     }
 
+    @Override
     public Locale getLocale()
     {
         return ctx.getLocale();
     }
 
+    @Override
     public void setLocale(final Locale locale)
     {
         ctx.setLocale(locale);
