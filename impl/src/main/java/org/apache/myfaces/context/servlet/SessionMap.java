@@ -18,13 +18,13 @@
  */
 package org.apache.myfaces.context.servlet;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.myfaces.shared.util.NullEnumeration;
 import org.apache.myfaces.util.AbstractThreadSafeAttributeMap;
 
 
@@ -71,7 +71,7 @@ public final class SessionMap extends AbstractThreadSafeAttributeMap<Object>
     protected Enumeration<String> getAttributeNames()
     {
         final HttpSession httpSession = _getSession();
-        return (httpSession == null) ? NullEnumeration.instance() : httpSession.getAttributeNames();
+        return (httpSession == null) ? Collections.emptyEnumeration() : httpSession.getAttributeNames();
     }
 
     @Override
