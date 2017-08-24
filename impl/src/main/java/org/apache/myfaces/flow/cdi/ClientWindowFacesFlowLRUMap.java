@@ -21,61 +21,33 @@ package org.apache.myfaces.flow.cdi;
 
 import java.io.Serializable;
 import java.util.Map;
-import org.apache.commons.collections.map.LRUMap;
+import org.apache.myfaces.shared.util.LRULinkedHashMap;
 
 /**
  *
  */
-class ClientWindowFacesFlowLRUMap extends LRUMap implements Serializable
+class ClientWindowFacesFlowLRUMap extends LRULinkedHashMap<String, String> implements Serializable
 {
     private transient FlowScopeBeanHolder holder;
 
-    public ClientWindowFacesFlowLRUMap()
+    public ClientWindowFacesFlowLRUMap(int capacity)
     {
+        super(capacity);
     }
 
-    public ClientWindowFacesFlowLRUMap(int maxSize)
-    {
-        super(maxSize);
-    }
-
-    public ClientWindowFacesFlowLRUMap(int maxSize, boolean scanUntilRemovable)
-    {
-        super(maxSize, scanUntilRemovable);
-    }
-
-    public ClientWindowFacesFlowLRUMap(int maxSize, float loadFactor)
-    {
-        super(maxSize, loadFactor);
-    }
-
-    public ClientWindowFacesFlowLRUMap(int maxSize, float loadFactor, boolean scanUntilRemovable)
-    {
-        super(maxSize, loadFactor, scanUntilRemovable);
-    }
-
-    public ClientWindowFacesFlowLRUMap(Map map)
-    {
-        super(map);
-    }
-
-    public ClientWindowFacesFlowLRUMap(Map map, boolean scanUntilRemovable)
-    {
-        super(map, scanUntilRemovable);
-    }
-    
     public void setFlowScopeBeanHolder(FlowScopeBeanHolder holder)
     {
         this.holder = holder;
     }
     
     @Override
-    protected boolean removeLRU(LinkEntry entry)
+    protected boolean removeEldestEntry(Map.Entry<String, String> eldest)
     {
         if (holder != null)
         {
-            holder.clearFlowMap((String) entry.getKey());
+            holder.clearFlowMap((String) eldest.getKey());
         }
-        return super.removeLRU(entry);
+
+        return super.removeEldestEntry(eldest);
     }
 }

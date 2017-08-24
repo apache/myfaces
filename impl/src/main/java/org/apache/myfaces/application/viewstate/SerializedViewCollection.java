@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
-import org.apache.commons.collections.map.LRUMap;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.spi.ViewScopeProvider;
+import org.apache.myfaces.shared.util.LRULinkedHashMap;
 
 /**
  *
@@ -252,13 +252,13 @@ class SerializedViewCollection implements Serializable
         {
             Integer i = getNumberOfSequentialViewsInSession(context);
             int j = getNumberOfViewsInSession(context);
-            if (i != null && i.intValue() > 0)
+            if (i != null && i> 0)
             {
-                _lastWindowKeys = new LRUMap((j / i.intValue()) + 1);
+                _lastWindowKeys = new LRULinkedHashMap<>((j / i) + 1);
             }
             else
             {
-                _lastWindowKeys = new LRUMap(j + 1);
+                _lastWindowKeys = new LRULinkedHashMap(j + 1);
             }
         }
         _lastWindowKeys.put(id, key);

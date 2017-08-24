@@ -25,11 +25,11 @@ import java.io.Serializable;
  */
 class FacesFlowClientWindowCollection implements Serializable
 {
-    private ClientWindowFacesFlowLRUMap lruMap;
+    private ClientWindowFacesFlowLRUMap map;
 
-    public FacesFlowClientWindowCollection(ClientWindowFacesFlowLRUMap lruMap)
+    public FacesFlowClientWindowCollection(ClientWindowFacesFlowLRUMap map)
     {
-        this.lruMap = lruMap;
+        this.map = map;
     }
 
     public FacesFlowClientWindowCollection()
@@ -38,27 +38,27 @@ class FacesFlowClientWindowCollection implements Serializable
     
     public synchronized void put(String key, String value)
     {
-        lruMap.put(key, value);
+        map.put(key, value);
     }
     
     public synchronized String get(String key)
     {
-        return (String) lruMap.get(key);
+        return map.get(key);
     }
     
     public synchronized void remove(String key)
     {
-        lruMap.remove(key);
+        map.remove(key);
     }
     
     public synchronized boolean isEmpty()
     {
-        return lruMap.isEmpty();
+        return map.isEmpty();
     }
     
     public void setFlowScopeBeanHolder(FlowScopeBeanHolder holder)
     {
-        lruMap.setFlowScopeBeanHolder(holder);
+        map.setFlowScopeBeanHolder(holder);
     }
     
 }
