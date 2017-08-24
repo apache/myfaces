@@ -426,7 +426,7 @@ public class DateTimeConverter
         }
         if (name.equals(STYLE_LONG))
         {
-            return FormatStyle.SHORT;
+            return FormatStyle.LONG;
         }
         if (name.equals(STYLE_FULL))
         {
