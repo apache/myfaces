@@ -44,7 +44,6 @@ import org.apache.myfaces.cdi.faces.FacesScopeProvider;
 
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.ReleaseableFacesContextFactory;
-import org.apache.myfaces.shared.util.NullIterator;
 import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
