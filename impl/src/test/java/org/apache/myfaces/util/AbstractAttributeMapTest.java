@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.util;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +73,7 @@ public class AbstractAttributeMapTest extends TestCase
         @Override
         protected Enumeration<String> getAttributeNames()
         {
-            return new IteratorEnumeration<String>(_values.keySet().iterator());
+            return Collections.enumeration(_values.keySet());
         }
 
         @Override
