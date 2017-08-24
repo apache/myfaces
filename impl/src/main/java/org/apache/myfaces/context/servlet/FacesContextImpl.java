@@ -240,7 +240,7 @@ public class FacesContextImpl extends FacesContextImplBase
 
         if (_messages == null)
         {
-            return NullIterator.instance();
+            return Collections.emptyIterator();
         }
         
         return _orderedMessages.iterator();
@@ -254,7 +254,7 @@ public class FacesContextImpl extends FacesContextImplBase
 
         if (_messages == null || !_messages.containsKey(clientId))
         {
-            return NullIterator.instance();
+            return Collections.emptyIterator();
         }
         
         return _messages.get(clientId).iterator();        
@@ -267,7 +267,7 @@ public class FacesContextImpl extends FacesContextImplBase
 
         if (_messages == null || _messages.isEmpty())
         {
-            return NullIterator.instance();
+            return Collections.emptyIterator();
         }
         
         return _messages.keySet().iterator();
