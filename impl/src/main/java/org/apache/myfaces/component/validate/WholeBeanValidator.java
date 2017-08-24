@@ -339,37 +339,26 @@ public class WholeBeanValidator implements Validator
             final ValueExpression valueExpression, final FacesContext context)
     {
         ELContext elCtx = context.getELContext();
-        if (ExternalSpecifications.isUnifiedELAvailable())
+        _ValueReferenceWrapper wrapper = _BeanValidatorUELUtils.getUELValueReferenceWrapper(valueExpression, elCtx);
+        if (wrapper != null && wrapper.getProperty() == null)
         {
-            // unified el 2.2 is available --> we can use ValueExpression.getValueReference()
-            // we can't access ValueExpression.getValueReference() directly here, because
-            // Class loading would fail in applications with el-api versions prior to 2.2
-            _ValueReferenceWrapper wrapper = _BeanValidatorUELUtils.getUELValueReferenceWrapper(valueExpression, elCtx);
-            if (wrapper != null)
+            // Fix for issue in Glassfish EL-impl-2.2.3
+            if (firstValueReferenceWarning && log.isLoggable(Level.WARNING))
             {
-                if (wrapper.getProperty() == null)
-                {
-                    // Fix for issue in Glassfish EL-impl-2.2.3
-                    if (firstValueReferenceWarning && log.isLoggable(Level.WARNING))
-                    {
-                        firstValueReferenceWarning = false;
-                        log.warning("ValueReference.getProperty() is null. " +
-                                    "Falling back to classic ValueReference resolving. " +
-                                    "This fallback may hurt performance. " +
-                                    "This may be caused by a bug your EL implementation. " +
-                                    "Glassfish EL-impl-2.2.3 is known for this issue. " +
-                                    "Try switching to a different EL implementation.");
-                    }
-                }
-                else
-                {
-                    return wrapper;
-                }
+                firstValueReferenceWarning = false;
+                log.warning("ValueReference.getProperty() is null. " +
+                            "Falling back to classic ValueReference resolving. " +
+                            "This fallback may hurt performance. " +
+                            "This may be caused by a bug your EL implementation. " +
+                            "Glassfish EL-impl-2.2.3 is known for this issue. " +
+                            "Try switching to a different EL implementation.");
             }
+            
+            // get base object and property name the "old-fashioned" way
+            return _ValueReferenceResolver.resolve(valueExpression, elCtx);
         }
 
-        // get base object and property name the "old-fashioned" way
-        return _ValueReferenceResolver.resolve(valueExpression, elCtx);
+        return wrapper;
     }
 
     /**

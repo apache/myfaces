@@ -35,14 +35,12 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
-import org.apache.myfaces.util.ExternalSpecifications;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.TemplateContext;
-import org.apache.myfaces.view.facelets.el.FaceletStateValueExpression;
 import org.apache.myfaces.view.facelets.el.FaceletStateValueExpressionUEL;
 import org.apache.myfaces.view.facelets.impl.TemplateContextImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
@@ -132,15 +130,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
                         {
                             //((AbstractFaceletContext) ctx).getTemplateContext().setParameter(names[i], values[i]);
                             faceletState.putBinding(uniqueId, names[i], values[i]);
-                            ValueExpression ve;
-                            if (ExternalSpecifications.isUnifiedELAvailable())
-                            {
-                                ve = new FaceletStateValueExpressionUEL(uniqueId, names[i]);
-                            }
-                            else
-                            {
-                                ve = new FaceletStateValueExpression(uniqueId, names[i]);
-                            }
+                            ValueExpression ve = new FaceletStateValueExpressionUEL(uniqueId, names[i]);
                             actx.getTemplateContext().setParameter(names[i], ve);
                         }
                     }

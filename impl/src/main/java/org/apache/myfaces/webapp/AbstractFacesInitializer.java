@@ -224,7 +224,6 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             WebConfigParamsLogger.logWebContextParams(facesContext);
             
             //Force output EL message
-            ExternalSpecifications.isUnifiedELAvailable();
             ExternalSpecifications.isBeanValidationAvailable();
             
             //Start ViewPoolProcessor if necessary

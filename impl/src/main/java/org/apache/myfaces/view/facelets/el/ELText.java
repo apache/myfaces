@@ -31,7 +31,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.ResponseWriter;
 import javax.faces.view.Location;
 
-import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 
 /**
@@ -298,16 +297,8 @@ public class ELText
                         Location location = (Location) cc.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY);
                         if (location != null)
                         {
-                            if (ExternalSpecifications.isUnifiedELAvailable())
-                            {
-                                valueExpression = new LocationValueExpressionUEL(location, valueExpression,
-                                        actx.getFaceletCompositionContext().getCompositeComponentLevel());
-                            }
-                            else
-                            {
-                                valueExpression = new LocationValueExpression(location, valueExpression,
-                                        actx.getFaceletCompositionContext().getCompositeComponentLevel());
-                            }
+                            valueExpression = new LocationValueExpressionUEL(location, valueExpression,
+                                    actx.getFaceletCompositionContext().getCompositeComponentLevel());
                         }
                     }
                 }
@@ -319,14 +310,7 @@ public class ELText
                         Location location = (Location) cc.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY);
                         if (location != null)
                         {
-                            if (ExternalSpecifications.isUnifiedELAvailable())
-                            {
-                                valueExpression = new ResourceLocationValueExpressionUEL(location, valueExpression);
-                            }
-                            else
-                            {
-                                valueExpression = new ResourceLocationValueExpression(location, valueExpression);
-                            }
+                            valueExpression = new ResourceLocationValueExpressionUEL(location, valueExpression);
                         }
                     }
                 }

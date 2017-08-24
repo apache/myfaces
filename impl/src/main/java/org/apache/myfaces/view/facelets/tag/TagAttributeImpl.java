@@ -30,21 +30,17 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagAttributeException;
 
-import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.el.ContextAwareTagMethodExpression;
-import org.apache.myfaces.view.facelets.el.ContextAwareTagValueExpression;
 import org.apache.myfaces.view.facelets.el.ContextAwareTagValueExpressionUEL;
 import org.apache.myfaces.view.facelets.el.ELText;
 import org.apache.myfaces.view.facelets.el.LocationMethodExpression;
 import org.apache.myfaces.view.facelets.el.LocationValueExpression;
 import org.apache.myfaces.view.facelets.el.LocationValueExpressionUEL;
 import org.apache.myfaces.view.facelets.el.ResourceELUtils;
-import org.apache.myfaces.view.facelets.el.ResourceLocationValueExpression;
 import org.apache.myfaces.view.facelets.el.ResourceLocationValueExpressionUEL;
 import org.apache.myfaces.view.facelets.el.TagMethodExpression;
-import org.apache.myfaces.view.facelets.el.TagValueExpression;
 import org.apache.myfaces.view.facelets.el.TagValueExpressionUEL;
 import org.apache.myfaces.view.facelets.el.ValueExpressionMethodExpression;
 
@@ -257,7 +253,7 @@ public final class TagAttributeImpl extends TagAttribute
                 // (see VDL.retargetMethodExpressions for details)
                 
                 // check for params in the the MethodExpression
-                if (ExternalSpecifications.isUnifiedELAvailable() && this.value.contains("("))
+                if (this.value.contains("("))
                 {
                     // if we don't throw this exception here, another ELException will be
                     // thrown later, because #{cc.attrs.method(param)} will not work as a
@@ -529,28 +525,14 @@ public final class TagAttributeImpl extends TagAttribute
         {
             ExpressionFactory f = ctx.getExpressionFactory();
             ValueExpression valueExpression = f.createValueExpression(ctx, this.value, type);
-            
-            if (ExternalSpecifications.isUnifiedELAvailable())
+
+            if (actx.getFaceletCompositionContext().isWrapTagExceptionsAsContextAware())
             {
-                if (actx.getFaceletCompositionContext().isWrapTagExceptionsAsContextAware())
-                {
-                    valueExpression = new ContextAwareTagValueExpressionUEL(this, valueExpression);
-                }
-                else
-                {
-                    valueExpression = new TagValueExpressionUEL(this, valueExpression);
-                }
+                valueExpression = new ContextAwareTagValueExpressionUEL(this, valueExpression);
             }
             else
             {
-                if (actx.getFaceletCompositionContext().isWrapTagExceptionsAsContextAware())
-                {
-                    valueExpression = new ContextAwareTagValueExpression(this, valueExpression);
-                }
-                else
-                {
-                    valueExpression = new TagValueExpression(this, valueExpression);
-                }
+                valueExpression = new TagValueExpressionUEL(this, valueExpression);
             }
 
             // if the ValueExpression contains a reference to the current composite
@@ -576,27 +558,13 @@ public final class TagAttributeImpl extends TagAttribute
                     //cacheable = false;
                     currentLocation = ccLocation;
                 }
-                if (ExternalSpecifications.isUnifiedELAvailable())
-                {
-                    valueExpression = new LocationValueExpressionUEL(currentLocation, valueExpression, 
-                            actx.getFaceletCompositionContext().getCompositeComponentLevel());
-                }
-                else
-                {
-                    valueExpression = new LocationValueExpression(currentLocation, valueExpression, 
-                            actx.getFaceletCompositionContext().getCompositeComponentLevel());
-                }
+
+                valueExpression = new LocationValueExpressionUEL(currentLocation, valueExpression, 
+                        actx.getFaceletCompositionContext().getCompositeComponentLevel());
             }
             else if ((this.capabilities & EL_RESOURCE) != 0)
             {
-                if (ExternalSpecifications.isUnifiedELAvailable())
-                {
-                    valueExpression = new ResourceLocationValueExpressionUEL(getLocation(), valueExpression);
-                }
-                else
-                {
-                    valueExpression = new ResourceLocationValueExpression(getLocation(), valueExpression);
-                }
+                valueExpression = new ResourceLocationValueExpressionUEL(getLocation(), valueExpression);
             }
             
             

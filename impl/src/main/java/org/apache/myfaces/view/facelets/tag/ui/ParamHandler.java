@@ -32,10 +32,8 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
-import org.apache.myfaces.view.facelets.el.FaceletStateValueExpression;
 import org.apache.myfaces.view.facelets.el.FaceletStateValueExpressionUEL;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
@@ -116,15 +114,7 @@ public class ParamHandler extends TagHandler
         {
             FaceletState faceletState = ComponentSupport.getFaceletState(ctx, parent, true);
             faceletState.putBinding(uniqueId, nameStr, valueVE);
-            ValueExpression ve;
-            if (ExternalSpecifications.isUnifiedELAvailable())
-            {
-                ve = new FaceletStateValueExpressionUEL(uniqueId, nameStr);
-            }
-            else
-            {
-                ve = new FaceletStateValueExpression(uniqueId, nameStr);
-            }
+            ValueExpression ve = new FaceletStateValueExpressionUEL(uniqueId, nameStr);
             actx.getTemplateContext().setParameter(nameStr, ve);
         }
         else

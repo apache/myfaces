@@ -41,11 +41,9 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.PageContext;
-import org.apache.myfaces.view.facelets.el.FaceletStateValueExpression;
 import org.apache.myfaces.view.facelets.el.FaceletStateValueExpressionUEL;
 import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
@@ -281,15 +279,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
             faceletState.putBinding(uniqueId, base, ve);
 
             //Put the indirect EL into context
-            ValueExpression fve;
-            if (ExternalSpecifications.isUnifiedELAvailable())
-            {
-                fve = new FaceletStateValueExpressionUEL(uniqueId, base);
-            }
-            else
-            {
-                fve = new FaceletStateValueExpression(uniqueId, base);
-            }
+            ValueExpression fve = new FaceletStateValueExpressionUEL(uniqueId, base);
             pctx.getAttributes().put(v, fve);
         }
         else
