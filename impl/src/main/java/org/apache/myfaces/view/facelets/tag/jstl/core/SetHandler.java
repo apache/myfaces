@@ -36,7 +36,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
-import org.apache.myfaces.view.facelets.el.CacheableValueExpressionUELWrapper;
+import org.apache.myfaces.view.facelets.el.CacheableValueExpressionWrapper;
 
 /**
  * Simplified implementation of c:set
@@ -140,7 +140,7 @@ public class SetHandler extends TagHandler
                 if (ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))
                 {
                     actx.getPageContext().getAttributes().put(varStr, 
-                        new CacheableValueExpressionUELWrapper(veObj));
+                        new CacheableValueExpressionWrapper(veObj));
                 }
                 else
                 {

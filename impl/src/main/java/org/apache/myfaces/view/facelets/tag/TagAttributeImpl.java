@@ -33,15 +33,14 @@ import javax.faces.view.facelets.TagAttributeException;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.el.ContextAwareTagMethodExpression;
-import org.apache.myfaces.view.facelets.el.ContextAwareTagValueExpressionUEL;
+import org.apache.myfaces.view.facelets.el.ContextAwareTagValueExpression;
 import org.apache.myfaces.view.facelets.el.ELText;
 import org.apache.myfaces.view.facelets.el.LocationMethodExpression;
 import org.apache.myfaces.view.facelets.el.LocationValueExpression;
-import org.apache.myfaces.view.facelets.el.LocationValueExpressionUEL;
 import org.apache.myfaces.view.facelets.el.ResourceELUtils;
-import org.apache.myfaces.view.facelets.el.ResourceLocationValueExpressionUEL;
+import org.apache.myfaces.view.facelets.el.ResourceLocationValueExpression;
 import org.apache.myfaces.view.facelets.el.TagMethodExpression;
-import org.apache.myfaces.view.facelets.el.TagValueExpressionUEL;
+import org.apache.myfaces.view.facelets.el.TagValueExpression;
 import org.apache.myfaces.view.facelets.el.ValueExpressionMethodExpression;
 
 /**
@@ -528,11 +527,11 @@ public final class TagAttributeImpl extends TagAttribute
 
             if (actx.getFaceletCompositionContext().isWrapTagExceptionsAsContextAware())
             {
-                valueExpression = new ContextAwareTagValueExpressionUEL(this, valueExpression);
+                valueExpression = new ContextAwareTagValueExpression(this, valueExpression);
             }
             else
             {
-                valueExpression = new TagValueExpressionUEL(this, valueExpression);
+                valueExpression = new TagValueExpression(this, valueExpression);
             }
 
             // if the ValueExpression contains a reference to the current composite
@@ -559,12 +558,12 @@ public final class TagAttributeImpl extends TagAttribute
                     currentLocation = ccLocation;
                 }
 
-                valueExpression = new LocationValueExpressionUEL(currentLocation, valueExpression, 
+                valueExpression = new LocationValueExpression(currentLocation, valueExpression, 
                         actx.getFaceletCompositionContext().getCompositeComponentLevel());
             }
             else if ((this.capabilities & EL_RESOURCE) != 0)
             {
-                valueExpression = new ResourceLocationValueExpressionUEL(getLocation(), valueExpression);
+                valueExpression = new ResourceLocationValueExpression(getLocation(), valueExpression);
             }
             
             

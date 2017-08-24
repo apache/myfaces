@@ -80,7 +80,7 @@ public class SerializableELExpressionsTestCase extends FaceletTestCase
         TagAttributeImpl tai = new TagAttributeImpl(new Location("path",299, 12), 
                 null, "value", "value", "#{cc.attrs.value}");
         TagValueExpression tve = new TagValueExpression(tai, ve);
-        LocationValueExpressionUEL lve = new LocationValueExpressionUEL(
+        LocationValueExpression lve = new LocationValueExpression(
                 new Location("path2",334, 22), tve);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
@@ -90,7 +90,7 @@ public class SerializableELExpressionsTestCase extends FaceletTestCase
         baos.flush();
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
-        LocationValueExpressionUEL lve2 = (LocationValueExpressionUEL) ois.readObject();
+        LocationValueExpression lve2 = (LocationValueExpression) ois.readObject();
         Assert.assertEquals(lve.getExpressionString(), lve2.getExpressionString());
         Assert.assertEquals(lve.getLocation().getPath(), lve2.getLocation().getPath());
         Assert.assertEquals(lve.getLocation().getLine(), lve2.getLocation().getLine());

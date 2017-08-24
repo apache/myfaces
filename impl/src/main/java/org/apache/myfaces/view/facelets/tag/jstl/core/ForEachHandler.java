@@ -44,7 +44,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.PageContext;
-import org.apache.myfaces.view.facelets.el.FaceletStateValueExpressionUEL;
+import org.apache.myfaces.view.facelets.el.FaceletStateValueExpression;
 import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
@@ -279,7 +279,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
             faceletState.putBinding(uniqueId, base, ve);
 
             //Put the indirect EL into context
-            ValueExpression fve = new FaceletStateValueExpressionUEL(uniqueId, base);
+            ValueExpression fve = new FaceletStateValueExpression(uniqueId, base);
             pctx.getAttributes().put(v, fve);
         }
         else

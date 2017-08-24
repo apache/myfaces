@@ -28,6 +28,7 @@ import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 import javax.el.ValueExpression;
+import javax.el.ValueReference;
 import javax.faces.FacesWrapper;
 import javax.faces.view.facelets.TagAttribute;
 
@@ -57,11 +58,13 @@ public class TagValueExpression extends ValueExpression implements Externalizabl
         this.orig = orig;
     }
 
+    @Override
     public Class<?> getExpectedType()
     {
         return this.orig.getExpectedType();
     }
 
+    @Override
     public Class<?> getType(ELContext context)
     {
         try
@@ -78,6 +81,7 @@ public class TagValueExpression extends ValueExpression implements Externalizabl
         }
     }
 
+    @Override
     public Object getValue(ELContext context)
     {
         try
@@ -94,6 +98,7 @@ public class TagValueExpression extends ValueExpression implements Externalizabl
         }
     }
 
+    @Override
     public boolean isReadOnly(ELContext context)
     {
         try
@@ -110,6 +115,7 @@ public class TagValueExpression extends ValueExpression implements Externalizabl
         }
     }
 
+    @Override
     public void setValue(ELContext context, Object value)
     {
         try
@@ -130,45 +136,70 @@ public class TagValueExpression extends ValueExpression implements Externalizabl
         }
     }
     
+    @Override
     public boolean equals(Object obj)
     {
         return this.orig.equals(obj);
     }
 
+    @Override
     public String getExpressionString()
     {
         return this.orig.getExpressionString();
     }
 
+    @Override
     public int hashCode()
     {
         return this.orig.hashCode();
     }
 
+    @Override
     public boolean isLiteralText()
     {
         return this.orig.isLiteralText();
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         this.orig = (ValueExpression) in.readObject();
         this.attr = in.readUTF();
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeObject(this.orig);
         out.writeUTF(this.attr);
     }
 
+    @Override
     public String toString()
     {
         return this.attr + ": " + this.orig;
     }
 
+    @Override
     public ValueExpression getWrapped()
     {
         return orig;
+    }
+    
+    @Override
+    public ValueReference getValueReference(ELContext context)
+    {
+        try
+        {
+            return this.orig.getValueReference(context);
+        }
+        catch (PropertyNotFoundException pnfe)
+        {
+            throw new PropertyNotFoundException(this.attr + ": " + pnfe.getMessage(), pnfe.getCause());
+        }
+        catch (ELException e)
+        {
+            throw new ELException(this.attr + ": " + e.getMessage(), e.getCause());
+        }
     }
 }

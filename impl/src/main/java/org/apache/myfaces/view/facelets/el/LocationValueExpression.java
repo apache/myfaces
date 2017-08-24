@@ -25,6 +25,7 @@ import java.io.ObjectOutput;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
+import javax.el.ValueReference;
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.view.Location;
@@ -107,7 +108,7 @@ public class LocationValueExpression extends ValueExpression
             return new LocationValueExpression(newLocation, this.delegate, newCCLevel);
         }
     }
-    
+        
     @Override
     public Class<?> getExpectedType()
     {
@@ -198,11 +199,13 @@ public class LocationValueExpression extends ValueExpression
         return delegate.isLiteralText();
     }
 
+    @Override
     public ValueExpression getWrapped()
     {
         return delegate;
     }
     
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         this.delegate = (ValueExpression) in.readObject();
@@ -210,10 +213,26 @@ public class LocationValueExpression extends ValueExpression
         this.ccLevel = in.readInt();
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeObject(this.delegate);
         out.writeObject(this.location);
         out.writeInt(this.ccLevel);
+    }
+        
+    @Override
+    public ValueReference getValueReference(ELContext context)
+    {
+        FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
+        CompositeComponentELUtils.saveCompositeComponentForResolver(facesContext, location, ccLevel);
+        try
+        {
+            return delegate.getValueReference(context);
+        }
+        finally
+        {
+            CompositeComponentELUtils.removeCompositeComponentForResolver(facesContext);
+        }
     }
 }

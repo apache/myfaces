@@ -28,6 +28,7 @@ import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 import javax.el.ValueExpression;
+import javax.el.ValueReference;
 import javax.faces.FacesWrapper;
 import javax.faces.view.Location;
 import javax.faces.view.facelets.TagAttribute;
@@ -46,9 +47,7 @@ public class ContextAwareTagValueExpression
     private static final long serialVersionUID = 1L;
 
     private ValueExpression _wrapped; 
-
     private Location _location;
-    
     private String _qName;
 
     public ContextAwareTagValueExpression()
@@ -63,11 +62,13 @@ public class ContextAwareTagValueExpression
         _wrapped = valueExpression;
     }
 
+    @Override
     public Class<?> getExpectedType()
     {
         return _wrapped.getExpectedType();
     }
 
+    @Override
     public Class<?> getType(ELContext context)
     {
         try
@@ -82,13 +83,9 @@ public class ContextAwareTagValueExpression
         {
             throw new ContextAwareELException(getLocation(), getLocalExpressionString(), getQName(), e);
         }
-        //Not necessary because NullPointerException by null context never occur and should not be wrapped
-        //catch (Exception e)
-        //{
-        //    throw new ContextAwareException(getLocation(), getLocalExpressionString(), getQName(), e); 
-        //}
     }
 
+    @Override
     public Object getValue(ELContext context)
     {
         try
@@ -124,6 +121,7 @@ public class ContextAwareTagValueExpression
         return expressionString;
     }
 
+    @Override
     public boolean isReadOnly(ELContext context)
     {
         try
@@ -138,14 +136,9 @@ public class ContextAwareTagValueExpression
         {
             throw new ContextAwareELException(getLocation(), getLocalExpressionString(), getQName(), e);
         }
-        //Not necessary because NullPointerException by null context never occur and should not be wrapped
-        //catch (Exception e)
-        //{
-        //    throw new ContextAwareException(getLocation(), getLocalExpressionString(), getQName(), e);
-        //}
-        
     }
 
+    @Override
     public void setValue(ELContext context, Object value)
     {
         try
@@ -165,33 +158,33 @@ public class ContextAwareTagValueExpression
         {
             throw new ContextAwareELException(getLocation(), getLocalExpressionString(), getQName(), e);
         }
-        //Not necessary because NullPointerException by null context never occur and should not be wrapped
-        //catch (Exception e)
-        //{
-        //    throw new ContextAwareException(getLocation(), getLocalExpressionString(), getQName(), e);
-        //}
     }
     
+    @Override
     public boolean equals(Object obj)
     {
         return _wrapped.equals(obj);
     }
 
+    @Override
     public String getExpressionString()
     {
         return _wrapped.getExpressionString();
     }
 
+    @Override
     public int hashCode()
     {
         return _wrapped.hashCode();
     }
 
+    @Override
     public boolean isLiteralText()
     {
         return _wrapped.isLiteralText();
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         _wrapped = (ValueExpression) in.readObject();
@@ -199,6 +192,7 @@ public class ContextAwareTagValueExpression
         _qName = in.readUTF();
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeObject(_wrapped);
@@ -206,23 +200,44 @@ public class ContextAwareTagValueExpression
         out.writeUTF(_qName);
     }
 
+    @Override
     public String toString()
     {
         return _location + ": " + _wrapped;
     }
 
+    @Override
     public ValueExpression getWrapped()
     {
         return _wrapped;
     }
 
+    @Override
     public Location getLocation()
     {
         return _location;
     }
     
+    @Override
     public String getQName()
     {
         return _qName;
+    }
+    
+    @Override
+    public ValueReference getValueReference(ELContext context)
+    {
+        try
+        {
+            return getWrapped().getValueReference(context);
+        }
+        catch (PropertyNotFoundException pnfe)
+        {
+            throw new ContextAwarePropertyNotFoundException(getLocation(), getExpressionString(), getQName() ,  pnfe);
+        }
+        catch (ELException e)
+        {
+            throw new ContextAwareELException(getLocation(), getExpressionString(), getQName(),  e);
+        }
     }
 }

@@ -20,6 +20,7 @@ package org.apache.myfaces.view.facelets.el;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
+import javax.el.ValueReference;
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.view.Location;
@@ -127,8 +128,24 @@ public class ResourceLocationValueExpression extends LocationValueExpression imp
         return delegate.isLiteralText();
     }
 
+    @Override
     public ValueExpression getWrapped()
     {
         return delegate;
+    }
+    
+    @Override
+    public ValueReference getValueReference(ELContext context)
+    {
+        FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
+        ResourceELUtils.saveResourceLocationForResolver(facesContext, location);
+        try
+        {
+            return delegate.getValueReference(context);
+        }
+        finally
+        {
+            ResourceELUtils.removeResourceLocationForResolver(facesContext);
+        }
     }
 }

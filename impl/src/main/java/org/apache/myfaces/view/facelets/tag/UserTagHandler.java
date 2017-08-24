@@ -41,7 +41,7 @@ import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.TemplateContext;
-import org.apache.myfaces.view.facelets.el.FaceletStateValueExpressionUEL;
+import org.apache.myfaces.view.facelets.el.FaceletStateValueExpression;
 import org.apache.myfaces.view.facelets.impl.TemplateContextImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
@@ -130,7 +130,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
                         {
                             //((AbstractFaceletContext) ctx).getTemplateContext().setParameter(names[i], values[i]);
                             faceletState.putBinding(uniqueId, names[i], values[i]);
-                            ValueExpression ve = new FaceletStateValueExpressionUEL(uniqueId, names[i]);
+                            ValueExpression ve = new FaceletStateValueExpression(uniqueId, names[i]);
                             actx.getTemplateContext().setParameter(names[i], ve);
                         }
                     }

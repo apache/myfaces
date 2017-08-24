@@ -27,6 +27,7 @@ import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 import javax.el.ValueExpression;
+import javax.el.ValueReference;
 import javax.faces.FacesWrapper;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
@@ -175,4 +176,9 @@ public class FaceletStateValueExpression extends ValueExpression
         return true;
     }
 
+    @Override
+    public ValueReference getValueReference(ELContext context)
+    {
+        return getWrapped(context).getValueReference(context);
+    }
 }

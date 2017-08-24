@@ -297,7 +297,7 @@ public class ELText
                         Location location = (Location) cc.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY);
                         if (location != null)
                         {
-                            valueExpression = new LocationValueExpressionUEL(location, valueExpression,
+                            valueExpression = new LocationValueExpression(location, valueExpression,
                                     actx.getFaceletCompositionContext().getCompositeComponentLevel());
                         }
                     }
@@ -310,7 +310,7 @@ public class ELText
                         Location location = (Location) cc.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY);
                         if (location != null)
                         {
-                            valueExpression = new ResourceLocationValueExpressionUEL(location, valueExpression);
+                            valueExpression = new ResourceLocationValueExpression(location, valueExpression);
                         }
                     }
                 }

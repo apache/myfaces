@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -40,6 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
+import javax.el.ValueReference;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -102,18 +102,6 @@ public class WholeBeanValidator implements Validator
             return;
         }
 
-        // Obtain a reference to the to-be-validated object and the property name.
-        /*
-        _ValueReferenceWrapper reference = getValueReference(valueExpression, context);
-        if (reference == null)
-        {
-            return;
-        }
-        Object base = reference.getBase();
-        if (base == null)
-        {
-            return;
-        }*/
         Object base = valueExpression.getValue(context.getELContext());
                 
         Class<?> valueBaseClass = base.getClass();
@@ -121,17 +109,6 @@ public class WholeBeanValidator implements Validator
         {
             return;
         }
-        /*
-        Object referenceProperty = reference.getProperty();
-        if (!(referenceProperty instanceof String))
-        {
-            // if the property is not a String, the ValueReference does not
-            // point to a bean method, but e.g. to a value in a Map, thus we 
-            // can exit bean validation here
-            return;
-        }
-        String valueProperty = (String) referenceProperty;
-        */
 
         // Initialize Bean Validation.
         ValidatorFactory validatorFactory = createValidatorFactory(context);
@@ -194,14 +171,11 @@ public class WholeBeanValidator implements Validator
         {
             copy = base.getClass().newInstance();
         }
-        catch (InstantiationException ex)
+        catch (Exception ex)
         {
             Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
         }
-        catch (IllegalAccessException ex)
-        {
-            Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
-        }
+        
         if (base instanceof Serializable)
         {
             copy = copySerializableObject(base);
@@ -214,23 +188,7 @@ public class WholeBeanValidator implements Validator
                 cloneMethod = base.getClass().getMethod("clone");
                 copy = cloneMethod.invoke(base);
             }
-            catch (NoSuchMethodException ex) 
-            {
-                Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
-            }
-            catch (SecurityException ex) 
-            {
-                Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
-            }
-            catch (IllegalAccessException ex)
-            {
-                Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
-            }
-            catch (IllegalArgumentException ex)
-            {
-                Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
-            }
-            catch (InvocationTargetException ex)
+            catch (Exception ex) 
             {
                 Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
             }
@@ -246,35 +204,17 @@ public class WholeBeanValidator implements Validator
                     copy = copyConstructor.newInstance(base);
                 }
             }
-            catch (NoSuchMethodException ex)
-            {
-                Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
-            }
-            catch (SecurityException ex)
-            {
-                Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
-            }
-            catch (IllegalAccessException ex)
-            {
-                Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
-            }
-            catch (IllegalArgumentException ex)
-            {
-                Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
-            }
-            catch (InvocationTargetException ex)
-            {
-                Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
-            }
-            catch (InstantiationException ex)
+            catch (Exception ex)
             {
                 Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
             }
         }
+        
         if (copy == null)
         {
             throw new FacesException("Cannot create copy for wholeBeanValidator: "+base.getClass().getName());
         }
+        
         return copy;
     }
     
@@ -325,8 +265,6 @@ public class WholeBeanValidator implements Validator
 
     }
 
-    // This boolean is used to make sure that the log isn't trashed with warnings.
-    private static volatile boolean firstValueReferenceWarning = true;
 
     /**
      * Get the ValueReference from the ValueExpression.
@@ -335,30 +273,12 @@ public class WholeBeanValidator implements Validator
      * @param context The FacesContext.
      * @return A ValueReferenceWrapper with the necessary information about the ValueReference.
      */
-    private _ValueReferenceWrapper getValueReference(
+    private ValueReference getValueReference(
             final ValueExpression valueExpression, final FacesContext context)
     {
         ELContext elCtx = context.getELContext();
-        _ValueReferenceWrapper wrapper = _BeanValidatorUELUtils.getUELValueReferenceWrapper(valueExpression, elCtx);
-        if (wrapper != null && wrapper.getProperty() == null)
-        {
-            // Fix for issue in Glassfish EL-impl-2.2.3
-            if (firstValueReferenceWarning && log.isLoggable(Level.WARNING))
-            {
-                firstValueReferenceWarning = false;
-                log.warning("ValueReference.getProperty() is null. " +
-                            "Falling back to classic ValueReference resolving. " +
-                            "This fallback may hurt performance. " +
-                            "This may be caused by a bug your EL implementation. " +
-                            "Glassfish EL-impl-2.2.3 is known for this issue. " +
-                            "Try switching to a different EL implementation.");
-            }
-            
-            // get base object and property name the "old-fashioned" way
-            return _ValueReferenceResolver.resolve(valueExpression, elCtx);
-        }
-
-        return wrapper;
+        
+        return _ValueReferenceResolver.resolve(valueExpression, elCtx);
     }
 
     /**
@@ -543,7 +463,6 @@ public class WholeBeanValidator implements Validator
             // Then a simple equals() check will do the trick to decide when to call
             // setValue and affect the model. If the base is the same than the value returned by
             // f:validateWholeBean, you are affecting to same instance.
-            // 
             
             ValueExpression valueExpression = target.getValueExpression("value");
             if (valueExpression == null)
@@ -554,12 +473,13 @@ public class WholeBeanValidator implements Validator
             }
 
             // Obtain a reference to the to-be-validated object and the property name.
-            _ValueReferenceWrapper reference = validator.getValueReference(
+            ValueReference reference = validator.getValueReference(
                     valueExpression, context.getFacesContext());
             if (reference == null)
             {
                 return VisitResult.ACCEPT;
             }
+            
             Object base = reference.getBase();
             if (base == null)
             {
@@ -574,13 +494,11 @@ public class WholeBeanValidator implements Validator
                 // can exit bean validation here
                 return VisitResult.ACCEPT;
             }
-            String valueProperty = (String) referenceProperty;
-            
+                        
             // If the base of the EL expression is the same to the base of the one in f:validateWholeBean
             if (base == this.wholeBeanBase || base.equals(this.wholeBeanBase))
             {
                 // Do the trick over ELResolver and apply it to the copy.
-                
                 ELContext elCtxDecorator = new _ELContextDecorator(context.getFacesContext().getELContext(),
                         new CopyBeanInterceptorELResolver(context.getFacesContext().getApplication().getELResolver(),
                             this.wholeBeanBase, this.wholeBeanBaseCopy));
@@ -588,6 +506,7 @@ public class WholeBeanValidator implements Validator
                 valueExpression.setValue(elCtxDecorator, candidateValuesMap.get(
                         target.getClientId(context.getFacesContext())));
             }
+            
             return VisitResult.ACCEPT;
         }
     }

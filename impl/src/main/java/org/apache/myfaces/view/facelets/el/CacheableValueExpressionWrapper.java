@@ -24,6 +24,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
+import javax.el.ValueReference;
 import javax.faces.FacesWrapper;
 
 /**
@@ -99,18 +100,27 @@ public class CacheableValueExpressionWrapper extends ValueExpression
         return delegate.isLiteralText();
     }
 
+    @Override
     public ValueExpression getWrapped()
     {
         return delegate;
     }
     
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         this.delegate = (ValueExpression) in.readObject();
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeObject(this.delegate);
+    }
+    
+    @Override
+    public ValueReference getValueReference(ELContext context)
+    {
+        return getWrapped().getValueReference(context);
     }
 }
