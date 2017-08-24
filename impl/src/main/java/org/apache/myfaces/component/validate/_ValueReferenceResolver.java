@@ -24,14 +24,10 @@ import javax.el.ValueExpression;
 import javax.el.ValueReference;
 import javax.faces.el.CompositeComponentExpressionHolder;
 
-/**
- * This class inspects the EL expression and returns a ValueReferenceWrapper
- * when Unified EL is not available.
- */
 final class _ValueReferenceResolver
 {
     /**
-     * This method can be used to extract the ValueReferenceWrapper from the given ValueExpression.
+     * This method can be used to extract the ValueReference from the given ValueExpression.
      *
      * @param valueExpression The ValueExpression to resolve.
      * @param elCtx The ELContext, needed to parse and execute the expression.

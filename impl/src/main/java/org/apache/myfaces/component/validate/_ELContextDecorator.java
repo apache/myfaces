@@ -57,41 +57,49 @@ final class _ELContextDecorator extends ELContext
     }
 
     // ############################ Standard delegating implementations ############################
+    @Override
     public FunctionMapper getFunctionMapper()
     {
         return ctx.getFunctionMapper();
     }
 
+    @Override
     public VariableMapper getVariableMapper()
     {
         return ctx.getVariableMapper();
     }
 
+    @Override
     public void setPropertyResolved(final boolean resolved)
     {
         ctx.setPropertyResolved(resolved);
     }
 
+    @Override
     public boolean isPropertyResolved()
     {
         return ctx.isPropertyResolved();
     }
 
+    @Override
     public void putContext(final Class key, Object contextObject)
     {
         ctx.putContext(key, contextObject);
     }
 
+    @Override
     public Object getContext(final Class key)
     {
         return ctx.getContext(key);
     }
 
+    @Override
     public Locale getLocale()
     {
         return ctx.getLocale();
     }
 
+    @Override
     public void setLocale(final Locale locale)
     {
         ctx.setLocale(locale);
