@@ -23,13 +23,14 @@ import java.util.Map;
 
 public class LRULinkedHashMap<K,V> extends LinkedHashMap<K,V>
 {
+    private static final float DEFAULT_LOAD_FACTOR = 0.75f;
     private final int capacity;
 
     public LRULinkedHashMap(int capacity)
     {
         // 1 extra element as add happens before remove (101), and load factor big
         // enough to avoid triggering resize.  True = keep in access order.
-        super(capacity + 1);
+        super(capacity + 1, DEFAULT_LOAD_FACTOR, true);
         this.capacity = capacity;
     }
 
