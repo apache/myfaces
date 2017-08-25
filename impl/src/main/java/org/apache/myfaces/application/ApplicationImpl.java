@@ -97,9 +97,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.myfaces.application.cdi.ConverterWrapper;
-import org.apache.myfaces.cdi.util.ExternalArtifactResolver;
-import org.apache.myfaces.application.cdi.ValidatorWrapper;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.cdi.behavior.FacesBehaviorCDIWrapper;
 import org.apache.myfaces.cdi.behavior.FacesClientBehaviorCDIWrapper;
@@ -137,7 +134,6 @@ import org.apache.myfaces.flow.FlowHandlerImpl;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
-import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.ELText;
 
@@ -265,8 +261,6 @@ public class ApplicationImpl extends Application
     /** Value of javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE parameter */
     private boolean _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = false; 
     
-    private final ExternalArtifactResolver _externalArtifactResolver;
-    
     private SearchExpressionHandler _searchExpressionHandler;
     
     private SearchKeywordResolver _searchExpressionResolver;
@@ -327,17 +321,6 @@ public class ApplicationImpl extends Application
         if (configParam != null && configParam.toLowerCase().equals("true"))
         {
             _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = true;
-        }
-        
-        if (ExternalSpecifications.isCDIAvailable(getFaceContext().getExternalContext()))
-        {
-            _externalArtifactResolver = (ExternalArtifactResolver) 
-                ClassUtils.newInstance(
-                    "org.apache.myfaces.cdi.util.CDIExternalArtifactResolver");
-        }
-        else
-        {
-            _externalArtifactResolver = null;
         }
     }
 
@@ -1665,17 +1648,7 @@ public class ApplicationImpl extends Application
     private Converter createConverterInstance(Class<? extends Converter> converterClass)
             throws InstantiationException, IllegalAccessException
     {
-        Converter result = _externalArtifactResolver != null ? 
-            _externalArtifactResolver.resolveManagedConverter(converterClass) : null;
-
-        if (result == null)
-        {
-            return converterClass.newInstance();
-        }
-        else
-        {
-            return new ConverterWrapper(result);
-        }
+        return converterClass.newInstance();
     }
 
     @Override
@@ -2202,17 +2175,7 @@ public class ApplicationImpl extends Application
     private Validator createValidatorInstance(Class<? extends Validator> validatorClass)
             throws InstantiationException, IllegalAccessException
     {
-        Validator result = _externalArtifactResolver != null ? 
-            _externalArtifactResolver.resolveManagedValidator(validatorClass) : null;
-
-        if (result == null)
-        {
-            return validatorClass.newInstance();
-        }
-        else
-        {
-            return new ValidatorWrapper(result);
-        }
+        return validatorClass.newInstance();
     }
 
     /**
