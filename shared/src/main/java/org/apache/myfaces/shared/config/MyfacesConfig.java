@@ -436,19 +436,6 @@ public class MyfacesConfig
     private static final String INIT_PARAM_EARLY_FLUSH_ENABLED =
         "org.apache.myfaces.EARLY_FLUSH_ENABLED";
     private static final boolean INIT_PARAM_EARLY_FLUSH_ENABLED_DEFAULT = false;
-
-    @JSFWebConfigParam(defaultValue = "false", since = "2.2.0", expectedValues="true, false", group="cdi",
-            tags="injection",
-            desc="Enable or disable CDI support for converters.")
-    private static final String INIT_PARAM_CDI_MANAGED_CONVERTERS_ENABLED =
-        "org.apache.myfaces.CDI_MANAGED_CONVERTERS_ENABLED";
-    private static final boolean INIT_PARAM_CDI_MANAGED_CONVERTERS_DEFAULT = false;
-    @JSFWebConfigParam(defaultValue = "false", since = "2.2.0", expectedValues="true, false", group="cdi",
-            tags="injection",
-            desc="Enable or disable CDI support for validators.")
-    private static final String INIT_PARAM_CDI_MANAGED_VALIDATORS_ENABLED =
-        "org.apache.myfaces.CDI_MANAGED_VALIDATORS_ENABLED";
-    private static final boolean INIT_PARAM_CDI_MANAGED_VALIDATORS_DEFAULT = false;
     
     /**
      * This param makes components like c:set, ui:param and templating components like ui:decorate,
@@ -582,8 +569,6 @@ public class MyfacesConfig
     private String _gaeJsfAnnotationsJarFiles;
     private boolean _strictJsf2ViewNotFound;
     private boolean _earlyFlushEnabled;
-    private boolean _cdiManagedConvertersEnabled;
-    private boolean _cdiManagedValidatorsEnabled;
     private boolean _strictJsf2FaceletsCompatibility;
     private boolean _renderFormViewStateAtBegin;
     private boolean _flashScopeDisabled;
@@ -694,8 +679,6 @@ public class MyfacesConfig
         setGaeJsfAnnotationsJarFiles(INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT);
         setStrictJsf2ViewNotFound(INIT_PARAM_STRICT_JSF_2_VIEW_NOT_FOUND_DEFAULT);
         setEarlyFlushEnabled(INIT_PARAM_EARLY_FLUSH_ENABLED_DEFAULT);
-        setCdiManagedConvertersEnabled(INIT_PARAM_CDI_MANAGED_CONVERTERS_DEFAULT);
-        setCdiManagedValidatorsEnabled(INIT_PARAM_CDI_MANAGED_VALIDATORS_DEFAULT);
         setStrictJsf2FaceletsCompatibility(INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT);
         setRenderFormViewStateAtBegin(INIT_PARAM_RENDER_FORM_VIEW_STATE_AT_BEGIN_DEFAULT);
         setFlashScopeDisabled(INIT_PARAM_FLASH_SCOPE_DISABLED_DEFAULT);
@@ -818,10 +801,6 @@ public class MyfacesConfig
         myfacesConfig.setEarlyFlushEnabled(WebConfigParamUtils.getBooleanInitParameter(extCtx,
                 INIT_PARAM_EARLY_FLUSH_ENABLED, INIT_PARAM_EARLY_FLUSH_ENABLED_DEFAULT));
 
-        myfacesConfig.setCdiManagedConvertersEnabled(WebConfigParamUtils.getBooleanInitParameter(extCtx,
-                INIT_PARAM_CDI_MANAGED_CONVERTERS_ENABLED, INIT_PARAM_CDI_MANAGED_CONVERTERS_DEFAULT));
-        myfacesConfig.setCdiManagedValidatorsEnabled(WebConfigParamUtils.getBooleanInitParameter(extCtx,
-                INIT_PARAM_CDI_MANAGED_VALIDATORS_ENABLED, INIT_PARAM_CDI_MANAGED_VALIDATORS_DEFAULT));
 
         myfacesConfig.setStrictJsf2FaceletsCompatibility(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
                 INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY, 
@@ -1439,26 +1418,6 @@ public class MyfacesConfig
     public void setEarlyFlushEnabled(boolean earlyFlushEnabled)
     {
         this._earlyFlushEnabled = earlyFlushEnabled;
-    }
-
-    public boolean isCdiManagedConvertersEnabled()
-    {
-        return _cdiManagedConvertersEnabled;
-    }
-
-    public void setCdiManagedConvertersEnabled(boolean cdiManagedConvertersEnabled)
-    {
-        this._cdiManagedConvertersEnabled = cdiManagedConvertersEnabled;
-    }
-
-    public boolean isCdiManagedValidatorsEnabled()
-    {
-        return _cdiManagedValidatorsEnabled;
-    }
-
-    public void setCdiManagedValidatorsEnabled(boolean cdiManagedValidatorsEnabled)
-    {
-        this._cdiManagedValidatorsEnabled = cdiManagedValidatorsEnabled;
     }
 
     public boolean isStrictJsf2FaceletsCompatibility()
