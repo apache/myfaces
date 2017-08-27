@@ -18,26 +18,17 @@
  */
 package javax.faces.component;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.faces.context.ExternalContext;
-
 /**
  * <p>
  * Package-private utility class for determining which specifications are available
  * in the current process. See JIRA issue: http://issues.apache.org/jira/browse/MYFACES-2386
+ * This is a stripped down version of: org.apache.myfaces.util.ExternalSpecifications
  * </p>
  * @since 2.0
  */
 final class _ExternalSpecifications
 {
-
-    //private static final Log log = LogFactory.getLog(BeanValidator.class);
-    private static final Logger log = Logger.getLogger(_ExternalSpecifications.class.getName());
-
     private static volatile Boolean beanValidationAvailable;
-    //private static volatile Boolean unifiedELAvailable;
-    private static volatile Boolean cdiAvailable;
 
     /**
      * This method determines if Bean Validation is present.
@@ -72,89 +63,16 @@ final class _ExternalSpecifications
                     }
                     catch (Throwable t)
                     {
-                        log.log(Level.FINE, "Error initializing Bean Validation (could be normal)", t);
                         beanValidationAvailable = false;
                     }
                 }
             }
             catch (Throwable t)
             {
-                log.log(Level.FINE, "Error loading class (could be normal)", t);
                 beanValidationAvailable = false;
             }
-
-            log.info("MyFaces Bean Validation support " + (beanValidationAvailable ? "enabled" : "disabled"));
         }
         return beanValidationAvailable;
-    }
-
-    /**
-     * This method determines if Unified EL is present.
-     *
-     * Eager initialization is used for performance. This means Unified EL binaries
-     * should not be added at runtime after this variable has been set.
-     * @return true if UEL is available, false otherwise.
-     */
-    /*
-    public static boolean isUnifiedELAvailable()
-    {
-        if (unifiedELAvailable == null)
-        {
-            try
-            {
-                // Check if the UEL classes are available.
-                // If the JSP EL classes are loaded first, UEL will not work
-                // properly, hence it will be disabled.
-                unifiedELAvailable = (
-                        Class.forName("javax.el.ValueReference") != null
-                     && Class.forName("javax.el.ValueExpression")
-                                .getMethod("getValueReference", ELContext.class) != null
-                );
-            }
-            catch (Throwable t)
-            {
-                log.log(Level.FINE, "Error loading class (could be normal)", t);
-                unifiedELAvailable = false;
-            }
-
-            log.info("MyFaces Unified EL support " + (unifiedELAvailable ? "enabled" : "disabled"));
-        }
-        return unifiedELAvailable;
-    }*/
-    
-    public static boolean isCDIAvailable(ExternalContext externalContext)
-    {
-        if (cdiAvailable == null)
-        {
-            try
-            {
-                cdiAvailable = Class.forName("javax.enterprise.inject.spi.BeanManager") != null;
-            }
-            catch (Throwable t)
-            {
-                //log.log(Level.FINE, "Error loading class (could be normal)", t);
-                cdiAvailable = false;
-            }
-            
-            if (cdiAvailable)
-            {
-                cdiAvailable = externalContext.getApplicationMap().containsKey(
-                    "oam.cdi.BEAN_MANAGER_INSTANCE");
-            }
-
-            log.info("MyFaces CDI support " + (cdiAvailable ? "enabled" : "disabled"));
-            
-            return cdiAvailable;
-        }
-        else
-        {
-            if (Boolean.TRUE.equals(cdiAvailable))
-            {
-                return externalContext.getApplicationMap().containsKey(
-                        "oam.cdi.BEAN_MANAGER_INSTANCE");
-            }
-            return cdiAvailable;
-        }        
     }
 
     /**
@@ -163,5 +81,4 @@ final class _ExternalSpecifications
     private _ExternalSpecifications()
     {
     }
-
 }
