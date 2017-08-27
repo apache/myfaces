@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,7 +39,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
 
-import org.apache.commons.collections.Predicate;
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.config.element.FaceletsTemplateMapping;
@@ -86,7 +86,7 @@ public class RuntimeConfig
     
     private Comparator<ELResolver> _elResolverComparator;
     
-    private Predicate _elResolverPredicate;
+    private Predicate<ELResolver> _elResolverPredicate;
 
     private final Map<String, org.apache.myfaces.config.element.Converter> _converterClassNameToConfigurationMap =
         new ConcurrentHashMap<String, org.apache.myfaces.config.element.Converter>();
@@ -434,12 +434,12 @@ public class RuntimeConfig
         _elResolverComparator = elResolverComparator;
     }
     
-    public Predicate getELResolverPredicate()
+    public Predicate<ELResolver> getELResolverPredicate()
     {
         return _elResolverPredicate;
     }
     
-    public void setELResolverPredicate(Predicate elResolverPredicate)
+    public void setELResolverPredicate(Predicate<ELResolver> elResolverPredicate)
     {
         _elResolverPredicate = elResolverPredicate;
     }

@@ -19,7 +19,9 @@
 package org.apache.myfaces.el.unified;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,8 +32,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.util.CDIUtils;
@@ -63,8 +63,8 @@ public class ResolverBuilderBase
     public static final String EL_RESOLVER_COMPARATOR = "org.apache.myfaces.EL_RESOLVER_COMPARATOR";
     
     @JSFWebConfigParam(since = "2.1.0", group="EL",
-        desc="The Class of an org.apache.commons.collections.Predicate&lt;ELResolver&gt; implementation."
-             + "If used and returns true for a ELResolver instance, such resolver will not be installed in "
+        desc="The Class of an java.util.function.Predicate&lt;ELResolver&gt; implementation."
+             + "If used and returns false for a ELResolver instance, such resolver will not be installed in "
              + "ELResolvers chain. Use with caution - can break functionality defined in JSF specification "
              + "'ELResolver Instances Provided by Faces'")
     public static final String EL_RESOLVER_PREDICATE = "org.apache.myfaces.EL_RESOLVER_PREDICATE";
@@ -187,14 +187,21 @@ public class ResolverBuilderBase
     protected Iterable<ELResolver> filterELResolvers(List<ELResolver> resolvers, Scope scope)
     {
         
-        Predicate predicate = _config.getELResolverPredicate();
+        Predicate<ELResolver> predicate = _config.getELResolverPredicate();
         if (predicate != null)
         {
             try
             {
                 // filter the resolvers
-                CollectionUtils.filter(resolvers, predicate);
-                
+                for (Iterator<ELResolver> iter = resolvers.iterator(); iter.hasNext();)
+                {
+                    ELResolver elResolver = iter.next();
+                    if (predicate.test(elResolver) == false)
+                    {
+                        iter.remove();
+                    }
+                }
+
                 if (log.isLoggable(Level.INFO))
                 {
                     log.log(Level.INFO, "Chain of EL resolvers for {0} filtered with: {1} and the result is {2}", 

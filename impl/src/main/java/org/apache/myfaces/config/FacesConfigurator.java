@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -76,7 +77,6 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.validator.BeanValidator;
 import javax.faces.webapp.FacesServlet;
 
-import org.apache.commons.collections.Predicate;
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.BackwardsCompatibleNavigationHandlerWrapper;
 import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
@@ -1093,26 +1093,23 @@ public class FacesConfigurator
             }
         }
 
-        String comparatorClass = _externalContext.getInitParameter(ResolverBuilderBase.EL_RESOLVER_COMPARATOR);
-
-        if (comparatorClass != null && !"".equals(comparatorClass))
+        String elResolverComparatorClass =
+                _externalContext.getInitParameter(ResolverBuilderBase.EL_RESOLVER_COMPARATOR);
+        if (elResolverComparatorClass != null && !elResolverComparatorClass.isEmpty())
         {
-            // get the comparator class
-            Class<Comparator<ELResolver>> clazz;
             try
             {
-                clazz = (Class<Comparator<ELResolver>>) ClassUtils.classForName(comparatorClass);
-                // create the instance
+                Class<Comparator<ELResolver>> clazz =
+                        (Class<Comparator<ELResolver>>) ClassUtils.classForName(elResolverComparatorClass);
                 Comparator<ELResolver> comparator = ClassUtils.newInstance(clazz);
-
                 runtimeConfig.setELResolverComparator(comparator);
             }
             catch (Exception e)
             {
                 if (log.isLoggable(Level.SEVERE))
                 {
-                    log.log(Level.SEVERE, "Cannot instantiate EL Resolver Comparator " + comparatorClass
-                            + " . Check org.apache.myfaces.EL_RESOLVER_COMPARATOR web config param. "
+                    log.log(Level.SEVERE, "Cannot instantiate EL Resolver Comparator " + elResolverComparatorClass
+                            + " . Check " + ResolverBuilderBase.EL_RESOLVER_COMPARATOR + " web config param. "
                             + "Initialization continues with no comparator used.", e);
                 }
             }
@@ -1123,25 +1120,33 @@ public class FacesConfigurator
         }
 
         String elResolverPredicateClass = _externalContext.getInitParameter(ResolverBuilderBase.EL_RESOLVER_PREDICATE);
-
-        if (elResolverPredicateClass != null && !"".equals(elResolverPredicateClass))
+        if (elResolverPredicateClass != null && !elResolverPredicateClass.isEmpty())
         {
-            // get the comparator class
-            Class<Predicate> clazz;
             try
             {
-                clazz = (Class<Predicate>) ClassUtils.classForName(elResolverPredicateClass);
-                // create the instance
-                Predicate elResolverPredicate = ClassUtils.newInstance(clazz);
-
-                runtimeConfig.setELResolverPredicate(elResolverPredicate);
+                Class<?> clazz = ClassUtils.classForName(elResolverPredicateClass);
+                Object elResolverPredicate = ClassUtils.newInstance(clazz);
+                if (elResolverPredicate instanceof Predicate)
+                {
+                    runtimeConfig.setELResolverPredicate((Predicate) elResolverPredicate);
+                }
+                else
+                {
+                    if (log.isLoggable(Level.SEVERE))
+                    {
+                        log.log(Level.SEVERE, "EL Resolver Predicate " + elResolverPredicateClass
+                                + " must implement " + Predicate.class.getName()
+                                + " . Check " + ResolverBuilderBase.EL_RESOLVER_PREDICATE + " web config param. "
+                                + "Initialization continues with no comparator used.");
+                    }
+                }
             }
             catch (Exception e)
             {
                 if (log.isLoggable(Level.SEVERE))
                 {
-                    log.log(Level.SEVERE, "Cannot instantiate EL Resolver Comparator " + comparatorClass
-                            + " . Check org.apache.myfaces.EL_RESOLVER_COMPARATOR web config param. "
+                    log.log(Level.SEVERE, "Cannot instantiate EL Resolver Predicate " + elResolverPredicateClass
+                            + " . Check " + ResolverBuilderBase.EL_RESOLVER_PREDICATE + " web config param. "
                             + "Initialization continues with no comparator used.", e);
                 }
             }
@@ -1171,7 +1176,7 @@ public class FacesConfigurator
             runtimeConfig.setClassLoaderResourceLibraryContracts(
                 rlcp.getClassloaderResourceLibraryContracts(_externalContext));
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             if (log.isLoggable(Level.SEVERE))
             {
