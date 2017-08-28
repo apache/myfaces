@@ -223,6 +223,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
 
             WebConfigParamsLogger.logWebContextParams(facesContext);
             
+            checkForDeprecatedContextParams(facesContext);
+            
             //Force output EL message
             ExternalSpecifications.isBeanValidationAvailable();
             
@@ -827,5 +829,26 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             }
         }
         return facesServletRegistration;
+    }
+    
+    protected void checkForDeprecatedContextParams(FacesContext facesContext)
+    {
+        ExternalContext externalContext = facesContext.getExternalContext();
+        
+        String value;
+        
+        value = externalContext.getInitParameter("org.apache.myfaces.CDI_MANAGED_CONVERTERS_ENABLED");
+        if (value != null && !value.isEmpty())
+        {
+            log.severe("'org.apache.myfaces.CDI_MANAGED_CONVERTERS_ENABLED' is not supported anymore since 2.3. "
+                    + "Please use @FacesConverter with managed=true.");
+        }
+        
+        value = externalContext.getInitParameter("org.apache.myfaces.CDI_MANAGED_VALIDATORS_ENABLED");
+        if (value != null && !value.isEmpty())
+        {
+            log.severe("'org.apache.myfaces.CDI_MANAGED_VALIDATORS_ENABLED' is not supported anymore since 2.3. "
+                    + "Please use @FacesValidator with managed=true.");
+        }
     }
 }
