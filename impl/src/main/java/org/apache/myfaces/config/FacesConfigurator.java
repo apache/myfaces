@@ -1137,7 +1137,7 @@ public class FacesConfigurator
                         log.log(Level.SEVERE, "EL Resolver Predicate " + elResolverPredicateClass
                                 + " must implement " + Predicate.class.getName()
                                 + " . Check " + ResolverBuilderBase.EL_RESOLVER_PREDICATE + " web config param. "
-                                + "Initialization continues with no comparator used.");
+                                + "Initialization continues with no predicate used.");
                     }
                 }
             }
@@ -1147,7 +1147,7 @@ public class FacesConfigurator
                 {
                     log.log(Level.SEVERE, "Cannot instantiate EL Resolver Predicate " + elResolverPredicateClass
                             + " . Check " + ResolverBuilderBase.EL_RESOLVER_PREDICATE + " web config param. "
-                            + "Initialization continues with no comparator used.", e);
+                            + "Initialization continues with no predicate used.", e);
                 }
             }
         }
