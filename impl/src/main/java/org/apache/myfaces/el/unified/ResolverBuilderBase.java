@@ -193,14 +193,7 @@ public class ResolverBuilderBase
             try
             {
                 // filter the resolvers
-                for (Iterator<ELResolver> iter = resolvers.iterator(); iter.hasNext();)
-                {
-                    ELResolver elResolver = iter.next();
-                    if (predicate.test(elResolver) == false)
-                    {
-                        iter.remove();
-                    }
-                }
+                resolvers.removeIf(elResolver -> !predicate.test(elResolver));
 
                 if (log.isLoggable(Level.INFO))
                 {
