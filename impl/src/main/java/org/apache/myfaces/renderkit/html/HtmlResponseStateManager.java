@@ -54,23 +54,6 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     private static final String CLIENT_WINDOW_COUNTER = "oam.partial.CLIENT_WINDOW_COUNTER";
     
     private static final String SESSION_TOKEN = "oam.rsm.SESSION_TOKEN";
-
-    /**
-     * Define if the state caching code should be handled by the ResponseStateManager or by the StateManager used.
-     * <p>
-     * This param is used to keep compatibility with previous state managers implementations depending from old myfaces
-     * way to deal with this. For example, JspStateManagerImpl requires this param set to false, but by default 
-     * it is set to true, to keep aligned with the Reference Implementation (RI). Note also the default StateManagerImpl
-     * requires this property set to true in order to work correctly, so if you set this param to false, please
-     * remember to add an entry into your faces-config.xml setting up JspStateManagerImpl as the state manager to use.
-     * </p> 
-     * @deprecated 
-     */
-    @Deprecated
-    @JSFWebConfigParam(since="2.0.6", expectedValues="true, false", defaultValue="true", group="state",
-        deprecated=true)
-    public static final String INIT_PARAM_HANDLE_STATE_CACHING_MECHANICS
-            = "org.apache.myfaces.HANDLE_STATE_CACHING_MECHANICS";
     
     /**
      * Add autocomplete="off" to the view state hidden field. Enabled by default.

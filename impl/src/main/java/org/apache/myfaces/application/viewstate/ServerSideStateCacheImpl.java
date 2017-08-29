@@ -111,16 +111,6 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> context parameter.
      */
     public static final boolean DEFAULT_SERIALIZE_STATE_IN_SESSION = false;
-
-    /**
-     * This parameter has been removed from 2.2.x version.
-     * 
-     * @deprecated removed because it has
-     */
-    @Deprecated
-    @JSFWebConfigParam(defaultValue="off", expectedValues="off, no, hard-soft, soft, soft-weak, weak",
-                       since="1.2.5", group="state", tags="performance", deprecated = true)
-    public static final String CACHE_OLD_VIEWS_IN_SESSION_MODE = "org.apache.myfaces.CACHE_OLD_VIEWS_IN_SESSION_MODE";
     
     /**
      * Allow use flash scope to keep track of the views used in session and the previous ones,

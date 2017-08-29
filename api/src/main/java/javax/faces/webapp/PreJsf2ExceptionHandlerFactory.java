@@ -36,8 +36,6 @@ import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.event.SystemEvent;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-
 /**
  * @since 2.0
  */
@@ -72,22 +70,6 @@ public class PreJsf2ExceptionHandlerFactory extends ExceptionHandlerFactory
          */
         
         private static final Logger log = Logger.getLogger(PreJsf2ExceptionHandlerImpl.class.getName());
-        
-        /**
-         * Since JSF 2.0 there is a standard way to deal with unexpected Exceptions: the ExceptionHandler.
-         * Due to backwards compatibility MyFaces 2.0 also supports the init parameter 
-         * org.apache.myfaces.ERROR_HANDLER, introduced in MyFaces 1.2.4. However, the given error handler
-         * now only needs to include the following method:
-         * <ul>
-         * <li>handleException(FacesContext fc, Exception ex)</li>
-         * </ul>
-         * Furthermore, the init parameter only works when using the PreJsf2ExceptionHandlerFactory.
-         * 
-         * @deprecated
-         */
-        @Deprecated
-        @JSFWebConfigParam(since="1.2.4",desc="Deprecated: use JSF 2.0 ExceptionHandler", deprecated=true)
-        private static final String ERROR_HANDLER_PARAMETER = "org.apache.myfaces.ERROR_HANDLER";
         
         private Queue<ExceptionQueuedEvent> handled;
         private Queue<ExceptionQueuedEvent> unhandled;

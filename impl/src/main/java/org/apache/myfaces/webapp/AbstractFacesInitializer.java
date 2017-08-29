@@ -850,5 +850,29 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             log.severe("'org.apache.myfaces.CDI_MANAGED_VALIDATORS_ENABLED' is not supported anymore since 2.3. "
                     + "Please use @FacesValidator with managed=true.");
         }
+        
+        value = externalContext.getInitParameter("org.apache.myfaces.SAVE_STATE_WITH_VISIT_TREE_ON_PSS");
+        if (value != null && !value.isEmpty())
+        {
+            log.severe("'org.apache.myfaces.SAVE_STATE_WITH_VISIT_TREE_ON_PSS' is not supported anymore since 2.3.");
+        }
+        
+        value = externalContext.getInitParameter("org.apache.myfaces.CACHE_OLD_VIEWS_IN_SESSION_MODE");
+        if (value != null && !value.isEmpty())
+        {
+            log.severe("'org.apache.myfaces.CACHE_OLD_VIEWS_IN_SESSION_MODE' is not supported anymore since 2.3.");
+        }
+        
+        value = externalContext.getInitParameter("org.apache.myfaces.HANDLE_STATE_CACHING_MECHANICS");
+        if (value != null && !value.isEmpty())
+        {
+            log.severe("'org.apache.myfaces.HANDLE_STATE_CACHING_MECHANICS' is not supported anymore since 2.3.");
+        }
+        
+        value = externalContext.getInitParameter("org.apache.myfaces.ERROR_HANDLER");
+        if (value != null && !value.isEmpty())
+        {
+            log.severe("'org.apache.myfaces.ERROR_HANDLER' is not supported anymore since 2.3.");
+        }
     }
 }

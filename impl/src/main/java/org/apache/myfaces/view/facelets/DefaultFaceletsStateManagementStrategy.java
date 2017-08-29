@@ -124,21 +124,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
      * been already processed.
      */
     public  static final String COMPONENT_ADDED_AFTER_BUILD_VIEW = "oam.COMPONENT_ADDED_AFTER_BUILD_VIEW"; 
-    
-    /**
-     * If this param is set to true (by default), when pss algorithm is executed to save state, a visit tree
-     * traversal is done, instead a plain traversal like previous versions (2.0.7/2.1.1 and earlier) of MyFaces Core.
-     * 
-     * This param is just provided to preserve backwards behavior. 
-     * @deprecated JSF 2.2 change enforces tree visiting as the preferred way. Performance tests shows that plain
-     * visit is faster but the difference is negligible.
-     */
-    @Deprecated
-    @JSFWebConfigParam(since="2.0.8, 2.1.2", defaultValue="true", expectedValues="true, false",
-                       group="state", tags="performance", deprecated=true)
-    public static final String SAVE_STATE_WITH_VISIT_TREE_ON_PSS
-            = "org.apache.myfaces.SAVE_STATE_WITH_VISIT_TREE_ON_PSS";
-    
+
     /**
      * Define how duplicate ids are checked when ProjectStage is Production, by default (auto) it only check ids of
      * components that does not encapsulate markup (like facelets UILeaf).
