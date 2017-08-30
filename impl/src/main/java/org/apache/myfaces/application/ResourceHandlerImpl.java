@@ -60,6 +60,7 @@ import java.util.stream.StreamSupport;
 import javax.faces.application.ResourceVisitOption;
 import javax.faces.application.ViewHandler;
 import javax.faces.view.ViewDeclarationLanguage;
+import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 import org.apache.myfaces.shared.resource.ContractResource;
 import org.apache.myfaces.shared.resource.ContractResourceLoader;
 import org.apache.myfaces.shared.resource.ResourceCachedInfo;
@@ -115,10 +116,10 @@ public class ResourceHandlerImpl extends ResourceHandler
     private Set<String> _viewSuffixes = null;
     
     private final static String MYFACES_JS_RESOURCE_NAME = "oamSubmit.js";
-    private final static String MYFACES_JS_RESOURCE_NAME_UNCOMPRESSED = "oamSubmit-uncompressed.js";
     public final static String RENDERED_RESOURCES_SET = "org.apache.myfaces.RENDERED_RESOURCES_SET";
     private final static String MYFACES_LIBRARY_NAME = "org.apache.myfaces";
-    private final static String RENDERED_MYFACES_JS = "org.apache.myfaces.RENDERED_MYFACES_JS";
+
+    private static final String SHARED_STRING_BUILDER = ResourceHandlerImpl.class.getName() + ".SHARED_STRING_BUILDER";
 
     @Override
     public Resource createResource(String resourceName)
@@ -1887,7 +1888,9 @@ public class ResourceHandlerImpl extends ResourceHandler
     public boolean isResourceRendered(FacesContext facesContext, String resourceName, String libraryName)
     {
         return getRenderedResources(facesContext).containsKey(
-                libraryName != null ? libraryName+'/'+resourceName : resourceName);
+                libraryName != null
+                        ? contactLibraryAndResource(facesContext, libraryName, resourceName)
+                        : resourceName);
     }
 
     /**
@@ -1900,14 +1903,19 @@ public class ResourceHandlerImpl extends ResourceHandler
     public void markResourceRendered(FacesContext facesContext, String resourceName, String libraryName)
     {
         getRenderedResources(facesContext).put(
-                libraryName != null ? libraryName+'/'+resourceName : resourceName, Boolean.TRUE);
+                libraryName != null
+                        ? contactLibraryAndResource(facesContext, libraryName, resourceName)
+                        : resourceName,
+                Boolean.TRUE);
+
         if (ResourceHandler.JSF_SCRIPT_LIBRARY_NAME.equals(libraryName) &&
             ResourceHandler.JSF_SCRIPT_RESOURCE_NAME.equals(resourceName))
         {
             // If we are calling this method, it is expected myfaces core is being used as runtime and note
             // oamSubmit script is included inside jsf.js, so mark this one too.
             getRenderedResources(facesContext).put(
-                    MYFACES_LIBRARY_NAME+'/'+MYFACES_JS_RESOURCE_NAME, Boolean.TRUE);
+                    contactLibraryAndResource(facesContext, MYFACES_LIBRARY_NAME, MYFACES_JS_RESOURCE_NAME),
+                    Boolean.TRUE);
         }
     }
     
@@ -1931,4 +1939,9 @@ public class ResourceHandlerImpl extends ResourceHandler
         return map;
     }
 
+    private static String contactLibraryAndResource(FacesContext facesContext, String libraryName, String resourceName)
+    {       
+        StringBuilder sb = SharedStringBuilder.get(facesContext, SHARED_STRING_BUILDER, 40);
+        return sb.append(libraryName).append('/').append(resourceName).toString();
+    }
 }
