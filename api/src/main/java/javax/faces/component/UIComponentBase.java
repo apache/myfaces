@@ -2460,7 +2460,7 @@ public abstract class UIComponentBase extends UIComponent
             {
                 throw new IllegalArgumentException("Subsequent characters of component identifier must be a letter, "
                                                    + "a digit, an underscore ('_'), or a dash ('-')! "
-                                                   + "But component identifier contains \""
+                                                   + "But component identifier \"" + string + "\" contains \""
                                                    + c + "\"");
             }
         }
