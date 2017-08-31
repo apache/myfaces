@@ -36,6 +36,7 @@ import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 
 public class HtmlFormRendererBase
         extends HtmlRenderer
@@ -50,6 +51,9 @@ public class HtmlFormRendererBase
 
     private static final String SCROLL_HIDDEN_INPUT = "org.apache.myfaces.SCROLL_HIDDEN_INPUT";
 
+    private static final String SHARED_STRING_BUILDER = HtmlFormRendererBase.class.getName() + ".SHARED_STRING_BUILDER";
+    
+    @Override
     public void encodeBegin(FacesContext facesContext, UIComponent component)
             throws IOException
     {
@@ -173,6 +177,7 @@ public class HtmlFormRendererBase
         return (String)form.getAttributes().get( JSFAttr.ACCEPTCHARSET_ATTR );
     }
 
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent component)
             throws IOException
     {
@@ -221,8 +226,9 @@ public class HtmlFormRendererBase
                 //write hidden input to determine "submitted" value on decode
         writer.startElement(HTML.INPUT_ELEM, null); // component);
         writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-        writer.writeAttribute(HTML.NAME_ATTR, component.getClientId(facesContext) +
-                                              HIDDEN_SUBMIT_INPUT_SUFFIX, null);
+        StringBuilder sb = SharedStringBuilder.get(facesContext, SHARED_STRING_BUILDER);
+        writer.writeAttribute(HTML.NAME_ATTR, sb.append(component.getClientId(facesContext)).
+                                              append(HIDDEN_SUBMIT_INPUT_SUFFIX).toString(), null);
         writer.writeAttribute(HTML.VALUE_ATTR, HIDDEN_SUBMIT_INPUT_VALUE, null);
         writer.endElement(HTML.INPUT_ELEM);
 
@@ -246,23 +252,25 @@ public class HtmlFormRendererBase
 
     private static String getHiddenCommandInputsSetName(FacesContext facesContext, UIComponent form)
     {
-        StringBuilder buf = new StringBuilder(HIDDEN_COMMAND_INPUTS_SET_ATTR.length()+20);
-        buf.append(HIDDEN_COMMAND_INPUTS_SET_ATTR);
-        buf.append("_");
-        buf.append(form.getClientId(facesContext));
-        return buf.toString();
+        StringBuilder sb = SharedStringBuilder.get(facesContext, SHARED_STRING_BUILDER,
+                HIDDEN_COMMAND_INPUTS_SET_ATTR.length() + 20);
+        sb.append(HIDDEN_COMMAND_INPUTS_SET_ATTR);
+        sb.append("_");
+        sb.append(form.getClientId(facesContext));
+        return sb.toString();
     }
 
     private static String getScrollHiddenInputName(FacesContext facesContext, UIComponent form)
     {
-        StringBuilder buf = new StringBuilder(SCROLL_HIDDEN_INPUT.length()+20);
-        buf.append(SCROLL_HIDDEN_INPUT);
-        buf.append("_");
-        buf.append(form.getClientId(facesContext));
-        return buf.toString();
+        StringBuilder sb = SharedStringBuilder.get(facesContext, SHARED_STRING_BUILDER,
+                SCROLL_HIDDEN_INPUT.length() + 20);
+        sb.append(SCROLL_HIDDEN_INPUT);
+        sb.append("_");
+        sb.append(form.getClientId(facesContext));
+        return sb.toString();
     }
 
-
+    @Override
     public void decode(FacesContext facesContext, UIComponent component)
     {
         org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, component, UIForm.class);
@@ -277,8 +285,11 @@ public class HtmlFormRendererBase
         UIForm htmlForm = (UIForm)component;
 
         Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
-        String submittedValue = (String)paramMap.get(component.getClientId(facesContext) +
-                                                     HIDDEN_SUBMIT_INPUT_SUFFIX);
+        // Perf: initialize StringBuilder to maximal lenght used in this renderer, render_response
+        // method will re-use it without capacity expanding 
+        StringBuilder sb = SharedStringBuilder.get(facesContext, SHARED_STRING_BUILDER, 100);
+        String submittedValue = (String) paramMap.get(
+                sb.append(component.getClientId(facesContext)).append(HIDDEN_SUBMIT_INPUT_SUFFIX));
         if (submittedValue != null && submittedValue.equals(HIDDEN_SUBMIT_INPUT_VALUE))
         {
             htmlForm.setSubmitted(true);
