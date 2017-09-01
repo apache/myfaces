@@ -5,6 +5,7 @@ org.apache.myfaces.cdi.dependent.DependentBeanExtension
 org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension
 org.apache.myfaces.push.cdi.PushContextCDIExtension
 org.apache.myfaces.cdi.faces.FacesScopeContextExtension
+org.apache.myfaces.cdi.viewtransient.ViewTransientScopeContextExtension
 org.apache.myfaces.cdi.bean.ManagedPropertyExtension
 org.apache.myfaces.cdi.converter.FacesConverterExtension
 org.apache.myfaces.cdi.validator.FacesValidatorExtension
