@@ -22,6 +22,7 @@ package org.apache.myfaces.cdi.faces;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.faces.annotation.FlowMap;
 import javax.faces.annotation.HeaderMap;
 import javax.faces.annotation.HeaderValuesMap;
 import javax.faces.annotation.RequestCookieMap;
@@ -147,9 +148,10 @@ public class FacesScopeObjectProducer
    
    
    /*
-   Don't use CDI for now as this results in bad performance.
-   Also @Inject UIComponent doesn't make sense.
-   See ImplicitObjectResolver#makeResolverForFacesCDI().
+   The spec actually forces us the use producers for "cc" and "component but it leads to a bad performance.
+   Also @Inject UIComponent doesn't make sense and wouldn't work correctly if we don't create a own "ComponentScoped"
+   or something.
+   We will still use ELResolvers for this - see ImplicitObjectResolver#makeResolverForFacesCDI().
    
    @Produces
    @Named("component")
@@ -167,5 +169,13 @@ public class FacesScopeObjectProducer
        return UIComponent.getCurrentCompositeComponent(FacesContext.getCurrentInstance());
    }
    */
-   
+
+   @Produces
+   @Named("flowScope")
+   @FlowMap
+   @ApplicationScoped
+   public Map<Object, Object> getFlowMap()
+   {
+      return FacesContext.getCurrentInstance().getApplication().getFlowHandler().getCurrentFlowScope();
+   }
 }
