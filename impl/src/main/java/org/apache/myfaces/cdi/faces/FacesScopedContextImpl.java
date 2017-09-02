@@ -45,12 +45,12 @@ public class FacesScopedContextImpl implements Context
         this.beanManager = beanManager;
     }
     
-    protected FacesScopeBeanHolder getFlowScopeBeanHolder()
+    protected FacesScopeBeanHolder getFacesScopeBeanHolder()
     {
-        return getFlowScopeBeanHolder(FacesContext.getCurrentInstance());
+        return getFacesScopeBeanHolder(FacesContext.getCurrentInstance());
     }
     
-    protected FacesScopeBeanHolder getFlowScopeBeanHolder(FacesContext facesContext)
+    protected FacesScopeBeanHolder getFacesScopeBeanHolder(FacesContext facesContext)
     {
         return new FacesScopeBeanHolder();
     }
@@ -70,19 +70,21 @@ public class FacesScopedContextImpl implements Context
 
         if (createIfNotExist)
         {
-            return getFlowScopeBeanHolder(facesContext).getContextualStorage(beanManager, facesContext);
+            return getFacesScopeBeanHolder(facesContext).getContextualStorage(beanManager, facesContext);
         }
         else
         {
-            return getFlowScopeBeanHolder(facesContext).getContextualStorageNoCreate(beanManager, facesContext);
+            return getFacesScopeBeanHolder(facesContext).getContextualStorageNoCreate(beanManager, facesContext);
         }
     }
 
+    @Override
     public Class<? extends Annotation> getScope()
     {
         return FacesScoped.class;
     }
 
+    @Override
     public boolean isActive()
     {
         return isActive(FacesContext.getCurrentInstance());
@@ -125,6 +127,7 @@ public class FacesScopedContextImpl implements Context
         return null;
     }
 
+    @Override
     public <T> T get(Contextual<T> bean, CreationalContext<T> creationalContext)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
