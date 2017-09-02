@@ -95,15 +95,17 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
         build(FacesContext.getCurrentInstance(), compositeElResolver);
     }
     
+    @Override
     public void build(FacesContext facesContext, CompositeELResolver compositeElResolver)
     {
         // add the ELResolvers to a List first to be able to sort them
-        List<ELResolver> list = new ArrayList<ELResolver>();
-        
+        List<ELResolver> list = new ArrayList<>();
+
+        // Add CDI ELResolver for JSF 2.3
         if (isReplaceImplicitObjectResolverWithCDIResolver(facesContext))
         {
-            //Add CDI ELResolver instead.
-            //Add CDI ELResolver instead.
+            list.add(ImplicitObjectResolver.makeResolverForFacesCDI());
+
             BeanManager beanManager = CDIUtils.getBeanManager(
                     FacesContext.getCurrentInstance().getExternalContext());
             list.add(beanManager.getELResolver());

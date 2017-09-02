@@ -44,7 +44,7 @@ public class ImplicitObjectResolver extends ELResolver
      */
     public static ELResolver makeResolverForJSP()
     {
-        Map<String, ImplicitObject> forJSPList = new HashMap<String, ImplicitObject>(8);//4
+        Map<String, ImplicitObject> forJSPList = new HashMap<>(8); //4
         ImplicitObject io1 = new FacesContextImplicitObject();
         forJSPList.put(io1.getName(), io1);
         ImplicitObject io2 = new ViewImplicitObject();
@@ -61,7 +61,7 @@ public class ImplicitObjectResolver extends ELResolver
      */
     public static ELResolver makeResolverForFaces()
     {
-        Map<String, ImplicitObject> forFacesList = new HashMap<String, ImplicitObject>(30);//14
+        Map<String, ImplicitObject> forFacesList = new HashMap<>(30); //19
         ImplicitObject io1 = new ApplicationImplicitObject();
         forFacesList.put(io1.getName(), io1);
         ImplicitObject io2 = new ApplicationScopeImplicitObject();
@@ -102,11 +102,25 @@ public class ImplicitObjectResolver extends ELResolver
         forFacesList.put(io19.getName(), io19);
         return new ImplicitObjectResolver(forFacesList);
     }
+    
+    public static ELResolver makeResolverForFacesCDI()
+    {
+        Map<String, ImplicitObject> forFacesCDIList = new HashMap<>(4); //2
+        ImplicitObject io;
+        
+        io = new ComponentImplicitObject();
+        forFacesCDIList.put(io.getName(), io);
+        
+        io = new CompositeComponentImplicitObject();
+        forFacesCDIList.put(io.getName(), io);
+        
+        return new ImplicitObjectResolver(forFacesCDIList);
+    }
 
     private ImplicitObjectResolver()
     {
         super();
-        this.implicitObjects = new HashMap<String, ImplicitObject>();
+        this.implicitObjects = new HashMap<>();
     }
 
     /** Creates a new instance of ImplicitObjectResolverForJSP */
@@ -237,7 +251,7 @@ public class ImplicitObjectResolver extends ELResolver
             return null;
         }
 
-        ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>(implicitObjects.size());
+        ArrayList<FeatureDescriptor> descriptors = new ArrayList<>(implicitObjects.size());
 
         for (ImplicitObject obj : implicitObjects.values())
         {

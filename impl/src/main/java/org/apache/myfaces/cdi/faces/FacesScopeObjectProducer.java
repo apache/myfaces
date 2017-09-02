@@ -29,7 +29,6 @@ import javax.faces.annotation.RequestMap;
 import javax.faces.annotation.RequestParameterMap;
 import javax.faces.annotation.RequestParameterValuesMap;
 import javax.faces.annotation.SessionMap;
-import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -146,9 +145,15 @@ public class FacesScopeObjectProducer
        return FacesContext.getCurrentInstance().getExternalContext().getSession(false);
    }
    
+   
+   /*
+   Don't use CDI for now as this results in bad performance.
+   Also @Inject UIComponent doesn't make sense.
+   See ImplicitObjectResolver#makeResolverForFacesCDI().
+   
    @Produces
    @Named("component")
-   @FacesScoped
+   @Dependent
    public UIComponent getComponent() 
    {
        return UIComponent.getCurrentComponent(FacesContext.getCurrentInstance());
@@ -156,10 +161,11 @@ public class FacesScopeObjectProducer
    
    @Produces
    @Named("cc")
-   @FacesScoped
+   @Dependent
    public UIComponent getCompositeComponent() 
    {
        return UIComponent.getCurrentCompositeComponent(FacesContext.getCurrentInstance());
    }
+   */
    
 }
