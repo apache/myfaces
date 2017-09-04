@@ -98,6 +98,9 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
     @Override
     public void build(FacesContext facesContext, CompositeELResolver compositeElResolver)
     {
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance(
+                     FacesContext.getCurrentInstance().getExternalContext());
+        
         // add the ELResolvers to a List first to be able to sort them
         List<ELResolver> list = new ArrayList<>();
 
@@ -122,7 +125,10 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
         //Flash object is instanceof Map, so it is necessary to resolve
         //before MapELResolver. Better to put this one before
         list.add(new FlashELResolver());
-        list.add(new ManagedBeanResolver());
+        if (config.isSupportManagedBeans())
+        {
+            list.add(new ManagedBeanResolver());
+        }
         list.add(new ResourceResolver());
         list.add(new ResourceBundleELResolver());
         list.add(new ResourceBundleResolver());
@@ -175,8 +181,7 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
         }
         
         // Only add this resolver if the user wants to use the EL ImportHandler
-        if (MyfacesConfig.getCurrentInstance(
-             FacesContext.getCurrentInstance().getExternalContext()).isSupportEL3ImportHandler())
+        if (config.isSupportEL3ImportHandler())
         {
             compositeElResolver.add(new ImportHandlerResolver());
         }
