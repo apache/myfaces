@@ -388,6 +388,13 @@ public class MyfacesConfig
     public final static String INIT_PARAM_SUPPORT_JSP_AND_FACES_EL = "org.apache.myfaces.SUPPORT_JSP_AND_FACES_EL";
     public final static boolean INIT_PARAM_SUPPORT_JSP_AND_FACES_EL_DEFAULT = true;
     
+    @JSFWebConfigParam(since = "2.3", expectedValues="true,false", defaultValue="true",
+         desc="If set false, myfaces won't support ManagedBeans anymore. ManagedBeans are deprecated in " +
+         "JSF 2.3, Default value is true.",
+         group="EL", tags="performance ")
+    public static final String INIT_PARAM_SUPPORT_MANAGED_BEANS = "org.apache.myfaces.SUPPORT_MANAGED_BEANS";
+    public final static boolean INIT_PARAM_SUPPORT_MANAGED_BEANS_DEFAULT = true;
+    
     /**
      * When the application runs inside Google Application Engine container (GAE),
      * indicate which jar files should be scanned for files (faces-config, facelets taglib
@@ -565,6 +572,7 @@ public class MyfacesConfig
     private boolean _viewUniqueIdsCacheEnabled;
     private int _componentUniqueIdsCacheSize;
     private boolean _supportJSPAndFacesEL;
+    private boolean _supportManagedBeans;
     private String _gaeJsfJarFiles;
     private String _gaeJsfAnnotationsJarFiles;
     private boolean _strictJsf2ViewNotFound;
@@ -675,6 +683,7 @@ public class MyfacesConfig
         setViewUniqueIdsCacheEnabled(INIT_PARAM_VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT);
         setComponentUniqueIdsCacheSize(INIT_PARAM_COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT);
         setSupportJSPAndFacesEL(INIT_PARAM_SUPPORT_JSP_AND_FACES_EL_DEFAULT);
+        setSupportManagedBeans(INIT_PARAM_SUPPORT_MANAGED_BEANS_DEFAULT);
         setGaeJsfJarFiles(INIT_PARAM_GAE_JSF_JAR_FILES_DEFAULT);
         setGaeJsfAnnotationsJarFiles(INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT);
         setStrictJsf2ViewNotFound(INIT_PARAM_STRICT_JSF_2_VIEW_NOT_FOUND_DEFAULT);
@@ -789,6 +798,9 @@ public class MyfacesConfig
                 INIT_PARAM_COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT));
         myfacesConfig.setSupportJSPAndFacesEL(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
                 INIT_PARAM_SUPPORT_JSP_AND_FACES_EL, INIT_PARAM_SUPPORT_JSP_AND_FACES_EL_DEFAULT));
+        
+        myfacesConfig.setSupportManagedBeans(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
+                INIT_PARAM_SUPPORT_MANAGED_BEANS, INIT_PARAM_SUPPORT_MANAGED_BEANS_DEFAULT));
         
         myfacesConfig.setGaeJsfJarFiles(WebConfigParamUtils.getStringInitParameter(extCtx, 
                 INIT_PARAM_GAE_JSF_JAR_FILES, INIT_PARAM_GAE_JSF_JAR_FILES_DEFAULT));
@@ -1364,12 +1376,21 @@ public class MyfacesConfig
         return _supportJSPAndFacesEL;
     }
 
-    public void setSupportJSPAndFacesEL(
-            boolean supportJSPANDFacesEL)
+    public void setSupportJSPAndFacesEL(boolean supportJSPANDFacesEL)
     {
         _supportJSPAndFacesEL = supportJSPANDFacesEL;
     }
 
+    public boolean isSupportManagedBeans()
+    {
+        return _supportManagedBeans;
+    }
+
+    public void setSupportManagedBeans(boolean supportManagedBeans)
+    {
+        _supportManagedBeans = supportManagedBeans;
+    }
+    
     public int getComponentUniqueIdsCacheSize()
     {
         return _componentUniqueIdsCacheSize;

@@ -23,22 +23,11 @@ import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.myfaces.shared.util.ClassUtils;
 
 import javax.faces.FactoryFinder;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextAttributeEvent;
-import javax.servlet.ServletContextAttributeListener;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.servlet.ServletRequestAttributeEvent;
-import javax.servlet.ServletRequestAttributeListener;
-import javax.servlet.ServletRequestEvent;
-import javax.servlet.ServletRequestListener;
-import javax.servlet.http.HttpSessionAttributeListener;
-import javax.servlet.http.HttpSessionBindingEvent;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -46,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -69,10 +57,7 @@ import java.util.logging.Logger;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class StartupServletContextListener implements ServletContextListener,
-        HttpSessionAttributeListener, HttpSessionListener,
-        ServletRequestListener, ServletRequestAttributeListener,
-        ServletContextAttributeListener
+public class StartupServletContextListener implements ServletContextListener
 {
     static final String FACES_INIT_DONE = "org.apache.myfaces.webapp.StartupServletContextListener.FACES_INIT_DONE";
 
@@ -87,13 +72,12 @@ public class StartupServletContextListener implements ServletContextListener,
     private static final byte FACES_INIT_PHASE_PREDESTROY = 2;
     private static final byte FACES_INIT_PHASE_POSTDESTROY = 3;
 
-    //private static final Log log = LogFactory.getLog(StartupServletContextListener.class);
     private static final Logger log = Logger.getLogger(StartupServletContextListener.class.getName());
 
     private FacesInitializer _facesInitializer;
     private ServletContext _servletContext;
-    private ManagedBeanDestroyerListener _detroyerListener = new ManagedBeanDestroyerListener();
 
+    @Override
     public void contextInitialized(ServletContextEvent event)
     {
         if (_servletContext != null)
@@ -115,16 +99,10 @@ public class StartupServletContextListener implements ServletContextListener,
             // Create startup FacesContext before initializing
             FacesContext facesContext = _facesInitializer.initStartupFacesContext(_servletContext);
 
-            // publish the ManagedBeanDestroyerListener instance in the application map
-            _publishManagedBeanDestroyerListener(facesContext);
-
             dispatchInitializationEvent(event, FACES_INIT_PHASE_PREINIT);
             _facesInitializer.initFaces(_servletContext);
             dispatchInitializationEvent(event, FACES_INIT_PHASE_POSTINIT);
             _servletContext.setAttribute(FACES_INIT_DONE, Boolean.TRUE);
-
-            // call contextInitialized on ManagedBeanDestroyerListener
-            _detroyerListener.contextInitialized(event);
 
             //Destroy startup FacesContext
             _facesInitializer.destroyStartupFacesContext(facesContext);
@@ -139,21 +117,7 @@ public class StartupServletContextListener implements ServletContextListener,
         }
     }
 
-    /**
-     * Publishes the ManagedBeanDestroyerListener instance in the application map.
-     * This allows the FacesConfigurator to access the instance and to set the
-     * correct ManagedBeanDestroyer instance on it.
-     *
-     * @param facesContext
-     */
-    private void _publishManagedBeanDestroyerListener(FacesContext facesContext)
-    {
-        ExternalContext externalContext = facesContext.getExternalContext();
-        Map<String, Object> applicationMap = externalContext.getApplicationMap();
-
-        applicationMap.put(ManagedBeanDestroyerListener.APPLICATION_MAP_KEY, _detroyerListener);
-    }
-
+    @Override
     public void contextDestroyed(ServletContextEvent event)
     {
         if (_facesInitializer != null && _servletContext != null)
@@ -162,8 +126,6 @@ public class StartupServletContextListener implements ServletContextListener,
             FacesContext facesContext = _facesInitializer.initShutdownFacesContext(_servletContext);
 
             dispatchInitializationEvent(event, FACES_INIT_PHASE_PREDESTROY);
-            // call contextDestroyed on ManagedBeanDestroyerListener to destroy the attributes
-            _detroyerListener.contextDestroyed(event);
 
             _facesInitializer.destroyFaces(_servletContext);
 
@@ -210,15 +172,16 @@ public class StartupServletContextListener implements ServletContextListener,
      * @return false in case of a failed attempt or no listeners found
      *         which then will cause the jdk5 context.xml code to trigger
      */
-    private boolean loadFacesInitPluginsJDK6()
+    private boolean loadFacesInitPluginsViaServiceLoader()
     {
-        String[] pluginEntries = null;
         try
         {
             Class serviceLoader = ClassUtils.getContextClassLoader().loadClass("java.util.ServiceLoader");
             Method m = serviceLoader.getDeclaredMethod("load", Class.class, ClassLoader.class);
+            
             Object loader = m.invoke(serviceLoader, StartupListener.class, ClassUtils.getContextClassLoader());
             m = loader.getClass().getDeclaredMethod("iterator");
+            
             Iterator<StartupListener> it = (Iterator<StartupListener>) m.invoke(loader);
             List<StartupListener> listeners = new LinkedList<StartupListener>();
             if (!it.hasNext())
@@ -229,7 +192,7 @@ public class StartupServletContextListener implements ServletContextListener,
             {
                 listeners.add(it.next());
             }
-            //StartupListener[] listeners1 = listeners.toArray(new StartupListener[listeners.size()]);
+
             _servletContext.setAttribute(FACES_INIT_PLUGINS, listeners);
             return true;
         }
@@ -253,18 +216,17 @@ public class StartupServletContextListener implements ServletContextListener,
     }
 
     /**
-     * loads the faces init plugins per reflection and Service loader
-     * in a jdk6 environment
+     * loads the faces init plugins per reflection from the context param.
      */
-    private void loadFacesInitPluginsJDK5()
+    private void loadFacesInitViaContextParam()
     {
-
         String plugins = (String) _servletContext.getInitParameter(FACES_INIT_PLUGINS);
         if (plugins == null)
         {
             return;
         }
         log.info("MyFaces Plugins found");
+        
         String[] pluginEntries = plugins.split(",");
         List<StartupListener> listeners = new ArrayList<StartupListener>(pluginEntries.length);
         for (String pluginEntry : pluginEntries)
@@ -292,7 +254,7 @@ public class StartupServletContextListener implements ServletContextListener,
                 log.log(Level.SEVERE, e.getMessage(), e);
             }
         }
-        // StartupListener[] listeners1 = listeners.toArray(new StartupListener[listeners.size()]);
+
         _servletContext.setAttribute(FACES_INIT_PLUGINS, listeners);
 
     }
@@ -306,12 +268,11 @@ public class StartupServletContextListener implements ServletContextListener,
      */
     private void dispatchInitializationEvent(ServletContextEvent event, int operation)
     {
-
         if (operation == FACES_INIT_PHASE_PREINIT)
         {
-            if (!loadFacesInitPluginsJDK6())
+            if (!loadFacesInitPluginsViaServiceLoader())
             {
-                loadFacesInitPluginsJDK5();
+                loadFacesInitViaContextParam();
             }
         }
 
@@ -347,77 +308,4 @@ public class StartupServletContextListener implements ServletContextListener,
         }
         log.info("Processing MyFaces plugins done");
     }
-
-    /* the following methods are needed to serve ManagedBeanDestroyerListener */
-    /* Session related methods ***********************************************/
-
-    public void attributeAdded(HttpSessionBindingEvent event)
-    {
-        _detroyerListener.attributeAdded(event);
-    }
-
-    public void attributeRemoved(HttpSessionBindingEvent event)
-    {
-        _detroyerListener.attributeRemoved(event);
-    }
-
-    public void attributeReplaced(HttpSessionBindingEvent event)
-    {
-        _detroyerListener.attributeReplaced(event);
-    }
-
-    public void sessionCreated(HttpSessionEvent event)
-    {
-        _detroyerListener.sessionCreated(event);
-    }
-
-    public void sessionDestroyed(HttpSessionEvent event)
-    {
-        _detroyerListener.sessionDestroyed(event);
-    }
-
-    /* Context related methods ***********************************************/
-
-    public void attributeAdded(ServletContextAttributeEvent event)
-    {
-        _detroyerListener.attributeAdded(event);
-    }
-
-    public void attributeRemoved(ServletContextAttributeEvent event)
-    {
-        _detroyerListener.attributeRemoved(event);
-    }
-
-    public void attributeReplaced(ServletContextAttributeEvent event)
-    {
-        _detroyerListener.attributeReplaced(event);
-    }
-
-    /* Request related methods ***********************************************/
-
-    public void attributeAdded(ServletRequestAttributeEvent event)
-    {
-        _detroyerListener.attributeAdded(event);
-    }
-
-    public void attributeRemoved(ServletRequestAttributeEvent event)
-    {
-        _detroyerListener.attributeRemoved(event);
-    }
-
-    public void attributeReplaced(ServletRequestAttributeEvent event)
-    {
-        _detroyerListener.attributeReplaced(event);
-    }
-
-    public void requestInitialized(ServletRequestEvent event)
-    {
-        _detroyerListener.requestInitialized(event);
-    }
-
-    public void requestDestroyed(ServletRequestEvent event)
-    {
-        _detroyerListener.requestDestroyed(event);
-    }
-
 }

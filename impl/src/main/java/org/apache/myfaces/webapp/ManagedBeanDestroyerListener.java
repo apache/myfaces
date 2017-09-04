@@ -62,17 +62,42 @@ public class ManagedBeanDestroyerListener implements
         ServletContextListener, ServletContextAttributeListener,
         ServletRequestListener, ServletRequestAttributeListener
 {
-
     /**
-     * The instance of the ManagedBeanDestroyerListener created by
-     * StartupServletContextListener is stored under this key in the
-     * ApplicationMap.
+     * The instance of the ManagedBeanDestroyerListener created by StartupServletContextListener
+     * is stored under this key in the ApplicationMap.
      */
-    public static final String APPLICATION_MAP_KEY = "org.apache.myfaces.ManagedBeanDestroyerListener";
+    public static final String APPLICATION_MAP_KEY = ManagedBeanDestroyerListener.class.getName();
 
     private ManagedBeanDestroyer _destroyer = null;
-    
     private ViewScopeProvider _viewScopeHandler = null;
+    
+    @Override
+    public void contextInitialized(ServletContextEvent event)
+    {
+
+    }
+    
+    @Override
+    public void contextDestroyed(ServletContextEvent event)
+    {
+        if (_destroyer != null)
+        {
+            ServletContext ctx = event.getServletContext();
+            Enumeration<String> attributes = ctx.getAttributeNames();
+            if (!attributes.hasMoreElements())
+            {
+                // nothing to do
+                return;
+            }
+
+            while (attributes.hasMoreElements())
+            {
+                String name = attributes.nextElement();
+                Object value = ctx.getAttribute(name);
+                _destroyer.destroy(name, value);
+            }
+        }
+    }
 
     /**
      * Sets the ManagedBeanDestroyer instance to use.
@@ -90,12 +115,13 @@ public class ManagedBeanDestroyerListener implements
     }
 
     /* Session related methods ***********************************************/
-    
+    @Override
     public void attributeAdded(HttpSessionBindingEvent event)
     {
         // noop
     }
 
+    @Override
     public void attributeRemoved(HttpSessionBindingEvent event)
     {
         if (_destroyer != null)
@@ -104,6 +130,7 @@ public class ManagedBeanDestroyerListener implements
         }
     }
 
+    @Override
     public void attributeReplaced(HttpSessionBindingEvent event)
     {
         if (_destroyer != null)
@@ -112,12 +139,13 @@ public class ManagedBeanDestroyerListener implements
         }
     }
 
+    @Override
     public void sessionCreated(HttpSessionEvent event)
     {
         // noop
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
     public void sessionDestroyed(HttpSessionEvent event)
     {
         // MYFACES-3040 @PreDestroy Has Called 2 times
@@ -180,12 +208,13 @@ public class ManagedBeanDestroyerListener implements
     }
     
     /* Context related methods ***********************************************/
-    
+    @Override
     public void attributeAdded(ServletContextAttributeEvent event)
     {
         // noop
     }
 
+    @Override
     public void attributeRemoved(ServletContextAttributeEvent event)
     {
         if (_destroyer != null)
@@ -194,6 +223,7 @@ public class ManagedBeanDestroyerListener implements
         }
     }
 
+    @Override
     public void attributeReplaced(ServletContextAttributeEvent event)
     {
         if (_destroyer != null)
@@ -201,41 +231,15 @@ public class ManagedBeanDestroyerListener implements
             _destroyer.destroy(event.getName(), event.getValue());
         }
     }
-
-    public void contextInitialized(ServletContextEvent event)
-    {
-        // noop
-    }
-    
-    @SuppressWarnings("unchecked")
-    public void contextDestroyed(ServletContextEvent event)
-    {
-        if (_destroyer != null)
-        {
-            ServletContext ctx = event.getServletContext();
-            Enumeration<String> attributes = ctx.getAttributeNames();
-            if (!attributes.hasMoreElements())
-            {
-                // nothing to do
-                return;
-            }
-
-            while (attributes.hasMoreElements())
-            {
-                String name = attributes.nextElement();
-                Object value = ctx.getAttribute(name);
-                _destroyer.destroy(name, value);
-            }
-        }
-    }
     
     /* Request related methods ***********************************************/
-    
+    @Override
     public void attributeAdded(ServletRequestAttributeEvent event)
     {
         // noop
     }
 
+    @Override
     public void attributeRemoved(ServletRequestAttributeEvent event)
     {
         if (_destroyer != null)
@@ -244,6 +248,7 @@ public class ManagedBeanDestroyerListener implements
         }
     }
 
+    @Override
     public void attributeReplaced(ServletRequestAttributeEvent event)
     {
         if (_destroyer != null)
@@ -252,12 +257,13 @@ public class ManagedBeanDestroyerListener implements
         }
     }
 
+    @Override
     public void requestInitialized(ServletRequestEvent event)
     {
         // noop
     }
     
-    @SuppressWarnings("unchecked")
+    @Override
     public void requestDestroyed(ServletRequestEvent event)
     {
         if (_destroyer != null)

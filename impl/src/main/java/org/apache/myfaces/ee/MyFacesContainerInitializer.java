@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.ee6;
+package org.apache.myfaces.ee;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -63,9 +63,11 @@ import javax.servlet.annotation.HandlesTypes;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet;
 import org.apache.myfaces.spi.FacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
+import org.apache.myfaces.webapp.ManagedBeanDestroyerListener;
 
 /**
  * This class is called by any Java EE 6 complaint container at startup.
@@ -135,10 +137,27 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
     private static final Class<? extends Servlet> FACES_SERVLET_CLASS = FacesServlet.class;
     private static final Class<?> DELEGATED_FACES_SERVLET_CLASS = DelegatedFacesServlet.class;
 
+    @Override
     public void onStartup(Set<Class<?>> clazzes, ServletContext servletContext) throws ServletException
     {
-        boolean startDireclty = shouldStartupRegardless(servletContext);
+        log.log(Level.INFO, "Using " + MyFacesContainerInitializer.class.getName());
+        
+        // No MyfacesConfig available yet, we must read the parameter directly:
+        String supportManagedBeans =
+                servletContext.getInitParameter(MyfacesConfig.INIT_PARAM_SUPPORT_MANAGED_BEANS);
+        if (supportManagedBeans == null || Boolean.TRUE.toString().equals(supportManagedBeans))
+        {
+            ManagedBeanDestroyerListener destroyListener = new ManagedBeanDestroyerListener();
+            servletContext.addListener(destroyListener);
 
+            // Publishes the ManagedBeanDestroyerListener instance into the servletContext.
+            // This allows the FacesConfigurator to access the instance and to set the
+            // correct ManagedBeanDestroyer instance on it.
+            // in < 2.3 it the ExternalContext#applicationMap was used but we have no access here
+            servletContext.setAttribute(ManagedBeanDestroyerListener.APPLICATION_MAP_KEY, destroyListener);
+        }
+
+        boolean startDireclty = shouldStartupRegardless(servletContext);
         if (startDireclty)
         {
             // if the INITIALIZE_ALWAYS_STANDALONE param was set to true,
@@ -198,7 +217,6 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
                 log.log(Level.INFO, "Added FacesServlet with mappings="
                         + Arrays.toString(mappings));
             }
-
         }
     }
 

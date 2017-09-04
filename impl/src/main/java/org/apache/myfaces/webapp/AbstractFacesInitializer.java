@@ -198,8 +198,10 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             ManagedBeanDestroyerListener listener = (ManagedBeanDestroyerListener)
                 externalContext.getApplicationMap().get(
                     ManagedBeanDestroyerListener.APPLICATION_MAP_KEY);
-            
-            listener.setViewScopeHandler(viewScopeHandler);
+            if (listener != null)
+            {
+                listener.setViewScopeHandler(viewScopeHandler);
+            }
 
             String useEncryption = servletContext.getInitParameter(StateUtils.USE_ENCRYPTION);
             if (!"false".equals(useEncryption)) // the default value is true

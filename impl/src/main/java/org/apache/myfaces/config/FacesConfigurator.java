@@ -1526,9 +1526,12 @@ public class FacesConfigurator
         }
         else
         {
-            log.log(Level.SEVERE, "No ManagedBeanDestroyerListener instance found, thus "
-                    + "@PreDestroy methods won't get called in every case. "
-                    + "This instance needs to be published before configuration is started.");
+            if (MyfacesConfig.getCurrentInstance(externalContext).isSupportManagedBeans())
+            {
+                log.log(Level.SEVERE, "No ManagedBeanDestroyerListener instance found, thus "
+                        + "@PreDestroy methods won't get called in every case. "
+                        + "This instance needs to be published before configuration is started.");
+            }
         }
     }
     
