@@ -480,8 +480,7 @@
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-atinject_1.0_spec</artifactId>
                 <version>1.0</version>
-                <scope>compile</scope>
-                <optional>true</optional>
+                <scope>provided</scope>
             </dependency>
 
             <!-- JSR356 Websockets -->
@@ -489,8 +488,7 @@
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-websocket-api</artifactId>
                 <version>7.0.78</version>
-                <scope>compile</scope>
-                <optional>true</optional>
+                <scope>provided</scope>
             </dependency>
             
             <!-- UTILITY DEPENDENCIES -->
