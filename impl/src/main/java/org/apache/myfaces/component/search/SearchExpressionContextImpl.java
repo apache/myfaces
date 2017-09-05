@@ -26,17 +26,12 @@ import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.component.visit.VisitHint;
 import javax.faces.context.FacesContext;
 
-/**
- *
- */
 public class SearchExpressionContextImpl extends SearchExpressionContext
 {
     private final FacesContext facesContext;
-    
-    private UIComponent source;
 
+    private UIComponent source;
     private Set<VisitHint> visitHints;
-    
     private Set<SearchExpressionHint> expressionHints;
     
     public SearchExpressionContextImpl(FacesContext facesContext)
@@ -44,60 +39,42 @@ public class SearchExpressionContextImpl extends SearchExpressionContext
         this.facesContext = facesContext;
     }
 
-    /**
-     * @return the source
-     */
+    @Override
     public UIComponent getSource()
     {
         return source;
     }
 
-    /**
-     * @param source the source to set
-     */
     public void setSource(UIComponent source)
     {
         this.source = source;
     }
 
-    /**
-     * @return the visitHints
-     */
+    @Override
     public Set<VisitHint> getVisitHints()
     {
         return visitHints;
     }
 
-    /**
-     * @param visitHints the visitHints to set
-     */
     public void setVisitHints(Set<VisitHint> visitHints)
     {
         this.visitHints = visitHints;
     }
 
-    /**
-     * @return the expressionHints
-     */
+    @Override
     public Set<SearchExpressionHint> getExpressionHints()
     {
         return expressionHints;
     }
 
-    /**
-     * @param expressionHints the expressionHints to set
-     */
     public void setExpressionHints(Set<SearchExpressionHint> expressionHints)
     {
         this.expressionHints = expressionHints;
     }
 
-    /**
-     * @return the facesContext
-     */
+    @Override
     public FacesContext getFacesContext()
     {
         return facesContext;
     }
-
 }

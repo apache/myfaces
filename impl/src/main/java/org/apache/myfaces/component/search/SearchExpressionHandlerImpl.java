@@ -32,12 +32,14 @@ import javax.faces.component.search.SearchExpressionHandler;
 import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.component.search.SearchKeywordContext;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 
 /**
  *
  */
 public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 {
+    private static final String SB_SPLIT = SearchExpressionHandlerImpl.class.getName() + "#split";
 
     protected void addHint(SearchExpressionContext searchExpressionContext, SearchExpressionHint hint)
     {
@@ -385,8 +387,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         char separatorChar = facesContext.getNamingContainerSeparatorChar();
         if (topExpression.charAt(0) == separatorChar)
         {
-            UIComponent findBase;
-            findBase = SearchComponentUtils.getRootComponent(previous);
+            UIComponent findBase = SearchComponentUtils.getRootComponent(previous);
             handler.invokeOnComponent(searchExpressionContext, findBase, topExpression.substring(1), topCallback);
             return;
         }
@@ -741,11 +742,11 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     public String[] splitExpressions(FacesContext context, String expressions)
     {
         // split expressions by blank or comma (and ignore blank and commas inside brackets)
-        String[] splittedExpressions = split(expressions, EXPRESSION_SEPARATOR_CHARS);
+        String[] splittedExpressions = split(context, expressions, EXPRESSION_SEPARATOR_CHARS);
         return splittedExpressions;
     }
 
-    private static String[] split(String value, char... separators)
+    private static String[] split(FacesContext context, String value, char... separators)
     {
         if (value == null)
         {
@@ -753,7 +754,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         }
 
         List<String> tokens = new ArrayList<String>();
-        StringBuilder buffer = new StringBuilder();
+        StringBuilder buffer = SharedStringBuilder.get(context, SB_SPLIT);
 
         int parenthesesCounter = 0;
 
