@@ -173,7 +173,7 @@ public class FacesScopeObjectProducer
    @Produces
    @Named("flowScope")
    @FlowMap
-   @ApplicationScoped
+   @FacesScoped
    public Map<Object, Object> getFlowMap()
    {
       return FacesContext.getCurrentInstance().getApplication().getFlowHandler().getCurrentFlowScope();

@@ -66,7 +66,7 @@ public class FlowScopedContextImpl implements Context
     {
         this.beanManager = beanManager;
         this.flowBeanReferences = flowBeanReferences;
-        passivatingScope = beanManager.isPassivatingScope(getScope());
+        this.passivatingScope = beanManager.isPassivatingScope(getScope());
     }
     
     /*
@@ -132,11 +132,13 @@ public class FlowScopedContextImpl implements Context
         }
     }
 
+    @Override
     public Class<? extends Annotation> getScope()
     {
         return FlowScoped.class;
     }
 
+    @Override
     public boolean isActive()
     {
         return isActive(FacesContext.getCurrentInstance());
