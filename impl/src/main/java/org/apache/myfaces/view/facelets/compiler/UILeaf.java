@@ -45,6 +45,7 @@ import javax.faces.event.FacesListener;
 import javax.faces.render.Renderer;
 
 import javax.faces.view.Location;
+import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 class UILeaf extends UIComponent implements UntargetableComponent, Map<String, Object>
@@ -57,6 +58,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
     
     private String _id = null;
 
+    @Override
     public String getClientId(FacesContext context)
     {
         if (context == null)
@@ -114,8 +116,8 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
             String containerClientId = namingContainer.getContainerClientId(context);
             if (containerClientId != null)
             {
-                StringBuilder bld = _getSharedStringBuilder(context);
-                _clientId = bld.append(containerClientId).append(
+                StringBuilder sb = SharedStringBuilder.get(context, _STRING_BUILDER_KEY);
+                _clientId = sb.append(containerClientId).append(
                                       context.getNamingContainerSeparatorChar()).append(id).toString();
             }
             else
@@ -150,6 +152,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
         return _clientId;
     }
     
+    @Override
     public String getId()
     {
         return _id;
@@ -266,27 +269,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
 
         getPathToComponent(component.getParent(), buf);
     }
-    
-    static StringBuilder _getSharedStringBuilder(FacesContext facesContext)
-    {
-        Map<Object, Object> attributes = facesContext.getAttributes();
 
-        StringBuilder sb = (StringBuilder) attributes.get(_STRING_BUILDER_KEY);
-
-        if (sb == null)
-        {
-            sb = new StringBuilder();
-            attributes.put(_STRING_BUILDER_KEY, sb);
-        }
-        else
-        {
-
-            // clear out the stringBuilder by setting the length to 0
-            sb.setLength(0);
-        }
-
-        return sb;
-    }
 
     //-------------- END TAKEN FROM UICOMPONENTBASE ------------------
     
@@ -377,6 +360,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
         // do nothing
     }
 
+    @Override
     public String getFamily()
     {
         return "facelets.LiteralText";
@@ -573,21 +557,25 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
         return null;
     }
 
+    @Override
     public Object saveState(FacesContext faces)
     {
         return null;
     }
 
+    @Override
     public void restoreState(FacesContext faces, Object state)
     {
         // do nothing
     }
 
+    @Override
     public boolean isTransient()
     {
         return true;
     }
 
+    @Override
     public void setTransient(boolean tranzient)
     {
         // do nothing
@@ -619,11 +607,13 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
         _markCreated = markCreated;
     }
 
+    @Override
     public int size()
     {
         return _attributes == null ? 0 : _attributes.size();
     }
          
+    @Override
     public void clear()
     {
         if (_attributes != null)
@@ -633,6 +623,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
         }
     }
          
+    @Override
     public boolean isEmpty()
     {
         if (_markCreated == null)
@@ -645,6 +636,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
         }
     }
          
+    @Override
     public boolean containsKey(Object key)
     {
         checkKey(key);
@@ -659,6 +651,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
         }
     }
          
+    @Override
     public boolean containsValue(Object value)
     {
         if (_markCreated != null && _markCreated.equals(value))
@@ -668,11 +661,13 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
         return (_attributes == null) ? false : _attributes.containsValue(value);
     }
 
+    @Override
     public Collection<Object> values()
     {
         return getUnderlyingMap().values();
     }
 
+    @Override
     public void putAll(Map<? extends String, ? extends Object> t)
     {
         for (Map.Entry<? extends String, ? extends Object> entry : t.entrySet())
@@ -681,16 +676,19 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
         }
     }
 
+    @Override
     public Set<Entry<String, Object>> entrySet()
     {
         return getUnderlyingMap().entrySet();
     }
 
+    @Override
     public Set<String> keySet()
     {
         return getUnderlyingMap().keySet();
     }
 
+    @Override
     public Object get(Object key)
     {
         checkKey(key);
@@ -710,6 +708,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
         return (_attributes == null) ? null : _attributes.get(key);
     }
 
+    @Override
     public Object remove(Object key)
     {
         checkKey(key);
@@ -721,6 +720,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
          return (_attributes == null) ? null : _attributes.remove(key);
     }
          
+    @Override
     public Object put(String key, Object value)
     {
         checkKey(key);
