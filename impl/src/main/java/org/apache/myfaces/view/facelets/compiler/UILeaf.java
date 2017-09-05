@@ -51,8 +51,8 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 class UILeaf extends UIComponent implements UntargetableComponent, Map<String, Object>
 {
     //-------------- START TAKEN FROM UIComponentBase ----------------
-    private static final String _STRING_BUILDER_KEY
-            = "javax.faces.component.UIComponentBase.SHARED_STRING_BUILDER";
+    private static final String STRING_BUILDER_KEY
+            = UILeaf.class.getName() + ".SHARED_STRING_BUILDER";
     
     private String _clientId = null;
     
@@ -116,7 +116,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
             String containerClientId = namingContainer.getContainerClientId(context);
             if (containerClientId != null)
             {
-                StringBuilder sb = SharedStringBuilder.get(context, _STRING_BUILDER_KEY);
+                StringBuilder sb = SharedStringBuilder.get(context, STRING_BUILDER_KEY);
                 _clientId = sb.append(containerClientId).append(
                                       context.getNamingContainerSeparatorChar()).append(id).toString();
             }

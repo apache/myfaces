@@ -58,6 +58,7 @@ import javax.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.cdi.model.DataModelBuilderProxy;
+import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
@@ -69,6 +70,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     public static final String COMPONENT_TYPE = "facelets.ui.Repeat";
 
     public static final String COMPONENT_FAMILY = "facelets";
+    
+    private static final String STRING_BUILDER_KEY
+            = UIRepeat.class.getName() + ".SHARED_STRING_BUILDER";
     
     //private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
 
@@ -101,7 +105,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     
     private int _index = -1;
 
-    private transient StringBuilder _clientIdBuffer;
     private transient Object _origValue;
     private transient Object _origVarStatus;
 
@@ -116,6 +119,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         setRendererType("facelets.ui.Repeat");
     }
 
+    @Override
     public String getFamily()
     {
         return COMPONENT_FAMILY;
@@ -319,8 +323,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             return clientId;
         }
 
-        StringBuilder bld = _getBuffer(); //SharedStringBuilder(context);
-        return bld.append(clientId).append(context.getNamingContainerSeparatorChar()).append(index).toString();
+        StringBuilder sb = SharedStringBuilder.get(context, STRING_BUILDER_KEY);
+        return sb.append(clientId).append(context.getNamingContainerSeparatorChar()).append(index).toString();
     }
     
     private RepeatStatus _getRepeatStatus()
@@ -348,18 +352,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         {
             _origVarStatus = getFacesContext().getExternalContext().getRequestMap().get(varStatus);
         }
-    }
-    
-    private StringBuilder _getBuffer()
-    {
-        if (_clientIdBuffer == null)
-        {
-            _clientIdBuffer = new StringBuilder();
-        }
-        
-        _clientIdBuffer.setLength(0);
-        
-        return _clientIdBuffer;
     }
 
     private boolean _isIndexAvailable()
@@ -1506,11 +1498,13 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             _target.setPhaseId(phaseId);
         }
 
+        @Override
         public boolean isAppropriateListener(FacesListener listener)
         {
             return _target.isAppropriateListener(listener);
         }
 
+        @Override
         public void processListener(FacesListener listener)
         {
             UIRepeat owner = (UIRepeat) getComponent();

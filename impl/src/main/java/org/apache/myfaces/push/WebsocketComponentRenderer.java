@@ -80,6 +80,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         return HtmlBufferResponseWriterWrapper.getInstance(context.getResponseWriter());
     }
 
+    @Override
     public void encodeBegin(FacesContext facesContext, UIComponent component) throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
