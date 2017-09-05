@@ -92,6 +92,7 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
         context.getAttributes().remove(mapKey);
     }
     
+    @Override
     public Map<Object, Object> getCurrentFlowScope(FacesContext facesContext)
     {
         Flow flow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
