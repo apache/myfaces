@@ -38,8 +38,8 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import javax.inject.Named;
-import org.apache.myfaces.cdi.faces.FacesScoped;
-import org.apache.myfaces.cdi.viewtransient.ViewTransientScoped;
+import org.apache.myfaces.cdi.scope.FacesScoped;
+import org.apache.myfaces.cdi.scope.ViewTransientScoped;
 
 public class JsfArtifactProducer
 {
