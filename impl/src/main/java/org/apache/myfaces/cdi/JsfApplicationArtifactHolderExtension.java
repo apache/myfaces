@@ -19,23 +19,17 @@
 package org.apache.myfaces.cdi;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
-public class JsfArtifactProducerExtension implements Extension
+public class JsfApplicationArtifactHolderExtension implements Extension
 {
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
-    {        
-        AnnotatedType<JsfArtifactProducer> jsfArtifactProducer =
-                        beanManager.createAnnotatedType(JsfArtifactProducer.class);
-        event.addAnnotatedType(jsfArtifactProducer);
-    }
-    
-    void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
     {
-        afterBeanDiscovery.addBean(new JsfArtifactFlowMapProducer());
+        AnnotatedType jsfApplicationArtifactHolder =
+                beanManager.createAnnotatedType(JsfApplicationArtifactHolder.class);
+        event.addAnnotatedType(jsfApplicationArtifactHolder);
     }
 }

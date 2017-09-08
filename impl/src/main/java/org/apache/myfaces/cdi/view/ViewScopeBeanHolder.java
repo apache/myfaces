@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.cdi.view;
 
+import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Random;
@@ -57,7 +58,7 @@ public class ViewScopeBeanHolder implements Serializable
     public static final String VIEW_SCOPE_PREFIX_KEY = VIEW_SCOPE_PREFIX+".KEY";
     
     @Inject
-    ApplicationContextBean applicationContextBean;
+    JsfApplicationArtifactHolder applicationContextBean;
     
     public ViewScopeBeanHolder()
     {

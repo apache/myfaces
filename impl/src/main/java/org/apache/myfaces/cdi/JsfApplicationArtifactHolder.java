@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.cdi.view;
+package org.apache.myfaces.cdi;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.ServletContext;
@@ -26,11 +26,10 @@ import javax.servlet.ServletContext;
  * used to ensure a valid FacesContext instance is passed when the bean is destroyed.
  */
 @ApplicationScoped
-public class ApplicationContextBean
+public class JsfApplicationArtifactHolder
 {
     private ServletContext servletContext;
 
-    /** Return the servlet context for the current application. */
     public ServletContext getServletContext() 
     {
         return servletContext;

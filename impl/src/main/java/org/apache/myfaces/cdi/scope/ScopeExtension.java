@@ -29,8 +29,7 @@ public class ScopeExtension implements Extension
     private FacesScopedContextImpl facesScopeContext;
     private ViewTransientScopedContextImpl viewTransientScopedContext;
 
-    void beforeBeanDiscovery(
-        @Observes final BeforeBeanDiscovery event, BeanManager beanManager)
+    void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
     {
         event.addScope(FacesScoped.class, true, false);
         event.addScope(ViewTransientScoped.class, true, false);

@@ -239,7 +239,7 @@ public class ViewScopeContextImpl implements Context
         
         for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : contextMap.entrySet())
         {
-            if (!(entry.getKey() instanceof _ContextualKey))
+            if (!(entry.getKey() instanceof ViewScopeContextualKey))
             {            
                 Contextual bean = storage.getBean(facesContext, entry.getKey());
 
@@ -250,7 +250,7 @@ public class ViewScopeContextImpl implements Context
             else
             {
                 // Destroy the JSF managed view scoped bean.
-                _ContextualKey key = (_ContextualKey) entry.getKey();
+                ViewScopeContextualKey key = (ViewScopeContextualKey) entry.getKey();
                 mbDestroyer.destroy(key.getName(), entry.getValue().getContextualInstance());
             }
         }

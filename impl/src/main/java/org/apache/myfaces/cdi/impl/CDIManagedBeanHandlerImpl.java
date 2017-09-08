@@ -25,7 +25,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.cdi.view.ApplicationContextBean;
+import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
 import org.apache.myfaces.cdi.view.ViewScopeBeanHolder;
 import org.apache.myfaces.cdi.view.ViewScopeCDIMap;
 import org.apache.myfaces.flow.cdi.FlowScopeBeanHolder;
@@ -51,8 +51,8 @@ public class CDIManagedBeanHandlerImpl extends ViewScopeProvider
         Object context = externalContext.getContext();
         if (context instanceof ServletContext)
         {
-            ApplicationContextBean appBean = CDIUtils.lookup(beanManager, 
-                ApplicationContextBean.class);
+            JsfApplicationArtifactHolder appBean = CDIUtils.lookup(beanManager, 
+                JsfApplicationArtifactHolder.class);
             appBean.setServletContext((ServletContext) context);
         }
     }

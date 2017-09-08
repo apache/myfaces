@@ -150,7 +150,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
 
     public Object put(String key, Object value)
     {
-        Object beanKey = new _ContextualKey(key);
+        Object beanKey = new ViewScopeContextualKey(key);
         this.getNameBeanKeyMap().put(key, beanKey);
         ContextualInstanceInfo info = new ContextualInstanceInfo();
         info.setContextualInstance(value);

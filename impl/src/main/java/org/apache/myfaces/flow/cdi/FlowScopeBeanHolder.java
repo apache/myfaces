@@ -41,7 +41,7 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
-import org.apache.myfaces.cdi.view.ApplicationContextBean;
+import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
@@ -79,7 +79,7 @@ public class FlowScopeBeanHolder implements Serializable
     public static final String FLOW_SCOPE_PREFIX_KEY = FLOW_SCOPE_PREFIX+".KEY";
     
     @Inject
-    ApplicationContextBean applicationContextBean;
+    JsfApplicationArtifactHolder applicationContextBean;
 
     public FlowScopeBeanHolder()
     {

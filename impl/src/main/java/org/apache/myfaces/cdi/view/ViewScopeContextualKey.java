@@ -24,16 +24,16 @@ import java.io.Serializable;
  *
  * @author Leonardo Uribe
  */
-class _ContextualKey implements Serializable
+class ViewScopeContextualKey implements Serializable
 {
     private String name;
 
-    public _ContextualKey(String name)
+    public ViewScopeContextualKey(String name)
     {
         this.name = name;
     }
     
-    public _ContextualKey()
+    public ViewScopeContextualKey()
     {
     }
     /**
@@ -63,7 +63,7 @@ class _ContextualKey implements Serializable
         {
             return false;
         }
-        final _ContextualKey other = (_ContextualKey) obj;
+        final ViewScopeContextualKey other = (ViewScopeContextualKey) obj;
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name))
         {
             return false;
