@@ -20,7 +20,6 @@ package org.apache.myfaces.cdi.viewtransient;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
@@ -36,10 +35,7 @@ public class ViewTransientScopeContextExtension implements Extension
         @Observes final BeforeBeanDiscovery event, BeanManager beanManager)
     {
         event.addScope(ViewTransientScoped.class, true, false);
-        
-        AnnotatedType<ViewTransientScopeObjectProducer> viewTransientScopeObjectProducer =
-                        beanManager.createAnnotatedType(ViewTransientScopeObjectProducer.class);
-        event.addAnnotatedType(viewTransientScopeObjectProducer);
+
     }
     
     void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)

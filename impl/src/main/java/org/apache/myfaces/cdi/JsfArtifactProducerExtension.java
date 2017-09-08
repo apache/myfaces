@@ -16,32 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.cdi.faces;
+package org.apache.myfaces.cdi;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
-/**
- * Handle FacesScoped related features.
- * 
- */
-public class FacesScopeContextExtension implements Extension
+public class JsfArtifactProducerExtension implements Extension
 {
-    private FacesScopedContextImpl facesScopeContext;
 
     void beforeBeanDiscovery(
         @Observes final BeforeBeanDiscovery event, BeanManager beanManager)
-    {
-        event.addScope(FacesScoped.class, true, false);
+    {        
+        AnnotatedType<JsfArtifactProducer> jsfArtifactProducer =
+                        beanManager.createAnnotatedType(JsfArtifactProducer.class);
+        event.addAnnotatedType(jsfArtifactProducer);
     }
     
     void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
     {
-        facesScopeContext = new FacesScopedContextImpl(beanManager);
-        afterBeanDiscovery.addContext(facesScopeContext);
-
+        afterBeanDiscovery.addBean(new JsfArtifactFlowMapProducer());
     }
 }
