@@ -105,21 +105,25 @@ public class ViewScopeCDIMap implements Map<String, Object>
         return _viewScopeId;
     }
     
+    @Override
     public int size()
     {
         return this.getNameBeanKeyMap().size();
     }
 
+    @Override
     public boolean isEmpty()
     {
         return this.getNameBeanKeyMap().isEmpty();
     }
 
+    @Override
     public boolean containsKey(Object key)
     {
         return this.getNameBeanKeyMap().containsKey(key);
     }
 
+    @Override
     public boolean containsValue(Object value)
     {
         if (value != null)
@@ -137,6 +141,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
         return false;
     }
 
+    @Override
     public Object get(Object key)
     {
         Object beanKey = this.getNameBeanKeyMap().get(key);
@@ -148,6 +153,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
         return null;
     }
 
+    @Override
     public Object put(String key, Object value)
     {
         Object beanKey = new ViewScopeContextualKey(key);
@@ -157,6 +163,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
         return this.getCreationalContextInstances().put(beanKey, info);
     }
 
+    @Override
     public Object remove(Object key)
     {
         Object beanKey = this.getNameBeanKeyMap().remove(key);
@@ -164,6 +171,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
         return info == null ? null : info.getContextualInstance();
     }
 
+    @Override
     public void putAll(Map<? extends String, ? extends Object> m)
     {
         for (Map.Entry<? extends String, ? extends Object> entry : m.entrySet())
@@ -172,6 +180,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
         }
     }
 
+    @Override
     public void clear()
     {
         boolean destroyed = false;
@@ -207,11 +216,13 @@ public class ViewScopeCDIMap implements Map<String, Object>
         }
     }
 
+    @Override
     public Set<String> keySet()
     {
         return this.getNameBeanKeyMap().keySet();
     }
 
+    @Override
     public Collection<Object> values()
     {
         List<Object> values = new ArrayList<Object>(this.getNameBeanKeyMap().size());
@@ -231,6 +242,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
         return values;
     }
 
+    @Override
     public Set<Entry<String, Object>> entrySet()
     {
         Set<Entry<String, Object>> values = new HashSet<Entry<String, Object>>();
@@ -259,17 +271,20 @@ public class ViewScopeCDIMap implements Map<String, Object>
             this.entry = entry;
         }
 
+        @Override
         public String getKey()
         {
             return entry.getKey();
         }
 
+        @Override
         public Object getValue()
         {
             ContextualInstanceInfo<?> info = getCreationalContextInstances().get(entry.getValue());
             return (Object) (info == null ? null : info.getContextualInstance());
         }
 
+        @Override
         public Object setValue(Object value)
         {
             ContextualInstanceInfo info = getCreationalContextInstances().get(entry.getValue());
