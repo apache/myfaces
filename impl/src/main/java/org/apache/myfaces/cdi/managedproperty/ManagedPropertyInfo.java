@@ -16,8 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-package org.apache.myfaces.cdi.behavior;
+package org.apache.myfaces.cdi.managedproperty;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -26,50 +25,41 @@ import java.util.Objects;
 /**
  *
  */
-public class BehaviorInfo implements Serializable
+public class ManagedPropertyInfo implements Serializable
 {
-    private Type type;
-    
-    private String behaviorId;
 
-    public BehaviorInfo(Type type, String behaviorId)
+    private Type type;
+
+    private String expression;
+
+    public ManagedPropertyInfo(Type type, String expression)
     {
         this.type = type;
-        this.behaviorId = behaviorId;
+        this.expression = expression;
     }
 
     /**
-     * @return the behaviorId
+     * @return the type
      */
-    public String getBehaviorId()
-    {
-        return behaviorId;
-    }
-
-    /**
-     * @param behaviorId the behaviorId to set
-     */
-    public void setBehaviorId(String behaviorId)
-    {
-        this.behaviorId = behaviorId;
-    }
-
     public Type getType()
     {
         return type;
     }
 
-    public void setType(Type type)
+    /**
+     * @return the expression
+     */
+    public String getExpression()
     {
-        this.type = type;
+        return expression;
     }
 
     @Override
     public int hashCode()
     {
-        int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.type);
-        hash = 53 * hash + Objects.hashCode(this.behaviorId);
+        int hash = 3;
+        hash = 79 * hash + Objects.hashCode(this.type);
+        hash = 79 * hash + Objects.hashCode(this.expression);
         return hash;
     }
 
@@ -84,17 +74,16 @@ public class BehaviorInfo implements Serializable
         {
             return false;
         }
-        final BehaviorInfo other = (BehaviorInfo) obj;
+        final ManagedPropertyInfo other = (ManagedPropertyInfo) obj;
         if (!Objects.equals(this.type, other.type))
         {
             return false;
         }
-        if (!Objects.equals(this.behaviorId, other.behaviorId))
+        if (!Objects.equals(this.expression, other.expression))
         {
             return false;
         }
         return true;
     }
-
 
 }

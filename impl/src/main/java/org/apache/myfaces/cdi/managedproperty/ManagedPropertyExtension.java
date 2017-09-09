@@ -16,8 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-package org.apache.myfaces.cdi.behavior;
+package org.apache.myfaces.cdi.managedproperty;
 
 import java.lang.reflect.Type;
 import java.util.HashSet;
@@ -25,45 +24,42 @@ import java.util.Set;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessManagedBean;
-import javax.faces.component.behavior.FacesBehavior;
+import javax.faces.annotation.ManagedProperty;
 
 /**
  *
  */
-public class FacesBehaviorExtension implements Extension
+public class ManagedPropertyExtension implements Extension
 {
-    private Set<FacesBehaviorInfo> types = new HashSet<FacesBehaviorInfo>();
+    private Set<ManagedPropertyInfo> types = new HashSet<ManagedPropertyInfo>();
 
     public <T> void collect(@Observes ProcessManagedBean<T> event)
     {
-        if (event.getAnnotatedBeanClass().isAnnotationPresent(FacesBehavior.class))
+        for (AnnotatedField<?> field : event.getAnnotatedBeanClass().getFields())
         {
-            Annotated annotated = event.getAnnotatedBeanClass();
-            
+            addAnnotatedTypeIfNecessary(field);
+        }
+    }
+    
+    private void addAnnotatedTypeIfNecessary(Annotated annotated)
+    {
+        if (annotated.isAnnotationPresent(ManagedProperty.class))
+        {
             Type type = annotated.getBaseType();
 
-            FacesBehavior conv = (FacesBehavior) annotated.getAnnotation(FacesBehavior.class);
-            
-            if (conv.managed())
-            {
-                boolean hasValue = conv.value().length() > 0;
-                if (hasValue)
-                {
-                    types.add(new FacesBehaviorInfo(type, conv.value()));
-                }
-            }
+            types.add(new ManagedPropertyInfo(type, annotated.getAnnotation(ManagedProperty.class).value()));
         }
     }
     
     public void afterBean(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
     {
-        for (FacesBehaviorInfo typeInfo : types)
+        for (ManagedPropertyInfo typeInfo : types)
         {
-            afterBeanDiscovery.addBean(new FacesBehaviorProducer(beanManager, typeInfo));
+            afterBeanDiscovery.addBean(new ManagedPropertyProducer(beanManager, typeInfo));
         }
     }
-
 }
