@@ -26,13 +26,13 @@ import java.util.Objects;
 /**
  *
  */
-public class ValidatorInfo implements Serializable
+public class FacesValidatorInfo implements Serializable
 {
     private Type type;
     
     private String validatorId;
 
-    public ValidatorInfo(Type type, String validatorId)
+    public FacesValidatorInfo(Type type, String validatorId)
     {
         this.type = type;
         this.validatorId = validatorId;
@@ -84,7 +84,7 @@ public class ValidatorInfo implements Serializable
         {
             return false;
         }
-        final ValidatorInfo other = (ValidatorInfo) obj;
+        final FacesValidatorInfo other = (FacesValidatorInfo) obj;
         if (!Objects.equals(this.type, other.type))
         {
             return false;

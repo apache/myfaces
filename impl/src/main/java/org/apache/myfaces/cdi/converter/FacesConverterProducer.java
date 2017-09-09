@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.myfaces.cdi.validator;
+package org.apache.myfaces.cdi.converter;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +26,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.FacesException;
-import javax.faces.validator.Validator;
+import javax.faces.convert.Converter;
 import org.apache.myfaces.cdi.util.AbstractDynamicProducer;
 import org.apache.myfaces.shared.util.ClassUtils;
 
@@ -34,42 +34,44 @@ import org.apache.myfaces.shared.util.ClassUtils;
  *
  */
 @Typed
-public class DynamicValidatorProducer extends AbstractDynamicProducer<Validator>
+public class FacesConverterProducer extends AbstractDynamicProducer<Converter>
 {
-    public DynamicValidatorProducer(BeanManager beanManager, ValidatorInfo typeInfo)
+    public FacesConverterProducer(BeanManager beanManager, FacesConverterInfo typeInfo)
     {
         super(beanManager);
         
-        String validatorId = typeInfo.getValidatorId() == null ? "" : typeInfo.getValidatorId();
-        String id = "" + typeInfo.getType() + "_" + validatorId;
+        String forClass = typeInfo.getForClass() == null ? "" : 
+                ((typeInfo.getForClass() == Object.class) ? "" : typeInfo.getForClass().getName());
+        String converterId = typeInfo.getConverterId() == null ? "" : typeInfo.getConverterId();
+        String id = "" + typeInfo.getType() + "_" + forClass + "_" + converterId;
 
-        FacesValidatorAnnotationLiteral literal = new FacesValidatorAnnotationLiteral(
-                        typeInfo.getValidatorId() == null ? "" : typeInfo.getValidatorId(), false, true);
+        FacesConverterAnnotationLiteral literal = new FacesConverterAnnotationLiteral(
+                        typeInfo.getForClass() == null ? Object.class : typeInfo.getForClass(), 
+                        typeInfo.getConverterId() == null ? "" : typeInfo.getConverterId(), true);
 
         super.id(id)
                 .scope(Dependent.class)
                 .qualifiers(literal)
                 .types(typeInfo.getType(), Object.class)
                 .beanClass(ClassUtils.simpleClassForName(typeInfo.getType().getTypeName()))
-                .create(e -> createValidator(e));
+                .create(e -> createConverter(e));
     }
 
-    protected Validator createValidator(CreationalContext<Validator> cc)
+    protected Converter createConverter(CreationalContext<Converter> cc)
     {
-        Class<? extends Validator> converterClass = (Class<? extends Validator>) getBeanClass();        
-        Validator converter = null;
+        Class<? extends Converter> converterClass = (Class<? extends Converter>) getBeanClass();        
+        Converter converter = null;
         try
         {
             converter = converterClass.newInstance();
         }
         catch (Exception ex)
         {
-            Logger.getLogger(DynamicValidatorProducer.class.getName()).log(
+            Logger.getLogger(FacesConverterProducer.class.getName()).log(
                     Level.SEVERE, "Could not instantiate converter " + converterClass.getName(), ex);
             throw new FacesException("Could not instantiate converter: " + converterClass.getName(), ex);
             
         }
         return converter;
     }
-
 }

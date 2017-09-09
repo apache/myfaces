@@ -35,7 +35,7 @@ import javax.faces.convert.FacesConverter;
  */
 public class FacesConverterExtension implements Extension
 {
-    private Set<ConverterInfo> types = new HashSet<ConverterInfo>();
+    private Set<FacesConverterInfo> types = new HashSet<FacesConverterInfo>();
 
     public <T> void collect(@Observes ProcessManagedBean<T> event)
     {
@@ -55,11 +55,11 @@ public class FacesConverterExtension implements Extension
                 {
                     if (hasForClass)
                     {
-                        types.add(new ConverterInfo(type, conv.forClass(), ""));
+                        types.add(new FacesConverterInfo(type, conv.forClass(), ""));
                     }
                     if (hasValue)
                     {
-                        types.add(new ConverterInfo(type, Object.class, conv.value()));
+                        types.add(new FacesConverterInfo(type, Object.class, conv.value()));
                     }
                 }
             }
@@ -68,9 +68,9 @@ public class FacesConverterExtension implements Extension
     
     public void afterBean(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
     {
-        for (ConverterInfo typeInfo : types)
+        for (FacesConverterInfo typeInfo : types)
         {
-            afterBeanDiscovery.addBean(new DynamicConverterProducer(beanManager, typeInfo));
+            afterBeanDiscovery.addBean(new FacesConverterProducer(beanManager, typeInfo));
         }
     }
 

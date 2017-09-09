@@ -26,7 +26,7 @@ import java.util.Objects;
 /**
  *
  */
-public class ConverterInfo implements Serializable
+public class FacesConverterInfo implements Serializable
 {
     private Type type;
     
@@ -34,7 +34,7 @@ public class ConverterInfo implements Serializable
     
     private String converterId;
 
-    public ConverterInfo(Type type, Class forClass, String converterId)
+    public FacesConverterInfo(Type type, Class forClass, String converterId)
     {
         this.type = type;
         this.forClass = forClass;
@@ -98,7 +98,7 @@ public class ConverterInfo implements Serializable
         {
             return false;
         }
-        final ConverterInfo other = (ConverterInfo) obj;
+        final FacesConverterInfo other = (FacesConverterInfo) obj;
         if (!Objects.equals(this.type, other.type))
         {
             return false;

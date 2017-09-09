@@ -59,7 +59,7 @@ public class ManagedPropertyExtension implements Extension
     {
         for (ManagedPropertyInfo typeInfo : types)
         {
-            afterBeanDiscovery.addBean(new DynamicManagedPropertyProducer(beanManager, typeInfo));
+            afterBeanDiscovery.addBean(new ManagedPropertyProducer(beanManager, typeInfo));
         }
     }
 }

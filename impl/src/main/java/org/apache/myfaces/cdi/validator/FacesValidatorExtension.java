@@ -35,7 +35,7 @@ import javax.faces.validator.FacesValidator;
  */
 public class FacesValidatorExtension implements Extension
 {
-    private Set<ValidatorInfo> types = new HashSet<ValidatorInfo>();
+    private Set<FacesValidatorInfo> types = new HashSet<FacesValidatorInfo>();
 
     public <T> void collect(@Observes ProcessManagedBean<T> event)
     {
@@ -52,7 +52,7 @@ public class FacesValidatorExtension implements Extension
                 boolean hasValue = conv.value().length() > 0;
                 if (hasValue)
                 {
-                    types.add(new ValidatorInfo(type, conv.value()));
+                    types.add(new FacesValidatorInfo(type, conv.value()));
                 }
             }
         }
@@ -60,9 +60,9 @@ public class FacesValidatorExtension implements Extension
     
     public void afterBean(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
     {
-        for (ValidatorInfo typeInfo : types)
+        for (FacesValidatorInfo typeInfo : types)
         {
-            afterBeanDiscovery.addBean(new DynamicValidatorProducer(beanManager, typeInfo));
+            afterBeanDiscovery.addBean(new FacesValidatorProducer(beanManager, typeInfo));
         }
     }
 
