@@ -29,12 +29,14 @@ import java.util.function.Function;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
 
 // Inspired by Mojarra's CdiProducer
 public abstract class AbstractDynamicProducer<T> implements Bean<T>, PassivationCapable, Serializable
 {
+    private BeanManager beanManager;
     private String id;
     private String name;
     private Class<?> beanClass;
@@ -43,8 +45,9 @@ public abstract class AbstractDynamicProducer<T> implements Bean<T>, Passivation
     private Class<? extends Annotation> scope;
     private Function<CreationalContext<T>, T> create;
 
-    public AbstractDynamicProducer()
+    public AbstractDynamicProducer(BeanManager beanManager)
     {
+        this.beanManager = beanManager;
         this.id = this.getClass().getName();
         this.beanClass = Object.class;
         this.types = Collections.singleton(Object.class);
@@ -124,8 +127,11 @@ public abstract class AbstractDynamicProducer<T> implements Bean<T>, Passivation
         return false;
     }
 
-    
-    
+    public BeanManager getBeanManager()
+    {
+        return beanManager;
+    }
+
     
     public AbstractDynamicProducer<T> name(String name)
     {
@@ -170,6 +176,12 @@ public abstract class AbstractDynamicProducer<T> implements Bean<T>, Passivation
         return this;
     }
 
+    public AbstractDynamicProducer<T> id(String id)
+    {
+        this.id = id;
+        return this;
+    }
+    
     public AbstractDynamicProducer<T> addToId(Object object)
     {
         id = id + " " + object.toString();

@@ -54,7 +54,7 @@ public class JsfArtifactProducerExtension implements Extension
     {
         if (registerCdiProducers)
         {
-            afterBeanDiscovery.addBean(new JsfArtifactFlowMapProducer());
+            afterBeanDiscovery.addBean(new JsfArtifactFlowMapProducer(beanManager));
         }
     }
 

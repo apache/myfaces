@@ -19,120 +19,39 @@
 
 package org.apache.myfaces.cdi.model;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import static java.util.Arrays.asList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Typed;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.PassivationCapable;
 import javax.faces.model.DataModel;
+import org.apache.myfaces.cdi.util.AbstractDynamicProducer;
 import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.shared.util.ClassUtils;
 
 /**
  *
  */
 @Typed
-public class DynamicDataModelProducer implements 
-        Bean< Map<Class<?>,Class<? extends DataModel>> >, Serializable, PassivationCapable
+public class DynamicDataModelProducer extends AbstractDynamicProducer<Map<Class<?>, Class<? extends DataModel>>>
 {
-    private static final long serialVersionUID = 1L;
-
-    private BeanManager beanManager;
-    private DataModelInfo typeInfo;
-    private Set<Type> types;
-    private Class<?> beanClass;
-
     public DynamicDataModelProducer(BeanManager beanManager, DataModelInfo typeInfo)
     {
-        this.beanManager = beanManager;
-        this.typeInfo = typeInfo;
-        types = new HashSet<Type>(asList(typeInfo.getType(), Object.class));
-        beanClass = ClassUtils.simpleClassForName(typeInfo.getType().getTypeName());
+        super(beanManager);
+        
+        FacesDataModelAnnotationLiteral literal = new FacesDataModelAnnotationLiteral(typeInfo.getForClass());
+
+        super.id("" + typeInfo.getForClass())
+                .scope(Dependent.class)
+                .qualifiers(literal)
+                .types(typeInfo.getType(), Object.class)
+                .beanClass(Map.class)
+                .create(e -> createDataModel(e));
     }
 
-    @Override
-    public String getId()
-    {
-        return ""+typeInfo.getForClass();
-    }
-
-    @Override
-    public Class<?> getBeanClass()
-    {
-        return Map.class;
-    }
-
-    @Override
-    public Set<Type> getTypes()
-    {
-        return types;
-    }
-    
-    @Override
-    public Set<Annotation> getQualifiers()
-    {
-        return Collections.singleton(
-                (Annotation) new FacesDataModelAnnotationLiteral(typeInfo.getForClass()));
-    }
-
-    @Override
-    public Class<? extends Annotation> getScope()
-    {
-        return Dependent.class;
-    }
-
-    @Override
-    public String getName()
-    {
-        return null;
-    }
-    
-
-    @Override
-    public Set<Class<? extends Annotation>> getStereotypes()
-    {
-        return Collections.emptySet();
-    }
-
-    @Override
-    public boolean isAlternative()
-    {
-        return false;
-    }
-    
-    @Override
-    public Set<InjectionPoint> getInjectionPoints()
-    {
-        return Collections.emptySet();
-    }
-
-    @Override
-    public boolean isNullable()
-    {
-        return true;
-    }
-    
-    @Override
-    public Map<Class<?>,Class<? extends DataModel>> create(
+    protected Map<Class<?>,Class<? extends DataModel>> createDataModel(
             CreationalContext<Map<Class<?>,Class<? extends DataModel>>> cc)
     {
-        FacesDataModelClassBeanHolder holder = CDIUtils.lookup(beanManager, FacesDataModelClassBeanHolder.class);
+        FacesDataModelClassBeanHolder holder = CDIUtils.lookup(getBeanManager(), FacesDataModelClassBeanHolder.class);
         return holder.getClassInstanceToDataModelWrapperClassMap();
-    }
-
-    @Override
-    public void destroy(Map<Class<?>,Class<? extends DataModel>> t, 
-            CreationalContext<Map<Class<?>,Class<? extends DataModel>>> cc)
-    {
     }
 }

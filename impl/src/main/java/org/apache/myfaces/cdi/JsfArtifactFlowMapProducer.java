@@ -20,6 +20,7 @@ package org.apache.myfaces.cdi;
 
 import java.lang.reflect.Type;
 import java.util.Map;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.faces.annotation.FlowMap;
 import javax.faces.context.FacesContext;
@@ -34,8 +35,10 @@ public class JsfArtifactFlowMapProducer extends AbstractDynamicProducer
         private static final long serialVersionUID = -8623640277155878657L;
     }
     
-    public JsfArtifactFlowMapProducer()
+    public JsfArtifactFlowMapProducer(BeanManager beanManager)
     {
+        super(beanManager);
+        
         super.name("flowScope")
                 .scope(FlowScoped.class)
                 .qualifiers(new FlowMapAnnotationLiteral())

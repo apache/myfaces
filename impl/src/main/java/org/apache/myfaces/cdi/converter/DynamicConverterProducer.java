@@ -19,118 +19,47 @@
 
 package org.apache.myfaces.cdi.converter;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import static java.util.Arrays.asList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Typed;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.PassivationCapable;
 import javax.faces.FacesException;
 import javax.faces.convert.Converter;
+import org.apache.myfaces.cdi.util.AbstractDynamicProducer;
 import org.apache.myfaces.shared.util.ClassUtils;
 
 /**
  *
  */
 @Typed
-public class DynamicConverterProducer implements Bean<Converter>, Serializable, PassivationCapable
+public class DynamicConverterProducer extends AbstractDynamicProducer<Converter>
 {
-    private static final long serialVersionUID = 1L;
-
-    private BeanManager beanManager;
-    private ConverterInfo typeInfo;
-    private Set<Type> types;
-    private Class<?> beanClass;
-
     public DynamicConverterProducer(BeanManager beanManager, ConverterInfo typeInfo)
     {
-        this.beanManager = beanManager;
-        this.typeInfo = typeInfo;
-        types = new HashSet<Type>(asList(typeInfo.getType(), Object.class));
-        beanClass = ClassUtils.simpleClassForName(typeInfo.getType().getTypeName());
-    }
-
-    @Override
-    public String getId()
-    {
+        super(beanManager);
+        
         String forClass = typeInfo.getForClass() == null ? "" : 
                 ((typeInfo.getForClass() == Object.class) ? "" : typeInfo.getForClass().getName());
         String converterId = typeInfo.getConverterId() == null ? "" : typeInfo.getConverterId();
-        return ""+typeInfo.getType()+"_"+forClass+"_"+converterId;
-    }
+        String id = "" + typeInfo.getType() + "_" + forClass + "_" + converterId;
 
-    @Override
-    public Class<?> getBeanClass()
-    {
-        return beanClass;
-    }
-
-    @Override
-    public Set<Type> getTypes()
-    {
-        return types;
-    }
-    
-    @Override
-    public Set<Annotation> getQualifiers()
-    {
-        return Collections.singleton(
-                (Annotation) new FacesConverterAnnotationLiteral(
+        FacesConverterAnnotationLiteral literal = new FacesConverterAnnotationLiteral(
                         typeInfo.getForClass() == null ? Object.class : typeInfo.getForClass(), 
-                        typeInfo.getConverterId() == null ? "" : typeInfo.getConverterId(), true));
+                        typeInfo.getConverterId() == null ? "" : typeInfo.getConverterId(), true);
+
+        super.id(id)
+                .scope(Dependent.class)
+                .qualifiers(literal)
+                .types(typeInfo.getType(), Object.class)
+                .beanClass(ClassUtils.simpleClassForName(typeInfo.getType().getTypeName()))
+                .create(e -> createConverter(e));
     }
 
-    @Override
-    public Class<? extends Annotation> getScope()
+    protected Converter createConverter(CreationalContext<Converter> cc)
     {
-        return Dependent.class;
-    }
-
-    @Override
-    public String getName()
-    {
-        return null;
-    }
-    
-
-    @Override
-    public Set<Class<? extends Annotation>> getStereotypes()
-    {
-        return Collections.emptySet();
-    }
-
-    @Override
-    public boolean isAlternative()
-    {
-        return false;
-    }
-    
-    @Override
-    public Set<InjectionPoint> getInjectionPoints()
-    {
-        return Collections.emptySet();
-    }
-
-    @Override
-    public boolean isNullable()
-    {
-        return true;
-    }
-    
-    @Override
-    public Converter create(CreationalContext<Converter> cc)
-    {
-        Class<? extends Converter> converterClass = (Class<? extends Converter>) beanClass;        
+        Class<? extends Converter> converterClass = (Class<? extends Converter>) getBeanClass();        
         Converter converter = null;
         try
         {
@@ -139,15 +68,10 @@ public class DynamicConverterProducer implements Bean<Converter>, Serializable, 
         catch (Exception ex)
         {
             Logger.getLogger(DynamicConverterProducer.class.getName()).log(
-                    Level.SEVERE, "Could not instantiate converter " + beanClass.getName(), ex);
-            throw new FacesException("Could not instantiate converter: " + beanClass.getName(), ex);
+                    Level.SEVERE, "Could not instantiate converter " + converterClass.getName(), ex);
+            throw new FacesException("Could not instantiate converter: " + converterClass.getName(), ex);
             
         }
         return converter;
-    }
-
-    @Override
-    public void destroy(Converter t, CreationalContext<Converter> cc)
-    {
     }
 }
