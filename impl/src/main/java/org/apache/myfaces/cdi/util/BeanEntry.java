@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.cdi.dependent;
+package org.apache.myfaces.cdi.util;
 
 public class BeanEntry
 {

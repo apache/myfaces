@@ -31,7 +31,7 @@ import org.apache.myfaces.shared.application.FacesServletMappingUtils;
 import org.apache.myfaces.shared.context.ExceptionHandlerImpl;
 import org.apache.myfaces.shared.util.StateUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
-import org.apache.myfaces.cdi.dependent.BeanEntry;
+import org.apache.myfaces.cdi.util.BeanEntry;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderException;
 import org.apache.myfaces.spi.InjectionProviderFactory;

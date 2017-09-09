@@ -3,7 +3,6 @@ org.apache.myfaces.cdi.JsfApplicationArtifactHolderExtension
 org.apache.myfaces.cdi.view.ViewScopeContextExtension
 org.apache.myfaces.flow.cdi.FlowBuilderCDIExtension
 org.apache.myfaces.flow.cdi.FlowScopeCDIExtension
-org.apache.myfaces.cdi.dependent.DependentBeanExtension
 org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension
 org.apache.myfaces.push.cdi.PushContextCDIExtension
 org.apache.myfaces.cdi.managedproperty.ManagedPropertyExtension
