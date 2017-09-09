@@ -20,22 +20,46 @@ package org.apache.myfaces.cdi;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AfterTypeDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.faces.annotation.FacesConfig;
 
 public class JsfArtifactProducerExtension implements Extension
 {
-    void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
+    private boolean registerCdiProducers = false;
+    
+    <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> event, BeanManager beanManager)
+    {
+        FacesConfig facesConfig = event.getAnnotatedType().getAnnotation(FacesConfig.class);
+        if (facesConfig != null && facesConfig.version() != FacesConfig.Version.JSF_2_2)
+        {
+            registerCdiProducers = true;
+        }
+    }
+    
+    void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanManager)
     {        
-        AnnotatedType<JsfArtifactProducer> jsfArtifactProducer =
-                        beanManager.createAnnotatedType(JsfArtifactProducer.class);
-        event.addAnnotatedType(jsfArtifactProducer);
+        if (registerCdiProducers)
+        {
+            AnnotatedType<JsfArtifactProducer> jsfArtifactProducer =
+                            beanManager.createAnnotatedType(JsfArtifactProducer.class);
+            event.addAnnotatedType(jsfArtifactProducer, null);
+        }
     }
     
     void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
     {
-        afterBeanDiscovery.addBean(new JsfArtifactFlowMapProducer());
+        if (registerCdiProducers)
+        {
+            afterBeanDiscovery.addBean(new JsfArtifactFlowMapProducer());
+        }
+    }
+
+    public boolean isRegisterCdiProducers()
+    {
+        return registerCdiProducers;
     }
 }
