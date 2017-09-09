@@ -95,7 +95,7 @@ public final class FactoryFinder
     
     private static final String INJECTION_PROVIDER_INSTANCE = "oam.spi.INJECTION_PROVIDER_KEY";
     private static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
-    private static final String BEAN_ENTRY_CLASS_NAME = "org.apache.myfaces.cdi.dependent.BeanEntry";
+    private static final String BEAN_ENTRY_CLASS_NAME = "org.apache.myfaces.cdi.util.BeanEntry";
 
     private static final Logger LOGGER = Logger.getLogger(FactoryFinder.class.getName());
 
