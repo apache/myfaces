@@ -62,9 +62,8 @@ public class ValidateWholeBeanComponent extends UIInput
         Boolean enabled = WebConfigParamUtils.getBooleanInitParameter(context.getExternalContext(), 
                 BeanValidator.ENABLE_VALIDATE_WHOLE_BEAN_PARAM_NAME, Boolean.FALSE);
         
-        if (Boolean.TRUE.equals(enabled))
+        if (Boolean.TRUE.equals(enabled) && !isDisabled())
         {
-            
             //Install WholeBeanValidator
             Validator[] validators = this.getValidators();
             if (validators != null && validators.length > 0)
@@ -96,8 +95,20 @@ public class ValidateWholeBeanComponent extends UIInput
         getStateHelper().put(PropertyKeys.validationGroups, validationGroups );
     }
     
+    @JSFProperty(defaultValue="false")
+    public boolean isDisabled()
+    {
+        return (Boolean) getStateHelper().eval(PropertyKeys.disabled, false);
+    }
+    
+    public void setDisabled(boolean disabled)
+    {
+        getStateHelper().put(PropertyKeys.disabled, disabled);
+    }
+    
     enum PropertyKeys
     {
-        validationGroups
+        validationGroups,
+        disabled
     }
 }
