@@ -28,111 +28,70 @@ import javax.el.ValueExpression;
 public final class IterationStatusExpression extends ValueExpression
 {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
     private final IterationStatus status;
 
-    /**
-     * 
-     */
     public IterationStatusExpression(IterationStatus status)
     {
         this.status = status;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see javax.el.ValueExpression#getValue(javax.el.ELContext)
-     */
+    @Override
     public Object getValue(ELContext context)
     {
         return this.status;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see javax.el.ValueExpression#setValue(javax.el.ELContext, java.lang.Object)
-     */
+    @Override
     public void setValue(ELContext context, Object value)
     {
         throw new UnsupportedOperationException("Cannot set IterationStatus");
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see javax.el.ValueExpression#isReadOnly(javax.el.ELContext)
-     */
+    @Override
     public boolean isReadOnly(ELContext context)
     {
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see javax.el.ValueExpression#getType(javax.el.ELContext)
-     */
+    @Override
     public Class getType(ELContext context)
     {
         return IterationStatus.class;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see javax.el.ValueExpression#getExpectedType()
-     */
+    @Override
     public Class getExpectedType()
     {
         return IterationStatus.class;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see javax.el.Expression#getExpressionString()
-     */
+    @Override
     public String getExpressionString()
     {
         return this.toString();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see javax.el.Expression#equals(java.lang.Object)
-     */
+    @Override
     public boolean equals(Object obj)
     {
         return this.status.equals(obj);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see javax.el.Expression#hashCode()
-     */
+    @Override
     public int hashCode()
     {
         return this.status.hashCode();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see javax.el.Expression#isLiteralText()
-     */
+    @Override
     public boolean isLiteralText()
     {
         return true;
     }
 
+    @Override
     public String toString()
     {
         return this.status.toString();

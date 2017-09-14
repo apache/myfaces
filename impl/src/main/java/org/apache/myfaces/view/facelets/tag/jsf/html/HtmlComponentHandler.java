@@ -29,14 +29,12 @@ import javax.faces.view.facelets.MetaRuleset;
 public class HtmlComponentHandler extends ComponentHandler
 {
 
-    /**
-     * @param config
-     */
     public HtmlComponentHandler(ComponentConfig config)
     {
         super(config);
     }
 
+    @Override
     protected MetaRuleset createMetaRuleset(Class type)
     {
         return super.createMetaRuleset(type).alias("class", "styleClass");

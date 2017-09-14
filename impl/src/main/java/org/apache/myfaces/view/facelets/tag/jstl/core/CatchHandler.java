@@ -60,6 +60,7 @@ public final class CatchHandler extends TagHandler
         this.var = this.getAttribute("var");
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {

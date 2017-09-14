@@ -62,7 +62,6 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 public final class LegacyDecorateHandler extends TagHandler implements TemplateClient
 {
 
-    //private static final Logger log = Logger.getLogger("facelets.tag.ui.decorate");
     private static final Logger log = Logger.getLogger(DecorateHandler.class.getName());
 
     /**
@@ -120,6 +119,7 @@ public final class LegacyDecorateHandler extends TagHandler implements TemplateC
      * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext,
      * javax.faces.component.UIComponent)
      */
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
@@ -239,6 +239,7 @@ public final class LegacyDecorateHandler extends TagHandler implements TemplateC
         }
     }
 
+    @Override
     public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException, FacesException,
             FaceletException, ELException
     {

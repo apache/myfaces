@@ -96,6 +96,7 @@ public class SetHandler extends TagHandler
         this.property = this.getAttribute("property");
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {

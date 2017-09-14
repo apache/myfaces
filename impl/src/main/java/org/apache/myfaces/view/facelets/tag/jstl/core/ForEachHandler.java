@@ -78,16 +78,19 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
             this.len = Array.getLength(src);
         }
 
+        @Override
         public boolean hasNext()
         {
             return this.i < this.len;
         }
 
+        @Override
         public Object next()
         {
             return Array.get(this.array, this.i++);
         }
 
+        @Override
         public void remove()
         {
             throw new UnsupportedOperationException();
@@ -170,6 +173,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         }
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {

@@ -27,9 +27,6 @@ import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 public abstract class AbstractHtmlLibrary extends AbstractTagLibrary
 {
 
-    /**
-     * @param namespace
-     */
     public AbstractHtmlLibrary(String namespace)
     {
         super(namespace);

@@ -56,6 +56,7 @@ public class JspViewDeclarationLanguageStrategy implements ViewDeclarationLangua
     /**
      * {@inheritDoc}
      */
+    @Override
     public ViewDeclarationLanguage getViewDeclarationLanguage()
     {
         return _language;
@@ -64,6 +65,7 @@ public class JspViewDeclarationLanguageStrategy implements ViewDeclarationLangua
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean handles(String viewId)
     {
         for (String suffix : _suffixes)

@@ -27,9 +27,6 @@ import java.io.Serializable;
 public final class IterationStatus implements Serializable
 {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
     private final int index;
@@ -45,10 +42,7 @@ public final class IterationStatus implements Serializable
     private final Integer step;
     
     private final Object value;
-    
-    /**
-     * 
-     */
+
     public IterationStatus(boolean first, boolean last, int index, Integer begin, Integer end,
                            Integer step, Object value)
     {

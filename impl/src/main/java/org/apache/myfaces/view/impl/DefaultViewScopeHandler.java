@@ -99,6 +99,7 @@ public class DefaultViewScopeHandler extends ViewScopeProvider
         return Long.toString(nextToken, 36);
     }
     
+    @Override
     public void onSessionDestroyed()
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -128,6 +129,7 @@ public class DefaultViewScopeHandler extends ViewScopeProvider
         }
     }
     
+    @Override
     public Map<String, Object> createViewScopeMap(FacesContext facesContext, String viewScopeId)
     {
         String fullToken = VIEW_SCOPE_PREFIX_MAP + SEPARATOR_CHAR + viewScopeId + SEPARATOR_CHAR;
@@ -135,6 +137,7 @@ public class DefaultViewScopeHandler extends ViewScopeProvider
         return map;
     }
     
+    @Override
     public Map<String, Object> restoreViewScopeMap(FacesContext facesContext, String viewScopeId)
     {
         String fullToken = VIEW_SCOPE_PREFIX_MAP + SEPARATOR_CHAR + viewScopeId + SEPARATOR_CHAR;
@@ -150,6 +153,7 @@ public class DefaultViewScopeHandler extends ViewScopeProvider
         return new SubKeyMap<Object>(sessionMap, prefix);
     }
     
+    @Override
     public String generateViewScopeId(FacesContext facesContext)
     {
         // To ensure uniqueness in this part we use a counter that 

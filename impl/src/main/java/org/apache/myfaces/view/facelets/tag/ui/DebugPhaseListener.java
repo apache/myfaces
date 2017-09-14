@@ -282,16 +282,19 @@ public class DebugPhaseListener implements PhaseListener
     private PhaseId _currentPhase;
     private DebugVisitCallback _visitCallback = new DebugVisitCallback();
 
+    @Override
     public void afterPhase(PhaseEvent event)
     {
         _doTreeVisit(event, true);
     }
 
+    @Override
     public void beforePhase(PhaseEvent event)
     {
         _doTreeVisit(event, false);
     }
 
+    @Override
     public PhaseId getPhaseId()
     {
         return PhaseId.ANY_PHASE;

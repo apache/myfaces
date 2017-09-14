@@ -44,6 +44,7 @@ public class RepeatHandler extends ComponentHandler
         super(config);
     }
 
+    @Override
     protected MetaRuleset createMetaRuleset(Class type)
     {
         MetaRuleset meta = super.createMetaRuleset(type);
@@ -96,6 +97,7 @@ public class RepeatHandler extends ComponentHandler
             _attrs = names.toArray(new String[names.size()]);
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             UIComponent component = (UIComponent) instance;

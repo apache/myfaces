@@ -62,21 +62,25 @@ public class JstlFnLibrary implements TagLibrary
         }
     }
 
+    @Override
     public boolean containsNamespace(String ns)
     {
         return NAMESPACE.equals(ns) || ALIAS_NAMESPACE.equals(ns);
     }
 
+    @Override
     public boolean containsTagHandler(String ns, String localName)
     {
         return false;
     }
 
+    @Override
     public TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException
     {
         return null;
     }
 
+    @Override
     public boolean containsFunction(String ns, String name)
     {
         if (NAMESPACE.equals(ns) || ALIAS_NAMESPACE.equals(ns))
@@ -87,6 +91,7 @@ public class JstlFnLibrary implements TagLibrary
         return false;
     }
 
+    @Override
     public Method createFunction(String ns, String name)
     {
         if (NAMESPACE.equals(ns) || ALIAS_NAMESPACE.equals(ns))

@@ -48,6 +48,7 @@ public class HtmlOutputStylesheetHandler extends HtmlComponentHandler implements
         super(config);
     }
 
+    @Override
     public UIComponent findChildByTagId(FaceletContext ctx, UIComponent parent,
             String id)
     {

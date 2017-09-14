@@ -181,6 +181,7 @@ public class DefaultTagDecorator implements TagDecorator
     
     private static final TagDecoratorExecutor NO_MATCH_SELECTOR = new TagSelectorImpl(null, "jsf:element");
     
+    @Override
     public Tag decorate(Tag tag)
     {
         boolean jsfNamespaceFound = false;
@@ -504,6 +505,7 @@ public class DefaultTagDecorator implements TagDecorator
             }
         }
 
+        @Override
         public TagDecoratorExecutor getExecutorIfApplies(Tag tag)
         {
             if (attributeQName != null)
@@ -576,6 +578,7 @@ public class DefaultTagDecorator implements TagDecorator
             }
         }
         
+        @Override
         public Tag decorate(Tag orig, TagAttributes attributes)
         {
             return new Tag(orig.getLocation(), this.targetNamespace, 

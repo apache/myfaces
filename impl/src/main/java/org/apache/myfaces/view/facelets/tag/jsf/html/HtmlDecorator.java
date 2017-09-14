@@ -36,19 +36,12 @@ public final class HtmlDecorator implements TagDecorator
 
     public final static HtmlDecorator INSTANCE = new HtmlDecorator();
 
-    /**
-     * 
-     */
     public HtmlDecorator()
     {
         super();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.myfaces.view.facelets.tag.TagDecorator#decorate(org.apache.myfaces.view.facelets.tag.Tag)
-     */
+    @Override
     public Tag decorate(Tag tag)
     {
         if (XHTML_NAMESPACE.equals(tag.getNamespace()))

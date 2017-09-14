@@ -37,17 +37,10 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
         defaultRendererType="javax.faces.resource.Stylesheet")
 abstract class _HtmlOutputStylesheet extends UIOutput
 {
-    /**
-     * 
-     * @return
-     */
+
     @JSFProperty
     public abstract String getLibrary();
-    
-    /**
-     * 
-     * @return
-     */
+
     @JSFProperty(required = true)
     public abstract String getName();
 

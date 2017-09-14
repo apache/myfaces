@@ -38,25 +38,12 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 abstract class _HtmlOutputScript extends UIOutput
 {
 
-    /**
-     * 
-     * @return
-     */
     @JSFProperty
     public abstract String getLibrary();
-    
 
-    /**
-     * 
-     * @return
-     */
     @JSFProperty(required = true)
     public abstract String getName();
 
-    /**
-     * 
-     * @return
-     */
     @JSFProperty
     public abstract String getTarget();
 }

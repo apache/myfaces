@@ -47,6 +47,7 @@ public final class ChooseOtherwiseHandler extends TagHandler
         super(config);
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {

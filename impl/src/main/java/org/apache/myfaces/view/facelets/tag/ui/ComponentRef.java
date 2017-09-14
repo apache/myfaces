@@ -35,6 +35,7 @@ public final class ComponentRef extends UIComponentBase
         super();
     }
 
+    @Override
     public String getFamily()
     {
         return COMPONENT_FAMILY;

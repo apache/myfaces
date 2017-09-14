@@ -57,6 +57,7 @@ public final class ChooseWhenHandler extends TagHandler implements ComponentCont
         this.test = this.getRequiredAttribute("test");
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {

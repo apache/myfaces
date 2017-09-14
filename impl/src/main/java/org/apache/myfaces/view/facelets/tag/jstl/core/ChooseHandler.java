@@ -84,6 +84,7 @@ public final class ChooseHandler extends TagHandler implements ComponentContaine
         }
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {

@@ -78,6 +78,7 @@ public final class IfHandler extends TagHandler implements ComponentContainerHan
         this.var = this.getAttribute("var");
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, ELException
     {
         FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);

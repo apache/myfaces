@@ -72,11 +72,13 @@ public final class UIDebug extends UIComponentBase
         setRendererType(null);
     }
 
+    @Override
     public String getFamily()
     {
         return COMPONENT_FAMILY;
     }
 
+    @Override
     public List<UIComponent> getChildren()
     {
         return new ArrayList<UIComponent>()

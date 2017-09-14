@@ -48,6 +48,7 @@ public class HtmlOutputScriptHandler extends HtmlComponentHandler implements Rel
         super(config);
     }
 
+    @Override
     public UIComponent findChildByTagId(FaceletContext ctx, UIComponent parent,
             String id)
     {

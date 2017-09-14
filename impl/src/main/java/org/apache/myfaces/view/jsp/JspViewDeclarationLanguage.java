@@ -54,7 +54,6 @@ import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
  */
 public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
 {
-    //private static final Log log = LogFactory.getLog(JspViewDeclarationLanguage.class);
     public static final Logger log = Logger.getLogger(JspViewDeclarationLanguage.class.getName());
     
     /**
@@ -246,6 +245,7 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
         }
     }
 
+    @Override
     public boolean viewExists(FacesContext facesContext, String viewId)
     {
         if (_strategy.handles(viewId))
