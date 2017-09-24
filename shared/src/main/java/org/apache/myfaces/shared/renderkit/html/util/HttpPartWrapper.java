@@ -101,7 +101,7 @@ public class HttpPartWrapper implements Part, FacesWrapper<Part>, StateHolder
         Part wrapped = getWrapped();
         try
         {
-            Method m = wrapped.getClass().getMethod("getSubmittedFileName");
+            Method m = Part.class.getMethod("getSubmittedFileName");
             return (String) m.invoke(wrapped);
         }
         catch (NoSuchMethodException | SecurityException | IllegalAccessException
