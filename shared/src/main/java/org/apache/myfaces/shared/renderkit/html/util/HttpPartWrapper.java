@@ -42,46 +42,55 @@ public class HttpPartWrapper implements Part, FacesWrapper<Part>, StateHolder
         this.delegate = delegate;
     }
 
+    @Override
     public void delete() throws IOException
     {
         getWrapped().delete();
     }
 
+    @Override
     public String getContentType()
     {
         return getWrapped().getContentType();
     }
 
+    @Override
     public String getHeader(String headerName)
     {
         return getWrapped().getHeader(headerName);
     }
 
+    @Override
     public Collection<String> getHeaderNames()
     {
         return getWrapped().getHeaderNames();
     }
 
+    @Override
     public Collection<String> getHeaders(String headerName)
     {
         return getWrapped().getHeaders(headerName);
     }
 
+    @Override
     public InputStream getInputStream() throws IOException
     {
         return getWrapped().getInputStream();
     }
 
+    @Override
     public String getName()
     {
         return getWrapped().getName();
     }
 
+    @Override
     public long getSize()
     {
         return getWrapped().getSize();
     }
 
+    @Override
     public void write(String fileName) throws IOException
     {
         getWrapped().write(fileName);
@@ -95,46 +104,36 @@ public class HttpPartWrapper implements Part, FacesWrapper<Part>, StateHolder
             Method m = wrapped.getClass().getMethod("getSubmittedFileName");
             return (String) m.invoke(wrapped);
         }
-        catch (NoSuchMethodException ex)
-        {
-            throw new FacesException(ex);
-        }
-        catch (SecurityException ex)
-        {
-            throw new FacesException(ex);
-        } 
-        catch (IllegalAccessException ex)
-        {
-            throw new FacesException(ex);
-        } 
-        catch (IllegalArgumentException ex)
-        {
-            throw new FacesException(ex);
-        }
-        catch (InvocationTargetException ex)
+        catch (NoSuchMethodException | SecurityException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException ex)
         {
             throw new FacesException(ex);
         }
     }
 
+    @Override
     public Object saveState(FacesContext context)
     {
         return null;
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state)
     {
     }
 
+    @Override
     public boolean isTransient()
     {
         return true;
     }
 
+    @Override
     public void setTransient(boolean newTransientValue)
     {
     }
 
+    @Override
     public Part getWrapped()
     {
         return delegate;
