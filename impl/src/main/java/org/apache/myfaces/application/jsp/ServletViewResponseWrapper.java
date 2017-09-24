@@ -32,6 +32,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import javax.servlet.WriteListener;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -225,6 +226,18 @@ public class ServletViewResponseWrapper extends HttpServletResponseWrapper imple
         public void reset()
         {
             _byteArrayOutputStream.reset();
+        }
+
+        @Override
+        public boolean isReady()
+        {
+            return true;
+        }
+
+        @Override
+        public void setWriteListener(WriteListener wl)
+        {
+            
         }
         
         /**

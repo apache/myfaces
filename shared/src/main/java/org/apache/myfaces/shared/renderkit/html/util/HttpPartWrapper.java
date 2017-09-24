@@ -20,10 +20,7 @@ package org.apache.myfaces.shared.renderkit.html.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collection;
-import javax.faces.FacesException;
 import javax.faces.FacesWrapper;
 import javax.faces.component.StateHolder;
 import javax.faces.context.FacesContext;
@@ -96,19 +93,10 @@ public class HttpPartWrapper implements Part, FacesWrapper<Part>, StateHolder
         getWrapped().write(fileName);
     }
     
+    @Override
     public String getSubmittedFileName()
     {
-        Part wrapped = getWrapped();
-        try
-        {
-            Method m = Part.class.getMethod("getSubmittedFileName");
-            return (String) m.invoke(wrapped);
-        }
-        catch (NoSuchMethodException | SecurityException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException ex)
-        {
-            throw new FacesException(ex);
-        }
+        return getWrapped().getSubmittedFileName();
     }
 
     @Override

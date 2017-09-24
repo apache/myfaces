@@ -383,11 +383,11 @@
 
             <!-- SPEC DEPENDENCIES -->
 
-            <!-- Servlet 3.0 (for ee6) -->
+            <!-- Servlet 3.1 -->
             <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-servlet_3.0_spec</artifactId>
-                <version>1.0</version>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-servlet-api</artifactId>
+                <version>8.5.21</version>
                 <scope>provided</scope>
             </dependency>
 

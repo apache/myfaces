@@ -46,10 +46,10 @@
             <artifactId>myfaces-api</artifactId>
         </dependency>
 
-        <!-- Servlet 3.0 -->
+        <!-- Servlet 3.1 -->
         <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-servlet_3.0_spec</artifactId>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-servlet-api</artifactId>
         </dependency>
 
         <!-- JSP 2.1 -->

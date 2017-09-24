@@ -19,9 +19,9 @@
 package org.apache.myfaces.shared.view;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 
 /**
  * Delegates the standard OutputStream-methods (close, flush, write)
@@ -30,7 +30,7 @@ import javax.servlet.ServletOutputStream;
 class SwitchableOutputStream extends ServletOutputStream
 {
 
-    OutputStream _delegate = null;
+    ServletOutputStream _delegate = null;
     ResponseSwitch _responseSwitch = null;
 
     public SwitchableOutputStream(ServletOutputStream delegate, ResponseSwitch responseSwitch)
@@ -81,6 +81,26 @@ class SwitchableOutputStream extends ServletOutputStream
         if (_responseSwitch.isEnabled())
         {
             _delegate.write(b);
+        }
+    }
+
+    @Override
+    public boolean isReady()
+    {
+        if (_responseSwitch.isEnabled())
+        {
+            return _delegate.isReady();
+        }
+        
+        return true;
+    }
+
+    @Override
+    public void setWriteListener(WriteListener wl)
+    {
+        if (_responseSwitch.isEnabled())
+        {
+            _delegate.setWriteListener(wl);
         }
     }
     

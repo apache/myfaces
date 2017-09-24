@@ -26,6 +26,7 @@ import javax.faces.context.ResponseWriter;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
 import javax.servlet.ServletResponseWrapper;
+import javax.servlet.WriteListener;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
@@ -132,6 +133,18 @@ public class ResponseWrapperSwitchTest extends AbstractJsfTestCase {
         @Override
         public void write(int arg0) throws IOException {
             _bos.write(arg0);
+        }
+
+        @Override
+        public boolean isReady()
+        {
+            return true;
+        }
+
+        @Override
+        public void setWriteListener(WriteListener wl)
+        {
+
         }
     }
 
