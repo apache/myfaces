@@ -164,13 +164,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
             //spec jsdoc, the success event must be sent from response
             _Impl.sendEvent(request, context, _Impl["SUCCESS"]);
-        } catch (e) {
 
-            if (window.console && window.console.error) {
-                //any error should be logged
-                console.error(e);
-            }
-            throw e;
         } finally {
             delete mfInternal._updateElems;
             delete mfInternal._updateForms;
