@@ -164,7 +164,13 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
             //spec jsdoc, the success event must be sent from response
             _Impl.sendEvent(request, context, _Impl["SUCCESS"]);
+        } catch (e) {
 
+            if (window.console && window.console.error) {
+                //any error should be logged
+                console.error(e);
+            }
+            throw e;
         } finally {
             delete mfInternal._updateElems;
             delete mfInternal._updateForms;
@@ -299,13 +305,13 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         //because just updating the render targets under one viewroot and the issuing form
         //again would leave broken viewstates
         var viewRoot = this._getViewRoot(context);
-        var forms = viewRoot.getElementsByTagName("form") || [];
+        var forms = this._Dom.findByTagNames(viewRoot, {"form": 1}) || [];
 
-        _Lang.arrForEach(forms, _Lang.hitch(this, function (elem) {
+        this._Lang.arrForEach(forms, this._Lang.hitch(this, function (elem) {
             //update all forms which start with prefix (all render and execute targets
-            if (elem.id && elem.id.indexOf(prefix) == 0) {
+
                 this._applyJSFArtifactValueToForm(context, elem, value, identifier);
-            }
+
         }));
     },
 
@@ -314,7 +320,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         if (prefix == "") {
             return document.getElementsByTagName("body")[0];
         }
-        prefix = prefix.substr(0, prefix.length() - 1);
+        prefix = prefix.substr(0, prefix.length - 1);
         var viewRoot = document.getElementById(prefix);
         if (viewRoot) {
             return viewRoot;
@@ -841,5 +847,4 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
         return this._Lang.makeException(error, finalTitle, finalName, this._nameSpace, caller || ( (arguments.caller) ? arguments.caller.toString() : "_raiseError"), finalMessage);
     }
-})
-;
+});
