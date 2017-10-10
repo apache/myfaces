@@ -458,8 +458,8 @@ public final class HtmlJavaScriptUtils
                     .getRequestParameterMap().get(AUTO_SCROLL_PARAM);
             if (scrolling != null && scrolling.length() > 0)
             {
-                int x = 0;
-                int y = 0;
+                double x = 0;
+                double y = 0;
                 int comma = scrolling.indexOf(',');
                 if (comma == -1)
                 {
@@ -470,8 +470,8 @@ public final class HtmlJavaScriptUtils
                 {
                     try
                     {
-                        //we convert to int against XSS vulnerability
-                        x = Integer.parseInt(scrolling.substring(0, comma));
+                        //we convert to double against XSS vulnerability
+                        x = Double.parseDouble(scrolling.substring(0, comma));
                     }
                     catch (NumberFormatException e)
                     {
@@ -492,8 +492,8 @@ public final class HtmlJavaScriptUtils
                         y = 0; //ignore false numbers
                     }
                 }
-                script.append("window.scrollTo(").append(x).append(",")
-                        .append(y).append(");\n");
+                script.append("window.scrollTo(").append(String.valueOf(x)).append(",")
+                        .append(String.valueOf(y)).append(");\n");
             }
         }
 
