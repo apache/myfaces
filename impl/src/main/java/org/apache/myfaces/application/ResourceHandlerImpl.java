@@ -139,6 +139,10 @@ public class ResourceHandlerImpl extends ResourceHandler
     {
         Resource resource = null;
         
+        if (resourceName == null || resourceName.length() == 0) 
+        {
+            return null;
+        }
         if (resourceName.charAt(0) == '/')
         {
             // If resourceName starts with '/', remove that character because it
