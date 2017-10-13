@@ -21,18 +21,14 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
 import java.util.Set;
-import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlCommandScript;
@@ -59,6 +55,9 @@ import org.apache.myfaces.shared.util.StringUtils;
     type="javax.faces.Script")
 public class HtmlCommandScriptRenderer extends HtmlRenderer
 {
+    private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
+            EnumSet.of(SearchExpressionHint.RESOLVE_CLIENT_SIDE, SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
+    
     private static final String AJAX_KEY_ONERROR = "onerror";
     private static final String AJAX_KEY_ONEVENT = "onevent";
     private static final String AJAX_KEY_EXECUTE = "execute";
@@ -68,26 +67,14 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
 
     private static final String AJAX_VAL_THIS = "this";
     private static final String JS_AJAX_REQUEST = "jsf.ajax.request";
-
-    private static final String ERR_NO_AJAX_BEHAVIOR = "The behavior must be an instance of AjaxBehavior";
     
     private static final String AJAX_SB = "oam.renderkit.AJAX_SB";
     private static final String AJAX_PARAM_SB = "oam.renderkit.AJAX_PARAM_SB";
     
-    private static final String VAL_FORM = "@form";
-    private static final String VAL_ALL = "@all";
-    private static final String VAL_THIS = "@this";
-    private static final String VAL_NONE = "@none";
-
-    private static final Collection<String> VAL_FORM_LIST = Collections.singletonList(VAL_FORM);
-    private static final Collection<String> VAL_ALL_LIST = Collections.singletonList(VAL_ALL);
-    private static final Collection<String> VAL_THIS_LIST = Collections.singletonList(VAL_THIS);
-    private static final Collection<String> VAL_NONE_LIST = Collections.singletonList(VAL_NONE);
-    
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException
     {
-        super.encodeBegin(context, component); //
+        super.encodeBegin(context, component);
 
         HtmlCommandScript commandScript = (HtmlCommandScript) component;
         ResponseWriter writer = context.getResponseWriter();
@@ -118,9 +105,8 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         script.append("var "+name+" = function(o){var o=(typeof o==='object')&&o?o:{};");
         script.prettyLine();
         
+        // TODO ajaxBehavior not required actually....
         AjaxBehavior ajaxBehavior = new AjaxBehavior();
-        ajaxBehavior.setExecute(getCollectionFromSpaceSplitString(commandScript.getExecute()));
-        ajaxBehavior.setRender(getCollectionFromSpaceSplitString(commandScript.getRender()));
         Boolean resetValues = commandScript.getResetValues();
         if (resetValues != null)
         {
@@ -128,7 +114,6 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         }
         ajaxBehavior.setOnerror(commandScript.getOnerror());
         ajaxBehavior.setOnevent(commandScript.getOnevent());
-        ajaxBehavior.setDelay(commandScript.getOnevent());
         
         Collection<ClientBehaviorContext.Parameter> eventParameters = new ArrayList<>();
         //eventParameters.add(new ClientBehaviorContext.Parameter("params", "o"));
@@ -136,7 +121,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                                     context, component, "action",
                                     commandScript.getClientId(context), eventParameters);
         
-        script.append(makeAjax(ccc, ajaxBehavior).toString());
+        script.append(makeAjax(ccc, ajaxBehavior, commandScript).toString());
         script.decreaseIndent();
         script.append("}");
         
@@ -173,17 +158,14 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
             return;
         }
         
-        Map<String, String> paramMap = facesContext
-                .getExternalContext().getRequestParameterMap();
-        String behaviorEventName = paramMap
-                .get(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME);
+        Map<String, String> paramMap = facesContext.getExternalContext().getRequestParameterMap();
+        String behaviorEventName = paramMap.get(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME);
         if (behaviorEventName != null)
         {
             String sourceId = paramMap.get(ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME);
             String componentClientId = component.getClientId(facesContext);
             String clientId = sourceId;
-            if (sourceId.startsWith(componentClientId) &&
-                sourceId.length() > componentClientId.length())
+            if (sourceId.startsWith(componentClientId) && sourceId.length() > componentClientId.length())
             {
                 String item = sourceId.substring(componentClientId.length()+1);
                 // If is item it should be an integer number, otherwise it can be related to a child 
@@ -215,25 +197,10 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                 }
             }
         }
-        if (component instanceof ClientBehaviorHolder &&
-                !HtmlRendererUtils.isDisabled(component))
+        if (component instanceof ClientBehaviorHolder && !HtmlRendererUtils.isDisabled(component))
         {
             HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
         }
-    }
-
-    public String getScript(ClientBehaviorContext behaviorContext,
-                            ClientBehavior behavior)
-    {
-        assertBehavior(behavior);
-        AjaxBehavior ajaxBehavior = (AjaxBehavior) behavior;
-
-        if (ajaxBehavior.isDisabled())
-        {
-            return null;
-        }
-
-        return makeAjax(behaviorContext, ajaxBehavior).toString();
     }
 
     /**
@@ -242,15 +209,22 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
      *
      * @param context  the Client behavior context
      * @param behavior the behavior
+     * @param commandScript the component
      * @return a fully working javascript with calls into jsf.js
      */
-    private StringBuilder makeAjax(ClientBehaviorContext context, AjaxBehavior behavior)
+    private StringBuilder makeAjax(ClientBehaviorContext context, AjaxBehavior behavior,
+            HtmlCommandScript commandScript)
     {
         StringBuilder retVal = SharedStringBuilder.get(context.getFacesContext(), AJAX_SB, 60);
         StringBuilder paramBuffer = SharedStringBuilder.get(context.getFacesContext(), AJAX_PARAM_SB, 20);
-
-        String executes = mapToString(context, paramBuffer, AJAX_KEY_EXECUTE, behavior.getExecute());
-        String render = mapToString(context, paramBuffer, AJAX_KEY_RENDER, behavior.getRender());
+    
+        SearchExpressionContext searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
+                            context.getFacesContext(), context.getComponent(), EXPRESSION_HINTS, null);
+        
+        String executes = resolveExpressionsAsParameter(paramBuffer, AJAX_KEY_EXECUTE, commandScript.getExecute(),
+                searchExpressionContext);
+        String render = resolveExpressionsAsParameter(paramBuffer, AJAX_KEY_RENDER, commandScript.getRender(),
+                searchExpressionContext);
 
         String onError = behavior.getOnerror();
         if (onError != null && !onError.trim().isEmpty())
@@ -349,9 +323,8 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                 {
                     // set the clientId of the component so the behavior can be decoded later,
                     // otherwise the behavior will fail
-                    List<String> list = new ArrayList<>();
-                    list.add(context.getComponent().getClientId(context.getFacesContext()));
-                    executes = mapToString(context, paramBuffer, AJAX_KEY_EXECUTE, list);
+                    executes = resolveExpressionsAsParameter(paramBuffer, AJAX_KEY_EXECUTE,
+                            context.getComponent().getClientId(context.getFacesContext()), searchExpressionContext);
                 }
             }
         }
@@ -483,128 +456,37 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         return retVal;
     }
 
-    private String mapToString(ClientBehaviorContext context, StringBuilder retVal,
-            String target, Collection<String> dataHolder)
+    private String resolveExpressionsAsParameter(StringBuilder retVal, String target, String expressions,
+            SearchExpressionContext searchExpressionContext)
     {
-        //Clear buffer
-        retVal.setLength(0);
-
-        if (dataHolder == null)
+        if (expressions != null && !expressions.trim().isEmpty())
         {
-            dataHolder = Collections.emptyList();
-        }
-        
-        int executeSize = dataHolder.size();
-        if (executeSize > 0)
-        {
+            retVal.setLength(0);
             retVal.append(target);
             retVal.append(':');
             retVal.append('\'');
 
-            int cnt = 0;
-
-            SearchExpressionContext searchExpressionContext = null;
+            SearchExpressionHandler handler =
+                    searchExpressionContext.getFacesContext().getApplication().getSearchExpressionHandler();
+            List<String> clientIds =
+                    handler.resolveClientIds(searchExpressionContext, expressions);
             
-            // perf: dataHolder is a Collection : ajaxBehaviour.getExecute()
-            // and ajaxBehaviour.getRender() API
-            // In most cases comes here a ArrayList, because
-            // javax.faces.component.behavior.AjaxBehavior.getCollectionFromSpaceSplitString
-            // creates it.
-            if (dataHolder instanceof RandomAccess)
+            if (clientIds != null && !clientIds.isEmpty())
             {
-                List<String> list = (List<String>) dataHolder;
-                for (; cnt  < executeSize; cnt++)
+                for (int i = 0; i < clientIds.size(); i++)
                 {
-                    if (searchExpressionContext == null)
+                    if (i > 0)
                     {
-                        searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
-                                context.getFacesContext(), context.getComponent(), EXPRESSION_HINTS, null);
+                        retVal.append(' ');
                     }
-                    
-                    String strVal = list.get(cnt);
-                    build(context, executeSize, retVal, cnt, strVal, searchExpressionContext);
+                    retVal.append(clientIds.get(i));
                 }
             }
-            else
-            {
-                for (String strVal : dataHolder)
-                {
-                    if (searchExpressionContext == null)
-                    {
-                        searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
-                                context.getFacesContext(), context.getComponent(), EXPRESSION_HINTS, null);
-                    }
-                    
-                    cnt++;
-                    build(context, executeSize, retVal, cnt, strVal, searchExpressionContext);
-                }
-            }
-
+            
             retVal.append('\'');
             return retVal.toString();
         }
+
         return null;
-
-    }
-
-    private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
-            EnumSet.of(SearchExpressionHint.RESOLVE_CLIENT_SIDE, SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
-    
-    protected void build(ClientBehaviorContext context,
-            int size, StringBuilder retVal, int cnt,
-            String strVal, SearchExpressionContext searchExpressionContext)
-    {
-        strVal = strVal.trim();
-        if (!strVal.isEmpty())
-        {
-            SearchExpressionHandler handler = context.getFacesContext().getApplication().getSearchExpressionHandler();
-            String clientId = handler.resolveClientId(searchExpressionContext, strVal);
-            retVal.append(clientId);
-            if (cnt < size)
-            {
-                retVal.append(' ');
-            }
-        }
-    }
-
-    private void assertBehavior(ClientBehavior behavior)
-    {
-        if (!(behavior instanceof AjaxBehavior))
-        {
-            throw new FacesException(ERR_NO_AJAX_BEHAVIOR);
-        }
-    }
-    
-    /**
-     * Splits the String based on spaces and returns the 
-     * resulting Strings as Collection.
-     * @param stringValue
-     * @return
-     */
-    private Collection<String> getCollectionFromSpaceSplitString(String stringValue)
-    {
-        if (stringValue == null || stringValue.trim().isEmpty())
-        {
-            return Collections.emptyList();
-        }
-        
-        //@special handling for @all, @none, @form and @this
-        switch (stringValue)
-        {
-            case VAL_FORM:
-                return VAL_FORM_LIST;
-            case VAL_ALL:
-                return VAL_ALL_LIST;
-            case VAL_NONE:
-                return VAL_NONE_LIST;
-            case VAL_THIS:
-                return VAL_THIS_LIST;
-            default:
-                break; 
-        }
-
-        // not one of the "normal" values - split it and return the Collection
-        String[] arrValue = stringValue.split(" ");
-        return Arrays.asList(arrValue);
     }
 }
