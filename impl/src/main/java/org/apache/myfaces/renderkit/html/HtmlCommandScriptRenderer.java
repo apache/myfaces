@@ -30,8 +30,6 @@ import java.util.Map;
 import java.util.RandomAccess;
 import java.util.Set;
 import javax.faces.FacesException;
-import javax.faces.component.ActionSource;
-import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.behavior.ClientBehavior;
@@ -44,8 +42,6 @@ import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.ActionEvent;
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.event.PhaseId;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.HTML;
@@ -57,18 +53,12 @@ import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 import org.apache.myfaces.shared.util.StringUtils;
 
-/**
- *
- */
 @JSFRenderer(
     renderKitId="HTML_BASIC",
     family="javax.faces.Command",
     type="javax.faces.Script")
 public class HtmlCommandScriptRenderer extends HtmlRenderer
 {
-    private static final String QUOTE = "'";
-    private static final String BLANK = " ";
-
     private static final String AJAX_KEY_ONERROR = "onerror";
     private static final String AJAX_KEY_ONEVENT = "onevent";
     private static final String AJAX_KEY_EXECUTE = "execute";
@@ -77,21 +67,9 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
     private static final String AJAX_KEY_RESETVALUES = "resetValues";
 
     private static final String AJAX_VAL_THIS = "this";
-    private static final String AJAX_VAL_EVENT = "event";
     private static final String JS_AJAX_REQUEST = "jsf.ajax.request";
 
-    private static final String COLON = ":";
-    private static final String EMPTY = "";
-    private static final String COMMA = ",";
-
     private static final String ERR_NO_AJAX_BEHAVIOR = "The behavior must be an instance of AjaxBehavior";
-    private static final String L_PAREN = "(";
-    private static final String R_PAREN = ")";
-
-    /*if this marker is present in the request we have to dispatch a behavior event*/
-    /*if an attached behavior triggers an ajax request this request param must be added*/
-    private static final String BEHAVIOR_EVENT = "javax.faces.behavior.event";
-    private static final String IDENTIFYER_MARKER = "@";
     
     private static final String AJAX_SB = "oam.renderkit.AJAX_SB";
     private static final String AJAX_PARAM_SB = "oam.renderkit.AJAX_PARAM_SB";
@@ -152,7 +130,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         ajaxBehavior.setOnevent(commandScript.getOnevent());
         ajaxBehavior.setDelay(commandScript.getOnevent());
         
-        Collection<ClientBehaviorContext.Parameter> eventParameters = new ArrayList<ClientBehaviorContext.Parameter>();
+        Collection<ClientBehaviorContext.Parameter> eventParameters = new ArrayList<>();
         //eventParameters.add(new ClientBehaviorContext.Parameter("params", "o"));
         ClientBehaviorContext ccc = ClientBehaviorContext.createClientBehaviorContext(
                                     context, component, "action",
@@ -244,20 +222,6 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         }
     }
 
-    /*
-    public void decode(FacesContext context, UIComponent component,
-                       ClientBehavior behavior)
-    {
-        assertBehavior(behavior);
-        AjaxBehavior ajaxBehavior = (AjaxBehavior) behavior;
-        if (ajaxBehavior.isDisabled() || !component.isRendered())
-        {
-            return;
-        }
-
-        dispatchBehaviorEvent(component, ajaxBehavior);
-    }*/
-
     public String getScript(ClientBehaviorContext behaviorContext,
                             ClientBehavior behavior)
     {
@@ -272,43 +236,6 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         return makeAjax(behaviorContext, ajaxBehavior).toString();
     }
 
-    private final void dispatchBehaviorEvent(UIComponent component, AjaxBehavior ajaxBehavior)
-    {
-        AjaxBehaviorEvent event = new AjaxBehaviorEvent(component, ajaxBehavior);
-
-        boolean isImmediate = false;
-        if (ajaxBehavior.isImmediateSet())
-        {
-            isImmediate = ajaxBehavior.isImmediate();
-        }
-        else
-        {
-            isImmediate = isComponentImmediate(component);
-        }
-        PhaseId phaseId = isImmediate ?
-                PhaseId.APPLY_REQUEST_VALUES :
-                PhaseId.INVOKE_APPLICATION;
-
-        event.setPhaseId(phaseId);
-
-        component.queueEvent(event);
-    }
-
-    private final boolean isComponentImmediate(UIComponent component)
-    {
-        boolean isImmediate = false;
-        if (component instanceof EditableValueHolder)
-        {
-            isImmediate = ((EditableValueHolder)component).isImmediate();
-        }
-        else if (component instanceof ActionSource)
-        {
-            isImmediate = ((ActionSource)component).isImmediate();
-        }
-        return isImmediate;
-    }
-
-
     /**
      * builds the generic ajax call depending upon
      * the ajax behavior parameters
@@ -317,7 +244,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
      * @param behavior the behavior
      * @return a fully working javascript with calls into jsf.js
      */
-    private final StringBuilder makeAjax(ClientBehaviorContext context, AjaxBehavior behavior)
+    private StringBuilder makeAjax(ClientBehaviorContext context, AjaxBehavior behavior)
     {
         StringBuilder retVal = SharedStringBuilder.get(context.getFacesContext(), AJAX_SB, 60);
         StringBuilder paramBuffer = SharedStringBuilder.get(context.getFacesContext(), AJAX_PARAM_SB, 20);
@@ -326,12 +253,12 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         String render = mapToString(context, paramBuffer, AJAX_KEY_RENDER, behavior.getRender());
 
         String onError = behavior.getOnerror();
-        if (onError != null && !onError.trim().equals(EMPTY))
+        if (onError != null && !onError.trim().isEmpty())
         {
             //onError = AJAX_KEY_ONERROR + COLON + onError;
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_ONERROR);
-            paramBuffer.append(COLON);
+            paramBuffer.append(':');
             paramBuffer.append(onError);
             onError = paramBuffer.toString();
         }
@@ -340,11 +267,11 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
             onError = null;
         }
         String onEvent = behavior.getOnevent();
-        if (onEvent != null && !onEvent.trim().equals(EMPTY))
+        if (onEvent != null && !onEvent.trim().isEmpty())
         {
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_ONEVENT);
-            paramBuffer.append(COLON);
+            paramBuffer.append(':');
             paramBuffer.append(onEvent);
             onEvent = paramBuffer.toString();
         }
@@ -352,15 +279,13 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         {
             onEvent = null;
         }
-        /*
-         * since version 2.2
-         */
+
         String delay = behavior.getDelay();
-        if (delay != null && !delay.trim().equals(EMPTY))
+        if (delay != null && !delay.trim().isEmpty())
         {
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_DELAY);
-            paramBuffer.append(COLON);
+            paramBuffer.append(':');
             if ("none".equals(delay))
             {
                 paramBuffer.append('\'');
@@ -377,15 +302,13 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         {
             delay = null;
         }
-        /*
-         * since version 2.2
-         */
+
         String resetValues = Boolean.toString(behavior.isResetValues());
         if (resetValues.equals("true"))
         {
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_RESETVALUES);
-            paramBuffer.append(COLON);
+            paramBuffer.append(':');
             paramBuffer.append(resetValues);
             resetValues = paramBuffer.toString();
         }
@@ -426,32 +349,24 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                 {
                     // set the clientId of the component so the behavior can be decoded later,
                     // otherwise the behavior will fail
-                    List<String> list = new ArrayList<String>();
+                    List<String> list = new ArrayList<>();
                     list.add(context.getComponent().getClientId(context.getFacesContext()));
                     executes = mapToString(context, paramBuffer, AJAX_KEY_EXECUTE, list);
                 }
             }
         }
 
-
         String event = context.getEventName();
 
         retVal.append(JS_AJAX_REQUEST);
-        retVal.append(L_PAREN);
+        retVal.append('(');
         retVal.append(sourceId);
-        retVal.append(COMMA);
-        //retVal.append(AJAX_VAL_EVENT);
-        retVal.append("window.event");
-        retVal.append(COMMA);
-
-        
-        retVal.append("myfaces._impl._util._Lang.mixMaps");
-        retVal.append(L_PAREN);
+        retVal.append(",window.event,myfaces._impl._util._Lang.mixMaps(");
         
         Collection<ClientBehaviorContext.Parameter> params = context.getParameters();
         int paramSize = (params != null) ? params.size() : 0;
 
-        List<String> parameterList = new ArrayList<String>(paramSize + 2);
+        List<String> parameterList = new ArrayList<>(paramSize + 2);
         if (executes != null)
         {
             parameterList.add(executes);
@@ -468,16 +383,10 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         {
             parameterList.add(onEvent);
         }
-        /*
-         * since version 2.2
-         */
         if (delay != null)
         {
             parameterList.add(delay);
         }
-        /*
-         * since version 2.2
-         */
         if (resetValues != null)
         {
             parameterList.add(resetValues);
@@ -508,15 +417,12 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
             }
         }
 
-        //parameterList.add(QUOTE + BEHAVIOR_EVENT + QUOTE + COLON + QUOTE + event + QUOTE);
         paramBuffer.setLength(0);
-        paramBuffer.append(QUOTE);
+        paramBuffer.append('\'');
         paramBuffer.append(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME);
-        paramBuffer.append(QUOTE);
-        paramBuffer.append(COLON);
-        paramBuffer.append(QUOTE);
+        paramBuffer.append("\':\'");
         paramBuffer.append(event);
-        paramBuffer.append(QUOTE);
+        paramBuffer.append('\'');
         parameterList.add(paramBuffer.toString());
 
         /**
@@ -527,14 +433,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         retVal.append(buildOptions(paramBuffer, parameterList));
 
         //mixMaps
-        retVal.append(COMMA);
-        retVal.append("o");
-        retVal.append(COMMA);
-        retVal.append("false");
-        
-        retVal.append(R_PAREN);
-        
-        retVal.append(R_PAREN);
+        retVal.append(",o,false))");
 
         return retVal;
     }
@@ -547,13 +446,11 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         //and the rest is up to the toString properly implemented
         //ANS: Both name and value should be quoted
         paramBuffer.setLength(0);
-        paramBuffer.append(QUOTE);
+        paramBuffer.append('\'');
         paramBuffer.append(param.getName());
-        paramBuffer.append(QUOTE);
-        paramBuffer.append(COLON);
-        paramBuffer.append(QUOTE);
+        paramBuffer.append("\':\'");
         paramBuffer.append(param.getValue().toString());
-        paramBuffer.append(QUOTE);
+        paramBuffer.append('\'');
         parameterList.add(paramBuffer.toString());
     }
 
@@ -569,11 +466,11 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         for (int i = 0, size = options.size(); i < size; i++)
         {
             String option = options.get(i);
-            if (option != null && !option.trim().equals(EMPTY))
+            if (option != null && !option.trim().isEmpty())
             {
                 if (!first)
                 {
-                    retVal.append(COMMA);
+                    retVal.append(':');
                 }
                 else
                 {
@@ -586,7 +483,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         return retVal;
     }
 
-    private final String mapToString(ClientBehaviorContext context, StringBuilder retVal,
+    private String mapToString(ClientBehaviorContext context, StringBuilder retVal,
             String target, Collection<String> dataHolder)
     {
         //Clear buffer
@@ -596,13 +493,13 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         {
             dataHolder = Collections.emptyList();
         }
+        
         int executeSize = dataHolder.size();
         if (executeSize > 0)
         {
-
             retVal.append(target);
-            retVal.append(COLON);
-            retVal.append(QUOTE);
+            retVal.append(':');
+            retVal.append('\'');
 
             int cnt = 0;
 
@@ -643,7 +540,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                 }
             }
 
-            retVal.append(QUOTE);
+            retVal.append('\'');
             return retVal.toString();
         }
         return null;
@@ -653,19 +550,19 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
     private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
             EnumSet.of(SearchExpressionHint.RESOLVE_CLIENT_SIDE, SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
     
-    public void build(ClientBehaviorContext context,
+    protected void build(ClientBehaviorContext context,
             int size, StringBuilder retVal, int cnt,
             String strVal, SearchExpressionContext searchExpressionContext)
     {
         strVal = strVal.trim();
-        if (!EMPTY.equals(strVal))
+        if (!strVal.isEmpty())
         {
             SearchExpressionHandler handler = context.getFacesContext().getApplication().getSearchExpressionHandler();
             String clientId = handler.resolveClientId(searchExpressionContext, strVal);
             retVal.append(clientId);
             if (cnt < size)
             {
-                retVal.append(BLANK);
+                retVal.append(' ');
             }
         }
     }
@@ -687,21 +584,18 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
     private Collection<String> getCollectionFromSpaceSplitString(String stringValue)
     {
         //@special handling for @all, @none, @form and @this
-        if (stringValue.equals(VAL_FORM)) 
+        switch (stringValue)
         {
-            return VAL_FORM_LIST;
-        } 
-        else if (stringValue.equals(VAL_ALL)) 
-        {
-            return VAL_ALL_LIST;
-        } 
-        else if (stringValue.equals(VAL_NONE)) 
-        {
-            return VAL_NONE_LIST;
-        } 
-        else if (stringValue.equals(VAL_THIS)) 
-        {
-            return VAL_THIS_LIST; 
+            case VAL_FORM:
+                return VAL_FORM_LIST;
+            case VAL_ALL:
+                return VAL_ALL_LIST;
+            case VAL_NONE:
+                return VAL_NONE_LIST;
+            case VAL_THIS:
+                return VAL_THIS_LIST;
+            default:
+                break; 
         }
 
         // not one of the "normal" values - split it and return the Collection
