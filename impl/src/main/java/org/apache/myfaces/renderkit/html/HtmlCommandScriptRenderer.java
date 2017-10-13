@@ -470,7 +470,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
             {
                 if (!first)
                 {
-                    retVal.append(':');
+                    retVal.append(',');
                 }
                 else
                 {
@@ -583,6 +583,11 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
      */
     private Collection<String> getCollectionFromSpaceSplitString(String stringValue)
     {
+        if (stringValue == null || stringValue.trim().isEmpty())
+        {
+            return Collections.emptyList();
+        }
+        
         //@special handling for @all, @none, @form and @this
         switch (stringValue)
         {
