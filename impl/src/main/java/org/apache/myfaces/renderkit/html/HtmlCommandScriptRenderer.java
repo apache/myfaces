@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.RandomAccess;
 import java.util.Set;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIParameter;
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.behavior.ClientBehaviorHolder;
@@ -115,13 +116,13 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         ajaxBehavior.setOnerror(commandScript.getOnerror());
         ajaxBehavior.setOnevent(commandScript.getOnevent());
         
-        Collection<ClientBehaviorContext.Parameter> eventParameters = new ArrayList<>();
+        Collection<ClientBehaviorContext.Parameter> eventParameters = null;    
         //eventParameters.add(new ClientBehaviorContext.Parameter("params", "o"));
         ClientBehaviorContext ccc = ClientBehaviorContext.createClientBehaviorContext(
                                     context, component, "action",
                                     commandScript.getClientId(context), eventParameters);
         
-        script.append(makeAjax(ccc, ajaxBehavior, commandScript).toString());
+        script.append(makeAjax(context, ccc, ajaxBehavior, commandScript).toString());
         script.decreaseIndent();
         script.append("}");
         
@@ -212,7 +213,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
      * @param commandScript the component
      * @return a fully working javascript with calls into jsf.js
      */
-    private StringBuilder makeAjax(ClientBehaviorContext context, AjaxBehavior behavior,
+    private StringBuilder makeAjax(FacesContext facesContext, ClientBehaviorContext context, AjaxBehavior behavior,
             HtmlCommandScript commandScript)
     {
         StringBuilder retVal = SharedStringBuilder.get(context.getFacesContext(), AJAX_SB, 60);
@@ -378,18 +379,29 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                 for (int i = 0, size = list.size(); i < size; i++)
                 {
                     ClientBehaviorContext.Parameter param = list.get(i);
-                    append(paramBuffer, parameterList, param);
+                    append(paramBuffer, parameterList, param.getName(), param.getValue());
                 }
             }
             else
             {
                 for (ClientBehaviorContext.Parameter param : params)
                 {
-                    append(paramBuffer, parameterList, param);
+                    append(paramBuffer, parameterList, param.getName(), param.getValue());
                 }
             }
         }
-
+        
+        List<UIParameter> uiParams = HtmlRendererUtils.getValidUIParameterChildren(
+                facesContext, commandScript.getChildren(), false, false);
+        if (uiParams != null && uiParams.size() > 0)
+        {
+            for (int i = 0, size = uiParams.size(); i < size; i++)
+            {
+                UIParameter param = uiParams.get(i);
+                append(paramBuffer, parameterList, param.getName(), param.getValue());
+            }
+        }
+            
         paramBuffer.setLength(0);
         paramBuffer.append('\'');
         paramBuffer.append(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME);
@@ -411,7 +423,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         return retVal;
     }
 
-    private void append(StringBuilder paramBuffer, List<String> parameterList, ClientBehaviorContext.Parameter param)
+    private void append(StringBuilder paramBuffer, List<String> parameterList, String paramName, Object paramValue)
     {
         //TODO we may need a proper type handling in this part
         //lets leave it for now as it is
@@ -420,13 +432,15 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         //ANS: Both name and value should be quoted
         paramBuffer.setLength(0);
         paramBuffer.append('\'');
-        paramBuffer.append(param.getName());
+        paramBuffer.append(paramName);
         paramBuffer.append("\':\'");
-        paramBuffer.append(param.getValue().toString());
+        if (paramValue != null)
+        {
+            paramBuffer.append(paramValue.toString());
+        }
         paramBuffer.append('\'');
         parameterList.add(paramBuffer.toString());
     }
-
 
     private StringBuilder buildOptions(StringBuilder retVal, List<String> options)
     {
