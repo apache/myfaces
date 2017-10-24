@@ -74,8 +74,8 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     private static final String AJAX_SB = "oam.renderkit.AJAX_SB";
     private static final String AJAX_PARAM_SB = "oam.renderkit.AJAX_PARAM_SB";
 
-    public void decode(FacesContext context, UIComponent component,
-                       ClientBehavior behavior)
+    @Override
+    public void decode(FacesContext context, UIComponent component, ClientBehavior behavior)
     {
         assertBehavior(behavior);
         AjaxBehavior ajaxBehavior = (AjaxBehavior) behavior;
@@ -87,9 +87,8 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         dispatchBehaviorEvent(component, ajaxBehavior);
     }
 
-
-    public String getScript(ClientBehaviorContext behaviorContext,
-                            ClientBehavior behavior)
+    @Override
+    public String getScript(ClientBehaviorContext behaviorContext, ClientBehavior behavior)
     {
         assertBehavior(behavior);
         AjaxBehavior ajaxBehavior = (AjaxBehavior) behavior;
@@ -102,8 +101,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         return makeAjax(behaviorContext, ajaxBehavior).toString();
     }
 
-
-    private final void dispatchBehaviorEvent(UIComponent component, AjaxBehavior ajaxBehavior)
+    private void dispatchBehaviorEvent(UIComponent component, AjaxBehavior ajaxBehavior)
     {
         AjaxBehaviorEvent event = new AjaxBehaviorEvent(component, ajaxBehavior);
 
@@ -116,9 +114,8 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         {
             isImmediate = isComponentImmediate(component);
         }
-        PhaseId phaseId = isImmediate ?
-                PhaseId.APPLY_REQUEST_VALUES :
-                PhaseId.INVOKE_APPLICATION;
+
+        PhaseId phaseId = isImmediate ? PhaseId.APPLY_REQUEST_VALUES : PhaseId.INVOKE_APPLICATION;
 
         event.setPhaseId(phaseId);
 
@@ -126,7 +123,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     }
 
 
-    private final boolean isComponentImmediate(UIComponent component)
+    private boolean isComponentImmediate(UIComponent component)
     {
         boolean isImmediate = false;
         if (component instanceof EditableValueHolder)
@@ -149,7 +146,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
      * @param behavior the behavior
      * @return a fully working javascript with calls into jsf.js
      */
-    private final StringBuilder makeAjax(ClientBehaviorContext context, AjaxBehavior behavior)
+    private StringBuilder makeAjax(ClientBehaviorContext context, AjaxBehavior behavior)
     {
         StringBuilder retVal = SharedStringBuilder.get(context.getFacesContext(), AJAX_SB, 60);
         StringBuilder paramBuffer = SharedStringBuilder.get(context.getFacesContext(), AJAX_PARAM_SB, 20);
@@ -278,7 +275,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         Collection<ClientBehaviorContext.Parameter> params = context.getParameters();
         int paramSize = (params != null) ? params.size() : 0;
 
-        List<String> parameterList = new ArrayList<String>(paramSize + 2);
+        List<String> parameterList = new ArrayList<>(paramSize + 2);
         if (executes != null)
         {
             parameterList.add(executes);
@@ -405,7 +402,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         return retVal;
     }
 
-    private final String mapToString(ClientBehaviorContext context, StringBuilder retVal,
+    private String mapToString(ClientBehaviorContext context, StringBuilder retVal,
             String target, Collection<String> dataHolder)
     {
         //Clear buffer

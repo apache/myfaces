@@ -179,7 +179,7 @@ public class HtmlFormatRenderer extends HtmlRenderer
                     UIParameter param = validParams.get(i);
                     if (argsList == null)
                     {
-                        argsList = new ArrayList<Object>();
+                        argsList = new ArrayList<>();
                     }
                     argsList.add(param.getValue());
                 }

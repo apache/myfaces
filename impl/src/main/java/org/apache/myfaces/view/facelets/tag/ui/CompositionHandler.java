@@ -50,8 +50,6 @@ import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 @JSFFaceletTag(name="ui:composition")
 public final class CompositionHandler extends TagHandler implements TemplateClient
 {
-
-    //private static final Logger log = Logger.getLogger("facelets.tag.ui.composition");
     private static final Logger log = Logger.getLogger(CompositionHandler.class.getName());
 
     public final static String NAME = "composition";

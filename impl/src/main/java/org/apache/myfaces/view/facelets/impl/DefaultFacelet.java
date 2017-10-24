@@ -65,8 +65,6 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  */
 final class DefaultFacelet extends AbstractFacelet
 {
-
-    //private static final Logger log = Logger.getLogger("facelets.facelet");
     private static final Logger log = Logger.getLogger(DefaultFacelet.class.getName());
 
     private final static String APPLIED_KEY = "org.apache.myfaces.view.facelets.APPLIED";

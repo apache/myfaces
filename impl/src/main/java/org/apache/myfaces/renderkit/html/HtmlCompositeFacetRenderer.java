@@ -34,17 +34,19 @@ import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.CompositeFacet")
 public class HtmlCompositeFacetRenderer extends HtmlRenderer
 {
-    
+    @Override
     public boolean getRendersChildren()
     {
         return true;
     }
 
+    @Override
     public void encodeBegin(FacesContext context, UIComponent component)
             throws IOException
     {
     }
 
+    @Override
     public void encodeChildren(FacesContext context, UIComponent component)
             throws IOException
     {
@@ -81,6 +83,7 @@ public class HtmlCompositeFacetRenderer extends HtmlRenderer
         }
     }
 
+    @Override
     public void encodeEnd(FacesContext context, UIComponent component)
             throws IOException
     {

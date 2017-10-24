@@ -165,6 +165,7 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
         }
     }
     
+    @Override
     public void addRenderer(String componentFamily, String rendererType, String rendererClass)
     {
         if (componentFamily == null)

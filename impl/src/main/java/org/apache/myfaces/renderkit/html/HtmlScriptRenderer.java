@@ -58,11 +58,11 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 @ListenerFor(systemEventClass = PostAddToViewEvent.class)
 public class HtmlScriptRenderer extends Renderer implements ComponentSystemEventListener
 {
-    //private static final Log log = LogFactory.getLog(HtmlScriptRenderer.class);
     private static final Logger log = Logger.getLogger(HtmlScriptRenderer.class.getName());
 
     private static final String IS_BUILDING_INITIAL_STATE = "javax.faces.IS_BUILDING_INITIAL_STATE";
 
+    @Override
     public void processEvent(ComponentSystemEvent event)
     {
         if (event instanceof PostAddToViewEvent)

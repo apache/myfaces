@@ -39,16 +39,19 @@ public class HtmlCompositeComponentRenderer extends HtmlRenderer
     //private static final Log log = LogFactory.getLog(HtmlCompositeComponentRenderer.class);
     private static final Logger log = Logger.getLogger(HtmlCompositeComponentRenderer.class.getName());
     
+    @Override
     public boolean getRendersChildren()
     {
         return true;
     }
 
+    @Override
     public void encodeBegin(FacesContext context, UIComponent component)
             throws IOException
     {
     }
 
+    @Override
     public void encodeChildren(FacesContext context, UIComponent component)
             throws IOException
     {
@@ -66,6 +69,7 @@ public class HtmlCompositeComponentRenderer extends HtmlRenderer
         compositeFacet.encodeAll(context);
     }
 
+    @Override
     public void encodeEnd(FacesContext context, UIComponent component)
             throws IOException
     {
