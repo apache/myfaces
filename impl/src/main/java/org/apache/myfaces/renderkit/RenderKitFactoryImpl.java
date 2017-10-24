@@ -37,7 +37,6 @@ import javax.faces.render.RenderKitFactory;
  */
 public class RenderKitFactoryImpl extends RenderKitFactory
 {
-    //private static final Log log = LogFactory.getLog(RenderKitFactoryImpl.class);
     private static final Logger log = Logger.getLogger(RenderKitFactoryImpl.class.getName());
 
     private Map<String, RenderKit> _renderkits = new HashMap<String, RenderKit>();

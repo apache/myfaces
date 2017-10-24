@@ -42,7 +42,6 @@ import org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet;
  */
 public class MyFacesServlet implements Servlet, DelegatedFacesServlet
 {
-    //private static final Log log = LogFactory.getLog(MyFacesServlet.class);
     private static final Logger log = Logger.getLogger(MyFacesServlet.class.getName());
 
     private final FacesServlet delegate = new FacesServlet();

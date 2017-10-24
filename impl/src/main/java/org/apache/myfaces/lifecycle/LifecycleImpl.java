@@ -49,7 +49,6 @@ import org.apache.myfaces.util.DebugUtils;
  */
 public class LifecycleImpl extends Lifecycle
 {
-    //private static final Log log = LogFactory.getLog(LifecycleImpl.class);
     private static final Logger log = Logger.getLogger(LifecycleImpl.class.getName());
     
     /**

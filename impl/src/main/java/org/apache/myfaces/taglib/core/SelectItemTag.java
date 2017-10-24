@@ -28,5 +28,5 @@ import org.apache.myfaces.shared.taglib.core.SelectItemTagBase;
 public class SelectItemTag
         extends SelectItemTagBase
 {
-    //private static final Log log = LogFactory.getLog(SelectItemTag.class);
+
 }

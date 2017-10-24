@@ -76,7 +76,6 @@ import org.apache.myfaces.spi.AnnotationProviderFactory;
  */
 public class AnnotationConfigurator
 {
-    //private static final Log log = LogFactory.getLog(AnnotationConfigurator.class);
     private static final Logger log = Logger.getLogger(AnnotationConfigurator.class.getName());
 
     public AnnotationConfigurator()

@@ -80,10 +80,6 @@ import org.apache.myfaces.view.facelets.ViewPoolProcessor;
  */
 public abstract class AbstractFacesInitializer implements FacesInitializer
 {
-    /**
-     * The logger instance for this class.
-     */
-    //private static final Log log = LogFactory.getLog(AbstractFacesInitializer.class);
     private static final Logger log = Logger.getLogger(AbstractFacesInitializer.class.getName());
     
     /**

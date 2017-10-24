@@ -27,8 +27,6 @@ import java.util.Iterator;
  */
 public final class EnumerationIterator<T> implements Iterator<T>
 {
-    //private static final Log log = LogFactory.getLog(EnumerationIterator.class);
-
     private final Enumeration<? extends T> _enumeration;
 
     public EnumerationIterator(final Enumeration<? extends T> enumeration)

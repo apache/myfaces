@@ -50,7 +50,6 @@ import javax.faces.validator.Validator;
  */
 public class DebugUtils
 {
-    //private static final Log log = LogFactory.getLog(DebugUtils.class);
     private static final Logger log = Logger.getLogger(DebugUtils.class.getName());
 
     // Attributes that should not be printed

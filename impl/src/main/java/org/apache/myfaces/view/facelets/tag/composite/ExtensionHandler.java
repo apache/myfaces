@@ -37,7 +37,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 public class ExtensionHandler extends TagHandler
 {
 
-    //private static final Log log = LogFactory.getLog(ExtensionHandler.class);
     private static final Logger log = Logger.getLogger(ExtensionHandler.class.getName());
     
     public ExtensionHandler(TagConfig config)

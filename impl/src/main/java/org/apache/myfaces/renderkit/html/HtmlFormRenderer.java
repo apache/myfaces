@@ -40,9 +40,7 @@ import org.apache.myfaces.shared.renderkit.html.HtmlFormRendererBase;
     type="javax.faces.Form")
 public class HtmlFormRenderer
         extends HtmlFormRendererBase
-{    
-    //private static final Log log = LogFactory.getLog(HtmlFormRenderer.class);
-    
+{
     @Override
     protected void afterFormElementsEnd(FacesContext facesContext, UIComponent component) throws IOException
     {

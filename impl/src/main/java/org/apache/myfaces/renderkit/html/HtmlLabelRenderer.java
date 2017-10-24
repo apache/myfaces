@@ -57,7 +57,6 @@ import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.Label")
 public class HtmlLabelRenderer extends HtmlRenderer
 {
-    //private static final Log log = LogFactory.getLog(HtmlLabelRenderer.class);
     private static final Logger log = Logger.getLogger(HtmlLabelRenderer.class.getName());
 
     @Override

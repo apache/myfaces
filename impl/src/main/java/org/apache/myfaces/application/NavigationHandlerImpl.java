@@ -84,7 +84,6 @@ import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
 public class NavigationHandlerImpl
     extends ConfigurableNavigationHandler
 {
-    //private static final Log log = LogFactory.getLog(NavigationHandlerImpl.class);
     private static final Logger log = Logger.getLogger(NavigationHandlerImpl.class.getName());
 
     private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";

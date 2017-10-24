@@ -61,7 +61,6 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 public class HtmlStylesheetRenderer extends Renderer implements
     ComponentSystemEventListener
 {
-    //private static final Log log = LogFactory.getLog(HtmlStylesheetRenderer.class);
     private static final Logger log = Logger.getLogger(HtmlStylesheetRenderer.class.getName());
     
     private static final String IS_BUILDING_INITIAL_STATE = "javax.faces.IS_BUILDING_INITIAL_STATE";

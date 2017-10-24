@@ -149,7 +149,6 @@ import org.apache.myfaces.view.facelets.el.ELText;
 @SuppressWarnings("deprecation")
 public class ApplicationImpl extends Application
 {
-    //private static final Log log = LogFactory.getLog(ApplicationImpl.class);
     private static final Logger log = Logger.getLogger(ApplicationImpl.class.getName());
 
     private final static VariableResolver VARIABLERESOLVER = new VariableResolverToApplicationELResolverAdapter();

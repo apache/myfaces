@@ -38,10 +38,8 @@ import org.xml.sax.InputSource;
  * @author Thomas Spiegl
  * @version $Revision$ $Date$
  */
-public class FacesConfigEntityResolver
-    implements EntityResolver
+public class FacesConfigEntityResolver implements EntityResolver
 {
-    //private static final Log log = LogFactory.getLog(FacesConfigEntityResolver.class);
     private static final Logger log = Logger.getLogger(FacesConfigEntityResolver.class.getName());
 
     private static final String FACES_CONFIG_1_0_DTD_SYSTEM_ID = "http://java.sun.com/dtd/web-facesconfig_1_0.dtd";

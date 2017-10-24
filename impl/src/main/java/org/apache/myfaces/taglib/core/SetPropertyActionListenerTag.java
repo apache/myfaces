@@ -40,8 +40,6 @@ import org.apache.myfaces.event.SetPropertyActionListener;
 @JSFJspTag(name = "f:setPropertyActionListener", bodyContent = "empty")
 public class SetPropertyActionListenerTag extends TagSupport
 {
-
-    //private static final Log log = LogFactory.getLog(SetPropertyActionListenerTag.class);
     private static final Logger log = Logger.getLogger(SetPropertyActionListenerTag.class.getName());
 
     private ValueExpression target;

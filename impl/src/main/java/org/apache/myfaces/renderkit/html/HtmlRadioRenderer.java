@@ -36,8 +36,6 @@ import org.apache.myfaces.shared.renderkit.html.HtmlRadioRendererBase;
 public class HtmlRadioRenderer
         extends HtmlRadioRendererBase
 {
-    //private static final Log log = LogFactory.getLog(HtmlRadioRenderer.class);
-
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
     {

@@ -42,7 +42,6 @@ import org.apache.myfaces.shared.renderkit.html.HtmlMenuRendererBase;
 public class HtmlMenuRenderer
         extends HtmlMenuRendererBase
 {
-    //private static final Log log = LogFactory.getLog(HtmlMenuRenderer.class);
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
     {

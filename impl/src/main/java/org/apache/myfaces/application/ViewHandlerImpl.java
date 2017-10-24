@@ -63,8 +63,8 @@ import org.apache.myfaces.view.facelets.StateWriter;
  */
 public class ViewHandlerImpl extends ViewHandler
 {
-    //private static final Log log = LogFactory.getLog(ViewHandlerImpl.class);
     private static final Logger log = Logger.getLogger(ViewHandlerImpl.class.getName());
+    
     public static final String FORM_STATE_MARKER = "<!--@@JSF_FORM_STATE_MARKER@@-->";
     private ViewHandlerSupport _viewHandlerSupport;
     private ViewDeclarationLanguageFactory _vdlFactory;

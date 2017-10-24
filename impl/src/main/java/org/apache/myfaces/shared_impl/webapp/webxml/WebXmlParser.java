@@ -45,7 +45,6 @@ import org.xml.sax.InputSource;
  */
 public class WebXmlParser
 {
-    //private static final Log log = LogFactory.getLog(WebXmlParser.class);
     private static final Logger log = Logger.getLogger(WebXmlParser.class.getName());
 
     /*

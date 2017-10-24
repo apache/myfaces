@@ -54,7 +54,6 @@ import org.apache.myfaces.shared.util.ClassUtils;
 @JSFRenderKit(renderKitId = "HTML_BASIC")
 public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
 {
-    //private static final Log log = LogFactory.getLog(HtmlRenderKitImpl.class);
     private static final Logger log = Logger.getLogger(HtmlRenderKitImpl.class.getName());
 
     // ~ Instance fields ----------------------------------------------------------------------------

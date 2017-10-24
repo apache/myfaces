@@ -44,10 +44,6 @@ import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
  */
 public class Jsp21FacesInitializer extends AbstractFacesInitializer
 {
-    /**
-     * The logger instance for this class.
-     */
-    //private static final Log log = LogFactory.getLog(Jsp21FacesInitializer.class);
     private static final Logger log = Logger.getLogger(Jsp21FacesInitializer.class.getName());
     
     /**

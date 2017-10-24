@@ -33,7 +33,6 @@ import javax.faces.context.FacesContext;
  */
 public class ApplicationFactoryImpl extends ApplicationFactory
 {
-    //private static final Log log = LogFactory.getLog(ApplicationFactoryImpl.class);
     private static final Logger log = Logger.getLogger(ApplicationFactoryImpl.class.getName());
 
     /**

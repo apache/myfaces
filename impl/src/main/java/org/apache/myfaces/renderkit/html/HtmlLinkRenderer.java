@@ -46,9 +46,7 @@ import org.apache.myfaces.shared.renderkit.html.HtmlLinkRendererBase;
 })
 public class HtmlLinkRenderer
     extends HtmlLinkRendererBase
-{
-    //private static final Log log = LogFactory.getLog(HtmlLinkRenderer.class);
-    
+{    
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
     {

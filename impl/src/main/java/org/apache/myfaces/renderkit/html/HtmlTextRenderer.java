@@ -42,9 +42,7 @@ import org.apache.myfaces.shared.renderkit.html.HtmlTextRendererBase;
 })
 public class HtmlTextRenderer
         extends HtmlTextRendererBase
-{
-    //private static final Log log = LogFactory.getLog(HtmlTextRenderer.class);
-    
+{    
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
     {

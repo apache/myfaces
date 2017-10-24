@@ -47,7 +47,6 @@ import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 public class AttributeHandler extends TagHandler implements InterfaceDescriptorCreator
 {
     
-    //private static final Log log = LogFactory.getLog(AttributeHandler.class);
     private static final Logger log = Logger.getLogger(AttributeHandler.class.getName());
     
     /**

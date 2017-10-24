@@ -45,7 +45,6 @@ import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 @JSFFaceletTag(name="composite:implementation")
 public class ImplementationHandler extends TagHandler
 {
-    //private static final Log log = LogFactory.getLog(ImplementationHandler.class);
     private static final Logger log = Logger.getLogger(ImplementationHandler.class.getName());
     
     public final static String NAME = "implementation";

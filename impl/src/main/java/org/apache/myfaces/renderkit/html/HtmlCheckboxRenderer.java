@@ -43,7 +43,6 @@ import org.apache.myfaces.shared.renderkit.html.HtmlCheckboxRendererBase;
 public class HtmlCheckboxRenderer
         extends HtmlCheckboxRendererBase
 {
-    //private static final Log log = LogFactory.getLog(HtmlCheckboxRenderer.class);
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
     {

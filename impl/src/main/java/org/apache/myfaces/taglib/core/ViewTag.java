@@ -45,7 +45,6 @@ import org.apache.myfaces.shared.util.LocaleUtils;
  */
 public class ViewTag extends UIComponentELTag
 {
-    //private static final Log log = LogFactory.getLog(ViewTag.class);
     private static final Logger log = Logger.getLogger(ViewTag.class.getName());
 
     @Override

@@ -36,7 +36,6 @@ import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.NamingContainer", type = "javax.faces.Composite")
 public class HtmlCompositeComponentRenderer extends HtmlRenderer
 {
-    //private static final Log log = LogFactory.getLog(HtmlCompositeComponentRenderer.class);
     private static final Logger log = Logger.getLogger(HtmlCompositeComponentRenderer.class.getName());
     
     @Override

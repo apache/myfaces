@@ -27,8 +27,6 @@ package org.apache.myfaces.convert;
  */
 public final class ConverterUtils
 {
-    //private static final Log log = LogFactory.getLog(ConverterUtils.class);
-
     private ConverterUtils() {}
 
 

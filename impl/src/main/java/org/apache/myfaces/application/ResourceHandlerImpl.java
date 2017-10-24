@@ -82,7 +82,6 @@ public class ResourceHandlerImpl extends ResourceHandler
 
     private ResourceHandlerCache _resourceHandlerCache;
 
-    //private static final Log log = LogFactory.getLog(ResourceHandlerImpl.class);
     private static final Logger log = Logger.getLogger(ResourceHandlerImpl.class.getName());
 
     /**

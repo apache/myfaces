@@ -65,8 +65,6 @@ import org.apache.myfaces.shared.util.ViewProtectionUtils;
  */
 class RestoreViewExecutor extends PhaseExecutor
 {
-
-    //private static final Log log = LogFactory.getLog(RestoreViewExecutor.class);
     private static final Logger log = Logger.getLogger(RestoreViewExecutor.class.getName());
     
     private RestoreViewSupport _restoreViewSupport;

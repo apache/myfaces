@@ -36,8 +36,6 @@ import org.apache.myfaces.shared.renderkit.html.HtmlTableRendererBase;
 public class HtmlTableRenderer
     extends HtmlTableRendererBase
 {
-    //private static final Log log = LogFactory.getLog(HtmlTableRenderer.class);
-
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
     {

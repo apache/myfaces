@@ -148,7 +148,6 @@ import org.apache.myfaces.view.facelets.util.FaceletsViewDeclarationLanguageUtil
  */
 public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLanguageBase
 {
-    //private static final Log log = LogFactory.getLog(FaceletViewDeclarationLanguage.class);
     private static final Logger log = Logger.getLogger(FaceletViewDeclarationLanguage.class.getName());
 
     private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];

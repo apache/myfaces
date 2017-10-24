@@ -35,10 +35,6 @@ import javax.servlet.ServletContext;
  */
 public class Jsp20FacesInitializer extends AbstractFacesInitializer
 {
-    /**
-     * The logger instance for this class.
-     */
-    //private static final Log log = LogFactory.getLog(Jsp20FacesInitializer.class);
     private static final Logger log = Logger.getLogger(Jsp20FacesInitializer.class.getName());
 
     /**

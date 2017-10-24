@@ -35,10 +35,6 @@ import java.util.Map;
  */
 public class TreeStructureManager
 {
-    //private static final Log log = LogFactory.getLog(TreeStructureManager.class);
-
-    //private FacesContext _facesContext;
-
     public TreeStructureManager()
     {
         //_facesContext = facesContext;

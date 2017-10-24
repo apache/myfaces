@@ -67,7 +67,6 @@ import org.apache.myfaces.util.EnumerationIterator;
  */
 public final class ServletExternalContextImpl extends ServletExternalContextImplBase
 {
-    //private static final Log log = LogFactory.getLog(ServletExternalContextImpl.class);
     private static final Logger log = Logger.getLogger(ServletExternalContextImpl.class.getName());
 
     private static final String URL_PARAM_SEPERATOR="&";

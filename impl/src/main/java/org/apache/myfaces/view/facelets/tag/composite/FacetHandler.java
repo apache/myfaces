@@ -54,7 +54,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 public class FacetHandler extends TagHandler implements InterfaceDescriptorCreator
 {
 
-    //private static final Log log = LogFactory.getLog(FacetHandler.class);
     private static final Logger log = Logger.getLogger(FacetHandler.class.getName());
     
     /**

@@ -43,10 +43,8 @@ import org.apache.myfaces.shared.util.ClassUtils;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class FacesContextFactoryImpl extends FacesContextFactory
-    implements ReleaseableFacesContextFactory
+public class FacesContextFactoryImpl extends FacesContextFactory implements ReleaseableFacesContextFactory
 {
-    //private static final Log log = LogFactory.getLog(FacesContextFactoryImpl.class);
     private static final Logger log = Logger.getLogger(FacesContextFactoryImpl.class.getName());
     
     /**

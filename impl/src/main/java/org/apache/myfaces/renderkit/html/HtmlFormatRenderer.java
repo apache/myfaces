@@ -51,7 +51,6 @@ import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.Format")
 public class HtmlFormatRenderer extends HtmlRenderer
 {
-    //private static final Log log = LogFactory.getLog(HtmlFormatRenderer.class);
     private static final Logger log = Logger.getLogger(HtmlFormatRenderer.class.getName());
 
     private static final Object[] EMPTY_ARGS = new Object[0];

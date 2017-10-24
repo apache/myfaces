@@ -50,7 +50,6 @@ public abstract class AttachedObjectTargetHandler<T extends AttachedObjectTarget
     extends TagHandler implements InterfaceDescriptorCreator
 {
 
-    //private static final Log log = LogFactory.getLog(AttachedObjectTargetHandler.class);
     private static final Logger log = Logger.getLogger(AttachedObjectTargetHandler.class.getName());
     
     /**

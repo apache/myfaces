@@ -59,7 +59,6 @@ import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 @SuppressWarnings("deprecation")
 public class RuntimeConfig
 {
-    //private static final Log log = LogFactory.getLog(RuntimeConfig.class);
     private static final Logger log = Logger.getLogger(RuntimeConfig.class.getName());
 
     private static final String APPLICATION_MAP_PARAM_NAME = RuntimeConfig.class.getName();
