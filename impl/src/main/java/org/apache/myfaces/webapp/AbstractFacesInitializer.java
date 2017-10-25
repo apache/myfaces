@@ -27,6 +27,7 @@ import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
+import org.apache.myfaces.ee.MyFacesContainerInitializer;
 import org.apache.myfaces.shared.application.FacesServletMappingUtils;
 import org.apache.myfaces.shared.context.ExceptionHandlerImpl;
 import org.apache.myfaces.shared.util.StateUtils;
@@ -81,13 +82,6 @@ import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 public abstract class AbstractFacesInitializer implements FacesInitializer
 {
     private static final Logger log = Logger.getLogger(AbstractFacesInitializer.class.getName());
-    
-    /**
-     * If the servlet mapping for the FacesServlet is added dynamically, Boolean.TRUE 
-     * is stored under this key in the ServletContext.
-     * ATTENTION: this constant is duplicate in MyFacesContainerInitializer.
-     */
-    private static final String FACES_SERVLET_ADDED_ATTRIBUTE = "org.apache.myfaces.DYNAMICALLY_ADDED_FACES_SERVLET";
 
     /**
      * This parameter specifies the ExpressionFactory implementation to use.
@@ -169,7 +163,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                 {
                     // check if the FacesServlet has been added dynamically
                     // in a Servlet 3.0 environment by MyFacesContainerInitializer
-                    Boolean mappingAdded = (Boolean) servletContext.getAttribute(FACES_SERVLET_ADDED_ATTRIBUTE);
+                    Boolean mappingAdded = (Boolean) servletContext.getAttribute(
+                                                        MyFacesContainerInitializer.FACES_SERVLET_ADDED_ATTRIBUTE);
                     if (mappingAdded == null || !mappingAdded)
                     {
                         if (log.isLoggable(Level.WARNING))
@@ -376,7 +371,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             {
                 // check if the FacesServlet has been added dynamically
                 // in a Servlet 3.0 environment by MyFacesContainerInitializer
-                Boolean mappingAdded = (Boolean) servletContext.getAttribute(FACES_SERVLET_ADDED_ATTRIBUTE);
+                Boolean mappingAdded = (Boolean) servletContext.getAttribute(
+                                                    MyFacesContainerInitializer.FACES_SERVLET_ADDED_ATTRIBUTE);
                 if (mappingAdded == null || !mappingAdded)
                 {
                     if (log.isLoggable(Level.WARNING))
