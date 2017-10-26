@@ -328,9 +328,10 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
             {
                 if (_type != null)
                 {
-                    String type = _type.getValue(ctx);
                     Class clazz = String.class;
-                    if (type != null)
+                    
+                    String type = _type.getValue(ctx);
+                    if (type != null && !type.trim().isEmpty())
                     {
                         try
                         {
@@ -338,7 +339,9 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
                         }
                         catch (ClassNotFoundException e)
                         {
-                            //Assume String
+                            log.log(Level.WARNING,
+                                    "composite:attribute 'type' with value'" + type + "' not resolveable. Fallback to string.",
+                                    e);
                         }
                     }
                     

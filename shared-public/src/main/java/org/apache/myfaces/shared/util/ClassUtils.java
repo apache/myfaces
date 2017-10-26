@@ -164,9 +164,7 @@ public final class ClassUtils
         // the local variable stack, that way
         //we can avoid synchronisation calls
         ClassLoaderExtension [] loaderPlugins = classLoadingExtensions;
-
-        int plugins = loaderPlugins.length;
-        for(int cnt = 0; cnt < loaderPlugins.length; cnt ++)
+        for (int cnt = 0; cnt < loaderPlugins.length; cnt ++)
         {
             ClassLoaderExtension extension = loaderPlugins[cnt];
             Class retVal = extension.forName(type);
@@ -175,7 +173,6 @@ public final class ClassUtils
                 return retVal;
             }
         }
-
 
         if (type == null)
         {
