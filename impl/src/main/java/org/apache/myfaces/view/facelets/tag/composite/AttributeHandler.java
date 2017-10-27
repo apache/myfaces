@@ -340,7 +340,8 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
                         catch (ClassNotFoundException e)
                         {
                             log.log(Level.WARNING,
-                                    "composite:attribute 'type' with value'" + type + "' not resolveable. Fallback to string.",
+                                    "composite:attribute 'type' with value'" + type + "' not resolveable. "
+                                    + "Fallback to string.",
                                     e);
                         }
                     }
