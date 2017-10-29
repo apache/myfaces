@@ -136,6 +136,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      * size return zero while calls to the get method return non-null
      * values.
      */
+    @Override
     public int size()
     {
         return getUnderlyingMap().size();
@@ -150,6 +151,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      * calls to the get method return non-null values immediately after
      * a call to clear.
      */
+    @Override
     public void clear()
     {
         getUnderlyingMap().clear();
@@ -164,6 +166,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      * isEmpty return true, while calls to the get method return non-null
      * values.
      */
+    @Override
     public boolean isEmpty()
     {
         return getUnderlyingMap().isEmpty();
@@ -181,6 +184,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      * @param key <i>must</i> be a String. Anything else will cause a
      *            ClassCastException to be thrown.
      */
+    @Override
     public boolean containsKey(Object key)
     {
         checkKey(key);
@@ -236,6 +240,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      *
      * @param value null is allowed
      */
+    @Override
     public boolean containsValue(Object value)
     {
         return getUnderlyingMap().containsValue(value);
@@ -245,6 +250,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      * Return a collection of the values of all <i>attributes</i>. Property
      * values are not included, nor value-bindings.
      */
+    @Override
     public Collection<Object> values()
     {
         return getUnderlyingMap().values();
@@ -253,6 +259,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     /**
      * Call put(key, value) for each entry in the provided map.
      */
+    @Override
     public void putAll(Map<? extends String, ?> t)
     {
         for (Map.Entry<? extends String, ?> entry : t.entrySet())
@@ -265,6 +272,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      * Return a set of all <i>attributes</i>. Properties of the underlying
      * UIComponent are not included, nor value-bindings.
      */
+    @Override
     public Set<Map.Entry<String, Object>> entrySet()
     {
         return getUnderlyingMap().entrySet();
@@ -274,6 +282,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      * Return a set of the keys for all <i>attributes</i>. Properties of the
      * underlying UIComponent are not included, nor value-bindings.
      */
+    @Override
     public Set<String> keySet()
     {
         return getUnderlyingMap().keySet();
@@ -286,6 +295,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      *
      * @param key must be a String. Any other type will cause ClassCastException.
      */
+    @Override
     public Object get(Object key)
     {
         checkKey(key);
@@ -458,6 +468,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      *
      * @param key must be a String. Any other type will cause ClassCastException.
      */
+    @Override
     public Object remove(Object key)
     {
         checkKey(key);
@@ -534,6 +545,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      * @param key   String, null is not allowed
      * @param value null is allowed
      */
+    @Override
     public Object put(String key, Object value)
     {
         if (key == null)
