@@ -268,8 +268,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         Map serializableMap = sourceMap;
         Map.Entry<Serializable, Object> entry;
 
-        Iterator<Map.Entry<Serializable, Object>> it = serializableMap
-                .entrySet().iterator();
+        Iterator<Map.Entry<Serializable, Object>> it = serializableMap.entrySet().iterator();
         while (it.hasNext())
         {
             entry = it.next();
@@ -283,11 +282,9 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
                 value instanceof List ||
                 !(value instanceof Serializable))
             {
-                Object savedValue = UIComponentBase.saveAttachedState(context,
-                    value);
+                Object savedValue = UIComponentBase.saveAttachedState(context, value);
 
-                targetMap.put(key, UIComponentBase.restoreAttachedState(context,
-                        savedValue));
+                targetMap.put(key, UIComponentBase.restoreAttachedState(context, savedValue));
             }
             else if (!(value instanceof Serializable))
             {
@@ -326,12 +323,10 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         if (_createDeltas(key))
         {
             //Track delta case
-            Map<Object, Boolean> deltaListMapValues = (Map<Object, Boolean>) _deltas
-                    .get(key);
+            Map<Object, Boolean> deltaListMapValues = (Map<Object, Boolean>) _deltas.get(key);
             if (deltaListMapValues == null)
             {
-                deltaListMapValues = new InternalDeltaListMap<Object, Boolean>(
-                        3);
+                deltaListMapValues = new InternalDeltaListMap<Object, Boolean>(3);
                 _deltas.put(key, deltaListMapValues);
             }
             deltaListMapValues.put(value, Boolean.TRUE);
@@ -355,12 +350,10 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         {
             return returnValue;
         }
-        ValueExpression expression = _component.getValueExpression(key
-                .toString());
+        ValueExpression expression = _component.getValueExpression(key.toString());
         if (expression != null)
         {
-            return expression.getValue(_component.getFacesContext()
-                    .getELContext());
+            return expression.getValue(_component.getFacesContext().getELContext());
         }
         return null;
     }
@@ -373,12 +366,10 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         {
             return returnValue;
         }
-        ValueExpression expression = _component.getValueExpression(key
-                .toString());
+        ValueExpression expression = _component.getValueExpression(key.toString());
         if (expression != null)
         {
-            return expression.getValue(_component.getFacesContext()
-                    .getELContext());
+            return expression.getValue(_component.getFacesContext().getELContext());
         }
         return defaultValue;
     }
@@ -431,8 +422,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         if (_createDeltas(key))
         {
             //Track delta case
-            Map<String, Object> mapValues = (Map<String, Object>) _deltas
-                    .get(key);
+            Map<String, Object> mapValues = (Map<String, Object>) _deltas.get(key);
             if (mapValues == null)
             {
                 mapValues = new InternalMap<String, Object>();
@@ -450,8 +440,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         }
 
         //Handle change on full map
-        Map<String, Object> mapValues = (Map<String, Object>) _fullState
-                .get(key);
+        Map<String, Object> mapValues = (Map<String, Object>) _fullState.get(key);
         if (mapValues == null)
         {
             mapValues = new InternalMap<String, Object>();
@@ -509,28 +498,24 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         {
             if (_createDeltas(key))
             {
-                returnValue = _removeValueOrKeyFromMap(_deltas, key,
-                        valueOrKey, true);
+                returnValue = _removeValueOrKeyFromMap(_deltas, key, valueOrKey, true);
                 _removeValueOrKeyFromMap(_fullState, key, valueOrKey, false);
             }
             else
             {
-                returnValue = _removeValueOrKeyFromMap(_fullState, key,
-                        valueOrKey, false);
+                returnValue = _removeValueOrKeyFromMap(_fullState, key, valueOrKey, false);
             }
         }
         else if (collectionOrMap instanceof InternalList)
         {
             if (_createDeltas(key))
             {
-                returnValue = _removeValueOrKeyFromCollectionDelta(_deltas,
-                        key, valueOrKey);
+                returnValue = _removeValueOrKeyFromCollectionDelta(_deltas, key, valueOrKey);
                 _removeValueOrKeyFromCollection(_fullState, key, valueOrKey);
             }
             else
             {
-                returnValue = _removeValueOrKeyFromCollection(_fullState, key,
-                        valueOrKey);
+                returnValue = _removeValueOrKeyFromCollection(_fullState, key, valueOrKey);
             }
         }
         return returnValue;
@@ -694,8 +679,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         Object[] retArr = new Object[serializableMap.entrySet().size() * 2];
         //Object[] retArr = new Object[serializableMap.entrySet().size() * 2 + stateHolderKeyCount]; 
 
-        Iterator<Map.Entry<Serializable, Object>> it = serializableMap
-                .entrySet().iterator();
+        Iterator<Map.Entry<Serializable, Object>> it = serializableMap.entrySet().iterator();
         int cnt = 0;
         while (it.hasNext())
         {
@@ -780,15 +764,13 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         for (int cnt = 0; cnt < serializedState.length; cnt += 2)
         {
             Serializable key = (Serializable) serializedState[cnt];
-            Object savedValue = UIComponentBase.restoreAttachedState(context,
-                    serializedState[cnt + 1]);
+            Object savedValue = UIComponentBase.restoreAttachedState(context, serializedState[cnt + 1]);
 
             if (isInitialStateMarked())
             {
                 if (savedValue instanceof InternalDeltaListMap)
                 {
-                    for (Map.Entry<Object, Boolean> mapEntry : ((Map<Object, Boolean>) savedValue)
-                            .entrySet())
+                    for (Map.Entry<Object, Boolean> mapEntry : ((Map<Object, Boolean>) savedValue).entrySet())
                     {
                         boolean addOrRemove = mapEntry.getValue();
                         if (addOrRemove)
@@ -805,8 +787,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
                 }
                 else if (savedValue instanceof InternalMap)
                 {
-                    for (Map.Entry<String, Object> mapEntry : ((Map<String, Object>) savedValue)
-                            .entrySet())
+                    for (Map.Entry<String, Object> mapEntry : ((Map<String, Object>) savedValue).entrySet())
                     {
                         this.put(key, mapEntry.getKey(), mapEntry.getValue());
                     }
@@ -937,8 +918,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
             Object[] listAsMap = (Object[]) state;
             for (int cnt = 0; cnt < listAsMap.length; cnt += 2)
             {
-                this.put((K) listAsMap[cnt], (V) UIComponentBase
-                        .restoreAttachedState(context, listAsMap[cnt + 1]));
+                this.put((K) listAsMap[cnt], (V) UIComponentBase.restoreAttachedState(context, listAsMap[cnt + 1]));
             }
         }
 

@@ -67,6 +67,7 @@ class _SelectItemsIterator implements Iterator<SelectItem>
         _facesContext = facesContext;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public boolean hasNext()
     {
@@ -209,6 +210,7 @@ class _SelectItemsIterator implements Iterator<SelectItem>
         return false;
     }
 
+    @Override
     public SelectItem next()
     {
         if (!hasNext())
@@ -299,6 +301,7 @@ class _SelectItemsIterator implements Iterator<SelectItem>
         throw new NoSuchElementException();
     }
 
+    @Override
     public void remove()
     {
         throw new UnsupportedOperationException();

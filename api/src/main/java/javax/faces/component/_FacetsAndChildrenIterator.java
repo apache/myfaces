@@ -34,6 +34,7 @@ class _FacetsAndChildrenIterator implements Iterator<UIComponent>
         _childrenIterator = childrenList != null ? childrenList.iterator() : null;
     }
 
+    @Override
     public boolean hasNext()
     {
         boolean hasNext = (_facetsIterator != null && _facetsIterator.hasNext())
@@ -47,6 +48,7 @@ class _FacetsAndChildrenIterator implements Iterator<UIComponent>
         return hasNext;
     }
 
+    @Override
     public UIComponent next()
     {
         if (_facetsIterator != null && _facetsIterator.hasNext())
@@ -63,6 +65,7 @@ class _FacetsAndChildrenIterator implements Iterator<UIComponent>
         }
     }
 
+    @Override
     public void remove()
     {
         throw new UnsupportedOperationException(this.getClass().getName() + " UnsupportedOperationException");
