@@ -40,11 +40,13 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
         _component = component;
     }
 
+    @Override
     public int size()
     {
         return _map.size();
     }
 
+    @Override
     public void clear()
     {
         UIComponent[] values = _map.values().toArray(new UIComponent[_map.size()]);
@@ -57,23 +59,27 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
         }
     }
 
+    @Override
     public boolean isEmpty()
     {
         return _map.isEmpty();
     }
 
+    @Override
     public boolean containsKey(Object key)
     {
         checkKey(key);
         return _map.containsKey(key);
     }
 
+    @Override
     public boolean containsValue(Object value)
     {
         checkValue(value);
         return _map.containsValue(value);
     }
 
+    @Override
     public Collection<V> values()
     {
         if (_valueCollection == null)
@@ -83,6 +89,7 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
         return _valueCollection;
     }
 
+    @Override
     public void putAll(Map<? extends String, ? extends V> t)
     {
         for (Map.Entry<? extends String, ? extends V> entry : t.entrySet())
@@ -91,6 +98,7 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
         }
     }
 
+    @Override
     public Set<Entry<String, V>> entrySet()
     {
         if (_entrySet == null)
@@ -100,6 +108,7 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
         return _entrySet;
     }
 
+    @Override
     public Set<String> keySet()
     {
         if (_keySet == null)
@@ -109,12 +118,14 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
         return _keySet;
     }
 
+    @Override
     public V get(Object key)
     {
         checkKey(key);
         return _map.get(key);
     }
 
+    @Override
     public V remove(Object key)
     {
         checkKey(key);
@@ -126,6 +137,7 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
         return facet;
     }
 
+    @Override
     public V put(String key, V value)
     {
         //checkKey(key);
@@ -204,36 +216,43 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
         {
         }
         
+        @Override
         public int size()
         {
             return _map.size();
         }
 
+        @Override
         public boolean isEmpty()
         {
             return _map.isEmpty();
         }
 
+        @Override
         public boolean contains(Object o)
         {
             return _map.entrySet().contains(o);
         }
 
+        @Override
         public Iterator<java.util.Map.Entry<String, V>> iterator()
         {
             return new ComponentFacetEntryIterator(_map.entrySet().iterator());
         }
 
+        @Override
         public Object[] toArray()
         {
             return _map.entrySet().toArray();
         }
 
+        @Override
         public <T> T[] toArray(T[] a)
         {
             return _map.entrySet().toArray(a);
         }
 
+        @Override
         public boolean add(java.util.Map.Entry<String, V> o)
         {
             // Add over the entry set is not allowed, because this should be done
@@ -241,6 +260,7 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
             throw new UnsupportedOperationException();
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public boolean remove(Object o)
         {
@@ -263,13 +283,14 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
             }
         }
 
+        @Override
         public boolean containsAll(Collection<?> c)
         {
             return _map.entrySet().containsAll(c);
         }
 
-        public boolean addAll(
-                Collection<? extends java.util.Map.Entry<String, V>> c)
+        @Override
+        public boolean addAll(Collection<? extends java.util.Map.Entry<String, V>> c)
         {
             // Add over the entry set is not allowed, because this should be done
             // through the outer Map instance.
@@ -306,11 +327,13 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
             _currentEntryValue = null;
         }
         
+        @Override
         public boolean hasNext()
         {
             return _delegate.hasNext();
         }
 
+        @Override
         public java.util.Map.Entry<String, V> next()
         {
             java.util.Map.Entry<String, V> next = _delegate.next(); 
@@ -318,6 +341,7 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
             return new ComponentFacetEntry(next);
         }
 
+        @Override
         public void remove()
         {
             _delegate.remove();
@@ -341,16 +365,19 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
             _entry = entry;
         }
 
+        @Override
         public String getKey()
         {
             return _entry.getKey();
         }
 
+        @Override
         public V getValue()
         {
             return _entry.getValue();
         }
 
+        @Override
         public V setValue(V value)
         {
             setNewParent(_entry.getKey(), value);
@@ -388,21 +415,25 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
         {
         }
         
+        @Override
         public int size()
         {
             return _map.keySet().size();
         }
 
+        @Override
         public boolean isEmpty()
         {
             return _map.keySet().isEmpty();
         }
 
+        @Override
         public boolean contains(Object o)
         {
             return _map.keySet().contains(o);
         }
 
+        @Override
         public Iterator<String> iterator()
         {
             // Iterate over entrySet is equals to iterate over keySet, but
@@ -412,21 +443,25 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
             return new ComponentFacetKeyIterator(_map.entrySet().iterator());
         }
 
+        @Override
         public Object[] toArray()
         {
             return _map.keySet().toArray();
         }
 
+        @Override
         public <T> T[] toArray(T[] a)
         {
             return _map.keySet().toArray(a);
         }
 
+        @Override
         public boolean add(String o)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean remove(Object o)
         {
             V previousValue = _map.get(o);
@@ -444,11 +479,13 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
             }
         }
 
+        @Override
         public boolean containsAll(Collection<?> c)
         {
             return _map.keySet().containsAll(c);
         }
 
+        @Override
         public boolean addAll(Collection<? extends String> c)
         {
             throw new UnsupportedOperationException();
@@ -484,11 +521,13 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
             _currentEntryValue = null;
         }
         
+        @Override
         public boolean hasNext()
         {
             return _delegate.hasNext();
         }
 
+        @Override
         public String next()
         {
             java.util.Map.Entry<String, V> next = _delegate.next(); 
@@ -496,6 +535,7 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
             return next.getKey();
         }
 
+        @Override
         public void remove()
         {
             _delegate.remove();
@@ -512,36 +552,43 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
         {
         }
 
+        @Override
         public int size()
         {
             return _map.values().size();
         }
 
+        @Override
         public boolean isEmpty()
         {
             return _map.values().isEmpty();
         }
 
+        @Override
         public boolean contains(Object o)
         {
             return _map.values().contains(o);
         }
 
+        @Override
         public Iterator<V> iterator()
         {
             return new ComponentFacetValueIterator(_map.entrySet().iterator());
         }
 
+        @Override
         public Object[] toArray()
         {
             return _map.values().toArray();
         }
 
+        @Override
         public <T> T[] toArray(T[] a)
         {
             return _map.values().toArray(a);
         }
 
+        @Override
         public boolean add(V o)
         {
             // Add over the entry set is not allowed, because this should be done
@@ -549,11 +596,13 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean containsAll(Collection<?> c)
         {
             return _map.values().containsAll(c);
         }
 
+        @Override
         public boolean addAll(Collection<? extends V> c)
         {
             // Add over the entry set is not allowed, because this should be done
@@ -591,11 +640,13 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
             _currentEntryValue = null;
         }
         
+        @Override
         public boolean hasNext()
         {
             return _delegate.hasNext();
         }
 
+        @Override
         public V next()
         {
             java.util.Map.Entry<String, V> next = _delegate.next(); 
@@ -603,6 +654,7 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
             return next.getValue();
         }
 
+        @Override
         public void remove()
         {
             _delegate.remove();
