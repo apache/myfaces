@@ -954,7 +954,7 @@
                     <plugin>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
-                            <excludePackageNames>org.apache.myfaces.ee6</excludePackageNames>
+                            <excludePackageNames>org.apache.myfaces.ee</excludePackageNames>
                         </configuration>
                         <executions>
                             <execution>
@@ -1358,7 +1358,7 @@
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <excludePackageNames>org.apache.myfaces.ee6</excludePackageNames>
+                    <excludePackageNames>org.apache.myfaces.ee</excludePackageNames>
                 </configuration>
             </plugin>
             <plugin>

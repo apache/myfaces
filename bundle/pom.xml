@@ -76,7 +76,7 @@
                             org.apache.myfaces.shared.taglib.core;version="${project.version}",
                             org.apache.myfaces.spi;version="${project.version}",
                             org.apache.myfaces.taglib.*;version="${project.version}",
-                            org.apache.myfaces.ee6;version="${project.version}",
+                            org.apache.myfaces.ee;version="${project.version}",
                             org.apache.myfaces.view;version="${project.version}",
                             org.apache.myfaces.view.facelets.el;version="${project.version}",
                             org.apache.myfaces.view.facelets.component;version="${project.version}",
