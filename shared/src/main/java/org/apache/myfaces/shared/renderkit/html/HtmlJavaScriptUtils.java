@@ -35,14 +35,17 @@ import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 public final class HtmlJavaScriptUtils
 {
-    private static final Logger log = Logger.getLogger(HtmlJavaScriptUtils.class.getName());
+    private static final Logger log = Logger.getLogger(HtmlJavaScriptUtils.class
+            .getName());
 
     private static final String AUTO_SCROLL_PARAM = "autoScroll";
     private static final String AUTO_SCROLL_FUNCTION = "getScrolling";
 
+    private static final String SET_HIDDEN_INPUT_FN_NAME = "oamSetHiddenInput";
     private static final String SET_HIDDEN_INPUT_FN_NAME_JSF2 = "myfaces.oam.setHiddenInput";
 
     private static final String FIRST_SUBMIT_SCRIPT_ON_PAGE = "org.apache.MyFaces.FIRST_SUBMIT_SCRIPT_ON_PAGE";
+    private static final String CLEAR_HIDDEN_INPUT_FN_NAME = "oamClearHiddenInput";
     
 
     @SuppressWarnings("unchecked")
