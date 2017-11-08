@@ -40,10 +40,11 @@ import java.util.Map;
 public class HtmlListboxRendererBase
         extends HtmlSelectableRendererBase
 {
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, uiComponent, null);
+        RendererUtils.checkParamValidity(facesContext, uiComponent, null);
         
         Map<String, List<ClientBehavior>> behaviors = null;
         if (uiComponent instanceof ClientBehaviorHolder)
@@ -111,12 +112,11 @@ public class HtmlListboxRendererBase
         }
         else
         {
-            return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(uiComponent, 
-                    org.apache.myfaces.shared.renderkit.html.HTML.DISABLED_ATTR, false);
+            return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
         }
     }
 
-
+    @Override
     public void decode(FacesContext facesContext, UIComponent uiComponent)
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, null);
@@ -140,14 +140,15 @@ public class HtmlListboxRendererBase
         }
     }
 
+    @Override
     public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue)
          throws ConverterException
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, uiComponent, null);
+        RendererUtils.checkParamValidity(facesContext, uiComponent, null);
 
         if (uiComponent instanceof UISelectMany)
         {
-            return org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedUISelectManyValue(facesContext,
+            return RendererUtils.getConvertedUISelectManyValue(facesContext,
                                                                (UISelectMany)uiComponent,
                                                                submittedValue);
         }

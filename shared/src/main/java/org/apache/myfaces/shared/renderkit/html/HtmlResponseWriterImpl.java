@@ -44,7 +44,6 @@ import org.apache.myfaces.shared.util.StreamCharBuffer;
 public class HtmlResponseWriterImpl
         extends ResponseWriter
 {
-    //private static final Log log = LogFactory.getLog(HtmlResponseWriterImpl.class);
     private static final Logger log = Logger.getLogger(HtmlResponseWriterImpl.class.getName());
 
     private static final String DEFAULT_CONTENT_TYPE = "text/html";

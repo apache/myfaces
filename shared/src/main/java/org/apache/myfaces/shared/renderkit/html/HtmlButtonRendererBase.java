@@ -136,10 +136,6 @@ public class HtmlButtonRendererBase
             }
         }
         
-        // If we are nested in a form, and we have javascript enabled, and autoscroll is enabled, 
-        // we should write the form submit script
-        // (define oamSetHiddenInput, oamClearHiddenInput, oamSubmitForm)
-        // because oamSetHiddenInput is called on onclick function
         List<UIComponent> childrenList = null;
         if (getChildCount(uiComponent) > 0)
         {
@@ -415,11 +411,6 @@ public class HtmlButtonRendererBase
             }
             onClick.append(");");
 
-            //Not necessary since we are using oamSetHiddenInput to create input hidden fields
-            //render hidden field - todo: in here for backwards compatibility
-            //String hiddenFieldName = HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo);
-            //addHiddenCommandParameter(facesContext, nestingForm, hiddenFieldName);
-
         }
         return onClick.toString();
     }
@@ -435,7 +426,6 @@ public class HtmlButtonRendererBase
         {
             String name = param.getName();
 
-            //Not necessary, since we are using oamSetHiddenInput to create hidden fields
             if (MyfacesConfig.getCurrentInstance(context.getExternalContext()).isRenderHiddenFieldsForLinkParams())
             {
                 addHiddenCommandParameter(context, nestingForm, name);

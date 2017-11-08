@@ -80,7 +80,7 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         }
     }
     
-    //update spec
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent component)
         throws IOException
     {   
@@ -96,9 +96,8 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
             {
                 HtmlForm form = (HtmlForm) formInfo.getForm();
                 String content = form.getEnctype();
-                if(content==null || !content.contains("multipart/form-data"))
+                if (content==null || !content.contains("multipart/form-data"))
                 {
-                     //Add facemessage
                      FacesMessage message = new FacesMessage("file upload requires a form with"+
                             " enctype equal to multipart/form-data");
                      facesContext.addMessage(component.getClientId(), message);
@@ -107,6 +106,7 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         }
     }
    
+    @Override
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue)
             throws ConverterException
     {

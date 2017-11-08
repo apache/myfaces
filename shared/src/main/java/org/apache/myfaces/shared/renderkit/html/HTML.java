@@ -26,11 +26,6 @@ import org.apache.myfaces.shared.util.ArrayUtils;
  */
 public interface HTML
 {
-    // Deprecated attributes
-    @Deprecated String DATAFLD_ATTR = "datafld";
-    @Deprecated String DATASRC_ATTR = "datasrc";
-    @Deprecated String DATAFORMATAS_ATTR = "dataformatas";
-
     // Common attributes
     String ALIGN_ATTR = "align";
     String BORDER_ATTR = "border";

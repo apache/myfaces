@@ -43,11 +43,11 @@ import org.apache.myfaces.shared.util.StringUtils;
 public class HtmlGridRendererBase
         extends HtmlRenderer
 {
-    //private static final Log log = LogFactory.getLog(HtmlGridRendererBase.class);
     private static final Logger log = Logger.getLogger(HtmlGridRendererBase.class.getName());
     
     private static final Integer[] ZERO_INT_ARRAY = new Integer[]{0};
 
+    @Override
     public boolean getRendersChildren()
     {
         return true;
@@ -62,18 +62,21 @@ public class HtmlGridRendererBase
         HtmlRendererUtils.decodeClientBehaviors(context, component);
     }
 
+    @Override
     public void encodeBegin(FacesContext facesContext, UIComponent component)
             throws IOException
     {
         // all work done in encodeEnd()
     }
 
+    @Override
     public void encodeChildren(FacesContext context, UIComponent component)
         throws IOException
     {
         // all work done in encodeEnd()
     }
 
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent component)
             throws IOException
     {

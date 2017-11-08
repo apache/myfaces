@@ -41,12 +41,13 @@ import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
  */
 public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
 {
-
+    @Override
     public boolean getRendersChildren()
     {
         return true;
     }
 
+    @Override
     public void encodeBegin(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
     {
@@ -190,12 +191,14 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
         return (String) uiComponent.getAttributes().get(JSFAttr.IMAGE_ATTR);
     }
 
+    @Override
     public void encodeChildren(FacesContext facesContext, UIComponent component)
             throws IOException
     {
         RendererUtils.renderChildren(facesContext, component);
     }
 
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent component)
             throws IOException
     {

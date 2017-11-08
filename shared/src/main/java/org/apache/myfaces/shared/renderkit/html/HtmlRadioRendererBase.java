@@ -63,8 +63,7 @@ public class HtmlRadioRendererBase
     @Override
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(
-                facesContext, uiComponent, UISelectOne.class);
+        RendererUtils.checkParamValidity(facesContext, uiComponent, UISelectOne.class);
 
         UISelectOne selectOne = (UISelectOne)uiComponent;
 
@@ -545,7 +544,7 @@ public class HtmlRadioRendererBase
 
         if (isDisabled(facesContext, uiComponent))
         {
-            writer.writeAttribute(org.apache.myfaces.shared.renderkit.html.HTML.DISABLED_ATTR, Boolean.TRUE, null);
+            writer.writeAttribute(HTML.DISABLED_ATTR, Boolean.TRUE, null);
         }
 
         writer.endElement(HTML.INPUT_ELEM);

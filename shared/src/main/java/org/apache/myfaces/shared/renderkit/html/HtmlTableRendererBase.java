@@ -45,16 +45,10 @@ import org.apache.myfaces.shared.util.StringUtils;
  */
 public class HtmlTableRendererBase extends HtmlRenderer
 {
-    /** Header facet name. */
     protected static final String HEADER_FACET_NAME = "header";
-
-    /** Footer facet name. */
     protected static final String FOOTER_FACET_NAME = "footer";
-
     protected static final String CAPTION_FACET_NAME = "caption";
     
-    /** The logger. */
-    //private static final Log log = LogFactory.getLog(HtmlTableRendererBase.class);
     private static final Logger log = Logger.getLogger(HtmlTableRendererBase.class.getName());
     
     private static final Integer[] ZERO_INT_ARRAY = new Integer[]{0};
@@ -95,9 +89,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
         return false;
     }
 
-    /**
-     * @see javax.faces.render.Renderer#getRendersChildren()
-     */
+    @Override
     public boolean getRendersChildren()
     {
         return true;
@@ -108,6 +100,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
      * 
      * @see javax.faces.render.Renderer#encodeBegin(FacesContext, UIComponent)
      */
+    @Override
     public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UIData.class);
@@ -199,6 +192,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
      * 
      * @see javax.faces.render.Renderer#encodeChildren(FacesContext, UIComponent)
      */
+    @Override
     public void encodeChildren(FacesContext facesContext, UIComponent component) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, component, UIData.class);

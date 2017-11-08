@@ -40,17 +40,17 @@ import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 public class HtmlImageRendererBase
         extends HtmlRenderer
 {
-    //private static final Log log = LogFactory.getLog(HtmlImageRendererBase.class);
     private static final Logger log = Logger.getLogger(HtmlImageRendererBase.class.getName());
     
+    @Override
     public void decode(FacesContext context, UIComponent component)
     {
-        //check for npe
         super.decode(context, component);
         
         HtmlRendererUtils.decodeClientBehaviors(context, component);
     }
 
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
     {
@@ -71,8 +71,7 @@ public class HtmlImageRendererBase
         
         writer.startElement(HTML.IMG_ELEM, uiComponent);
 
-        if (uiComponent instanceof ClientBehaviorHolder
-                && !behaviors.isEmpty())
+        if (uiComponent instanceof ClientBehaviorHolder && !behaviors.isEmpty())
         {
             HtmlRendererUtils.writeIdAndName(writer, uiComponent, facesContext);
         }
@@ -88,12 +87,12 @@ public class HtmlImageRendererBase
         }
         else
         {
-          if (facesContext.isProjectStage(ProjectStage.Development) && log.isLoggable(Level.WARNING))
-          {
-              log.warning("Component UIGraphic " + uiComponent.getClientId(facesContext) 
-                      + " has no attribute url, value, name or attribute resolves to null. Path to component " 
-                      + RendererUtils.getPathToComponent(uiComponent));
-          }
+            if (facesContext.isProjectStage(ProjectStage.Development) && log.isLoggable(Level.WARNING))
+            {
+                log.warning("Component UIGraphic " + uiComponent.getClientId(facesContext) 
+                        + " has no attribute url, value, name or attribute resolves to null. Path to component " 
+                        + RendererUtils.getPathToComponent(uiComponent));
+            }
         }
 
         /* 
