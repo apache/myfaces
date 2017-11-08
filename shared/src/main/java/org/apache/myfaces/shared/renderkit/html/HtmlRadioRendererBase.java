@@ -100,12 +100,8 @@ public class HtmlRadioRendererBase
             }
         }
         
-        String group = null;
-        if (uiComponent instanceof HtmlSelectOneRadio)
-        {
-            group = ((HtmlSelectOneRadio)uiComponent).getGroup();
-        }
-        if (group != null && group.length() > 0)
+        String group = selectOne instanceof HtmlSelectOneRadio ? ((HtmlSelectOneRadio) selectOne).getGroup() : null;
+        if (group != null && !group.isEmpty())
         {
             // NEW JSF 2.3: Render as distributed component
             String id = uiComponent.getId();
@@ -357,7 +353,7 @@ public class HtmlRadioRendererBase
             
             //writer.write("\t\t");
             boolean renderGroupId = false;
-            if (group != null && group.length() > 0)
+            if (group != null && !group.isEmpty())
             {
                 //no op
                 renderGroupId = true;
