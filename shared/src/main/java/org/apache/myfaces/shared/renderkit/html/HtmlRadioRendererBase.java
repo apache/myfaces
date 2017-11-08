@@ -52,15 +52,15 @@ import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 public class HtmlRadioRendererBase
         extends HtmlRenderer
 {
-    //private static final Log log = LogFactory.getLog(HtmlRadioRendererBase.class);
     private static final Logger log = Logger.getLogger(HtmlRadioRendererBase.class.getName());
 
     private static final String PAGE_DIRECTION = "pageDirection";
     private static final String LINE_DIRECTION = "lineDirection";
     
-    private static final  Set<VisitHint> FIND_SELECT_LIST_HINTS = 
+    private static final Set<VisitHint> FIND_SELECT_LIST_HINTS = 
             Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED));
     
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
         org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(
@@ -91,7 +91,6 @@ public class HtmlRadioRendererBase
         ResponseWriter writer = facesContext.getResponseWriter();
 
         Map<String, List<ClientBehavior>> behaviors = null;
-
         if (uiComponent instanceof ClientBehaviorHolder)
         {
             behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
@@ -122,11 +121,10 @@ public class HtmlRadioRendererBase
                     i--;
                 }
                 Integer itemNum = Integer.valueOf(id.substring(i+1));
+
+                List selectItemList = RendererUtils.getSelectItemList(selectOne, facesContext);
+                Converter converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
                 
-                Converter converter;
-                List selectItemList = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(
-                        selectOne, facesContext);
-                converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
                 ValueExpression ve = selectOne.getValueExpression("value");
                 Object currentValue = null;
                 boolean currentValueSet = false;
@@ -151,10 +149,8 @@ public class HtmlRadioRendererBase
                 {
                     if (!currentValueSet)
                     {
-                        currentValue = 
-                            org.apache.myfaces.shared.renderkit.RendererUtils.
-                                    getStringFromSubmittedValueOrLocalValueReturnNull(
-                                    facesContext, selectOne);
+                        currentValue = RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
+                                facesContext, selectOne);
                     }
 
                     SelectItem selectItem = (SelectItem) selectItemList.get(itemNum);
@@ -169,14 +165,10 @@ public class HtmlRadioRendererBase
                 // like for example inside a dataTable. The important thing here is do not encapsulate the radio
                 // inside a <table> tag, because it is not necessary. 
                 
-                Converter converter;
-                List selectItemList = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(
-                        selectOne, facesContext);
-                converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
-
-                Object currentValue = 
-                    org.apache.myfaces.shared.renderkit.RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
-                            facesContext, selectOne);
+                List selectItemList = RendererUtils.getSelectItemList(selectOne, facesContext);
+                Converter converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
+                Object currentValue = RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
+                        facesContext, selectOne);
 
                 int itemNum = 0;
                 for (int i = 0; i < selectItemList.size(); i++)
@@ -210,13 +202,9 @@ public class HtmlRadioRendererBase
                 writer.startElement(HTML.TR_ELEM, null); // selectOne);
             }
 
-            Converter converter;
-            List selectItemList = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(
-                    selectOne, facesContext);
-            converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
-
-            Object currentValue = 
-                org.apache.myfaces.shared.renderkit.RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
+            List selectItemList = RendererUtils.getSelectItemList(selectOne, facesContext);
+            Converter converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
+            Object currentValue = RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
                         facesContext, selectOne);
 
             int itemNum = 0;
@@ -348,7 +336,7 @@ public class HtmlRadioRendererBase
         } 
         else 
         {
-            String itemStrValue = org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedStringValue(
+            String itemStrValue = RendererUtils.getConvertedStringValue(
                     facesContext, selectOne, converter, selectItem.getValue());
             boolean itemChecked = (itemStrValue == null) ? 
                     itemStrValue == currentValue : 
@@ -386,7 +374,7 @@ public class HtmlRadioRendererBase
             boolean itemDisabled = selectItem.isDisabled();
     
             String itemId = renderRadio(facesContext, selectOne, itemStrValue, itemDisabled, 
-                    itemChecked, renderGroupId ? true : false, renderGroupId ? null : itemNum);
+                    itemChecked, renderGroupId, renderGroupId ? null : itemNum);
     
             // label element after the input
             boolean componentDisabled = isDisabled(facesContext, selectOne);
@@ -440,7 +428,7 @@ public class HtmlRadioRendererBase
     {
         String clientId = uiComponent.getClientId(facesContext);
 
-        String itemId = (itemNum == null)? null : clientId + 
+        String itemId = (itemNum == null) ? null : clientId + 
                 facesContext.getNamingContainerSeparatorChar() + itemNum;
 
         ResponseWriter writer = facesContext.getResponseWriter();
@@ -578,14 +566,13 @@ public class HtmlRadioRendererBase
             return ((HtmlSelectOneRadio)uiComponent).isDisabled();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(
-                uiComponent, HTML.DISABLED_ATTR, false);
+        return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
     }
 
-
+    @Override
     public void decode(FacesContext facesContext, UIComponent uiComponent)
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, uiComponent, null);
+        RendererUtils.checkParamValidity(facesContext, uiComponent, null);
         if (uiComponent instanceof UIInput)
         {
             HtmlRendererUtils.decodeUISelectOne(facesContext, uiComponent);
@@ -597,14 +584,13 @@ public class HtmlRadioRendererBase
         }
     }
 
-
+    @Override
     public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue)
         throws ConverterException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UISelectOne.class);
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedUISelectOneValue(facesContext,
-                                                                                               (UISelectOne)uiComponent,
-                                                                                               submittedValue);
+        return RendererUtils.getConvertedUISelectOneValue(facesContext,
+                (UISelectOne)uiComponent, submittedValue);
     }
     
     private static class GetSelectItemListCallback implements VisitCallback
@@ -632,15 +618,12 @@ public class HtmlRadioRendererBase
                     {
                         UISelectOne selectOne = (UISelectOne) target;
                         FacesContext facesContext = context.getFacesContext();
-                        selectItemList = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(
-                            selectOne, facesContext);
+                        selectItemList = RendererUtils.getSelectItemList(selectOne, facesContext);
                         converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
                         
                         if (selectItemList != null && selectItemList.size() > 0)
                         {
-                            currentValue = 
-                                org.apache.myfaces.shared.renderkit.RendererUtils.
-                                        getStringFromSubmittedValueOrLocalValueReturnNull(
+                            currentValue = RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
                                         context.getFacesContext(), selectOne);
                         }
                         return VisitResult.COMPLETE;
