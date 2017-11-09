@@ -104,10 +104,9 @@ public class HtmlRadioRendererBase
         if (group != null && !group.isEmpty())
         {
             List selectItemList = RendererUtils.getSelectItemList(selectOne, facesContext);
-            Converter converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
-
             if (selectItemList != null && !selectItemList.isEmpty())
             {
+                Converter converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
                 Object currentValue = RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
                             facesContext, selectOne);
                 SelectItem selectItem = (SelectItem) selectItemList.get(0);
@@ -123,13 +122,9 @@ public class HtmlRadioRendererBase
                 formInfo.getForm().visitTree(
                         VisitContext.createVisitContext(facesContext, null, FIND_SELECT_LIST_HINTS),
                         callback);                
-                renderGroupOrItemRadio(facesContext, selectOne,
-                                                     callback.getSelectItem(),
-                                                     callback.getCurrentValue(),
-                                                     callback.getConverter(),
-                                                     pageDirectionLayout,
-                                                     group,
-                                                     callback.getIndex());
+                renderGroupOrItemRadio(facesContext, selectOne, callback.getSelectItem(),
+                        callback.getCurrentValue(), callback.getConverter(), 
+                        pageDirectionLayout, group, callback.getIndex());
             }
         }
         else
@@ -549,8 +544,7 @@ public class HtmlRadioRendererBase
         private final UISelectOne selectOneRadio;
         private final String group;
         
-        private UISelectOne firstSelectOneRadio;
-        private List<String> selectOneRadioClientIds;
+        private final List<UISelectOne> selectOneRadios;
         
         private int index;
         private SelectItem selectItem;
@@ -561,6 +555,8 @@ public class HtmlRadioRendererBase
         {
             this.selectOneRadio = selectOneRadio;
             this.group = group;
+            
+            this.selectOneRadios = new ArrayList<>();
         }
 
         @Override
@@ -572,37 +568,29 @@ public class HtmlRadioRendererBase
                 String targetGroup = targetSelectOneRadio.getGroup();
                 if (group.equals(targetGroup))
                 {
-                    if (firstSelectOneRadio == null)
-                    {
-                        firstSelectOneRadio = targetSelectOneRadio;
-                    }
-                    if (selectOneRadioClientIds == null)
-                    {
-                        selectOneRadioClientIds = new ArrayList<>();
-                    }
-                    selectOneRadioClientIds.add(targetSelectOneRadio.getClientId(context.getFacesContext()));
+                    selectOneRadios.add(targetSelectOneRadio);
                     
                     // check if the current selectOneRadio was already visited
-                    index = selectOneRadioClientIds.indexOf(selectOneRadio.getClientId(context.getFacesContext()));
+                    index = selectOneRadios.indexOf(selectOneRadio);
                     if (index != -1)
                     {                        
+                        UISelectOne first = selectOneRadios.get(0);
+
                         // if we were found,
                         // lets take the selectItems from the first selectOneRadio of our group
-                        List<SelectItem> selectItemList = RendererUtils.getSelectItemList(
-                                firstSelectOneRadio, context.getFacesContext());
+                        List<SelectItem> selectItemList = RendererUtils.getSelectItemList(first,
+                                context.getFacesContext());
                         if (selectItemList == null || selectItemList.isEmpty())
                         {
-                            throw new FacesException(
-                                    "UISelectOne with id=\"" + firstSelectOneRadio.getId()
+                            throw new FacesException("UISelectOne with id=\"" + first.getId()
                                             + "\" and group=\"" + group + "\" does not have any UISelectItems!");
                         }
                         
                         // evaluate required infos from the first selectOneRadio of our group
                         selectItem = selectItemList.get(index);
-                        converter = HtmlRendererUtils.findUIOutputConverterFailSafe(
-                                context.getFacesContext(), firstSelectOneRadio);
+                        converter = HtmlRendererUtils.findUIOutputConverterFailSafe(context.getFacesContext(), first);
                         currentValue = RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
-                                context.getFacesContext(), firstSelectOneRadio);
+                                context.getFacesContext(), first);
                         
                         return VisitResult.COMPLETE;
                     }
