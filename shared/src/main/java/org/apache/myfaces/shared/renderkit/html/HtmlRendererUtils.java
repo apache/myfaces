@@ -77,10 +77,9 @@ import org.apache.myfaces.shared.util.StringUtils;
 
 public final class HtmlRendererUtils
 {
-    //private static final Log log = LogFactory.getLog(HtmlRendererUtils.class);
     private static final Logger log = Logger.getLogger(HtmlRendererUtils.class
             .getName());
-    //private static final String[] EMPTY_STRING_ARRAY = new String[0];
+
     private static final String LINE_SEPARATOR = System.getProperty(
             "line.separator", "\r\n");
     private static final char TABULATOR = '\t';
@@ -271,24 +270,23 @@ public final class HtmlRendererUtils
             if (group != null && group.length() > 0)
             {
                 FormInfo formInfo = RendererUtils.findNestingForm(component, facesContext);
-                String fullGroupId = formInfo.getFormName()+
-                        facesContext.getNamingContainerSeparatorChar()+group;
+                String fullGroupId = formInfo.getFormName() +
+                        facesContext.getNamingContainerSeparatorChar() + group;
                 if (paramMap.containsKey(fullGroupId))
                 {
                     String submittedValue = (String) paramMap.get(fullGroupId);
-                    String expectedStart = component.getClientId(facesContext)+
+                    String submittedValuePrefix = component.getClientId(facesContext) +
                             facesContext.getNamingContainerSeparatorChar();
-                    if (submittedValue.startsWith(expectedStart))
+                    if (submittedValue.startsWith(submittedValuePrefix))
                     {
+                        String realSubmittedValue = submittedValue.substring(submittedValuePrefix.length());
                         SelectOneGroupSetSubmittedValueCallback callback = 
                                 new SelectOneGroupSetSubmittedValueCallback(group,
-                                        submittedValue.substring(expectedStart.length()),
+                                        realSubmittedValue,
                                         component.getClientId(facesContext),
                                         component.getValueExpression("value") != null);
                         formInfo.getForm().visitTree(
                                 VisitContext.createVisitContext(facesContext, null, FIND_SELECT_LIST_HINTS), callback);
-                        //((EditableValueHolder) component).setSubmittedValue(
-                        //        submittedValue.substring(expectedStart.length()));
                     }
                 }
                 return;
@@ -307,7 +305,7 @@ public final class HtmlRendererUtils
         }
     }
     
-    private static final  Set<VisitHint> FIND_SELECT_LIST_HINTS = 
+    private static final Set<VisitHint> FIND_SELECT_LIST_HINTS = 
         Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED));
     
     private static class SelectOneGroupSetSubmittedValueCallback implements VisitCallback
@@ -333,21 +331,21 @@ public final class HtmlRendererUtils
         {
             if (target instanceof UISelectOne)
             {
-                UISelectOne component = (UISelectOne) target;
-                String targetGroup = component.getGroup();
+                UISelectOne targetSelectOneRadio = ((UISelectOne) target);
+                String targetGroup = targetSelectOneRadio.getGroup();
                 if (group.equals(targetGroup))
                 {
                     if (this.sourceComponentHasValueVE)
                     {
                         // dataTable case or original case. Set submittedValue on that component and
                         // in the others ones of the group empty.
-                        if (submittedClientId.equals(component.getClientId(context.getFacesContext())))
+                        if (submittedClientId.equals(targetSelectOneRadio.getClientId(context.getFacesContext())))
                         {
-                            component.setSubmittedValue(submittedValue);
+                            targetSelectOneRadio.setSubmittedValue(submittedValue);
                         }
                         else
                         {
-                            component.resetValue();
+                            targetSelectOneRadio.resetValue();
                         }
                     }
                     else
@@ -356,19 +354,19 @@ public final class HtmlRendererUtils
                         // For all other components set as submitted value empty.
                         if (!this.submittedValueSet)
                         {
-                            if (component.getValueExpression("value") != null)
+                            if (targetSelectOneRadio.getValueExpression("value") != null)
                             {
-                                component.setSubmittedValue(submittedValue);
+                                targetSelectOneRadio.setSubmittedValue(submittedValue);
                                 this.submittedValueSet = true;
                             }
                             else
                             {
-                                component.resetValue();
+                                targetSelectOneRadio.resetValue();
                             }
                         }
                         else
                         {
-                            component.resetValue();
+                            targetSelectOneRadio.resetValue();
                         }
                     }
                     return VisitResult.REJECT;
