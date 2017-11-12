@@ -391,12 +391,8 @@ public class HtmlRadioRendererBase
         }
         writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_RADIO, null);
         
-        String group = null;
-        if (uiComponent instanceof HtmlSelectOneRadio)
-        {
-            group = ((HtmlSelectOneRadio)uiComponent).getGroup();
-        }
-        if (group != null && group.length() > 0)
+        String group = uiComponent instanceof HtmlSelectOneRadio ? ((HtmlSelectOneRadio) uiComponent).getGroup() : null;
+        if (group != null && !group.isEmpty())
         {
             FormInfo formInfo = RendererUtils.findNestingForm(uiComponent, facesContext);
             writer.writeAttribute(HTML.NAME_ATTR, formInfo.getFormName()+

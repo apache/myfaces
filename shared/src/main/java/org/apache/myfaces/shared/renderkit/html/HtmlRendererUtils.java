@@ -267,7 +267,7 @@ public final class HtmlRendererUtils
         if (component instanceof UISelectOne)
         {
             String group = ((UISelectOne) component).getGroup();
-            if (group != null && group.length() > 0)
+            if (group != null && !group.isEmpty())
             {
                 FormInfo formInfo = RendererUtils.findNestingForm(component, facesContext);
                 String fullGroupId = formInfo.getFormName() +
@@ -275,14 +275,14 @@ public final class HtmlRendererUtils
                 if (paramMap.containsKey(fullGroupId))
                 {
                     String submittedValue = (String) paramMap.get(fullGroupId);
-                    String submittedValuePrefix = component.getClientId(facesContext) +
+                    String submittedValueNamespace = component.getClientId(facesContext) +
                             facesContext.getNamingContainerSeparatorChar();
-                    if (submittedValue.startsWith(submittedValuePrefix))
+                    if (submittedValue.startsWith(submittedValueNamespace))
                     {
-                        String realSubmittedValue = submittedValue.substring(submittedValuePrefix.length());
+                        submittedValue = submittedValue.substring(submittedValueNamespace.length());
                         SelectOneGroupSetSubmittedValueCallback callback = 
                                 new SelectOneGroupSetSubmittedValueCallback(group,
-                                        realSubmittedValue,
+                                        submittedValue,
                                         component.getClientId(facesContext),
                                         component.getValueExpression("value") != null);
                         formInfo.getForm().visitTree(
@@ -292,6 +292,7 @@ public final class HtmlRendererUtils
                 return;
             }
         }
+        
         String clientId = component.getClientId(facesContext);
         if (paramMap.containsKey(clientId))
         {
