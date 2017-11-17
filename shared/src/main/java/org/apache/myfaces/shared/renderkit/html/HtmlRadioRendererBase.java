@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -60,6 +61,8 @@ public class HtmlRadioRendererBase
     
     private static final Set<VisitHint> FIND_SELECT_LIST_HINTS = 
             Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED, VisitHint.SKIP_ITERATION));
+
+    private Map<String, UISelectOne> groupFirst = new HashMap<String, UISelectOne>();
     
     @Override
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
@@ -103,12 +106,31 @@ public class HtmlRadioRendererBase
         String group = selectOne instanceof HtmlSelectOneRadio ? ((HtmlSelectOneRadio) selectOne).getGroup() : null;
         if (group != null && !group.isEmpty())
         {
+            if (!groupFirst.containsKey(group)) 
+            {
+                groupFirst.put(group, selectOne);
+            }
+
             List selectItemList = RendererUtils.getSelectItemList(selectOne, facesContext);
             if (selectItemList != null && !selectItemList.isEmpty())
             {
                 Converter converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
-                Object currentValue = RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
-                            facesContext, selectOne);
+                Object currentValue = null;
+
+                // If the current selectOne radio contains a value expression, 
+                // then get the current value using the current selectOne radio.
+                // Otherwise get the current value using the first selectOne radio which
+                // must contain a value expression.
+                if (selectOne.getValueExpression("value") != null)
+                {
+                    currentValue = RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
+                                facesContext, selectOne);
+                }
+                else
+                {
+                    currentValue = RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
+                                facesContext, groupFirst.get(group));
+                }
                 SelectItem selectItem = (SelectItem) selectItemList.get(0);
                 renderGroupOrItemRadio(facesContext, selectOne,
                                                      selectItem, currentValue,
