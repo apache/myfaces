@@ -264,10 +264,10 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
     _fetchUniqueId: function(prefix, identifier) {
         var cnt = 0;
-        var retVal = prefix + identifier + jsf.separatorchar+cnt;
+        var retVal = prefix + identifier + jsf.separatorchar + cnt;
         while(this._Dom.byId(retVal) != null) {
             cnt++;
-            prefix + identifier + jsf.separatorchar+cnt;
+            retVal = prefix + identifier + jsf.separatorchar + cnt;
         }
         return retVal;
     },
