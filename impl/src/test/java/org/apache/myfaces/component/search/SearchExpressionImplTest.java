@@ -117,6 +117,10 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
         componentId = facesContext.getApplication().getSearchExpressionHandler().resolveClientIds(
                 searchContext, "@parent:@id(msgName)").get(0);
         Assert.assertEquals(componentId, "mainForm:msgName");
+
+        componentId = facesContext.getApplication().getSearchExpressionHandler().resolveClientIds(
+                searchContext, "topLevelOutputText").get(0);
+        Assert.assertEquals(componentId, "topLevelOutputText");
         
         facesContext.getViewRoot().invokeOnComponent(facesContext, "mainForm:table:3:nested:1:nestedButton", 
                 new ContextCallback()

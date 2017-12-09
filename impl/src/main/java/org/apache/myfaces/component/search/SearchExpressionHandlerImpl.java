@@ -428,6 +428,8 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                 // Command completed, apply parent callback
                 this.applyKeyword(searchExpressionContext, previous, command, null, parentCallback);
             }
+            
+            return;
         }
         else
         {
@@ -439,7 +441,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
             {
                 int idx = topExpression.indexOf(":@");
                 nextExpression = topExpression.substring(idx+1);
-                expression = topExpression.substring(0,idx);
+                expression = topExpression.substring(0, idx);
             }
             else
             {
@@ -529,9 +531,14 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 
                 return;
             }
-
-            topCallback.invokeContextCallback(facesContext, previous);
         }
+        
+        // still no component found - lets try a invokeComponent as last fallback (see MYFACES-4176)
+        String clientId = topExpression;
+        if (clientId.charAt(0) == separatorChar) {
+            clientId = clientId.substring(1);
+        }
+        facesContext.getViewRoot().invokeOnComponent(facesContext, clientId, topCallback);
     }
 
     // take the command and resolve it using the chain of responsibility pattern.
@@ -562,8 +569,6 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         char separatorChar = facesContext.getNamingContainerSeparatorChar();
         if (topExpression.charAt(0) == separatorChar)
         {
-            //return facesContext.getApplication().getSearchExpressionHandler().isPassthroughExpression(
-            //        searchExpressionContext, topExpression.substring(1));
             // only keywords are passthrough expressions.
             return false;
         }
