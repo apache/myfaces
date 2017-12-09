@@ -120,7 +120,7 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
         };
         
         label.setValue("outputdata");
-        label.setFor("compId");
+        //label.setFor("compId"); 
         
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 label, facesContext, writer, attrs);
