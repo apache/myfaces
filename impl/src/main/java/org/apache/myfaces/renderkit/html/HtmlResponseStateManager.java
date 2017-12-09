@@ -32,10 +32,8 @@ import javax.faces.render.ResponseStateManager;
 import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
-import org.apache.myfaces.renderkit.StateTokenProcessor;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.html.HTML;
-import org.apache.myfaces.shared.util.StateUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.StateCacheProvider;
 import org.apache.myfaces.spi.StateCacheProviderFactory;
@@ -64,14 +62,11 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
             "org.apache.myfaces.AUTOCOMPLETE_OFF_VIEW_STATE";
             
     private StateCacheProvider _stateCacheFactory;
-    
-    private StateTokenProcessor _stateTokenProcessor;
-    
+        
     private Boolean _autoCompleteOffViewState;
     
     public HtmlResponseStateManager()
     {
-        _stateTokenProcessor = new DefaultStateTokenProcessor();
         _autoCompleteOffViewState = null;
     }
     
@@ -124,7 +119,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     private void writeViewStateField(FacesContext facesContext, ResponseWriter responseWriter, Object savedState)
         throws IOException
     {
-        String serializedState = _stateTokenProcessor.encode(facesContext, savedState);
+        String serializedState = getStateCache(facesContext).encodeStateToken(facesContext, savedState);
         ExternalContext extContext = facesContext.getExternalContext();
         MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(extContext);
 
@@ -186,12 +181,12 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     {
         Object encodedState = 
             facesContext.getExternalContext().getRequestParameterMap().get(STANDARD_STATE_SAVING_PARAM);
-        if(encodedState==null || (((String) encodedState).length() == 0))
+        if (encodedState == null || (((String) encodedState).length() == 0))
         {
             return null;
         }
 
-        Object savedStateObject = _stateTokenProcessor.decode(facesContext, (String)encodedState);
+        Object savedStateObject = getStateCache(facesContext).decodeStateToken(facesContext, (String)encodedState);
         
         return savedStateObject;
     }
@@ -225,22 +220,22 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         
         Object state = getStateCache(facesContext).saveSerializedView(facesContext, baseState);
 
-        return _stateTokenProcessor.encode(facesContext, state);
+        return getStateCache(facesContext).encodeStateToken(facesContext, state);
     }
 
     @Override
-    public boolean isStateless(FacesContext context, String viewId)
+    public boolean isStateless(FacesContext facesContext, String viewId)
     {
-        if (context.isPostback())
+        if (facesContext.isPostback())
         {
             String encodedState = 
-                context.getExternalContext().getRequestParameterMap().get(STANDARD_STATE_SAVING_PARAM);
+                facesContext.getExternalContext().getRequestParameterMap().get(STANDARD_STATE_SAVING_PARAM);
             if(encodedState==null || (((String) encodedState).length() == 0))
             {
                 return false;
             }
 
-            return _stateTokenProcessor.isStateless(context, encodedState);
+            return getStateCache(facesContext).isStatelessToken(facesContext, encodedState);
         }
         else 
         {
@@ -339,41 +334,6 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         return id;
     }
 
-    private static class DefaultStateTokenProcessor extends StateTokenProcessor
-    {
-        private static final String STATELESS_TOKEN = "stateless";
-
-        @Override
-        public Object decode(FacesContext facesContext, String token)
-        {
-            if (STATELESS_TOKEN.equals(token))
-            {
-                // Should not happen, because ResponseStateManager.isStateless(context,viewId) should
-                // catch it first
-                return null;
-            }
-            Object savedStateObject = StateUtils.reconstruct((String)token, facesContext.getExternalContext());
-            return savedStateObject;
-        }
-
-        @Override
-        public String encode(FacesContext facesContext, Object savedStateObject)
-        {
-            if (facesContext.getViewRoot().isTransient())
-            {
-                return STATELESS_TOKEN;
-            }
-            String serializedState = StateUtils.construct(savedStateObject, facesContext.getExternalContext());
-            return serializedState;
-        }
-
-        @Override
-        public boolean isStateless(FacesContext facesContext, String token)
-        {
-            return STATELESS_TOKEN.equals(token);
-        }
-    }
-    
     private boolean isAutocompleteOffViewState(FacesContext facesContext)
     {
         if (_autoCompleteOffViewState == null)

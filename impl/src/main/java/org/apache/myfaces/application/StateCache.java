@@ -75,6 +75,8 @@ public abstract class StateCache<K, V>
     public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM 
             = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM";
 
+    public static final String STATELESS_TOKEN = "stateless";
+    
     /**
      * Put the state on the cache, to can be restored later.
      * 
@@ -124,4 +126,16 @@ public abstract class StateCache<K, V>
      * @return 
      */
     public abstract String createCryptographicallyStrongTokenFromSession(FacesContext context);
+    
+    
+    
+    
+    public abstract Object decodeStateToken(FacesContext facesContext, String token);
+    
+    public abstract String encodeStateToken(FacesContext facesContext, Object savedStateObject);
+    
+    public boolean isStatelessToken(FacesContext facesContext, String token)
+    {
+        return STATELESS_TOKEN.equals(token);
+    }
 }
