@@ -535,7 +535,8 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         
         // still no component found - lets try a invokeComponent as last fallback (see MYFACES-4176)
         String clientId = topExpression;
-        if (clientId.charAt(0) == separatorChar) {
+        if (clientId.charAt(0) == separatorChar)
+        {
             clientId = clientId.substring(1);
         }
         facesContext.getViewRoot().invokeOnComponent(facesContext, clientId, topCallback);
