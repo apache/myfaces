@@ -313,21 +313,6 @@ public class MyfacesConfig
     public final static boolean INIT_PARAM_DEBUG_PHASE_LISTENER_DEFAULT = false;
     
     /**
-     * DEPRECATED: No longer used in JSF 2.3, because PartialViewContext now contemplates update resources
-     * in ajax request. Detect if a target (usually head) should be update for the current view in an ajax render 
-     * operation. This is activated if a css or js resource is added dynamically by effect of a refresh 
-     * (c:if, ui:include src="#{...}" or a manipulation of the tree). This ensures ajax updates of content 
-     * using ui:include will be consistent. Note this behavior is a myfaces specific extension, so to 
-     * ensure strict compatibility with the spec, set this param to false (default false).
-     * 
-     * @deprecated 
-     */
-    @JSFWebConfigParam(since="2.0.10", expectedValues="true, false", defaultValue="false",deprecated = true)
-    public final static String INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX = 
-        "org.apache.myfaces.STRICT_JSF_2_REFRESH_TARGET_AJAX";
-    public final static boolean INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX_DEFAULT = false;
-    
-    /**
      * Change default getType() behavior for composite component EL resolver, from return null 
      * (see JSF 2_0 spec section 5_6_2_2) to
      * use the metadata information added by composite:attribute, ensuring components working with 
@@ -574,7 +559,6 @@ public class MyfacesConfig
     private boolean _wrapScriptContentWithXmlCommentTag;
     private boolean _renderFormSubmitScriptInline;
     private boolean _debugPhaseListenerEnabled;
-    private boolean _strictJsf2RefreshTargetAjax;
     private boolean _strictJsf2CCELResolver;
     private String _defaultResponseWriterContentTypeMode;
     private boolean _viewUniqueIdsCacheEnabled;
@@ -686,7 +670,6 @@ public class MyfacesConfig
         setCheckExtensionsFilter(false);
         setRenderFormSubmitScriptInline(INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT);
         setDebugPhaseListenerEnabled(INIT_PARAM_DEBUG_PHASE_LISTENER_DEFAULT);
-        setStrictJsf2RefreshTargetAjax(INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX_DEFAULT);
         setStrictJsf2CCELResolver(INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT);
         setDefaultResponseWriterContentTypeMode(INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT);
         setViewUniqueIdsCacheEnabled(INIT_PARAM_VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT);
@@ -789,10 +772,7 @@ public class MyfacesConfig
         
         myfacesConfig.setDebugPhaseListenerEnabled(getBooleanInitParameter(extCtx, INIT_PARAM_DEBUG_PHASE_LISTENER,
                 INIT_PARAM_DEBUG_PHASE_LISTENER_DEFAULT));
-        
-        myfacesConfig.setStrictJsf2RefreshTargetAjax(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
-                INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX, INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX_DEFAULT));
-        
+                
         myfacesConfig.setStrictJsf2CCELResolver(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
                 INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER, INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT));
         
@@ -1342,16 +1322,6 @@ public class MyfacesConfig
     public void setDebugPhaseListenerEnabled(boolean debugPhaseListener)
     {
         this._debugPhaseListenerEnabled = debugPhaseListener;
-    }
-
-    public boolean isStrictJsf2RefreshTargetAjax()
-    {
-        return _strictJsf2RefreshTargetAjax;
-    }
-
-    public void setStrictJsf2RefreshTargetAjax(boolean strictJsf2RefreshTargetAjax)
-    {
-        this._strictJsf2RefreshTargetAjax = strictJsf2RefreshTargetAjax;
     }
 
     public boolean isStrictJsf2CCELResolver()

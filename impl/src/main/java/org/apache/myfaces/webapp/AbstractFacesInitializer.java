@@ -868,5 +868,11 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         {
             log.severe("'org.apache.myfaces.ERROR_HANDLER' is not supported anymore since 2.3.");
         }
+        
+        value = externalContext.getInitParameter("org.apache.myfaces.STRICT_JSF_2_REFRESH_TARGET_AJAX");
+        if (value != null && !value.isEmpty())
+        {
+            log.severe("'org.apache.myfaces.STRICT_JSF_2_REFRESH_TARGET_AJAX' is not supported anymore since 2.3.");
+        }
     }
 }

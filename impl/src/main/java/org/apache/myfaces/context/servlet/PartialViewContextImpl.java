@@ -512,43 +512,6 @@ public class PartialViewContextImpl extends PartialViewContext
                         processRenderResource(_facesContext, writer, rvc, updatedComponents, "head");
                         processRenderResource(_facesContext, writer, rvc, updatedComponents, "body");
                         processRenderResource(_facesContext, writer, rvc, updatedComponents, "form");
-                        
-                        /*
-                        if (!ExternalContextUtils.isPortlet(_facesContext.getExternalContext()) &&
-                                MyfacesConfig.getCurrentInstance(externalContext).isStrictJsf2RefreshTargetAjax())
-                        {
-                            RequestViewContext rvc = RequestViewContext.getCurrentInstance(_facesContext);
-                            if (rvc.isRenderTarget("head"))
-                            {
-                                UIComponent head = findHeadComponent(viewRoot);
-                                if (head != null)
-                                {
-                                    writer.startUpdate("javax.faces.ViewHead");
-                                    head.encodeAll(_facesContext);
-                                    writer.endUpdate();
-                                    if (updatedComponents == null)
-                                    {
-                                        updatedComponents = new ArrayList<UIComponent>();
-                                    }
-                                    updatedComponents.add(head);
-                                }
-                            }
-                            if (rvc.isRenderTarget("body") || rvc.isRenderTarget("form"))
-                            {
-                                UIComponent body = findBodyComponent(viewRoot);
-                                if (body != null)
-                                {
-                                    writer.startUpdate("javax.faces.ViewBody");
-                                    body.encodeAll(_facesContext);
-                                    writer.endUpdate();
-                                    if (updatedComponents == null)
-                                    {
-                                        updatedComponents = new ArrayList<UIComponent>();
-                                    }
-                                    updatedComponents.add(body);
-                                }
-                            }
-                        }*/
 
                         VisitContext visitCtx = getVisitContextFactory().getVisitContext(
                                 _facesContext, renderIds, PARTIAL_RENDER_HINTS);
@@ -564,32 +527,6 @@ public class PartialViewContextImpl extends PartialViewContext
                     processRenderResource(_facesContext, writer, rvc, updatedComponents, "body");
                     processRenderResource(_facesContext, writer, rvc, updatedComponents, "form");
                 }
-                /*
-                else if (!ExternalContextUtils.isPortlet(_facesContext.getExternalContext()) &&
-                        MyfacesConfig.getCurrentInstance(externalContext).isStrictJsf2RefreshTargetAjax())
-                {
-                    RequestViewContext rvc = RequestViewContext.getCurrentInstance(_facesContext);
-                    if (rvc.isRenderTarget("head"))
-                    {
-                        UIComponent head = findHeadComponent(viewRoot);
-                        if (head != null)
-                        {
-                            writer.startUpdate("javax.faces.ViewHead");
-                            head.encodeAll(_facesContext);
-                            writer.endUpdate();
-                        }
-                    }
-                    if (rvc.isRenderTarget("body") || rvc.isRenderTarget("form"))
-                    {
-                        UIComponent body = findBodyComponent(viewRoot);
-                        if (body != null)
-                        {
-                            writer.startUpdate("javax.faces.ViewBody");
-                            body.encodeAll(_facesContext);
-                            writer.endUpdate();
-                        }
-                    }
-                }*/
                 
                 List<String> evalScripts = pvc.getEvalScripts();
                 if (evalScripts != null && evalScripts.size() > 0)
