@@ -40,7 +40,7 @@ class RandomSessionViewStorageFactory extends SessionViewStorageFactory<KeyFacto
     @Override
     public SerializedViewKey createSerializedViewKey(FacesContext context, String viewId, byte[] key)
     {
-        return new IntByteArraySerializedViewKey(viewId == null ? 0 : viewId.hashCode(), key);
+        return new SerializedViewKey(viewId == null ? 0 : viewId.hashCode(), key);
     }
     
 }

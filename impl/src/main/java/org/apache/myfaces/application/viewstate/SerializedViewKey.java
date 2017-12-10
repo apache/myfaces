@@ -19,12 +19,52 @@
 package org.apache.myfaces.application.viewstate;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * Base implementation where all keys used to identify the state of a view should
  * extend.
  */
-abstract class SerializedViewKey implements Serializable
+class SerializedViewKey implements Serializable
 {
-    
+    final int _viewId;
+    final byte[] _sequenceId;
+
+    public SerializedViewKey(int viewId, byte[] sequence)
+    {
+        _sequenceId = sequence;
+        _viewId = viewId;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final SerializedViewKey other = (SerializedViewKey) obj;
+        if (this._viewId != other._viewId)
+        {
+            return false;
+        }
+        if (!Arrays.equals(this._sequenceId, other._sequenceId))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 5;
+        hash = 37 * hash + this._viewId;
+        hash = 37 * hash + Arrays.hashCode(this._sequenceId);
+        return hash;
+    }
 }
