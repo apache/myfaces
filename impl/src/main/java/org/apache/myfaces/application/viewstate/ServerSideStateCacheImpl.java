@@ -127,14 +127,13 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     public static final String USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION
             = "org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION";
 
-    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_NONE = "none";
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM = "random";
     
     /**
      * Adds a random key to the generated view state session token.
      */
-    @JSFWebConfigParam(since="2.1.9, 2.0.15", expectedValues="secureRandom, random, none", 
+    @JSFWebConfigParam(since="2.1.9, 2.0.15", expectedValues="secureRandom, random", 
             defaultValue="secureRandom", group="state")
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN";
@@ -204,7 +203,11 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         }
         else
         {
-            sessionViewStorageFactory = new CounterSessionViewStorageFactory(new CounterKeyFactory());
+            log.warning("org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN \""
+                    + randomMode + "\" is not supported (anymore)."
+                    + " Fallback to \"secureRandom\"");
+            sessionViewStorageFactory = new RandomSessionViewStorageFactory(
+                    new SecureRandomKeyFactory(facesContext));
         }
         
         String csrfRandomMode = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
