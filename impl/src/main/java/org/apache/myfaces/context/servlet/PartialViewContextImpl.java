@@ -769,6 +769,7 @@ public class PartialViewContextImpl extends PartialViewContext
             this._alreadyUpdatedComponents = alreadyUpdatedComponents;
         }
 
+        @Override
         public VisitResult visit(VisitContext context, UIComponent target)
         {
             if (_phaseId == PhaseId.APPLY_REQUEST_VALUES)
