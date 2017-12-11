@@ -242,14 +242,13 @@ public class HtmlLabelRenderer extends HtmlRenderer
     }
 
     private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
-            EnumSet.of(SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
+            EnumSet.of(SearchExpressionHint.RESOLVE_SINGLE_COMPONENT, SearchExpressionHint.IGNORE_NO_RESULT);
     
     protected String getClientId(FacesContext facesContext, UIComponent uiComponent, String forAttr)
     {
         SearchExpressionContext searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
                 facesContext, uiComponent, EXPRESSION_HINTS, null);
-        
-        //return RendererUtils.getClientId(facesContext, uiComponent, forAttr);
+
         return facesContext.getApplication().getSearchExpressionHandler().resolveClientId(
                 searchExpressionContext, forAttr);
     }
