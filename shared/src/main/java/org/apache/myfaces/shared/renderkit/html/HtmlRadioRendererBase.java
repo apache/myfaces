@@ -348,7 +348,9 @@ public class HtmlRadioRendererBase
             boolean componentDisabled = isDisabled(facesContext, selectOne);
             boolean disabled = (componentDisabled || itemDisabled);
     
-            HtmlRendererUtils.renderLabel(writer, selectOne, itemId, selectItem, disabled);
+            HtmlRendererUtils.renderLabel(writer, selectOne,
+                    renderGroupId ? selectOne.getClientId(facesContext) : itemId,
+                    selectItem, disabled);
 
             if (group != null && group.length() > 0)
             {
