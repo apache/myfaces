@@ -26,6 +26,7 @@ import javax.faces.FacesException;
 import javax.faces.component.ContextCallback;
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.component.search.ComponentNotFoundException;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchExpressionHandler;
@@ -429,7 +430,6 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                 this.applyKeyword(searchExpressionContext, previous, command, null, parentCallback);
             }
             
-            return;
         }
         else
         {
@@ -531,15 +531,55 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 
                 return;
             }
+
+            // At this point if the algorithm hasn't returned and the topExpression does not have any separator char
+            // we need to do the search backward using findComponent.
+            if (target == null 
+                    && searchExpressionContext.getSource() == previous 
+                    && (topExpression.indexOf(separatorChar) == -1) )
+            {
+                UIComponent baseNC = previous.getNamingContainer();
+                if (baseNC != null && baseNC.getParent() != null)
+                {
+                    UIComponent parentNC = getParentNamingContainerUIViewRoot(baseNC.getParent());
+                    while (target == null && parentNC != null)
+                    {
+                        UIComponent parent = parentNC.getParent();
+                        target = parentNC.findComponent(expression);
+                        if (parent != null)
+                        {
+                            parentNC = getParentNamingContainerUIViewRoot(parent);
+                        }
+                        else
+                        {
+                            parentNC = null;
+                        }
+                    }
+                    if (target != null)
+                    {
+                        topCallback.invokeContextCallback(facesContext, target);
+                        return;
+                    }
+                }
+            }
+        
+            topCallback.invokeContextCallback(facesContext, previous);
         }
         
-        // still no component found - lets try a invokeComponent as last fallback (see MYFACES-4176)
-        String clientId = topExpression;
-        if (clientId.charAt(0) == separatorChar)
+    }
+    
+    private static UIComponent getParentNamingContainerUIViewRoot(UIComponent component)
+    {
+        do
         {
-            clientId = clientId.substring(1);
-        }
-        facesContext.getViewRoot().invokeOnComponent(facesContext, clientId, topCallback);
+            if (component instanceof NamingContainer || component instanceof UIViewRoot)
+            {
+                return component;
+            }
+
+            component = component.getParent();
+        } while (component != null);
+        return null;
     }
 
     // take the command and resolve it using the chain of responsibility pattern.
