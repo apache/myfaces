@@ -22,9 +22,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.application.StateCache;
-import static org.apache.myfaces.application.StateCache.STATELESS_TOKEN;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.shared.util.StateUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 class ClientSideStateCacheImpl extends StateCache<Object, Object>
@@ -197,29 +195,5 @@ class ClientSideStateCacheImpl extends StateCache<Object, Object>
     public String createCryptographicallyStrongTokenFromSession(FacesContext context)
     {
         return csrfSessionTokenFactory.createCryptographicallyStrongTokenFromSession(context);
-    }
-    
-    @Override
-    public Object decodeStateToken(FacesContext facesContext, String token)
-    {
-        if (isStatelessToken(facesContext, token))
-        {
-            // Should not happen, because ResponseStateManager.isStateless(context,viewId) should
-            // catch it first
-            return null;
-        }
-        Object savedStateObject = StateUtils.reconstruct((String)token, facesContext.getExternalContext());
-        return savedStateObject;
-    }
-
-    @Override
-    public String encodeStateToken(FacesContext facesContext, Object savedStateObject)
-    {
-        if (facesContext.getViewRoot().isTransient())
-        {
-            return STATELESS_TOKEN;
-        }
-        String serializedState = StateUtils.construct(savedStateObject, facesContext.getExternalContext());
-        return serializedState;
     }
 }

@@ -36,8 +36,8 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
         
         SerializedViewCollection collection = new SerializedViewCollection();
         String viewId = "/test.xhtml";
-        SerializedViewKey key1 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 1});
-        SerializedViewKey key2 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 2});
+        SerializedViewKey key1 = new IntIntSerializedViewKey(viewId.hashCode(), 1);
+        SerializedViewKey key2 = new IntIntSerializedViewKey(viewId.hashCode(), 2);
         
         TestViewScopeProvider provider = new TestViewScopeProvider();
         
@@ -58,9 +58,9 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
         
         SerializedViewCollection collection = new SerializedViewCollection();
         String viewId = "/test.xhtml";
-        SerializedViewKey key1 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 1});
-        SerializedViewKey key2 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 2});
-        SerializedViewKey key3 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 3});
+        SerializedViewKey key1 = new IntIntSerializedViewKey(viewId.hashCode(), 1);
+        SerializedViewKey key2 = new IntIntSerializedViewKey(viewId.hashCode(), 2);
+        SerializedViewKey key3 = new IntIntSerializedViewKey(viewId.hashCode(), 3);
         
         TestViewScopeProvider provider = new TestViewScopeProvider();
         
@@ -84,9 +84,9 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
         
         SerializedViewCollection collection = new SerializedViewCollection();
         String viewId = "/test.xhtml";
-        SerializedViewKey key1 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 1});
-        SerializedViewKey key2 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 2});
-        SerializedViewKey key3 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 3});
+        SerializedViewKey key1 = new IntIntSerializedViewKey(viewId.hashCode(), 1);
+        SerializedViewKey key2 = new IntIntSerializedViewKey(viewId.hashCode(), 2);
+        SerializedViewKey key3 = new IntIntSerializedViewKey(viewId.hashCode(), 3);
         
         TestViewScopeProvider provider = new TestViewScopeProvider();
         
@@ -112,9 +112,9 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
         
         SerializedViewCollection collection = new SerializedViewCollection();
         String viewId = "/test.xhtml";
-        SerializedViewKey key1 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 1});
-        SerializedViewKey key2 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 2});
-        SerializedViewKey key3 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 3});
+        SerializedViewKey key1 = new IntIntSerializedViewKey(viewId.hashCode(), 1);
+        SerializedViewKey key2 = new IntIntSerializedViewKey(viewId.hashCode(), 2);
+        SerializedViewKey key3 = new IntIntSerializedViewKey(viewId.hashCode(), 3);
         
         TestViewScopeProvider provider = new TestViewScopeProvider();
         
@@ -139,10 +139,10 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
         
         SerializedViewCollection collection = new SerializedViewCollection();
         String viewId = "/test.xhtml";
-        SerializedViewKey key1 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 1});
-        SerializedViewKey key2 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 2});
-        SerializedViewKey key3 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 3});
-        SerializedViewKey key4 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 4});
+        SerializedViewKey key1 = new IntIntSerializedViewKey(viewId.hashCode(), 1);
+        SerializedViewKey key2 = new IntIntSerializedViewKey(viewId.hashCode(), 2);
+        SerializedViewKey key3 = new IntIntSerializedViewKey(viewId.hashCode(), 3);
+        SerializedViewKey key4 = new IntIntSerializedViewKey(viewId.hashCode(), 4);
         
         TestViewScopeProvider provider = new TestViewScopeProvider();
         
@@ -180,15 +180,15 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
         
         SerializedViewCollection collection = new SerializedViewCollection();
         String viewId = "/test.xhtml";
-        SerializedViewKey key1 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 1});
-        SerializedViewKey key2 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 2});
-        SerializedViewKey key3 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 3});
-        SerializedViewKey key4 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 4});
-        SerializedViewKey key5 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 5});
-        SerializedViewKey key6 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 6});
-        SerializedViewKey key7 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 7});
-        SerializedViewKey key8 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 8});
-        SerializedViewKey key9 = new SerializedViewKey(viewId.hashCode(), new byte[] {(byte) 9});
+        SerializedViewKey key1 = new IntIntSerializedViewKey(viewId.hashCode(), 1);
+        SerializedViewKey key2 = new IntIntSerializedViewKey(viewId.hashCode(), 2);
+        SerializedViewKey key3 = new IntIntSerializedViewKey(viewId.hashCode(), 3);
+        SerializedViewKey key4 = new IntIntSerializedViewKey(viewId.hashCode(), 4);
+        SerializedViewKey key5 = new IntIntSerializedViewKey(viewId.hashCode(), 5);
+        SerializedViewKey key6 = new IntIntSerializedViewKey(viewId.hashCode(), 6);
+        SerializedViewKey key7 = new IntIntSerializedViewKey(viewId.hashCode(), 7);
+        SerializedViewKey key8 = new IntIntSerializedViewKey(viewId.hashCode(), 8);
+        SerializedViewKey key9 = new IntIntSerializedViewKey(viewId.hashCode(), 9);
         
         TestViewScopeProvider provider = new TestViewScopeProvider();
         

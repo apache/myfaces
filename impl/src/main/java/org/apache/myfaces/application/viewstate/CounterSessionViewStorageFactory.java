@@ -18,13 +18,29 @@
  */
 package org.apache.myfaces.application.viewstate;
 
-import java.io.Serializable;
+import javax.faces.context.FacesContext;
 
 /**
- * Base implementation where all keys used to identify the state of a view should
- * extend.
+ *
  */
-abstract class SerializedViewKey implements Serializable
+class CounterSessionViewStorageFactory extends SessionViewStorageFactory<KeyFactory<Integer>, Integer>
 {
+
+    public CounterSessionViewStorageFactory(KeyFactory<Integer> keyFactory)
+    {
+        super(keyFactory);
+    }
+
+    @Override
+    public SerializedViewCollection createSerializedViewCollection(FacesContext context)
+    {
+        return new SerializedViewCollection();
+    }
+
+    @Override
+    public SerializedViewKey createSerializedViewKey(FacesContext context, String viewId, Integer key)
+    {
+        return new IntIntSerializedViewKey(viewId == null ? 0 : viewId.hashCode(), key);
+    }
     
 }

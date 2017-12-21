@@ -16,15 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.application.viewstate;
+package org.apache.myfaces.renderkit;
 
-import java.io.Serializable;
+import javax.faces.context.FacesContext;
 
 /**
- * Base implementation where all keys used to identify the state of a view should
- * extend.
+ *
+ * @author Leonardo Uribe
  */
-abstract class SerializedViewKey implements Serializable
+public abstract class StateTokenProcessor
 {
+    public abstract Object decode(FacesContext facesContext, String token);
     
+    public abstract String encode(FacesContext facesContext, Object savedStateObject);
+    
+    public abstract boolean isStateless(FacesContext facesContext, String token);
 }

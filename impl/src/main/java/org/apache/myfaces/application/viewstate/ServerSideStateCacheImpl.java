@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -34,7 +33,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import javax.faces.FacesException;
 import javax.faces.FacesWrapper;
 import javax.faces.application.StateManager;
 
@@ -47,7 +45,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.util.MyFacesObjectInputStream;
-import org.apache.myfaces.shared.util.StateUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.ViewScopeProvider;
 import org.apache.myfaces.spi.ViewScopeProviderFactory;
@@ -127,18 +124,19 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     public static final String USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION
             = "org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION";
 
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_NONE = "none";
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM = "random";
     
     /**
      * Adds a random key to the generated view state session token.
      */
-    @JSFWebConfigParam(since="2.1.9, 2.0.15", expectedValues="secureRandom, random", 
-            defaultValue="secureRandom", group="state")
+    @JSFWebConfigParam(since="2.1.9, 2.0.15", expectedValues="secureRandom, random, none", 
+            defaultValue="none", group="state")
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN";
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM_DEFAULT = 
-            RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM;
+            RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_NONE;
 
     /**
      * Set the default length of the random key added to the view state session token.
@@ -203,11 +201,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         }
         else
         {
-            log.warning("org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN \""
-                    + randomMode + "\" is not supported (anymore)."
-                    + " Fallback to \"secureRandom\"");
-            sessionViewStorageFactory = new RandomSessionViewStorageFactory(
-                    new SecureRandomKeyFactory(facesContext));
+            sessionViewStorageFactory = new CounterSessionViewStorageFactory(new CounterKeyFactory());
         }
         
         String csrfRandomMode = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
@@ -504,7 +498,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         }
         
         // Fallback old parameter.
-        value = context.getExternalContext().getInitParameter(SERIALIZE_STATE_IN_SESSION_PARAM);
+        value = context.getExternalContext().getInitParameter(
+                SERIALIZE_STATE_IN_SESSION_PARAM);
         if (value != null)
         {
            serialize = Boolean.valueOf(value);
@@ -586,7 +581,17 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                     }
                 }
             }
-            catch (PrivilegedActionException | IOException | ClassNotFoundException e)
+            catch (PrivilegedActionException e) 
+            {
+                log.log(Level.SEVERE, "Exiting deserializeView - Could not deserialize state: " + e.getMessage(), e);
+                return null;
+            }
+            catch (IOException e)
+            {
+                log.log(Level.SEVERE, "Exiting deserializeView - Could not deserialize state: " + e.getMessage(), e);
+                return null;
+            }
+            catch (ClassNotFoundException e)
             {
                 log.log(Level.SEVERE, "Exiting deserializeView - Could not deserialize state: " + e.getMessage(), e);
                 return null;
@@ -601,7 +606,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
             return state;
         }
-        else if (state == null)
+        else if(state == null)
         {
             log.severe("Exiting deserializeView - this method should not be called with a null-state.");
             return null;
@@ -699,54 +704,5 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     public String createCryptographicallyStrongTokenFromSession(FacesContext context)
     {
         return csrfSessionTokenFactory.createCryptographicallyStrongTokenFromSession(context);
-    }
-
-    @Override
-    public Object decodeStateToken(FacesContext facesContext, String token)
-    {
-        if (isStatelessToken(facesContext, token))
-        {
-            // Should not happen, because ResponseStateManager.isStateless(context,viewId) should
-            // catch it first
-            return null;
-        }
-
-        try
-        {
-            byte[] tokenBytes = token.getBytes(StateUtils.ZIP_CHARSET);
-            byte[] tokenBytesDecoded = StateUtils.decode(tokenBytes);
-            String tokenDecoded = new String(tokenBytesDecoded, StateUtils.ZIP_CHARSET);
-
-            return tokenDecoded;
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            throw new FacesException(e);
-        }
-
-    }
-
-    @Override
-    public String encodeStateToken(FacesContext facesContext, Object savedStateObject)
-    {
-        if (facesContext.getViewRoot().isTransient())
-        {
-            return STATELESS_TOKEN;
-        }
-
-        try
-        {
-            // string from #encodeSerializedState
-            String token = (String) savedStateObject;
-            byte[] tokenBytes = token.getBytes(StateUtils.ZIP_CHARSET);
-            byte[] tokenBytesEncoded = StateUtils.encode(tokenBytes);
-            String tokenEncoded = new String(tokenBytesEncoded, StateUtils.ZIP_CHARSET);
-
-            return tokenEncoded;
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            throw new FacesException(e);
-        }
     }
 }
