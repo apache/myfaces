@@ -34,11 +34,11 @@
         <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/impl-test</developerConnection>
         <url>http://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/impl-test</url>
     </scm>
-    
+
     <properties>
         <openwebbeans.version>1.2.1</openwebbeans.version>
     </properties>
-    
+
     <build>
       <plugins>
         <plugin>
@@ -51,7 +51,7 @@
                     </goals>
                 </execution>
             </executions>
-        </plugin>   
+        </plugin>
         <!--
         <plugin>
             <groupId>org.codehaus.mojo</groupId>
@@ -91,7 +91,7 @@
                       <groupId>org.apache.myfaces.core</groupId>
                       <artifactId>myfaces-impl</artifactId>
                       <version>${project.version}</version>
-                      <classifier>test-sources</classifier>                   
+                      <classifier>test-sources</classifier>
                       <outputDirectory>${project.build.directory}/generated-sources/myfaces-impl</outputDirectory>
                       <includes>org/apache/myfaces/mc/**/*.java</includes>
                       <excludes>**/*.class,**/META-INF/**</excludes>
@@ -130,7 +130,7 @@
                           <groupId>org.apache.myfaces.core</groupId>
                           <artifactId>myfaces-impl</artifactId>
                           <version>${project.version}</version>
-                          <classifier>test-sources</classifier>                   
+                          <classifier>test-sources</classifier>
                         </artifactItem>
                      </artifactItems>
                      <includes>org/apache/myfaces/mc/**/*.java</includes>
@@ -139,7 +139,7 @@
                   </configuration>
                 </execution>
               </executions>
-            </plugin>        
+            </plugin>
           </plugins>
         </build>
       </profile>
@@ -154,7 +154,7 @@
         <dependency>
             <groupId>org.apache.myfaces.core.internal</groupId>
             <artifactId>myfaces-impl-shared-public</artifactId>
-            <scope>provided</scope> 
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.myfaces.core.internal</groupId>
@@ -176,8 +176,8 @@
             <artifactId>junit</artifactId>
             <scope>provided</scope>
         </dependency>
-        
-        <!-- Servlet 3.1 -->
+
+        <!-- Servlet 4.0 -->
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-servlet-api</artifactId>
@@ -231,5 +231,5 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
-    
+
 </project>

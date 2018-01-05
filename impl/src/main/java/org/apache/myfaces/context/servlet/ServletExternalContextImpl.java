@@ -29,10 +29,12 @@ import java.net.URLEncoder;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.faces.FacesException;
@@ -57,6 +59,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.myfaces.shared.context.flash.FlashImpl;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.util.EnumerationIterator;
+import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
  * Implements the external context for servlet request. JSF 1.2, 6.1.3
@@ -73,6 +76,8 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     private static final char URL_QUERY_SEPERATOR='?';
     private static final char URL_FRAGMENT_SEPERATOR='#';
     private static final String URL_NAME_VALUE_PAIR_SEPERATOR="=";
+    private static final String PUSHED_RESOURCE_URLS = "oam.PUSHED_RESOURCE_URLS";
+    private static final String PUSH_SUPPORTED = "oam.PUSH_SUPPORTED";
 
     private ServletRequest _servletRequest;
     private ServletResponse _servletResponse;
@@ -365,9 +370,65 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     {
         checkNull(url, "url");
         checkHttpServletRequest();
-        return ((HttpServletResponse) _servletResponse).encodeURL(url);
+        String encodedUrl = ((HttpServletResponse) _servletResponse).encodeURL(url);
+        
+        pushResource(encodedUrl);
+        
+        return encodedUrl;
     }
 
+    protected void pushResource(String resourceUrl)
+    {
+        if (!ExternalSpecifications.isServlet4Available())
+        {
+            return;
+        }
+        
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<Object, Object> attributes = facesContext.getAttributes();
+
+        javax.servlet.http.PushBuilder pushBuilder = null;
+        
+        if (!attributes.containsKey(PUSH_SUPPORTED))
+        {
+            Object request = getRequest();
+            boolean pushSupported = false;
+            if (request instanceof HttpServletRequest)
+            {
+                HttpServletRequest servletRequest = (HttpServletRequest) request;
+                pushBuilder = servletRequest.newPushBuilder();
+                pushSupported = pushBuilder != null;
+            }
+            
+            attributes.put(PUSH_SUPPORTED, pushSupported);
+        }
+
+        boolean pushSupported = (boolean) attributes.get(PUSH_SUPPORTED);
+        if (!pushSupported)
+        {
+            return;
+        }
+        
+        Set<String> pushedResourceUrls = (Set<String>) facesContext.getAttributes()
+                 .computeIfAbsent(PUSHED_RESOURCE_URLS, a -> new HashSet<>());
+        if (pushedResourceUrls.contains(resourceUrl))
+        {
+            return;
+        }
+
+        // might be != null on the first hit
+        if (pushBuilder == null)
+        {
+            HttpServletRequest servletRequest = (HttpServletRequest) getRequest();
+            pushBuilder = servletRequest.newPushBuilder();
+        }
+        
+        if (pushBuilder != null)
+        {
+            pushBuilder.path(resourceUrl).push();
+        }
+    }
+    
     @Override
     public String encodeNamespace(final String s)
     {

@@ -42,6 +42,7 @@ public final class ExternalSpecifications
     private static volatile Boolean beanValidationAvailable;
     private static volatile Boolean cdiAvailable;
     private static volatile Boolean el3Available;
+    private static volatile Boolean sevlet4Available;
 
     /**
      * This method determines if Bean Validation is present.
@@ -128,6 +129,23 @@ public final class ExternalSpecifications
             log.info("MyFaces EL 3.0 support " + (el3Available ? "enabled" : "disabled"));
         }
         return el3Available;
+    }
+
+    public static boolean isServlet4Available()
+    {
+        if (sevlet4Available == null)
+        {
+            try
+            {
+                sevlet4Available = Class.forName("javax.servlet.http.PushBuilder") != null ;
+            }
+            catch (Throwable t)
+            {
+                sevlet4Available = false;
+            }
+            log.info("MyFaces Servlet 4.0 support " + (sevlet4Available ? "enabled" : "disabled"));
+        }
+        return sevlet4Available;
     }
 
     /**

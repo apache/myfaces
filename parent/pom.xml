@@ -35,7 +35,7 @@
     </description>
     <version>2.3.0-SNAPSHOT</version>
     <url>http://myfaces.apache.org/core23</url>
-    
+
     <issueManagement>
         <system>jira</system>
         <url>https://issues.apache.org/jira/browse/MYFACES</url>
@@ -48,7 +48,7 @@
     </scm>
 
     <build>
-    
+
         <!-- Since Maven 3.0, this is required to add scpexe as protocol for deploy. -->
         <extensions>
           <extension>
@@ -57,7 +57,7 @@
             <version>1.0-beta-7</version>
           </extension>
         </extensions>
-        
+
         <plugins>
 
             <!-- JDK 1.8 -->
@@ -112,7 +112,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-scm-publish-plugin</artifactId>
@@ -132,7 +132,7 @@
                 <stagingSiteURL>${siteDeploy.url}</stagingSiteURL>
               </configuration>
             </plugin>
-			
+
 			<plugin>
 			  <artifactId>maven-release-plugin</artifactId>
 			  <version>2.5.3</version>
@@ -154,7 +154,7 @@
                     <artifactId>myfaces-builder-plugin</artifactId>
                     <version>1.0.10</version>
                 </plugin>
-                
+
                 <plugin>
                     <artifactId>myfaces-javascript-plugin</artifactId>
                     <groupId>org.apache.myfaces.buildtools</groupId>
@@ -195,12 +195,12 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.16</version>
                 </plugin>
-                
+
                 <plugin>
                     <artifactId>maven-surefire-report-plugin</artifactId>
                     <version>2.16</version>
                 </plugin>
-                
+
                 <!-- SITE GENERATION -->
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
@@ -216,7 +216,7 @@
                                 <placement>X</placement>
                             </tag>
                         </tags>
-                    </configuration>				
+                    </configuration>
                 </plugin>
                 <plugin>
                   <artifactId>maven-site-plugin</artifactId>
@@ -258,7 +258,7 @@
 
     </build>
 
-    
+
     <profiles>
 
         <!-- TODO jakobk: we could change this to -Papache-release -->
@@ -342,7 +342,7 @@
             </plugin>
         </plugins>
     </reporting>
-    
+
 
     <dependencyManagement>
 
@@ -373,7 +373,7 @@
                 <artifactId>myfaces-impl-shared-public</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.apache.myfaces.core.internal</groupId>
                 <artifactId>myfaces-impl-shared</artifactId>
@@ -383,11 +383,11 @@
 
             <!-- SPEC DEPENDENCIES -->
 
-            <!-- Servlet 3.1 -->
+            <!-- Servlet 4.0 -->
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-servlet-api</artifactId>
-                <version>8.5.21</version>
+                <version>9.0.2</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -413,7 +413,7 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            
+
             <!-- annotations 1.2 (javax.annotation.*) -->
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
@@ -468,7 +468,7 @@
                 <artifactId>geronimo-jcdi_1.1_spec</artifactId>
                 <version>1.0</version>
 				<scope>provided</scope>
-				<!-- MYFACES-3917 set compile/optional, clashes 
+				<!-- MYFACES-3917 set compile/optional, clashes
 				     with weld cdi by transitive dependency effect
                 <scope>compile</scope>
                 <optional>true</optional>
@@ -490,7 +490,7 @@
                 <version>7.0.78</version>
                 <scope>provided</scope>
             </dependency>
-            
+
             <!-- UTILITY DEPENDENCIES -->
 
             <!-- builder-annotations like @JSFWebConfigParam -->
@@ -500,7 +500,7 @@
                 <version>1.0.9</version>
                 <scope>provided</scope>
             </dependency>
-            
+
             <dependency>
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils</artifactId>
@@ -544,7 +544,7 @@
                 <version>4.12</version>
                 <scope>test</scope>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
@@ -645,7 +645,7 @@
         </repository>
 
     </repositories>
-    
+
     <!--
     <distributionManagement>
         <site>

@@ -39,9 +39,9 @@
         <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/api</developerConnection>
         <url>http://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/api</url>
     </scm>
-    
+
     <build>
-        
+
         <resources>
             <!-- standard resources -->
             <resource>
@@ -69,9 +69,9 @@
                 <directory>src/main/javascript/META-INF/resources/myfaces/api</directory>
                 <targetPath>META-INF/internal-resources/org.apache.myfaces.core.api</targetPath>
             </resource>
-            
+
         </resources>
-        
+
         <plugins>
 
             <plugin>
@@ -97,13 +97,13 @@
                     <excludes>
                         <!-- dojo has combined new bsd + AFL 2.1 license -->
                         <exclude>src/main/resources/META-INF/licenses/dojo-LICENSE.TXT</exclude>
-                        
+
                         <!-- facelets has non-standard APL license -->
                         <exclude>src/main/resources/META-INF/licenses/facelets-LICENSE.txt</exclude>
                     </excludes>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -111,7 +111,7 @@
                     <excludes>javax/faces/component/**/*.java</excludes>
                 </configuration>
             </plugin>
-            
+
             <!-- compilation and compression of our javascripts -->
             <plugin>
                 <artifactId>myfaces-javascript-plugin</artifactId>
@@ -321,7 +321,7 @@
                 </configuration>
             </plugin>
 
-            <!-- 
+            <!--
                 berlios jsunit under apache2 license to cover javascript core routines which
                 do not have to rely on a browser or can work on browser mockups!
 
@@ -458,10 +458,10 @@
             </plugin>
 
         </plugins>
-        
+
     </build>
 
-    
+
     <profiles>
 
         <!-- TODO jakobk: we could change this to -Papache-release -->
@@ -579,7 +579,7 @@
                                 </configuration>
                             </execution>
                         </executions>
-                    </plugin>            
+                    </plugin>
 				-->
                 </plugins>
             </build>
@@ -625,13 +625,13 @@
 
     </profiles>
 
-    
+
     <dependencies>
         <!--
             NOTE that all versions and scopes are defined in the parent dependencyManagement section
-            (except for optional=true due to a maven bug). 
+            (except for optional=true due to a maven bug).
         -->
-        <!-- Servlet 3.1 -->
+        <!-- Servlet 4.0 -->
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-servlet-api</artifactId>
@@ -666,29 +666,29 @@
             <groupId>org.apache.myfaces.buildtools</groupId>
             <artifactId>myfaces-builder-annotations</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jcdi_1.1_spec</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-atinject_1.0_spec</artifactId>
         </dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-websocket-api</artifactId>
 		</dependency>
-        
+
         <!-- TEST DEPENDENCIES -->
-        
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.myfaces.test</groupId>
             <artifactId>myfaces-test23</artifactId>
@@ -713,7 +713,7 @@
             <groupId>jmock</groupId>
             <artifactId>jmock-cglib</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>de.berlios.jsunit</groupId>
             <artifactId>jsunit-maven2-plugin</artifactId>
@@ -724,14 +724,14 @@
             <artifactId>commons-beanutils</artifactId>
             <scope>test</scope> <!-- normally scope=compile, but here only for tests needed - TODO jakobk really? -->
         </dependency>
-        
+
     </dependencies>
 
-    
+
     <reporting>
-        
+
         <plugins>
-            
+
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
@@ -747,7 +747,7 @@
                     </tags>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                <groupId>org.apache.myfaces.buildtools</groupId>
                 <artifactId>myfaces-jsdoc-plugin</artifactId>
@@ -779,12 +779,12 @@
             <plugin>
                 <artifactId>maven-surefire-report-plugin</artifactId>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>taglist-maven-plugin</artifactId>
             </plugin>
-            
+
             <!-- override PMD settings to set targetJdk -->
             <plugin>
                 <artifactId>maven-pmd-plugin</artifactId>
@@ -813,7 +813,7 @@
             </plugin>
 
         </plugins>
-        
+
     </reporting>
 
 </project>

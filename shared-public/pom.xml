@@ -25,7 +25,7 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  
+
   <groupId>org.apache.myfaces.core.internal</groupId>
   <artifactId>myfaces-impl-shared-public</artifactId>
   <packaging>jar</packaging>
@@ -38,7 +38,7 @@
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/shared-public</developerConnection>
     <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/branches/2.3.x/shared-public</url>
   </scm>
-  
+
   <dependencies>
         <!-- myfaces-api -->
         <dependency>
@@ -46,7 +46,7 @@
             <artifactId>myfaces-api</artifactId>
         </dependency>
 
-        <!-- Servlet 3.1 -->
+        <!-- Servlet 4.0 -->
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-servlet-api</artifactId>
@@ -57,13 +57,13 @@
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jsp_2.2_spec</artifactId>
         </dependency>
-        
+
         <!-- el 2.2 (javax.el.*) -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-el_2.2_spec</artifactId>
         </dependency>
-        
+
         <!-- builder-annotations like @JSFWebConfigParam -->
         <dependency>
             <groupId>org.apache.myfaces.buildtools</groupId>
@@ -74,7 +74,7 @@
             <groupId>org.apache.myfaces.test</groupId>
             <artifactId>myfaces-test23</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
@@ -91,7 +91,7 @@
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
         </dependency>
-  
+
   </dependencies>
 
   <build>
@@ -156,7 +156,7 @@
               </reportSet>
           </reportSets>
       </plugin>
-      <!-- 
+      <!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>surefire-report-maven-plugin</artifactId>

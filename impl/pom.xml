@@ -25,7 +25,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    
+
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-impl</artifactId>
     <name>Apache MyFaces JSF-2.3 Core Impl</name>
@@ -39,13 +39,13 @@
         <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/impl</developerConnection>
         <url>http://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/impl</url>
     </scm>
-    
+
     <properties>
         <openwebbeans.version>1.6.3</openwebbeans.version>
     </properties>
-    
+
     <build>
-        
+
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -54,7 +54,7 @@
                 </excludes>
             </resource>
         </resources>
-        
+
         <plugins>
 
             <plugin>
@@ -74,14 +74,14 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <!-- license checker needs to exclude some kinds of files -->
             <plugin>
                 <groupId>org.apache.rat</groupId>
                 <artifactId>apache-rat-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        
+
                         <!-- The xsd files are CDDL+GLP:
                           Category B: Reciprocal Licenses
                          "For small amounts of source that is directly consumed by the ASF product
@@ -98,7 +98,7 @@
                         <!-- facelets has non-standard APL license -->
                         <exclude>src/main/resources/META-INF/licenses/facelets-LICENSE.txt</exclude>
 						<exclude>src/main/resources/META-INF/licenses/omnifaces-LICENSE.txt</exclude>
-                        
+
                         <!-- services files are trivial config files with no comments -->
                         <exclude>src/test/resources/META-INF/services/org.apache.myfaces.config.annotation.LifecycleProvider</exclude>
                         <exclude>src/main/resources/META-INF/services/org.apache.myfaces.config.annotation.LifecycleProvider</exclude>
@@ -112,7 +112,7 @@
                     </excludes>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -126,13 +126,13 @@
                         org/apache/myfaces/webapp/WebConfigParamsLogger.java</excludes>
                 </configuration>
             </plugin>
-            
+
             <!-- myfaces-build-plugin - we generate a lot of stuff with this plugin (see executions) -->
             <plugin>
                 <groupId>org.apache.myfaces.buildtools</groupId>
                 <artifactId>myfaces-builder-plugin</artifactId>
                 <executions>
-                    
+
                     <execution>
                         <id>makemyfacesmetadata</id>
                         <configuration>
@@ -145,7 +145,7 @@
                           <goal>build-metadata</goal>
                         </goals>
                     </execution>
-                    
+
                     <execution>
                         <id>makeWebConfigParamsLogger</id>
                         <configuration>
@@ -162,7 +162,7 @@
                             <goal>make-config</goal>
                         </goals>
                     </execution>
-                    
+
                     <execution>
                         <id>makefacesconfig</id>
                         <configuration>
@@ -204,7 +204,7 @@
                             <goal>make-tags</goal>
                         </goals>
                     </execution>
-                    
+
                     <execution>
                         <id>makecoretld</id>
                         <configuration>
@@ -247,7 +247,7 @@
                             <goal>make-config</goal>
                         </goals>
                     </execution>
-                    
+
                     <!--
                         To generate facelet taglib doc we need to create alternate facelets files
                         so taglibdoc goal can extract the required information and create html files.
@@ -276,7 +276,7 @@
                             <goal>make-config</goal>
                         </goals>
                     </execution>
-                    
+
                     <execution>
                         <id>make_html_facelet_tld</id>
                         <configuration>
@@ -324,7 +324,7 @@
                             <goal>make-config</goal>
                         </goals>
                     </execution>
-                    
+
                     <execution>
                         <id>make_ui_facelet_tld</id>
                         <configuration>
@@ -348,7 +348,7 @@
                             <goal>make-config</goal>
                         </goals>
                     </execution>
-                    
+
                     <execution>
                         <id>make_composite_facelet_tld</id>
                         <configuration>
@@ -372,7 +372,7 @@
                             <goal>make-config</goal>
                         </goals>
                     </execution>
-                    
+
                     <execution>
                         <id>make_fn_facelet_tld</id>
                         <configuration>
@@ -397,7 +397,7 @@
                     </execution>
 
                     <!-- START XSD GENERATION -->
-                    
+
                     <execution>
                         <id>make_core_facelet_xsd</id>
                         <configuration>
@@ -420,7 +420,7 @@
                             <goal>make-config</goal>
                         </goals>
                     </execution>
-                    
+
                     <execution>
                         <id>make_html_facelet_xsd</id>
                         <configuration>
@@ -464,7 +464,7 @@
                             <goal>make-config</goal>
                         </goals>
                     </execution>
-                    
+
                     <execution>
                         <id>make_ui_facelet_xsd</id>
                         <configuration>
@@ -486,7 +486,7 @@
                             <goal>make-config</goal>
                         </goals>
                     </execution>
-                    
+
                     <execution>
                         <id>make_composite_facelet_xsd</id>
                         <configuration>
@@ -624,7 +624,7 @@
                 </executions>
             </plugin>
 
-            
+
             <!-- generate a -tests.jar too -->
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -653,7 +653,7 @@
                     </archive>
                 </configuration>
             </plugin>
-            
+
             <!-- run test-cases -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -781,7 +781,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
         </plugins>
 
     </build>
@@ -806,7 +806,7 @@
                         <groupId>org.apache.myfaces.buildtools</groupId>
                         <artifactId>myfaces-builder-plugin</artifactId>
                         <executions>
-                            
+
                             <execution>
                                 <id>site-tagdoc-content</id>
                                 <configuration>
@@ -844,20 +844,20 @@
                                     <goal>make-config</goal>
                                 </goals>
                             </execution>
-                            
+
                         </executions>
                     </plugin>
 
                     <!--
                         Unfortunately we can't execute the same report twice, so
-                        we have to generate this files outside report generation. 
+                        we have to generate this files outside report generation.
                     -->
                     <plugin>
                         <groupId>net.sourceforge.maven-taglib</groupId>
                         <artifactId>maven-taglib-plugin</artifactId>
                         <version>2.4</version>
                         <executions>
-                            
+
                             <execution>
                                 <id>tlddoc-facelets</id>
                                 <phase>site</phase>
@@ -871,7 +871,7 @@
                                     <tldDocDir>${basedir}/target/site/tlddoc-facelets</tldDocDir>
                                 </configuration>
                             </execution>
-                            
+
                             <execution>
                                 <id>tlddoc-jsp</id>
                                 <phase>site</phase>
@@ -884,7 +884,7 @@
                                     <tldDocDir>${basedir}/target/site/tlddoc</tldDocDir>
                                 </configuration>
                             </execution>
-                            
+
                         </executions>
                     </plugin>
 
@@ -965,13 +965,13 @@
                             </execution>
                         </executions>
                     </plugin>
-                    
+
                     <plugin>
                         <groupId>net.sourceforge.maven-taglib</groupId>
                         <artifactId>maven-taglib-plugin</artifactId>
                         <version>2.4</version>
                         <executions>
-                            
+
                             <execution>
                                 <id>tlddoc-facelets</id>
                                 <!--
@@ -991,7 +991,7 @@
                                     <tldDocDir>${basedir}/target/site/tlddoc-facelets</tldDocDir>
                                 </configuration>
                             </execution>
-                            
+
                             <execution>
                                 <id>tlddoc-jsp</id>
                                 <phase>process-resources</phase>
@@ -1014,7 +1014,7 @@
                                     <tldDocDir>${basedir}/target/site/tlddoc</tldDocDir>
                                 </configuration>
                             </execution>
-                            
+
                             <execution>
                                 <id>attach-tlddoc-facelets</id>
                                 <goals>
@@ -1026,7 +1026,7 @@
                                     <tlddocJar>${basedir}/target/${project.artifactId}-${project.version}-facelets-tlddoc.jar</tlddocJar>
                                 </configuration>
                             </execution>
-                            
+
                         </executions>
                     </plugin>
 
@@ -1052,7 +1052,7 @@
                             </execution>
                         </executions>
                     </plugin>
-                    
+
                 </plugins>
             </build>
         </profile>
@@ -1105,7 +1105,7 @@
 
     </profiles>
 
-    
+
     <dependencies>
         <!-- NOTE that all versions and scopes are defined in the parent dependencyManagement section -->
 
@@ -1116,30 +1116,30 @@
         </dependency>
 
         <!-- this dependency will be packed together with the main artifact of this pom -->
-        <!-- 
+        <!--
         <dependency>
             <groupId>org.apache.myfaces.shared</groupId>
             <artifactId>myfaces-shared-impl</artifactId>
         </dependency>
          -->
-        
+
         <!-- This is included in myfaces-impl-shared, but in eclipse
              it is not detected, so an easy workaround is include it
              as an optional dependency -->
         <dependency>
             <groupId>org.apache.myfaces.core.internal</groupId>
             <artifactId>myfaces-impl-shared-public</artifactId>
-            <optional>true</optional> 
+            <optional>true</optional>
         </dependency>
-         
+
         <dependency>
             <groupId>org.apache.myfaces.core.internal</groupId>
             <artifactId>myfaces-impl-shared</artifactId>
-            <optional>true</optional> 
+            <optional>true</optional>
         </dependency>
 
 
-        <!-- Servlet 3.1 -->
+        <!-- Servlet 4.0 -->
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-servlet-api</artifactId>
@@ -1173,7 +1173,7 @@
             <artifactId>geronimo-validation_1.0_spec</artifactId>
             <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
         </dependency>
-        
+
         <!-- annotations 1.2 (javax.annotation.*) -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
@@ -1193,24 +1193,24 @@
             <artifactId>geronimo-ejb_3.0_spec</artifactId>
             <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
         </dependency>
-		
+
 		<!-- CDI -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jcdi_1.1_spec</artifactId>
-        </dependency>		
+        </dependency>
 
         <!-- builder-annotations like @JSFWebConfigParam -->
         <dependency>
             <groupId>org.apache.myfaces.buildtools</groupId>
             <artifactId>myfaces-builder-annotations</artifactId>
         </dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.geronimo.specs</groupId>
 			<artifactId>geronimo-atinject_1.0_spec</artifactId>
 		</dependency>
-		
+
 		<!-- Websockets -->
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
@@ -1240,7 +1240,7 @@
             <artifactId>guice</artifactId>
             <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
         </dependency>
-        
+
 
         <!-- TEST DEPENDENCIES -->
 
@@ -1248,7 +1248,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
@@ -1262,7 +1262,7 @@
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.myfaces.test</groupId>
             <artifactId>myfaces-test23</artifactId>
@@ -1341,20 +1341,20 @@
             <version>${openwebbeans.version}</version>
             <scope>test</scope>
         </dependency>-->
-        
+
         <dependency>
             <groupId>org.apache.bval</groupId>
             <artifactId>bval-jsr303</artifactId>
             <version>0.5</version>
             <scope>test</scope>
         </dependency>
-        
+
     </dependencies>
-    
+
 
     <reporting>
         <plugins>
-            
+
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
@@ -1378,20 +1378,20 @@
                     </reportSet>
                 </reportSets>
             </plugin>
-            
+
             <plugin>
                 <artifactId>maven-jxr-plugin</artifactId>
             </plugin>
-            
+
             <plugin>
                 <artifactId>maven-surefire-report-plugin</artifactId>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>taglist-maven-plugin</artifactId>
             </plugin>
-            
+
             <!-- override PMD settings to set targetJdk -->
             <plugin>
                 <artifactId>maven-pmd-plugin</artifactId>
@@ -1418,7 +1418,7 @@
                     </reportSet>
                 </reportSets>
             </plugin>
-            
+
         </plugins>
     </reporting>
 
