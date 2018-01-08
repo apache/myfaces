@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.context.ExternalContext;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 
 /**
@@ -137,7 +138,8 @@ public final class ExternalSpecifications
         {
             try
             {
-                sevlet4Available = Class.forName("javax.servlet.http.PushBuilder") != null ;
+                sevlet4Available = Class.forName("javax.servlet.http.PushBuilder") != null
+                        && HttpServletRequest.class.getMethod("newPushBuilder", (Class[]) null) != null;
             }
             catch (Throwable t)
             {
