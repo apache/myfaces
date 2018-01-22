@@ -20,6 +20,7 @@ package org.apache.myfaces.renderkit.html.behavior;
 
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.shared.renderkit.html.HTML;
+import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -44,11 +45,18 @@ public class HtmlClientEventAttributesUtil
 
         return attrs;
     }
-    
+
     public static HtmlRenderedClientEventAttr[] generateClientBehaviorInputEventAttrs()
     {
-        return (HtmlRenderedClientEventAttr[]) 
-            org.apache.myfaces.shared.util.ArrayUtils.concat( 
+        return generateClientBehaviorInputEventAttrs(HtmlCheckAttributesUtil.DEFAULT_IS_ON_SELECT_ATTRIBUTE_NEEDED);
+    }
+    
+    public static HtmlRenderedClientEventAttr[] generateClientBehaviorInputEventAttrs(boolean isOnSelectNeeded)
+    {
+        HtmlRenderedClientEventAttr[] attrs = null;
+        if (isOnSelectNeeded)
+        {
+            attrs = (HtmlRenderedClientEventAttr[]) org.apache.myfaces.shared.util.ArrayUtils.concat( 
                 generateClientBehaviorEventAttrs(),
                 new HtmlRenderedClientEventAttr[]{
                     new HtmlRenderedClientEventAttr(HTML.ONBLUR_ATTR, ClientBehaviorEvents.BLUR),
@@ -57,5 +65,20 @@ public class HtmlClientEventAttributesUtil
                     new HtmlRenderedClientEventAttr(HTML.ONCHANGE_ATTR, ClientBehaviorEvents.CHANGE),
                     new HtmlRenderedClientEventAttr(HTML.ONCHANGE_ATTR, ClientBehaviorEvents.VALUECHANGE)
                 });
+        }
+        else
+        {
+            // Note that on JSF 2.3, some components don't need onselect attribute
+            // Please see https://issues.apache.org/jira/browse/MYFACES-4190
+            attrs = (HtmlRenderedClientEventAttr[]) org.apache.myfaces.shared.util.ArrayUtils.concat( 
+                generateClientBehaviorEventAttrs(),
+                new HtmlRenderedClientEventAttr[]{
+                    new HtmlRenderedClientEventAttr(HTML.ONBLUR_ATTR, ClientBehaviorEvents.BLUR),
+                    new HtmlRenderedClientEventAttr(HTML.ONFOCUS_ATTR, ClientBehaviorEvents.FOCUS),
+                    new HtmlRenderedClientEventAttr(HTML.ONCHANGE_ATTR, ClientBehaviorEvents.CHANGE),
+                    new HtmlRenderedClientEventAttr(HTML.ONCHANGE_ATTR, ClientBehaviorEvents.VALUECHANGE)
+                });
+        }
+        return attrs;
     }
 }

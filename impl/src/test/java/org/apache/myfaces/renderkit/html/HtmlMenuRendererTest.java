@@ -89,7 +89,7 @@ public class HtmlMenuRendererTest extends AbstractJsfTestCase
 
     public void testSelectOneHtmlPropertyPassTru() throws Exception
     {
-        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
+        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs(false);
         
         List items = new ArrayList();
         items.add(new SelectItem("mars"));
@@ -108,7 +108,7 @@ public class HtmlMenuRendererTest extends AbstractJsfTestCase
     
     public void testSelectManyHtmlPropertyPassTru() throws Exception
     {
-        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs();
+        HtmlRenderedAttr[] attrs = HtmlCheckAttributesUtil.generateBasicAttrs(false);
         
         List items = new ArrayList();
         items.add(new SelectItem("mars"));

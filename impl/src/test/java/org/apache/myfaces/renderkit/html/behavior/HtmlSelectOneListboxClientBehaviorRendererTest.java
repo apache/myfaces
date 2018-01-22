@@ -34,7 +34,7 @@ public class HtmlSelectOneListboxClientBehaviorRendererTest extends AbstractClie
     public void setUp() throws Exception
     {
         super.setUp();
-        attrs = HtmlClientEventAttributesUtil.generateClientBehaviorInputEventAttrs();
+        attrs = HtmlClientEventAttributesUtil.generateClientBehaviorInputEventAttrs(false);
     }
 
     @Override

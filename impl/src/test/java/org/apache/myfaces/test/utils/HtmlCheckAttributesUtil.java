@@ -31,6 +31,8 @@ import org.apache.myfaces.test.mock.MockResponseWriter;
  */
 public class HtmlCheckAttributesUtil 
 {
+    public static final boolean DEFAULT_IS_ON_SELECT_ATTRIBUTE_NEEDED = true;
+
     /**
      * This method adds all elements of attrs to the attributes map of component.
      * @param component The component to add the attributes to.
@@ -168,38 +170,89 @@ public class HtmlCheckAttributesUtil
         }
     }
     
-    public static HtmlRenderedAttr[] generateBasicAttrs() {
-        HtmlRenderedAttr[] attrs = {
-            //_AccesskeyProperty
-            new HtmlRenderedAttr("accesskey"),
-            //_UniversalProperties
-            new HtmlRenderedAttr("dir"), 
-            new HtmlRenderedAttr("lang"), 
-            new HtmlRenderedAttr("title"),
-            new HtmlRenderedAttr("role"),
-            //_FocusBlurProperties
-            new HtmlRenderedAttr("onfocus"), 
-            new HtmlRenderedAttr("onblur"),
-            //_ChangeSelectProperties
-            new HtmlRenderedAttr("onchange"), 
-            new HtmlRenderedAttr("onselect"),
-            //_EventProperties
-            new HtmlRenderedAttr("onclick"), 
-            new HtmlRenderedAttr("ondblclick"), 
-            new HtmlRenderedAttr("onkeydown"), 
-            new HtmlRenderedAttr("onkeypress"),
-            new HtmlRenderedAttr("onkeyup"), 
-            new HtmlRenderedAttr("onmousedown"), 
-            new HtmlRenderedAttr("onmousemove"), 
-            new HtmlRenderedAttr("onmouseout"),
-            new HtmlRenderedAttr("onmouseover"), 
-            new HtmlRenderedAttr("onmouseup"),
-            //_StyleProperties
-            new HtmlRenderedAttr("style"), 
-            new HtmlRenderedAttr("styleClass", "styleClass", "class=\"styleClass\""),
-            //_TabindexProperty
-            new HtmlRenderedAttr("tabindex")
-        };
+    public static HtmlRenderedAttr[] generateBasicAttrs() 
+    {
+        return generateBasicAttrs(DEFAULT_IS_ON_SELECT_ATTRIBUTE_NEEDED);
+    }
+
+    /**
+     * Generates an array of basic attributes.
+     * Note that on JSF 2.3 some components don't need onselect attribute.
+     * Please see https://issues.apache.org/jira/browse/MYFACES-4190
+     * @param isOnSelectNeeded   A boolean value to check if onselect attribute is needed.
+     */
+    public static HtmlRenderedAttr[] generateBasicAttrs(boolean isOnSelectNeeded) 
+    {
+        HtmlRenderedAttr[] attrs = null;
+        if (isOnSelectNeeded)
+        {
+            attrs = new HtmlRenderedAttr[] {
+                //_AccesskeyProperty
+                new HtmlRenderedAttr("accesskey"),
+                //_UniversalProperties
+                new HtmlRenderedAttr("dir"), 
+                new HtmlRenderedAttr("lang"), 
+                new HtmlRenderedAttr("title"),
+                new HtmlRenderedAttr("role"),
+                //_FocusBlurProperties
+                new HtmlRenderedAttr("onfocus"), 
+                new HtmlRenderedAttr("onblur"),
+                //_ChangeProperty
+                new HtmlRenderedAttr("onchange"), 
+                // _SelectProperty
+                new HtmlRenderedAttr("onselect"),
+                //_EventProperties
+                new HtmlRenderedAttr("onclick"), 
+                new HtmlRenderedAttr("ondblclick"), 
+                new HtmlRenderedAttr("onkeydown"), 
+                new HtmlRenderedAttr("onkeypress"),
+                new HtmlRenderedAttr("onkeyup"), 
+                new HtmlRenderedAttr("onmousedown"), 
+                new HtmlRenderedAttr("onmousemove"), 
+                new HtmlRenderedAttr("onmouseout"),
+                new HtmlRenderedAttr("onmouseover"), 
+                new HtmlRenderedAttr("onmouseup"),
+                //_StyleProperties
+                new HtmlRenderedAttr("style"), 
+                new HtmlRenderedAttr("styleClass", "styleClass", "class=\"styleClass\""),
+                //_TabindexProperty
+                new HtmlRenderedAttr("tabindex")
+            };
+        }
+        else
+        {
+            // Note that on JSF 2.3, some components don't need onselect attribute
+            attrs = new HtmlRenderedAttr[] {
+                //_AccesskeyProperty
+                new HtmlRenderedAttr("accesskey"),
+                //_UniversalProperties
+                new HtmlRenderedAttr("dir"), 
+                new HtmlRenderedAttr("lang"), 
+                new HtmlRenderedAttr("title"),
+                new HtmlRenderedAttr("role"),
+                //_FocusBlurProperties
+                new HtmlRenderedAttr("onfocus"), 
+                new HtmlRenderedAttr("onblur"),
+                //_ChangeProperty
+                new HtmlRenderedAttr("onchange"), 
+                //_EventProperties
+                new HtmlRenderedAttr("onclick"), 
+                new HtmlRenderedAttr("ondblclick"), 
+                new HtmlRenderedAttr("onkeydown"), 
+                new HtmlRenderedAttr("onkeypress"),
+                new HtmlRenderedAttr("onkeyup"), 
+                new HtmlRenderedAttr("onmousedown"), 
+                new HtmlRenderedAttr("onmousemove"), 
+                new HtmlRenderedAttr("onmouseout"),
+                new HtmlRenderedAttr("onmouseover"), 
+                new HtmlRenderedAttr("onmouseup"),
+                //_StyleProperties
+                new HtmlRenderedAttr("style"), 
+                new HtmlRenderedAttr("styleClass", "styleClass", "class=\"styleClass\""),
+                //_TabindexProperty
+                new HtmlRenderedAttr("tabindex")
+            };
+        }
         
         return attrs;
     }

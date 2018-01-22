@@ -34,7 +34,7 @@ public class HtmlSelectOneMenuClientBehaviorRendererTest extends AbstractClientB
     public void setUp() throws Exception
     {
         super.setUp();
-        attrs = HtmlClientEventAttributesUtil.generateClientBehaviorInputEventAttrs();
+        attrs = HtmlClientEventAttributesUtil.generateClientBehaviorInputEventAttrs(false);
     }
 
     @Override
