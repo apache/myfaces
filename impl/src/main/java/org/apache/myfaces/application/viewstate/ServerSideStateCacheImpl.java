@@ -126,7 +126,6 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     public static final String USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION
             = "org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION";
 
-    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_NONE = "none";
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM = "random";
     
@@ -138,7 +137,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN";
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM_DEFAULT = 
-            RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_NONE;
+            RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM;
 
     /**
      * Set the default length of the random key added to the view state session token.
