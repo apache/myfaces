@@ -203,7 +203,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         }
         else
         {
-            if (randomMode != null && !randomMode.isEmpty()) {
+            if (randomMode != null && !randomMode.isEmpty())
+            {
                 log.warning(RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM + " \""
                         + randomMode + "\" is not supported (anymore)."
                         + " Fallback to \"random\"");
