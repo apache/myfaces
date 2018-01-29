@@ -16,31 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.application.viewstate;
+package org.apache.myfaces.application.viewstate.token;
 
 import javax.faces.context.FacesContext;
 
 /**
  *
+ * @author Leonardo Uribe
  */
-class CounterSessionViewStorageFactory extends SessionViewStorageFactory<KeyFactory<Integer>, Integer>
+public abstract class StateTokenProcessor
 {
-
-    public CounterSessionViewStorageFactory(KeyFactory<Integer> keyFactory)
-    {
-        super(keyFactory);
-    }
-
-    @Override
-    public SerializedViewCollection createSerializedViewCollection(FacesContext context)
-    {
-        return new SerializedViewCollection();
-    }
-
-    @Override
-    public SerializedViewKey createSerializedViewKey(FacesContext context, String viewId, Integer key)
-    {
-        return new IntIntSerializedViewKey(viewId == null ? 0 : viewId.hashCode(), key);
-    }
+    public static final String STATELESS_TOKEN = "stateless";
     
+    public abstract Object decode(FacesContext facesContext, String token);
+    
+    public abstract String encode(FacesContext facesContext, Object savedStateObject);
+    
+    public boolean isStateless(FacesContext facesContext, String token)
+    {
+        return STATELESS_TOKEN.equals(token);
+    }
 }

@@ -41,6 +41,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.lifecycle.ClientWindow;
 
 import org.apache.myfaces.application.StateCache;
+import org.apache.myfaces.application.viewstate.token.ServiceSideStateTokenProcessor;
+import org.apache.myfaces.application.viewstate.token.StateTokenProcessor;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
@@ -131,8 +133,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     /**
      * Adds a random key to the generated view state session token.
      */
-    @JSFWebConfigParam(since="2.1.9, 2.0.15", expectedValues="secureRandom, random, none", 
-            defaultValue="none", group="state")
+    @JSFWebConfigParam(since="2.1.9, 2.0.15", expectedValues="secureRandom, random", 
+            defaultValue="random", group="state")
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN";
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM_DEFAULT = 
@@ -180,8 +182,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     private boolean _numberOfSequentialViewsInSessionSet = false;
 
     private SessionViewStorageFactory sessionViewStorageFactory;
-
     private CsrfSessionTokenFactory csrfSessionTokenFactory;
+    private StateTokenProcessor stateTokenProcessor;
 
     public ServerSideStateCacheImpl()
     {
@@ -201,7 +203,13 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         }
         else
         {
-            sessionViewStorageFactory = new CounterSessionViewStorageFactory(new CounterKeyFactory());
+            if (randomMode != null && !randomMode.isEmpty()) {
+                log.warning(RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM + " \""
+                        + randomMode + "\" is not supported (anymore)."
+                        + " Fallback to \"random\"");
+            }
+            sessionViewStorageFactory = new RandomSessionViewStorageFactory(
+                    new RandomKeyFactory(facesContext));
         }
         
         String csrfRandomMode = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
@@ -215,6 +223,8 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         {
             csrfSessionTokenFactory = new RandomCsrfSessionTokenFactory(facesContext);
         }
+        
+        stateTokenProcessor = new ServiceSideStateTokenProcessor();
     }
     
     //------------------------------------- METHODS COPIED FROM JspStateManagerImpl--------------------------------
@@ -581,17 +591,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                     }
                 }
             }
-            catch (PrivilegedActionException e) 
-            {
-                log.log(Level.SEVERE, "Exiting deserializeView - Could not deserialize state: " + e.getMessage(), e);
-                return null;
-            }
-            catch (IOException e)
-            {
-                log.log(Level.SEVERE, "Exiting deserializeView - Could not deserialize state: " + e.getMessage(), e);
-                return null;
-            }
-            catch (ClassNotFoundException e)
+            catch (PrivilegedActionException | IOException | ClassNotFoundException e) 
             {
                 log.log(Level.SEVERE, "Exiting deserializeView - Could not deserialize state: " + e.getMessage(), e);
                 return null;
@@ -704,5 +704,11 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     public String createCryptographicallyStrongTokenFromSession(FacesContext context)
     {
         return csrfSessionTokenFactory.createCryptographicallyStrongTokenFromSession(context);
+    }
+    
+    @Override
+    public StateTokenProcessor getStateTokenProcessor(FacesContext context)
+    {
+        return stateTokenProcessor;
     }
 }

@@ -19,6 +19,7 @@
 package org.apache.myfaces.application;
 
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.application.viewstate.token.StateTokenProcessor;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 /**
@@ -124,4 +125,7 @@ public abstract class StateCache<K, V>
      * @return 
      */
     public abstract String createCryptographicallyStrongTokenFromSession(FacesContext context);
+    
+    
+    public abstract StateTokenProcessor getStateTokenProcessor(FacesContext context);
 }

@@ -22,6 +22,8 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.application.StateCache;
+import org.apache.myfaces.application.viewstate.token.ClientSideStateTokenProcessor;
+import org.apache.myfaces.application.viewstate.token.StateTokenProcessor;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
@@ -47,6 +49,7 @@ class ClientSideStateCacheImpl extends StateCache<Object, Object>
     private Long _clientViewStateTimeout;
     
     private CsrfSessionTokenFactory csrfSessionTokenFactory;
+    private StateTokenProcessor stateTokenProcessor;
     
     public ClientSideStateCacheImpl()
     {
@@ -63,6 +66,8 @@ class ClientSideStateCacheImpl extends StateCache<Object, Object>
         {
             csrfSessionTokenFactory = new RandomCsrfSessionTokenFactory(facesContext);
         }
+        
+        stateTokenProcessor = new ClientSideStateTokenProcessor();
     }
 
     @Override
@@ -195,5 +200,11 @@ class ClientSideStateCacheImpl extends StateCache<Object, Object>
     public String createCryptographicallyStrongTokenFromSession(FacesContext context)
     {
         return csrfSessionTokenFactory.createCryptographicallyStrongTokenFromSession(context);
+    }
+    
+    @Override
+    public StateTokenProcessor getStateTokenProcessor(FacesContext context)
+    {
+        return stateTokenProcessor;
     }
 }
