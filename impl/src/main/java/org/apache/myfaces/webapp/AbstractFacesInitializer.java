@@ -195,7 +195,12 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             }
 
             String useEncryption = servletContext.getInitParameter(StateUtils.USE_ENCRYPTION);
-            if (!"false".equals(useEncryption)) // the default value is true
+            if ("false".equals(useEncryption))
+            {
+                log.warning(StateUtils.USE_ENCRYPTION + " is set to false. " 
+                        + "This is unsecure and should only be used for local or intranet applications!");
+            }
+            else
             {
                 StateUtils.initSecret(servletContext);
             }
