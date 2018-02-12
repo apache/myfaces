@@ -225,7 +225,13 @@ public class FacesConfigurator
         }
         _externalContext = externalContext;
 
-        _externalContext.getApplicationMap().put(INJECTED_BEAN_STORAGE_KEY, new CopyOnWriteArrayList());
+        // In dev mode a new Faces Configurator is created for every request so only
+        // create a new bean storage list if we don't already have one which will be
+        // the case first time through during init.
+        if (_externalContext.getApplicationMap().get(INJECTED_BEAN_STORAGE_KEY) == null) 
+        {
+            _externalContext.getApplicationMap().put(INJECTED_BEAN_STORAGE_KEY, new CopyOnWriteArrayList());
+        }
     }
 
     /**
