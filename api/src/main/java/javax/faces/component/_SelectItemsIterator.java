@@ -120,7 +120,7 @@ class _SelectItemsIterator implements Iterator<SelectItem>
                     boolean disabled = uiSelectItem.isItemDisabled();
                     boolean escape = uiSelectItem.isItemEscaped();
                     boolean noSelectionOption = uiSelectItem.isNoSelectionOption();
-                    if (label == null)
+                    if (label == null && itemValue != null)
                     {
                         label = itemValue.toString();
                     }
@@ -255,7 +255,7 @@ class _SelectItemsIterator implements Iterator<SelectItem>
                 // Spec: When iterating over the select items, toString() 
                 // must be called on the string rendered attribute values
                 Object itemLabel = attributeMap.get(ITEM_LABEL_ATTR);
-                if (itemLabel == null)
+                if (itemLabel == null && itemValue != null)
                 {
                     itemLabel = itemValue.toString();
                 }
