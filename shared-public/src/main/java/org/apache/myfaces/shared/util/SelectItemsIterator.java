@@ -264,9 +264,12 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 // Spec: When iterating over the select items, toString() 
                 // must be called on the string rendered attribute values
                 Object itemLabel = attributeMap.get(ITEM_LABEL_PROP);
-                if (itemLabel == null && itemValue != null)
+                if (itemLabel == null)
                 {
-                    itemLabel = itemValue.toString();
+				    if (itemValue != null)
+				    {
+                        itemLabel = itemValue.toString();
+				    }
                 }
                 else
                 {
