@@ -1,0 +1,293 @@
+<?xml version="1.0"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<faces-config version="2.2"
+              xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xi="http://www.w3.org/2001/XInclude"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_2.xsd">
+
+    <name>flow_def_1</name>
+    
+    <flow-definition id="flow1">
+        <start-node>begin</start-node>
+        
+        <inbound-parameter>
+            <!-- The idea is when entering a flow pass the return outcome in
+                 the flow call. This value will be saved in flowScope
+                 and used later to calculate the returning outcome -->
+            <name>backOutcome</name>
+            <value>#{flowScope.backOutcome}</value>
+        </inbound-parameter>
+
+        <flow-return id="end">
+            <from-outcome>exit</from-outcome>
+        </flow-return>
+        
+        <flow-return id="back">
+            <!-- note the outcome will not be resolved, so the
+            last displayed view should be used -->
+            <from-outcome>back</from-outcome>
+        </flow-return>
+        
+        <flow-return id="back_flow_1"/>
+        
+        <flow-return id="back_flow_1_3">
+            <from-outcome>back_flow_3</from-outcome>
+        </flow-return>
+        
+        <flow-return id="back_flow_1_4">
+            <from-outcome>back_flow_4</from-outcome>
+        </flow-return>
+        
+        <!-- The idea is use a switch combo to get back, since
+             the from-outcome of the switch cannot receive
+             EL expressions -->
+        <switch id="switchBack">
+            <case>
+                <if>#{not empty flowScope.backOutcome}</if>
+                <from-outcome>backEL</from-outcome>
+            </case>
+            <default-outcome>back</default-outcome>
+        </switch>
+        
+        <flow-return id="backEL">
+            <from-outcome>#{flowScope.backOutcome}</from-outcome>
+        </flow-return>
+        
+        <navigation-rule>
+            <from-view-id>*</from-view-id>
+            <navigation-case>
+                <from-outcome>flow1_content</from-outcome>
+                <to-view-id>content</to-view-id>
+            </navigation-case>
+            
+            <!-- This navigation rule is a critical point, and very difficult to
+                 get it done right. The intention is redirect the exit here and 
+                 end both flow1 and flow2 in 1 step. Note the from-action is 
+                 different here and in the final outer navigation case. -->
+            <navigation-case>
+                <from-action>flow2</from-action>
+                <from-outcome>exit</from-outcome>
+                <to-view-id>end</to-view-id>
+            </navigation-case>
+        </navigation-rule>
+        
+        <flow-call id="call_flow2">
+            <flow-reference>
+                <flow-id>flow2</flow-id>
+            </flow-reference>
+        </flow-call>
+            
+        <view id="begin">
+            <vdl-document>/flow1/begin.xhtml</vdl-document>
+        </view>
+        <view id="content">
+            <vdl-document>/flow1/content.xhtml</vdl-document>
+        </view>
+    </flow-definition>
+    
+    <flow-definition id="flow2">
+        <start-node>begin</start-node>
+
+        <flow-return id="end">
+            <from-outcome>exit</from-outcome>
+        </flow-return>
+        
+        <!-- The idea of this return is "back" is not mapped to anything,
+             so the navigation algorithm should not return any navigation
+             case and it should be used the last displayed view id by
+             default-->
+        <flow-return id="back"/>
+        
+        <flow-return id="back_flow_2"/>
+        
+        <navigation-rule>
+            <from-view-id>*</from-view-id>
+            <navigation-case>
+                <from-outcome>flow2_content</from-outcome>
+                <to-view-id>content</to-view-id>
+            </navigation-case>
+        </navigation-rule>
+            
+        <view id="begin">
+            <vdl-document>/flow2/begin.xhtml</vdl-document>
+        </view>
+        <view id="content">
+            <vdl-document>/flow2/content.xhtml</vdl-document>
+        </view>
+    </flow-definition>
+    
+    <!-- The idea of this flow is call a second flow, so as soon as
+    the algorithm try to enter flow3 it should enter flow1. -->
+    <flow-definition id="flow3">
+        <start-node>call_flow1</start-node>
+        
+        <flow-call id="call_flow1">
+            <flow-reference>
+                <flow-document-id>flow_def_1</flow-document-id>
+                <flow-id>flow1</flow-id>
+            </flow-reference>
+            <outbound-parameter>
+                <name>backOutcome</name>
+                <value>content</value>
+            </outbound-parameter>
+        </flow-call>
+        
+        <navigation-rule>
+            <from-view-id>*</from-view-id>
+            <navigation-case>
+                <from-action>flow1</from-action>
+                <from-outcome>exit</from-outcome>
+                <to-view-id>content</to-view-id>
+            </navigation-case>
+        </navigation-rule>
+        
+        <flow-return id="end">
+            <from-outcome>exit</from-outcome>
+        </flow-return>
+        
+        <flow-return id="back_flow_3"/>
+        
+        <view id="content">
+            <vdl-document>/flow3/content.xhtml</vdl-document>
+        </view>
+        
+    </flow-definition>
+    
+    <flow-definition id="flow4">
+        
+        <flow-call id="call_flow1_4">
+            <flow-reference>
+                <flow-document-id>flow_def_1</flow-document-id>
+                <flow-id>flow1</flow-id>
+            </flow-reference>
+            <outbound-parameter>
+                <name>backOutcome</name>
+                <value>content</value>
+            </outbound-parameter>
+        </flow-call>
+        
+        <flow-call id="call_flow5_4">
+            <flow-reference>
+                <flow-document-id>flow_def_1</flow-document-id>
+                <flow-id>flow5</flow-id>
+            </flow-reference>
+            <outbound-parameter>
+                <name>someId</name>
+                <value>customId</value>
+            </outbound-parameter>
+        </flow-call>        
+        
+        <navigation-rule>
+            <from-view-id>*</from-view-id>
+            <navigation-case>
+                <from-action>flow1</from-action>
+                <from-outcome>exit</from-outcome>
+                <to-view-id>content</to-view-id>
+            </navigation-case>
+        </navigation-rule>
+        
+        <flow-return id="end">
+            <from-outcome>exit</from-outcome>
+        </flow-return>
+        
+        <flow-return id="back_flow_4"/>
+        
+        <view id="content">
+            <vdl-document>/flow4/content.xhtml</vdl-document>
+        </view>
+        
+    </flow-definition>
+    
+    <flow-definition id="flow5">
+        
+        <inbound-parameter>
+            <name>someId</name>
+            <value>#{flowScope.someId}</value>
+        </inbound-parameter>
+        
+        <initializer>#{flow5Bean.init}</initializer>        
+                
+        <flow-return id="end">
+            <from-outcome>exit</from-outcome>
+        </flow-return>
+        
+        <flow-return id="back_flow_5"/>
+        
+        <view id="content">
+            <vdl-document>/flow5/content.xhtml</vdl-document>
+        </view>
+        
+    </flow-definition>    
+
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <!-- End Flow 1 -->
+        <navigation-case>
+            <from-action>flow1</from-action>
+            <from-outcome>exit</from-outcome>
+            <to-view-id>/flow1_end.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>flow_base</from-outcome>
+            <to-view-id>/flow_base.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <flow-definition id="flowA">
+
+        <flow-return id="end">
+            <from-outcome>exit</from-outcome>
+        </flow-return>
+        
+        <flow-call id="call_flow_B">
+            <flow-reference>
+                <flow-document-id>flow_def_1</flow-document-id>
+                <flow-id>flowB</flow-id>
+            </flow-reference>
+        </flow-call>        
+        
+        <view id="content">
+            <vdl-document>/flowA/content.xhtml</vdl-document>
+        </view>
+        
+    </flow-definition>    
+    
+    <flow-definition id="flowB">
+
+        <flow-return id="end">
+            <from-outcome>exit</from-outcome>
+        </flow-return>
+
+        <flow-call id="call_flow_A">
+            <flow-reference>
+                <flow-document-id>flow_def_1</flow-document-id>
+                <flow-id>flowA</flow-id>
+            </flow-reference>
+        </flow-call>        
+        
+        <view id="content">
+            <vdl-document>/flowB/content.xhtml</vdl-document>
+        </view>
+        
+    </flow-definition>
+    
+</faces-config>
+        

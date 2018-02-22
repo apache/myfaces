@@ -1,0 +1,14 @@
+org.apache.myfaces.cdi.scope.ScopeExtension
+org.apache.myfaces.cdi.JsfApplicationArtifactHolderExtension
+org.apache.myfaces.cdi.view.ViewScopeContextExtension
+org.apache.myfaces.flow.cdi.FlowBuilderCDIExtension
+org.apache.myfaces.flow.cdi.FlowScopeCDIExtension
+org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension
+org.apache.myfaces.push.cdi.PushContextCDIExtension
+org.apache.myfaces.cdi.managedproperty.ManagedPropertyExtension
+org.apache.myfaces.cdi.converter.FacesConverterExtension
+org.apache.myfaces.cdi.validator.FacesValidatorExtension
+org.apache.myfaces.cdi.behavior.FacesBehaviorExtension
+org.apache.myfaces.cdi.model.FacesDataModelExtension
+org.apache.myfaces.cdi.config.FacesConfigExtension
+org.apache.myfaces.cdi.JsfArtifactProducerExtension

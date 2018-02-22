@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+#*
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*###
+<document>
+ <properties>
+  <title>Web Context Parameters</title>
+ </properties>
+ <body>
+  <section name="Web Context Parameters">
+  <p>
+  MyFaces core behavior can be customized, adding some web config params into your 
+  WEB-INF/web.xml file for your custom project in this way:
+  </p>
+  <div class="source"><pre>
+      &lt;context-param&gt;
+        &lt;param-name&gt;org.apache.myfaces.SOME_USEFUL_PARAM&lt;/param-name&gt;
+        &lt;param-value&gt;someValue&lt;/param-value&gt;
+      &lt;/context-param&gt;
+  </pre></div>
+  <p>
+  Below is the list of available web context parameters supported: 
+  </p>
+  </section>
+#if ($baseContent)
+$baseContent
+#end
+## ----------------------------- PROPERTY MACROS -----------------------------
+##
+## -------------------------------
+## writeWebConfigParamRow
+## -------------------------------
+##
+#macro(writeWebConfigParamRow $webConfigParam) 
+ <tr>
+  <td><a href="#$webConfigParam.name.replace('.','_')">$webConfigParam.name</a></td>
+#if ($webConfigParam.since)
+  <td>$webConfigParam.since</td>
+#else
+  <td></td>
+#end
+#if ($webConfigParam.defaultValue)
+  <td>$webConfigParam.defaultValue</td>
+#else
+  <td></td>
+#end
+#if ($webConfigParam.description)
+  <td>$webConfigParam.description</td>
+#elseif ($webConfigParam.longDescription)
+  <td>$webConfigParam.longDescription</td>
+#else
+  <td></td>
+#end
+ </tr>
+#end
+##
+## ----------------------------- END PROPERTY MACROS -------------------------
+##
+
+  <section name="Summary">
+  <p>Click on the name of each param to find detailed information about each one of them.</p>
+  <p>The "since" column means the version since the param was added. Note this param is not "lineal",
+  so please check the release dates on myfaces issue tracker to know if an specified version
+  has or not the selected param. For example, if a param was added on 2.0.7, it means that 2.1.1
+  has the parameter because it was released on the same time, but 2.1.0 will not have it, because
+  it was released before that date.
+  </p>
+#set ($webConfigGroups = ${model.getWebConfigGroups($modelIds)})
+#set ($webConfigGroupsLabel = {"resources" : "Resources (resource)", 
+                               "validation" : "Conversion and Validation (validation)", 
+                               "state" : "State Saving (state)",
+                               "cdi" : "CDI (cdi)",
+                               "EL" : "Expression Language (EL)",
+                               "viewhandler" : "View Handling (viewhandler)",
+                               "render" : "Rendering (render)"} )
+#foreach( $webConfigGroup in $webConfigGroups )
+#if (${webConfigGroupsLabel.containsKey($webConfigGroup)})
+#set ($groupLabel = $webConfigGroupsLabel.get($webConfigGroup))
+#else
+#set ($groupLabel = $webConfigGroup)
+#end
+  <p><b>$groupLabel Configuration Params</b></p>
+<table>
+ <tr>
+  <th>Name</th>
+  <th>Since</th>
+  <th>Default Value</th>
+  <th>Short Description</th>
+ </tr>
+#set ($webConfigList = ${model.getWebConfigs()})
+#foreach( $webConfig in $webConfigList )
+#if ($modelIds.contains($webConfig.modelId))
+#set ($webConfigParamList = ${webConfig.getWebConfigParametersList()})
+#foreach( $webConfigParam in $webConfigParamList )
+#if (!$webConfigParam.deprecated)
+#if (not $webConfigParam.containsTag('tomahawk'))
+#if ($webConfigParam.group == $webConfigGroup)
+#writeWebConfigParamRow($webConfigParam)
+#end
+#end
+#end
+#end
+#end
+#end
+</table>
+#end
+
+  <p><b>Other Configuration Params</b></p>
+<table>
+ <tr>
+  <th>Name</th>
+  <th>Since</th>
+  <th>Default Value</th>
+  <th>Short Description</th>
+ </tr>
+#set ($webConfigList = ${model.getWebConfigs()})
+#foreach( $webConfig in $webConfigList )
+#if ($modelIds.contains($webConfig.modelId))
+#set ($webConfigParamList = ${webConfig.getWebConfigParametersList()})
+#foreach( $webConfigParam in $webConfigParamList )
+#if (!$webConfigParam.deprecated)
+#if (not $webConfigParam.containsTag('tomahawk'))
+#if (!$webConfigParam.group)
+#writeWebConfigParamRow($webConfigParam)
+#elseif ($webConfigParam.group == "")
+#writeWebConfigParamRow($webConfigParam)
+#end
+#end
+#end
+#end
+#end
+#end
+</table>
+
+  <p><b>Deprecated Parameters</b></p>
+<table>
+ <tr>
+  <th>Name</th>
+  <th>Since</th>
+  <th>Default Value</th>
+  <th>Short Description</th>
+ </tr>
+#set ($webConfigList = ${model.getWebConfigs()})
+#foreach( $webConfig in $webConfigList )
+#if ($modelIds.contains($webConfig.modelId))
+#set ($webConfigParamList = ${webConfig.getWebConfigParametersList()})
+#foreach( $webConfigParam in $webConfigParamList )
+#if ($webConfigParam.deprecated)
+#if (not $webConfigParam.containsTag('tomahawk'))
+#writeWebConfigParamRow($webConfigParam)
+#end
+#end
+#end
+#end
+#end
+</table>
+  </section>
+  <section name="Detailed Information">
+
+#foreach( $webConfig in $webConfigList )
+#if ($modelIds.contains($webConfig.modelId))
+<p>Artifact Id: $webConfig.modelId</p>
+<table>
+#set ($webConfigParamList = ${webConfig.getWebConfigParametersList()})
+#foreach( $webConfigParam in $webConfigParamList )
+#if (not $webConfigParam.containsTag('tomahawk'))
+  <tr><td>
+  <p>
+    <b>Param Name:</b> <a name="$webConfigParam.name.replace('.','_')">$webConfigParam.name</a>
+    <br/>
+    <b>Ignore Upper/Lower case values:</b> $webConfigParam.isIgnoreUpperLowerCase()
+    <br/>
+#if ($webConfigParam.defaultValue)
+    <b>Default Value:</b> $webConfigParam.defaultValue
+    <br/>
+#end
+#if ($webConfigParam.deprecated)
+    <b>Deprecated:</b> $webConfigParam.isDeprecated()
+    <br/>
+#end
+#if ($webConfigParam.expectedValues)
+    <b>Expected Values:</b> $webConfigParam.expectedValues
+    <br/>
+#end
+#if ($webConfigParam.since)
+    <b>Since:</b> $webConfigParam.since
+    <br/>
+#end
+    <b>Group:</b> #if ($webConfigParam.group)$webConfigParam.group#end
+    <br/>
+    <b>Tags:</b> #if ($webConfigParam.tags)$webConfigParam.tags#end
+    <br/>
+#if ($webConfigParam.sourceClassName.startsWith("javax.faces."))
+#set ($javadocPath = "../myfaces-api/xref/" + $webConfigParam.sourceClassName.replace('.', '/') )
+#elseif ($webConfigParam.sourceClassName.startsWith("org.apache.myfaces.shared."))
+#set ($javadocPath = "../myfaces-impl-shared/xref/" + $webConfigParam.sourceClassName.replace('.', '/') )
+#else
+#set ($javadocPath = "./xref/" + $webConfigParam.sourceClassName.replace('.', '/') )
+#end
+    <b>Source Class:</b> <a href="${javadocPath}.html">$webConfigParam.sourceClassName</a>
+    <br/>
+#if ($webConfigParam.longDescription)
+    <b>Description:</b> 
+    <br/>
+    $webConfigParam.longDescription
+#elseif ($webConfigParam.description)
+    <b>Description:</b> 
+    <br/>
+    $webConfigParam.description
+#else
+    <b>Description:</b> no description available yet.
+    <br/>
+#end
+  </p>
+  </td></tr>
+#end
+#end
+</table>
+#end
+#end
+
+  </section>
+ </body> 
+</document>

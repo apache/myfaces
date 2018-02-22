@@ -1,0 +1,75 @@
+<!--
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ $Id: defineInclude.xml 804043 2009-08-13 22:08:44Z lu4242 $
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:my="http://xmlns.jcp.org/jsf">
+<head my:id="idHead">
+    <link rel="stylesheet" type="text/css" href="custom.css"/>
+    <script type="text/javascript">
+        function hello(){
+            alert("Hello");
+        }
+    </script>
+    <link my:id="osh" rel="stylesheet" type="text/css" my:library="mylib" my:name="resource.css"/>
+    <script my:id="osc" type="text/javascript">
+        function hello(){
+            alert("Hello");
+        }
+    </script>
+</head>
+<body my:id="idBody">
+    <form my:id="myForm">
+        <a my:id="link1" my:action="#{test.testAction}"/>
+        <a my:id="link2" my:actionListener="#{test.testActionListener}"/>
+        <a my:id="link3" my:value="/my/new/location.txt"/>
+        <a my:id="link4" my:outcome="rollback"/>
+        <button my:id="button1" my:action="#{test.testAction}"/>
+        <button my:id="button2" my:outcome="rollback"/>
+        <img my:id="img1" my:url="/my/image.png"/>
+        <input my:id="input1" type="button"/>
+        <input my:id="input2" type="checkbox"/>
+        <input my:id="input3" type="color"/>
+        <input my:id="input4" type="date"/>
+        <input my:id="input5" type="datetime"/>
+        <input my:id="input6" type="datetime-local"/>
+        <input my:id="input7" type="email"/>
+        <input my:id="input8" type="month"/>
+        <input my:id="input9" type="number"/>
+        <input my:id="input10" type="range"/>
+        <input my:id="input11" type="search"/>
+        <input my:id="input12" type="time"/>
+        <input my:id="input13" type="url"/>
+        <input my:id="input14" type="week"/>
+        <input my:id="input15" type="file"/>
+        <input my:id="input16" type="hidden"/>
+        <input my:id="input17" type="password"/>
+        <input my:id="input18" type="reset"/>
+        <input my:id="input19" type="submit"/>
+        <input my:id="input20" type="anything"/>
+        <label my:id="label1" />
+        <select my:id="select1">
+            <f:selectItem itemValue="option1"/>
+        </select>
+        <select my:id="select2" multiple="multiple">
+            <f:selectItem itemValue="option1"/>
+            <f:selectItem itemValue="option2"/>
+        </select>
+        <textarea my:id="textarea1"/>
+    </form>
+</body>
+</html>

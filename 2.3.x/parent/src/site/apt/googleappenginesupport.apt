@@ -1,0 +1,159 @@
+ ------
+ Myfaces Core 2.0 on Google App Engine
+ ------
+ Ali Ok
+ ------
+ 2010-04-08
+ ------- 
+ 
+~~ Licensed to the Apache Software Foundation (ASF) under one
+~~ or more contributor license agreements.  See the NOTICE file
+~~ distributed with this work for additional information
+~~ regarding copyright ownership.  The ASF licenses this file
+~~ to you under the Apache License, Version 2.0 (the
+~~ "License"); you may not use this file except in compliance
+~~ with the License.  You may obtain a copy of the License at
+~~
+~~   http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~ Unless required by applicable law or agreed to in writing,
+~~ software distributed under the License is distributed on an
+~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+~~ KIND, either express or implied.  See the License for the
+~~ specific language governing permissions and limitations
+~~ under the License.
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/doxia/references/apt-format.html
+
+Myfaces Core 2.0 on Google App Engine
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  In order to run Myfaces on Google App Engine, you need to complete the steps below. Configuration explained in this document is tested with
+  Google App Engine 1.3.0.
+  
+  You can also find tutorials for {{{http://myfaces.apache.org/core20/myfaces2-googleappengine-eclipse-tutorial.html}Eclipse}} and {{{http://myfaces.apache.org/core20/myfaces2-googleappengine-idea-tutorial.html}IntelliJ IDEA}}.  
+
+   * Download a Myfaces Core <<<2.0.0-beta-3>>> or a version released <<later>> than <<<2.0.0-beta-3>>>. Google App Engine support is not available for older versions.
+     Extract and put following files into war/WEB-INF/lib:
+       
+       * myfaces-api-2.0.x.jar
+       
+       * myfaces-impl-2.0.x.jar
+       
+       * commons-beanutils-1.x.x.jar
+       
+       * commons-collections-3.x.jar
+       
+       * commons-digester-x.x.jar
+       
+       * commons-discovery-0.x.jar
+       
+       * commons-logging-1.x.x.jar
+        
+
+   * Add following lines into your web.xml.
+
++------------------------------------------------------------------------+
+      <web-app>
+        ...
+                
+        <!-- 
+           We need to set annotation lifecycyle provider manually as org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider.
+           Other providers use some classes that are restricted on Google App Engine. 	
+        -->  
+        <context-param>
+            <param-name>org.apache.myfaces.config.annotation.LifecycleProvider</param-name>
+            <param-value>org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider</param-value>
+        </context-param>
+        
+        <!--
+            Need to set a secret to avoid javax.crypto.BadPaddingException.
+            "param-value" must be Base64 encoded.
+            More details: http://wiki.apache.org/myfaces/Secure_Your_Application
+         -->
+        <context-param>
+            <param-name>org.apache.myfaces.SECRET</param-name>
+            <param-value>NzY1NDMyMTA=</param-value>
+        </context-param>
+        
+        <!--
+           Facelets configuration fragment
+        -->
+        <context-param>
+          <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+          <param-value>.xhtml</param-value>
+        </context-param>
+        
+        <servlet>
+          <servlet-name>Faces Servlet</servlet-name>
+          <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        </servlet>
+        
+        <servlet-mapping>
+          <servlet-name>Faces Servlet</servlet-name>
+          <url-pattern>*.jsf</url-pattern>
+        </servlet-mapping>
+        ...      
+      </web-app>
++------------------------------------------------------------------------+
+
+   * Enable sessions on App Engine. To do this, add line below to war/WEB-INF/appengine-web.xml.
+   
++------------------------------------------------------------------------+
+      <sessions-enabled>true</sessions-enabled>
++------------------------------------------------------------------------+
+
+   
+   * Although Google App Engine is said to support JSP 2.1, JSP implementation version(2.0) 
+     does not match JSP API version(2.1). So, we need to supply Unified Expression Language 
+     implementation jars. You can find them {{{https://uel.dev.java.net/}here}}.
+     Put el-api-1.x.jar and el-impl-1.x.jar into war/WEB-INF/lib.  
+
+   * If you have a faces-config.xml, please check that you use the header for JSF2:
+
++------------------------------------------------------------------------+
+	<?xml version="1.0" encoding="UTF-8"?>
+	<faces-config
+	    xmlns="http://java.sun.com/xml/ns/javaee"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
+	    version="2.0">
+	    ...
+	</faces-config>
++------------------------------------------------------------------------+
+
+
+   * Here is the <<sample>> directory structure:
+   
++------------------------------------------------------------------------+
+   +<Your Google App Engine Project Folder>
+     + src
+       + META-INF
+         - jdoconfig.xml
+     + war
+       - somepage.xhtml
+       + WEB-INF
+         - appengine-web.xml
+         - faces-config.xml
+         - logging.properties
+         - web.xml
+         + lib
+           - appengine-api-1.0-sdk-1.3.0.jar
+           - appengine-api-labs-1.3.0.jar
+           - commons-beanutils-1.7.0.jar
+           - commons-collections-3.2.jar
+           - commons-digester-1.8.jar
+           - commons-discovery-0.4.jar
+           - commons-logging-1.1.1.jar
+           - datanucleus-appengine-1.0.4.1.final.jar
+           - datanucleus-core-1.1.5.jar
+           - datanucleus-jpa-1.1.5.jar
+           - el-api-1.1.jar
+           - el-impl-1.1.jar
+           - geronimo-jpa_3.0_spec-1.1.1.jar
+           - geronimo-jta_1.1_spec-1.1.1.jar
+           - jdo2-api-2.3-eb.jar
+           - myfaces-api-2.0.0-beta-3.jar 
+           - myfaces-impl-2.0.0-beta-3.jar 
++------------------------------------------------------------------------+

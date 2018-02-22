@@ -1,0 +1,29 @@
+ ------
+ MyFaces Core 2.2: API
+ ------
+
+ ~~ Licensed to the Apache Software Foundation (ASF) under one
+ ~~ or more contributor license agreements.  See the NOTICE file
+ ~~ distributed with this work for additional information
+ ~~ regarding copyright ownership.  The ASF licenses this file
+ ~~ to you under the Apache License, Version 2.0 (the
+ ~~ "License"); you may not use this file except in compliance
+ ~~ with the License.  You may obtain a copy of the License at
+ ~~
+ ~~   http://www.apache.org/licenses/LICENSE-2.0
+ ~~
+ ~~ Unless required by applicable law or agreed to in writing,
+ ~~ software distributed under the License is distributed on an
+ ~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~~ KIND, either express or implied.  See the License for the
+ ~~ specific language governing permissions and limitations
+ ~~ under the License.
+
+MyFaces Core 2.2: API Project
+
+  The API submodule implements all of the classes that are defined in the specification.
+  If you are looking for API documentation about the classes that your JSF application
+  needs to use, then see the javadoc for this module.
+  
+  Check the download page or you can check the nightly builds {{{https://repository.apache.org/content/repositories/snapshots/org/apache/myfaces/core}here}}.
+  

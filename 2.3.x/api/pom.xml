@@ -1,0 +1,819 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>org.apache.myfaces.core</groupId>
+        <artifactId>myfaces-core-project</artifactId>
+        <version>2.3.0</version>
+        <relativePath>../parent/pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.apache.myfaces.core</groupId>
+    <artifactId>myfaces-api</artifactId>
+    <name>Apache MyFaces JSF-2.3 Core API</name>
+    <description>
+        The public API classes of the Apache MyFaces CORE JSF-2.3 project
+    </description>
+    <url>http://myfaces.apache.org/core23/myfaces-api</url>
+
+    <scm>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.3.0/api</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.3.0/api</developerConnection>
+        <url>http://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.3.0/api</url>
+    </scm>
+
+    <build>
+
+        <resources>
+            <!-- standard resources -->
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+
+            <!-- javascript resources -->
+            <resource>
+                <directory>src/main/javascript/META-INF/resources/myfaces/_impl/_util</directory>
+                <targetPath>META-INF/internal-resources/org.apache.myfaces.core.impl.util</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/javascript/META-INF/resources/myfaces/_impl/i18n</directory>
+                <targetPath>META-INF/internal-resources/org.apache.myfaces.core.impl.i18n</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/javascript/META-INF/resources/myfaces/_impl/core</directory>
+                <targetPath>META-INF/internal-resources/org.apache.myfaces.core.impl.core</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/javascript/META-INF/resources/myfaces/_impl/xhrCore</directory>
+                <targetPath>META-INF/internal-resources/org.apache.myfaces.core.impl.xhrCore</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/javascript/META-INF/resources/myfaces/api</directory>
+                <targetPath>META-INF/internal-resources/org.apache.myfaces.core.api</targetPath>
+            </resource>
+
+        </resources>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.9.1</version>
+                <executions>
+                  <execution>
+                    <id>parse-version</id>
+                    <goals>
+                      <goal>parse-version</goal>
+                    </goals>
+                  </execution>
+                </executions>
+            </plugin>
+
+
+            <!-- license checker needs to exclude some kinds of files -->
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <!-- dojo has combined new bsd + AFL 2.1 license -->
+                        <exclude>src/main/resources/META-INF/licenses/dojo-LICENSE.TXT</exclude>
+
+                        <!-- facelets has non-standard APL license -->
+                        <exclude>src/main/resources/META-INF/licenses/facelets-LICENSE.txt</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <excludes>javax/faces/component/**/*.java</excludes>
+                </configuration>
+            </plugin>
+
+            <!-- compilation and compression of our javascripts -->
+            <plugin>
+                <artifactId>myfaces-javascript-plugin</artifactId>
+                <groupId>org.apache.myfaces.buildtools</groupId>
+                <version>1.0.1</version>
+                <extensions>true</extensions>
+                <executions>
+                     <execution>
+                        <id>compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <descriptor>${basedir}/src/assembler/jsfscripts-compiler.xml</descriptor>
+                            <excludes>
+                                <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
+                                <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
+                                <exclude>**/myfaces/_impl/_util/_ExtLang.js</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>compile-uncompressed</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <descriptor>${basedir}/src/assembler/jsfscripts-uncompressed-compiler.xml</descriptor>
+                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
+                            <excludes>
+                                <exclude>**/myfaces/_impl/core/Impl.js</exclude>
+                                <exclude>**/myfaces/_impl/_util/*</exclude>
+                                <exclude>**/myfaces/_impl/xhrCore/*</exclude>
+                                <exclude>**/myfaces/api/*</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>compile-uncompressed-full</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <descriptor>${basedir}/src/assembler/jsfscripts-uncompressed-full-compiler.xml</descriptor>
+                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
+                            <excludes>
+                                <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
+                                <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>compile-minimal</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <descriptor>${basedir}/src/assembler/jsfscripts-minimal-compiler.xml</descriptor>
+                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
+                            <excludes>
+                                <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
+                                <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                     <execution>
+                        <id>compile-minimal-modern</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <descriptor>${basedir}/src/assembler/jsfscripts-minimal-modern-compiler.xml</descriptor>
+                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
+                            <excludes>
+                                <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
+                                <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>compile-i18n</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <descriptor>${basedir}/src/assembler/jsfscripts-i18n-compiler.xml</descriptor>
+                            <outputDirectory>${basedir}/target/classes/META-INF/resources/myfaces/</outputDirectory>
+                            <excludes>
+                                <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
+                                <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                     <execution>
+                        <id>compile-experimental</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <descriptor>${basedir}/src/assembler/jsfscripts-experimental.xml</descriptor>
+                            <outputDirectory>${basedir}/target/classes/META-INF/resources/myfaces/</outputDirectory>
+                            <excludes>
+                                <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
+                                <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>compile-legacy</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <descriptor>${basedir}/src/assembler/jsfscripts-legacy.xml</descriptor>
+                            <outputDirectory>${basedir}/target/classes/META-INF/resources/myfaces/</outputDirectory>
+                            <excludes>
+                                <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
+                                <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>compress</id>
+                        <goals>
+                            <goal>compress</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+
+                        <configuration>
+                            <scripts>target/classes/META-INF/resources/javax.faces/</scripts>
+                            <excludes>
+                                <exclude>jsf-uncompressed.js</exclude>
+                                <exclude>jsf-uncompressed-full.js</exclude>
+                            </excludes>
+                            <compressor>yahooUI</compressor>
+
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>compress-extended</id>
+                        <goals>
+                            <goal>compress</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+
+                        <configuration>
+                            <scripts>target/classes/META-INF/resources/myfaces/</scripts>
+                            <excludes>
+                                <exclude>jsf-uncompressed.js</exclude>
+                                <exclude>jsf-uncompressed-full.js</exclude>
+                            </excludes>
+                            <compressor>yahooUI</compressor>
+
+                        </configuration>
+                    </execution>
+
+                <execution>
+                        <id>compress-alternatives</id>
+                        <goals>
+                            <goal>compress</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+
+                        <configuration>
+                            <scripts>target/classes/META-INF/internal-resources/javax.faces/</scripts>
+                            <excludes>
+                                <exclude>jsf-uncompressed.js</exclude>
+                                <exclude>jsf-uncompressed-full.js</exclude>
+                            </excludes>
+                            <compressor>yahooUI</compressor>
+
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <optimizationLevel>0</optimizationLevel>
+                    <sourceDirectory>src/main/javascript</sourceDirectory>
+                    <webappDirectory>${basedir}</webappDirectory>
+                    <outputDirectory>${basedir}/target/classes/META-INF/resources/javax.faces/</outputDirectory>
+                </configuration>
+            </plugin>
+
+            <!-- we want to use the test cases also in myfacse-impl, thus creating a test-jar -->
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!--
+                berlios jsunit under apache2 license to cover javascript core routines which
+                do not have to rely on a browser or can work on browser mockups!
+
+                for furhter on dom testing we probably have to integrate html based tests
+                with a browser engine but for the core apis this should be sufficient
+            -->
+            <plugin>
+                <groupId>de.berlios.jsunit</groupId>
+                <artifactId>jsunit-maven2-plugin</artifactId>
+                <executions>
+                    <!-- TODO currently deactivated -->
+                    <!--execution>
+                        <id>test</id>
+                        <goals>
+                            <goal>jsunit-test</goal>
+                        </goals>
+                    </execution-->
+                </executions>
+                <configuration>
+                    <sourceDirectory>src/main/javascript/META-INF/resources</sourceDirectory>
+                    <sources>
+                        <source>../../../../test/javascript/org/apache/myfaces/mockups/BrowserMockups.js</source>
+                        <!--
+                        <source>javax/faces/_util/OpenAjax.js</source>
+                        -->
+                        <source>javax/faces/_util/_JSF2Utils.js</source>
+                        <source>javax/faces/ajax/Ajax.js</source>
+                        <source>../../../../test/javascript/org/apache/myfaces/test/_TestScenario.js</source>
+                    </sources>
+                    <testSourceDirectory>src/test/javascript/org/apache/myfaces</testSourceDirectory>
+                    <reportsDirectory>target/surefire-reports</reportsDirectory>
+                    <testSuites>
+                        <testSuite>
+                            <name>javax.faces.Ajax</name>
+                            <type>TESTSUITES</type>
+                            <includes>
+                                <include>test/MockupTest.js</include>
+                                <include>utils/_JSF2UtilsTests.js</include>
+                                <include>ajax/AjaxTests.js</include>
+                            </includes>
+                        </testSuite>
+                    </testSuites>
+                </configuration>
+            </plugin>
+
+            <!-- myfaces-builder-plugin for metadata and component classes -->
+            <plugin>
+                <groupId>org.apache.myfaces.buildtools</groupId>
+                <artifactId>myfaces-builder-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build-metadata</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>makecomp</id>
+                        <configuration>
+                            <jsfVersion>20</jsfVersion>
+                            <templateComponentName>componentClass20.vm</templateComponentName>
+                        </configuration>
+                        <goals>
+                            <goal>make-components</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- create manifest.mf for OSGi -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                        <configuration>
+                            <instructions>
+                                <Bundle-SymbolicName>org.apache.myfaces.core.api</Bundle-SymbolicName>
+                                <Bundle-Classpath>.</Bundle-Classpath>
+                                <Build-Jdk>${java.version}</Build-Jdk>
+                                <Implementation-Title>${project.name}</Implementation-Title>
+                                <Implementation-Version>${project.version}</Implementation-Version>
+                                <Implementation-Vendor>The Apache Software Foundation</Implementation-Vendor>
+                                <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+                                <Export-Package>
+                                    *;version="${project.version}"
+                                </Export-Package>
+                                <Import-Package>
+                                    javax.el;version="[1.0.0, 3.1.0)",
+                                    javax.validation*;version="[1.0.0, 2.0.0)",
+                                    javax.servlet;version="[2.5.0, 4.0)",
+                                    javax.servlet.http;version="[2.5.0, 4.0)",
+                                    javax.servlet.jsp;version="[2.1.0, 3.1)",
+                                    javax.servlet.jsp.jstl.core;version="[1.1.2, 2.0.0)",
+                                    javax.servlet.jsp.jstl.sql;version="[1.1.2, 2.0.0)",
+                                    javax.servlet.jsp.tagext;version="[2.1.0, 3.2)",
+                                    org.apache.commons.logging;version="[1.1.1, 2.0.0)",
+                                    javax.faces.*;version="${project.version}"
+                                </Import-Package>
+                                <Require-Bundle>
+                                    org.apache.myfaces.core.impl;bundle-version="${parsedVersion.osgiVersion}"
+                                </Require-Bundle>
+                            </instructions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- execute tests (JUnit) -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <executions>
+
+                    <!-- JUnit -->
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <!--
+                            <parallel>classes</parallel>
+                            <threadCount>4</threadCount>
+                            <perCoreThreadCount>true</perCoreThreadCount>
+                            -->
+                            <testNGArtifactName>none:none</testNGArtifactName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+
+    <profiles>
+
+        <!-- TODO jakobk: we could change this to -Papache-release -->
+        <!--
+        - Generate files that are good to have when doing a release to main
+        - repositories, but which are not wanted when doing a quick
+        - "mvn install" before testing some code modifications.
+        -->
+        <profile>
+            <id>generate-assembly</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <tags>
+                                <tag>
+                                    <name>JSFJspTag</name>
+                                    <placement>X</placement>
+                                </tag>
+                                <tag>
+                                    <name>JSFJspAttribute</name>
+                                    <placement>X</placement>
+                                </tag>
+                            </tags>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadoc</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.myfaces.buildtools</groupId>
+                        <artifactId>myfaces-jsdoc-plugin</artifactId>
+                        <version>1.0-beta-1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-jsdoc</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- This profile verifies the binary compablity with the jsf api of the RI -->
+        <profile>
+            <id>checkCompatibility</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>clirr-maven-plugin</artifactId>
+                        <version>2.8</version>
+                        <configuration>
+                            <comparisonArtifacts>
+                                <comparisonArtifact>
+                                    <groupId>org.glassfish</groupId>
+                                    <artifactId>javax.faces</artifactId>
+                                    <version>2.3.0</version>
+                                </comparisonArtifact>
+                            </comparisonArtifacts>
+                            <includes>
+                                <include>javax/faces/**</include>
+                            </includes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <phase>test</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- check for Java 1.6 -->
+        <profile>
+            <id>checkJDK</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+				<!--
+                    <plugin>
+                        <groupId>org.jvnet</groupId>
+                        <artifactId>animal-sniffer</artifactId>
+                        <version>1.2</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <configuration>
+                                    <signature>
+                                        <groupId>org.jvnet.animal-sniffer</groupId>
+                                        <artifactId>java1.6</artifactId>
+                                        <version>1.0</version>
+                                    </signature>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+				-->
+                </plugins>
+            </build>
+
+            <!-- mojarra is only available on java.net -->
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>java.net.repo</id>
+                    <name>java.net repository</name>
+                    <url>http://download.java.net/maven/2/</url>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+
+        <!--
+            this optional profile generates the jsdoc content from
+            the embedded javascripts
+        -->
+
+        <profile>
+            <id>generateJsDoc</id>
+            <build>
+              <plugins>
+                    <plugin>
+                        <groupId>org.apache.myfaces.buildtools</groupId>
+                        <artifactId>myfaces-jsdoc-plugin</artifactId>
+                        <version>1.0-beta-1</version>
+
+                        <executions>
+                            <execution>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>jsdoc</goal>
+                                </goals>
+                            </execution>
+
+                        </executions>
+
+                    </plugin>
+               </plugins>
+            </build>
+        </profile>
+
+    </profiles>
+
+
+    <dependencies>
+        <!--
+            NOTE that all versions and scopes are defined in the parent dependencyManagement section
+            (except for optional=true due to a maven bug).
+        -->
+        <!-- Servlet 4.0 -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-servlet-api</artifactId>
+        </dependency>
+        <!-- JSP 2.1 -->
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jsp_2.2_spec</artifactId>
+        </dependency>
+
+        <!-- JSTL 1.2 -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+
+        <!-- el 2.2 (javax.el.*) -->
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-el_2.2_spec</artifactId>
+        </dependency>
+
+        <!-- bean-validation 1.0 (javax.validation.*) -->
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-validation_1.0_spec</artifactId>
+            <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
+        </dependency>
+
+        <!-- builder-annotations like @JSFWebConfigParam -->
+        <dependency>
+            <groupId>org.apache.myfaces.buildtools</groupId>
+            <artifactId>myfaces-builder-annotations</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jcdi_1.1_spec</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-atinject_1.0_spec</artifactId>
+        </dependency>
+
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-websocket-api</artifactId>
+		</dependency>
+
+        <!-- TEST DEPENDENCIES -->
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.myfaces.test</groupId>
+            <artifactId>myfaces-test23</artifactId>
+        </dependency>
+
+        <!-- easymock -->
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymockclassextension</artifactId>
+        </dependency>
+
+        <!-- jmock -->
+        <dependency>
+            <groupId>jmock</groupId>
+            <artifactId>jmock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jmock</groupId>
+            <artifactId>jmock-cglib</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>de.berlios.jsunit</groupId>
+            <artifactId>jsunit-maven2-plugin</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <scope>test</scope> <!-- normally scope=compile, but here only for tests needed - TODO jakobk really? -->
+        </dependency>
+
+    </dependencies>
+
+
+    <reporting>
+
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <tags>
+                        <tag>
+                            <name>JSFJspTag</name>
+                            <placement>X</placement>
+                        </tag>
+                        <tag>
+                            <name>JSFJspAttribute</name>
+                            <placement>X</placement>
+                        </tag>
+                    </tags>
+                </configuration>
+            </plugin>
+
+            <plugin>
+               <groupId>org.apache.myfaces.buildtools</groupId>
+                <artifactId>myfaces-jsdoc-plugin</artifactId>
+                <version>1.0-beta-1</version>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-changelog-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <id>dual-report</id>
+                        <configuration>
+                            <type>range</type>
+                            <range>30</range>
+                        </configuration>
+                        <reports>
+                            <report>changelog</report>
+                            <report>file-activity</report>
+                            <report>dev-activity</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-jxr-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>taglist-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- override PMD settings to set targetJdk -->
+            <plugin>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <configuration>
+                    <rulesets>
+                        <ruleset>/rulesets/basic.xml</ruleset>
+                        <ruleset>/rulesets/unusedcode.xml</ruleset>
+                    </rulesets>
+                    <linkXRef>true</linkXRef>
+                    <minimumTokens>100</minimumTokens>
+                    <targetJdk>1.5</targetJdk>
+                    <excludes>
+                        <!-- these class make the PMD plugin crash (NullPointerException). -->
+                        <exclude>org/apache/myfaces/el/convert/PropertyResolverToELResolver.java</exclude>
+                        <exclude>org/apache/myfaces/el/PropertyResolverImpl.java</exclude>
+                    </excludes>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>pmd</report>
+                            <report>cpd</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+        </plugins>
+
+    </reporting>
+
+</project>

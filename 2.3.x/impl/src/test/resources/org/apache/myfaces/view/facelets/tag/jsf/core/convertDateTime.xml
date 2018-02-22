@@ -1,0 +1,39 @@
+<!--
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ $Id$
+-->
+<composition xmlns="http://java.sun.com/jsf/facelets"
+             xmlns:h="http://java.sun.com/jsf/html"
+             xmlns:f="http://java.sun.com/jsf/core">
+	<h:form id="form" prependId="false">
+	<h:outputText id="out1" value="#{now}">
+		<f:convertDateTime dateStyle="short"/>
+	</h:outputText>
+	<h:outputText id="out2" value="#{now}">
+		<f:convertDateTime type="both" dateStyle="short" timeStyle="medium" />
+	</h:outputText>
+	<h:outputText id="out3" value="#{now}">
+		<f:convertDateTime timeStyle="full" timeZone="CST" />
+	</h:outputText>
+	<h:outputText id="out4" value="#{now}">
+		<f:convertDateTime type="time" />
+	</h:outputText>
+	<h:outputText id="out5" value="#{now}">
+		<f:convertDateTime pattern="K:mm a, z" timeZone="CST" />
+	</h:outputText>
+	<h:outputText id="out6" value="#{now}">
+		<f:convertDateTime pattern="K:mm a, z" timeZone="#{null}" />
+	</h:outputText>
+	</h:form>
+</composition>
