@@ -1,5 +1,5 @@
  ------
- MyFaces Core 2.2: Impl
+ MyFaces Core 2.3: Impl
  ------
 
  ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -19,7 +19,7 @@
  ~~ specific language governing permissions and limitations
  ~~ under the License.
 
-MyFaces Core 2.2: Impl Project
+MyFaces Core 2.3: Impl Project
 
   The Impl submodule implements all of the "invisible" classes that are needed for a functioning
   JSF implementation but which are not part of the public api.

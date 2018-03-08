@@ -1,5 +1,5 @@
  ------
- MyFaces Core 2.2: API
+ MyFaces Core 2.3: API
  ------
 
  ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -19,7 +19,7 @@
  ~~ specific language governing permissions and limitations
  ~~ under the License.
 
-MyFaces Core 2.2: API Project
+MyFaces Core 2.3: API Project
 
   The API submodule implements all of the classes that are defined in the specification.
   If you are looking for API documentation about the classes that your JSF application

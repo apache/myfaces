@@ -1,5 +1,5 @@
  ------
- Myfaces Core 2.2
+ Myfaces Core 2.3
  ------
 
  ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -20,9 +20,9 @@
  ~~ under the License.
  
 
-MyFaces Core 2.2 Project
+MyFaces Core 2.3 Project
 
-  This project provides an implementation of the JavaServer Faces 2.2 (JSF 2.2) specification.
+  This project provides an implementation of the JavaServer Faces 2.3 (JSF 2.3) specification.
 
     * The API submodule implements all of the classes that are defined in the specification. 
       If you are looking for API documentation about the classes that your JSF application
@@ -49,11 +49,11 @@ MyFaces Core 2.2 Project
 
 Requirements
 
-  JSF 2.2 requires java 1.6 or later, JSP 2.1, JSTL 1.2 and a Java Servlet 2.5 implementation.
+  JSF 2.3 requires java 1.8 or later, JSP 2.2, JSTL 1.2, CDI 2.0, WebSocket 1.1 and a Java Servlet 4.0 implementation.
 
 Specifications
 
-  MyFaces implements {{{http://www.jcp.org/en/jsr/detail?id=344}Java Specification Request 344}}
+  MyFaces implements {{{https://www.jcp.org/en/jsr/detail?id=372}Java Specification Request 372}}
   Each major release of MyFaces is certified against the Sun TCK to ensure compliance.
   
   Check the download page or you can check the nightly builds {{{https://repository.apache.org/content/repositories/snapshots/org/apache/myfaces/core}here}}.

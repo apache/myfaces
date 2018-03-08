@@ -22,7 +22,7 @@
   - starts with the project's url is converted into a relative url. Other
   - urls are left unaltered.
   -->
-<project name="MyFaces Core JSF-2.2">
+<project name="MyFaces Core JSF-2.3">
     <bannerLeft>
         <name>Apache MyFaces</name>
         <src>img/banners/MyFaces_logo.jpg</src>
@@ -38,9 +38,9 @@
     <publishDate format="dd MMM yyyy" />
     
     <skin>
-      	<groupId>org.apache.myfaces.maven</groupId>
-      	<artifactId>myfaces-site-skin</artifactId>
-      	<version>3</version>
+        <groupId>org.apache.myfaces.maven</groupId>
+        <artifactId>myfaces-site-skin</artifactId>
+        <version>3</version>
     </skin>
     
     <body>
@@ -55,11 +55,14 @@
         </links>
 
         <menu name="JSF Implementations" inherit="top">
-            <item name="Core JSF-2.2"   href="./index.html" collapse="false">
-              <item name="API"          href="http://myfaces.apache.org/core22/myfaces-api/index.html"/>
-              <item name="Impl"         href="http://myfaces.apache.org/core22/myfaces-impl/index.html"/>
-              <item name="Shared"       href="http://myfaces.apache.org/core22/myfaces-impl-shared/index.html"/>
-              <item name="Bundle"       href="http://myfaces.apache.org/core22/myfaces-bundle/index.html"/>
+            <item name="Core JSF-2.3"   href="./index.html" collapse="false">
+              <item name="API"          href="http://myfaces.apache.org/core23/myfaces-api/index.html"/>
+              <item name="Impl"         href="http://myfaces.apache.org/core23/myfaces-impl/index.html"/>
+              <item name="Shared"       href="http://myfaces.apache.org/core23/myfaces-impl-shared/index.html"/>
+              <item name="Bundle"       href="http://myfaces.apache.org/core23/myfaces-bundle/index.html"/>
+            </item> 
+            <item name="Core JSF-2.2"   href="../core22/index.html" collapse="true">
+              <item name="dummy"        href="dummy"/>
             </item>        
             <item name="Core JSF-2.1"   href="../core21/index.html" collapse="true">
               <item name="dummy"        href="dummy"/>
