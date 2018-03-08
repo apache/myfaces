@@ -49,7 +49,7 @@ MyFaces Core 2.3 Project
 
 Requirements
 
-  JSF 2.3 requires java 1.8 or later, JSP 2.3, JSTL 1.2, CDI 2.0 and a Java Servlet 4.0 implementation.
+  JSF 2.3 requires java 1.8 or later, JSP 2.2, JSTL 1.2, CDI 2.0, WebSocket 1.1 and a Java Servlet 4.0 implementation.
 
 Specifications
 

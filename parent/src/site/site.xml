@@ -61,7 +61,7 @@
               <item name="Shared"       href="http://myfaces.apache.org/core23/myfaces-impl-shared/index.html"/>
               <item name="Bundle"       href="http://myfaces.apache.org/core23/myfaces-bundle/index.html"/>
             </item> 
-            <item name="Core JSF-2.2"   href="../core22/index.html" collapse="false">
+            <item name="Core JSF-2.2"   href="../core22/index.html" collapse="true">
               <item name="dummy"        href="dummy"/>
             </item>        
             <item name="Core JSF-2.1"   href="../core21/index.html" collapse="true">
