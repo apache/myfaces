@@ -242,7 +242,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>findbugs-maven-plugin</artifactId>
-                    <version>2.5.2</version>
+                    <version>3.0.5</version>
                 </plugin>
                 <plugin>
                   <artifactId>maven-project-info-reports-plugin</artifactId>
@@ -316,6 +316,18 @@
             </build>
         </profile>
 
+        <!-- Disable doclint on java 8 as it is very strict.
+             Some javadocs issues will need to be fixed like non existent reference links -->
+        <profile>
+            <id>disable-java8-doclint</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <properties>
+                <additionalparam>-Xdoclint:none</additionalparam>
+            </properties>
+        </profile>
+
     </profiles>
 
 
@@ -335,6 +347,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.5</version>
             </plugin>
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
