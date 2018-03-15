@@ -107,6 +107,7 @@
             <item name="Getting Started" href="http://myfaces.apache.org/wiki/core/user-guide/getting-started.html"/>
             <item name="MyFaces and Google App Engine"  href="http://myfaces.apache.org/core20/googleappenginesupport.html"/>
             <item name="Generated Javadoc, Tlddoc and Others"        href="./javadoc.html"/>
+            <item name="MyFaces Release Checklist"        href="./release-checklist.html"/>
             <item name="FAQ"             href="http://myfaces.apache.org/wiki/core/faq.html"/>
         </menu>
 

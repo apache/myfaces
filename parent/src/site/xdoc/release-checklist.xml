@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation Maven//EN" "http://maven.apache.org/dtd/maven-xdoc.dtd">
+
+<document>
+    <body>
+        <section name="MyFaces 2.3.x Release Checklist (Developer Info)">
+
+            <p><b>Wikis to follow as guides:</b></p>
+            <ul>
+                <li><a class="externalLink" href="https://wiki.apache.org/myfaces/CoreRelease2212">Core Release 2.2.12</a></li>
+                <li><a class="externalLink" href="https://wiki.apache.org/myfaces/CoreRelease230beta">Core Release 2.3.0 Beta</a></li>
+                <li><a class="externalLink" href="http://myfaces.apache.org/tobago/release-checklist.html">Tobago Release Checklist</a></li>
+            </ul>
+
+            <p>Checklist of tasks to perform for each release. For general information about Apache releases you may also consult <a class="externalLink" href="http://www.apache.org/dev/publishing-maven-artifacts.html">Publishing Maven Artifacts</a>.</p>
+
+        </section>
+        <section name="Diary">
+
+            <p><b>NOTE:</b> Make sure you have the right ssh public key set in id.apache.org page before performing the release steps.</p>
+
+            <p>Before performing the release you need to configure your environment if you haven't done it before.</p>
+            a. Go to: <a class="externalLink" href="http://www.apache.org/dev/publishing-maven-artifacts.html">Publishing Maven Artifacts</a>
+            <br/>
+            b. Go to the section SETUP YOUR DEVELOPMENT ENVIRONMENT and generate the pgp key signature. Don't forget to distribute the public key step. 
+            <br/>
+            Link: <a class="externalLink" href="https://blog.sonatype.com/2010/01/how-to-generate-pgp-signatures-with-maven/#.Vm9Km8q22-q">Generate PGP signature</a>
+
+            <p><b>NOTE:</b> You can ignore sections GETTING YOUR PROJECT SETUP IN THE NEXUS REPOSITORY and MAVEN SPECIFIC PREPARATIONS AND PROCEDURES but reading the whole document will help you understand the release process.
+            Also, we don't need to setup the project in nexus repository by creating a JIRA issue.</p>
+
+            <p>Some useful links/resources:</p>
+            <ul>
+                <li><a class="externalLink" href="http://central.sonatype.org/pages/apache-maven.html">Apache Maven</a></li>
+                <li><a class="externalLink" href="https://maven.apache.org/guides/mini/guide-central-repository-upload.html">Guide Central Repository Upload</a></li>
+                <li><a class="externalLink" href="https://youtube.com/watch?v=bxP9IuJbcDQ">How to Publish a Java Library to Maven Central</a></li>
+            </ul>
+
+            <h3>1. Preparing shared 4.2.9 (optional)</h3>
+
+            <ul>
+                <p><b>NOTE:</b> This step is optional. The current project structure does not required a "shared project" release, since it just copy the code inside the shared module in myfaces core.</p>
+                <br/>
+
+                <li>Change shared/core/pom.xml variable to mirror updated shared copy from core and run from shared root path</li>
+                <div class="source">
+                    <pre>
+mvn clean install -Dsynch-shared=true
+                    </pre>
+                </div>
+                Try -DdryRun=true SUCCESS
+                <div class="source">
+                    <pre>
+mvn release:prepare -DtagBase=https://svn.apache.org/repos/asf/myfaces/shared/tags -DdryRun=true    
+                    </pre>
+                </div>       
+                Release it! FAIL
+                <div class="source">
+                    <pre>
+mvn release:prepare -DtagBase=https://svn.apache.org/repos/asf/myfaces/shared/tags -Dresume=false
+mvn install
+mvn release:rollback
+mvn release:prepare -DtagBase=https://svn.apache.org/repos/asf/myfaces/shared/tags -Dresume=false
+                    </pre>
+                </div>
+        
+                <p><b>NOTE:</b> Preparing the release will create the new tag in SVN, automatically checking in on your behalf. Note: If you're located in Europe then release:prepare may fail with 'Unable to tag SCM' and 'svn: No such revision X'. Wait 10 seconds and run mvn release:prepare again.</p>
+
+                <li><p>Stage the release for a vote</p></li>
+                <div class="source">
+                    <pre>
+mvn release:perform -DtagBase=https://svn.apache.org/repos/asf/myfaces/shared/tags
+                    </pre>
+                </div>
+            
+            </ul>
+
+            <h3>2. Preparing Core 2.3.0</h3>
+
+            <ul>
+                <li><p>Once the environment is configured, run the following commands to prepare the MyFaces Core</p></li>
+
+                <div class="source">
+                    <pre>
+mvn clean install
+mvn install -Pgenerate-assembly -Papache-release
+# The dryRun=true don't checkin or tag anything in the scm repository, or modify the checkout. 
+# Useful to check modifications to poms and scm operations.
+mvn release:prepare -DprepareRelease=true -DdryRun=true
+# Run again this command to prepare release 
+# and commit to https://svn.apache.org/repos/asf/myfaces/core/tags/ repository.
+mvn release:prepare -DprepareRelease=true -Dresume=false 
+                    </pre>
+                </div>
+            
+
+                <p><b>NOTE:</b> Preparing the release will create the new tag in SVN, automatically checking in on your behalf.</p>
+
+                <p><b>NOTE:</b> If you're located in Europe then release:prepare may fail with 'Unable to tag SCM' and 'svn: No such revision X'. Wait 10 seconds and run mvn release:prepare again.</p>
+
+                <p><b>NOTE:</b> If you see a message like "You don't have a SNAPSHOT project in the reactor projects list" it means that the workspace directory is not cleaned and Maven uses the old temporary files which contain some weird versions instead of the current SNAPSHOTs. You will have to do a mvn release:clean or start the process again from the beginning. 
+                <a class="externalLink" href="http://kaczanowscy.pl/tomek/2012-12/jenkins-maven-no-snapshots-in-the-reactor-project-list">Maven no snapshot in the project</a></p>
+
+                <li><p>Verify that the new tag myfaces-core-module-2.3.0 was created: <a class="externalLink" href="https://svn.apache.org/viewvc/myfaces/core/tags/">MyFaces Core Tags</a></p></li>
+                <p>You should be able to checkout myfaces-core-module-2.3.0 and run: mvn install</p>
+
+                <li><p>Stage the release for a vote</p></li>
+                <div class="source">
+                    <pre>
+# Finally perform the release so artifacts are uploaded to nexus repository.
+mvn release:perform -DperformRelease=true
+                    </pre>
+                </div>
+
+            </ul>
+
+            <p>Some useful links/resources:</p>
+            <ul>
+                <li><a class="externalLink" href="http://maven.apache.org/maven-release/maven-release-plugin/examples/prepare-release.html">Maven Prepare Release</a></li>
+                <li><a class="externalLink" href="https://maven.apache.org/guides/mini/guide-releasing.html">Guide Releasing</a></li>
+            </ul>
+
+
+            <h3>3. JIRA Release Management</h3>
+            <br/>
+            <ul>
+                <li>Create 2.3.1 and 2.3.1-SNAPSHOT versions</li> 
+                <li>Find resolved issues and close them</li> 
+                <li>Unresolved issues moved to 2.3.1-SNAPSHOT</li> 
+            </ul>
+
+            <p>Go to the following link perform these steps under the MyFaces Core Project: <a class="externalLink" href="https://issues.apache.org/jira/secure/Dashboard.jspa">JIRA Dashboard</a></p>
+
+
+            <h3>4. TCK</h3>
+            <br/>
+            <ul>
+                <li>We can skip TCK step if there is no TCK for JSF 2.3</li>
+            </ul>
+
+
+            <h3>5. Generate assembly</h3>
+            <br/>
+            <ul>
+                <li>Automatically done by maven on release:perform step and should be available in the nexus maven repository to do the final deploy.</li>
+                <p>Login to nexus repository using the id.apache.org account: <a class="externalLink" href="https://repository.apache.org">Nexus Repository</a></p>
+                Now  under Build Promotion go to Staging Repositories, look for orgapachemyfaces-xxxx repository. Click "close" so the artifacts can be downloaded. If the artifacts has some bug you can click "drop", if the artifacts are approved, you can click on "release". 
+                <p>More information here: <a class="externalLink" href="http://central.sonatype.org/pages/releasing-the-deployment.html#locate-and-examine-your-staging-repository">Locate and examine your staging repository</a></p>
+                <p>Link: <a class="externalLink" href="https://repository.apache.org/content/repositories/orgapachemyfaces-1130/org/apache/myfaces/core/myfaces-core-assembly/2.3.0/">https://repository.apache.org/content/repositories/orgapachemyfaces-1130/org/apache/myfaces/core/myfaces-core-assembly/2.3.0/</a></p>
+                <br/>
+                <br/>
+
+                <li>Otherwise you can generate them manually. Try to do it automatically javadoc and other stuff SUCCESS. It generate myfaces-core-2.3.0-bin.tar.gz and zip</li>
+
+                <div class="source">
+                    <pre>
+mvn install -Pgenerate-assembly
+cd assembly
+mvn package
+                    </pre>
+                </div>
+
+                <li>Create myfaces-core-2.3.0-src.tar.gz and zip manually and create .asc .sha1 for bin and src</li>
+
+                <div class="source">
+                    <pre>
+openssl sha1 myfaces-core-2.3.0-src.tar.gz > myfaces-core-2.3.0-src.tar.gz.sha1
+openssl sha1 myfaces-core-2.3.0-src.zip > myfaces-core-2.3.0-src.zip.sha1
+gpg --armor --output myfaces-core-2.3.0-src.tar.gz.asc --detach-sig myfaces-core-2.3.0-src.tar.gz
+gpg --armor --output myfaces-core-2.3.0-src.zip.asc --detach-sig myfaces-core-2.3.0-src.zip
+
+openssl sha1 myfaces-core-2.3.0-bin.tar.gz > myfaces-core-2.3.0-bin.tar.gz.sha1
+openssl sha1 myfaces-core-2.3.0-bin.zip > myfaces-core-2.3.0-bin.zip.sha1
+gpg --armor --output myfaces-core-2.3.0-bin.tar.gz.asc --detach-sig myfaces-core-2.3.0-bin.tar.gz
+gpg --armor --output myfaces-core-2.3.0-bin.zip.asc --detach-sig myfaces-core-2.3.0-bin.zip
+                    </pre>
+                </div>
+
+                <li>Copy to ftp private account on people.apache.org</li>
+
+                <div class="source">
+                    <pre>
+scp -p -r myfaces-core-2.3.0-bin* embreijo@people.apache.org:/home/embreijo/public_html/myfaces230binsrc/binaries
+scp -p -r myfaces-core-2.3.0-src* embreijo@people.apache.org:/home/embreijo/public_html/myfaces230binsrc/sources
+                    </pre>
+                </div>
+            </ul>
+
+
+            <h3>6. Clirr report to check binary incompatibilities success</h3>
+            <ul>
+                <p><b>NOTE:</b> I could not use the Clirr tool but I was able to use a similar tool called japicmp</p>
+
+                Github: <a class="externalLink" href="https://github.com/siom79/japicmp">https://github.com/siom79/japicmp</a>
+                <br/>
+                Website: <a class="externalLink" href="https://siom79.github.io/japicmp/">https://siom79.github.io/japicmp/</a>
+                <br/>
+                <br/>
+                <li>
+                    Download the jar-with-dependencies.jar archive and follow instructions to compare the two versions.
+                </li>
+                <p>Example: 
+                java -jar japicmp-0.11.0-jar-with-dependencies.jar -n &lt;v2_binary&gt;.jar -o &lt;v1_binary&gt;.jar --ignore-missing-classes --html-file &lt;dir_name&gt;/results.html</p>
+
+                <p>Report of myfaces-api-2.3.0-beta vs myfaces-api-2.3.0.jar looks good.</p>
+            </ul>    
+
+
+
+            <h3>7. VOTE: Send email to the MyFaces DEV - dev@myfaces.apache.org</h3>
+            <ul>
+                <div class="source">
+                    <pre>
+Subject: [VOTE] release of MyFaces Core 2.3.0
+
+Hi,
+
+I was running the needed tasks to get the 2.3.0 release of Apache
+MyFaces core out.
+
+
+Please note that this vote concerns all of the following parts:
+   1. Maven artifact group "org.apache.myfaces.core" v2.3.0  [1]
+
+The artifacts were deployed on nexus repo [1] for binary and source packages.
+
+The release notes could be found at [4].
+
+Also the japicmp tool (similar to clirr) does not show binary incompatibilities with myfaces-api.
+
+Please take a look at the "2.3.0" artifacts and vote! (see [3])
+
+Please note: This vote is "majority approval" with a minimum of three +1 votes (see [2]).
+
+------------------------------------------------
+[ ] +1 for community members who have reviewed the bits
+[ ] +0
+[ ] -1 for fatal flaws that should cause these bits not to be released, and why..............
+------------------------------------------------
+
+Thanks,
+Eduardo M. Breijo
+
+[1] https://repository.apache.org/content/repositories/orgapachemyfaces-1130/org/apache/myfaces/core/
+[2] http://www.apache.org/foundation/voting.html#ReleaseVotes
+[3] https://repository.apache.org/content/repositories/orgapachemyfaces-1130/org/apache/myfaces/core/myfaces-core-assembly/
+[4] https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=10600&amp;version=12339569
+                    </pre>
+                </div>
+
+                <p><b>NOTE:</b> To generate the ReleaseNote you need to go to the JIRA dashboard. Then go to MyFaces Core project. Finally go to the version to be released (example 2.3.0) and click "Release Notes" button.</p>
+
+            </ul>
+
+
+
+            <h3>8. Vote closed, starting distribution</h3>
+            <ul>
+                <li><p>Now that the voting is closed, go the <a class="externalLink" href="https://repository.apache.org">Nexus Repository</a> and find the myfaces 2.3.0 repo (example: orgapachemyfaces-1130) and click the release button. More information here: <a class="externalLink" href="http://central.sonatype.org/pages/releasing-the-deployment.html#close-and-drop-or-release-your-staging-repository">Close and drop or release your staging repository</a></p>
+                </li>
+                
+
+                <p>Some useful links/resources:</p>
+                <ul>
+                    <li>Link with information about where we need to upload the assembly files: <a class="externalLink" href="http://www.apache.org/legal/release-policy.html#where-do-releases-go">Where do release go</a></li>
+                    <li>How to upload a release: <a class="externalLink" href="http://www.apache.org/legal/release-policy.html#upload-ci">Upload CI</a></li>
+                </ul>
+
+                <li>You can use the <a href="./scripts/release-artifacts.sh">MyFaces Release Artifacts</a> script to upload the files to svn dist repo: <a class="externalLink" href="https://dist.apache.org/repos/dist/release/myfaces">MyFaces Distribution Repository</a></li>
+
+                <li>Otherwise, use an svn client and add the release artifacts to the svn dist repo: <a class="externalLink" href="https://dist.apache.org/repos/dist/release/myfaces">MyFaces Distribution Repository</a></li>
+                <ul>
+                    <li>myfaces-core-assembly-${VERSION}-bin.* should go under the binaries directory</li>
+                    <li>myfaces-core-assembly-${VERSION}-src.* should go under the source directory</li>
+                </ul>
+
+                <li>Files can also be found in the following link once they are added to the svn repo: <a class="externalLink" href="http://www.apache.org/dist/myfaces/">MyFaces Distribution Server</a></li>
+
+
+                <li>Add the release version and date to the Apache Committee Report Helper: <a class="externalLink" href="https://reporter.apache.org/addrelease.html?myfaces">Add Release</a></li>
+
+            </ul>
+
+
+            <h3>9. Site deploy for shared and core (mvn site:site and mvn site:deploy)</h3>
+            <ul>
+                <li><p>The site you can see here: <a class="externalLink" href="https://myfaces.apache.org/">https://myfaces.apache.org/</a> is synced by some automatic job from this repo: <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/site/publish/">https://svn.apache.org/repos/asf/myfaces/site/publish/</a></p></li>
+
+                <li><p>So, you need to</p></li>
+                    <ul>
+                        1. checkout the relevant parts from that publish URL
+                        <br/>
+                        2. building the site (mvn site:site) as in the above step
+                        <br/>
+                        3. syncing this site (from 2.) locally to the checkout (from 1.) using "mvn site:stage"
+                        <br/>
+                        4. commit it
+                    </ul>
+
+                <li><p>Checkout <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/site/trunk/">https://svn.apache.org/repos/asf/myfaces/site/trunk/</a></p></li>
+                Modify and commit
+                
+                <div class="source">
+                    <pre>
+src/site/apt/download.apt
+src/site/apt/index.apt
+src/site/resources/doap_MyFaces.rdf (if necessary)
+src/site/site.xml (if necessary)
+                    </pre>
+                </div>
+
+                Execute
+                <div class="source">
+                    <pre>
+mvn site:site # this will generate the site under the target directory
+                    </pre>
+                </div>
+
+                Commit the new generated files under main site repo: <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/site/publish/">https://svn.apache.org/repos/asf/myfaces/site/publish/</a>
+
+
+
+
+                <li><p>Checkout <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.3.0/">MyFaces Core Module 2.3.0</a></p></li>
+                Modify and commit
+                
+                <div class="source">
+                    <pre>
+api/src/site/apt/index.apt (if necessary)
+impl/src/site/apt/index.apt (if necessary)
+parent/src/site/resources/doap_MyFaces.rdf (if necessary)
+parent/src/site/site.xml (if necessary)
+                    </pre>
+                </div>
+
+                Execute
+                <div class="source">
+                    <pre>
+mvn site:site # this will generate the site under the target directory
+                    </pre>
+                </div>
+
+                Commit the new generated files under core23 site repo: <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/site/publish/core23">https://svn.apache.org/repos/asf/myfaces/site/publish/core23</a>
+
+
+                <li><p>Finally generate the tld docs and webconfig.html file (if necessary)</p></li>
+                These docs are: tagdoc, tlddoc, tlddoc-facelets directories, tagdoc.html, webconfig.html
+
+
+                <p>Run:</p>
+                <div class="source">
+                    <pre>
+mvn -Pgenerate-site -Pgenerate-tlddoc site
+                    </pre>
+                </div>
+
+                Commit the generated docs in repo <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/site/publish/core23/myfaces-impl">https://svn.apache.org/repos/asf/myfaces/site/publish/core23/myfaces-impl</a>
+
+            </ul>
+
+
+
+            <h3>10. Announce</h3>
+            <ul>
+
+                <li><p>Sent announcement mail</p></li>
+                To: announce@apache.org, announce@myfaces.apache.org
+                <br/>
+                Cc: dev@myfaces.apache.org, users@myfaces.apache.org
+
+                <li><p>Sent announcement to jcp-open@apache.org (Necessary for TCK certified releases)</p></li>
+
+                <div class="source">
+                    <pre>
+Subject: [ANNOUNCE] MyFaces Core v2.3.0 Release
+
+The Apache MyFaces team is pleased to announce the release of MyFaces Core 2.3.0.
+
+MyFaces Core is a JavaServer(tm) Faces 2.3 implementation as specified by JSR-372.
+
+MyFaces Core 2.3.0 is available in both binary and source distributions.
+
+    * http://myfaces.apache.org/download.html
+
+MyFaces Core is also available in the central Maven repository under Group ID "org.apache.myfaces.core".
+
+Release Notes - MyFaces Core - Version 2.3.0 can be found in the following link: 
+https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=10600&amp;version=12339569
+
+Regards,
+Eduardo M. Breijo
+                    </pre>
+                </div>
+
+            </ul>
+            
+        </section>
+    </body>
+</document>
