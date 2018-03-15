@@ -315,7 +315,7 @@ Eduardo M. Breijo
                     </ul>
 
                 <li><p>Checkout <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/site/trunk/">https://svn.apache.org/repos/asf/myfaces/site/trunk/</a></p></li>
-                Modify and commit
+                Modify and commit the changes
                 
                 <div class="source">
                     <pre>
@@ -338,8 +338,10 @@ mvn site:site # this will generate the site under the target directory
 
 
 
-                <li><p>Checkout <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.3.0/">MyFaces Core Module 2.3.0</a></p></li>
-                Modify and commit
+                <li><p>Checkout <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.3.0/">https://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.3.0/</a></p></li>
+                Modify and commit the changes
+                <br/>
+                <b>NOTE:</b> You may have to do modify and commit these same changes to <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/">https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/</a> repository to keep the dev repo up to date.
                 
                 <div class="source">
                     <pre>
