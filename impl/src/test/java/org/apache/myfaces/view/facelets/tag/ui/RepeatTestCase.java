@@ -799,4 +799,33 @@ public class RepeatTestCase extends FaceletTestCase
         
         //System.out.println(fw);
     }
+    
+    
+    
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testInvokeOnComponentBeginEnd() throws IOException
+    {                
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testUIRepeatBeginEnd.xhtml");
+        
+        UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
+        Assert.assertNotNull(repeat);
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        
+        repeat.encodeAll(facesContext);
+        
+        String content = fw.toString();
+
+        Assert.assertTrue(content.contains("Hello 1"));
+        Assert.assertTrue(content.contains("Hello 2"));
+        Assert.assertTrue(content.contains("Hello 3"));
+        
+        Assert.assertFalse(content.contains("Hello 0"));
+        Assert.assertFalse(content.contains("Hello 4"));
+    }
 }

@@ -73,8 +73,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     
     private static final String STRING_BUILDER_KEY
             = UIRepeat.class.getName() + ".SHARED_STRING_BUILDER";
-    
-    //private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
 
     private final static DataModel<?> EMPTY_MODEL = new ListDataModel<Object>(Collections.emptyList());
     
@@ -335,7 +333,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             begin = getOffset();
         }
         
-        return new RepeatStatus(_count == 0, _index + getStep() >= getDataModel().getRowCount(),
+        return new RepeatStatus(_count == 0, _index + getStep() >= getRowCount(),
             _count, _index, begin, _end, getStep());
         
     }
@@ -356,7 +354,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
     private boolean _isIndexAvailable()
     {
-        return getDataModel().isRowAvailable();
+        return getDataModel() == EMPTY_MODEL || getDataModel().isRowAvailable();
     }
 
     private void _restoreScopeValues()
@@ -732,7 +730,14 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
      */
     public int getRowCount()
     {
-        return getDataModel().getRowCount();
+        if (getValue() == null) // empty model
+        {
+            return (getEnd() - getBegin())/(getStep() <= 0 ? 1 : getStep());
+        }
+        else 
+        {
+            return getDataModel().getRowCount();
+        }
     }
     
     /**
@@ -802,10 +807,17 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         if (_index != -1)
         {
             String var = getVar();
-            if (var != null && localModel.isRowAvailable())
+            boolean emptyModel = getDataModel() == EMPTY_MODEL;
+            if (var != null && (emptyModel || localModel.isRowAvailable()))
             {
-                getFacesContext().getExternalContext().getRequestMap()
-                        .put(var, localModel.getRowData());
+                if (emptyModel)
+                {
+                    getFacesContext().getExternalContext().getRequestMap().put(var, _index);
+                }
+                else
+                {
+                    getFacesContext().getExternalContext().getRequestMap().put(var, localModel.getRowData());
+                }
             }
             String varStatus = getVarStatus();
             if (varStatus != null)
@@ -873,10 +885,11 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     private void _validateAttributes() throws FacesException
     {
         
+        boolean emptyModel = getDataModel() == EMPTY_MODEL;
         int begin = getBegin();
         int end = getEnd();
         int size = getSize();
-        int count = getDataModel().getRowCount();
+        int count = getRowCount();
         int offset = getOffset();
         if (begin == -1)
         {
@@ -888,7 +901,12 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
        
         if (end == -1 && size == -1) 
         {
-            if (begin == -1) 
+            if (emptyModel && end == -1)
+            {
+                throw new FacesException("on empty models, you must define begin and " +
+                        "end");
+            }
+            else if (begin == -1) 
             {
                 end = getDataModel().getRowCount();
             } 
@@ -899,7 +917,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         }
         
         int step = getStep();
-        boolean sizeIsEnd = false;
+        boolean sizeIsEnd = emptyModel;
+        boolean countdown = emptyModel && end < begin;
 
         if (size == -1)
         {
@@ -910,11 +929,26 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             } 
             else 
             {
-                size = end - begin + 1;
+                size = countdown ? (begin - end + 1)/step : (end - begin + 1)/step;
             }     
         }
+        
+        step = countdown && step > 0 ? -step : step;
 
-        if (end >= 0)
+        if (emptyModel)
+        {
+            if (step > 0 && (end < begin))
+            {
+                throw new FacesException("on empty models, end cannot be less than begin " +
+                        "when the step is positive");
+            }
+            else if (step < 0 && (end > begin))
+            {
+                throw new FacesException("on empty models, end cannot be greater than begin " +
+                        "when the step is negative");
+            }
+        }
+        else if (end >= 0)
         {
             if (size < 0)
             {
@@ -947,23 +981,23 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                         "than collection size");
             }
         }
-        if ((begin >= 0) && (begin > end))
+        if (!emptyModel && (begin >= 0) && (begin > end))
         {
             throw new FacesException("begin cannot be greater " +
                     "end");
         }
-        if ((size > -1) && (offset > end))
+        if (!emptyModel && (size > -1) && (offset > end))
         {
             throw new FacesException("iteration offset cannot be greater " +
                     "than collection size");
         }
 
-        if (step == -1)
+        if (!emptyModel && step == -1)
         {
             setStep(1);
         }
 
-        if (step < 0)
+        if (!emptyModel && step < 0)
         {
             throw new FacesException("iteration step size cannot be less " +
                     "than zero");
@@ -975,7 +1009,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     "to zero");
         }
 
-        
+        setStep(step);
         _end = end;
         
     }
@@ -1027,7 +1061,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 
                 _setIndex(i);
                 
-                while (i <= end && _isIndexAvailable())
+                while (((step > 0 && i <= end) || (step < 0 && i >= end)) && _isIndexAvailable())
                 {
 
                     if (PhaseId.RENDER_RESPONSE.equals(phase) && renderer != null)
