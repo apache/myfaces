@@ -175,6 +175,7 @@ public abstract class FacesContextWrapper extends FacesContext implements FacesW
         return getWrapped().getViewRoot();
     }
 
+    @Override
     public FacesContext getWrapped()
     {
         return delegate;

@@ -65,6 +65,7 @@ public abstract class ExceptionHandlerWrapper extends ExceptionHandler implement
         return getWrapped().getUnhandledExceptionQueuedEvents();
     }
 
+    @Override
     public ExceptionHandler getWrapped()
     {
         return delegate;

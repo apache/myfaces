@@ -48,6 +48,7 @@ public abstract class ExceptionHandlerFactory implements FacesWrapper<ExceptionH
      * 
      * @since 2.0
      */
+    @Override
     public ExceptionHandlerFactory getWrapped()
     {
         return delegate;

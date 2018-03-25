@@ -44,7 +44,9 @@ public abstract class ExceptionHandler implements SystemEventListener
 
     public abstract void handle() throws FacesException;
 
+    @Override
     public abstract boolean isListenerForSource(Object source);
 
+    @Override
     public abstract void processEvent(SystemEvent exceptionQueuedEvent) throws AbortProcessingException;
 }

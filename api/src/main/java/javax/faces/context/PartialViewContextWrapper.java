@@ -61,6 +61,7 @@ public abstract class PartialViewContextWrapper extends PartialViewContext imple
         return getWrapped().getRenderIds();
     }
 
+    @Override
     public PartialViewContext getWrapped()
     {
         return delegate;

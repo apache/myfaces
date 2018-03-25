@@ -41,6 +41,7 @@ public abstract class ExternalContextFactory implements FacesWrapper<ExternalCon
     public abstract ExternalContext getExternalContext(Object context, Object request, Object response)
             throws FacesException;
 
+    @Override
     public ExternalContextFactory getWrapped()
     {
         return delegate;
