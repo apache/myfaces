@@ -89,6 +89,7 @@ public abstract class ResponseWriterWrapper extends ResponseWriter implements Fa
         return getWrapped().getContentType();
     }
 
+    @Override
     public abstract ResponseWriter getWrapped();
 
     @Override
@@ -139,9 +140,6 @@ public abstract class ResponseWriterWrapper extends ResponseWriter implements Fa
         getWrapped().writeText(text, property);
     }
 
-    /**
-     * @since 1.2
-     */
     @Override
     public void writeText(Object object, UIComponent component, String string) throws IOException
     {
