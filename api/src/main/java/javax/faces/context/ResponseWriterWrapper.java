@@ -90,7 +90,10 @@ public abstract class ResponseWriterWrapper extends ResponseWriter implements Fa
     }
 
     @Override
-    public abstract ResponseWriter getWrapped();
+    public ResponseWriter getWrapped()
+    {
+        return delegate;
+    }
 
     @Override
     public void startCDATA() throws IOException
