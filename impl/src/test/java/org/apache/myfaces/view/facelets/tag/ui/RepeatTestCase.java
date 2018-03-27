@@ -20,6 +20,8 @@ package org.apache.myfaces.view.facelets.tag.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.el.ELContext;
@@ -827,5 +829,57 @@ public class RepeatTestCase extends FaceletTestCase
         
         Assert.assertFalse(content.contains("Hello 0"));
         Assert.assertFalse(content.contains("Hello 4"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testInvokeOnNullModel() throws IOException
+    {                
+        final List<String> modelValues = null;
+        final List<String> loadedModelValues = Arrays.asList("Claire", "Michael");
+        facesContext.getExternalContext().getRequestMap().put("modelValues", modelValues);
+        facesContext.getExternalContext().getRequestMap().put("loadedModelValues", loadedModelValues);
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testUIRepeatEmpty.xhtml");
+        
+        UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
+        Assert.assertNotNull(repeat);
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        
+        repeat.encodeAll(facesContext);
+        
+        String content = fw.toString();
+
+        Assert.assertFalse(content.contains("Hello "));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testInvokeOnEmptyList() throws IOException
+    {                
+        final List<String> modelValues = Collections.emptyList();
+        final List<String> loadedModelValues = Arrays.asList("Claire", "Michael");
+        facesContext.getExternalContext().getRequestMap().put("modelValues", modelValues);
+        facesContext.getExternalContext().getRequestMap().put("loadedModelValues", loadedModelValues);
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "testUIRepeatEmpty.xhtml");
+        
+        UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
+        Assert.assertNotNull(repeat);
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        
+        repeat.encodeAll(facesContext);
+        
+        String content = fw.toString();
+
+        Assert.assertFalse(content.contains("Hello "));
     }
 }

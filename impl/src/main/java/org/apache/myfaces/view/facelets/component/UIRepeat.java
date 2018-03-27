@@ -96,6 +96,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     
     // will be set to false if the data should not be refreshed at the beginning of the encode phase
     private boolean _isValidChilds = true;
+    
+    private boolean _emptyModel = false;
 
     private int _end = -1;
     
@@ -354,7 +356,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
     private boolean _isIndexAvailable()
     {
-        return getDataModel() == EMPTY_MODEL || getDataModel().isRowAvailable();
+        return _emptyModel || getDataModel().isRowAvailable();
     }
 
     private void _restoreScopeValues()
@@ -730,7 +732,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
      */
     public int getRowCount()
     {
-        if (getValue() == null) // empty model
+        if (_emptyModel) // empty model
         {
             return (getEnd() - getBegin())/(getStep() <= 0 ? 1 : getStep());
         }
@@ -807,10 +809,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         if (_index != -1)
         {
             String var = getVar();
-            boolean emptyModel = getDataModel() == EMPTY_MODEL;
-            if (var != null && (emptyModel || localModel.isRowAvailable()))
+            if (var != null && (_emptyModel || localModel.isRowAvailable()))
             {
-                if (emptyModel)
+                if (_emptyModel)
                 {
                     getFacesContext().getExternalContext().getRequestMap().put(var, _index);
                 }
@@ -885,10 +886,10 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     private void _validateAttributes() throws FacesException
     {
         
-        boolean emptyModel = getDataModel() == EMPTY_MODEL;
         int begin = getBegin();
         int end = getEnd();
         int size = getSize();
+        _emptyModel = getDataModel() == EMPTY_MODEL && begin != -1 && end != -1;
         int count = getRowCount();
         int offset = getOffset();
         if (begin == -1)
@@ -901,12 +902,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
        
         if (end == -1 && size == -1) 
         {
-            if (emptyModel && end == -1)
-            {
-                throw new FacesException("on empty models, you must define begin and " +
-                        "end");
-            }
-            else if (begin == -1) 
+            if (begin == -1) 
             {
                 end = getDataModel().getRowCount();
             } 
@@ -917,8 +913,8 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         }
         
         int step = getStep();
-        boolean sizeIsEnd = emptyModel;
-        boolean countdown = emptyModel && end < begin;
+        boolean sizeIsEnd = _emptyModel;
+        boolean countdown = _emptyModel && end < begin;
 
         if (size == -1)
         {
@@ -935,7 +931,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         
         step = countdown && step > 0 ? -step : step;
 
-        if (emptyModel)
+        if (_emptyModel)
         {
             if (step > 0 && (end < begin))
             {
@@ -981,23 +977,23 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                         "than collection size");
             }
         }
-        if (!emptyModel && (begin >= 0) && (begin > end))
+        if (!_emptyModel && (begin >= 0) && (begin > end))
         {
             throw new FacesException("begin cannot be greater " +
                     "end");
         }
-        if (!emptyModel && (size > -1) && (offset > end))
+        if (!_emptyModel && (size > -1) && (offset > end))
         {
             throw new FacesException("iteration offset cannot be greater " +
                     "than collection size");
         }
 
-        if (!emptyModel && step == -1)
+        if (!_emptyModel && step == -1)
         {
             setStep(1);
         }
 
-        if (!emptyModel && step < 0)
+        if (!_emptyModel && step < 0)
         {
             throw new FacesException("iteration step size cannot be less " +
                     "than zero");
