@@ -223,5 +223,11 @@ public class ViewHandlerTest extends TestCase
             throw new UnsupportedOperationException();
         }
 
+        @Override
+        public String getWebsocketURL(FacesContext context, String channelAndToken)
+        {
+            throw new UnsupportedOperationException();
+        }
+
     }
 }
