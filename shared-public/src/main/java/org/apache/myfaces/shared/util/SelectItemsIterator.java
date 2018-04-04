@@ -266,10 +266,10 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 Object itemLabel = attributeMap.get(ITEM_LABEL_PROP);
                 if (itemLabel == null)
                 {
-				    if (itemValue != null)
-				    {
+                    if (itemValue != null)
+                    {
                         itemLabel = itemValue.toString();
-				    }
+                    }
                 }
                 else
                 {
