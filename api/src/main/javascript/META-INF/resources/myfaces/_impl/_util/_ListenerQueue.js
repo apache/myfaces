@@ -68,10 +68,10 @@ _MF_CLS(_PFX_UTIL+"_ListenerQueue", myfaces._impl._util._Queue,
 
     /**
      * generic broadcast with a number of arguments being passed down
-     * @param {Object} argument the arguments passed down which are broadcast
+     * @param {Object} args the arguments passed down which are broadcast
      */
-    broadcastEvent : function(argument) {
-        var _args = myfaces._impl._util._Lang.objToArray(arguments);
+    broadcastEvent : function(args) {
+        var _args = myfaces._impl._util._Lang.objToArray(arguments); // XXX arguments vs. args?
 
         var broadCastFunc = function(element) {
             element.apply(null, _args);
