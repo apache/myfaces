@@ -307,6 +307,9 @@ if (!myfaces._impl.core._Runtime.fetchNamespace(_PFX_XHR + "_AjaxResponseJSF22")
                         break;
                     case CMD_EXTENSION:
                         break;
+                    case undefined:
+                        // ignoring white spaces
+                        break;
                     default:
                         throw _raiseError(new Error(), "_AjaxResponse.processChanges: Illegal Command Issued", "_processChanges");
                 }

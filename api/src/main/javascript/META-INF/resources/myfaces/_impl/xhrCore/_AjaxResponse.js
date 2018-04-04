@@ -356,6 +356,9 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                     break;
                 case this.CMD_EXTENSION:
                     break;
+                case undefined:
+                    // ignoring white spaces
+                    break;
                 default:
                     throw this._raiseError(new Error(), "_AjaxResponse.processChanges: Illegal Command Issued", "processChanges");
             }
