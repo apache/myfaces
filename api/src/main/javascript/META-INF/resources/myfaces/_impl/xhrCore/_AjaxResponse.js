@@ -213,6 +213,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
          * JSF 2.3 we set all the viewstates under a given declared viewRoot or all forms
          * if none is given
          */
+
         this._updateJSFClientArtifacts(context, mfInternal.appliedClientWindow, this.P_CLIENTWINDOW);
 
     },
@@ -300,20 +301,45 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             }
         }
 
-        //We update all elements under viewroot
-        //this clearly violates the jsf 2.3 jsdocs
-        //however I think that the jsdocs were sloppily updated
-        //because just updating the render targets under one viewroot and the issuing form
-        //again would leave broken viewstates
+
         var viewRoot = this._getViewRoot(context);
         var forms = this._Dom.findByTagNames(viewRoot, {"form": 1}) || [];
 
-        this._Lang.arrForEach(forms, this._Lang.hitch(this, function (elem) {
-            //update all forms which start with prefix (all render and execute targets
+        //since the spec thanks to the over intrusive portlet api still is broken
+        //we need our old fallback hack for proper handling without having
+        //to deal with multiple render targets.
+        if(this._RT.getLocalOrGlobalConfig(context, "no_portlet_env", false)) {
 
-            this._applyJSFArtifactValueToForm(context, elem, value, identifier);
+            //We update all elements under viewroot
+            //this clearly violates the jsf 2.3 jsdocs
+            //however I think that the jsdocs were sloppily updated
+            //because just updating the render targets under one viewroot and the issuing form
+            //again would leave broken viewstates, in the end the portlet spec is at fault here
+            //which came late to the game and expected all frameworks to adapt to their needs.
+            //instead of properly adapting to the frameworks
+            //now the viewroot mechanism per se would work, but people are dropping
+            //jsf 2.3 into old portlet containers which then expose the legacy behavior
+            //of having just one view root.
+            this._Lang.arrForEach(forms, this._Lang.hitch(this, function (elem) {
+                //update all forms which start with prefix (all render and execute targets
+                this._applyJSFArtifactValueToForm(context, elem, value, identifier);
+            }));
+        } else {
 
-        }));
+            //follow the spec 2.3 path 1:1 we update the forms hosting the render targets which start
+            //with the viewroot
+            for(var cnt = 0; cnt < context._mfInternal._updateForms.length; cnt++) {
+                var updateForm = context._mfInternal._updateForms[cnt];
+                var viewRootId = viewRoot.id || "";
+                if(updateForm.indexOf(viewRootId) != 0) {
+                    continue;
+                } else {
+                    this._applyJSFArtifactValueToForm(context, this._Dom.byId(updateForm), value, identifier);
+                }
+            }
+
+        }
+
     },
 
     _getViewRoot: function (context) {
@@ -357,8 +383,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             errorMessage = node.childNodes[1].firstChild.data || "";
 
         this.attr("impl").sendError(request, context, this.attr("impl").SERVER_ERROR, errorName, errorMessage, "myfaces._impl.xhrCore._AjaxResponse", "processError");
-    }
-    ,
+    },
 
     /**
      * processes an incoming xml redirect directive from the ajax response
@@ -430,8 +455,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         }
 
         return true;
-    }
-    ,
+    },
 
     /**
      * First sub-step process a pending update tag
@@ -452,7 +476,8 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         else {
             // response may contain several blocks
             var cDataBlock = this._Dom.concatCDATABlocks(node),
-                resultNode = null;
+                resultNode = null,
+                pushOpRes = this._Lang.hitch(this, this._pushOperationResult);
 
             switch (node.getAttribute('id')) {
                 case this.P_VIEWROOT:
@@ -472,8 +497,10 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                     break;
                 case this.P_VIEWBODY:
                     //we assume the cdata block is our body including the tag
-                    this._replaceBody(request, context, cDataBlock);
-
+                    resultNode = this._replaceBody(request, context, cDataBlock);
+                    if (resultNode) {
+                        pushOpRes(context, resultNode);
+                    }
                     break;
                 case this.P_RESOURCE:
 
@@ -481,15 +508,59 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                     break;
                 default:
 
-                    this.replaceHtmlItem(request, context, node.getAttribute('id'), cDataBlock);
-
+                    resultNode = this.replaceHtmlItem(request, context, node.getAttribute('id'), cDataBlock);
+                    if (resultNode) {
+                        pushOpRes(context, resultNode);
+                    }
                     break;
             }
         }
 
         return true;
-    }
-    ,
+    },
+
+    _pushOperationResult: function(context, resultNode) {
+        var mfInternal = context._mfInternal;
+        var pushSubnode = this._Lang.hitch(this, function(currNode) {
+            var parentForm = this._Dom.getParent(currNode, "form");
+            //if possible we work over the ids
+            //so that elements later replaced are referenced
+            //at the latest possibility
+            if (null != parentForm) {
+                mfInternal._updateForms.push(parentForm.id || parentForm);
+            }
+            else {
+                mfInternal._updateElems.push(currNode.id || currNode);
+            }
+        });
+
+        var pushEmbedded = this._Lang.hitch(this, function(currNode) {
+            if(currNode.tagName && currNode.tagName == "form") {
+                mfInternal._updateForms.push(currNode);
+            } else {
+                var childForms = this._Dom.findByTagName(currNode, "form");
+                if(childForms && childForms.length) {
+                    for(var cnt = 0; cnt < childForms.lenght; cnt++) {
+                        mfInternal._updateForms.push(childForms[cnt]);
+                    }
+                }
+            }
+
+        });
+
+
+        var isArr = 'undefined' != typeof resultNode.length && 'undefined' == typeof resultNode.nodeType;
+        if (isArr && resultNode.length) {
+            for (var cnt = 0; cnt < resultNode.length; cnt++) {
+                pushSubnode(resultNode[cnt]);
+                pushEmbedded(resultNode[cnt]);
+            }
+        } else if (!isArr) {
+            pushSubnode(resultNode);
+            pushEmbedded(resultNode);
+        }
+
+    },
 
 
     /**
@@ -549,16 +620,14 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         _Dom.runScripts(newHead, true);
 
         return doc;
-    }
-    ,
+    },
 
     _addResourceToHead: function (request, context, newData) {
         var lastHeadChildTag = document.getElementsByTagName("head")[0].lastChild;
 
         this._Dom.insertAfter(lastHeadChildTag, newData);
 
-    }
-    ,
+    },
 
     /**
      * special method to handle the body dom manipulation,
@@ -630,9 +699,11 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
         var returnedElement = this.replaceHtmlItem(request, context, placeHolder, bodyData);
 
+        if (returnedElement) {
+            this._pushOperationResult(context, returnedElement);
+        }
         return returnedElement;
-    }
-    ,
+    },
 
     /**
      * Replaces HTML elements through others and handle errors if the occur in the replacement part
@@ -652,8 +723,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             throw this._raiseError(new Error(), _Lang.getMessage("ERR_ITEM_ID_NOTFOUND", null, "_AjaxResponse.replaceHtmlItem", (itemIdToReplace) ? itemIdToReplace.toString() : "undefined"), "replaceHtmlItem");
         }
         return _Dom.outerHTML(item, markup, this._RT.getLocalOrGlobalConfig(context, "preserveFocus", false));
-    }
-    ,
+    },
 
     /**
      * xml insert command handler
@@ -679,11 +749,12 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         }
 
         //call insertBefore or insertAfter in our dom routines
-        _Dom[insertData.insertType](opNode, insertData.cDataBlock);
-
+        var replacementFragment = _Dom[insertData.insertType](opNode, insertData.cDataBlock);
+        if (replacementFragment) {
+            this._pushOperationResult(context, replacementFragment);
+        }
         return true;
-    }
-    ,
+    },
 
     /**
      * determines the corner data from the insert tag parsing process
@@ -751,8 +822,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         }
         ret.opId = _Lang.trim(ret.opId);
         return ret;
-    }
-    ,
+    },
 
     processDelete: function (request, context, node) {
 
@@ -776,8 +846,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         _Dom.deleteItem(item);
 
         return true;
-    }
-    ,
+    },
 
     processAttributes: function (request, context, node) {
         //we now route into our attributes function to bypass
@@ -832,8 +901,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             }
         }
         return true;
-    }
-    ,
+    },
 
     /**
      * internal helper which raises an error in the
