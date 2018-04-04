@@ -23,8 +23,8 @@ _MF_CLS(_PFX_XHR + "_MultipartAjaxRequestLevel2", myfaces._impl.xhrCore._AjaxReq
 
     _sourceForm:null,
 
-    constructor_:function (arguments) {
-        this._callSuper("constructor_", arguments);
+    constructor_:function (args) {
+        this._callSuper("constructor_", args);
         //TODO xhr level2 can deal with real props
 
     },
@@ -72,8 +72,8 @@ _MF_CLS(_PFX_XHR + "_AjaxRequestLevel2", myfaces._impl.xhrCore._AjaxRequest, {
 
     _sourceForm:null,
 
-    constructor_:function (arguments) {
-        this._callSuper("constructor_", arguments);
+    constructor_:function (args) {
+        this._callSuper("constructor_", args);
         //TODO xhr level2 can deal with real props
 
     },

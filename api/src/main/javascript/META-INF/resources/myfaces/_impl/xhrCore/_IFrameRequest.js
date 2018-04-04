@@ -41,8 +41,8 @@ _MF_CLS(_PFX_XHR+"_IFrameRequest", myfaces._impl.xhrCore._AjaxRequest,
     MF_PART_FACES_REQUEST: "javax.faces.request",
 
 
-    constructor_: function(arguments) {
-        this._callSuper("constructor_", arguments);
+    constructor_: function(args) {
+        this._callSuper("constructor_", args);
     },
 
     getFormData: function() {
