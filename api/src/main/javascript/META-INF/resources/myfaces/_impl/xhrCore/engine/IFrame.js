@@ -42,19 +42,19 @@ _MF_CLS(_PFX_XHR + "engine.IFrame", myfaces._impl.xhrCore.engine.BaseRequest,
              * constructor which shifts the arguments
              * to the protected properties of this clas
              *
-             * @param arguments
+             * @param args
              */
-            constructor_: function (arguments) {
+            constructor_: function (args) {
                 //we fetch in the standard arguments
 
-                this._callSuper("constructor", arguments);
+                this._callSuper("constructor", args);
 
                 this._initDefaultFinalizableFields();
                 //this._requestHeader = {};
 
                 this._XHRConst = myfaces._impl.xhrCore.engine.XhrConst;
 
-                this._Lang.applyArgs(this, arguments);
+                this._Lang.applyArgs(this, args);
                 this.readyState = this._XHRConst.READY_STATE_UNSENT;
                 this._startTimeout();
             },
