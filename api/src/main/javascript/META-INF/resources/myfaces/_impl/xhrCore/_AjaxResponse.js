@@ -330,7 +330,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             //with the viewroot
             for(var cnt = 0; cnt < context._mfInternal._updateForms.length; cnt++) {
                 var updateForm = context._mfInternal._updateForms[cnt];
-                var viewRootId = viewRoot.id || "";
+                var viewRootId = viewRoot.id || "";
                 if(updateForm.indexOf(viewRootId) != 0) {
                     continue;
                 } else {
