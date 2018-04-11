@@ -293,6 +293,7 @@ Eduardo M. Breijo
 
                 <li>Files can also be found in the following link once they are added to the svn repo: <a class="externalLink" href="http://www.apache.org/dist/myfaces/">MyFaces Distribution Server</a></li>
 
+                <li>Make sure to remove the previous release from the svn dist repo after adding the new release: <a class="externalLink" href="https://dist.apache.org/repos/dist/release/myfaces">MyFaces Distribution Repository</a></li>
 
                 <li>Add the release version and date to the Apache Committee Report Helper: <a class="externalLink" href="https://reporter.apache.org/addrelease.html?myfaces">Add Release</a></li>
 
