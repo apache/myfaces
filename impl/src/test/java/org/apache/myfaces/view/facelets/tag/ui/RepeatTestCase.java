@@ -882,4 +882,195 @@ public class RepeatTestCase extends FaceletTestCase
 
         Assert.assertFalse(content.contains("Hello "));
     }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testInvokeModelStep_1() throws IOException
+    {                
+        final List<String> values = Arrays.asList("User #0", "User #1", "User #2", "User #3", "User #4", "User #5", "User #6", "User #7", "User #8", "User #9", "User #10");
+        IterationBean iterationBean = new IterationBean(1, 7, 1, values);
+        facesContext.getExternalContext().getRequestMap().put("iterationBean", iterationBean);
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "ui_repeat_model_step.xhtml");
+        
+        UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
+        Assert.assertNotNull(repeat);
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        
+        repeat.encodeAll(facesContext);
+        
+        String content = fw.toString();
+
+        Assert.assertTrue(content.contains("User #1"));
+        Assert.assertTrue(content.contains("User #2"));
+        Assert.assertTrue(content.contains("User #3"));
+        Assert.assertTrue(content.contains("User #4"));
+        Assert.assertTrue(content.contains("User #5"));
+        Assert.assertTrue(content.contains("User #6"));
+        Assert.assertTrue(content.contains("User #7"));
+        Assert.assertFalse(content.contains("User #0"));
+        Assert.assertFalse(content.contains("User #8"));
+        Assert.assertFalse(content.contains("User #9"));
+        Assert.assertFalse(content.contains("User #10"));
+    }
+    
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testInvokeModelStep_2() throws IOException
+    {                
+        final List<String> values = Arrays.asList("User #0", "User #1", "User #2", "User #3", "User #4", "User #5", "User #6", "User #7", "User #8", "User #9", "User #10");
+        IterationBean iterationBean = new IterationBean(1, 7, 2, values);
+        facesContext.getExternalContext().getRequestMap().put("iterationBean", iterationBean);
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "ui_repeat_model_step.xhtml");
+        
+        UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
+        Assert.assertNotNull(repeat);
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        
+        repeat.encodeAll(facesContext);
+        
+        String content = fw.toString();
+
+        Assert.assertTrue(content.contains("User #1"));
+        Assert.assertTrue(content.contains("User #3"));
+        Assert.assertTrue(content.contains("User #5"));
+        Assert.assertTrue(content.contains("User #7"));
+        Assert.assertFalse(content.contains("User #0"));
+        Assert.assertFalse(content.contains("User #2"));
+        Assert.assertFalse(content.contains("User #4"));
+        Assert.assertFalse(content.contains("User #6"));
+        Assert.assertFalse(content.contains("User #8"));
+        Assert.assertFalse(content.contains("User #9"));
+        Assert.assertFalse(content.contains("User #10"));
+    }
+    
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testInvokeModelStep_3() throws IOException
+    {                
+        final List<String> values = Arrays.asList("User #0", "User #1", "User #2", "User #3", "User #4", "User #5", "User #6", "User #7", "User #8", "User #9", "User #10");
+        IterationBean iterationBean = new IterationBean(2, 7, 3, values);
+        facesContext.getExternalContext().getRequestMap().put("iterationBean", iterationBean);
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "ui_repeat_model_step.xhtml");
+        
+        UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
+        Assert.assertNotNull(repeat);
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        
+        repeat.encodeAll(facesContext);
+        
+        String content = fw.toString();
+
+        Assert.assertTrue(content.contains("User #2"));
+        Assert.assertTrue(content.contains("User #5"));
+        Assert.assertFalse(content.contains("User #0"));
+        Assert.assertFalse(content.contains("User #1"));
+        Assert.assertFalse(content.contains("User #3"));
+        Assert.assertFalse(content.contains("User #4"));
+        Assert.assertFalse(content.contains("User #6"));
+        Assert.assertFalse(content.contains("User #7"));
+        Assert.assertFalse(content.contains("User #8"));
+        Assert.assertFalse(content.contains("User #9"));
+        Assert.assertFalse(content.contains("User #10"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testInvokeModelChangeStep_3() throws IOException
+    {                
+        final List<String> values = Arrays.asList("User #0", "User #1", "User #2", "User #3", "User #4", "User #5", "User #6", "User #7", "User #8", "User #9", "User #10");
+        IterationBean iterationBean = new IterationBean(2, 7, 3, values);
+        facesContext.getExternalContext().getRequestMap().put("iterationBean", iterationBean);
+        UIViewRoot root = facesContext.getViewRoot();
+        vdl.buildView(facesContext, root, "ui_repeat_model_step.xhtml");
+        
+        UIRepeat repeat = (UIRepeat) root.findComponent("form:repeat");
+        Assert.assertNotNull(repeat);
+        
+        FastWriter fw = new FastWriter();
+        ResponseWriter rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        
+        repeat.encodeAll(facesContext);
+        
+        String content = fw.toString();
+
+        Assert.assertTrue(content.contains("User #2"));
+        Assert.assertTrue(content.contains("User #5"));
+
+        Assert.assertFalse(content.contains("User #0"));
+        Assert.assertFalse(content.contains("User #1"));
+        Assert.assertFalse(content.contains("User #3"));
+        Assert.assertFalse(content.contains("User #4"));
+        Assert.assertFalse(content.contains("User #6"));
+        Assert.assertFalse(content.contains("User #7"));
+        Assert.assertFalse(content.contains("User #8"));
+        Assert.assertFalse(content.contains("User #9"));
+        Assert.assertFalse(content.contains("User #10"));
+        
+        iterationBean.setStep(2);
+        fw = new FastWriter();
+        rw = facesContext.getResponseWriter();
+        rw = rw.cloneWithWriter(fw);
+        facesContext.setResponseWriter(rw);
+        
+        repeat.encodeAll(facesContext);
+        content = fw.toString();
+        
+        Assert.assertTrue(content.contains("User #2"));
+        Assert.assertTrue(content.contains("User #4"));
+        Assert.assertTrue(content.contains("User #6"));
+        
+        Assert.assertFalse(content.contains("User #0"));
+        Assert.assertFalse(content.contains("User #1"));
+        Assert.assertFalse(content.contains("User #3"));
+        Assert.assertFalse(content.contains("User #5"));
+        Assert.assertFalse(content.contains("User #7"));
+        Assert.assertFalse(content.contains("User #8"));
+        Assert.assertFalse(content.contains("User #9"));
+        Assert.assertFalse(content.contains("User #10"));
+    }
+    
+    public class IterationBean {
+        private int begin;
+        private int end;
+        private int step;
+        private List<String> values;
+        public IterationBean(int begin, int end, int step, List<String> values) {
+            this.begin = begin;
+            this.end = end;
+            this.step = step;
+            this.values = values;
+        }
+        public int getBegin() {
+            return begin;
+        }
+        public int getEnd() {
+            return end;
+        }
+        public int getStep() {
+            return step;
+        }
+        public void setStep(int step) {
+        	this.step = step;
+        }
+        public List<String> getValues() {
+            return values;
+        }
+    }
 }
