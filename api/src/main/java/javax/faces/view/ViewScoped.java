@@ -27,6 +27,7 @@ import java.lang.annotation.Target;
 import javax.enterprise.context.NormalScope;
 
 /**
+ * This is the CDI successor of {@link javax.faces.bean.ViewScoped}.
  *
  * @since 2.2
  */
