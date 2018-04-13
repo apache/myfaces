@@ -36,7 +36,7 @@
     </scm>
     
     <properties>
-        <openwebbeans.version>1.2.1</openwebbeans.version>
+        <openwebbeans.version>1.2.7</openwebbeans.version>
     </properties>
     
     <build>
@@ -221,12 +221,6 @@
         <dependency>
             <groupId>org.apache.openwebbeans</groupId>
             <artifactId>openwebbeans-resource</artifactId>
-            <version>${openwebbeans.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.openwebbeans</groupId>
-            <artifactId>openwebbeans-clustering</artifactId>
             <version>${openwebbeans.version}</version>
             <optional>true</optional>
         </dependency>
