@@ -95,7 +95,7 @@ mvn release:perform -DtagBase=https://svn.apache.org/repos/asf/myfaces/shared/ta
             <h3>2. Preparing Core 2.3.0</h3>
 
             <ul>
-                <li><p>Once the environment is configured, run the following commands to prepare the MyFaces Core</p></li>
+                <li><p>Once the environment is configured, you need to checkout the MyFaces 2.3.x development branch <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/">https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/</a> and run the following commands to prepare the MyFaces Core</p></li>
 
                 <div class="source">
                     <pre>
@@ -118,6 +118,26 @@ mvn release:prepare -DprepareRelease=true -Dresume=false
                 <p><b>NOTE:</b> If you see a message like "You don't have a SNAPSHOT project in the reactor projects list" it means that the workspace directory is not cleaned and Maven uses the old temporary files which contain some weird versions instead of the current SNAPSHOTs. You will have to do a mvn release:clean or start the process again from the beginning. 
                 <a class="externalLink" href="http://kaczanowscy.pl/tomek/2012-12/jenkins-maven-no-snapshots-in-the-reactor-project-list">Maven no snapshot in the project</a></p>
 
+                <p><b>NOTE:</b> If you have an issue like the one below when running the command "mvn release:prepare -DprepareRelease=true" that's because the local directory .m2/repository/org/apache/myfaces/core does not have the assembly files for the version to be released.</p>
+
+                <div class="source">
+                    <pre>
+[INFO] [ERROR] Failed to execute goal org.codehaus.mojo:dependency-maven-plugin:1.0:copy (copy-javadoc) on 
+project myfaces-core-assembly: Unable to find artifact. Could not find artifact 
+org.apache.myfaces.core:myfaces-api:jar:javadoc:2.3.1 in tomcat (http://tomcat.apache.org/dev/dist/m2-repository)
+                    </pre>
+                </div>
+
+                To fix the issue, run again the following command to generate the assembly files for the version to be released
+                
+                <div class="source">
+                    <pre>
+mvn install -Pgenerate-assembly -Papache-release -Dgpg.passphrase=yourphrase
+                    </pre>
+                </div>
+
+                Finally, execute again the release prepare command: "mvn release:prepare -DprepareRelease=true -Dresume=false"
+
                 <li><p>Verify that the new tag myfaces-core-module-2.3.0 was created: <a class="externalLink" href="https://svn.apache.org/viewvc/myfaces/core/tags/">MyFaces Core Tags</a></p></li>
                 <p>You should be able to checkout myfaces-core-module-2.3.0 and run: mvn install</p>
 
@@ -128,6 +148,10 @@ mvn release:prepare -DprepareRelease=true -Dresume=false
 mvn release:perform -DperformRelease=true
                     </pre>
                 </div>
+
+                <p><b>NOTE:</b> This command is run from the local MyFaces 2.3.x development branch.</p>
+
+                <p><b>NOTE:</b> You should be able to verify that the release is now available in the Nexus Repository. For more information check step 5 of this checklist.</p>
 
             </ul>
 
@@ -316,7 +340,7 @@ Eduardo M. Breijo
                         4. commit it
                     </ul>
 
-                <li><p>Checkout <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/site/trunk/">https://svn.apache.org/repos/asf/myfaces/site/trunk/</a></p></li>
+                <li><p>Checkout the main site <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/site/trunk/">https://svn.apache.org/repos/asf/myfaces/site/trunk/</a></p></li>
                 Modify and commit the changes
                 
                 <div class="source">
@@ -340,10 +364,10 @@ mvn site:site # this will generate the site under the target directory
 
 
 
-                <li><p>Checkout <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.3.0/">https://svn.apache.org/repos/asf/myfaces/core/tags/myfaces-core-module-2.3.0/</a></p></li>
+                <li><p>Checkout the 2.3.x tag to be released <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/core/tags/">https://svn.apache.org/repos/asf/myfaces/core/tags/</a></p></li>
                 Modify and commit the changes
                 <br/>
-                <b>NOTE:</b> You may have to do modify and commit these same changes to <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/">https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/</a> repository to keep the dev repo up to date.
+                <b>NOTE:</b> You may have to do modify and commit these same changes to the <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/">https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/</a> repository to keep the dev repo up to date.
                 
                 <div class="source">
                     <pre>
