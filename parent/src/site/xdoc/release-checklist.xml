@@ -428,6 +428,8 @@ The Apache MyFaces team is pleased to announce the release of MyFaces Core 2.3.0
 
 MyFaces Core is a JavaServer(tm) Faces 2.3 implementation as specified by JSR-372.
 
+JavaServer Faces (JSF) is a Java specification for building component-based user interfaces for web applications.
+
 MyFaces Core 2.3.0 is available in both binary and source distributions.
 
     * http://myfaces.apache.org/download.html
