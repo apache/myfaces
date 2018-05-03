@@ -308,13 +308,18 @@ Eduardo M. Breijo
                     <li>How to upload a release: <a class="externalLink" href="http://www.apache.org/legal/release-policy.html#upload-ci">Upload CI</a></li>
                 </ul>
 
-                <li>You can use the <a href="./scripts/release-artifacts.sh">MyFaces Release Artifacts</a> script to upload the files to svn dist repo: <a class="externalLink" href="https://dist.apache.org/repos/dist/release/myfaces">MyFaces Distribution Repository</a></li>
-
+                <li>You can use the <a href="./scripts/release-artifacts.sh">MyFaces Release Artifacts</a> script to download the assembly files from <a class="externalLink" href="https://repository.apache.org/content/repositories/releases/org/apache/myfaces/core/myfaces-core-assembly/">Released MyFaces Core Assembly</a> and upload them to svn dist repo: <a class="externalLink" href="https://dist.apache.org/repos/dist/release/myfaces">MyFaces Distribution Repository</a></li>
+                <p>To execute the script run: "./release-artifacts.sh &lt;version&gt; &lt;svn_username&gt;"</p>
+                Example: ./release-artifacts.sh 2.3.0 yourusername
+                <br/>
+                <br/>
                 <li>Otherwise, use an svn client and add the release artifacts to the svn dist repo: <a class="externalLink" href="https://dist.apache.org/repos/dist/release/myfaces">MyFaces Distribution Repository</a></li>
                 <ul>
                     <li>myfaces-core-assembly-${VERSION}-bin.* should go under the binaries directory</li>
                     <li>myfaces-core-assembly-${VERSION}-src.* should go under the source directory</li>
                 </ul>
+                <p><b>NOTE:</b> Providing MD5 checksum files is now discouraged for new releases, but still allowed for past releases.</p>
+                <br/>
 
                 <li>Files can also be found in the following link once they are added to the svn repo: <a class="externalLink" href="http://www.apache.org/dist/myfaces/">MyFaces Distribution Server</a></li>
 
