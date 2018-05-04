@@ -333,9 +333,10 @@ public final class DefaultFaceletFactory extends FaceletFactory
         {
             // Should check for file modification
 
+            URLConnection conn = null;
             try
             {
-                URLConnection conn = facelet.getSource().openConnection();
+                conn = facelet.getSource().openConnection();
                 long lastModified = ResourceLoaderUtils.getResourceLastModified(conn);
 
                 return lastModified == 0 || lastModified > target;
@@ -343,6 +344,20 @@ public final class DefaultFaceletFactory extends FaceletFactory
             catch (IOException e)
             {
                 throw new FaceletException("Error Checking Last Modified for " + facelet.getAlias(), e);
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    try
+                    {
+                        conn.getInputStream().close();
+                    }
+                    catch (Exception e)
+                    {
+                        // Ignored
+                    }
+                }
             }
         }
 
