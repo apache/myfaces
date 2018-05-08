@@ -1,0 +1,15 @@
+*.iml
+*.ipr
+*.iws
+.classpath
+.externalToolBuilders
+.idea
+.project
+.settings
+maven-eclipse.xml
+target
+.ruleset
+.checkstyle
+.DS_Store
+.pmd
+.eclipse-pmd
