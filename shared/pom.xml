@@ -33,12 +33,6 @@
   <description>The MyFaces Impl Shared module contains utility classes shared by other
   projects like Tomahawk, Orchestra and Portlet-Bridge through shared project.</description>
 
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/shared</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/shared</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/myfaces/core/branches/2.3.x/shared</url>
-  </scm>
-
   <dependencies>
         <!-- myfaces-api -->
         <dependency>

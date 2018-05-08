@@ -29,12 +29,6 @@
     <artifactId>myfaces-impl-test</artifactId>
     <name>Apache MyFaces JSF-2.3 Impl Test</name>
 
-    <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/impl-test</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/impl-test</developerConnection>
-        <url>http://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/impl-test</url>
-    </scm>
-
     <properties>
         <openwebbeans.version>1.2.1</openwebbeans.version>
     </properties>

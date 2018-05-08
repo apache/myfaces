@@ -30,12 +30,6 @@
     <name>Apache MyFaces JSF-2.3 Core OSGi Bundle</name>
     <packaging>bundle</packaging>
 
-    <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/bundle</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/bundle</developerConnection>
-        <url>http://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/bundle</url>
-    </scm>
-    
     <build>
         <plugins>
             <plugin>

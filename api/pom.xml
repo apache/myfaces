@@ -34,12 +34,6 @@
     </description>
     <url>http://myfaces.apache.org/core23/myfaces-api</url>
 
-    <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/api</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/api</developerConnection>
-        <url>http://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/api</url>
-    </scm>
-
     <build>
 
         <resources>
