@@ -239,7 +239,11 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         var elements = theForm.elements;
         for (var i = 0, l = elements.length; i < l; i++) {
             var e = elements[i];
-            if (e.name.indexOf(identifier) != -1) {
+            //https://issues.apache.org/jira/browse/MYFACES-4230
+            //ie11 has a devation from the standard behavior, we have to remap the null/undefined name
+            //to an empty string
+            var eName = e.name || "";
+            if (eName.indexOf(identifier) != -1) {
                 fieldsFound.push(e);
             }
         }
