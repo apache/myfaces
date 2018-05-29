@@ -34,6 +34,16 @@ import javax.faces.context.FacesContext;
 public class SearchExpressionContextFactoryImpl extends SearchExpressionContextFactory
 {
 
+    public SearchExpressionContextFactoryImpl()
+    {
+        super(null);
+    }
+
+    public SearchExpressionContextFactoryImpl(SearchExpressionContextFactory delegate)
+    {
+        super(delegate);
+    }
+
     @Override
     public SearchExpressionContext getSearchExpressionContext(
             FacesContext context, UIComponent source,
@@ -45,12 +55,6 @@ public class SearchExpressionContextFactoryImpl extends SearchExpressionContextF
                 new HashSet<SearchExpressionHint>(2) : expressionHints);
         searchExpressionContext.setVisitHints(visitHints);
         return searchExpressionContext;
-    }
-
-    @Override
-    public SearchExpressionContextFactory getWrapped()
-    {
-        return null;
     }
 
 }
