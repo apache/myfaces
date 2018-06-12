@@ -240,9 +240,10 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         for (var i = 0, l = elements.length; i < l; i++) {
             var e = elements[i];
             //https://issues.apache.org/jira/browse/MYFACES-4230
-            //ie11 has a devation from the standard behavior, we have to remap the null/undefined name
+            //ie11 has a deviation from the standard behavior, we have to remap the null/undefined name
             //to an empty string
             var eName = e.name || "";
+
             if (eName.indexOf(identifier) != -1) {
                 fieldsFound.push(e);
             }
@@ -258,7 +259,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             //per JSF 2.3 spec the identifier of the element must be unique in the dom tree
             //otherwise we will break the html spec here
             element.innerHTML = ["<input type='hidden'", "id='", this._fetchUniqueId(prefix, identifier), "' name='", identifier, "' value='", value, "' />"].join("");
-            //now we go to proper dom handling after having to deal with another ie screwup
+            //now we go to proper dom handling after having to deal with another ie screw-up
             try {
                 theForm.appendChild(element.childNodes[0]);
             } finally {
@@ -295,6 +296,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         var prefix = this._getPrefix(context);
 
         //do we still need the issuing form update? I guess it is needed.
+        //jsf spec 2.3 and earlier all issuing forms must update
         var sourceForm = (context._mfInternal._mfSourceFormId) ? this._Dom.byId(context._mfInternal._mfSourceFormId) : null;
         if (sourceForm) {
             sourceForm = this._Dom.byId(sourceForm);
@@ -306,12 +308,15 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         }
 
 
+
         var viewRoot = this._getViewRoot(context);
         var forms = this._Dom.findByTagNames(viewRoot, {"form": 1}) || [];
 
         //since the spec thanks to the over intrusive portlet api still is broken
         //we need our old fallback hack for proper handling without having
         //to deal with multiple render targets.
+
+
         if(this._RT.getLocalOrGlobalConfig(context, "no_portlet_env", false)) {
 
             //We update all elements under viewroot
@@ -330,14 +335,29 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             }));
         } else {
 
-            //follow the spec 2.3 path 1:1 we update the forms hosting the render targets which start
-            //with the viewroot
+
+            //check for a portlet condition a present viewroot
+
+            var viewRootId = viewRoot.id || "";
+
             for(var cnt = 0; cnt < context._mfInternal._updateForms.length; cnt++) {
                 var updateForm = context._mfInternal._updateForms[cnt];
-                var viewRootId = viewRoot.id || "";
+
+                //follow the spec 2.3 path 1:1 we update the forms hosting the render targets which start
+                //with the viewroot
+                //if there is a viewroot present, however we seem to have a bug in myfaces
+                //even if we have a naming container response we
+                //cannot rely on the naming container being prefixed
+
+                //This atm is not bad, because we safely can assume
+                //that if no viewroot can be found we are under
+                //one single viewroot and can omit the prefix check
+                //(aka fallback into the old behavior)
+
+
                 if(updateForm.indexOf(viewRootId) != 0) {
                     continue;
-                } else {
+                } else { //either an empty viewroot, or a namespace match
                     this._applyJSFArtifactValueToForm(context, this._Dom.byId(updateForm), value, identifier);
                 }
             }
@@ -539,13 +559,17 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         });
 
         var pushEmbedded = this._Lang.hitch(this, function(currNode) {
-            if(currNode.tagName && currNode.tagName == "form") {
-                mfInternal._updateForms.push(currNode);
+            if(currNode.tagName && this._Lang.equalsIgnoreCase(currNode.tagName, "form")) {
+                if(currNode.id)  { //should not happen but just in case someone manipulates the html
+                    mfInternal._updateForms.push(currNode.id);
+                }
             } else {
                 var childForms = this._Dom.findByTagName(currNode, "form");
                 if(childForms && childForms.length) {
-                    for(var cnt = 0; cnt < childForms.lenght; cnt++) {
-                        mfInternal._updateForms.push(childForms[cnt]);
+                    for(var cnt = 0; cnt < childForms.length; cnt++) {
+                        if(childForms[cnt].id) {
+                            mfInternal._updateForms.push(childForms[cnt].id);
+                        }
                     }
                 }
             }
