@@ -265,7 +265,7 @@ if (!jsf.push) {
         // Private fields -----------------------------------------------------------------------------------------
 
         var socket;
-        var reconnectAttempts;
+        var reconnectAttempts = 0;
         var self = this;
 
         // Public functions ---------------------------------------------------------------------------------------
@@ -281,7 +281,7 @@ if (!jsf.push) {
             socket = new WebSocket(url);
 
             socket.onopen = function(event) {
-                if (reconnectAttempts == null) {
+                if (!reconnectAttempts) {
                     var clientIds = clientIdsByTokens[channelToken];
                     for (var i = clientIds.length - 1; i >= 0; i--){
                         var socketClientId = clientIds[i];
@@ -289,7 +289,7 @@ if (!jsf.push) {
                     }
                 }
                 reconnectAttempts = 0;
-            }
+            };
 
             socket.onmessage = function(event) {
                 var message = JSON.parse(event.data);
@@ -321,13 +321,13 @@ if (!jsf.push) {
                     self.close();
                 }
 
-            }
+            };
 
             socket.onclose = function(event) {
                 if (!socket
                     || (event.code == 1000 && event.reason == REASON_EXPIRED)
                     || (event.code == 1008)
-                    || (reconnectAttempts == null)
+                    || (!reconnectAttempts)
                     || (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS))
                 {
                     var clientIds = clientIdsByTokens[channelToken];
@@ -339,8 +339,8 @@ if (!jsf.push) {
                 else {
                     setTimeout(self.open, RECONNECT_INTERVAL * reconnectAttempts++);
                 }
-            }
-        }
+            };
+        };
 
         /**
          * Closes the reconnecting web socket.
