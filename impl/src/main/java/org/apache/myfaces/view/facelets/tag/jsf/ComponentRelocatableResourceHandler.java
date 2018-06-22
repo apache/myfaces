@@ -34,6 +34,7 @@ public class ComponentRelocatableResourceHandler implements RelocatableResourceH
 {
     public static final ComponentRelocatableResourceHandler INSTANCE = new ComponentRelocatableResourceHandler();
     
+    @Override
     public UIComponent findChildByTagId(FaceletContext ctx, UIComponent parent,
             String id)
     {

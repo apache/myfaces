@@ -65,6 +65,7 @@ public class HtmlStylesheetRenderer extends Renderer implements
     
     private static final String IS_BUILDING_INITIAL_STATE = "javax.faces.IS_BUILDING_INITIAL_STATE";
     
+    @Override
     public void processEvent(ComponentSystemEvent event)
     {
         if (event instanceof PostAddToViewEvent)
