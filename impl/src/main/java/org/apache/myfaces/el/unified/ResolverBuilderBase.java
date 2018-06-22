@@ -39,6 +39,7 @@ import org.apache.myfaces.el.convert.PropertyResolverToELResolver;
 import org.apache.myfaces.el.convert.VariableResolverToELResolver;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -226,6 +227,11 @@ public class ResolverBuilderBase
     
     protected boolean isReplaceImplicitObjectResolverWithCDIResolver(FacesContext facesContext)
     {
+        if (!ExternalSpecifications.isCDIAvailable(facesContext.getExternalContext()))
+        {
+            return false;
+        }
+
         BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
         if (beanManager != null)
         {
