@@ -36,12 +36,11 @@ import javax.faces.render.Renderer;
 import javax.faces.view.Location;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.context.RequestViewContext;
+import org.apache.myfaces.component.ComponentResourceUtils;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
@@ -62,9 +61,7 @@ public class HtmlStylesheetRenderer extends Renderer implements
     ComponentSystemEventListener
 {
     private static final Logger log = Logger.getLogger(HtmlStylesheetRenderer.class.getName());
-    
-    private static final String IS_BUILDING_INITIAL_STATE = "javax.faces.IS_BUILDING_INITIAL_STATE";
-    
+        
     @Override
     public void processEvent(ComponentSystemEvent event)
     {
@@ -85,28 +82,8 @@ public class HtmlStylesheetRenderer extends Renderer implements
                             ComponentSupport.getFindComponentExpression(facesContext, ccParent));
                 }
             }
-            // If this is an ajax request and the view is being refreshed and a PostAddToViewEvent
-            // was propagated to relocate this resource, means the header must be refreshed.
-            // Note ajax request does not occur on non postback requests.
 
-            if (facesContext.getPartialViewContext().isAjaxRequest() )
-            {
-                boolean isBuildingInitialState = facesContext.getAttributes().
-                    containsKey(IS_BUILDING_INITIAL_STATE);
-                // The next condition takes into account the current request is an ajax request. 
-                boolean isPostAddToViewEventAfterBuildInitialState = 
-                    !isBuildingInitialState ||
-                    (isBuildingInitialState && 
-                            FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext));
-                if (isPostAddToViewEventAfterBuildInitialState)
-                {
-                    //!(component.getParent() instanceof ComponentResourceContainer)
-                    RequestViewContext requestViewContext = RequestViewContext.getCurrentInstance(facesContext);
-                    requestViewContext.setRenderTarget("head", true, component);
-                }
-            }
-            facesContext.getViewRoot().addComponentResource(facesContext,
-                        component, "head");
+            ComponentResourceUtils.addComponentResource(facesContext, component, "head");
         }
     }
     
