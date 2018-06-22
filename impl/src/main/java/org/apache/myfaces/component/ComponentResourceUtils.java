@@ -33,7 +33,9 @@ public class ComponentResourceUtils
 
     public static void addComponentResource(FacesContext context, UIComponent componentResource, String target)
     {
-        if (context.getPartialViewContext().isAjaxRequest() )
+        // this is required to make dynamic resource loading possible since JSF 2.3
+        // also see {@link PartialViewContextImpl#processRenderResource}
+        if (context.getPartialViewContext().isAjaxRequest())
         {
             boolean isBuildingInitialState = context.getAttributes().
                 containsKey(StateManager.IS_BUILDING_INITIAL_STATE);

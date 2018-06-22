@@ -648,11 +648,9 @@ public class PartialViewContextImpl extends PartialViewContext
                             continue;
                         }
 
-                        String additionalQueryParams = null;
                         int index = resourceName.indexOf('?');
                         if (index >= 0)
                         {
-                            additionalQueryParams = resourceName.substring(index + 1);
                             resourceName = resourceName.substring(0, index);
                         }
                         // Is resource, render only if it has not been rendered before.

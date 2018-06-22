@@ -239,7 +239,7 @@ public class RequestViewContext
     
     private class RefreshViewContext implements VisitCallback
     {
-
+        @Override
         public VisitResult visit(VisitContext context, UIComponent target)
         {
             Class<?> inspectedClass = (Class<?>)target.getAttributes().get(RESOURCE_DEPENDENCY_INSPECTED_CLASS);
