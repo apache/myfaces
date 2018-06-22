@@ -139,12 +139,10 @@ public class FaceletsViewDeclarationLanguageUtils
                     {
                         continue;
                     }
-                    
-                    String additionalQueryParams = null;
+
                     int index = resourceName.indexOf('?');
                     if (index >= 0)
                     {
-                        additionalQueryParams = resourceName.substring(index + 1);
                         resourceName = resourceName.substring(0, index);
                     }
                     

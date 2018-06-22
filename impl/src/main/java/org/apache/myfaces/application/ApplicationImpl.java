@@ -1713,8 +1713,7 @@ public class ApplicationImpl extends Application
                     //object stored in the map for this id is an invalid type.  remove it and return null
                     _converterTargetClassToConverterClassMap.remove(targetClass);
                 }
-                
-                boolean managed = false;
+
                 if (!_cdiManagedConverterMap.containsKey(converterClass))
                 {
                     FacesConverter annotation = converterClass.getAnnotation(FacesConverter.class);

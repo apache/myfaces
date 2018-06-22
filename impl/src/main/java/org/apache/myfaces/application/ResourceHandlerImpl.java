@@ -1766,22 +1766,9 @@ public class ResourceHandlerImpl extends ResourceHandler
         final List<String> contracts = facesContext.getResourceLibraryContracts(); 
         String contractPreferred = getContractNameForLocateResource(facesContext);
 
-        boolean topLevelViewOnly = false;
-        
         if (this._viewSuffixes == null)
         {
             this._viewSuffixes = loadSuffixes(facesContext.getExternalContext());
-        }
-        
-        if (options != null)
-        {
-            for (ResourceVisitOption option : options)
-            {
-                if (ResourceVisitOption.TOP_LEVEL_VIEWS_ONLY.equals(option))
-                {
-                    topLevelViewOnly = true;
-                }
-            }
         }
 
         Iterator it = new FilterInvalidSuffixViewResourceIterator(new ViewResourceIterator(facesContext, 

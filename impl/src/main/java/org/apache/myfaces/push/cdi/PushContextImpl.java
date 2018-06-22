@@ -91,26 +91,22 @@ public class PushContextImpl implements PushContext
             return Collections.emptySet();
         }
         
-        List<String> channelTokens = null;
-        String scope = "application";
+        List<String> channelTokens;
         
         if (viewTokenBean != null && viewTokenBean.isChannelAvailable(channel))
         {
             // Use view scope for context
             channelTokens = viewTokenBean.getChannelTokensFor(channel);
-            scope = "view";
         }
         else if (sessionTokenBean != null && sessionTokenBean.isChannelAvailable(getChannel()))
         {
             // Use session scope for context
             channelTokens = sessionTokenBean.getChannelTokensFor(channel);
-            scope = "session";
         }
         else if (appTokenBean != null && appTokenBean.isChannelAvailable(getChannel()))
         {
             // Use application scope for context
             channelTokens = appTokenBean.getChannelTokensFor(channel);
-            scope = "application";
         }
         else
         {
@@ -180,14 +176,12 @@ public class PushContextImpl implements PushContext
             // No base bean to push message
             return Collections.emptyMap();
         }
-        
-        String scope = "application";
+
         Map<S, Set<Future<Void>>> result = new HashMap<S, Set<Future<Void>>>();
         
         if (viewTokenBean != null && viewTokenBean.isChannelAvailable(channel))
         {
             // Use view scope for context
-            scope = "view";
             for (S user : users)
             {
                 result.put(user, send(viewTokenBean.getChannelTokensFor(channel, user), message));
@@ -196,7 +190,6 @@ public class PushContextImpl implements PushContext
         else if (sessionTokenBean != null && sessionTokenBean.isChannelAvailable(getChannel()))
         {
             // Use session scope for context
-            scope = "session";
             for (S user : users)
             {
                 result.put(user, send(sessionTokenBean.getChannelTokensFor(channel, user), message));
@@ -205,7 +198,6 @@ public class PushContextImpl implements PushContext
         else if (appTokenBean != null && appTokenBean.isChannelAvailable(getChannel()))
         {
             // Use application scope for context
-            scope = "application";
             for (S user : users)
             {
                 result.put(user, send(appTokenBean.getChannelTokensFor(channel, user), message));
