@@ -1140,22 +1140,18 @@ public abstract class HTMLEncoder
      */
     private static void percentEncode(Writer writer, char c, String characterEncoding) throws IOException
     {
-        String app = null;
         if (c > (char)((short)0x007F))
         {
             //percent encode in the proper encoding to be consistent
-            //app = percentEncodeNonUsAsciiCharacter(writer c, characterEncoding);
             percentEncodeNonUsAsciiCharacter(writer, c, characterEncoding);
         }
         else
         {
             //percent encode US-ASCII char (0x00-0x7F range)
-            //app = "%" + HEX_CHARSET.charAt( ((c >> 0x4) % 0x10)) +HEX_CHARSET.charAt(c % 0x10);
             writer.write('%');
             writer.write(HEX_CHARSET.charAt( ((c >> 0x4) % 0x10)));
             writer.write(HEX_CHARSET.charAt(c % 0x10));
         }
-        //return app;
     }
     
     private static void percentEncodeNonUsAsciiCharacter(Writer currentWriter, char c, String characterEncoding) 

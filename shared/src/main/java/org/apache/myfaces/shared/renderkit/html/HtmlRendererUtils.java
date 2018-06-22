@@ -57,7 +57,6 @@ import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 import javax.faces.context.ResponseWriter;
@@ -2110,7 +2109,6 @@ public final class HtmlRendererUtils
             Map<String, List<ClientBehavior>> clientBehaviors,
             String userEventCode, String serverEventCode)
     {
-        ExternalContext externalContext = facesContext.getExternalContext();
         List<String> finalParams = new ArrayList<String>(3);
         if (userEventCode != null && !userEventCode.trim().equals(STR_EMPTY))
         {
