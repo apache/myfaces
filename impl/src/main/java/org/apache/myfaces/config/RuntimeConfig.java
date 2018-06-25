@@ -524,10 +524,7 @@ public class RuntimeConfig
             contractsList = new ArrayList<String>();
             _contractMappings.put(urlPattern, contractsList);
         }
-        for (String contract : contracts)
-        {
-            contractsList.add(contract);
-        }
+        Collections.addAll(contractsList, contracts);
     }
     
     public void addContractMapping(String urlPattern, String contract)

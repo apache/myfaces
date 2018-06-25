@@ -247,11 +247,8 @@ public class DefaultAnnotationProvider extends AnnotationProvider
 
         //Scan files inside META-INF ending with .faces-config.xml
         URL[] urls = Classpath.search(getClassLoader(), META_INF_PREFIX, FACES_CONFIG_SUFFIX);
-        for (int i = 0; i < urls.length; i++)
-        {
-            urlSet.add(urls[i]);
-        }
-        
+        Collections.addAll(urlSet, urls);
+
         return urlSet;
     }
     

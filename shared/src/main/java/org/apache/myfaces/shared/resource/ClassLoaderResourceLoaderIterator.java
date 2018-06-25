@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -247,12 +248,8 @@ public class ClassLoaderResourceLoaderIterator implements Iterator<String>
             this.options = options;
             
             File[] list = this.directory.listFiles();
-            
-            for (int i = 0; i < list.length; i++)
-            {
-                File file = list[i];
-                stack.add(file);
-            }
+            Collections.addAll(stack, list);
+
             this.basePathName = this.directory.getPath().replace(File.separatorChar, '/');
         }
         

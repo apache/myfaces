@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -88,10 +89,7 @@ public class DefaultFacesConfigResourceProvider extends FacesConfigResourceProvi
         {
             //Scan files inside META-INF ending with .faces-config.xml
             URL[] urls = Classpath.search(getClassLoader(), META_INF_PREFIX, FACES_CONFIG_SUFFIX);
-            for (int i = 0; i < urls.length; i++)
-            {
-                urlSet.add(urls[i]);
-            }
+            Collections.addAll(urlSet, urls);
         }
         
         return urlSet;
