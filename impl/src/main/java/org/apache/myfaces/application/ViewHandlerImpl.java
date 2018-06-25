@@ -511,7 +511,7 @@ public class ViewHandlerImpl extends ViewHandler
                     // since we have checked !parameters.containsKey(viewParameter.getName())
                     // here already, the parameters Map will never contain a List under the
                     // key viewParameter.getName(), thus we do not have to check it here (again).
-                    List<String> parameterValueList = new ArrayList<String>();
+                    List<String> parameterValueList = new ArrayList<String>(1);
                     parameterValueList.add(parameterValue);
                     parameters.put(viewParameter.getName(), parameterValueList);
                 }
