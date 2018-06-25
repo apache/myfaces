@@ -50,8 +50,7 @@ public class SelectItemsUtils
     {
         List<SelectItemInfo> list = new ArrayList<SelectItemInfo>();
 
-        for (SelectItemsIterator iter = new SelectItemsIterator(uiSelectMany, facesContext); iter
-                .hasNext();)
+        for (SelectItemsIterator iter = new SelectItemsIterator(uiSelectMany, facesContext); iter.hasNext();)
         {
             list.add(new SelectItemInfo(iter.next(), iter.getCurrentComponent(), iter.getCurrentValue()));
         }
@@ -62,8 +61,7 @@ public class SelectItemsUtils
             FacesContext facesContext)
     {
         List<SelectItemInfo> list = new ArrayList<SelectItemInfo>();
-        for (SelectItemsIterator iter = new SelectItemsIterator(uiSelectOne, facesContext); iter
-                .hasNext();)
+        for (SelectItemsIterator iter = new SelectItemsIterator(uiSelectOne, facesContext); iter.hasNext();)
         {
             list.add(new SelectItemInfo(iter.next(), iter.getCurrentComponent(), iter.getCurrentValue()));
         }
@@ -87,10 +85,9 @@ public class SelectItemsUtils
             if (selectItem instanceof SelectItemGroup)
             {
                 writer.startElement(HTML.OPTGROUP_ELEM, selectItemInfo.getComponent()); // component);
-                writer.writeAttribute(HTML.LABEL_ATTR, selectItem.getLabel(),
-                        null);
-                SelectItem[] selectItems = ((SelectItemGroup) selectItem)
-                        .getSelectItems();
+                writer.writeAttribute(HTML.LABEL_ATTR, selectItem.getLabel(), null);
+
+                SelectItem[] selectItems = ((SelectItemGroup) selectItem).getSelectItems();
                 List<SelectItemInfo> selectItemsGroupList = new ArrayList<SelectItemInfo>(selectItems.length);
                 for (SelectItem item : selectItems)
                 {
@@ -165,13 +162,11 @@ public class SelectItemsUtils
 
                 if (componentDisabled || disabled)
                 {
-                    labelClass = (String) component.getAttributes().get(
-                            JSFAttr.DISABLED_CLASS_ATTR);
+                    labelClass = (String) component.getAttributes().get(JSFAttr.DISABLED_CLASS_ATTR);
                 }
                 else
                 {
-                    labelClass = (String) component.getAttributes().get(
-                            JSFAttr.ENABLED_CLASS_ATTR);
+                    labelClass = (String) component.getAttributes().get(JSFAttr.ENABLED_CLASS_ATTR);
                 }
                 if (labelClass != null)
                 {
@@ -199,8 +194,7 @@ public class SelectItemsUtils
                 }
                 else
                 {
-                    escape = RendererUtils.getBooleanAttribute(component,
-                            JSFAttr.ESCAPE_ATTR, false);
+                    escape = RendererUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR, false);
                     //default is to escape
                     //In JSF 1.2, when a SelectItem is created by default 
                     //selectItem.isEscape() returns true (this property
@@ -226,13 +220,11 @@ public class SelectItemsUtils
                     // If there was a previous value stored with the key from var in the request map, restore it
                     if (oldRequestMapVarValue != null)
                     {
-                        context.getExternalContext()
-                                .getRequestMap().put(var, oldRequestMapVarValue);
+                        context.getExternalContext().getRequestMap().put(var, oldRequestMapVarValue);
                     }
                     else
                     {
-                        context.getExternalContext()
-                                .getRequestMap().remove(var);
+                        context.getExternalContext().getRequestMap().remove(var);
                     }
                 }
             }

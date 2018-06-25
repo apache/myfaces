@@ -19,8 +19,7 @@
 package org.apache.myfaces.view.facelets.tag.jsf.core;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import javax.el.ELException;
 import javax.el.MethodExpression;
@@ -173,16 +172,10 @@ public final class ViewHandler extends TagHandler
                 String contractsValue = this.contracts.getValue(ctx);
                 if (contractsValue != null)
                 {
-                    String[] values = StringUtils.trim(
-                        StringUtils.splitShortString(contractsValue, ','));
+                    String[] values = StringUtils.trim(StringUtils.splitShortString(contractsValue, ','));
                     if (values != null)
                     {
-                        List<String> list = new ArrayList<String>();
-                        for (String v : values)
-                        {
-                            list.add(v);
-                        }
-                        ctx.getFacesContext().setResourceLibraryContracts(list);
+                        ctx.getFacesContext().setResourceLibraryContracts(Arrays.asList(values));
                     }
                 }
             }
