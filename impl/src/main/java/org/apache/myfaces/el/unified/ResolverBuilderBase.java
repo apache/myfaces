@@ -88,10 +88,7 @@ public class ResolverBuilderBase
     {
         if (_config.getFacesConfigElResolvers() != null)
         {
-            for (ELResolver resolver : _config.getFacesConfigElResolvers())
-            {
-                resolvers.add(resolver);
-            }
+            resolvers.addAll(_config.getFacesConfigElResolvers());
         }
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -141,10 +138,7 @@ public class ResolverBuilderBase
 
         if (_config.getApplicationElResolvers() != null)
         {
-            for (ELResolver resolver : _config.getApplicationElResolvers())
-            {
-                resolvers.add(resolver);
-            }
+            resolvers.addAll(_config.getApplicationElResolvers());
         }
     }
     

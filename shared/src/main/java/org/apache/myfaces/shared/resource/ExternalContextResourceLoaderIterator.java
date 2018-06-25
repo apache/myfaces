@@ -102,9 +102,9 @@ public class ExternalContextResourceLoaderIterator implements Iterator<String>
                     if (depth < maxDepth)
                     {
                         Set<String> list = facesContext.getExternalContext().getResourcePaths(path);
-                        for (String p : list)
+                        if (list != null)
                         {
-                            stack.add(p);
+                            stack.addAll(list);
                         }
                     }
                     if (!stack.isEmpty())
@@ -138,9 +138,9 @@ public class ExternalContextResourceLoaderIterator implements Iterator<String>
                     if (depth < maxDepth)
                     {
                         Set<String> list = facesContext.getExternalContext().getResourcePaths(path);
-                        for (String p : list)
+                        if (list != null)
                         {
-                            stack.add(p);
+                            stack.addAll(list);
                         }
                     }
                     if (!stack.isEmpty())

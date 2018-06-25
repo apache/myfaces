@@ -320,12 +320,9 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
                 }
             }
         }
-        
-        for (ComponentTagDeclaration declaration : config.getComponentTagDeclarations().values())
-        {
-            componentTagDeclarations.add(declaration);
-        }
-        
+
+        componentTagDeclarations.addAll(config.getComponentTagDeclarations().values());
+
         faceletTagLibraries.addAll(config.getFaceletTagLibraryList());
 
         lifecyclePhaseListeners.addAll(config.getLifecyclePhaseListener());
