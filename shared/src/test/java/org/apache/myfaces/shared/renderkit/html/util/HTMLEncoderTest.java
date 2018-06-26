@@ -242,7 +242,7 @@ public class HTMLEncoderTest extends AbstractJsfTestCase {
   {
       String cad1 = "http://myfaces.apache.org/hello.jsf?key1=val&key2=val2#id";
       String cad2 = "http://myfaces.apache.org/hello.jsf?key1=val&amp;key2=val2#id";
-      String cad3 = HTMLEncoder.encodeURIAtributte(cad1,"UTF-8");
+      String cad3 = HTMLEncoder.encodeURIAttribute(cad1,"UTF-8");
       assertEquals(cad2, cad3);      
   }
   
@@ -257,12 +257,12 @@ public class HTMLEncoderTest extends AbstractJsfTestCase {
       // - From %7F ad infinitum
       String cad1 = "?key=\"%<>\\`{|}^\n "; //Omit %
       String cad2 = "?key=%22%25%3C%3E%5C%60%7B%7C%7D%5E%0A%20";
-      String cad3 = HTMLEncoder.encodeURIAtributte(cad1,"UTF-8");
+      String cad3 = HTMLEncoder.encodeURIAttribute(cad1,"UTF-8");
       assertEquals(cad2, cad3);
       
       String cad4 = "\"%<>\\`{|}^\n ";
       String cad5 = "%22%25%3C%3E%5C%60%7B%7C%7D%5E%0A%20";
-      String cad6 = HTMLEncoder.encodeURIAtributte(cad4,"UTF-8");
+      String cad6 = HTMLEncoder.encodeURIAttribute(cad4,"UTF-8");
       assertEquals(cad5, cad6);
       
       
@@ -279,12 +279,12 @@ public class HTMLEncoderTest extends AbstractJsfTestCase {
       // - From %7F ad infinitum
       String cad1 = "?key=\"%<>\\`{|}^\n "; //Omit %
       String cad2 = "?key=%22%25%3c%3e%5c%60%7b%7c%7d%5e%0a%20";
-      String cad3 = HTMLEncoder.encodeURIAtributte(cad1,"UTF-8");
+      String cad3 = HTMLEncoder.encodeURIAttribute(cad1,"UTF-8");
       assertEquals(cad2.substring(0,5) + cad2.substring(5).toUpperCase(), cad3);
       
       String cad4 = "\"%<>\\`{|}^\n ";
       String cad5 = "%22%25%3c%3e%5c%60%7b%7c%7d%5e%0a%20";
-      String cad6 = HTMLEncoder.encodeURIAtributte(cad4,"UTF-8");
+      String cad6 = HTMLEncoder.encodeURIAttribute(cad4,"UTF-8");
       assertEquals(cad5.substring(0,5) + cad5.substring(5).toUpperCase(), cad6);
       
   }  
@@ -296,7 +296,7 @@ public class HTMLEncoderTest extends AbstractJsfTestCase {
 	  byte [] array = new byte[]{(byte)0xFC};
       String cad1 = new String(array,"ISO-8859-1");//+(char)0xC3BC;//"http://myfaces.apache.org/heüll o.jsf?key=val#id";
       String cad2 = "%C3%BC";//"http://myfaces.apache.org/he%FCll%20o.jsf?key=val#id";
-      String cad3 = HTMLEncoder.encodeURIAtributte(cad1,"UTF-8");
+      String cad3 = HTMLEncoder.encodeURIAttribute(cad1,"UTF-8");
       assertEquals(cad2, cad3);
 
   }
@@ -312,11 +312,11 @@ public class HTMLEncoderTest extends AbstractJsfTestCase {
       //               %21   %24   %26   %27   %28   %29   %2A   %2B   %2C   %3B   %3D
       
       String cad1 = "?key=:/[]@!$'()*+,;="; //Omit &
-      String cad2 = HTMLEncoder.encodeURIAtributte(cad1,"UTF-8");
+      String cad2 = HTMLEncoder.encodeURIAttribute(cad1,"UTF-8");
       assertEquals(cad1, cad2);
       
       String cad7 = ":/[]@!$&'()*+,;=";
-      String cad8 = HTMLEncoder.encodeURIAtributte(cad7,"UTF-8");
+      String cad8 = HTMLEncoder.encodeURIAttribute(cad7,"UTF-8");
       assertEquals(cad7, cad8);
   }
 
@@ -327,15 +327,15 @@ public class HTMLEncoderTest extends AbstractJsfTestCase {
       // underscore (%5F), or tilde (%7E) should not be created by URI
       // producers...."
       String cad1 = "?key=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
-      String cad2 = HTMLEncoder.encodeURIAtributte(cad1,"UTF-8");
+      String cad2 = HTMLEncoder.encodeURIAttribute(cad1,"UTF-8");
       assertEquals(cad1, cad2);
       
       String cad3 = "#somefile?key=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
-      String cad4 = HTMLEncoder.encodeURIAtributte(cad3,"UTF-8");
+      String cad4 = HTMLEncoder.encodeURIAttribute(cad3,"UTF-8");
       assertEquals(cad3, cad4);
       
       String cad5 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
-      String cad6 = HTMLEncoder.encodeURIAtributte(cad5,"UTF-8");
+      String cad6 = HTMLEncoder.encodeURIAttribute(cad5,"UTF-8");
       assertEquals(cad5, cad6);
   }
 
@@ -353,17 +353,17 @@ public class HTMLEncoderTest extends AbstractJsfTestCase {
       String cad11 = new String(array11,"UTF-8") + ((char)(0xFF))+((char)(0x100));
       String cad12 = "%C2%A1%C2%A2%C2%A3%C2%A4%C2%A5%C2%A6%C2%A7%C2%A8%C2%A9%C2%AA%C2%AB%C2%AC%C2%AD"+
                      "%C2%AE%C2%AF%C2%B0%C2%B1%C3%BF%C4%80";
-      String cad13 = HTMLEncoder.encodeURIAtributte(cad11,"UTF-8");
+      String cad13 = HTMLEncoder.encodeURIAttribute(cad11,"UTF-8");
       assertEquals(cad12, cad13);
       
       String cad1= "?key=" + new String(array11,"UTF-8")+((char)(0xFF))+((char)(0x100));
       String cad2 = "?key=%C2%A1%C2%A2%C2%A3%C2%A4%C2%A5%C2%A6%C2%A7%C2%A8%C2%A9%C2%AA%C2%AB%C2%AC%C2%AD"+
                      "%C2%AE%C2%AF%C2%B0%C2%B1%C3%BF%C4%80";
-      String cad3 = HTMLEncoder.encodeURIAtributte(cad1,"UTF-8");
+      String cad3 = HTMLEncoder.encodeURIAttribute(cad1,"UTF-8");
       assertEquals(cad2, cad3);
             
       //String cad14 = "http://myfaces.apache.org/page.jsf?key="+((char)0xFF)+((char)0x100);
-      //String cad15 = HTMLEncoder.encodeURIAtributte(cad14,false);
+      //String cad15 = HTMLEncoder.encodeURIAttribute(cad14,false);
       //assertEquals(cad14,cad15);
   }
     
