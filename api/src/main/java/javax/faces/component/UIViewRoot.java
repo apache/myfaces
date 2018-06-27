@@ -19,6 +19,7 @@
 package javax.faces.component;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,6 +37,7 @@ import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.faces.FactoryFinder;
 import javax.faces.application.ProjectStage;
+import javax.faces.application.StateManager;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
@@ -104,21 +106,37 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      * allows change the implementation of view scope map to use cdi or
      * whatever without change UIViewRoot implementation.
      */
-    private static final Class<?> VIEW_SCOPE_PROXY_MAP_CLASS;
+    private static Class<?> VIEW_SCOPE_PROXY_MAP_CLASS = null;
+    
+    private static Class<?> REQUEST_VIEW_CONTEXT_CLASS = null;
+    private static Method REQUEST_VIEW_CONTEXT_GET_INSTANCE = null;
+    private static Method REQUEST_VIEW_CONTEXT_SET_RENDER_TARGET = null;
 
     static
     {
-        Class<?> viewMapClass = null;
         try
         {
-            viewMapClass = _ClassUtils.classForName(
-                "org.apache.myfaces.view.ViewScopeProxyMap");
+            VIEW_SCOPE_PROXY_MAP_CLASS
+                    = _ClassUtils.classForName("org.apache.myfaces.view.ViewScopeProxyMap");
         }
         catch (Exception e)
         {
             // no op
         }
-        VIEW_SCOPE_PROXY_MAP_CLASS = viewMapClass;
+        
+        try
+        {
+            REQUEST_VIEW_CONTEXT_CLASS
+                    = _ClassUtils.classForName("org.apache.myfaces.context.RequestViewContext");
+            REQUEST_VIEW_CONTEXT_GET_INSTANCE = REQUEST_VIEW_CONTEXT_CLASS.getMethod("getCurrentInstance",
+                    new Class[] { FacesContext.class });
+            REQUEST_VIEW_CONTEXT_SET_RENDER_TARGET = REQUEST_VIEW_CONTEXT_CLASS.getMethod("setRenderTarget",
+                    new Class[] { String.class, boolean.class, UIComponent.class });
+        }
+        catch (Exception e)
+        {
+            // no op
+        }
     }
 
     /**
@@ -310,6 +328,34 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             else
             {
                 componentResources.add(componentResource);
+            }
+
+            // this is required to make dynamic resource loading possible since JSF 2.3
+            if (context.getPartialViewContext().isAjaxRequest())
+            {
+                boolean isBuildingInitialState
+                        = context.getAttributes().containsKey(StateManager.IS_BUILDING_INITIAL_STATE);
+                
+                // FaceletViewDeclarationLanguage.isRefreshingTransientBuild(context)
+                boolean isRefreshTransientBuild
+                        = context.getAttributes().containsKey("org.apache.myfaces.REFRESHING_TRANSIENT_BUILD");
+                
+                boolean isPostAddToViewEventAfterBuildInitialState =
+                        !isBuildingInitialState || (isBuildingInitialState && isRefreshTransientBuild);
+                if (isPostAddToViewEventAfterBuildInitialState)
+                {
+                    try
+                    {
+                        // RequestViewContext requestViewContext = RequestViewContext.getInstance(context);
+                        // requestViewContext.setRenderTarget("head", true, componentResource);
+                        Object requestViewContext = REQUEST_VIEW_CONTEXT_GET_INSTANCE.invoke(null, context);
+                        REQUEST_VIEW_CONTEXT_SET_RENDER_TARGET.invoke(requestViewContext, "head", true, componentResource);
+                    }
+                    catch (Exception e)
+                    {
+                        _getLogger().log(Level.SEVERE, "Could not access RequestViewContext", e);
+                    }
+                }
             }
         }
     }

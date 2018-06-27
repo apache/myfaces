@@ -38,7 +38,6 @@ import javax.faces.render.Renderer;
 import javax.faces.view.Location;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.component.ComponentResourceUtils;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.HTML;
@@ -83,7 +82,7 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
                     }
                 }
 
-                ComponentResourceUtils.addComponentResource(facesContext, component, target);
+                facesContext.getViewRoot().addComponentResource(facesContext, component, target);
             }
         }
 

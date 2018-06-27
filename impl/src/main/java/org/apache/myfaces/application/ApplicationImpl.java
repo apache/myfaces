@@ -102,7 +102,6 @@ import org.apache.myfaces.cdi.behavior.FacesBehaviorCDIWrapper;
 import org.apache.myfaces.cdi.behavior.FacesClientBehaviorCDIWrapper;
 import org.apache.myfaces.cdi.converter.FacesConverterCDIWrapper;
 import org.apache.myfaces.cdi.validator.FacesValidatorCDIWrapper;
-import org.apache.myfaces.component.ComponentResourceUtils;
 import org.apache.myfaces.component.search.AllSearchKeywordResolver;
 import org.apache.myfaces.component.search.ChildSearchKeywordResolver;
 import org.apache.myfaces.component.search.CompositeComponentParentSearchKeywordResolver;
@@ -2604,13 +2603,13 @@ public class ApplicationImpl extends Application
                                       context.getELContext(), target).toString(context.getELContext());
                 // If target is non-null, store it under the key "target".
                 attributes.put("target", target);
-                ComponentResourceUtils.addComponentResource(context, output, target);
+                context.getViewRoot().addComponentResource(context, output, target);
             }
             else
             {
                 // Otherwise, if target is null, call UIViewRoot.addComponentResource(javax.faces.context.FacesContext,
                 // javax.faces.component.UIComponent), passing the UIOutput instance as the second argument.
-                ComponentResourceUtils.addComponentResource(context, output);
+                context.getViewRoot().addComponentResource(context, output);
             }
         }
     }
