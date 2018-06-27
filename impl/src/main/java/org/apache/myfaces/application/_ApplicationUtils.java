@@ -127,6 +127,8 @@ class _ApplicationUtils
         return event;
     }
     
+    // Do it with a copy because the list could be changed during a event
+    // see MYFACES-2935
     static SystemEvent _traverseListenerListWithCopy(FacesContext facesContext,
             List<? extends SystemEventListener> listeners,
             Class<? extends SystemEvent> systemEventClass, Object source,
