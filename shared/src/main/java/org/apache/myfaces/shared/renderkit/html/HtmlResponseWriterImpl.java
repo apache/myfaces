@@ -92,8 +92,8 @@ public class HtmlResponseWriterImpl
     private boolean _isUTF8;
     
     private String _startElementName;
-    private Boolean _isInsideScript;
-    private Boolean _isStyle;
+    private boolean _isInsideScript = false;
+    private boolean _isStyle = false;
     private Boolean _isTextArea;
     private UIComponent _startElementUIComponent;
     private boolean _startTagOpen;
@@ -374,14 +374,14 @@ public class HtmlResponseWriterImpl
         if(isScript(_startElementName))
         {
             // handle a <script> start
-            _isInsideScript = Boolean.TRUE;
-            _isStyle = Boolean.FALSE;
+            _isInsideScript = true;
+            _isStyle = false;
             _isTextArea = Boolean.FALSE;
         }
         else if (isStyle(_startElementName))
         {
-            _isInsideScript = Boolean.FALSE;
-            _isStyle = Boolean.TRUE;
+            _isInsideScript = false;
+            _isStyle = true;
             _isTextArea = Boolean.FALSE;
         }
     }
@@ -522,7 +522,7 @@ public class HtmlResponseWriterImpl
         _startElementName = null;
         _startElementUIComponent = null;
         _passThroughAttributesMap = null;
-        _isStyle = null;
+        _isStyle = false;
         _isTextArea = null;
     }
 
@@ -804,11 +804,11 @@ public class HtmlResponseWriterImpl
         if (isScript(name))
         {
             // reset _isInsideScript
-            _isInsideScript = Boolean.FALSE;
+            _isInsideScript = false;
         }
         else if (isStyle(name))
         {
-            _isStyle = Boolean.FALSE;
+            _isStyle = false;
         }
 
         _currentWriter.write("</");
@@ -931,7 +931,7 @@ public class HtmlResponseWriterImpl
             }
             */
             //_writer.write(strValue);
-            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encodeURIAtributte(_currentWriter,
+            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encodeURIAttribute(_currentWriter,
                             strValue, _characterEncoding);
         }
         _currentWriter.write('"');
@@ -1024,8 +1024,7 @@ public class HtmlResponseWriterImpl
     {
         //initializeStartedTagInfo();
 
-        return (_isStyle != null && _isStyle.booleanValue()) ||
-                (_isInsideScript != null && _isInsideScript.booleanValue());
+        return _isStyle || _isInsideScript;
     }
     
     /**
@@ -1040,7 +1039,7 @@ public class HtmlResponseWriterImpl
     
     private boolean isScript()
     {
-        return (_isInsideScript != null && _isInsideScript.booleanValue());
+        return _isInsideScript;
     }
     
     private boolean isStyle(String element)
@@ -1050,7 +1049,7 @@ public class HtmlResponseWriterImpl
     
     private boolean isStyle()
     {
-        return (_isStyle != null && _isStyle.booleanValue());
+        return _isStyle;
     }
 
     private boolean isTextarea()
