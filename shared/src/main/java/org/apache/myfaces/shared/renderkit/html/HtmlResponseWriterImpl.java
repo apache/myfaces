@@ -320,7 +320,6 @@ public class HtmlResponseWriterImpl
         }
 
         closeStartTagIfNecessary();
-        _currentWriter.write('<');
 
         resetStartedElement();
 
@@ -329,6 +328,8 @@ public class HtmlResponseWriterImpl
         _startTagOpen = true;
         _passThroughAttributesMap = (_startElementUIComponent != null) ?
             _startElementUIComponent.getPassThroughAttributes(false) : null;
+
+        String startElementNameToWrite = name;    
 
         if (_passThroughAttributesMap != null)
         {
@@ -349,17 +350,15 @@ public class HtmlResponseWriterImpl
                     _startedChangedElements.add(elementName);
                     _startedElementsCount.add(0);
                 }
-                _currentWriter.write((String) elementName);
-            }
-            else
-            {
-                _currentWriter.write(name);
+                startElementNameToWrite = elementName;
             }
         }
-        else
-        {
-            _currentWriter.write(name);
-        }
+
+        StringBuilder sb = new StringBuilder(startElementNameToWrite.length() + 1);
+        sb.append('<');
+        sb.append(startElementNameToWrite);
+
+        _currentWriter.write(sb.toString());
 
         if (!_startedElementsCount.isEmpty())
         {
@@ -805,9 +804,11 @@ public class HtmlResponseWriterImpl
             _isStyle = false;
         }
 
-        _currentWriter.write("</");
-        _currentWriter.write(name);
-        _currentWriter.write('>');
+        StringBuilder sb = new StringBuilder(name.length() + 3);
+        sb.append("</");
+        sb.append(name);
+        sb.append('>');
+        _currentWriter.write(sb.toString());
     }
 
     public void writeAttribute(String name, Object value, String componentPropertyName) throws IOException
@@ -833,34 +834,42 @@ public class HtmlResponseWriterImpl
             if (((Boolean)value).booleanValue())
             {
                 // name as value for XHTML compatibility
-                _currentWriter.write(' ');
-                _currentWriter.write(name);
-                _currentWriter.write("=\"");
-                _currentWriter.write(name);
-                _currentWriter.write('"');
+                StringBuilder sb = new StringBuilder(name.length() * 2 + 4);
+                sb.append(' ');
+                sb.append(name);
+                sb.append("=\"");
+                sb.append(name);
+                sb.append('"');
+                _currentWriter.write(sb.toString());
             }
         }
         else
         {
             String strValue = (value==null)?"":value.toString();
-            _currentWriter.write(' ');
-            _currentWriter.write(name);
-            _currentWriter.write("=\"");
-            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(_currentWriter,
+            String encodedStr = org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
                     strValue, false, false, !_isUTF8);
-            _currentWriter.write('"');
+            StringBuilder sb = new StringBuilder(name.length() + encodedStr.length() + 4);
+            sb.append(' ');
+            sb.append(name);
+            sb.append("=\"");
+            sb.append(encodedStr);
+            sb.append('"');
+            _currentWriter.write(sb.toString());
         }
     }
     
     private void encodeAndWriteAttribute(String name, Object value) throws IOException
     {
         String strValue = (value==null)?"":value.toString();
-        _currentWriter.write(' ');
-        _currentWriter.write(name);
-        _currentWriter.write("=\"");
-        org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(_currentWriter,
+        String encodedStr = org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
                 strValue, false, false, !_isUTF8);
-        _currentWriter.write('"');
+        StringBuilder sb = new StringBuilder(name.length() + encodedStr.length() + 4);
+        sb.append(' ');
+        sb.append(name);
+        sb.append("=\"");
+        sb.append(encodedStr);
+        sb.append('"');
+        _currentWriter.write(sb.toString());
     }
 
     public void writeURIAttribute(String name, Object value, String componentPropertyName) throws IOException
@@ -887,12 +896,10 @@ public class HtmlResponseWriterImpl
     private void encodeAndWriteURIAttribute(String name, Object value) throws IOException
     {
         String strValue = value.toString();
-        _currentWriter.write(' ');
-        _currentWriter.write(name);
-        _currentWriter.write("=\"");
+        String encodedStr;
         if (strValue.toLowerCase().startsWith("javascript:"))
         {
-            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(_currentWriter,
+            encodedStr = org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
                     strValue, false, false, !_isUTF8);
         }
         else
@@ -925,10 +932,16 @@ public class HtmlResponseWriterImpl
             }
             */
             //_writer.write(strValue);
-            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encodeURIAttribute(_currentWriter,
+            encodedStr = org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encodeURIAttribute(
                             strValue, _characterEncoding);
         }
-        _currentWriter.write('"');
+        StringBuilder sb = new StringBuilder(name.length() + encodedStr.length() + 4);
+        sb.append(' ');
+        sb.append(name);
+        sb.append("=\"");
+        sb.append(encodedStr);
+        sb.append('"');
+        _currentWriter.write(sb.toString());
     }
 
     public void writeComment(Object value) throws IOException
@@ -939,9 +952,12 @@ public class HtmlResponseWriterImpl
         }
 
         closeStartTagIfNecessary();
-        _currentWriter.write("<!--");
-        _currentWriter.write(value.toString());    //TODO: Escaping: must not have "-->" inside!
-        _currentWriter.write("-->");
+        String strValue = value.toString();
+        StringBuilder sb = new StringBuilder(strValue.length() + 7);
+        sb.append("<!--");
+        sb.append(strValue);    //TODO: Escaping: must not have "-->" inside!
+        sb.append("-->");
+        _currentWriter.write(sb.toString());
     }
 
     public void writeText(Object value, String componentPropertyName) throws IOException
