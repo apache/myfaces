@@ -33,15 +33,17 @@ import javax.el.ELResolver;
 public class OpenWebBeansELResolverComparator implements Comparator<ELResolver>
 {
     
-    public static final String OWB_RESOLVER = "org.apache.webbeans.el.WebBeansELResolver";
+    public static final String OWB_RESOLVER_OLD = "org.apache.webbeans.el.WebBeansELResolver";
+    public static final String OWB_RESOLVER     = "org.apache.webbeans.el22.WebBeansELResolver";
 
+    @Override
     public int compare(ELResolver r1, ELResolver r2)
     {
-        if (r1.getClass().getName().equals(OWB_RESOLVER))
+        if (r1.getClass().getName().equals(OWB_RESOLVER_OLD) || r1.getClass().getName().equals(OWB_RESOLVER))
         {
             return 1;
         }
-        else if (r2.getClass().getName().equals(OWB_RESOLVER))
+        else if (r2.getClass().getName().equals(OWB_RESOLVER_OLD) || r2.getClass().getName().equals(OWB_RESOLVER))
         {
             return -1;
         }
