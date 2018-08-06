@@ -69,7 +69,7 @@ public class CDataEndEscapeFilterWriter extends FilterWriter
                 out.write("<![CDATA[]]]]><![CDATA[>");
             }
             c1 = c2;
-            c2 = (char) cbuf[off+i];
+            c2 = c;
             pos++;
         }
         if (index < off+len)
@@ -92,7 +92,7 @@ public class CDataEndEscapeFilterWriter extends FilterWriter
                 out.write("<![CDATA[]]]]><![CDATA[>");
             }
             c1 = c2;
-            c2 = (char) str.charAt(off+i);
+            c2 = c;
             pos++;
         }
         if (index < off+len)
