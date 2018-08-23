@@ -84,6 +84,13 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     private static final String FACES_SERVLET_ADDED_ATTRIBUTE = "org.apache.myfaces.DYNAMICALLY_ADDED_FACES_SERVLET";
 
     /**
+     * If the servlet mapping for the FacesServlet is found on the ServletContext, Boolean.TRUE 
+     * is stored under this key in the ServletContext.
+     * ATTENTION: this constant is duplicate in MyFacesContainerInitializer.
+     */
+    private static final String FACES_SERVLET_FOUND = "org.apache.myfaces.FACES_SERVLET_FOUND"; 
+
+    /**
      * This parameter specifies the ExpressionFactory implementation to use.
      */
     @JSFWebConfigParam(since="1.2.7", group="EL")
@@ -153,16 +160,23 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
 
                 if (webConfigProvider.getFacesServletMappings(facesContext.getExternalContext()).isEmpty())
                 {
-                    // check if the FacesServlet has been added dynamically
-                    // in a Servlet 3.0 environment by MyFacesContainerInitializer
-                    Boolean mappingAdded = (Boolean) servletContext.getAttribute(FACES_SERVLET_ADDED_ATTRIBUTE);
+                    // check to see if the FacesServlet was found by MyFacesContainerInitializer
+                    Boolean mappingAdded = (Boolean) servletContext.getAttribute(FACES_SERVLET_FOUND);
+
                     if (mappingAdded == null || !mappingAdded)
                     {
-                        if (log.isLoggable(Level.WARNING))
+                        // check if the FacesServlet has been added dynamically
+                        // in a Servlet 3.0 environment by MyFacesContainerInitializer
+                        mappingAdded = (Boolean) servletContext.getAttribute(FACES_SERVLET_ADDED_ATTRIBUTE);
+
+                        if (mappingAdded == null || !mappingAdded)
                         {
-                            log.warning("No mappings of FacesServlet found. Abort initializing MyFaces.");
+                            if (log.isLoggable(Level.WARNING))
+                            {
+                                log.warning("No mappings of FacesServlet found. Abort initializing MyFaces.");
+                            }
+                            return;
                         }
-                        return;
                     }
                 }
             }
@@ -347,16 +361,23 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
 
             if (webConfigProvider.getFacesServletMappings(facesContext.getExternalContext()).isEmpty())
             {
-                // check if the FacesServlet has been added dynamically
-                // in a Servlet 3.0 environment by MyFacesContainerInitializer
-                Boolean mappingAdded = (Boolean) servletContext.getAttribute(FACES_SERVLET_ADDED_ATTRIBUTE);
+                // check to see if the FacesServlet was found by MyFacesContainerInitializer
+                Boolean mappingAdded = (Boolean) servletContext.getAttribute(FACES_SERVLET_FOUND);
+
                 if (mappingAdded == null || !mappingAdded)
                 {
-                    if (log.isLoggable(Level.WARNING))
+                    // check if the FacesServlet has been added dynamically
+                    // in a Servlet 3.0 environment by MyFacesContainerInitializer
+                    mappingAdded = (Boolean) servletContext.getAttribute(FACES_SERVLET_ADDED_ATTRIBUTE);
+
+                    if (mappingAdded == null || !mappingAdded)
                     {
-                        log.warning("No mappings of FacesServlet found. Abort destroy MyFaces.");
+                        if (log.isLoggable(Level.WARNING))
+                        {
+                            log.warning("No mappings of FacesServlet found. Abort destroy MyFaces.");
+                        }
+                        return;
                     }
-                    return;
                 }
             }
         }
