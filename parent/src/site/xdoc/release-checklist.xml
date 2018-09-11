@@ -95,7 +95,7 @@ mvn release:perform -DtagBase=https://svn.apache.org/repos/asf/myfaces/shared/ta
             <h3>2. Preparing Core 2.3.0</h3>
 
             <ul>
-                <li><p>Once the environment is configured, you need to checkout the MyFaces 2.3.x development branch <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/">https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/</a> and run the following commands to prepare the MyFaces Core</p></li>
+                <li><p>Once the environment is configured, you need to checkout the MyFaces 2.3.x development branch (currently the master branch in GitHub) <a class="externalLink" href="https://github.com/apache/myfaces">https://github.com/apache/myfaces</a> and run the following commands to prepare the MyFaces Core</p></li>
 
                 <div class="source">
                     <pre>
@@ -105,7 +105,7 @@ mvn install -Pgenerate-assembly -Papache-release -Dgpg.passphrase=yourphrase
 # Useful to check modifications to poms and scm operations.
 mvn release:prepare -DprepareRelease=true -DdryRun=true
 # Run again this command to prepare release 
-# and commit to https://svn.apache.org/repos/asf/myfaces/core/tags/ repository.
+# and commit to https://github.com/apache/myfaces/tags repository.
 mvn release:prepare -DprepareRelease=true -Dresume=false 
                     </pre>
                 </div>
@@ -138,7 +138,7 @@ mvn install -Pgenerate-assembly -Papache-release -Dgpg.passphrase=yourphrase
 
                 Finally, execute again the release prepare command: "mvn release:prepare -DprepareRelease=true -Dresume=false"
 
-                <li><p>Verify that the new tag myfaces-core-module-2.3.0 was created: <a class="externalLink" href="https://svn.apache.org/viewvc/myfaces/core/tags/">MyFaces Core Tags</a></p></li>
+                <li><p>Verify that the new tag myfaces-core-module-2.3.0 was created: <a class="externalLink" href="https://github.com/apache/myfaces/tags">MyFaces Core Tags</a></p></li>
                 <p>You should be able to checkout myfaces-core-module-2.3.0 and run: mvn install</p>
 
                 <li><p>Stage the release for a vote</p></li>
@@ -185,7 +185,10 @@ mvn release:perform -DperformRelease=true
             <ul>
                 <li>Automatically done by maven on release:perform step and should be available in the nexus maven repository to do the final deploy.</li>
                 <p>Login to nexus repository using the id.apache.org account: <a class="externalLink" href="https://repository.apache.org">Nexus Repository</a></p>
-                Now  under Build Promotion go to Staging Repositories, look for orgapachemyfaces-xxxx repository. Click "close" so the artifacts can be downloaded. If the artifacts has some bug you can click "drop", if the artifacts are approved, you can click on "release". 
+                Now  under Build Promotion go to Staging Repositories, look for orgapachemyfaces-xxxx repository. Click "close" so the artifacts can be downloaded. 
+
+                <p><b>NOTE:</b> If the artifacts has some bug when testing them you can click "drop", if the artifacts are approved, follow the Step 8 in this wiki, so you can release them.</p>
+                
                 <p>More information here: <a class="externalLink" href="http://central.sonatype.org/pages/releasing-the-deployment.html#locate-and-examine-your-staging-repository">Locate and examine your staging repository</a></p>
                 <p>Example link: <a class="externalLink" href="https://repository.apache.org/content/repositories/orgapachemyfaces-1130/org/apache/myfaces/core/myfaces-core-assembly/2.3.0/">https://repository.apache.org/content/repositories/orgapachemyfaces-1130/org/apache/myfaces/core/myfaces-core-assembly/2.3.0/</a></p>
                 <p><b>NOTE:</b> Providing MD5 checksum files is now discouraged for new releases, but still allowed for past releases.</p>
@@ -245,6 +248,10 @@ scp -p -r myfaces-core-2.3.0-src* embreijo@people.apache.org:/home/embreijo/publ
                 java -jar japicmp-0.11.0-jar-with-dependencies.jar -n &lt;v2_binary&gt;.jar -o &lt;v1_binary&gt;.jar --ignore-missing-classes --html-file &lt;dir_name&gt;/results.html</p>
 
                 <p>Report of myfaces-api-2.3.0-beta vs myfaces-api-2.3.0.jar looks good.</p>
+
+                <p><b>NOTE:</b> Comparison should also be done between MyFaces 2.3 API and Mojarra 2.3 API jars, that is, myfaces-api-2.3.x.jar and javax.faces-api-2.3.jar.</p>
+
+                <p>Link to Mojarra 2.3 API: <a class="externalLink" href="https://mvnrepository.com/artifact/javax.faces/javax.faces-api/2.3">https://mvnrepository.com/artifact/javax.faces/javax.faces-api/2.3</a></p>
             </ul>    
 
 
@@ -311,6 +318,14 @@ Eduardo M. Breijo
                 <li>You can use the <a href="./scripts/release-artifacts.sh">MyFaces Release Artifacts</a> script to download the assembly files from <a class="externalLink" href="https://repository.apache.org/content/repositories/releases/org/apache/myfaces/core/myfaces-core-assembly/">Released MyFaces Core Assembly</a> and upload them to svn dist repo: <a class="externalLink" href="https://dist.apache.org/repos/dist/release/myfaces">MyFaces Distribution Repository</a></li>
                 <p>To execute the script run: "./release-artifacts.sh &lt;version&gt; &lt;svn_username&gt;"</p>
                 Example: ./release-artifacts.sh 2.3.0 yourusername
+                <p><b>NOTE:</b> Depending on the operating system, you might need to change the following line in the script to use "f" instead of "file" if you get this issue: "find: Arguments to -type should contain only one letter"
+                <div class="source">
+                    <pre>
+# Note that "f" is being used instead of "file"
+for file in $(find . -type f -name "${PATTERN}" -exec basename \{\} \; ) ; do
+                    </pre>
+                </div>
+                </p>
                 <br/>
                 <br/>
                 <li>Otherwise, use an svn client and add the release artifacts to the svn dist repo: <a class="externalLink" href="https://dist.apache.org/repos/dist/release/myfaces">MyFaces Distribution Repository</a></li>
@@ -323,8 +338,12 @@ Eduardo M. Breijo
 
                 <li>Files can also be found in the following link once they are added to the svn repo: <a class="externalLink" href="http://www.apache.org/dist/myfaces/">MyFaces Distribution Server</a></li>
 
-                <li>Make sure to remove the previous release from the svn dist repo after adding the new release: <a class="externalLink" href="https://dist.apache.org/repos/dist/release/myfaces">MyFaces Distribution Repository</a></li>
-
+                <li>Make sure to remove the previous release from both binaries and source directories of the svn dist repo after adding the new release: <a class="externalLink" href="https://dist.apache.org/repos/dist/release/myfaces">MyFaces Distribution Repository</a></li>
+                <ul>
+                    <li>Command: svn delete URL... -m "commit message"</li>
+                    <li>Example: svn delete https://dist.apache.org/repos/dist/release/myfaces/source/myfaces-core-assembly-2.3.0-src.tar.gz -m "delete 2.3.0 source"</li>
+                    <li>Note that you need to delete the previous release files one by one from both binaries and source directories.</li>
+                </ul>
                 <li>Add the release version and date to the Apache Committee Report Helper: <a class="externalLink" href="https://reporter.apache.org/addrelease.html?myfaces">Add Release</a></li>
 
             </ul>
@@ -369,10 +388,10 @@ mvn site:site # this will generate the site under the target directory
 
 
 
-                <li><p>Checkout the 2.3.x tag to be released <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/core/tags/">https://svn.apache.org/repos/asf/myfaces/core/tags/</a></p></li>
+                <li><p>Checkout the MyFaces 2.3.x tag to be released from <a class="externalLink" href="https://github.com/apache/myfaces/tags">https://github.com/apache/myfaces/tags</a></p></li>
                 Modify and commit the changes
                 <br/>
-                <b>NOTE:</b> You may have to do modify and commit these same changes to the <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/">https://svn.apache.org/repos/asf/myfaces/core/branches/2.3.x/</a> repository to keep the dev repo up to date.
+                <b>NOTE:</b> You may have to do modify and commit these same changes to the MyFaces 2.3.x development branch (currently master branch in GitHub) in <a class="externalLink" href="https://github.com/apache/myfaces">https://github.com/apache/myfaces</a> repository to keep the dev repo up to date.
                 
                 <div class="source">
                     <pre>
