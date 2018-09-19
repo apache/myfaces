@@ -34,6 +34,9 @@
         </section>
         <section name="Diary">
 
+            <p><b>NOTE: SHA1 hashes have been deprecated for some time on download pages (*). The announce was moderated this time, but the download page must be fixed for the next release. 
+            This means using SHA256 or SHA512 instead of SHA1. </b></p>
+
             <p><b>NOTE:</b> Make sure you have the right ssh public key set in id.apache.org page before performing the release steps.</p>
 
             <p>Before performing the release you need to configure your environment if you haven't done it before.</p>
@@ -465,6 +468,8 @@ Eduardo M. Breijo
 
             </ul>
             
+            <p><b>NOTE:</b> If you use your personal email to send the announcement to announce@apache.org and announce@myfaces.apache.org it will bounce back and it will not be delivered. To get around this, please login into the apache webclient <a class="externalLink" href="https://lists.apache.org/list.html?announce@apache.org">Announce @ Apache</a> and <a class="externalLink" href="https://lists.apache.org/list.html?announce@myfaces.apache.org">Announce @ MyFaces Apache</a>. You need to use your apache id credentials and from each list, start a new discussion in the top right corner.</p> 
+
         </section>
     </body>
 </document>
