@@ -124,6 +124,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
      * Performs all necessary initialization tasks like configuring this JSF
      * application.
      */
+    @Override
     public void initFaces(ServletContext servletContext)
     {
         try
@@ -368,6 +369,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     /**
      * Cleans up all remaining resources (well, theoretically).
      */
+    @Override
     public void destroyFaces(ServletContext servletContext)
     {
 
@@ -425,22 +427,11 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             m.setAccessible(true);
             m.invoke(null);
         }
-        catch(ClassNotFoundException e)
+        catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
         {
             log.log(Level.SEVERE, e.getMessage(), e);
         }
-        catch(NoSuchMethodException e)
-        {
-            log.log(Level.SEVERE, e.getMessage(), e);
-        }
-        catch(IllegalAccessException e)
-        {
-            log.log(Level.SEVERE, e.getMessage(), e);
-        }
-        catch(InvocationTargetException e)
-        {
-            log.log(Level.SEVERE, e.getMessage(), e);
-        }
+
 
         // TODO is it possible to make a real cleanup?
     }
@@ -543,6 +534,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         return null;
     }
 
+    @Override
     public FacesContext initStartupFacesContext(ServletContext servletContext)
     {
         // We cannot use FacesContextFactory, because it is necessary to initialize 
@@ -550,16 +542,19 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         return _createFacesContext(servletContext, true);
     }
         
+    @Override
     public void destroyStartupFacesContext(FacesContext facesContext)
     {
         _releaseFacesContext(facesContext);
     }
     
+    @Override
     public FacesContext initShutdownFacesContext(ServletContext servletContext)
     {
         return _createFacesContext(servletContext, false);
     }
-        
+    
+    @Override    
     public void destroyShutdownFacesContext(FacesContext facesContext)
     {
         _releaseFacesContext(facesContext);
