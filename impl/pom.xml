@@ -28,7 +28,7 @@
 
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-impl</artifactId>
-    <name>Apache MyFaces JSF-3.0 Core Impl</name>
+    <name>Apache MyFaces Core 3.0 - Impl</name>
     <description>
         The private implementation classes of the Apache MyFaces Core JSF-3.0 Implementation
     </description>
