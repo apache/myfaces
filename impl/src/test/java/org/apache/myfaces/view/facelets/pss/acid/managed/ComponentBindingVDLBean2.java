@@ -20,20 +20,20 @@ package org.apache.myfaces.view.facelets.pss.acid.managed;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIPanel;
 import javax.faces.component.html.HtmlPanelGroup;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
+import javax.inject.Named;
 
 /**
  *
  * @author Leonardo Uribe
  */
-@ManagedBean(name="componentBindingVDLBean2")
+@Named("componentBindingVDLBean2")
 @RequestScoped
 public class ComponentBindingVDLBean2
 {

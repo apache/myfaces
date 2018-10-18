@@ -21,13 +21,13 @@ package org.apache.myfaces.view.facelets.pool;
 import java.io.Serializable;
 import java.util.Locale;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 /**
  *
  */
-@ManagedBean(name="dynamicBean")
+@Named("dynamicBean")
 @SessionScoped
 public class DynamicBean implements Serializable
 {

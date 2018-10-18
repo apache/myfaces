@@ -23,15 +23,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import javax.faces.context.ExternalContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationCase;
 import org.apache.myfaces.config.element.NavigationRule;
-import org.apache.myfaces.shared.util.ClassUtils;
 
 public class FacesConfigValidator
 {
@@ -55,31 +52,16 @@ public class FacesConfigValidator
         
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(ctx);
         
-        Map<String, ManagedBean> managedBeansMap = runtimeConfig.getManagedBeans();
-        
-        Collection<? extends ManagedBean> managedBeans = null;
-        if (managedBeansMap != null)
-        {
-            managedBeans = managedBeansMap.values();
-        }
-        
         Collection<? extends NavigationRule> navRules = runtimeConfig.getNavigationRules();
         
-        return validate(managedBeans, navRules, ctx);
+        return validate(navRules, ctx);
         
     }
     
-    public static List<String> validate(Collection<? extends ManagedBean> managedBeans, 
-                                        Collection<? extends NavigationRule> navRules, ExternalContext ctx)
+    public static List<String> validate(Collection<? extends NavigationRule> navRules, ExternalContext ctx)
     {
-        
         List<String> list = new ArrayList<String>();
-        
-        if (managedBeans != null)
-        {
-            validateManagedBeans(managedBeans, list);
-        }
-        
+
         if (navRules != null)
         {
             validateNavRules(navRules, list, ctx);
@@ -132,29 +114,5 @@ public class FacesConfigValidator
             }
         }
     }
-    
-    private static void validateManagedBeans(Collection<? extends ManagedBean> managedBeans, List<String> list)
-    {
-        for (ManagedBean managedBean : managedBeans)
-        {
-            validateManagedBean(managedBean, list);
-        }
-    }
 
-    private static void validateManagedBean(ManagedBean managedBean, List<String> list)
-    {
-        String className = managedBean.getManagedBeanClassName();
-        
-        try
-        {
-            ClassUtils.classForName(className);
-        }
-        catch (ClassNotFoundException e)
-        { 
-            String msg = "Could not locate class " 
-                + className + " for managed bean '" + managedBean.getManagedBeanName() + "'";
-            
-            list.add(msg);
-        }
-    }
 }

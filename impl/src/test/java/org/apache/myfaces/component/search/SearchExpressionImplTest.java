@@ -33,14 +33,14 @@ import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchExpressionHandler;
 import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
+import org.apache.myfaces.mc.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  *
  */
-public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
+public class SearchExpressionImplTest extends AbstractMyFacesCDIRequestTestCase
 {
     @Override
     protected boolean isScanAnnotations()

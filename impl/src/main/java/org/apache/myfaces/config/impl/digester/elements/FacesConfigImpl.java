@@ -32,7 +32,6 @@ import org.apache.myfaces.config.element.Converter;
 import org.apache.myfaces.config.element.FacesConfigExtension;
 import org.apache.myfaces.config.element.FacesFlowDefinition;
 import org.apache.myfaces.config.element.Factory;
-import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NamedEvent;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Ordering;
@@ -50,7 +49,6 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     private Map<String, String> components;
     private Map<String, ComponentTagDeclaration> componentTagDeclarations;
     private List<Converter> converters;
-    private List<ManagedBean> managedBeans;
     private List<NavigationRule> navigationRules;
     private List<RenderKit> renderKits;
     private List<String> lifecyclePhaseListener;
@@ -68,7 +66,6 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     private transient Map<String, String> unmodifiableComponents;
     private transient Map<String, ComponentTagDeclaration> unmodifiableComponentTagDeclarations;
     private transient List<Converter> unmodifiableConverters;
-    private transient List<ManagedBean> unmodifiableManagedBeans;
     private transient List<NavigationRule> unmodifiableNavigationRules;
     private transient List<RenderKit> unmodifiableRenderKits;
     private transient List<String> unmodifiableLifecyclePhaseListener;
@@ -134,15 +131,6 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
             converters = new ArrayList<Converter>();
         }
         converters.add(converter);
-    }
-
-    public void addManagedBean(ManagedBean bean)
-    {
-        if (managedBeans == null)
-        {
-            managedBeans = new ArrayList<ManagedBean>();
-        }
-        managedBeans.add(bean);
     }
 
     public void addNavigationRule(NavigationRule rule)
@@ -312,20 +300,6 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
                 Collections.unmodifiableList(converters);
         }
         return unmodifiableConverters;
-    }
-
-    public List<ManagedBean> getManagedBeans()
-    {
-        if (managedBeans == null)
-        {
-            return Collections.emptyList();
-        }
-        if (unmodifiableManagedBeans == null)
-        {
-            unmodifiableManagedBeans = 
-                Collections.unmodifiableList(managedBeans);
-        }
-        return unmodifiableManagedBeans;
     }
 
     public List<NavigationRule> getNavigationRules()

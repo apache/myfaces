@@ -21,23 +21,23 @@ package org.apache.myfaces.view.facelets.pss.acid.managed;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
 /**
  *
  * @author lu4242
  */
-@ManagedBean(name="testBean")
+@Named("acidTestBean")
 @RequestScoped
-public class TestBean
+public class AcidTestBean
 {
 
     private List<ValueHolder> values = new ArrayList<ValueHolder>();
     
     private String param2;
 
-    public TestBean()
+    public AcidTestBean()
     {
         param2 = "value2";
     }

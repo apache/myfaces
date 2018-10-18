@@ -29,8 +29,8 @@ import javax.faces.component.UIOutput;
 import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.html.HtmlDataTable;
+import org.apache.myfaces.mc.test.core.AbstractMyFacesCDIRequestTestCase;
 
-import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.apache.myfaces.view.facelets.pss.acid.component.UISimpleComponent1;
@@ -41,11 +41,11 @@ import org.apache.myfaces.view.facelets.pss.acid.managed.ComponentBindingFormBea
 import org.apache.myfaces.view.facelets.pss.acid.managed.CustomSessionBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ForEachBean;
 import org.apache.myfaces.view.facelets.pss.acid.managed.ResourceDependencyBean;
-import org.apache.myfaces.view.facelets.pss.acid.managed.TestBean;
+import org.apache.myfaces.view.facelets.pss.acid.managed.AcidTestBean;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
+public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
 {
 
     @Override
@@ -967,8 +967,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         client.submit(button);
         processLifecycleExecute();
         
-        TestBean bean = facesContext.getApplication().evaluateExpressionGet(
-                facesContext, "#{testBean}", TestBean.class);
+        AcidTestBean bean = facesContext.getApplication().evaluateExpressionGet(facesContext, "#{acidTestBean}", AcidTestBean.class);
         bean.setParam2("otherValue2");
         
         processLifecycleRender();

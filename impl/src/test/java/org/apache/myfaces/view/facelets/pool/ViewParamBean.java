@@ -18,13 +18,13 @@
  */
 package org.apache.myfaces.view.facelets.pool;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
 /**
  *
  */
-@ManagedBean(name="viewParamBean")
+@Named("viewParamBean")
 @RequestScoped
 public class ViewParamBean
 {

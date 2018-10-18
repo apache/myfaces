@@ -74,6 +74,13 @@ public class ViewScopeProxyMap implements Map<String, Object>, StateHolder
 
                 ViewScopeProvider handler = factory.getViewScopeHandler(facesContext.getExternalContext());
 
+                // for unittests without CDI
+                if (handler == null)
+                {
+                    _delegate = new ViewScope();
+                    return _delegate;
+                }
+                
                 if (_viewScopeId == null)
                 {
                     _viewScopeId = handler.generateViewScopeId(facesContext);

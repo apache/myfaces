@@ -64,8 +64,6 @@ import javax.faces.event.ActionListener;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.PhaseListener;
 import javax.faces.event.PostConstructApplicationEvent;
-import javax.faces.event.PreDestroyCustomScopeEvent;
-import javax.faces.event.PreDestroyViewMapEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.flow.FlowHandler;
 import javax.faces.flow.FlowHandlerFactory;
@@ -81,8 +79,6 @@ import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.BackwardsCompatibleNavigationHandlerWrapper;
 import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
 import org.apache.myfaces.config.annotation.AnnotationConfigurator;
-import org.apache.myfaces.config.annotation.LifecycleProvider;
-import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.myfaces.config.element.Behavior;
 import org.apache.myfaces.config.element.ClientBehaviorRenderer;
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
@@ -98,7 +94,6 @@ import org.apache.myfaces.config.element.FacesFlowParameter;
 import org.apache.myfaces.config.element.FacesFlowReturn;
 import org.apache.myfaces.config.element.FacesFlowSwitch;
 import org.apache.myfaces.config.element.FacesFlowView;
-import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NamedEvent;
 import org.apache.myfaces.config.element.NavigationCase;
 import org.apache.myfaces.config.element.NavigationRule;
@@ -159,7 +154,6 @@ import org.apache.myfaces.view.facelets.el.ELText;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
-import org.apache.myfaces.webapp.ManagedBeanDestroyerListener;
 
 /**
  * Configures everything for a given context. The FacesConfigurator is independent of the concrete implementations that
@@ -615,7 +609,6 @@ public class FacesConfigurator
         configureRuntimeConfig();
         configureLifecycle();
         handleSerialFactory();
-        configureManagedBeanDestroyer();
         configureFlowHandler();
 
         configureProtectedViews();
@@ -1029,20 +1022,6 @@ public class FacesConfigurator
                 knownNamespaces.add(declaration.getNamespace());
             }
         }
-        
-        for (ManagedBean bean : dispenser.getManagedBeans())
-        {
-            if (log.isLoggable(Level.WARNING) && runtimeConfig.getManagedBean(bean.getManagedBeanName()) != null)
-            {
-                log.warning("More than one managed bean w/ the name of '" + bean.getManagedBeanName()
-                        + "' - only keeping the last ");
-            }
-
-            runtimeConfig.addManagedBean(bean.getManagedBeanName(), bean);
-
-        }
-
-        removePurgedBeansFromSessionAndApplication(runtimeConfig);
 
         for (NavigationRule rule : dispenser.getNavigationRules())
         {
@@ -1281,31 +1260,6 @@ public class FacesConfigurator
         }
     }
 
-    private void removePurgedBeansFromSessionAndApplication(RuntimeConfig runtimeConfig)
-    {
-        Map<String, ManagedBean> oldManagedBeans = runtimeConfig.getManagedBeansNotReaddedAfterPurge();
-        if (oldManagedBeans != null)
-        {
-            for (Map.Entry<String, ManagedBean> entry : oldManagedBeans.entrySet())
-            {
-                ManagedBean bean = entry.getValue();
-
-                String scope = bean.getManagedBeanScope();
-
-                if (scope != null && scope.equalsIgnoreCase("session"))
-                {
-                    _externalContext.getSessionMap().remove(entry.getKey());
-                }
-                else if (scope != null && scope.equalsIgnoreCase("application"))
-                {
-                    _externalContext.getApplicationMap().remove(entry.getKey());
-                }
-            }
-        }
-
-        runtimeConfig.resetManagedBeansNotReaddedAfterPurge();
-    }
-
     private void configureRenderKits()
     {
         RenderKitFactory renderKitFactory
@@ -1509,45 +1463,6 @@ public class FacesConfigurator
         _externalContext.getApplicationMap().put(StateUtils.SERIAL_FACTORY, serialFactory);
     }
 
-    private void configureManagedBeanDestroyer()
-    {
-        FacesContext facesContext = getFacesContext();
-        ExternalContext externalContext = facesContext.getExternalContext();
-        Map<String, Object> applicationMap = externalContext.getApplicationMap();
-        Application application = facesContext.getApplication();
-
-        // get RuntimeConfig and LifecycleProvider
-        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
-        LifecycleProvider lifecycleProvider = LifecycleProviderFactory
-                .getLifecycleProviderFactory(externalContext).getLifecycleProvider(externalContext);
-
-        // create ManagedBeanDestroyer
-        ManagedBeanDestroyer mbDestroyer
-                = new ManagedBeanDestroyer(lifecycleProvider, runtimeConfig);
-
-        // subscribe ManagedBeanDestroyer as listener for needed events 
-        application.subscribeToEvent(PreDestroyCustomScopeEvent.class, mbDestroyer);
-        application.subscribeToEvent(PreDestroyViewMapEvent.class, mbDestroyer);
-
-        // get ManagedBeanDestroyerListener instance 
-        ManagedBeanDestroyerListener listener = (ManagedBeanDestroyerListener)
-                applicationMap.get(ManagedBeanDestroyerListener.APPLICATION_MAP_KEY);
-        if (listener != null)
-        {
-            // set the instance on the listener
-            listener.setManagedBeanDestroyer(mbDestroyer);
-        }
-        else
-        {
-            if (MyfacesConfig.getCurrentInstance(externalContext).isSupportManagedBeans())
-            {
-                log.log(Level.SEVERE, "No ManagedBeanDestroyerListener instance found, thus "
-                        + "@PreDestroy methods won't get called in every case. "
-                        + "This instance needs to be published before configuration is started.");
-            }
-        }
-    }
-    
     private void configureFlowHandler()
     {
         FacesContext facesContext = getFacesContext();

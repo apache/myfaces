@@ -20,11 +20,11 @@ package org.apache.myfaces.view.facelets.updateheadres.managed;
 
 import java.io.Serializable;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 
-@ManagedBean(name="ajaxContentBean")
+@Named("ajaxContentBean")
 @ViewScoped
 public class AjaxContentBean implements Serializable
 {

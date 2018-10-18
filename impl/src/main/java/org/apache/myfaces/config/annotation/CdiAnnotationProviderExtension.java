@@ -27,7 +27,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.faces.bean.ManagedBean;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.behavior.FacesBehavior;
 import javax.faces.convert.FacesConverter;
@@ -59,7 +58,6 @@ public class CdiAnnotationProviderExtension implements Extension
             FacesConverter.class,
             FacesValidator.class,
             FacesRenderer.class,
-            ManagedBean.class,
             NamedEvent.class,
             FacesBehaviorRenderer.class,
             FaceletsResourceResolver.class

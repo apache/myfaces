@@ -70,9 +70,7 @@ import org.apache.myfaces.lifecycle.ViewNotFoundException;
 import org.apache.myfaces.mc.test.core.annotation.BeforeJSFInit;
 import org.apache.myfaces.mc.test.core.mock.MockMyFacesViewDeclarationLanguageFactory;
 import org.apache.myfaces.mc.test.core.annotation.DeclareFacesConfig;
-import org.apache.myfaces.mc.test.core.annotation.ManagedBeans;
 import org.apache.myfaces.mc.test.core.annotation.TestConfig;
-import org.apache.myfaces.mc.test.core.annotation.PageBean;
 import org.apache.myfaces.mc.test.core.annotation.SetupWebConfigParams;
 import org.apache.myfaces.mc.test.core.annotation.TestServletListeners;
 import org.apache.myfaces.mc.test.core.mock.DefaultContext;
@@ -1408,45 +1406,6 @@ public class AbstractJsfTestContainer
                     facesConfig = super.getAnnotationsFacesConfig(ectx, metadataComplete); 
                 }
 
-                ManagedBeans annoManagedBeans = getTestJavaClass().getAnnotation(ManagedBeans.class);
-                if (annoManagedBeans != null)
-                {
-                    if (facesConfig == null)
-                    {
-                        facesConfig = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
-                    }
-                    for (PageBean annoPageBean : annoManagedBeans.value())
-                    {
-                        org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl bean = new 
-                            org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl();
-                        bean.setBeanClass(annoPageBean.clazz().getName());
-                        bean.setName(annoPageBean.name() == null ? annoPageBean.clazz().getName() : 
-                            annoPageBean.name());
-                        bean.setScope(annoPageBean.scope() == null ? "request" : annoPageBean.scope());
-                        bean.setEager(Boolean.toString(annoPageBean.eager()));
-
-                        ((org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl)facesConfig).
-                            addManagedBean(bean);
-                    }
-                }
-
-                PageBean annoPageBean = getTestJavaClass().getAnnotation(PageBean.class);
-                if (annoPageBean != null)
-                {
-                    if (facesConfig == null)
-                    {
-                        facesConfig = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
-                    }
-                    org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl bean = new 
-                        org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl();
-                    bean.setBeanClass(annoPageBean.clazz().getName());
-                    bean.setName(annoPageBean.name() == null ? annoPageBean.clazz().getName() : annoPageBean.name());
-                    bean.setScope(annoPageBean.scope() == null ? "request" : annoPageBean.scope());
-                    bean.setEager(Boolean.toString(annoPageBean.eager()));
-
-                    ((org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl)facesConfig).
-                        addManagedBean(bean);
-                }
                 jsfConfiguration.setAnnotationFacesConfig(facesConfig);
             }
             return facesConfig;

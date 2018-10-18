@@ -40,7 +40,6 @@ import java.util.logging.Logger;
 import javax.enterprise.inject.spi.BeanManager;
 
 import javax.faces.FacesException;
-import javax.faces.bean.ManagedBean;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.behavior.FacesBehavior;
 import javax.faces.context.ExternalContext;
@@ -118,7 +117,6 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         bcan.add("Ljavax/faces/convert/FacesConverter;");
         bcan.add("Ljavax/faces/validator/FacesValidator;");
         bcan.add("Ljavax/faces/render/FacesRenderer;");
-        bcan.add("Ljavax/faces/bean/ManagedBean;");
         bcan.add("Ljavax/faces/event/NamedEvent;");
         //bcan.add("Ljavax/faces/event/ListenerFor;");
         //bcan.add("Ljavax/faces/event/ListenersFor;");
@@ -138,7 +136,6 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         bcan.add(FacesConverter.class);
         bcan.add(FacesValidator.class);
         bcan.add(FacesRenderer.class);
-        bcan.add(ManagedBean.class);
         bcan.add(NamedEvent.class);
         bcan.add(FacesBehaviorRenderer.class);
         bcan.add(FaceletsResourceResolver.class);

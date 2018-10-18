@@ -22,14 +22,14 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.UIViewRoot;
 import junit.framework.Assert;
-import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
+import org.apache.myfaces.mc.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.junit.Test;
 
 /**
  *
  * @author lu4242
  */
-public class ResetValuesTestCase extends AbstractMyFacesRequestTestCase
+public class ResetValuesTestCase extends AbstractMyFacesCDIRequestTestCase
 {
     
     @Override

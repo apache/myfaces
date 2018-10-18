@@ -184,11 +184,6 @@ public abstract class FacesConfigData implements Serializable
     public abstract Map<String, String> getValidatorClassesById();
 
     /**
-     * @return Iterator over {@link org.apache.myfaces.config.element.ManagedBean ManagedBean}s
-     */
-    public abstract Collection<ManagedBean> getManagedBeans();
-
-    /**
      * @return Iterator over {@link org.apache.myfaces.config.element.NavigationRule NavigationRule}s
      */
     public abstract Collection<NavigationRule> getNavigationRules();

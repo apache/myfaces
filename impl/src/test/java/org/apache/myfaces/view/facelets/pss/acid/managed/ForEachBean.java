@@ -18,18 +18,18 @@
  */
 package org.apache.myfaces.view.facelets.pss.acid.managed;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 /**
  *
  */
-@ManagedBean(name="forEachBean")
+@Named("forEachBean")
 @SessionScoped
-public class ForEachBean
+public class ForEachBean implements Serializable
 {
     private List<String> items1;
     

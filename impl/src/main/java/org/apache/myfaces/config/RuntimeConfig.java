@@ -42,7 +42,6 @@ import javax.faces.el.VariableResolver;
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.config.element.FaceletsTemplateMapping;
-import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.ResourceBundle;
 import org.apache.myfaces.config.element.ViewPoolMapping;
@@ -64,10 +63,8 @@ public class RuntimeConfig
     private static final String APPLICATION_MAP_PARAM_NAME = RuntimeConfig.class.getName();
 
     private final Collection<NavigationRule> _navigationRules = new ArrayList<NavigationRule>();
-    private final Map<String, ManagedBean> _managedBeans = new HashMap<String, ManagedBean>();
     private boolean _navigationRulesChanged = false;
     private final Map<String, ResourceBundle> _resourceBundles = new HashMap<String, ResourceBundle>();
-    private final Map<String, ManagedBean> _oldManagedBeans = new HashMap<String, ManagedBean>();
     
     private String _facesVersion;
     
@@ -144,9 +141,6 @@ public class RuntimeConfig
     public void purge()
     {
         _navigationRules.clear();
-        _oldManagedBeans.clear();
-        _oldManagedBeans.putAll(_managedBeans);
-        _managedBeans.clear();
         _navigationRulesChanged = false;
         _converterClassNameToConfigurationMap.clear();
         _externalContextResourceLibraryContracts.clear();
@@ -202,30 +196,6 @@ public class RuntimeConfig
         _navigationRulesChanged = navigationRulesChanged;
     }
 
-    /**
-     * Return the managed bean info that can be used by the VariableResolver implementation.
-     * 
-     * @return a {@link org.apache.myfaces.config.element.ManagedBean ManagedBean}
-     */
-    public ManagedBean getManagedBean(String name)
-    {
-        return _managedBeans.get(name);
-    }
-
-    public Map<String, ManagedBean> getManagedBeans()
-    {
-        return Collections.unmodifiableMap(_managedBeans);
-    }
-
-    public void addManagedBean(String name, ManagedBean managedBean)
-    {
-        _managedBeans.put(name, managedBean);
-        if(_oldManagedBeans!=null)
-        {
-            _oldManagedBeans.remove(name);
-        }
-    }
-    
     public void addComponentTagDeclaration(ComponentTagDeclaration declaration)
     {
         _componentTagDeclarations.add(declaration);
@@ -393,17 +363,7 @@ public class RuntimeConfig
         return _variableResolverChainHead;
     }
 
-    public Map<String, ManagedBean> getManagedBeansNotReaddedAfterPurge()
-    {
-        return _oldManagedBeans;
-    }
-
-    public void resetManagedBeansNotReaddedAfterPurge()
-    {
-        _oldManagedBeans.clear();
-    }
-    
-    public String getFacesVersion ()
+    public String getFacesVersion()
     {
         return _facesVersion;
     }

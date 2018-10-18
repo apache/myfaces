@@ -18,19 +18,19 @@
  */
 package org.apache.myfaces.view.facelets.pss.acid.managed;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.html.HtmlPanelGroup;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 /**
  *
  * @author Leonardo Uribe
  */
-@ManagedBean(name="componentBindingBean")
+@Named("componentBindingBean")
 @RequestScoped
 public class ComponentBindingBean
 {

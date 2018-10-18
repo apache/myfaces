@@ -50,8 +50,6 @@ import java.util.logging.Logger;
  * generated. Very old versions of MyFaces Core do not register the listener in the .tld file, so those also need a
  * manual entry in web.xml. However all versions since at least 1.1.2 have this entry in the tld.
  * </p><p>
- * This listener also delegates all session, request and context events to ManagedBeanDestroyer.
- * Because of that we only need to register one listener in the tld.
  * </p>
  *
  * @author Manfred Geiler (latest modification by $Author$)

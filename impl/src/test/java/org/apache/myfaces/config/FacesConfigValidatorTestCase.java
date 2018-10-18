@@ -21,7 +21,6 @@ import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
@@ -60,12 +59,11 @@ public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
     
     public void testVerifyExistence(){
         
-        Collection<ManagedBean> managedBeans = dispenser.getManagedBeans();
         Collection<NavigationRule> navRules = dispenser.getNavigationRules();
         
-        List<String> list = FacesConfigValidator.validate(managedBeans, navRules, externalContext);
+        List<String> list = FacesConfigValidator.validate(navRules, externalContext);
         
-        int expected = 3;
+        int expected = 2;
         
         assertTrue(list.size() + " should equal " + expected, list.size() == expected);
         

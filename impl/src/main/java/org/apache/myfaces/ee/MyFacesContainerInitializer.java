@@ -29,15 +29,6 @@ import java.util.logging.Logger;
 
 import javax.faces.application.ResourceDependencies;
 import javax.faces.application.ResourceDependency;
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.CustomScoped;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.NoneScoped;
-import javax.faces.bean.ReferencedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.FacesBehavior;
@@ -63,11 +54,9 @@ import javax.servlet.annotation.HandlesTypes;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
-import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet;
 import org.apache.myfaces.spi.FacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
-import org.apache.myfaces.webapp.ManagedBeanDestroyerListener;
 
 /**
  * This class is called by any Java EE 6 complaint container at startup.
@@ -81,8 +70,6 @@ import org.apache.myfaces.webapp.ManagedBeanDestroyerListener;
  * @version $Revision$ $Date$
  */
 @HandlesTypes({
-        ApplicationScoped.class,
-        CustomScoped.class,
         FacesBehavior.class,
         FacesBehaviorRenderer.class,
         FacesComponent.class,
@@ -92,16 +79,9 @@ import org.apache.myfaces.webapp.ManagedBeanDestroyerListener;
         FacesDataModel.class,
         ListenerFor.class,
         ListenersFor.class,
-        ManagedBean.class,
-        ManagedProperty.class,
         NamedEvent.class,
-        NoneScoped.class,
-        ReferencedBean.class,
-        RequestScoped.class,
         ResourceDependencies.class,
         ResourceDependency.class,
-        SessionScoped.class,
-        ViewScoped.class,
         UIComponent.class,
         Converter.class,
         Renderer.class,
@@ -146,21 +126,6 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
     public void onStartup(Set<Class<?>> clazzes, ServletContext servletContext) throws ServletException
     {
         log.log(Level.INFO, "Using " + MyFacesContainerInitializer.class.getName());
-        
-        // No MyfacesConfig available yet, we must read the parameter directly:
-        String supportManagedBeans =
-                servletContext.getInitParameter(MyfacesConfig.INIT_PARAM_SUPPORT_MANAGED_BEANS);
-        if (supportManagedBeans == null || Boolean.TRUE.toString().equals(supportManagedBeans))
-        {
-            ManagedBeanDestroyerListener destroyListener = new ManagedBeanDestroyerListener();
-            servletContext.addListener(destroyListener);
-
-            // Publishes the ManagedBeanDestroyerListener instance into the servletContext.
-            // This allows the FacesConfigurator to access the instance and to set the
-            // correct ManagedBeanDestroyer instance on it.
-            // in < 2.3 it the ExternalContext#applicationMap was used but we have no access here
-            servletContext.setAttribute(ManagedBeanDestroyerListener.APPLICATION_MAP_KEY, destroyListener);
-        }
 
         boolean startDireclty = shouldStartupRegardless(servletContext);
         if (startDireclty)

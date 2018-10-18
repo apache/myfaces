@@ -32,8 +32,8 @@ import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.view.ViewMetadata;
+import org.apache.myfaces.mc.test.core.AbstractMyFacesCDIRequestTestCase;
 
-import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.pool.impl.ViewPoolImpl;
@@ -42,7 +42,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
+public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCase
 {
 
     @Override

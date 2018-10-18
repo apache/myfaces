@@ -18,16 +18,17 @@
  */
 package org.apache.myfaces.view.facelets.pss.acid.managed;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import java.io.Serializable;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 /**
  *
  * @author Leonardo Uribe
  */
-@ManagedBean(name="resourceDependencyBean")
+@Named("resourceDependencyBean")
 @SessionScoped
-public class ResourceDependencyBean
+public class ResourceDependencyBean implements Serializable
 {
     private boolean includeContent;
     

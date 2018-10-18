@@ -22,14 +22,14 @@ package org.apache.myfaces.component.search;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
 /**
  *
  * @author lu4242
  */
-@ManagedBean(name = "searchBean")
+@Named("searchBean")
 @RequestScoped
 public class SearchBean
 {

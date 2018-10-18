@@ -21,9 +21,7 @@ package org.apache.myfaces.webapp;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
-import org.apache.myfaces.config.ManagedBeanBuilder;
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
@@ -56,7 +54,6 @@ import javax.faces.event.SystemEvent;
 import javax.servlet.ServletContext;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -194,14 +191,6 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             
             ViewScopeProvider viewScopeHandler = factory.getViewScopeHandler(
                 externalContext);
-            
-            ManagedBeanDestroyerListener listener = (ManagedBeanDestroyerListener)
-                externalContext.getApplicationMap().get(
-                    ManagedBeanDestroyerListener.APPLICATION_MAP_KEY);
-            if (listener != null)
-            {
-                listener.setViewScopeHandler(viewScopeHandler);
-            }
 
             String useEncryption = servletContext.getInitParameter(StateUtils.USE_ENCRYPTION);
             if ("false".equals(useEncryption))
@@ -213,9 +202,6 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             {
                 StateUtils.initSecret(servletContext);
             }
-
-            // initialize eager managed beans
-            _createEagerBeans(facesContext);
 
             _dispatchApplicationEvent(servletContext, PostConstructApplicationEvent.class);
             
@@ -283,64 +269,6 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         {
             log.log(Level.SEVERE, "An error occured while initializing MyFaces: "
                       + ex.getMessage(), ex);
-        }
-    }
-    
-    /**
-     * Checks for application scoped managed-beans with eager=true,
-     * creates them and stores them in the application map.
-     * @param facesContext
-     */
-    private void _createEagerBeans(FacesContext facesContext)
-    {
-        ExternalContext externalContext = facesContext.getExternalContext();
-        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
-        List<ManagedBean> eagerBeans = new ArrayList<ManagedBean>();
-        
-        // check all registered managed-beans
-        for (ManagedBean bean : runtimeConfig.getManagedBeans().values())
-        {
-            String eager = bean.getEager();
-            if (eager != null && "true".equals(eager))
-            {
-                // eager beans are only allowed for application scope
-                if (ManagedBeanBuilder.APPLICATION.equals(bean.getManagedBeanScope()))
-                {
-                    // add to eager beans
-                    eagerBeans.add(bean);
-                }
-                else
-                {
-                    // log warning and continue (the bean will be lazy loaded)
-                    log.log(Level.WARNING, "The managed-bean with name "
-                            + bean.getManagedBeanName()
-                            + " must be application scoped to support eager=true.");
-                }
-            }
-        }
-        
-        // check if there are any eager beans
-        if (!eagerBeans.isEmpty())
-        {
-            ManagedBeanBuilder managedBeanBuilder = new ManagedBeanBuilder();
-            Map<String, Object> applicationMap = externalContext.getApplicationMap();
-            
-            for (ManagedBean bean : eagerBeans)
-            {
-                // check application scope for bean instance
-                if (applicationMap.containsKey(bean.getManagedBeanName()))
-                {
-                    // do not build bean, because it already exists
-                    // (e.g. @ManagedProperty from previous managed bean already created it)
-                    continue;
-                }
-
-                // create instance
-                Object beanInstance = managedBeanBuilder.buildManagedBean(facesContext, bean);
-                
-                // put in application scope
-                applicationMap.put(bean.getManagedBeanName(), beanInstance);
-            }
         }
     }
 

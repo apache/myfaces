@@ -23,7 +23,6 @@ import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.ViewScopeProvider;
 import org.apache.myfaces.spi.ViewScopeProviderFactory;
 import org.apache.myfaces.util.ExternalSpecifications;
-import org.apache.myfaces.view.impl.DefaultViewScopeHandler;
 
 /**
  *
@@ -50,10 +49,7 @@ public class DefaultViewScopeProviderFactory extends ViewScopeProviderFactory
                     "org.apache.myfaces.cdi.impl.CDIManagedBeanHandlerImpl");
                     //CDIManagedBeanHandler.getInstance(externalContext);
             }
-            else
-            {
-                returnValue = new DefaultViewScopeHandler();
-            }
+
             // cache the result on the ApplicationMap
             externalContext.getApplicationMap().put(VIEW_SCOPE_HANDLER_INSTANCE_KEY, returnValue);
         }

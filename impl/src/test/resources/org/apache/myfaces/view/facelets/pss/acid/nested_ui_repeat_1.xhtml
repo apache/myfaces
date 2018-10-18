@@ -22,7 +22,7 @@
 <h:body>
   <h:panelGroup id="panel" binding="#{componentBindingBean.panel}"/>
   <h:form id="mainForm">
-     <ui:repeat var="item" value="#{testBean.values}">
+     <ui:repeat var="item" value="#{acidTestBean.values}">
         <testComposite:testUIRepeatCC item="#{item}"/>
      </ui:repeat>
      <h:commandButton id="postback" value="POSTBACK"/>

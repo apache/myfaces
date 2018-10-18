@@ -37,8 +37,6 @@ public abstract class FacesConfig implements Serializable
 
     public abstract List<Converter> getConverters();
 
-    public abstract List<ManagedBean> getManagedBeans();
-
     public abstract List<NavigationRule> getNavigationRules();
 
     public abstract List<RenderKit> getRenderKits();

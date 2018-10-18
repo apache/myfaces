@@ -20,11 +20,13 @@ package org.apache.myfaces.view.facelets.pss.acid.managed;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
 
-import javax.faces.bean.ManagedBean;
 import javax.faces.event.ActionEvent;
+import javax.inject.Named;
 
-@ManagedBean(name="testManagedBean")
+@Named("testManagedBean")
+@RequestScoped
 public class ProbeManagedBean {
 
 	private static final List<String>	LIST;

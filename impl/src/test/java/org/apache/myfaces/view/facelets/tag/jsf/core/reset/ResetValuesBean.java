@@ -18,17 +18,18 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf.core.reset;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import java.io.Serializable;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.event.ActionEvent;
+import javax.inject.Named;
 
 /**
  *
  * @author Leonardo Uribe
  */
-@ManagedBean(name="bean")
+@Named("bean")
 @SessionScoped
-public class ResetValuesBean
+public class ResetValuesBean implements Serializable
 {
     
     private String field1;

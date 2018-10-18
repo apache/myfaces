@@ -20,15 +20,15 @@ package org.apache.myfaces.view.facelets.pss.acid.managed;
 
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.event.ActionEvent;
+import javax.inject.Named;
 
 /**
  *
  * @author Leonardo Uribe
  */
-@ManagedBean(name="checkActionEventBean")
+@Named("checkActionEventBean")
 @SessionScoped
 public class CheckActionEventBean implements Serializable
 {

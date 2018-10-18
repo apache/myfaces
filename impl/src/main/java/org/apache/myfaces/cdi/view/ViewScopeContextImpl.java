@@ -28,16 +28,11 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.PassivationCapable;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 
 import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
-import org.apache.myfaces.config.ManagedBeanDestroyer;
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.annotation.LifecycleProvider;
-import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.myfaces.view.ViewScopeProxyMap;
 
 /**
@@ -234,9 +229,7 @@ public class ViewScopeContextImpl implements Context
     public static void destroyAllActive(ViewScopeContextualStorage storage, FacesContext facesContext)
     {
         Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
-        ManagedBeanDestroyer mbDestroyer = 
-            getManagedBeanDestroyer(facesContext.getExternalContext());
-        
+
         for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : contextMap.entrySet())
         {
             if (!(entry.getKey() instanceof ViewScopeContextualKey))
@@ -246,12 +239,6 @@ public class ViewScopeContextImpl implements Context
                 ContextualInstanceInfo<?> contextualInstanceInfo = entry.getValue();
                 bean.destroy(contextualInstanceInfo.getContextualInstance(), 
                     contextualInstanceInfo.getCreationalContext());
-            }
-            else
-            {
-                // Destroy the JSF managed view scoped bean.
-                ViewScopeContextualKey key = (ViewScopeContextualKey) entry.getKey();
-                mbDestroyer.destroy(key.getName(), entry.getValue().getContextualInstance());
             }
         }
         
@@ -272,12 +259,4 @@ public class ViewScopeContextImpl implements Context
         }
     }
 
-    protected static ManagedBeanDestroyer getManagedBeanDestroyer(ExternalContext externalContext)
-    {
-        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(externalContext);
-        LifecycleProvider lifecycleProvider = LifecycleProviderFactory
-                .getLifecycleProviderFactory(externalContext).getLifecycleProvider(externalContext);
-
-        return new ManagedBeanDestroyer(lifecycleProvider, runtimeConfig);
-    }
 }

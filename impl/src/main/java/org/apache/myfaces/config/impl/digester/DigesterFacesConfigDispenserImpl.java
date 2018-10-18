@@ -33,7 +33,6 @@ import org.apache.myfaces.config.element.Behavior;
 import org.apache.myfaces.config.element.ClientBehaviorRenderer;
 import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.config.element.FacesConfigExtension;
-import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
 import org.apache.myfaces.config.element.Application;
@@ -111,8 +110,6 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     private List<String> searchExpressionHandlers = new ArrayList<String>();
     private List<String> searchKeywordResolvers = new ArrayList<String>();
     
-    private List<ManagedBean> managedBeans = new ArrayList<ManagedBean>();
-    
     private List<NavigationRule> navigationRules = new ArrayList<NavigationRule>();
     private List<ResourceBundle> resourceBundles = new ArrayList<ResourceBundle>();
 
@@ -164,7 +161,6 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     private transient List<String> umviewHandlers;
     private transient List<String> umsearchExpressionHandlers;
     private transient List<String> umsearchKeywordResolvers;
-    private transient List<ManagedBean> ummanagedBeans;
     private transient List<NavigationRule> umnavigationRules;
     private transient List<ResourceBundle> umresourceBundles;
     private transient List<SystemEventListener> umsystemEventListeners;
@@ -326,7 +322,6 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         faceletTagLibraries.addAll(config.getFaceletTagLibraryList());
 
         lifecyclePhaseListeners.addAll(config.getLifecyclePhaseListener());
-        managedBeans.addAll(config.getManagedBeans());
         navigationRules.addAll(config.getNavigationRules());
         facesVersion = config.getVersion();
         namedEvents.addAll(config.getNamedEvents());
@@ -782,19 +777,6 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     public String getValidatorClass(String validatorId)
     {
         return validators.get(validatorId);
-    }
-
-    /**
-     * @return Collection over {@link org.apache.myfaces.config.element.ManagedBean ManagedBean}s
-     */
-    @Override
-    public Collection<ManagedBean> getManagedBeans()
-    {
-        if (ummanagedBeans == null)
-        {
-            ummanagedBeans = Collections.unmodifiableList(managedBeans);
-        }
-        return ummanagedBeans;
     }
 
     /**

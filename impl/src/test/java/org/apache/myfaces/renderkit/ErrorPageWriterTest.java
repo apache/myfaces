@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.renderkit;
 
+import java.io.IOException;
 import java.io.StringWriter;
 
 import javax.el.ValueExpression;
@@ -80,7 +81,7 @@ public class ErrorPageWriterTest extends AbstractJsfTestCase
         writer = null;
     }
 
-    public void testValueExpressionGetExpressionStringReturnsNull()
+    public void testValueExpressionGetExpressionStringReturnsNull() throws IOException
     {
         //See MYFACES-3413 for details
         UIViewRoot root = facesContext.getViewRoot();
@@ -95,25 +96,19 @@ public class ErrorPageWriterTest extends AbstractJsfTestCase
         outputText.setValueExpression("rendered", ve);
         String id = "testValueExpressionGetExpressionStringReturnsNullOutputComponent";
         outputText.setId(id);
-        try 
-        {
-            StringWriter w = new StringWriter();
-            Throwable t = new Throwable("Placeholder throwable");
-            ErrorPageWriter.debugHtml(w, facesContext, t);
-            String output = w.toString();
-            int indexOfOutputComponentId = output.indexOf(id);
-            String surroundingText = "output component not found.";
-            if (-1 != indexOfOutputComponentId) {
-                surroundingText = output.substring(Math.max(0, indexOfOutputComponentId - 20), Math.min(output.length(), indexOfOutputComponentId + 280));
-            }
-            int indexOfHasRenderedAttribute = output.indexOf("rendered=\"\"");
-            boolean hasRenderedAttribute = (-1 != indexOfHasRenderedAttribute);
-            assertTrue("rendered attribute wasn't written correctly: " + surroundingText, hasRenderedAttribute);
+
+        StringWriter w = new StringWriter();
+        Throwable t = new Throwable("Placeholder throwable");
+        ErrorPageWriter.debugHtml(w, facesContext, t);
+        String output = w.toString();
+        int indexOfOutputComponentId = output.indexOf(id);
+        String surroundingText = "output component not found.";
+        if (-1 != indexOfOutputComponentId) {
+            surroundingText = output.substring(Math.max(0, indexOfOutputComponentId - 20), Math.min(output.length(), indexOfOutputComponentId + 280));
         }
-        catch (Exception e)
-        {
-            fail(e.getMessage());
-        }
+        int indexOfHasRenderedAttribute = output.indexOf("rendered=\"\"");
+        boolean hasRenderedAttribute = (-1 != indexOfHasRenderedAttribute);
+        assertTrue("rendered attribute wasn't written correctly: " + surroundingText, hasRenderedAttribute);
     }
     
 }

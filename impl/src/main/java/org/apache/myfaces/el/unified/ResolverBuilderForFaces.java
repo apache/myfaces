@@ -41,7 +41,6 @@ import org.apache.myfaces.el.unified.resolver.CompositeComponentELResolver;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.el.unified.resolver.ImportConstantsELResolver;
 import org.apache.myfaces.el.unified.resolver.ImportHandlerResolver;
-import org.apache.myfaces.el.unified.resolver.ManagedBeanResolver;
 import org.apache.myfaces.el.unified.resolver.ResourceBundleResolver;
 import org.apache.myfaces.el.unified.resolver.ResourceResolver;
 import org.apache.myfaces.el.unified.resolver.ScopedAttributeResolver;
@@ -125,10 +124,6 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
         //Flash object is instanceof Map, so it is necessary to resolve
         //before MapELResolver. Better to put this one before
         list.add(new FlashELResolver());
-        if (config.isSupportManagedBeans())
-        {
-            list.add(new ManagedBeanResolver());
-        }
         list.add(new ResourceResolver());
         list.add(new ResourceBundleELResolver());
         list.add(new ResourceBundleResolver());

@@ -27,13 +27,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.FacesException;
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.CustomScoped;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.NoneScoped;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.behavior.FacesBehavior;
 import javax.faces.context.ExternalContext;
@@ -62,8 +55,6 @@ import org.apache.myfaces.spi.AnnotationProviderFactory;
  * <li>{@link javax.faces.convert.FacesConverter}</li>
  * <li>{@link javax.faces.validator.FacesValidator}</li>
  * <li>{@link javax.faces.render.FacesRenderer}</li>
- * <li>{@link javax.faces.bean.ManagedBean}</li>
- * <li>{@link javax.faces.bean.ManagedProperty}</li>
  * <li>{@link javax.faces.render.FacesBehaviorRenderer}</li>
  * </ul>
  * <p>
@@ -270,12 +261,6 @@ public class AnnotationConfigurator
             }
         }
 
-        classes = map.get(ManagedBean.class);
-        if (classes != null && !classes.isEmpty())
-        {
-            handleManagedBean(facesConfig, classes);
-        }
-
         classes = map.get(NamedEvent.class);
         if (classes != null && !classes.isEmpty())
         {
@@ -302,142 +287,7 @@ public class AnnotationConfigurator
         
         return facesConfig;
     }
-    
-    private void handleManagedBean(FacesConfigImpl facesConfig, Set<Class<?>> classes)
-    {
-        for (Class<?> clazz : classes)
-        {
-            javax.faces.bean.ManagedBean bean =
-                    (javax.faces.bean.ManagedBean) clazz.getAnnotation(javax.faces.bean.ManagedBean.class);
 
-            if (bean != null)
-            {
-                if (log.isLoggable(Level.FINE))
-                {
-                    log.fine("Class '" + clazz.getName() + "' has an @ManagedBean annotation");
-                }
-
-                org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl mbc =
-                        new org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl();
-                String beanName = bean.name();
-
-                if ((beanName == null) || beanName.isEmpty())
-                {
-                    int index;
-
-                    // Missing name attribute algorithm: take the unqualified name and make the
-                    // first character lowercase.
-
-                    beanName = clazz.getName();
-                    index = beanName.lastIndexOf('.');
-
-                    if (index != -1)
-                    {
-                        beanName = beanName.substring(index + 1);
-                    }
-
-                    beanName = Character.toLowerCase(beanName.charAt(0)) +
-                            beanName.substring(1);
-                }
-
-                mbc.setName(beanName);
-                mbc.setEager(Boolean.toString(bean.eager()));
-                mbc.setBeanClass(clazz.getName());
-
-                ApplicationScoped appScoped = (ApplicationScoped) clazz.getAnnotation(ApplicationScoped.class);
-                if (appScoped != null)
-                {
-                    mbc.setScope("application");
-                }
-
-                else
-                {
-                    NoneScoped noneScoped = (NoneScoped) clazz.getAnnotation(NoneScoped.class);
-                    if (noneScoped != null)
-                    {
-                        mbc.setScope("none");
-                    }
-
-                    else
-                    {
-                        RequestScoped requestScoped = (RequestScoped) clazz.getAnnotation(RequestScoped.class);
-                        if (requestScoped != null)
-                        {
-                            mbc.setScope("request");
-                        }
-
-                        else
-                        {
-                            SessionScoped sessionScoped = (SessionScoped) clazz.getAnnotation(SessionScoped.class);
-                            if (sessionScoped != null)
-                            {
-                                mbc.setScope("session");
-                            }
-
-                            else
-                            {
-                                ViewScoped viewScoped = (ViewScoped) clazz.getAnnotation(ViewScoped.class);
-                                if (viewScoped != null)
-                                {
-                                    mbc.setScope("view");
-                                }
-
-                                else
-                                {
-                                    CustomScoped customScoped
-                                            = (CustomScoped) clazz.getAnnotation(CustomScoped.class);
-                                    if (customScoped != null)
-                                    {
-                                        mbc.setScope(customScoped.value());
-                                    }
-
-                                    else
-                                    {
-                                        // No scope annotation means default of "request".
-
-                                        mbc.setScope("request");
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                Field[] fields = fields(clazz);
-                for (Field field : fields)
-                {
-                    if (log.isLoggable(Level.FINEST))
-                    {
-                        log.finest("  Scanning field '" + field.getName() + "'");
-                    }
-                    javax.faces.bean.ManagedProperty property = (javax.faces.bean.ManagedProperty) field
-                            .getAnnotation(javax.faces.bean.ManagedProperty.class);
-                    if (property != null)
-                    {
-                        if (log.isLoggable(Level.FINE))
-                        {
-                            log.fine("  Field '" + field.getName()
-                                    + "' has a @ManagedProperty annotation");
-                        }
-                        org.apache.myfaces.config.impl.digester.elements.ManagedPropertyImpl mpc =
-                                new org.apache.myfaces.config.impl.digester.elements.ManagedPropertyImpl();
-                        String name = property.name();
-                        if ((name == null) || "".equals(name))
-                        {
-                            name = field.getName();
-                        }
-                        mpc.setPropertyName(name);
-                        mpc.setPropertyClass(field.getType().getName()); // FIXME - primitives, arrays, etc.
-                        mpc.setValue(property.value());
-                        mbc.addProperty(mpc);
-                        continue;
-                    }
-                }
-                facesConfig.addManagedBean(mbc);
-            }
-        }
-    }
-    
     private void handleNamedEvent(FacesConfigImpl facesConfig, Set<Class<?>> classes)
     {
         for (Class<?> clazz : classes)

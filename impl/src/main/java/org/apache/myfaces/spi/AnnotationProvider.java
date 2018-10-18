@@ -32,7 +32,6 @@ import javax.faces.context.ExternalContext;
  * needs to be found at startup: 
  * 
  * <ul>
- * <li>{@link javax.faces.bean.ManagedBean}</li>
  * <li>{@link javax.faces.component.FacesComponent}</li>
  * <li>{@link javax.faces.component.behavior.FacesBehavior}</li>
  * <li>{@link javax.faces.convert.FacesConverter}</li>

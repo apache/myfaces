@@ -59,7 +59,6 @@ public class DigesterFacesConfigUnmarshallerImplTest extends TestCase
         assertTrue(cfg.getConverters().isEmpty());
         assertTrue(cfg.getFactories().isEmpty());
         assertTrue(cfg.getLifecyclePhaseListener().isEmpty());
-        assertTrue(cfg.getManagedBeans().isEmpty());
         assertTrue(cfg.getNavigationRules().isEmpty());
         assertTrue(cfg.getRenderKits().isEmpty());
         assertTrue(cfg.getValidators().isEmpty());
@@ -136,7 +135,6 @@ public class DigesterFacesConfigUnmarshallerImplTest extends TestCase
         assertTrue(cfg.getConverters().isEmpty());
         assertTrue(cfg.getFactories().isEmpty());
         assertTrue(cfg.getLifecyclePhaseListener().isEmpty());
-        assertTrue(cfg.getManagedBeans().isEmpty());
         assertTrue(cfg.getNavigationRules().isEmpty());
         assertTrue(cfg.getRenderKits().isEmpty());
         assertTrue(cfg.getValidators().isEmpty());
@@ -162,7 +160,6 @@ public class DigesterFacesConfigUnmarshallerImplTest extends TestCase
         assertTrue(cfg.getConverters().isEmpty());
         assertTrue(cfg.getFactories().isEmpty());
         assertTrue(cfg.getLifecyclePhaseListener().isEmpty());
-        assertTrue(cfg.getManagedBeans().isEmpty());
         assertTrue(cfg.getNavigationRules().isEmpty());
         assertTrue(cfg.getRenderKits().isEmpty());
         assertTrue(cfg.getValidators().isEmpty());
