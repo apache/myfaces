@@ -21,6 +21,7 @@
         <groupId>org.apache.myfaces</groupId>
         <artifactId>myfaces</artifactId>
         <version>19</version>
+        <relativePath></relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
