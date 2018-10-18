@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-core-project</artifactId>
-    <version>2.3.3-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
@@ -145,7 +145,7 @@
                   <version>${project.version}</version>
                   <type>zip</type>
                   <classifier>source-release</classifier>
-                </artifactItem>                
+                </artifactItem>
                </artifactItems>
                <outputDirectory>${project.build.directory}/src</outputDirectory>
              </configuration>
@@ -163,7 +163,7 @@
         	      <descriptors>
 			    	 <descriptor>src/main/assembly/coresrc.xml</descriptor>
 	    		  </descriptors>
-        	      <finalName>myfaces-core-${project.version}-src</finalName>	    		  
+        	      <finalName>myfaces-core-${project.version}-src</finalName>
         	      <appendAssemblyId>false</appendAssemblyId>
 		          <outputDirectory>target/assembly/out</outputDirectory>
         		  <workDirectory>target/assembly/work</workDirectory>
@@ -171,7 +171,7 @@
         	    <phase>package</phase>
         	    <goals>
         	       <goal>attached</goal>
-        	    </goals>        	    
+        	    </goals>
         	</execution>
         	<execution>
         	    <id>make_assembly_bin</id>
@@ -182,7 +182,7 @@
         	      <finalName>myfaces-core-${project.version}-bin</finalName>
         	      <appendAssemblyId>false</appendAssemblyId>
 		          <outputDirectory>target/assembly/out</outputDirectory>
-        		  <workDirectory>target/assembly/work</workDirectory>        	      
+        		  <workDirectory>target/assembly/work</workDirectory>
                 </configuration>
                 <phase>package</phase>
         	    <goals>
@@ -259,7 +259,7 @@
       <artifactId>myfaces-api</artifactId>
       <version>${project.version}</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-bundle</artifactId>

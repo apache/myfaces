@@ -34,7 +34,7 @@
         </section>
         <section name="Diary">
 
-            <p><b>NOTE: SHA1 hashes have been deprecated for some time on download pages (*). The announce was moderated this time, but the download page must be fixed for the next release. 
+            <p><b>NOTE: SHA1 hashes have been deprecated for some time on download pages (*). The announce was moderated this time, but the download page must be fixed for the next release.
             This means using SHA256 or SHA512 instead of SHA1. </b></p>
 
             <p><b>NOTE:</b> Make sure you have the right ssh public key set in id.apache.org page before performing the release steps.</p>
@@ -42,7 +42,7 @@
             <p>Before performing the release you need to configure your environment if you haven't done it before.</p>
             a. Go to: <a class="externalLink" href="http://www.apache.org/dev/publishing-maven-artifacts.html">Publishing Maven Artifacts</a>
             <br/>
-            b. Go to the section SETUP YOUR DEVELOPMENT ENVIRONMENT and generate the pgp key signature. Don't forget to distribute the public key step. 
+            b. Go to the section SETUP YOUR DEVELOPMENT ENVIRONMENT and generate the pgp key signature. Don't forget to distribute the public key step.
             <br/>
             Link: <a class="externalLink" href="https://blog.sonatype.com/2010/01/how-to-generate-pgp-signatures-with-maven/#.Vm9Km8q22-q">Generate PGP signature</a>
 
@@ -71,9 +71,9 @@ mvn clean install -Dsynch-shared=true
                 Try -DdryRun=true SUCCESS
                 <div class="source">
                     <pre>
-mvn release:prepare -DtagBase=https://svn.apache.org/repos/asf/myfaces/shared/tags -DdryRun=true    
+mvn release:prepare -DtagBase=https://svn.apache.org/repos/asf/myfaces/shared/tags -DdryRun=true
                     </pre>
-                </div>       
+                </div>
                 Release it! FAIL
                 <div class="source">
                     <pre>
@@ -83,7 +83,7 @@ mvn release:rollback
 mvn release:prepare -DtagBase=https://svn.apache.org/repos/asf/myfaces/shared/tags -Dresume=false
                     </pre>
                 </div>
-        
+
                 <p><b>NOTE:</b> Preparing the release will create the new tag in SVN, automatically checking in on your behalf. Note: If you're located in Europe then release:prepare may fail with 'Unable to tag SCM' and 'svn: No such revision X'. Wait 10 seconds and run mvn release:prepare again.</p>
 
                 <li><p>Stage the release for a vote</p></li>
@@ -92,7 +92,7 @@ mvn release:prepare -DtagBase=https://svn.apache.org/repos/asf/myfaces/shared/ta
 mvn release:perform -DtagBase=https://svn.apache.org/repos/asf/myfaces/shared/tags
                     </pre>
                 </div>
-            
+
             </ul>
 
             <h3>2. Preparing Core 2.3.0</h3>
@@ -104,35 +104,35 @@ mvn release:perform -DtagBase=https://svn.apache.org/repos/asf/myfaces/shared/ta
                     <pre>
 mvn clean install
 mvn install -Pgenerate-assembly -Papache-release -Dgpg.passphrase=yourphrase
-# The dryRun=true don't checkin or tag anything in the scm repository, or modify the checkout. 
+# The dryRun=true don't checkin or tag anything in the scm repository, or modify the checkout.
 # Useful to check modifications to poms and scm operations.
 mvn release:prepare -DprepareRelease=true -DdryRun=true
-# Run again this command to prepare release 
+# Run again this command to prepare release
 # and commit to https://github.com/apache/myfaces/tags repository.
-mvn release:prepare -DprepareRelease=true -Dresume=false 
+mvn release:prepare -DprepareRelease=true -Dresume=false
                     </pre>
                 </div>
-            
+
 
                 <p><b>NOTE:</b> Preparing the release will create the new tag in SVN, automatically checking in on your behalf.</p>
 
                 <p><b>NOTE:</b> If you're located in Europe then release:prepare may fail with 'Unable to tag SCM' and 'svn: No such revision X'. Wait 10 seconds and run mvn release:prepare again.</p>
 
-                <p><b>NOTE:</b> If you see a message like "You don't have a SNAPSHOT project in the reactor projects list" it means that the workspace directory is not cleaned and Maven uses the old temporary files which contain some weird versions instead of the current SNAPSHOTs. You will have to do a mvn release:clean or start the process again from the beginning. 
+                <p><b>NOTE:</b> If you see a message like "You don't have a SNAPSHOT project in the reactor projects list" it means that the workspace directory is not cleaned and Maven uses the old temporary files which contain some weird versions instead of the current SNAPSHOTs. You will have to do a mvn release:clean or start the process again from the beginning.
                 <a class="externalLink" href="http://kaczanowscy.pl/tomek/2012-12/jenkins-maven-no-snapshots-in-the-reactor-project-list">Maven no snapshot in the project</a></p>
 
                 <p><b>NOTE:</b> If you have an issue like the one below when running the command "mvn release:prepare -DprepareRelease=true" that's because the local directory .m2/repository/org/apache/myfaces/core does not have the assembly files for the version to be released.</p>
 
                 <div class="source">
                     <pre>
-[INFO] [ERROR] Failed to execute goal org.codehaus.mojo:dependency-maven-plugin:1.0:copy (copy-javadoc) on 
-project myfaces-core-assembly: Unable to find artifact. Could not find artifact 
+[INFO] [ERROR] Failed to execute goal org.codehaus.mojo:dependency-maven-plugin:1.0:copy (copy-javadoc) on
+project myfaces-core-assembly: Unable to find artifact. Could not find artifact
 org.apache.myfaces.core:myfaces-api:jar:javadoc:2.3.1 in tomcat (http://tomcat.apache.org/dev/dist/m2-repository)
                     </pre>
                 </div>
 
                 To fix the issue, run again the following command to generate the assembly files for the version to be released
-                
+
                 <div class="source">
                     <pre>
 mvn install -Pgenerate-assembly -Papache-release -Dgpg.passphrase=yourphrase
@@ -168,9 +168,9 @@ mvn release:perform -DperformRelease=true
             <h3>3. JIRA Release Management</h3>
             <br/>
             <ul>
-                <li>Create 2.3.1 and 2.3.1-SNAPSHOT versions</li> 
-                <li>Find resolved issues and close them</li> 
-                <li>Unresolved issues moved to 2.3.1-SNAPSHOT</li> 
+                <li>Create 2.3.1 and 2.3.1-SNAPSHOT versions</li>
+                <li>Find resolved issues and close them</li>
+                <li>Unresolved issues moved to 2.3.1-SNAPSHOT</li>
             </ul>
 
             <p>Go to the following link perform these steps under the MyFaces Core Project: <a class="externalLink" href="https://issues.apache.org/jira/secure/Dashboard.jspa">JIRA Dashboard</a></p>
@@ -188,10 +188,10 @@ mvn release:perform -DperformRelease=true
             <ul>
                 <li>Automatically done by maven on release:perform step and should be available in the nexus maven repository to do the final deploy.</li>
                 <p>Login to nexus repository using the id.apache.org account: <a class="externalLink" href="https://repository.apache.org">Nexus Repository</a></p>
-                Now  under Build Promotion go to Staging Repositories, look for orgapachemyfaces-xxxx repository. Click "close" so the artifacts can be downloaded. 
+                Now  under Build Promotion go to Staging Repositories, look for orgapachemyfaces-xxxx repository. Click "close" so the artifacts can be downloaded.
 
                 <p><b>NOTE:</b> If the artifacts has some bug when testing them you can click "drop", if the artifacts are approved, follow the Step 8 in this wiki, so you can release them.</p>
-                
+
                 <p>More information here: <a class="externalLink" href="http://central.sonatype.org/pages/releasing-the-deployment.html#locate-and-examine-your-staging-repository">Locate and examine your staging repository</a></p>
                 <p>Example link: <a class="externalLink" href="https://repository.apache.org/content/repositories/orgapachemyfaces-1130/org/apache/myfaces/core/myfaces-core-assembly/2.3.0/">https://repository.apache.org/content/repositories/orgapachemyfaces-1130/org/apache/myfaces/core/myfaces-core-assembly/2.3.0/</a></p>
                 <p><b>NOTE:</b> Providing MD5 checksum files is now discouraged for new releases, but still allowed for past releases.</p>
@@ -247,7 +247,7 @@ scp -p -r myfaces-core-2.3.0-src* embreijo@people.apache.org:/home/embreijo/publ
                 <li>
                     Download the jar-with-dependencies.jar archive and follow instructions to compare the two versions.
                 </li>
-                <p>Example: 
+                <p>Example:
                 java -jar japicmp-0.11.0-jar-with-dependencies.jar -n &lt;v2_binary&gt;.jar -o &lt;v1_binary&gt;.jar --ignore-missing-classes --html-file &lt;dir_name&gt;/results.html</p>
 
                 <p>Report of myfaces-api-2.3.0-beta vs myfaces-api-2.3.0.jar looks good.</p>
@@ -255,7 +255,7 @@ scp -p -r myfaces-core-2.3.0-src* embreijo@people.apache.org:/home/embreijo/publ
                 <p><b>NOTE:</b> Comparison should also be done between MyFaces 2.3 API and Mojarra 2.3 API jars, that is, myfaces-api-2.3.x.jar and javax.faces-api-2.3.jar.</p>
 
                 <p>Link to Mojarra 2.3 API: <a class="externalLink" href="https://mvnrepository.com/artifact/javax.faces/javax.faces-api/2.3">https://mvnrepository.com/artifact/javax.faces/javax.faces-api/2.3</a></p>
-            </ul>    
+            </ul>
 
 
 
@@ -310,7 +310,7 @@ Eduardo M. Breijo
             <ul>
                 <li><p>Now that the voting is closed, go the <a class="externalLink" href="https://repository.apache.org">Nexus Repository</a> and find the myfaces 2.3.0 repo (example: orgapachemyfaces-1130) and click the release button. More information here: <a class="externalLink" href="http://central.sonatype.org/pages/releasing-the-deployment.html#close-and-drop-or-release-your-staging-repository">Close and drop or release your staging repository</a></p>
                 </li>
-                
+
 
                 <p>Some useful links/resources:</p>
                 <ul>
@@ -369,7 +369,7 @@ for file in $(find . -type f -name "${PATTERN}" -exec basename \{\} \; ) ; do
 
                 <li><p>Checkout the main site <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/site/trunk/">https://svn.apache.org/repos/asf/myfaces/site/trunk/</a></p></li>
                 Modify and commit the changes
-                
+
                 <div class="source">
                     <pre>
 src/site/apt/download.apt
@@ -395,7 +395,7 @@ mvn site:site # this will generate the site under the target directory
                 Modify and commit the changes
                 <br/>
                 <b>NOTE:</b> You may have to do modify and commit these same changes to the MyFaces 2.3.x development branch (currently master branch in GitHub) in <a class="externalLink" href="https://github.com/apache/myfaces">https://github.com/apache/myfaces</a> repository to keep the dev repo up to date.
-                
+
                 <div class="source">
                     <pre>
 api/src/site/apt/index.apt (if necessary)
@@ -412,7 +412,7 @@ mvn site:site # this will generate the site under the target directory
                     </pre>
                 </div>
 
-                Commit the new generated files under core23 site repo: <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/site/publish/core23">https://svn.apache.org/repos/asf/myfaces/site/publish/core23</a>
+                Commit the new generated files under core30 site repo: <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/site/publish/core30">https://svn.apache.org/repos/asf/myfaces/site/publish/core30</a>
 
 
                 <li><p>Finally generate the tld docs and webconfig.html file (if necessary)</p></li>
@@ -426,7 +426,7 @@ mvn -Pgenerate-site -Pgenerate-tlddoc site
                     </pre>
                 </div>
 
-                Commit the generated docs in repo <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/site/publish/core23/myfaces-impl">https://svn.apache.org/repos/asf/myfaces/site/publish/core23/myfaces-impl</a>
+                Commit the generated docs in repo <a class="externalLink" href="https://svn.apache.org/repos/asf/myfaces/site/publish/core30/myfaces-impl">https://svn.apache.org/repos/asf/myfaces/site/publish/core30/myfaces-impl</a>
 
             </ul>
 
@@ -458,7 +458,7 @@ MyFaces Core 2.3.0 is available in both binary and source distributions.
 
 MyFaces Core is also available in the central Maven repository under Group ID "org.apache.myfaces.core".
 
-Release Notes - MyFaces Core - Version 2.3.0 can be found in the following link: 
+Release Notes - MyFaces Core - Version 2.3.0 can be found in the following link:
 https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=10600&amp;version=12339569
 
 Regards,
@@ -467,8 +467,8 @@ Eduardo M. Breijo
                 </div>
 
             </ul>
-            
-            <p><b>NOTE:</b> If you use your personal email to send the announcement to announce@apache.org and announce@myfaces.apache.org it will bounce back and it will not be delivered. To get around this, please login into the apache webclient <a class="externalLink" href="https://lists.apache.org/list.html?announce@apache.org">Announce @ Apache</a> and <a class="externalLink" href="https://lists.apache.org/list.html?announce@myfaces.apache.org">Announce @ MyFaces Apache</a>. You need to use your apache id credentials and from each list, start a new discussion in the top right corner.</p> 
+
+            <p><b>NOTE:</b> If you use your personal email to send the announcement to announce@apache.org and announce@myfaces.apache.org it will bounce back and it will not be delivered. To get around this, please login into the apache webclient <a class="externalLink" href="https://lists.apache.org/list.html?announce@apache.org">Announce @ Apache</a> and <a class="externalLink" href="https://lists.apache.org/list.html?announce@myfaces.apache.org">Announce @ MyFaces Apache</a>. You need to use your apache id credentials and from each list, start a new discussion in the top right corner.</p>
 
         </section>
     </body>

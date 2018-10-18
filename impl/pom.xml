@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-core-project</artifactId>
-        <version>2.3.3-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
@@ -28,11 +28,11 @@
 
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-impl</artifactId>
-    <name>Apache MyFaces JSF-2.3 Core Impl</name>
+    <name>Apache MyFaces JSF-3.0 Core Impl</name>
     <description>
-        The private implementation classes of the Apache MyFaces Core JSF-2.3 Implementation
+        The private implementation classes of the Apache MyFaces Core JSF-3.0 Implementation
     </description>
-    <url>http://myfaces.apache.org/core23/myfaces-impl</url>
+    <url>http://myfaces.apache.org/core30/myfaces-impl</url>
 
     <properties>
         <openwebbeans.version>1.6.3</openwebbeans.version>
