@@ -43,7 +43,6 @@ import javax.el.ELContextListener;
 import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.FacesWrapper;
@@ -71,11 +70,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.DateTimeConverter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.ReferenceSyntaxException;
-import javax.faces.el.ValueBinding;
-import javax.faces.el.VariableResolver;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionListener;
 import javax.faces.event.ComponentSystemEventListener;
@@ -121,11 +115,6 @@ import org.apache.myfaces.config.element.Property;
 import org.apache.myfaces.config.element.ResourceBundle;
 import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.context.RequestViewMetadata;
-import org.apache.myfaces.el.PropertyResolverImpl;
-import org.apache.myfaces.el.VariableResolverToApplicationELResolverAdapter;
-import org.apache.myfaces.el.convert.MethodExpressionToMethodBinding;
-import org.apache.myfaces.el.convert.ValueBindingToValueExpression;
-import org.apache.myfaces.el.convert.ValueExpressionToValueBinding;
 import org.apache.myfaces.el.unified.ELResolverBuilder;
 import org.apache.myfaces.el.unified.ResolverBuilderForFaces;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
@@ -151,17 +140,9 @@ public class ApplicationImpl extends Application
 {
     private static final Logger log = Logger.getLogger(ApplicationImpl.class.getName());
 
-    private final static VariableResolver VARIABLERESOLVER = new VariableResolverToApplicationELResolverAdapter();
-
-    private final static PropertyResolver PROPERTYRESOLVER = new PropertyResolverImpl();
-
     // the name for the system property which specifies the current ProjectStage (see MYFACES-2545 for details)
     public final static String PROJECT_STAGE_SYSTEM_PROPERTY_NAME = "faces.PROJECT_STAGE";
-    
-    // MyFaces specific System Property to set the ProjectStage, if not present via the standard way
-    @Deprecated
-    public final static String MYFACES_PROJECT_STAGE_SYSTEM_PROPERTY_NAME = "org.apache.myfaces.PROJECT_STAGE";
-    
+
     /**
      * Indicate the stage of the initialized application.
      */
@@ -763,28 +744,6 @@ public class ApplicationImpl extends Application
         return _navigationHandler;
     }
 
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    @Override
-    public final void setPropertyResolver(final PropertyResolver propertyResolver)
-    {
-        checkNull(propertyResolver, "propertyResolver");
-
-        if (getFaceContext() != null)
-        {
-            throw new IllegalStateException("propertyResolver must be defined before request processing");
-        }
-
-        _runtimeConfig.setPropertyResolver(propertyResolver);
-
-        if (log.isLoggable(Level.FINEST))
-        {
-            log.finest("set PropertyResolver = " + propertyResolver.getClass().getName());
-        }
-    }
-
     @Override
     public ProjectStage getProjectStage()
     {
@@ -797,20 +756,6 @@ public class ApplicationImpl extends Application
             // try to obtain the ProjectStage from the system property
             // faces.PROJECT_STAGE as proposed by Ed Burns
             stageName = System.getProperty(PROJECT_STAGE_SYSTEM_PROPERTY_NAME);
-            
-            if (stageName == null)
-            {
-                // if not found check for the "old" System Property
-                // and print a warning message to the log (just to be 
-                // sure that everyone recognizes the change in the name).
-                stageName = System.getProperty(MYFACES_PROJECT_STAGE_SYSTEM_PROPERTY_NAME);
-                if (stageName != null)
-                {
-                    log.log(Level.WARNING, "The system property " + MYFACES_PROJECT_STAGE_SYSTEM_PROPERTY_NAME
-                            + " has been replaced by " + PROJECT_STAGE_SYSTEM_PROPERTY_NAME + "!"
-                            + " Please change your settings.");
-                }
-            }
             
             if (stageName == null)
             {
@@ -897,15 +842,6 @@ public class ApplicationImpl extends Application
         return _projectStage;
     }
 
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    @Override
-    public final PropertyResolver getPropertyResolver()
-    {
-        return PROPERTYRESOLVER;
-    }
 
     @Override
     public final void setResourceHandler(ResourceHandler resourceHandler)
@@ -948,38 +884,6 @@ public class ApplicationImpl extends Application
     public final Iterator<String> getValidatorIds()
     {
         return _validatorClassMap.keySet().iterator();
-    }
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    @Override
-    public final void setVariableResolver(final VariableResolver variableResolver)
-    {
-        checkNull(variableResolver, "variableResolver");
-
-        if (isFirstRequestProcessed())
-        {
-            throw new IllegalStateException("variableResolver must be defined before request processing");
-        }
-
-        _runtimeConfig.setVariableResolver(variableResolver);
-
-        if (log.isLoggable(Level.FINEST))
-        {
-            log.finest("set VariableResolver = " + variableResolver.getClass().getName());
-        }
-    }
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    @Override
-    public final VariableResolver getVariableResolver()
-    {
-        return VARIABLERESOLVER;
     }
 
     @Override
@@ -1545,25 +1449,6 @@ public class ApplicationImpl extends Application
     }
 
     /**
-     * @deprecated Use createComponent(ValueExpression, FacesContext, String) instead.
-     */
-    @Deprecated
-    @Override
-    public final UIComponent createComponent(final ValueBinding valueBinding, final FacesContext facesContext,
-                                             final String componentType) throws FacesException
-    {
-
-        checkNull(valueBinding, "valueBinding");
-        checkNull(facesContext, "facesContext");
-        checkNull(componentType, "componentType");
-        checkEmpty(componentType, "componentType");
-
-        final ValueExpression valExpression = new ValueBindingToValueExpression(valueBinding);
-
-        return createComponent(valExpression, facesContext, componentType);
-    }
-
-    /**
      * Return an instance of the converter class that has been registered under the specified id.
      * <p>
      * Converters are registered via faces-config.xml files, and can also be registered via the addConverter(String id,
@@ -2076,45 +1961,6 @@ public class ApplicationImpl extends Application
         }
     }
 
-    // Note: this method used to be synchronized in the JSF 1.1 version. Why?
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    @Override
-    public final MethodBinding createMethodBinding(final String reference, Class<?>[] params)
-            throws ReferenceSyntaxException
-    {
-        checkNull(reference, "reference");
-        checkEmpty(reference, "reference");
-
-        // TODO: this check should be performed by the expression factory. It is
-        // a requirement of the TCK
-        if (!(reference.startsWith("#{") && reference.endsWith("}")))
-        {
-            throw new ReferenceSyntaxException("Invalid method reference: '" + reference + "'");
-        }
-
-        if (params == null)
-        {
-            params = new Class[0];
-        }
-
-        MethodExpression methodExpression;
-
-        try
-        {
-            methodExpression = getExpressionFactory().createMethodExpression(threadELContext(), reference,
-                                                                             Object.class, params);
-        }
-        catch (ELException e)
-        {
-            throw new ReferenceSyntaxException(e);
-        }
-
-        return new MethodExpressionToMethodBinding(methodExpression);
-    }
-
     @Override
     public final Validator createValidator(final String validatorId) throws FacesException
     {
@@ -2176,29 +2022,6 @@ public class ApplicationImpl extends Application
         return validatorClass.newInstance();
     }
 
-    /**
-     * @deprecated
-     */
-    @Override
-    public final ValueBinding createValueBinding(final String reference) throws ReferenceSyntaxException
-    {
-        checkNull(reference, "reference");
-        checkEmpty(reference, "reference");
-
-        ValueExpression valueExpression;
-
-        try
-        {
-            valueExpression = getExpressionFactory().createValueExpression(
-                    threadELContext(), reference, Object.class);
-        }
-        catch (ELException e)
-        {
-            throw new ReferenceSyntaxException(e);
-        }
-
-        return new ValueExpressionToValueBinding(valueExpression);
-    }
 
     // gets the elContext from the current FacesContext()
     private final ELContext threadELContext()

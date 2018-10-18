@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.el.PropertyNotFoundException;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
@@ -57,8 +58,6 @@ import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
-import javax.faces.el.PropertyNotFoundException;
-import javax.faces.el.ValueBinding;
 import javax.faces.event.PhaseId;
 import javax.faces.model.SelectItem;
 import javax.faces.render.RenderKit;
@@ -261,17 +260,6 @@ public final class RendererUtils
         }
 
         return ((ValueHolder) component).getValue();
-    }
-
-    @Deprecated
-    public static String getStringValue(FacesContext context, ValueBinding vb)
-    {
-        Object value = vb.getValue(context);
-        if (value != null)
-        {
-            return value.toString();
-        }
-        return null;
     }
 
     public static String getStringValue(FacesContext context, ValueExpression ve)
@@ -1182,7 +1170,6 @@ public final class RendererUtils
         dest.setStyleClass(src.getStyleClass());
         dest.setTabindex(src.getTabindex());
         dest.setTitle(src.getTitle());
-        dest.setValidator(src.getValidator());
     }
 
     public static UIComponent findComponent(UIComponent headerComp, Class clazz)

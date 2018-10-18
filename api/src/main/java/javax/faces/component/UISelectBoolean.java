@@ -19,7 +19,6 @@
 package javax.faces.component;
 
 import javax.el.ValueExpression;
-import javax.faces.el.ValueBinding;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
@@ -66,46 +65,6 @@ public class UISelectBoolean extends UIInput
         }
 
         return value != null ? value.booleanValue() : false;
-    }
-
-    /**
-     * @deprecated Use getValueExpression instead
-     */
-    @Override
-    public ValueBinding getValueBinding(String name)
-    {
-        if (name == null)
-        {
-            throw new NullPointerException("name");
-        }
-        if (name.equals("selected"))
-        {
-            return super.getValueBinding("value");
-        }
-        else
-        {
-            return super.getValueBinding(name);
-        }
-    }
-
-    /**
-     * @deprecated Use setValueExpression instead
-     */
-    @Override
-    public void setValueBinding(String name, ValueBinding binding)
-    {
-        if (name == null)
-        {
-            throw new NullPointerException("name");
-        }
-        if (name.equals("selected"))
-        {
-            super.setValueBinding("value", binding);
-        }
-        else
-        {
-            super.setValueBinding(name, binding);
-        }
     }
 
     @Override

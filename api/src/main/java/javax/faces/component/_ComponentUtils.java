@@ -21,9 +21,6 @@ package javax.faces.component;
 import javax.el.ValueExpression;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.ValueBinding;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 import java.util.Collection;
@@ -318,61 +315,6 @@ class _ComponentUtils
                 }
             }
         }
-
-        // now invoke the validator method defined as a method-binding attribute
-        // on the component
-        MethodBinding validatorBinding = input.getValidator();
-        if (validatorBinding != null)
-        {
-            try
-            {
-                validatorBinding.invoke(context, new Object[] { context, input, convertedValue });
-            }
-            catch (EvaluationException e)
-            {
-                input.setValid(false);
-                Throwable cause = e.getCause();
-                if (cause instanceof ValidatorException)
-                {
-                    String validatorMessage = input.getValidatorMessage();
-                    if (validatorMessage != null)
-                    {
-                        context.addMessage(input.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            validatorMessage, validatorMessage));
-                    }
-                    else
-                    {
-                        FacesMessage facesMessage = ((ValidatorException)cause).getFacesMessage();
-                        if (facesMessage != null)
-                        {
-                            context.addMessage(input.getClientId(context), facesMessage);
-                        }
-                        Collection<FacesMessage> facesMessages = ((ValidatorException)cause).getFacesMessages();
-                        if (facesMessages != null)
-                        {
-                            for (FacesMessage message : facesMessages)
-                            {
-                                context.addMessage(input.getClientId(context), message);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    throw e;
-                }
-            }
-        }
-    }
-
-    static String getStringValue(FacesContext context, ValueBinding vb)
-    {
-        Object value = vb.getValue(context);
-        if (value == null)
-        {
-            return null;
-        }
-        return value.toString();
     }
 
     @SuppressWarnings("unchecked")

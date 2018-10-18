@@ -18,10 +18,8 @@
  */
 package javax.faces.webapp;
 
-import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
@@ -132,19 +130,6 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
             throw new NullPointerException("componentType");
         }
 
-        if (_binding != null)
-        {
-            Application application = context.getApplication();
-            ValueBinding componentBinding = application.createValueBinding(_binding);
-            UIComponent component = application.createComponent(componentBinding, context, componentType);
-
-            component.setId(id);
-            component.setValueBinding("binding", componentBinding);
-            setProperties(component);
-
-            return component;
-        }
-
         UIComponent component = context.getApplication().createComponent(componentType);
         component.setId(id);
         setProperties(component);
@@ -222,16 +207,8 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
 
         if (_rendered != null)
         {
-            if (isValueReference(_rendered))
-            {
-                ValueBinding vb = getFacesContext().getApplication().createValueBinding(_rendered);
-                component.setValueBinding("rendered", vb);
-            }
-            else
-            {
-                boolean b = Boolean.valueOf(_rendered).booleanValue();
-                component.setRendered(b);
-            }
+            boolean b = Boolean.valueOf(_rendered).booleanValue();
+            component.setRendered(b);
         }
     }
 

@@ -41,7 +41,6 @@ public abstract class AbstractUIComponentPropertyTest<T>
 
     private IMocksControl _mocksControl;
     private MockFacesContext12 _facesContext;
-    //private ValueBinding _valueBinding;
     private ValueExpression _valueExpression;
     private ELContext _elContext;
     private UIComponent _component;
@@ -60,7 +59,6 @@ public abstract class AbstractUIComponentPropertyTest<T>
         _facesContext = new MockFacesContext12();
         _elContext = _mocksControl.createMock(ELContext.class);
         _facesContext.setELContext(_elContext);
-        //_valueBinding = _mocksControl.createMock(ValueBinding.class);
         _valueExpression = _mocksControl.createMock(ValueExpression.class);
         _component = createComponent();
     }

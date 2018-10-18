@@ -43,7 +43,6 @@ import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
@@ -150,11 +149,6 @@ public abstract class UIComponent
 
     Map<Class<? extends SystemEvent>, List<SystemEventListener>> _systemEventListenerClassMap;
 
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    protected Map<String, ValueExpression> bindings;
     /**
      * Used to cache the map created using getResourceBundleMap() method, since this method could be called several
      * times when rendering the composite component. This attribute may not be serialized, so transient is used (There
@@ -361,11 +355,6 @@ public abstract class UIComponent
         return true;
     }
 
-    /**
-     * @deprecated Replaced by setValueExpression
-     */
-    public abstract void setValueBinding(String name, ValueBinding binding);
-
     public void setValueExpression(String name, ValueExpression expression)
     {
         if (name == null)
@@ -383,12 +372,6 @@ public abstract class UIComponent
 
         if (expression == null)
         {
-            //if (bindings != null) {
-            //    bindings.remove(name);
-            //    if (bindings.isEmpty()) {
-            //        bindings = null;
-            //    }
-            //}
             getStateHelper().remove(PropertyKeys.bindings, name);
         }
         else
@@ -407,11 +390,6 @@ public abstract class UIComponent
                 }
             }
 
-            //if (bindings == null) {
-            //    bindings = new HashMap<String, ValueExpression>();
-            //}
-            //
-            //bindings.put(name, expression);
             getStateHelper().put(PropertyKeys.bindings, name, expression);
         }
     }
@@ -711,11 +689,6 @@ public abstract class UIComponent
         return _resourceBundleMap;
     }
 
-    /**
-     * @deprecated Replaced by getValueExpression
-     */
-    public abstract ValueBinding getValueBinding(String name);
-
     public ValueExpression getValueExpression(String name)
     {
         if (name == null)
@@ -725,27 +698,11 @@ public abstract class UIComponent
 
         Map<String, Object> bindings = (Map<String, Object>) getStateHelper().
                 get(PropertyKeys.bindings);
-
-        if (bindings == null)
+        if (bindings != null)
         {
-            if (!(this instanceof UIComponentBase))
-            {
-                // if the component does not inherit from UIComponentBase and don't implements JSF 1.2 or later
-                ValueBinding vb = getValueBinding(name);
-                if (vb != null)
-                {
-                    //bindings = new HashMap<String, ValueExpression>();
-                    ValueExpression ve = new _ValueBindingToValueExpression(vb);
-                    getStateHelper().put(PropertyKeys.bindings, name, ve);
-                    return ve;
-                }
-            }
-        }
-        else
-        {
-            //return bindings.get(name);
             return (ValueExpression) bindings.get(name);
         }
+
         return null;
     }
 

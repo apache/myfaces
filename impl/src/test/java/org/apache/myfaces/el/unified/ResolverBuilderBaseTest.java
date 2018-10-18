@@ -25,12 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.el.ELResolver;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
 
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.el.convert.PropertyResolverToELResolver;
-import org.apache.myfaces.el.convert.VariableResolverToELResolver;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
@@ -98,62 +94,4 @@ public class ResolverBuilderBaseTest extends AbstractJsfTestCase
         _mocksControl.verify();
         Assert.assertEquals(Arrays.asList(resolver), _resolvers);
     }
-
-    @Test
-    public void testGetVariableResolver() throws Exception
-    {
-        VariableResolver resolver = _mocksControl.createMock(VariableResolver.class);
-        expect(_runtimeConfig.getVariableResolver()).andReturn(resolver).anyTimes();
-        _mocksControl.replay();
-        _testImpl.addFromRuntimeConfig(_resolvers);
-        _mocksControl.verify();
-        
-        VariableResolverToELResolver elResolver
-                = (VariableResolverToELResolver) _resolvers.get(0);
-        Assert.assertEquals(resolver, elResolver.getVariableResolver());
-    }
-
-    @Test
-    public void testGetVariableResolverChainHead() throws Exception
-    {
-        VariableResolver resolver = _mocksControl.createMock(VariableResolver.class);
-        EasyMock.expect(_runtimeConfig.getVariableResolverChainHead()).andReturn(resolver).anyTimes();
-        _mocksControl.replay();
-        _testImpl.addFromRuntimeConfig(_resolvers);
-        _mocksControl.verify();
-        
-        VariableResolverToELResolver elResolver
-                = (VariableResolverToELResolver) _resolvers.get(0);
-        Assert.assertEquals(resolver, elResolver.getVariableResolver());
-    }
-
-    @Test
-    public void testGetPropertyResolver() throws Exception
-    {
-        PropertyResolver resolver = _mocksControl.createMock(PropertyResolver.class);
-        expect(_runtimeConfig.getPropertyResolver()).andReturn(resolver).anyTimes();
-        _mocksControl.replay();
-        _testImpl.addFromRuntimeConfig(_resolvers);
-        _mocksControl.verify();
-        
-        PropertyResolverToELResolver elResolver
-                = (PropertyResolverToELResolver) _resolvers.get(0);
-        Assert.assertEquals(resolver, elResolver.getPropertyResolver());
-    }
-
-    @Test
-    public void testGetPropertyResolverChainHead() throws Exception
-    {
-        PropertyResolver resolver = _mocksControl.createMock(PropertyResolver.class);
-        EasyMock.expect(_runtimeConfig.getPropertyResolverChainHead()).andReturn(resolver).anyTimes();
-        _mocksControl.replay();
-        _testImpl.addFromRuntimeConfig(_resolvers);
-        _mocksControl.verify();
-        
-
-        PropertyResolverToELResolver elResolver
-                = (PropertyResolverToELResolver) _resolvers.get(0);
-        Assert.assertEquals(resolver, elResolver.getPropertyResolver());
-    }
-
 }

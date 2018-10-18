@@ -20,7 +20,6 @@ package javax.faces.component;
 
 import javax.el.MethodExpression;
 import javax.faces.context.FacesContext;
-import javax.faces.el.MethodBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
@@ -50,53 +49,6 @@ public class UICommand extends UIComponentBase implements ActionSource2
         setRendererType("javax.faces.Button");
     }
 
-    /**
-     * Specifies the action to take when this command is invoked.
-     * <p>
-     * If the value is an expression, it is expected to be a method 
-     * binding EL expression that identifies an action method. An action method
-     * accepts no parameters and has a String return value, called the action
-     * outcome, that identifies the next view displayed. The phase that this
-     * event is fired in can be controlled via the immediate attribute.
-     * </p>
-     * <p>
-     * If the value is a string literal, it is treated as a navigation outcome
-     * for the current view.  This is functionally equivalent to a reference to
-     * an action method that returns the string literal.
-     * </p>
-     * 
-     * @deprecated Use getActionExpression() instead.
-     */
-    public MethodBinding getAction()
-    {
-        MethodExpression actionExpression = getActionExpression();
-        if (actionExpression instanceof _MethodBindingToMethodExpression)
-        {
-            return ((_MethodBindingToMethodExpression) actionExpression)
-                    .getMethodBinding();
-        }
-        if (actionExpression != null)
-        {
-            return new _MethodExpressionToMethodBinding(actionExpression);
-        }
-        return null;
-    }
-
-    /**
-     * @deprecated Use setActionExpression instead.
-     */
-    public void setAction(MethodBinding action)
-    {
-        if (action != null)
-        {
-            setActionExpression(new _MethodBindingToMethodExpression(action));
-        }
-        else
-        {
-            setActionExpression(null);
-        }
-    }
-
     @Override
     public void broadcast(FacesEvent event) throws AbortProcessingException
     {
@@ -105,13 +57,6 @@ public class UICommand extends UIComponentBase implements ActionSource2
         if (event instanceof ActionEvent)
         {
             FacesContext context = getFacesContext();
-
-            MethodBinding mb = getActionListener();
-            if (mb != null)
-            {
-                mb.invoke(context, new Object[]
-                { event });
-            }
 
             ActionListener defaultActionListener = context.getApplication()
                     .getActionListener();
@@ -199,30 +144,6 @@ public class UICommand extends UIComponentBase implements ActionSource2
     public void setActionExpression(MethodExpression actionExpression)
     {
         getStateHelper().put(PropertyKeys.actionExpression, actionExpression);
-    }
-
-    /**
-     * A method binding EL expression that identifies an action listener method to be invoked if
-     * this component is activated by the user.
-     * <p>
-     * An action listener method accepts a parameter of type javax.faces.event.ActionEvent and returns void.
-     * The phase that this event is fired in can be controlled via the immediate attribute.
-     * 
-     * @deprecated
-     */
-    @JSFProperty(stateHolder=true, returnSignature = "void", methodSignature = "javax.faces.event.ActionEvent")
-    public MethodBinding getActionListener()
-    {
-        return (MethodBinding) getStateHelper().eval(PropertyKeys.actionListener);
-    }
-
-    /**
-     * @deprecated
-     */
-    @JSFProperty(returnSignature="void",methodSignature="javax.faces.event.ActionEvent")
-    public void setActionListener(MethodBinding actionListener)
-    {
-        getStateHelper().put(PropertyKeys.actionListener, actionListener);
     }
 
     public void addActionListener(ActionListener listener)

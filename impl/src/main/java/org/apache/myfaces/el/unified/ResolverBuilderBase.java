@@ -28,17 +28,12 @@ import javax.el.ELResolver;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.annotation.FacesConfig;
 import javax.faces.context.FacesContext;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.el.convert.PropertyResolverToELResolver;
-import org.apache.myfaces.el.convert.VariableResolverToELResolver;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
-import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
@@ -89,51 +84,6 @@ public class ResolverBuilderBase
         if (_config.getFacesConfigElResolvers() != null)
         {
             resolvers.addAll(_config.getFacesConfigElResolvers());
-        }
-
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext == null)
-        {
-            // Should not happen, but if by some reason happens,
-            // initialize as usual.
-            if (_config.getVariableResolver() != null)
-            {
-                resolvers.add(createELResolver(_config.getVariableResolver()));
-            }
-            else if (_config.getVariableResolverChainHead() != null)
-            {
-                resolvers.add(createELResolver(_config.getVariableResolverChainHead()));
-            }
-
-            if (_config.getPropertyResolver() != null)
-            {
-                resolvers.add(createELResolver(_config.getPropertyResolver()));
-            }
-            else if (_config.getPropertyResolverChainHead() != null)
-            {
-                resolvers.add(createELResolver(_config.getPropertyResolverChainHead()));
-            }
-        }
-        else if (facesContext != null && MyfacesConfig.getCurrentInstance(
-                facesContext.getExternalContext()).isSupportJSPAndFacesEL())
-        {
-            if (_config.getVariableResolver() != null)
-            {
-                resolvers.add(createELResolver(_config.getVariableResolver()));
-            }
-            else if (_config.getVariableResolverChainHead() != null)
-            {
-                resolvers.add(createELResolver(_config.getVariableResolverChainHead()));
-            }
-
-            if (_config.getPropertyResolver() != null)
-            {
-                resolvers.add(createELResolver(_config.getPropertyResolver()));
-            }
-            else if (_config.getPropertyResolverChainHead() != null)
-            {
-                resolvers.add(createELResolver(_config.getPropertyResolverChainHead()));
-            }
         }
 
         if (_config.getApplicationElResolvers() != null)
@@ -202,16 +152,6 @@ public class ResolverBuilderBase
             }
         }
         return resolvers;
-    }
-    
-    protected ELResolver createELResolver(VariableResolver resolver)
-    {
-        return new VariableResolverToELResolver(resolver);
-    }
-
-    protected ELResolver createELResolver(PropertyResolver resolver)
-    {
-        return new PropertyResolverToELResolver(resolver);
     }
 
     protected RuntimeConfig getRuntimeConfig()

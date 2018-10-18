@@ -572,8 +572,8 @@
 
             <dependency>
                 <groupId>org.apache.myfaces.test</groupId>
-                <artifactId>myfaces-test23</artifactId>
-                <version>1.0.8</version>
+                <artifactId>myfaces-test30</artifactId>
+                <version>1.0.9-SNAPSHOT</version>
                 <scope>test</scope>
             </dependency>
 

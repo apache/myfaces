@@ -23,12 +23,10 @@ import javax.faces.application.Application;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.NavigationCase;
 import javax.faces.application.NavigationHandler;
-import javax.faces.component.ActionSource;
 import javax.faces.component.ActionSource2;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.faces.el.MethodBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
@@ -51,7 +49,6 @@ public class ActionListenerImpl implements ActionListener
         UIComponent component = actionEvent.getComponent();
         
         MethodExpression methodExpression = null;
-        MethodBinding methodBinding = null;
         
         String fromAction = null;
         String outcome = null;
@@ -60,11 +57,6 @@ public class ActionListenerImpl implements ActionListener
         {
             // Must be an instance of ActionSource2, so don't look on action if the actionExpression is set 
             methodExpression = ((ActionSource2) component).getActionExpression();            
-        }
-        if (methodExpression == null && component instanceof ActionSource)
-        {
-            // Backwards compatibility for pre-1.2.
-            methodBinding = ((ActionSource) component).getAction();
         }
         
         if (methodExpression != null)
@@ -77,18 +69,6 @@ public class ActionListenerImpl implements ActionListener
                 outcome = objOutcome.toString();
             }
             
-        }
-        
-        else if (methodBinding != null)
-        {
-            fromAction = methodBinding.getExpressionString();
-            Object objOutcome = methodBinding.invoke(facesContext, null);
-
-            if (objOutcome != null)
-            {
-                outcome = objOutcome.toString();
-            }
-
         }
         
         UIViewRoot root = facesContext.getViewRoot();

@@ -24,7 +24,6 @@ import java.util.Locale;
 import javax.el.ValueExpression;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 
 /** 
  * This class encapsulates a FacesMessage to evaluate the label
@@ -130,14 +129,6 @@ class _ParametrizableFacesMessage extends FacesMessage
             if (_args[i] == null)
             {
                 continue;
-            }
-            else if (_args[i] instanceof ValueBinding)
-            {
-                if (facesContext == null)
-                {
-                    facesContext = FacesContext.getCurrentInstance();
-                }
-                _evaluatedArgs[i] = ((ValueBinding)_args[i]).getValue(facesContext);
             }
             else if (_args[i] instanceof ValueExpression)
             {

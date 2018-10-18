@@ -37,7 +37,6 @@ import javax.faces.component.visit.VisitHint;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
-import javax.faces.el.MethodBinding;
 import javax.faces.event.PhaseId;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.validator.LengthValidator;
@@ -99,57 +98,6 @@ public class UIInputTest extends AbstractJsfTestCase
         {
             ((UIInput)component).setValid(false);
         }
-    }
-    
-    public void testValidateNotCallValueChangeListenerWhenCallValidateWithBinding()
-    {
-        MethodExpression itemValue = new MockMethodExpression("#{valueChangeBean.changeValue}", 
-                new Class[]{ValueChangeEvent.class} , MyMockValueChangeBean.class);
-        externalContext.getRequestMap().put("valueChangeBean", new MyMockValueChangeBean());
-        input.setValueChangeListener(new _MethodExpressionToMethodBinding(itemValue));
-        
-        request.setAttribute("mockValidator",new MyMockValidatorBean());
-        
-        MethodBinding binding = application.createMethodBinding(
-                "#{requestScope.mockValidator.validate}",
-                new Class[] { FacesContext.class, UIComponent.class, Object.class }
-            );
-        input.setValidator(binding);
-        
-        UIViewRoot root = new UIViewRoot();
-        
-        root.getChildren().add(input);
-        input.setSubmittedValue("xxx");
-        input.processValidators(facesContext);
-        input.setValid(true);
-        input.processValidators(facesContext);
-        root.broadcastEvents(facesContext, PhaseId.PROCESS_VALIDATIONS);
-        assertNotNull(input.getSubmittedValue());
-    }
-    
-    public void testValidateNotCallValueChangeListenerWhenCallValidateWithValidator()
-    {
-        MethodExpression itemValue = new MockMethodExpression("#{valueChangeBean.changeValue}", 
-                new Class[]{ValueChangeEvent.class} , MyMockValueChangeBean.class);
-        externalContext.getRequestMap().put("valueChangeBean", new MyMockValueChangeBean());
-        input.setValueChangeListener(new _MethodExpressionToMethodBinding(itemValue));
-        
-        input.addValidator(new Validator(){
-
-            public void validate(FacesContext context, UIComponent component,
-                    Object value) throws ValidatorException
-            {
-                ((UIInput)component).setValid(false);
-            }
-        });
-        
-        UIViewRoot root = new UIViewRoot();
-        
-        root.getChildren().add(input);
-        input.setSubmittedValue("xxx");
-        input.processValidators(facesContext);
-        root.broadcastEvents(facesContext, PhaseId.PROCESS_VALIDATIONS);
-        assertNotNull(input.getSubmittedValue());
     }
 
     public void testWhenSpecifiedConverterMessageIsUsedInCaseConverterExceptionOccurs()

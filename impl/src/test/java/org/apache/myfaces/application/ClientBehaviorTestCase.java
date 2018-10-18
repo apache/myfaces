@@ -36,8 +36,6 @@ import org.apache.myfaces.component.ComponentResourceContainer;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
-import org.apache.myfaces.test.mock.MockPropertyResolver;
-import org.apache.myfaces.test.mock.MockVariableResolver;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -64,10 +62,6 @@ public class ClientBehaviorTestCase extends AbstractJsfConfigurableMockTestCase
     {
         super.setUpExternalContext();
         //Set RuntimeConfig object properly to make work ValueExpressions 
-        RuntimeConfig.getCurrentInstance(externalContext).setPropertyResolver(
-                new MockPropertyResolver());
-        RuntimeConfig.getCurrentInstance(externalContext).setVariableResolver(
-                new MockVariableResolver());
         RuntimeConfig.getCurrentInstance(externalContext).setExpressionFactory(
                 new MockExpressionFactory());
     }

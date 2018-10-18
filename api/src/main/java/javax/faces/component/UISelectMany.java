@@ -31,7 +31,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
-import javax.faces.el.ValueBinding;
 import javax.faces.model.SelectItem;
 import javax.faces.render.Renderer;
 
@@ -85,46 +84,6 @@ public class UISelectMany extends UIInput
     public void setSelectedValues(Object[] selectedValues)
     {
         setValue(selectedValues);
-    }
-
-    /**
-     * @deprecated Use getValueExpression instead
-     */
-    @Override
-    public ValueBinding getValueBinding(String name)
-    {
-        if (name == null)
-        {
-            throw new NullPointerException("name");
-        }
-        if (name.equals("selectedValues"))
-        {
-            return super.getValueBinding("value");
-        }
-        else
-        {
-            return super.getValueBinding(name);
-        }
-    }
-
-    /**
-     * @deprecated Use setValueExpression instead
-     */
-    @Override
-    public void setValueBinding(String name, ValueBinding binding)
-    {
-        if (name == null)
-        {
-            throw new NullPointerException("name");
-        }
-        if (name.equals("selectedValues"))
-        {
-            super.setValueBinding("value", binding);
-        }
-        else
-        {
-            super.setValueBinding(name, binding);
-        }
     }
 
     @Override

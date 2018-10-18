@@ -21,9 +21,9 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -33,9 +33,6 @@
  */
 package ${component.packageName};
 
-#if ($component.className.startsWith("javax.faces.component.html"))
-import javax.faces.el.ValueBinding;
-#end
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
 $utils.importTagClasses($component)
@@ -55,8 +52,8 @@ public class ${utils.getClassFromFullClass($component.className)} extends $gener
 #end
 {
 #if ($component.serialuid)
-    private static final long serialVersionUID = ${component.serialuid}; 
-#end  
+    private static final long serialVersionUID = ${component.serialuid};
+#end
 
     static public final String COMPONENT_FAMILY =
         "$component.family";
@@ -64,13 +61,13 @@ public class ${utils.getClassFromFullClass($component.className)} extends $gener
         "$component.type";
 ##if ($component.rendererType)
 ##if (!($component.rendererType == ""))
-##    static public final String DEFAULT_RENDERER_TYPE = 
+##    static public final String DEFAULT_RENDERER_TYPE =
 ##        "$component.rendererType";
 ##end
 ##end
 
 #if ($innersource)
-    //BEGIN CODE COPIED FROM $component.sourceClassName 
+    //BEGIN CODE COPIED FROM $component.sourceClassName
 $innersource
     //END CODE COPIED FROM $component.sourceClassName
 #end
@@ -90,7 +87,7 @@ $innersource
 
 ## On myfaces 1.1 the family is inherited, so this could be commented
 ## On other this should not be commented
-    @Override    
+    @Override
     public String getFamily()
     {
         return COMPONENT_FAMILY;
@@ -103,7 +100,7 @@ $innersource
 ## and csv implements
 #if ($component.implements)
 #if ($component.implements == "javax.faces.component.behavior.ClientBehaviorHolder")
-    static private final java.util.Collection<String> CLIENT_EVENTS_LIST = 
+    static private final java.util.Collection<String> CLIENT_EVENTS_LIST =
         java.util.Collections.unmodifiableCollection(
             java.util.Arrays.asList(
 #set ($commavar = "")
@@ -111,7 +108,7 @@ $innersource
 #if ($property.clientEvent)
 #if ($property.clientEvent != "")
             $commavar "$property.clientEvent"
-#set ($commavar = ",")            
+#set ($commavar = ",")
 #end
 #end
 #end
@@ -142,11 +139,11 @@ $innersource
 #end
 
 #set ($propertyList = ${component.propertyComponentList})
-    
+
 #foreach( $property in $propertyList )
 #set ($field = $property.fieldName)
 #set ($type = $utils.getClassFromFullClass($property.className))
-#if($utils.getDefaultValueField($property)) 
+#if($utils.getDefaultValueField($property))
 #set ($defaultValue = $utils.getDefaultValueField($property))
 #else
 #set ($defaultValue = false)
@@ -156,10 +153,10 @@ $innersource
 #if ($property.isLiteralOnly() || $property.isTagExcluded() )
     private $type $field #if($defaultValue) = $defaultValue;#{else};#{end}
 
-     
+
 #else
     private $type $field;
-    
+
 #end
 
     private boolean _$utils.getPrefixedPropertyName("isSet", $property.name)()
@@ -170,7 +167,7 @@ $innersource
 
 #if($utils.isPrimitiveClass($type) && !$property.isTagExcluded() )
     private boolean ${field}Set;
-    
+
 #if ($property.isSetMethod())
     $property.setMethodScope boolean $utils.getPrefixedPropertyName("isSet", $property.name)()
     {
@@ -188,7 +185,7 @@ $innersource
     {
         return $field;
     }
-     
+
 #end
     public $type $utils.getMethodReaderFromProperty($property.name, $type)()
     {
@@ -214,7 +211,7 @@ $innersource
             Object value = vb == null ? null : vb.getValue(getFacesContext().getELContext());
             if (!(value instanceof $type)){
                 value = ${type}.valueOf(value.toString());
-            }            
+            }
             return $utils.castIfNecessary($type) value;
 #else
             return $utils.castIfNecessary($type) vb.getValue(getFacesContext().getELContext());
@@ -222,10 +219,10 @@ $innersource
 #end
         }
 #if ($defaultValue)
-        return $defaultValue; 
+        return $defaultValue;
 #elseif ($utils.isPrimitiveClass($type))
         return $utils.primitiveDefaultValue($type);
-#else       
+#else
         return null;
 #end
 #end
@@ -239,7 +236,7 @@ $innersource
             getStateHelper().put(PropertyKeys.${property.name}Set,Boolean.TRUE);
         }
 #if ($utils.isPrimitiveClass($type) && !$property.isTagExcluded() )
-        this.${field}Set = true;        
+        this.${field}Set = true;
 #end
     }
 #else
@@ -261,11 +258,11 @@ $innersource
         Object value = getStateHelper().get(PropertyKeys.$field);
         if (value != null)
         {
-            return $utils.castIfNecessary($type) value;        
+            return $utils.castIfNecessary($type) value;
         }
-        return $defaultValue;        
+        return $defaultValue;
 #else
-        return $utils.castIfNecessary($type) getStateHelper().get(PropertyKeys.$field);        
+        return $utils.castIfNecessary($type) getStateHelper().get(PropertyKeys.$field);
 #end
 #else
 #if ($defaultValue)
@@ -275,10 +272,10 @@ $innersource
 #end
 #end
     }
-    
+
     public void $utils.getPrefixedPropertyName("set", $property.name)($type $utils.getVariableFromName($property.name))
     {
-        getStateHelper().put(PropertyKeys.$field, $utils.getVariableFromName($property.name) ); 
+        getStateHelper().put(PropertyKeys.$field, $utils.getVariableFromName($property.name) );
 #if ($property.name == "style" ||
      $property.name == "styleClass" ||
      $property.name == "dir" ||
@@ -327,12 +324,6 @@ $innersource
 #end
 
 #if ($component.className.startsWith("javax.faces.component.html") && $overrideSetValueExpression)
-    public void setValueBinding(String name, ValueBinding binding)
-    {
-        super.setValueBinding(name, binding);
-        _CommonPropertyConstants.markProperty(this, name);
-    }
-
     public void setValueExpression(String name, ValueExpression expression)
     {
         super.setValueExpression(name, expression);
@@ -362,7 +353,7 @@ $innersource
 #set ($field = $property.name)
 #end
 #set ($type = $utils.getClassFromFullClass($property.className))
-#if($utils.getDefaultValueField($property)) 
+#if($utils.getDefaultValueField($property))
 #set ($defaultValue = $utils.getDefaultValueField($property))
 #else
 #set ($defaultValue = false)
@@ -383,17 +374,17 @@ $innersource
 #if ("true" == $addc)
         ;
         String c;
-        
+
         PropertyKeys()
         {
         }
-        
+
         //Constructor needed by "for" property
         PropertyKeys(String c)
-        { 
+        {
             this.c = c;
         }
-        
+
         public String toString()
         {
             return ((this.c != null) ? this.c : super.toString());
@@ -401,7 +392,7 @@ $innersource
 #end
     }
 
-#set ($primitiveCount = 1) ## $propertyList.size() + 1 
+#set ($primitiveCount = 1) ## $propertyList.size() + 1
 #foreach( $property in $propertyList )
 #if ($property.isPartialStateHolder())
 #set ($primitiveCount = $primitiveCount + 1)
@@ -419,8 +410,8 @@ $innersource
         super.markInitialState();
 #foreach( $property in $propertyList )
 #set ($field = $property.fieldName)
-#if ($property.isPartialStateHolder())        
-        if ($field != null && 
+#if ($property.isPartialStateHolder())
+        if ($field != null &&
             $field instanceof PartialStateHolder)
         {
             ((PartialStateHolder)$field).markInitialState();
@@ -428,7 +419,7 @@ $innersource
 #end
 #end
     }
-    
+
     public void clearInitialState()
     {
         if (initialStateMarked())
@@ -438,7 +429,7 @@ $innersource
 #set ($field = $property.fieldName)
 #if ($property.isPartialStateHolder())
 ##          //Only has sense propagate this method if is initialStateMarked
-            if ($field != null && 
+            if ($field != null &&
                 $field instanceof PartialStateHolder)
             {
                 ((PartialStateHolder)$field).clearInitialState();
@@ -483,7 +474,7 @@ $innersource
                 //Full
                 ${property.name}Saved = saveAttachedState(facesContext,$field);
                 nullDelta = false;
-            }        
+            }
 ## StateHelper Properties does not need save and restore
 #end
 #end
@@ -492,7 +483,7 @@ $innersource
                 //No values
                 return null;
             }
-            
+
             Object[] values = new Object[$primitiveCount];
             values[0] = parentSaved;
 ## Save full state
@@ -534,7 +525,7 @@ $innersource
         {
             return;
         }
-        
+
         Object[] values = (Object[])state;
         super.restoreState(facesContext,values[0]);
 #set ($arrayIndex = 0)
@@ -552,7 +543,7 @@ $innersource
         {
             //Full
             $field = $utils.castIfNecessary($type) restoreAttachedState(facesContext,values[$arrayIndex]);
-        }         
+        }
 #else
 ## StateHelper Properties does not need save and restore
 #end

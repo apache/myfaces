@@ -185,14 +185,6 @@ public abstract class UIComponentELTagBase extends UIComponentELTag
                 defaultValue);
     }
 
-    @Deprecated
-    protected void setStringProperty(UIComponent component, String propName,
-            String value)
-    {
-        UIComponentTagUtils.setStringProperty(getFacesContext(), component,
-                propName, value);
-    }
-
     protected void setStringProperty(UIComponent component, String propName,
             ValueExpression value)
     {
@@ -204,14 +196,6 @@ public abstract class UIComponentELTagBase extends UIComponentELTag
     {
         UIComponentELTagUtils.setStringProperty(component, propName, value,
                 defaultValue);
-    }
-
-    @Deprecated
-    protected void setBooleanProperty(UIComponent component, String propName,
-            String value)
-    {
-        UIComponentTagUtils.setBooleanProperty(getFacesContext(), component,
-                propName, value);
     }
 
     protected void setBooleanProperty(UIComponent component, String propName,
@@ -247,26 +231,11 @@ public abstract class UIComponentELTagBase extends UIComponentELTag
                 component, value);
     }
 
-    @Deprecated
-    protected void setActionProperty(UIComponent component, String action)
-    {
-        UIComponentTagUtils.setActionProperty(getFacesContext(), component,
-                action);
-    }
-
     protected void setActionProperty(UIComponent component,
             MethodExpression action)
     {
         UIComponentELTagUtils.setActionProperty(getFacesContext(), component,
                 action);
-    }
-
-    @Deprecated
-    protected void setActionListenerProperty(UIComponent component,
-            String actionListener)
-    {
-        UIComponentTagUtils.setActionListenerProperty(getFacesContext(),
-                component, actionListener);
     }
 
     protected void setActionListenerProperty(UIComponent component,

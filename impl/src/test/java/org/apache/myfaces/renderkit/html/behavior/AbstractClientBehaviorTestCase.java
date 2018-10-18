@@ -172,7 +172,7 @@ public abstract class AbstractClientBehaviorTestCase extends FaceletTestCase
         }
         else
         {
-            Assert.fail("Property " + attr.getName() + "not found");
+            Assert.fail("Property " + attr.getName() + " not found");
             return -1;
         }
     }
@@ -225,7 +225,7 @@ public abstract class AbstractClientBehaviorTestCase extends FaceletTestCase
         }
         else
         {
-            Assert.fail("Property " + attr.getName() + "not found"+" Output: "+output);
+            Assert.fail("Property " + attr.getName() + " not found Output: "+output);
             return -1;
         }
     }

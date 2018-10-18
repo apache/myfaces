@@ -43,7 +43,7 @@
         <dependency>
             <groupId>org.apache.myfaces.core.internal</groupId>
             <artifactId>myfaces-impl-shared-public</artifactId>
-            <optional>true</optional> 
+            <optional>true</optional>
         </dependency>
 
         <!-- Servlet 4.0 -->
@@ -72,7 +72,7 @@
 
         <dependency>
             <groupId>org.apache.myfaces.test</groupId>
-            <artifactId>myfaces-test23</artifactId>
+            <artifactId>myfaces-test30</artifactId>
         </dependency>
 
         <dependency>

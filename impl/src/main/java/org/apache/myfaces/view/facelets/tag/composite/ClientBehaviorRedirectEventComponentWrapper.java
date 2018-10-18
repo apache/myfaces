@@ -36,7 +36,6 @@ import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
@@ -263,11 +262,6 @@ public class ClientBehaviorRedirectEventComponentWrapper extends UIComponent
         return _delegate.getResourceBundleMap();
     }
 
-    public ValueBinding getValueBinding(String name)
-    {
-        return _delegate.getValueBinding(name);
-    }
-
     public ValueExpression getValueExpression(String name)
     {
         return _delegate.getValueExpression(name);
@@ -378,11 +372,6 @@ public class ClientBehaviorRedirectEventComponentWrapper extends UIComponent
     public void setTransient(boolean newTransientValue)
     {
         _delegate.setTransient(newTransientValue);
-    }
-
-    public void setValueBinding(String name, ValueBinding binding)
-    {
-        _delegate.setValueBinding(name, binding);
     }
 
     public void setValueExpression(String name, ValueExpression expression)

@@ -20,7 +20,6 @@ package org.apache.myfaces.shared.util;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
@@ -30,16 +29,6 @@ public final class _ComponentUtils
 
     private _ComponentUtils()
     {
-    }
-
-    public static String getStringValue(FacesContext context, ValueBinding vb)
-    {
-        Object value = vb.getValue(context);
-        if (value != null)
-        {
-            return value.toString();
-        }
-        return null;
     }
 
     public static FormInfo findNestingForm(UIComponent uiComponent, FacesContext facesContext)

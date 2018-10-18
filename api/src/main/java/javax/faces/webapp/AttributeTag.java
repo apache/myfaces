@@ -19,8 +19,6 @@
 package javax.faces.webapp;
 
 import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -96,25 +94,11 @@ public class AttributeTag extends TagSupport
 
     private String getName()
     {
-        if (UIComponentTag.isValueReference(_name))
-        {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            ValueBinding vb = facesContext.getApplication().createValueBinding(_name);
-            return (String)vb.getValue(facesContext);
-        }
-
         return _name;
     }
 
     private Object getValue()
     {
-        if (UIComponentTag.isValueReference(_value))
-        {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            ValueBinding vb = facesContext.getApplication().createValueBinding(_value);
-            return vb.getValue(facesContext);
-        }
-
         return _value;
     }
 

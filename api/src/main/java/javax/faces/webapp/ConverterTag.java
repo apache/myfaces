@@ -23,7 +23,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.ValueHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.el.ValueBinding;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -96,25 +95,6 @@ public class ConverterTag extends TagSupport
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Application application = facesContext.getApplication();
-
-        if (_binding != null)
-        {
-            ValueBinding vb = application.createValueBinding(_binding);
-            if (vb != null)
-            {
-                Converter converter = (Converter)vb.getValue(facesContext);
-                if (converter != null)
-                {
-                    return converter;
-                }
-            }
-        }
-
-        if (UIComponentTag.isValueReference(_converterId))
-        {
-            ValueBinding vb = facesContext.getApplication().createValueBinding(_converterId);
-            return application.createConverter((String)vb.getValue(facesContext));
-        }
 
         return application.createConverter(_converterId);
 

@@ -22,11 +22,6 @@ import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.ReferenceSyntaxException;
-import javax.faces.el.ValueBinding;
-import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
 import javax.faces.validator.Validator;
 import java.util.Collection;
@@ -65,12 +60,6 @@ public class MockApplication extends Application
     }
 
     @Override
-    public UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType) throws FacesException
-    {
-        return null;
-    }
-
-    @Override
     public Converter createConverter(Class<?> targetClass)
     {
         return null;
@@ -83,19 +72,7 @@ public class MockApplication extends Application
     }
 
     @Override
-    public MethodBinding createMethodBinding(String ref, Class<?>[] params) throws ReferenceSyntaxException
-    {
-        return null;
-    }
-
-    @Override
     public Validator createValidator(String validatorId) throws FacesException
-    {
-        return null;
-    }
-
-    @Override
-    public ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException
     {
         return null;
     }
@@ -149,12 +126,6 @@ public class MockApplication extends Application
     }
 
     @Override
-    public PropertyResolver getPropertyResolver()
-    {
-        return null;
-    }
-
-    @Override
     public StateManager getStateManager()
     {
         return null;
@@ -168,12 +139,6 @@ public class MockApplication extends Application
 
     @Override
     public Iterator<String> getValidatorIds()
-    {
-        return null;
-    }
-
-    @Override
-    public VariableResolver getVariableResolver()
     {
         return null;
     }
@@ -210,22 +175,12 @@ public class MockApplication extends Application
     }
 
     @Override
-    public void setPropertyResolver(PropertyResolver resolver)
-    {
-    }
-
-    @Override
     public void setStateManager(StateManager manager)
     {
     }
 
     @Override
     public void setSupportedLocales(Collection<Locale> locales)
-    {
-    }
-
-    @Override
-    public void setVariableResolver(VariableResolver resolver)
     {
     }
 

@@ -648,8 +648,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     }
 
     /**
-     * MethodBinding pointing to a method that takes a javax.faces.event.PhaseEvent and returns void, called after every
-     * phase except for restore view.
+     * MethodExpression pointing to a method that takes a javax.faces.event.PhaseEvent and returns void,
+     * called after every phase except for restore view.
      *
      * @return the new afterPhaseListener value
      */
@@ -661,8 +661,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     }
 
     /**
-     * MethodBinding pointing to a method that takes a javax.faces.event.PhaseEvent and returns void, called before
-     * every phase except for restore view.
+     * MethodExpression pointing to a method that takes a javax.faces.event.PhaseEvent and returns void,
+     * called before every phase except for restore view.
      *
      * @return the new beforePhaseListener value
      */

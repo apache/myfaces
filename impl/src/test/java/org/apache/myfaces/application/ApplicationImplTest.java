@@ -42,8 +42,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.EnumConverter;
-import javax.faces.el.ReferenceSyntaxException;
-import javax.faces.el.VariableResolver;
 
 import junit.framework.TestCase;
 
@@ -70,16 +68,6 @@ public class ApplicationImplTest extends TestCase
     {
         app = new ApplicationImpl(new RuntimeConfig());
         context = new MockFacesContext12();
-    }
-    
-    public void testCreateMethodBinding() throws Exception
-    {
-        assertThrowable(ReferenceSyntaxException.class, new TestRunnable() {
-            public void run() throws Throwable
-            {
-                app.createMethodBinding("xxx", null);
-            }
-        });
     }
 
     /**
@@ -187,21 +175,6 @@ public class ApplicationImplTest extends TestCase
         {
             fail("FacesException expected: " + e.getMessage());
         }
-    }
-    
-    public void testGetVariableResolver() throws Exception
-    {
-        VariableResolver variableResolver = app.getVariableResolver();
-        assertNotNull(variableResolver);
-        IMocksControl mocksControl = EasyMock.createControl();
-        Application mockApp = mocksControl.createMock(Application.class);
-        context.setApplication(mockApp);        
-        ELResolver elResolver = mocksControl.createMock(ELResolver.class);
-        expect(mockApp.getELResolver()).andReturn(elResolver);
-        context.setELContext(new MockELContext());
-        expect(elResolver.getValue(eq(context.getELContext()), isNull(), eq("xxx"))).andReturn("testValue");
-        mocksControl.replay();
-        assertEquals("testValue", variableResolver.resolveVariable(context, "xxx"));
     }
 
     private void assertGetResourceBundleWithLocale(final Locale expectedLocale)

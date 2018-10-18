@@ -58,8 +58,6 @@ import javax.faces.component.search.SearchExpressionHandler;
 import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.PhaseListener;
@@ -107,8 +105,6 @@ import org.apache.myfaces.context.ExternalContextFactoryImpl;
 import org.apache.myfaces.context.FacesContextFactoryImpl;
 import org.apache.myfaces.context.PartialViewContextFactoryImpl;
 import org.apache.myfaces.context.servlet.ServletFlashFactoryImpl;
-import org.apache.myfaces.el.DefaultPropertyResolver;
-import org.apache.myfaces.el.VariableResolverImpl;
 import org.apache.myfaces.el.unified.ResolverBuilderBase;
 import org.apache.myfaces.lifecycle.ClientWindowFactoryImpl;
 import org.apache.myfaces.flow.FlowCallNodeImpl;
@@ -897,19 +893,6 @@ public class FacesConfigurator
         FlowHandler flowHandler = flowHandlerFactory.createFlowHandler(
             getFacesContext());
         application.setFlowHandler(flowHandler);
-
-        if (MyfacesConfig.getCurrentInstance(_externalContext).isSupportJSPAndFacesEL())
-        {
-            // If no JSP and old Faces EL, there is no need to initialize PropertyResolver
-            // and VariableResolver stuff.
-            runtimeConfig.setPropertyResolverChainHead(ClassUtils.buildApplicationObject(PropertyResolver.class,
-                    dispenser.getPropertyResolverIterator(),
-                    new DefaultPropertyResolver()));
-    
-            runtimeConfig.setVariableResolverChainHead(ClassUtils.buildApplicationObject(VariableResolver.class,
-                    dispenser.getVariableResolverIterator(),
-                    new VariableResolverImpl()));
-        }
         
         for (ContractMapping mapping : dispenser.getResourceLibraryContractMappings())
         {

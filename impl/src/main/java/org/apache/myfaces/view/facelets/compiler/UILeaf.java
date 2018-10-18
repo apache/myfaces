@@ -37,7 +37,6 @@ import javax.faces.component.search.UntargetableComponent;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.FacesEvent;
@@ -332,20 +331,6 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
             throws AbortProcessingException
     {
         //Do nothing, because UILeaf will not need to handle "binding" property
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public ValueBinding getValueBinding(String binding)
-    {
-        return null;
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public void setValueBinding(String name, ValueBinding binding)
-    {
-        // do nothing
     }
 
     @Override

@@ -21,7 +21,6 @@ package javax.faces.component;
 import javax.el.MethodExpression;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextWrapper;
-import javax.faces.el.MethodBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
@@ -113,13 +112,6 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
                             ((ViewActionEvent) event).setFacesContext(wrappedFacesContext);
                         }
 
-                        MethodBinding mb = getActionListener();
-                        if (mb != null)
-                        {
-                            mb.invoke(context, new Object[]
-                            { event });
-                        }
-
                         if (defaultActionListener != null)
                         {
                             defaultActionListener.processAction((ActionEvent) event);
@@ -197,38 +189,6 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
         context.getAttributes().put(EVENT_COUNT_KEY, count);
     }
 
-    @Deprecated
-    public MethodBinding getAction()
-    {
-        MethodExpression actionExpression = getActionExpression();
-        if (actionExpression instanceof _MethodBindingToMethodExpression)
-        {
-            return ((_MethodBindingToMethodExpression) actionExpression)
-                    .getMethodBinding();
-        }
-        if (actionExpression != null)
-        {
-            return new _MethodExpressionToMethodBinding(actionExpression);
-        }
-        return null;
-    }
-
-    /**
-     * @deprecated Use setActionExpression instead.
-     */
-    @Deprecated
-    public void setAction(MethodBinding action)
-    {
-        if (action != null)
-        {
-            setActionExpression(new _MethodBindingToMethodExpression(action));
-        }
-        else
-        {
-            setActionExpression(null);
-        }
-    }
-
     @JSFProperty
     public boolean isImmediate()
     {
@@ -249,25 +209,6 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
     public void setActionExpression(MethodExpression actionExpression)
     {
         getStateHelper().put(PropertyKeys.actionExpression, actionExpression);
-    }
-
-    @Deprecated
-    @JSFProperty(stateHolder=true, returnSignature = "void", methodSignature = "javax.faces.event.ActionEvent")
-    public MethodBinding getActionListener()
-    {
-        return (MethodBinding) getStateHelper().eval(PropertyKeys.actionListener);
-    }
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    @JSFProperty(returnSignature="void",methodSignature="javax.faces.event.ActionEvent")
-    public void setActionListener(MethodBinding actionListener)
-    {
-        getStateHelper().put(PropertyKeys.actionListener, actionListener);
-        // Note f:viewAction does not have actionListener property defined.
-        //throw new UnsupportedOperationException();
     }
 
     public void addActionListener(ActionListener listener)

@@ -37,11 +37,6 @@ import javax.faces.component.search.SearchExpressionHandler;
 import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.ReferenceSyntaxException;
-import javax.faces.el.ValueBinding;
-import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
@@ -140,14 +135,6 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     }
 
     @Override
-    @Deprecated
-    public UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType)
-            throws FacesException
-    {
-        return getWrapped().createComponent(componentBinding, context, componentType);
-    }
-
-    @Override
     public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType,
                                        String rendererType)
     {
@@ -174,22 +161,9 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     }
 
     @Override
-    @Deprecated
-    public MethodBinding createMethodBinding(String ref, Class<?>[] params) throws ReferenceSyntaxException
-    {
-        return getWrapped().createMethodBinding(ref, params);
-    }
-
-    @Override
     public Validator createValidator(String validatorId) throws FacesException
     {
         return getWrapped().createValidator(validatorId);
-    }
-
-    @Override
-    public ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException
-    {
-        return getWrapped().createValueBinding(ref);
     }
 
     @Override
@@ -285,13 +259,6 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     }
 
     @Override
-    @Deprecated
-    public PropertyResolver getPropertyResolver()
-    {
-        return getWrapped().getPropertyResolver();
-    }
-
-    @Override
     public ResourceBundle getResourceBundle(FacesContext ctx, String name) throws FacesException, NullPointerException
     {
         return getWrapped().getResourceBundle(ctx, name);
@@ -319,13 +286,6 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     public Iterator<String> getValidatorIds()
     {
         return getWrapped().getValidatorIds();
-    }
-
-    @Override
-    @Deprecated
-    public VariableResolver getVariableResolver()
-    {
-        return getWrapped().getVariableResolver();
     }
 
     @Override
@@ -389,13 +349,6 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     }
 
     @Override
-    @Deprecated
-    public void setPropertyResolver(PropertyResolver resolver)
-    {
-        getWrapped().setPropertyResolver(resolver);
-    }
-
-    @Override
     public void setResourceHandler(ResourceHandler resourceHandler)
     {
         getWrapped().setResourceHandler(resourceHandler);
@@ -411,13 +364,6 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     public void setSupportedLocales(Collection<Locale> locales)
     {
         getWrapped().setSupportedLocales(locales);
-    }
-
-    @Override
-    @Deprecated
-    public void setVariableResolver(VariableResolver resolver)
-    {
-        getWrapped().setVariableResolver(resolver);
     }
 
     @Override

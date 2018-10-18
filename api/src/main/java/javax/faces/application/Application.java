@@ -38,11 +38,6 @@ import javax.faces.component.search.SearchExpressionHandler;
 import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.ReferenceSyntaxException;
-import javax.faces.el.ValueBinding;
-import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
@@ -348,26 +343,6 @@ public abstract class Application
 
     /**
      * <p>
-     * Create an object which has an associating "binding" expression tying the component to a user property.
-     * </p>
-     * 
-     * <p>
-     * First the specified value-binding is evaluated; if it returns a non-null value then the component
-     * "already exists" and so the resulting value is simply returned.
-     * </p>
-     * 
-     * <p>
-     * Otherwise a new UIComponent instance is created using the specified componentType, and the new object stored via
-     * the provided value-binding before being returned.
-     * </p>
-     * 
-     * @deprecated
-     */
-    public abstract UIComponent createComponent(ValueBinding componentBinding, FacesContext context,
-                    String componentType) throws FacesException;
-
-    /**
-     * <p>
      * Call the <code>getValue()</code> method on the specified <code>ValueExpression</code>. If it returns a
      * <code>{@link UIComponent}</code> instance, return it as the value of this method. If it does not, instantiate a
      * new <code>{@link UIComponent}</code> instance of the specified component type, pass the new component to the
@@ -472,17 +447,6 @@ public abstract class Application
     public abstract Converter createConverter(String converterId);
 
     /**
-     * Create an object which can be used to invoke an arbitrary method via an EL expression at a later time. This is
-     * similar to createValueBinding except that it can invoke an arbitrary method (with parameters) rather than just
-     * get/set a javabean property.
-     * <p>
-     * This is used to invoke ActionListener method, and ValueChangeListener methods.
-     * 
-     * @deprecated
-     */
-    public abstract MethodBinding createMethodBinding(String ref, Class<?>[] params) throws ReferenceSyntaxException;
-
-    /**
      * Instantiate and return a new <code>{@link Validator}</code> instance of the class specified by a previous call to
      * <code>addValidator()</code> for the specified validator id.
      * 
@@ -495,18 +459,6 @@ public abstract class Application
      *             if validatorId is <code>null</code>
      */
     public abstract Validator createValidator(String validatorId) throws FacesException;
-
-    /**
-     * <p>
-     * Create an object which can be used to invoke an arbitrary method via an EL expression at a later time. This is
-     * similar to createValueBinding except that it can invoke an arbitrary method (with parameters) rather than just
-     * get/set a javabean property.
-     * </p>
-     * This is used to invoke ActionListener method, and ValueChangeListener methods.
-     * 
-     * @deprecated
-     */
-    public abstract ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException;
 
     /**
      * <p>
@@ -790,15 +742,6 @@ public abstract class Application
     }
 
     /**
-     * Get the object used by the VariableResolver to read and write named properties on java beans, Arrays, Lists and
-     * Maps. This object is used by the ValueBinding implementation, and during the process of configuring
-     * "managed bean" properties.
-     * 
-     * @deprecated
-     */
-    public abstract PropertyResolver getPropertyResolver();
-
-    /**
      * <p>
      * Find a <code>ResourceBundle</code> as defined in the application configuration resources under the specified
      * name. If a <code>ResourceBundle</code> was defined for the name, return an instance that uses the locale of the
@@ -878,13 +821,6 @@ public abstract class Application
      * <code>Application</code>.
      */
     public abstract Iterator<String> getValidatorIds();
-
-    /**
-     * Get the object used to resolve expressions of form "#{...}".
-     * 
-     * @deprecated
-     */
-    public abstract VariableResolver getVariableResolver();
 
     /**
      * Set the <code>{@link ViewHandler}</code> instance that will be utilized during the
@@ -1072,16 +1008,6 @@ public abstract class Application
     public abstract void setNavigationHandler(NavigationHandler handler);
 
     /**
-     * The recommended way to affect the execution of the EL is to provide an &lt;el-resolver&gt; element at the right 
-     * place in the application configuration resources which will be considered in the normal course of expression
-     * evaluation. This method now will cause the argument resolver to be wrapped inside an implementation of ELResolver
-     * and exposed to the EL resolution system as if the user had called addELResolver(javax.el.ELResolver).
-     * 
-     * @deprecated
-     */
-    public abstract void setPropertyResolver(PropertyResolver resolver);
-
-    /**
      * 
      * @param resourceHandler
      * 
@@ -1122,16 +1048,6 @@ public abstract class Application
      * 
      */
     public abstract void setSupportedLocales(Collection<Locale> locales);
-
-    /**
-     * The recommended way to affect the execution of the EL is to provide an &lt;el-resolver&gt; element at the right 
-     * place in the application configuration resources which will be considered in the normal course of expression
-     * evaluation. This method now will cause the argument resolver to be wrapped inside an implementation of ELResolver
-     * and exposed to the EL resolution system as if the user had called addELResolver(javax.el.ELResolver).
-     * 
-     * @deprecated
-     */
-    public abstract void setVariableResolver(VariableResolver resolver);
 
     /**
      * Set the {@link ViewHandler} instance that will be utilized during the <code>Restore View and Render Response

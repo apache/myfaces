@@ -30,8 +30,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.MethodBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
@@ -380,27 +378,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         // Check if the event is applicable for ValueChangeListener
         if (event instanceof ValueChangeEvent)
         {
-            // invoke the single listener defined directly on the component
-            MethodBinding valueChangeListenerBinding = getValueChangeListener();
-            if (valueChangeListenerBinding != null)
-            {
-                try
-                {
-                    valueChangeListenerBinding.invoke(getFacesContext(), new Object[] { event });
-                }
-                catch (EvaluationException e)
-                {
-                    Throwable cause = e.getCause();
-                    if (cause != null && cause instanceof AbortProcessingException)
-                    {
-                        throw (AbortProcessingException) cause;
-                    }
-                    else
-                    {
-                        throw e;
-                    }
-                }
-            }
+
         }
     }
 
@@ -887,36 +865,6 @@ public class UIInput extends UIOutput implements EditableValueHolder
         getStateHelper().put(PropertyKeys.requiredMessage, requiredMessage );
     }
 
-    /**
-     * A method-binding EL expression which is invoked during the validation phase for this component.
-     * <p>
-     * The invoked method is expected to check the submitted value for this component, and if not acceptable then report
-     * a validation error for the component.
-     * </p>
-     * <p>
-     * The method is expected to have the prototype
-     * </p>
-     * <code>public void aMethod(FacesContext, UIComponent,Object)</code>
-     * 
-     * @deprecated
-     */
-    @SuppressWarnings("dep-ann")
-    @JSFProperty(stateHolder=true, returnSignature = "void",
-            methodSignature = "javax.faces.context.FacesContext,javax.faces.component.UIComponent,java.lang.Object")
-    public MethodBinding getValidator()
-    {
-        return (MethodBinding) getStateHelper().eval(PropertyKeys.validator);
-    }
-
-    /** See getValidator.
-     *  
-     * @deprecated 
-     */
-    public void setValidator(MethodBinding validator)
-    {
-        getStateHelper().put(PropertyKeys.validator, validator);
-    }
-
     /** See getValidator. */
     public void addValidator(Validator validator)
     {
@@ -1006,32 +954,6 @@ public class UIInput extends UIOutput implements EditableValueHolder
     public void setValidatorMessage(String validatorMessage)
     {
         getStateHelper().put(PropertyKeys.validatorMessage, validatorMessage );
-    }
-
-    /**
-     * A method which is invoked during postback processing for the current view if the submitted value for this
-     * component is not equal to the value which the "value" expression for this component returns.
-     * <p>
-     * The phase in which this method is invoked can be controlled via the immediate attribute.
-     * </p>
-     * 
-     * @deprecated
-     */
-    @JSFProperty(stateHolder=true, returnSignature = "void",
-                 methodSignature = "javax.faces.event.ValueChangeEvent", clientEvent="valueChange")
-    public MethodBinding getValueChangeListener()
-    {
-        return (MethodBinding) getStateHelper().eval(PropertyKeys.valueChangeListener);
-    }
-
-    /**
-     * See getValueChangeListener.
-     * 
-     * @deprecated
-     */
-    public void setValueChangeListener(MethodBinding valueChangeListener)
-    {
-        getStateHelper().put(PropertyKeys.valueChangeListener, valueChangeListener);
     }
 
     /**

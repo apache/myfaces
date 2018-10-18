@@ -27,9 +27,7 @@ import javax.faces.component.UIViewRoot;
 import junit.framework.Assert;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
-import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 import org.junit.Test;
 
 public class HtmlRolePassedThroughTestCase extends FaceletTestCase

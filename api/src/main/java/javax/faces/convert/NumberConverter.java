@@ -113,10 +113,10 @@ public class NumberConverter
                 // to prevent loss in precision, and do not break existing examples (since
                 // in those cases it is expected to return Double). See MYFACES-1890 and TRINIDAD-1124
                 // for details
-                ValueExpression valueBinding = uiComponent.getValueExpression("value");
-                if (valueBinding != null)
+                ValueExpression valueExpression = uiComponent.getValueExpression("value");
+                if (valueExpression != null)
                 {
-                    Class<?> destType = valueBinding.getType(facesContext.getELContext());
+                    Class<?> destType = valueExpression.getType(facesContext.getELContext());
                     if (destType != null && BigDecimal.class.isAssignableFrom(destType))
                     {
                         df.setParseBigDecimal(true);

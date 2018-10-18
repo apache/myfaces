@@ -18,7 +18,6 @@
  */
 package javax.faces.component;
 
-import javax.faces.el.MethodBinding;
 import javax.faces.event.ValueChangeListener;
 import javax.faces.validator.Validator;
 
@@ -124,38 +123,6 @@ public interface EditableValueHolder extends ValueHolder
     public boolean isImmediate();
 
     public void setImmediate(boolean immediate);
-
-    /**
-     * Get the single validator defined directly on this component.
-     * <p>
-     * In addition to this validator, there may be a list of validators associated with this component.
-     * <p>
-     * This validator is executed after all validators in the validator list.
-     * 
-     * @deprecated Use getValidators() instead.
-     */
-    public MethodBinding getValidator();
-
-    /**
-     * @deprecated Use addValidator(MethodExpressionValidaotr) instead.
-     */
-    public void setValidator(javax.faces.el.MethodBinding validatorBinding);
-
-    /**
-     * Get the single value-change defined directly on this component.
-     * <p>
-     * In addition to this listener, there may be a list of listeners associated with this component.
-     * <p>
-     * This listeners is executed after all listeners in the list.
-     * 
-     * @deprecated Use getValueChangeLIsteners() instead.
-     */
-    public MethodBinding getValueChangeListener();
-
-    /**
-     * @deprecated use addValueChangeListener(MethodExpressionValueChangeListener) instead.
-     */
-    public void setValueChangeListener(MethodBinding valueChangeMethod);
 
     public void addValidator(Validator validator);
 

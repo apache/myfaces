@@ -31,8 +31,6 @@ import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.el.DefaultPropertyResolver;
-import org.apache.myfaces.el.VariableResolverImpl;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.easymock.IAnswer;
@@ -70,8 +68,6 @@ public class Jsp21FacesInitializerTest extends AbstractJsfTestCase
         ServletContext context = control.createMock(ServletContext.class);
         ExpressionFactory expressionFactory = control.createMock(ExpressionFactory.class);
         runtimeConfig.setExpressionFactory(expressionFactory);
-        runtimeConfig.setPropertyResolverChainHead(isA(DefaultPropertyResolver.class));
-        runtimeConfig.setVariableResolverChainHead(isA(VariableResolverImpl.class));
         
         expect(context.getAttribute(eq(RuntimeConfig.class.getName()))).andReturn(runtimeConfig).anyTimes();
         

@@ -19,7 +19,6 @@
 package javax.faces.component;
 
 import javax.el.ValueExpression;
-import javax.faces.el.ValueBinding;
 
 import org.easymock.classextension.EasyMock;
 import org.junit.Assert;
@@ -52,16 +51,4 @@ public class UIGraphicTest
         Assert.assertSame(graphic.getValueExpression("url"), expression);
     }
 
-    @Test
-    public void testUrlValueBinding()
-    {
-        UIGraphic graphic = new UIGraphic();
-        ValueBinding binding = EasyMock.createMock(ValueBinding.class);
-        graphic.setValueBinding("url", binding);
-        Assert.assertSame(graphic.getValueBinding("value"), binding);
-
-        binding = EasyMock.createMock(ValueBinding.class);
-        graphic.setValueBinding("value", binding);
-        Assert.assertSame(graphic.getValueBinding("url"), binding);
-    }
 }

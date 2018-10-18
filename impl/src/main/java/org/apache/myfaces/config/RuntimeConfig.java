@@ -36,8 +36,6 @@ import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.context.ExternalContext;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
 
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.FaceletsProcessing;
@@ -71,14 +69,7 @@ public class RuntimeConfig
     private List<ELResolver> facesConfigElResolvers;
     private List<ELResolver> applicationElResolvers;
 
-    private VariableResolver _variableResolver;
-    private PropertyResolver _propertyResolver;
-
     private ExpressionFactory _expressionFactory;
-
-    private PropertyResolver _propertyResolverChainHead;
-
-    private VariableResolver _variableResolverChainHead;
     
     private Comparator<ELResolver> _elResolverComparator;
     
@@ -313,26 +304,6 @@ public class RuntimeConfig
         return applicationElResolvers;
     }
 
-    public void setVariableResolver(VariableResolver variableResolver)
-    {
-        _variableResolver = variableResolver;
-    }
-
-    public VariableResolver getVariableResolver()
-    {
-        return _variableResolver;
-    }
-
-    public void setPropertyResolver(PropertyResolver propertyResolver)
-    {
-        _propertyResolver = propertyResolver;
-    }
-
-    public PropertyResolver getPropertyResolver()
-    {
-        return _propertyResolver;
-    }
-
     public ExpressionFactory getExpressionFactory()
     {
         return _expressionFactory;
@@ -341,26 +312,6 @@ public class RuntimeConfig
     public void setExpressionFactory(ExpressionFactory expressionFactory)
     {
         _expressionFactory = expressionFactory;
-    }
-
-    public void setPropertyResolverChainHead(PropertyResolver resolver)
-    {
-        _propertyResolverChainHead = resolver;
-    }
-
-    public PropertyResolver getPropertyResolverChainHead()
-    {
-        return _propertyResolverChainHead;
-    }
-
-    public void setVariableResolverChainHead(VariableResolver resolver)
-    {
-        _variableResolverChainHead = resolver;
-    }
-
-    public VariableResolver getVariableResolverChainHead()
-    {
-        return _variableResolverChainHead;
     }
 
     public String getFacesVersion()

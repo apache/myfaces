@@ -665,7 +665,7 @@
 
         <dependency>
             <groupId>org.apache.myfaces.test</groupId>
-            <artifactId>myfaces-test23</artifactId>
+            <artifactId>myfaces-test30</artifactId>
         </dependency>
 
         <!-- easymock -->

@@ -29,8 +29,6 @@ import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -55,7 +53,6 @@ public class UIComponentValueExpressionTest extends UIComponentTestBase
         Class<UIComponent> clazz = UIComponent.class;
         mockedMethods.add(clazz.getDeclaredMethod("getAttributes", (Class<?>[])null));
         mockedMethods.add(clazz.getDeclaredMethod("getFacesContext", (Class<?>[])null));
-        mockedMethods.add(clazz.getDeclaredMethod("getValueBinding", new Class[] { String.class }));
 
         _testimpl = _mocksControl.createMock(clazz, mockedMethods.toArray(new Method[mockedMethods.size()]));
         _expression = _mocksControl.createMock(ValueExpression.class);
@@ -93,7 +90,6 @@ public class UIComponentValueExpressionTest extends UIComponentTestBase
         _mocksControl.verify();
 
         Assert.assertNull(_testimpl.getValueExpression("xxx"));
-        Assert.assertNull(_testimpl.bindings);
     }
 
     @Test(expected =  FacesException.class )
@@ -125,20 +121,4 @@ public class UIComponentValueExpressionTest extends UIComponentTestBase
         Assert.assertNull(_testimpl.getValueExpression("xxx"));
     }
 
-    @Test
-    public void testValueExpressionWithValueBindingFallback() throws Exception
-    {
-        ValueBinding valueBinding = _mocksControl.createMock(ValueBinding.class);
-        expect(_testimpl.getValueBinding("xxx")).andReturn(valueBinding);
-        _mocksControl.replay();
-        ValueExpression valueExpression = _testimpl.getValueExpression("xxx");
-        _mocksControl.verify();
-        Assert.assertTrue(valueExpression instanceof _ValueBindingToValueExpression);
-        _mocksControl.reset();
-        expect(_elContext.getContext(EasyMock.eq(FacesContext.class))).andReturn(_facesContext);
-        expect(valueBinding.getValue(EasyMock.eq(_facesContext))).andReturn("value");
-        _mocksControl.replay();
-        Assert.assertEquals("value", valueExpression.getValue(_elContext));
-        _mocksControl.verify();
-    }
 }

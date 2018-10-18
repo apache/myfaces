@@ -62,8 +62,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialResponseWriter;
 import javax.faces.context.ResponseWriter;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.ValueBinding;
 import javax.faces.render.Renderer;
 import javax.faces.view.Location;
 import javax.servlet.http.HttpServletResponse;
@@ -1318,14 +1316,6 @@ public final class ErrorPageWriter
                                     if (v instanceof Expression)
                                     {
                                         str = ((Expression)v).getExpressionString();
-                                    }
-                                    else if (v instanceof ValueBinding)
-                                    {
-                                        str = ((ValueBinding) v).getExpressionString();
-                                    }
-                                    else if (v instanceof MethodBinding)
-                                    {
-                                        str = ((MethodBinding) v).getExpressionString();
                                     }
                                     else
                                     {

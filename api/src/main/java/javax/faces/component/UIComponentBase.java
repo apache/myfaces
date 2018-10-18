@@ -29,7 +29,6 @@ import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.BehaviorEvent;
 import javax.faces.event.FacesEvent;
@@ -138,17 +137,6 @@ public abstract class UIComponentBase extends UIComponent
     
     public UIComponentBase()
     {
-    }
-
-    /**
-     * Put the provided value-binding into a map of value-bindings associated with this component.
-     * 
-     * @deprecated Replaced by setValueExpression
-     */
-    @Override
-    public void setValueBinding(String name, ValueBinding binding)
-    {
-        setValueExpression(name, binding == null ? null : new _ValueBindingToValueExpression(binding));
     }
 
     /**
@@ -1128,30 +1116,6 @@ public abstract class UIComponentBase extends UIComponent
         return renderer != null ? renderer.getRendersChildren() : false;
     }
 
-    /**
-     * Get the named value-binding associated with this component.
-     * <p>
-     * Value-bindings are stored in a map associated with the component, though there is commonly a property
-     * (setter/getter methods) of the same name defined on the component itself which evaluates the value-binding when
-     * called.
-     * 
-     * @deprecated Replaced by getValueExpression
-     */
-    @Override
-    public ValueBinding getValueBinding(String name)
-    {
-        ValueExpression expression = getValueExpression(name);
-        if (expression != null)
-        {
-            if (expression instanceof _ValueBindingToValueExpression)
-            {
-                return ((_ValueBindingToValueExpression) expression).getValueBinding();
-            }
-            return new _ValueExpressionToValueBinding(expression);
-        }
-        return null;
-    }
-    
     /**
      * <code>invokeOnComponent</code> must be implemented in <code>UIComponentBase</code> too...
      */

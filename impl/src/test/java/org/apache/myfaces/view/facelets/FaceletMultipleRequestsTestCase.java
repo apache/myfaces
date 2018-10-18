@@ -59,8 +59,6 @@ import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.test.mock.MockFacesContext;
 import org.apache.myfaces.test.mock.MockFacesContextFactory;
-import org.apache.myfaces.test.mock.MockPropertyResolver;
-import org.apache.myfaces.test.mock.MockVariableResolver;
 import org.apache.myfaces.test.mock.visit.MockVisitContextFactory;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
@@ -174,11 +172,7 @@ public abstract class FaceletMultipleRequestsTestCase extends AbstractJsfConfigu
     protected void setUpExternalContext() throws Exception
     {
         super.setUpExternalContext();
-        
-        RuntimeConfig.getCurrentInstance(externalContext).setPropertyResolver(
-                new MockPropertyResolver());
-        RuntimeConfig.getCurrentInstance(externalContext).setVariableResolver(
-                new MockVariableResolver());
+
         RuntimeConfig.getCurrentInstance(externalContext).setExpressionFactory(
                 createExpressionFactory());
     }
