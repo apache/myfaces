@@ -1039,6 +1039,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * have allowed it.
      */
     @JSFProperty(defaultValue = "true", tagExcluded = true)
+    @Override
     public boolean isValid()
     {
         Object value = getStateHelper().get(PropertyKeys.valid);
@@ -1049,6 +1050,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         return true; 
     }
 
+    @Override
     public void setValid(boolean valid)
     {
         // default value for valid is true, so if the intention is to save the default
