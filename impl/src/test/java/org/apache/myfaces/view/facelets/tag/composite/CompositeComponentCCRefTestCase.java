@@ -25,8 +25,6 @@ import javax.el.ExpressionFactory;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;

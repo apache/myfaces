@@ -43,7 +43,6 @@ import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Employee;
 import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
-import org.apache.myfaces.view.facelets.util.FastWriter;
 import org.junit.Assert;
 import org.junit.Test;
 

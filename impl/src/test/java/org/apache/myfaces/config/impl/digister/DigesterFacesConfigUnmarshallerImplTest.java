@@ -24,16 +24,7 @@ import org.apache.myfaces.config.element.Application;
 import org.apache.myfaces.config.element.ContractMapping;
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.element.FacesConfigNameSlot;
-import org.apache.myfaces.config.element.FacesFlowCall;
-import org.apache.myfaces.config.element.FacesFlowDefinition;
-import org.apache.myfaces.config.element.FacesFlowMethodCall;
-import org.apache.myfaces.config.element.FacesFlowParameter;
-import org.apache.myfaces.config.element.FacesFlowReturn;
-import org.apache.myfaces.config.element.FacesFlowSwitch;
-import org.apache.myfaces.config.element.FacesFlowView;
 import org.apache.myfaces.config.element.LocaleConfig;
-import org.apache.myfaces.config.element.NavigationCase;
-import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.OrderSlot;
 
 /**

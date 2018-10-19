@@ -22,7 +22,6 @@ import static org.apache.myfaces.test.AssertThrowables.assertThrowable;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.isNull;
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.replay;
 
@@ -31,10 +30,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.el.ELContext;
-import javax.el.ELResolver;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
-import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
@@ -47,10 +44,7 @@ import junit.framework.TestCase;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.test.TestRunnable;
-import org.apache.myfaces.test.el.MockELContext;
 import org.apache.myfaces.test.mock.MockFacesContext12;
-import org.easymock.classextension.EasyMock;
-import org.easymock.classextension.IMocksControl;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)

@@ -20,8 +20,6 @@
 
 package org.apache.myfaces.shared.util;
 
-import junit.framework.Test;
-
 public class CachedStateUtilsTripleDES_ECBTest extends AbstractStateUtilsTest
 {
 

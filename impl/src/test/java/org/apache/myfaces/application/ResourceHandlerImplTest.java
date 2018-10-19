@@ -18,11 +18,8 @@
  */
 package org.apache.myfaces.application;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,7 +29,6 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.myfaces.shared.resource.ExternalContextResourceLoader;
 import org.apache.myfaces.shared.resource.ResourceLoader;
 import org.apache.myfaces.shared.resource.ResourceMeta;
 import org.apache.myfaces.shared.resource.ResourceMetaImpl;

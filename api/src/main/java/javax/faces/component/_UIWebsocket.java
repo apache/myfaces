@@ -20,7 +20,6 @@
 package javax.faces.component;
 
 import java.io.Serializable;
-import javax.faces.component.behavior.ClientBehaviorHolder;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 

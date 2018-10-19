@@ -25,14 +25,11 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.application.StateManager;
-import javax.faces.component.UIColumn;
 import javax.faces.component.UIData;
 import javax.faces.component.UIDataTest.RowData;
 import javax.faces.component.UIInput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.event.PhaseId;
-import javax.faces.render.Renderer;
 import static junit.framework.TestCase.assertEquals;
 
 import org.apache.myfaces.Assert;

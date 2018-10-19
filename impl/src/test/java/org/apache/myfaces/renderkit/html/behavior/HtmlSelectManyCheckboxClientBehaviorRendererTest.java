@@ -20,13 +20,11 @@ package org.apache.myfaces.renderkit.html.behavior;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UISelectItem;
-import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlSelectManyCheckbox;
 
 import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)

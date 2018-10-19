@@ -21,13 +21,10 @@ package org.apache.myfaces.renderkit.html;
 import java.io.IOException;
 import java.io.StringWriter;
 import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
 
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.html.HtmlOutputLabel;
 
-import org.apache.myfaces.application.ApplicationImpl;
-import org.apache.myfaces.application.ApplicationImplJsfTest;
 
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;

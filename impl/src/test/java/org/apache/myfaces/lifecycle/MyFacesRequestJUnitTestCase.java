@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.lifecycle;
 
-import javax.faces.component.UIComponent;
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.junit.Assert;
 import org.junit.Test;

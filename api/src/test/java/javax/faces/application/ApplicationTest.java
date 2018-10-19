@@ -18,10 +18,8 @@
  */
 package javax.faces.application;
 
-import javax.el.ValueExpression;
 
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
-import org.junit.Test;
 
 /**
  * Tests for {@link Application}

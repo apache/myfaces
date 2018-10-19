@@ -19,30 +19,18 @@
 package org.apache.myfaces.application;
 
 import java.beans.BeanInfo;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import javax.el.ExpressionFactory;
-import javax.el.VariableMapper;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationWrapper;
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
-import org.apache.myfaces.test.el.MockVariableMapper;
-import org.apache.myfaces.test.mock.MockServletContext;
-import org.apache.myfaces.test.mock.resource.MockSimpleResource;
-import org.apache.myfaces.view.facelets.MockFaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
 import org.easymock.classextension.EasyMock;

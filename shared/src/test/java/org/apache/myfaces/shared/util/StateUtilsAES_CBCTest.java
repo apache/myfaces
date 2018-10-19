@@ -15,8 +15,6 @@
  */
 package org.apache.myfaces.shared.util;
 
-import junit.framework.Test;
-
 /**
  * <p>This TestCase uses the Advanced Encryption Standard with
  * Cipher Block Chaining mode and PKCS5 padding.</p>

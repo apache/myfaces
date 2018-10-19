@@ -20,7 +20,6 @@ import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
 
-import junit.framework.Test;
 import org.apache.myfaces.shared.util.MessageUtils;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 

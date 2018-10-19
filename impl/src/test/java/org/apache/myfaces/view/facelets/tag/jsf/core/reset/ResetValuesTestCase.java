@@ -20,7 +20,6 @@ package org.apache.myfaces.view.facelets.tag.jsf.core.reset;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
-import javax.faces.component.UIViewRoot;
 import junit.framework.Assert;
 import org.apache.myfaces.mc.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.junit.Test;

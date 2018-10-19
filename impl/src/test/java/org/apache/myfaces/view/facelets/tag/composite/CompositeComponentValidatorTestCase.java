@@ -24,8 +24,6 @@ import javax.faces.component.UIInput;
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIViewRoot;
 
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.junit.Assert;
 import org.junit.Test;

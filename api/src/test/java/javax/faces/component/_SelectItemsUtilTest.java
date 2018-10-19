@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class _SelectItemsUtilTest extends AbstractJsfTestCase

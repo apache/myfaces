@@ -25,7 +25,6 @@ import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class NumberConverterTest extends AbstractJsfTestCase

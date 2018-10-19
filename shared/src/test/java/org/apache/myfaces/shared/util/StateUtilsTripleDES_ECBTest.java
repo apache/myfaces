@@ -15,8 +15,6 @@
  */
 package org.apache.myfaces.shared.util;
 
-import junit.framework.Test;
-
 /**
  * This TestCase uses the 3DES algorithm in Electronic CodeBook mode
  * with PKCS5 padding.

@@ -20,7 +20,6 @@ package javax.faces.application;
 
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.event.ActionListener;
 import javax.faces.validator.Validator;

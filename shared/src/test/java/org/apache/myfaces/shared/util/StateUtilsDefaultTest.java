@@ -15,8 +15,6 @@
  */
 package org.apache.myfaces.shared.util;
 
-import junit.framework.Test;
-
 /**
  * This TestCase uses the the default algorithm/mode/padding of
  * StateUtils.

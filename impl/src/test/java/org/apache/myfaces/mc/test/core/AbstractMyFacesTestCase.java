@@ -70,8 +70,6 @@ import org.apache.myfaces.config.impl.digester.elements.FactoryImpl;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.lifecycle.ViewNotFoundException;
 import org.apache.myfaces.mc.test.core.annotation.DeclareFacesConfig;
-import org.apache.myfaces.mc.test.core.annotation.ManagedBeans;
-import org.apache.myfaces.mc.test.core.annotation.PageBean;
 import org.apache.myfaces.mc.test.core.annotation.TestConfig;
 import org.apache.myfaces.mc.test.core.mock.DefaultContext;
 import org.apache.myfaces.mc.test.core.mock.MockInitialContextFactory;
