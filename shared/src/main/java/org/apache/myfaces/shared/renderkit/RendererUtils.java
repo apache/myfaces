@@ -650,43 +650,11 @@ public final class RendererUtils
     }
 
     /**
-     * 
-     * @param facesContext
-     * @param child
-     * @throws IOException
-     * @deprecated use UIComponent.encodeAll() instead
-     */
-    @Deprecated
-    public static void renderChild(FacesContext facesContext, UIComponent child)
-            throws IOException
-    {
-        // The next isRendered() call is only shortcut:
-        // methods encodeBegin, encodeChildren and encodeEnd should proceed only if 
-        // "If our rendered property is true, render the (beginning, child, ending) of this component"
-        if (!isRendered(facesContext, child))
-        {
-            return;
-        }
-
-        child.encodeBegin(facesContext);
-        if (child.getRendersChildren())
-        {
-            child.encodeChildren(facesContext);
-        }
-        else
-        {
-            renderChildren(facesContext, child);
-        }
-        child.encodeEnd(facesContext);
-    }
-
-    /**
      * Call {@link UIComponent#pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)}, 
      * reads the isRendered property, call {@link
      * UIComponent#popComponentFromEL(javax.faces.context.FacesContext)} and returns the value of isRendered.
      */
-    public static boolean isRendered(FacesContext facesContext,
-            UIComponent uiComponent)
+    public static boolean isRendered(FacesContext facesContext, UIComponent uiComponent)
     {
         // We must call pushComponentToEL here because ValueExpression may have 
         // implicit object "component" used. 

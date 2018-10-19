@@ -169,32 +169,6 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
         Object convertedUIOutputValue = RendererUtils.getConvertedUIOutputValue(facesContext, uiInput, submittedValue);
         assertEquals("If submittedvalue is not String, toString() must be used", submittedValue.toString(), convertedUIOutputValue);
     }
-
-    /**
-     * test for MYFACES-3126
-     */
-    @Test
-    public void testRenderChild() throws IOException
-    {
-        
-       UIInput uiInput = _setUpComponentStack();
-       
-       RendererUtils.renderChild(facesContext, uiInput);
-       
-       assertEquals("Invocation must not change the current component", parent, UIComponent.getCurrentComponent(facesContext));
-    }
-
-    
-    /**
-     * Test that no method encode* are called if component is not rendered 
-     */
-    @Test
-    public void testRenderChild2() throws IOException {
-
-        MockComponent component = new MockComponent();
-        
-        RendererUtils.renderChild(facesContext, component);
-    }
     
     @Test
     public void testIsRendered()
