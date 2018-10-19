@@ -44,6 +44,7 @@ import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 
 public abstract class HtmlMessagesRendererBase
         extends HtmlMessageRendererBase
@@ -203,7 +204,7 @@ public abstract class HtmlMessagesRendererBase
 
         while(messagesIterator.hasNext())
         {
-            writer.startElement(org.apache.myfaces.shared.renderkit.html.HTML.LI_ELEM, null); //messages);
+            writer.startElement(HTML.LI_ELEM, null); //messages);
             
             FacesMessage facesMessage = (FacesMessage)messagesIterator.next();
             // determine style and style class

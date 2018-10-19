@@ -32,6 +32,7 @@ import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils.ScriptContext;
 import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 
 public final class HtmlJavaScriptUtils
 {

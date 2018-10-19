@@ -34,6 +34,7 @@ import javax.faces.convert.ConverterException;
 
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 
 
@@ -155,7 +156,7 @@ public class HtmlTextareaRendererBase
 
         if (isDisabled(facesContext, uiComponent))
         {
-            writer.writeAttribute(org.apache.myfaces.shared.renderkit.html.HTML.DISABLED_ATTR, Boolean.TRUE, null);
+            writer.writeAttribute(HTML.DISABLED_ATTR, Boolean.TRUE, null);
         }
     }
 

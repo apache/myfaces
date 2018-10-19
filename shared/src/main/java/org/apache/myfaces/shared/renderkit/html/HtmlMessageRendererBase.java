@@ -41,6 +41,7 @@ import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 
 public abstract class HtmlMessageRendererBase
         extends HtmlRenderer
@@ -342,7 +343,7 @@ public abstract class HtmlMessageRendererBase
 
         if (span)
         {
-            writer.endElement(org.apache.myfaces.shared.renderkit.html.HTML.SPAN_ELEM);
+            writer.endElement(HTML.SPAN_ELEM);
         }
         
         // note that this FacesMessage already has been rendered 

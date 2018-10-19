@@ -42,7 +42,7 @@ import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.CommonEventUtils;
 import org.apache.myfaces.shared.renderkit.html.CommonPropertyUtils;
-import org.apache.myfaces.shared.renderkit.html.HTML;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;

@@ -40,6 +40,7 @@ import org.apache.myfaces.shared.component.EscapeCapable;
 import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 
 public class HtmlTextRendererBase
         extends HtmlRenderer
@@ -162,7 +163,7 @@ public class HtmlTextRendererBase
 
             if(span)
             {
-                writer.endElement(org.apache.myfaces.shared.renderkit.html.HTML.SPAN_ELEM);
+                writer.endElement(HTML.SPAN_ELEM);
             }
         }
     }
@@ -414,7 +415,7 @@ public class HtmlTextRendererBase
 
             if (span)
             {
-                writer.endElement(org.apache.myfaces.shared.renderkit.html.HTML.SPAN_ELEM);
+                writer.endElement(HTML.SPAN_ELEM);
             }
         }
     }

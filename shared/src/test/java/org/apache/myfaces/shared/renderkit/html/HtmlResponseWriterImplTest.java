@@ -23,6 +23,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Field;
 
 import org.apache.myfaces.shared.util.CommentUtils;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 /**

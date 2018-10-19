@@ -32,6 +32,7 @@ import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 
 /**
  * Renderer used by h:body component

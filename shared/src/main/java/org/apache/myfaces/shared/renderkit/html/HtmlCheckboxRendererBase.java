@@ -41,6 +41,7 @@ import javax.faces.model.SelectItemGroup;
 
 import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 
 public class HtmlCheckboxRendererBase extends HtmlRenderer
 {
@@ -349,8 +350,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         
         if (checked)
         {
-            writer.writeAttribute(HTML.CHECKED_ATTR, 
-                    org.apache.myfaces.shared.renderkit.html.HTML.CHECKED_ATTR, null);
+            writer.writeAttribute(HTML.CHECKED_ATTR, HTML.CHECKED_ATTR, null);
         }
         
         if (disabled)

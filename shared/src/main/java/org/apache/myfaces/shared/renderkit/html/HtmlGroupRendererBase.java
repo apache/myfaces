@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import javax.faces.component.behavior.ClientBehavior;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 
 public class HtmlGroupRendererBase
         extends HtmlRenderer 

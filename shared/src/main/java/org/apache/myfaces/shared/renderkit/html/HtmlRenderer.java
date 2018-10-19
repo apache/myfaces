@@ -27,6 +27,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.render.Renderer;
 import java.io.IOException;
 import java.util.List;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 
 public abstract class HtmlRenderer
         extends Renderer

@@ -24,31 +24,30 @@ import org.apache.myfaces.shared.util.ArrayUtils;
 /**
  * Constant declarations for HTML rendering.
  */
-public final class HTML
+public interface HTML
 {
-
     // Common attributes
-    public static final String ALIGN_ATTR = "align";
-    public static final String BORDER_ATTR = "border";
-    public static final String WIDTH_ATTR = "width";
-    public static final String READONLY_ATTR = "readonly";
-    public static final String FILE_ATTR = "file";
-    public static final String ACCEPT_ATTR = "accept";
+    String ALIGN_ATTR = "align";
+    String BORDER_ATTR = "border";
+    String WIDTH_ATTR = "width";
+    String READONLY_ATTR = "readonly";
+    String FILE_ATTR = "file";
+    String ACCEPT_ATTR = "accept";
 
     // Common event handler attributes
-    public static final String ONCLICK_ATTR     = "onclick";
-    public static final String ONDBLCLICK_ATTR  = "ondblclick";
-    public static final String ONMOUSEDOWN_ATTR = "onmousedown";
-    public static final String ONMOUSEUP_ATTR   = "onmouseup";
-    public static final String ONMOUSEOVER_ATTR = "onmouseover";
-    public static final String ONMOUSEMOVE_ATTR = "onmousemove";
-    public static final String ONMOUSEOUT_ATTR  = "onmouseout";
-    public static final String ONKEYPRESS_ATTR  = "onkeypress";
-    public static final String ONKEYDOWN_ATTR   = "onkeydown";
-    public static final String ONKEYUP_ATTR     = "onkeyup";
-    public static final String ONFOCUS_ATTR = "onfocus";
-    public static final String ONBLUR_ATTR = "onblur";
-    public static final String[] EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONCLICK =
+    String ONCLICK_ATTR     = "onclick";
+    String ONDBLCLICK_ATTR  = "ondblclick";
+    String ONMOUSEDOWN_ATTR = "onmousedown";
+    String ONMOUSEUP_ATTR   = "onmouseup";
+    String ONMOUSEOVER_ATTR = "onmouseover";
+    String ONMOUSEMOVE_ATTR = "onmousemove";
+    String ONMOUSEOUT_ATTR  = "onmouseout";
+    String ONKEYPRESS_ATTR  = "onkeypress";
+    String ONKEYDOWN_ATTR   = "onkeydown";
+    String ONKEYUP_ATTR     = "onkeyup";
+    String ONFOCUS_ATTR = "onfocus";
+    String ONBLUR_ATTR = "onblur";
+    String[] EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONCLICK =
     {
         ONDBLCLICK_ATTR,
         ONMOUSEDOWN_ATTR,
@@ -60,7 +59,7 @@ public final class HTML
         ONKEYDOWN_ATTR,
         ONKEYUP_ATTR
     };
-    public static final String[] EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONMOUSEOVER_AND_ONMOUSEOUT =
+    String[] EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONMOUSEOVER_AND_ONMOUSEOUT =
     {
         ONDBLCLICK_ATTR,
         ONMOUSEDOWN_ATTR,
@@ -71,15 +70,15 @@ public final class HTML
         ONKEYUP_ATTR,
         ONCLICK_ATTR
     };
-    public static final String[] EVENT_HANDLER_ATTRIBUTES =
-            (String[]) ArrayUtils.concat(
+    String[] EVENT_HANDLER_ATTRIBUTES =
+            (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
                 EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONCLICK,
                 new String[] {ONCLICK_ATTR});
 
     // Input field event handler attributes
-    public static final String ONSELECT_ATTR = "onselect";
-    public static final String ONCHANGE_ATTR = "onchange";
-    public static final String[] COMMON_FIELD_EVENT_ATTRIBUTES =
+    String ONSELECT_ATTR = "onselect";
+    String ONCHANGE_ATTR = "onchange";
+    String[] COMMON_FIELD_EVENT_ATTRIBUTES =
     {
         ONFOCUS_ATTR,
         ONBLUR_ATTR,
@@ -87,128 +86,131 @@ public final class HTML
         ONCHANGE_ATTR
     };
 
-    public static final String[] COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONFOCUS =
+    String[] COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONFOCUS =
     {
         ONBLUR_ATTR,
         ONSELECT_ATTR,
         ONCHANGE_ATTR
     };
     
-    public static final String[] COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONSELECT_AND_ONCHANGE =
+    String[] COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONSELECT_AND_ONCHANGE =
     {
         ONFOCUS_ATTR,
         ONBLUR_ATTR
     };
 
     // universal attributes
-    public static final String DIR_ATTR   = "dir";
-    public static final String LANG_ATTR  = "lang";
-    public static final String STYLE_ATTR = "style";
-    public static final String TITLE_ATTR = "title";
-    public static final String STYLE_CLASS_ATTR = "styleClass"; //"class" cannot be used as property name
-     
-    public static final String[] UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE =
+    String DIR_ATTR   = "dir";
+    String LANG_ATTR  = "lang";
+    String STYLE_ATTR = "style";
+    String TITLE_ATTR = "title";
+    String STYLE_CLASS_ATTR = "styleClass"; //"class" cannot be used as property name
+    // Role attribute (applies for "every" html tag)
+    String ROLE_ATTR  = "role"; 
+    
+    String[] UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE =
     {
         DIR_ATTR,
         LANG_ATTR,
         TITLE_ATTR,
-
+        ROLE_ATTR,
         //NOTE: if changed, please verify universal attributes in HtmlMessageRenderer !
     };
-    public static final String[] UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE_AND_TITLE =
+    String[] UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE_AND_TITLE =
     {
         DIR_ATTR,
         LANG_ATTR,
+        ROLE_ATTR,
     };
-    public static final String[] UNIVERSAL_ATTRIBUTES =
-            (String[]) ArrayUtils.concat(
+    String[] UNIVERSAL_ATTRIBUTES =
+            (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
                 UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE,
                 new String[] {STYLE_ATTR, STYLE_CLASS_ATTR});
 
     //universal, but not the same property-name -
     //styleClass attribute is rendered as such
-    public static final String CLASS_ATTR = "class";
+    String CLASS_ATTR = "class";
 
     // common form field attributes
-    public static final String ACCESSKEY_ATTR   = "accesskey";
-    public static final String TABINDEX_ATTR    = "tabindex";
-    public static final String DISABLED_ATTR = "disabled";
-    public static final String[] COMMON_FIELD_ATTRIBUTES_WITHOUT_DISABLED =
+    String ACCESSKEY_ATTR   = "accesskey";
+    String TABINDEX_ATTR    = "tabindex";
+    String DISABLED_ATTR = "disabled";
+    String[] COMMON_FIELD_ATTRIBUTES_WITHOUT_DISABLED =
     {
         ACCESSKEY_ATTR,
         TABINDEX_ATTR
     };
-    public static final String[] COMMON_FIELD_ATTRIBUTES =
+    String[] COMMON_FIELD_ATTRIBUTES =
         (String[]) ArrayUtils.concat(
             COMMON_FIELD_ATTRIBUTES_WITHOUT_DISABLED,
             new String[] {DISABLED_ATTR});
 
     // Common Attributes
-    public static final String[] COMMON_PASSTROUGH_ATTRIBUTES =
-        (String[]) ArrayUtils.concat(
+    String[] COMMON_PASSTROUGH_ATTRIBUTES =
+        (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
             EVENT_HANDLER_ATTRIBUTES,
             UNIVERSAL_ATTRIBUTES);
-    public static final String[] COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_STYLE =
-        (String[]) ArrayUtils.concat(
+    String[] COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_STYLE =
+        (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
             EVENT_HANDLER_ATTRIBUTES,
             UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE);
-    public static final String[] COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONCLICK =
+    String[] COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONCLICK =
         (String[]) ArrayUtils.concat(
             EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONCLICK,
             UNIVERSAL_ATTRIBUTES);
-    public static final String[] COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONCLICK_WITHOUT_STYLE =
+    String[] COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONCLICK_WITHOUT_STYLE =
         (String[]) ArrayUtils.concat(
             EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONCLICK,
             UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE);
-    public static final String[] COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED =
+    String[] COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED =
         (String[]) ArrayUtils.concat(
             COMMON_PASSTROUGH_ATTRIBUTES,
             COMMON_FIELD_ATTRIBUTES_WITHOUT_DISABLED,
             COMMON_FIELD_EVENT_ATTRIBUTES);
-    public static final String[] COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE =
+    String[] COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE =
         (String[]) ArrayUtils.concat(
             COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_STYLE,
             COMMON_FIELD_ATTRIBUTES_WITHOUT_DISABLED,
             COMMON_FIELD_EVENT_ATTRIBUTES);
-    public static final String[] COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONFOCUS =
-        (String[]) ArrayUtils.concat(
+    String[] COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONFOCUS =
+        (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
             COMMON_PASSTROUGH_ATTRIBUTES,
             COMMON_FIELD_ATTRIBUTES_WITHOUT_DISABLED,
             COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONFOCUS);
-    public static final String[] COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONFOCUS_AND_ONCLICK =
+    String[] COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONFOCUS_AND_ONCLICK =
         (String[]) ArrayUtils.concat(
             COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONCLICK,
             COMMON_FIELD_ATTRIBUTES_WITHOUT_DISABLED,
             COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONFOCUS);
-    public static final String[] COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONCLICK =
-        (String[]) ArrayUtils.concat(
+    String[] COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONCLICK =
+        (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
             COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONCLICK,
             COMMON_FIELD_ATTRIBUTES_WITHOUT_DISABLED,
             COMMON_FIELD_EVENT_ATTRIBUTES);
-    public static final String[] COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONMOUSEOVER_AND_ONMOUSEOUT =
-        (String[]) ArrayUtils.concat(
+    String[] COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONMOUSEOVER_AND_ONMOUSEOUT =
+        (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
             EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONMOUSEOVER_AND_ONMOUSEOUT,
             UNIVERSAL_ATTRIBUTES);
-    public static final String[] COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS =
+    String[] COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS =
         (String[]) ArrayUtils.concat(
             UNIVERSAL_ATTRIBUTES,
             COMMON_FIELD_ATTRIBUTES_WITHOUT_DISABLED);
-    public static final String[] COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE_AND_EVENTS =
+    String[] COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE_AND_EVENTS =
         (String[]) ArrayUtils.concat(
             UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE,
             COMMON_FIELD_ATTRIBUTES_WITHOUT_DISABLED);
     
     // <a>
-    public static final String TARGET_ATTR = "target";  //used by <a> and <form>
-    public static final String CHARSET_ATTR     = "charset";
-    public static final String COORDS_ATTR      = "coords";
-    public static final String HREF_ATTR    = "href";
-    public static final String HREFLANG_ATTR    = "hreflang";
-    public static final String REL_ATTR         = "rel";
-    public static final String REV_ATTR         = "rev";
-    public static final String SHAPE_ATTR       = "shape";
-    public static final String TYPE_ATTR        = "type";
-    public static final String[] ANCHOR_ATTRIBUTES =
+    String TARGET_ATTR = "target";  //used by <a> and <form>
+    String CHARSET_ATTR     = "charset";
+    String COORDS_ATTR      = "coords";
+    String HREF_ATTR    = "href";
+    String HREFLANG_ATTR    = "hreflang";
+    String REL_ATTR         = "rel";
+    String REV_ATTR         = "rev";
+    String SHAPE_ATTR       = "shape";
+    String TYPE_ATTR        = "type";
+    String[] ANCHOR_ATTRIBUTES =
     {
         ACCESSKEY_ATTR,
         CHARSET_ATTR,
@@ -221,36 +223,51 @@ public final class HTML
         TARGET_ATTR,
         TYPE_ATTR
     };
-    public static final String[] ANCHOR_PASSTHROUGH_ATTRIBUTES =
+    String[] ANCHOR_PASSTHROUGH_ATTRIBUTES =
         (String[]) ArrayUtils.concat(
             ANCHOR_ATTRIBUTES,
             COMMON_PASSTROUGH_ATTRIBUTES,
             COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONSELECT_AND_ONCHANGE);
-    public static final String[] ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_STYLE =
-        (String[]) ArrayUtils.concat(
+    String[] ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_STYLE =
+        (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
             ANCHOR_ATTRIBUTES,
             COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_STYLE,
             COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONSELECT_AND_ONCHANGE);
-    public static final String[] ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_ONCLICK_WITHOUT_STYLE =
-        (String[]) ArrayUtils.concat(
+    String[] ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_ONCLICK_WITHOUT_STYLE =
+        (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
             ANCHOR_ATTRIBUTES,
             COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONCLICK_WITHOUT_STYLE,
             COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONSELECT_AND_ONCHANGE);
-    public static final String[] ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS =
+    String[] ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS =
         (String[]) ArrayUtils.concat(
             ANCHOR_ATTRIBUTES,
             UNIVERSAL_ATTRIBUTES);
-    public static final String[] ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_STYLE_AND_EVENTS =
-        (String[]) ArrayUtils.concat(
+    String[] ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_STYLE_AND_EVENTS =
+        (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
             ANCHOR_ATTRIBUTES,
             UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE);
-
+    
+    String[] ANCHOR_ATTRIBUTES_DISABLED =
+    {
+        ACCESSKEY_ATTR,
+        TABINDEX_ATTR,
+    };
+    String[] ANCHOR_PASSTHROUGH_ATTRIBUTES_DISABLED =
+        (String[]) ArrayUtils.concat(
+            ANCHOR_ATTRIBUTES_DISABLED,
+            COMMON_PASSTROUGH_ATTRIBUTES,
+            COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONSELECT_AND_ONCHANGE);
+    String[] ANCHOR_PASSTHROUGH_ATTRIBUTES_DISABLED_WITHOUT_EVENTS =
+        (String[]) ArrayUtils.concat(
+            ANCHOR_ATTRIBUTES_DISABLED,
+            UNIVERSAL_ATTRIBUTES);
+    
     // <form>
-    public static final String ACCEPT_CHARSET_ATTR = "accept-charset";
-    public static final String ENCTYPE_ATTR = "enctype";
-    public static final String ONRESET_ATTR = "onreset";
-    public static final String ONSUMBIT_ATTR = "onsubmit";
-    public static final String[] FORM_ATTRIBUTES =
+    String ACCEPT_CHARSET_ATTR = "accept-charset";
+    String ENCTYPE_ATTR = "enctype";
+    String ONRESET_ATTR = "onreset";
+    String ONSUMBIT_ATTR = "onsubmit";
+    String[] FORM_ATTRIBUTES =
     {
         ACCEPT_ATTR,
         ACCEPT_CHARSET_ATTR,
@@ -259,25 +276,25 @@ public final class HTML
         ONSUMBIT_ATTR,
         TARGET_ATTR,
     };
-    public static final String[] FORM_PASSTHROUGH_ATTRIBUTES =
+    String[] FORM_PASSTHROUGH_ATTRIBUTES =
         (String[]) ArrayUtils.concat(
             FORM_ATTRIBUTES,
             COMMON_PASSTROUGH_ATTRIBUTES);
-    public static final String[] FORM_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS =
+    String[] FORM_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS =
         (String[]) ArrayUtils.concat(
             FORM_ATTRIBUTES,
             UNIVERSAL_ATTRIBUTES);
     // <img>
-    public static final String SRC_ATTR = "src";
-    public static final String ALT_ATTR = "alt";
-    public static final String HEIGHT_ATTR = "height";
-    public static final String HSPACE_ATTR = "hspace";
-    public static final String ISMAP_ATTR = "ismap";
-    public static final String LONGDESC_ATTR = "longdesc";
-    public static final String USEMAP_ATTR = "usemap";
-    public static final String VSPACE_ATTR = "vspace";
+    String SRC_ATTR = "src";
+    String ALT_ATTR = "alt";
+    String HEIGHT_ATTR = "height";
+    String HSPACE_ATTR = "hspace";
+    String ISMAP_ATTR = "ismap";
+    String LONGDESC_ATTR = "longdesc";
+    String USEMAP_ATTR = "usemap";
+    String VSPACE_ATTR = "vspace";
 
-    public static final String[] IMG_ATTRIBUTES =
+    String[] IMG_ATTRIBUTES =
     {
         ALIGN_ATTR,
         ALT_ATTR,
@@ -290,25 +307,25 @@ public final class HTML
         VSPACE_ATTR,
         WIDTH_ATTR
     };
-    public static final String[] IMG_PASSTHROUGH_ATTRIBUTES =
+    String[] IMG_PASSTHROUGH_ATTRIBUTES =
         (String[]) ArrayUtils.concat(
            IMG_ATTRIBUTES,
            COMMON_PASSTROUGH_ATTRIBUTES);
-    public static final String[] IMG_PASSTHROUGH_ATTRIBUTES_WITHOUT_ONMOUSEOVER_AND_ONMOUSEOUT =
+    String[] IMG_PASSTHROUGH_ATTRIBUTES_WITHOUT_ONMOUSEOVER_AND_ONMOUSEOUT =
         (String[]) ArrayUtils.concat(
            IMG_ATTRIBUTES,
            COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONMOUSEOVER_AND_ONMOUSEOUT);
-    public static final String[] IMG_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS =
+    String[] IMG_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS =
         (String[]) ArrayUtils.concat(
            IMG_ATTRIBUTES,
            UNIVERSAL_ATTRIBUTES);
     // <input>
-    public static final String SIZE_ATTR = "size";
-    public static final String AUTOCOMPLETE_ATTR = "autocomplete";
-    public static final String CHECKED_ATTR = "checked";
-    public static final String MAXLENGTH_ATTR = "maxlength";
+    String SIZE_ATTR = "size";
+    String AUTOCOMPLETE_ATTR = "autocomplete";
+    String CHECKED_ATTR = "checked";
+    String MAXLENGTH_ATTR = "maxlength";
 
-    public static final String[] INPUT_ATTRIBUTES = {
+    String[] INPUT_ATTRIBUTES = {
         ALIGN_ATTR,
         ALT_ATTR,
         CHECKED_ATTR,
@@ -316,101 +333,102 @@ public final class HTML
         READONLY_ATTR,
         SIZE_ATTR
     };
-    public static final String[] INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED =
+    String[] INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED =
         (String[]) ArrayUtils.concat(
                 INPUT_ATTRIBUTES,
                 COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED);
-    public static final String[] INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE =
+    String[] INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE =
         (String[]) ArrayUtils.concat(
                 INPUT_ATTRIBUTES,
                 COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE);
 
-    public static final String[] INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONFOCUS_AND_ONCLICK =
-        (String[]) ArrayUtils.concat(
+    String[] INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONFOCUS_AND_ONCLICK =
+        (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
                 INPUT_ATTRIBUTES,
                 COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONFOCUS_AND_ONCLICK);
 
-    public static final String[] INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS =
+    String[] INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS =
         (String[]) ArrayUtils.concat(
                 INPUT_ATTRIBUTES,
                 COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
     
-    public static final String[] INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE_AND_EVENTS =
+    String[] INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE_AND_EVENTS =
         (String[]) ArrayUtils.concat(
                 INPUT_ATTRIBUTES,
                 COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE_AND_EVENTS);
 
     //values for input-type attribute
-    public static final String INPUT_TYPE_SUBMIT = "submit";
-    public static final String INPUT_TYPE_IMAGE = "image";
-    public static final String INPUT_TYPE_HIDDEN = "hidden";
-    public static final String INPUT_TYPE_CHECKBOX = "checkbox";
-    public static final String INPUT_TYPE_PASSWORD = "password";
-    public static final String INPUT_TYPE_TEXT = "text";
-    public static final String INPUT_TYPE_RADIO = "radio";
-    public static final String INPUT_TYPE_BUTTON = "button";
+    String INPUT_TYPE_SUBMIT = "submit";
+    String INPUT_TYPE_IMAGE = "image";
+    String INPUT_TYPE_HIDDEN = "hidden";
+    String INPUT_TYPE_CHECKBOX = "checkbox";
+    String INPUT_TYPE_PASSWORD = "password";
+    String INPUT_TYPE_TEXT = "text";
+    String INPUT_TYPE_RADIO = "radio";
+    String INPUT_TYPE_BUTTON = "button";
+    String INPUT_TYPE_FILE = "file";
 
     // <button>
-    public static final String[] BUTTON_ATTRIBUTES =
+    String[] BUTTON_ATTRIBUTES =
     {
         ALIGN_ATTR,
         ALT_ATTR,
     };
-    public static final String[] BUTTON_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED =
-        (String[]) ArrayUtils.concat(
+    String[] BUTTON_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED =
+        (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
             BUTTON_ATTRIBUTES,
             COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED);
-    public static final String[] BUTTON_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONCLICK =
-        (String[]) ArrayUtils.concat(
+    String[] BUTTON_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONCLICK =
+        (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
             BUTTON_ATTRIBUTES,
             COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONCLICK);
-    public static final String[] BUTTON_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS =
-        (String[]) ArrayUtils.concat(
+    String[] BUTTON_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS =
+        (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
             BUTTON_ATTRIBUTES,
             COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
 
     // <iframe>
-    public static final String FRAMEBORDER_ATTR = "frameborder";
-    public static final String SCROLLING_ATTR = "scrolling";
+    String FRAMEBORDER_ATTR = "frameborder";
+    String SCROLLING_ATTR = "scrolling";
 
     // <label>
-    public static final String FOR_ATTR = "for";
-    public static final String[] LABEL_ATTRIBUTES =
+    String FOR_ATTR = "for";
+    String[] LABEL_ATTRIBUTES =
     {
         ACCESSKEY_ATTR,
         ONBLUR_ATTR,
         ONFOCUS_ATTR
         //FOR_ATTR is no pass through !
     };
-    public static final String[] LABEL_ATTRIBUTES_WITHOUT_EVENTS =
+    String[] LABEL_ATTRIBUTES_WITHOUT_EVENTS =
     {
         ACCESSKEY_ATTR
     };
-    public static final String[] LABEL_PASSTHROUGH_ATTRIBUTES =
-        (String[]) ArrayUtils.concat(
+    String[] LABEL_PASSTHROUGH_ATTRIBUTES =
+        (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
             LABEL_ATTRIBUTES,
             COMMON_PASSTROUGH_ATTRIBUTES);
-    public static final String[] LABEL_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS =
-        (String[]) ArrayUtils.concat(
+    String[] LABEL_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS =
+        (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
             LABEL_ATTRIBUTES_WITHOUT_EVENTS,
             UNIVERSAL_ATTRIBUTES);
 
     // <select>
-    public static final String MULTIPLE_ATTR = "multiple";
+    String MULTIPLE_ATTR = "multiple";
 
-    public static final String[] SELECT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED = 
+    String[] SELECT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED = 
             COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED;
-    public static final String[] SELECT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS = 
+    String[] SELECT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS = 
         COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS;
 
     // <table>
-    public static final String BGCOLOR_ATTR = "bgcolor";
-    public static final String CELLPADDING_ATTR = "cellpadding";
-    public static final String CELLSPACING_ATTR = "cellspacing";
-    public static final String FRAME_ATTR = "frame";
-    public static final String RULES_ATTR = "rules";
-    public static final String SUMMARY_ATTR = "summary";
-    public static final String[] TABLE_ATTRIBUTES = {
+    String BGCOLOR_ATTR = "bgcolor";
+    String CELLPADDING_ATTR = "cellpadding";
+    String CELLSPACING_ATTR = "cellspacing";
+    String FRAME_ATTR = "frame";
+    String RULES_ATTR = "rules";
+    String SUMMARY_ATTR = "summary";
+    String[] TABLE_ATTRIBUTES = {
         ALIGN_ATTR,
         BGCOLOR_ATTR,
         BORDER_ATTR,
@@ -421,45 +439,45 @@ public final class HTML
         SUMMARY_ATTR,
         WIDTH_ATTR
     };
-    public static final String[] TABLE_PASSTHROUGH_ATTRIBUTES =
+    String[] TABLE_PASSTHROUGH_ATTRIBUTES =
         (String[]) ArrayUtils.concat(
             TABLE_ATTRIBUTES,
             COMMON_PASSTROUGH_ATTRIBUTES);
-    public static final String[] TABLE_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS =
+    String[] TABLE_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS =
         (String[]) ArrayUtils.concat(
             TABLE_ATTRIBUTES,
             UNIVERSAL_ATTRIBUTES);
 
     // <textarea>
-    public static final String COLS_ATTR = "cols";
-    public static final String ROWS_ATTR = "rows";
-    public static final String WRAP_ATTR = "wrap";
-    public static final String[] TEXTAREA_ATTRIBUTES =
+    String COLS_ATTR = "cols";
+    String ROWS_ATTR = "rows";
+    String WRAP_ATTR = "wrap";
+    String[] TEXTAREA_ATTRIBUTES =
     {
         COLS_ATTR,
         READONLY_ATTR,
         ROWS_ATTR,
         WRAP_ATTR
     };
-    public static final String[] TEXTAREA_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED =
+    String[] TEXTAREA_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED =
         (String[]) ArrayUtils.concat(
             TEXTAREA_ATTRIBUTES,
             COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED);
-    public static final String[] TEXTAREA_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS =
+    String[] TEXTAREA_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS =
         (String[]) ArrayUtils.concat(
             TEXTAREA_ATTRIBUTES,
             COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
 
     // <input type=file>
-    public static final String[] INPUT_FILE_UPLOAD_ATTRIBUTES =
+    String[] INPUT_FILE_UPLOAD_ATTRIBUTES =
     {
         ACCEPT_ATTR
     };
-    public static final String[] INPUT_FILE_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED =
+    String[] INPUT_FILE_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED =
         (String[]) ArrayUtils.concat(
             INPUT_FILE_UPLOAD_ATTRIBUTES,
             INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
-    public static final String[] INPUT_FILE_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS =
+    String[] INPUT_FILE_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS =
         (String[]) ArrayUtils.concat(
             INPUT_FILE_UPLOAD_ATTRIBUTES,
             INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
@@ -471,43 +489,46 @@ public final class HTML
             EVENT_HANDLER_ATTRIBUTES);
             */
 
-    public static final String[] MESSAGE_PASSTHROUGH_ATTRIBUTES_WITHOUT_TITLE_STYLE_AND_STYLE_CLASS =
-        (String[]) ArrayUtils.concat(
+    String[] MESSAGE_PASSTHROUGH_ATTRIBUTES_WITHOUT_TITLE_STYLE_AND_STYLE_CLASS =
+        (String[]) org.apache.myfaces.shared.util.ArrayUtils.concat(
             new String[] {DIR_ATTR, LANG_ATTR},
             EVENT_HANDLER_ATTRIBUTES);
 
 
     // selectOne/Many table
-    public static final String[] SELECT_TABLE_PASSTHROUGH_ATTRIBUTES =
+    String[] SELECT_TABLE_PASSTHROUGH_ATTRIBUTES =
         new String[] {STYLE_ATTR, STYLE_CLASS_ATTR, BORDER_ATTR};
 
-    public static final String COMPACT_ATTR = "compact";
-    public static final String[] UL_ATTRIBUTES = {
+    String COMPACT_ATTR = "compact";
+    String[] UL_ATTRIBUTES = {
         COMPACT_ATTR,
         TYPE_ATTR
     };
-    public static final String[] UL_PASSTHROUGH_ATTRIBUTES =
+    String[] UL_PASSTHROUGH_ATTRIBUTES =
         (String[]) ArrayUtils.concat(
             UL_ATTRIBUTES,
             COMMON_PASSTROUGH_ATTRIBUTES);
-    public static final String[] UL_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS =
+    String[] UL_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS =
         (String[]) ArrayUtils.concat(
             UL_ATTRIBUTES,
             UNIVERSAL_ATTRIBUTES);
 
-    //body
-    public static final String BODY_ELEM = "body";
-    public static final String BODY_TARGET = BODY_ELEM;
+    //head
+    String HEAD_ELEM = "head";
     
-    public static final String ONLOAD_ATTR = "onload";
-    public static final String ONUNLOAD_ATTR = "onunload";
-    public static final String ALINK_ATTR = "alink";
-    public static final String VLINK_ATTR = "vlink";
-    public static final String LINK_ATTR = "link";
-    public static final String TEXT_ATTR = "text";
-    public static final String BACKGROUND_ATTR = "background";
+    //body
+    String BODY_ELEM = "body";
+    String BODY_TARGET = BODY_ELEM;
+    
+    String ONLOAD_ATTR = "onload";
+    String ONUNLOAD_ATTR = "onunload";
+    String ALINK_ATTR = "alink";
+    String VLINK_ATTR = "vlink";
+    String LINK_ATTR = "link";
+    String TEXT_ATTR = "text";
+    String BACKGROUND_ATTR = "background";
 
-    public static final String[] BODY_ATTRIBUTES =
+    String[] BODY_ATTRIBUTES =
     {
         ONLOAD_ATTR,
         ONUNLOAD_ATTR,
@@ -519,7 +540,7 @@ public final class HTML
         BGCOLOR_ATTR
     };
     
-    public static final String[] BODY_ATTRIBUTES_WITHOUT_EVENTS =
+    String[] BODY_ATTRIBUTES_WITHOUT_EVENTS =
     {
         ALINK_ATTR,
         VLINK_ATTR,
@@ -529,82 +550,83 @@ public final class HTML
         BGCOLOR_ATTR
     };
 
-    public static final String[] BODY_PASSTHROUGH_ATTRIBUTES =
+    String[] BODY_PASSTHROUGH_ATTRIBUTES =
         (String[]) ArrayUtils.concat(
                 COMMON_PASSTROUGH_ATTRIBUTES,
                 BODY_ATTRIBUTES);
-    public static final String[] BODY_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS =
+    String[] BODY_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS =
         (String[]) ArrayUtils.concat(
                 UNIVERSAL_ATTRIBUTES,
                 BODY_ATTRIBUTES_WITHOUT_EVENTS);
     //HTML attributes needed for renderding only
-    public static final String ID_ATTR = "id";
-    public static final String NAME_ATTR = "name";
-    public static final String VALUE_ATTR = "value";
-    public static final String METHOD_ATTR = "method";
-    public static final String ACTION_ATTR = "action";
-    public static final String COLSPAN_ATTR = "colspan";
-    public static final String SCOPE_ATTR = "scope";
-    public static final String LABEL_ATTR = "label";
-    public static final String SELECTED_ATTR = "selected";
+    String ID_ATTR = "id";
+    String NAME_ATTR = "name";
+    String VALUE_ATTR = "value";
+    String METHOD_ATTR = "method";
+    String ACTION_ATTR = "action";
+    String COLSPAN_ATTR = "colspan";
+    String SCOPE_ATTR = "scope";
+    String LABEL_ATTR = "label";
+    String SELECTED_ATTR = "selected";
+    String XMLNS_ATTR = "xmlns";
 
     //HTML attributes values
-    public static final String SCOPE_COLGROUP_VALUE = "colgroup";
-    public static final String SCOPE_ROW_VALUE = "row";
+    String SCOPE_COLGROUP_VALUE = "colgroup";
+    String SCOPE_ROW_VALUE = "row";
 
     //HTML element constants
-    public static final String SPAN_ELEM = "span";
-    public static final String DIV_ELEM = "div";
-    public static final String INPUT_ELEM = "input";
-    public static final String BUTTON_ELEM = "button";
-    public static final String SELECT_ELEM = "select";
-    public static final String OPTION_ELEM = "option";
-    public static final String OPTGROUP_ELEM = "optgroup";
-    public static final String TEXTAREA_ELEM = "textarea";
-    public static final String FORM_ELEM = "form";
-    public static final String ANCHOR_ELEM = "a";
-    public static final String H1_ELEM = "h1";
-    public static final String H2_ELEM = "h2";
-    public static final String H3_ELEM = "h3";
-    public static final String H4_ELEM = "h4";
-    public static final String H5_ELEM = "h5";
-    public static final String H6_ELEM = "h6";
-    public static final String IFRAME_ELEM = "iframe";
-    public static final String IMG_ELEM = "img";
-    public static final String LABEL_ELEM = "label";
-    public static final String TABLE_ELEM = "table";
-    public static final String CAPTION_ELEM = "caption";
-    public static final String TR_ELEM = "tr";
-    public static final String TH_ELEM = "th";
-    public static final String TD_ELEM = "td";
-    public static final String TBODY_ELEM = "tbody";
-    public static final String TFOOT_ELEM = "tfoot";
-    public static final String THEAD_ELEM = "thead";
-    public static final String STYLE_ELEM = "style";
-    public static final String SCRIPT_ELEM = "script";
-    public static final String SCRIPT_TYPE_ATTR = "type";
-    public static final String SCRIPT_TYPE_TEXT_JAVASCRIPT = "text/javascript";
-    public static final String STYLE_TYPE_TEXT_CSS = "text/css";
-    public static final String SCRIPT_LANGUAGE_ATTR = "language";
-    public static final String SCRIPT_LANGUAGE_JAVASCRIPT = "JavaScript";
-    public static final String SCRIPT_ELEM_DEFER_ATTR = "defer";
-    public static final String LINK_ELEM = "link";
-    public static final String STYLESHEET_VALUE = "stylesheet";
-    public static final String UL_ELEM = "ul";
-    public static final String OL_ELEM = "ol";
-    public static final String LI_ELEM = "li";
+    String SPAN_ELEM = "span";
+    String DIV_ELEM = "div";
+    String INPUT_ELEM = "input";
+    String BUTTON_ELEM = "button";
+    String SELECT_ELEM = "select";
+    String OPTION_ELEM = "option";
+    String OPTGROUP_ELEM = "optgroup";
+    String TEXTAREA_ELEM = "textarea";
+    String FORM_ELEM = "form";
+    String ANCHOR_ELEM = "a";
+    String H1_ELEM = "h1";
+    String H2_ELEM = "h2";
+    String H3_ELEM = "h3";
+    String H4_ELEM = "h4";
+    String H5_ELEM = "h5";
+    String H6_ELEM = "h6";
+    String IFRAME_ELEM = "iframe";
+    String IMG_ELEM = "img";
+    String LABEL_ELEM = "label";
+    String TABLE_ELEM = "table";
+    String CAPTION_ELEM = "caption";
+    String TR_ELEM = "tr";
+    String TH_ELEM = "th";
+    String TD_ELEM = "td";
+    String TBODY_ELEM = "tbody";
+    String TFOOT_ELEM = "tfoot";
+    String THEAD_ELEM = "thead";
+    String STYLE_ELEM = "style";
+    String SCRIPT_ELEM = "script";
+    String SCRIPT_TYPE_ATTR = "type";
+    String SCRIPT_TYPE_TEXT_JAVASCRIPT = "text/javascript";
+    String STYLE_TYPE_TEXT_CSS = "text/css";
+    String SCRIPT_LANGUAGE_ATTR = "language";
+    String SCRIPT_LANGUAGE_JAVASCRIPT = "JavaScript";
+    String SCRIPT_ELEM_DEFER_ATTR = "defer";
+    String LINK_ELEM = "link";
+    String STYLESHEET_VALUE = "stylesheet";
+    String UL_ELEM = "ul";
+    String OL_ELEM = "ol";
+    String LI_ELEM = "li";
 
 
     //HTML simple element constants
-    public static final String BR_ELEM = "br";
+    String BR_ELEM = "br";
 
 
     //HTML entities
-    public static final String NBSP_ENTITY = "&#160;";
+    String NBSP_ENTITY = "&#160;";
 
-    public static final String HREF_PATH_SEPARATOR = "/";
-    public static final String HREF_PATH_FROM_PARAM_SEPARATOR = "?";
+    String HREF_PATH_SEPARATOR = "/";
+    String HREF_PATH_FROM_PARAM_SEPARATOR = "?";
     //removed because wrong for XHTML and not used anyway: String HREF_PARAM_SEPARATOR = "&";
-    public static final String HREF_PARAM_NAME_FROM_VALUE_SEPARATOR = "=";
+    String HREF_PARAM_NAME_FROM_VALUE_SEPARATOR = "=";
 
 }

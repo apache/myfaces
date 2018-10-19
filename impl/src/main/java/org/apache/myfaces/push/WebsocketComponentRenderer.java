@@ -41,7 +41,7 @@ import org.apache.myfaces.push.cdi.WebsocketChannelMetadata;
 import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilderBean;
 import org.apache.myfaces.push.cdi.WebsocketSessionBean;
 import org.apache.myfaces.push.cdi.WebsocketViewBean;
-import org.apache.myfaces.shared.renderkit.html.HTML;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**

@@ -38,6 +38,7 @@ import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.util.ArrayUtils;
 import org.apache.myfaces.shared.util.StringUtils;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 
 /**
  * Common methods for renderers for components that subclass the standard

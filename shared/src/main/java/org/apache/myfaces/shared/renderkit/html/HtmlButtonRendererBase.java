@@ -44,6 +44,7 @@ import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 
 public class HtmlButtonRendererBase
     extends HtmlRenderer
@@ -175,8 +176,7 @@ public class HtmlButtonRendererBase
             Object value = getValue(uiComponent);
             if (value != null)
             {
-                writer.writeAttribute(org.apache.myfaces.shared.renderkit.html.HTML.VALUE_ATTR, value, 
-                        JSFAttr.VALUE_ATTR);
+                writer.writeAttribute(HTML.VALUE_ATTR, value, JSFAttr.VALUE_ATTR);
             }
         }
         

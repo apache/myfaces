@@ -38,7 +38,7 @@ import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.CommonPropertyConstants;
 import org.apache.myfaces.shared.renderkit.html.CommonPropertyUtils;
-import org.apache.myfaces.shared.renderkit.html.HTML;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 
@@ -152,7 +152,7 @@ public class HtmlFormatRenderer extends HtmlRenderer
 
             if(span)
             {
-                writer.endElement(org.apache.myfaces.shared.renderkit.html.HTML.SPAN_ELEM);
+                writer.endElement(HTML.SPAN_ELEM);
             }
         }
     }

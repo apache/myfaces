@@ -73,6 +73,7 @@ import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder;
 import org.apache.myfaces.shared.renderkit.html.util.OutcomeTargetUtils;
 import org.apache.myfaces.shared.util.StringUtils;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 
 public final class HtmlRendererUtils
 {
@@ -1336,7 +1337,7 @@ public final class HtmlRendererUtils
             UIInput input) throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
-        writer.startElement(org.apache.myfaces.shared.renderkit.html.HTML.SPAN_ELEM, input);
+        writer.startElement(HTML.SPAN_ELEM, input);
         writeIdIfNecessary(writer, input, facesContext);
         renderDisplayValueOnlyAttributes(input, writer);
         String strValue = RendererUtils.getStringValue(facesContext, input);

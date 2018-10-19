@@ -38,6 +38,7 @@ import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.util.ArrayUtils;
 import org.apache.myfaces.shared.util.StringUtils;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 
 
 public class HtmlGridRendererBase
@@ -206,8 +207,7 @@ public class HtmlGridRendererBase
             return;
         }
 
-        writer.startElement(
-                header ? org.apache.myfaces.shared.renderkit.html.HTML.THEAD_ELEM : HTML.TFOOT_ELEM, null);
+        writer.startElement(header ? HTML.THEAD_ELEM : HTML.TFOOT_ELEM, null);
                 // component);
         writer.startElement(HTML.TR_ELEM, null); // component);
         writer.startElement(header ? HTML.TH_ELEM : HTML.TD_ELEM, null); // component);

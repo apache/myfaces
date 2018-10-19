@@ -35,6 +35,7 @@ import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 
 
 public class HtmlImageRendererBase
@@ -155,7 +156,7 @@ public class HtmlImageRendererBase
             }
         }
 
-        writer.endElement(org.apache.myfaces.shared.renderkit.html.HTML.IMG_ELEM);
+        writer.endElement(HTML.IMG_ELEM);
 
     }
 

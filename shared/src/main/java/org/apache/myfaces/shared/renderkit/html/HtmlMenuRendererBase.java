@@ -35,6 +35,7 @@ import javax.faces.convert.ConverterException;
 
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 
 /**
  * X-CHECKED: tlddoc of h:selectManyListbox
@@ -109,14 +110,13 @@ public class HtmlMenuRendererBase
         }
         else
         {
-            return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(uiComponent, 
-                    org.apache.myfaces.shared.renderkit.html.HTML.DISABLED_ATTR, false);
+            return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
         }
     }
 
     public void decode(FacesContext facesContext, UIComponent uiComponent)
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, uiComponent, null);
+        RendererUtils.checkParamValidity(facesContext, uiComponent, null);
 
         if (uiComponent instanceof UISelectMany)
         {
@@ -140,17 +140,17 @@ public class HtmlMenuRendererBase
     public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue)
          throws ConverterException
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, uiComponent, null);
+        RendererUtils.checkParamValidity(facesContext, uiComponent, null);
 
         if (uiComponent instanceof UISelectMany)
         {
-            return org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedUISelectManyValue(facesContext,
+            return RendererUtils.getConvertedUISelectManyValue(facesContext,
                                                                (UISelectMany)uiComponent,
                                                                submittedValue);
         }
         else if (uiComponent instanceof UISelectOne)
         {
-            return org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedUISelectOneValue(facesContext,
+            return RendererUtils.getConvertedUISelectOneValue(facesContext,
                                                            (UISelectOne)uiComponent,
                                                            submittedValue);
         }

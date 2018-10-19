@@ -34,9 +34,9 @@ import javax.faces.model.SelectItemGroup;
 import org.apache.myfaces.shared.component.EscapeCapable;
 import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.renderkit.html.HTML;
 import static org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils.isHideNoSelectionOption;
 import org.apache.myfaces.shared.util.SelectItemsIterator;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 
 /**
  * Utility methods to manipulate SelectItem/SelectItems

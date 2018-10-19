@@ -41,7 +41,7 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.event.ActionEvent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.renderkit.html.HTML;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;

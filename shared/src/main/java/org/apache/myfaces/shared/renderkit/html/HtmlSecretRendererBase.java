@@ -34,6 +34,7 @@ import javax.faces.convert.ConverterException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 
 
 /**
@@ -74,7 +75,7 @@ public class HtmlSecretRendererBase
         ResponseWriter writer = facesContext.getResponseWriter();
         
         writer.startElement(HTML.INPUT_ELEM, uiComponent);
-        writer.writeAttribute(HTML.TYPE_ATTR, org.apache.myfaces.shared.renderkit.html.HTML.INPUT_TYPE_PASSWORD, null);
+        writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_PASSWORD, null);
 
         if (uiComponent instanceof ClientBehaviorHolder
                 && !((ClientBehaviorHolder) uiComponent).getClientBehaviors().isEmpty())
@@ -96,8 +97,7 @@ public class HtmlSecretRendererBase
         }
         else
         {
-            isRedisplay = org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(uiComponent, 
-                    JSFAttr.REDISPLAY_ATTR, false);
+            isRedisplay = RendererUtils.getBooleanAttribute(uiComponent, JSFAttr.REDISPLAY_ATTR, false);
         }
         if (isRedisplay)
         {

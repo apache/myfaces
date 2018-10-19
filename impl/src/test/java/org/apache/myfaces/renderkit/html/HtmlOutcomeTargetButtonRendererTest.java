@@ -30,7 +30,7 @@ import junit.framework.TestSuite;
 
 import org.apache.myfaces.application.NavigationHandlerImpl;
 import org.apache.myfaces.shared.util.renderkit.JSFAttr;
-import org.apache.myfaces.shared.renderkit.html.HTML;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;

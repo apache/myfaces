@@ -34,8 +34,8 @@ import javax.faces.component.html.HtmlGraphicImage;
 import javax.faces.context.FacesContext;
 
 import junit.framework.Assert;
+import org.apache.myfaces.shared.util.renderkit.HTML;
 
-import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
@@ -139,7 +139,7 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
 
 		// Tested method :
 		String iconSrc = RendererUtils.getIconSrc(facesContext, graphicImage,
-				HTML.IMG_ELEM);
+				                    HTML.IMG_ELEM);
 
 		assertEquals("RES_NOT_FOUND", iconSrc);
 		assertTrue("If resource is not found, a Message must be added",
