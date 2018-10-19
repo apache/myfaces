@@ -49,6 +49,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFExclude;
 
 /**
  * UICommand is a base abstraction for components that implement ActionSource.
@@ -159,6 +160,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * <p>
      * Otherwise, evaluate an EL expression to fetch a value from the model. 
      */
+    @JSFExclude
+    @JSFProperty(clientEvent="valueChange")
     public Object getValue()
     {
         if (isLocalValueSet())
@@ -1350,5 +1353,4 @@ public class UIInput extends UIOutput implements EditableValueHolder
         }
         return false;
     }
-
 }
