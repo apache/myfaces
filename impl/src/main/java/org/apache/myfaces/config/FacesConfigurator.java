@@ -18,14 +18,11 @@
  */
 package org.apache.myfaces.config;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.JarURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -121,6 +118,7 @@ import org.apache.myfaces.lifecycle.LifecycleFactoryImpl;
 import org.apache.myfaces.renderkit.RenderKitFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
 import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.shared.resource.ResourceLoaderUtils;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.LocaleUtils;
 import org.apache.myfaces.shared.util.StateUtils;
@@ -193,10 +191,6 @@ public class FacesConfigurator
      */
     public static final String ENABLE_DEFAULT_WINDOW_MODE = 
         "org.apache.myfaces.ENABLE_DEFAULT_WINDOW_MODE";
-    
-    private final static String PARAM_FACELETS_LIBRARIES_DEPRECATED = "facelets.LIBRARIES";
-    private final static String[] PARAMS_FACELETS_LIBRARIES = {ViewHandler.FACELETS_LIBRARIES_PARAM_NAME,
-        PARAM_FACELETS_LIBRARIES_DEPRECATED};
 
     private final ExternalContext _externalContext;
     private FacesContext _facesContext;
@@ -294,7 +288,7 @@ public class FacesConfigurator
             URL url = _externalContext.getResource(resource);
             if (url != null)
             {
-                return getResourceLastModified(url);
+                return ResourceLoaderUtils.getResourceLastModified(url);
             }
         }
         catch (IOException e)
@@ -302,66 +296,6 @@ public class FacesConfigurator
             log.log(Level.SEVERE, "Could not read resource " + resource, e);
         }
         return 0;
-    }
-
-    //Taken from trinidad URLUtils
-    private long getResourceLastModified(URL url) throws IOException
-    {
-        if ("file".equals(url.getProtocol()))
-        {
-            String externalForm = url.toExternalForm();
-            // Remove the "file:"
-            File file = new File(externalForm.substring(5));
-
-            return file.lastModified();
-        }
-        else
-        {
-            return getResourceLastModified(url.openConnection());
-        }
-    }
-
-    //Taken from trinidad URLUtils
-    private long getResourceLastModified(URLConnection connection) throws IOException
-    {
-        long modified;
-        if (connection instanceof JarURLConnection)
-        {
-            // The following hack is required to work-around a JDK bug.
-            // getLastModified() on a JAR entry URL delegates to the actual JAR file
-            // rather than the JAR entry.
-            // This opens internally, and does not close, an input stream to the JAR
-            // file.
-            // In turn, you cannot close it by yourself, because it's internal.
-            // The work-around is to get the modification date of the JAR file
-            // manually,
-            // and then close that connection again.
-
-            URL jarFileUrl = ((JarURLConnection) connection).getJarFileURL();
-            URLConnection jarFileConnection = jarFileUrl.openConnection();
-
-            try
-            {
-                modified = jarFileConnection.getLastModified();
-            }
-            finally
-            {
-                try
-                {
-                    jarFileConnection.getInputStream().close();
-                }
-                catch (Exception exception)
-                {
-                    // Ignored
-                }
-            }
-        }
-        else
-        {
-            modified = connection.getLastModified();
-        }
-
-        return modified;
     }
 
     private long getLastModifiedTime()
@@ -388,8 +322,8 @@ public class FacesConfigurator
         }
         
         // get last modified from .taglib.xml
-        String faceletsFiles = WebConfigParamUtils.getStringInitParameter(_externalContext, 
-                PARAMS_FACELETS_LIBRARIES);
+        String faceletsFiles = WebConfigParamUtils.getStringInitParameter(_externalContext,
+                ViewHandler.FACELETS_LIBRARIES_PARAM_NAME);
         if (faceletsFiles != null)
         {
             String[] faceletFilesList = StringUtils.trim(faceletsFiles.split(";"));

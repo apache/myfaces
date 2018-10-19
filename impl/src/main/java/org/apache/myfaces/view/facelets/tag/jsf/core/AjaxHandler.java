@@ -48,6 +48,7 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
@@ -277,7 +278,7 @@ public class AjaxHandler extends TagHandler implements
         if (!facesContext.getAttributes().containsKey(STANDARD_JSF_AJAX_LIBRARY_LOADED))
         {
             UIComponent outputScript = facesContext.getApplication().
-                createComponent(facesContext, "javax.faces.Output", "javax.faces.resource.Script");
+                createComponent(facesContext, "javax.faces.Output", ResourceUtils.DEFAULT_SCRIPT_RENDERER_TYPE);
             outputScript.getAttributes().put(JSFAttr.NAME_ATTR, ResourceHandler.JSF_SCRIPT_RESOURCE_NAME);
             outputScript.getAttributes().put(JSFAttr.LIBRARY_ATTR, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME);
             outputScript.getAttributes().put(JSFAttr.TARGET_ATTR, "head");

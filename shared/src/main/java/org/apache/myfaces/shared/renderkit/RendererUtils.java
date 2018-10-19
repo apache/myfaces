@@ -22,7 +22,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,7 +57,6 @@ import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
-import javax.faces.event.PhaseId;
 import javax.faces.model.SelectItem;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
@@ -75,37 +73,9 @@ public final class RendererUtils
         //nope
     }
 
-    //private static final Log log = LogFactory.getLog(RendererUtils.class);
-    private static final Logger log = Logger.getLogger(RendererUtils.class
-            .getName());
+    private static final Logger log = Logger.getLogger(RendererUtils.class.getName());
 
-    public static final String SELECT_ITEM_LIST_ATTR = RendererUtils.class
-            .getName() + ".LIST";
     public static final String EMPTY_STRING = "";
-    //This constant is no longer used by UISelectOne/UISelectMany instances
-    public static final Object NOTHING = new Serializable()
-    {
-        public boolean equals(final Object o)
-        {
-            if (o != null)
-            {
-                if (o.getClass().equals(this.getClass()))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode()
-        {
-            return super.hashCode();
-        }
-    };
-
-    public static final String ACTION_FOR_LIST = "org.apache.myfaces.ActionForList";
-    public static final String ACTION_FOR_PHASE_LIST = "org.apache.myfaces.ActionForPhaseList";
 
     public static final String SEQUENCE_PARAM = "jsf_sequence";
 
@@ -767,14 +737,6 @@ public final class RendererUtils
     private static List<SelectItem> internalGetSelectItemList(UIComponent uiComponent,
             FacesContext facesContext)
     {
-        /* TODO: Shall we cache the list in a component attribute?
-        ArrayList list = (ArrayList)uiComponent.getAttributes().get(SELECT_ITEM_LIST_ATTR);
-        if (list != null)
-        {
-            return list;
-        }
-         */
-
         List<SelectItem> list = new ArrayList<SelectItem>();
 
         for (SelectItemsIterator iter = new SelectItemsIterator(uiComponent, facesContext); iter.hasNext();)
@@ -1064,16 +1026,11 @@ public final class RendererUtils
         return i != null ? i.intValue() : defaultValue;
     }
 
-    private static final String TRINIDAD_FORM_COMPONENT_FAMILY = "org.apache.myfaces.trinidad.Form";
-    private static final String ADF_FORM_COMPONENT_FAMILY = "oracle.adf.Form";
-
     /**
      * Find the enclosing form of a component
      * in the view-tree.
      * All Subclasses of <code>UIForm</code> and all known
      * form-families are searched for.
-     * Currently those are the Trinidad form family,
-     * and the (old) ADF Faces form family.
      * <p>
      * There might be additional form families
      * which have to be explicitly entered here.</p>
@@ -1086,10 +1043,7 @@ public final class RendererUtils
             FacesContext facesContext)
     {
         UIComponent parent = uiComponent.getParent();
-        while (parent != null
-                && (!ADF_FORM_COMPONENT_FAMILY.equals(parent.getFamily())
-                        && !TRINIDAD_FORM_COMPONENT_FAMILY.equals(parent
-                                .getFamily()) && !(parent instanceof UIForm)))
+        while (parent != null && !(parent instanceof UIForm))
         {
             parent = parent.getParent();
         }
@@ -1269,53 +1223,6 @@ public final class RendererUtils
 
     }
 
-    public static List convertIdsToClientIds(String actionFor,
-            FacesContext facesContext, UIComponent component)
-    {
-        List li = new ArrayList();
-
-        String[] ids = actionFor.split(",");
-
-        for (int i = 0; i < ids.length; i++)
-        {
-            String trimedId = ids[i].trim();
-            if (trimedId.equals("none"))
-            {
-                li.add(trimedId);
-            }
-            else
-            {
-                li.add(RendererUtils.getClientId(facesContext, component,
-                        trimedId));
-            }
-        }
-        return li;
-    }
-
-    public static List convertPhasesToPhasesIds(String actionForPhase)
-    {
-        List li = new ArrayList();
-
-        if (actionForPhase == null)
-        {
-            return li;
-        }
-
-        String[] ids = actionForPhase.split(",");
-
-        for (int i = 0; i < ids.length; i++)
-        {
-            if (ids[i].equals("PROCESS_VALIDATIONS"))
-            {
-                li.add(PhaseId.PROCESS_VALIDATIONS);
-            }
-            else if (ids[i].equals("UPDATE_MODEL_VALUES"))
-            {
-                li.add(PhaseId.UPDATE_MODEL_VALUES);
-            }
-        }
-        return li;
-    }
 
     /**
      * Helper method which loads a resource file (such as css) by a given context path and a file name.
@@ -1390,46 +1297,6 @@ public final class RendererUtils
         }
 
         return content != null ? content.toString() : null;
-    }
-
-    /**
-     * check for partial validation or model update attributes being set
-     * and initialize the request-map accordingly.
-     * SubForms will work with this information.
-     */
-    public static void initPartialValidationAndModelUpdate(
-            UIComponent component, FacesContext facesContext)
-    {
-        String actionFor = (String) component.getAttributes().get("actionFor");
-
-        if (actionFor != null)
-        {
-            List li = convertIdsToClientIds(actionFor, facesContext, component);
-
-            facesContext.getExternalContext().getRequestMap()
-                    .put(ACTION_FOR_LIST, li);
-
-            String actionForPhase = (String) component.getAttributes().get(
-                    "actionForPhase");
-
-            if (actionForPhase != null)
-            {
-                List phaseList = convertPhasesToPhasesIds(actionForPhase);
-
-                facesContext.getExternalContext().getRequestMap()
-                        .put(ACTION_FOR_PHASE_LIST, phaseList);
-            }
-        }
-    }
-
-    public static boolean isAdfOrTrinidadForm(UIComponent component)
-    {
-        if (component == null)
-        {
-            return false;
-        }
-        return ADF_FORM_COMPONENT_FAMILY.equals(component.getFamily())
-                || TRINIDAD_FORM_COMPONENT_FAMILY.equals(component.getFamily());
     }
 
     /**

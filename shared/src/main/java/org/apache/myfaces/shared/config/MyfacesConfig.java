@@ -22,7 +22,6 @@ package org.apache.myfaces.shared.config;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.context.ExternalContext;
-import javax.servlet.ServletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.ClassUtils;
@@ -46,14 +45,6 @@ public class MyfacesConfig
     private static final String APPLICATION_MAP_PARAM_NAME = MyfacesConfig.class.getName();
 
     /**
-     * Set the virtual path used to serve resources using tomahawk addResource API. Note ExtensionsFilter should
-     * be able to receive request on the prefix used here.
-     */
-    @JSFWebConfigParam(tags="tomahawk")
-    public static final String  INIT_PARAM_RESOURCE_VIRTUAL_PATH = "org.apache.myfaces.RESOURCE_VIRTUAL_PATH";
-    public static final String  INIT_PARAM_RESOURCE_VIRTUAL_PATH_DEFAULT = "/faces/myFacesExtensionResource";
-
-    /**
      * If true, rendered HTML code will be formatted, so that it is "human readable".
      * i.e. additional line separators and whitespace will be written, that do not
      * influence the HTML code. Default: "true"
@@ -62,84 +53,6 @@ public class MyfacesConfig
             ignoreUpperLowerCase=true, group="render")
     private static final String  INIT_PARAM_PRETTY_HTML = "org.apache.myfaces.PRETTY_HTML";
     private static final boolean INIT_PARAM_PRETTY_HTML_DEFAULT = true;
-
-    /**
-     * This parameter tells MyFaces if javascript code should be allowed in the rendered HTML output.
-     * If javascript is allowed, command_link anchors will have javascript code 
-     * that submits the corresponding form.
-     * If javascript is not allowed, the state saving info and nested parameters ill be 
-     * added as url parameters.
-     * Default: "true"
-     */
-    @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1",
-            ignoreUpperLowerCase=true, group="render")
-    private static final String  INIT_PARAM_ALLOW_JAVASCRIPT = "org.apache.myfaces.ALLOW_JAVASCRIPT";
-    private static final boolean INIT_PARAM_ALLOW_JAVASCRIPT_DEFAULT = true;
-
-    /**
-     * Deprecated: tomahawk specific param to detect javascript, but it is no longer valid anymore.
-     */
-    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false, on, off, yes, no",since="1.1",
-            ignoreUpperLowerCase=true, deprecated=true, tags="tomahawk", group="render")
-    private static final String  INIT_PARAM_DETECT_JAVASCRIPT = "org.apache.myfaces.DETECT_JAVASCRIPT";
-    private static final boolean INIT_PARAM_DETECT_JAVASCRIPT_DEFAULT = false;
-
-    /**
-     * If true, a javascript function will be rendered that is able to restore the 
-     * former vertical scroll on every request. Convenient feature if you have pages
-     * with long lists and you do not want the browser page to always jump to the top
-     * if you trigger a link or button action that stays on the same page.
-     * Default: "false"
-     */
-    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false, on, off, yes, no",since="1.1", 
-            ignoreUpperLowerCase=true, tags="tomahawk")
-    private static final String  INIT_PARAM_AUTO_SCROLL = "org.apache.myfaces.AUTO_SCROLL";
-    private static final boolean INIT_PARAM_AUTO_SCROLL_DEFAULT = false;
-
-    /**
-     * Tomahawk specific: A class implementing the
-     * org.apache.myfaces.shared.renderkit.html.util.AddResource
-     * interface. It is responsible to
-     * place scripts and css on the right position in your HTML document.
-     * Default: "org.apache.myfaces.shared.renderkit.html.util.DefaultAddResource"
-     * Follow the description on the MyFaces-Wiki-Performance page to enable
-     * StreamingAddResource instead of DefaultAddResource if you want to
-     * gain performance.
-     */
-    @JSFWebConfigParam(defaultValue="org.apache.myfaces. renderkit.html.util. DefaultAddResource",since="1.1",
-            desc="Tomahawk specific: Indicate the class responsible to place scripts and css using " +
-                 "tomahawk AddResource API", tags="tomahawk")
-    private static final String INIT_PARAM_ADD_RESOURCE_CLASS = "org.apache.myfaces.ADD_RESOURCE_CLASS";
-    private static final String INIT_PARAM_ADD_RESOURCE_CLASS_DEFAULT = 
-        "org.apache.myfaces.renderkit.html.util.DefaultAddResource";
-
-    /**
-     * Tomahawk specific: A very common problem in configuring MyFaces-web-applications
-     * is that the Extensions-Filter is not configured at all
-     * or improperly configured. This parameter will check for a properly
-     * configured Extensions-Filter if it is needed by the web-app.
-     * In most cases this check will work just fine, there might be cases
-     * where an internal forward will bypass the Extensions-Filter and the check
-     * will not work. If this is the case, you can disable the check by setting
-     * this parameter to false.
-     * 
-     * In tomahawk for JSF 2.0 since version 1.1.11, this param is set by default to false, otherwise is true.
-     */
-    @JSFWebConfigParam(defaultValue="for JSF 2.0 since 1.1.11 false, otherwise true", 
-            expectedValues="true, false, on, off, yes, no",since="1.1", ignoreUpperLowerCase=true,
-            desc="Tomahawk specific: This parameter will check for a properly configured Extensions-Filter if " +
-                 "it is needed by the web-app.", tags="tomahawk")
-    private static final String  INIT_CHECK_EXTENSIONS_FILTER = "org.apache.myfaces.CHECK_EXTENSIONS_FILTER";
-    private static final boolean INIT_CHECK_EXTENSIONS_FILTER_DEFAULT = false;
-
-    /**
-     * Tomahawk specific: Interpret "readonly" property as "disable" for select components like t:selectOneRow.
-     */
-    @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1", 
-            ignoreUpperLowerCase=true, tags="tomahawk", group="render")
-    private static final String INIT_READONLY_AS_DISABLED_FOR_SELECT = 
-        "org.apache.myfaces.READONLY_AS_DISABLED_FOR_SELECTS";
-    private static final boolean INIT_READONLY_AS_DISABLED_FOR_SELECT_DEFAULT = true;
 
     /**
      * Set the time in seconds that check for updates of web.xml and faces-config descriptors and 
@@ -530,13 +443,6 @@ public class MyfacesConfig
     public final static boolean STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT = false;
 
     private boolean _prettyHtml;
-    private boolean _detectJavascript;
-    private boolean _allowJavascript;
-    private boolean _autoScroll;
-    private String _addResourceClass;
-    private String _resourceVirtualPath;
-    private boolean _checkExtensionsFilter;
-    private boolean _readonlyAsDisabledForSelect;
     private long _configRefreshPeriod;
     private boolean _viewStateJavascript;
     private boolean _renderViewStateId;
@@ -571,24 +477,8 @@ public class MyfacesConfig
     private boolean _supportEL3ImportHandler;
     private boolean _strictJsf2OriginHeaderAppPath;
 
-    private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
-
-    static
-    {
-        boolean tomahawkAvailable;
-        try
-        {
-            ClassUtils.classForName("org.apache.myfaces.webapp.filter.ExtensionsFilter");
-            tomahawkAvailable = true;
-        }
-        catch (ClassNotFoundException e)
-        {
-            tomahawkAvailable = false;
-        }
-        TOMAHAWK_AVAILABLE = tomahawkAvailable;
-    }
 
     static
     {
@@ -639,11 +529,9 @@ public class MyfacesConfig
     public MyfacesConfig()
     {
         setPrettyHtml(INIT_PARAM_PRETTY_HTML_DEFAULT);
-        setAllowJavascript(INIT_PARAM_ALLOW_JAVASCRIPT_DEFAULT);
         setRenderClearJavascriptOnButton(INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT);
         setRenderHiddenFieldsForLinkParams(INIT_PARAM_RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS_DEFAULT);
         setSaveFormSubmitLinkIE(INIT_PARAM_SAVE_FORM_SUBMIT_LINK_IE_DEFAULT);
-        setReadonlyAsDisabledForSelect(INIT_READONLY_AS_DISABLED_FOR_SELECT_DEFAULT);
         setRenderViewStateId(INIT_PARAM_RENDER_VIEWSTATE_ID_DEFAULT);
         setStrictXhtmlLinks(INIT_PARAM_STRICT_XHTML_LINKS_DEFAULT);
         setConfigRefreshPeriod(INIT_PARAM_CONFIG_REFRESH_PERIOD_DEFAULT);        
@@ -653,13 +541,6 @@ public class MyfacesConfig
         setRefreshTransientBuildOnPSSPreserveState(INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE_DEFAULT);
         setValidateXML(INIT_PARAM_VALIDATE_XML_DEFAULT);
         setWrapScriptContentWithXmlCommentTag(INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT);
-        setDetectJavascript(INIT_PARAM_DETECT_JAVASCRIPT_DEFAULT);
-        setAutoScroll(INIT_PARAM_AUTO_SCROLL_DEFAULT);
-        setAddResourceClass(INIT_PARAM_ADD_RESOURCE_CLASS_DEFAULT);
-        setResourceVirtualPath(INIT_PARAM_RESOURCE_VIRTUAL_PATH_DEFAULT);
-        //The default is true but we'll let it false because it depends if 
-        //tomahawk is on classpath and no test environment is set
-        setCheckExtensionsFilter(false);
         setRenderFormSubmitScriptInline(INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT);
         setDebugPhaseListenerEnabled(INIT_PARAM_DEBUG_PHASE_LISTENER_DEFAULT);
         setStrictJsf2CCELResolver(INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT);
@@ -690,8 +571,6 @@ public class MyfacesConfig
 
         myfacesConfig.setPrettyHtml(getBooleanInitParameter(extCtx, INIT_PARAM_PRETTY_HTML,
                                                             INIT_PARAM_PRETTY_HTML_DEFAULT));
-        myfacesConfig.setAllowJavascript(getBooleanInitParameter(extCtx, INIT_PARAM_ALLOW_JAVASCRIPT,
-                                                                 INIT_PARAM_ALLOW_JAVASCRIPT_DEFAULT));
 
         myfacesConfig.setRenderClearJavascriptOnButton(getBooleanInitParameter(extCtx, 
                                                             INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON,
@@ -703,10 +582,7 @@ public class MyfacesConfig
 
         myfacesConfig.setSaveFormSubmitLinkIE(getBooleanInitParameter(extCtx, INIT_PARAM_SAVE_FORM_SUBMIT_LINK_IE,
                                                             INIT_PARAM_SAVE_FORM_SUBMIT_LINK_IE_DEFAULT));
-        
-        myfacesConfig.setReadonlyAsDisabledForSelect(getBooleanInitParameter(extCtx, 
-                                                                 INIT_READONLY_AS_DISABLED_FOR_SELECT,
-                                                                 INIT_READONLY_AS_DISABLED_FOR_SELECT_DEFAULT));
+
         myfacesConfig.setRenderViewStateId(getBooleanInitParameter(extCtx, INIT_PARAM_RENDER_VIEWSTATE_ID,
                                                                    INIT_PARAM_RENDER_VIEWSTATE_ID_DEFAULT));
         myfacesConfig.setStrictXhtmlLinks(getBooleanInitParameter(extCtx, INIT_PARAM_STRICT_XHTML_LINKS,
@@ -877,54 +753,7 @@ public class MyfacesConfig
         myfacesConfig.setStrictJsf2OriginHeaderAppPath(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
                         STRICT_JSF_2_ORIGIN_HEADER_APP_PATH, 
                         STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT));
-        
-        if (TOMAHAWK_AVAILABLE)
-        {
-            myfacesConfig.setDetectJavascript(getBooleanInitParameter(extCtx, INIT_PARAM_DETECT_JAVASCRIPT,
-                    INIT_PARAM_DETECT_JAVASCRIPT_DEFAULT));
-            myfacesConfig.setAutoScroll(getBooleanInitParameter(extCtx, INIT_PARAM_AUTO_SCROLL,
-                    INIT_PARAM_AUTO_SCROLL_DEFAULT));
-                        
-            myfacesConfig.setAddResourceClass(getStringInitParameter(extCtx, INIT_PARAM_ADD_RESOURCE_CLASS,
-                    INIT_PARAM_ADD_RESOURCE_CLASS_DEFAULT));
-            myfacesConfig.setResourceVirtualPath(getStringInitParameter(extCtx, INIT_PARAM_RESOURCE_VIRTUAL_PATH,
-                    INIT_PARAM_RESOURCE_VIRTUAL_PATH_DEFAULT));
 
-            myfacesConfig.setCheckExtensionsFilter(getBooleanInitParameter(extCtx, INIT_CHECK_EXTENSIONS_FILTER,
-                    INIT_CHECK_EXTENSIONS_FILTER_DEFAULT));
-            /*
-            if(RI_IMPL_AVAILABLE)
-            {
-                if(log.isLoggable(Level.INFO))
-                {
-                    log.info("Starting up Tomahawk on the RI-JSF-Implementation.");
-                }
-            }
-
-            if(MYFACES_IMPL_AVAILABLE)
-            {
-                if(log.isLoggable(Level.INFO))
-                {
-                    log.info("Starting up Tomahawk on the MyFaces-JSF-Implementation");
-                }
-            }*/
-        }
-        /*
-        else
-        {
-            if (log.isLoggable(Level.INFO))
-            {
-                log.info("Tomahawk jar not available. Autoscrolling, DetectJavascript, "+
-                "AddResourceClass and CheckExtensionsFilter are disabled now.");
-            }
-        }*/
-
-        /*
-        if(RI_IMPL_AVAILABLE && MYFACES_IMPL_AVAILABLE)
-        {
-            log.severe("Both MyFaces and the RI are on your classpath. Please make sure to"+
-            " use only one of the two JSF-implementations.");
-        }*/
         return myfacesConfig;
     }
 
@@ -998,16 +827,6 @@ public class MyfacesConfig
            return defaultValue;
        }
     }
-        
-     private void setResourceVirtualPath( String resourceVirtualPath )
-     {
-         this._resourceVirtualPath = resourceVirtualPath;
-    }
-
-     public String getResourceVirtualPath()
-     {
-         return this._resourceVirtualPath;
-     }
 
     public boolean isPrettyHtml()
     {
@@ -1019,36 +838,15 @@ public class MyfacesConfig
         _prettyHtml = prettyHtml;
     }
 
-    public boolean isDetectJavascript()
+    public long getConfigRefreshPeriod()
     {
-        return _detectJavascript;
+        return _configRefreshPeriod;
     }
 
-    private void setDetectJavascript(boolean detectJavascript)
+    public void setConfigRefreshPeriod(long configRefreshPeriod)
     {
-        _detectJavascript = detectJavascript;
+        _configRefreshPeriod = configRefreshPeriod;
     }
-
-    private void setReadonlyAsDisabledForSelect(boolean readonlyAsDisabledForSelect)
-    {
-        _readonlyAsDisabledForSelect = readonlyAsDisabledForSelect;
-    }
-
-    public boolean isReadonlyAsDisabledForSelect()
-    {
-        return _readonlyAsDisabledForSelect;
-    }
-
-
-   public long getConfigRefreshPeriod()
-   {
-       return _configRefreshPeriod;
-   }
-
-   public void setConfigRefreshPeriod(long configRefreshPeriod)
-   {
-       _configRefreshPeriod = configRefreshPeriod;
-   }
 
     /**
      * JSF API 1.2 defines a "javax.faces.ViewState" client parameter, that must be rendered as both the "name"
@@ -1097,11 +895,6 @@ public class MyfacesConfig
         _strictXhtmlLinks = strictXhtmlLinks;
     }
 
-    public boolean isTomahawkAvailable()
-    {
-        return TOMAHAWK_AVAILABLE;
-    }
-
     public boolean isMyfacesImplAvailable()
     {
         return MYFACES_IMPL_AVAILABLE;
@@ -1110,63 +903,6 @@ public class MyfacesConfig
     public boolean isRiImplAvailable()
     {
         return RI_IMPL_AVAILABLE;
-    }
-
-    /**
-     * @deprecated 
-     */
-    public boolean isAllowJavascript()
-    {
-        return _allowJavascript;
-    }
-
-    private void setAllowJavascript(boolean allowJavascript)
-    {
-        _allowJavascript = allowJavascript;
-    }
-
-    public boolean isAutoScroll()
-    {
-        return _autoScroll;
-    }
-
-    private void setAutoScroll(boolean autoScroll)
-    {
-        _autoScroll = autoScroll;
-    }
-
-    private void setAddResourceClass(String addResourceClass)
-    {
-        _addResourceClass = addResourceClass;
-    }
-
-    public String getAddResourceClass()
-    {
-        return _addResourceClass;
-    }
-
-    /**
-     * ExtensionFilter needs access to AddResourceClass init param without having
-     * an ExternalContext at hand.
-     */
-    public static String getAddResourceClassFromServletContext(ServletContext servletContext)
-    {
-        String addResourceClass = servletContext.getInitParameter(INIT_PARAM_ADD_RESOURCE_CLASS);
-
-        return addResourceClass == null ? INIT_PARAM_ADD_RESOURCE_CLASS_DEFAULT : addResourceClass;
-    }
-
-    /**
-     * Should the environment be checked so that the ExtensionsFilter will work properly. 
-     */
-    public boolean isCheckExtensionsFilter()
-    {
-        return _checkExtensionsFilter;
-    }
-
-    public void setCheckExtensionsFilter(boolean extensionsFilter)
-    {
-        _checkExtensionsFilter = extensionsFilter;
     }
 
     /**

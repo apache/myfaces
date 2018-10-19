@@ -57,6 +57,7 @@ import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandlerDelegate;
 import javax.faces.view.facelets.ValidatorHandler;
 
+import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.ComponentState;
@@ -160,8 +161,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         {
             // Check if the component is a relocatable component done overriding the tag handler
             if (_componentType != null && _rendererType != null &&
-                (_rendererType.equals("javax.faces.resource.Script") ||
-                 _rendererType.equals("javax.faces.resource.Stylesheet")) &&
+                (_rendererType.equals(ResourceUtils.DEFAULT_SCRIPT_RENDERER_TYPE) ||
+                 _rendererType.equals(ResourceUtils.DEFAULT_STYLESHEET_RENDERER_TYPE)) &&
                 _componentType.equals(UIOutput.COMPONENT_TYPE))
             {
                 _relocatableResourceHandler = ComponentRelocatableResourceHandler.INSTANCE;

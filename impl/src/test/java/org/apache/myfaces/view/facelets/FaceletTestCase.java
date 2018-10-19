@@ -84,7 +84,6 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
         servletContext.addInitParameter("org.apache.myfaces.ALLOW_JAVASCRIPT","true");
         servletContext.addInitParameter("org.apache.myfaces.RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON","false");
         servletContext.addInitParameter("org.apache.myfaces.SAVE_FORM_SUBMIT_LINK_IE","false");
-        servletContext.addInitParameter("org.apache.myfaces.READONLY_AS_DISABLED_FOR_SELECTS","true");
         servletContext.addInitParameter("org.apache.myfaces.RENDER_VIEWSTATE_ID","true");
         servletContext.addInitParameter("org.apache.myfaces.STRICT_XHTML_LINKS","true");
         servletContext.addInitParameter("org.apache.myfaces.CONFIG_REFRESH_PERIOD","0");

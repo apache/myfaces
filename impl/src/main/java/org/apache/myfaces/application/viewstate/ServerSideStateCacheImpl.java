@@ -79,20 +79,6 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             MyfacesConfig.INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT;
 
     /**
-     * Indicate if the state should be serialized before save it on the session. 
-     * <p>
-     * Only applicable if state saving method is "server" (= default).
-     * If <code>true</code> (default) the state will be serialized to a byte stream before it is written to the session.
-     * If <code>false</code> the state will not be serialized to a byte stream.
-     * </p>
-     * @deprecated 
-     */
-    @Deprecated
-    @JSFWebConfigParam(defaultValue="false",since="1.1", expectedValues="true,false", 
-        group="state", tags="performance", deprecated=true)
-    public static final String SERIALIZE_STATE_IN_SESSION_PARAM = "org.apache.myfaces.SERIALIZE_STATE_IN_SESSION";
-
-    /**
      * Indicates that the serialized state will be compressed before it is written to the session. By default true.
      * 
      * Only applicable if state saving method is "server" (= default) and if
@@ -506,14 +492,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             serialize = value.toLowerCase().equals("true");
             return serialize;
         }
-        
-        // Fallback old parameter.
-        value = context.getExternalContext().getInitParameter(
-                SERIALIZE_STATE_IN_SESSION_PARAM);
-        if (value != null)
-        {
-           serialize = Boolean.valueOf(value);
-        }
+
         return serialize;
     }
 

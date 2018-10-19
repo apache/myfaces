@@ -23,12 +23,9 @@ import javax.faces.FacesWrapper;
 
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import org.apache.myfaces.shared.config.MyfacesConfig;
-import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.shared.resource.ContractResource;
 
@@ -37,11 +34,6 @@ import org.apache.myfaces.shared.resource.ContractResource;
  */
 public class ResourceUtils
 {
-    @Deprecated //Use the one from JSF 2.3 ResourceHandler
-    public final static String JAVAX_FACES_LIBRARY_NAME = "javax.faces";
-    @Deprecated //Use the one from JSF 2.3 ResourceHandler
-    public final static String JSF_JS_RESOURCE_NAME = "jsf.js";
-
     public final static String MYFACES_JS_RESOURCE_NAME = "oamSubmit.js";
     public final static String MYFACES_JS_RESOURCE_NAME_UNCOMPRESSED = "oamSubmit-uncompressed.js";
     public final static String MYFACES_LIBRARY_NAME = "org.apache.myfaces";
@@ -60,9 +52,6 @@ public class ResourceUtils
     public final static String JSF_MYFACES_JSFJS_LEGACY = "jsf-legacy.js";
 
     private final static String RENDERED_JSF_JS = "org.apache.myfaces.RENDERED_JSF_JS";
-    public final static String HEAD_TARGET = "head";
-    public final static String BODY_TARGET = "body";
-    public final static String FORM_TARGET = "form";
 
     public static final String JAVAX_FACES_OUTPUT_COMPONENT_TYPE = "javax.faces.Output";
     public static final String JAVAX_FACES_TEXT_RENDERER_TYPE = "javax.faces.Text";
@@ -98,26 +87,14 @@ public class ResourceUtils
     {
         if (!ResourceUtils.isRenderedScript(facesContext, libraryName, resourceName))
         {
-            if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isRiImplAvailable())
-            {
-                //Use more compatible way.
-                UIComponent outputScript = facesContext.getApplication().
-                    createComponent(facesContext, JAVAX_FACES_OUTPUT_COMPONENT_TYPE, DEFAULT_SCRIPT_RENDERER_TYPE);
-                outputScript.getAttributes().put(JSFAttr.NAME_ATTR, resourceName);
-                outputScript.getAttributes().put(JSFAttr.LIBRARY_ATTR, libraryName);
-                outputScript.encodeAll(facesContext);
-            }
-            else
-            {
-                //Fast shortcut, don't create component instance and do what HtmlScriptRenderer do.
-                Resource resource = facesContext.getApplication().getResourceHandler().createResource(
-                        resourceName, libraryName);
-                markScriptAsRendered(facesContext, libraryName, resourceName);
-                writer.startElement(HTML.SCRIPT_ELEM, null);
-                writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT , null);
-                writer.writeURIAttribute(HTML.SRC_ATTR, resource.getRequestPath(), null);
-                writer.endElement(HTML.SCRIPT_ELEM);
-            }
+            //Fast shortcut, don't create component instance and do what HtmlScriptRenderer do.
+            Resource resource = facesContext.getApplication().getResourceHandler().createResource(
+                    resourceName, libraryName);
+            markScriptAsRendered(facesContext, libraryName, resourceName);
+            writer.startElement(HTML.SCRIPT_ELEM, null);
+            writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT , null);
+            writer.writeURIAttribute(HTML.SRC_ATTR, resource.getRequestPath(), null);
+            writer.endElement(HTML.SCRIPT_ELEM);
         }
     }
     
@@ -147,42 +124,16 @@ public class ResourceUtils
         {
             return;
         }
-        
 
-        // Here we have two cases:
-        // 1. The standard script could be put in another target (body or form).
-        // 2. RI is used so it is not used our set to check for rendered resources
-        //    and we don't have access to that one.
-        // 
-        // Check if we have the resource registered on UIViewRoot "body" or "form" target
-        // is not safe, because the page could not use h:body or h:form. 
-        // Anyway, there is no clear reason why page authors could do the first one, 
-        // but the second one could be.
-        //
-        // Finally we need to force render the script. If the script has been already rendered
-        // (RI used and rendered as a h:outputScript not relocated), nothing will happen because the default
-        // script renderer will check if the script has been rendered first.
-        if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isRiImplAvailable())
-        {
-            //Use more compatible way.
-            UIComponent outputScript = facesContext.getApplication().
-                    createComponent(facesContext, JAVAX_FACES_OUTPUT_COMPONENT_TYPE, DEFAULT_SCRIPT_RENDERER_TYPE);
-            outputScript.getAttributes().put(JSFAttr.NAME_ATTR, ResourceHandler.JSF_SCRIPT_RESOURCE_NAME);
-            outputScript.getAttributes().put(JSFAttr.LIBRARY_ATTR, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME);
-            outputScript.encodeAll(facesContext);
-        }
-        else
-        {
-            //Fast shortcut, don't create component instance and do what HtmlScriptRenderer do.
-            Resource resource = facesContext.getApplication().getResourceHandler().createResource(
-                    ResourceHandler.JSF_SCRIPT_RESOURCE_NAME, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME);
-            markScriptAsRendered(facesContext, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME,
-                    ResourceHandler.JSF_SCRIPT_RESOURCE_NAME);
-            writer.startElement(HTML.SCRIPT_ELEM, null);
-            writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
-            writer.writeURIAttribute(HTML.SRC_ATTR, resource.getRequestPath(), null);
-            writer.endElement(HTML.SCRIPT_ELEM);
-        }
+        //Fast shortcut, don't create component instance and do what HtmlScriptRenderer do.
+        Resource resource = facesContext.getApplication().getResourceHandler().createResource(
+                ResourceHandler.JSF_SCRIPT_RESOURCE_NAME, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME);
+        markScriptAsRendered(facesContext, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME,
+                ResourceHandler.JSF_SCRIPT_RESOURCE_NAME);
+        writer.startElement(HTML.SCRIPT_ELEM, null);
+        writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
+        writer.writeURIAttribute(HTML.SRC_ATTR, resource.getRequestPath(), null);
+        writer.endElement(HTML.SCRIPT_ELEM);
 
         //mark as rendered
         facesContext.getAttributes().put(RENDERED_JSF_JS, Boolean.TRUE);
@@ -216,39 +167,14 @@ public class ResourceUtils
             return;
         }
 
-        // Here we have two cases:
-        // 1. The standard script could be put in another target (body or form).
-        // 2. RI is used so it is not used our set to check for rendered resources
-        //    and we don't have access to that one.
-        //
-        // Check if we have the resource registered on UIViewRoot "body" or "form" target
-        // is not safe, because the page could not use h:body or h:form.
-        // Anyway, there is no clear reason why page authors could do the first one,
-        // but the second one could be.
-        //
-        // Finally we need to force render the script. If the script has been already rendered
-        // (RI used and rendered as a h:outputScript not relocated), nothing will happen because the default
-        // script renderer will check if the script has been rendered first.
-        if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isRiImplAvailable())
-        {
-            //Use more compatible way.
-            UIComponent outputScript = facesContext.getApplication().
-                    createComponent(facesContext, JAVAX_FACES_OUTPUT_COMPONENT_TYPE, DEFAULT_SCRIPT_RENDERER_TYPE);
-            outputScript.getAttributes().put(JSFAttr.NAME_ATTR, MYFACES_JS_RESOURCE_NAME);
-            outputScript.getAttributes().put(JSFAttr.LIBRARY_ATTR, MYFACES_LIBRARY_NAME);
-            outputScript.encodeAll(facesContext);
-        }
-        else
-        {
-            //Fast shortcut, don't create component instance and do what HtmlScriptRenderer do.
-            Resource resource = facesContext.getApplication().getResourceHandler().createResource(
-                    MYFACES_JS_RESOURCE_NAME, MYFACES_LIBRARY_NAME);
-            markScriptAsRendered(facesContext, MYFACES_LIBRARY_NAME, MYFACES_JS_RESOURCE_NAME);
-            writer.startElement(HTML.SCRIPT_ELEM, null);
-            writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
-            writer.writeURIAttribute(HTML.SRC_ATTR, resource.getRequestPath(), null);
-            writer.endElement(HTML.SCRIPT_ELEM);
-        }
+        //Fast shortcut, don't create component instance and do what HtmlScriptRenderer do.
+        Resource resource = facesContext.getApplication().getResourceHandler().createResource(
+                MYFACES_JS_RESOURCE_NAME, MYFACES_LIBRARY_NAME);
+        markScriptAsRendered(facesContext, MYFACES_LIBRARY_NAME, MYFACES_JS_RESOURCE_NAME);
+        writer.startElement(HTML.SCRIPT_ELEM, null);
+        writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
+        writer.writeURIAttribute(HTML.SRC_ATTR, resource.getRequestPath(), null);
+        writer.endElement(HTML.SCRIPT_ELEM);
 
         //mark as rendered
         facesContext.getAttributes().put(RENDERED_MYFACES_JS, Boolean.TRUE);

@@ -63,10 +63,6 @@ import javax.faces.context.FacesContext;
  * and do a clean separation between initial state and delta.
  * </p>
  * <p>
- * The code from this class comes from a refactor of 
- * org.apache.myfaces.trinidad.bean.util.PropertyHashMap
- * </p>
- * <p>
  * The context from this class comes and that should be taken into account
  * is this:
  * </p>

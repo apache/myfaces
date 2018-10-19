@@ -179,7 +179,7 @@ public class ViewPoolProcessor
             }
             
             long refreshPeriod = WebConfigParamUtils.getLongInitParameter(context.getExternalContext(),
-                    FaceletViewDeclarationLanguage.PARAMS_REFRESH_PERIOD,
+                    ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,
                     FaceletViewDeclarationLanguage.DEFAULT_REFRESH_PERIOD_PRODUCTION);
 
             if (refreshPeriod != -1)

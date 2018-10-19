@@ -40,9 +40,10 @@ import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlForm;
 import javax.faces.component.html.HtmlInputText;
+
+import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.HttpPartWrapper;
-import org.apache.myfaces.shared.util._ComponentUtils;
 
 public class HtmlInputFileRendererBase extends HtmlRenderer
 {
@@ -91,7 +92,7 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
              (facesContext.getPartialViewContext().isPartialRequest() ||
               facesContext.getPartialViewContext().isAjaxRequest()))
         {
-            FormInfo formInfo = _ComponentUtils.findNestingForm(component, facesContext);
+            FormInfo formInfo = RendererUtils.findNestingForm(component, facesContext);
             if (formInfo != null && formInfo.getForm() instanceof HtmlForm)
             {
                 HtmlForm form = (HtmlForm) formInfo.getForm();

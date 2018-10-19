@@ -84,7 +84,6 @@ public final class HtmlRendererUtils
     private static final char TABULATOR = '\t';
     public static final String HIDDEN_COMMANDLINK_FIELD_NAME = "_idcl";
     public static final String HIDDEN_COMMANDLINK_FIELD_NAME_MYFACES_OLD = "_link_hidden_";
-    public static final String HIDDEN_COMMANDLINK_FIELD_NAME_TRINIDAD = "source";
     public static final String CLEAR_HIDDEN_FIELD_FN_NAME = "clearFormHiddenParams";
     public static final String SUBMIT_FORM_FN_NAME = "oamSubmitForm";
     public static final String SUBMIT_FORM_FN_NAME_JSF2 = "myfaces.oam.submitForm";
@@ -730,9 +729,8 @@ public final class HtmlRendererUtils
                 {
                     escape = ((EscapeCapable) component).isEscape();
 
-                    // Preserve tomahawk semantic. If escape=false
-                    // all items should be non escaped. If escape
-                    // is true check if selectItem.isEscape() is
+                    // If escape=false all items should be non escaped.
+                    // If escape is true check if selectItem.isEscape() is
                     // true and do it.
                     // This is done for remain compatibility.
                     if (escape && selectItem.isEscape())
@@ -1663,10 +1661,6 @@ public final class HtmlRendererUtils
      */
     public static String getHiddenCommandLinkFieldName(FormInfo formInfo)
     {
-        if (RendererUtils.isAdfOrTrinidadForm(formInfo.getForm()))
-        {
-            return HIDDEN_COMMANDLINK_FIELD_NAME_TRINIDAD;
-        }
         return formInfo.getFormName() + ':' 
                 + HIDDEN_COMMANDLINK_FIELD_NAME;
     }
@@ -1674,10 +1668,6 @@ public final class HtmlRendererUtils
     public static String getHiddenCommandLinkFieldName(
             FormInfo formInfo, FacesContext facesContext)
     {
-        if (RendererUtils.isAdfOrTrinidadForm(formInfo.getForm()))
-        {
-            return HIDDEN_COMMANDLINK_FIELD_NAME_TRINIDAD;
-        }
         return formInfo.getFormName() + ':'
                 + HIDDEN_COMMANDLINK_FIELD_NAME;
     }

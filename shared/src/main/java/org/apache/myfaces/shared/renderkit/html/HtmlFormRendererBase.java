@@ -328,10 +328,6 @@ public class HtmlFormRendererBase
         if (facesContext.getExternalContext().getRequestMap().get(
                 getScrollHiddenInputName(facesContext, form)) == null)
         {
-            if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isAutoScroll())
-            {
-                HtmlRendererUtils.renderAutoScrollHiddenInput(facesContext, writer);
-            }
             facesContext.getExternalContext().getRequestMap().put(getScrollHiddenInputName(
                     facesContext, form), Boolean.TRUE);
         }

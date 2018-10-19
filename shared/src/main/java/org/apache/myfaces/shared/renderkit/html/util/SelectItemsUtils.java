@@ -178,9 +178,8 @@ public class SelectItemsUtils
                 {
                     escape = ((EscapeCapable) component).isEscape();
 
-                    // Preserve tomahawk semantic. If escape=false
-                    // all items should be non escaped. If escape
-                    // is true check if selectItem.isEscape() is
+                    // If escape=false all items should be non escaped.
+                    // If escape is true check if selectItem.isEscape() is
                     // true and do it.
                     // This is done for remain compatibility.
                     if (escape && selectItem.isEscape())

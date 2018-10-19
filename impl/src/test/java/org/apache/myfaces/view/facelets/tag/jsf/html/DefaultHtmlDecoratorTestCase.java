@@ -47,6 +47,7 @@ import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagDecorator;
 import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
+import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
@@ -113,12 +114,12 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         {
             if (child instanceof UIOutput)
             {
-                if ("javax.faces.resource.Script".equals(child.getRendererType()))
+                if (ResourceUtils.DEFAULT_SCRIPT_RENDERER_TYPE.equals(child.getRendererType()))
                 {
                     Assert.assertEquals("osc", child.getId());
                     scriptsFound++;
                 }
-                if ("javax.faces.resource.Stylesheet".equals(child.getRendererType()))
+                if (ResourceUtils.DEFAULT_STYLESHEET_RENDERER_TYPE.equals(child.getRendererType()))
                 {
                     Assert.assertEquals("osh", child.getId());
                     linksFound++;

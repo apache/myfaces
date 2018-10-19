@@ -167,33 +167,10 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     public final static String DEFAULT_CHARACTER_ENCODING = "UTF-8";
 
     /**
-     * Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in a
-     * servlet environment to HttpServletResponse.setBufferSize().
-     */
-    @JSFWebConfigParam(since = "2.0", deprecated = true, classType = "java.lang.Integer")
-    private final static String PARAM_BUFFER_SIZE_DEPRECATED = "facelets.BUFFER_SIZE";
-
-    private final static String[] PARAMS_BUFFER_SIZE = {ViewHandler.FACELETS_BUFFER_SIZE_PARAM_NAME,
-        PARAM_BUFFER_SIZE_DEPRECATED};
-
-    //private final static String PARAM_BUILD_BEFORE_RESTORE = "facelets.BUILD_BEFORE_RESTORE";
-
-    /**
      * Constant used by EncodingHandler to indicate the current encoding of the page being built,
      * and indicate which one is the response encoding on getResponseEncoding(FacesContext, String) method.
      */
     public final static String PARAM_ENCODING = "facelets.Encoding";
-
-    /**
-     * Define the period used to refresh the facelet abstract syntax tree from the view definition file. 
-     *
-     * <p>By default is infinite (no active).</p>
-     */
-    @JSFWebConfigParam(since = "2.0", defaultValue = "-1", deprecated = true)
-    public final static String PARAM_REFRESH_PERIOD_DEPRECATED = "facelets.REFRESH_PERIOD";
-
-    public final static String[] PARAMS_REFRESH_PERIOD = {ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,
-        PARAM_REFRESH_PERIOD_DEPRECATED};
 
     /**
      * Class implementing ResourceResolver interface used to locate facelet resources. 
@@ -201,20 +178,9 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     @JSFWebConfigParam(since = "2.0", alias = "facelets.RESOURCE_RESOLVER")
     public final static String PARAM_RESOURCE_RESOLVER = "javax.faces.FACELETS_RESOURCE_RESOLVER";
 
-    /**
-     * Class implementing ResourceResolver interface used to locate facelet resources.
-     */
-    @JSFWebConfigParam(since = "2.0", deprecated = true)
-    private final static String PARAM_RESOURCE_RESOLVER_DEPRECATED = "facelets.RESOURCE_RESOLVER";
-
-    private final static String[] PARAMS_RESOURCE_RESOLVER
-            = {PARAM_RESOURCE_RESOLVER, PARAM_RESOURCE_RESOLVER_DEPRECATED};
-
     @JSFWebConfigParam(since = "2.1", defaultValue = "false", expectedValues = "true, false", tags = "performance")
     private final static String PARAM_MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW
             = "org.apache.myfaces.MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW";
-
-    public final static String FILLED_VIEW = "org.apache.myfaces.FILLED_VIEW";
 
     //BEGIN CONSTANTS SET ON BUILD VIEW
 
@@ -2212,20 +2178,20 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         long refreshPeriod;
         if (context.isProjectStage(ProjectStage.Production))
         {
-            refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext, PARAMS_REFRESH_PERIOD,
-                    DEFAULT_REFRESH_PERIOD_PRODUCTION);
+            refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext,
+                    ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, DEFAULT_REFRESH_PERIOD_PRODUCTION);
         }
         else
         {
-            refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext, PARAMS_REFRESH_PERIOD,
-                    DEFAULT_REFRESH_PERIOD);
+            refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext,
+                    ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, DEFAULT_REFRESH_PERIOD);
         }
 
         // resource resolver
         ResourceResolver resolver = new DefaultResourceResolver();
         ArrayList<String> classNames = new ArrayList<String>();
         String faceletsResourceResolverClassName = WebConfigParamUtils.getStringInitParameter(eContext,
-                PARAMS_RESOURCE_RESOLVER, null);
+                PARAM_RESOURCE_RESOLVER, null);
         List<String> resourceResolversFromAnnotations = RuntimeConfig.getCurrentInstance(
             context.getExternalContext()).getResourceResolvers();
         if (faceletsResourceResolverClassName != null)
@@ -2615,7 +2581,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
     private void _initializeBuffer(ExternalContext context)
     {
-        _bufferSize = WebConfigParamUtils.getIntegerInitParameter(context, PARAMS_BUFFER_SIZE, 1024);
+        _bufferSize = WebConfigParamUtils.getIntegerInitParameter(context,
+                ViewHandler.FACELETS_BUFFER_SIZE_PARAM_NAME, 1024);
     }
 
     private void _initializeMode(ExternalContext context)

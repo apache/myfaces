@@ -63,7 +63,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.element.FacesFlowDefinition;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl;
@@ -111,17 +110,6 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
         FACTORY_NAMES.add(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
         FACTORY_NAMES.add(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY);
     }
-    
-    /**
-     * Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.
-     */
-    @JSFWebConfigParam(since = "2.0",
-            desc = "Set of .taglib.xml files, separated by ';' that should be loaded by facelet engine.",
-            deprecated = true)
-    private final static String PARAM_LIBRARIES_DEPRECATED = "facelets.LIBRARIES";
-
-    private final static String[] PARAMS_LIBRARIES = {ViewHandler.FACELETS_LIBRARIES_PARAM_NAME,
-        PARAM_LIBRARIES_DEPRECATED};
 
     private static final Logger log = Logger.getLogger(DefaultFacesConfigurationProvider.class.getName());
 
@@ -779,7 +767,8 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     {
         List<FacesConfig> facesConfigFilesList = new ArrayList<FacesConfig>();
         
-        String param = WebConfigParamUtils.getStringInitParameter(externalContext, PARAMS_LIBRARIES);
+        String param = WebConfigParamUtils.getStringInitParameter(externalContext,
+                ViewHandler.FACELETS_LIBRARIES_PARAM_NAME);
         if (param != null)
         {
             for (String library : param.split(";"))

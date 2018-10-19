@@ -75,8 +75,7 @@ public class ResourceLoaderUtils
         }
         return Long.valueOf(date.getTime());
     }
-    
-    //Taken from trinidad URLUtils
+
     public static long getResourceLastModified(URL url) throws IOException
     {
         if ("file".equals(url.getProtocol()))
@@ -93,7 +92,6 @@ public class ResourceLoaderUtils
         }
     }
 
-    //Taken from trinidad URLUtils
     public static long getResourceLastModified(URLConnection connection) throws IOException
     {
         long modified;

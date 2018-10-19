@@ -28,7 +28,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextWrapper;
 import javax.faces.view.facelets.TagDecorator;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
@@ -57,26 +56,7 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 public class FaceletsCompilerSupport
 {
     private static final Logger log = Logger.getLogger(FaceletsCompilerSupport.class.getName());
-    
-    /**
-     * Set of class names, separated by ';', implementing TagDecorator interface, used to transform
-     * a view definition in a facelet abstract syntax tree, that is used later to generate a component tree.
-     */
-    @JSFWebConfigParam(since = "2.0", deprecated = true)
-    private final static String PARAM_DECORATORS_DEPRECATED = "facelets.DECORATORS";
 
-    private final static String[] PARAMS_DECORATORS = {ViewHandler.FACELETS_DECORATORS_PARAM_NAME, 
-        PARAM_DECORATORS_DEPRECATED};
-    
-    /**
-     * Skip comments found on a facelet file.
-     */
-    @JSFWebConfigParam(since = "2.0", deprecated = true)
-    private final static String PARAM_SKIP_COMMENTS_DEPRECATED = "facelets.SKIP_COMMENTS";
-
-    private final static String[] PARAMS_SKIP_COMMENTS = {ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME,
-        PARAM_SKIP_COMMENTS_DEPRECATED};
-    
     /**
      * Load the various tag libraries for Facelets.
      *
@@ -172,7 +152,8 @@ public class FaceletsCompilerSupport
      */
     public void loadDecorators(FacesContext context, Compiler compiler)
     {
-        String param = WebConfigParamUtils.getStringInitParameter(context.getExternalContext(), PARAMS_DECORATORS);
+        String param = WebConfigParamUtils.getStringInitParameter(context.getExternalContext(),
+                ViewHandler.FACELETS_DECORATORS_PARAM_NAME);
         if (param != null)
         {
             for (String decorator : param.split(";"))
@@ -199,7 +180,7 @@ public class FaceletsCompilerSupport
 
         // skip comments?
         compiler.setTrimmingComments(WebConfigParamUtils.getBooleanInitParameter(
-                eContext, PARAMS_SKIP_COMMENTS, false));
+                eContext, ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME, false));
         
         compiler.setFaceletsProcessingConfigurations(
                 RuntimeConfig.getCurrentInstance(

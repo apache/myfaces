@@ -55,6 +55,7 @@ import org.apache.myfaces.context.PartialResponseWriterImpl;
 import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 
 public class PartialViewContextImpl extends PartialViewContext
@@ -627,8 +628,8 @@ public class PartialViewContextImpl extends PartialViewContext
                 for (UIComponent component : list)
                 {
                     boolean resourceRendered = false;
-                    if ("javax.faces.resource.Script".equals(component.getRendererType()) ||
-                        "javax.faces.resource.Stylesheet".equals(component.getRendererType()))
+                    if (ResourceUtils.DEFAULT_SCRIPT_RENDERER_TYPE.equals(component.getRendererType()) ||
+                            ResourceUtils.DEFAULT_STYLESHEET_RENDERER_TYPE.equals(component.getRendererType()))
                     {
                         String resourceName = (String) 
                                 component.getAttributes().get(JSFAttr.NAME_ATTR);

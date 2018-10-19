@@ -92,29 +92,17 @@ public final class HtmlJavaScriptUtils
         MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext
                 .getExternalContext());
         ScriptContext script = new ScriptContext();
-        boolean autoScroll = config.isAutoScroll();
         boolean autoSave = JavascriptUtils.isSaveFormSubmitLinkIE(facesContext
                 .getExternalContext());
 
-        if (autoScroll || autoSave)
+        if (autoSave)
         {
             script.prettyLine();
             script.increaseIndent();
             script.append("(!window.myfaces) ? window.myfaces = {} : null;");
             script.append("(!myfaces.core) ? myfaces.core = {} : null;");
             script.append("(!myfaces.core.config) ? myfaces.core.config = {} : null;");
-        }
-
-        if (autoScroll)
-        {
-            script.append("myfaces.core.config.autoScroll = true;");
-        }
-        if (autoSave)
-        {
             script.append("myfaces.core.config.ieAutoSave = true;");
-        }
-        if (autoScroll || autoSave)
-        {
             writer.startElement(HTML.SCRIPT_ELEM, null);
             writer.writeAttribute(HTML.TYPE_ATTR, "text/javascript", null);
             writer.writeText(script.toString(), null);

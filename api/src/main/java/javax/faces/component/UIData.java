@@ -2445,8 +2445,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * Indicates whether the state for a component in each row should not be 
      * discarded before the datatable is rendered again.
      * 
-     * This property is similar to tomahawk t:dataTable preserveRowStates
-     * 
      * This will only work reliable if the datamodel of the 
      * datatable did not change either by sorting, removing or 
      * adding rows. Default: false

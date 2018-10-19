@@ -44,15 +44,12 @@ import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.shared.util._ComponentUtils;
 
 public class HtmlButtonRendererBase
     extends HtmlRenderer
 {
     private static final String IMAGE_BUTTON_SUFFIX_X = ".x";
     private static final String IMAGE_BUTTON_SUFFIX_Y = ".y";
-
-    public static final String ACTION_FOR_LIST = "org.apache.myfaces.ActionForList";
 
     public void decode(FacesContext facesContext, UIComponent uiComponent)
     {
@@ -62,13 +59,7 @@ public class HtmlButtonRendererBase
         //super.decode must not be called, because value is handled here
         boolean disabled = isDisabled(facesContext, uiComponent);
         // MYFACES-3960 Decode, decode client behavior and queue action event at the end
-        boolean activateActionEvent = !isReset(uiComponent) && isSubmitted(facesContext, uiComponent) &&
-            !disabled;
-        if (activateActionEvent)
-        {
-            org.apache.myfaces.shared.renderkit.RendererUtils.initPartialValidationAndModelUpdate(
-                    uiComponent, facesContext);
-        }
+        boolean activateActionEvent = !isReset(uiComponent) && isSubmitted(facesContext, uiComponent) && !disabled;
         
         if (uiComponent instanceof ClientBehaviorHolder &&
                 !disabled)
@@ -96,7 +87,7 @@ public class HtmlButtonRendererBase
     {
         String clientId = uiComponent.getClientId(facesContext);
         Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
-        FormInfo formInfo = _ComponentUtils.findNestingForm(uiComponent, facesContext);
+        FormInfo formInfo = RendererUtils.findNestingForm(uiComponent, facesContext);
         String hiddenLink = null;
          
         if (formInfo != null)
@@ -149,9 +140,8 @@ public class HtmlButtonRendererBase
                 facesContext, childrenList, false, false);
         
         if (formInfo != null 
-                && (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isAutoScroll() ||
-                        (validParams != null && !validParams.isEmpty() )))
-        {        
+                && (validParams != null && !validParams.isEmpty()))
+        {
             HtmlRendererUtils.renderFormSubmitScript(facesContext);
         }
         
@@ -358,11 +348,6 @@ public class HtmlButtonRendererBase
                     //call the script to clear the form (clearFormHiddenParams_<formName>) method
                     HtmlRendererUtils.appendClearHiddenCommandFormParamsFunctionCall(rendererOnClick, formName);
                 }
-        
-                if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isAutoScroll())
-                {
-                    HtmlRendererUtils.appendAutoScrollAssignment(rendererOnClick, formName);
-                }
             //}
         }
 
@@ -384,34 +369,24 @@ public class HtmlButtonRendererBase
 
         StringBuilder onClick = new StringBuilder();
 
-        if (RendererUtils.isAdfOrTrinidadForm(formInfo.getForm()))
+        StringBuilder params = addChildParameters(facesContext, nestingForm, validParams);
+
+        String target = getTarget(component);
+
+        onClick.append("return ").
+            append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
+            append(formName).append("','").
+            append(component.getClientId(facesContext)).append("'");
+
+        if (params.length() > 2 || target != null)
         {
-            onClick.append("submitForm('");
-            onClick.append(formInfo.getForm().getClientId(facesContext));
-            onClick.append("',1,{source:'");
-            onClick.append(component.getClientId(facesContext));
-            onClick.append("'});return false;");
+            onClick.append(",").
+                append(target == null ? "null" : ("'" + target + "'")).append(",").
+                append(params);
         }
-        else
-        {
-            StringBuilder params = addChildParameters(facesContext, nestingForm, validParams);
+        onClick.append(");");
 
-            String target = getTarget(component);
-
-            onClick.append("return ").
-                append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
-                append(formName).append("','").
-                append(component.getClientId(facesContext)).append("'");
-
-            if (params.length() > 2 || target != null)
-            {
-                onClick.append(",").
-                    append(target == null ? "null" : ("'" + target + "'")).append(",").
-                    append(params);
-            }
-            onClick.append(");");
-
-        }
+        
         return onClick.toString();
     }
     
@@ -591,11 +566,6 @@ public class HtmlButtonRendererBase
                     //call the script to clear the form (clearFormHiddenParams_<formName>) method
                     HtmlRendererUtils.appendClearHiddenCommandFormParamsFunctionCall(onClick, formName);
                 }
-        
-                if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isAutoScroll())
-                {
-                    HtmlRendererUtils.appendAutoScrollAssignment(onClick, formName);
-                }
             }
         }
         
@@ -628,8 +598,7 @@ public class HtmlButtonRendererBase
     }
 
     /**
-     * find nesting form<p>
-     * need to be overrideable to deal with dummyForm stuff in tomahawk.</p>
+     * find nesting form
      */
     protected FormInfo findNestingForm(UIComponent uiComponent, FacesContext facesContext)
     {

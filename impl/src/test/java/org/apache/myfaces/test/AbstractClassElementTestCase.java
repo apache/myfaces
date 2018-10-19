@@ -31,10 +31,7 @@ import org.apache.myfaces.shared.test.ClassElementHandler;
 /**
  * This test makes sure all of our components, tags, renderers, validators, converters, action listeners, phase
  * listeners and core implementation classes are in the build.
- * 
- * This class has been copy and pasted into both tomahawk and core in order to avoid a compile scoped dependency on
- * junit in shared.
- * 
+ *
  * @see ClassElementHandler
  * @author Dennis Byrne
  */

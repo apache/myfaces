@@ -169,9 +169,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     private VisitContextFactory _visitContextFactory = null;
     
     private String _checkIdsProductionMode;
-    
-    private MyfacesConfig _config;
-    
+
     private ViewPoolProcessor _viewPoolProcessor;
     
     public DefaultFaceletsStateManagementStrategy ()
@@ -183,7 +181,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     {
         _vdlFactory = (ViewDeclarationLanguageFactory)
                 FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
-        _config = MyfacesConfig.getCurrentInstance(context.getExternalContext());
         _viewPoolProcessor = ViewPoolProcessor.getInstance(context);
     }
     

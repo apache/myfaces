@@ -19,6 +19,7 @@
 package org.apache.myfaces.application;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.resource.ResourceHandlerCache;
 import org.apache.myfaces.shared.resource.ResourceHandlerCache.ResourceValue;
 import org.apache.myfaces.shared.resource.ResourceHandlerSupport;
@@ -510,11 +511,11 @@ public class ResourceHandlerImpl extends ResourceHandler
     {
         if (resourceName.endsWith(".js"))
         {
-            return "javax.faces.resource.Script";
+            return ResourceUtils.DEFAULT_SCRIPT_RENDERER_TYPE;
         }
         else if (resourceName.endsWith(".css"))
         {
-            return "javax.faces.resource.Stylesheet";
+            return ResourceUtils.DEFAULT_STYLESHEET_RENDERER_TYPE;
         }
         return null;
     }

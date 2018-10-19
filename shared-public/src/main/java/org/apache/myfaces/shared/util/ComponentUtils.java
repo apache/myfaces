@@ -21,6 +21,7 @@ package org.apache.myfaces.shared.util;
 
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UniqueIdVendor;
 
 /**
  * 
@@ -74,6 +75,21 @@ public class ComponentUtils
             {
                 parent = parent.getParent();
             }
+        }
+        return null;
+    }
+
+    public static UniqueIdVendor findParentUniqueIdVendor(UIComponent component)
+    {
+        UIComponent parent = component.getParent();
+
+        while (parent != null)
+        {
+            if (parent instanceof UniqueIdVendor)
+            {
+                return (UniqueIdVendor) parent;
+            }
+            parent = parent.getParent();
         }
         return null;
     }

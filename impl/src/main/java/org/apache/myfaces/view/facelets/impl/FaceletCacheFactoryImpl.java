@@ -37,11 +37,6 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
  */
 public class FaceletCacheFactoryImpl extends FaceletCacheFactory
 {
-    private final static String PARAM_REFRESH_PERIOD_DEPRECATED = "facelets.REFRESH_PERIOD";
-    
-    private final static String[] PARAMS_REFRESH_PERIOD
-            = {ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, PARAM_REFRESH_PERIOD_DEPRECATED};
-
 
     @Override
     public FaceletCache getFaceletCache()
@@ -52,12 +47,14 @@ public class FaceletCacheFactoryImpl extends FaceletCacheFactory
         long refreshPeriod;
         if(context.isProjectStage(ProjectStage.Production))
         {
-            refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext, PARAMS_REFRESH_PERIOD,
+            refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext,
+                    ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,
                     FaceletViewDeclarationLanguage.DEFAULT_REFRESH_PERIOD_PRODUCTION);
         }
         else
         {
-            refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext, PARAMS_REFRESH_PERIOD,
+            refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext,
+                    ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,
                     FaceletViewDeclarationLanguage.DEFAULT_REFRESH_PERIOD);
         }
         

@@ -21,6 +21,7 @@ package org.apache.myfaces.shared.util;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -53,7 +54,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
     private static final String ITEM_LABEL_ESCAPED_PROP = JsfProperties.ITEM_LABEL_ESCAPED_PROP;
     private static final String NO_SELECTION_VALUE_PROP = JsfProperties.NO_SELECTION_VALUE_PROP;
     
-    private static final Iterator<UIComponent> _EMPTY_UICOMPONENT_ITERATOR = new _EmptyIterator<UIComponent>();
+    private static final Iterator<UIComponent> _EMPTY_UICOMPONENT_ITERATOR = Collections.<UIComponent>emptyIterator();
     
     private final Iterator<UIComponent> _children;
     private Iterator<? extends Object> _nestedItems;

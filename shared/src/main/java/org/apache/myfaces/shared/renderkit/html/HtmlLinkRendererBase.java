@@ -48,18 +48,11 @@ import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.shared.util._ComponentUtils;
 
 public abstract class HtmlLinkRendererBase
     extends HtmlRenderer
 {
-    /* this one is never used
-    public static final String URL_STATE_MARKER      = "JSF_URL_STATE_MARKER=DUMMY";
-    public static final int    URL_STATE_MARKER_LEN  = URL_STATE_MARKER.length();
-    */
 
-    //private static final Log log = LogFactory.getLog(HtmlLinkRenderer.class);
-    
     public static final String END_LINK_OUTCOME_AS_SPAN = 
         "oam.shared.HtmlLinkRendererBase.END_LINK_OUTCOME_AS_SPAN";
 
@@ -87,13 +80,8 @@ public abstract class HtmlLinkRendererBase
                         HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo, facesContext));
                 activateActionEvent = reqValue != null && reqValue.equals(clientId)
                     || HtmlRendererUtils.isPartialOrBehaviorSubmit(facesContext, clientId);
-                if (activateActionEvent)
-                {
-                    RendererUtils.initPartialValidationAndModelUpdate(component, facesContext);
-                }
             }
-            if (component instanceof ClientBehaviorHolder &&
-                    !disabled)
+            if (component instanceof ClientBehaviorHolder && !disabled)
             {
                 HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
             }
@@ -471,46 +459,37 @@ public abstract class HtmlLinkRendererBase
             onClick.append("var oamSF = function(){");
         }
 
-        if (RendererUtils.isAdfOrTrinidadForm(formInfo.getForm()))
+
+        HtmlRendererUtils.renderFormSubmitScript(facesContext);
+
+        StringBuilder params = addChildParameters(facesContext, component, nestingForm);
+
+        String target = getTarget(component);
+
+        onClick.append("return ").
+            append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
+            append(formName).append("','").
+            append(clientId).append("'");
+
+        if (params.length() > 2 || target != null)
         {
-            onClick.append("submitForm('");
-            onClick.append(formInfo.getForm().getClientId(facesContext));
-            onClick.append("',1,{source:'");
-            onClick.append(component.getClientId(facesContext));
-            onClick.append("'});return false;");
+            onClick.append(",").
+                append(target == null ? "null" : ("'" + target + "'")).append(",").
+                append(params);
         }
-        else
+        onClick.append(");");
+
+        //Not necessary since we are using oamSetHiddenInput to create input hidden fields
+        //render hidden field - todo: in here for backwards compatibility
+        if (MyfacesConfig.getCurrentInstance(
+                facesContext.getExternalContext()).isRenderHiddenFieldsForLinkParams())
         {
-            HtmlRendererUtils.renderFormSubmitScript(facesContext);
-
-            StringBuilder params = addChildParameters(facesContext, component, nestingForm);
-
-            String target = getTarget(component);
-
-            onClick.append("return ").
-                append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
-                append(formName).append("','").
-                append(clientId).append("'");
-
-            if (params.length() > 2 || target != null)
-            {
-                onClick.append(",").
-                    append(target == null ? "null" : ("'" + target + "'")).append(",").
-                    append(params);
-            }
-            onClick.append(");");
-
-            //Not necessary since we are using oamSetHiddenInput to create input hidden fields
-            //render hidden field - todo: in here for backwards compatibility
-            if (MyfacesConfig.getCurrentInstance(
-                    facesContext.getExternalContext()).isRenderHiddenFieldsForLinkParams())
-            {
-                String hiddenFieldName = HtmlRendererUtils.getHiddenCommandLinkFieldName(
-                        formInfo, facesContext);
-                addHiddenCommandParameter(facesContext, nestingForm, hiddenFieldName);
-            }
-
+            String hiddenFieldName = HtmlRendererUtils.getHiddenCommandLinkFieldName(
+                    formInfo, facesContext);
+            addHiddenCommandParameter(facesContext, nestingForm, hiddenFieldName);
         }
+
+        
         
         if (commandOnclick != null)
         {
@@ -621,41 +600,25 @@ public abstract class HtmlLinkRendererBase
 
         StringBuilder onClick = new StringBuilder();
 
-        if (RendererUtils.isAdfOrTrinidadForm(formInfo.getForm()))
+        HtmlRendererUtils.renderFormSubmitScript(facesContext);
+
+        StringBuilder params = addChildParameters(facesContext, component, nestingForm);
+
+        String target = getTarget(component);
+
+        onClick.append("return ").
+            append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
+            append(formName).append("','").
+            append(clientId).append("'");
+
+        if (params.length() > 2 || target != null)
         {
-            onClick.append("submitForm('");
-            onClick.append(formInfo.getForm().getClientId(facesContext));
-            onClick.append("',1,{source:'");
-            onClick.append(component.getClientId(facesContext));
-            onClick.append("'});return false;");
+            onClick.append(",").
+                append(target == null ? "null" : ("'" + target + "'")).append(",").
+                append(params);
         }
-        else
-        {
-            HtmlRendererUtils.renderFormSubmitScript(facesContext);
-
-            StringBuilder params = addChildParameters(facesContext, component, nestingForm);
-
-            String target = getTarget(component);
-
-            onClick.append("return ").
-                append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
-                append(formName).append("','").
-                append(clientId).append("'");
-
-            if (params.length() > 2 || target != null)
-            {
-                onClick.append(",").
-                    append(target == null ? "null" : ("'" + target + "'")).append(",").
-                    append(params);
-            }
-            onClick.append(");");
-
-            //Not necessary since we are using oamSetHiddenInput to create input hidden fields
-            //render hidden field - todo: in here for backwards compatibility
-            //String hiddenFieldName = HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo);
-            //addHiddenCommandParameter(facesContext, nestingForm, hiddenFieldName);
-
-        }
+        onClick.append(");");
+        
         return onClick.toString();
     }
 
@@ -760,11 +723,10 @@ public abstract class HtmlLinkRendererBase
 
     /**
      * find nesting form<p>
-     * need to be overrideable to deal with dummyForm stuff in tomahawk.</p>
      */
     protected FormInfo findNestingForm(UIComponent uiComponent, FacesContext facesContext)
     {
-        return _ComponentUtils.findNestingForm(uiComponent, facesContext);
+        return RendererUtils.findNestingForm(uiComponent, facesContext);
     }
 
     protected void addHiddenCommandParameter(

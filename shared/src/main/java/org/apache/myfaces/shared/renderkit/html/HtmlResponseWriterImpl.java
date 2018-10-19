@@ -490,7 +490,6 @@ public class HtmlResponseWriterImpl
     
     private boolean isEmptyElement(String elem)
     {
-        // Code taken from trinidad
         // =-=AEW Performance?  Certainly slower to use a hashtable,
         // at least if we can't assume the input name is lowercased.
         // -= Leonardo Uribe =- elem.toLowerCase() internally creates an array,

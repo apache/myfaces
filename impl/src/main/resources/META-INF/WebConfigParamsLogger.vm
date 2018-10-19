@@ -37,51 +37,25 @@ public class WebConfigParamsLogger
     public static void logWebContextParams(FacesContext facesContext)
     {
         String logCommand = WebConfigParamUtils.getStringInitParameter(
-                facesContext.getExternalContext(), 
+                facesContext.getExternalContext(),
                 AbstractFacesInitializer.INIT_PARAM_LOG_WEB_CONTEXT_PARAMS, AbstractFacesInitializer.INIT_PARAM_LOG_WEB_CONTEXT_PARAMS_DEFAULT);
-        
-        if ( logCommand.equals("false") || 
+
+        if ( logCommand.equals("false") ||
              (logCommand.equals("auto") && !facesContext.isProjectStage(ProjectStage.Development) && !facesContext.isProjectStage(ProjectStage.Production) )
            )
         {
             //No log if is disabled or is in auto mode and project stage is UnitTest or SystemTest
             return;
         }
-        
-        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
-        
-        if (myfacesConfig.isTomahawkAvailable())
-        {
-            if(myfacesConfig.isMyfacesImplAvailable())
-            {
-                if(log.isLoggable(Level.INFO))
-                {
-                    log.info("Starting up Tomahawk on the MyFaces-JSF-Implementation");
-                }
-            }
 
-            if(myfacesConfig.isRiImplAvailable())
-            {
-                if(log.isLoggable(Level.INFO))
-                {
-                    log.info("Starting up Tomahawk on the RI-JSF-Implementation.");
-                }
-            }
-        }
-        else
-        {
-            if (log.isLoggable(Level.INFO))
-            {
-                log.info("Tomahawk jar not available. Autoscrolling, DetectJavascript, AddResourceClass and CheckExtensionsFilter are disabled now.");
-            }
-        }
+        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
 
         if(myfacesConfig.isRiImplAvailable() && myfacesConfig.isMyfacesImplAvailable())
         {
             log.severe("Both MyFaces and the RI are on your classpath. Please make sure to use only one of the two JSF-implementations.");
         }
-        
-        
+
+
 ## ----------------------------- PROPERTY MACROS -----------------------------
 ##
 ## -------------------------------
@@ -106,7 +80,7 @@ public class WebConfigParamsLogger
                     if (paramValue.equalsIgnoreCase(expectedValues[i]))
 #else
                     if (paramValue.equals(expectedValues[i]))
-#end                    
+#end
                     {
                         found = true;
                         break;
@@ -115,7 +89,7 @@ public class WebConfigParamsLogger
                 if (!found)
                 {
                     if (log.isLoggable(Level.WARNING))
-                    { 
+                    {
                         log.warning("Wrong value in context init parameter '$webConfigParam.name' (='" + paramValue + "'), using default value #if($webConfigParam.defaultValue)'$webConfigParam.defaultValue'#else'null'#end");
                     }
                 }
@@ -156,26 +130,11 @@ public class WebConfigParamsLogger
 #if (not $webConfigParam.containsTag('tomahawk'))
 
 #writePropertyCheck($webConfigParam)
-#end            
+#end
 #end
 #end
 #end
         }
 ##
-        if (log.isLoggable(Level.INFO) && myfacesConfig.isTomahawkAvailable())
-        {
-            String paramValue = null;
-#foreach( $webConfig in $webConfigList )
-#if ($modelIds.contains($webConfig.modelId))
-#set ($webConfigParamList = ${webConfig.getWebConfigParametersList()})
-#foreach( $webConfigParam in $webConfigParamList )
-#if ($webConfigParam.containsTag('tomahawk'))
-
-#writePropertyCheck($webConfigParam)
-#end            
-#end
-#end            
-#end
-        }
     }
 }

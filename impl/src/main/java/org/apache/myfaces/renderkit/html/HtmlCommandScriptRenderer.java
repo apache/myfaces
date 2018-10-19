@@ -187,10 +187,6 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                             HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo, facesContext));
                     activateActionEvent = reqValue != null && reqValue.equals(clientId)
                         || HtmlRendererUtils.isPartialOrBehaviorSubmit(facesContext, clientId);
-                    if (activateActionEvent)
-                    {
-                        RendererUtils.initPartialValidationAndModelUpdate(component, facesContext);
-                    }
                 }
                 if (activateActionEvent)
                 {

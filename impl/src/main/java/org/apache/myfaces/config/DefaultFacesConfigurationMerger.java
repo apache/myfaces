@@ -229,7 +229,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
             }
         }
 
-        //add null check for apps which don't have a faces-config.xml (e.g. tomahawk examples for 1.1/1.2)
+        //add null check for apps which don't have a faces-config.xml
         if(webAppConfig != null)
         {
             dispenser.feed(webAppConfig);
