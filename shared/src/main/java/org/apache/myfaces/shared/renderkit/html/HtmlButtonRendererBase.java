@@ -39,7 +39,7 @@ import javax.faces.event.ActionEvent;
 
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
-import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
@@ -154,15 +154,14 @@ public class HtmlButtonRendererBase
 
         writer.startElement(HTML.INPUT_ELEM, uiComponent);
 
-        writer.writeAttribute(HTML.ID_ATTR, clientId, org.apache.myfaces.shared.renderkit.JSFAttr.ID_ATTR);
+        writer.writeAttribute(HTML.ID_ATTR, clientId, JSFAttr.ID_ATTR);
         writer.writeAttribute(HTML.NAME_ATTR, clientId, JSFAttr.ID_ATTR);
 
         String image = RendererUtils.getIconSrc(facesContext, uiComponent, JSFAttr.IMAGE_ATTR);
         if (image != null)
         {
-            writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_IMAGE, 
-                    org.apache.myfaces.shared.renderkit.JSFAttr.TYPE_ATTR);
-            writer.writeURIAttribute(HTML.SRC_ATTR, image, org.apache.myfaces.shared.renderkit.JSFAttr.IMAGE_ATTR);
+            writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_IMAGE, JSFAttr.TYPE_ATTR);
+            writer.writeURIAttribute(HTML.SRC_ATTR, image, JSFAttr.IMAGE_ATTR);
         }
         else
         {
@@ -172,12 +171,12 @@ public class HtmlButtonRendererBase
             {
                 type = HTML.INPUT_TYPE_SUBMIT;
             }
-            writer.writeAttribute(HTML.TYPE_ATTR, type, org.apache.myfaces.shared.renderkit.JSFAttr.TYPE_ATTR);
+            writer.writeAttribute(HTML.TYPE_ATTR, type, JSFAttr.TYPE_ATTR);
             Object value = getValue(uiComponent);
             if (value != null)
             {
                 writer.writeAttribute(org.apache.myfaces.shared.renderkit.html.HTML.VALUE_ATTR, value, 
-                        org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
+                        JSFAttr.VALUE_ATTR);
             }
         }
         
@@ -271,13 +270,13 @@ public class HtmlButtonRendererBase
         if (isDisabled(facesContext, uiComponent))
         {
             writer.writeAttribute(HTML.DISABLED_ATTR, Boolean.TRUE, 
-                    org.apache.myfaces.shared.renderkit.JSFAttr.DISABLED_ATTR);
+                    JSFAttr.DISABLED_ATTR);
         }
         
         if (isReadonly(facesContext, uiComponent))
         {
             writer.writeAttribute(HTML.READONLY_ATTR, Boolean.TRUE, 
-                    org.apache.myfaces.shared.renderkit.JSFAttr.READONLY_ATTR);
+                    JSFAttr.READONLY_ATTR);
         }
     }
     
@@ -634,7 +633,7 @@ public class HtmlButtonRendererBase
         {
             return ((HtmlCommandButton)uiComponent).getType();
         }
-        return (String)uiComponent.getAttributes().get(org.apache.myfaces.shared.renderkit.JSFAttr.TYPE_ATTR);
+        return (String)uiComponent.getAttributes().get(JSFAttr.TYPE_ATTR);
     }
 
     private Object getValue(UIComponent uiComponent)

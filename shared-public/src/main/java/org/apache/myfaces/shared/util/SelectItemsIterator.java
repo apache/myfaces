@@ -36,7 +36,7 @@ import javax.faces.component.UISelectItems;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
-import org.apache.myfaces.shared.util.renderkit.JsfProperties;
+import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 
 // ATTENTION
 // This class is associated with javax.faces.component._SelectItemsIterator.
@@ -46,13 +46,13 @@ public class SelectItemsIterator implements Iterator<SelectItem>
 {
     private static final Logger log = Logger.getLogger(SelectItemsIterator.class.getName());
     
-    private static final String VAR_PROP = JsfProperties.VAR_PROP;
-    private static final String ITEM_VALUE_PROP = JsfProperties.ITEM_VALUE_PROP;
-    private static final String ITEM_LABEL_PROP = JsfProperties.ITEM_LABEL_PROP;
-    private static final String ITEM_DESCRIPTION_PROP = JsfProperties.ITEM_DESCRIPTION_PROP;
-    private static final String ITEM_DISABLED_PROP = JsfProperties.ITEM_DISABLED_PROP;
-    private static final String ITEM_LABEL_ESCAPED_PROP = JsfProperties.ITEM_LABEL_ESCAPED_PROP;
-    private static final String NO_SELECTION_VALUE_PROP = JsfProperties.NO_SELECTION_VALUE_PROP;
+    private static final String VAR_PROP = JSFAttr.VAR_ATTR;
+    private static final String ITEM_VALUE_PROP = JSFAttr.ITEM_VALUE_ATTR;
+    private static final String ITEM_LABEL_PROP = JSFAttr.ITEM_LABEL_ATTR;
+    private static final String ITEM_DESCRIPTION_PROP = JSFAttr.ITEM_DESCRIPTION_ATTR;
+    private static final String ITEM_DISABLED_PROP = JSFAttr.ITEM_DISABLED_ATTR;
+    private static final String ITEM_LABEL_ESCAPED_PROP = JSFAttr.ITEM_LABEL_ESCAPED_ATTR;
+    private static final String NO_SELECTION_VALUE_PROP = JSFAttr.NO_SELECTION_VALUE_ATTR;
     
     private static final Iterator<UIComponent> _EMPTY_UICOMPONENT_ITERATOR = Collections.<UIComponent>emptyIterator();
     

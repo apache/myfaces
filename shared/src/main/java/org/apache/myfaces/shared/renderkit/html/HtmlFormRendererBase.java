@@ -34,7 +34,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.shared.config.MyfacesConfig;
-import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 

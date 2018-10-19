@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.shared.taglib;
 
-import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
@@ -65,11 +65,11 @@ public abstract class UIComponentELTagBase extends UIComponentELTag
         super.setProperties(component);
 
         setBooleanProperty(component,
-                org.apache.myfaces.shared.renderkit.JSFAttr.FORCE_ID_ATTR,
+                JSFAttr.FORCE_ID_ATTR,
                 _forceId);
         setBooleanProperty(
                 component,
-                org.apache.myfaces.shared.renderkit.JSFAttr.FORCE_ID_INDEX_ATTR,
+                JSFAttr.FORCE_ID_INDEX_ATTR,
                 _forceIdIndex, DEFAULT_FORCE_ID_INDEX_VALUE);
         if (_javascriptLocation != null)
         {

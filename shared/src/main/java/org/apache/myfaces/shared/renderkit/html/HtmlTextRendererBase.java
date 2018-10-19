@@ -37,7 +37,7 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.convert.ConverterException;
 
 import org.apache.myfaces.shared.component.EscapeCapable;
-import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
@@ -95,9 +95,8 @@ public class HtmlTextRendererBase
         }
         else
         {
-            escape = RendererUtils.getBooleanAttribute(component, 
-                    org.apache.myfaces.shared.renderkit.JSFAttr.ESCAPE_ATTR,
-                                                       true); //default is to escape
+            escape = RendererUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR,
+                    true); //default is to escape
         }
         if (text != null)
         {
@@ -154,7 +153,7 @@ public class HtmlTextRendererBase
                 {
                     log.fine("renderOutputText writing '" + text + "'");
                 }
-                writer.writeText(text, org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
+                writer.writeText(text, JSFAttr.VALUE_ATTR);
             }
             else
             {
@@ -406,7 +405,7 @@ public class HtmlTextRendererBase
                     log.fine("renderOutputText writing '" + text + "'");
                 }
                 writer.writeText(text,
-                        org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
+                        JSFAttr.VALUE_ATTR);
             }
             else
             {

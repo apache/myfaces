@@ -65,6 +65,7 @@ import javax.faces.render.ResponseStateManager;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.util.HashMapUtils;
 import org.apache.myfaces.shared.util.SelectItemsIterator;
+import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 
 public final class RendererUtils
 {

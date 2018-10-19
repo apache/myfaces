@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.renderkit;
+package org.apache.myfaces.shared.util.renderkit;
 
 import javax.faces.event.ActionListener;
 
@@ -71,8 +71,6 @@ public interface JSFAttr
     String HIDE_NO_SELECTION_OPTION_ATTR = "hideNoSelectionOption";
 
     // Common Command Attributes
-    /**@deprecated */
-    String   COMMAND_CLASS_ATTR           = "commandClass";
     String   LABEL_ATTR                   = "label";
     String   IMAGE_ATTR                   = "image";
     String   ACTION_ATTR                 = "action";
@@ -83,8 +81,6 @@ public interface JSFAttr
     String   TYPE_ATTR                    = "type";
 
     // Common Panel Attributes
-    /**@deprecated */
-    String   PANEL_CLASS_ATTR       = "panelClass";
     String   FOOTER_CLASS_ATTR      = "footerClass";
     String   HEADER_CLASS_ATTR      = "headerClass";
     String   COLUMN_CLASSES_ATTR    = "columnClasses";

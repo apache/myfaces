@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.shared.renderkit.html;
 
-import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;

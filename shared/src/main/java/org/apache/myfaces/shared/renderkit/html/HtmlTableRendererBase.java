@@ -33,7 +33,7 @@ import javax.faces.component.html.HtmlDataTable;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.util.ArrayUtils;
@@ -715,7 +715,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
         
         renderRowStyle(facesContext, writer, uiData, styles, rowStyleIndex);
         
-        Object rowId = uiData.getAttributes().get(org.apache.myfaces.shared.renderkit.JSFAttr.ROW_ID);
+        Object rowId = uiData.getAttributes().get(JSFAttr.ROW_ID);
 
         if (rowId != null)
         {
@@ -1403,7 +1403,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
         else
         {
             return (String) component.getAttributes().get(
-                    org.apache.myfaces.shared.renderkit.JSFAttr.HEADER_CLASS_ATTR);
+                    JSFAttr.HEADER_CLASS_ATTR);
         }
     }
 
@@ -1420,8 +1420,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
         }
         else
         {
-            return (String) component.getAttributes().get(
-                    org.apache.myfaces.shared.renderkit.JSFAttr.FOOTER_CLASS_ATTR);
+            return (String) component.getAttributes().get(JSFAttr.FOOTER_CLASS_ATTR);
         }
     }
 

@@ -21,7 +21,6 @@ package org.apache.myfaces.view.facelets.tag.jsf;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -76,7 +75,6 @@ public final class ComponentSupport
         SET_CACHED_FACES_CONTEXT = method;
     }
 
-    private final static String MARK_DELETED = "oam.vf.MARK_DELETED";
     public final static String MARK_CREATED = "oam.vf.MARK_ID";
     
     /**
@@ -97,48 +95,6 @@ public final class ComponentSupport
      * The key under the facelet state map is stored
      */
     public final static String FACELET_STATE_INSTANCE = "oam.FACELET_STATE_INSTANCE";
-
-    /**
-     * Used in conjunction with markForDeletion where any UIComponent marked will be removed.
-     * 
-     * @deprecated use FaceletCompositionContext.finalizeForDeletion
-     * @param component
-     *            UIComponent to finalize
-     */
-    @Deprecated
-    public static void finalizeForDeletion(UIComponent component)
-    {
-        // remove any existing marks of deletion
-        component.getAttributes().remove(MARK_DELETED);
-
-        // finally remove any children marked as deleted
-        if (component.getChildCount() > 0)
-        {
-            for (Iterator<UIComponent> iter = component.getChildren().iterator(); iter.hasNext();)
-            {
-                UIComponent child = iter.next();
-                if (child.getAttributes().containsKey(MARK_DELETED))
-                {
-                    iter.remove();
-                }
-            }
-        }
-
-        // remove any facets marked as deleted
-        if (component.getFacetCount() > 0)
-        {
-            Map<String, UIComponent> facets = component.getFacets();
-            Collection<UIComponent> col = facets.values();
-            for (Iterator<UIComponent> itr = col.iterator(); itr.hasNext();)
-            {
-                UIComponent fc = itr.next();
-                if (fc.getAttributes().containsKey(MARK_DELETED))
-                {
-                    itr.remove();
-                }
-            }
-        }
-    }
 
     /**
      * A lighter-weight version of UIComponent's findChild.
@@ -467,31 +423,6 @@ public final class ComponentSupport
         }
         return root;
     }
-    
-    /**
-     * Marks all direct children and Facets with an attribute for deletion.
-     * 
-     * @deprecated use FaceletCompositionContext.markForDeletion
-     * @see #finalizeForDeletion(UIComponent)
-     * @param component
-     *            UIComponent to mark
-     */
-    @Deprecated
-    public static void markForDeletion(UIComponent component)
-    {
-        // flag this component as deleted
-        component.getAttributes().put(MARK_DELETED, Boolean.TRUE);
-
-        Iterator<UIComponent> iter = component.getFacetsAndChildren();
-        while (iter.hasNext())
-        {
-            UIComponent child = iter.next();
-            if (child.getAttributes().containsKey(MARK_CREATED))
-            {
-                child.getAttributes().put(MARK_DELETED, Boolean.TRUE);
-            }
-        }
-    }
 
     public static void encodeRecursive(FacesContext context, UIComponent toRender) throws IOException, FacesException
     {
@@ -552,21 +483,6 @@ public final class ComponentSupport
         }
     }
 
-    /**
-     * Determine if the passed component is not null and if it's new to the tree. This operation can be used for
-     * determining if attributes should be wired to the component.
-     * 
-     * @deprecated use ComponentHandler.isNew
-     * @param component
-     *            the component you wish to modify
-     * @return true if it's new
-     */
-    @Deprecated
-    public static boolean isNew(UIComponent component)
-    {
-        return component != null && component.getParent() == null;
-    }
-    
     /**
      * Create a new UIPanel for the use as a dynamically 
      * created container for multiple children in a facet.

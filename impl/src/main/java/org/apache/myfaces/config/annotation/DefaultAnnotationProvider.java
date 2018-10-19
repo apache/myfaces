@@ -230,26 +230,6 @@ public class DefaultAnnotationProvider extends AnnotationProvider
     }
     
     @Override
-    public Set<URL> getBaseUrls() throws IOException
-    {
-        Set<URL> urlSet = new HashSet<URL>();
-        
-        //This usually happens when maven-jetty-plugin is used
-        //Scan jars looking for paths including META-INF/faces-config.xml
-        Enumeration<URL> resources = getClassLoader().getResources(FACES_CONFIG_IMPLICIT);
-        while (resources.hasMoreElements())
-        {
-            urlSet.add(resources.nextElement());
-        }
-
-        //Scan files inside META-INF ending with .faces-config.xml
-        URL[] urls = Classpath.search(getClassLoader(), META_INF_PREFIX, FACES_CONFIG_SUFFIX);
-        Collections.addAll(urlSet, urls);
-
-        return urlSet;
-    }
-    
-    @Override
     public Set<URL> getBaseUrls(ExternalContext context) throws IOException
     {
         String jarFilesToScanParam = MyfacesConfig.getCurrentInstance(context).getGaeJsfJarFiles();
@@ -278,7 +258,21 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         }
         else
         {
-            return getBaseUrls();
+            Set<URL> urlSet = new HashSet<URL>();
+
+            //This usually happens when maven-jetty-plugin is used
+            //Scan jars looking for paths including META-INF/faces-config.xml
+            Enumeration<URL> resources = getClassLoader().getResources(FACES_CONFIG_IMPLICIT);
+            while (resources.hasMoreElements())
+            {
+                urlSet.add(resources.nextElement());
+            }
+
+            //Scan files inside META-INF ending with .faces-config.xml
+            URL[] urls = Classpath.search(getClassLoader(), META_INF_PREFIX, FACES_CONFIG_SUFFIX);
+            Collections.addAll(urlSet, urls);
+
+            return urlSet;
         }
     }
 

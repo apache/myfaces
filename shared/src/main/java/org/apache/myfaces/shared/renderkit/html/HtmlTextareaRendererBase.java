@@ -34,6 +34,7 @@ import javax.faces.convert.ConverterException;
 
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 
 
 public class HtmlTextareaRendererBase
@@ -184,7 +185,7 @@ public class HtmlTextareaRendererBase
         String strValue = org.apache.myfaces.shared.renderkit.RendererUtils.getStringValue(facesContext, uiComponent);
         if (strValue != null)
         {
-            writer.writeText(strValue, org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
+            writer.writeText(strValue, JSFAttr.VALUE_ATTR);
         }
     }
     

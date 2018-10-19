@@ -33,7 +33,7 @@ import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.util.ArrayUtils;
@@ -90,7 +90,7 @@ public class HtmlGridRendererBase
         else
         {
             Integer i = (Integer)component.getAttributes().get(
-                    org.apache.myfaces.shared.renderkit.JSFAttr.COLUMNS_ATTR);
+                    JSFAttr.COLUMNS_ATTR);
             columns = i != null ? i.intValue() : 0;
         }
 
@@ -219,12 +219,12 @@ public class HtmlGridRendererBase
             : (header ?
                          (String)component.getAttributes().get(JSFAttr.HEADER_CLASS_ATTR) :
                          (String)component.getAttributes().get(
-                                 org.apache.myfaces.shared.renderkit.JSFAttr.FOOTER_CLASS_ATTR));
+                                 JSFAttr.FOOTER_CLASS_ATTR));
         if (styleClass != null)
         {
             writer.writeAttribute(HTML.CLASS_ATTR, styleClass,
                                   header ? JSFAttr.HEADER_CLASS_ATTR : 
-                                      org.apache.myfaces.shared.renderkit.JSFAttr.FOOTER_CLASS_ATTR);
+                                      JSFAttr.FOOTER_CLASS_ATTR);
         }
 
         if (header)
@@ -267,8 +267,7 @@ public class HtmlGridRendererBase
         }
         else
         {
-            columnClasses = (String)component.getAttributes().get(
-                    org.apache.myfaces.shared.renderkit.JSFAttr.COLUMN_CLASSES_ATTR);
+            columnClasses = (String)component.getAttributes().get(JSFAttr.COLUMN_CLASSES_ATTR);
             rowClasses = (String)component.getAttributes().get(JSFAttr.ROW_CLASSES_ATTR);
         }
 

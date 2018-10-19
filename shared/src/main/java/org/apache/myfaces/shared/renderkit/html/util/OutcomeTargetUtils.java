@@ -39,7 +39,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.flow.FlowHandler;
 import javax.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.shared.application.NavigationUtils;
-import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 

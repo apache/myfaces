@@ -36,6 +36,7 @@ import javax.faces.convert.Converter;
 import javax.faces.event.MethodExpressionActionListener;
 import javax.faces.event.MethodExpressionValueChangeListener;
 import javax.faces.validator.MethodExpressionValidator;
+import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 
 /**
  * @since 1.2
@@ -205,7 +206,7 @@ public class UIComponentELTagUtils
             if (!value.isLiteralText())
             {
                 component.setValueExpression(
-                        org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR,
+                        JSFAttr.VALUE_ATTR,
                         value);
             }
             else if (component instanceof UICommand)
@@ -251,18 +252,14 @@ public class UIComponentELTagUtils
             {
                 if (value.isLiteralText())
                 {
-                    FacesContext facesContext = FacesContext
-                            .getCurrentInstance();
+                    FacesContext facesContext = FacesContext.getCurrentInstance();
                     Converter converter = facesContext.getApplication()
                             .createConverter(value.getExpressionString());
                     ((ValueHolder) component).setConverter(converter);
                 }
                 else
                 {
-                    component
-                            .setValueExpression(
-                                    org.apache.myfaces.shared.renderkit.JSFAttr.CONVERTER_ATTR,
-                                    value);
+                    component.setValueExpression(JSFAttr.CONVERTER_ATTR, value);
                 }
             }
             else

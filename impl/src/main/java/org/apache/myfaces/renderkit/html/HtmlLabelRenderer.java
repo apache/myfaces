@@ -38,7 +38,7 @@ import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.component.EscapeCapable;
-import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.CommonEventUtils;
 import org.apache.myfaces.shared.renderkit.html.CommonPropertyUtils;
@@ -194,13 +194,12 @@ public class HtmlLabelRenderer extends HtmlRenderer
                 }
                 else
                 {
-                    escape = RendererUtils.getBooleanAttribute(uiComponent,
-                                                               org.apache.myfaces.shared.renderkit.JSFAttr.ESCAPE_ATTR,
+                    escape = RendererUtils.getBooleanAttribute(uiComponent, JSFAttr.ESCAPE_ATTR,
                                                                true); //default is to escape
                 }                
                 if (escape)
                 {
-                    writer.writeText(text, org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
+                    writer.writeText(text, JSFAttr.VALUE_ATTR);
                 }
                 else
                 {

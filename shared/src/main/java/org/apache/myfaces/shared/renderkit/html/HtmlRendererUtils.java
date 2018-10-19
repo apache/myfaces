@@ -67,7 +67,7 @@ import javax.faces.model.SelectItemGroup;
 import org.apache.myfaces.shared.component.DisplayValueOnlyCapable;
 import org.apache.myfaces.shared.component.EscapeCapable;
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
-import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder;
@@ -1242,10 +1242,8 @@ public final class HtmlRendererUtils
         }
         else
         {
-            captionClass = (String) component.getAttributes()
-                    .get(org.apache.myfaces.shared.renderkit.JSFAttr.CAPTION_CLASS_ATTR);
-            captionStyle = (String) component.getAttributes()
-                    .get(org.apache.myfaces.shared.renderkit.JSFAttr.CAPTION_STYLE_ATTR);
+            captionClass = (String) component.getAttributes().get(JSFAttr.CAPTION_CLASS_ATTR);
+            captionStyle = (String) component.getAttributes().get(JSFAttr.CAPTION_STYLE_ATTR);
         }
         writer.startElement(HTML.CAPTION_ELEM, null); // component);
         if (captionClass != null)
@@ -1491,7 +1489,7 @@ public final class HtmlRendererUtils
         else
         {
             labelClass = (String) component.getAttributes()
-                    .get(org.apache.myfaces.shared.renderkit.JSFAttr.ENABLED_CLASS_ATTR);
+                    .get(JSFAttr.ENABLED_CLASS_ATTR);
         }
         if (labelClass != null)
         {
@@ -1522,7 +1520,7 @@ public final class HtmlRendererUtils
         else
         {
             labelClass = (String) component.getAttributes()
-                    .get(org.apache.myfaces.shared.renderkit.JSFAttr.ENABLED_CLASS_ATTR);
+                    .get(JSFAttr.ENABLED_CLASS_ATTR);
         }
         if (labelClass != null)
         {
@@ -1563,7 +1561,7 @@ public final class HtmlRendererUtils
         else
         {
             labelClass = (String) component.getAttributes()
-                    .get(org.apache.myfaces.shared.renderkit.JSFAttr.ENABLED_CLASS_ATTR);
+                    .get(JSFAttr.ENABLED_CLASS_ATTR);
         }
         String labelSelectedClass = null;
         if (selected)

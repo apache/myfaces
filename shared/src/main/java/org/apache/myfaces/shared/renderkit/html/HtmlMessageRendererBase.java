@@ -39,7 +39,7 @@ import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 
 public abstract class HtmlMessageRendererBase
@@ -393,33 +393,33 @@ public abstract class HtmlMessageRendererBase
             Map<String, Object> attr = message.getAttributes();
             if (severity == FacesMessage.SEVERITY_INFO)
             {
-                style = (String) attr.get(org.apache.myfaces.shared.renderkit.JSFAttr.INFO_STYLE_ATTR);
-                styleClass = (String) attr.get(org.apache.myfaces.shared.renderkit.JSFAttr.INFO_CLASS_ATTR);
+                style = (String) attr.get(JSFAttr.INFO_STYLE_ATTR);
+                styleClass = (String) attr.get(JSFAttr.INFO_CLASS_ATTR);
             }
             else if (severity == FacesMessage.SEVERITY_WARN)
             {
-                style = (String) attr.get(org.apache.myfaces.shared.renderkit.JSFAttr.WARN_STYLE_ATTR);
-                styleClass = (String) attr.get(org.apache.myfaces.shared.renderkit.JSFAttr.WARN_CLASS_ATTR);
+                style = (String) attr.get(JSFAttr.WARN_STYLE_ATTR);
+                styleClass = (String) attr.get(JSFAttr.WARN_CLASS_ATTR);
             }
             else if (severity == FacesMessage.SEVERITY_ERROR)
             {
-                style = (String) attr.get(org.apache.myfaces.shared.renderkit.JSFAttr.ERROR_STYLE_ATTR);
-                styleClass = (String) attr.get(org.apache.myfaces.shared.renderkit.JSFAttr.ERROR_CLASS_ATTR);
+                style = (String) attr.get(JSFAttr.ERROR_STYLE_ATTR);
+                styleClass = (String) attr.get(JSFAttr.ERROR_CLASS_ATTR);
             }
             else if (severity == FacesMessage.SEVERITY_FATAL)
             {
-                style = (String) attr.get(org.apache.myfaces.shared.renderkit.JSFAttr.FATAL_STYLE_ATTR);
-                styleClass = (String) attr.get(org.apache.myfaces.shared.renderkit.JSFAttr.FATAL_CLASS_ATTR);
+                style = (String) attr.get(JSFAttr.FATAL_STYLE_ATTR);
+                styleClass = (String) attr.get(JSFAttr.FATAL_CLASS_ATTR);
             }
 
             if (style == null)
             {
-                style = (String) attr.get(org.apache.myfaces.shared.renderkit.JSFAttr.STYLE_ATTR);
+                style = (String) attr.get(JSFAttr.STYLE_ATTR);
             }
 
             if (styleClass == null)
             {
-                styleClass = (String) attr.get(org.apache.myfaces.shared.renderkit.JSFAttr.STYLE_CLASS_ATTR);
+                styleClass = (String) attr.get(JSFAttr.STYLE_CLASS_ATTR);
             }
         }
 
@@ -456,7 +456,7 @@ public abstract class HtmlMessageRendererBase
         }
 
         return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, 
-                org.apache.myfaces.shared.renderkit.JSFAttr.TOOLTIP_ATTR, false);
+                JSFAttr.TOOLTIP_ATTR, false);
         
     }
 
@@ -468,7 +468,7 @@ public abstract class HtmlMessageRendererBase
         }
 
         return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, 
-                org.apache.myfaces.shared.renderkit.JSFAttr.SHOW_SUMMARY_ATTR, false);
+                JSFAttr.SHOW_SUMMARY_ATTR, false);
         
     }
 
@@ -480,7 +480,7 @@ public abstract class HtmlMessageRendererBase
         }
 
         return RendererUtils.getBooleanAttribute(component, 
-                org.apache.myfaces.shared.renderkit.JSFAttr.SHOW_DETAIL_ATTR, false);
+                JSFAttr.SHOW_DETAIL_ATTR, false);
         
     }
     
@@ -492,7 +492,7 @@ public abstract class HtmlMessageRendererBase
         }
 
         return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, 
-                org.apache.myfaces.shared.renderkit.JSFAttr.REDISPLAY_ATTR, true);
+                JSFAttr.REDISPLAY_ATTR, true);
         
     }
 

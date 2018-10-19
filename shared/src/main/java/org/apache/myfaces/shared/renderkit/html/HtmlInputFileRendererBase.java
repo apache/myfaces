@@ -44,6 +44,7 @@ import javax.faces.component.html.HtmlInputText;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.HttpPartWrapper;
+import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 
 public class HtmlInputFileRendererBase extends HtmlRenderer
 {
@@ -316,8 +317,7 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
                 {
                     log.fine("renderOutputText writing '" + text + "'");
                 }
-                writer.writeText(text,
-                        org.apache.myfaces.shared.renderkit.JSFAttr.VALUE_ATTR);
+                writer.writeText(text, JSFAttr.VALUE_ATTR);
             }
             else
             {

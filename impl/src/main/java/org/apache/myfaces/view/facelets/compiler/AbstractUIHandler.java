@@ -23,32 +23,10 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.TextHandler;
 
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
 
 public abstract class AbstractUIHandler implements FaceletHandler, TextHandler
 {
-
-    /**
-     * @param ctx
-     * @param parent
-     * @param c
-     * @deprecated
-     */
-    @Deprecated
-    public void addComponent(FaceletContext ctx, UIComponent parent, UIComponent c)
-    {
-        // possible facet scoped
-        String facetName = this.getFacetName(ctx, parent);
-        if (facetName == null)
-        {
-            parent.getChildren().add(c);
-        }
-        else
-        {
-            ComponentSupport.addFacet(ctx, parent, c, facetName);
-        }
-    }
 
     protected final String getFacetName(FaceletContext ctx, UIComponent parent)
     {

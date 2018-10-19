@@ -60,8 +60,6 @@ import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.context.PartialResponseWriter;
-import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 import javax.faces.view.Location;
 import javax.servlet.http.HttpServletResponse;
@@ -69,11 +67,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.lifecycle.ViewNotFoundException;
 import org.apache.myfaces.shared.config.MyfacesConfig;
-import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.StateUtils;
-import org.apache.myfaces.spi.WebConfigProvider;
-import org.apache.myfaces.spi.WebConfigProviderFactory;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
 import org.apache.myfaces.view.facelets.el.ContextAware;
 
@@ -475,122 +470,6 @@ public final class ErrorPageWriter
 
         // mark the response as complete
         facesContext.responseComplete();
-    }
-
-    /**
-     * Handles the given Throwbale in the following way:
-     * If there is no &lt;error-page&gt; entry in web.xml, try to reset the current HttpServletResponse,
-     * generate the error page and call responseComplete(). If this fails, rethrow the Exception.
-     * If there is an &lt;error-page&gt; entry in web.xml, save the current UIViewRoot in the RequestMap
-     * with the key "org.apache.myfaces.error.UIViewRoot" to access it on the error page and
-     * rethrow the Exception to let it flow up to FacesServlet.service() and thus be handled by the container.
-     * @param facesContext
-     * @param ex
-     * @throws FacesException
-     * @deprecated Use MyFacesExceptionHandlerWrapperImpl and handle() method
-     */
-    @Deprecated
-    public static void handleThrowable(FacesContext facesContext, Throwable ex) throws FacesException
-    {
-        _prepareExceptionStack(ex);
-
-        boolean errorPageWritten = false;
-
-        // check if an error page is present in web.xml
-        // if so, do not generate an error page
-        //WebXml webXml = WebXml.getWebXml(facesContext.getExternalContext());
-        //if (webXml.isErrorPagePresent())
-        WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebConfigProviderFactory(
-                facesContext.getExternalContext()).getWebConfigProvider(facesContext.getExternalContext());
-
-        if(webConfigProvider.isErrorPagePresent(facesContext.getExternalContext()))
-        {
-            // save current view in the request map to access it on the error page
-            facesContext.getExternalContext().getRequestMap().put(VIEW_KEY, facesContext.getViewRoot());
-        }
-        else
-        {
-            // check for org.apache.myfaces.ERROR_HANDLING
-            // do not generate an error page if it is false
-            String errorHandling = facesContext.getExternalContext().getInitParameter(ERROR_HANDLING_PARAMETER);
-            boolean errorHandlingDisabled = (errorHandling != null && errorHandling.equalsIgnoreCase("false"));
-            if (!errorHandlingDisabled)
-            {
-                // write the error page
-                Object response = facesContext.getExternalContext().getResponse();
-                if (response instanceof HttpServletResponse)
-                {
-                    HttpServletResponse httpResp = (HttpServletResponse) response;
-                    if (!httpResp.isCommitted())
-                    {
-                        httpResp.reset();
-                        if (facesContext.getPartialViewContext().isAjaxRequest())
-                        {
-                            // ajax request --> xml error page 
-                            httpResp.setContentType("text/xml; charset=UTF-8");
-                            try
-                            {
-                                Writer writer = httpResp.getWriter();
-                                // can't use facesContext.getResponseWriter(), because it might not have been set
-                                ResponseWriter responseWriter = new HtmlResponseWriterImpl(writer, "text/xml", "utf-8");
-                                PartialResponseWriter partialWriter = new PartialResponseWriter(responseWriter);
-                                partialWriter.startDocument();
-                                partialWriter.startError(ex.getClass().getName());
-                                if (ex.getCause() != null)
-                                {
-                                    partialWriter.write(ex.getCause().toString());
-                                }
-                                else if (ex.getMessage() != null)
-                                {
-                                    partialWriter.write(ex.getMessage());
-                                }
-                                partialWriter.endError();
-                                partialWriter.endDocument();
-                            }
-                            catch(IOException ioe)
-                            {
-                                throw new FacesException("Could not write the error page", ioe);
-                            }
-                        }
-                        else
-                        {
-                            // normal request --> html error page
-                            httpResp.setContentType("text/html; charset=UTF-8");
-                            try
-                            {
-                                Writer writer = httpResp.getWriter();
-                                debugHtml(writer, facesContext, ex);
-                            }
-                            catch(IOException ioe)
-                            {
-                                throw new FacesException("Could not write the error page", ioe);
-                            }
-                        }
-                        log.log(Level.SEVERE, "An exception occurred", ex);
-
-                        // mark the response as complete
-                        facesContext.responseComplete();
-
-                        errorPageWritten = true;
-                    }
-                }
-            }
-        }
-
-        // rethrow the throwable, if we did not write the error page
-        if (!errorPageWritten)
-        {
-            if (ex instanceof FacesException)
-            {
-                throw (FacesException) ex;
-            }
-            if (ex instanceof RuntimeException)
-            {
-                throw (RuntimeException) ex;
-            }
-            throw new FacesException(ex);
-        }
-
     }
 
     private static String _getErrorTemplate(FacesContext context)

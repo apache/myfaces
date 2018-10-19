@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.shared.taglib.core;
 
-import org.apache.myfaces.shared.renderkit.JSFAttr;
+import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 
 import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
@@ -52,7 +52,7 @@ public class SelectItemTagBase
 
         setBooleanProperty(component, JSFAttr.ITEM_DISABLED_ATTR, _itemDisabled);
         setStringProperty(component, JSFAttr.ITEM_DESCRIPTION_ATTR, _itemDescription);
-        setStringProperty(component, org.apache.myfaces.shared.renderkit.JSFAttr.ITEM_LABEL_ATTR, _itemLabel);
+        setStringProperty(component, JSFAttr.ITEM_LABEL_ATTR, _itemLabel);
         setStringProperty(component, JSFAttr.ITEM_VALUE_ATTR, _itemValue);
         setBooleanProperty(component, JSFAttr.ITEM_ESCAPED_ATTR, _escape, Boolean.TRUE);
         setBooleanProperty(component, JSFAttr.NO_SELECTION_OPTION_ATTR, _noSelectionOption, Boolean.FALSE);
@@ -71,13 +71,6 @@ public class SelectItemTagBase
     public void setItemLabel(ValueExpression itemLabel)
     {
         _itemLabel = itemLabel;
-    }
-
-    @Deprecated
-    protected void setItemValue(String itemValue)
-    {
-        _itemValue = getFacesContext().getApplication().getExpressionFactory().createValueExpression(
-                    getFacesContext().getELContext(),itemValue,String.class);
     }
 
     public void setItemValue(ValueExpression itemValue)

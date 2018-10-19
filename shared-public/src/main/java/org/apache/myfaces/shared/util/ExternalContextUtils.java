@@ -281,30 +281,6 @@ public final class ExternalContextUtils
     }
 
     /**
-     * Returns the contextPath of the ServletRequest or <code>null</code> for portlet requests
-     *
-     * @param ec the current external context
-     * @return a String containing the request context path
-     * @see ExternalContext#getRequestContextPath()
-     * 
-     * @deprecated use ExternalContext.getRequestContextPath() as of JSF 1.2.  This method
-     *             does not appropriately handle portlet environments, but the functionality
-     *             is maintained to prevent needing to change the contract.
-     */
-    @Deprecated
-    public static String getRequestContextPath(ExternalContext ec)
-    {
-        if (!isPortlet(ec))
-        {
-            return ec.getRequestContextPath();
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    /**
      * Returns the requestURI of the HttpServletRequest or <code>null</code> for 
      * portlet requests
      *
@@ -321,21 +297,6 @@ public final class ExternalContextUtils
         {
             return null;
         }
-    }
-
-    /**
-     * Returns the character encoding or <code>null</code> if there isn't any
-     *
-     * @param ec the current external context
-     * @return a string containing the request's character encoding
-     * @see ExternalContext#getRequestCharacterEncoding()
-     * 
-     * @deprecated replaced by an API in JSF.  Use ExternalContext.getRequestCharacterEncoding()
-     */
-    @Deprecated
-    public static String getCharacterEncoding(ExternalContext ec)
-    {
-        return ec.getRequestCharacterEncoding();
     }
 
     /**
@@ -411,22 +372,6 @@ public final class ExternalContextUtils
     }
 
     /**
-     * Returns the content type from the current externalContext or
-     * <code>null</code> if unknown.
-     *
-     * @param ec the current external context
-     * @return a String contining the the content type or <code>null</code>
-     * @see ExternalContext#getRequestContentType()
-     *
-     * @deprecated use ExternalContext.getRequestContentType()
-     */
-    @Deprecated
-    public static String getContentType(ExternalContext ec)
-    {
-        return ec.getRequestContentType();
-    }
-
-    /**
      * Returns the request input stream if one is available
      *
      * @param ec the current external context
@@ -451,24 +396,6 @@ public final class ExternalContextUtils
         }
 
         return null;
-    }
-
-    /**
-     * Returns <code>true</code> if this externalContext represents an "action". 
-     * An action request is any ServletRequest or a portlet ActionRequest or 
-     * ResourceRequest.
-     *
-     * @param ec the current external context
-     * @return a boolean of <code>true</code> if this request is an action-type
-     *         request.
-     * @see #isRequestFromClient(ExternalContext)
-     *         
-     * @deprecated replaced with {@link #isRequestFromClient(ExternalContext)}
-     */
-    @Deprecated
-    public static boolean isAction(ExternalContext ec)
-    {
-        return isRequestFromClient(ec);
     }
 
     /**
