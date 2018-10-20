@@ -30,8 +30,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-
-import org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet;
+import org.apache.myfaces.shared.webapp.webxml.DelegatedFacesServlet;
 
 /**
  * Derived FacesServlet that can be used for debugging purpose

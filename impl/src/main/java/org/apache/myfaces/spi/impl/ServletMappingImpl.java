@@ -23,10 +23,9 @@ import org.apache.myfaces.spi.ServletMapping;
 public class ServletMappingImpl implements ServletMapping
 {
 
-    private org.apache.myfaces.shared_impl.webapp.webxml.ServletMapping _delegateMapping;
+    private ServletMapping _delegateMapping;
 
-    public ServletMappingImpl(
-            org.apache.myfaces.shared_impl.webapp.webxml.ServletMapping delegateMapping)
+    public ServletMappingImpl(ServletMapping delegateMapping)
     {
         super();
         this._delegateMapping = delegateMapping;

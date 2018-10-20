@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.context.ExternalContext;
+import org.apache.myfaces.shared.webapp.webxml.WebXml;
 
-import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 import org.apache.myfaces.spi.ServletMapping;
 import org.apache.myfaces.spi.WebConfigProvider;
 
@@ -51,8 +51,7 @@ public class DefaultWebConfigProvider extends WebConfigProvider
         
         for (int i = 0; i < mapping.size(); i++)
         {
-            org.apache.myfaces.shared_impl.webapp.webxml.ServletMapping delegateMapping = 
-                (org.apache.myfaces.shared_impl.webapp.webxml.ServletMapping) mapping.get(i);
+            ServletMapping delegateMapping = (ServletMapping) mapping.get(i);
             
             mappingList.add(new ServletMappingImpl(delegateMapping));
         }

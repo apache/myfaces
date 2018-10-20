@@ -34,7 +34,7 @@ import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.StateUtils;
-import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
+import org.apache.myfaces.shared.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.test.mock.MockFacesContext20;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.view.facelets.FaceletMultipleRequestsTestCase;

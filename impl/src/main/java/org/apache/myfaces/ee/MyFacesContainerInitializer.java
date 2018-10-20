@@ -54,7 +54,7 @@ import javax.servlet.annotation.HandlesTypes;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
-import org.apache.myfaces.shared_impl.webapp.webxml.DelegatedFacesServlet;
+import org.apache.myfaces.shared.webapp.webxml.DelegatedFacesServlet;
 import org.apache.myfaces.spi.FacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
 
