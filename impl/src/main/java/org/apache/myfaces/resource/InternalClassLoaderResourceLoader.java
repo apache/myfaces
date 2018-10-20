@@ -202,14 +202,6 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
         {
             return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
         }
-        else if (_developmentStage && libraryName != null &&
-                ResourceUtils.MYFACES_LIBRARY_NAME.equals(libraryName) &&
-                ResourceUtils.MYFACES_JS_RESOURCE_NAME.equals(resourceName))
-        {
-            //handle the oamSubmit.js
-            return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion,
-                    resourceName, resourceVersion, ResourceUtils.MYFACES_JS_RESOURCE_NAME_UNCOMPRESSED, true);
-        }
         else if (_developmentStage && libraryName != null && libraryName.startsWith("org.apache.myfaces.core"))
         {
             return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);

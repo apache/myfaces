@@ -34,10 +34,7 @@ import org.apache.myfaces.shared.util.renderkit.HTML;
  */
 public class ResourceUtils
 {
-    public final static String MYFACES_JS_RESOURCE_NAME = "oamSubmit.js";
-    public final static String MYFACES_JS_RESOURCE_NAME_UNCOMPRESSED = "oamSubmit-uncompressed.js";
     public final static String MYFACES_LIBRARY_NAME = "org.apache.myfaces";
-    private final static String RENDERED_MYFACES_JS = "org.apache.myfaces.RENDERED_MYFACES_JS";
 
     public final static String JSF_MYFACES_JSFJS_MINIMAL = "minimal";
     public final static String JSF_MYFACES_JSFJS_MINIMAL_MODERN = "minimal-modern";
@@ -137,47 +134,6 @@ public class ResourceUtils
 
         //mark as rendered
         facesContext.getAttributes().put(RENDERED_JSF_JS, Boolean.TRUE);
-        return;
-    }
-
-    public static void renderMyfacesJSInlineIfNecessary(FacesContext facesContext, ResponseWriter writer)
-        throws IOException
-    {
-        if (facesContext.getAttributes().containsKey(RENDERED_MYFACES_JS))
-        {
-            return;
-        }
-
-
-        //we only are allowed to do this on partial requests
-        //because on normal requests a static viewroot still could mean that a full page refresh is performed
-        //only in a ppr case this means we have the script already loaded and parsed
-        if (facesContext.getPartialViewContext() != null && 
-                (facesContext.getPartialViewContext().isPartialRequest() ||
-                 facesContext.getPartialViewContext().isAjaxRequest() )
-            )
-        {
-            return;
-        }
-        // Check first if we have lucky, we are using myfaces and the script has
-        // been previously rendered
-        if (isRenderedScript(facesContext, MYFACES_LIBRARY_NAME, MYFACES_JS_RESOURCE_NAME))
-        {
-            facesContext.getAttributes().put(RENDERED_MYFACES_JS, Boolean.TRUE);
-            return;
-        }
-
-        //Fast shortcut, don't create component instance and do what HtmlScriptRenderer do.
-        Resource resource = facesContext.getApplication().getResourceHandler().createResource(
-                MYFACES_JS_RESOURCE_NAME, MYFACES_LIBRARY_NAME);
-        markScriptAsRendered(facesContext, MYFACES_LIBRARY_NAME, MYFACES_JS_RESOURCE_NAME);
-        writer.startElement(HTML.SCRIPT_ELEM, null);
-        writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
-        writer.writeURIAttribute(HTML.SRC_ATTR, resource.getRequestPath(), null);
-        writer.endElement(HTML.SCRIPT_ELEM);
-
-        //mark as rendered
-        facesContext.getAttributes().put(RENDERED_MYFACES_JS, Boolean.TRUE);
         return;
     }
 

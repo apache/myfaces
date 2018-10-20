@@ -31,7 +31,6 @@ import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils.ScriptContext;
 import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
-import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.util.renderkit.HTML;
 
 public final class HtmlJavaScriptUtils
@@ -67,23 +66,10 @@ public final class HtmlJavaScriptUtils
         if (firstScript == null || firstScript.equals(Boolean.TRUE))
         {
             map.put(FIRST_SUBMIT_SCRIPT_ON_PAGE, Boolean.FALSE);
-            renderFormSubmitScriptIfNecessary(facesContext);
 
             //we have to render the config just in case
             renderConfigOptionsIfNecessary(facesContext);
         }
-    }
-    
-    /**
-     * @param facesContext
-     * @throws IOException
-     */
-    private static void renderFormSubmitScriptIfNecessary(
-            FacesContext facesContext) throws IOException
-    {
-        ResponseWriter writer = facesContext.getResponseWriter();
-        ResourceUtils
-                .renderMyfacesJSInlineIfNecessary(facesContext, writer);
     }
     
     private static void renderConfigOptionsIfNecessary(FacesContext facesContext)

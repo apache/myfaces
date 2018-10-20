@@ -115,7 +115,6 @@ public class ResourceHandlerImpl extends ResourceHandler
             "facelets.VIEW_MAPPINGS"};
     private Set<String> _viewSuffixes = null;
     
-    private final static String MYFACES_JS_RESOURCE_NAME = "oamSubmit.js";
     public final static String RENDERED_RESOURCES_SET = "org.apache.myfaces.RENDERED_RESOURCES_SET";
     private final static String MYFACES_LIBRARY_NAME = "org.apache.myfaces";
 
@@ -1899,16 +1898,6 @@ public class ResourceHandlerImpl extends ResourceHandler
                         ? contactLibraryAndResource(facesContext, libraryName, resourceName)
                         : resourceName,
                 Boolean.TRUE);
-
-        if (ResourceHandler.JSF_SCRIPT_LIBRARY_NAME.equals(libraryName) &&
-            ResourceHandler.JSF_SCRIPT_RESOURCE_NAME.equals(resourceName))
-        {
-            // If we are calling this method, it is expected myfaces core is being used as runtime and note
-            // oamSubmit script is included inside jsf.js, so mark this one too.
-            getRenderedResources(facesContext).put(
-                    contactLibraryAndResource(facesContext, MYFACES_LIBRARY_NAME, MYFACES_JS_RESOURCE_NAME),
-                    Boolean.TRUE);
-        }
     }
     
     /**

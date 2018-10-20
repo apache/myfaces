@@ -117,9 +117,6 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
             new HtmlRenderedAttr("onfocus"), 
             new HtmlRenderedAttr("onblur"),
             //_EventProperties
-            //new HtmlRenderedAttr("onclick",1) "onclick", 
-            //        "onclick=\"var cf = function(){onclick};var oamSF = function(){return oamSubmitForm(&apos;j_id1&apos;,&apos;j_id1:j_id0&apos;);};return (cf()==false)? false : oamSF();\"")
-            //, 
             new HtmlRenderedAttr("ondblclick"), 
             new HtmlRenderedAttr("onkeydown"), 
             new HtmlRenderedAttr("onkeypress"),
