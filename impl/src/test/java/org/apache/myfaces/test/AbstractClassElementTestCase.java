@@ -24,8 +24,6 @@ import java.util.logging.Logger;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import junit.framework.TestCase;
-
 import org.apache.myfaces.shared.test.ClassElementHandler;
 import org.junit.Assert;
 import org.junit.Before;

@@ -18,32 +18,35 @@
  */
 package org.apache.myfaces.shared.webapp.webxml;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class ServletMappingTest extends TestCase
+public class ServletMappingTest
 {
 
     /**
      * Test method for
      * {@link org.apache.myfaces.shared.webapp.webxml.ServletMapping#ServletMapping(java.lang.String, java.lang.Class, java.lang.String)}.
      */
+    @Test
     public void testExtensionServletMapping()
     {
         ServletMapping mapping = new ServletMapping("xxx", Object.class, "*.faces");
-        assertTrue(mapping.isExtensionMapping());
-        assertEquals(".faces", mapping.getExtension());
-        assertEquals("*.faces", mapping.getUrlPattern());
+        Assert.assertTrue(mapping.isExtensionMapping());
+        Assert.assertEquals(".faces", mapping.getExtension());
+        Assert.assertEquals("*.faces", mapping.getUrlPattern());
     }
 
     /**
      * Test method for
      * {@link org.apache.myfaces.shared.webapp.webxml.ServletMapping#ServletMapping(java.lang.String, java.lang.Class, java.lang.String)}.
      */
+    @Test
     public void testPrefixServletMapping()
     {
         ServletMapping mapping = new ServletMapping("xxx", Object.class, "/faces/*");
-        assertFalse(mapping.isExtensionMapping());
-        assertEquals("/faces/*", mapping.getUrlPattern());
-        assertEquals("/faces", mapping.getPrefix());
+        Assert.assertFalse(mapping.isExtensionMapping());
+        Assert.assertEquals("/faces/*", mapping.getUrlPattern());
+        Assert.assertEquals("/faces", mapping.getPrefix());
     }
 }
