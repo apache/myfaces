@@ -26,7 +26,7 @@ import java.util.Map;
 
 import javax.faces.FacesException;
 
-import org.apache.myfaces.Assert;
+import org.apache.myfaces.MyFacesAsserts;
 import org.apache.myfaces.FacesTestCase;
 import org.apache.myfaces.TestRunner;
 
@@ -187,7 +187,7 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
         expect(_externalContext.getRequestServletPath()).andReturn(null);
 
         _mocksControl.replay();
-        Assert.assertException(FacesException.class, new TestRunner()
+        MyFacesAsserts.assertException(FacesException.class, new TestRunner()
         {
             public void run() throws Throwable
             {

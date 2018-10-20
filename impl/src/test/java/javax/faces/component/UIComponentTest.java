@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.Assert;
+import org.apache.myfaces.MyFacesAsserts;
 import org.apache.myfaces.TestRunner;
 import org.junit.Test;
 
@@ -74,7 +74,7 @@ public class UIComponentTest extends UIComponentTestBase
                 .size()]));
         _mocksControl.checkOrder(true);
 
-        Assert.assertException(NullPointerException.class, new TestRunner()
+        MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
         {
             public void run() throws Throwable
             {

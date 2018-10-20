@@ -44,7 +44,7 @@ import javax.faces.event.PhaseId;
 import javax.faces.render.Renderer;
 import static junit.framework.TestCase.assertEquals;
 
-import org.apache.myfaces.Assert;
+import org.apache.myfaces.MyFacesAsserts;
 import org.apache.myfaces.TestRunner;
 import org.apache.myfaces.mock.MockRenderedValueExpression;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
@@ -83,7 +83,7 @@ public class UIDataTest extends AbstractJsfTestCase
 
     private void assertSetValueExpressionException(Class<? extends Throwable> expected, final String name)
     {
-        Assert.assertException(expected, new TestRunner()
+        MyFacesAsserts.assertException(expected, new TestRunner()
         {
             public void run() throws Throwable
             {

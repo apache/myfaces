@@ -23,7 +23,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIPanel;
 import javax.faces.context.FacesContext;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Verifies the current component on stack in method getValue. Created for MYFACES-3157

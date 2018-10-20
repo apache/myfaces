@@ -16,48 +16,45 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.test;
+package org.apache.myfaces;
 
-import static junit.framework.Assert.fail;
+import org.junit.Assert;
 
 /**
- * @author Mathias Broekelmann (latest modification by $Author$)
- * @version $Revision$ $Date$
+ * Provides various assert calls which can be used for tests.
  */
-public class AssertThrowables
+public class MyFacesAsserts
 {
-    public static void assertThrowable(Class<? extends Throwable> expected,
-            TestRunnable test)
+    protected MyFacesAsserts()
     {
-        try
-        {
-            test.run();
-            fail("expected exception: " + expected);
-        }
-        catch (Throwable e)
-        {
-            if (!expected.isAssignableFrom(e.getClass()))
-            {
-                fail("expected exception: " + expected + " but got "
-                        + e.getClass());
-            }
-        }
     }
 
-    public static void assertThrowable(String message,
-            Class<? extends Throwable> expected, TestRunnable test)
+    /**
+     * Asserts that the execution of the {@link TestRunner#run()} method will throw the <code>expected</code>
+     * exception
+     * 
+     * @param expected
+     *            the expected Exception
+     * @param testCase
+     *            the testcase to run
+     */
+    public static void assertException(Class<? extends Throwable> expected, TestRunner testCase)
     {
+        Assert.assertNotNull(expected);
+        Assert.assertNotNull(testCase);
         try
         {
-            test.run();
-            fail(message);
+            testCase.run();
         }
         catch (Throwable e)
         {
-            if (!expected.isAssignableFrom(e.getClass()))
+            if (expected.isAssignableFrom(e.getClass()))
             {
-                fail(message);
+                return;
             }
         }
+
+        Assert.fail(expected.getName() + " expected");
     }
+
 }

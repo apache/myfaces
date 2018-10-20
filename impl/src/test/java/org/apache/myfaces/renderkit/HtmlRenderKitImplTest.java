@@ -20,7 +20,7 @@ package org.apache.myfaces.renderkit;
 
 import java.io.StringWriter;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
 import org.apache.myfaces.shared.config.MyfacesConfig;

@@ -24,7 +24,7 @@ import java.util.Collection;
 
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.Assert;
+import org.apache.myfaces.MyFacesAsserts;
 import org.apache.myfaces.TestRunner;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
@@ -65,7 +65,7 @@ public class UIComponentEncodeAllTest extends AbstractJsfTestCase
     @Test
     public void testEncodeAllNullContext() throws Exception
     {
-        Assert.assertException(NullPointerException.class, new TestRunner()
+        MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
         {
             public void run() throws Throwable
             {

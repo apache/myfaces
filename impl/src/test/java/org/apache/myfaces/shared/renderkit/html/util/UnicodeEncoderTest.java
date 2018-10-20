@@ -16,7 +16,7 @@
 package org.apache.myfaces.shared.renderkit.html.util;
 
 import java.io.StringWriter;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.Test;
 

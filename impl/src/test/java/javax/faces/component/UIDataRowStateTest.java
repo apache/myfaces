@@ -23,7 +23,7 @@ import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.model.ListDataModel;
 import javax.faces.render.Renderer;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.Test;
 

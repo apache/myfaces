@@ -33,7 +33,7 @@ import javax.faces.component.UIPanel;
 import javax.faces.component.html.HtmlGraphicImage;
 import javax.faces.context.FacesContext;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.apache.myfaces.shared.util.renderkit.HTML;
 
 import org.apache.myfaces.shared.util.renderkit.JSFAttr;

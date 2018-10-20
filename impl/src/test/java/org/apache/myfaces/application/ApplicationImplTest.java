@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.application;
 
-import static org.apache.myfaces.test.AssertThrowables.assertThrowable;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
@@ -41,9 +40,10 @@ import javax.faces.convert.ConverterException;
 import javax.faces.convert.EnumConverter;
 
 import junit.framework.TestCase;
+import org.apache.myfaces.MyFacesAsserts;
+import org.apache.myfaces.TestRunner;
 
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.test.TestRunnable;
 import org.apache.myfaces.test.mock.MockFacesContext12;
 
 /**
@@ -70,14 +70,14 @@ public class ApplicationImplTest extends TestCase
      */
     public void testGetResourceBundleNPE()
     {
-        assertThrowable(NullPointerException.class, new TestRunnable()
+        MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
         {
             public void run()
             {
                 app.getResourceBundle(null, "xxx");
             }
         });
-        assertThrowable(NullPointerException.class, new TestRunnable()
+        MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
         {
             public void run()
             {
@@ -103,7 +103,7 @@ public class ApplicationImplTest extends TestCase
                 return "bundleName";
             }
         };
-        assertThrowable(FacesException.class, new TestRunnable()
+        MyFacesAsserts.assertException(FacesException.class, new TestRunner()
         {
             public void run()
             {

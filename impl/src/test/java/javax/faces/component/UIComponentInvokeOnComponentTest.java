@@ -83,7 +83,7 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
         EasyMock.expectLastCall().andThrow(new RuntimeException());
         _mocksControl.replay();
         
-        org.apache.myfaces.Assert.assertException(FacesException.class, new TestRunner()
+        org.apache.myfaces.MyFacesAsserts.assertException(FacesException.class, new TestRunner()
         {
             public void run() throws Throwable
             {
@@ -127,21 +127,21 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
     @Test
     public void testInvokeOnComponentExceptions() throws Exception
     {
-        org.apache.myfaces.Assert.assertException(NullPointerException.class, new TestRunner()
+        org.apache.myfaces.MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
         {
             public void run() throws Throwable
             {
                 _testimpl.invokeOnComponent(null, "xxx", _contextCallback);
             }
         });
-        org.apache.myfaces.Assert.assertException(NullPointerException.class, new TestRunner()
+        org.apache.myfaces.MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
         {
             public void run() throws Throwable
             {
                 _testimpl.invokeOnComponent(facesContext, null, _contextCallback);
             }
         });
-        org.apache.myfaces.Assert.assertException(NullPointerException.class, new TestRunner()
+        org.apache.myfaces.MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
         {
             public void run() throws Throwable
             {

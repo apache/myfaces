@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.test.component;
 import javax.el.ExpressionFactory;
 import javax.faces.application.StateManager;
 import javax.faces.component.UIComponent;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;

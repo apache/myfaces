@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 import javax.faces.application.StateManager;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.apache.myfaces.config.RuntimeConfig;
 
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;

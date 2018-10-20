@@ -30,13 +30,13 @@ import javax.faces.component.UIDataTest.RowData;
 import javax.faces.component.UIInput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.event.PhaseId;
-import static junit.framework.TestCase.assertEquals;
 
-import org.apache.myfaces.Assert;
+import org.apache.myfaces.MyFacesAsserts;
 import org.apache.myfaces.TestRunner;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class UIRepeatTest extends AbstractJsfTestCase
@@ -70,7 +70,7 @@ public class UIRepeatTest extends AbstractJsfTestCase
 
     private void assertSetValueExpressionException(Class<? extends Throwable> expected, final String name)
     {
-        Assert.assertException(expected, new TestRunner()
+        MyFacesAsserts.assertException(expected, new TestRunner()
         {
             public void run() throws Throwable
             {
@@ -114,7 +114,7 @@ public class UIRepeatTest extends AbstractJsfTestCase
         {
             RowData rowData = model.get(i); 
             table.setRowIndex(i);
-            assertEquals(rowData.getText(), text.getValue());
+            Assert.assertEquals(rowData.getText(), text.getValue());
             text.setSubmittedValue("value"+(i+1));
             //text.getAttributes().put("style", rowData.getStyle());
         }
@@ -153,7 +153,7 @@ public class UIRepeatTest extends AbstractJsfTestCase
         {
             RowData rowData = model.get(i); 
             table.setRowIndex(i);
-            assertEquals("value"+(i+1), text.getSubmittedValue());
+            Assert.assertEquals("value"+(i+1), text.getSubmittedValue());
             //assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
         }
     }

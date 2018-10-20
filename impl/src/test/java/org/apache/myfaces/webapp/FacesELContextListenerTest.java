@@ -26,22 +26,22 @@ import javax.el.ELContextListener;
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 
-import junit.framework.TestCase;
-
 import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.IMocksControl;
 import org.easymock.classextension.EasyMock;
+import org.junit.Test;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class FacesELContextListenerTest extends TestCase
+public class FacesELContextListenerTest
 {
 
     /**
      * Test method for {@link org.apache.myfaces.webapp.FacesELContextListener#contextCreated(javax.el.ELContextEvent)}.
      */
+    @Test
     public void testContextCreated()
     {
         FacesELContextListener listener = new FacesELContextListener();

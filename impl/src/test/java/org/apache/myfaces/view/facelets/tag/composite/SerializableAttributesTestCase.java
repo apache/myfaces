@@ -25,24 +25,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import javax.faces.component.UINamingContainer;
+import org.junit.Assert;
+import org.junit.Test;
 
-import junit.framework.TestCase;
-
-public class SerializableAttributesTestCase extends TestCase
+public class SerializableAttributesTestCase
 {
-
-    @Override
-    protected void setUp() throws Exception
-    {
-        super.setUp();
-    }
-
-    @Override
-    protected void tearDown() throws Exception
-    {
-        super.tearDown();
-    }
-    
+    @Test
     public void testSerializeCompositeResourceWrapper() throws Exception
     {
         CompositeResouceWrapper subject = new CompositeResouceWrapper();
@@ -58,13 +46,14 @@ public class SerializableAttributesTestCase extends TestCase
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
         CompositeResouceWrapper blorg = (CompositeResouceWrapper) ois.readObject();
-        assertEquals(blorg.getResourceName(), subject.getResourceName());
-        assertEquals(blorg.getLibraryName(), subject.getLibraryName());
-        assertEquals(blorg.getContentType(), subject.getContentType());
+        Assert.assertEquals(blorg.getResourceName(), subject.getResourceName());
+        Assert.assertEquals(blorg.getLibraryName(), subject.getLibraryName());
+        Assert.assertEquals(blorg.getContentType(), subject.getContentType());
         oos.close();
         ois.close();
     }
     
+    @Test
     public void testSerializeCompositeComponentBeanInfo() throws Exception
     {
         BeanDescriptor descriptor = new BeanDescriptor(UINamingContainer.class);
@@ -81,8 +70,8 @@ public class SerializableAttributesTestCase extends TestCase
         ObjectInputStream ois = new ObjectInputStream(bais);
         CompositeComponentBeanInfo blorg = (CompositeComponentBeanInfo) ois.readObject();
         
-        assertEquals(UINamingContainer.class, blorg.getBeanDescriptor().getBeanClass());
-        assertEquals(pd.getName(), blorg.getPropertyDescriptorsList().get(0).getName());
+        Assert.assertEquals(UINamingContainer.class, blorg.getBeanDescriptor().getBeanClass());
+        Assert.assertEquals(pd.getName(), blorg.getPropertyDescriptorsList().get(0).getName());
         oos.close();
         ois.close();
     }

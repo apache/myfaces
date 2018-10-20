@@ -23,17 +23,19 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class AbstractAttributeMapTest extends TestCase
+public class AbstractAttributeMapTest
 {
     private TestAttributeMap _testimpl;
 
-    @Override
+    @Before
     protected void setUp() throws Exception
     {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -44,15 +46,17 @@ public class AbstractAttributeMapTest extends TestCase
     /**
      * Test method for {@link java.util.AbstractMap#hashCode()}.
      */
+    @Test
     public void testHashCodeEquals()
     {
-        assertEquals(_testimpl.hashCode(), _testimpl.hashCode());
+        Assert.assertEquals(_testimpl.hashCode(), _testimpl.hashCode());
     }
 
+    @Test
     public void testValues() throws Exception
     {
         _testimpl.put("myKey", "myValue");
-        assertTrue(_testimpl.values().contains("myValue"));
+        Assert.assertTrue(_testimpl.values().contains("myValue"));
     }
 
     private static final class TestAttributeMap extends AbstractAttributeMap<Object>

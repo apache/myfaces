@@ -23,7 +23,7 @@ import java.io.StringWriter;
 import javax.el.ExpressionFactory;
 import javax.faces.component.UIViewRoot;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;

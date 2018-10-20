@@ -19,7 +19,7 @@ import java.io.Serializable;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.LongConverter;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.Test;
 

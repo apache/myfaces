@@ -34,7 +34,7 @@ import javax.faces.context.FacesContext;
 
 import junit.framework.TestCase;
 
-import org.apache.myfaces.Assert;
+import org.apache.myfaces.MyFacesAsserts;
 import org.apache.myfaces.TestRunner;
 import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
@@ -163,7 +163,7 @@ public class ViewHandlerTest extends TestCase
         _externalContext.setRequestCharacterEncoding(eq("xxx"));
         expectLastCall().andThrow(new UnsupportedEncodingException());
         _mocksControl.replay();
-        Assert.assertException(FacesException.class, new TestRunner()
+        MyFacesAsserts.assertException(FacesException.class, new TestRunner()
         {
             public void run() throws Throwable
             {

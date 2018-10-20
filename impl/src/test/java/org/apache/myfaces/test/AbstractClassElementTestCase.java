@@ -27,6 +27,9 @@ import javax.xml.parsers.SAXParserFactory;
 import junit.framework.TestCase;
 
 import org.apache.myfaces.shared.test.ClassElementHandler;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * This test makes sure all of our components, tags, renderers, validators, converters, action listeners, phase
@@ -36,7 +39,7 @@ import org.apache.myfaces.shared.test.ClassElementHandler;
  * @author Dennis Byrne
  */
 
-public abstract class AbstractClassElementTestCase extends TestCase
+public abstract class AbstractClassElementTestCase
 {
 
     //private Log log = LogFactory.getLog(AbstractClassElementTestCase.class);
@@ -45,6 +48,7 @@ public abstract class AbstractClassElementTestCase extends TestCase
     protected List<String> resource = new ArrayList<String>();
     private List<String> className = new ArrayList<String>();
 
+    @Before
     protected void setUp() throws Exception
     {
         SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -75,6 +79,7 @@ public abstract class AbstractClassElementTestCase extends TestCase
         className.addAll(handler.getClassName());
     }
 
+    @Test
     public void testClassPath()
     {
         int i = -1;
@@ -93,7 +98,7 @@ public abstract class AbstractClassElementTestCase extends TestCase
                 }
                 catch (ClassNotFoundException e2)
                 {
-                    assertFalse("Could not load " + clazz, true);
+                    Assert.assertFalse("Could not load " + clazz, true);
                 }
             }
         }

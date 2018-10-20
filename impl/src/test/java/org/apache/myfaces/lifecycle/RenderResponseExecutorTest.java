@@ -20,7 +20,7 @@ package org.apache.myfaces.lifecycle;
 
 import javax.faces.component.UIViewRoot;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.Test;

@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.shared.renderkit.html;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
