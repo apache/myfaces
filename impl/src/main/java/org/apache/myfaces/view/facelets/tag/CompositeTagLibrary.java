@@ -23,8 +23,7 @@ import java.lang.reflect.Method;
 import javax.faces.FacesException;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
-
-import org.apache.myfaces.view.facelets.util.ParameterCheck;
+import org.apache.myfaces.shared.util.Assert;
 
 /**
  * A TagLibrary that is composed of 1 or more TagLibrary children. Uses the chain of responsibility pattern to stop
@@ -40,7 +39,7 @@ public final class CompositeTagLibrary implements TagLibrary
 
     public CompositeTagLibrary(TagLibrary[] libraries)
     {
-        ParameterCheck.notNull("libraries", libraries);
+        Assert.notNull("libraries", libraries);
         this.libraries = libraries;
     }
 

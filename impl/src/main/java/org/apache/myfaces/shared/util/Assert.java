@@ -28,7 +28,7 @@ public class Assert
         }
     }
 
-    public static void notNull(Object value, String fieldName)
+    public static void notNull(String fieldName, Object value)
     {
         if (value == null)
         {

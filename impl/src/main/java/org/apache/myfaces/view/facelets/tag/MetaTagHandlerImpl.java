@@ -21,8 +21,7 @@ package org.apache.myfaces.view.facelets.tag;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.MetaTagHandler;
 import javax.faces.view.facelets.TagConfig;
-
-import org.apache.myfaces.view.facelets.util.ParameterCheck;
+import org.apache.myfaces.shared.util.Assert;
 
 /**
  * A base tag for wiring state to an object instance based on rules populated at the time of creating a MetaRuleset.
@@ -45,7 +44,7 @@ public abstract class MetaTagHandlerImpl extends MetaTagHandler
      */
     protected MetaRuleset createMetaRuleset(Class type)
     {
-        ParameterCheck.notNull("type", type);
+        Assert.notNull("type", type);
         
         return new MetaRulesetImpl(this.tag, type);
     }

@@ -29,7 +29,7 @@ import javax.faces.view.facelets.FaceletCache;
 import javax.faces.view.facelets.FaceletException;
 
 import org.apache.myfaces.shared.resource.ResourceLoaderUtils;
-import org.apache.myfaces.view.facelets.util.ParameterCheck;
+import org.apache.myfaces.shared.util.Assert;
 
 /**
  * TODO: Note MyFaces core has another type of Facelet for read composite component
@@ -72,7 +72,7 @@ class FaceletCacheImpl extends FaceletCache<DefaultFacelet>
     @Override
     public DefaultFacelet getFacelet(URL url) throws IOException
     {
-        ParameterCheck.notNull("url", url);
+        Assert.notNull("url", url);
         
         String key = url.toString();
         
@@ -102,7 +102,7 @@ class FaceletCacheImpl extends FaceletCache<DefaultFacelet>
     @Override
     public DefaultFacelet getViewMetadataFacelet(URL url) throws IOException
     {
-        ParameterCheck.notNull("url", url);
+        Assert.notNull("url", url);
         
         String key = url.toString();
         

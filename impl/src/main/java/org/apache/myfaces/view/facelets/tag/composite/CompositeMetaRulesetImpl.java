@@ -21,7 +21,6 @@ package org.apache.myfaces.view.facelets.tag.composite;
 import org.apache.myfaces.view.facelets.tag.BeanPropertyTagRule;
 import org.apache.myfaces.view.facelets.tag.MetadataImpl;
 import org.apache.myfaces.view.facelets.tag.MetadataTargetImpl;
-import org.apache.myfaces.view.facelets.util.ParameterCheck;
 
 import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
@@ -40,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.myfaces.shared.util.Assert;
 
 public class CompositeMetaRulesetImpl extends MetaRuleset
 {
@@ -110,7 +110,7 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
 
     public MetaRuleset add(Metadata mapper)
     {
-        ParameterCheck.notNull("mapper", mapper);
+        Assert.notNull("mapper", mapper);
 
         if (!_mappers.contains(mapper))
         {
@@ -122,7 +122,7 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
 
     public MetaRuleset addRule(MetaRule rule)
     {
-        ParameterCheck.notNull("rule", rule);
+        Assert.notNull("rule", rule);
 
         _rules.add(rule);
 
@@ -131,8 +131,8 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
 
     public MetaRuleset alias(String attribute, String property)
     {
-        ParameterCheck.notNull("attribute", attribute);
-        ParameterCheck.notNull("property", property);
+        Assert.notNull("attribute", attribute);
+        Assert.notNull("property", property);
 
         TagAttribute attr = (TagAttribute) _attributes.remove(attribute);
         if (attr != null)
@@ -193,7 +193,7 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
 
     public MetaRuleset ignore(String attribute)
     {
-        ParameterCheck.notNull("attribute", attribute);
+        Assert.notNull("attribute", attribute);
 
         _attributes.remove(attribute);
 

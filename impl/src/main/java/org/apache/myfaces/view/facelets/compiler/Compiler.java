@@ -36,13 +36,13 @@ import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.TagDecorator;
 
 import org.apache.myfaces.config.element.FaceletsProcessing;
+import org.apache.myfaces.shared.util.Assert;
 import org.apache.myfaces.view.facelets.tag.BaseMultipleTagDecorator;
 import org.apache.myfaces.view.facelets.tag.BaseTagDecorator;
 import org.apache.myfaces.view.facelets.tag.CompositeTagDecorator;
 import org.apache.myfaces.view.facelets.tag.CompositeTagLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.html.DefaultTagDecorator;
-import org.apache.myfaces.view.facelets.util.ParameterCheck;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 /**
@@ -136,7 +136,7 @@ public abstract class Compiler
 
     public final void addTagDecorator(TagDecorator decorator)
     {
-        ParameterCheck.notNull("decorator", decorator);
+        Assert.notNull("decorator", decorator);
         if (!this.decorators.contains(decorator))
         {
             this.decorators.add(decorator);
@@ -196,7 +196,7 @@ public abstract class Compiler
 
     public final void addTagLibrary(TagLibrary library)
     {
-        ParameterCheck.notNull("library", library);
+        Assert.notNull("library", library);
         if (!this.libraries.contains(library))
         {
             this.libraries.add(library);

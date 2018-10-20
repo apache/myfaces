@@ -25,7 +25,6 @@ import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResouceWrapper;
-import org.apache.myfaces.view.facelets.util.ParameterCheck;
 import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 import javax.faces.FacesException;
@@ -52,6 +51,7 @@ import org.apache.myfaces.config.element.facelets.FaceletSourceTag;
 import org.apache.myfaces.config.element.facelets.FaceletTag;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.element.facelets.FaceletValidatorTag;
+import org.apache.myfaces.shared.util.Assert;
 
 /**
  * Handles creating a {@link org.apache.myfaces.view.facelets.tag.TagLibrary TagLibrary}
@@ -272,90 +272,90 @@ public final class TagLibraryConfig
 
         public void putConverter(String name, String id)
         {
-            ParameterCheck.notNull("name", name);
-            ParameterCheck.notNull("id", id);
+            Assert.notNull("name", name);
+            Assert.notNull("id", id);
             this.addConverter(name, id);
         }
 
         public void putConverter(String name, String id, Class<? extends TagHandler> handlerClass)
         {
-            ParameterCheck.notNull("name", name);
-            ParameterCheck.notNull("id", id);
-            ParameterCheck.notNull("handlerClass", handlerClass);
+            Assert.notNull("name", name);
+            Assert.notNull("id", id);
+            Assert.notNull("handlerClass", handlerClass);
             this.addConverter(name, id, handlerClass);
         }
 
         public void putValidator(String name, String id)
         {
-            ParameterCheck.notNull("name", name);
-            ParameterCheck.notNull("id", id);
+            Assert.notNull("name", name);
+            Assert.notNull("id", id);
             this.addValidator(name, id);
         }
 
         public void putValidator(String name, String id, Class<? extends TagHandler> handlerClass)
         {
-            ParameterCheck.notNull("name", name);
-            ParameterCheck.notNull("id", id);
-            ParameterCheck.notNull("handlerClass", handlerClass);
+            Assert.notNull("name", name);
+            Assert.notNull("id", id);
+            Assert.notNull("handlerClass", handlerClass);
             this.addValidator(name, id, handlerClass);
         }
 
         public void putTagHandler(String name, Class<? extends TagHandler> type)
         {
-            ParameterCheck.notNull("name", name);
-            ParameterCheck.notNull("type", type);
+            Assert.notNull("name", name);
+            Assert.notNull("type", type);
             this.addTagHandler(name, type);
         }
         
         public void putComponentFromResourceId(String name, String resourceId)
         {
-            ParameterCheck.notNull("name", name);
-            ParameterCheck.notNull("resourceId", resourceId);
+            Assert.notNull("name", name);
+            Assert.notNull("resourceId", resourceId);
             this.addComponentFromResourceId(name, resourceId);
         }
 
         public void putComponent(String name, String componentType, String rendererType)
         {
-            ParameterCheck.notNull("name", name);
-            ParameterCheck.notNull("componentType", componentType);
+            Assert.notNull("name", name);
+            Assert.notNull("componentType", componentType);
             this.addComponent(name, componentType, rendererType);
         }
 
         public void putComponent(String name, String componentType, String rendererType, 
                                  Class<? extends TagHandler> handlerClass)
         {
-            ParameterCheck.notNull("name", name);
-            ParameterCheck.notNull("componentType", componentType);
-            ParameterCheck.notNull("handlerClass", handlerClass);
+            Assert.notNull("name", name);
+            Assert.notNull("componentType", componentType);
+            Assert.notNull("handlerClass", handlerClass);
             this.addComponent(name, componentType, rendererType, handlerClass);
         }
 
         public void putUserTag(String name, URL source)
         {
-            ParameterCheck.notNull("name", name);
-            ParameterCheck.notNull("source", source);
+            Assert.notNull("name", name);
+            Assert.notNull("source", source);
             this.addUserTag(name, source);
         }
 
         public void putFunction(String name, Method method)
         {
-            ParameterCheck.notNull("name", name);
-            ParameterCheck.notNull("method", method);
+            Assert.notNull("name", name);
+            Assert.notNull("method", method);
             this.addFunction(name, method);
         }
         
         public void putBehavior(String name, String id)
         {
-            ParameterCheck.notNull("name", name);
-            ParameterCheck.notNull("id", id);
+            Assert.notNull("name", name);
+            Assert.notNull("id", id);
             this.addBehavior(name, id);
         }
         
         public void putBehavior(String name, String id, Class<? extends TagHandler> handlerClass)
         {
-            ParameterCheck.notNull("name", name);
-            ParameterCheck.notNull("id", id);
-            ParameterCheck.notNull("handlerClass", handlerClass);
+            Assert.notNull("name", name);
+            Assert.notNull("id", id);
+            Assert.notNull("handlerClass", handlerClass);
             this.addBehavior(name, id, handlerClass);
         }
     }

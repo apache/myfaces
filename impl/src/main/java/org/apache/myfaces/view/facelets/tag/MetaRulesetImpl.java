@@ -19,8 +19,6 @@
 package org.apache.myfaces.view.facelets.tag;
 
 import org.apache.myfaces.shared.util.ClassUtils;
-import org.apache.myfaces.view.facelets.util.ParameterCheck;
-
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRule;
 import javax.faces.view.facelets.MetaRuleset;
@@ -37,6 +35,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.myfaces.shared.util.Assert;
 import org.apache.myfaces.view.facelets.PassthroughRule;
 import org.apache.myfaces.view.facelets.tag.jsf.PassThroughLibrary;
 
@@ -183,7 +182,7 @@ public final class MetaRulesetImpl extends MetaRuleset
 
     public MetaRuleset add(Metadata mapper)
     {
-        ParameterCheck.notNull("mapper", mapper);
+        Assert.notNull("mapper", mapper);
 
         if (!_mappers.contains(mapper))
         {
@@ -195,7 +194,7 @@ public final class MetaRulesetImpl extends MetaRuleset
 
     public MetaRuleset addRule(MetaRule rule)
     {
-        ParameterCheck.notNull("rule", rule);
+        Assert.notNull("rule", rule);
 
         if (rule instanceof PassthroughRule)
         {
@@ -211,8 +210,8 @@ public final class MetaRulesetImpl extends MetaRuleset
 
     public MetaRuleset alias(String attribute, String property)
     {
-        ParameterCheck.notNull("attribute", attribute);
-        ParameterCheck.notNull("property", property);
+        Assert.notNull("attribute", attribute);
+        Assert.notNull("property", property);
 
         TagAttribute attr = (TagAttribute) _attributes.remove(attribute);
         if (attr != null)
@@ -315,7 +314,7 @@ public final class MetaRulesetImpl extends MetaRuleset
 
     public MetaRuleset ignore(String attribute)
     {
-        ParameterCheck.notNull("attribute", attribute);
+        Assert.notNull("attribute", attribute);
 
         _attributes.remove(attribute);
 

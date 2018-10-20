@@ -42,10 +42,10 @@ import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.ResourceResolver;
 
 import org.apache.myfaces.shared.resource.ResourceLoaderUtils;
+import org.apache.myfaces.shared.util.Assert;
 import org.apache.myfaces.view.facelets.AbstractFaceletCache;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.compiler.Compiler;
-import org.apache.myfaces.view.facelets.util.ParameterCheck;
 
 /**
  * Default FaceletFactory implementation.
@@ -88,8 +88,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
     public DefaultFaceletFactory(Compiler compiler, ResourceResolver resolver, long refreshPeriod)
     {
-        ParameterCheck.notNull("compiler", compiler);
-        ParameterCheck.notNull("resolver", resolver);
+        Assert.notNull("compiler", compiler);
+        Assert.notNull("resolver", resolver);
 
         _compiler = compiler;
 
@@ -567,7 +567,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
         }
         else
         {
-            ParameterCheck.notNull("url", url);
+            Assert.notNull("url", url);
 
             String key = url.toString();
 

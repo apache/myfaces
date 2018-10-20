@@ -20,8 +20,7 @@ package org.apache.myfaces.view.facelets.tag;
 
 import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagDecorator;
-
-import org.apache.myfaces.view.facelets.util.ParameterCheck;
+import org.apache.myfaces.shared.util.Assert;
 
 /**
  * A TagDecorator that is composed of 1 or more TagDecorator instances. It uses the chain of responsibility pattern to
@@ -37,7 +36,7 @@ public final class CompositeTagDecorator implements TagDecorator
 
     public CompositeTagDecorator(TagDecorator[] decorators)
     {
-        ParameterCheck.notNull("decorators", decorators);
+        Assert.notNull("decorators", decorators);
         this.decorators = decorators;
     }
 

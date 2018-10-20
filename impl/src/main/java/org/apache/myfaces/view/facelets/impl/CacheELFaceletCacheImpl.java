@@ -31,9 +31,9 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 
 import org.apache.myfaces.shared.resource.ResourceLoaderUtils;
+import org.apache.myfaces.shared.util.Assert;
 import org.apache.myfaces.view.facelets.AbstractFaceletCache;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
-import org.apache.myfaces.view.facelets.util.ParameterCheck;
 
 /**
  * Extended MyFaces specific FaceletCache implementation that recompile
@@ -78,7 +78,7 @@ class CacheELFaceletCacheImpl extends AbstractFaceletCache<DefaultFacelet>
     @Override
     public DefaultFacelet getFacelet(URL url) throws IOException
     {
-        ParameterCheck.notNull("url", url);
+        Assert.notNull("url", url);
         
         String key = url.toString();
         
@@ -187,7 +187,7 @@ class CacheELFaceletCacheImpl extends AbstractFaceletCache<DefaultFacelet>
     @Override
     public DefaultFacelet getViewMetadataFacelet(URL url) throws IOException
     {
-        ParameterCheck.notNull("url", url);
+        Assert.notNull("url", url);
         
         String key = url.toString();
         
@@ -260,7 +260,7 @@ class CacheELFaceletCacheImpl extends AbstractFaceletCache<DefaultFacelet>
     @Override
     public DefaultFacelet getCompositeComponentMetadataFacelet(URL url) throws IOException
     {
-        ParameterCheck.notNull("url", url);
+        Assert.notNull("url", url);
 
         String key = url.toString();
 
