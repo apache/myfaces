@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.context.ExternalContext;
+import org.apache.myfaces.shared.webapp.webxml.ServletMapping;
 import org.apache.myfaces.shared.webapp.webxml.WebXml;
 
-import org.apache.myfaces.spi.ServletMapping;
 import org.apache.myfaces.spi.WebConfigProvider;
 
 /**
@@ -47,15 +47,7 @@ public class DefaultWebConfigProvider extends WebConfigProvider
      
         // In MyFaces 2.0, getFacesServletMappins is used only at startup
         // time, so we don't need to cache this result.
-        List<ServletMapping> mappingList = new ArrayList<ServletMapping>(mapping.size());
-        
-        for (int i = 0; i < mapping.size(); i++)
-        {
-            ServletMapping delegateMapping = (ServletMapping) mapping.get(i);
-            
-            mappingList.add(new ServletMappingImpl(delegateMapping));
-        }
-        return mappingList;
+        return new ArrayList<ServletMapping>(mapping);
     }
 
     @Override
