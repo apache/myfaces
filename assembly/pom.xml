@@ -54,12 +54,6 @@
                   <classifier>javadoc</classifier>
                 </artifactItem>
                 <artifactItem>
-                  <groupId>org.apache.myfaces.core.internal</groupId>
-                  <artifactId>myfaces-impl-shared</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>javadoc</classifier>
-                </artifactItem>
-                <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-impl</artifactId>
                   <version>${project.version}</version>
@@ -130,12 +124,6 @@
                 <artifactItem>
                   <groupId>org.apache.myfaces.core</groupId>
                   <artifactId>myfaces-impl</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>sources</classifier>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.apache.myfaces.core.internal</groupId>
-                  <artifactId>myfaces-impl-shared</artifactId>
                   <version>${project.version}</version>
                   <classifier>sources</classifier>
                 </artifactItem>

@@ -149,7 +149,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                         </configuration>
                         <goals>
@@ -166,7 +165,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                         </configuration>
                         <goals>
@@ -207,7 +205,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                 <shortname>f</shortname>
@@ -257,7 +254,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                 <shortname>f</shortname>
@@ -281,7 +277,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                <shortname>h</shortname>
@@ -305,7 +300,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                <shortname>c</shortname>
@@ -329,7 +323,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                <shortname>ui</shortname>
@@ -353,7 +346,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                <shortname>composite</shortname>
@@ -376,7 +368,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                <shortname>fn</shortname>
@@ -400,7 +391,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                 <shortname>f</shortname>
@@ -423,7 +413,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                <shortname>h</shortname>
@@ -445,7 +434,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                <shortname>c</shortname>
@@ -467,7 +455,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                <shortname>ui</shortname>
@@ -489,7 +476,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                <shortname>composite</shortname>
@@ -511,7 +497,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                 <shortname>f</shortname>
@@ -534,7 +519,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                 <shortname>h</shortname>
@@ -556,7 +540,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                 <shortname>c</shortname>
@@ -578,7 +561,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                 <shortname>ui</shortname>
@@ -600,7 +582,6 @@
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
                                 <modelId>myfaces-impl</modelId>
-                                <modelId>myfaces-impl-shared</modelId>
                             </modelIds>
                             <params>
                                 <shortname>composite</shortname>
@@ -696,11 +677,6 @@
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <createSourcesJar>true</createSourcesJar>
-                            <artifactSet>
-                                <includes>
-                                    <include>org.apache.myfaces.core.internal:myfaces-impl-shared</include>
-                                </includes>
-                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
@@ -798,7 +774,6 @@
                                     <modelIds>
                                         <modelId>myfaces-api</modelId>
                                         <modelId>myfaces-impl</modelId>
-                                        <modelId>myfaces-impl-shared</modelId>
                                     </modelIds>
                                     <taglibs>
                                         <f>http://xmlns.jcp.org/jsf/core</f>
@@ -822,7 +797,6 @@
                                     <modelIds>
                                         <modelId>myfaces-api</modelId>
                                         <modelId>myfaces-impl</modelId>
-                                        <modelId>myfaces-impl-shared</modelId>
                                     </modelIds>
                                 </configuration>
                                 <goals>
@@ -898,7 +872,6 @@
                                     <modelIds>
                                         <modelId>myfaces-api</modelId>
                                         <modelId>myfaces-impl</modelId>
-                                        <modelId>myfaces-impl-shared</modelId>
                                     </modelIds>
                                     <taglibs>
                                         <f>http://xmlns.jcp.org/jsf/core</f>
@@ -1107,22 +1080,6 @@
             <artifactId>myfaces-shared-impl</artifactId>
         </dependency>
          -->
-
-        <!-- This is included in myfaces-impl-shared, but in eclipse
-             it is not detected, so an easy workaround is include it
-             as an optional dependency -->
-        <dependency>
-            <groupId>org.apache.myfaces.core.internal</groupId>
-            <artifactId>myfaces-impl-shared-public</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.myfaces.core.internal</groupId>
-            <artifactId>myfaces-impl-shared</artifactId>
-            <optional>true</optional>
-        </dependency>
-
 
         <!-- Servlet 4.0 -->
         <dependency>

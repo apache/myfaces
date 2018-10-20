@@ -376,19 +376,6 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.apache.myfaces.core.internal</groupId>
-                <artifactId>myfaces-impl-shared-public</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.myfaces.core.internal</groupId>
-                <artifactId>myfaces-impl-shared</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-
             <!-- SPEC DEPENDENCIES -->
 
             <!-- Servlet 4.0 -->

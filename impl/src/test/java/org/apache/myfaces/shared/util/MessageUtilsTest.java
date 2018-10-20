@@ -50,14 +50,14 @@ public class MessageUtilsTest extends AbstractJsfTestCase
 
         FacesMessage msg = MessageUtils.getMessage(FacesMessage.SEVERITY_ERROR,
                 "javax.faces.component.UIInput.CONVERSION", null);
-        assertEquals("Conversion Error", msg.getSummary());
+        assertEquals("{0}: Conversion error occurred.", msg.getSummary());
 
         facesContext.getViewRoot().setLocale(Locale.GERMAN);
 
         msg = MessageUtils.getMessage(FacesMessage.SEVERITY_ERROR,
                 "javax.faces.component.UIInput.CONVERSION",
                 "blubb");
-        assertEquals("Konvertierungsfehler", msg.getSummary());
+        assertEquals("blubb: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
     }
 
     /**
@@ -69,13 +69,13 @@ public class MessageUtilsTest extends AbstractJsfTestCase
 
         FacesMessage msg = MessageUtils.getMessage(FacesMessage.SEVERITY_ERROR,
                 "javax.faces.component.UIInput.CONVERSION", null);
-        assertEquals("Conversion Error", msg.getSummary());
+        assertEquals("{0}: Conversion error occurred.", msg.getSummary());
 
         facesContext.getViewRoot().setLocale(Locale.GERMAN);
 
         msg = MessageUtils.getMessage(FacesMessage.SEVERITY_ERROR,
                 "javax.faces.component.UIInput.CONVERSION", null);
-        assertEquals("Konvertierungsfehler", msg.getSummary());
+        assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
     }
 
     /**
@@ -87,14 +87,14 @@ public class MessageUtilsTest extends AbstractJsfTestCase
 
         FacesMessage msg = MessageUtils.getMessage(FacesMessage.SEVERITY_ERROR,
                 "javax.faces.component.UIInput.CONVERSION", null, facesContext);
-        assertEquals("Conversion Error", msg.getSummary());
+        assertEquals("{0}: Conversion error occurred.", msg.getSummary());
 
         facesContext.getViewRoot().setLocale(Locale.GERMAN);
 
         msg = MessageUtils.getMessage(FacesMessage.SEVERITY_ERROR,
                 "javax.faces.component.UIInput.CONVERSION", null,
                 facesContext);
-        assertEquals("Konvertierungsfehler", msg.getSummary());
+        assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
     }
 
     /**
@@ -106,11 +106,11 @@ public class MessageUtilsTest extends AbstractJsfTestCase
 
         FacesMessage msg = org.apache.myfaces.shared.util.MessageUtils.getMessage(Locale.ENGLISH,
                 "javax.faces.component.UIInput.CONVERSION", null);
-        assertEquals("Conversion Error", msg.getSummary());
+        assertEquals("{0}: Conversion error occurred.", msg.getSummary());
 
         msg = MessageUtils.getMessage(Locale.GERMAN,
                 "javax.faces.component.UIInput.CONVERSION", null);
-        assertEquals("Konvertierungsfehler", msg.getSummary());
+        assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
 
     }
 
@@ -123,13 +123,13 @@ public class MessageUtilsTest extends AbstractJsfTestCase
 
         FacesMessage msg = MessageUtils.getMessage(facesContext,
                 "javax.faces.component.UIInput.CONVERSION");
-        assertEquals("Conversion Error", msg.getSummary());
+        assertEquals("{0}: Conversion error occurred.", msg.getSummary());
 
         facesContext.getViewRoot().setLocale(Locale.GERMAN);
 
         msg = MessageUtils.getMessage(facesContext,
                 "javax.faces.component.UIInput.CONVERSION");
-        assertEquals("Konvertierungsfehler", msg.getSummary());
+        assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
     }
 
     /**
@@ -141,13 +141,13 @@ public class MessageUtilsTest extends AbstractJsfTestCase
 
         FacesMessage msg = MessageUtils.getMessage(facesContext,
                 "javax.faces.component.UIInput.CONVERSION", null);
-        assertEquals("Conversion Error", msg.getSummary());
+        assertEquals("{0}: Conversion error occurred.", msg.getSummary());
 
         facesContext.getViewRoot().setLocale(Locale.GERMAN);
 
         msg = MessageUtils.getMessage(facesContext,
                 "javax.faces.component.UIInput.CONVERSION", null);
-        assertEquals("Konvertierungsfehler", msg.getSummary());
+        assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
     }
 
     /**
@@ -162,7 +162,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
         FacesMessage msg = MessageUtils.getMessage(bundle,
                 "javax.faces.component.UIInput.CONVERSION", null);
 
-        assertEquals("Conversion Error", msg.getSummary());
+        assertEquals("{0}: Conversion error occurred.", msg.getSummary());
     }
 
     /**
@@ -175,7 +175,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
         FacesMessage msg = MessageUtils.getMessage(DEFAULT_BUNDLE,
                 "javax.faces.component.UIInput.CONVERSION", null);
 
-        assertEquals("Conversion Error", msg.getSummary());
+        assertEquals("{0}: Conversion error occurred.", msg.getSummary());
     }
 
     /**
@@ -186,7 +186,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
         FacesMessage msg = MessageUtils.getMessage(DEFAULT_BUNDLE,
                 Locale.GERMAN, "javax.faces.component.UIInput.CONVERSION", null);
 
-        assertEquals("Konvertierungsfehler", msg.getSummary());
+        assertEquals("{0}: Ein Konvertierungsfehler ist aufgetreten.", msg.getSummary());
     }
 
     /**

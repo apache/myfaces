@@ -58,7 +58,6 @@
             <item name="Core JSF-2.3"   href="./index.html" collapse="false">
               <item name="API"          href="http://myfaces.apache.org/core30/myfaces-api/index.html"/>
               <item name="Impl"         href="http://myfaces.apache.org/core30/myfaces-impl/index.html"/>
-              <item name="Shared"       href="http://myfaces.apache.org/core30/myfaces-impl-shared/index.html"/>
               <item name="Bundle"       href="http://myfaces.apache.org/core30/myfaces-bundle/index.html"/>
             </item>
             <item name="Core JSF-2.2"   href="../core22/index.html" collapse="true">
