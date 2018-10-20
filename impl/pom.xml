@@ -1263,6 +1263,17 @@
             <artifactId>easymockclassextension</artifactId>
         </dependency>
 
+        <!-- jmock -->
+        <dependency>
+            <groupId>jmock</groupId>
+            <artifactId>jmock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jmock</groupId>
+            <artifactId>jmock-cglib</artifactId>
+        </dependency>
+
+
         <!-- We need a real EL implementation for test ui:param tag,
         because myfaces-test MockExpressionFactory is not designed to
         handle VariableMapper stuff (see IncludeParamTestCase). Needed

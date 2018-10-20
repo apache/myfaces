@@ -656,38 +656,6 @@
             <artifactId>tomcat-websocket-api</artifactId>
         </dependency>
 
-        <!-- TEST DEPENDENCIES -->
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.myfaces.test</groupId>
-            <artifactId>myfaces-test30</artifactId>
-        </dependency>
-
-        <!-- easymock -->
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymockclassextension</artifactId>
-        </dependency>
-
-        <!-- jmock -->
-        <dependency>
-            <groupId>jmock</groupId>
-            <artifactId>jmock</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jmock</groupId>
-            <artifactId>jmock-cglib</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>de.berlios.jsunit</groupId>
             <artifactId>jsunit-maven2-plugin</artifactId>
