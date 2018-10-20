@@ -24,8 +24,8 @@ import java.util.Collection;
 
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.MyFacesAsserts;
-import org.apache.myfaces.TestRunner;
+import org.apache.myfaces.test.MyFacesAsserts;
+import org.apache.myfaces.test.TestRunner;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;

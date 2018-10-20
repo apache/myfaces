@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.updateheadres;
 import javax.faces.application.StateManager;
 import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
-import org.apache.myfaces.mc.test.core.AbstractMyFacesCDIRequestTestCase;
+import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.junit.Assert;

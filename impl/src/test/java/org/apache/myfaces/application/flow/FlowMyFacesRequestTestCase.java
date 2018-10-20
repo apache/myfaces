@@ -26,7 +26,7 @@ import javax.faces.component.UICommand;
 import javax.faces.flow.Flow;
 import javax.faces.flow.FlowHandler;
 import javax.faces.render.ResponseStateManager;
-import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
+import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.junit.Assert;
 import org.junit.Test;

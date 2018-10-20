@@ -28,7 +28,7 @@ import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.event.PhaseId;
 
-import org.apache.myfaces.FacesTestCase;
+import org.apache.myfaces.test.FacesTestCase;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)

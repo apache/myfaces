@@ -26,9 +26,9 @@ import java.util.Map;
 
 import javax.faces.FacesException;
 
-import org.apache.myfaces.MyFacesAsserts;
-import org.apache.myfaces.FacesTestCase;
-import org.apache.myfaces.TestRunner;
+import org.apache.myfaces.test.MyFacesAsserts;
+import org.apache.myfaces.test.FacesTestCase;
+import org.apache.myfaces.test.TestRunner;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)

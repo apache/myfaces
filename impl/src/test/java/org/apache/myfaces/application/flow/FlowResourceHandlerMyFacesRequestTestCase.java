@@ -21,7 +21,7 @@ package org.apache.myfaces.application.flow;
 import java.util.Iterator;
 import java.util.stream.Stream;
 import javax.faces.application.StateManager;
-import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
+import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.resource.ClassLoaderResourceLoader;
 import org.apache.myfaces.shared.resource.ExternalContextResourceLoader;

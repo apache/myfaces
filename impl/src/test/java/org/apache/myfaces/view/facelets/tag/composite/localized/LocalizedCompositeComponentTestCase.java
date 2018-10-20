@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite.localized;
 
-import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
-import org.apache.myfaces.mc.test.core.annotation.DeclareFacesConfig;
+import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
+import org.apache.myfaces.test.core.annotation.DeclareFacesConfig;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -40,8 +40,8 @@ import javax.faces.convert.ConverterException;
 import javax.faces.convert.EnumConverter;
 
 import junit.framework.TestCase;
-import org.apache.myfaces.MyFacesAsserts;
-import org.apache.myfaces.TestRunner;
+import org.apache.myfaces.test.MyFacesAsserts;
+import org.apache.myfaces.test.TestRunner;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.test.mock.MockFacesContext12;

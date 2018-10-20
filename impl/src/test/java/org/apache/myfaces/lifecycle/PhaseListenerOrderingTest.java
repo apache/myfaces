@@ -20,10 +20,10 @@
 package org.apache.myfaces.lifecycle;
 
 import java.util.List;
-import org.apache.myfaces.mc.test.core.annotation.DeclareFacesConfig;
-import org.apache.myfaces.mc.test.core.annotation.TestContainer;
-import org.apache.myfaces.mc.test.core.runner.MyFacesContainer;
-import org.apache.myfaces.mc.test.core.runner.MyFacesTestRunner;
+import org.apache.myfaces.test.core.annotation.DeclareFacesConfig;
+import org.apache.myfaces.test.core.annotation.TestContainer;
+import org.apache.myfaces.test.core.runner.MyFacesContainer;
+import org.apache.myfaces.test.core.runner.MyFacesTestRunner;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

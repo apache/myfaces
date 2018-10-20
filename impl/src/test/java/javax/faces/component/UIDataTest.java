@@ -44,9 +44,9 @@ import javax.faces.event.PhaseId;
 import javax.faces.render.Renderer;
 import static junit.framework.TestCase.assertEquals;
 
-import org.apache.myfaces.MyFacesAsserts;
-import org.apache.myfaces.TestRunner;
-import org.apache.myfaces.mock.MockRenderedValueExpression;
+import org.apache.myfaces.test.MyFacesAsserts;
+import org.apache.myfaces.test.TestRunner;
+import org.apache.myfaces.test.mock.MockRenderedValueExpression;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.visit.MockVisitContext;
 import org.easymock.classextension.EasyMock;

@@ -34,8 +34,8 @@ import javax.faces.context.FacesContext;
 
 import junit.framework.TestCase;
 
-import org.apache.myfaces.MyFacesAsserts;
-import org.apache.myfaces.TestRunner;
+import org.apache.myfaces.test.MyFacesAsserts;
+import org.apache.myfaces.test.TestRunner;
 import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;

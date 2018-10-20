@@ -23,8 +23,8 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.myfaces.mock.api.Mock2ApplicationFactory;
-import org.apache.myfaces.mock.api.MockApplicationFactory;
+import org.apache.myfaces.test.mock.api.Mock2ApplicationFactory;
+import org.apache.myfaces.test.mock.api.MockApplicationFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

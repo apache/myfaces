@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets;
 
 import javax.el.ExpressionFactory;
 
-import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
+import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 

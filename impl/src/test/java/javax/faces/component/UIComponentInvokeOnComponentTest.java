@@ -25,7 +25,7 @@ import java.util.Collection;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.TestRunner;
+import org.apache.myfaces.test.TestRunner;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
@@ -83,7 +83,7 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
         EasyMock.expectLastCall().andThrow(new RuntimeException());
         _mocksControl.replay();
         
-        org.apache.myfaces.MyFacesAsserts.assertException(FacesException.class, new TestRunner()
+        org.apache.myfaces.test.MyFacesAsserts.assertException(FacesException.class, new TestRunner()
         {
             public void run() throws Throwable
             {
@@ -127,21 +127,21 @@ public class UIComponentInvokeOnComponentTest extends AbstractJsfTestCase
     @Test
     public void testInvokeOnComponentExceptions() throws Exception
     {
-        org.apache.myfaces.MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
+        org.apache.myfaces.test.MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
         {
             public void run() throws Throwable
             {
                 _testimpl.invokeOnComponent(null, "xxx", _contextCallback);
             }
         });
-        org.apache.myfaces.MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
+        org.apache.myfaces.test.MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
         {
             public void run() throws Throwable
             {
                 _testimpl.invokeOnComponent(facesContext, null, _contextCallback);
             }
         });
-        org.apache.myfaces.MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
+        org.apache.myfaces.test.MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
         {
             public void run() throws Throwable
             {

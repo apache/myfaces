@@ -33,7 +33,7 @@ import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchExpressionHandler;
 import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.mc.test.core.AbstractMyFacesCDIRequestTestCase;
+import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 

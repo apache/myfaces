@@ -28,8 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.MyFacesAsserts;
-import org.apache.myfaces.TestRunner;
+import org.apache.myfaces.test.MyFacesAsserts;
+import org.apache.myfaces.test.TestRunner;
 import org.junit.Test;
 
 public class UIComponentTest extends UIComponentTestBase
