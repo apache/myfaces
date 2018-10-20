@@ -24,6 +24,7 @@ import javax.el.ValueReference;
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.view.Location;
+import org.apache.myfaces.shared.resource.ResourceELUtils;
 
 /**
  * 

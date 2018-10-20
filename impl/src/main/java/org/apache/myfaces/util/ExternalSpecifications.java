@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 
 import javax.faces.context.ExternalContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Validation;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 
 /**
@@ -74,7 +75,7 @@ public final class ExternalSpecifications
                         // Trial-error approach to check for Bean Validation impl existence.
                         // If any Exception occurs here, we assume that Bean Validation is not available.
                         // The cause may be anything, i.e. NoClassDef, config error...
-                        _ValidationUtils.tryBuildDefaultValidatorFactory();
+                        Validation.buildDefaultValidatorFactory().getValidator();
                     }
                     catch (Throwable t)
                     {

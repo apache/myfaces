@@ -30,6 +30,7 @@ import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.context.ResponseWriter;
 import javax.faces.view.Location;
+import org.apache.myfaces.shared.resource.ResourceELUtils;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 

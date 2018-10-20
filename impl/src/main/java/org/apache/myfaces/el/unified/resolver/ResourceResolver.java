@@ -31,9 +31,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.Location;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.resource.ContractResource;
+import org.apache.myfaces.shared.resource.ResourceELUtils;
 
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
-import org.apache.myfaces.view.facelets.el.ResourceELUtils;
 
 /**
  * See JSF 2.0 spec section 5.6.1.3 and 5.6.2.4
