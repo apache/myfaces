@@ -23,7 +23,7 @@ import java.io.StringWriter;
 import org.junit.Assert;
 
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.ContentTypeUtils;
 import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;

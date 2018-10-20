@@ -663,25 +663,6 @@
                 </executions>
             </plugin>
 
-            <!-- include implee6 via maven-shade-plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>shade_package</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <createSourcesJar>true</createSourcesJar>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
             <!-- create OSGI-ready manifest.mf -->
             <plugin>
                 <groupId>org.apache.felix</groupId>

@@ -27,7 +27,6 @@ import java.util.Enumeration;
 import java.util.List;
 
 import javax.faces.context.ExternalContext;
-import org.apache.myfaces.shared.config.MyfacesConfig;
 
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigResourceProvider;

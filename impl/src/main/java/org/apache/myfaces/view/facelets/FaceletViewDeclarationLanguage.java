@@ -97,7 +97,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.shared.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.shared.application.ViewHandlerSupport;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;

@@ -45,7 +45,7 @@ import org.apache.myfaces.el.unified.resolver.ResourceBundleResolver;
 import org.apache.myfaces.el.unified.resolver.ResourceResolver;
 import org.apache.myfaces.el.unified.resolver.ScopedAttributeResolver;
 import org.apache.myfaces.el.unified.resolver.implicitobject.ImplicitObjectResolver;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
 
 /**

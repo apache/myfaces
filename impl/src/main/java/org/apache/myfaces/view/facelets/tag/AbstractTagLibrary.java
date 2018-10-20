@@ -43,7 +43,7 @@ import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 import javax.faces.view.facelets.ValidatorConfig;
 import javax.faces.view.facelets.ValidatorHandler;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResouceWrapper;
 

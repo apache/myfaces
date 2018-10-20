@@ -31,7 +31,6 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
-import org.apache.myfaces.shared.component.EscapeCapable;
 import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import static org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils.isHideNoSelectionOption;
@@ -173,42 +172,21 @@ public class SelectItemsUtils
                     writer.writeAttribute("class", labelClass, "labelClass");
                 }
 
-                boolean escape;
-                if (component instanceof EscapeCapable)
+                boolean escape = RendererUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR, false);
+                //default is to escape
+                //In JSF 1.2, when a SelectItem is created by default 
+                //selectItem.isEscape() returns true (this property
+                //is not available on JSF 1.1).
+                //so, if we found a escape property on the component
+                //set to true, escape every item, but if not
+                //check if isEscape() = true first.
+                if (escape || selectItem.isEscape())
                 {
-                    escape = ((EscapeCapable) component).isEscape();
-
-                    // If escape=false all items should be non escaped.
-                    // If escape is true check if selectItem.isEscape() is
-                    // true and do it.
-                    // This is done for remain compatibility.
-                    if (escape && selectItem.isEscape())
-                    {
-                        writer.writeText(selectItem.getLabel(), null);
-                    }
-                    else
-                    {
-                        writer.write(selectItem.getLabel());
-                    }
+                    writer.writeText(selectItem.getLabel(), null);
                 }
                 else
                 {
-                    escape = RendererUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR, false);
-                    //default is to escape
-                    //In JSF 1.2, when a SelectItem is created by default 
-                    //selectItem.isEscape() returns true (this property
-                    //is not available on JSF 1.1).
-                    //so, if we found a escape property on the component
-                    //set to true, escape every item, but if not
-                    //check if isEscape() = true first.
-                    if (escape || selectItem.isEscape())
-                    {
-                        writer.writeText(selectItem.getLabel(), null);
-                    }
-                    else
-                    {
-                        writer.write(selectItem.getLabel());
-                    }
+                    writer.write(selectItem.getLabel());
                 }
 
                 writer.endElement(HTML.OPTION_ELEM);

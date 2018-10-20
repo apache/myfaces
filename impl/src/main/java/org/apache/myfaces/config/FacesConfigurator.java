@@ -117,7 +117,6 @@ import org.apache.myfaces.flow.impl.AnnotatedFlowConfigurator;
 import org.apache.myfaces.lifecycle.LifecycleFactoryImpl;
 import org.apache.myfaces.renderkit.RenderKitFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
-import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.resource.ResourceLoaderUtils;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.LocaleUtils;

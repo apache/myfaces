@@ -53,7 +53,7 @@ import javax.faces.view.facelets.FaceletsResourceResolver;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProviderFactory;

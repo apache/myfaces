@@ -22,7 +22,7 @@ import javax.faces.FacesException;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.util.ContainerUtils;
 

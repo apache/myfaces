@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 
 import javax.faces.context.ExternalContext;
 
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 
 public final class JavascriptUtils
 {

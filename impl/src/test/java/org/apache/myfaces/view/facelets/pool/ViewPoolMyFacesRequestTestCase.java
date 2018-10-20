@@ -34,7 +34,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.view.ViewMetadata;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.pool.impl.ViewPoolImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;

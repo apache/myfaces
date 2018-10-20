@@ -44,7 +44,7 @@ import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.application.viewstate.token.ServiceSideStateTokenProcessor;
 import org.apache.myfaces.application.viewstate.token.StateTokenProcessor;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.util.MyFacesObjectInputStream;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;

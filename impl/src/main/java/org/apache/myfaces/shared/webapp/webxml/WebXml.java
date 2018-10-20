@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 import javax.faces.context.ExternalContext;
 import javax.faces.webapp.FacesServlet;
 
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 
 public class WebXml
 {

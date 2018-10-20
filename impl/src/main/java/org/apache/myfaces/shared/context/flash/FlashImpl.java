@@ -46,7 +46,7 @@ import javax.faces.event.PostPutFlashValueEvent;
 import javax.faces.event.PreClearFlashEvent;
 import javax.faces.event.PreRemoveFlashValueEvent;
 import javax.faces.lifecycle.ClientWindow;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 
 /**
  * Implementation of Flash object

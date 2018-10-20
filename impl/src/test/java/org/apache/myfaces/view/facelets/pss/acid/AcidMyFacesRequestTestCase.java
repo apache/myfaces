@@ -31,7 +31,7 @@ import javax.faces.component.UIViewParameter;
 import javax.faces.component.html.HtmlDataTable;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockPrintWriter;
 import org.apache.myfaces.view.facelets.pss.acid.component.UISimpleComponent1;
 import org.apache.myfaces.view.facelets.pss.acid.component.UISimpleComponent2;

@@ -28,7 +28,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils.ScriptContext;
 import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.util.renderkit.HTML;

@@ -37,7 +37,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.shared.component.EscapeCapable;
 import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.CommonEventUtils;
@@ -188,7 +187,7 @@ public class HtmlLabelRenderer extends HtmlRenderer
             if (text != null)
             {
                 boolean escape;
-                if (uiComponent instanceof HtmlOutputLabel || uiComponent instanceof EscapeCapable)
+                if (uiComponent instanceof HtmlOutputLabel)
                 {
                     escape = ((HtmlOutputLabel)uiComponent).isEscape();
                 }

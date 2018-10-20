@@ -29,7 +29,7 @@ import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewDeclarationLanguageFactory;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.jsp.JspViewDeclarationLanguageStrategy;
 

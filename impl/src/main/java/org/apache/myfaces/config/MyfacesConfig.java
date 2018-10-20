@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.config;
+package org.apache.myfaces.config;
 
 
 import java.util.logging.Level;

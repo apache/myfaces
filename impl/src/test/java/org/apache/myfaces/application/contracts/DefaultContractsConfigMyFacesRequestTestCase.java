@@ -26,7 +26,7 @@ import org.junit.Assert;
 import org.apache.myfaces.config.RuntimeConfig;
 
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.junit.Test;
 
 public class DefaultContractsConfigMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase

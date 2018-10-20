@@ -36,7 +36,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.convert.ConverterException;
 
-import org.apache.myfaces.shared.component.EscapeCapable;
 import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
@@ -90,7 +89,7 @@ public class HtmlTextRendererBase
             log.fine("renderOutput '" + text + "'");
         }
         boolean escape;
-        if (component instanceof HtmlOutputText || component instanceof EscapeCapable)
+        if (component instanceof HtmlOutputText)
         {
             escape = ((HtmlOutputText)component).isEscape();
         }

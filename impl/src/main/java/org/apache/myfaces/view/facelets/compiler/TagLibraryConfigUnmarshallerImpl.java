@@ -37,7 +37,7 @@ import org.apache.myfaces.config.impl.digester.elements.facelets.FaceletSourceTa
 import org.apache.myfaces.config.impl.digester.elements.facelets.FaceletTagImpl;
 import org.apache.myfaces.config.impl.digester.elements.facelets.FaceletTagLibraryImpl;
 import org.apache.myfaces.config.impl.digester.elements.facelets.FaceletValidatorTagImpl;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;

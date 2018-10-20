@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets.pss.acid;
 
 import javax.faces.application.StateManager;
 
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 
 public class AcidPssRefreshPreserveStateMyFacesRequestTestCase extends AcidMyFacesRequestTestCase
 {

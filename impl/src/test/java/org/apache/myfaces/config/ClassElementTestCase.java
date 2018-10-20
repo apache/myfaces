@@ -51,7 +51,7 @@ public class ClassElementTestCase
     }
     
     @Before
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setValidating(false);

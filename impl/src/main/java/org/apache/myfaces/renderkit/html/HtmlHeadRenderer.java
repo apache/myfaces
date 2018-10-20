@@ -29,7 +29,7 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.renderkit.HTML;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 

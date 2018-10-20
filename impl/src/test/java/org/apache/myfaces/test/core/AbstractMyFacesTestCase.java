@@ -73,7 +73,7 @@ import org.apache.myfaces.test.core.annotation.DeclareFacesConfig;
 import org.apache.myfaces.test.core.annotation.TestConfig;
 import org.apache.myfaces.test.core.mock.DefaultContext;
 import org.apache.myfaces.test.core.mock.MockInitialContextFactory;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigurationProvider;
 import org.apache.myfaces.spi.impl.DefaultFacesConfigurationProviderFactory;

@@ -64,8 +64,6 @@ import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
-import org.apache.myfaces.shared.component.DisplayValueOnlyCapable;
-import org.apache.myfaces.shared.component.EscapeCapable;
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
@@ -181,7 +179,7 @@ public final class HtmlRendererUtils
 
     public static boolean isDisabledOrReadOnly(UIComponent component)
     {
-        return isDisplayValueOnly(component) || isDisabled(component) || isReadOnly(component);
+        return isDisabled(component) || isReadOnly(component);
     }
 
     public static boolean isDisabled(UIComponent component)
@@ -725,43 +723,22 @@ public final class HtmlRendererUtils
                     writer.writeAttribute("class", labelClass, "labelClass");
                 }
 
-                boolean escape;
-                if (component instanceof EscapeCapable)
+                boolean escape = RendererUtils.getBooleanAttribute(component,
+                            JSFAttr.ESCAPE_ATTR, false);
+                //default is to escape
+                //In JSF 1.2, when a SelectItem is created by default 
+                //selectItem.isEscape() returns true (this property
+                //is not available on JSF 1.1).
+                //so, if we found a escape property on the component
+                //set to true, escape every item, but if not
+                //check if isEscape() = true first.
+                if (escape || selectItem.isEscape())
                 {
-                    escape = ((EscapeCapable) component).isEscape();
-
-                    // If escape=false all items should be non escaped.
-                    // If escape is true check if selectItem.isEscape() is
-                    // true and do it.
-                    // This is done for remain compatibility.
-                    if (escape && selectItem.isEscape())
-                    {
-                        writer.writeText(selectItem.getLabel(), null);
-                    }
-                    else
-                    {
-                        writer.write(selectItem.getLabel());
-                    }
+                    writer.writeText(selectItem.getLabel(), null);
                 }
                 else
                 {
-                    escape = RendererUtils.getBooleanAttribute(component,
-                            JSFAttr.ESCAPE_ATTR, false);
-                    //default is to escape
-                    //In JSF 1.2, when a SelectItem is created by default 
-                    //selectItem.isEscape() returns true (this property
-                    //is not available on JSF 1.1).
-                    //so, if we found a escape property on the component
-                    //set to true, escape every item, but if not
-                    //check if isEscape() = true first.
-                    if (escape || selectItem.isEscape())
-                    {
-                        writer.writeText(selectItem.getLabel(), null);
-                    }
-                    else
-                    {
-                        writer.write(selectItem.getLabel());
-                    }
+                    writer.write(selectItem.getLabel());
                 }
 
                 writer.endElement(HTML.OPTION_ELEM);
@@ -1089,7 +1066,6 @@ public final class HtmlRendererUtils
 
             writer.startElement(HTML.SPAN_ELEM, uiComponent);
             writeIdIfNecessary(writer, uiComponent, facesContext);
-            renderDisplayValueOnlyAttributes(uiComponent, writer);
             writer.writeText(RendererUtils.getConvertedStringValue(
                     facesContext, uiComponent, converter,
                     ((UISelectBoolean) uiComponent).getValue()),
@@ -1119,8 +1095,6 @@ public final class HtmlRendererUtils
             writer.startElement(isSelectOne ? HTML.SPAN_ELEM : HTML.UL_ELEM, uiComponent);
             writeIdIfNecessary(writer, uiComponent, facesContext);
 
-            renderDisplayValueOnlyAttributes(uiComponent, writer);
-
             Set lookupSet = getSubmittedOrSelectedValuesAsSet(
                     uiComponent instanceof UISelectMany, uiComponent,
                     facesContext, converter);
@@ -1133,46 +1107,6 @@ public final class HtmlRendererUtils
             writer.endElement(isSelectOne ? HTML.SPAN_ELEM : HTML.UL_ELEM);
         }
 
-    }
-
-    public static void renderDisplayValueOnlyAttributes(
-            UIComponent uiComponent, ResponseWriter writer) throws IOException
-    {
-        if (!(uiComponent instanceof org.apache.myfaces.shared.component.DisplayValueOnlyCapable))
-        {
-            log.severe("Wrong type of uiComponent. needs DisplayValueOnlyCapable.");
-            renderHTMLAttributes(writer, uiComponent, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
-
-            return;
-        }
-
-        if (getDisplayValueOnlyStyle(uiComponent) != null
-                || getDisplayValueOnlyStyleClass(uiComponent) != null)
-        {
-            if (getDisplayValueOnlyStyle(uiComponent) != null)
-            {
-                writer.writeAttribute(HTML.STYLE_ATTR, getDisplayValueOnlyStyle(uiComponent), null);
-            }
-            else if (uiComponent.getAttributes().get("style") != null)
-            {
-                writer.writeAttribute(HTML.STYLE_ATTR, uiComponent.getAttributes().get("style"), null);
-            }
-
-            if (getDisplayValueOnlyStyleClass(uiComponent) != null)
-            {
-                writer.writeAttribute(HTML.CLASS_ATTR, getDisplayValueOnlyStyleClass(uiComponent), null);
-            }
-            else if (uiComponent.getAttributes().get("styleClass") != null)
-            {
-                writer.writeAttribute(HTML.CLASS_ATTR, uiComponent.getAttributes().get("styleClass"), null);
-            }
-
-            renderHTMLAttributes(writer, uiComponent, HTML.COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_STYLE);
-        }
-        else
-        {
-            renderHTMLAttributes(writer, uiComponent, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
-        }
     }
 
     private static void renderSelectOptionsAsText(FacesContext context,
@@ -1261,85 +1195,13 @@ public final class HtmlRendererUtils
         writer.endElement(HTML.CAPTION_ELEM);
     }
 
-    public static String getDisplayValueOnlyStyleClass(UIComponent component)
-    {
-        if (component instanceof org.apache.myfaces.shared.component.DisplayValueOnlyCapable)
-        {
-            if (((org.apache.myfaces.shared.component.DisplayValueOnlyCapable) component)
-                    .getDisplayValueOnlyStyleClass() != null)
-            {
-                return ((DisplayValueOnlyCapable) component)
-                        .getDisplayValueOnlyStyleClass();
-            }
-            UIComponent parent = component;
-            while ((parent = parent.getParent()) != null)
-            {
-                if (parent instanceof org.apache.myfaces.shared.component.DisplayValueOnlyCapable
-                        && ((org.apache.myfaces.shared.component.DisplayValueOnlyCapable) parent)
-                                .getDisplayValueOnlyStyleClass() != null)
-                {
-                    return ((org.apache.myfaces.shared.component.DisplayValueOnlyCapable) parent)
-                            .getDisplayValueOnlyStyleClass();
-                }
-            }
-        }
-        return null;
-    }
-
-    public static String getDisplayValueOnlyStyle(UIComponent component)
-    {
-        if (component instanceof DisplayValueOnlyCapable)
-        {
-            if (((org.apache.myfaces.shared.component.DisplayValueOnlyCapable) component)
-                    .getDisplayValueOnlyStyle() != null)
-            {
-                return ((DisplayValueOnlyCapable) component)
-                        .getDisplayValueOnlyStyle();
-            }
-            UIComponent parent = component;
-            while ((parent = parent.getParent()) != null)
-            {
-                if (parent instanceof org.apache.myfaces.shared.component.DisplayValueOnlyCapable
-                        && ((DisplayValueOnlyCapable) parent)
-                                .getDisplayValueOnlyStyle() != null)
-                {
-                    return ((DisplayValueOnlyCapable) parent)
-                            .getDisplayValueOnlyStyle();
-                }
-            }
-        }
-        return null;
-    }
-
-    public static boolean isDisplayValueOnly(UIComponent component)
-    {
-        if (component instanceof DisplayValueOnlyCapable)
-        {
-            if (((DisplayValueOnlyCapable) component).isSetDisplayValueOnly())
-            {
-                return ((DisplayValueOnlyCapable) component).isDisplayValueOnly();
-            }
-            UIComponent parent = component;
-            while ((parent = parent.getParent()) != null)
-            {
-                if (parent instanceof DisplayValueOnlyCapable
-                        && ((DisplayValueOnlyCapable) parent).isSetDisplayValueOnly())
-                {
-                    return ((org.apache.myfaces.shared.component.DisplayValueOnlyCapable) parent)
-                            .isDisplayValueOnly();
-                }
-            }
-        }
-        return false;
-    }
-
     public static void renderDisplayValueOnly(FacesContext facesContext,
             UIInput input) throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
         writer.startElement(HTML.SPAN_ELEM, input);
         writeIdIfNecessary(writer, input, facesContext);
-        renderDisplayValueOnlyAttributes(input, writer);
+
         String strValue = RendererUtils.getStringValue(facesContext, input);
         writer.write(HTMLEncoder.encode(strValue, true, true));
         writer.endElement(HTML.SPAN_ELEM);

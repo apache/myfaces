@@ -36,7 +36,7 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagAttributeException;
 
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.ComponentState;
 import org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;

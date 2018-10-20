@@ -32,7 +32,7 @@ import javax.faces.render.ResponseStateManager;
 import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.renderkit.HTML;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.StateCacheProvider;

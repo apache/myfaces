@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.event.PostClientWindowAndViewInitializedEvent;
 
 import org.apache.myfaces.renderkit.ErrorPageWriter;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.shared.util.ViewProtectionUtils;
 

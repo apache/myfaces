@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.spi.ViewScopeProvider;
 import org.apache.myfaces.shared.util.LRULinkedHashMap;
 

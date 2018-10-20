@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.shared.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.shared.application.ViewHandlerSupport;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 
 
 public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLanguageBase

@@ -25,7 +25,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.event.PhaseId;
 import javax.faces.render.RenderKitFactory;
 import org.junit.Assert;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.junit.Test;

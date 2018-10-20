@@ -75,7 +75,7 @@ import org.apache.myfaces.test.core.annotation.SetupWebConfigParams;
 import org.apache.myfaces.test.core.annotation.TestServletListeners;
 import org.apache.myfaces.test.core.mock.DefaultContext;
 import org.apache.myfaces.test.core.mock.MockInitialContextFactory;
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigurationProvider;
 import org.apache.myfaces.spi.InjectionProvider;

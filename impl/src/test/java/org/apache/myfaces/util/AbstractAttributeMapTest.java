@@ -36,7 +36,7 @@ public class AbstractAttributeMapTest
     private TestAttributeMap _testimpl;
 
     @Before
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("key", "value");
