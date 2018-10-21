@@ -74,8 +74,7 @@ public class SelectItemsUtils
         ResponseWriter writer = context.getResponseWriter();
         // check for the hideNoSelectionOption attribute
         boolean hideNoSelectionOption = isHideNoSelectionOption(component);
-        boolean componentDisabled = isTrue(component.getAttributes()
-                .get("disabled"));
+        boolean componentDisabled = isTrue(component.getAttributes().get("disabled"));
 
         for (int i = 0; i < selectItemList.size(); i++)
         {
@@ -136,7 +135,7 @@ public class SelectItemsUtils
                     }
                 }
                 
-                writer.startElement(HTML.OPTION_ELEM, selectItemInfo.getComponent()); // component);
+                writer.startElement(HTML.OPTION_ELEM, selectItemInfo.getComponent());
                 if (itemStrValue != null)
                 {
                     writer.writeAttribute(HTML.VALUE_ATTR, itemStrValue, null);
