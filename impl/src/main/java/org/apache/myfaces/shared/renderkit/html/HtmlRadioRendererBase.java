@@ -372,18 +372,6 @@ public class HtmlRadioRendererBase
         return itemNum;
     }
 
-    @Deprecated
-    protected void renderRadio(FacesContext facesContext,
-                               UIComponent uiComponent,
-                               String value,
-                               String label,
-                               boolean disabled,
-                               boolean checked, boolean renderId)
-            throws IOException
-    {
-        renderRadio(facesContext, (UIInput) uiComponent, value, disabled, checked, renderId, 0);
-    }
-
     /**
      * Renders the input item
      * @return the 'id' value of the rendered element

@@ -18,10 +18,7 @@
  */
 package org.apache.myfaces.shared.renderkit;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +35,6 @@ import javax.el.PropertyNotFoundException;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
@@ -47,20 +43,15 @@ import javax.faces.component.EditableValueHolder;
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIForm;
-import javax.faces.component.UIInput;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UISelectMany;
 import javax.faces.component.UISelectOne;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.ValueHolder;
-import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.model.SelectItem;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.util.HashMapUtils;
@@ -79,9 +70,6 @@ public final class RendererUtils
     public static final String EMPTY_STRING = "";
 
     public static final String SEQUENCE_PARAM = "jsf_sequence";
-
-    private static final String RENDER_KIT_IMPL = RendererUtils.class.getName()
-            + ".RenderKitImpl";
 
     // This nice constant is "specified" 13.1.1.2 The Resource API Approach in Spec as an example
     public static final String RES_NOT_FOUND = "RES_NOT_FOUND";
@@ -222,8 +210,7 @@ public final class RendererUtils
 
         if (component instanceof EditableValueHolder)
         {
-            Object value = ((EditableValueHolder) component)
-                    .getSubmittedValue();
+            Object value = ((EditableValueHolder) component).getSubmittedValue();
             if (value != null)
             {
                 return value;
@@ -271,9 +258,7 @@ public final class RendererUtils
 
         if (component instanceof EditableValueHolder)
         {
-
             EditableValueHolder holder = (EditableValueHolder) component;
-
             if (holder.isLocalValueSet())
             {
                 value = holder.getLocalValue();
@@ -351,8 +336,7 @@ public final class RendererUtils
 
             if (component instanceof EditableValueHolder)
             {
-                Object submittedValue = ((EditableValueHolder) component)
-                        .getSubmittedValue();
+                Object submittedValue = ((EditableValueHolder) component).getSubmittedValue();
                 if (submittedValue != null)
                 {
                     if (log.isLoggable(Level.FINE))
@@ -367,9 +351,7 @@ public final class RendererUtils
 
             if (component instanceof EditableValueHolder)
             {
-
                 EditableValueHolder holder = (EditableValueHolder) component;
-
                 if (holder.isLocalValueSet())
                 {
                     value = holder.getLocalValue();
@@ -499,8 +481,7 @@ public final class RendererUtils
     public static Converter findUIOutputConverter(FacesContext facesContext,
             UIOutput component) throws FacesException
     {
-        return _SharedRendererUtils.findUIOutputConverter(facesContext,
-                component);
+        return _SharedRendererUtils.findUIOutputConverter(facesContext,  component);
     }
 
     /**
@@ -538,8 +519,7 @@ public final class RendererUtils
         if (considerValueType)
         {
             // try to get a converter from the valueType attribute
-            converter = _SharedRendererUtils.getValueTypeConverter(
-                    facesContext, component);
+            converter = _SharedRendererUtils.getValueTypeConverter(facesContext, component);
             if (converter != null)
             {
                 return converter;
@@ -557,8 +537,7 @@ public final class RendererUtils
         // if value == null, obtain the type from the ValueExpression
         Class<?> valueType = null;
         Object value = ve.getValue(facesContext.getELContext());
-        valueType = (value != null) ? value.getClass() : ve
-                .getType(facesContext.getELContext());
+        valueType = (value != null) ? value.getClass() : ve.getType(facesContext.getELContext());
 
         if (valueType == null)
         {
@@ -567,8 +546,7 @@ public final class RendererUtils
 
         // a valueType of Object is also permitted, in order to support
         // managed bean properties of type Object that resolve to null at this point
-        if (Collection.class.isAssignableFrom(valueType)
-                || Object.class.equals(valueType))
+        if (Collection.class.isAssignableFrom(valueType) || Object.class.equals(valueType))
         {
             // try to get the by-type-converter from the type of the SelectItems
             return _SharedRendererUtils.getSelectItemsValueConverter(
@@ -601,8 +579,7 @@ public final class RendererUtils
 
         try
         {
-            return facesContext.getApplication().createConverter(
-                    arrayComponentType);
+            return facesContext.getApplication().createConverter(arrayComponentType);
         }
         catch (FacesException e)
         {
@@ -671,8 +648,7 @@ public final class RendererUtils
 
     public static List getSelectItemList(UISelectOne uiSelectOne)
     {
-        return internalGetSelectItemList(uiSelectOne,
-                FacesContext.getCurrentInstance());
+        return internalGetSelectItemList(uiSelectOne, FacesContext.getCurrentInstance());
     }
 
     /**
@@ -680,16 +656,9 @@ public final class RendererUtils
      * @param facesContext
      * @return List of SelectItem Objects
      */
-    public static List<SelectItem> getSelectItemList(UISelectOne uiSelectOne,
-            FacesContext facesContext)
+    public static List<SelectItem> getSelectItemList(UISelectOne uiSelectOne, FacesContext facesContext)
     {
         return internalGetSelectItemList(uiSelectOne, facesContext);
-    }
-
-    public static List<SelectItem> getSelectItemList(UISelectMany uiSelectMany)
-    {
-        return internalGetSelectItemList(uiSelectMany,
-                FacesContext.getCurrentInstance());
     }
 
     /**
@@ -697,14 +666,12 @@ public final class RendererUtils
      * @param facesContext
      * @return List of SelectItem Objects
      */
-    public static List<SelectItem> getSelectItemList(UISelectMany uiSelectMany,
-            FacesContext facesContext)
+    public static List<SelectItem> getSelectItemList(UISelectMany uiSelectMany, FacesContext facesContext)
     {
         return internalGetSelectItemList(uiSelectMany, facesContext);
     }
 
-    private static List<SelectItem> internalGetSelectItemList(UIComponent uiComponent,
-            FacesContext facesContext)
+    private static List<SelectItem> internalGetSelectItemList(UIComponent uiComponent, FacesContext facesContext)
     {
         List<SelectItem> list = new ArrayList<SelectItem>();
 
@@ -757,9 +724,8 @@ public final class RendererUtils
             UISelectMany uiSelectMany)
     {
         Object selectedValues = uiSelectMany.getValue();
-
-        return internalSubmittedOrSelectedValuesAsSet(context, component,
-                converter, uiSelectMany, selectedValues, true);
+        return internalSubmittedOrSelectedValuesAsSet(
+                context, component, converter, uiSelectMany, selectedValues, true);
     }
 
     /**
@@ -797,8 +763,7 @@ public final class RendererUtils
     public static String getConvertedStringValue(FacesContext context,
             UIComponent component, Converter converter, SelectItem selectItem)
     {
-        return getConvertedStringValue(context, component, converter,
-                selectItem.getValue());
+        return getConvertedStringValue(context, component, converter, selectItem.getValue());
     }
 
     private static Set internalSubmittedOrSelectedValuesAsSet(
@@ -1051,272 +1016,6 @@ public final class RendererUtils
         return defaultValue;
     }
 
-    public static void copyHtmlInputTextAttributes(HtmlInputText src,
-            HtmlInputText dest)
-    {
-        dest.setId(src.getId());
-        boolean forceId = getBooleanValue(JSFAttr.FORCE_ID_ATTR, src
-                .getAttributes().get(JSFAttr.FORCE_ID_ATTR), false);
-        if (forceId)
-        {
-            dest.getAttributes().put(JSFAttr.FORCE_ID_ATTR, Boolean.TRUE);
-        }
-        dest.setImmediate(src.isImmediate());
-        dest.setTransient(src.isTransient());
-        dest.setAccesskey(src.getAccesskey());
-        dest.setAlt(src.getAlt());
-        dest.setConverter(src.getConverter());
-        dest.setDir(src.getDir());
-        dest.setDisabled(src.isDisabled());
-        dest.setLang(src.getLang());
-        dest.setLocalValueSet(src.isLocalValueSet());
-        dest.setMaxlength(src.getMaxlength());
-        dest.setOnblur(src.getOnblur());
-        dest.setOnchange(src.getOnchange());
-        dest.setOnclick(src.getOnclick());
-        dest.setOndblclick(src.getOndblclick());
-        dest.setOnfocus(src.getOnfocus());
-        dest.setOnkeydown(src.getOnkeydown());
-        dest.setOnkeypress(src.getOnkeypress());
-        dest.setOnkeyup(src.getOnkeyup());
-        dest.setOnmousedown(src.getOnmousedown());
-        dest.setOnmousemove(src.getOnmousemove());
-        dest.setOnmouseout(src.getOnmouseout());
-        dest.setOnmouseover(src.getOnmouseover());
-        dest.setOnmouseup(src.getOnmouseup());
-        dest.setOnselect(src.getOnselect());
-        dest.setReadonly(src.isReadonly());
-        dest.setRendered(src.isRendered());
-        dest.setRequired(src.isRequired());
-        dest.setSize(src.getSize());
-        dest.setStyle(src.getStyle());
-        dest.setStyleClass(src.getStyleClass());
-        dest.setTabindex(src.getTabindex());
-        dest.setTitle(src.getTitle());
-    }
-
-    public static UIComponent findComponent(UIComponent headerComp, Class clazz)
-    {
-        if (clazz.isAssignableFrom(headerComp.getClass()))
-        {
-            return headerComp;
-        }
-
-        List li = headerComp.getChildren();
-
-        for (int i = 0; i < li.size(); i++)
-        {
-            UIComponent comp = (UIComponent) li.get(i);
-
-            //recursively iterate through children to find the component
-            UIComponent lookupComp = findComponent(comp, clazz);
-
-            if (lookupComp != null)
-            {
-                return lookupComp;
-            }
-        }
-
-        return null;
-    }
-
-    public static void addOrReplaceChild(UIInput component, UIComponent child)
-    {
-        List li = component.getChildren();
-
-        for (int i = 0; i < li.size(); i++)
-        {
-            UIComponent oldChild = (UIComponent) li.get(i);
-
-            if (oldChild.getId() != null
-                    && oldChild.getId().equals(child.getId()))
-            {
-                li.set(i, child);
-                return;
-            }
-        }
-
-        component.getChildren().add(child);
-    }
-
-    public static String getClientId(FacesContext facesContext,
-            UIComponent uiComponent, String forAttr)
-    {
-        UIComponent forComponent = uiComponent.findComponent(forAttr);
-        if (forComponent == null)
-        {
-            final char separatorChar = facesContext.getNamingContainerSeparatorChar();
-            
-            Level level = Level.WARNING;
-            boolean productionStage = facesContext.isProjectStage(ProjectStage.Production);
-            if (productionStage)
-            {
-                level = Level.FINE;
-            }
-            if (log.isLoggable(level))
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.append("Unable to find component '");
-                sb.append(forAttr);
-                sb.append("' (calling findComponent on component '");
-                sb.append(uiComponent.getClientId(facesContext));
-                sb.append("'");
-                if (!productionStage)
-                {
-                    sb.append(", viewLocation: ");
-                    sb.append(uiComponent.getAttributes().get(UIComponent.VIEW_LOCATION_KEY));
-                }
-                sb.append(").");
-                sb.append(" We'll try to return a guessed client-id anyways -");
-                sb.append(" this will be a problem if you put the referenced component");
-                sb.append(" into a different naming-container. If this is the case, ");
-                sb.append("you can always use the full client-id.");
-                log.info(sb.toString());
-            }
-            if (forAttr.length() > 0 && forAttr.charAt(0) == separatorChar)
-            {
-                //absolute id path
-                return forAttr.substring(1);
-            }
-
-            //relative id path, we assume a component on the same level as the label component
-            String labelClientId = uiComponent.getClientId(facesContext);
-            int colon = labelClientId.lastIndexOf(separatorChar);
-
-            return colon == -1 ? forAttr : labelClientId
-                    .substring(0, colon + 1) + forAttr;
-
-        }
-
-        return forComponent.getClientId(facesContext);
-
-    }
-
-
-    /**
-     * Helper method which loads a resource file (such as css) by a given context path and a file name.
-     * Useful to provide css files (or js files) inline.
-     * 
-     * @param ctx <code>FacesContext</code> object to calculate the context path of the web application.
-     * @param file name of the resource file (e.g. <code>foo.css</code>).
-     * @return the content of the resource file, or <code>null</code> if no such file is available.
-     */
-    public static String loadResourceFile(FacesContext ctx, String file)
-    {
-
-        ByteArrayOutputStream content = new ByteArrayOutputStream(10240);
-
-        InputStream in = null;
-        try
-        {
-            in = ctx.getExternalContext().getResourceAsStream(file);
-            if (in == null)
-            {
-                return null;
-            }
-
-            byte[] fileBuffer = new byte[10240];
-            int read;
-            while ((read = in.read(fileBuffer)) > -1)
-            {
-                content.write(fileBuffer, 0, read);
-            }
-        }
-        catch (FileNotFoundException e)
-        {
-            if (log.isLoggable(Level.WARNING))
-            {
-                log.log(Level.WARNING, "no such file " + file, e);
-            }
-            content = null;
-        }
-        catch (IOException e)
-        {
-            if (log.isLoggable(Level.WARNING))
-            {
-                log.log(Level.WARNING, "problems during processing resource "
-                        + file, e);
-            }
-            content = null;
-        }
-        finally
-        {
-            try
-            {
-                if (content != null)
-                {
-                    content.close();
-                }
-            }
-            catch (IOException e)
-            {
-                log.log(Level.WARNING, e.getLocalizedMessage(), e);
-            }
-            if (in != null)
-            {
-                try
-                {
-                    in.close();
-                }
-                catch (IOException e)
-                {
-                    log.log(Level.WARNING, e.getLocalizedMessage(), e);
-                }
-            }
-        }
-
-        return content != null ? content.toString() : null;
-    }
-
-    /**
-     * Gets the ResponseStateManager for the renderKit Id provided
-     * 
-     * @deprecated use FacesContext.getRenderKit() or getRenderKitFactory().getRenderKit(
-     *               context, renderKitId).getResponseStateManager()
-     */
-    @Deprecated
-    public static ResponseStateManager getResponseStateManager(
-            FacesContext facesContext, String renderKitId)
-            throws FacesException
-    {
-        RenderKit renderKit = facesContext.getRenderKit();
-
-        if (renderKit == null)
-        {
-            // look for the renderkit in the request
-            Map attributesMap = facesContext.getAttributes();
-            RenderKitFactory factory = (RenderKitFactory) attributesMap
-                    .get(RENDER_KIT_IMPL);
-
-            if (factory != null)
-            {
-                renderKit = factory.getRenderKit(facesContext, renderKitId);
-            }
-            else
-            {
-                factory = (RenderKitFactory) FactoryFinder
-                        .getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-
-                if (factory == null)
-                {
-                    throw new IllegalStateException("Factory is null");
-                }
-
-                attributesMap.put(RENDER_KIT_IMPL, factory);
-
-                renderKit = factory.getRenderKit(facesContext, renderKitId);
-            }
-        }
-
-        if (renderKit == null)
-        {
-            throw new IllegalArgumentException(
-                    "Could not find a RenderKit for \"" + renderKitId + "\"");
-        }
-
-        return renderKit.getResponseStateManager();
-    }
-
     /**
       * Checks for name/library attributes on component and if they are avaliable,
       * creates {@link Resource} and returns it's path suitable for rendering.
@@ -1339,16 +1038,13 @@ public final class RendererUtils
         if (resourceName != null && (resourceName.length() > 0))
         {
 
-            final ResourceHandler resourceHandler = facesContext
-                    .getApplication().getResourceHandler();
+            final ResourceHandler resourceHandler = facesContext.getApplication().getResourceHandler();
             final Resource resource;
 
-            final String libraryName = (String) component.getAttributes().get(
-                    JSFAttr.LIBRARY_ATTR);
+            final String libraryName = (String) component.getAttributes().get(JSFAttr.LIBRARY_ATTR);
             if ((libraryName != null) && (libraryName.length() > 0))
             {
-                resource = resourceHandler.createResource(resourceName,
-                        libraryName);
+                resource = resourceHandler.createResource(resourceName, libraryName);
             }
             else
             {
@@ -1381,8 +1077,7 @@ public final class RendererUtils
         }
         else
         {
-            String value = (String) component.getAttributes()
-                    .get(attributeName);
+            String value = (String) component.getAttributes().get(attributeName);
             return toResourceUri(facesContext, value);
         }
     }
@@ -1428,10 +1123,8 @@ public final class RendererUtils
             // If the specified path starts with a "/",
             // following method will prefix it with the context path for the current web application,
             // and return the result
-            String resourceURL = facesContext.getApplication().getViewHandler()
-                    .getResourceURL(facesContext, uri);
-            return facesContext.getExternalContext().encodeResourceURL(
-                    resourceURL);
+            String resourceURL = facesContext.getApplication().getViewHandler().getResourceURL(facesContext, uri);
+            return facesContext.getExternalContext().encodeResourceURL(resourceURL);
         }
     }
 
@@ -1447,12 +1140,14 @@ public final class RendererUtils
             this.converter = converter;
         }
 
+        @Override
         public Object getAsObject(FacesContext context, UIComponent component,
                 String value) throws ConverterException
         {
             return converter.getAsObject(context, component, value);
         }
 
+        @Override
         public String getAsString(FacesContext context, UIComponent component,
                 Object value) throws ConverterException
         {

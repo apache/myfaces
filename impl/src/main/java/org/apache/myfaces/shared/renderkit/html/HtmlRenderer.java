@@ -123,35 +123,6 @@ public abstract class HtmlRenderer
 
       return true;
     }
-
-    /**
-     * Coerces an object into a URI, accounting for JSF rules
-     * with initial slashes.
-     */
-    static public String toUri(Object o)
-    {
-      if (o == null)
-      {
-          return null;
-      }
-
-      String uri = o.toString();
-      if (uri.startsWith("/"))
-      {
-        // Treat two slashes as server-relative
-        if (uri.startsWith("//"))
-        {
-          uri = uri.substring(1);
-        }
-        else
-        {
-          FacesContext fContext = FacesContext.getCurrentInstance();
-          uri = fContext.getExternalContext().getRequestContextPath() + uri;
-        }
-      }
-
-      return uri;
-    }
     
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
     {

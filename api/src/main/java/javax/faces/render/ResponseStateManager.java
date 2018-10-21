@@ -97,25 +97,9 @@ public abstract class ResponseStateManager
     public Object getState(FacesContext context, String viewId)
     {
         Object[] structureAndState = new Object[2];
-        structureAndState[0] = getTreeStructureToRestore(context, viewId);
-        structureAndState[1] = getComponentStateToRestore(context);
+        structureAndState[0] = null; //getTreeStructureToRestore(context, viewId);
+        structureAndState[1] = null; //getComponentStateToRestore(context);
         return structureAndState;
-    }
-
-    /**
-     * @deprecated
-     */
-    public Object getTreeStructureToRestore(FacesContext context, String viewId)
-    {
-        return null;
-    }
-
-    /**
-     * @deprecated
-     */
-    public Object getComponentStateToRestore(FacesContext context)
-    {
-        return null;
     }
 
     /**

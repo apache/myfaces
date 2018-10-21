@@ -30,10 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import javax.faces.FacesException;
 import javax.faces.component.EditableValueHolder;
@@ -75,26 +73,18 @@ import org.apache.myfaces.shared.util.renderkit.HTML;
 
 public final class HtmlRendererUtils
 {
-    private static final Logger log = Logger.getLogger(HtmlRendererUtils.class
-            .getName());
+    private static final Logger log = Logger.getLogger(HtmlRendererUtils.class.getName());
 
-    private static final String LINE_SEPARATOR = System.getProperty(
-            "line.separator", "\r\n");
     private static final char TABULATOR = '\t';
     public static final String HIDDEN_COMMANDLINK_FIELD_NAME = "_idcl";
-    public static final String HIDDEN_COMMANDLINK_FIELD_NAME_MYFACES_OLD = "_link_hidden_";
     public static final String CLEAR_HIDDEN_FIELD_FN_NAME = "clearFormHiddenParams";
-    public static final String SUBMIT_FORM_FN_NAME = "oamSubmitForm";
     public static final String SUBMIT_FORM_FN_NAME_JSF2 = "myfaces.oam.submitForm";
-    public static final String ALLOW_CDATA_SECTION_ON = "org.apache.myfaces.ResponseWriter.CdataSectionOn";
     public static final String NON_SUBMITTED_VALUE_WARNING 
             = "There should always be a submitted value for an input if it is rendered,"
             + " its form is submitted, and it was not originally rendered disabled or read-only."
             + "  You cannot submit a form after disabling an input element via javascript."
             + "  Consider setting read-only to true instead"
             + " or resetting the disabled value back to false prior to form submission.";
-    public static final String STR_EMPTY = "";
-    public static final Pattern GROUP_INDEXED_ID_CHECKER = Pattern.compile("^.*\\d$");
 
     private HtmlRendererUtils()
     {
@@ -117,8 +107,7 @@ public final class HtmlRendererUtils
                     + component.getClientId(facesContext)
                     + " is not an EditableValueHolder");
         }
-        Map paramMap = facesContext.getExternalContext()
-                .getRequestParameterMap();
+        Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
         String clientId = component.getClientId(facesContext);
         if (isDisabledOrReadOnly(component))
         {
@@ -131,8 +120,7 @@ public final class HtmlRendererUtils
         }
         else
         {
-            log.warning(NON_SUBMITTED_VALUE_WARNING + " Component : "
-                    + RendererUtils.getPathToComponent(component));
+            log.warning(NON_SUBMITTED_VALUE_WARNING + " Component : " + RendererUtils.getPathToComponent(component));
         }
     }
 
@@ -154,15 +142,14 @@ public final class HtmlRendererUtils
         {
             return;
         }
-        Map paramMap = facesContext.getExternalContext()
-                .getRequestParameterMap();
+        Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
         String clientId = component.getClientId(facesContext);
         if (paramMap.containsKey(clientId))
         {
             String reqValue = (String) paramMap.get(clientId);
             if ((reqValue.equalsIgnoreCase("on")
-                    || reqValue.equalsIgnoreCase("yes") || reqValue
-                    .equalsIgnoreCase("true")))
+                    || reqValue.equalsIgnoreCase("yes")
+                    || reqValue.equalsIgnoreCase("true")))
             {
                 ((EditableValueHolder) component).setSubmittedValue(Boolean.TRUE);
             }
@@ -202,7 +189,7 @@ public final class HtmlRendererUtils
         {
             return false;
         }
-        return ((Boolean) obj).booleanValue();
+        return ((Boolean) obj);
     }
 
     /**
@@ -219,12 +206,14 @@ public final class HtmlRendererUtils
                     + component.getClientId(facesContext)
                     + " is not an EditableValueHolder");
         }
+        
         Map paramValuesMap = facesContext.getExternalContext().getRequestParameterValuesMap();
         String clientId = component.getClientId(facesContext);
         if (isDisabledOrReadOnly(component))
         {
             return;
         }
+        
         if (paramValuesMap.containsKey(clientId))
         {
             String[] reqValues = (String[]) paramValuesMap.get(clientId);
@@ -299,7 +288,7 @@ public final class HtmlRendererUtils
         else
         {
             //see reason for this action at decodeUISelectMany
-            ((EditableValueHolder) component).setSubmittedValue(STR_EMPTY);
+            ((EditableValueHolder) component).setSubmittedValue(RendererUtils.EMPTY_STRING);
         }
     }
     
@@ -382,8 +371,7 @@ public final class HtmlRendererUtils
         if (component instanceof ClientBehaviorHolder)
         {
             ClientBehaviorHolder clientBehaviorHolder = (ClientBehaviorHolder) component;
-            Map<String, List<ClientBehavior>> clientBehaviors = clientBehaviorHolder
-                    .getClientBehaviors();
+            Map<String, List<ClientBehavior>> clientBehaviors = clientBehaviorHolder.getClientBehaviors();
             if (clientBehaviors != null && !clientBehaviors.isEmpty())
             {
                 Map<String, String> paramMap = facesContext
@@ -392,10 +380,8 @@ public final class HtmlRendererUtils
                         .get(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME);
                 if (behaviorEventName != null)
                 {
-                    List<ClientBehavior> clientBehaviorList = clientBehaviors
-                            .get(behaviorEventName);
-                    if (clientBehaviorList != null
-                            && !clientBehaviorList.isEmpty())
+                    List<ClientBehavior> clientBehaviorList = clientBehaviors.get(behaviorEventName);
+                    if (clientBehaviorList != null&& !clientBehaviorList.isEmpty())
                     {
                         String sourceId = paramMap.get(ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME);
                         String componentClientId = component.getClientId(facesContext);
@@ -478,19 +464,17 @@ public final class HtmlRendererUtils
         {
             HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
         }
-        writer.writeAttribute(HTML.NAME_ATTR,
-                uiComponent.getClientId(facesContext), null);
+        writer.writeAttribute(HTML.NAME_ATTR, uiComponent.getClientId(facesContext), null);
+        
         List selectItemList;
         if (selectMany)
         {
             writer.writeAttribute(HTML.MULTIPLE_ATTR, HTML.MULTIPLE_ATTR, null);
-            selectItemList = org.apache.myfaces.shared.renderkit.RendererUtils
-                    .getSelectItemList((UISelectMany) uiComponent, facesContext);
+            selectItemList = RendererUtils.getSelectItemList((UISelectMany) uiComponent, facesContext);
         }
         else
         {
-            selectItemList = RendererUtils.getSelectItemList(
-                    (UISelectOne) uiComponent, facesContext);
+            selectItemList = RendererUtils.getSelectItemList((UISelectOne) uiComponent, facesContext);
         }
 
         if (size == Integer.MIN_VALUE)
@@ -503,11 +487,11 @@ public final class HtmlRendererUtils
         {
             writer.writeAttribute(HTML.SIZE_ATTR, Integer.toString(size), null);
         }
+        
         Map<String, List<ClientBehavior>> behaviors = null;
         if (uiComponent instanceof ClientBehaviorHolder)
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent)
-                    .getClientBehaviors();
+            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
             renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
             renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
             renderBehaviorizedFieldEventHandlersWithoutOnchange(facesContext, writer, uiComponent, behaviors);
@@ -532,13 +516,12 @@ public final class HtmlRendererUtils
             writer.writeAttribute(HTML.READONLY_ATTR, HTML.READONLY_ATTR, null);
         }
 
-        Set lookupSet = getSubmittedOrSelectedValuesAsSet(selectMany,
-                uiComponent, facesContext, converter);
+        Set lookupSet = getSubmittedOrSelectedValuesAsSet(selectMany, uiComponent, facesContext, converter);
 
         renderSelectOptions(facesContext, uiComponent, converter, lookupSet,
                 selectItemList);
         // bug #970747: force separate end tag
-        writer.writeText(STR_EMPTY, null);
+        writer.writeText(RendererUtils.EMPTY_STRING, null);
         writer.endElement(HTML.SELECT_ELEM);
     }
 
@@ -549,8 +532,7 @@ public final class HtmlRendererUtils
         if (selectMany)
         {
             UISelectMany uiSelectMany = (UISelectMany) uiComponent;
-            lookupSet = RendererUtils.getSubmittedValuesAsSet(facesContext,
-                    uiComponent, converter, uiSelectMany);
+            lookupSet = RendererUtils.getSubmittedValuesAsSet(facesContext, uiComponent, converter, uiSelectMany);
             if (lookupSet == null)
             {
                 lookupSet = RendererUtils.getSelectedValuesAsSet(facesContext,
@@ -564,11 +546,11 @@ public final class HtmlRendererUtils
             if (lookup == null)
             {
                 lookup = uiSelectOne.getValue();
-                String lookupString = RendererUtils.getConvertedStringValue(
-                        facesContext, uiComponent, converter, lookup);
+                String lookupString =
+                        RendererUtils.getConvertedStringValue(facesContext, uiComponent, converter, lookup);
                 lookupSet = Collections.singleton(lookupString);
             }
-            else if (STR_EMPTY.equals(lookup))
+            else if (RendererUtils.EMPTY_STRING.equals(lookup))
             {
                 lookupSet = Collections.EMPTY_SET;
             }
@@ -644,8 +626,7 @@ public final class HtmlRendererUtils
         ResponseWriter writer = context.getResponseWriter();
         // check for the hideNoSelectionOption attribute
         boolean hideNoSelectionOption = isHideNoSelectionOption(component);
-        boolean componentDisabled = isTrue(component.getAttributes()
-                .get("disabled"));
+        boolean componentDisabled = isTrue(component.getAttributes().get("disabled"));
 
         for (int i = 0; i < selectItemList.size(); i++)
         {
@@ -653,19 +634,14 @@ public final class HtmlRendererUtils
             if (selectItem instanceof SelectItemGroup)
             {
                 writer.startElement(HTML.OPTGROUP_ELEM, null); // component);
-                writer.writeAttribute(HTML.LABEL_ATTR, selectItem.getLabel(),
-                        null);
-                SelectItem[] selectItems = ((SelectItemGroup) selectItem)
-                        .getSelectItems();
-                renderSelectOptions(context, component, converter, lookupSet,
-                        Arrays.asList(selectItems));
+                writer.writeAttribute(HTML.LABEL_ATTR, selectItem.getLabel(), null);
+                SelectItem[] selectItems = ((SelectItemGroup) selectItem).getSelectItems();
+                renderSelectOptions(context, component, converter, lookupSet, Arrays.asList(selectItems));
                 writer.endElement(HTML.OPTGROUP_ELEM);
             }
             else
             {
-                String itemStrValue = org.apache.myfaces.shared.renderkit.RendererUtils
-                        .getConvertedStringValue(context, component, converter,
-                                selectItem);
+                String itemStrValue = RendererUtils.getConvertedStringValue(context, component, converter,selectItem);
                 boolean selected = lookupSet.contains(itemStrValue); 
                 //TODO/FIX: we always compare the String vales, better fill lookupSet with Strings 
                 //only when useSubmittedValue==true, else use the real item value Objects
@@ -710,21 +686,18 @@ public final class HtmlRendererUtils
 
                 if (componentDisabled || disabled)
                 {
-                    labelClass = (String) component.getAttributes().get(
-                            JSFAttr.DISABLED_CLASS_ATTR);
+                    labelClass = (String) component.getAttributes().get(JSFAttr.DISABLED_CLASS_ATTR);
                 }
                 else
                 {
-                    labelClass = (String) component.getAttributes().get(
-                            JSFAttr.ENABLED_CLASS_ATTR);
+                    labelClass = (String) component.getAttributes().get(JSFAttr.ENABLED_CLASS_ATTR);
                 }
                 if (labelClass != null)
                 {
                     writer.writeAttribute("class", labelClass, "labelClass");
                 }
 
-                boolean escape = RendererUtils.getBooleanAttribute(component,
-                            JSFAttr.ESCAPE_ATTR, false);
+                boolean escape = RendererUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR, false);
                 //default is to escape
                 //In JSF 1.2, when a SelectItem is created by default 
                 //selectItem.isEscape() returns true (this property
@@ -757,8 +730,7 @@ public final class HtmlRendererUtils
         if (!RendererUtils.isDefaultAttributeValue(value))
         {
             // render JSF "styleClass" and "itemStyleClass" attributes as "class"
-            String htmlAttrName = attrName.equals(HTML.STYLE_CLASS_ATTR) ? HTML.CLASS_ATTR
-                    : attrName;
+            String htmlAttrName = attrName.equals(HTML.STYLE_CLASS_ATTR) ? HTML.CLASS_ATTR : attrName;
             writer.writeAttribute(htmlAttrName, value, componentProperty);
             return true;
         }
@@ -803,8 +775,7 @@ public final class HtmlRendererUtils
             String attrName, Object value, boolean startElementWritten)
             throws IOException
     {
-        if (!org.apache.myfaces.shared.renderkit.RendererUtils
-                .isDefaultAttributeValue(value))
+        if (!RendererUtils.isDefaultAttributeValue(value))
         {
             if (!startElementWritten)
             {
@@ -1006,18 +977,12 @@ public final class HtmlRendererUtils
      */
     private static boolean isDefaultStringAttributeValue(String value)
     {
-        if (value == null)
+        if (value == null || value.length() == 0)
         {
             return true;
         }
-        else if (value.length() == 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
     
     public static boolean renderHTMLStringNoStyleAttributes(ResponseWriter writer,
@@ -1078,18 +1043,14 @@ public final class HtmlRendererUtils
             if (uiComponent instanceof UISelectMany)
             {
                 isSelectOne = false;
-                selectItemList = RendererUtils.getSelectItemList(
-                        (UISelectMany) uiComponent, facesContext);
-                converter = findUISelectManyConverterFailsafe(facesContext,
-                        uiComponent, considerValueType);
+                selectItemList = RendererUtils.getSelectItemList((UISelectMany) uiComponent, facesContext);
+                converter = findUISelectManyConverterFailsafe(facesContext, uiComponent, considerValueType);
             }
             else if (uiComponent instanceof UISelectOne)
             {
                 isSelectOne = true;
-                selectItemList = RendererUtils.getSelectItemList(
-                        (UISelectOne) uiComponent, facesContext);
-                converter = findUIOutputConverterFailSafe(facesContext,
-                        uiComponent);
+                selectItemList = RendererUtils.getSelectItemList((UISelectOne) uiComponent, facesContext);
+                converter = findUIOutputConverterFailSafe(facesContext, uiComponent);
             }
 
             writer.startElement(isSelectOne ? HTML.SPAN_ELEM : HTML.UL_ELEM, uiComponent);
@@ -1103,7 +1064,7 @@ public final class HtmlRendererUtils
                     lookupSet, selectItemList, isSelectOne);
 
             // bug #970747: force separate end tag
-            writer.writeText(STR_EMPTY, null);
+            writer.writeText(RendererUtils.EMPTY_STRING, null);
             writer.endElement(isSelectOne ? HTML.SPAN_ELEM : HTML.UL_ELEM);
         }
 
@@ -1220,48 +1181,6 @@ public final class HtmlRendererUtils
         HtmlJavaScriptUtils.renderFormSubmitScript(facesContext);
     }
 
-    public static boolean isAllowedCdataSection(FacesContext fc)
-    {
-        Boolean value = null;
-        if (fc != null)
-        {
-            value = (Boolean) fc.getExternalContext().getRequestMap().get(ALLOW_CDATA_SECTION_ON);
-        }
-        return value != null && value.booleanValue();
-    }
-
-    public static void allowCdataSection(FacesContext fc, boolean cdataSectionAllowed)
-    {
-        fc.getExternalContext().getRequestMap().put(ALLOW_CDATA_SECTION_ON, Boolean.valueOf(cdataSectionAllowed));
-    }
-
-    public static class LinkParameter
-    {
-        private String _name;
-
-        private Object _value;
-
-        public String getName()
-        {
-            return _name;
-        }
-
-        public void setName(String name)
-        {
-            _name = name;
-        }
-
-        public Object getValue()
-        {
-            return _value;
-        }
-
-        public void setValue(Object value)
-        {
-            _value = value;
-        }
-    }
-
     public static void renderHiddenCommandFormParams(ResponseWriter writer,
             Set dummyFormParams) throws IOException
     {
@@ -1286,44 +1205,6 @@ public final class HtmlRendererUtils
     }
 
     /**
-     * @deprecated Replaced by
-     *             renderLabel(ResponseWriter writer,
-     *             UIComponent component,
-     *             String forClientId,
-     *             SelectItem item,
-     *             boolean disabled).
-     *             Renders a label HTML element
-     */
-    @Deprecated
-    public static void renderLabel(ResponseWriter writer,
-            UIComponent component, String forClientId, String labelValue,
-            boolean disabled) throws IOException
-    {
-        writer.startElement(HTML.LABEL_ELEM, null); // component);
-        writer.writeAttribute(HTML.FOR_ATTR, forClientId, null);
-        String labelClass = null;
-        if (disabled)
-        {
-            labelClass = (String) component.getAttributes().get(JSFAttr.DISABLED_CLASS_ATTR);
-        }
-        else
-        {
-            labelClass = (String) component.getAttributes()
-                    .get(JSFAttr.ENABLED_CLASS_ATTR);
-        }
-        if (labelClass != null)
-        {
-            writer.writeAttribute("class", labelClass, "labelClass");
-        }
-        if ((labelValue != null) && (labelValue.length() > 0))
-        {
-            writer.write(HTML.NBSP_ENTITY);
-            writer.writeText(labelValue, null);
-        }
-        writer.endElement(HTML.LABEL_ELEM);
-    }
-
-    /**
      * Renders a label HTML element
      */
     public static void renderLabel(ResponseWriter writer,
@@ -1339,8 +1220,7 @@ public final class HtmlRendererUtils
         }
         else
         {
-            labelClass = (String) component.getAttributes()
-                    .get(JSFAttr.ENABLED_CLASS_ATTR);
+            labelClass = (String) component.getAttributes().get(JSFAttr.ENABLED_CLASS_ATTR);
         }
         if (labelClass != null)
         {
@@ -1479,15 +1359,13 @@ public final class HtmlRendererUtils
      */
     public static String getHiddenCommandLinkFieldName(FormInfo formInfo)
     {
-        return formInfo.getFormName() + ':' 
-                + HIDDEN_COMMANDLINK_FIELD_NAME;
+        return formInfo.getFormName() + ':' + HIDDEN_COMMANDLINK_FIELD_NAME;
     }
     
     public static String getHiddenCommandLinkFieldName(
             FormInfo formInfo, FacesContext facesContext)
     {
-        return formInfo.getFormName() + ':'
-                + HIDDEN_COMMANDLINK_FIELD_NAME;
+        return formInfo.getFormName() + ':' + HIDDEN_COMMANDLINK_FIELD_NAME;
     }
 
     public static boolean isPartialOrBehaviorSubmit(FacesContext facesContext,
@@ -1517,13 +1395,6 @@ public final class HtmlRendererUtils
         return partialOrBehaviorSubmit;
     }
 
-    public static String getHiddenCommandLinkFieldNameMyfacesOld(
-            FormInfo formInfo)
-    {
-        return formInfo.getFormName() + ':'
-                + HIDDEN_COMMANDLINK_FIELD_NAME_MYFACES_OLD;
-    }
-
     public static String getOutcomeTargetHref(FacesContext facesContext,
             UIOutcomeTarget component) throws IOException
     {
@@ -1542,76 +1413,7 @@ public final class HtmlRendererUtils
             HTML_CONTENT_TYPE, //Prefer this over any other, because IE does not support XHTML content type
             XHTML_CONTENT_TYPE, APPLICATION_XML_CONTENT_TYPE,
             TEXT_XML_CONTENT_TYPE, TEXT_ANY_CONTENT_TYPE, ANY_CONTENT_TYPE };
-    /**
-     * @deprecated use ContentTypeUtils instead
-     */
-    @Deprecated
-    public static String selectContentType(String contentTypeListString)
-    {
-        if (contentTypeListString == null)
-        {
-            FacesContext context = FacesContext.getCurrentInstance();
-            if (context != null)
-            {
-                contentTypeListString = (String) context.getExternalContext()
-                        .getRequestHeaderMap().get("Accept");
-                // There is a windows mobile IE client (6.12) sending
-                // "application/vnd.wap.mms-message;*/*"
-                // Note that the Accept header should be written as 
-                // "application/vnd.wap.mms-message,*/*" ,
-                // so this is bug of the client. Anyway, this is a workaround ...
-                if (contentTypeListString != null
-                        && contentTypeListString.startsWith("application/vnd.wap.mms-message;*/*"))
-                {
-                    contentTypeListString = "*/*";
-                }
-            }
-            if (contentTypeListString == null)
-            {
-                if (log.isLoggable(Level.FINE))
-                {
-                    log.fine("No content type list given, creating HtmlResponseWriterImpl with default content type.");
-                }
-                contentTypeListString = HTML_CONTENT_TYPE;
-            }
-        }
-        List contentTypeList = splitContentTypeListString(contentTypeListString);
-        String[] supportedContentTypeArray = getSupportedContentTypes();
-        String selectedContentType = null;
-        for (int i = 0; i < supportedContentTypeArray.length; i++)
-        {
-            String supportedContentType = supportedContentTypeArray[i].trim();
 
-            for (int j = 0; j < contentTypeList.size(); j++)
-            {
-                String contentType = (String) contentTypeList.get(j);
-
-                if (contentType.indexOf(supportedContentType) != -1)
-                {
-                    if (isHTMLContentType(contentType))
-                    {
-                        selectedContentType = HTML_CONTENT_TYPE;
-                    }
-                    else if (isXHTMLContentType(contentType))
-                    {
-                        selectedContentType = XHTML_CONTENT_TYPE;
-                    }
-                    break;
-                }
-            }
-            if (selectedContentType != null)
-            {
-                break;
-            }
-        }
-        if (selectedContentType == null)
-        {
-            throw new IllegalArgumentException(
-                    "ContentTypeList does not contain a supported content type: "
-                            + contentTypeListString);
-        }
-        return selectedContentType;
-    }
 
     public static String[] getSupportedContentTypes()
     {
@@ -1621,35 +1423,11 @@ public final class HtmlRendererUtils
         return SUPPORTED_CONTENT_TYPES;
     }
 
-    private static boolean isHTMLContentType(String contentType)
-    {
-        return contentType.indexOf(HTML_CONTENT_TYPE) != -1
-                || contentType.indexOf(ANY_CONTENT_TYPE) != -1
-                || contentType.indexOf(TEXT_ANY_CONTENT_TYPE) != -1;
-    }
-
     public static boolean isXHTMLContentType(String contentType)
     {
         return contentType.indexOf(XHTML_CONTENT_TYPE) != -1
                 || contentType.indexOf(APPLICATION_XML_CONTENT_TYPE) != -1
                 || contentType.indexOf(TEXT_XML_CONTENT_TYPE) != -1;
-    }
-
-    private static List splitContentTypeListString(String contentTypeListString)
-    {
-        List contentTypeList = new ArrayList();
-        StringTokenizer st = new StringTokenizer(contentTypeListString, ",");
-        while (st.hasMoreTokens())
-        {
-            String contentType = st.nextToken().trim();
-            int semicolonIndex = contentType.indexOf(';');
-            if (semicolonIndex != -1)
-            {
-                contentType = contentType.substring(0, semicolonIndex);
-            }
-            contentTypeList.add(contentType);
-        }
-        return contentTypeList;
     }
 
     public static String getJavascriptLocation(UIComponent component)
@@ -1707,8 +1485,7 @@ public final class HtmlRendererUtils
             paramList = new ArrayList<ClientBehaviorContext.Parameter>(params.size());
             for (Map.Entry<String, String> paramEntry : params.entrySet())
             {
-                paramList.add(new ClientBehaviorContext.Parameter(paramEntry
-                        .getKey(), paramEntry.getValue()));
+                paramList.add(new ClientBehaviorContext.Parameter(paramEntry.getKey(), paramEntry.getValue()));
             }
         }
         return paramList;
@@ -1738,26 +1515,25 @@ public final class HtmlRendererUtils
     {
         if (!(uiComponent instanceof ClientBehaviorHolder))
         {
-            target.append(STR_EMPTY);
+            target.append(RendererUtils.EMPTY_STRING);
             return false;
         }
         boolean renderClientBehavior = clientBehaviors != null && clientBehaviors.size() > 0;
         if (!renderClientBehavior)
         {
-            target.append(STR_EMPTY);
+            target.append(RendererUtils.EMPTY_STRING);
             return false;
         }
-        List<ClientBehavior> attachedEventBehaviors = clientBehaviors
-                .get(eventName);
-        if (attachedEventBehaviors == null
-                || attachedEventBehaviors.isEmpty())
+        
+        List<ClientBehavior> attachedEventBehaviors = clientBehaviors.get(eventName);
+        if (attachedEventBehaviors == null || attachedEventBehaviors.isEmpty())
         {
-            target.append(STR_EMPTY);
+            target.append(RendererUtils.EMPTY_STRING);
             return false;
         }
+        
         ClientBehaviorContext context = ClientBehaviorContext
-                .createClientBehaviorContext(facesContext, uiComponent,
-                        eventName, sourceId, params);
+                .createClientBehaviorContext(facesContext, uiComponent, eventName, sourceId, params);
         boolean submitting = false;
         
         // List<ClientBehavior>  attachedEventBehaviors is  99% _DeltaList created in
@@ -1767,7 +1543,7 @@ public final class HtmlRendererUtils
             for (int i = 0, size = attachedEventBehaviors.size(); i < size; i++)
             {
                 ClientBehavior clientBehavior = attachedEventBehaviors.get(i);
-                submitting =  _appendClientBehaviourScript(target, context, 
+                submitting = _appendClientBehaviourScript(target, context, 
                         submitting, i < (size -1), clientBehavior);   
             }
         }
@@ -1805,8 +1581,7 @@ public final class HtmlRendererUtils
         // submitting hint because. it is evidence the client behavior is disabled.
         if (script != null && !submitting)
         {
-            submitting = clientBehavior.getHints().contains(
-                    ClientBehaviorHint.SUBMITTING);
+            submitting = clientBehavior.getHints().contains(ClientBehaviorHint.SUBMITTING);
         }
         return submitting;
     }
@@ -1832,27 +1607,27 @@ public final class HtmlRendererUtils
             String userEventCode, String serverEventCode)
     {
         List<String> finalParams = new ArrayList<String>(3);
-        if (userEventCode != null && !userEventCode.trim().equals(STR_EMPTY))
+        if (userEventCode != null && !userEventCode.trim().isEmpty())
         {
             // escape every ' in the user event code since it will
             // be a string attribute of jsf.util.chain
             finalParams.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
         }
+        
         ScriptContext behaviorCode = new ScriptContext();
         ScriptContext retVal = new ScriptContext();
         getClientBehaviorScript(facesContext, uiComponent, sourceId,
                 eventName, clientBehaviors, behaviorCode, params);
-        if (behaviorCode != null
-                && !behaviorCode.toString().trim().equals(STR_EMPTY))
+        
+        if (behaviorCode != null && !behaviorCode.toString().trim().isEmpty())
         {
             finalParams.add(behaviorCode.toString());
         }
-        if (serverEventCode != null
-                && !serverEventCode.trim().equals(STR_EMPTY))
+        if (serverEventCode != null && !serverEventCode.trim().isEmpty())
         {
-            finalParams
-                    .add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
+            finalParams.add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
         }
+        
         Iterator<String> it = finalParams.iterator();
         // It's possible that there are no behaviors to render.  For example, if we have
         // <f:ajax disabled="true" /> as the only behavior.
@@ -1918,7 +1693,7 @@ public final class HtmlRendererUtils
             String userEventCode, String serverEventCode)
     {
         List<String> finalParams = new ArrayList<String>(3);
-        if (userEventCode != null && !userEventCode.trim().equals(STR_EMPTY))
+        if (userEventCode != null && !userEventCode.trim().isEmpty())
         {
             finalParams.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
         }
@@ -1935,18 +1710,15 @@ public final class HtmlRendererUtils
 
         // ClientBehaviors for both events have to be checked for the Submitting hint
         boolean submitting = submitting1 || submitting2;
-        if (behaviorCode != null
-                && !behaviorCode.toString().trim().equals(STR_EMPTY))
+        if (behaviorCode != null && !behaviorCode.toString().trim().isEmpty())
         {
             finalParams.add(behaviorCode.toString());
         }
-        if (behaviorCode2 != null
-                && !behaviorCode2.toString().trim().equals(STR_EMPTY))
+        if (behaviorCode2 != null && !behaviorCode2.toString().trim().isEmpty())
         {
             finalParams.add(behaviorCode2.toString());
         }
-        if (serverEventCode != null
-                && !serverEventCode.trim().equals(STR_EMPTY))
+        if (serverEventCode != null && !serverEventCode.trim().isEmpty())
         {
             finalParams.add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
         }
@@ -1969,8 +1741,7 @@ public final class HtmlRendererUtils
             }
             else
             {
-                retVal.append("jsf.util.chain(document.getElementById('"
-                        + sourceId + "'), event,");
+                retVal.append("jsf.util.chain(document.getElementById('" + sourceId + "'), event,");
             }
             int cursor = 0;
             while (cursor != size)
@@ -2197,8 +1968,7 @@ public final class HtmlRendererUtils
                 .get(eventName) : null;
         if (cbl == null || cbl.isEmpty())
         {
-            return renderHTMLAttribute(writer, componentProperty, htmlAttrName,
-                    attributeValue);
+            return renderHTMLAttribute(writer, componentProperty, htmlAttrName, attributeValue);
         }
         if (cbl.size() > 1 || (cbl.size() == 1 && attributeValue != null))
         {
@@ -2206,7 +1976,7 @@ public final class HtmlRendererUtils
                     HtmlRendererUtils.buildBehaviorChain(facesContext,
                             component, sourceId, eventName,
                             eventParameters, clientBehaviors, attributeValue,
-                            STR_EMPTY));
+                            RendererUtils.EMPTY_STRING));
         }
         else
         {
@@ -2264,8 +2034,7 @@ public final class HtmlRendererUtils
             throws IOException
     {
 
-        List<ClientBehavior> cbl = (clientBehaviors != null) ? clientBehaviors
-                .get(eventName) : null;
+        List<ClientBehavior> cbl = (clientBehaviors != null) ? clientBehaviors.get(eventName) : null;
         if (((cbl != null) ? cbl.size() : 0) + (attributeValue != null ? 1 : 0)
                 + (serverSideScript != null ? 1 : 0) <= 1)
         {
@@ -2273,13 +2042,11 @@ public final class HtmlRendererUtils
             {
                 if (attributeValue != null)
                 {
-                    return renderHTMLStringAttribute(writer, componentProperty,
-                            htmlAttrName, attributeValue);
+                    return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName, attributeValue);
                 }
                 else
                 {
-                    return renderHTMLStringAttribute(writer, componentProperty,
-                            htmlAttrName, serverSideScript);
+                    return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName, serverSideScript);
                 }
             }
             else
@@ -2332,22 +2099,18 @@ public final class HtmlRendererUtils
             String htmlAttrName, String attributeValue, String serverSideScript)
             throws IOException
     {
-        List<ClientBehavior> cb1 = (clientBehaviors != null) ? clientBehaviors
-                .get(eventName) : null;
-        List<ClientBehavior> cb2 = (clientBehaviors != null) ? clientBehaviors
-                .get(eventName2) : null;
+        List<ClientBehavior> cb1 = (clientBehaviors != null) ? clientBehaviors.get(eventName) : null;
+        List<ClientBehavior> cb2 = (clientBehaviors != null) ? clientBehaviors.get(eventName2) : null;
         if (((cb1 != null) ? cb1.size() : 0) + ((cb2 != null) ? cb2.size() : 0)
                 + (attributeValue != null ? 1 : 0) <= 1)
         {
             if (attributeValue != null)
             {
-                return renderHTMLStringAttribute(writer, componentProperty,
-                        htmlAttrName, attributeValue);
+                return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName, attributeValue);
             }
             else if (serverSideScript != null)
             {
-                return renderHTMLStringAttribute(writer, componentProperty,
-                        htmlAttrName, serverSideScript);
+                return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName, serverSideScript);
             }
             else if (((cb1 != null) ? cb1.size() : 0) > 0)
             {
@@ -2597,9 +2360,8 @@ public final class HtmlRendererUtils
     {
         boolean hasChange = HtmlRendererUtils.hasClientBehavior(
                 ClientBehaviorEvents.CHANGE, clientBehaviors, facesContext);
-        boolean hasValueChange = HtmlRendererUtils
-                .hasClientBehavior(ClientBehaviorEvents.VALUECHANGE,
-                        clientBehaviors, facesContext);
+        boolean hasValueChange = HtmlRendererUtils.hasClientBehavior(
+                ClientBehaviorEvents.VALUECHANGE, clientBehaviors, facesContext);
 
         if (hasChange && hasValueChange)
         {
@@ -2638,9 +2400,8 @@ public final class HtmlRendererUtils
     {
         boolean hasChange = HtmlRendererUtils.hasClientBehavior(
                 ClientBehaviorEvents.CHANGE, clientBehaviors, facesContext);
-        boolean hasValueChange = HtmlRendererUtils
-                .hasClientBehavior(ClientBehaviorEvents.VALUECHANGE,
-                        clientBehaviors, facesContext);
+        boolean hasValueChange = HtmlRendererUtils.hasClientBehavior(
+                ClientBehaviorEvents.VALUECHANGE, clientBehaviors, facesContext);
 
         if (hasChange && hasValueChange)
         {
@@ -2680,8 +2441,7 @@ public final class HtmlRendererUtils
     public static boolean isHideNoSelectionOption(UIComponent component)
     {
         // check hideNoSelectionOption for literal value (String) or ValueExpression (Boolean)
-        Object hideNoSelectionOptionAttr = component.getAttributes().get(
-                JSFAttr.HIDE_NO_SELECTION_OPTION_ATTR);
+        Object hideNoSelectionOptionAttr = component.getAttributes().get(JSFAttr.HIDE_NO_SELECTION_OPTION_ATTR);
         return ((hideNoSelectionOptionAttr instanceof String && "true"
                 .equalsIgnoreCase((String) hideNoSelectionOptionAttr)) || 
                 (hideNoSelectionOptionAttr instanceof Boolean && ((Boolean) hideNoSelectionOptionAttr)));

@@ -1911,31 +1911,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         }
     }
 
-/*
-    private static class RestoreStateCallback implements VisitCallback
-    {
-        private PostRestoreStateEvent event;
-
-        public VisitResult visit(VisitContext context, UIComponent target)
-        {
-            if (event == null)
-            {
-                event = new PostRestoreStateEvent(target);
-            }
-            else
-            {
-                event.setComponent(target);
-            }
-
-            // call the processEvent method of the current component.
-            // The argument event must be an instance of AfterRestoreStateEvent whose component
-            // property is the current component in the traversal.
-            target.processEvent(event);
-            
-            return VisitResult.ACCEPT;
-        }
-    }
-*/
 
     // we cannot make this class a inner class, because the 
     // enclosing class (UIViewRoot) would also have to be serialized.

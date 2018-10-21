@@ -310,14 +310,6 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         return itemNum;
     }
 
-    @Deprecated
-    protected void renderCheckbox(FacesContext facesContext,
-            UIComponent uiComponent, String value, String label,
-            boolean disabled, boolean checked, boolean renderId) throws IOException
-    {
-        renderCheckbox(facesContext, uiComponent, value, disabled, checked, renderId, 0);
-    }
-
     /**
      * Renders the input item
      * @return the 'id' value of the rendered element

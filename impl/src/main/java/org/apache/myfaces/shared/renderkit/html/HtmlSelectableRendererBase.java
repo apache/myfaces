@@ -30,6 +30,7 @@ import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.convert.Converter;
+import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.SelectItemInfo;
 import org.apache.myfaces.shared.renderkit.html.util.SelectItemsUtils;
 import org.apache.myfaces.shared.util.renderkit.HTML;
@@ -163,7 +164,7 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
         SelectItemsUtils.renderSelectOptions(facesContext, uiComponent, converter, lookupSet,
                 selectItemList);
         // bug #970747: force separate end tag
-        writer.writeText(HtmlRendererUtils.STR_EMPTY, null);
+        writer.writeText(RendererUtils.EMPTY_STRING, null);
         writer.endElement(HTML.SELECT_ELEM);
     }
     

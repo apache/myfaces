@@ -41,7 +41,6 @@ import javax.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.shared.application.NavigationUtils;
 import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 
 /**
  * Utility methods for OutcomeTarget components.
@@ -49,8 +48,7 @@ import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 public class OutcomeTargetUtils
 {
     
-    private static final Logger log = Logger.getLogger(OutcomeTargetUtils.class
-            .getName());
+    private static final Logger log = Logger.getLogger(OutcomeTargetUtils.class.getName());
     
     public static String getOutcomeTargetHref(FacesContext facesContext,
             UIOutcomeTarget component) throws IOException
@@ -58,7 +56,7 @@ public class OutcomeTargetUtils
         String outcome = component.getOutcome();
         outcome = (outcome == null) ? facesContext.getViewRoot().getViewId()
                 : outcome;
-        outcome = ((outcome == null) ? HtmlRendererUtils.STR_EMPTY : outcome.trim());
+        outcome = ((outcome == null) ? RendererUtils.EMPTY_STRING : outcome.trim());
         // Get the correct URL for the outcome.
         NavigationHandler nh = facesContext.getApplication().getNavigationHandler();
         if (!(nh instanceof ConfigurableNavigationHandler))
@@ -263,7 +261,7 @@ public class OutcomeTargetUtils
                 }
                 // check the name
                 String name = param.getName();
-                if (skipNullName && (name == null || HtmlRendererUtils.STR_EMPTY.equals(name)))
+                if (skipNullName && (name == null || RendererUtils.EMPTY_STRING.equals(name)))
                 {
                     // warn for a null-name
                     log.log(Level.WARNING, "The UIParameter " + RendererUtils.getPathToComponent(param)

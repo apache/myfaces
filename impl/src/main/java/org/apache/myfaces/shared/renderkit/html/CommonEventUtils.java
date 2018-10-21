@@ -28,6 +28,7 @@ import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
+import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.util.renderkit.HTML;
 
 public class CommonEventUtils
@@ -42,74 +43,6 @@ public class CommonEventUtils
         }
         return commonEvents;
     }
-        
-    /**
-     * Render an attribute taking into account the passed event and
-     * the component property. It will be rendered as "componentProperty"
-     * attribute.
-     *
-     * @param facesContext
-     * @param writer
-     * @param componentProperty
-     * @param component
-     * @param eventName
-     * @param clientBehaviors
-     * @return
-     * @throws IOException
-     * @since 4.0.1
-     */
-    /*
-    public static boolean renderBehaviorizedAttribute(
-            FacesContext facesContext, ResponseWriter writer,
-            String componentProperty, UIComponent component, String eventName,
-            Map<String, List<ClientBehavior>> clientBehaviors)
-            throws IOException
-    {
-        return renderBehaviorizedAttribute(facesContext, writer,
-                componentProperty, component, eventName, clientBehaviors,
-                componentProperty);
-    }
-
-    public static boolean renderBehaviorizedAttribute(
-            FacesContext facesContext, ResponseWriter writer,
-            String componentProperty, UIComponent component,
-            String sourceId, String eventName,
-            Map<String, List<ClientBehavior>> clientBehaviors)
-            throws IOException
-    {
-        return renderBehaviorizedAttribute(facesContext, writer,
-                componentProperty, component, sourceId, eventName,
-                clientBehaviors, componentProperty);
-    }*/
-
-    /**
-     * Render an attribute taking into account the passed event and
-     * the component property. The event will be rendered on the selected
-     * htmlAttrName
-     *
-     * @param facesContext
-     * @param writer
-     * @param component
-     * @param clientBehaviors
-     * @param eventName
-     * @param componentProperty
-     * @param htmlAttrName
-     * @return
-     * @throws IOException
-     * @since 4.0.1
-     */
-    /*
-    public static boolean renderBehaviorizedAttribute(
-            FacesContext facesContext, ResponseWriter writer,
-            String componentProperty, UIComponent component, String eventName,
-            Map<String, List<ClientBehavior>> clientBehaviors,
-            String htmlAttrName) throws IOException
-    {
-        return renderBehaviorizedAttribute(facesContext, writer,
-                componentProperty, component, eventName, null, clientBehaviors,
-                htmlAttrName,
-                (String) component.getAttributes().get(componentProperty));
-    }*/
 
     public static boolean renderBehaviorizedAttribute(
             FacesContext facesContext, ResponseWriter writer,
@@ -177,7 +110,7 @@ public class CommonEventUtils
                     HtmlRendererUtils.buildBehaviorChain(facesContext,
                             component, sourceId, eventName,
                             eventParameters, clientBehaviors, attributeValue,
-                            HtmlRendererUtils.STR_EMPTY));
+                            RendererUtils.EMPTY_STRING));
         }
         else
         {
