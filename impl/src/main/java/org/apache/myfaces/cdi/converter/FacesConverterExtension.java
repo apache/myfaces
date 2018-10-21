@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
@@ -74,4 +75,8 @@ public class FacesConverterExtension implements Extension
         }
     }
 
+    public void cleanup(AfterDeploymentValidation afterDeploymentValidation)
+    {
+        types.clear();
+    }
 }

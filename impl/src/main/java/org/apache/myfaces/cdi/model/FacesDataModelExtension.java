@@ -89,4 +89,8 @@ public class FacesDataModelExtension implements Extension
         Map<Class<?>,Class<? extends DataModel>> map = holder.getClassInstanceToDataModelWrapperClassMap();
     }
 
+    public void cleanup(AfterDeploymentValidation afterDeploymentValidation)
+    {
+        types.clear();
+    }
 }
