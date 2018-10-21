@@ -21,6 +21,7 @@ package org.apache.myfaces.test.mock;
 
 import java.io.ByteArrayOutputStream;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 
 /**
  * <p>Mock implementation of <code>ServletOutputStream</code>.</p>
@@ -88,6 +89,18 @@ public class MockServletOutputStream extends ServletOutputStream
     public void write(int content)
     {
         baos.write(content);
+    }
+
+    @Override
+    public boolean isReady()
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setWriteListener(WriteListener wl)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

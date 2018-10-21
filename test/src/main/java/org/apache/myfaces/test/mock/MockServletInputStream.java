@@ -22,6 +22,7 @@ package org.apache.myfaces.test.mock;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.servlet.ReadListener;
 
 import javax.servlet.ServletInputStream;
 
@@ -49,6 +50,24 @@ public class MockServletInputStream extends ServletInputStream
     public int read() throws IOException
     {
         return this.source.read();
+    }
+
+    @Override
+    public boolean isFinished()
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean isReady()
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setReadListener(ReadListener rl)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

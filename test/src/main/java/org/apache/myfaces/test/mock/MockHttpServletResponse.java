@@ -471,4 +471,10 @@ public class MockHttpServletResponse implements HttpServletResponse
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public void setContentLengthLong(long l)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

@@ -34,17 +34,44 @@
     <name>Apache MyFaces Core 3.0 - Test</name>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-api</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>javax.portlet</groupId>
+            <artifactId>portlet-api</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Java EE APIs -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-el-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jsp_2.2_spec</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-digester</groupId>
+            <artifactId>commons-digester</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
             <version>2.33</version>
             <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-digester</groupId>
-            <artifactId>commons-digester</artifactId>
         </dependency>
 
         <dependency>
@@ -78,57 +105,6 @@
             <version>0.8</version>
             <optional>true</optional>
         </dependency>
-
-
-
-
-
-
-
-        <dependency>
-            <groupId>javax.portlet</groupId>
-            <artifactId>portlet-api</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.myfaces.core</groupId>
-            <artifactId>myfaces-api</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!--
-        <dependency>
-            <groupId>javax.faces</groupId>
-            <artifactId>javax.faces-api</artifactId>
-            <version>2.2</version>
-            <scope>provided</scope>
-        </dependency>-->
-
-        <!-- Servlet 3.0 -->
-        <dependency>
-             <groupId>org.apache.geronimo.specs</groupId>
-             <artifactId>geronimo-servlet_3.0_spec</artifactId>
-             <version>1.0</version>
-             <scope>provided</scope>
-        </dependency>
-        <!-- JSP 2.1 -->
-        <dependency>
-             <groupId>org.apache.geronimo.specs</groupId>
-             <artifactId>geronimo-jsp_2.1_spec</artifactId>
-             <version>1.0.1</version>
-             <scope>provided</scope>
-        </dependency>
-        <!-- EL 1.0 -->
-        <dependency>
-             <groupId>org.apache.geronimo.specs</groupId>
-             <artifactId>geronimo-el_1.0_spec</artifactId>
-             <version>1.0.2</version>
-             <scope>provided</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
