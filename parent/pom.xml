@@ -557,13 +557,6 @@
                 <scope>test</scope>
             </dependency>
 
-            <dependency>
-                <groupId>org.apache.myfaces.test</groupId>
-                <artifactId>myfaces-test30</artifactId>
-                <version>1.0.9-SNAPSHOT</version>
-                <scope>test</scope>
-            </dependency>
-
             <!-- easymock -->
             <dependency>
                 <groupId>org.easymock</groupId>

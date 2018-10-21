@@ -1187,8 +1187,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.myfaces.test</groupId>
-            <artifactId>myfaces-test30</artifactId>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- easymock -->
