@@ -679,7 +679,6 @@
                                 </Export-Package>
                                 <Import-Package>
                                     !org.apache.myfaces.*,
-                                    com.google.inject;version="[1.0.0, 2.0.0)";resolution:=optional,
                                     javax.annotation,
                                     javax.crypto,
                                     javax.crypto.spec,
@@ -1013,16 +1012,16 @@
             <artifactId>tomcat-websocket-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-el-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jsp_2.2_spec</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-el_2.2_spec</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
@@ -1047,6 +1046,10 @@
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-atinject_1.0_spec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-interceptor_1.2_spec</artifactId>
         </dependency>
 
         <!-- builder-annotations like @JSFWebConfigParam -->
@@ -1099,30 +1102,15 @@
 
         <!-- We need a real EL implementation for test ui:param tag,
         because myfaces-test MockExpressionFactory is not designed to
-        handle VariableMapper stuff (see IncludeParamTestCase). Needed
-        to update to 7.0.0 for method invocation to work. Later
-        versions cause failures and would require org.apache.el.parser.SKIP_IDENTIFIER_CHECK=true
-        to be set.-->
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-el-api</artifactId>
-            <version>7.0.0</version>
-            <scope>test</scope>
-        </dependency>
+        handle VariableMapper stuff (see IncludeParamTestCase).-->
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jasper-el</artifactId>
-            <version>7.0.0</version>
+            <version>9.0.2</version>
             <scope>test</scope>
         </dependency>
 
         <!-- Openwebbeans for CDI Test -->
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-interceptor_1.2_spec</artifactId>
-            <version>1.0</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.apache.openwebbeans</groupId>
             <artifactId>openwebbeans-impl</artifactId>

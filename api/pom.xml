@@ -563,7 +563,6 @@
                         <groupId>org.apache.myfaces.buildtools</groupId>
                         <artifactId>myfaces-jsdoc-plugin</artifactId>
                         <version>1.0-beta-1</version>
-
                         <executions>
                             <execution>
                                 <phase>generate-resources</phase>
@@ -571,9 +570,7 @@
                                     <goal>jsdoc</goal>
                                 </goals>
                             </execution>
-
                         </executions>
-
                     </plugin>
                </plugins>
             </build>
@@ -583,39 +580,40 @@
 
 
     <dependencies>
-        <!--
-            NOTE that all versions and scopes are defined in the parent dependencyManagement section
-            (except for optional=true due to a maven bug).
-        -->
-        <!-- Servlet 4.0 -->
+        <!-- Java EE APIs -->
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-servlet-api</artifactId>
         </dependency>
-        <!-- JSP 2.1 -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-websocket-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-el-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jsp_2.2_spec</artifactId>
         </dependency>
-
-        <!-- JSTL 1.2 -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
         </dependency>
-
-        <!-- el 2.2 (javax.el.*) -->
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-el_2.2_spec</artifactId>
-        </dependency>
-
-        <!-- bean-validation 1.0 (javax.validation.*) -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-validation_1.0_spec</artifactId>
-            <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
         </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jcdi_1.1_spec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-atinject_1.0_spec</artifactId>
+        </dependency>
+
 
         <!-- builder-annotations like @JSFWebConfigParam -->
         <dependency>
@@ -624,38 +622,14 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jcdi_1.1_spec</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-atinject_1.0_spec</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-websocket-api</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>de.berlios.jsunit</groupId>
             <artifactId>jsunit-maven2-plugin</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <scope>test</scope> <!-- normally scope=compile, but here only for tests needed - TODO jakobk really? -->
-        </dependency>
-
     </dependencies>
 
 
     <reporting>
-
         <plugins>
-
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
@@ -735,9 +709,7 @@
                     </reportSet>
                 </reportSets>
             </plugin>
-
         </plugins>
-
     </reporting>
 
 </project>
