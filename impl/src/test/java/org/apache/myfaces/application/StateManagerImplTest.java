@@ -33,10 +33,10 @@ import org.apache.myfaces.shared.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMultipleRequestsTestCase;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.testng.Assert;
 
 @RunWith(JUnit4.class)
 public class StateManagerImplTest extends AbstractJsfConfigurableMultipleRequestsTestCase

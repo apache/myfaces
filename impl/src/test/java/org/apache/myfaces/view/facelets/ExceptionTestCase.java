@@ -41,8 +41,8 @@ import javax.faces.validator.ValidatorException;
 
 import org.apache.myfaces.shared.context.ExceptionHandlerImpl;
 import org.easymock.classextension.EasyMock;
+import org.junit.Assert;
 import org.junit.Test;
-import org.testng.Assert;
 
 public class ExceptionTestCase extends FaceletTestCase
 {
@@ -86,7 +86,7 @@ public class ExceptionTestCase extends FaceletTestCase
         }
         catch(FacesException e)
         {
-            Assert.fail("No exception should be thrown at this point.",e);
+            Assert.fail("No exception should be thrown at this point.");
         }
         
         int i = 0;
@@ -101,7 +101,7 @@ public class ExceptionTestCase extends FaceletTestCase
             }
             else
             {
-                Assert.fail("Unexpected exception queued", e);
+                Assert.fail("Unexpected exception queued");
             }
         }
         Assert.assertEquals(1, i);
@@ -143,7 +143,7 @@ public class ExceptionTestCase extends FaceletTestCase
         Iterable<ExceptionQueuedEvent> unhandledExceptionQueuedEvents = facesContext.getExceptionHandler().getUnhandledExceptionQueuedEvents();
         ExceptionQueuedEvent exceptionQueuedEvent = unhandledExceptionQueuedEvents.iterator().next();
          
-        Assert.assertNotNull(exceptionQueuedEvent.getContext().getException(), "Exception should be queued at this point.");
+        Assert.assertNotNull(exceptionQueuedEvent.getContext().getException());
     }
     
     /**
@@ -182,7 +182,7 @@ public class ExceptionTestCase extends FaceletTestCase
         Iterable<ExceptionQueuedEvent> unhandledExceptionQueuedEvents = facesContext.getExceptionHandler().getUnhandledExceptionQueuedEvents();
         ExceptionQueuedEvent exceptionQueuedEvent = unhandledExceptionQueuedEvents.iterator().next();
          
-        Assert.assertNotNull(exceptionQueuedEvent.getContext().getException(), "Exception should be queued at this point.");
+        Assert.assertNotNull(exceptionQueuedEvent.getContext().getException());
     }
 
     @Test
@@ -228,7 +228,7 @@ public class ExceptionTestCase extends FaceletTestCase
             }
             else
             {
-                Assert.fail("Unexpected exception queued", e);
+                Assert.fail("Unexpected exception queued");
             }
         }
         Assert.assertEquals(1, i);
@@ -284,7 +284,7 @@ public class ExceptionTestCase extends FaceletTestCase
             Throwable e = eqe.getContext().getException();
             if (e instanceof AbortProcessingException)
             {
-                Assert.fail("Unexpected exception queued", e);
+                Assert.fail("Unexpected exception queued");
             }
             else
             {
@@ -331,7 +331,7 @@ public class ExceptionTestCase extends FaceletTestCase
                 }
                 catch(FacesException e)
                 {
-                    Assert.fail("No exception expected", e);
+                    Assert.fail("No exception expected");
                 }
             }
         });
@@ -359,7 +359,7 @@ public class ExceptionTestCase extends FaceletTestCase
                 }
                 catch(FacesException e)
                 {
-                    Assert.fail("No exception expected", e);
+                    Assert.fail("No exception expected");
                 }
             }
         });
@@ -394,7 +394,7 @@ public class ExceptionTestCase extends FaceletTestCase
                 }
                 catch(FacesException e)
                 {
-                    Assert.fail("No exception expected", e);
+                    Assert.fail("No exception expected");
                 }
             }
         });
@@ -421,7 +421,7 @@ public class ExceptionTestCase extends FaceletTestCase
             }
             else
             {
-                Assert.fail("Unexpected exception queued", e);
+                Assert.fail("Unexpected exception queued");
             }
         }
         Assert.assertEquals(1, i);
@@ -452,7 +452,7 @@ public class ExceptionTestCase extends FaceletTestCase
                 }
                 catch(FacesException e)
                 {
-                    Assert.fail("No exception expected", e);
+                    Assert.fail("No exception expected");
                 }
                 
                 request.setAttribute("bean", bean);                
@@ -476,7 +476,7 @@ public class ExceptionTestCase extends FaceletTestCase
             Throwable e = eqe.getContext().getException();
             if (e instanceof AbortProcessingException)
             {
-                Assert.fail("Unexpected exception queued", e);
+                Assert.fail("Unexpected exception queued");
             }
             else
             {

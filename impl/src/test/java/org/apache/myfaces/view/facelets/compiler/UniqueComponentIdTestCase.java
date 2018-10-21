@@ -39,8 +39,8 @@ import org.apache.myfaces.test.mock.MockFacesContext20;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.view.facelets.FaceletMultipleRequestsTestCase;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.junit.Assert;
 import org.junit.Test;
-import org.testng.Assert;
 
 public class UniqueComponentIdTestCase extends FaceletMultipleRequestsTestCase
 {

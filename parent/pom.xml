@@ -465,7 +465,6 @@
                 <version>1.9.3</version>
                 <scope>compile</scope>
             </dependency>
-
             <dependency>
                 <groupId>commons-digester</groupId>
                 <artifactId>commons-digester</artifactId>
@@ -481,8 +480,7 @@
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-catalina</artifactId>
                 <version>9.0.2</version>
-                <scope>compile</scope>
-                <optional>true</optional>
+                <scope>provided</scope>
             </dependency>
 
             <!-- TEST DEPENDENCIES -->
@@ -491,23 +489,6 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.12</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.testng</groupId>
-                <artifactId>testng</artifactId>
-                <!-- <classifier>jdk15</classifier> -->
-                <version>6.11</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- test cases of myfaces-api -->
-            <dependency>
-                <groupId>org.apache.myfaces.core</groupId>
-                <artifactId>myfaces-api</artifactId>
-                <classifier>tests</classifier>
-                <version>${project.version}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -577,18 +558,6 @@
         </pluginRepository>
     </pluginRepositories>
 
-    <repositories>
-
-        <!-- NOTE that apache.snapshots is defined in apache-parent -->
-
-        <!-- tomcat el-impl for test cases (see related tomcat-dependencies) -->
-        <repository>
-            <id>tomcat</id>
-            <url>http://tomcat.apache.org/dev/dist/m2-repository</url>
-        </repository>
-
-    </repositories>
-
     <!--
     <distributionManagement>
         <site>
@@ -604,6 +573,7 @@
             <url>scp://localhost/${user.home}/myfaces-site/${siteModule.path}</url>
         </site>
     </distributionManagement>
+
     <properties>
         <siteModule.path>core30</siteModule.path>
         <site.mainDirectory>${user.home}/myfaces-site/checkout</site.mainDirectory>

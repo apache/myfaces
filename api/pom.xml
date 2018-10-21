@@ -432,24 +432,6 @@
             <!-- execute tests (JUnit) -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <executions>
-
-                    <!-- JUnit -->
-                    <execution>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <!--
-                            <parallel>classes</parallel>
-                            <threadCount>4</threadCount>
-                            <perCoreThreadCount>true</perCoreThreadCount>
-                            -->
-                            <testNGArtifactName>none:none</testNGArtifactName>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
 
         </plugins>

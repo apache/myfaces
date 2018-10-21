@@ -24,8 +24,8 @@ import java.net.URI;
 import java.net.URL;
 
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.junit.Assert;
 import org.junit.Test;
-import org.testng.Assert;
 
 public class DefaultRestoreViewSupport2Test extends AbstractJsfTestCase
 {

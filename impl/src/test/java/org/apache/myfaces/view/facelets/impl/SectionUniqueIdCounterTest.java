@@ -22,8 +22,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.junit.Assert;
 import org.junit.Test;
-import org.testng.Assert;
 
 public class SectionUniqueIdCounterTest extends AbstractJsfTestCase
 {

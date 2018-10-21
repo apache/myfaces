@@ -23,8 +23,8 @@ import java.util.List;
 import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.util.FastWriter;
+import org.junit.Assert;
 import org.junit.Test;
-import org.testng.Assert;
 
 /**
  *

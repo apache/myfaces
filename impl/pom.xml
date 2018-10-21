@@ -624,7 +624,6 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <testNGArtifactName>none:none</testNGArtifactName>
                     <excludes>
                         <exclude>**/DefaultViewHandlerSupportTest*</exclude>
                         <exclude>**/ApplicationImplTest*</exclude>
@@ -642,7 +641,6 @@
                             <!-- <forkMode>always</forkMode> -->
                             <forkCount>1</forkCount>
                             <reuseForks>false</reuseForks>
-                            <testNGArtifactName>none:none</testNGArtifactName>
                             <includes>
                                 <include>**/FactoryFinderProviderTest*</include>
                             </includes>
@@ -993,81 +991,62 @@
 
 
     <dependencies>
-        <!-- NOTE that all versions and scopes are defined in the parent dependencyManagement section -->
-
-        <!-- myfaces-api -->
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
 
-        <!-- this dependency will be packed together with the main artifact of this pom -->
-        <!--
-       <dependency>
-           <groupId>org.apache.myfaces.shared</groupId>
-           <artifactId>myfaces-shared-impl</artifactId>
-       </dependency>
-        -->
-
-        <!-- Servlet 4.0 -->
+        <!-- Java EE APIs -->
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-servlet-api</artifactId>
         </dependency>
-
-        <!-- JSP 2.1 -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-websocket-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jsp_2.2_spec</artifactId>
         </dependency>
-
-        <!-- JSTL 1.2 -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
         </dependency>
-
-        <!-- el 2.2 (javax.el.*) -->
-        <!--
-            NOTE that we are also compatible with el 1.0, but we need to use el 2.2 as
-            compile-dependency, because our ValueExpression wrappers need to support getValueReference().
-        -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-el_2.2_spec</artifactId>
         </dependency>
-
-        <!-- bean-validation 1.0 (javax.validation.*) -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-validation_1.0_spec</artifactId>
-            <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
         </dependency>
-
-        <!-- annotations 1.2 (javax.annotation.*) -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-annotation_1.2_spec</artifactId>
         </dependency>
-
-        <!-- jpa 3.0 - needed in AllAnnotationLifecycleProvider -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jpa_3.0_spec</artifactId>
-            <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
         </dependency>
-
-        <!-- ejb 3.0 - needed in AllAnnotationLifecycleProvider -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-ejb_3.0_spec</artifactId>
-            <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
         </dependency>
-
-        <!-- CDI -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jcdi_1.1_spec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-atinject_1.0_spec</artifactId>
         </dependency>
 
         <!-- builder-annotations like @JSFWebConfigParam -->
@@ -1076,22 +1055,11 @@
             <artifactId>myfaces-builder-annotations</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-atinject_1.0_spec</artifactId>
-        </dependency>
-
-        <!-- Websockets -->
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-websocket-api</artifactId>
-        </dependency>
-
+        <!-- Commons -->
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
         </dependency>
-
         <dependency>
             <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>
@@ -1101,36 +1069,11 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-catalina</artifactId>
-            <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
         </dependency>
-
-
-        <!-- TEST DEPENDENCIES -->
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <!--<classifier>jdk15</classifier>-->
-        </dependency>
-
-        <!-- test cases of myfaces-api -->
-        <dependency>
-            <groupId>org.apache.myfaces.core</groupId>
-            <artifactId>myfaces-api</artifactId>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.myfaces.core</groupId>
-            <artifactId>myfaces-test</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
         </dependency>
 
         <!-- easymock -->

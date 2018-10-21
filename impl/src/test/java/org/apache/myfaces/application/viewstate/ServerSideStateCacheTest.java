@@ -28,8 +28,8 @@ import javax.faces.application.StateManager;
 
 import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMultipleRequestsTestCase;
+import org.junit.Assert;
 import org.junit.Test;
-import org.testng.Assert;
 
 public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleRequestsTestCase
 {
