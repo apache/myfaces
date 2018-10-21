@@ -52,7 +52,6 @@ import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
 final class CompilationManager
 {
 
-    //private final static Logger log = Logger.getLogger("facelets.compiler");
     private final static Logger log = Logger.getLogger(CompilationManager.class.getName());
 
     private final Compiler compiler;

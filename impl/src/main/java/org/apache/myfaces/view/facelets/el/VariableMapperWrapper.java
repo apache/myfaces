@@ -42,9 +42,7 @@ public final class VariableMapperWrapper extends VariableMapperBase implements F
     private final VariableMapperBase _targetBase;
 
     private Map<String, ValueExpression> _vars;
-    
-    //private final boolean _checkTargetBase;
-    
+
     public boolean _trackResolveVariables;
     
     public boolean _variableResolved;

@@ -43,7 +43,6 @@ import org.apache.myfaces.shared.util.renderkit.HTML;
 public class HtmlMenuRendererBase
         extends HtmlSelectableRendererBase
 {
-    //private static final Log log = LogFactory.getLog(HtmlMenuRenderer.class);
 
     public void encodeEnd(FacesContext facesContext, UIComponent component)
             throws IOException

@@ -55,7 +55,7 @@ public final class MessageUtils
 
     /** Suffix for message details (<code>_detail</code>)*/
     private static final String DETAIL_SUFFIX = "_detail";
-    //private static Log log = LogFactory.getLog(MessageUtils.class);
+
     private static Logger log = Logger.getLogger(MessageUtils.class.getName());
 
     /**

@@ -70,8 +70,6 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     private static final String CACHED_SERVLET_MAPPING =
         DefaultRestoreViewSupport.class.getName() + ".CACHED_SERVLET_MAPPING";
 
-
-    //private final Log log = LogFactory.getLog(DefaultRestoreViewSupport.class);
     private final Logger log = Logger.getLogger(DefaultRestoreViewSupport.class.getName());
 
     /**

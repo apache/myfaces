@@ -156,10 +156,8 @@ public class TagLibraryConfigUnmarshallerImpl
 
         private String functionName;
 
-        //private Class<? extends TagHandler> handlerClass;
         private String handlerClass;
 
-        //private Class<?> functionClass;
         private String functionClass;
 
         private String functionSignature;

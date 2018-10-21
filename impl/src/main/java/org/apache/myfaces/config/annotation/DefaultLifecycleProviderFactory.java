@@ -42,7 +42,6 @@ import org.apache.myfaces.spi.ServiceProviderFinderFactory;
  */
 public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory
 {
-    //private static Log log = LogFactory.getLog(DefaultLifecycleProviderFactory.class);
     private static Logger log = Logger.getLogger(DefaultLifecycleProviderFactory.class.getName());
 
     /**

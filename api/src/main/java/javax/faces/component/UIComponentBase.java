@@ -77,7 +77,6 @@ import javax.faces.event.PhaseId;
                 desc = "backing bean property to bind to this component instance")
 public abstract class UIComponentBase extends UIComponent
 {
-    //private static Log log = LogFactory.getLog(UIComponentBase.class);
     private static Logger log = Logger.getLogger(UIComponentBase.class.getName());
 
     private static final Iterator<UIComponent> _EMPTY_UICOMPONENT_ITERATOR = new _EmptyIterator<UIComponent>();
@@ -98,14 +97,10 @@ public abstract class UIComponentBase extends UIComponent
     private String _id = null;
     private UIComponent _parent = null;
     private boolean _transient = false;
-    
-    //private boolean _isRendererTypeSet = false;
+
     private String _rendererType;
     private String _markCreated;
     private String _facetName;
-    //private boolean _addedByHandler = false;
-    //private boolean _facetCreatedUIPanel = false;
-    //private boolean _passthroughAttributesMapSet = false;
     
     private int _capabilities = 0;
     private final static int FLAG_IS_RENDERER_TYPE_SET = 1;

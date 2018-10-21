@@ -50,8 +50,7 @@ class PhaseListenerManager
     // Tracks success in the beforePhase.  Listeners that throw an exception
     // in beforePhase or were never called because a previous listener threw
     // an exception should not have its afterPhase called
-    //private Map<PhaseId, boolean[]> listenerSuccessMap = new HashMap<PhaseId, boolean[]>();
-    private Map listenerSuccessMap = new HashMap();
+    private Map<PhaseId, boolean[]> listenerSuccessMap = new HashMap<PhaseId, boolean[]>();
 
     /** Creates a new instance of PhaseListenerManager */
     PhaseListenerManager(Lifecycle lifecycle, FacesContext facesContext,

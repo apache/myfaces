@@ -222,7 +222,6 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         Externalizable
 {
     static final long serialVersionUID = 5486972234419632945L;
-    //private static final Log log=LogFactory.getLog(StreamCharBuffer.class);
 
     private static final int DEFAULT_CHUNK_SIZE = Integer.getInteger(
             "oam.streamcharbuffer.chunksize", 512);

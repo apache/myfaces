@@ -60,7 +60,6 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
 
     private Map<String, Map<String, Renderer>> _renderers;
     private ResponseStateManager _responseStateManager;
-    //private Map<String,Set<String>> _families;
     private Map<String, ClientBehaviorRenderer> _clientBehaviorRenderers;
     
     // ~ Constructors -------------------------------------------------------------------------------

@@ -42,7 +42,6 @@ final class _ClassUtils
 {
     // ~ Static fields/initializers -----------------------------------------------------------------
 
-    //private static final Log log = LogFactory.getLog(_ClassUtils.class);
     private static final Logger log = Logger.getLogger(_ClassUtils.class.getName());
 
     public static final Class<boolean[]> BOOLEAN_ARRAY_CLASS = boolean[].class;

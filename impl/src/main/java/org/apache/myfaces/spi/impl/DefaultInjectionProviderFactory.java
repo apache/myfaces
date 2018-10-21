@@ -45,7 +45,6 @@ import org.apache.myfaces.spi.ServiceProviderFinderFactory;
  */
 public class DefaultInjectionProviderFactory extends InjectionProviderFactory
 {
-    //private static Log log = LogFactory.getLog(DefaultLifecycleProviderFactory.class);
     private static Logger log = Logger.getLogger(DefaultInjectionProviderFactory.class.getName());
 
     /**

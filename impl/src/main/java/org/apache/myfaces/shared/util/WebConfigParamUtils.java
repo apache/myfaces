@@ -28,9 +28,6 @@ import javax.faces.context.ExternalContext;
  */
 public final class WebConfigParamUtils
 {
-    public final static String[] COMMON_TRUE_VALUES = {"true", "on", "yes"};
-    public final static String[] COMMON_FALSE_VALUES = {"false", "off", "no"};
-
     /**
      * Gets the String init parameter value from the specified context. If the parameter is an empty String or a String
      * containing only white space, this method returns <code>null</code>

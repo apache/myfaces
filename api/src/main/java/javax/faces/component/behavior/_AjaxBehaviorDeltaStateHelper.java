@@ -60,12 +60,6 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
      */
     private Map<Serializable, Object> _deltas;
 
-    /**
-     * This map keep track of StateHolder keys, to be saved when
-     * saveState is called.
-     */
-    //private Set<Serializable> _stateHolderKeys;
-
     private boolean _transient = false;
 
     public _AjaxBehaviorDeltaStateHelper(A component)

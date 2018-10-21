@@ -42,7 +42,6 @@ import org.apache.myfaces.shared.util.renderkit.HTML;
 public class HtmlFormRendererBase
         extends HtmlRenderer
 {
-    //private static final Log log = LogFactory.getLog(HtmlFormRenderer.class);
     private static final String FORM_TARGET = HTML.FORM_ELEM;
     private static final String HIDDEN_SUBMIT_INPUT_SUFFIX = "_SUBMIT";
     private static final String HIDDEN_SUBMIT_INPUT_VALUE = "1";

@@ -139,12 +139,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         }
     }
 
-    /**
-     * The counter which will ensure a unique component id for every component instance in the tree that doesn't have an
-     * id attribute set.
-     */
-    //private long _uniqueIdCounter = 0;
-
     // todo: is it right to save the state of _events and _phaseListeners?
     private List<FacesEvent> _events;
 

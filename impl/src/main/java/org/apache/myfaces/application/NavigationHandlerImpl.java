@@ -98,7 +98,6 @@ public class NavigationHandlerImpl
     private static final String ASTERISK = "*";
 
     private Map<String, Set<NavigationCase>> _navigationCases = null;
-    //private List<String> _wildcardKeys = new ArrayList<String>();
     private List<_WildcardPattern> _wildcardPatterns = new ArrayList<_WildcardPattern>();
     private Boolean _developmentStage;
     

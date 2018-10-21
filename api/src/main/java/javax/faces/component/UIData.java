@@ -155,7 +155,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     private static final int PROCESS_DECODES = 1;
     private static final int PROCESS_VALIDATORS = 2;
     private static final int PROCESS_UPDATES = 3;
-    //private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
 
     private static final Object[] LEAF_NO_STATE = new Object[]{null,null};
 
@@ -181,12 +180,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     private Object _initialDescendantComponentState = null;
     
     private Object _initialDescendantFullComponentState = null;
-
-    //private int _first;
-    //private boolean _firstSet;
-    //private int _rows;
-    //private boolean _rowsSet;
-    //private Object _value;
 
     private static class FacesEventWrapper extends FacesEvent
     {

@@ -39,8 +39,6 @@ public class ContextAwarePropertyNotFoundException
     private static final long serialVersionUID = -4194177998555929451L;
 
     private ContextAwareExceptionWrapper _delegate;
-    //private Throwable _wrappedException;
-    //private String _localizedMessage;
 
 
     public ContextAwarePropertyNotFoundException(Location location,
@@ -48,9 +46,6 @@ public class ContextAwarePropertyNotFoundException
                                                  Throwable wrapped)
     {
         super(wrapped);
-        //super(wrapped.getMessage());
-        //_localizedMessage = wrapped.getLocalizedMessage();
-        //_wrappedException = wrapped;
         _delegate = new DefaultContextAwareELException(location, expressionString, qName, wrapped);
     }
 

@@ -1220,49 +1220,6 @@ public final class HtmlRendererUtils
         HtmlJavaScriptUtils.renderFormSubmitScript(facesContext);
     }
 
-    /**
-     * Adds the hidden form input value assignment that is necessary for the autoscroll
-     * feature to an html link or button onclick attribute.
-     */
-    public static void appendAutoScrollAssignment(StringBuilder onClickValue,
-            String formName)
-    {
-        HtmlJavaScriptUtils.appendAutoScrollAssignment(onClickValue, formName);
-    }
-
-    /**
-     * Adds the hidden form input value assignment that is necessary for the autoscroll
-     * feature to an html link or button onclick attribute.
-     */
-    public static void appendAutoScrollAssignment(FacesContext context,
-            StringBuilder onClickValue, String formName)
-    {
-        HtmlJavaScriptUtils.appendAutoScrollAssignment(context, onClickValue, formName);
-    }
-
-    /**
-     * Renders the hidden form input that is necessary for the autoscroll feature.
-     */
-    public static void renderAutoScrollHiddenInput(FacesContext facesContext,
-            ResponseWriter writer) throws IOException
-    {
-        HtmlJavaScriptUtils.renderAutoScrollHiddenInput(facesContext, writer);
-    }
-
-    /**
-     * Renders the autoscroll javascript function.
-     */
-    public static void renderAutoScrollFunction(FacesContext facesContext,
-            ResponseWriter writer) throws IOException
-    {
-        HtmlJavaScriptUtils.renderAutoScrollFunction(facesContext, writer);
-    }
-
-    public static String getAutoScrollFunction(FacesContext facesContext)
-    {
-        return HtmlJavaScriptUtils.getAutoScrollFunction(facesContext);
-    }
-
     public static boolean isAllowedCdataSection(FacesContext fc)
     {
         Boolean value = null;

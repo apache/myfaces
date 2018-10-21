@@ -53,9 +53,6 @@ public class HtmlResponseWriterImpl
 
     private static final String APPLICATION_XML_CONTENT_TYPE = "application/xml";
     private static final String TEXT_XML_CONTENT_TYPE = "text/xml";
-    
-    //private boolean _writeDummyForm = false;
-    //private Set _dummyFormParams = null;
 
     /**
      * The writer used as output, or in other words, the one passed on the constructor

@@ -49,7 +49,6 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
     private static final String CACHED_SERVLET_MAPPING =
         DefaultViewHandlerSupport.class.getName() + ".CACHED_SERVLET_MAPPING";
 
-    //private static final Log log = LogFactory.getLog(DefaultViewHandlerSupport.class);
     private static final Logger log = Logger.getLogger(DefaultViewHandlerSupport.class.getName());
 
     /**

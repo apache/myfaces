@@ -58,17 +58,12 @@ public final class DefaultFaceletFactory extends FaceletFactory
     private static final long INFINITE_DELAY = -1;
     private static final long NO_CACHE_DELAY = 0;
     
-    //protected final Log log = LogFactory.getLog(DefaultFaceletFactory.class);
     protected final Logger log = Logger.getLogger(DefaultFaceletFactory.class.getName());
 
     private URL _baseUrl;
 
     private Compiler _compiler;
-    
-    //private Map<String, DefaultFacelet> _facelets;
-    
-    //private Map<String, DefaultFacelet> _viewMetadataFacelets;
-    
+
     private Map<String, DefaultFacelet> _compositeComponentMetadataFacelets;
 
     private long _refreshPeriod;

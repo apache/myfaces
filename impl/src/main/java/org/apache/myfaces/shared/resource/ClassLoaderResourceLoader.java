@@ -18,8 +18,6 @@
  */
 package org.apache.myfaces.shared.resource;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
@@ -34,54 +32,6 @@ import org.apache.myfaces.shared.util.ClassUtils;
  */
 public class ClassLoaderResourceLoader extends ResourceLoader
 {
-    /**
-     * It checks version like this: 1, 1_0, 1_0_0, 100_100
-     * 
-     * Used on getLibraryVersion to filter resource directories
-     **/
-    //protected static Pattern VERSION_CHECKER = Pattern.compile("\\p{Digit}+(_\\p{Digit}*)*");
-
-    /**
-     * It checks version like this: /1.js, /1_0.js, /1_0_0.js, /100_100.js
-     * 
-     * Used on getResourceVersion to filter resources
-     **/
-    //protected static Pattern RESOURCE_VERSION_CHECKER = Pattern.compile("/\\p{Digit}+(_\\p{Digit}*)*\\..*");
-
-    /*
-    private FileFilter _libraryFileFilter = new FileFilter()
-    {
-        public boolean accept(File pathname)
-        {
-            if (pathname.isDirectory() && VERSION_CHECKER.matcher(pathname.getName()).matches())
-            {
-                return true;
-            }
-            return false;
-        }
-    };*/
-
-    /*
-    private FileFilter _resourceFileFilter = new FileFilter()
-    {
-        public boolean accept(File pathname)
-        {
-            if (pathname.isDirectory() && RESOURCE_VERSION_CHECKER.matcher(pathname.getName()).matches())
-            {
-                return true;
-            }
-            return false;
-        }
-    };*/
-    
-    private FileFilter _resourceFileFilter = new FileFilter()
-    {
-        public boolean accept(File pathname)
-        {
-            return true;
-        }
-    };    
-    
     public ClassLoaderResourceLoader(String prefix)
     {
         super(prefix);

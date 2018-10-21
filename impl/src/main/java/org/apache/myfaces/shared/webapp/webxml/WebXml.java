@@ -33,7 +33,6 @@ import org.apache.myfaces.config.MyfacesConfig;
 
 public class WebXml
 {
-    //private static final Log log = LogFactory.getLog(WebXml.class);
     private static final Logger log = Logger.getLogger(WebXml.class.getName());
 
 

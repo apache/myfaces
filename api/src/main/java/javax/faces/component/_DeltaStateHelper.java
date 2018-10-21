@@ -155,15 +155,8 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     private Map<Serializable, Object> _deltas;
     
     private Map<Object, Object> _transientState;
-    
-    //private Map<Serializable, Object> _initialState;
+
     private Object[] _initialState;
-    
-    /**
-     * This map keep track of StateHolder keys, to be saved when
-     * saveState is called. 
-     */
-    //private Set<Serializable> _stateHolderKeys;  
 
     private boolean _transient = false;
 

@@ -86,8 +86,6 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
 {
 
     private static final String STANDARD_FACES_CONFIG_RESOURCE = "META-INF/standard-faces-config.xml";
-    
-    //private static final String META_INF_SERVICES_RESOURCE_PREFIX = "META-INF/services/";
 
     private static final String DEFAULT_FACES_CONFIG = "/WEB-INF/faces-config.xml";
 

@@ -231,7 +231,6 @@ public final class ErrorPageWriter
      * attribute map.
      */
     private static final String VISITED_FACET_COUNT_KEY = "org.apache.myfaces.debug.VISITED_FACET_COUNT";
-    //private static Map<UIComponent, Integer> visitedFacetCount = new HashMap<UIComponent, Integer>();
 
     /**
      * Indicate if myfaces is responsible to handle errors. 

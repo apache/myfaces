@@ -46,7 +46,6 @@ import org.apache.myfaces.shared.util.renderkit.HTML;
 public abstract class HtmlMessageRendererBase
         extends HtmlRenderer
 {
-    //private static final Log log = LogFactory.getLog(HtmlMessageRendererBase.class);
     private static final Logger log = Logger.getLogger(HtmlMessageRendererBase.class.getName());
 
     protected abstract String getSummary(FacesContext facesContext,

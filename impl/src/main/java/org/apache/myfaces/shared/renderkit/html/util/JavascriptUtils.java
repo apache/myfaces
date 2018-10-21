@@ -22,7 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.faces.context.ExternalContext;
 
@@ -30,17 +29,6 @@ import org.apache.myfaces.config.MyfacesConfig;
 
 public final class JavascriptUtils
 {
-    //private static final Log log = LogFactory.getLog(JavascriptUtils.class);
-    private static final Logger log = Logger.getLogger(JavascriptUtils.class.getName());
-
-    public static final String JAVASCRIPT_DETECTED = JavascriptUtils.class.getName() + ".JAVASCRIPT_DETECTED";
-
-    private static final String AUTO_SCROLL_PARAM = "autoScroll";
-    private static final String AUTO_SCROLL_FUNCTION = "getScrolling()";
-
-    private static final String OLD_VIEW_ID = JavascriptUtils.class + ".OLD_VIEW_ID";
-
-
     private JavascriptUtils()
     {
         // utility class, do not instantiate
@@ -262,14 +250,4 @@ public final class JavascriptUtils
             return false;
         }
     }    
-
-    public static void setOldViewId(ExternalContext externalContext, String viewId)
-    {
-        externalContext.getRequestMap().put(OLD_VIEW_ID, viewId);
-    }
-
-    public static String getOldViewId(ExternalContext externalContext)
-    {
-        return (String)externalContext.getRequestMap().get(OLD_VIEW_ID);
-    }
 }

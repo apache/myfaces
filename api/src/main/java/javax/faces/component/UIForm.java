@@ -38,9 +38,6 @@ import java.util.Collection;
 @JSFComponent(type = "javax.faces.Form", family = "javax.faces.Form")
 public class UIForm extends UIComponentBase implements NamingContainer, UniqueIdVendor
 {
-    // private static final Log log = LogFactory.getLog(UIForm.class);
-
-    //private boolean _submitted;
 
     /**
      * 

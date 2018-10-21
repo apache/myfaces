@@ -27,7 +27,6 @@ import javax.faces.webapp.UIComponentELTag;
 
 public abstract class UIComponentELTagBase extends UIComponentELTag
 {
-    //private static final Log log = LogFactory.getLog(UIComponentTagBase.class);
 
     //UIComponent attributes
     private ValueExpression _forceId;

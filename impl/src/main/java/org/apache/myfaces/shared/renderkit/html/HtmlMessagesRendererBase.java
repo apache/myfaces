@@ -49,7 +49,6 @@ import org.apache.myfaces.shared.util.renderkit.HTML;
 public abstract class HtmlMessagesRendererBase
         extends HtmlMessageRendererBase
 {
-    //private static final Log log = LogFactory.getLog(HtmlMessagesRendererBase.class);
     private static final Logger log = Logger.getLogger(HtmlMessagesRendererBase.class.getName());
 
     protected static final String LAYOUT_LIST  = "list";

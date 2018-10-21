@@ -423,7 +423,6 @@ public class DefaultTagDecorator implements TagDecorator
     
     private static class TagSelectorImpl extends TagSelector implements TagDecoratorExecutor
     {
-        //private String selector;
         private String attributeQName;
         private String attributeLocalName;
         private String attributePrefix;

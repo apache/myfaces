@@ -147,7 +147,6 @@ public class PhaseListenerTag extends TagSupport
         private transient PhaseListener phaseListenerCache = null;
         private ValueExpression type;
         private ValueExpression binding;
-        //private final Log log = LogFactory.getLog(PhaseListenerTag.class);
 
         BindingPhaseListener(ValueExpression binding, ValueExpression type)
         {

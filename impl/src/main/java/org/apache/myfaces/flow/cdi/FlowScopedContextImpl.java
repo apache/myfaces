@@ -59,8 +59,6 @@ public class FlowScopedContextImpl implements Context
     
     private Map<Class, FlowReference> flowBeanReferences;
 
-    //private FlowScopeBeanHolder flowScopeBeanHolder;
-    
     public FlowScopedContextImpl(BeanManager beanManager, 
         Map<Class, FlowReference> flowBeanReferences)
     {
@@ -68,13 +66,7 @@ public class FlowScopedContextImpl implements Context
         this.flowBeanReferences = flowBeanReferences;
         this.passivatingScope = beanManager.isPassivatingScope(getScope());
     }
-    
-    /*
-    public void initFlowContext(FlowScopeBeanHolder flowScopeBeanHolder)
-    {
-        this.flowScopeBeanHolder = flowScopeBeanHolder;
-    }*/
-    
+
     protected FlowScopeBeanHolder getFlowScopeBeanHolder()
     {
         return getFlowScopeBeanHolder(FacesContext.getCurrentInstance());

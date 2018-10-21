@@ -24,28 +24,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils.ScriptContext;
 import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.shared.util.renderkit.HTML;
 
 public final class HtmlJavaScriptUtils
 {
-    private static final Logger log = Logger.getLogger(HtmlJavaScriptUtils.class
-            .getName());
-
-    private static final String AUTO_SCROLL_PARAM = "autoScroll";
-    private static final String AUTO_SCROLL_FUNCTION = "getScrolling";
-
-    private static final String SET_HIDDEN_INPUT_FN_NAME = "oamSetHiddenInput";
-    private static final String SET_HIDDEN_INPUT_FN_NAME_JSF2 = "myfaces.oam.setHiddenInput";
+    private static final Logger log = Logger.getLogger(HtmlJavaScriptUtils.class.getName());
 
     private static final String FIRST_SUBMIT_SCRIPT_ON_PAGE = "org.apache.MyFaces.FIRST_SUBMIT_SCRIPT_ON_PAGE";
-    private static final String CLEAR_HIDDEN_INPUT_FN_NAME = "oamClearHiddenInput";
     
 
     @SuppressWarnings("unchecked")
@@ -76,8 +66,6 @@ public final class HtmlJavaScriptUtils
             throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
-        MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext
-                .getExternalContext());
         ScriptContext script = new ScriptContext();
         boolean autoSave = JavascriptUtils.isSaveFormSubmitLinkIE(facesContext
                 .getExternalContext());
@@ -95,155 +83,6 @@ public final class HtmlJavaScriptUtils
             writer.writeText(script.toString(), null);
             writer.endElement(HTML.SCRIPT_ELEM);
         }
-    }
-    
-    public static void appendAutoScrollAssignment(StringBuilder onClickValue,
-            String formName)
-    {
-        appendAutoScrollAssignment(FacesContext.getCurrentInstance(),
-                new ScriptContext(onClickValue, false), formName);
-    }
-
-    /**
-     * Adds the hidden form input value assignment that is necessary for the autoscroll
-     * feature to an html link or button onclick attribute.
-     */
-    public static void appendAutoScrollAssignment(FacesContext context,
-            StringBuilder onClickValue, String formName)
-    {
-        appendAutoScrollAssignment(context, new ScriptContext(onClickValue,
-                false), formName);
-    }
-    
-    private static void appendAutoScrollAssignment(FacesContext context,
-            ScriptContext scriptContext, String formName)
-    {
-        String formNameStr = formName == null ? "formName" : (new StringBuilder(
-                "'").append(formName).append("'").toString());
-        String paramName = new StringBuilder().append("'")
-                .append(AUTO_SCROLL_PARAM).append("'").toString();
-        String value = new StringBuilder().append(AUTO_SCROLL_FUNCTION)
-                .append("()").toString();
-
-        scriptContext.prettyLine();
-        scriptContext.append("if(typeof window." + AUTO_SCROLL_FUNCTION
-                + "!='undefined')");
-        scriptContext.append("{");
-        scriptContext.append(SET_HIDDEN_INPUT_FN_NAME_JSF2);
-        scriptContext.append("(").append(formNameStr).append(",")
-                .append(paramName).append(",").append(value).append(");");
-        scriptContext.append("}");
-
-    }
-    
-    public static String getAutoScrollFunction(FacesContext facesContext)
-    {
-        ScriptContext script = new ScriptContext();
-
-        script.prettyLineIncreaseIndent();
-
-        script.append("function ");
-        script.append(AUTO_SCROLL_FUNCTION);
-        script.append("()");
-        script.append("{");
-        script.append("var x = 0; var y = 0;");
-        script.append("if (self.pageXOffset || self.pageYOffset)");
-        script.append("{");
-        script.append("x = self.pageXOffset;");
-        script.prettyLine();
-        script.append("y = self.pageYOffset;");
-        script.append("}");
-        script.append(" else if ((document.documentElement && document.documentElement.scrollLeft)||"+
-                "(document.documentElement && document.documentElement.scrollTop))");
-        script.append("{");
-        script.append("x = document.documentElement.scrollLeft;");
-        script.prettyLine();
-        script.append("y = document.documentElement.scrollTop;");
-        script.append("}");
-        script.append(" else if (document.body) ");
-        script.append("{");
-        script.append("x = document.body.scrollLeft;");
-        script.prettyLine();
-        script.append("y = document.body.scrollTop;");
-        script.append("}");
-        script.append("return x + \",\" + y;");
-        script.append("}");
-
-        ExternalContext externalContext = facesContext.getExternalContext();
-        String oldViewId = JavascriptUtils.getOldViewId(externalContext);
-        if (oldViewId != null
-                && oldViewId.equals(facesContext.getViewRoot().getViewId()))
-        {
-            //ok, we stayed on the same page, so let's scroll it to the former place
-            String scrolling = (String) externalContext
-                    .getRequestParameterMap().get(AUTO_SCROLL_PARAM);
-            if (scrolling != null && scrolling.length() > 0)
-            {
-                double x = 0;
-                double y = 0;
-                int comma = scrolling.indexOf(',');
-                if (comma == -1)
-                {
-                    log.warning("Illegal autoscroll request parameter: "
-                            + scrolling);
-                }
-                else
-                {
-                    try
-                    {
-                        //we convert to double against XSS vulnerability
-                        x = Double.parseDouble(scrolling.substring(0, comma));
-                    }
-                    catch (NumberFormatException e)
-                    {
-                        log.warning("Error getting x offset for autoscroll feature. Bad param value: "
-                                + scrolling);
-                        x = 0; //ignore false numbers
-                    }
-
-                    try
-                    {
-                        //we convert to int against XSS vulnerability
-                        y = Integer.parseInt(scrolling.substring(comma + 1));
-                    }
-                    catch (NumberFormatException e)
-                    {
-                        log.warning("Error getting y offset for autoscroll feature. Bad param value: "
-                                + scrolling);
-                        y = 0; //ignore false numbers
-                    }
-                }
-                script.append("window.scrollTo(").append(String.valueOf(x)).append(",")
-                        .append(String.valueOf(y)).append(");\n");
-            }
-        }
-
-        return script.toString();
-    }
-    
-    /**
-     * Renders the hidden form input that is necessary for the autoscroll feature.
-     */
-    public static void renderAutoScrollHiddenInput(FacesContext facesContext,
-            ResponseWriter writer) throws IOException
-    {
-        writer.startElement(HTML.INPUT_ELEM, null);
-        writer.writeAttribute(HTML.TYPE_ATTR, "hidden", null);
-        writer.writeAttribute(HTML.NAME_ATTR, AUTO_SCROLL_PARAM, null);
-        writer.endElement(HTML.INPUT_ELEM);
-    }
-
-    /**
-     * Renders the autoscroll javascript function.
-     */
-    public static void renderAutoScrollFunction(FacesContext facesContext,
-            ResponseWriter writer) throws IOException
-    {
-        writer.startElement(HTML.SCRIPT_ELEM, null);
-        writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR,
-                HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
-        writer.writeText(getAutoScrollFunction(facesContext), null);
-        writer.endElement(HTML.SCRIPT_ELEM);
     }
     
     public static void appendClearHiddenCommandFormParamsFunctionCall(

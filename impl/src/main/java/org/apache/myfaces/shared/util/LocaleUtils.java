@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 
 public final class LocaleUtils
 {
-    //private static final Log log = LogFactory.getLog(LocaleUtils.class);
+
     private static final Logger log = Logger.getLogger(LocaleUtils.class.getName());
 
     /** Utility class, do not instatiate */

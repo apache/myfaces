@@ -68,9 +68,6 @@ public class AjaxBehavior extends ClientBehaviorBase
 
     //To enable delta state saving we need this one
     private _DeltaStateHelper<AjaxBehavior> _stateHelper = null;
-    
-    //private Map<String, ValueExpression> _valueExpressions 
-    //        = new HashMap<String, ValueExpression>();
 
     public AjaxBehavior() 
     {
@@ -341,11 +338,6 @@ public class AjaxBehavior extends ClientBehaviorBase
         }
     }
 
-    //private Map<String, ValueExpression> getValueExpressionMap() 
-    //{
-    //    return _valueExpressions;
-    //}
-    
     /**
      * Invokes eval on the getStateHelper() and tries to get a
      * Collection out of the result.

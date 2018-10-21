@@ -36,7 +36,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFComponent(name = "f:viewAction")
 public class UIViewAction extends UIComponentBase implements ActionSource2
 {
-    //private static final Logger log = Logger.getLogger(UIViewAction.class.getName());
+
     public static final String COMPONENT_FAMILY = "javax.faces.ViewAction";
     public static final String COMPONENT_TYPE = "javax.faces.ViewAction";
     

@@ -45,7 +45,6 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
 {
     private final static Metadata NONE = new NullMetadata();
 
-    //private final static Logger log = Logger.getLogger("facelets.tag.meta");
     private final static Logger log = Logger.getLogger(CompositeMetadataTargetImpl.class.getName());
     
     private static final String METADATA_KEY

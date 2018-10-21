@@ -54,7 +54,6 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 public abstract class Compiler
 {
 
-    //protected final static Logger log = Logger.getLogger("facelets.compiler");
     protected final static Logger log = Logger.getLogger(Compiler.class.getName());
 
     public final static String EXPRESSION_FACTORY = "compiler.ExpressionFactory";

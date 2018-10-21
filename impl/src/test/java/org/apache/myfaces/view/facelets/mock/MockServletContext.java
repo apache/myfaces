@@ -40,7 +40,6 @@ public class MockServletContext extends
         org.apache.myfaces.test.mock.MockServletContext
 {
 
-    //private static Log log = LogFactory.getLog(MockServletContext.class);
     private static Logger log = Logger.getLogger(MockServletContext.class.getName());
 
     protected final URI base;

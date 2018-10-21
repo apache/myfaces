@@ -890,11 +890,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         getStack(pageContext).add(this);
     }
 
-    //private boolean isIncludedOrForwarded() {
-    //    return getFacesContext().getExternalContext().getRequestMap().
-    //            containsKey("javax.servlet.include.request_uri");
-    //}
-
     /** Generate diagnostic output. */
     private String getPathToComponent(UIComponent component)
     {

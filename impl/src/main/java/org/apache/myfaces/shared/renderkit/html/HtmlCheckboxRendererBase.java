@@ -45,8 +45,6 @@ import org.apache.myfaces.shared.util.renderkit.HTML;
 
 public class HtmlCheckboxRendererBase extends HtmlRenderer
 {
-    //private static final Log log = LogFactory
-    //        .getLog(HtmlCheckboxRendererBase.class);
     private static final Logger log = Logger.getLogger(HtmlCheckboxRendererBase.class.getName());
 
     private static final String PAGE_DIRECTION = "pageDirection";

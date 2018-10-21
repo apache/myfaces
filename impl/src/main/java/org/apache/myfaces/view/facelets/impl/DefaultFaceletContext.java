@@ -79,14 +79,10 @@ final class DefaultFaceletContext extends AbstractFaceletContext
 
     private FunctionMapper _fnMapper;
 
-    //private final Map<String, Integer> _ids;
-    //private final Map<Integer, Integer> _prefixes;
     private String _prefix;
 
     private StringBuilder _uniqueIdBuilder;
 
-    //private final LinkedList<TemplateManager> _clients;
-    
     private final FaceletCompositionContext _mctx;
     
     private LinkedList<AjaxHandler> _ajaxHandlerStack;

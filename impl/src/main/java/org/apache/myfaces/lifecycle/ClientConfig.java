@@ -52,11 +52,6 @@ public class ClientConfig implements Serializable
     private volatile String userAgent = null;
 
     /**
-     * The location of the default windowhandler resource
-     */
-    //private static final String DEFAULT_WINDOW_HANDLER_HTML_FILE = "static/windowhandler.html";
-
-    /**
      * Defaults to <code>true</code>.
      * @return if the user has JavaScript enabled
      */

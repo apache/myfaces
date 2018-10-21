@@ -33,8 +33,7 @@ import org.apache.myfaces.cdi.util.CDIUtils;
 public class FacesConverterCDIWrapper implements PartialStateHolder, Converter, FacesWrapper<Converter>
 {
     private transient Converter delegate;
-    
-    //private Class<? extends Converter> converterClass;
+
     private Class<?> forClass;
     private String converterId;
     private boolean _transient;

@@ -24,8 +24,6 @@ package org.apache.myfaces.lifecycle;
  */
 public class WindowContextConfig
 {
-    private static final long serialVersionUID = 8159770064249255686L;
-
     protected WindowContextConfig()
     {
     }

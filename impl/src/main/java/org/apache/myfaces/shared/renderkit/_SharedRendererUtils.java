@@ -490,7 +490,6 @@ class _SharedRendererUtils
         return converter;
     }
 
-    //private static final Log log = LogFactory.getLog(_SharedRendererUtils.class);
     private static final Logger log = Logger.getLogger(_SharedRendererUtils.class.getName());
 
     /**

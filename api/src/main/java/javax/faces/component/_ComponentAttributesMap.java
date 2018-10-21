@@ -82,11 +82,6 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     // The component that is read/written via this map.
     private UIComponentBase _component;
 
-    // We delegate instead of derive from HashMap, so that we can later
-    // optimize Serialization
-    // JSF 2.0 Changed getUnderlyingMap to point to StateHelper attributesMap
-    //private Map<String, Object> _attributes = null;
-
     // A cached hashmap of propertyName => PropertyDescriptor object for all
     // the javabean properties of the associated component. This is built by
     // introspection on the associated UIComponent. Don't serialize this as

@@ -89,8 +89,6 @@ import org.apache.myfaces.shared.util.serial.SerialFactory;
  */
 public final class StateUtils
 {
-
-    //private static final Log log = LogFactory.getLog(StateUtils.class);
     private static final Logger log = Logger.getLogger(StateUtils.class.getName());
 
     public static final String ZIP_CHARSET = "ISO-8859-1";

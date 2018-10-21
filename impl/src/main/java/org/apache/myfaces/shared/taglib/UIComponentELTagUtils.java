@@ -43,7 +43,7 @@ import org.apache.myfaces.shared.util.renderkit.JSFAttr;
  */
 public class UIComponentELTagUtils
 {
-    //private static final Log log = LogFactory.getLog(UIComponentELTagUtils.class);
+
     private static final Logger log = Logger
             .getLogger(UIComponentELTagUtils.class.getName());
 

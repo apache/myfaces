@@ -39,15 +39,7 @@ import org.xml.sax.InputSource;
 
 public class WebXmlParser
 {
-    //private static final Log log = LogFactory.getLog(WebXmlParser.class);
     private static final Logger log = Logger.getLogger(WebXmlParser.class.getName());
-
-    /*
-    private static final String JAXP_SCHEMA_LANGUAGE =
-        "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
-    private static final String W3C_XML_SCHEMA =
-        "http://www.w3.org/2001/XMLSchema";
-        */
 
     private static final String WEB_XML_PATH = "/WEB-INF/web.xml";
 

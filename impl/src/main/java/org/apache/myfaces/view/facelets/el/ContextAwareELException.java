@@ -38,16 +38,11 @@ public class ContextAwareELException extends ELException implements ContextAware
     private static final long serialVersionUID = -2231893442274827689L;
 
     private ContextAwareExceptionWrapper _delegate;
-    //private Throwable _wrappedException;
-    //private String _localizedMessage;
 
     public ContextAwareELException(Location location, String expressionString,
                                    String qName, Throwable wrapped)
     {
         super(wrapped);
-        //super(wrapped.getMessage());
-        //_localizedMessage = wrapped.getLocalizedMessage();
-        //_wrappedException = wrapped;
         _delegate = new DefaultContextAwareELException(location, expressionString, qName, wrapped);
     }
 

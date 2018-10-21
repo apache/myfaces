@@ -32,7 +32,6 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
         super(name);
     }
 
-    //private static final Log log = LogFactory.getLog(StateUtilsAbstractCase.class);
     protected String sensitiveString;
     private static final String TEST_DATA = "This is the test data.";
     // 76543210

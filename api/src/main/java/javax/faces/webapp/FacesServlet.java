@@ -45,7 +45,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 @MultipartConfig
 public final class FacesServlet implements Servlet
 {
-    //private static final Log log = LogFactory.getLog(FacesServlet.class);
     private static final Logger log = Logger.getLogger(FacesServlet.class.getName());
     
     /**

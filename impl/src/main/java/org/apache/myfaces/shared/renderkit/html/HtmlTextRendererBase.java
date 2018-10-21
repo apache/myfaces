@@ -44,7 +44,6 @@ import org.apache.myfaces.shared.util.renderkit.HTML;
 public class HtmlTextRendererBase
         extends HtmlRenderer
 {
-    //private static final Log log = LogFactory.getLog(HtmlTextRendererBase.class);
     private static final Logger log = Logger.getLogger(HtmlTextRendererBase.class.getName());
 
     private static final String AUTOCOMPLETE_VALUE_OFF = "off";

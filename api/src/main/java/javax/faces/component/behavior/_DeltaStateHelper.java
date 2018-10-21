@@ -154,12 +154,6 @@ class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
      * This map only keep track of delta changes to be saved
      */
     private Map<Serializable, Object> _deltas;
-    
-    /**
-     * This map keep track of StateHolder keys, to be saved when
-     * saveState is called. 
-     */
-    //private Set<Serializable> _stateHolderKeys;  
 
     private boolean _transient = false;
 

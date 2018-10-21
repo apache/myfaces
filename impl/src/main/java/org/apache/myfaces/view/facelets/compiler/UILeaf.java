@@ -291,8 +291,6 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
     };
 
     private UIComponent parent;
-    
-    //private _ComponentAttributesMap attributesMap;
 
     @Override
     public Map<String, Object> getAttributes()

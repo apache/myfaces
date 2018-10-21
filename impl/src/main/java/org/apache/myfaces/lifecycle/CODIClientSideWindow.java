@@ -41,18 +41,10 @@ import javax.servlet.http.HttpServletResponse;
 public class CODIClientSideWindow extends ClientWindow
 {
     /**
-     * Key for storing the window-id e.g. in URLs
-     */
-    //private static final String WINDOW_CONTEXT_ID_PARAMETER_KEY = 
-    //        ResponseStateManager.CLIENT_WINDOW_URL_PARAM;
-
-    /**
      * Value which can be used as "window-id" by external clients which aren't aware of windows.
      * It deactivates e.g. the redirect for the initial request.
      */
     private static final String AUTOMATED_ENTRY_POINT_PARAMETER_KEY = "automatedEntryPoint";    
-    
-    private static final long serialVersionUID = 5293942986187078113L;
 
     private static final String WINDOW_ID_COOKIE_PREFIX = "jfwid-";
     private static final String CODI_REQUEST_TOKEN = "mfRid";
@@ -73,12 +65,6 @@ public class CODIClientSideWindow extends ClientWindow
     private String unparsedWindowHandlerHtml = null;
     
     private Map<String,String> queryParamsMap;
-
-    /*
-    protected CODIClientSideWindow()
-    {
-        // needed for proxying
-    }*/
 
     protected CODIClientSideWindow(TokenGenerator clientWindowTokenGenerator,
             WindowContextConfig windowContextConfig,

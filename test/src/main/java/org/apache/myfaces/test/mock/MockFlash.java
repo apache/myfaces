@@ -461,8 +461,6 @@ public class MockFlash extends Flash
         }
     }
 
-    //private void _addPreviousToken
-
     /**
      * Retrieve the postback map key
      */

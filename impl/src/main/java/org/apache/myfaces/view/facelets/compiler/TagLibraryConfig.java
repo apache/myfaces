@@ -62,10 +62,6 @@ import org.apache.myfaces.shared.util.Assert;
  */
 public final class TagLibraryConfig
 {
-
-    //private final static String SUFFIX = ".taglib.xml";
-
-    //protected final static Logger log = Logger.getLogger("facelets.compiler");
     protected final static Logger log = Logger.getLogger(TagLibraryConfig.class.getName());
 
     private static class TagLibraryImpl extends AbstractTagLibrary

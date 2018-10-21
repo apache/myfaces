@@ -26,7 +26,6 @@ import javax.faces.component.UIComponent;
 public class SelectItemTagBase
     extends org.apache.myfaces.shared.taglib.UIComponentELTagBase
 {
-    //private static final Log log = LogFactory.getLog(SelectItemTag.class);
 
     public String getComponentType()
     {

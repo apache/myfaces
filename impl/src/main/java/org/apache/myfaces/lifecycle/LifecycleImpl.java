@@ -84,13 +84,7 @@ public class LifecycleImpl extends Lifecycle
      * note in this case the semantic of the variable must be preserved.
      */
     private volatile boolean _firstRequestProcessed = false;
-    /**
-     * Lazy cache for returning _phaseListenerList as an Array.
-     * 
-     * Replaced by _phaseListenerList CopyOnWriteArrayList
-     */
-    //private PhaseListener[] _phaseListenerArray = null;
-    
+
     private ClientWindowFactory clientWindowFactory;
     
     public LifecycleImpl()

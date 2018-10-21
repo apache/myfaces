@@ -116,7 +116,6 @@ public class ResourceHandlerImpl extends ResourceHandler
     private Set<String> _viewSuffixes = null;
     
     public final static String RENDERED_RESOURCES_SET = "org.apache.myfaces.RENDERED_RESOURCES_SET";
-    private final static String MYFACES_LIBRARY_NAME = "org.apache.myfaces";
 
     private static final String SHARED_STRING_BUILDER = ResourceHandlerImpl.class.getName() + ".SHARED_STRING_BUILDER";
 

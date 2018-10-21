@@ -44,8 +44,6 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ConcurrentLRUCache<K, V>
 {
-    //private static Logger log = Logger.getLogger(ConcurrentLRUCache.class
-    //        .getName());
 
     private final ConcurrentHashMap<Object, CacheEntry<K, V>> map;
     private final int upperWaterMark;

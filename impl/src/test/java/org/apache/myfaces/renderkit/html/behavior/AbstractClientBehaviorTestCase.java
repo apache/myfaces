@@ -42,9 +42,7 @@ public abstract class AbstractClientBehaviorTestCase extends FaceletTestCase
     protected ResponseWriter writer;
     protected FastWriter outputWriter; 
     protected ConfigParser parser;
-    
-    //protected abstract UIComponent getComponentToTest();
-    
+
     protected abstract HtmlRenderedClientEventAttr[] getClientBehaviorHtmlRenderedAttributes();
     
     protected abstract UIComponent createComponentToTest();

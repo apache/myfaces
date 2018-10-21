@@ -224,9 +224,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
     private int _bufferSize;
 
-    // This param evolve in jsf 2.0 to partial state saving
-    //private boolean _buildBeforeRestore = false;
-
     private ViewHandlerSupport _cachedViewHandlerSupport;
 
     private String _defaultSuffix;
