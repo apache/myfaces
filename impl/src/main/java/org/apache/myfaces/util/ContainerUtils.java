@@ -63,37 +63,7 @@ public class ContainerUtils
         return false;
     }
     
-    /**
-     * Return true if the specified string contains an EL expression.
-     * 
-     * <p>
-     * <strong>NOTICE</strong> This method is just a copy of
-     * {@link javax.faces.webapp.UIComponentTag#isValueReference(String)}, but it's required
-     * because the class UIComponentTag depends on a JSP 2.1 container 
-     * (for example, it indirectly implements the interface JspIdConsumer)
-     * and therefore internal classes shouldn't access this class. That's
-     * also the reason why this method is inside the class ContainerUtils,
-     * because it allows MyFaces to be independent of a JSP 2.1 container.
-     * </p>
-     */
-    public static boolean isValueReference(String value) 
-    {
-        if (value == null)
-        {
-            throw new NullPointerException("value");
-        }
-
-        int start = value.indexOf("#{");
-        if (start < 0)
-        {
-            return false;
-        }
-
-        int end = value.lastIndexOf('}');
-        return (end >=0 && start < end);
-    }
-    
-private static Boolean runningOnGoogleAppEngine = null;
+    private static Boolean runningOnGoogleAppEngine = null;
     
     /**Returns true if running on Google App Engine (both production and development environment).
      * <p>If this method returns true, then

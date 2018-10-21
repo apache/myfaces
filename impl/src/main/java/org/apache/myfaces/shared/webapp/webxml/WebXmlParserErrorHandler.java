@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.util.xml;
+package org.apache.myfaces.shared.webapp.webxml;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,16 +27,17 @@ import org.xml.sax.SAXParseException;
 /**
  * Convenient error handler for xml sax parsing.
  */
-public class MyFacesErrorHandler
+public class WebXmlParserErrorHandler
         implements ErrorHandler
 {
     private Logger _log;
 
-    public MyFacesErrorHandler(Logger log)
+    public WebXmlParserErrorHandler(Logger log)
     {
         _log = log;
     }
 
+    @Override
     public void warning(SAXParseException exception)
     {
         if (_log.isLoggable(Level.WARNING))
@@ -45,11 +46,13 @@ public class MyFacesErrorHandler
         }
     }
 
+    @Override
     public void error(SAXParseException exception)
     {
         _log.log(Level.SEVERE, getMessage(exception), exception);
     }
 
+    @Override
     public void fatalError(SAXParseException exception)
     {
         _log.log(Level.SEVERE, getMessage(exception), exception);

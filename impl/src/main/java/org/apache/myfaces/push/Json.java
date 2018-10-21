@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.push.util;
+package org.apache.myfaces.push;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;

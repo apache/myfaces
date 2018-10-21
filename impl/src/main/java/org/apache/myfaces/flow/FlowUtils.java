@@ -16,13 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.flow.util;
+package org.apache.myfaces.flow;
 
 import java.util.List;
 import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
-import org.apache.myfaces.flow.FlowHandlerImpl;
-import org.apache.myfaces.flow.FlowReference;
 
 /**
  *

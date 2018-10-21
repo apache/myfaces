@@ -27,7 +27,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
 import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.flow.util.FlowUtils;
+import org.apache.myfaces.flow.FlowUtils;
 import org.apache.myfaces.spi.FacesFlowProvider;
 
 /**

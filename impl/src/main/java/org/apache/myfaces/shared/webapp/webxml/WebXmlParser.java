@@ -30,8 +30,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.myfaces.shared.util.ClassUtils;
-import org.apache.myfaces.shared.util.xml.MyFacesErrorHandler;
-import org.apache.myfaces.shared.util.xml.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -83,7 +81,7 @@ public class WebXmlParser
 
             DocumentBuilder db = dbf.newDocumentBuilder();
             db.setEntityResolver(new _EntityResolver());
-            db.setErrorHandler(new MyFacesErrorHandler(log));
+            db.setErrorHandler(new WebXmlParserErrorHandler(log));
 
             InputSource is = createContextInputSource(null, WEB_XML_PATH);
 
@@ -248,11 +246,11 @@ public class WebXmlParser
             {
                 if (n.getNodeName().equals("servlet-name"))
                 {
-                    servletName = XmlUtils.getElementText((Element)n);
+                    servletName = WebXmlParserUtils.getElementText((Element)n);
                 }
                 else if (n.getNodeName().equals("servlet-class"))
                 {
-                    servletClass = org.apache.myfaces.shared.util.xml.XmlUtils.getElementText((Element)n).trim();
+                    servletClass = WebXmlParserUtils.getElementText((Element)n).trim();
                 }
                 else if (n.getNodeName().equals("description") || n.getNodeName().equals("load-on-startup") 
                         || n.getNodeName().equals("init-param"))
@@ -292,11 +290,11 @@ public class WebXmlParser
             {
                 if (n.getNodeName().equals("servlet-name"))
                 {
-                    servletName = org.apache.myfaces.shared.util.xml.XmlUtils.getElementText((Element)n);
+                    servletName = WebXmlParserUtils.getElementText((Element)n);
                 }
                 else if (n.getNodeName().equals("url-pattern"))
                 {
-                    urlPattern = org.apache.myfaces.shared.util.xml.XmlUtils.getElementText((Element)n).trim();
+                    urlPattern = WebXmlParserUtils.getElementText((Element)n).trim();
                 }
                 else
                 {
@@ -331,11 +329,11 @@ public class WebXmlParser
             {
                 if (n.getNodeName().equals("filter-name"))
                 {
-                    filterName = XmlUtils.getElementText((Element)n).trim();
+                    filterName = WebXmlParserUtils.getElementText((Element)n).trim();
                 }
                 else if (n.getNodeName().equals("filter-class"))
                 {
-                    filterClass = org.apache.myfaces.shared.util.xml.XmlUtils.getElementText((Element)n).trim();
+                    filterClass = WebXmlParserUtils.getElementText((Element)n).trim();
                 }
                 else if (n.getNodeName().equals("description") || n.getNodeName().equals("init-param"))
                 {
@@ -374,11 +372,11 @@ public class WebXmlParser
             {
                 if (n.getNodeName().equals("filter-name"))
                 {
-                    filterName = org.apache.myfaces.shared.util.xml.XmlUtils.getElementText((Element)n).trim();
+                    filterName = WebXmlParserUtils.getElementText((Element)n).trim();
                 }
                 else if (n.getNodeName().equals("url-pattern"))
                 {
-                    urlPattern = org.apache.myfaces.shared.util.xml.XmlUtils.getElementText((Element)n).trim();
+                    urlPattern = WebXmlParserUtils.getElementText((Element)n).trim();
                 }
                 else if (n.getNodeName().equals("servlet-name"))
                 {

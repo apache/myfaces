@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.util.xml;
+package org.apache.myfaces.shared.webapp.webxml;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -26,9 +26,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class XmlUtils
+public class WebXmlParserUtils
 {
-    private XmlUtils()
+    private WebXmlParserUtils()
     {
         // hide from public access
     }

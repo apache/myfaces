@@ -37,7 +37,7 @@ import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 import org.apache.myfaces.flow.FlowReference;
-import org.apache.myfaces.flow.util.FlowUtils;
+import org.apache.myfaces.flow.FlowUtils;
 
 /**
  * Implementation of FlowScope.
