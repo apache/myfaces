@@ -46,8 +46,8 @@
         <connection>scm:git:https://gitbox.apache.org/repos/asf/myfaces.git</connection>
         <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/myfaces.git</developerConnection>
         <url>https://gitbox.apache.org/repos/asf?p=myfaces.git</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <modules>
         <module>parent</module>
@@ -61,29 +61,29 @@
 
         <!-- Since Maven 3.0, this is required to add scpexe as protocol for deploy. -->
         <extensions>
-          <extension>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-ssh-external</artifactId>
-            <version>1.0-beta-7</version>
-          </extension>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh-external</artifactId>
+                <version>1.0-beta-7</version>
+            </extension>
         </extensions>
 
         <pluginManagement>
-          <plugins>
-            <plugin>
-              <artifactId>maven-site-plugin</artifactId>
-              <version>3.3</version>
-            </plugin>
-            <plugin>
-			  <artifactId>maven-release-plugin</artifactId>
-			  <version>2.5.3</version>
-			</plugin>
-          </plugins>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.3</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5.3</version>
+                </plugin>
+            </plugins>
         </pluginManagement>
         <plugins>
 
-          <!-- license checker needs to exclude some kinds of files -->
-          <plugin>
+            <!-- license checker needs to exclude some kinds of files -->
+            <plugin>
                 <groupId>org.apache.rat</groupId>
                 <artifactId>apache-rat-plugin</artifactId>
                 <configuration>
@@ -92,27 +92,27 @@
                         <exclude>DEPENDENCIES</exclude>
                     </excludes>
                 </configuration>
-          </plugin>
+            </plugin>
 
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-scm-publish-plugin</artifactId>
-            <version>1.0-beta-2</version>
-            <configuration>
-              <pubScmUrl>${siteScmPublish.url}</pubScmUrl>
-              <tryUpdate>true</tryUpdate>
-              <checkoutDirectory>${scmCheckout.path}</checkoutDirectory>
-              <content>\${siteContent.path}</content>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-site-plugin</artifactId>
-            <configuration>
-              <stagingRepositoryId>myfaces-local-staging</stagingRepositoryId>
-              <stagingSiteURL>${siteDeploy.url}</stagingSiteURL>
-            </configuration>
-          </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-publish-plugin</artifactId>
+                <version>1.0-beta-2</version>
+                <configuration>
+                    <pubScmUrl>${siteScmPublish.url}</pubScmUrl>
+                    <tryUpdate>true</tryUpdate>
+                    <checkoutDirectory>${scmCheckout.path}</checkoutDirectory>
+                    <content>\${siteContent.path}</content>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <configuration>
+                    <stagingRepositoryId>myfaces-local-staging</stagingRepositoryId>
+                    <stagingSiteURL>${siteDeploy.url}</stagingSiteURL>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -182,14 +182,6 @@
 
     <repositories>
 
-        <!-- NOTE that apache.snapshots is defined in apache-parent -->
-
-        <!-- tomcat el-impl for test cases (see related tomcat-dependencies) -->
-        <repository>
-            <id>tomcat</id>
-            <url>http://tomcat.apache.org/dev/dist/m2-repository</url>
-        </repository>
-
     </repositories>
 
     <!--
@@ -202,25 +194,26 @@
     </distributionManagement>
     -->
     <!-- To deploy the site, use site:stage-deploy goal and commit changes manually on
-         https://svn.apache.org/repos/asf/myfaces/site/publish/
+    https://svn.apache.org/repos/asf/myfaces/site/publish/
 
-         -->
-  <distributionManagement>
-    <site>
-      <id>myfaces-local-staging</id>
-      <name>Apache Website</name>
-      <url>scp://localhost/${user.home}/myfaces-site/${siteModule.path}</url>
-    </site>
-  </distributionManagement>
-  <properties>
-    <siteModule.path>core30/module</siteModule.path>
-    <site.mainDirectory>${user.home}/myfaces-site/checkout</site.mainDirectory>
-    <siteContent.path>${user.home}/myfaces-site/site/${siteModule.path}</siteContent.path>
-    <!-- it's a default location for performance reason (not checkout the content all the time)
-         you can override this value in your settings. -->
-    <scmCheckout.path>\${site.mainDirectory}/${siteModule.path}</scmCheckout.path>
-    <siteDeploy.url>file://${user.home}/myfaces-site/site/${siteModule.path}</siteDeploy.url>
-    <siteScmPublish.url>scm:svn:https://svn.apache.org/repos/asf/myfaces/site/publish/</siteScmPublish.url>
-  </properties>
+    -->
+    <distributionManagement>
+        <site>
+            <id>myfaces-local-staging</id>
+            <name>Apache Website</name>
+            <url>scp://localhost/${user.home}/myfaces-site/${siteModule.path}</url>
+        </site>
+    </distributionManagement>
+    
+    <properties>
+        <siteModule.path>core30/module</siteModule.path>
+        <site.mainDirectory>${user.home}/myfaces-site/checkout</site.mainDirectory>
+        <siteContent.path>${user.home}/myfaces-site/site/${siteModule.path}</siteContent.path>
+        <!-- it's a default location for performance reason (not checkout the content all the time)
+        you can override this value in your settings. -->
+        <scmCheckout.path>\${site.mainDirectory}/${siteModule.path}</scmCheckout.path>
+        <siteDeploy.url>file://${user.home}/myfaces-site/site/${siteModule.path}</siteDeploy.url>
+        <siteScmPublish.url>scm:svn:https://svn.apache.org/repos/asf/myfaces/site/publish/</siteScmPublish.url>
+    </properties>
 
 </project>

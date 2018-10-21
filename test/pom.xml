@@ -38,7 +38,7 @@
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
-            <version>1.14</version>
+            <version>2.33</version>
             <optional>true</optional>
         </dependency>
 
@@ -52,7 +52,6 @@
             <artifactId>jmock</artifactId>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>jmock</groupId>
             <artifactId>jmock-cglib</artifactId>
@@ -64,7 +63,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.5</version>
+            <version>4.12</version>
             <scope>compile</scope>
         </dependency>
 
@@ -74,13 +73,18 @@
             <version>0.8</version>
             <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-ant</artifactId>
             <version>0.8</version>
             <optional>true</optional>
         </dependency>
+
+
+
+
+
+
 
         <dependency>
             <groupId>javax.portlet</groupId>

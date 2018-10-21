@@ -132,10 +132,9 @@ public abstract class AbstractHtmlUnitTestCase extends TestCase
     protected HtmlBody body() throws Exception
     {
 
-        Iterator elements = page.getAllHtmlChildElements();
-        while (elements.hasNext())
+        Iterable<HtmlElement> elements = page.getHtmlElementDescendants();
+        for (HtmlElement element : elements)
         {
-            HtmlElement element = (HtmlElement) elements.next();
             if (element instanceof HtmlBody)
             {
                 return ((HtmlBody) element);
@@ -184,7 +183,7 @@ public abstract class AbstractHtmlUnitTestCase extends TestCase
         while (forms.hasNext())
         {
             HtmlForm form = (HtmlForm) forms.next();
-            if (id.equals(form.getAttributeValue("id")))
+            if (id.equals(form.getAttribute("id")))
             {
                 return (form);
             }
@@ -202,10 +201,9 @@ public abstract class AbstractHtmlUnitTestCase extends TestCase
     protected HtmlHead head() throws Exception
     {
 
-        Iterator elements = page.getAllHtmlChildElements();
-        while (elements.hasNext())
+        Iterable<HtmlElement> elements = page.getHtmlElementDescendants();
+        for (HtmlElement element : elements)
         {
-            HtmlElement element = (HtmlElement) elements.next();
             if (element instanceof HtmlHead)
             {
                 return ((HtmlHead) element);

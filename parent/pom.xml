@@ -11,7 +11,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or imcommons-digesterplied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
 -->
@@ -46,16 +46,14 @@
 
         <!-- Since Maven 3.0, this is required to add scpexe as protocol for deploy. -->
         <extensions>
-          <extension>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-ssh-external</artifactId>
-            <version>1.0-beta-7</version>
-          </extension>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh-external</artifactId>
+                <version>1.0-beta-7</version>
+            </extension>
         </extensions>
 
         <plugins>
-
-            <!-- JDK 1.8 -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.6.1</version>
@@ -65,30 +63,20 @@
                 </configuration>
             </plugin>
 
-            <!-- ceckstyle - TODO use myfaces wide checkstyle config from myfaces-parent? -->
             <plugin>
-                <!--
-                  - Make a checkstyle violation a compile error. Note that if a compile error occurs,
-                  - further information can be found in target/site/checkstyle.html (present even when
-                  - just the compile goal and not the site goal has been run). Note also that child
-                  - projects may redeclare this plugin and provide different configuration settings
-                  - to use different checks (more or less strict than the default).
-                  -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.17</version>
+                <version>2.17</version>
                 <executions>
                     <execution>
                         <id>verify-style</id>
                         <phase>verify</phase>
-                        <goals><goal>check</goal></goals>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
                     </execution>
                 </executions>
                 <configuration>
-<!--
-                    <configLocation>default/myfaces-checks-minimal.xml</configLocation>
-                    <headerLocation>default/myfaces-header.txt</headerLocation>
--->
                     <configLocation>default/myfaces-checks-standard.xml</configLocation>
                     <headerLocation>default/myfaces-header.txt</headerLocation>
                 </configuration>
@@ -109,29 +97,29 @@
             </plugin>
 
             <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-scm-publish-plugin</artifactId>
-              <version>1.0-beta-2</version>
-              <configuration>
-                <pubScmUrl>${siteScmPublish.url}</pubScmUrl>
-                <tryUpdate>true</tryUpdate>
-                <checkoutDirectory>${scmCheckout.path}</checkoutDirectory>
-                <content>\${siteContent.path}</content>
-              </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-publish-plugin</artifactId>
+                <version>1.0-beta-2</version>
+                <configuration>
+                    <pubScmUrl>${siteScmPublish.url}</pubScmUrl>
+                    <tryUpdate>true</tryUpdate>
+                    <checkoutDirectory>${scmCheckout.path}</checkoutDirectory>
+                    <content>\${siteContent.path}</content>
+                </configuration>
             </plugin>
             <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-site-plugin</artifactId>
-              <configuration>
-                <stagingRepositoryId>myfaces-local-staging</stagingRepositoryId>
-                <stagingSiteURL>${siteDeploy.url}</stagingSiteURL>
-              </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <configuration>
+                    <stagingRepositoryId>myfaces-local-staging</stagingRepositoryId>
+                    <stagingSiteURL>${siteDeploy.url}</stagingSiteURL>
+                </configuration>
             </plugin>
 
-			<plugin>
-			  <artifactId>maven-release-plugin</artifactId>
-			  <version>2.5.3</version>
-			</plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+            </plugin>
 
         </plugins>
 
@@ -157,12 +145,6 @@
                 </plugin>
 
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-shade-plugin</artifactId>
-                    <version>2.4.3</version>
-                </plugin>
-
-                <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
                     <version>1.5</version>
@@ -172,18 +154,6 @@
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
                     <version>3.0.1</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-idea-plugin</artifactId>
-                    <version>2.1</version>
-                    <configuration>
-                        <jdkName>1.5</jdkName>
-                        <linkModules>true</linkModules>
-                        <downloadSources>true</downloadSources>
-                        <jdkLevel>1.5</jdkLevel>
-                    </configuration>
                 </plugin>
 
                 <plugin>
@@ -214,8 +184,8 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                  <artifactId>maven-site-plugin</artifactId>
-                  <version>3.3</version>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.3</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jxr-plugin</artifactId>
@@ -240,13 +210,13 @@
                     <version>3.0.5</version>
                 </plugin>
                 <plugin>
-                  <artifactId>maven-project-info-reports-plugin</artifactId>
-                  <version>2.7</version>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>2.7</version>
                 </plugin>
                 <plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>cobertura-maven-plugin</artifactId>
-                  <version>2.6</version>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                    <version>2.6</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -280,12 +250,12 @@
                         <groupId>org.apache.rat</groupId>
                         <artifactId>apache-rat-plugin</artifactId>
                         <executions>
-                          <execution>
-                            <phase>verify</phase>
-                            <goals>
-                              <goal>check</goal>
-                            </goals>
-                          </execution>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
                         </executions>
                     </plugin>
                 </plugins>
@@ -312,7 +282,7 @@
         </profile>
 
         <!-- Disable doclint on java 8 as it is very strict.
-             Some javadocs issues will need to be fixed like non existent reference links -->
+        Some javadocs issues will need to be fixed like non existent reference links -->
         <profile>
             <id>disable-java8-doclint</id>
             <activation>
@@ -337,7 +307,7 @@
                 </reportSets>-->
             </plugin>
             <plugin>
-              <artifactId>maven-project-info-reports-plugin</artifactId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -345,8 +315,8 @@
                 <version>3.0.5</version>
             </plugin>
             <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>cobertura-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </reporting>
@@ -403,8 +373,8 @@
                 <exclusions>
                     <!-- we already have a jsp-api -->
                     <exclusion>
-                          <groupId>javax.servlet</groupId>
-                          <artifactId>jsp-api</artifactId>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>jsp-api</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -444,8 +414,7 @@
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-jpa_3.0_spec</artifactId>
                 <version>1.1.1</version>
-                <scope>compile</scope>
-                <optional>true</optional>
+                <scope>provided</scope>
             </dependency>
 
             <!-- ejb 3.0 - needed in AllAnnotationLifecycleProvider -->
@@ -453,8 +422,7 @@
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-ejb_3.0_spec</artifactId>
                 <version>1.0.1</version>
-                <scope>compile</scope>
-                <optional>true</optional>
+                <scope>provided</scope>
             </dependency>
 
             <!-- CDI 1.0 -->
@@ -462,12 +430,7 @@
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-jcdi_1.1_spec</artifactId>
                 <version>1.0</version>
-				<scope>provided</scope>
-				<!-- MYFACES-3917 set compile/optional, clashes
-				     with weld cdi by transitive dependency effect
-                <scope>compile</scope>
-                <optional>true</optional>
-				-->
+                <scope>provided</scope>
             </dependency>
 
             <!-- Injection -->
@@ -482,7 +445,7 @@
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-websocket-api</artifactId>
-                <version>7.0.78</version>
+                <version>9.0.2</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -517,16 +480,7 @@
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-catalina</artifactId>
-                <version>7.0.78</version>
-                <scope>compile</scope>
-                <optional>true</optional>
-            </dependency>
-
-            <!-- Google guice support (GuiceResolver) -->
-            <dependency>
-                <groupId>com.google.code.guice</groupId>
-                <artifactId>guice</artifactId>
-                <version>1.0</version>
+                <version>9.0.2</version>
                 <scope>compile</scope>
                 <optional>true</optional>
             </dependency>
@@ -573,16 +527,16 @@
 
             <!-- jmock -->
             <dependency>
-                  <groupId>jmock</groupId>
-                  <artifactId>jmock</artifactId>
-                  <version>1.2.0</version>
-                  <scope>test</scope>
+                <groupId>jmock</groupId>
+                <artifactId>jmock</artifactId>
+                <version>1.2.0</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
-                  <groupId>jmock</groupId>
-                  <artifactId>jmock-cglib</artifactId>
-                  <version>1.2.0</version>
-                  <scope>test</scope>
+                <groupId>jmock</groupId>
+                <artifactId>jmock-cglib</artifactId>
+                <version>1.2.0</version>
+                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -598,18 +552,19 @@
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>el-api</artifactId>
-                <version>6.0.53</version>
+                <version>9.0.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>jasper-el</artifactId>
-                <version>6.0.53</version>
+                <version>9.0.2</version>
                 <scope>test</scope>
             </dependency>
 
         </dependencies>
     </dependencyManagement>
+
 
     <pluginRepositories>
         <pluginRepository>
@@ -642,21 +597,21 @@
             <url>scpexe://people.apache.org/www/myfaces.apache.org/core21/</url>
         </site>
     </distributionManagement>-->
-  <distributionManagement>
-    <site>
-      <id>myfaces-local-staging</id>
-      <name>Apache Website</name>
-      <url>scp://localhost/${user.home}/myfaces-site/${siteModule.path}</url>
-    </site>
-  </distributionManagement>
-  <properties>
-    <siteModule.path>core30</siteModule.path>
-    <site.mainDirectory>${user.home}/myfaces-site/checkout</site.mainDirectory>
-    <siteContent.path>${user.home}/myfaces-site/site/${siteModule.path}</siteContent.path>
-    <!-- it's a default location for performance reason (not checkout the content all the time)
-         you can override this value in your settings. -->
-    <scmCheckout.path>\${site.mainDirectory}/${siteModule.path}</scmCheckout.path>
-    <siteDeploy.url>file://${user.home}/myfaces-site/site/${siteModule.path}</siteDeploy.url>
-    <siteScmPublish.url>scm:svn:https://svn.apache.org/repos/asf/myfaces/site/publish/</siteScmPublish.url>
-  </properties>
+    <distributionManagement>
+        <site>
+            <id>myfaces-local-staging</id>
+            <name>Apache Website</name>
+            <url>scp://localhost/${user.home}/myfaces-site/${siteModule.path}</url>
+        </site>
+    </distributionManagement>
+    <properties>
+        <siteModule.path>core30</siteModule.path>
+        <site.mainDirectory>${user.home}/myfaces-site/checkout</site.mainDirectory>
+        <siteContent.path>${user.home}/myfaces-site/site/${siteModule.path}</siteContent.path>
+        <!-- it's a default location for performance reason (not checkout the content all the time)
+        you can override this value in your settings. -->
+        <scmCheckout.path>\${site.mainDirectory}/${siteModule.path}</scmCheckout.path>
+        <siteDeploy.url>file://${user.home}/myfaces-site/site/${siteModule.path}</siteDeploy.url>
+        <siteScmPublish.url>scm:svn:https://svn.apache.org/repos/asf/myfaces/site/publish/</siteScmPublish.url>
+    </properties>
 </project>

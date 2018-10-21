@@ -91,7 +91,7 @@
 
                         <!-- facelets has non-standard APL license -->
                         <exclude>src/main/resources/META-INF/licenses/facelets-LICENSE.txt</exclude>
-						<exclude>src/main/resources/META-INF/licenses/omnifaces-LICENSE.txt</exclude>
+                        <exclude>src/main/resources/META-INF/licenses/omnifaces-LICENSE.txt</exclude>
 
                         <!-- services files are trivial config files with no comments -->
                         <exclude>src/test/resources/META-INF/services/org.apache.myfaces.config.annotation.LifecycleProvider</exclude>
@@ -102,7 +102,7 @@
 
                         <!-- This file probably needs a license, but I don't know if it's safe to put it in there -->
                         <exclude>src/test/resources/org/apache/myfaces/context/nestedScriptCDATA.xml</exclude>
-						<exclude>src/test/resources/META-INF/openwebbeans/openwebbeans.properties</exclude>
+                        <exclude>src/test/resources/META-INF/openwebbeans/openwebbeans.properties</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -136,7 +136,7 @@
                             </sourceDirectories>
                         </configuration>
                         <goals>
-                          <goal>build-metadata</goal>
+                            <goal>build-metadata</goal>
                         </goals>
                     </execution>
 
@@ -184,13 +184,13 @@
                     <execution>
                         <id>make_tags</id>
                         <configuration>
-                           <jsfVersion>12</jsfVersion>
-                           <templateTagName>tagClass12.vm</templateTagName>
-                           <packageContains>org.apache</packageContains>
-                           <typePrefix>javax.faces</typePrefix>
-                           <modelIds>
-                               <modelId>myfaces-api</modelId>
-                           </modelIds>
+                            <jsfVersion>12</jsfVersion>
+                            <templateTagName>tagClass12.vm</templateTagName>
+                            <packageContains>org.apache</packageContains>
+                            <typePrefix>javax.faces</typePrefix>
+                            <modelIds>
+                                <modelId>myfaces-api</modelId>
+                            </modelIds>
                         </configuration>
                         <goals>
                             <goal>make-tags</goal>
@@ -225,10 +225,10 @@
                             <xmlBaseFile>src/main/conf/META-INF/myfaces_html-base.tld</xmlBaseFile>
                             <templateFile>myfaces_html12.vm</templateFile>
                             <params>
-                               <shortname>h</shortname>
-                               <uri>http://java.sun.com/jsf/html</uri>
-                               <displayname>JSF HTML tag library.</displayname>
-                               <description>This tag library implements the standard JSF HTML tags.</description>
+                                <shortname>h</shortname>
+                                <uri>http://java.sun.com/jsf/html</uri>
+                                <displayname>JSF HTML tag library.</displayname>
+                                <description>This tag library implements the standard JSF HTML tags.</description>
                             </params>
                             <modelIds>
                                 <modelId>myfaces-api</modelId>
@@ -279,10 +279,10 @@
                                 <modelId>myfaces-impl</modelId>
                             </modelIds>
                             <params>
-                               <shortname>h</shortname>
-                               <uri>http://java.sun.com/jsf/html</uri>
-                               <displayname>JSF HTML Facelets Tag Library.</displayname>
-                               <description>This tag library implements the standard JSF HTML tags for Facelets.</description>
+                                <shortname>h</shortname>
+                                <uri>http://java.sun.com/jsf/html</uri>
+                                <displayname>JSF HTML Facelets Tag Library.</displayname>
+                                <description>This tag library implements the standard JSF HTML tags for Facelets.</description>
                             </params>
                         </configuration>
                         <goals>
@@ -302,10 +302,10 @@
                                 <modelId>myfaces-impl</modelId>
                             </modelIds>
                             <params>
-                               <shortname>c</shortname>
-                               <uri>http://java.sun.com/jsp/jstl/core</uri>
-                               <displayname>JSTL core Facelets Tag Library.</displayname>
-                               <description>JSTL core Facelets Tag Library.</description>
+                                <shortname>c</shortname>
+                                <uri>http://java.sun.com/jsp/jstl/core</uri>
+                                <displayname>JSTL core Facelets Tag Library.</displayname>
+                                <description>JSTL core Facelets Tag Library.</description>
                             </params>
                         </configuration>
                         <goals>
@@ -325,10 +325,10 @@
                                 <modelId>myfaces-impl</modelId>
                             </modelIds>
                             <params>
-                               <shortname>ui</shortname>
-                               <uri>http://java.sun.com/jsf/facelets</uri>
-                               <displayname>JSF UI Facelets Tag Library.</displayname>
-                               <description>JSF UI Facelets Tag Library.</description>
+                                <shortname>ui</shortname>
+                                <uri>http://java.sun.com/jsf/facelets</uri>
+                                <displayname>JSF UI Facelets Tag Library.</displayname>
+                                <description>JSF UI Facelets Tag Library.</description>
                             </params>
                         </configuration>
                         <goals>
@@ -348,10 +348,10 @@
                                 <modelId>myfaces-impl</modelId>
                             </modelIds>
                             <params>
-                               <shortname>composite</shortname>
-                               <uri>http://java.sun.com/jsf/composite</uri>
-                               <displayname>JSF Composite Facelets Tag Library.</displayname>
-                               <description>JSF Composite Facelets Tag Library.</description>
+                                <shortname>composite</shortname>
+                                <uri>http://java.sun.com/jsf/composite</uri>
+                                <displayname>JSF Composite Facelets Tag Library.</displayname>
+                                <description>JSF Composite Facelets Tag Library.</description>
                             </params>
                         </configuration>
                         <goals>
@@ -370,10 +370,10 @@
                                 <modelId>myfaces-impl</modelId>
                             </modelIds>
                             <params>
-                               <shortname>fn</shortname>
-                               <uri>http://java.sun.com/jsp/jstl/functions</uri>
-                               <displayname>JSTL Facelets Function Library.</displayname>
-                               <description>JSTL Facelets Function Library.</description>
+                                <shortname>fn</shortname>
+                                <uri>http://java.sun.com/jsp/jstl/functions</uri>
+                                <displayname>JSTL Facelets Function Library.</displayname>
+                                <description>JSTL Facelets Function Library.</description>
                             </params>
                         </configuration>
                         <goals>
@@ -415,10 +415,10 @@
                                 <modelId>myfaces-impl</modelId>
                             </modelIds>
                             <params>
-                               <shortname>h</shortname>
-                               <uri>http://java.sun.com/jsf/html</uri>
-                               <displayname>JSF HTML Facelets Tag Library.</displayname>
-                               <description>This tag library implements the standard JSF HTML tags for Facelets.</description>
+                                <shortname>h</shortname>
+                                <uri>http://java.sun.com/jsf/html</uri>
+                                <displayname>JSF HTML Facelets Tag Library.</displayname>
+                                <description>This tag library implements the standard JSF HTML tags for Facelets.</description>
                             </params>
                         </configuration>
                         <goals>
@@ -436,10 +436,10 @@
                                 <modelId>myfaces-impl</modelId>
                             </modelIds>
                             <params>
-                               <shortname>c</shortname>
-                               <uri>http://java.sun.com/jsp/jstl/core</uri>
-                               <displayname>JSTL core Facelets Tag Library.</displayname>
-                               <description>JSTL core Facelets Tag Library.</description>
+                                <shortname>c</shortname>
+                                <uri>http://java.sun.com/jsp/jstl/core</uri>
+                                <displayname>JSTL core Facelets Tag Library.</displayname>
+                                <description>JSTL core Facelets Tag Library.</description>
                             </params>
                         </configuration>
                         <goals>
@@ -457,10 +457,10 @@
                                 <modelId>myfaces-impl</modelId>
                             </modelIds>
                             <params>
-                               <shortname>ui</shortname>
-                               <uri>http://java.sun.com/jsf/facelets</uri>
-                               <displayname>JSF UI Facelets Tag Library.</displayname>
-                               <description>JSF UI Facelets Tag Library.</description>
+                                <shortname>ui</shortname>
+                                <uri>http://java.sun.com/jsf/facelets</uri>
+                                <displayname>JSF UI Facelets Tag Library.</displayname>
+                                <description>JSF UI Facelets Tag Library.</description>
                             </params>
                         </configuration>
                         <goals>
@@ -478,10 +478,10 @@
                                 <modelId>myfaces-impl</modelId>
                             </modelIds>
                             <params>
-                               <shortname>composite</shortname>
-                               <uri>http://java.sun.com/jsf/composite</uri>
-                               <displayname>JSF Composite Facelets Tag Library.</displayname>
-                               <description>JSF Composite Facelets Tag Library.</description>
+                                <shortname>composite</shortname>
+                                <uri>http://java.sun.com/jsf/composite</uri>
+                                <displayname>JSF Composite Facelets Tag Library.</displayname>
+                                <description>JSF Composite Facelets Tag Library.</description>
                             </params>
                         </configuration>
                         <goals>
@@ -615,7 +615,7 @@
                         <goals>
                             <goal>test-jar</goal>
                         </goals>
-                      </execution>
+                    </execution>
                 </executions>
 
             </plugin>
@@ -624,15 +624,8 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <!-- Only run JUnit tests -->
-                    <!--
-                    <parallel>classes</parallel>
-                    <threadCount>4</threadCount>
-                    <perCoreThreadCount>true</perCoreThreadCount>
-                    -->
                     <testNGArtifactName>none:none</testNGArtifactName>
                     <excludes>
-                        <exclude>**/JspStateManagerImplTest*</exclude>
                         <exclude>**/DefaultViewHandlerSupportTest*</exclude>
                         <exclude>**/ApplicationImplTest*</exclude>
                         <exclude>**/FactoryFinderProviderTest*</exclude>
@@ -996,52 +989,6 @@
             </build>
         </profile>
 
-        <!-- check Java 1.5 -->
-        <profile>
-            <id>checkJDK</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-				    <!--
-                    <plugin>
-                        <groupId>org.jvnet</groupId>
-                        <artifactId>animal-sniffer</artifactId>
-                        <version>1.2</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>check</goal>
-                                </goals>
-                                <configuration>
-                                    <signature>
-                                        <groupId>org.jvnet.animal-sniffer</groupId>
-                                        <artifactId>java1.6</artifactId>
-                                        <version>1.0</version>
-                                    </signature>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-					-->
-                </plugins>
-            </build>
-
-            <!-- TODO jakobk: update to codehaus animal-sniffer (is in maven-central)! -->
-            <!-- plugin is only in java.net -->
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>java.net.repo</id>
-                    <name>java.net repository</name>
-                    <url>http://download.java.net/maven/2/</url>
-                </pluginRepository>
-            </pluginRepositories>
-        </profile>
-
     </profiles>
 
 
@@ -1056,11 +1003,11 @@
 
         <!-- this dependency will be packed together with the main artifact of this pom -->
         <!--
-        <dependency>
-            <groupId>org.apache.myfaces.shared</groupId>
-            <artifactId>myfaces-shared-impl</artifactId>
-        </dependency>
-         -->
+       <dependency>
+           <groupId>org.apache.myfaces.shared</groupId>
+           <artifactId>myfaces-shared-impl</artifactId>
+       </dependency>
+        -->
 
         <!-- Servlet 4.0 -->
         <dependency>
@@ -1117,7 +1064,7 @@
             <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
         </dependency>
 
-		<!-- CDI -->
+        <!-- CDI -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jcdi_1.1_spec</artifactId>
@@ -1129,16 +1076,16 @@
             <artifactId>myfaces-builder-annotations</artifactId>
         </dependency>
 
-		<dependency>
-			<groupId>org.apache.geronimo.specs</groupId>
-			<artifactId>geronimo-atinject_1.0_spec</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-atinject_1.0_spec</artifactId>
+        </dependency>
 
-		<!-- Websockets -->
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-websocket-api</artifactId>
-		</dependency>
+        <!-- Websockets -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-websocket-api</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>commons-beanutils</groupId>
@@ -1154,13 +1101,6 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-catalina</artifactId>
-            <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
-        </dependency>
-
-        <!-- Google guice support (GuiceResolver) -->
-        <dependency>
-            <groupId>com.google.code.guice</groupId>
-            <artifactId>guice</artifactId>
             <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
         </dependency>
 
@@ -1224,13 +1164,13 @@
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-el-api</artifactId>
             <version>7.0.0</version>
-			<scope>test</scope>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jasper-el</artifactId>
             <version>7.0.0</version>
-			<scope>test</scope>
+            <scope>test</scope>
         </dependency>
 
         <!-- Openwebbeans for CDI Test -->
@@ -1270,13 +1210,6 @@
             <version>${openwebbeans.version}</version>
             <scope>test</scope>
         </dependency>
-		<!--
-        <dependency>
-            <groupId>org.apache.openwebbeans</groupId>
-            <artifactId>openwebbeans-clustering</artifactId>
-            <version>${openwebbeans.version}</version>
-            <scope>test</scope>
-        </dependency>-->
 
         <dependency>
             <groupId>org.apache.bval</groupId>
@@ -1290,12 +1223,8 @@
 
     <reporting>
         <plugins>
-
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <excludePackageNames>org.apache.myfaces.ee</excludePackageNames>
-                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-changelog-plugin</artifactId>
@@ -1339,11 +1268,6 @@
                     <linkXref>true</linkXref>
                     <minimumTokens>100</minimumTokens>
                     <targetJdk>1.5</targetJdk>
-                    <excludes>
-                        <!-- these class make the PMD plugin crash (NullPointerException). -->
-                        <exclude>org/apache/myfaces/el/convert/PropertyResolverToELResolver.java</exclude>
-                        <exclude>org/apache/myfaces/el/PropertyResolverImpl.java</exclude>
-                    </excludes>
                 </configuration>
                 <reportSets>
                     <reportSet>
