@@ -254,6 +254,8 @@ public class ViewScopeContextImpl implements Context
                 mbDestroyer.destroy(key.getName(), entry.getValue().getContextualInstance());
             }
         }
+
+        contextMap.clear();
         
         storage.deactivate();
     }
