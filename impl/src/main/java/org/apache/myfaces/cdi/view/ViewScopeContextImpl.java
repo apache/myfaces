@@ -241,6 +241,8 @@ public class ViewScopeContextImpl implements Context
                     contextualInstanceInfo.getCreationalContext());
             }
         }
+
+        contextMap.clear();
         
         storage.deactivate();
     }
