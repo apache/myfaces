@@ -87,10 +87,7 @@ public class FacesDataModelExtension implements Extension
         }
         // Initialize unmodifiable wrapper
         Map<Class<?>,Class<? extends DataModel>> map = holder.getClassInstanceToDataModelWrapperClassMap();
-    }
-
-    public void cleanup(AfterDeploymentValidation afterDeploymentValidation)
-    {
+        
         types.clear();
     }
 }

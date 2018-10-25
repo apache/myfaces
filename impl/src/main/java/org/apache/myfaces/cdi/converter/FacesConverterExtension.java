@@ -75,7 +75,7 @@ public class FacesConverterExtension implements Extension
         }
     }
 
-    public void cleanup(AfterDeploymentValidation afterDeploymentValidation)
+    public void cleanup(@Observes AfterDeploymentValidation afterDeploymentValidation)
     {
         types.clear();
     }
