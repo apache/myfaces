@@ -140,4 +140,17 @@ public class ServletExternalContextImplTest extends AbstractJsfTestCase
         
     }
     
+    @Test
+    public void testSameParameterNames()
+    {
+        String baseUrl = "/test?par=test1&par=test2";
+        
+        // encode that URL without adding further parameters
+        final String redirectUrl = _testExternalContext.encodeRedirectURL(baseUrl, null);
+        
+        // the URL should not change
+        Assert.assertTrue(redirectUrl.contains("par=test1"));
+        Assert.assertTrue(redirectUrl.contains("par=test2"));
+
+    }
 }
