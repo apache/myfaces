@@ -885,11 +885,23 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
             for (int i = 0; i < nameValuePairs.length; i++)
             {
                 String[] currentPair = nameValuePairs[i].split(URL_NAME_VALUE_PAIR_SEPERATOR);
+                String currentName = currentPair[0];
 
-                ArrayList<String> value = new ArrayList<String>(1);
+                if (paramMap == null)
+                {
+                    paramMap = new HashMap<String, List<String>>();
+                }
+                
+                List<String> values = paramMap.get(currentName);
+                if (values == null)
+                {
+                    values = new ArrayList<>(1);
+                    paramMap.put(currentName, values);
+                }
+ 
                 try
                 {
-                    value.add(currentPair.length > 1
+                    values.add(currentPair.length > 1
                                 ? URLDecoder.decode(currentPair[1], getResponseCharacterEncoding())
                                 : "");
                 }
@@ -899,11 +911,6 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                     throw new UnsupportedOperationException("Encoding type=" + getResponseCharacterEncoding()
                                                             + " not supported", e);
                 }
-                if (paramMap == null)
-                {
-                    paramMap = new HashMap<String, List<String>>();
-                }
-                paramMap.put(currentPair[0], value);
             }
         }
 
