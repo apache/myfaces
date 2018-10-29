@@ -37,13 +37,13 @@ import javax.faces.view.facelets.TagDecorator;
 
 import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.shared.util.Assert;
+import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.BaseMultipleTagDecorator;
 import org.apache.myfaces.view.facelets.tag.BaseTagDecorator;
 import org.apache.myfaces.view.facelets.tag.CompositeTagDecorator;
 import org.apache.myfaces.view.facelets.tag.CompositeTagLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 import org.apache.myfaces.view.facelets.tag.jsf.html.DefaultTagDecorator;
-import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 /**
  * A Compiler instance may handle compiling multiple sources
@@ -174,7 +174,7 @@ public abstract class Compiler
         {
             try
             {
-                return ReflectionUtil.forName(type).newInstance();
+                return ClassUtils.forName(type).newInstance();
             }
             catch (Throwable t)
             {

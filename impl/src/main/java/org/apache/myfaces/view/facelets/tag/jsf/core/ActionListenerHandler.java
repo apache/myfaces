@@ -42,9 +42,9 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.renderkit.JSFAttr;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
-import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 /**
  * Register an ActionListener instance on the UIComponent associated with the closest parent UIComponent custom action.
@@ -92,7 +92,7 @@ public final class ActionListenerHandler extends TagHandler
             {
                 try
                 {
-                    instance = (ActionListener) ReflectionUtil.forName(this.type).newInstance();
+                    instance = (ActionListener) ClassUtils.forName(this.type).newInstance();
                 }
                 catch (Exception e)
                 {
@@ -133,7 +133,7 @@ public final class ActionListenerHandler extends TagHandler
                 // test it out
                 try
                 {
-                    ReflectionUtil.forName(type.getValue());
+                    ClassUtils.forName(type.getValue());
                 }
                 catch (ClassNotFoundException e)
                 {

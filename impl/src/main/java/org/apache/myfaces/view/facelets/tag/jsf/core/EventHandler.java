@@ -48,11 +48,11 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
-import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 /**
  * Registers a listener for a given system event class on the UIComponent associated with this tag.
@@ -194,16 +194,14 @@ public final class EventHandler extends TagHandler
         Collection<Class<? extends ComponentSystemEvent>> events;
         
         // We can look up the event class by name in the NamedEventManager.
-        
-        events = RuntimeConfig.getCurrentInstance(
-                context.getFacesContext().getExternalContext()).
+        events = RuntimeConfig.getCurrentInstance(context.getFacesContext().getExternalContext()).
                     getNamedEventManager().getNamedEvent(value);
         
         if (events == null)
         {
             try
             {
-                eventClass = ReflectionUtil.forName (value);
+                eventClass = ClassUtils.forName(value);
                 if (type.isLiteral())
                 {
                     eventClassLiteral = eventClass;

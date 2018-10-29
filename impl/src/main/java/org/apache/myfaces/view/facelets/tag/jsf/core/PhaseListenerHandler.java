@@ -41,8 +41,8 @@ import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
-import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 @JSFFaceletTag(
         name = "f:phaseListener",
@@ -82,7 +82,7 @@ public class PhaseListenerHandler extends TagHandler
             {
                 try
                 {
-                    instance = (PhaseListener) ReflectionUtil.forName(this.type).newInstance();
+                    instance = (PhaseListener) ClassUtils.forName(this.type).newInstance();
                 }
                 catch (Exception e)
                 {
@@ -96,6 +96,7 @@ public class PhaseListenerHandler extends TagHandler
             return instance;
         }
 
+        @Override
         public void afterPhase(PhaseEvent event)
         {
             PhaseListener pl = this.getInstance();
@@ -105,6 +106,7 @@ public class PhaseListenerHandler extends TagHandler
             }
         }
 
+        @Override
         public void beforePhase(PhaseEvent event)
         {
             PhaseListener pl = this.getInstance();
@@ -114,6 +116,7 @@ public class PhaseListenerHandler extends TagHandler
             }
         }
 
+        @Override
         public PhaseId getPhaseId()
         {
             PhaseListener pl = this.getInstance();
@@ -142,7 +145,7 @@ public class PhaseListenerHandler extends TagHandler
                 // test it out
                 try
                 {
-                    ReflectionUtil.forName(type.getValue());
+                    ClassUtils.forName(type.getValue());
                 }
                 catch (ClassNotFoundException e)
                 {

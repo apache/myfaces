@@ -25,7 +25,6 @@ import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResouceWrapper;
-import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 import javax.faces.FacesException;
 import javax.faces.application.Resource;
@@ -52,6 +51,7 @@ import org.apache.myfaces.config.element.facelets.FaceletTag;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.element.facelets.FaceletValidatorTag;
 import org.apache.myfaces.shared.util.Assert;
+import org.apache.myfaces.shared.util.ClassUtils;
 
 /**
  * Handles creating a {@link org.apache.myfaces.view.facelets.tag.TagLibrary TagLibrary}
@@ -532,7 +532,7 @@ public final class TagLibraryConfig
     @SuppressWarnings("unchecked")
     private static <T> Class<? extends T> createClass(Class<T> type, String name) throws Exception
     {
-        Class<? extends T> factory = (Class<? extends T>)ReflectionUtil.forName(name);
+        Class<? extends T> factory = (Class<? extends T>) ClassUtils.forName(name);
         if (!type.isAssignableFrom(factory))
         {
             throw new Exception(name + " must be an instance of " + type.getName());
@@ -575,7 +575,7 @@ public final class TagLibraryConfig
                         pc = new Class[ps.length];
                         for (int i = 0; i < pc.length; i++)
                         {
-                            pc[i] = ReflectionUtil.forName(ps[i].trim());
+                            pc[i] = ClassUtils.forName(ps[i].trim());
                         }
                     }
                     try

@@ -32,6 +32,7 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.tag.ComponentTagDeclarationLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
@@ -46,7 +47,6 @@ import org.apache.myfaces.view.facelets.tag.jstl.core.LegacyJstlCoreLibrary;
 import org.apache.myfaces.view.facelets.tag.jstl.fn.JstlFnLibrary;
 import org.apache.myfaces.view.facelets.tag.ui.LegacyUILibrary;
 import org.apache.myfaces.view.facelets.tag.ui.UILibrary;
-import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 /**
  * Perform initialization steps for facelets compiler
@@ -160,7 +160,7 @@ public class FaceletsCompilerSupport
             {
                 try
                 {
-                    compiler.addTagDecorator((TagDecorator) ReflectionUtil.forName(decorator).newInstance());
+                    compiler.addTagDecorator((TagDecorator) ClassUtils.forName(decorator).newInstance());
                     if (log.isLoggable(Level.FINE))
                     {
                         log.fine("Successfully loaded decorator: " + decorator);

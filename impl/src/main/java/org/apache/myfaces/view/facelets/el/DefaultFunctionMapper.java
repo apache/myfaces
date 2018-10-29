@@ -27,8 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.el.FunctionMapper;
+import org.apache.myfaces.shared.util.ClassUtils;
 
-import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 
 /**
  * Default implementation of the FunctionMapper
@@ -161,7 +161,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
             out.writeUTF(_localName);
             out.writeUTF(_m.getDeclaringClass().getName());
             out.writeUTF(_m.getName());
-            out.writeObject(ReflectionUtil.toTypeNameArray(this._m.getParameterTypes()));
+            out.writeObject(ClassUtils.toTypeNameArray(this._m.getParameterTypes()));
         }
 
         /*
@@ -189,8 +189,8 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
             {
                 try
                 {
-                    Class<?> t = ReflectionUtil.forName(_owner);
-                    Class<?>[] p = ReflectionUtil.toTypeArray(_types);
+                    Class<?> t = ClassUtils.forName(_owner);
+                    Class<?>[] p = ClassUtils.toTypeArray(_types);
                     _m = t.getMethod(_name, p);
                 }
                 catch (Exception e)
