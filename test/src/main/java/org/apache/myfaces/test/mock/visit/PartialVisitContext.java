@@ -358,14 +358,14 @@ public class PartialVisitContext extends VisitContext
         // the client id to remove should be contained in the corresponding
         // collection - ie. whether the key (the NamingContainer client id)
         // is present at the start of the client id to remove.
-        for (String key : _subtreeClientIds.keySet())
+        for (Map.Entry<String, Collection<String>> stringCollectionEntry : _subtreeClientIds.entrySet())
         {
-            if (clientId.startsWith(key))
+            if (clientId.startsWith(stringCollectionEntry.getKey()))
             {
                 // If the clientId starts with the key, we should
                 // have an entry for this clientId in the corresponding
                 // collection.  Remove it.
-                Collection<String> ids = _subtreeClientIds.get(key);
+                Collection<String> ids = stringCollectionEntry.getValue();
                 ids.remove(clientId);
             }
         }

@@ -420,9 +420,9 @@ public final class CompositeComponentELResolver extends ELResolver
 
         public void putAll(Map<? extends String, ? extends Object> m)
         {
-            for (String key : m.keySet())
+            for (Entry<? extends String, ? extends Object> entry : m.entrySet())
             {
-                put(key, m.get(key));
+                put(entry.getKey(), entry.getValue());
             }
         }
 

@@ -192,7 +192,7 @@ public class StringCharArrayAccessor
             return createStringFallback(charBuf);
         }
 
-        String str = new String();
+        String str = "";
         try
         {
             // try to prevent possible final field setting execution reordering in JIT 

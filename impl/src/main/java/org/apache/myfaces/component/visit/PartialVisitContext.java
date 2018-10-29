@@ -53,7 +53,7 @@ public class PartialVisitContext extends VisitContext
    * @param clientIds the client ids of the components to visit
    * @throws NullPointerException  if {@code facesContext}
    *                               is {@code null}
-   */    
+   */
   public PartialVisitContext(
     FacesContext facesContext,
     Collection<String> clientIds)
@@ -70,7 +70,7 @@ public class PartialVisitContext extends VisitContext
    *                               is {@code null}
    * @throws IllegalArgumentException if the phaseId is specified and
    * hints does not contain VisitHint.EXECUTE_LIFECYCLE
-   */    
+   */
   public PartialVisitContext(FacesContext facesContext,
                              Collection<String> clientIds,
                              Set<VisitHint> hints)
@@ -83,9 +83,9 @@ public class PartialVisitContext extends VisitContext
     _facesContext = facesContext;
 
     // Copy the client ids into a HashSet to allow for quick lookups.
-//    Set<String> clientIdSet = (clientIds == null)
-//            ? new HashSet<String>()
-//                    : new HashSet<String>(clientIds);
+  //    Set<String> clientIdSet = (clientIds == null)
+  //            ? new HashSet<String>()
+  //                    : new HashSet<String>(clientIds);
 
     // Initialize our various collections
     // We maintain 4 collections:
@@ -115,8 +115,8 @@ public class PartialVisitContext extends VisitContext
     // Intialize subtreeClientIds collection
     _subtreeClientIds = new HashMap<String, Collection<String>>();
 
-    // Initialize the clientIds collection.  Note that we proxy 
-    // this collection so that we can trap adds/removes and sync 
+    // Initialize the clientIds collection.  Note that we proxy
+    // this collection so that we can trap adds/removes and sync
     // up all of the other collections.
     _clientIds = new CollectionProxy<String>(new HashSet<String>());
 
@@ -193,7 +193,7 @@ public class PartialVisitContext extends VisitContext
    */
   @Override
   public VisitResult invokeVisitCallback(
-    UIComponent component, 
+    UIComponent component,
     VisitCallback callback)
   {
     // First sure that we should visit this component - ie.
@@ -223,7 +223,7 @@ public class PartialVisitContext extends VisitContext
     }
     else
     {
-      // Otherwise, just return the callback's result 
+      // Otherwise, just return the callback's result
       return result;
     }
   }
@@ -303,13 +303,13 @@ public class PartialVisitContext extends VisitContext
     }
     else if (lastIndex < (clientId.length() - 1))
     {
-      id = clientId.substring(lastIndex + 1);              
+      id = clientId.substring(lastIndex + 1);
     }
     //else
     //{
       // TODO log warning for trailing colon case
     //}
- 
+
     return id;
   }
 
@@ -323,19 +323,19 @@ public class PartialVisitContext extends VisitContext
     // NamingContainer, add an entry into the map for the full client
     // id.
     final char separator = getFacesContext().getNamingContainerSeparatorChar();
-    
+
     int length = clientId.length();
 
     for (int i = 0; i < length; i++)
     {
       if (clientId.charAt(i) == separator)
       {
-        // We found an ancestor NamingContainer client id - add 
+        // We found an ancestor NamingContainer client id - add
         // an entry to the map.
         String namingContainerClientId = clientId.substring(0, i);
 
         // Check to see whether we've already ids under this
-        // NamingContainer client id.  If not, create the 
+        // NamingContainer client id.  If not, create the
         // Collection for this NamingContainer client id and
         // stash it away in our map
         Collection<String> c = _subtreeClientIds.get(namingContainerClientId);
@@ -361,14 +361,14 @@ public class PartialVisitContext extends VisitContext
     // the client id to remove should be contained in the corresponding
     // collection - ie. whether the key (the NamingContainer client id)
     // is present at the start of the client id to remove.
-    for (String key : _subtreeClientIds.keySet())
+    for (Map.Entry<String, Collection<String>> stringCollectionEntry : _subtreeClientIds.entrySet())
     {
-      if (clientId.startsWith(key))
+      if (clientId.startsWith(stringCollectionEntry.getKey()))
       {
         // If the clientId starts with the key, we should
         // have an entry for this clientId in the corresponding
         // collection.  Remove it.
-        Collection<String> ids = _subtreeClientIds.get(key);
+        Collection<String> ids = stringCollectionEntry.getValue();
         ids.remove(clientId);
       }
     }
@@ -429,7 +429,7 @@ public class PartialVisitContext extends VisitContext
     public E next()
     {
       _current = _wrapped.next();
-      
+
       return _current;
     }
 

@@ -389,7 +389,7 @@ class _ELText
 
         if (buff.length() > 0)
         {
-            text.add(new _ELText(new String(buff.toString())));
+            text.add(new _ELText(buff.toString()));
             buff.setLength(0);
         }
 

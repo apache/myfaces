@@ -80,7 +80,7 @@ public class HashMapUtils
         while (iter.hasNext())
         {
             Map.Entry entry = (Map.Entry) iter.next();
-            buff.append("[" + entry.getKey() + ',' + entry.getValue() + "]\n");
+            buff.append("[").append(entry.getKey()).append(',').append(entry.getValue()).append("]\n");
         }
         return buff.toString();
     }

@@ -238,7 +238,7 @@ class _SelectItemsIterator implements Iterator<SelectItem>
                 boolean wroteRequestMapVarValue = false;
                 Object oldRequestMapVarValue = null;
                 String var = (String) attributeMap.get(VAR_ATTR);
-                if(var != null && !"".equals(var))
+                if(var != null && !var.isEmpty())
                 {
                     // save the current value of the key listed in var from the request map
                     oldRequestMapVarValue = _facesContext.getExternalContext().getRequestMap().put(var, item);

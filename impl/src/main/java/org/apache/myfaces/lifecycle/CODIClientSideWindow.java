@@ -242,7 +242,7 @@ public class CODIClientSideWindow extends ClientWindow
             String line = null;
             while ((line = reader.readLine()) != null)
             {
-              sb.append(line + '\n');
+              sb.append(line).append('\n');
             }
         }
         catch (IOException e)

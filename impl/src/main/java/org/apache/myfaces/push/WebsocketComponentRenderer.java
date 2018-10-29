@@ -185,13 +185,18 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
 
         StringBuilder sb = new StringBuilder(50);
         sb.append("jsf.push.init(");
-        sb.append('\'' +component.getClientId()+ '\'');
+        sb.append('\'');
+        sb.append(component.getClientId());
+        sb.append('\'');
         sb.append(',');
-        sb.append('\'' +facesContext.getExternalContext().encodeWebsocketURL(
+        sb.append('\'');
+        sb.append(facesContext.getExternalContext().encodeWebsocketURL(
                 facesContext.getApplication().getViewHandler().getWebsocketURL(
                         facesContext, component.getChannel()+ '?' +channelToken))+ '\'');
         sb.append(',');
-        sb.append('\'' +component.getChannel()+ '\'');
+        sb.append('\'');
+        sb.append(component.getChannel());
+        sb.append('\'');
         sb.append(',');
         sb.append(component.getOnopen());
         sb.append(',');

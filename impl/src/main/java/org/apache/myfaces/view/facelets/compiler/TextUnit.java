@@ -283,7 +283,7 @@ final class TextUnit extends CompilationUnit
             this.addInstruction(new CommentInstruction(el));
         }
 
-        this.buffer.append("<!--" + text + "-->");
+        this.buffer.append("<!--").append(text).append("-->");
     }
 
     public void startTag(Tag tag)
