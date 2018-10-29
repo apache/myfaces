@@ -216,8 +216,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     public FaceletCompositionContextImpl(FaceletFactory factory, FacesContext facesContext, String base)
     {
         this(factory, facesContext);
-        _sectionUniqueIdCounter = new SectionUniqueIdCounter(base+"_");
-        _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter("_"+ base +"_");
+        _sectionUniqueIdCounter = new SectionUniqueIdCounter(base+ '_');
+        _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter('_' + base + '_');
         _sectionUniqueNormalIdCounter = _sectionUniqueIdCounter;
         _sectionUniqueComponentNormalIdCounter = _sectionUniqueComponentIdCounter;
         _dynamicComponentTopLevel = true;
@@ -1162,8 +1162,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         
         _sectionUniqueIdCounterStack.add(_sectionUniqueIdCounter);
         _sectionUniqueComponentIdCounterStack.add(_sectionUniqueComponentIdCounter);
-        _sectionUniqueIdCounter = new SectionUniqueIdCounter(base+"_");
-        _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter("_"+ base +"_");
+        _sectionUniqueIdCounter = new SectionUniqueIdCounter(base+ '_');
+        _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter('_' + base + '_');
         _sectionUniqueNormalIdCounter = _sectionUniqueIdCounter;
         _sectionUniqueComponentNormalIdCounter = _sectionUniqueComponentIdCounter;
         _dynamicComponentTopLevel = true;

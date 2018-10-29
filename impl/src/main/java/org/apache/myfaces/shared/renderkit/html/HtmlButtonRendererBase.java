@@ -375,12 +375,12 @@ public class HtmlButtonRendererBase
         onClick.append("return ").
             append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
             append(formName).append("','").
-            append(component.getClientId(facesContext)).append("'");
+            append(component.getClientId(facesContext)).append('\'');
 
         if (params.length() > 2 || target != null)
         {
-            onClick.append(",").
-                append(target == null ? "null" : ("'" + target + "'")).append(",").
+            onClick.append(',').
+                append(target == null ? "null" : ('\'' + target + '\'')).append(',').
                 append(params);
         }
         onClick.append(");");
@@ -394,7 +394,7 @@ public class HtmlButtonRendererBase
     {
         //add child parameters
         StringBuilder params = new StringBuilder();
-        params.append("[");
+        params.append('[');
         
         for (UIParameter param : validParams) 
         {
@@ -448,7 +448,7 @@ public class HtmlButtonRendererBase
 
             if (params.length() > 1) 
             {
-                params.append(",");
+                params.append(',');
             }
 
             params.append("['");
@@ -457,7 +457,7 @@ public class HtmlButtonRendererBase
             params.append(strParamValue);
             params.append("']");
         }
-        params.append("]");
+        params.append(']');
         return params;
     }
 
@@ -535,12 +535,12 @@ public class HtmlButtonRendererBase
                 onClick.append("return ").
                     append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
                     append(formName).append("','").
-                    append(uiComponent.getClientId(facesContext)).append("'");
+                    append(uiComponent.getClientId(facesContext)).append('\'');
 
                 if (params.length() > 2 || target != null)
                 {
-                    onClick.append(",").
-                        append(target == null ? "null" : ("'" + target + "'")).append(",").
+                    onClick.append(',').
+                        append(target == null ? "null" : ('\'' + target + '\'')).append(',').
                         append(params);
                 }
                 onClick.append(");");

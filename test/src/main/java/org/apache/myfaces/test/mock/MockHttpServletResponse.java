@@ -66,7 +66,7 @@ public class MockHttpServletResponse implements HttpServletResponse
      */
     public String getHeader(String name)
     {
-        String match = name + ":";
+        String match = name + ':';
         Iterator headers = this.headers.iterator();
         while (headers.hasNext())
         {
@@ -448,7 +448,7 @@ public class MockHttpServletResponse implements HttpServletResponse
      */
     private void removeHeader(String name)
     {
-        String match = name + ":";
+        String match = name + ':';
         Iterator headers = this.headers.iterator();
         while (headers.hasNext())
         {

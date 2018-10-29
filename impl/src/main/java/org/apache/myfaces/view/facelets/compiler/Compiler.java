@@ -155,7 +155,7 @@ public abstract class Compiler
                 {
                     log.warning("No default ExpressionFactory from Faces Implementation, "
                                 + "attempting to load from Feature["
-                                + EXPRESSION_FACTORY + "]");
+                                + EXPRESSION_FACTORY + ']');
                 }
             }
             catch (Exception e)

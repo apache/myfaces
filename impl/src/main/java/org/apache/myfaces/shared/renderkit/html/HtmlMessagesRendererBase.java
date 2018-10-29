@@ -20,7 +20,7 @@ package org.apache.myfaces.shared.renderkit.html;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -75,25 +75,13 @@ public abstract class HtmlMessagesRendererBase
     {
         // check the for attribute
         String forAttr = getFor(messages);
-        //UIComponent forComponent = null;
         String clientId = null;
-        if(forAttr != null && !"".equals(forAttr))
+        if (forAttr != null && !forAttr.isEmpty())
         {
-            /*
-            forComponent = messages.findComponent(forAttr);
-            if (forComponent == null)
-            {
-                log.severe("Could not render Messages. Unable to find component '"
-                        + forAttr + "' (calling findComponent on component '" 
-                        + messages.getClientId(facesContext)
-                        + "'). If the provided id was correct, wrap the message and its "
-                        + "component into an h:panelGroup or h:panelGrid.");
-                return;
-            }*/
             SearchExpressionHandler searchExpressionHandler = 
                     facesContext.getApplication().getSearchExpressionHandler();
-            Set<SearchExpressionHint> expressionHints = new HashSet<SearchExpressionHint>();
-            expressionHints.add(SearchExpressionHint.IGNORE_NO_RESULT);
+            Set<SearchExpressionHint> expressionHints = EnumSet.of(SearchExpressionHint.IGNORE_NO_RESULT);
+
             clientId = searchExpressionHandler.resolveClientId(
                     SearchExpressionContext.createSearchExpressionContext(
                             facesContext, messages, expressionHints, null), forAttr);

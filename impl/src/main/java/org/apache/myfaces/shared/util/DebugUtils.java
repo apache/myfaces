@@ -48,7 +48,7 @@ public class DebugUtils
         getPathToComponent(component,buf);
 
         buf.insert(0,"{Component-Path : ");
-        buf.append("}");
+        buf.append('}');
 
         return buf.toString();
     }
@@ -74,7 +74,7 @@ public class DebugUtils
             intBuf.append(",Id: ");
             intBuf.append(component.getId());
         }
-        intBuf.append("]");
+        intBuf.append(']');
 
         buf.insert(0,intBuf.toString());
 

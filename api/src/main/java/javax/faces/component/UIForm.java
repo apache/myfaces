@@ -400,7 +400,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         getPathToComponent(component, buf);
 
         buf.insert(0, "{Component-Path : ");
-        buf.append("}");
+        buf.append('}');
 
         return buf.toString();
     }
@@ -426,7 +426,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
             intBuf.append(",Id: ");
             intBuf.append(component.getId());
         }
-        intBuf.append("]");
+        intBuf.append(']');
 
         buf.insert(0, intBuf.toString());
 

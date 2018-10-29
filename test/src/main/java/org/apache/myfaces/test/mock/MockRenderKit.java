@@ -76,7 +76,7 @@ public class MockRenderKit extends RenderKit
         {
             throw new NullPointerException();
         }
-        renderers.put(family + "|" + rendererType, renderer);
+        renderers.put(family + '|' + rendererType, renderer);
 
     }
 
@@ -88,7 +88,7 @@ public class MockRenderKit extends RenderKit
         {
             throw new NullPointerException();
         }
-        return (Renderer) renderers.get(family + "|" + rendererType);
+        return (Renderer) renderers.get(family + '|' + rendererType);
 
     }
 

@@ -316,7 +316,7 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
             {
                 if (log.isLoggable(Level.FINE))
                 {
-                    log.fine("renderOutputText writing '" + text + "'");
+                    log.fine("renderOutputText writing '" + text + '\'');
                 }
                 writer.writeText(text, JSFAttr.VALUE_ATTR);
             }

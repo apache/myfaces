@@ -62,7 +62,7 @@ public final class TagAttributeException extends FaceletException
      */
     public TagAttributeException(Tag tag, TagAttribute attr, String message)
     {
-        super(print(tag, attr) + " " + message);
+        super(print(tag, attr) + ' ' + message);
     }
 
     /**
@@ -71,7 +71,7 @@ public final class TagAttributeException extends FaceletException
      */
     public TagAttributeException(Tag tag, TagAttribute attr, String message, Throwable cause)
     {
-        super(print(tag, attr) + " " + message, cause);
+        super(print(tag, attr) + ' ' + message, cause);
     }
 
     /**
@@ -79,11 +79,11 @@ public final class TagAttributeException extends FaceletException
      */
     public TagAttributeException(Tag tag, TagAttribute attr, Throwable cause)
     {
-        super(print(tag, attr) + " " + cause.getMessage(), cause);
+        super(print(tag, attr) + ' ' + cause.getMessage(), cause);
     }
 
     private static String print(Tag tag, TagAttribute attr)
     {
-        return tag.getLocation() + " <" + tag.getQName() + " " + attr.getQName() + "=\"" + attr.getValue() + "\">";
+        return tag.getLocation() + " <" + tag.getQName() + ' ' + attr.getQName() + "=\"" + attr.getValue() + "\">";
     }
 }

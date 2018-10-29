@@ -226,7 +226,7 @@ public final class Classpath
         if (!done && prefix.length() > 0)
         {
             // we add '/' at the end since join adds it as well
-            String urlString = url.toExternalForm() + "/";
+            String urlString = url.toExternalForm() + '/';
 
             String[] split = prefix.split("/");
 
@@ -260,7 +260,7 @@ public final class Classpath
         int length = tokens.length - (excludeLast ? 1 : 0);
         for (int i = 0; i < length; i++)
         {
-            join.append(tokens[i]).append("/");
+            join.append(tokens[i]).append('/');
         }
 
         return join.toString();

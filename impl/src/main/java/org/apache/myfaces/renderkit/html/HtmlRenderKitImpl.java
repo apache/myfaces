@@ -125,7 +125,7 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
         }
         if (renderer == null)
         {
-            log.warning("Unsupported component-family/renderer-type: " + componentFamily + "/" + rendererType);
+            log.warning("Unsupported component-family/renderer-type: " + componentFamily + '/' + rendererType);
         }
         if (renderer instanceof LazyRendererWrapper)
         {

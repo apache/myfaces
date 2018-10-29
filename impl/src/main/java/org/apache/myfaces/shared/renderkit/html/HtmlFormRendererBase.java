@@ -255,7 +255,7 @@ public class HtmlFormRendererBase
         StringBuilder sb = SharedStringBuilder.get(facesContext, SHARED_STRING_BUILDER,
                 HIDDEN_COMMAND_INPUTS_SET_ATTR.length() + 20);
         sb.append(HIDDEN_COMMAND_INPUTS_SET_ATTR);
-        sb.append("_");
+        sb.append('_');
         sb.append(form.getClientId(facesContext));
         return sb.toString();
     }
@@ -265,7 +265,7 @@ public class HtmlFormRendererBase
         StringBuilder sb = SharedStringBuilder.get(facesContext, SHARED_STRING_BUILDER,
                 SCROLL_HIDDEN_INPUT.length() + 20);
         sb.append(SCROLL_HIDDEN_INPUT);
-        sb.append("_");
+        sb.append('_');
         sb.append(form.getClientId(facesContext));
         return sb.toString();
     }

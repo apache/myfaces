@@ -90,7 +90,7 @@ public abstract class AbstractHtmlUnitTestCase
 
         // Calculate the URL for the installed "systest" web application
         String url = System.getProperty("url");
-        this.url = new URL(url + "/");
+        this.url = new URL(url + '/');
 
         // Initialize HtmlUnit constructs for this test case
         webClient = new WebClient();

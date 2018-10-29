@@ -832,7 +832,7 @@ public class NavigationHandlerImpl
             // In faces-config javadoc says:
             // "If there is no <start-node> element declared, it 
             //  is assumed to be <flowName>.xhtml."
-            outcomeToGo = "/" + targetFlow.getId()+ "/" + 
+            outcomeToGo = '/' + targetFlow.getId()+ '/' +
                 targetFlow.getId() + ".xhtml";
         }
         else
@@ -1104,7 +1104,7 @@ public class NavigationHandlerImpl
             if (index == -1)
             {
                 //viewIdToTest = "/" + viewIdToTest;
-                viewIdToTest.insert(0,"/");
+                viewIdToTest.insert(0, '/');
             }
             
             else

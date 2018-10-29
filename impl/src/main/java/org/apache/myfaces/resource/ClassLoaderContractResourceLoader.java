@@ -51,10 +51,11 @@ public class ClassLoaderContractResourceLoader extends ContractResourceLoader
     public InputStream getResourceInputStream(ResourceMeta resourceMeta)
     {
         InputStream is = null;
-        if (getPrefix() != null && !"".equals(getPrefix()))
+
+        String prefix = getPrefix();
+        if (prefix != null && !prefix.isEmpty())
         {
-            String name = getPrefix() + '/' + resourceMeta.getContractName() 
-                + '/' + resourceMeta.getResourceIdentifier();
+            String name = prefix + '/' + resourceMeta.getContractName() + '/' + resourceMeta.getResourceIdentifier();
             is = getClassLoader().getResourceAsStream(name);
             if (is == null)
             {
@@ -64,8 +65,7 @@ public class ClassLoaderContractResourceLoader extends ContractResourceLoader
         }
         else
         {
-            String name = resourceMeta.getContractName() 
-                + '/' + resourceMeta.getResourceIdentifier();
+            String name = resourceMeta.getContractName() + '/' + resourceMeta.getResourceIdentifier();
             is = getClassLoader().getResourceAsStream(name);
             if (is == null)
             {
@@ -79,10 +79,11 @@ public class ClassLoaderContractResourceLoader extends ContractResourceLoader
     public URL getResourceURL(ResourceMeta resourceMeta)
     {
         URL url = null;
-        if (getPrefix() != null && !"".equals(getPrefix()))
+
+        String prefix = getPrefix();
+        if (prefix != null && !prefix.isEmpty())
         {
-            String name = getPrefix() + '/' + resourceMeta.getContractName() + 
-                '/' + resourceMeta.getResourceIdentifier();
+            String name = prefix + '/' + resourceMeta.getContractName() + '/' + resourceMeta.getResourceIdentifier();
             url = getClassLoader().getResource(name);
             if (url == null)
             {
@@ -131,10 +132,10 @@ public class ClassLoaderContractResourceLoader extends ContractResourceLoader
     @Override
     public boolean libraryExists(String libraryName, String contractName)
     {
-        if (getPrefix() != null && !"".equals(getPrefix()))
+        String prefix = getPrefix();
+        if (prefix != null && !prefix.isEmpty())
         {
-            String name = getPrefix() + '/' + 
-                contractName + '/' + libraryName;
+            String name = prefix + '/' + contractName + '/' + libraryName;
             URL url = getClassLoader().getResource(name);
             if (url == null)
             {
@@ -166,10 +167,11 @@ public class ClassLoaderContractResourceLoader extends ContractResourceLoader
             int maxDepth, ResourceVisitOption... options)
     {
         String basePath = path;
-        
-        if (getPrefix() != null)
+
+        String prefix = getPrefix();
+        if (prefix != null)
         {
-            basePath = getPrefix() + '/' + (path.startsWith("/") ? path.substring(1) : path);
+            basePath = prefix + '/' + (path.startsWith("/") ? path.substring(1) : path);
         }
 
         URL url = getClassLoader().getResource(basePath);

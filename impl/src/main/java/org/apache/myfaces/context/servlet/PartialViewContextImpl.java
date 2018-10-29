@@ -236,7 +236,7 @@ public class PartialViewContextImpl extends PartialViewContext
                     getRequestParameterMap().get(
                     PartialViewContext.PARTIAL_EXECUTE_PARAM_NAME);
 
-            if (executeMode != null && !"".equals(executeMode) &&
+            if (executeMode != null && !executeMode.isEmpty() &&
                     //!PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode) &&
                     !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode))
             {
@@ -309,7 +309,7 @@ public class PartialViewContextImpl extends PartialViewContext
                     getRequestParameterMap().get(
                     PartialViewContext.PARTIAL_RENDER_PARAM_NAME);
 
-            if (renderMode != null && !"".equals(renderMode) &&
+            if (renderMode != null && !renderMode.isEmpty() &&
                     //!PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode) &&
                     !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode))
             {
@@ -636,13 +636,7 @@ public class PartialViewContextImpl extends PartialViewContext
                         String libraryName = (String) 
                                 component.getAttributes().get(JSFAttr.LIBRARY_ATTR);
 
-                        if (resourceName == null)
-                        {
-                            // No resource, render all
-                            component.encodeAll(facesContext);
-                            continue;
-                        }
-                        if ("".equals(resourceName))
+                        if (resourceName == null || resourceName.isEmpty())
                         {
                             // No resource, render all
                             component.encodeAll(facesContext);

@@ -678,7 +678,7 @@ public final class WebConfigParamUtils
             }
             catch (Exception e)
             {
-                throw new FacesException("Error Initializing Object[" + param + "]", e);
+                throw new FacesException("Error Initializing Object[" + param + ']', e);
             }
         }
     }

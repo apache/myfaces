@@ -200,9 +200,11 @@ public class ClassLoaderResourceLoader extends ResourceLoader
     public InputStream getResourceInputStream(ResourceMeta resourceMeta)
     {
         InputStream is = null;
-        if (getPrefix() != null && !"".equals(getPrefix()))
+
+        String prefix = getPrefix();
+        if (prefix != null && !prefix.isEmpty())
         {
-            String name = getPrefix() + '/' + resourceMeta.getResourceIdentifier();
+            String name = prefix + '/' + resourceMeta.getResourceIdentifier();
             is = getClassLoader().getResourceAsStream(name);
             if (is == null)
             {
@@ -225,9 +227,11 @@ public class ClassLoaderResourceLoader extends ResourceLoader
     public URL getResourceURL(String resourceId)
     {
         URL url = null;
-        if (getPrefix() != null && !"".equals(getPrefix()))
+
+        String prefix = getPrefix();
+        if (prefix != null && !prefix.isEmpty())
         {
-            String name = getPrefix() + '/' + resourceId;
+            String name = prefix + '/' + resourceId;
             url = getClassLoader().getResource(name);
             if (url == null)
             {
@@ -427,12 +431,14 @@ public class ClassLoaderResourceLoader extends ResourceLoader
     @Override
     public boolean libraryExists(String libraryName)
     {
-        if (getPrefix() != null && !"".equals(getPrefix()))
+        String prefix = getPrefix();
+        if (prefix != null && !prefix.isEmpty())
         {
-            URL url = getClassLoader().getResource(getPrefix() + '/' + libraryName);
+            String name = prefix + '/' + libraryName;
+            URL url = getClassLoader().getResource(name);
             if (url == null)
             {
-                url = this.getClass().getClassLoader().getResource(getPrefix() + '/' + libraryName);
+                url = this.getClass().getClassLoader().getResource(name);
             }
             if (url != null)
             {
@@ -459,10 +465,11 @@ public class ClassLoaderResourceLoader extends ResourceLoader
             int maxDepth, ResourceVisitOption... options)
     {
         String basePath = path;
-        
-        if (getPrefix() != null)
+
+        String prefix = getPrefix();
+        if (prefix != null)
         {
-            basePath = getPrefix() + '/' + (path.startsWith("/") ? path.substring(1) : path);
+            basePath = prefix + '/' + (path.startsWith("/") ? path.substring(1) : path);
         }
 
         URL url = getClassLoader().getResource(basePath);

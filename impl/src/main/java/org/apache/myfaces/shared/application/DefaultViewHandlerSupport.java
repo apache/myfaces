@@ -303,14 +303,14 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             int index = builder.indexOf("?");
             if (index >= 0)
             {
-                builder.append("&");
+                builder.append('&');
             }
             else
             {
-                builder.append("?");
+                builder.append('?');
             }
             builder.append(ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM);
-            builder.append("=");
+            builder.append('=');
             ResponseStateManager rsm = context.getRenderKit().getResponseStateManager();
             builder.append(rsm.getCryptographicallyStrongTokenFromSession(context));
         }
@@ -318,7 +318,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         String calculatedActionURL = builder.toString();
         if (log.isLoggable(Level.FINEST))
         {
-            log.finest("Calculated actionURL: '" + calculatedActionURL + "' for viewId: '" + viewId + "'");
+            log.finest("Calculated actionURL: '" + calculatedActionURL + "' for viewId: '" + viewId + '\'');
         }
         return calculatedActionURL;
     }

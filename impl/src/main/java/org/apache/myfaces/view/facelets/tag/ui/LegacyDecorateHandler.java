@@ -92,7 +92,7 @@ public final class LegacyDecorateHandler extends TagHandler implements TemplateC
             _handlers.put(handler.getName(), handler);
             if (log.isLoggable(Level.FINE))
             {
-                log.fine(tag + " found Define[" + handler.getName() + "]");
+                log.fine(tag + " found Define[" + handler.getName() + ']');
             }
         }
 

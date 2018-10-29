@@ -415,8 +415,8 @@ public final class ClassUtils
             {
                 if (!expectedTypes[i].isAssignableFrom(clazzForName))
                 {
-                    throw new FacesException("'" + type + "' does not implement expected type '" + expectedTypes[i]
-                            + "'");
+                    throw new FacesException('\'' + type + "' does not implement expected type '" + expectedTypes[i]
+                            + '\'');
                 }
             }
         }

@@ -602,7 +602,7 @@ public final class TagAttributeImpl extends TagAttribute
     {
         if (this.string == null)
         {
-            this.string = this.location + " " + this.qName + "=\"" + this.value + "\"";
+            this.string = this.location + " " + this.qName + "=\"" + this.value + '"';
         }
         return this.string;
     }

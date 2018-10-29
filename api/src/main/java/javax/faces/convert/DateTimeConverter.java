@@ -168,7 +168,7 @@ public class DateTimeConverter
                         }
                         else
                         {
-                            throw new ConverterException("invalid type '" + _type + "'");
+                            throw new ConverterException("invalid type '" + _type + '\'');
                         }
                     }
                 }
@@ -205,7 +205,7 @@ public class DateTimeConverter
                         }
                         else
                         {
-                            throw new ConverterException("invalid type '" + _type + "'");
+                            throw new ConverterException("invalid type '" + _type + '\'');
                         }
                     }
                 }
@@ -303,7 +303,7 @@ public class DateTimeConverter
         }
         else
         {
-            throw new ConverterException("invalid type '" + _type + "'");
+            throw new ConverterException("invalid type '" + _type + '\'');
         }
         
         // format cannot be lenient (JSR-127)
@@ -433,7 +433,7 @@ public class DateTimeConverter
             return FormatStyle.FULL;
         }
         
-        throw new ConverterException("invalid style '" + name + "'");
+        throw new ConverterException("invalid style '" + name + '\'');
     }
 
     private int calcStyle(String name)
@@ -459,7 +459,7 @@ public class DateTimeConverter
             return DateFormat.FULL;
         }
 
-        throw new ConverterException("invalid style '" + name + "'");
+        throw new ConverterException("invalid style '" + name + '\'');
     }
     
     private boolean isJava8DateTimeFormatter()

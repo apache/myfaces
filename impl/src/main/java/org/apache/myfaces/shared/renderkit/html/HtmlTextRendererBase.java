@@ -85,7 +85,7 @@ public class HtmlTextRendererBase
         String text = org.apache.myfaces.shared.renderkit.RendererUtils.getStringValue(facesContext, component);
         if (log.isLoggable(Level.FINE))
         {
-            log.fine("renderOutput '" + text + "'");
+            log.fine("renderOutput '" + text + '\'');
         }
         boolean escape;
         if (component instanceof HtmlOutputText)
@@ -150,7 +150,7 @@ public class HtmlTextRendererBase
             {
                 if (log.isLoggable(Level.FINE))
                 {
-                    log.fine("renderOutputText writing '" + text + "'");
+                    log.fine("renderOutputText writing '" + text + '\'');
                 }
                 writer.writeText(text, JSFAttr.VALUE_ATTR);
             }
@@ -276,7 +276,7 @@ public class HtmlTextRendererBase
         String value = RendererUtils.getStringValue(facesContext, component);
         if (log.isLoggable(Level.FINE))
         {
-           log.fine("renderInput '" + value + "'");
+           log.fine("renderInput '" + value + '\'');
         }
 
         if (value != null)
@@ -401,7 +401,7 @@ public class HtmlTextRendererBase
             {
                 if (log.isLoggable(Level.FINE))
                 {
-                    log.fine("renderOutputText writing '" + text + "'");
+                    log.fine("renderOutputText writing '" + text + '\'');
                 }
                 writer.writeText(text,
                         JSFAttr.VALUE_ATTR);

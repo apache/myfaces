@@ -442,7 +442,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
     {
         retVal.setLength(0);
 
-        retVal.append("{");
+        retVal.append('{');
 
         boolean first = true;
 
@@ -462,7 +462,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                 retVal.append(option);
             }
         }
-        retVal.append("}");
+        retVal.append('}');
         return retVal;
     }
 

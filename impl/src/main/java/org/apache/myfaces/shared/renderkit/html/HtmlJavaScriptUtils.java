@@ -134,13 +134,13 @@ public final class HtmlJavaScriptUtils
         final char separatorChar = FacesContext.getCurrentInstance().getNamingContainerSeparatorChar();
         if (formName == null)
         {
-            return "'" + HtmlRendererUtils.CLEAR_HIDDEN_FIELD_FN_NAME
+            return '\'' + HtmlRendererUtils.CLEAR_HIDDEN_FIELD_FN_NAME
                     + "_'+formName.replace(/-/g, '\\$" + separatorChar
                     + "').replace(/" + separatorChar + "/g,'_')";
         }
 
         return JavascriptUtils
-                .getValidJavascriptNameAsInRI(HtmlRendererUtils.CLEAR_HIDDEN_FIELD_FN_NAME + "_"
+                .getValidJavascriptNameAsInRI(HtmlRendererUtils.CLEAR_HIDDEN_FIELD_FN_NAME + '_'
                         + formName.replace(separatorChar, '_'));
     }
 
@@ -211,7 +211,7 @@ public final class HtmlJavaScriptUtils
         }
         else
         {
-            script.append("'");
+            script.append('\'');
             script.append(formTarget);
             script.append("';");
         }
@@ -220,7 +220,7 @@ public final class HtmlJavaScriptUtils
         //Just to be sure we call this clear method on each load.
         //Otherwise in the case, that someone submits a form by pressing Enter
         //within a text input, the hidden inputs won't be cleared!
-        script.append("\n");
+        script.append('\n');
         script.append(functionName);
         script.append("();");
 

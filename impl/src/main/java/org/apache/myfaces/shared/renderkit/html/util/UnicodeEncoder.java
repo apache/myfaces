@@ -53,7 +53,7 @@ public abstract class UnicodeEncoder
                 //encode all non basic latin characters
                 sb.append("&#");
                 sb.append((int)c);
-                sb.append(";");
+                sb.append(';');
             }
             else if( sb != null )
             {

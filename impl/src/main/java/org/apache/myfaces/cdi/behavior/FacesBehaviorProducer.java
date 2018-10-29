@@ -44,7 +44,7 @@ public class FacesBehaviorProducer extends AbstractDynamicProducer<Behavior>
                         typeInfo.getBehaviorId() == null ? "" : typeInfo.getBehaviorId(), true);
         
         String behaviorId = typeInfo.getBehaviorId() == null ? "" : typeInfo.getBehaviorId();
-        String id = "" + typeInfo.getType() + "_" + behaviorId;
+        String id = "" + typeInfo.getType() + '_' + behaviorId;
 
         super.id(id)
                 .scope(Dependent.class)

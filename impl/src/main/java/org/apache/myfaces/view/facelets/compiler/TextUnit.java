@@ -308,7 +308,7 @@ final class TextUnit extends CompilationUnit
             {
                 String qname = attrs[i].getQName();
                 String value = attrs[i].getValue();
-                this.buffer.append(' ').append(qname).append("=\"").append(value).append("\"");
+                this.buffer.append(' ').append(qname).append("=\"").append(value).append('"');
 
                 ELText txt = ELText.parseAllowEmptyString(value);
                 if (txt != null)
@@ -344,7 +344,7 @@ final class TextUnit extends CompilationUnit
     {
         if (this.tags.size() > 0 && this.startTagOpen)
         {
-            this.buffer.append(">");
+            this.buffer.append('>');
             this.startTagOpen = false;
         }
     }
@@ -729,7 +729,7 @@ final class TextUnit extends CompilationUnit
 
     public String toString()
     {
-        return "TextUnit[" + this.children.size() + "]";
+        return "TextUnit[" + this.children.size() + ']';
     }
     
     public void addMessage(FacesMessage.Severity severity, String summary, String detail)

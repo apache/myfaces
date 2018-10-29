@@ -303,7 +303,7 @@ public class MockResourceHandler extends ResourceHandler
         try
         {
             URL url = FacesContext.getCurrentInstance().getExternalContext()
-                    .getResource("/" + pathToLib);
+                    .getResource('/' + pathToLib);
             return (url != null);
         }
         catch (MalformedURLException e)

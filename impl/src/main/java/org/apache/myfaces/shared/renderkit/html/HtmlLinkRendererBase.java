@@ -470,12 +470,12 @@ public abstract class HtmlLinkRendererBase
         onClick.append("return ").
             append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
             append(formName).append("','").
-            append(clientId).append("'");
+            append(clientId).append('\'');
 
         if (params.length() > 2 || target != null)
         {
-            onClick.append(",").
-                append(target == null ? "null" : ("'" + target + "'")).append(",").
+            onClick.append(',').
+                append(target == null ? "null" : ('\'' + target + '\'')).append(',').
                 append(params);
         }
         onClick.append(");");
@@ -610,12 +610,12 @@ public abstract class HtmlLinkRendererBase
         onClick.append("return ").
             append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
             append(formName).append("','").
-            append(clientId).append("'");
+            append(clientId).append('\'');
 
         if (params.length() > 2 || target != null)
         {
-            onClick.append(",").
-                append(target == null ? "null" : ("'" + target + "'")).append(",").
+            onClick.append(',').
+                append(target == null ? "null" : ('\'' + target + '\'')).append(',').
                 append(params);
         }
         onClick.append(");");
@@ -642,7 +642,7 @@ public abstract class HtmlLinkRendererBase
     {
         //add child parameters
         StringBuilder params = new StringBuilder();
-        params.append("[");
+        params.append('[');
         
         List<UIComponent> childrenList = null;
         if (getChildCount(component) > 0)
@@ -709,7 +709,7 @@ public abstract class HtmlLinkRendererBase
 
             if (params.length() > 1) 
             {
-                params.append(",");
+                params.append(',');
             }
 
             params.append("['");
@@ -718,7 +718,7 @@ public abstract class HtmlLinkRendererBase
             params.append(strParamValue);
             params.append("']");
         }
-        params.append("]");
+        params.append(']');
         return params;
     }
 
@@ -878,9 +878,9 @@ public abstract class HtmlLinkRendererBase
             {
                 fragmentAttr = (String) output.getAttributes().get(JSFAttr.FRAGMENT_ATTR);
             }
-            if (fragmentAttr != null && !"".equals(fragmentAttr)) 
+            if (fragmentAttr != null && !fragmentAttr.isEmpty())
             {
-                href += "#" + fragmentAttr;
+                href += '#' + fragmentAttr;
             }
             else if (isAnchorInHref)
             {

@@ -123,7 +123,7 @@ public class ValueExpressionFilterInputStream extends InputStream
                         ValueExpression ve = context.getApplication().
                             getExpressionFactory().createValueExpression(
                                     elContext,
-                                    "#{"+convertToExpression(expressionList)+"}",
+                                    "#{"+convertToExpression(expressionList)+ '}',
                                     String.class);
                         String value = (String) ve.getValue(elContext);
                         
@@ -142,7 +142,7 @@ public class ValueExpressionFilterInputStream extends InputStream
                         if (log.isLoggable(Level.SEVERE))
                         {
                             log.severe("Cannot evaluate EL expression " + convertToExpression(expressionList)
-                                    + " in resource " + (libraryName == null?"":libraryName) + ":" + 
+                                    + " in resource " + (libraryName == null?"":libraryName) + ':' +
                                     (resourceName == null?"":resourceName));
                         }
                         

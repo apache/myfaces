@@ -105,7 +105,7 @@ public class MockSimpleResourceHandler extends ResourceHandler
             String contentType)
     {
         String prefix = getLocalePrefixForLocateResource();
-        String libraryVersion = getLibraryVersion(prefix + "/" + libraryName);
+        String libraryVersion = getLibraryVersion(prefix + '/' + libraryName);
 
         String pathToResource;
         if (null != libraryVersion)
@@ -199,7 +199,7 @@ public class MockSimpleResourceHandler extends ResourceHandler
         try
         {
             URL url = FacesContext.getCurrentInstance().getExternalContext()
-                    .getResource("/" + pathToLib);
+                    .getResource('/' + pathToLib);
             return (url != null);
         }
         catch (MalformedURLException e)
@@ -281,7 +281,7 @@ public class MockSimpleResourceHandler extends ResourceHandler
                 .getExternalContext();
 
         String libraryVersion = null;
-        Set<String> libraryPaths = context.getResourcePaths("/" + path);
+        Set<String> libraryPaths = context.getResourcePaths('/' + path);
         if (null != libraryPaths && !libraryPaths.isEmpty())
         {
             // Look in the libraryPaths for versioned libraries.
@@ -377,7 +377,7 @@ public class MockSimpleResourceHandler extends ResourceHandler
         ExternalContext context = FacesContext.getCurrentInstance()
                 .getExternalContext();
         String resourceVersion = null;
-        Set<String> resourcePaths = context.getResourcePaths("/" + path);
+        Set<String> resourcePaths = context.getResourcePaths('/' + path);
 
         if (null != resourcePaths && !resourcePaths.isEmpty())
         {

@@ -242,7 +242,7 @@ public class CODIClientSideWindow extends ClientWindow
             String line = null;
             while ((line = reader.readLine()) != null)
             {
-              sb.append(line + "\n");
+              sb.append(line + '\n');
             }
         }
         catch (IOException e)
@@ -287,11 +287,11 @@ public class CODIClientSideWindow extends ClientWindow
         // add noscript parameter
         if (url.contains("?"))
         {
-            url = url + "&";
+            url = url + '&';
         }
         else
         {
-            url = url + "?";
+            url = url + '?';
         }
         url = url + NOSCRIPT_PARAMETER + "=true";
 
@@ -318,7 +318,7 @@ public class CODIClientSideWindow extends ClientWindow
     {
         StringBuilder finalUrl = new StringBuilder(url);
         boolean existingParameters = url.contains("?");
-        boolean urlContainsWindowId = url.contains(ResponseStateManager.CLIENT_WINDOW_URL_PARAM + "=");
+        boolean urlContainsWindowId = url.contains(ResponseStateManager.CLIENT_WINDOW_URL_PARAM + '=');
 
         /* TODO: implement me
         for(RequestParameter requestParam :

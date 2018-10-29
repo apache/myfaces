@@ -254,7 +254,7 @@ class _PackageInfo
             {
                 if (file.isDirectory())
                 {
-                    listFilesRecursive(classes, file, cld, pckgname + "."
+                    listFilesRecursive(classes, file, cld, pckgname + '.'
                             + file.getName());
                     return false;
                 }
@@ -263,7 +263,7 @@ class _PackageInfo
                     return false;
                 }
 
-                String className = filenameToClassname(pckgname + "."
+                String className = filenameToClassname(pckgname + '.'
                         + file.getName());
                 loadClass(classes, cld, className);
 

@@ -287,7 +287,7 @@ public class HtmlGridRendererBase
             // get the row indizes for which a new TBODY element should be created
             Integer[] bodyrows = null;
             String bodyrowsAttr = (String) component.getAttributes().get(JSFAttr.BODYROWS_ATTR);
-            if(bodyrowsAttr != null && !"".equals(bodyrowsAttr)) 
+            if(bodyrowsAttr != null && !bodyrowsAttr.isEmpty())
             {   
                 String[] bodyrowsString = StringUtils.trim(StringUtils.splitShortString(bodyrowsAttr, ','));
                 // parsing with no exception handling, because of JSF-spec: 
@@ -350,7 +350,7 @@ public class HtmlGridRendererBase
                             }
                             else
                             {
-                                rowClass = rowClass+" "+rowClassesArray[rowClassIndex];
+                                rowClass = rowClass + ' ' + rowClassesArray[rowClassIndex];
                             }
                         }
                         if (rowClass != null)

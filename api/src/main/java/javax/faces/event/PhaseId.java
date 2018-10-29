@@ -84,7 +84,7 @@ public class PhaseId implements Comparable
     @Override
     public String toString()
     {
-        return _name + "(" + _ordinal + ")";
+        return _name + '(' + _ordinal + ')';
     }
     
     /*

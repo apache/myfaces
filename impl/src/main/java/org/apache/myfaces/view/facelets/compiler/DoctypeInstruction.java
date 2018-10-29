@@ -57,15 +57,15 @@ public class DoctypeInstruction implements Instruction
             sb.append("<!DOCTYPE ").append(name);
             if (publicId != null)
             {
-                sb.append(" PUBLIC \"").append(publicId).append("\"");
+                sb.append(" PUBLIC \"").append(publicId).append('"');
                 if (systemId != null)
                 {
-                    sb.append(" \"").append(systemId).append("\"");
+                    sb.append(" \"").append(systemId).append('"');
                 }
             }
             else if (systemId != null)
             {
-                sb.append(" SYSTEM \"").append(systemId).append("\"");
+                sb.append(" SYSTEM \"").append(systemId).append('"');
             }
             sb.append(" >\n");
         }

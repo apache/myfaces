@@ -243,17 +243,17 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                 int length = projectStage.name().length();
                 for (int i = 0; i < 11 - length; i++)
                 {
-                    message.append(" ");
+                    message.append(' ');
                 }
                 message.append("   ***\n");
                 message.append("***                                         ");
                 for (int i = 0; i < length; i++)
                 {
-                    message.append("^");
+                    message.append('^');
                 }
                 for (int i = 0; i < 20 - length; i++)
                 {
-                    message.append(" ");
+                    message.append(' ');
                 }
                 message.append("***\n");
                 message.append("*** Do NOT deploy to your live server(s) without changing this. ***\n");

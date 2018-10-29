@@ -185,22 +185,22 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
 
         StringBuilder sb = new StringBuilder(50);
         sb.append("jsf.push.init(");
-        sb.append("'"+component.getClientId()+"'");
-        sb.append(",");
-        sb.append("'"+facesContext.getExternalContext().encodeWebsocketURL(
+        sb.append('\'' +component.getClientId()+ '\'');
+        sb.append(',');
+        sb.append('\'' +facesContext.getExternalContext().encodeWebsocketURL(
                 facesContext.getApplication().getViewHandler().getWebsocketURL(
-                        facesContext, component.getChannel()+"?"+channelToken))+"'");
-        sb.append(",");
-        sb.append("'"+component.getChannel()+"'");
-        sb.append(",");
+                        facesContext, component.getChannel()+ '?' +channelToken))+ '\'');
+        sb.append(',');
+        sb.append('\'' +component.getChannel()+ '\'');
+        sb.append(',');
         sb.append(component.getOnopen());
-        sb.append(",");
+        sb.append(',');
         sb.append(component.getOnmessage());
-        sb.append(",");
+        sb.append(',');
         sb.append(component.getOnclose());
-        sb.append(",");
+        sb.append(',');
         sb.append(getBehaviorScripts(facesContext, component));
-        sb.append(",");
+        sb.append(',');
         sb.append(component.isConnected());
         sb.append(");");
 
@@ -241,13 +241,13 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
                 scripts.append(clientBehaviors.get(i).getScript(
                         ClientBehaviorContext.createClientBehaviorContext(
                                 facesContext, component, event, clientId, null)));
-                scripts.append("}");
+                scripts.append('}');
             }
 
-            scripts.append("]");
+            scripts.append(']');
         }
 
-        return scripts.append("}").toString();
+        return scripts.append('}').toString();
     }
         
 }

@@ -238,7 +238,7 @@ public class MockMethodExpression extends MethodExpression
                 List names = new ArrayList();
                 while (temp.length() > 0)
                 {
-                    int period = temp.indexOf(".");
+                    int period = temp.indexOf('.');
                     if (period >= 0)
                     {
                         names.add(temp.substring(0, period));

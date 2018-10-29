@@ -173,7 +173,7 @@ class LogMetaInfUtils
         {
             JarInfo info = versions.get(0);
             log.info("Artifact '" + artifactId + "' was found in version '"
-                     + info.getVersion() + "' from path '" + info.getUrl() + "'");
+                     + info.getVersion() + "' from path '" + info.getUrl() + '\'');
         }
     }
 

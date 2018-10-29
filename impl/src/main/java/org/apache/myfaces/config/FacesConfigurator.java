@@ -1561,7 +1561,7 @@ public class FacesConfigurator
                     ClientWindowFactoryImpl.WINDOW_MODE_URL);
                 
                 log.info("The current configuration requires client window enabled, setting it to '"+
-                    defaultWindowMode+"'");
+                    defaultWindowMode+ '\'');
                 
                 facesContext.getExternalContext().getApplicationMap().put(
                     ENABLE_DEFAULT_WINDOW_MODE, Boolean.TRUE);

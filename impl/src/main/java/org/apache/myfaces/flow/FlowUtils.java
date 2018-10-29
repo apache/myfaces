@@ -54,7 +54,7 @@ public class FlowUtils
         int flowIndex = getFlowIndex(facesContext, flow);
         if (flowIndex > 0)
         {
-            flowMapKey = flowMapKey + "_" + flowIndex;
+            flowMapKey = flowMapKey + '_' + flowIndex;
         }
         return flowMapKey;
     }

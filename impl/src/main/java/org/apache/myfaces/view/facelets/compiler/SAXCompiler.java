@@ -1006,7 +1006,7 @@ public final class SAXCompiler extends Compiler
                 {
                     if (!mngr.getFaceletsProcessingInstructions().isConsumeXmlDeclaration())
                     {
-                        mngr.writeInstruction(m.group(0) + "\n");
+                        mngr.writeInstruction(m.group(0) + '\n');
                     }
                     if (m.group(3) != null)
                     {

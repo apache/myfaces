@@ -147,7 +147,7 @@ public class FacesServletMapping
     {
         if (isExtensionMapping())
         {
-            return "*" + extension;
+            return '*' + extension;
         }
         else
         {

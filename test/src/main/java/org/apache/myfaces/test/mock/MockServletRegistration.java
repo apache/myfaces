@@ -19,6 +19,7 @@
 
 package org.apache.myfaces.test.mock;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -48,10 +49,7 @@ public class MockServletRegistration implements ServletRegistration
         
     public Set<String> addMapping(String... mappingArray)
     {
-        for (String s : mappingArray)
-        {
-            mappings.add(s);
-        }
+        mappings.addAll(Arrays.asList(mappingArray));
         return mappings;
     }
 

@@ -104,7 +104,7 @@ public final class JavascriptUtils
     {
         if (checkForReservedWord && RESERVED_WORDS.contains(s))
         {
-            return s + "_";
+            return s + '_';
         }
 
         StringBuilder buf = null;

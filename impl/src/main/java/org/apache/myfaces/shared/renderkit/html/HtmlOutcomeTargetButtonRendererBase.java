@@ -108,7 +108,7 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
             String href = facesContext.getExternalContext().encodeResourceURL(outcomeTargetHref);
 
             String commandOnClick = (String) uiComponent.getAttributes().get(HTML.ONCLICK_ATTR);
-            String navigationJavaScript = "window.location.href = '" + href + "'";
+            String navigationJavaScript = "window.location.href = '" + href + '\'';
 
             if (behaviors != null && !behaviors.isEmpty())
             {

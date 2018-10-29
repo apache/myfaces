@@ -380,7 +380,7 @@ public class MockHttpServletRequest implements HttpServletRequest
     public long getDateHeader(String name)
     {
 
-        String match = name + ":";
+        String match = name + ':';
         Iterator headers = this.headers.iterator();
         while (headers.hasNext())
         {
@@ -398,7 +398,7 @@ public class MockHttpServletRequest implements HttpServletRequest
     public String getHeader(String name)
     {
 
-        String match = name + ":";
+        String match = name + ':';
         Iterator headers = this.headers.iterator();
         while (headers.hasNext())
         {
@@ -439,7 +439,7 @@ public class MockHttpServletRequest implements HttpServletRequest
     public Enumeration getHeaders(String name)
     {
 
-        String match = name + ":";
+        String match = name + ':';
         Vector values = new Vector();
         Iterator headers = this.headers.iterator();
         while (headers.hasNext())
@@ -458,7 +458,7 @@ public class MockHttpServletRequest implements HttpServletRequest
     public int getIntHeader(String name)
     {
 
-        String match = name + ":";
+        String match = name + ':';
         Iterator headers = this.headers.iterator();
         while (headers.hasNext())
         {

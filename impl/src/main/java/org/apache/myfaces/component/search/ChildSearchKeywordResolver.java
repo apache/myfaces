@@ -52,7 +52,7 @@ public class ChildSearchKeywordResolver extends SearchKeywordResolver
                 throw new FacesException("Component with clientId \""
                         + current.getClientId(expressionContext.getSearchExpressionContext().getFacesContext()) 
                         + "\" has fewer children as \"" + 
-                          childNumber + "\". Expression: \"" + keyword + "\"");
+                          childNumber + "\". Expression: \"" + keyword + '"');
             }
 
             List<UIComponent> list = current.getChildren();
@@ -74,13 +74,13 @@ public class ChildSearchKeywordResolver extends SearchKeywordResolver
                 throw new FacesException("Component with clientId \""
                         + current.getClientId(expressionContext.getSearchExpressionContext().getFacesContext()) 
                         + "\" has fewer children as \"" + 
-                          childNumber + "\". Expression: \"" + keyword + "\"");
+                          childNumber + "\". Expression: \"" + keyword + '"');
             }
         }
         else
         {
             throw new FacesException(
-                    "Expression does not match following pattern @child(n). Expression: \"" + keyword + "\"");
+                    "Expression does not match following pattern @child(n). Expression: \"" + keyword + '"');
         }
     }
 

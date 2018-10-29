@@ -253,7 +253,7 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
         {
             // tag is disabled --> add its validatorId to the parent's exclusion list
             String validatorId = _delegate.getValidatorConfig().getValidatorId();
-            if (validatorId != null && !"".equals(validatorId))
+            if (validatorId != null && !validatorId.isEmpty())
             {
                 List<String> exclusionList = (List<String>) parent.getAttributes()
                         .get(VALIDATOR_ID_EXCLUSION_LIST_KEY);

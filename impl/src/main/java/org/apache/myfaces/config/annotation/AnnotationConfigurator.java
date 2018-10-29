@@ -107,8 +107,8 @@ public class AnnotationConfigurator
                 {
                     if (log.isLoggable(Level.FINEST))
                     {
-                        log.finest("addComponent(" + comp.value() + ","
-                                + clazz.getName() + ")");
+                        log.finest("addComponent(" + comp.value() + ','
+                                + clazz.getName() + ')');
                     }
                     String value = comp.value();
                     if ( value == null ||
@@ -150,8 +150,8 @@ public class AnnotationConfigurator
                 {
                     if (log.isLoggable(Level.FINEST))
                     {
-                        log.finest("addConverter(" + conv.value() + ","
-                                + clazz.getName() + ")");
+                        log.finest("addConverter(" + conv.value() + ','
+                                + clazz.getName() + ')');
                     }
                     //If there is a previous entry on Application Configuration Resources,
                     //the entry there takes precedence
@@ -192,8 +192,8 @@ public class AnnotationConfigurator
                 {
                     if (log.isLoggable(Level.FINEST))
                     {
-                        log.finest("addValidator(" + val.value() + "," + clazz.getName()
-                                + ")");
+                        log.finest("addValidator(" + val.value() + ',' + clazz.getName()
+                                + ')');
                     }
                     String value = val.value();
                     if ( value == null ||
@@ -238,7 +238,7 @@ public class AnnotationConfigurator
                     {
                         log.finest("addRenderer(" + renderKitId + ", "
                                 + rend.componentFamily() + ", " + rend.rendererType()
-                                + ", " + clazz.getName() + ")");
+                                + ", " + clazz.getName() + ')');
                     }
 
                     org.apache.myfaces.config.impl.digester.elements.RenderKitImpl renderKit =
@@ -344,7 +344,7 @@ public class AnnotationConfigurator
 
                 if (log.isLoggable(Level.FINEST))
                 {
-                    log.finest("addBehavior(" + facesBehavior.value() + ", " + clazz.getName() + ")");
+                    log.finest("addBehavior(" + facesBehavior.value() + ", " + clazz.getName() + ')');
                 }
 
                 BehaviorImpl behavior = new BehaviorImpl();
@@ -372,7 +372,7 @@ public class AnnotationConfigurator
                 {
                     log.finest("addClientBehaviorRenderer(" + renderKitId + ", "
                                + facesBehaviorRenderer.rendererType() + ", "
-                               + clazz.getName() + ")");
+                               + clazz.getName() + ')');
                 }
 
                 org.apache.myfaces.config.impl.digester.elements.RenderKitImpl renderKit =

@@ -86,7 +86,7 @@ public class RootExternalContextResourceLoader extends ResourceLoader
     {
         try
         {
-            String correctedResourceId = resourceId.startsWith("/") ? resourceId : "/"+resourceId;
+            String correctedResourceId = resourceId.startsWith("/") ? resourceId : '/' +resourceId;
 
             return FacesContext.getCurrentInstance().getExternalContext().getResource(
                 correctedResourceId);
@@ -114,7 +114,7 @@ public class RootExternalContextResourceLoader extends ResourceLoader
     public InputStream getResourceInputStream(ResourceMeta resourceMeta)
     {
         String resourceId = resourceMeta.getResourceIdentifier();
-        String correctedResourceId = resourceId.startsWith("/") ? resourceId : "/"+resourceId;
+        String correctedResourceId = resourceId.startsWith("/") ? resourceId : '/' +resourceId;
 
         return FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream(correctedResourceId);
     }

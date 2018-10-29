@@ -186,7 +186,7 @@ public class ResourceAnnotationInjectionProvider extends NoInjectionAnnotationIn
         else
         {
             // TODO local or global JNDI 
-            lookedupResource = context.lookup(JAVA_COMP_ENV + instance.getClass().getName() + "/" + field.getName());
+            lookedupResource = context.lookup(JAVA_COMP_ENV + instance.getClass().getName() + '/' + field.getName());
         }
 
         boolean accessibility = field.isAccessible();
@@ -222,7 +222,7 @@ public class ResourceAnnotationInjectionProvider extends NoInjectionAnnotationIn
         {
             // TODO local or global JNDI
             lookedupResource =
-                    context.lookup(JAVA_COMP_ENV + instance.getClass().getName() + "/" + getFieldName(method));
+                    context.lookup(JAVA_COMP_ENV + instance.getClass().getName() + '/' + getFieldName(method));
         }
 
         boolean accessibility = method.isAccessible();

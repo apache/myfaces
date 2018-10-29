@@ -137,7 +137,7 @@ public abstract class HTMLEncoder
 
                     default :
                         //encode all non basic latin characters
-                        app = "&#" + ((int)c) + ";";
+                        app = "&#" + ((int)c) + ';';
                     break;
                 }
             }
@@ -271,7 +271,7 @@ public abstract class HTMLEncoder
 
                     default :
                         //encode all non basic latin characters
-                        app = "&#" + ((int)c) + ";";
+                        app = "&#" + ((int)c) + ';';
                     break;
                 }
             }
@@ -432,7 +432,7 @@ public abstract class HTMLEncoder
 
                     default :
                         //encode all non basic latin characters
-                        app = "&#" + ((int)c) + ";";
+                        app = "&#" + ((int)c) + ';';
                     break;
                 }
             }

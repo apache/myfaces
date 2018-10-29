@@ -476,8 +476,7 @@ public class ViewHandlerImpl extends ViewHandler
         // won't be updated on any following request
         // (Note that parametersFromArg is the Map from the NavigationCase)
         // Also note that we don't have to copy the Lists, because they won't be changed
-        Map<String, List<String>> parameters = new HashMap<String, List<String>>();
-        parameters.putAll(parametersFromArg);
+        Map<String, List<String>> parameters = new HashMap<String, List<String>>(parametersFromArg);
 
         for (UIViewParameter viewParameter : toViewParams)
         {

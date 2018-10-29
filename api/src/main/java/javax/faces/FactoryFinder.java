@@ -779,7 +779,7 @@ public final class FactoryFinder
     {
         if (!VALID_FACTORY_NAMES.contains(factoryName))
         {
-            throw new IllegalArgumentException("factoryName '" + factoryName + "'");
+            throw new IllegalArgumentException("factoryName '" + factoryName + '\'');
         }
     }
 

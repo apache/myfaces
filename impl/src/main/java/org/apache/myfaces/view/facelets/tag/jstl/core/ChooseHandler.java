@@ -60,11 +60,8 @@ public final class ChooseHandler extends TagHandler implements ComponentContaine
     {
         super(config);
 
-        List<ChooseWhenHandler> whenList = new ArrayList<ChooseWhenHandler>();
-        for (ChooseWhenHandler handler : TagHandlerUtils.findNextByType(nextHandler, ChooseWhenHandler.class))
-        {
-            whenList.add(handler);
-        }
+        List<ChooseWhenHandler> whenList = new ArrayList<ChooseWhenHandler>(
+                TagHandlerUtils.findNextByType(nextHandler, ChooseWhenHandler.class));
         if (whenList.isEmpty())
         {
             throw new TagException(this.tag, "Choose Tag must have one or more When Tags");

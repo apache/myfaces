@@ -323,7 +323,7 @@ public final class StateUtils
             // keep local to avoid threading issue
             Mac mac = Mac.getInstance(macAlgorithm);
             mac.init(macSecretKey);
-            Cipher cipher = Cipher.getInstance(algorithm + "/" + algorithmParams);
+            Cipher cipher = Cipher.getInstance(algorithm + '/' + algorithmParams);
             if (iv != null)
             {
                 IvParameterSpec ivSpec = new IvParameterSpec(iv);
@@ -335,7 +335,7 @@ public final class StateUtils
             }
             if (log.isLoggable(Level.FINE))
             {
-                log.fine("encrypting w/ " + algorithm + "/" + algorithmParams);
+                log.fine("encrypting w/ " + algorithm + '/' + algorithmParams);
             }
             
             //EtM Composition Approach
@@ -476,7 +476,7 @@ public final class StateUtils
             // keep local to avoid threading issue
             Mac mac = Mac.getInstance(macAlgorithm);
             mac.init(macSecretKey);
-            Cipher cipher = Cipher.getInstance(algorithm + "/"
+            Cipher cipher = Cipher.getInstance(algorithm + '/'
                     + algorithmParams);
             if (iv != null)
             {
@@ -489,7 +489,7 @@ public final class StateUtils
             }
             if (log.isLoggable(Level.FINE))
             {
-                log.fine("decrypting w/ " + algorithm + "/" + algorithmParams);
+                log.fine("decrypting w/ " + algorithm + '/' + algorithmParams);
             }
 
             //EtM Composition Approach
@@ -825,7 +825,7 @@ public final class StateUtils
 
                 if (secret == null)
                 {
-                    throw new NullPointerException("Could not find secret using key '" + INIT_SECRET + "'");
+                    throw new NullPointerException("Could not find secret using key '" + INIT_SECRET + '\'');
                 }
                 
                 String algorithm = findAlgorithm(ctx);
@@ -835,14 +835,14 @@ public final class StateUtils
             else
             {
                 throw new NullPointerException("Could not find SecretKey in application scope using key '" 
-                        + INIT_SECRET_KEY_CACHE + "'");
+                        + INIT_SECRET_KEY_CACHE + '\'');
             }
         }
         
         if( ! ( secretKey instanceof SecretKey ) )
         {
             throw new ClassCastException("Did not find an instance of SecretKey "
-                    + "in application scope using the key '" + INIT_SECRET_KEY_CACHE + "'");
+                    + "in application scope using the key '" + INIT_SECRET_KEY_CACHE + '\'');
         }
 
         
@@ -980,7 +980,7 @@ public final class StateUtils
                 
                 if (secret == null)
                 {
-                    throw new NullPointerException("Could not find secret using key '" + INIT_MAC_SECRET + "'");
+                    throw new NullPointerException("Could not find secret using key '" + INIT_MAC_SECRET + '\'');
                 }
                 
                 String macAlgorithm = findMacAlgorithm(ctx);
@@ -990,14 +990,14 @@ public final class StateUtils
             else
             {
                 throw new NullPointerException("Could not find SecretKey in application scope using key '" 
-                        + INIT_MAC_SECRET_KEY_CACHE + "'");
+                        + INIT_MAC_SECRET_KEY_CACHE + '\'');
             }
         }
         
         if( ! ( secretKey instanceof SecretKey ) )
         {
             throw new ClassCastException("Did not find an instance of SecretKey "
-                    + "in application scope using the key '" + INIT_MAC_SECRET_KEY_CACHE + "'");
+                    + "in application scope using the key '" + INIT_MAC_SECRET_KEY_CACHE + '\'');
         }
 
         

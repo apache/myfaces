@@ -2090,7 +2090,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 // If the view is not transient, then something is wrong. Throw an exception.
                 if (!view.isTransient())
                 {
-                    throw new FacesException ("unable to create view \"" + viewId + "\"");
+                    throw new FacesException ("unable to create view \"" + viewId + '"');
                 } 
                 else
                 {
@@ -2109,7 +2109,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             }
             catch (Throwable e)
             {
-                throw new FacesException ("unable to create view \"" + viewId + "\"", e);
+                throw new FacesException ("unable to create view \"" + viewId + '"', e);
             }
             FaceletsViewDeclarationLanguageUtils.markRenderedResources(context, view);
             return view;
@@ -2219,7 +2219,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         if (renderKit == null)
         {
             String id = context.getViewRoot().getRenderKitId();
-            throw new IllegalStateException("No render kit was available for id \"" + id + "\"");
+            throw new IllegalStateException("No render kit was available for id \"" + id + '"');
         }
 
         // set the buffer for content
@@ -2325,7 +2325,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             contentType = (String) m.get("facelets.ContentType");
             if (log.isLoggable(Level.FINEST))
             {
-                log.finest("Facelet specified alternate contentType '" + contentType + "'");
+                log.finest("Facelet specified alternate contentType '" + contentType + '\'');
             }
         }
 
@@ -2360,7 +2360,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             encoding = (String) m.get(PARAM_ENCODING);
             if (encoding != null && log.isLoggable(Level.FINEST))
             {
-                log.finest("Facelet specified alternate encoding '" + encoding + "'");
+                log.finest("Facelet specified alternate encoding '" + encoding + '\'');
             }
 
             sm.put(CHARACTER_ENCODING_KEY, encoding);
@@ -2378,7 +2378,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             encoding = (String) sm.get(CHARACTER_ENCODING_KEY);
             if (encoding != null && log.isLoggable(Level.FINEST))
             {
-                log.finest("Session specified alternate encoding '" + encoding + "'");
+                log.finest("Session specified alternate encoding '" + encoding + '\'');
             }
         }
 

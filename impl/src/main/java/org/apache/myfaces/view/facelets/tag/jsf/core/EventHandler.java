@@ -65,6 +65,7 @@ public final class EventHandler extends TagHandler
     
     private static final Class<?>[] COMPONENT_SYSTEM_EVENT_PARAMETER = new Class<?>[] { ComponentSystemEvent.class };
     private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
+    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
     
     @JSFFaceletAttribute(name="listener",
             className="javax.el.MethodExpression",
@@ -235,7 +236,7 @@ public final class EventHandler extends TagHandler
                 }
                 else
                 {
-                    classNames.append ("]");
+                    classNames.append (']');
                 }
             }
             
@@ -294,7 +295,7 @@ public final class EventHandler extends TagHandler
                 try
                 {
                     // if that fails try to invoke the MethodExpression with zero arguments
-                    this.methodExpZeroArg.invoke(elContext, new Object[0]);
+                    this.methodExpZeroArg.invoke(elContext, EMPTY_OBJECT_ARRAY);
                 }
                 catch (MethodNotFoundException mnfeZeroArg)
                 {
@@ -352,7 +353,7 @@ public final class EventHandler extends TagHandler
                         try
                         {
                             // if that fails try to invoke the MethodExpression with zero arguments
-                            this.methodExpZeroArg.invoke(elContext, new Object[0]);
+                            this.methodExpZeroArg.invoke(elContext, EMPTY_OBJECT_ARRAY);
                         }
                         catch (MethodNotFoundException mnfeZeroArg)
                         {

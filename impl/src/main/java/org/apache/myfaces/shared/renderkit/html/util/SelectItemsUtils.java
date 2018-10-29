@@ -126,7 +126,7 @@ public class SelectItemsUtils
                 if (selectItemInfo != null && selectItemInfo.getComponent() instanceof UISelectItems)
                 {
                     var = (String) selectItemInfo.getComponent().getAttributes().get(JSFAttr.VAR_ATTR);
-                    if(var != null && !"".equals(var))
+                    if(var != null && !var.isEmpty())
                     {
                         // save the current value of the key listed in var from the request map
                         oldRequestMapVarValue = context.getExternalContext().getRequestMap().put(var, 

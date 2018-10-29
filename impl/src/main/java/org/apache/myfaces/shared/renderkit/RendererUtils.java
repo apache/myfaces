@@ -94,7 +94,7 @@ public final class RendererUtils
         {
             buf.append(" Location: ").append(location);
         }
-        buf.append("}");
+        buf.append('}');
 
         return buf.toString();
     }
@@ -121,7 +121,7 @@ public final class RendererUtils
             intBuf.append(",Id: ");
             intBuf.append(component.getId());
         }
-        intBuf.append("]");
+        intBuf.append(']');
 
         buf.insert(0, intBuf.toString());
 
@@ -248,7 +248,7 @@ public final class RendererUtils
             {
                 if (log.isLoggable(Level.FINE))
                 {
-                    log.fine("returning 1 '" + submittedValue + "'");
+                    log.fine("returning 1 '" + submittedValue + '\'');
                 }
                 return submittedValue.toString();
             }
@@ -341,7 +341,7 @@ public final class RendererUtils
                 {
                     if (log.isLoggable(Level.FINE))
                     {
-                        log.fine("returning 1 '" + submittedValue + "'");
+                        log.fine("returning 1 '" + submittedValue + '\'');
                     }
                     return submittedValue.toString();
                 }

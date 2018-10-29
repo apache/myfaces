@@ -1297,7 +1297,7 @@ public abstract class UIComponentBase extends UIComponent
             String location = getComponentLocation(this);
             String logStr = "No Renderer found for component " + getPathToComponent(this)
                     + " (component-family=" + getFamily()
-                    + ", renderer-type=" + rendererType + ")"
+                    + ", renderer-type=" + rendererType + ')'
                     + (location != null ? " created from: " + location : "");
             
             getFacesContext().getExternalContext().log(logStr);
@@ -1681,7 +1681,7 @@ public abstract class UIComponentBase extends UIComponent
         getPathToComponent(component, buf);
 
         buf.insert(0, "{Component-Path : ");
-        buf.append("}");
+        buf.append('}');
 
         return buf.toString();
     }
@@ -1707,7 +1707,7 @@ public abstract class UIComponentBase extends UIComponent
             intBuf.append(",Id: ");
             intBuf.append(component.getId());
         }
-        intBuf.append("]");
+        intBuf.append(']');
 
         buf.insert(0, intBuf.toString());
 
@@ -2411,7 +2411,7 @@ public abstract class UIComponentBase extends UIComponent
         {
             throw new IllegalArgumentException("component identifier's first character must be a letter "
                                                + "or an underscore ('_')! But it is \""
-                                               + string.charAt(0) + "\"");
+                                               + string.charAt(0) + '"');
         }
         for (int i = 1; i < string.length(); i++)
         {
@@ -2422,7 +2422,7 @@ public abstract class UIComponentBase extends UIComponent
                 throw new IllegalArgumentException("Subsequent characters of component identifier must be a letter, "
                                                    + "a digit, an underscore ('_'), or a dash ('-')! "
                                                    + "But component identifier \"" + string + "\" contains \""
-                                                   + c + "\"");
+                                                   + c + '"');
             }
         }
     }

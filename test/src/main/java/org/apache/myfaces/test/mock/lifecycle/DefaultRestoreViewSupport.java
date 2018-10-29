@@ -74,7 +74,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
             {
                 log.trace("Calculated viewId '" + viewId
                         + "' from request param '"
-                        + JAVAX_SERVLET_INCLUDE_PATH_INFO + "'");
+                        + JAVAX_SERVLET_INCLUDE_PATH_INFO + '\'');
             }
         }
         else
@@ -95,7 +95,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
             {
                 log.trace("Calculated viewId '" + viewId
                         + "' from request param '"
-                        + JAVAX_SERVLET_INCLUDE_SERVLET_PATH + "'");
+                        + JAVAX_SERVLET_INCLUDE_SERVLET_PATH + '\'');
             }
         }
 

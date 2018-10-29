@@ -378,7 +378,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     {
         retVal.setLength(0);
 
-        retVal.append("{");
+        retVal.append('{');
 
         boolean first = true;
 
@@ -398,7 +398,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
                 retVal.append(option);
             }
         }
-        retVal.append("}");
+        retVal.append('}');
         return retVal;
     }
 

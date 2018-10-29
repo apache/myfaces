@@ -227,7 +227,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
             }
             else
             {
-                throw new IOException("'" + uri + "' not found.");
+                throw new IOException('\'' + uri + "' not found.");
             }
         }
         return this.getFacelet(url);
@@ -377,7 +377,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
             log.fine("Creating Facelet for: " + url);
         }
 
-        String alias = "/" + _removeFirst(url.getFile(), getBaseUrl().getFile());
+        String alias = '/' + _removeFirst(url.getFile(), getBaseUrl().getFile());
         try
         {
             FaceletHandler h = _compiler.compile(url, alias);
@@ -409,7 +409,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         // The alias is used later for informative purposes, so we append 
         // some prefix to identify later where the errors comes from.
-        String faceletId = "/"+ _removeFirst(url.getFile(), getBaseUrl().getFile());
+        String faceletId = '/' + _removeFirst(url.getFile(), getBaseUrl().getFile());
         String alias = "/viewMetadata" + faceletId;
         try
         {
@@ -489,7 +489,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
             }
             else
             {
-                throw new IOException("'" + uri + "' not found.");
+                throw new IOException('\'' + uri + "' not found.");
             }
         }
         return this.getViewMetadataFacelet(url);
@@ -543,7 +543,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
             }
             else
             {
-                throw new IOException("'" + uri + "' not found.");
+                throw new IOException('\'' + uri + "' not found.");
             }
         }
         return this.getCompositeComponentMetadataFacelet(url);

@@ -54,7 +54,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
     {
         if (_functions != null)
         {
-            Function f = (Function) _functions.get(prefix + ":" + localName);
+            Function f = (Function) _functions.get(prefix + ':' + localName);
             return f.getMethod();
         }
         
@@ -71,7 +71,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
         Function f = new Function(prefix, localName, m);
         synchronized (this)
         {
-            _functions.put(prefix + ":" + localName, f);
+            _functions.put(prefix + ':' + localName, f);
         }
     }
 

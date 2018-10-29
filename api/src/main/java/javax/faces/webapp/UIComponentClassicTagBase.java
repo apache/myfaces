@@ -68,7 +68,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     
     private static final String LOGICAL_PAGE_COUNTER = "org.apache.myfaces.LOGICAL_PAGE_COUNTER";
 
-    protected static final String UNIQUE_ID_PREFIX = UIViewRoot.UNIQUE_ID_PREFIX + "_";
+    protected static final String UNIQUE_ID_PREFIX = UIViewRoot.UNIQUE_ID_PREFIX + '_';
 
     protected PageContext pageContext = null;
     protected BodyContent bodyContent = null;
@@ -905,7 +905,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         getPathToComponent(component, buf);
 
         buf.insert(0, "{Component-Path : ");
-        buf.append("}");
+        buf.append('}');
 
         return buf.toString();
     }
@@ -932,7 +932,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             intBuf.append(",Id: ");
             intBuf.append(component.getId());
         }
-        intBuf.append("]");
+        intBuf.append(']');
 
         buf.insert(0, intBuf);
 

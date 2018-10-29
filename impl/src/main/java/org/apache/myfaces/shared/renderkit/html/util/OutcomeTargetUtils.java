@@ -200,7 +200,7 @@ public class OutcomeTargetUtils
 
             if (fragment.length() > 0)
             {
-                href += "#" + fragment;
+                href += '#' + fragment;
             }
         }
         return href;

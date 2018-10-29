@@ -41,7 +41,7 @@ public class FacesValidatorProducer extends AbstractDynamicProducer<Validator>
         super(beanManager);
         
         String validatorId = typeInfo.getValidatorId() == null ? "" : typeInfo.getValidatorId();
-        String id = "" + typeInfo.getType() + "_" + validatorId;
+        String id = "" + typeInfo.getType() + '_' + validatorId;
 
         FacesValidatorAnnotationLiteral literal = new FacesValidatorAnnotationLiteral(
                         typeInfo.getValidatorId() == null ? "" : typeInfo.getValidatorId(), false, true);

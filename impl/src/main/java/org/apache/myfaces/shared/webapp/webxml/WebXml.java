@@ -154,7 +154,7 @@ public class WebXml
             {
                 if (log.isLoggable(Level.FINEST))
                 {
-                    log.finest("ignoring servlet + " + servletName + " " + servletClass + " (no FacesServlet)");
+                    log.finest("ignoring servlet + " + servletName + ' ' + servletClass + " (no FacesServlet)");
                 }
             }
         }

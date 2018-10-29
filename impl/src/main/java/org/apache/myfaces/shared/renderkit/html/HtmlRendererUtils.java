@@ -1280,7 +1280,7 @@ public final class HtmlRendererUtils
             }
             else
             {
-                labelClass = labelClass + " " + labelSelectedClass;
+                labelClass = labelClass + ' ' + labelSelectedClass;
             }
         }
         if (labelClass != null)
@@ -1571,7 +1571,7 @@ public final class HtmlRendererUtils
             //either strings or functions, but I assume string is more appropriate 
             //since it allows access to the
             //origin as this!
-            target.append("'" + escapeJavaScriptForChain(script) + "'");
+            target.append('\'' + escapeJavaScriptForChain(script) + '\'');
             if (hasNext)
             {
                 target.append(", ");

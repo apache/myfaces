@@ -128,7 +128,7 @@ public class LegacySetHandler extends TagHandler
                 {
                     expStr.append("Scope");
                 }
-                expStr.append(".").append(varStr).append("}");
+                expStr.append('.').append(varStr).append('}');
                 ELContext elCtx = ctx.getFacesContext().getELContext();
                 ValueExpression expr = ctx.getExpressionFactory().createValueExpression(
                         elCtx, expStr.toString(), Object.class);

@@ -142,7 +142,7 @@ public final class LocaleUtils
         catch(Exception e)
         {
             throw new IllegalArgumentException("Locale parsing exception - " +
-                "invalid string representation '" + name + "'");
+                "invalid string representation '" + name + '\'');
         }
     }
 }

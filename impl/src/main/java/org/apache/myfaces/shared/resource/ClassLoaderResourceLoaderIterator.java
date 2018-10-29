@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.Enumeration;
@@ -268,10 +269,7 @@ public class ClassLoaderResourceLoaderIterator implements Iterator<String>
                         if (depth < maxDepth)
                         {
                             File[] list = file.listFiles();
-                            for (File f : list)
-                            {
-                                stack.add(f);
-                            }
+                            stack.addAll(Arrays.asList(list));
                         }
                         if (!stack.isEmpty())
                         {
@@ -304,10 +302,7 @@ public class ClassLoaderResourceLoaderIterator implements Iterator<String>
                         if (depth < maxDepth)
                         {
                             File[] list = file.listFiles();
-                            for (File f : list)
-                            {
-                                stack.add(f);
-                            }
+                            stack.addAll(Arrays.asList(list));
                         }
                         if (!stack.isEmpty())
                         {
@@ -355,7 +350,7 @@ public class ClassLoaderResourceLoaderIterator implements Iterator<String>
      */
     private static boolean isJarResourceProtocol(String protocol)
     {
-    // Websphere uses the protocol "wsjar://" and Weblogic uses the protocol "zip://".
-    return "jar".equals(protocol) || "wsjar".equals(protocol) || "zip".equals(protocol); 
+        // Websphere uses the protocol "wsjar://" and Weblogic uses the protocol "zip://".
+        return "jar".equals(protocol) || "wsjar".equals(protocol) || "zip".equals(protocol);
     }
 }

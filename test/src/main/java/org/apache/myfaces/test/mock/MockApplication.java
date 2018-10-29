@@ -275,7 +275,7 @@ public class MockApplication extends Application
         {
             throw new FacesException(
                     "No component class registered for component type '"
-                            + componentType + "'");
+                            + componentType + '\'');
         }
         try
         {

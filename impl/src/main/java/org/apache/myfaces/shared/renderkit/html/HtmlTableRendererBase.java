@@ -319,7 +319,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
     {
         Integer[] bodyrows = null;
         String bodyrowsAttr = (String) component.getAttributes().get(JSFAttr.BODYROWS_ATTR);
-        if(bodyrowsAttr != null && !"".equals(bodyrowsAttr)) 
+        if (bodyrowsAttr != null && !bodyrowsAttr.isEmpty())
         {   
             String[] bodyrowsString = StringUtils.trim(StringUtils.splitShortString(bodyrowsAttr, ','));
             // parsing with no exception handling, because of JSF-spec: 
@@ -680,7 +680,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
             }
             else
             {
-                styleClass = styleClass+" "+styles.getColumnStyle(columnStyleIndex);
+                styleClass = styleClass+ ' ' +styles.getColumnStyle(columnStyleIndex);
             }
         }
         if (styleClass != null)
@@ -740,7 +740,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
             }
             else
             {
-                rowClass = rowClass+" "+styles.getRowStyle(rowStyleIndex);
+                rowClass = rowClass+ ' ' +styles.getRowStyle(rowStyleIndex);
             }
         }
         if (rowClass != null)

@@ -336,6 +336,6 @@ class _Hex
      */
     public String toString()
     {
-        return super.toString() + "[charsetName=" + this.charsetName + "]";
+        return super.toString() + "[charsetName=" + this.charsetName + ']';
     }
 }

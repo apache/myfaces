@@ -127,12 +127,12 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
                 // does the message contain "f" (prefix f of tags)
                 // or the related uri http://java.sun.com/jsf/core
                 if (message.contains("\"f\"") 
-                        || message.contains("\"" + CoreLibrary.NAMESPACE + "\""))
+                        || message.contains('"' + CoreLibrary.NAMESPACE + '"'))
                 {
                     // check facelets-only f tags
                     for (String tag : FACELETS_ONLY_F_TAGS)
                     {
-                        if (message.contains("\"" + tag + "\""))
+                        if (message.contains('"' + tag + '"'))
                         {
                             String exceptionMessage = "The tag f:" + tag + 
                                     " is only available on facelets.";
@@ -142,12 +142,12 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
                     }
                 }  
                 else if (message.contains("\"h\"") 
-                        || message.contains("\"" + HtmlLibrary.NAMESPACE + "\""))
+                        || message.contains('"' + HtmlLibrary.NAMESPACE + '"'))
                 {
                     // check facelets-only h tags
                     for (String tag : FACELETS_ONLY_H_TAGS)
                     {
-                        if (message.contains("\"" + tag + "\""))
+                        if (message.contains('"' + tag + '"'))
                         {
                             String exceptionMessage = "The tag h:" + tag + 
                                     " is only available on facelets.";

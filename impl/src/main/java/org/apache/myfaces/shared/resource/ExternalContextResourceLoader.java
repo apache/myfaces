@@ -184,13 +184,14 @@ public class ExternalContextResourceLoader extends ResourceLoader
     @Override
     public boolean libraryExists(String libraryName)
     {
-        if (getPrefix() != null && !"".equals(getPrefix()))
+        String prefix = getPrefix();
+        if (prefix != null && !prefix.isEmpty())
         {
             try
             {
                 URL url =
                     FacesContext.getCurrentInstance().getExternalContext().getResource(
-                        getPrefix() + '/' + libraryName);
+                        prefix + '/' + libraryName);
                 if (url != null)
                 {
                     return true;
@@ -226,10 +227,11 @@ public class ExternalContextResourceLoader extends ResourceLoader
             String path, int maxDepth, ResourceVisitOption... options)
     {
         String basePath = path;
-        
-        if (getPrefix() != null)
+
+        String prefix = getPrefix();
+        if (prefix != null)
         {
-            basePath = getPrefix() + '/' + (path.startsWith("/") ? path.substring(1) : path);
+            basePath = prefix + '/' + (path.startsWith("/") ? path.substring(1) : path);
         }
         
         return new ExternalContextResourceLoaderIterator(facesContext, basePath, maxDepth, options);

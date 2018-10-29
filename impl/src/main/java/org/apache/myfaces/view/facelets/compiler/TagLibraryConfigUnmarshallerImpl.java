@@ -388,8 +388,8 @@ public class TagLibraryConfigUnmarshallerImpl
             }
             catch (Exception e)
             {
-                throw new SAXParseException("Error Handling [" + this.source + "@" + this.locator.getLineNumber()
-                        + "," + this.locator.getColumnNumber() + "] <" + qName + ">", locator, e);
+                throw new SAXParseException("Error Handling [" + this.source + '@' + this.locator.getLineNumber()
+                        + ',' + this.locator.getColumnNumber() + "] <" + qName + '>', locator, e);
             }
         }
 
@@ -452,7 +452,7 @@ public class TagLibraryConfigUnmarshallerImpl
         public void error(SAXParseException e) throws SAXException
         {
             throw new SAXException(
-                    "Error Handling [" + this.source + "@" + e.getLineNumber() + "," + e.getColumnNumber() + "]", e);
+                    "Error Handling [" + this.source + '@' + e.getLineNumber() + ',' + e.getColumnNumber() + ']', e);
         }
 
         public void setDocumentLocator(Locator locator)

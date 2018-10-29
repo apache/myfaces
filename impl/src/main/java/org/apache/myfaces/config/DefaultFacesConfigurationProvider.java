@@ -702,7 +702,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 FacesFlowReturnImpl returnNode = new FacesFlowReturnImpl();
                 returnNode.setId(flowName+"-return");
                 NavigationCaseImpl returnNavCase = new NavigationCaseImpl();
-                returnNavCase.setFromOutcome("/"+flowName+"-return");
+                returnNavCase.setFromOutcome('/' +flowName+"-return");
                 returnNode.setNavigationCase(returnNavCase);
                 flow.addReturn(returnNode);
                 

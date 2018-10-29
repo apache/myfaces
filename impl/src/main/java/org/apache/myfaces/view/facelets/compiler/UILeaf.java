@@ -237,7 +237,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
         getPathToComponent(component, buf);
 
         buf.insert(0, "{Component-Path : ");
-        buf.append("}");
+        buf.append('}');
 
         return buf.toString();
     }
@@ -263,7 +263,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
             intBuf.append(",Id: ");
             intBuf.append(component.getId());
         }
-        intBuf.append("]");
+        intBuf.append(']');
 
         buf.insert(0, intBuf.toString());
 

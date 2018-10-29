@@ -345,8 +345,8 @@ public class ViewPoolProcessor
         {
             if (oldView.getFacetCount() > 0)
             {
-                List<String> facetKeys = new ArrayList<String>();
-                facetKeys.addAll(oldView.getFacets().keySet());
+                List<String> facetKeys = new ArrayList<String>(oldView.getFacets().keySet());
+
                 for (String facetKey : facetKeys)
                 {
                     //context.setProcessingEvents(false);

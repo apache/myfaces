@@ -326,9 +326,9 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             // applied inside an included section (by ui:define and ui:insert for example).
             if (!getFaceletCompositionContext().isInMetadataSection())
             {
-                _uniqueIdBuilder.append("_");
+                _uniqueIdBuilder.append('_');
                 _uniqueIdBuilder.append(_prefix);
-                _uniqueIdBuilder.append("_");
+                _uniqueIdBuilder.append('_');
                 _uniqueIdBuilder.append(base);
             }
             uniqueIdFromIterator = _uniqueIdBuilder.toString();
@@ -347,9 +347,9 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         initPrefix();
         _uniqueIdBuilder.setLength(0);
         _uniqueIdBuilder.append(count);
-        _uniqueIdBuilder.append("_");
+        _uniqueIdBuilder.append('_');
         _uniqueIdBuilder.append(_prefix);
-        _uniqueIdBuilder.append("_");
+        _uniqueIdBuilder.append('_');
         _uniqueIdBuilder.append(base);
         return _uniqueIdBuilder.toString();
     }

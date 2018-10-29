@@ -184,7 +184,7 @@ public abstract class AbstractDynamicProducer<T> implements Bean<T>, Passivation
     
     public AbstractDynamicProducer<T> addToId(Object object)
     {
-        id = id + " " + object.toString();
+        id = id + ' ' + object.toString();
         return this;
     }
 

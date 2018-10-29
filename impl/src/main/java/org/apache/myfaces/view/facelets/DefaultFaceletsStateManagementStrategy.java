@@ -353,7 +353,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             }
             catch (Throwable e)
             {
-                throw new FacesException ("unable to create view \"" + viewId + "\"", e);
+                throw new FacesException ("unable to create view \"" + viewId + '"', e);
             }
 
             // Stateless mode only for transient views and non stateless mode for

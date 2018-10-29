@@ -422,7 +422,7 @@ class RestoreViewExecutor extends PhaseExecutor
                 }
                 boolean isStrictJsf2OriginHeaderAppPath = 
                                 MyfacesConfig.getCurrentInstance(ectx).isStrictJsf2OriginHeaderAppPath();
-                if (!path.equals(""))
+                if (!path.isEmpty())
                 {
                     if (serverHost.equals(host) && matchPort && path.contains(appContextPath))
                     {

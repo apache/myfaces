@@ -99,7 +99,7 @@ public class IdSearchKeywordResolver extends SearchKeywordResolver
         else
         {
             throw new FacesException("Expression does not match following pattern @id(id). Expression: \""
-                    + expression + "\"");
+                    + expression + '"');
         }
     }
 

@@ -85,7 +85,7 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
                      !renderedJSFJS.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL))
                 {
                     _resourceLoaders = new ResourceLoader[] {
-                            new TempDirFileCacheResourceLoader(new ExternalContextResourceLoader("/"+directory)),
+                            new TempDirFileCacheResourceLoader(new ExternalContextResourceLoader('/' +directory)),
                             new TempDirFileCacheResourceLoader(new FacesFlowClassLoaderResourceLoader()),
                             new TempDirFileCacheResourceLoader(
                                              new InternalClassLoaderResourceLoader(META_INF_INTERNAL_RESOURCES)),
@@ -95,7 +95,7 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
                 else
                 {
                     _resourceLoaders = new ResourceLoader[] {
-                            new TempDirFileCacheResourceLoader(new ExternalContextResourceLoader("/"+directory)),
+                            new TempDirFileCacheResourceLoader(new ExternalContextResourceLoader('/' +directory)),
                             new TempDirFileCacheResourceLoader(new FacesFlowClassLoaderResourceLoader()),
                             new TempDirFileCacheResourceLoader(new ClassLoaderResourceLoader(META_INF_RESOURCES))
                     };
@@ -113,7 +113,7 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
                      !renderedJSFJS.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL))
                 {
                     _resourceLoaders = new ResourceLoader[] {
-                            new ExternalContextResourceLoader("/"+directory),
+                            new ExternalContextResourceLoader('/' +directory),
                             new FacesFlowClassLoaderResourceLoader(),
                             new InternalClassLoaderResourceLoader(META_INF_INTERNAL_RESOURCES),
                             new ClassLoaderResourceLoader(META_INF_RESOURCES)
@@ -122,7 +122,7 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
                 else
                 {
                     _resourceLoaders = new ResourceLoader[] {
-                            new ExternalContextResourceLoader("/"+directory),
+                            new ExternalContextResourceLoader('/' +directory),
                             new FacesFlowClassLoaderResourceLoader(),
                             new ClassLoaderResourceLoader(META_INF_RESOURCES)
                     };
@@ -151,7 +151,7 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
             {
                 _contractResourceLoaders= new ContractResourceLoader[] { 
                     new TempDirFileCacheContractResourceLoader(
-                        new ExternalContextContractResourceLoader("/"+directory)),
+                        new ExternalContextContractResourceLoader('/' +directory)),
                     new TempDirFileCacheContractResourceLoader(
                         new ClassLoaderContractResourceLoader(META_INF_CONTRACTS))
                 };
@@ -160,7 +160,7 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
             {
             
                 _contractResourceLoaders= new ContractResourceLoader[] { 
-                    new ExternalContextContractResourceLoader("/"+directory),
+                    new ExternalContextContractResourceLoader('/' +directory),
                     new ClassLoaderContractResourceLoader(META_INF_CONTRACTS)
                 };
             }

@@ -132,11 +132,7 @@ public class FaceletsViewDeclarationLanguageUtils
                     String resourceName = (String) component.getAttributes().get(JSFAttr.NAME_ATTR);
                     String libraryName = (String) component.getAttributes().get(JSFAttr.LIBRARY_ATTR);
                     
-                    if (resourceName == null)
-                    {
-                        continue;
-                    }
-                    if ("".equals(resourceName))
+                    if (resourceName == null || resourceName.isEmpty())
                     {
                         continue;
                     }

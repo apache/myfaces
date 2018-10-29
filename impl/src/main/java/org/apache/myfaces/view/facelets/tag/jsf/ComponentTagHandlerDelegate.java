@@ -832,7 +832,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             while (enclosingValidatorIds.hasNext())
             {
                 Map.Entry<String, EditableValueHolderAttachedObjectHandler> entry = enclosingValidatorIds.next();
-                boolean validatorIdAvailable = entry.getKey() != null && !"".equals(entry.getKey());
+                boolean validatorIdAvailable = entry.getKey() != null && !entry.getKey().isEmpty();
                 if (validatorIdAvailable && entry.getKey().equals(validatorId))
                 {
                     if (((ValidatorHandler)((FacesWrapper<ValidatorHandler>)entry.getValue()).getWrapped())

@@ -178,7 +178,7 @@ public class TempDirFileCacheContractResourceLoader extends ContractResourceLoad
     @SuppressWarnings("unchecked")
     private File createOrGetTempFile(FacesContext facesContext, ResourceMeta resourceMeta)
     {
-        String identifier = resourceMeta.getResourceIdentifier()+"_"+resourceMeta.getContractName();
+        String identifier = resourceMeta.getResourceIdentifier()+ '_' +resourceMeta.getContractName();
         File file = getTemporalFile(resourceMeta);
         if (!file.exists())
         {
@@ -212,7 +212,7 @@ public class TempDirFileCacheContractResourceLoader extends ContractResourceLoad
     private File getTemporalFile(ResourceMeta resourceMeta)
     {
         return new File(_tempDir, 
-            resourceMeta.getResourceIdentifier()+"_"+ resourceMeta.getContractName() + TEMP_FILE_SUFFIX);
+            resourceMeta.getResourceIdentifier()+ '_' + resourceMeta.getContractName() + TEMP_FILE_SUFFIX);
     }
 
     protected void createTemporalFileVersion(FacesContext facesContext, ResourceMeta resourceMeta, File target)

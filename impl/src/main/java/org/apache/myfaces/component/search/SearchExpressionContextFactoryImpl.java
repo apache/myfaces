@@ -19,7 +19,7 @@
 
 package org.apache.myfaces.component.search;
 
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 import javax.faces.component.UIComponent;
 import javax.faces.component.search.SearchExpressionContext;
@@ -52,7 +52,7 @@ public class SearchExpressionContextFactoryImpl extends SearchExpressionContextF
         SearchExpressionContextImpl searchExpressionContext = new SearchExpressionContextImpl(context);
         searchExpressionContext.setSource(source);
         searchExpressionContext.setExpressionHints(expressionHints == null ?
-                new HashSet<SearchExpressionHint>(2) : expressionHints);
+                EnumSet.noneOf(SearchExpressionHint.class) : expressionHints);
         searchExpressionContext.setVisitHints(visitHints);
         return searchExpressionContext;
     }

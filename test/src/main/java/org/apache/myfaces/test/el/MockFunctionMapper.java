@@ -57,7 +57,7 @@ public class MockFunctionMapper extends FunctionMapper
     public void mapFunction(String prefix, String localName, Method method)
     {
 
-        functions.put(prefix + ":" + localName, method);
+        functions.put(prefix + ':' + localName, method);
 
     }
 
@@ -67,7 +67,7 @@ public class MockFunctionMapper extends FunctionMapper
     public Method resolveFunction(String prefix, String localName)
     {
 
-        return (Method) functions.get(prefix + ":" + localName);
+        return (Method) functions.get(prefix + ':' + localName);
 
     }
 

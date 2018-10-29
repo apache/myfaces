@@ -598,7 +598,7 @@ public final class ErrorPageWriter
             ContextAware caex = (ContextAware) ex;
             contextAwareLocation = caex.getLocation().toString() + "    " +
                                    caex.getQName() + "=\"" +
-                                   caex.getExpressionString() + "\"";
+                                   caex.getExpressionString() + '"';
         }
         while (ex.getCause() != null)
         {
@@ -608,7 +608,7 @@ public final class ErrorPageWriter
                 ContextAware caex = (ContextAware) ex;
                 contextAwareLocation = caex.getLocation().toString() + "    " +
                                        caex.getQName() + "=\"" +
-                                       caex.getExpressionString() + "\"";
+                                       caex.getExpressionString() + '"';
             }
             if (ex.getMessage() != null)
             {
@@ -953,7 +953,7 @@ public final class ErrorPageWriter
                                 // check if a call stack is available
                                 if (debugInfo[3] != null)
                                 {
-                                    final String stackTraceId = fieldid + "_" + entry.getKey() + "_" + i;
+                                    final String stackTraceId = fieldid + '_' + entry.getKey() + '_' + i;
                                     _writer.write("<div class=\"stacktrace_wrapper\">");
                                     _writer.write("<a href=\"#\" onclick=\"toggle('");
                                     _writer.write(stackTraceId);

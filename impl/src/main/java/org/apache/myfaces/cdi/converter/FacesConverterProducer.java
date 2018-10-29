@@ -43,7 +43,7 @@ public class FacesConverterProducer extends AbstractDynamicProducer<Converter>
         String forClass = typeInfo.getForClass() == null ? "" : 
                 ((typeInfo.getForClass() == Object.class) ? "" : typeInfo.getForClass().getName());
         String converterId = typeInfo.getConverterId() == null ? "" : typeInfo.getConverterId();
-        String id = "" + typeInfo.getType() + "_" + forClass + "_" + converterId;
+        String id = "" + typeInfo.getType() + '_' + forClass + '_' + converterId;
 
         FacesConverterAnnotationLiteral literal = new FacesConverterAnnotationLiteral(
                         typeInfo.getForClass() == null ? Object.class : typeInfo.getForClass(), 

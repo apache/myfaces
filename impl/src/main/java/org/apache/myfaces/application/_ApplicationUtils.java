@@ -136,13 +136,9 @@ class _ApplicationUtils
     {
         if (listeners != null && !listeners.isEmpty())
         {
-            List<SystemEventListener> listenersCopy = new ArrayList<SystemEventListener>();
             int processedListenerIndex = 0;
-            
-            for (int i = 0; i < listeners.size(); i++)
-            {
-                listenersCopy.add(listeners.get(i));
-            }
+
+            List<SystemEventListener> listenersCopy = new ArrayList<SystemEventListener>(listeners);
             
             // If the inner for is succesful, processedListenerIndex == listenersCopy.size()
             // and the loop will be complete.

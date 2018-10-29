@@ -106,6 +106,6 @@ public final class Tag
      */
     public String toString()
     {
-        return this.location + " <" + this.qName + ">";
+        return this.location + " <" + this.qName + '>';
     }
 }

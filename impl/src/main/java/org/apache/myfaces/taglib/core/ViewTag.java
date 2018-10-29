@@ -104,7 +104,7 @@ public class ViewTag extends UIComponentELTag
             }
             catch (IOException e)
             {
-                throw new JspException("Can't write content above <f:view> tag" + " " + e.getMessage());
+                throw new JspException("Can't write content above <f:view> tag" + ' ' + e.getMessage());
             }
         }
 

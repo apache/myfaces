@@ -191,7 +191,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
                 if (traceEnabled)
                 {
                     log.finest("Calculated viewId '" + viewId + "' from request param '"
-                               + JAVAX_SERVLET_INCLUDE_PATH_INFO + "'");
+                               + JAVAX_SERVLET_INCLUDE_PATH_INFO + '\'');
                 }
             }
             else
@@ -209,7 +209,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
                 if (viewId != null && traceEnabled)
                 {
                     log.finest("Calculated viewId '" + viewId + "' from request param '"
-                            + JAVAX_SERVLET_INCLUDE_SERVLET_PATH + "'");
+                            + JAVAX_SERVLET_INCLUDE_SERVLET_PATH + '\'');
                 }
             }
         }

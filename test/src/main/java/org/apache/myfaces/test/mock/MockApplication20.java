@@ -976,7 +976,7 @@ public class MockApplication20 extends MockApplication12
 
                 String name = componentResource.getResourceName();
                 String className = name.substring(0, name.lastIndexOf('.'));
-                fqcn = componentResource.getLibraryName() + "." + className;
+                fqcn = componentResource.getLibraryName() + '.' + className;
                 
                 try
                 {

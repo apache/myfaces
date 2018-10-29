@@ -1207,7 +1207,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
     {
         String contextPath = externalContext.getRequestContextPath();
 
-        if (contextPath == null || "".equals(contextPath))
+        if (contextPath == null || contextPath.isEmpty())
         {
             contextPath = "/";
         }

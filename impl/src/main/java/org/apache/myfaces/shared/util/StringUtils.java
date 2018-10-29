@@ -279,7 +279,7 @@ public final class StringUtils
             {
                 throw new IllegalArgumentException(
                     "Internal quote not doubled in string '"
-                    + str.substring(begin, end) + "'");
+                    + str.substring(begin, end) + '\'');
             }
 
             sb.append(substring(str, beginInt, endInt)).append(quote);
@@ -332,7 +332,7 @@ public final class StringUtils
         {
             throw new IllegalArgumentException(
                 "Closing quote missing in string '"
-                + substring(str, begin, end) + "'");
+                + substring(str, begin, end) + '\'');
         }
 
         return dequote(str, begin + 1, endInt, quote);
@@ -493,7 +493,7 @@ public final class StringUtils
                 if (pos == 0)
                 {
                     throw new IllegalArgumentException(
-                        "Closing quote missing in string '" + str + "'");
+                        "Closing quote missing in string '" + str + '\'');
                 }
             }
 
@@ -507,7 +507,7 @@ public final class StringUtils
                 {
                     throw new IllegalArgumentException(
                         "Separator must follow closing quote in string '"
-                        + str + "'");
+                        + str + '\'');
                 }
             }
             else
@@ -618,7 +618,7 @@ public final class StringUtils
                 if (pos == 0)
                 {
                     throw new IllegalArgumentException(
-                        "Closing quote missing in string '" + str + "'");
+                        "Closing quote missing in string '" + str + '\'');
                 }
             }
 
@@ -628,7 +628,7 @@ public final class StringUtils
                 {
                     throw new IllegalArgumentException(
                         "Separator must follow closing quote in strng '"
-                        + str + "'");
+                        + str + '\'');
                 }
             }
             else
@@ -674,7 +674,7 @@ public final class StringUtils
                 {
                     throw new IllegalArgumentException(
                         "Separator must follow closing quote in strng '"
-                        + str + "'");
+                        + str + '\'');
                 }
             }
             else

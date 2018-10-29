@@ -698,7 +698,7 @@ public class ApplicationImpl extends Application
         _defaultLocale = locale;
         if (log.isLoggable(Level.FINEST))
         {
-            log.finest("set defaultLocale = " + locale.getCountry() + " " + locale.getLanguage());
+            log.finest("set defaultLocale = " + locale.getCountry() + ' ' + locale.getLanguage());
         }
     }
 
@@ -1273,7 +1273,7 @@ public class ApplicationImpl extends Application
                 boolean isProduction = FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Production);
                 String name = componentResource.getResourceName();
                 String className = name.substring(0, name.lastIndexOf('.'));
-                fqcn = componentResource.getLibraryName() + "." + className;
+                fqcn = componentResource.getLibraryName() + '.' + className;
                 
                 if (isProduction)
                 {

@@ -60,7 +60,7 @@ public class ViewResourceIterator implements Iterator<String>
         this.options = options;
         this.facesContext = facesContext;
 
-        String basePath = this.origBasePath.endsWith("/") ? this.origBasePath : this.origBasePath+"/";
+        String basePath = this.origBasePath.endsWith("/") ? this.origBasePath : this.origBasePath+ '/';
         
         if (contractPreferred != null)
         {
@@ -69,10 +69,10 @@ public class ViewResourceIterator implements Iterator<String>
                 if (localePrefix != null)
                 {
                     stack.add(loader);
-                    basePathStack.add(basePath+localePrefix+"/"+contractPreferred);
+                    basePathStack.add(basePath+localePrefix+ '/' +contractPreferred);
                 }
                 stack.add(loader);
-                basePathStack.add(basePath+"/"+contractPreferred);
+                basePathStack.add(basePath+ '/' +contractPreferred);
             }
         }
         if (!contracts.isEmpty())
@@ -84,7 +84,7 @@ public class ViewResourceIterator implements Iterator<String>
                     if (localePrefix != null)
                     {
                         stack.add(loader);
-                        basePathStack.add(basePath+localePrefix+"/"+contract);
+                        basePathStack.add(basePath+localePrefix+ '/' +contract);
                     }
                     stack.add(loader);
                     basePathStack.add(basePath+contract);

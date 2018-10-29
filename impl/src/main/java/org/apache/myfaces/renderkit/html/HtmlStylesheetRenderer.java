@@ -109,7 +109,7 @@ public class HtmlStylesheetRenderer extends Renderer implements
         String resourceName = (String) componentAttributesMap.get(JSFAttr.NAME_ATTR);
         boolean hasChildren = component.getChildCount() > 0;
         
-        if (resourceName != null && (!"".equals(resourceName)) )
+        if (resourceName != null && !resourceName.isEmpty())
         {
             if (hasChildren)
             {
@@ -148,14 +148,7 @@ public class HtmlStylesheetRenderer extends Renderer implements
         String resourceName = (String) componentAttributesMap.get(JSFAttr.NAME_ATTR);
         String libraryName = (String) componentAttributesMap.get(JSFAttr.LIBRARY_ATTR);
 
-        if (resourceName == null)
-        {
-            //log.warn("Trying to encode resource represented by component" + 
-            //        component.getClientId() + " without resourceName."+
-            //        " It will be silenty ignored.");
-            return;
-        }
-        if ("".equals(resourceName))
+        if (resourceName == null || resourceName.isEmpty())
         {
             return;
         }

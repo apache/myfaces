@@ -56,7 +56,7 @@ public class DefaultResourceLibraryContractsProvider extends ResourceLibraryCont
             directory = directory.substring(0, directory.length()-1);
         }
         
-        directory = "/"+directory+"/";
+        directory = '/' +directory+ '/';
         Set<String> contracts = new HashSet<String>();
         Set<String> paths = context.getResourcePaths(directory);
         if (paths != null)
