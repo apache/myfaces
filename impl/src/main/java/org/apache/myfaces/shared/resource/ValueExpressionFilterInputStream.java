@@ -34,7 +34,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 
-import org.apache.myfaces.shared.util.io.DynamicPushbackInputStream;
+import org.apache.myfaces.shared.util.DynamicPushbackInputStream;
 
 public class ValueExpressionFilterInputStream extends InputStream
 {

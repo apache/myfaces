@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.util.io;
+package org.apache.myfaces.shared.util;
 
 import java.io.IOException;
 import java.io.InputStream;
