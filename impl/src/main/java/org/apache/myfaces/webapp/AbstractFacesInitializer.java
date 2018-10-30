@@ -25,7 +25,6 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
-import org.apache.myfaces.ee.MyFacesContainerInitializer;
 import org.apache.myfaces.shared.application.FacesServletMappingUtils;
 import org.apache.myfaces.context.ExceptionHandlerImpl;
 import org.apache.myfaces.shared.util.StateUtils;
