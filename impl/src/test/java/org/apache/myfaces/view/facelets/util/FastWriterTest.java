@@ -54,7 +54,7 @@ public class FastWriterTest
     public void testFastWriterWriteStringLength() throws Exception
     {
        String sampleStringToWrite = "Test String to write";
-       int length = sampleStringToWrite.substring(0, sampleStringToWrite.indexOf(" ")).length();
+       int length = sampleStringToWrite.substring(0, sampleStringToWrite.indexOf(' ')).length();
        
        FastWriter fw = new FastWriter();
        fw.write(sampleStringToWrite, 0, length);

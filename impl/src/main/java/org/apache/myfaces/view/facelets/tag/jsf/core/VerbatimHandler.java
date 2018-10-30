@@ -46,7 +46,7 @@ public final class VerbatimHandler extends ComponentHandler
 
     public void onComponentCreated(FaceletContext ctx, UIComponent c, UIComponent parent)
     {
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
         for (TextHandler handler : TagHandlerUtils.findNextByType(nextHandler, TextHandler.class))
         {
             content.append(handler.getText(ctx));

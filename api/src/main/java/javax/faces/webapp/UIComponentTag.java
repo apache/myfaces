@@ -207,7 +207,7 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
 
         if (_rendered != null)
         {
-            boolean b = Boolean.valueOf(_rendered).booleanValue();
+            boolean b = Boolean.parseBoolean(_rendered);
             component.setRendered(b);
         }
     }

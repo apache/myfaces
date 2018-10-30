@@ -365,7 +365,7 @@ public final class Classpath
         if (url != null && url.indexOf('%') >= 0)
         {
             int n = url.length();
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             ByteBuffer bytes = ByteBuffer.allocate(n);
             for (int i = 0; i < n; )
             {

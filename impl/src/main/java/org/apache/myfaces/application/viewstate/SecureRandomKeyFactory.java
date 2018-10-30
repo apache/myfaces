@@ -95,10 +95,7 @@ class SecureRandomKeyFactory extends KeyFactory<byte[]>
         byte[] array = new byte[length];
         byte[] key = new byte[length + 4];
         sessionIdGenerator.getRandomBytes(array);
-        for (int i = 0; i < array.length; i++)
-        {
-            key[i] = array[i];
-        }
+        System.arraycopy(array, 0, key, 0, array.length);
         int value = generateCounterKey(facesContext);
         key[array.length] = (byte) (value >>> 24);
         key[array.length + 1] = (byte) (value >>> 16);

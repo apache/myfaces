@@ -132,11 +132,11 @@ public final class TagAttributeImpl extends TagAttribute
     {
         if ((this.capabilities & EL_LITERAL) != 0)
         {
-            return Boolean.valueOf(this.value).booleanValue();
+            return Boolean.valueOf(this.value);
         }
         else
         {
-            return ((Boolean) this.getObject(ctx, Boolean.class)).booleanValue();
+            return ((Boolean) this.getObject(ctx, Boolean.class));
         }
     }
 
@@ -321,10 +321,7 @@ public final class TagAttributeImpl extends TagAttribute
                     array[0] = type;
                     array[1] = paramTypes;
                     array[2] = methodExpression;
-                    for (int i = 0; i < localCachedExpression.length; i++)
-                    {
-                        array[i+3] = localCachedExpression[i];
-                    }
+                    System.arraycopy(localCachedExpression, 0, array, 3, localCachedExpression.length);
                     cachedExpression = array;
                 }
                 else

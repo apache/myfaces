@@ -112,7 +112,7 @@ public class HtmlCheckAttributesUtil
      */
     public static String constructErrorMessage(HtmlRenderedAttr[] attrs, String actual) 
     {
-        StringBuffer messgBuffer = new StringBuffer();
+        StringBuilder messgBuffer = new StringBuilder();
         for(int i = 0; i < attrs.length; i++) 
         {
             if(attrs[i].getErrorCode() == HtmlRenderedAttr.RENDERED_MORE_TIMES_THAN_EXPECTED) 

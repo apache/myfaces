@@ -1326,7 +1326,7 @@ public abstract class UIComponent
         {
             String param
                     = facesContext.getExternalContext().getInitParameter(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME);
-            paramValue = Boolean.valueOf((param != null && Boolean.valueOf(param).booleanValue()));
+            paramValue = (param != null && Boolean.parseBoolean(param));
             attributes.put(HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME, paramValue);
         }
         return paramValue;

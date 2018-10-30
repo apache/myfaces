@@ -194,7 +194,7 @@ public final class HtmlJavaScriptUtils
                 script.append(elemVarName).append(".nodeName=='INPUT'){");
                 script.append("\n   if (").append(elemVarName)
                         .append(".value != '') {");
-                script.append("\n    " + elemVarName + ".value='';");
+                script.append("\n    ").append(elemVarName).append(".value='';");
                 script.append("\n   }");
                 script.append("\n  }");
                 i++;

@@ -265,7 +265,7 @@ public final class SAXCompiler extends Compiler
         {
             if (this.inDocument && !this.unit.getFaceletsProcessingInstructions().isConsumeProcessingInstructions())
             {
-                StringBuffer sb = new StringBuffer(64);
+                StringBuilder sb = new StringBuilder(64);
                 sb.append("<?").append(target).append(' ').append(data).append("?>\n");
                 this.unit.writeInstruction(sb.toString());
             }
@@ -495,7 +495,7 @@ public final class SAXCompiler extends Compiler
         {
             if (inDocument && inMetadata && !unit.getFaceletsProcessingInstructions().isConsumeProcessingInstructions())
             {
-                StringBuffer sb = new StringBuffer(64);
+                StringBuilder sb = new StringBuilder(64);
                 sb.append("<?").append(target).append(' ').append(data).append("?>\n");
                 unit.writeInstruction(sb.toString());
             }
@@ -738,7 +738,7 @@ public final class SAXCompiler extends Compiler
             if (inDocument && inCompositeInterface
                 && !unit.getFaceletsProcessingInstructions().isConsumeProcessingInstructions())
             {
-                StringBuffer sb = new StringBuffer(64);
+                StringBuilder sb = new StringBuilder(64);
                 sb.append("<?").append(target).append(' ').append(data).append("?>\n");
                 this.unit.writeInstruction(sb.toString());
             }

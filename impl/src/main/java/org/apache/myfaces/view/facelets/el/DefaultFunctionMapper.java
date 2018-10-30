@@ -99,7 +99,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
     @Override
     public String toString()
     {
-        StringBuffer sb = new StringBuffer(128);
+        StringBuilder sb = new StringBuilder(128);
         sb.append("FunctionMapper[\n");
         for (Function function : _functions.values())
         {
@@ -249,7 +249,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
         @Override
         public String toString()
         {
-            StringBuffer sb = new StringBuffer(32);
+            StringBuilder sb = new StringBuilder(32);
             sb.append("Function[");
             if (_prefix != null)
             {

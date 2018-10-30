@@ -109,7 +109,7 @@ public class HtmlFormRendererTest extends AbstractJsfTestCase
     }
     
     private String printHTMLAttrs(String[] attrs) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for(int i = 0; i < attrs.length; i++) {
             buffer.append(attrs[i]);
             if(i+1 < attrs.length) {

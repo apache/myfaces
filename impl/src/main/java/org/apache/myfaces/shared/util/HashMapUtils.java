@@ -76,7 +76,7 @@ public class HashMapUtils
     {
         Set entries = map.entrySet();
         Iterator iter = entries.iterator();
-        StringBuffer buff = new StringBuffer();
+        StringBuilder buff = new StringBuilder();
         while (iter.hasNext())
         {
             Map.Entry entry = (Map.Entry) iter.next();

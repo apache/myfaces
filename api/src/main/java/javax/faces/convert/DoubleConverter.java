@@ -108,7 +108,7 @@ public class DoubleConverter
         // replace decimal separators which are different to '.'
         if (decSep != '.' && value.lastIndexOf(decSep) >= 0)
         {
-            StringBuffer sbVal = new StringBuffer();
+            StringBuilder sbVal = new StringBuilder();
 
             // remove all groupSeperators and change the decimalSeperator
             for (int i = 0; i < value.length(); i++)
@@ -139,7 +139,7 @@ public class DoubleConverter
         // TODO we can remove this hack, once this got fixed in the jvm!
         if (value.length() >= 23)
         {
-            StringBuffer normalized = new StringBuffer();
+            StringBuilder normalized = new StringBuilder();
             for (int i=0; i< value.length(); i++)
             {
                 char c = value.charAt(i);

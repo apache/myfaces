@@ -997,11 +997,11 @@ public final class RendererUtils
     {
         if (value instanceof Boolean)
         {
-            return ((Boolean) value).booleanValue();
+            return ((Boolean) value);
         }
         else if (value instanceof String)
         {
-            return Boolean.valueOf((String) value).booleanValue();
+            return Boolean.parseBoolean((String) value);
         }
         else if (value != null)
         {

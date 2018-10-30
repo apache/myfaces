@@ -68,7 +68,7 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase
         {
             if (_rendered.isLiteralText())
             {
-                boolean b = Boolean.valueOf(_rendered.getExpressionString()).booleanValue();
+                boolean b = Boolean.parseBoolean(_rendered.getExpressionString());
                 component.setRendered(b);
             }
             else

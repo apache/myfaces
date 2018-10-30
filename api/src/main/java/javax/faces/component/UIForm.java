@@ -388,7 +388,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
     
     private String getPathToComponent(UIComponent component)
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         if (component == null)
         {
@@ -405,14 +405,14 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         return buf.toString();
     }
     
-    private void getPathToComponent(UIComponent component, StringBuffer buf)
+    private void getPathToComponent(UIComponent component, StringBuilder buf)
     {
         if (component == null)
         {
             return;
         }
 
-        StringBuffer intBuf = new StringBuffer();
+        StringBuilder intBuf = new StringBuilder();
 
         intBuf.append("[Class: ");
         intBuf.append(component.getClass().getName());

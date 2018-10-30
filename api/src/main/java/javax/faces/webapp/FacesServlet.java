@@ -153,7 +153,7 @@ public final class FacesServlet implements Servlet
          */
         if (pathInfo != null && (pathInfo.startsWith("/WEB-INF") || pathInfo.startsWith("/META-INF")))
         {
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
 
             buffer.append(" Someone is trying to access a secure resource : ").append(pathInfo);
             buffer.append("\n remote address is ").append(httpRequest.getRemoteAddr());

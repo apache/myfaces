@@ -192,7 +192,8 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         sb.append('\'');
         sb.append(facesContext.getExternalContext().encodeWebsocketURL(
                 facesContext.getApplication().getViewHandler().getWebsocketURL(
-                        facesContext, component.getChannel()+ '?' +channelToken))+ '\'');
+                        facesContext, component.getChannel()+ '?' +channelToken)));
+        sb.append('\'');
         sb.append(',');
         sb.append('\'');
         sb.append(component.getChannel());
