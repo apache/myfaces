@@ -237,17 +237,4 @@ public final class JavascriptUtils
             return false;
         }
     }
-    
-    public static boolean isSaveFormSubmitLinkIE(ExternalContext externalContext)
-    {
-        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(externalContext);
-        if (myfacesConfig.isSaveFormSubmitLinkIE())
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }    
 }

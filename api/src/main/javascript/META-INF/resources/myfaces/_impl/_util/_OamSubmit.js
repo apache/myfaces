@@ -36,7 +36,7 @@ if (!myfaces.oam) {
             if (typeof form == 'undefined') {
                 form = document.getElementById(formname);
             }
-    
+
             if (typeof form.elements[name] != 'undefined' && (form.elements[name].nodeName == 'INPUT' || form.elements[name].nodeName == 'input')) {
                 form.elements[name].value = value;
             }
@@ -49,7 +49,7 @@ if (!myfaces.oam) {
                 form.appendChild(newInput);
             }
         };
-        
+
         /**
          * clears a hidden input field
          *
@@ -59,17 +59,17 @@ if (!myfaces.oam) {
          */
         this.clearHiddenInput = function(formname, name, value) {
             var form = document.forms[formname];
-    
+
             if (typeof form == 'undefined') {
                 form = document.getElementById(formname);
             }
-    
+
             var hInput = form.elements[name];
             if (typeof hInput != 'undefined') {
                 form.removeChild(hInput);
             }
         };
-        
+
         /**
          * does special form submit remapping
          * remaps the issuing command link into something
@@ -81,32 +81,22 @@ if (!myfaces.oam) {
          * @param params
          */
         this.submitForm = function(formName, linkId, target, params) {
-    
+
             var clearFn = 'clearFormHiddenParams_' + formName.replace(/-/g, '\$:').replace(/:/g, '_');
             if (typeof window[clearFn] == 'function') {
                 window[clearFn](formName);
             }
-    
+
             var form = document.forms[formName];
             if (typeof form == 'undefined') {
                 form = document.getElementById(formName);
             }
-    
+
             //autoscroll code
             if (myfaces.core.config.autoScroll && typeof window.getScrolling != 'undefined') {
                 myfaces.oam.setHiddenInput(formName, 'autoScroll', getScrolling());
             }
-    
-            if (myfaces.core.config.ieAutoSave) {
-                var agentString = navigator.userAgent.toLowerCase();
-                var version = navigator.appVersion;
-                if (agentString.indexOf('msie') != -1) {
-                    if (!(agentString.indexOf('ppc') != -1 && agentString.indexOf('windows ce') != -1 && version >= 4.0)) {
-                        window.external.AutoCompleteSaveForm(form);
-                    }
-                }
-            }
-    
+
             var oldTarget = form.target;
             if (target != null) {
                 form.target = target;
@@ -115,11 +105,11 @@ if (!myfaces.oam) {
                 for (var i = 0, param; (param = params[i]); i++) {
                     myfaces.oam.setHiddenInput(formName, param[0], param[1]);
                 }
-    
+
             }
-    
+
             myfaces.oam.setHiddenInput(formName, formName + ':' + '_idcl', linkId);
-    
+
             if (form.onsubmit) {
                 var result = form.onsubmit();
                 if ((typeof result == 'undefined') || result) {
@@ -129,7 +119,7 @@ if (!myfaces.oam) {
                     catch(e) {
                     }
                 }
-    
+
             }
             else {
                 try {
@@ -138,16 +128,16 @@ if (!myfaces.oam) {
                 catch(e) {
                 }
             }
-    
+
             form.target = oldTarget;
             if ((typeof params != 'undefined') && params != null) {
-    
+
                 for (var i = 0, param; (param = params[i]); i++) {
                     myfaces.oam.clearHiddenInput(formName, param[0], param[1]);
                 }
-    
+
             }
-    
+
             myfaces.oam.clearHiddenInput(formName, formName + ':' + '_idcl', linkId);
             return false;
         };

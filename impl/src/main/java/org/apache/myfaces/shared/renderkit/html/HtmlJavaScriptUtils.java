@@ -18,72 +18,16 @@
  */
 package org.apache.myfaces.shared.renderkit.html;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils.ScriptContext;
 import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
-import org.apache.myfaces.shared.renderkit.html.util.HTML;
 
 public final class HtmlJavaScriptUtils
 {
     private static final Logger log = Logger.getLogger(HtmlJavaScriptUtils.class.getName());
-
-    private static final String FIRST_SUBMIT_SCRIPT_ON_PAGE = "org.apache.MyFaces.FIRST_SUBMIT_SCRIPT_ON_PAGE";
-    
-
-    @SuppressWarnings("unchecked")
-    public static void renderFormSubmitScript(FacesContext facesContext)
-            throws IOException
-    {
-        if (facesContext.getPartialViewContext() != null && 
-                (facesContext.getPartialViewContext().isPartialRequest() ||
-                 facesContext.getPartialViewContext().isAjaxRequest() )
-            )
-        {
-            return;
-        }
-
-        Map map = facesContext.getExternalContext().getRequestMap();
-        Boolean firstScript = (Boolean) map.get(FIRST_SUBMIT_SCRIPT_ON_PAGE);
-
-        if (firstScript == null || firstScript.equals(Boolean.TRUE))
-        {
-            map.put(FIRST_SUBMIT_SCRIPT_ON_PAGE, Boolean.FALSE);
-
-            //we have to render the config just in case
-            renderConfigOptionsIfNecessary(facesContext);
-        }
-    }
-    
-    private static void renderConfigOptionsIfNecessary(FacesContext facesContext)
-            throws IOException
-    {
-        ResponseWriter writer = facesContext.getResponseWriter();
-        ScriptContext script = new ScriptContext();
-        boolean autoSave = JavascriptUtils.isSaveFormSubmitLinkIE(facesContext
-                .getExternalContext());
-
-        if (autoSave)
-        {
-            script.prettyLine();
-            script.increaseIndent();
-            script.append("(!window.myfaces) ? window.myfaces = {} : null;");
-            script.append("(!myfaces.core) ? myfaces.core = {} : null;");
-            script.append("(!myfaces.core.config) ? myfaces.core.config = {} : null;");
-            script.append("myfaces.core.config.ieAutoSave = true;");
-            writer.startElement(HTML.SCRIPT_ELEM, null);
-            writer.writeAttribute(HTML.TYPE_ATTR, "text/javascript", null);
-            writer.writeText(script.toString(), null);
-            writer.endElement(HTML.SCRIPT_ELEM);
-        }
-    }
     
     public static void appendClearHiddenCommandFormParamsFunctionCall(
             StringBuilder buf, String formName)
@@ -149,83 +93,6 @@ public final class HtmlJavaScriptUtils
     {
         return "clear_"
                 + JavascriptUtils.getValidJavascriptName(formName, false);
-    }
-    
-    /**
-     * Render the javascript function that is called on a click on a commandLink
-     * to clear the hidden inputs. This is necessary because on a browser back,
-     * each hidden input still has it's old value (browser cache!) and therefore
-     * a new submit would cause the according action once more!
-     *
-     * @param writer
-     * @param formName
-     * @param dummyFormParams
-     * @param formTarget
-     * @throws IOException
-     */
-    public static void renderClearHiddenCommandFormParamsFunction(
-            ResponseWriter writer, String formName, Set dummyFormParams,
-            String formTarget) throws IOException
-    {
-        //render the clear hidden inputs javascript function
-        String functionName = getClearHiddenCommandFormParamsFunctionName(formName);
-        writer.startElement(HTML.SCRIPT_ELEM, null);
-        writer.writeAttribute(HTML.TYPE_ATTR, "text/javascript", null);
-
-        // Using writeComment instead of write with <!-- tag
-        StringBuilder script = new StringBuilder();
-        script.append("function ");
-        script.append(functionName);
-        script.append("() {");
-        if (dummyFormParams != null)
-        {
-            script.append("\n  var f = document.forms['");
-            script.append(formName);
-            script.append("'];");
-            int i = 0;
-            for (Iterator it = dummyFormParams.iterator(); it.hasNext();)
-            {
-                String elemVarName = "elem" + i;
-                script.append("\n  var ").append(elemVarName).append(" = ");
-                script.append("f.elements['").append((String) it.next())
-                        .append("'];");
-                script.append("\n  if(typeof ").append(elemVarName)
-                        .append(" !='undefined' && ");
-                script.append(elemVarName).append(".nodeName=='INPUT'){");
-                script.append("\n   if (").append(elemVarName)
-                        .append(".value != '') {");
-                script.append("\n    ").append(elemVarName).append(".value='';");
-                script.append("\n   }");
-                script.append("\n  }");
-                i++;
-            }
-        }
-        // clear form target
-        script.append("\n  f.target=");
-        if (formTarget == null || formTarget.length() == 0)
-        {
-            //Normally one would think that setting target to null has the
-            //desired effect, but once again IE is different...
-            //Setting target to null causes IE to open a new window!
-            script.append("'';");
-        }
-        else
-        {
-            script.append('\'');
-            script.append(formTarget);
-            script.append("';");
-        }
-        script.append("\n}");
-
-        //Just to be sure we call this clear method on each load.
-        //Otherwise in the case, that someone submits a form by pressing Enter
-        //within a text input, the hidden inputs won't be cleared!
-        script.append('\n');
-        script.append(functionName);
-        script.append("();");
-
-        writer.writeText(script.toString(), null);
-        writer.endElement(HTML.SCRIPT_ELEM);
     }
     
     /**

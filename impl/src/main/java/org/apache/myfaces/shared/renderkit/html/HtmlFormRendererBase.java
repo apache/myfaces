@@ -19,17 +19,14 @@
 package org.apache.myfaces.shared.renderkit.html;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIForm;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.component.html.HtmlForm;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
@@ -45,9 +42,6 @@ public class HtmlFormRendererBase
     private static final String FORM_TARGET = HTML.FORM_ELEM;
     private static final String HIDDEN_SUBMIT_INPUT_SUFFIX = "_SUBMIT";
     private static final String HIDDEN_SUBMIT_INPUT_VALUE = "1";
-
-    private static final String HIDDEN_COMMAND_INPUTS_SET_ATTR
-            = UIForm.class.getName() + ".org.apache.myfaces.HIDDEN_COMMAND_INPUTS_SET";
 
     private static final String SCROLL_HIDDEN_INPUT = "org.apache.myfaces.SCROLL_HIDDEN_INPUT";
 
@@ -185,28 +179,6 @@ public class HtmlFormRendererBase
 
         beforeFormElementsEnd(facesContext, component);
 
-        //render hidden command inputs
-        Set set =  (Set) facesContext.getExternalContext().getRequestMap().get(
-                getHiddenCommandInputsSetName(facesContext, component)); 
-        if (set != null && !set.isEmpty())
-        {
-            HtmlRendererUtils.renderHiddenCommandFormParams(writer, set);
-
-            String target;
-            if (component instanceof HtmlForm)
-            {
-                target = ((HtmlForm)component).getTarget();
-            }
-            else
-            {
-                target = (String)component.getAttributes().get(HTML.TARGET_ATTR);
-            }
-            HtmlRendererUtils.renderClearHiddenCommandFormParamsFunction(writer,
-                                                                         component.getClientId(facesContext),
-                                                                         set,
-                                                                         target);
-        }
-
         MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
         if (!config.isRenderFormViewStateAtBegin())
         {
@@ -248,16 +220,6 @@ public class HtmlFormRendererBase
            UIComponent child = componentResources.get(i);
            child.encodeAll (facesContext);
         }
-    }
-
-    private static String getHiddenCommandInputsSetName(FacesContext facesContext, UIComponent form)
-    {
-        StringBuilder sb = SharedStringBuilder.get(facesContext, SHARED_STRING_BUILDER,
-                HIDDEN_COMMAND_INPUTS_SET_ATTR.length() + 20);
-        sb.append(HIDDEN_COMMAND_INPUTS_SET_ATTR);
-        sb.append('_');
-        sb.append(form.getClientId(facesContext));
-        return sb.toString();
     }
 
     private static String getScrollHiddenInputName(FacesContext facesContext, UIComponent form)
@@ -302,19 +264,6 @@ public class HtmlFormRendererBase
         HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
     }
 
-
-    public static void addHiddenCommandParameter(FacesContext facesContext, UIComponent form, String paramName)
-    {
-        Set set = (Set) facesContext.getExternalContext().getRequestMap().get(
-                getHiddenCommandInputsSetName(facesContext, form));
-        if (set == null)
-        {
-            set = new HashSet();
-            facesContext.getExternalContext().getRequestMap().put(
-                    getHiddenCommandInputsSetName(facesContext, form), set);
-        }
-        set.add(paramName);
-    }
 
     public static void renderScrollHiddenInputIfNecessary(
             UIComponent form, FacesContext facesContext, ResponseWriter writer)

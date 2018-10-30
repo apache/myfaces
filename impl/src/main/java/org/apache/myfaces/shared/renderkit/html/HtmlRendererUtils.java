@@ -1174,13 +1174,6 @@ public final class HtmlRendererUtils
         HtmlJavaScriptUtils.appendClearHiddenCommandFormParamsFunctionCall(buf, formName);
     }
 
-    @SuppressWarnings("unchecked")
-    public static void renderFormSubmitScript(FacesContext facesContext)
-            throws IOException
-    {
-        HtmlJavaScriptUtils.renderFormSubmitScript(facesContext);
-    }
-
     public static void renderHiddenCommandFormParams(ResponseWriter writer,
             Set dummyFormParams) throws IOException
     {
@@ -1305,25 +1298,6 @@ public final class HtmlRendererUtils
     }
 
     /**
-     * Render the javascript function that is called on a click on a commandLink
-     * to clear the hidden inputs. This is necessary because on a browser back,
-     * each hidden input still has it's old value (browser cache!) and therefore
-     * a new submit would cause the according action once more!
-     *
-     * @param writer
-     * @param formName
-     * @param dummyFormParams
-     * @param formTarget
-     * @throws IOException
-     */
-    public static void renderClearHiddenCommandFormParamsFunction(
-            ResponseWriter writer, String formName, Set dummyFormParams,
-            String formTarget) throws IOException
-    {
-        HtmlJavaScriptUtils.renderClearHiddenCommandFormParamsFunction(writer, formName, dummyFormParams, formTarget);
-    }
-
-    /**
      * Prefixes the given String with "clear_" and removes special characters
      *
      * @param formName
@@ -1333,12 +1307,6 @@ public final class HtmlRendererUtils
             String formName)
     {
         return HtmlJavaScriptUtils.getClearHiddenCommandFormParamsFunctionName(formName);
-    }
-
-    public static String getClearHiddenCommandFormParamsFunctionNameMyfacesLegacy(
-            String formName)
-    {
-        return HtmlJavaScriptUtils.getClearHiddenCommandFormParamsFunctionNameMyfacesLegacy(formName);
     }
 
     /**

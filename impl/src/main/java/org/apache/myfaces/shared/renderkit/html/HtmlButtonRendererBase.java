@@ -37,7 +37,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.ActionEvent;
 
-import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
@@ -52,6 +51,7 @@ public class HtmlButtonRendererBase
     private static final String IMAGE_BUTTON_SUFFIX_X = ".x";
     private static final String IMAGE_BUTTON_SUFFIX_Y = ".y";
 
+    @Override
     public void decode(FacesContext facesContext, UIComponent uiComponent)
     {
         org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(
@@ -139,13 +139,7 @@ public class HtmlButtonRendererBase
         }
         List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
                 facesContext, childrenList, false, false);
-        
-        if (formInfo != null 
-                && (validParams != null && !validParams.isEmpty()))
-        {
-            HtmlRendererUtils.renderFormSubmitScript(facesContext);
-        }
-        
+
         String commandOnclick = (String)uiComponent.getAttributes().get(HTML.ONCLICK_ATTR);
         
         if (commandOnclick != null && (validParams != null && !validParams.isEmpty() ) )
@@ -280,6 +274,7 @@ public class HtmlButtonRendererBase
         }
     }
     
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
     {
@@ -396,15 +391,10 @@ public class HtmlButtonRendererBase
         StringBuilder params = new StringBuilder();
         params.append('[');
         
-        for (UIParameter param : validParams) 
+        for (int i = 0, size = validParams.size(); i < size; i++)
         {
+            UIParameter param = validParams.get(i);
             String name = param.getName();
-
-            if (MyfacesConfig.getCurrentInstance(context.getExternalContext()).isRenderHiddenFieldsForLinkParams())
-            {
-                addHiddenCommandParameter(context, nestingForm, name);
-            }
-
             Object value = param.getValue();
 
             //UIParameter is no ValueHolder, so no conversion possible - calling .toString on value....
@@ -422,15 +412,15 @@ public class HtmlButtonRendererBase
             {
                 strParamValue = value.toString();
                 StringBuilder buff = null;
-                for (int i = 0; i < strParamValue.length(); i++)
+                for (int j = 0; j < strParamValue.length(); j++)
                 {
-                    char c = strParamValue.charAt(i); 
+                    char c = strParamValue.charAt(j); 
                     if (c == '\'' || c == '\\')
                     {
                         if (buff == null)
                         {
                             buff = new StringBuilder();
-                            buff.append(strParamValue.substring(0,i));
+                            buff.append(strParamValue.substring(0,j));
                         }
                         buff.append('\\');
                         buff.append(c);
@@ -480,33 +470,6 @@ public class HtmlButtonRendererBase
                                         ResponseWriter writer, List<UIParameter> validParams)
         throws IOException
     {
-        /* DUMMY STUFF
-        //Find form
-        UIComponent parent = uiComponent.getParent();
-        while (parent != null && !(parent instanceof UIForm))
-        {
-            parent = parent.getParent();
-        }
-
-        UIForm nestingForm = null;
-        String formName;
-
-        if (parent != null)
-        {
-            //link is nested inside a form
-            nestingForm = (UIForm)parent;
-            formName = nestingForm.getClientId(facesContext);
-
-        }
-        else
-        {
-            //not nested in form, we must add a dummy form at the end of the document
-            formName = DummyFormUtils.DUMMY_FORM_NAME;
-            //dummyFormResponseWriter = DummyFormUtils.getDummyFormResponseWriter(facesContext);
-            //dummyFormResponseWriter.setWriteDummyForm(true);
-            DummyFormUtils.setWriteDummyForm(facesContext, true);
-        }
-        */
         StringBuilder onClick = new StringBuilder();
         String commandOnClick = (String) uiComponent.getAttributes().get(HTML.ONCLICK_ATTR);
 
@@ -544,23 +507,11 @@ public class HtmlButtonRendererBase
                         append(params);
                 }
                 onClick.append(");");
-
-                //Not necessary since we are using oamSetHiddenInput to create input hidden fields
-                //render hidden field - todo: in here for backwards compatibility
-                if (MyfacesConfig.getCurrentInstance(
-                        facesContext.getExternalContext()).isRenderHiddenFieldsForLinkParams())
-                {
-                    String hiddenFieldName = HtmlRendererUtils.getHiddenCommandLinkFieldName(
-                            nestedFormInfo, facesContext);
-                    addHiddenCommandParameter(facesContext, nestedFormInfo.getForm(), hiddenFieldName);
-                }
             }
             else
             {
         
-                if (JavascriptUtils.isRenderClearJavascriptOnButton(facesContext.getExternalContext()) ||
-                        MyfacesConfig.getCurrentInstance(
-                                facesContext.getExternalContext()).isRenderHiddenFieldsForLinkParams() )
+                if (JavascriptUtils.isRenderClearJavascriptOnButton(facesContext.getExternalContext()))
                 {
                     //call the script to clear the form (clearFormHiddenParams_<formName>) method
                     HtmlRendererUtils.appendClearHiddenCommandFormParamsFunctionCall(onClick, formName);
@@ -575,25 +526,7 @@ public class HtmlButtonRendererBase
             onClick.append("return (cf.apply(this, [])==false)? false : oamSF.apply(this, []); ");
         }  
 
-        //The hidden field has only sense if isRenderClearJavascriptOnButton is
-        //set to true. In other case, this hidden field should not be rendered.
-        //if (JavascriptUtils.isRenderClearJavascriptOnButton(facesContext.getExternalContext()))
-        //{
-            //add hidden field for the case there is no commandLink in the form
-            //String hiddenFieldName = HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo);
-            //addHiddenCommandParameter(facesContext, nestingForm, hiddenFieldName);
-        //}
-
         return onClick;
-    }
-
-    protected void addHiddenCommandParameter(FacesContext facesContext, 
-            UIComponent nestingForm, String hiddenFieldName)
-    {
-        if (nestingForm != null)
-        {
-            HtmlFormRendererBase.addHiddenCommandParameter(facesContext, nestingForm, hiddenFieldName);
-        }
     }
 
     /**

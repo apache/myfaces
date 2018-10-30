@@ -460,9 +460,6 @@ public abstract class HtmlLinkRendererBase
             onClick.append("var oamSF = function(){");
         }
 
-
-        HtmlRendererUtils.renderFormSubmitScript(facesContext);
-
         StringBuilder params = addChildParameters(facesContext, component, nestingForm);
 
         String target = getTarget(component);
@@ -480,17 +477,6 @@ public abstract class HtmlLinkRendererBase
         }
         onClick.append(");");
 
-        //Not necessary since we are using oamSetHiddenInput to create input hidden fields
-        //render hidden field - todo: in here for backwards compatibility
-        if (MyfacesConfig.getCurrentInstance(
-                facesContext.getExternalContext()).isRenderHiddenFieldsForLinkParams())
-        {
-            String hiddenFieldName = HtmlRendererUtils.getHiddenCommandLinkFieldName(
-                    formInfo, facesContext);
-            addHiddenCommandParameter(facesContext, nestingForm, hiddenFieldName);
-        }
-
-        
         
         if (commandOnclick != null)
         {
@@ -601,8 +587,6 @@ public abstract class HtmlLinkRendererBase
 
         StringBuilder onClick = new StringBuilder();
 
-        HtmlRendererUtils.renderFormSubmitScript(facesContext);
-
         StringBuilder params = addChildParameters(facesContext, component, nestingForm);
 
         String target = getTarget(component);
@@ -659,13 +643,6 @@ public abstract class HtmlLinkRendererBase
         {
             UIParameter param = validParams.get(j);
             String name = param.getName();
-
-            //Not necessary, since we are using oamSetHiddenInput to create hidden fields
-            if (MyfacesConfig.getCurrentInstance(context.getExternalContext()).isRenderHiddenFieldsForLinkParams())
-            {
-                addHiddenCommandParameter(context, nestingForm, name);
-            }
-
             Object value = param.getValue();
 
             //UIParameter is no ValueHolder, so no conversion possible - calling .toString on value....
@@ -728,15 +705,6 @@ public abstract class HtmlLinkRendererBase
     protected FormInfo findNestingForm(UIComponent uiComponent, FacesContext facesContext)
     {
         return RendererUtils.findNestingForm(uiComponent, facesContext);
-    }
-
-    protected void addHiddenCommandParameter(
-            FacesContext facesContext, UIComponent nestingForm, String hiddenFieldName)
-    {
-        if (nestingForm != null)
-        {
-            HtmlFormRendererBase.addHiddenCommandParameter(facesContext, nestingForm, hiddenFieldName);
-        }
     }
 
     private void addChildParametersToHref(FacesContext facesContext,

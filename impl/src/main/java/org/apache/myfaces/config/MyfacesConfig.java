@@ -116,28 +116,6 @@ public class MyfacesConfig
     private static final boolean INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT= false;
 
     /**
-     * This param renders hidden fields at the end of h:form for link params when h:commandLink + f:param is used,
-     * instead use javascript to create them. Set this param to true also enables 
-     * org.apache.myfaces.RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON 
-     * automatically to ensure consistency. This feature is required to support Windows Mobile 6, because in 
-     * this environment, document.createElement() and form.appendChild() javascript methods are not supported.
-     */
-    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false, on, off, yes, no",since="1.2.9",
-            ignoreUpperLowerCase=true, group="render")
-    private static final String INIT_PARAM_RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS = 
-        "org.apache.myfaces.RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS";
-    private static final boolean INIT_PARAM_RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS_DEFAULT= false;
-    
-    /**
-     * Add a code that save the form before submit using a
-     * link (call to window.external.AutoCompleteSaveForm(form) ). It's a bug on IE.
-     */
-    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false, on, off, yes, no",since="1.1",
-            ignoreUpperLowerCase=true, group="render")
-    private static final String INIT_PARAM_SAVE_FORM_SUBMIT_LINK_IE = "org.apache.myfaces.SAVE_FORM_SUBMIT_LINK_IE";
-    private static final boolean INIT_PARAM_SAVE_FORM_SUBMIT_LINK_IE_DEFAULT = false;
-    
-    /**
      * Define an alternate class name that will be used to initialize MyFaces, instead the default 
      * javax.faces.webapp.FacesServlet.
      * 
@@ -439,7 +417,6 @@ public class MyfacesConfig
     private boolean _renderViewStateId;
     private boolean _strictXhtmlLinks;
     private boolean _renderClearJavascriptOnButton;
-    private boolean renderHiddenFieldsForLinkParams;
     private boolean _saveFormSubmitLinkIE;
     private String _delegateFacesServlet;
     private boolean _refreshTransientBuildOnPSS;
@@ -521,8 +498,6 @@ public class MyfacesConfig
     {
         setPrettyHtml(INIT_PARAM_PRETTY_HTML_DEFAULT);
         setRenderClearJavascriptOnButton(INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT);
-        setRenderHiddenFieldsForLinkParams(INIT_PARAM_RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS_DEFAULT);
-        setSaveFormSubmitLinkIE(INIT_PARAM_SAVE_FORM_SUBMIT_LINK_IE_DEFAULT);
         setRenderViewStateId(INIT_PARAM_RENDER_VIEWSTATE_ID_DEFAULT);
         setStrictXhtmlLinks(INIT_PARAM_STRICT_XHTML_LINKS_DEFAULT);
         setConfigRefreshPeriod(INIT_PARAM_CONFIG_REFRESH_PERIOD_DEFAULT);
@@ -565,13 +540,6 @@ public class MyfacesConfig
         myfacesConfig.setRenderClearJavascriptOnButton(getBooleanInitParameter(extCtx, 
                                                             INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON,
                                                             INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT));
-
-        myfacesConfig.setRenderHiddenFieldsForLinkParams(getBooleanInitParameter(extCtx, 
-                INIT_PARAM_RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS,
-                INIT_PARAM_RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS_DEFAULT));
-
-        myfacesConfig.setSaveFormSubmitLinkIE(getBooleanInitParameter(extCtx, INIT_PARAM_SAVE_FORM_SUBMIT_LINK_IE,
-                                                            INIT_PARAM_SAVE_FORM_SUBMIT_LINK_IE_DEFAULT));
 
         myfacesConfig.setRenderViewStateId(getBooleanInitParameter(extCtx, INIT_PARAM_RENDER_VIEWSTATE_ID,
                                                                    INIT_PARAM_RENDER_VIEWSTATE_ID_DEFAULT));
@@ -909,33 +877,6 @@ public class MyfacesConfig
     public boolean isRenderClearJavascriptOnButton()
     {
         return _renderClearJavascriptOnButton;
-    }
-
-    public boolean isRenderHiddenFieldsForLinkParams()
-    {
-        return renderHiddenFieldsForLinkParams;
-    }
-
-    public void setRenderHiddenFieldsForLinkParams(
-            boolean renderHiddenFieldsForLinkParams)
-    {
-        this.renderHiddenFieldsForLinkParams = renderHiddenFieldsForLinkParams;
-    }
-
-    public void setSaveFormSubmitLinkIE(boolean saveFormSubmitLinkIE)
-    {
-        _saveFormSubmitLinkIE = saveFormSubmitLinkIE;
-    }
-
-    /**
-     * Add a code that save the form when submit a form using a
-     * link. It's a bug on IE.
-     * 
-     * @return
-     */
-    public boolean isSaveFormSubmitLinkIE()
-    {
-        return _saveFormSubmitLinkIE;
     }
     
     public String getDelegateFacesServlet()
