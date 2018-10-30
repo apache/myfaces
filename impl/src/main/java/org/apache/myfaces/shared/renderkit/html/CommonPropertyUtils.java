@@ -23,7 +23,7 @@ import java.io.IOException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ResponseWriter;
-import org.apache.myfaces.shared.util.renderkit.HTML;
+import org.apache.myfaces.shared.renderkit.html.util.HTML;
 
 public final class CommonPropertyUtils
 {

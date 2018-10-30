@@ -42,9 +42,9 @@ import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import org.apache.myfaces.shared.util.renderkit.JSFAttr;
+import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.util.renderkit.HTML;
+import org.apache.myfaces.shared.renderkit.html.util.HTML;
 
 public abstract class HtmlMessagesRendererBase
         extends HtmlMessageRendererBase

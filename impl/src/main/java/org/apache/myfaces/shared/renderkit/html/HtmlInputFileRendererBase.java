@@ -44,8 +44,8 @@ import javax.faces.component.html.HtmlInputText;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.HttpPartWrapper;
-import org.apache.myfaces.shared.util.renderkit.HTML;
-import org.apache.myfaces.shared.util.renderkit.JSFAttr;
+import org.apache.myfaces.shared.renderkit.html.util.HTML;
+import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
 
 public class HtmlInputFileRendererBase extends HtmlRenderer
 {

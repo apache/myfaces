@@ -28,7 +28,6 @@ public class SharedStringBuilder
         return get(FacesContext.getCurrentInstance(), stringBuilderKey);
     }
 
-    // TODO checkstyle complains; does this have to lead with __ ?
     public static StringBuilder get(FacesContext facesContext, String stringBuilderKey)
     {
         Map<Object, Object> attributes = facesContext.getAttributes();
@@ -42,7 +41,6 @@ public class SharedStringBuilder
         }
         else
         {
-
             // clear out the stringBuilder by setting the length to 0
             sb.setLength(0);
         }
@@ -63,7 +61,6 @@ public class SharedStringBuilder
         }
         else
         {
-
             // clear out the stringBuilder by setting the length to 0
             sb.setLength(0);
         }

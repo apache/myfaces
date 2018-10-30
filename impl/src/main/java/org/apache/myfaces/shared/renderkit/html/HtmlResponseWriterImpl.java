@@ -40,7 +40,7 @@ import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.UnicodeEncoder;
 import org.apache.myfaces.shared.util.CommentUtils;
 import org.apache.myfaces.shared.util.StreamCharBuffer;
-import org.apache.myfaces.shared.util.renderkit.HTML;
+import org.apache.myfaces.shared.renderkit.html.util.HTML;
 
 public class HtmlResponseWriterImpl
         extends ResponseWriter

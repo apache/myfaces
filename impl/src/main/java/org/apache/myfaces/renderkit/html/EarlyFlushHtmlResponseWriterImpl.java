@@ -24,7 +24,7 @@ import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-import org.apache.myfaces.shared.util.renderkit.HTML;
+import org.apache.myfaces.shared.renderkit.html.util.HTML;
 import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
 
 /**

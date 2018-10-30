@@ -34,9 +34,8 @@ import javax.faces.component.html.HtmlGraphicImage;
 import javax.faces.context.FacesContext;
 
 import org.junit.Assert;
-import org.apache.myfaces.shared.util.renderkit.HTML;
-
-import org.apache.myfaces.shared.util.renderkit.JSFAttr;
+import org.apache.myfaces.shared.renderkit.html.util.HTML;
+import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.easymock.classextension.EasyMock;

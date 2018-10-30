@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.shared.renderkit.html;
 
-import org.apache.myfaces.shared.util.renderkit.JSFAttr;
+import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
 
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
@@ -27,7 +27,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.render.Renderer;
 import java.io.IOException;
 import java.util.List;
-import org.apache.myfaces.shared.util.renderkit.HTML;
+import org.apache.myfaces.shared.renderkit.html.util.HTML;
 
 public abstract class HtmlRenderer
         extends Renderer

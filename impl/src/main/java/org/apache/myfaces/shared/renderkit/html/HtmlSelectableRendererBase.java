@@ -33,7 +33,7 @@ import javax.faces.convert.Converter;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.SelectItemInfo;
 import org.apache.myfaces.shared.renderkit.html.util.SelectItemsUtils;
-import org.apache.myfaces.shared.util.renderkit.HTML;
+import org.apache.myfaces.shared.renderkit.html.util.HTML;
 
 public class HtmlSelectableRendererBase extends HtmlRenderer
 {

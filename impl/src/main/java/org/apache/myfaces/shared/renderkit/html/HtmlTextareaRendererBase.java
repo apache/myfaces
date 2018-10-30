@@ -34,8 +34,8 @@ import javax.faces.convert.ConverterException;
 
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.shared.util.renderkit.HTML;
-import org.apache.myfaces.shared.util.renderkit.JSFAttr;
+import org.apache.myfaces.shared.renderkit.html.util.HTML;
+import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
 
 
 public class HtmlTextareaRendererBase

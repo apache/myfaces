@@ -27,7 +27,7 @@ import javax.faces.component.html.HtmlForm;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.myfaces.shared.util.renderkit.HTML;
+import org.apache.myfaces.shared.renderkit.html.util.HTML;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;

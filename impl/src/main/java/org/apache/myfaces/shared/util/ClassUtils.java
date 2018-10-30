@@ -27,6 +27,9 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -520,8 +523,29 @@ public final class ClassUtils
      */
     public static ClassLoader getContextClassLoader()
     {
-        // call into the same method on ClassLoaderUtils.  no need for duplicate code maintenance. 
-        return ClassLoaderUtils.getContextClassLoader();
+      if (System.getSecurityManager() != null) 
+      {
+          try 
+          {
+              ClassLoader cl = AccessController.doPrivileged(new PrivilegedExceptionAction<ClassLoader>()
+                      {
+                          @Override
+                          public ClassLoader run() throws PrivilegedActionException
+                          {
+                              return Thread.currentThread().getContextClassLoader();
+                          }
+                      });
+              return cl;
+          }
+          catch (PrivilegedActionException pae)
+          {
+              throw new FacesException(pae);
+          }
+      }
+      else
+      {
+          return Thread.currentThread().getContextClassLoader();
+      }
     }
     
     /**

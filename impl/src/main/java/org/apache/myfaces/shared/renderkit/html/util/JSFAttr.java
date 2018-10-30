@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.util.renderkit;
+package org.apache.myfaces.shared.renderkit.html.util;
 
 import javax.faces.event.ActionListener;
 

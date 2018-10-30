@@ -27,7 +27,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.shared.resource.ContractResource;
-import org.apache.myfaces.shared.util.renderkit.HTML;
 
 /**
  * @since 4.0.1

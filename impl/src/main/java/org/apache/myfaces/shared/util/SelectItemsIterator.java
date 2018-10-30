@@ -35,8 +35,9 @@ import javax.faces.component.UISelectItem;
 import javax.faces.component.UISelectItems;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import org.apache.myfaces.shared.renderkit.RendererUtils;
 
-import org.apache.myfaces.shared.util.renderkit.JSFAttr;
+import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
 
 // ATTENTION
 // This class is associated with javax.faces.component._SelectItemsIterator.
@@ -137,7 +138,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                     ValueExpression expression = uiSelectItem.getValueExpression("value");
                     throw new IllegalArgumentException("ValueExpression '"
                             + (expression == null ? null : expression.getExpressionString()) + "' of UISelectItem : "
-                            + DebugUtils.getPathToComponent(child)
+                            + RendererUtils.getPathToComponent(child)
                             + " does not reference an Object of type SelectItem");
                 }
                 _nextItem = (SelectItem) item;
@@ -203,7 +204,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                                 + " array, Iterable or Map, but of type: {2}",
                                 new Object[] {
                                     (expression == null ? null : expression.getExpressionString()),
-                                    DebugUtils.getPathToComponent(child),
+                                    RendererUtils.getPathToComponent(child),
                                     (value == null ? null : value.getClass().getName()) 
                                 });
                     }

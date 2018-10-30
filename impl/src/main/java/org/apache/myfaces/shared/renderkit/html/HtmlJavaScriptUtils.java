@@ -29,7 +29,7 @@ import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils.ScriptContext;
 import org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils;
-import org.apache.myfaces.shared.util.renderkit.HTML;
+import org.apache.myfaces.shared.renderkit.html.util.HTML;
 
 public final class HtmlJavaScriptUtils
 {

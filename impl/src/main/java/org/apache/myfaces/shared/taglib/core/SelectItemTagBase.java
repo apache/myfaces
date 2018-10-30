@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.shared.taglib.core;
 
-import org.apache.myfaces.shared.util.renderkit.JSFAttr;
+import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
 
 import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;

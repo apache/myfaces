@@ -547,18 +547,14 @@ public final class ExternalContextUtils
 
         try
         {
-            context = ClassLoaderUtils
-                    .loadClass("javax.portlet.PortletContext");
-            config = ClassLoaderUtils.loadClass("javax.portlet.PortletConfig");
-            actionRequest = ClassLoaderUtils
-                    .loadClass("javax.portlet.ActionRequest");
-            renderRequest = ClassLoaderUtils
-                    .loadClass("javax.portlet.RenderRequest");
+            context = ClassUtils.forName("javax.portlet.PortletContext");
+            config = ClassUtils.forName("javax.portlet.PortletConfig");
+            actionRequest = ClassUtils.forName("javax.portlet.ActionRequest");
+            renderRequest = ClassUtils.forName("javax.portlet.RenderRequest");
 
             try
             {
-                resourceRequest = ClassLoaderUtils
-                        .loadClass("javax.portlet.ResourceRequest");
+                resourceRequest = ClassUtils.forName("javax.portlet.ResourceRequest");
             }
             catch (ClassNotFoundException e)
             {
@@ -585,8 +581,7 @@ public final class ExternalContextUtils
 
             try
             {
-                Class<?> bridge = ClassLoaderUtils
-                        .loadClass("javax.portlet.faces.Bridge");
+                Class<?> bridge = ClassUtils.forName("javax.portlet.faces.Bridge");
 
                 if (bridge != null)
                 {
@@ -655,52 +650,4 @@ public final class ExternalContextUtils
         }
         return null; // not found
     }
-
-    /**
-     * Trys to obtain a ResponseSwitch from the Response.
-     * @param response
-     * @return if found, the ResponseSwitch, null otherwise
-     */
-    /*
-    public static ResponseSwitch getResponseSwitch(Object response)
-    {
-        // unwrap the response until we find a ResponseSwitch
-        while (response != null)
-        {
-            if (response instanceof ResponseSwitch)
-            {
-                // found
-                return (ResponseSwitch) response;
-            }
-            if (response instanceof ServletResponseWrapper)
-            {
-                // unwrap
-                response = ((ServletResponseWrapper) response).getResponse();
-            }
-            // no more possibilities to find a ResponseSwitch
-            break; 
-        }
-        return null; // not found
-    }*/
-
-    /**
-     * Try to create a ResponseSwitch for this response.
-     * @param response
-     * @return the created ResponseSwitch, if there is a ResponseSwitch 
-     *         implementation for the given response, null otherwise
-     */
-    /*
-    public static ResponseSwitch createResponseSwitch(Object response)
-    {
-        if (response instanceof HttpServletResponse)
-        {
-            return new HttpServletResponseSwitch((HttpServletResponse) response);
-        }
-        else if (response instanceof ServletResponse)
-        {
-            return new ServletResponseSwitch((ServletResponse) response);
-        }
-        return null;
-    }*/
-
 }

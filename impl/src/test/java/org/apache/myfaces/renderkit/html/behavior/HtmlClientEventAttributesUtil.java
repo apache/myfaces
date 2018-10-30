@@ -19,7 +19,7 @@
 package org.apache.myfaces.renderkit.html.behavior;
 
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
-import org.apache.myfaces.shared.util.renderkit.HTML;
+import org.apache.myfaces.shared.renderkit.html.util.HTML;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 
 /**
