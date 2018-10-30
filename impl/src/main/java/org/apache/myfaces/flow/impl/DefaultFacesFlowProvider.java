@@ -133,4 +133,10 @@ public class DefaultFacesFlowProvider extends FacesFlowProvider
         }
         return map;
     }
+
+    @Override
+    public void onSessionDestroyed()
+    {
+        
+    }
 }

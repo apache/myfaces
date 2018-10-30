@@ -19,6 +19,7 @@
 package org.apache.myfaces.spi.impl;
 
 import javax.faces.context.ExternalContext;
+import org.apache.myfaces.cdi.view.CDIViewScopeProviderImpl;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.ViewScopeProvider;
 import org.apache.myfaces.spi.ViewScopeProviderFactory;
@@ -45,9 +46,7 @@ public class DefaultViewScopeProviderFactory extends ViewScopeProviderFactory
         {
             if (ExternalSpecifications.isCDIAvailable(externalContext))
             {
-                returnValue = (ViewScopeProvider) ClassUtils.newInstance(
-                    "org.apache.myfaces.cdi.impl.CDIManagedBeanHandlerImpl");
-                    //CDIManagedBeanHandler.getInstance(externalContext);
+                returnValue = (ViewScopeProvider) ClassUtils.newInstance(CDIViewScopeProviderImpl.class.getName());
             }
 
             // cache the result on the ApplicationMap

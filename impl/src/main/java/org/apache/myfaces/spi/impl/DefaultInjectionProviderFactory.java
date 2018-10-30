@@ -267,24 +267,6 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
 
     private InjectionProvider resolveFallbackInjectionProvider(ExternalContext externalContext)
     {
-        /* Added entry in META-INF/services/org.apache.myfaces.spi.InjectionProvider to
-         * give precedence to CDI integration instead server integration.
-        if (ExternalSpecifications.isCDIAvailable(externalContext))
-        {
-            try
-            {
-                Class clazz = ClassUtils.simpleClassForName(
-                    "org.apache.myfaces.cdi.impl.CDIAnnotationInjectionProvider");
-                return (InjectionProvider) clazz.getConstructor(
-                    ExternalContext.class).newInstance(externalContext);
-            }
-            catch(Exception e)
-            {
-                //Ignore
-            }
-        }
-        */
-        
         try
         {
             ClassUtils.classForName("javax.annotation.PreDestroy");

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.cdi.impl;
+package org.apache.myfaces.cdi.view;
 
 import java.util.Map;
 import javax.enterprise.inject.spi.BeanManager;
@@ -26,25 +26,21 @@ import javax.servlet.ServletContext;
 import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
-import org.apache.myfaces.cdi.view.ViewScopeBeanHolder;
-import org.apache.myfaces.cdi.view.ViewScopeCDIMap;
-import org.apache.myfaces.flow.cdi.FlowScopeBeanHolder;
 import org.apache.myfaces.spi.ViewScopeProvider;
 
 /**
  *
  * @author Leonardo Uribe
  */
-public class CDIManagedBeanHandlerImpl extends ViewScopeProvider
+public class CDIViewScopeProviderImpl extends ViewScopeProvider
 {
     
     private BeanManager beanManager;
     
     private ViewScopeBeanHolder viewScopeBeanHolder;
     
-    private FlowScopeBeanHolder flowScopeBeanHolder;
     
-    public CDIManagedBeanHandlerImpl()
+    public CDIViewScopeProviderImpl()
     {
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         beanManager = CDIUtils.getBeanManager(externalContext);
@@ -66,27 +62,20 @@ public class CDIManagedBeanHandlerImpl extends ViewScopeProvider
         }
         return viewScopeBeanHolder;
     }
-    
-    private FlowScopeBeanHolder getFlowScopeBeanHolder()
-    {
-        if (flowScopeBeanHolder == null)
-        {
-            flowScopeBeanHolder = BeanProvider.getContextualReference(
-                beanManager, FlowScopeBeanHolder.class, false);
-        }
-        return flowScopeBeanHolder;
-    }
-    
+
+    @Override
     public Map<String, Object> createViewScopeMap(FacesContext facesContext, String viewScopeId)
     {
         return new ViewScopeCDIMap(facesContext, viewScopeId);
     }
     
+    @Override
     public Map<String, Object> restoreViewScopeMap(FacesContext facesContext, String viewScopeId)
     {
         return new ViewScopeCDIMap(facesContext, viewScopeId);
     }
     
+    @Override
     public String generateViewScopeId(FacesContext facesContext)
     {
         return getViewScopeBeanHolder().generateUniqueViewScopeId();
@@ -95,6 +84,7 @@ public class CDIManagedBeanHandlerImpl extends ViewScopeProvider
     /**
      * 
      */
+    @Override
     public void onSessionDestroyed()
     {
         // In CDI case, the best way to deal with this is use a method 
@@ -112,10 +102,6 @@ public class CDIManagedBeanHandlerImpl extends ViewScopeProvider
                 {
                     getViewScopeBeanHolder().destroyBeans();                
                 }
-                if (isFlowScopeBeanHolderCreated(facesContext))
-                {
-                    getFlowScopeBeanHolder().destroyBeans();
-                }
             }
         }
     }
@@ -124,13 +110,6 @@ public class CDIManagedBeanHandlerImpl extends ViewScopeProvider
     {
         return facesContext.getExternalContext().
             getSessionMap().containsKey(ViewScopeBeanHolder.VIEW_SCOPE_PREFIX_KEY);
-    }
-    
-    
-    private boolean isFlowScopeBeanHolderCreated(FacesContext facesContext)
-    {
-        return facesContext.getExternalContext().
-            getSessionMap().containsKey(FlowScopeBeanHolder.FLOW_SCOPE_PREFIX_KEY);
     }
 
     @Override

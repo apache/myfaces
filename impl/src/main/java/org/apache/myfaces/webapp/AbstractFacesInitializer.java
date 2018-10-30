@@ -68,6 +68,8 @@ import org.apache.myfaces.push.EndpointImpl;
 import org.apache.myfaces.push.WebsocketConfigurator;
 import org.apache.myfaces.push.WebsocketFacesInit;
 import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.spi.FacesFlowProvider;
+import org.apache.myfaces.spi.FacesFlowProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinder;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
@@ -185,12 +187,23 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             
             initContainerIntegration(servletContext, externalContext);
             
-            ViewScopeProviderFactory factory = ViewScopeProviderFactory.getViewScopeHandlerFactory(
-                externalContext);
-            
-            ViewScopeProvider viewScopeHandler = factory.getViewScopeHandler(
-                externalContext);
+            ViewScopeProviderFactory viewScopeProviderFactory =
+                    ViewScopeProviderFactory.getViewScopeHandlerFactory(externalContext);
+            ViewScopeProvider viewScopeProvider = viewScopeProviderFactory.getViewScopeHandler(externalContext);
 
+            FacesFlowProviderFactory facesFlowProviderFactory =
+                    FacesFlowProviderFactory.getFacesFlowProviderFactory(externalContext);
+            FacesFlowProvider facesFlowProvider = facesFlowProviderFactory.getFacesFlowProvider(externalContext);
+            
+            MyFacesHttpSessionListener listener = (MyFacesHttpSessionListener)
+                externalContext.getApplicationMap().get(
+                    MyFacesHttpSessionListener.APPLICATION_MAP_KEY);
+            if (listener != null)
+            {
+                listener.setViewScopeProvider(viewScopeProvider);
+                listener.setFacesFlowProvider(facesFlowProvider);
+            }
+            
             String useEncryption = servletContext.getInitParameter(StateUtils.USE_ENCRYPTION);
             if ("false".equals(useEncryption))
             {

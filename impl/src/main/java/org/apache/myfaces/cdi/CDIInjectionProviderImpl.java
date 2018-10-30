@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.cdi.impl;
+package org.apache.myfaces.cdi;
 
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.spi.InjectionProvider;
@@ -32,11 +32,11 @@ import javax.faces.context.ExternalContext;
  *
  * @author Leonardo Uribe
  */
-public class CDIAnnotationInjectionProvider extends InjectionProvider
+public class CDIInjectionProviderImpl extends InjectionProvider
 {
     private BeanManager beanManager;
 
-    public CDIAnnotationInjectionProvider(ExternalContext externalContext)
+    public CDIInjectionProviderImpl(ExternalContext externalContext)
     {
         beanManager = CDIUtils.getBeanManager(externalContext);
     }

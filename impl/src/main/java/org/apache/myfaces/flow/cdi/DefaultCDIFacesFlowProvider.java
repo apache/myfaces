@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
+import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.flow.FlowUtils;
 import org.apache.myfaces.spi.FacesFlowProvider;
@@ -42,6 +43,39 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
     private final static String CURRENT_FLOW_SCOPE_MAP = "oam.flow.SCOPE_MAP";
     
     static final char SEPARATOR_CHAR = '.';
+    
+    private boolean isFlowScopeBeanHolderCreated(FacesContext facesContext)
+    {
+        return facesContext.getExternalContext().
+            getSessionMap().containsKey(FlowScopeBeanHolder.FLOW_SCOPE_PREFIX_KEY);
+    }
+    
+    @Override
+    public void onSessionDestroyed()
+    {
+        // In CDI case, the best way to deal with this is use a method 
+        // with @PreDestroy annotation on a session scope bean 
+        // ( ViewScopeBeanHolder.destroyBeans() ). There is no need
+        // to do anything else in this location, but it is advised
+        // in CDI the beans are destroyed at the end of the request,
+        // not when invalidateSession() is called.
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext != null)
+        {
+            if (facesContext.getExternalContext().getSession(false) != null)
+            {
+                if (isFlowScopeBeanHolderCreated(facesContext))
+                {
+                    FlowScopeBeanHolder flowScopeBeanHolder = BeanProvider.getContextualReference(
+                        _beanManager, FlowScopeBeanHolder.class, false);
+                    if (flowScopeBeanHolder != null)
+                    {
+                        flowScopeBeanHolder.destroyBeans();
+                    }
+                }
+            }
+        }
+    }
     
     @Override
     public Iterator<Flow> getAnnotatedFlows(FacesContext facesContext)
