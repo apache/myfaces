@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.context;
+package org.apache.myfaces.context;
 
 import java.io.IOException;
 import java.util.ArrayList;

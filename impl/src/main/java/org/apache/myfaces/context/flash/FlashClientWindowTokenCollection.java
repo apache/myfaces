@@ -16,42 +16,43 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.context.flash;
+package org.apache.myfaces.context.flash;
 
-import javax.faces.FacesException;
+import java.io.Serializable;
 
-public class FlashScopeDisabledException extends FacesException
+/**
+ * This class is a wrapper used to deal with concurrency issues when accessing the inner LRUMap.
+ */
+class FlashClientWindowTokenCollection implements Serializable
 {
+    private ClientWindowFlashTokenLRUMap map;
 
-    /**
-     * 
-     */
-    public FlashScopeDisabledException()
+    public FlashClientWindowTokenCollection(ClientWindowFlashTokenLRUMap map)
     {
+        this.map = map;
     }
 
-    /**
-     * @param message
-     */
-    public FlashScopeDisabledException(String message)
+    public FlashClientWindowTokenCollection()
     {
-        super(message);
     }
-
-    /**
-     * @param cause
-     */
-    public FlashScopeDisabledException(Throwable cause)
+    
+    public synchronized void put(String key, String value)
     {
-        super(cause);
+        map.put(key, value);
     }
-
-    /**
-     * @param message
-     * @param cause
-     */
-    public FlashScopeDisabledException(String message, Throwable cause)
+    
+    public synchronized String get(String key)
     {
-        super(message, cause);
+        return map.get(key);
+    }
+    
+    public synchronized void remove(String key)
+    {
+        map.remove(key);
+    }
+    
+    public synchronized boolean isEmpty()
+    {
+        return map.isEmpty();
     }
 }

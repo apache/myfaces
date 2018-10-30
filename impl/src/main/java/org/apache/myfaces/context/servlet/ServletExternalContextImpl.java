@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.shared.context.flash.FlashImpl;
+import org.apache.myfaces.context.flash.FlashImpl;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.util.EnumerationIterator;
 import org.apache.myfaces.util.ExternalSpecifications;

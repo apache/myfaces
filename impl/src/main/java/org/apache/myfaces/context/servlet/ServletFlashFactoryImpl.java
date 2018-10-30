@@ -21,7 +21,7 @@ package org.apache.myfaces.context.servlet;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import javax.faces.context.FlashFactory;
-import org.apache.myfaces.shared.context.flash.FlashImpl;
+import org.apache.myfaces.context.flash.FlashImpl;
 
 /**
  *

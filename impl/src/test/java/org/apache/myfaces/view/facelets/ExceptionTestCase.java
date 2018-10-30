@@ -39,7 +39,7 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 
-import org.apache.myfaces.shared.context.ExceptionHandlerImpl;
+import org.apache.myfaces.context.ExceptionHandlerImpl;
 import org.easymock.classextension.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;

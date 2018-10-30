@@ -64,14 +64,6 @@ public class MyfacesConfig
     public static final long INIT_PARAM_CONFIG_REFRESH_PERIOD_DEFAULT = 2;
 
     /**
-     * Set the view state using a javascript function instead a hidden input field.
-     */
-    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false, on, off, yes, no",since="1.1", 
-            ignoreUpperLowerCase=true, deprecated=true, group="state")
-    private static final String  INIT_PARAM_VIEWSTATE_JAVASCRIPT = "org.apache.myfaces.VIEWSTATE_JAVASCRIPT";
-    private static final boolean INIT_PARAM_VIEWSTATE_JAVASCRIPT_DEFAULT = false;
-
-    /**
      * Define if the input field that should store the state (javax.faces.ViewState) should render 
      * id="javax.faces.ViewState".
      * 
@@ -444,7 +436,6 @@ public class MyfacesConfig
 
     private boolean _prettyHtml;
     private long _configRefreshPeriod;
-    private boolean _viewStateJavascript;
     private boolean _renderViewStateId;
     private boolean _strictXhtmlLinks;
     private boolean _renderClearJavascriptOnButton;
@@ -534,8 +525,7 @@ public class MyfacesConfig
         setSaveFormSubmitLinkIE(INIT_PARAM_SAVE_FORM_SUBMIT_LINK_IE_DEFAULT);
         setRenderViewStateId(INIT_PARAM_RENDER_VIEWSTATE_ID_DEFAULT);
         setStrictXhtmlLinks(INIT_PARAM_STRICT_XHTML_LINKS_DEFAULT);
-        setConfigRefreshPeriod(INIT_PARAM_CONFIG_REFRESH_PERIOD_DEFAULT);        
-        setViewStateJavascript(INIT_PARAM_VIEWSTATE_JAVASCRIPT_DEFAULT);        
+        setConfigRefreshPeriod(INIT_PARAM_CONFIG_REFRESH_PERIOD_DEFAULT);
         setRefreshTransientBuildOnPSS(true);
         setRefreshTransientBuildOnPSSAuto(true);
         setRefreshTransientBuildOnPSSPreserveState(INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE_DEFAULT);
@@ -593,9 +583,6 @@ public class MyfacesConfig
         
         myfacesConfig.setConfigRefreshPeriod(getLongInitParameter(extCtx, INIT_PARAM_CONFIG_REFRESH_PERIOD,
                 INIT_PARAM_CONFIG_REFRESH_PERIOD_DEFAULT));
-
-        myfacesConfig.setViewStateJavascript(getBooleanInitParameter(extCtx, INIT_PARAM_VIEWSTATE_JAVASCRIPT,
-                INIT_PARAM_VIEWSTATE_JAVASCRIPT_DEFAULT));
 
         myfacesConfig.setDelegateFacesServlet(extCtx.getInitParameter(INIT_PARAM_DELEGATE_FACES_SERVLET));
         
@@ -903,19 +890,6 @@ public class MyfacesConfig
     public boolean isRiImplAvailable()
     {
         return RI_IMPL_AVAILABLE;
-    }
-
-    /**
-     * 
-     */
-    public boolean isViewStateJavascript()
-    {
-        return _viewStateJavascript;
-    }
-
-    private void setViewStateJavascript(boolean viewStateJavascript)
-    {
-        _viewStateJavascript = viewStateJavascript;
     }
 
     public void setRenderClearJavascriptOnButton(

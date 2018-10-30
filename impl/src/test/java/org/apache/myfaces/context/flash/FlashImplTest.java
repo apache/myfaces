@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.context.flash;
+package org.apache.myfaces.context.flash;
 
 import java.util.Arrays;
 import java.util.Collections;
