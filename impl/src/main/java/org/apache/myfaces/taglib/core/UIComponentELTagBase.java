@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.taglib;
+package org.apache.myfaces.taglib.core;
 
 import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
 

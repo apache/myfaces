@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.myfaces.shared.taglib.UIComponentELTagUtils;
 import org.apache.myfaces.shared.util.LocaleUtils;
 
 import javax.el.ELContext;

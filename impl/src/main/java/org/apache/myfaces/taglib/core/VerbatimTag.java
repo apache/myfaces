@@ -21,7 +21,6 @@ package org.apache.myfaces.taglib.core;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
 import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
-import org.apache.myfaces.shared.taglib.UIComponentELTagBase;
 
 import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
