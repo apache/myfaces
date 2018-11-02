@@ -30,15 +30,13 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.BehaviorEvent;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
-/**
- *
- */
 public class FacesClientBehaviorCDIWrapper implements PartialStateHolder, ClientBehavior, FacesWrapper<ClientBehavior>
 {
     private transient ClientBehavior delegate;
     
     private String behaviorId;
     private boolean _transient;
+    private boolean _initialStateMarked = false;
 
     public FacesClientBehaviorCDIWrapper()
     {
@@ -119,18 +117,19 @@ public class FacesClientBehaviorCDIWrapper implements PartialStateHolder, Client
         _transient = newTransientValue;
     }
 
-    private boolean _initialStateMarked = false;
-
+    @Override
     public void clearInitialState()
     {
         _initialStateMarked = false;
     }
 
+    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
+    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;

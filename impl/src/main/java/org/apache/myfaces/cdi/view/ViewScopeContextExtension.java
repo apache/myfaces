@@ -35,8 +35,7 @@ public class ViewScopeContextExtension implements Extension
 {
     private ViewScopeContextImpl viewScopeContext;
 
-    void beforeBeanDiscovery(
-        @Observes final BeforeBeanDiscovery event, BeanManager beanManager)
+    void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
     {
         event.addScope(ViewScoped.class, true, true);
         // Register ViewScopeBeanHolder as a bean with CDI annotations, so the system

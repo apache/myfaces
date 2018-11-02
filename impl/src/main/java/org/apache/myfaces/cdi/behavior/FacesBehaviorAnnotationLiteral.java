@@ -22,9 +22,6 @@ import java.util.Objects;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.faces.component.behavior.FacesBehavior;
 
-/**
- *
- */
 public class FacesBehaviorAnnotationLiteral extends AnnotationLiteral<FacesBehavior> implements FacesBehavior
 {
     private static final long serialVersionUID = 1L;

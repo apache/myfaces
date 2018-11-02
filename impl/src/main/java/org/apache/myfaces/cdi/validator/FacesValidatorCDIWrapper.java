@@ -27,15 +27,13 @@ import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
-/**
- *
- */
 public class FacesValidatorCDIWrapper implements PartialStateHolder, Validator, FacesWrapper<Validator>
 {
     private transient Validator delegate;
     
     private String validatorId;
     private boolean _transient;
+    private boolean _initialStateMarked = false;
 
     public FacesValidatorCDIWrapper()
     {
@@ -98,18 +96,19 @@ public class FacesValidatorCDIWrapper implements PartialStateHolder, Validator, 
         _transient = newTransientValue;
     }
 
-    private boolean _initialStateMarked = false;
-
+    @Override
     public void clearInitialState()
     {
         _initialStateMarked = false;
     }
 
+    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
+    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;

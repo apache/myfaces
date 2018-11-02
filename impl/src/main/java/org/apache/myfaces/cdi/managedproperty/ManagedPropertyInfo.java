@@ -22,14 +22,9 @@ import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Objects;
 
-/**
- *
- */
 public class ManagedPropertyInfo implements Serializable
 {
-
     private Type type;
-
     private String expression;
 
     public ManagedPropertyInfo(Type type, String expression)
@@ -38,17 +33,11 @@ public class ManagedPropertyInfo implements Serializable
         this.expression = expression;
     }
 
-    /**
-     * @return the type
-     */
     public Type getType()
     {
         return type;
     }
 
-    /**
-     * @return the expression
-     */
     public String getExpression()
     {
         return expression;

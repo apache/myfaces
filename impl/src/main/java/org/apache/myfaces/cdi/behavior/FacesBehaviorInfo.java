@@ -23,13 +23,9 @@ import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Objects;
 
-/**
- *
- */
 public class FacesBehaviorInfo implements Serializable
 {
     private Type type;
-    
     private String behaviorId;
 
     public FacesBehaviorInfo(Type type, String behaviorId)
@@ -38,17 +34,11 @@ public class FacesBehaviorInfo implements Serializable
         this.behaviorId = behaviorId;
     }
 
-    /**
-     * @return the behaviorId
-     */
     public String getBehaviorId()
     {
         return behaviorId;
     }
 
-    /**
-     * @param behaviorId the behaviorId to set
-     */
     public void setBehaviorId(String behaviorId)
     {
         this.behaviorId = behaviorId;
@@ -95,6 +85,4 @@ public class FacesBehaviorInfo implements Serializable
         }
         return true;
     }
-
-
 }

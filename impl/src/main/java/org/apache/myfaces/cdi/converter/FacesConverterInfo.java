@@ -23,15 +23,10 @@ import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Objects;
 
-/**
- *
- */
 public class FacesConverterInfo implements Serializable
 {
     private Type type;
-    
     private Class forClass;
-    
     private String converterId;
 
     public FacesConverterInfo(Type type, Class forClass, String converterId)
@@ -41,17 +36,11 @@ public class FacesConverterInfo implements Serializable
         this.converterId = converterId;
     }
 
-    /**
-     * @return the converterId
-     */
     public String getConverterId()
     {
         return converterId;
     }
 
-    /**
-     * @param converterId the converterId to set
-     */
     public void setConverterId(String converterId)
     {
         this.converterId = converterId;

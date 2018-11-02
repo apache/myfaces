@@ -22,29 +22,18 @@ package org.apache.myfaces.cdi.config;
 import javax.enterprise.context.ApplicationScoped;
 import javax.faces.annotation.FacesConfig;
 
-/**
- *
- */
 @ApplicationScoped
 public class FacesConfigBeanHolder
 {
-    
     private FacesConfig.Version facesConfigVersion = null;
 
-    /**
-     * @return the facesConfigVersion
-     */
     public FacesConfig.Version getFacesConfigVersion()
     {
         return facesConfigVersion;
     }
 
-    /**
-     * @param facesConfigVersion the facesConfigVersion to set
-     */
     public void setFacesConfigVersion(FacesConfig.Version facesConfigVersion)
     {
         this.facesConfigVersion = facesConfigVersion;
     }
-    
 }

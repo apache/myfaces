@@ -108,6 +108,7 @@ public class ViewScopeContextImpl implements Context
         return null;
     }
 
+    @Override
     public Class<? extends Annotation> getScope()
     {
         return ViewScoped.class;
@@ -117,6 +118,7 @@ public class ViewScopeContextImpl implements Context
      * The WindowContext is active once a current windowId is set for the current Thread.
      * @return
      */
+    @Override
     public boolean isActive()
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -131,6 +133,7 @@ public class ViewScopeContextImpl implements Context
         }
     }
 
+    @Override
     public <T> T get(Contextual<T> bean)
     {
         checkActive();
@@ -151,6 +154,7 @@ public class ViewScopeContextImpl implements Context
         return (T) contextualInstanceInfo.getContextualInstance();
     }
 
+    @Override
     public <T> T get(Contextual<T> bean, CreationalContext<T> creationalContext)
     {
         checkActive();

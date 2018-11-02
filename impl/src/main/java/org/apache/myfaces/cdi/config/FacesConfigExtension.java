@@ -30,15 +30,11 @@ import javax.enterprise.inject.spi.ProcessManagedBean;
 import javax.faces.annotation.FacesConfig;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
-/**
- *
- */
 public class FacesConfigExtension implements Extension
 {
     private FacesConfig.Version facesConfigVersion;
     
-    void beforeBeanDiscovery(
-        @Observes final BeforeBeanDiscovery event, BeanManager beanManager)
+    void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
     {
         AnnotatedType beanHolder = beanManager.createAnnotatedType(FacesConfigBeanHolder.class);
         event.addAnnotatedType(beanHolder, beanHolder.getJavaClass().getName());

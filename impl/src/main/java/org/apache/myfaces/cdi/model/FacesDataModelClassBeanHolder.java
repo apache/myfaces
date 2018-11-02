@@ -140,35 +140,15 @@ public class FacesDataModelClassBeanHolder extends DataModelBuilder
                 return dm;
             }
         } 
-        catch (NoSuchMethodException ex)
+        catch (NoSuchMethodException | IllegalArgumentException | InvocationTargetException ex)
         {
             throw new FacesException(
-                    "Cannot find constructor of DataModel with "+forClass.getName()+" as parameter", ex);
+                    "Cannot find constructor of DataModel with " + forClass.getName() + " as parameter", ex);
         }
-        catch (SecurityException ex)
+        catch (SecurityException | InstantiationException | IllegalAccessException ex)
         {
             throw new FacesException(
-                    "Cannot access constructor of DataModel with "+forClass.getName()+" as parameter", ex);
+                    "Cannot access constructor of DataModel with " + forClass.getName() + " as parameter", ex);
         } 
-        catch (InstantiationException ex)
-        {
-            throw new FacesException(
-                    "Cannot access constructor of DataModel with "+forClass.getName()+" as parameter", ex);
-        }
-        catch (IllegalAccessException ex)
-        {
-            throw new FacesException(
-                    "Cannot access constructor of DataModel with "+forClass.getName()+" as parameter", ex);
-        } 
-        catch (IllegalArgumentException ex)
-        {
-            throw new FacesException(
-                    "Cannot find constructor of DataModel with "+forClass.getName()+" as parameter", ex);
-        } 
-        catch (InvocationTargetException ex)
-        {
-            throw new FacesException(
-                    "Cannot find constructor of DataModel with "+forClass.getName()+" as parameter", ex);
-        }
     }
 }

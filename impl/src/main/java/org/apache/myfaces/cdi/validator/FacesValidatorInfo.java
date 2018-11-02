@@ -23,13 +23,9 @@ import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Objects;
 
-/**
- *
- */
 public class FacesValidatorInfo implements Serializable
 {
     private Type type;
-    
     private String validatorId;
 
     public FacesValidatorInfo(Type type, String validatorId)
@@ -38,17 +34,11 @@ public class FacesValidatorInfo implements Serializable
         this.validatorId = validatorId;
     }
 
-    /**
-     * @return the validatorId
-     */
     public String getValidatorId()
     {
         return validatorId;
     }
 
-    /**
-     * @param validatorId the validatorId to set
-     */
     public void setValidatorId(String validatorId)
     {
         this.validatorId = validatorId;

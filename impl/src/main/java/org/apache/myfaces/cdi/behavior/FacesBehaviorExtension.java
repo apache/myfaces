@@ -31,9 +31,6 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessManagedBean;
 import javax.faces.component.behavior.FacesBehavior;
 
-/**
- *
- */
 public class FacesBehaviorExtension implements Extension
 {
     private Set<FacesBehaviorInfo> types = new HashSet<FacesBehaviorInfo>();

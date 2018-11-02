@@ -30,9 +30,6 @@ import javax.faces.component.behavior.Behavior;
 import org.apache.myfaces.cdi.util.AbstractDynamicProducer;
 import org.apache.myfaces.shared.util.ClassUtils;
 
-/**
- *
- */
 @Typed
 public class FacesBehaviorProducer extends AbstractDynamicProducer<Behavior>
 {
