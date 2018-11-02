@@ -93,8 +93,6 @@
             <xsd:element name="resource-handler" type="javaee:fully-qualified-classType"/>
             <xsd:element name="state-manager" type="javaee:fully-qualified-classType"/>
             <xsd:element name="el-resolver" type="javaee:fully-qualified-classType"/>
-            <xsd:element name="property-resolver" type="javaee:fully-qualified-classType"/>
-            <xsd:element name="variable-resolver" type="javaee:fully-qualified-classType"/>
             <xsd:element name="resource-library-contracts"
                    type="javaee:faces-config-application-resource-library-contractsType"/>
             <xsd:element name="search-expression-handler" type="javaee:fully-qualified-classType"/>
