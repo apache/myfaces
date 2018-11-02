@@ -32,10 +32,10 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
-import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.context.ExceptionHandlerImpl;
+import org.apache.myfaces.context.ReleasableExternalContext;
 
 /**
  *
@@ -160,7 +160,7 @@ public class ViewScopeBeanHolder implements Serializable
                         ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
                         ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
                         facesContext = new StartupFacesContextImpl(externalContext, 
-                                (ReleaseableExternalContext) externalContext, exceptionHandler, false);
+                                (ReleasableExternalContext) externalContext, exceptionHandler, false);
                         ViewScopeContextImpl.destroyAllActive(contextualStorage, facesContext);
                     }
                     finally
@@ -206,7 +206,7 @@ public class ViewScopeBeanHolder implements Serializable
                     ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
                     ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
                     facesContext = new StartupFacesContextImpl(externalContext, 
-                            (ReleaseableExternalContext) externalContext, exceptionHandler, false);
+                            (ReleasableExternalContext) externalContext, exceptionHandler, false);
                     for (ViewScopeContextualStorage contextualStorage : oldWindowContextStorages.values())
                     {
                         ViewScopeContextImpl.destroyAllActive(contextualStorage, facesContext);

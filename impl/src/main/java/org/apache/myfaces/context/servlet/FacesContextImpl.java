@@ -42,9 +42,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.apache.myfaces.cdi.scope.FacesScopeProvider;
 
-import org.apache.myfaces.context.ReleaseableExternalContext;
-import org.apache.myfaces.context.ReleaseableFacesContextFactory;
 import org.apache.myfaces.util.ExternalSpecifications;
+import org.apache.myfaces.context.ReleasableFacesContextFactory;
+import org.apache.myfaces.context.ReleasableExternalContext;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -69,7 +69,7 @@ public class FacesContextImpl extends FacesContextImplBase
     private boolean _responseComplete = false;
     private boolean _validationFailed = false;
     private PartialViewContext _partialViewContext = null;
-    private ReleaseableFacesContextFactory _facesContextFactory = null;
+    private ReleasableFacesContextFactory _facesContextFactory = null;
     
     private PartialViewContextFactory _partialViewContextFactory = null;
     private RenderKitFactory _renderKitFactory = null;
@@ -102,8 +102,8 @@ public class FacesContextImpl extends FacesContextImplBase
      * @param facesContextFactory
      */
     public FacesContextImpl(final ExternalContext externalContext,
-            final ReleaseableExternalContext defaultExternalContext , 
-            final ReleaseableFacesContextFactory facesContextFactory)
+            final ReleasableExternalContext defaultExternalContext , 
+            final ReleasableFacesContextFactory facesContextFactory)
     {
         // setCurrentInstance is called in constructor of super class
         super(externalContext, defaultExternalContext);
@@ -112,8 +112,8 @@ public class FacesContextImpl extends FacesContextImplBase
     }
     
     public FacesContextImpl(final ExternalContext externalContext,
-            final ReleaseableExternalContext defaultExternalContext , 
-            final ReleaseableFacesContextFactory facesContextFactory,
+            final ReleasableExternalContext defaultExternalContext , 
+            final ReleasableFacesContextFactory facesContextFactory,
             final ApplicationFactory applicationFactory,
             final RenderKitFactory renderKitFactory,
             final PartialViewContextFactory partialViewContextFactory)

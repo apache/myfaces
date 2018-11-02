@@ -22,7 +22,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.shared.application.FacesServletMappingUtils;
@@ -73,6 +72,7 @@ import org.apache.myfaces.spi.FacesFlowProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinder;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
+import org.apache.myfaces.context.ReleasableExternalContext;
 
 /**
  * Performs common initialization tasks.
@@ -503,7 +503,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, startup);
         ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
         FacesContext facesContext = new StartupFacesContextImpl(externalContext, 
-                (ReleaseableExternalContext) externalContext, exceptionHandler, startup);
+                (ReleasableExternalContext) externalContext, exceptionHandler, startup);
         
         // If getViewRoot() is called during application startup or shutdown, 
         // it should return a new UIViewRoot with its locale set to Locale.getDefault().

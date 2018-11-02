@@ -25,11 +25,11 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import org.apache.myfaces.context.ExceptionHandlerImpl;
-import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.spi.FacesFlowProvider;
 import org.apache.myfaces.spi.ViewScopeProvider;
+import org.apache.myfaces.context.ReleasableExternalContext;
 
 public class MyFacesHttpSessionListener implements HttpSessionListener
 {
@@ -85,7 +85,7 @@ public class MyFacesHttpSessionListener implements HttpSessionListener
                 ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
                 ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
                 facesContext = new StartupFacesContextImpl(externalContext, 
-                        (ReleaseableExternalContext) externalContext, exceptionHandler, false);
+                        (ReleasableExternalContext) externalContext, exceptionHandler, false);
 
                 if (viewScopeProvider != null)
                 {

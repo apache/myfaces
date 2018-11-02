@@ -28,7 +28,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.lifecycle.ClientWindow;
 import javax.servlet.ServletContext;
 
-import org.apache.myfaces.context.ReleaseableExternalContext;
+import org.apache.myfaces.context.ReleasableExternalContext;
 
 /**
  * Provides a base implementation of the ExternalContext for Servlet
@@ -39,7 +39,7 @@ import org.apache.myfaces.context.ReleaseableExternalContext;
  * @version $Revision$ $Date$
  */
 public abstract class ServletExternalContextImplBase extends ExternalContext
-        implements ReleaseableExternalContext
+        implements ReleasableExternalContext
 {
     
     private static final String INIT_PARAMETER_MAP_ATTRIBUTE = InitParameterMap.class.getName();

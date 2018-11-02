@@ -19,13 +19,11 @@
 package org.apache.myfaces.context;
 
 /**
- * Allows the FacesContextImpl to refer to the external context
- * polymorphically.
  *
- * @author  Stan Silvert (latest modification by $Author$)
+ * @author  Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public interface ReleaseableExternalContext
+public interface ReleasableFacesContextFactory
 {
     /**
      * Release resources that the ExternalContext is holding onto.

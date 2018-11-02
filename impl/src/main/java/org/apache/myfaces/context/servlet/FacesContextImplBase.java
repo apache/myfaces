@@ -38,8 +38,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 
-import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.el.unified.FacesELContext;
+import org.apache.myfaces.context.ReleasableExternalContext;
 
 /**
  * Provides a base implementation of the FacesContext for the use
@@ -54,7 +54,7 @@ public abstract class FacesContextImplBase extends FacesContext
 
     private Application _application;
     private ExternalContext _externalContext;
-    private ReleaseableExternalContext _defaultExternalContext;
+    private ReleasableExternalContext _defaultExternalContext;
     private UIViewRoot _viewRoot;
     private RenderKitFactory _renderKitFactory;
     private ELContext _elContext;
@@ -79,7 +79,7 @@ public abstract class FacesContextImplBase extends FacesContext
      * Calls FacesContext.setCurrentInstance(this);
      */
     public FacesContextImplBase(final ExternalContext externalContext,
-            final ReleaseableExternalContext defaultExternalContext)
+            final ReleasableExternalContext defaultExternalContext)
     {
         _externalContext = externalContext;
         _defaultExternalContext = defaultExternalContext;
@@ -90,7 +90,7 @@ public abstract class FacesContextImplBase extends FacesContext
     }
     
     public FacesContextImplBase(final ExternalContext externalContext,
-            final ReleaseableExternalContext defaultExternalContext,
+            final ReleasableExternalContext defaultExternalContext,
             final ApplicationFactory applicationFactory,
             final RenderKitFactory renderKitFactory)
     {

@@ -43,7 +43,7 @@ import org.apache.myfaces.shared.util.ClassUtils;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class FacesContextFactoryImpl extends FacesContextFactory implements ReleaseableFacesContextFactory
+public class FacesContextFactoryImpl extends FacesContextFactory implements ReleasableFacesContextFactory
 {
     private static final Logger log = Logger.getLogger(FacesContextFactoryImpl.class.getName());
     
@@ -170,16 +170,16 @@ public class FacesContextFactoryImpl extends FacesContextFactory implements Rele
         //if (context instanceof ServletContext)
         //{
             FacesContext facesContext;
-            if (externalContext instanceof ReleaseableExternalContext)
+            if (externalContext instanceof ReleasableExternalContext)
             {
-                facesContext = new FacesContextImpl(externalContext, (ReleaseableExternalContext) externalContext,
+                facesContext = new FacesContextImpl(externalContext, (ReleasableExternalContext) externalContext,
                                                     this, _applicationFactory, _renderKitFactory, 
                                                     _partialViewContextFactory);
             }
-            else if (defaultExternalContext != null && defaultExternalContext instanceof ReleaseableExternalContext)
+            else if (defaultExternalContext != null && defaultExternalContext instanceof ReleasableExternalContext)
             {
                 facesContext = new FacesContextImpl(externalContext,
-                                                    (ReleaseableExternalContext) defaultExternalContext, this,
+                                                    (ReleasableExternalContext) defaultExternalContext, this,
                                                     _applicationFactory, _renderKitFactory, 
                                                     _partialViewContextFactory);
             }
