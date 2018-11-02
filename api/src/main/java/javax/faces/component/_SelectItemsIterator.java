@@ -21,6 +21,7 @@ package javax.faces.component;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -41,7 +42,7 @@ class _SelectItemsIterator implements Iterator<SelectItem>
     
     private static final Logger log = Logger.getLogger(_SelectItemsIterator.class.getName());
     
-    private static final Iterator<UIComponent> _EMPTY_UICOMPONENT_ITERATOR = new _EmptyIterator<UIComponent>();
+    private static final Iterator<UIComponent> _EMPTY_UICOMPONENT_ITERATOR = Collections.<UIComponent>emptyIterator();
     
     // org.apache.myfaces.shared.util.SelectItemsIterator uses JSFAttr
     private static final String VAR_ATTR = "var";

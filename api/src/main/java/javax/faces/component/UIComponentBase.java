@@ -79,7 +79,7 @@ public abstract class UIComponentBase extends UIComponent
 {
     private static Logger log = Logger.getLogger(UIComponentBase.class.getName());
 
-    private static final Iterator<UIComponent> _EMPTY_UICOMPONENT_ITERATOR = new _EmptyIterator<UIComponent>();
+    private static final Iterator<UIComponent> _EMPTY_UICOMPONENT_ITERATOR = Collections.<UIComponent>emptyIterator();
 
     private static final String _STRING_BUILDER_KEY
             = "javax.faces.component.UIComponentBase.SHARED_STRING_BUILDER";

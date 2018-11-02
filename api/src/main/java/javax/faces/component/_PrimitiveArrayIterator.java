@@ -26,6 +26,10 @@ import java.util.Iterator;
  */
 class _PrimitiveArrayIterator implements Iterator<Object>
 {
+    private Object _primitiveArray;
+    private int _size;
+    private int _position;
+    
     public _PrimitiveArrayIterator(Object primitiveArray)
     {
         if (primitiveArray == null ||
@@ -38,22 +42,21 @@ class _PrimitiveArrayIterator implements Iterator<Object>
         _size = Array.getLength(primitiveArray);
     }
 
+    @Override
     public boolean hasNext()
     {
         return (_position < _size);
     }
 
+    @Override
     public Object next()
     {
         return Array.get(_primitiveArray, _position++);
     }
 
+    @Override
     public void remove()
     {
         throw new UnsupportedOperationException();
     }
-
-    private Object _primitiveArray;
-    private int    _size;
-    private int    _position;
 }
