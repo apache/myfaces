@@ -411,8 +411,8 @@
                                 <Import-Package>
                                     javax.el;version="[1.0.0, 3.1.0)",
                                     javax.validation*;version="[1.0.0, 2.0.0)",
-                                    javax.servlet;version="[2.5.0, 4.0)",
-                                    javax.servlet.http;version="[2.5.0, 4.0)",
+                                    javax.servlet;version="[3, 5)",
+                                    javax.servlet.http;version="[3, 5)",
                                     javax.servlet.jsp;version="[2.1.0, 3.1)",
                                     javax.servlet.jsp.jstl.core;version="[1.1.2, 2.0.0)",
                                     javax.servlet.jsp.jstl.sql;version="[1.1.2, 2.0.0)",
