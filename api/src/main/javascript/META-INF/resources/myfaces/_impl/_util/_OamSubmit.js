@@ -117,6 +117,9 @@ if (!myfaces.oam) {
                         form.submit();
                     }
                     catch(e) {
+                        if (window.console) {
+                            console.error(e);
+                        }
                     }
                 }
 
@@ -126,6 +129,9 @@ if (!myfaces.oam) {
                     form.submit();
                 }
                 catch(e) {
+                    if (window.console) {
+                        console.error(e);
+                    }
                 }
             }
 
