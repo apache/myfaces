@@ -83,8 +83,6 @@ public class UIComponentBaseTest
             methods.add(UIComponentBase.class.getDeclaredMethod("getRenderer", new Class[] { FacesContext.class }));
             methods.add(UIComponentBase.class.getDeclaredMethod("getFacesContext", (Class<?>[])null));
             methods.add(UIComponentBase.class.getDeclaredMethod("getParent", (Class<?>[])null));
-            methods.add(UIComponentBase.class
-                    .getDeclaredMethod("getPathToComponent", new Class[] { UIComponent.class }));
 
             return methods;
         }

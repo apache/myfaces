@@ -44,6 +44,7 @@ import javax.faces.event.FacesListener;
 import javax.faces.render.Renderer;
 
 import javax.faces.view.Location;
+
 import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 import org.apache.myfaces.shared.util.ComponentUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
@@ -97,7 +98,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
                     String location = getComponentLocation(this);
                     throw new FacesException("Cannot create clientId. No id is assigned for component"
                             + " to create an id and UIViewRoot is not defined: "
-                            + getPathToComponent(this)
+                            + ComponentUtils.getPathToComponent(this)
                             + (location != null ? " created from: " + location : ""));
                 }
             }
@@ -221,53 +222,6 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
             return location.toString();
         }
         return null;
-    }
-
-    private String getPathToComponent(UIComponent component)
-    {
-        StringBuilder buf = new StringBuilder();
-
-        if (component == null)
-        {
-            buf.append("{Component-Path : ");
-            buf.append("[null]}");
-            return buf.toString();
-        }
-
-        getPathToComponent(component, buf);
-
-        buf.insert(0, "{Component-Path : ");
-        buf.append('}');
-
-        return buf.toString();
-    }
-
-    private void getPathToComponent(UIComponent component, StringBuilder buf)
-    {
-        if (component == null)
-        {
-            return;
-        }
-
-        StringBuilder intBuf = new StringBuilder();
-
-        intBuf.append("[Class: ");
-        intBuf.append(component.getClass().getName());
-        if (component instanceof UIViewRoot)
-        {
-            intBuf.append(",ViewId: ");
-            intBuf.append(((UIViewRoot) component).getViewId());
-        }
-        else
-        {
-            intBuf.append(",Id: ");
-            intBuf.append(component.getId());
-        }
-        intBuf.append(']');
-
-        buf.insert(0, intBuf.toString());
-
-        getPathToComponent(component.getParent(), buf);
     }
 
 

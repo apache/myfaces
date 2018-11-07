@@ -924,7 +924,7 @@ public abstract class UIComponentBase extends UIComponent
                     String location = getComponentLocation(this);
                     throw new FacesException("Cannot create clientId. No id is assigned for component"
                             + " to create an id and UIViewRoot is not defined: "
-                            + getPathToComponent(this)
+                            + _ComponentUtils.getPathToComponent(this)
                             + (location != null ? " created from: " + location : ""));
                 }
             }
@@ -973,7 +973,7 @@ public abstract class UIComponentBase extends UIComponent
         //            + "If this component was created dynamically (i.e. not by a JSP tag) you should assign it an "
         //            + "explicit static id or assign it the id you get from "
         //            + "the createUniqueId from the current UIViewRoot "
-        //            + "component right after creation! Path to Component: " + getPathToComponent(this));
+        //            + "component right after creation! Path to Component: " + _ComponentUtils.getPathToComponent(this));
         //}
 
         return _clientId;
@@ -1295,7 +1295,7 @@ public abstract class UIComponentBase extends UIComponent
         if (renderer == null)
         {
             String location = getComponentLocation(this);
-            String logStr = "No Renderer found for component " + getPathToComponent(this)
+            String logStr = "No Renderer found for component " + _ComponentUtils.getPathToComponent(this)
                     + " (component-family=" + getFamily()
                     + ", renderer-type=" + rendererType + ')'
                     + (location != null ? " created from: " + location : "");
@@ -1665,53 +1665,6 @@ public abstract class UIComponentBase extends UIComponent
             return location.toString();
         }
         return null;
-    }
-
-    private String getPathToComponent(UIComponent component)
-    {
-        StringBuilder buf = new StringBuilder();
-
-        if (component == null)
-        {
-            buf.append("{Component-Path : ");
-            buf.append("[null]}");
-            return buf.toString();
-        }
-
-        getPathToComponent(component, buf);
-
-        buf.insert(0, "{Component-Path : ");
-        buf.append('}');
-
-        return buf.toString();
-    }
-
-    private void getPathToComponent(UIComponent component, StringBuilder buf)
-    {
-        if (component == null)
-        {
-            return;
-        }
-
-        StringBuilder intBuf = new StringBuilder();
-
-        intBuf.append("[Class: ");
-        intBuf.append(component.getClass().getName());
-        if (component instanceof UIViewRoot)
-        {
-            intBuf.append(",ViewId: ");
-            intBuf.append(((UIViewRoot) component).getViewId());
-        }
-        else
-        {
-            intBuf.append(",Id: ");
-            intBuf.append(component.getId());
-        }
-        intBuf.append(']');
-
-        buf.insert(0, intBuf.toString());
-
-        getPathToComponent(component.getParent(), buf);
     }
 
     public void setTransient(boolean transientFlag)

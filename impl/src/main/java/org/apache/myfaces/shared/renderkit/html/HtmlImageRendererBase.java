@@ -36,6 +36,7 @@ import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.renderkit.html.util.HTML;
+import org.apache.myfaces.shared.util.ComponentUtils;
 
 
 public class HtmlImageRendererBase
@@ -92,7 +93,7 @@ public class HtmlImageRendererBase
             {
                 log.warning("Component UIGraphic " + uiComponent.getClientId(facesContext) 
                         + " has no attribute url, value, name or attribute resolves to null. Path to component " 
-                        + RendererUtils.getPathToComponent(uiComponent));
+                        + ComponentUtils.getPathToComponent(uiComponent));
             }
         }
 
@@ -105,7 +106,7 @@ public class HtmlImageRendererBase
             {
                 log.warning("Component UIGraphic " + uiComponent.getClientId(facesContext) 
                         + " has no attribute alt or attribute resolves to null. Path to component " 
-                        + RendererUtils.getPathToComponent(uiComponent));
+                        + ComponentUtils.getPathToComponent(uiComponent));
             }
         }
 

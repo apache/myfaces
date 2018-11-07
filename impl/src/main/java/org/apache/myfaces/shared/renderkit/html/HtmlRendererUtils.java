@@ -68,6 +68,7 @@ import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder;
 import org.apache.myfaces.shared.renderkit.html.util.OutcomeTargetUtils;
+import org.apache.myfaces.shared.util.ComponentUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.shared.renderkit.html.util.HTML;
 
@@ -120,7 +121,7 @@ public final class HtmlRendererUtils
         }
         else
         {
-            log.warning(NON_SUBMITTED_VALUE_WARNING + " Component : " + RendererUtils.getPathToComponent(component));
+            log.warning(NON_SUBMITTED_VALUE_WARNING + " Component : " + ComponentUtils.getPathToComponent(component));
         }
     }
 

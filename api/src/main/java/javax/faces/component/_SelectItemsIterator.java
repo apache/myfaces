@@ -133,7 +133,7 @@ class _SelectItemsIterator implements Iterator<SelectItem>
                     ValueExpression expression = uiSelectItem.getValueExpression("value");
                     throw new IllegalArgumentException("ValueExpression '"
                             + (expression == null ? null : expression.getExpressionString()) + "' of UISelectItem : "
-                            + getPathToComponent(child) + " does not reference an Object of type SelectItem");
+                            + _ComponentUtils.getPathToComponent(child) + " does not reference an Object of type SelectItem");
                 }
                 _nextItem = (SelectItem) item;
                 _currentComponent = child;
@@ -197,7 +197,7 @@ class _SelectItemsIterator implements Iterator<SelectItem>
                                 + " array, Iterable or Map, but of type: {2}",
                                 new Object[] {
                                     (expression == null ? null : expression.getExpressionString()),
-                                    getPathToComponent(child),
+                                    _ComponentUtils.getPathToComponent(child),
                                     (value == null ? null : value.getClass().getName()) 
                                 });
                     }
@@ -334,52 +334,5 @@ class _SelectItemsIterator implements Iterator<SelectItem>
             // otherwise you would have to write <tag attribute="#{true}" />.
             return Boolean.valueOf(value.toString());
         }
-    }
-
-    private String getPathToComponent(UIComponent component)
-    {
-        StringBuffer buf = new StringBuffer();
-
-        if (component == null)
-        {
-            buf.append("{Component-Path : ");
-            buf.append("[null]}");
-            return buf.toString();
-        }
-
-        getPathToComponent(component, buf);
-
-        buf.insert(0, "{Component-Path : ");
-        buf.append('}');
-
-        return buf.toString();
-    }
-
-    private void getPathToComponent(UIComponent component, StringBuffer buf)
-    {
-        if (component == null)
-        {
-            return;
-        }
-
-        StringBuffer intBuf = new StringBuffer();
-
-        intBuf.append("[Class: ");
-        intBuf.append(component.getClass().getName());
-        if (component instanceof UIViewRoot)
-        {
-            intBuf.append(",ViewId: ");
-            intBuf.append(((UIViewRoot) component).getViewId());
-        }
-        else
-        {
-            intBuf.append(",Id: ");
-            intBuf.append(component.getId());
-        }
-        intBuf.append(']');
-
-        buf.insert(0, intBuf);
-
-        getPathToComponent(component.getParent(), buf);
     }
 }

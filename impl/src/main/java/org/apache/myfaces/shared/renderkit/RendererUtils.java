@@ -46,7 +46,6 @@ import javax.faces.component.UIForm;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UISelectMany;
 import javax.faces.component.UISelectOne;
-import javax.faces.component.UIViewRoot;
 import javax.faces.component.ValueHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -54,6 +53,7 @@ import javax.faces.convert.ConverterException;
 import javax.faces.model.SelectItem;
 
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
+import org.apache.myfaces.shared.util.ComponentUtils;
 import org.apache.myfaces.shared.util.HashMapUtils;
 import org.apache.myfaces.shared.util.SelectItemsIterator;
 import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
@@ -73,60 +73,6 @@ public final class RendererUtils
 
     // This nice constant is "specified" 13.1.1.2 The Resource API Approach in Spec as an example
     public static final String RES_NOT_FOUND = "RES_NOT_FOUND";
-
-    public static String getPathToComponent(UIComponent component)
-    {
-        StringBuilder buf = new StringBuilder();
-
-        if (component == null)
-        {
-            buf.append("{Component-Path : ");
-            buf.append("[null]}");
-            return buf.toString();
-        }
-
-        getPathToComponent(component, buf);
-
-        buf.insert(0, "{Component-Path : ");
-        Object location = component.getAttributes().get(
-                UIComponent.VIEW_LOCATION_KEY);
-        if (location != null)
-        {
-            buf.append(" Location: ").append(location);
-        }
-        buf.append('}');
-
-        return buf.toString();
-    }
-
-    private static void getPathToComponent(UIComponent component,
-            StringBuilder buf)
-    {
-        if (component == null)
-        {
-            return;
-        }
-
-        StringBuilder intBuf = new StringBuilder();
-
-        intBuf.append("[Class: ");
-        intBuf.append(component.getClass().getName());
-        if (component instanceof UIViewRoot)
-        {
-            intBuf.append(",ViewId: ");
-            intBuf.append(((UIViewRoot) component).getViewId());
-        }
-        else
-        {
-            intBuf.append(",Id: ");
-            intBuf.append(component.getId());
-        }
-        intBuf.append(']');
-
-        buf.insert(0, intBuf.toString());
-
-        getPathToComponent(component.getParent(), buf);
-    }
 
     public static String getConcatenatedId(FacesContext context,
             UIComponent container, String clientId)
@@ -183,7 +129,7 @@ public final class RendererUtils
 
         throw new IllegalArgumentException(
                 "Expected submitted value of type Boolean for Component : "
-                        + getPathToComponent(component));
+                        + ComponentUtils.getPathToComponent(component));
 
     }
 
@@ -197,7 +143,7 @@ public final class RendererUtils
 
         throw new IllegalArgumentException(
                 "Expected submitted value of type Date for component : "
-                        + getPathToComponent(component));
+                        + ComponentUtils.getPathToComponent(component));
     }
 
     public static Object getObjectValue(UIComponent component)
@@ -205,7 +151,7 @@ public final class RendererUtils
         if (!(component instanceof ValueHolder))
         {
             throw new IllegalArgumentException("Component : "
-                    + getPathToComponent(component) + "is not a ValueHolder");
+                    + ComponentUtils.getPathToComponent(component) + "is not a ValueHolder");
         }
 
         if (component instanceof EditableValueHolder)
@@ -236,7 +182,7 @@ public final class RendererUtils
         if (!(component instanceof ValueHolder))
         {
             throw new IllegalArgumentException("Component : "
-                    + getPathToComponent(component)
+                    + ComponentUtils.getPathToComponent(component)
                     + "is not a ValueHolder");
         }
 
@@ -330,7 +276,7 @@ public final class RendererUtils
             if (!(component instanceof ValueHolder))
             {
                 throw new IllegalArgumentException("Component : "
-                        + getPathToComponent(component)
+                        + ComponentUtils.getPathToComponent(component)
                         + "is not a ValueHolder");
             }
 
@@ -416,7 +362,7 @@ public final class RendererUtils
         catch (PropertyNotFoundException ex)
         {
             log.log(Level.SEVERE, "Property not found - called by component : "
-                    + getPathToComponent(component), ex);
+                    + ComponentUtils.getPathToComponent(component), ex);
 
             throw ex;
         }
@@ -558,7 +504,7 @@ public final class RendererUtils
         {
             throw new IllegalArgumentException(
                     "ValueExpression for UISelectMany : "
-                            + getPathToComponent(component)
+                            + ComponentUtils.getPathToComponent(component)
                             + " must be of type Collection or Array");
         }
 
@@ -607,7 +553,7 @@ public final class RendererUtils
         if (compClass != null && !(compClass.isInstance(uiComponent)))
         {
             throw new IllegalArgumentException("uiComponent : "
-                    + getPathToComponent(uiComponent) + " is not instance of "
+                    + ComponentUtils.getPathToComponent(uiComponent) + " is not instance of "
                     + compClass.getName() + " as it should be");
         }
     }
@@ -834,7 +780,7 @@ public final class RendererUtils
         {
             throw new IllegalArgumentException(
                     "Value of UISelectMany component with path : "
-                            + getPathToComponent(uiSelectMany)
+                            + ComponentUtils.getPathToComponent(uiSelectMany)
                             + " is not of type Array or List");
         }
     }
@@ -846,7 +792,7 @@ public final class RendererUtils
         {
             throw new IllegalArgumentException(
                     "Submitted value of type String for component : "
-                            + getPathToComponent(output) + "expected");
+                            + ComponentUtils.getPathToComponent(output) + "expected");
         }
 
         //To be compatible with jsf ri, and according to issue 69
@@ -939,7 +885,7 @@ public final class RendererUtils
         {
             throw new ConverterException(
                     "Submitted value of type String[] for component : "
-                            + getPathToComponent(selectMany) + "expected");
+                            + ComponentUtils.getPathToComponent(selectMany) + "expected");
         }
 
         return _SharedRendererUtils.getConvertedUISelectManyValue(facesContext,

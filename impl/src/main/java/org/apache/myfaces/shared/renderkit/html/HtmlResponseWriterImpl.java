@@ -36,9 +36,9 @@ import javax.faces.render.Renderer;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.ContentTypeUtils;
-import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.UnicodeEncoder;
 import org.apache.myfaces.shared.util.CommentUtils;
+import org.apache.myfaces.shared.util.ComponentUtils;
 import org.apache.myfaces.shared.util.StreamCharBuffer;
 import org.apache.myfaces.shared.renderkit.html.util.HTML;
 
@@ -545,7 +545,7 @@ public class HtmlResponseWriterImpl
             {
                 log.warning("HTML nesting warning on closing " + elementName + ": element " + _startElementName +
                         (_startElementUIComponent==null?"":(" rendered by component : "+
-                        RendererUtils.getPathToComponent(_startElementUIComponent)))+" not explicitly closed");
+                        ComponentUtils.getPathToComponent(_startElementUIComponent)))+" not explicitly closed");
             }
         }
 

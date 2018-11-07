@@ -21,6 +21,7 @@ package org.apache.myfaces.shared.util;
 
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.component.UniqueIdVendor;
 
 /**
@@ -92,5 +93,58 @@ public class ComponentUtils
             parent = parent.getParent();
         }
         return null;
+    }
+
+    public static String getPathToComponent(UIComponent component)
+    {
+        StringBuilder buf = new StringBuilder();
+
+        if (component == null)
+        {
+            buf.append("{Component-Path : ");
+            buf.append("[null]}");
+            return buf.toString();
+        }
+
+        getPathToComponent(component, buf);
+
+        buf.insert(0, "{Component-Path : ");
+        Object location = component.getAttributes().get(
+                UIComponent.VIEW_LOCATION_KEY);
+        if (location != null)
+        {
+            buf.append(" Location: ").append(location);
+        }
+        buf.append('}');
+
+        return buf.toString();
+    }
+
+    private static void getPathToComponent(UIComponent component, StringBuilder buf)
+    {
+        if (component == null)
+        {
+            return;
+        }
+
+        StringBuilder intBuf = new StringBuilder();
+
+        intBuf.append("[Class: ");
+        intBuf.append(component.getClass().getName());
+        if (component instanceof UIViewRoot)
+        {
+            intBuf.append(",ViewId: ");
+            intBuf.append(((UIViewRoot) component).getViewId());
+        }
+        else
+        {
+            intBuf.append(",Id: ");
+            intBuf.append(component.getId());
+        }
+        intBuf.append(']');
+
+        buf.insert(0, intBuf.toString());
+
+        getPathToComponent(component.getParent(), buf);
     }
 }

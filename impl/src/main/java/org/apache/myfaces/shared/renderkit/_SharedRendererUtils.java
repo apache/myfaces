@@ -43,6 +43,7 @@ import javax.faces.convert.ConverterException;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
+import org.apache.myfaces.shared.util.ComponentUtils;
 import org.apache.myfaces.shared.util.SelectItemsIterator;
 
 /**
@@ -435,7 +436,7 @@ class _SharedRendererUtils
             if (converter == null)
             {
                 log.log(Level.WARNING, "Found attribute valueType on component " +
-                        RendererUtils.getPathToComponent(component) +
+                        ComponentUtils.getPathToComponent(component) +
                         ", but could not get a by-type converter for type " + 
                         valueType.getName());
             }

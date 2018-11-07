@@ -27,7 +27,7 @@ import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.view.Location;
 
-import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.util.ComponentUtils;
 
 /**
  *
@@ -141,7 +141,7 @@ public final class CheckDuplicateIdFaceletUtils
         {
             // location is not available in production mode or if the component
             // doesn't come from Facelets VDL.
-            message += RendererUtils.getPathToComponent(firstComponent);
+            message += ComponentUtils.getPathToComponent(firstComponent);
         }
         
         // 2) we store the first commponent in exception attributes

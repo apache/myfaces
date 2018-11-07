@@ -37,6 +37,7 @@ import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.util.ArrayUtils;
+import org.apache.myfaces.shared.util.ComponentUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.shared.renderkit.html.util.HTML;
 
@@ -390,7 +391,7 @@ public class HtmlGridRendererBase
                     Level level = context.isProjectStage(ProjectStage.Production) ? Level.FINE : Level.WARNING;
                     if (log.isLoggable(level))
                     {
-                        log.log(level, "PanelGrid " + RendererUtils.getPathToComponent(component) 
+                        log.log(level, "PanelGrid " + ComponentUtils.getPathToComponent(component)
                                 + " has not enough children. Child count should be a " 
                                 + "multiple of the columns attribute.");
                     }

@@ -728,7 +728,7 @@ public final class ClassUtils
     
    public static Class<?> forName(String name) throws ClassNotFoundException
     {
-        if (null == name || "".equals(name))
+        if (name == null || name.isEmpty())
         {
             return null;
         }

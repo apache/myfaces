@@ -41,6 +41,7 @@ import javax.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.application.viewstate.StateCacheUtils;
 import org.apache.myfaces.context.RequestViewContext;
+import org.apache.myfaces.shared.util.ComponentUtils;
 
 public class StateManagerImpl extends StateManager
 {
@@ -303,7 +304,7 @@ public class StateManagerImpl extends StateManager
             throw new IllegalStateException("Client-id : " + id +
                                             " is duplicated in the faces tree. Component : " + 
                                             component.getClientId(context)+", path: " +
-                                            getPathToComponent(component));
+                                            ComponentUtils.getPathToComponent(component));
         }
         
         if (component instanceof NamingContainer)
@@ -324,53 +325,6 @@ public class StateManagerImpl extends StateManager
             UIComponent child = component.getChildren().get(i);
             checkForDuplicateIds (context, child, ids);
         }
-    }
-
-    private static String getPathToComponent(UIComponent component)
-    {
-        StringBuilder buf = new StringBuilder();
-
-        if(component == null)
-        {
-            buf.append("{Component-Path : ");
-            buf.append("[null]}");
-            return buf.toString();
-        }
-
-        getPathToComponent(component,buf);
-
-        buf.insert(0,"{Component-Path : ");
-        buf.append('}');
-
-        return buf.toString();
-    }
-
-    private static void getPathToComponent(UIComponent component, StringBuilder buf)
-    {
-        if(component == null)
-        {
-            return;
-        }
-
-        StringBuilder intBuf = new StringBuilder();
-
-        intBuf.append("[Class: ");
-        intBuf.append(component.getClass().getName());
-        if(component instanceof UIViewRoot)
-        {
-            intBuf.append(",ViewId: ");
-            intBuf.append(((UIViewRoot) component).getViewId());
-        }
-        else
-        {
-            intBuf.append(",Id: ");
-            intBuf.append(component.getId());
-        }
-        intBuf.append(']');
-
-        buf.insert(0,intBuf.toString());
-
-        getPathToComponent(component.getParent(),buf);
     }
 
     @Override

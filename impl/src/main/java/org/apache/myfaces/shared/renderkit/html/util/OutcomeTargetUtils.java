@@ -40,6 +40,7 @@ import javax.faces.flow.FlowHandler;
 import javax.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.shared.application.NavigationUtils;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.shared.util.ComponentUtils;
 
 /**
  * Utility methods for OutcomeTarget components.
@@ -89,7 +90,7 @@ public class OutcomeTargetUtils
         {
             // log a warning
             log.warning("Could not determine NavigationCase for UIOutcomeTarget component "
-                    + RendererUtils.getPathToComponent(component) + " with outcome " + outcome);
+                    + ComponentUtils.getPathToComponent(component) + " with outcome " + outcome);
 
             return null;
         }
@@ -263,7 +264,7 @@ public class OutcomeTargetUtils
                 if (skipNullName && (name == null || RendererUtils.EMPTY_STRING.equals(name)))
                 {
                     // warn for a null-name
-                    log.log(Level.WARNING, "The UIParameter " + RendererUtils.getPathToComponent(param)
+                    log.log(Level.WARNING, "The UIParameter " + ComponentUtils.getPathToComponent(param)
                                     + " has a name of null or empty string and thus will not be added to the URL.");
                     // and skip it
                     continue;
@@ -274,7 +275,7 @@ public class OutcomeTargetUtils
                     if (facesContext.isProjectStage(ProjectStage.Development))
                     {
                         // inform the user about the null value when in Development stage
-                        log.log(Level.INFO, "The UIParameter " + RendererUtils.getPathToComponent(param)
+                        log.log(Level.INFO, "The UIParameter " + ComponentUtils.getPathToComponent(param)
                                         + " has a value of null and thus will not be added to the URL.");
                     }
                     // skip a null-value
