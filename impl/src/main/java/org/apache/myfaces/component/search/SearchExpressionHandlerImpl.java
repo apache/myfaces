@@ -34,6 +34,7 @@ import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.component.search.SearchKeywordContext;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
+import org.apache.myfaces.shared.util.ComponentUtils;
 
 /**
  *
@@ -388,7 +389,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         char separatorChar = facesContext.getNamingContainerSeparatorChar();
         if (topExpression.charAt(0) == separatorChar)
         {
-            UIComponent findBase = SearchComponentUtils.getRootComponent(previous);
+            UIComponent findBase = ComponentUtils.getRootComponent(previous);
             handler.invokeOnComponent(searchExpressionContext, findBase, topExpression.substring(1), topCallback);
             return;
         }

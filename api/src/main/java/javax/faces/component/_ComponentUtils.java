@@ -90,36 +90,23 @@ class _ComponentUtils
         return null;
     }
     
-    static UIForm findParentUIForm(UIComponent component)
+    static <T> T closest(Class<T> type, UIComponent base) 
     {
-        UIComponent parent = component.getParent();
+        UIComponent parent = base.getParent();
 
-        while (parent != null)
+        while (parent != null) 
         {
-            if (parent instanceof UIForm)
+            if (type.isAssignableFrom(parent.getClass())) 
             {
-                return (UIForm) parent;
+                return (T) parent;
             }
+
             parent = parent.getParent();
         }
+
         return null;
     }
 
-    static UniqueIdVendor findParentUniqueIdVendor(UIComponent component)
-    {
-        UIComponent parent = component.getParent();
-
-        while (parent != null)
-        {
-            if (parent instanceof UniqueIdVendor)
-            {
-                return (UniqueIdVendor) parent;
-            }
-            parent = parent.getParent();
-        }
-        return null;
-    }
-    
     static UIComponent getRootComponent(UIComponent component)
     {
         UIComponent parent;

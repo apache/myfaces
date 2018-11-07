@@ -31,6 +31,7 @@ import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.UniqueIdVendor;
 import javax.faces.component.search.UntargetableComponent;
@@ -84,7 +85,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
             // NamingContainer but UniqueIdVendor is UIViewRoot. Anyway we just can't be 100% sure about this
             // fact, so it is better to scan for the closest UniqueIdVendor. If it is not found use 
             // viewRoot.createUniqueId, otherwise use UniqueIdVendor.createUniqueId(context,seed).
-            UniqueIdVendor parentUniqueIdVendor = ComponentUtils.findParentUniqueIdVendor(this);
+            UniqueIdVendor parentUniqueIdVendor = ComponentUtils.closest(UniqueIdVendor.class, this);
             if (parentUniqueIdVendor == null)
             {
                 UIViewRoot viewRoot = context.getViewRoot();
@@ -111,7 +112,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
             // idWasNull = true;
         }
 
-        UIComponent namingContainer = ComponentUtils.findParentNamingContainer(this, false);
+        UIComponent namingContainer = ComponentUtils.closest(UINamingContainer.class, this);
         if (namingContainer != null)
         {
             String containerClientId = namingContainer.getContainerClientId(context);

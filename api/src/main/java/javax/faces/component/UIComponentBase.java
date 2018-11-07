@@ -910,7 +910,7 @@ public abstract class UIComponentBase extends UIComponent
             // NamingContainer but UniqueIdVendor is UIViewRoot. Anyway we just can't be 100% sure about this
             // fact, so it is better to scan for the closest UniqueIdVendor. If it is not found use 
             // viewRoot.createUniqueId, otherwise use UniqueIdVendor.createUniqueId(context,seed).
-            UniqueIdVendor parentUniqueIdVendor = _ComponentUtils.findParentUniqueIdVendor(this);
+            UniqueIdVendor parentUniqueIdVendor = _ComponentUtils.closest(UniqueIdVendor.class, this);
             if (parentUniqueIdVendor == null)
             {
                 UIViewRoot viewRoot = context.getViewRoot();

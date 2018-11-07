@@ -122,8 +122,7 @@ public final class ComponentSupport
         return null;
     }
     
-    public static String findFacetNameByComponentInstance(
-        UIComponent parent, UIComponent instance)
+    public static String findFacetNameByComponentInstance(UIComponent parent, UIComponent instance)
     {
         if (parent.getFacetCount() > 0)
         {
@@ -131,8 +130,7 @@ public final class ComponentSupport
             {
                 UIComponent facet = entry.getValue();
                 // check if this is a dynamically generated UIPanel
-                if (Boolean.TRUE.equals(facet.getAttributes()
-                             .get(FACET_CREATED_UIPANEL_MARKER)))
+                if (Boolean.TRUE.equals(facet.getAttributes().get(FACET_CREATED_UIPANEL_MARKER)))
                 {
                     // only check the children and facets of the panel
                     if (facet.getChildCount() > 0)
@@ -169,8 +167,7 @@ public final class ComponentSupport
         return null;
     }
 
-    public static UIComponent findChildInFacetByTagId(
-        UIComponent parent, String id, String facetName)
+    public static UIComponent findChildInFacetByTagId(UIComponent parent, String id, String facetName)
     {
         if (parent.getFacetCount() > 0)
         {
@@ -178,8 +175,7 @@ public final class ComponentSupport
             if (facet != null)
             {
                 // check if this is a dynamically generated UIPanel
-                if (Boolean.TRUE.equals(facet.getAttributes()
-                             .get(FACET_CREATED_UIPANEL_MARKER)))
+                if (Boolean.TRUE.equals(facet.getAttributes().get(FACET_CREATED_UIPANEL_MARKER)))
                 {
                     // only check the children and facets of the panel
                     if (facet.getChildCount() > 0)
@@ -215,8 +211,7 @@ public final class ComponentSupport
         return null;
     }
     
-    public static UIComponent findChildInChildrenByTagId(
-        UIComponent parent, String id)
+    public static UIComponent findChildInChildrenByTagId(UIComponent parent, String id)
     {
         if (parent.getChildCount() > 0)
         {
@@ -260,8 +255,7 @@ public final class ComponentSupport
             {
                 UIComponent facet = itr.next();
                 // check if this is a dynamically generated UIPanel
-                if (Boolean.TRUE.equals(facet.getAttributes()
-                             .get(FACET_CREATED_UIPANEL_MARKER)))
+                if (Boolean.TRUE.equals(facet.getAttributes().get(FACET_CREATED_UIPANEL_MARKER)))
                 {
                     // only check the children and facets of the panel
                     if (facet.getChildCount() > 0)
@@ -309,8 +303,7 @@ public final class ComponentSupport
                 Map.Entry<String, UIComponent> entry = itr.next();
                 UIComponent facet = entry.getValue();
                 // check if this is a dynamically generated UIPanel
-                if (Boolean.TRUE.equals(facet.getAttributes()
-                             .get(FACET_CREATED_UIPANEL_MARKER)))
+                if (Boolean.TRUE.equals(facet.getAttributes().get(FACET_CREATED_UIPANEL_MARKER)))
                 {
                     // only check the children and facets of the panel
                     if (facet.getChildCount() > 0)

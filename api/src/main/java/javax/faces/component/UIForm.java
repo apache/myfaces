@@ -45,6 +45,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
      * 
      * @since 2.0
      */
+    @Override
     public String createUniqueId(FacesContext context, String seed)
     {
         StringBuilder bld = null;
@@ -56,7 +57,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         if (!isPrependId() && seed==null )
         {
             bld = new StringBuilder();
-            UniqueIdVendor parentUniqueIdVendor = _ComponentUtils.findParentUniqueIdVendor(this);
+            UniqueIdVendor parentUniqueIdVendor = _ComponentUtils.closest(UniqueIdVendor.class, this);
             if (parentUniqueIdVendor == null)
             {
                 UIViewRoot viewRoot = context.getViewRoot();

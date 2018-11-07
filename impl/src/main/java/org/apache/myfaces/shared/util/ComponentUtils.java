@@ -19,82 +19,11 @@
 
 package org.apache.myfaces.shared.util;
 
-import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
-import javax.faces.component.UniqueIdVendor;
 
-/**
- * 
- * @since 1.0.2
- */
 public class ComponentUtils
 {
-
-    /**
-     * Return the parent NamingContainer of the component passed as argument.
-     * 
-     * @param component
-     * @return
-     */
-    public static UIComponent findParentNamingContainer(UIComponent component)
-    {
-        return findParentNamingContainer(component, true);
-    }
-
-    /**
-     * Return the parent NamingContainer of the component passed as argument.
-     * 
-     * @param component
-     * @param returnRootIfNotFound
-     * @return
-     */
-    public static UIComponent findParentNamingContainer(UIComponent component, boolean returnRootIfNotFound)
-    {
-        UIComponent parent = component.getParent();
-        if (returnRootIfNotFound && parent == null)
-        {
-            return component;
-        }
-        while (parent != null)
-        {
-            if (parent instanceof NamingContainer)
-            {
-                return parent;
-            }
-
-            if (returnRootIfNotFound)
-            {
-                UIComponent nextParent = parent.getParent();
-                if (nextParent == null)
-                {
-                    return parent; // Root
-                }
-                parent = nextParent;
-            }
-            else
-            {
-                parent = parent.getParent();
-            }
-        }
-        return null;
-    }
-
-    public static UniqueIdVendor findParentUniqueIdVendor(UIComponent component)
-    {
-        UIComponent parent = component.getParent();
-
-        while (parent != null)
-        {
-            if (parent instanceof UniqueIdVendor)
-            {
-                return (UniqueIdVendor) parent;
-            }
-            parent = parent.getParent();
-        }
-        return null;
-    }
-
     public static String getPathToComponent(UIComponent component)
     {
         StringBuilder buf = new StringBuilder();
@@ -146,5 +75,36 @@ public class ComponentUtils
         buf.insert(0, intBuf.toString());
 
         getPathToComponent(component.getParent(), buf);
+    }
+    
+    public static <T> T closest(Class<T> type, UIComponent base) 
+    {
+        UIComponent parent = base.getParent();
+
+        while (parent != null) 
+        {
+            if (type.isAssignableFrom(parent.getClass())) 
+            {
+                return (T) parent;
+            }
+
+            parent = parent.getParent();
+        }
+
+        return null;
+    }
+    
+    public static UIComponent getRootComponent(UIComponent component)
+    {
+        UIComponent parent;
+        for (;;)
+        {
+            parent = component.getParent();
+            if (parent == null)
+            {
+                return component;
+            }
+            component = parent;
+        }
     }
 }
