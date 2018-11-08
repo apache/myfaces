@@ -84,7 +84,6 @@ public abstract class FaceletMultipleRequestsTestCase extends AbstractJsfConfigu
         servletContext.addInitParameter("org.apache.myfaces.PRETTY_HTML","true");
         servletContext.addInitParameter("org.apache.myfaces.ALLOW_JAVASCRIPT","true");
         servletContext.addInitParameter("org.apache.myfaces.RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON","false");
-        servletContext.addInitParameter("org.apache.myfaces.SAVE_FORM_SUBMIT_LINK_IE","false");
         servletContext.addInitParameter("org.apache.myfaces.RENDER_VIEWSTATE_ID","true");
         servletContext.addInitParameter("org.apache.myfaces.STRICT_XHTML_LINKS","true");
         servletContext.addInitParameter("org.apache.myfaces.CONFIG_REFRESH_PERIOD","0");
