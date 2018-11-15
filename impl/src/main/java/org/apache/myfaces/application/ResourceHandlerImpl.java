@@ -657,13 +657,21 @@ public class ResourceHandlerImpl extends ResourceHandler
             catch (IOException e)
             {
                 //TODO: Log using a localized message (which one?)
-                if (log.isLoggable(Level.SEVERE))
+                if (isConnectionAbort(e))
                 {
-                    log.log(Level.SEVERE,"Error trying to load resource " + resourceName
-                            + " with library " + libraryName + " :"
-                            + e.getMessage(), e);
+                    log.log(Level.INFO,"Connection was aborted while loading resource " + resourceName
+                            + " with library " + libraryName);
                 }
-                httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                else
+                {
+                    if (log.isLoggable(Level.WARNING))
+                    {
+                        log.log(Level.WARNING,"Error trying to load and send resource " + resourceName
+                                + " with library " + libraryName + " :"
+                                + e.getMessage(), e);
+                    }
+                    httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                }
             }
         //}
         //catch (Throwable ex)
@@ -673,6 +681,11 @@ public class ResourceHandlerImpl extends ResourceHandler
             // shouln't we do something better? -=Jakob Korherr=-
             //ErrorPageWriter.handleThrowable(facesContext, ex);
         //}
+    }
+
+    private static boolean isConnectionAbort(IOException e)
+    {
+        return e.getClass().getCanonicalName().equals("org.apache.catalina.connector.ClientAbortException");
     }
 
     /**
