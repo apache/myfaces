@@ -66,10 +66,9 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
 
     public HtmlRenderKitImpl()
     {
-        _renderers = new ConcurrentHashMap<String, Map<String, Renderer>>(64, 0.75f, 1);
+        _renderers = new ConcurrentHashMap<>(64, 0.75f, 1);
         _responseStateManager = new HtmlResponseStateManager();
-        //_families = new HashMap<String, Set<String> >();
-        _clientBehaviorRenderers = new HashMap<String, ClientBehaviorRenderer>();
+        _clientBehaviorRenderers = new HashMap<>();
     }
 
     // ~ Methods ------------------------------------------------------------------------------------
@@ -113,10 +112,12 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
         {
             throw new NullPointerException("component family must not be null.");
         }
+        
         if (rendererType == null)
         {
             throw new NullPointerException("renderer type must not be null.");
         }
+        
         Map <String,Renderer> familyRendererMap = _renderers.get(componentFamily); 
         Renderer renderer = null;
         if (familyRendererMap != null)
@@ -203,7 +204,7 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
         Map <String,Renderer> familyRendererMap = _renderers.get(componentFamily);
         if (familyRendererMap == null)
         {
-            familyRendererMap = new ConcurrentHashMap<String, Renderer>(8, 0.75f, 1);
+            familyRendererMap = new ConcurrentHashMap<>(8, 0.75f, 1);
             _renderers.put(componentFamily, familyRendererMap);
         }
         else
@@ -249,25 +250,16 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
         {
             return map.keySet().iterator();
         }
-        /*
-        Set<String> rendererTypes = _families.get(componentFamily);
-        if(rendererTypes != null)
-        {
-            return rendererTypes.iterator();
-        }*/
+
         //If the specified componentFamily is not known to this RenderKit implementation, return an empty Iterator
         return Collections.<String>emptySet().iterator();
-        
-
-
     }
 
     @Override
     public ResponseWriter createResponseWriter(Writer writer, String contentTypeListString, String characterEncoding)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(
-                facesContext.getExternalContext());
+        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
         String selectedContentType = null;
         String writerContentType = null;
         boolean isAjaxRequest = facesContext.getPartialViewContext().isAjaxRequest();

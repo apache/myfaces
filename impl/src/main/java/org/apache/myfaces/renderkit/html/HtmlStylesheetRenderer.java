@@ -113,7 +113,7 @@ public class HtmlStylesheetRenderer extends Renderer implements
         {
             if (hasChildren)
             {
-                log.info("Component with resourceName "+ resourceName + 
+                log.info("Component with resourceName " + resourceName + 
                         " and child components found. Child components will be ignored.");
             }
         }

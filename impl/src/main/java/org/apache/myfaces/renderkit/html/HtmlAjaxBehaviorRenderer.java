@@ -255,7 +255,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
                 {
                     // set the clientId of the component so the behavior can be decoded later,
                     // otherwise the behavior will fail
-                    List<String> list = new ArrayList<String>();
+                    List<String> list = new ArrayList<>();
                     list.add(context.getComponent().getClientId(context.getFacesContext()));
                     executes = mapToString(context, paramBuffer, AJAX_KEY_EXECUTE, list);
                 }
