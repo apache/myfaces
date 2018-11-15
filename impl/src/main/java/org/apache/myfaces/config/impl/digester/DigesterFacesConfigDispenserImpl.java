@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.faces.render.RenderKitFactory;
 
@@ -57,10 +58,10 @@ import org.apache.myfaces.config.impl.digester.elements.RenderKitImpl;
  */
 public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
 {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 3550379003287939559L;
+    
+    private static final Logger log = Logger.getLogger(DigesterFacesConfigDispenserImpl.class.getName());
+    
     // Factories
     private List<String> applicationFactories = new ArrayList<String>();
     private List<String> exceptionHandlerFactories = new ArrayList<String>();
@@ -93,8 +94,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     
     private Map<String, Converter> converterConfigurationByClassName = new HashMap<String, Converter>();
     
-    private Map<String, RenderKit> renderKits
-            = new LinkedHashMap<String, RenderKit>();
+    private Map<String, RenderKit> renderKits = new LinkedHashMap<String, RenderKit>();
     
     private List<String> actionListeners = new ArrayList<String>();
     private List<String> elResolvers = new ArrayList<String>();
@@ -180,6 +180,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
      * @param config
      *            unmarshalled faces config object
      */
+    @Override
     public void feed(FacesConfig config)
     {
         for (Factory factory : config.getFactories())
@@ -271,13 +272,20 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
         {
             if (converter.getConverterId() != null)
             {
-                converterById.put(converter.getConverterId(),converter
-                        .getConverterClass());
+                converterById.put(converter.getConverterId(), converter.getConverterClass());
             }
             if (converter.getForClass() != null)
             {
-                converterByClass.put(converter.getForClass(),converter
-                        .getConverterClass());
+                String oldConverter = converterByClass.get(converter.getForClass());
+                // don't log if someone overwrites the built-in converters
+                if (oldConverter != null && !oldConverter.startsWith("javax.faces.convert."))
+                {
+                    log.warning("There is already a converter defined for " + converter.getForClass() + "!"
+                            + " old: " + oldConverter
+                            + " new: " + converter.getConverterClass());
+                }
+
+                converterByClass.put(converter.getForClass(), converter.getConverterClass());
             }
 
             converterConfigurationByClassName.put(converter.getConverterClass(), converter);

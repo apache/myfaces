@@ -101,8 +101,7 @@ public class AnnotationConfigurator
         {
             for (Class<?> clazz : classes)
             {
-                FacesComponent comp = (FacesComponent) clazz
-                        .getAnnotation(FacesComponent.class);
+                FacesComponent comp = (FacesComponent) clazz.getAnnotation(FacesComponent.class);
                 if (comp != null)
                 {
                     if (log.isLoggable(Level.FINEST))
@@ -111,8 +110,7 @@ public class AnnotationConfigurator
                                 + clazz.getName() + ')');
                     }
                     String value = comp.value();
-                    if ( value == null ||
-                        (value != null && value.length() <= 0))
+                    if (value == null || value.isEmpty())
                     {
                         String simpleName = clazz.getSimpleName();
                         value = Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
@@ -144,14 +142,12 @@ public class AnnotationConfigurator
         {
             for (Class<?> clazz : classes)
             {
-                FacesConverter conv = (FacesConverter) clazz
-                        .getAnnotation(FacesConverter.class);
+                FacesConverter conv = (FacesConverter) clazz.getAnnotation(FacesConverter.class);
                 if (conv != null)
                 {
                     if (log.isLoggable(Level.FINEST))
                     {
-                        log.finest("addConverter(" + conv.value() + ','
-                                + clazz.getName() + ')');
+                        log.finest("addConverter(" + conv.value() + ',' + clazz.getName() + ')');
                     }
                     //If there is a previous entry on Application Configuration Resources,
                     //the entry there takes precedence
@@ -186,8 +182,7 @@ public class AnnotationConfigurator
         {
             for (Class<?> clazz : classes)
             {
-                FacesValidator val = (FacesValidator) clazz
-                        .getAnnotation(FacesValidator.class);
+                FacesValidator val = (FacesValidator) clazz.getAnnotation(FacesValidator.class);
                 if (val != null)
                 {
                     if (log.isLoggable(Level.FINEST))
@@ -196,8 +191,7 @@ public class AnnotationConfigurator
                                 + ')');
                     }
                     String value = val.value();
-                    if ( value == null ||
-                        (value != null && value.length() <= 0))
+                    if (value == null || value.isEmpty())
                     {
                         String simpleName = clazz.getSimpleName();
                         value = Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
@@ -225,8 +219,7 @@ public class AnnotationConfigurator
         {
             for (Class<?> clazz : classes)
             {
-                FacesRenderer rend = (FacesRenderer) clazz
-                        .getAnnotation(FacesRenderer.class);
+                FacesRenderer rend = (FacesRenderer) clazz.getAnnotation(FacesRenderer.class);
                 if (rend != null)
                 {
                     String renderKitId = rend.renderKitId();
