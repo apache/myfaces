@@ -45,6 +45,7 @@ import org.apache.myfaces.shared.renderkit.html.util.HTML;
 import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.shared.util.ComponentUtils;
 
 /**
  * 
@@ -174,7 +175,8 @@ public class HtmlLabelRenderer extends HtmlRenderer
         {
             if (log.isLoggable(Level.WARNING))
             {
-                log.warning("Attribute 'for' of label component with id " + uiComponent.getClientId(facesContext)
+                log.warning("Attribute 'for' of label "
+                        + ComponentUtils.getPathToComponent(uiComponent)
                         + " is not defined");
             }
         }

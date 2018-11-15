@@ -48,6 +48,7 @@ public class HtmlTextRendererBase
 
     private static final String AUTOCOMPLETE_VALUE_OFF = "off";
 
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent component)
         throws IOException
     {
@@ -94,8 +95,7 @@ public class HtmlTextRendererBase
         }
         else
         {
-            escape = RendererUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR,
-                    true); //default is to escape
+            escape = RendererUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR, true); //default is to escape
         }
         if (text != null)
         {
@@ -141,8 +141,8 @@ public class HtmlTextRendererBase
                 }
                 else
                 {
-                    span = HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(writer,component,
-                            HTML.SPAN_ELEM,HTML.COMMON_PASSTROUGH_ATTRIBUTES);
+                    span = HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(writer,
+                            component, HTML.SPAN_ELEM, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
                 }
             }
 
@@ -322,7 +322,7 @@ public class HtmlTextRendererBase
         return false;
     }
 
-
+    @Override
     public void decode(FacesContext facesContext, UIComponent component)
     {
         RendererUtils.checkParamValidity(facesContext,component,null);
@@ -330,8 +330,7 @@ public class HtmlTextRendererBase
         if (component instanceof UIInput)
         {
             HtmlRendererUtils.decodeUIInput(facesContext, component);
-            if (component instanceof ClientBehaviorHolder &&
-                    !HtmlRendererUtils.isDisabled(component))
+            if (component instanceof ClientBehaviorHolder && !HtmlRendererUtils.isDisabled(component))
             {
                 HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
             }
@@ -346,7 +345,7 @@ public class HtmlTextRendererBase
         }
     }
 
-
+    @Override
     public Object getConvertedValue(FacesContext facesContext, UIComponent component, Object submittedValue)
         throws ConverterException
     {
@@ -382,19 +381,14 @@ public class HtmlTextRendererBase
 
                 writer.startElement(HTML.SPAN_ELEM, component);
 
-                HtmlRendererUtils.writeIdIfNecessary(writer, component,
-                        facesContext);
+                HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
 
-                HtmlRendererUtils.renderHTMLAttributes(writer, component,
-                        HTML.COMMON_PASSTROUGH_ATTRIBUTES);
-
+                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
             }
             else
             {
-                span = HtmlRendererUtils
-                        .renderHTMLAttributesWithOptionalStartElement(writer,
-                                component, HTML.SPAN_ELEM,
-                                HTML.COMMON_PASSTROUGH_ATTRIBUTES);
+                span = HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(writer,
+                                component, HTML.SPAN_ELEM, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
             }
 
             if (escape)
@@ -403,8 +397,7 @@ public class HtmlTextRendererBase
                 {
                     log.fine("renderOutputText writing '" + text + '\'');
                 }
-                writer.writeText(text,
-                        JSFAttr.VALUE_ATTR);
+                writer.writeText(text, JSFAttr.VALUE_ATTR);
             }
             else
             {

@@ -601,7 +601,8 @@ public final class HtmlRendererUtils
         {
             log.log(Level.SEVERE,
                     "Error finding Converter for component with id "
-                            + uiComponent.getClientId(facesContext), e);
+                            + uiComponent.getClientId(facesContext) + " "
+                            + ComponentUtils.getPathToComponent(uiComponent), e);
             converter = null;
         }
         return converter;

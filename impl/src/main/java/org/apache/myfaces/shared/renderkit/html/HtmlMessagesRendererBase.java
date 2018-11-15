@@ -45,6 +45,7 @@ import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.HTML;
+import org.apache.myfaces.shared.util.ComponentUtils;
 
 public abstract class HtmlMessagesRendererBase
         extends HtmlMessageRendererBase
@@ -118,7 +119,8 @@ public abstract class HtmlMessagesRendererBase
             {
                 if (log.isLoggable(Level.WARNING) && !layout.equalsIgnoreCase(LAYOUT_LIST))
                 {
-                    log.warning("Unsupported messages layout '" + layout + "' - using default layout 'list'.");
+                    log.warning("Unsupported messages layout '" + layout + "' - using default layout 'list'. "
+                        + "Component: " + ComponentUtils.getPathToComponent(messages));
                 }
                 renderList(facesContext, messages, messagesIterator);
             }

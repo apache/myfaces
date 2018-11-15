@@ -42,6 +42,7 @@ import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.HTML;
+import org.apache.myfaces.shared.util.ComponentUtils;
 
 public abstract class HtmlMessageRendererBase
         extends HtmlRenderer
@@ -83,7 +84,8 @@ public abstract class HtmlMessageRendererBase
         String forAttr = getFor(message);
         if (forAttr == null)
         {
-            log.severe("Attribute 'for' of UIMessage must not be null");
+            log.severe("Attribute 'for' of UIMessage "
+                    + ComponentUtils.getPathToComponent(message) + " must not be null");
             return;
         }
 

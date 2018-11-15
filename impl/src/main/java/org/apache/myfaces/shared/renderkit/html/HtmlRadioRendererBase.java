@@ -51,6 +51,7 @@ import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.renderkit.html.util.HTML;
+import org.apache.myfaces.shared.util.ComponentUtils;
 
 public class HtmlRadioRendererBase
         extends HtmlRenderer
@@ -87,8 +88,8 @@ public class HtmlRadioRendererBase
             }
             else
             {
-                log.severe("Wrong layout attribute for component " + 
-                        selectOne.getClientId(facesContext) + ": " + layout);
+                log.severe("Wrong layout '" + layout + "' defined for component "
+                        + ComponentUtils.getPathToComponent(selectOne));
             }
         }
 

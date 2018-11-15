@@ -151,7 +151,7 @@ public final class RendererUtils
         if (!(component instanceof ValueHolder))
         {
             throw new IllegalArgumentException("Component : "
-                    + ComponentUtils.getPathToComponent(component) + "is not a ValueHolder");
+                    + ComponentUtils.getPathToComponent(component) + " is not a ValueHolder");
         }
 
         if (component instanceof EditableValueHolder)
@@ -183,7 +183,7 @@ public final class RendererUtils
         {
             throw new IllegalArgumentException("Component : "
                     + ComponentUtils.getPathToComponent(component)
-                    + "is not a ValueHolder");
+                    + " is not a ValueHolder");
         }
 
         if (component instanceof EditableValueHolder)
