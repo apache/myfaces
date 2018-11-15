@@ -204,7 +204,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
 
         components.putAll(config.getComponents());
         validators.putAll(config.getValidators());
-        behaviors.addAll (config.getBehaviors());
+        behaviors.addAll(config.getBehaviors());
         
         for (Application application : config.getApplications())
         {
@@ -280,7 +280,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
                 // don't log if someone overwrites the built-in converters
                 if (oldConverter != null && !oldConverter.startsWith("javax.faces.convert."))
                 {
-                    log.warning("There is already a converter defined for " + converter.getForClass() + "!"
+                    log.warning("There is already a converter defined for class: " + converter.getForClass() + "."
                             + " old: " + oldConverter
                             + " new: " + converter.getConverterClass());
                 }

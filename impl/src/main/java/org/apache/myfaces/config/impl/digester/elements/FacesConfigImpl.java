@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import org.apache.myfaces.config.element.AbsoluteOrdering;
 import org.apache.myfaces.config.element.Application;
 import org.apache.myfaces.config.element.Behavior;
@@ -43,6 +44,7 @@ import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
  */
 public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConfig implements Serializable
 {
+    private static final Logger log = Logger.getLogger(FacesConfigImpl.class.getName());
 
     private List<Application> applications;
     private List<Factory> factories;
@@ -166,6 +168,16 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         {
             validators = new HashMap<String, String>();
         }
+
+        String oldValidator = validators.get(id);
+        // don't log if someone overwrites the built-in converters
+        if (oldValidator != null && !oldValidator.startsWith("javax.faces.validator."))
+        {
+            log.warning("There is already a validator defined for id: " + id + "."
+                    + " old: " + oldValidator
+                    + " new: " + validatorClass);
+        }
+
         validators.put(id, validatorClass);
     }
     
