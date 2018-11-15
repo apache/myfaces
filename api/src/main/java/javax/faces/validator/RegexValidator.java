@@ -111,9 +111,8 @@ public class RegexValidator implements Validator, PartialStateHolder
 
     // VALIDATE
     /** {@inheritDoc} */
-    public void validate(FacesContext context,
-                         UIComponent component,
-                         Object value)
+    @Override
+    public void validate(FacesContext context, UIComponent component, Object value)
     {
         if (context == null)
         {
@@ -128,16 +127,21 @@ public class RegexValidator implements Validator, PartialStateHolder
         {
             return;
         }
-        if (!(value instanceof String))
-        {
-            throw new ValidatorException(_MessageUtils.getErrorMessage(context, NOT_MATCHED_MESSAGE_ID, null));
+        if (!(value instanceof CharSequence))
+        {   
+            // The value must be CharSequence - java.util.regex.Pattern.matcher(CharSequence)
+            // this instanceof check indicates disagreement between local value (converted) 
+            // and type expected in validator but behaviour is not specified.
+            // We use message for String conversion here:
+            // javax.faces.converter.STRING={1}: Could not convert ''{0}'' to a string
+            Object[] args = {value, _MessageUtils.getLabel(context, component)};
+            throw new ValidatorException(_MessageUtils.getErrorMessage(context, "javax.faces.converter.STRING", args));
         }
 
-        String string = (String) value;
+        CharSequence charSequence = (CharSequence) value;
 
         Pattern thePattern;
-        if (pattern == null
-         || pattern.equals(EMPTY_STRING))
+        if (pattern == null || pattern.equals(EMPTY_STRING))
         {
             throw new ValidatorException(_MessageUtils.getErrorMessage(context, PATTERN_NOT_SET_MESSAGE_ID, null));
         }
@@ -151,7 +155,7 @@ public class RegexValidator implements Validator, PartialStateHolder
             throw new ValidatorException(_MessageUtils.getErrorMessage(context, MATCH_EXCEPTION_MESSAGE_ID, null));
         }
 
-        if (!thePattern.matcher(string).matches())
+        if (!thePattern.matcher(charSequence).matches())
         {
             //TODO: Present the patternExpression in a more user friendly way
             Object[] args = {thePattern, _MessageUtils.getLabel(context, component)};
@@ -162,6 +166,7 @@ public class RegexValidator implements Validator, PartialStateHolder
     // RESTORE & SAVE STATE
 
     /** {@inheritDoc} */
+    @Override
     public Object saveState(FacesContext context)
     {
         if (context == null)
@@ -177,6 +182,7 @@ public class RegexValidator implements Validator, PartialStateHolder
     }
 
     /** {@inheritDoc} */
+    @Override
     public void restoreState(FacesContext context, Object state)
     {
         if (context == null)
@@ -195,12 +201,14 @@ public class RegexValidator implements Validator, PartialStateHolder
     // SETTER & GETTER
 
     /** {@inheritDoc} */
+    @Override
     public boolean isTransient()
     {
         return isTransient;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setTransient(boolean isTransient)
     {
         this.isTransient = isTransient;
@@ -232,16 +240,19 @@ public class RegexValidator implements Validator, PartialStateHolder
 
     private boolean _initialStateMarked = false;
 
+    @Override
     public void clearInitialState()
     {
         _initialStateMarked = false;
     }
 
+    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
+    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;
