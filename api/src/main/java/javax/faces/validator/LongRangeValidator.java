@@ -58,6 +58,7 @@ public class LongRangeValidator
     private Long _minimum = null;
     private Long _maximum = null;
     private boolean _transient = false;
+    private boolean _initialStateMarked = false;
 
     // CONSTRUCTORS
     public LongRangeValidator()
@@ -77,9 +78,8 @@ public class LongRangeValidator
     }
 
     // VALIDATE
-    public void validate(FacesContext facesContext,
-                         UIComponent uiComponent,
-                         Object value)
+    @Override
+    public void validate(FacesContext facesContext, UIComponent uiComponent, Object value)
             throws ValidatorException
     {
         if (facesContext == null)
@@ -180,17 +180,20 @@ public class LongRangeValidator
         clearInitialState();
     }
 
+    @Override
     public boolean isTransient()
     {
         return _transient;
     }
 
+    @Override
     public void setTransient(boolean transientValue)
     {
         _transient = transientValue;
     }
 
     // RESTORE & SAVE STATE
+    @Override
     public Object saveState(FacesContext context)
     {
         if (context == null)
@@ -208,8 +211,8 @@ public class LongRangeValidator
         return null;
     }
 
-    public void restoreState(FacesContext context,
-                             Object state)
+    @Override
+    public void restoreState(FacesContext context, Object state)
     {
         if (context == null)
         {
@@ -259,18 +262,19 @@ public class LongRangeValidator
         return result;
     }
 
-    private boolean _initialStateMarked = false;
-
+    @Override
     public void clearInitialState()
     {
         _initialStateMarked = false;
     }
 
+    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
+    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;

@@ -107,7 +107,8 @@ public class RegexValidator implements Validator, PartialStateHolder
 
     private String pattern;
 
-    private boolean isTransient = false;
+    private boolean _transient = false;
+    private boolean _initialStateMarked = false;
 
     // VALIDATE
     /** {@inheritDoc} */
@@ -204,14 +205,14 @@ public class RegexValidator implements Validator, PartialStateHolder
     @Override
     public boolean isTransient()
     {
-        return isTransient;
+        return _transient;
     }
 
     /** {@inheritDoc} */
     @Override
     public void setTransient(boolean isTransient)
     {
-        this.isTransient = isTransient;
+        this._transient = isTransient;
     }
 
     /**
@@ -237,8 +238,6 @@ public class RegexValidator implements Validator, PartialStateHolder
     {
         return this.pattern;
     }
-
-    private boolean _initialStateMarked = false;
 
     @Override
     public void clearInitialState()

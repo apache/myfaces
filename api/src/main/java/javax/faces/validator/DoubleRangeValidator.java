@@ -58,6 +58,7 @@ public class DoubleRangeValidator
     private Double _minimum = null;
     private Double _maximum = null;
     private boolean _transient = false;
+    private boolean _initialStateMarked = false;
 
     // CONSTRUCTORS
     public DoubleRangeValidator()
@@ -69,17 +70,15 @@ public class DoubleRangeValidator
         _maximum = new Double(maximum);
     }
 
-    public DoubleRangeValidator(double maximum,
-                                double minimum)
+    public DoubleRangeValidator(double maximum, double minimum)
     {
         _maximum = new Double(maximum);
         _minimum = new Double(minimum);
     }
 
     // VALIDATE
-    public void validate(FacesContext facesContext,
-                         UIComponent uiComponent,
-                         Object value)
+    @Override
+    public void validate(FacesContext facesContext, UIComponent uiComponent, Object value)
             throws ValidatorException
     {
         if (facesContext == null)
@@ -181,6 +180,7 @@ public class DoubleRangeValidator
 
 
     // RESTORE/SAVE STATE
+    @Override
     public Object saveState(FacesContext context)
     {
         if (context == null)
@@ -198,8 +198,8 @@ public class DoubleRangeValidator
         return null;
     }
 
-    public void restoreState(FacesContext context,
-                             Object state)
+    @Override
+    public void restoreState(FacesContext context, Object state)
     {
         if (context == null)
         {
@@ -214,11 +214,13 @@ public class DoubleRangeValidator
         }
     }
 
+    @Override
     public boolean isTransient()
     {
         return _transient;
     }
 
+    @Override
     public void setTransient(boolean transientValue)
     {
         _transient = transientValue;
@@ -251,20 +253,19 @@ public class DoubleRangeValidator
         return true;
     }
 
-
-
-    private boolean _initialStateMarked = false;
-
+    @Override
     public void clearInitialState()
     {
         _initialStateMarked = false;
     }
 
+    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
+    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;

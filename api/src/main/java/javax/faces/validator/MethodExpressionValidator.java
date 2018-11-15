@@ -50,6 +50,7 @@ public class MethodExpressionValidator implements Validator, StateHolder
         this.methodExpression = methodExpression;
     }
 
+    @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException
     {
         Object[] params = new Object[3];
@@ -86,18 +87,10 @@ public class MethodExpressionValidator implements Validator, StateHolder
             {
                 throw e;
             }
-            //Throwable cause = e.getCause();
-            //if (cause instanceof ValidatorException)
-            //{
-            //    throw (ValidatorException)cause;
-            //}
-            //else
-            //{
-            //    throw e;
-            //}
         }
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state)
     {
         if (context == null)
@@ -108,6 +101,7 @@ public class MethodExpressionValidator implements Validator, StateHolder
         methodExpression = (MethodExpression)state;
     }
 
+    @Override
     public Object saveState(FacesContext context)
     {
         if (context == null)
@@ -118,11 +112,13 @@ public class MethodExpressionValidator implements Validator, StateHolder
         return methodExpression;
     }
 
+    @Override
     public void setTransient(boolean newTransientValue)
     {
         isTransient = newTransientValue;
     }
 
+    @Override
     public boolean isTransient()
     {
         return isTransient;

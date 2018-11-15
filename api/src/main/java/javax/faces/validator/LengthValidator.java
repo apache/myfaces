@@ -57,6 +57,7 @@ public class LengthValidator
     private Integer _minimum = null;
     private Integer _maximum = null;
     private boolean _transient = false;
+    private boolean _initialStateMarked = false;
 
     // CONSTRUCTORS
     public LengthValidator()
@@ -76,9 +77,8 @@ public class LengthValidator
     }
 
     // VALIDATE
-    public void validate(FacesContext facesContext,
-                         UIComponent uiComponent,
-                         Object value)
+    @Override
+    public void validate(FacesContext facesContext, UIComponent uiComponent, Object value)
             throws ValidatorException
     {
         if (facesContext == null)
@@ -151,17 +151,20 @@ public class LengthValidator
         clearInitialState();
     }
 
+    @Override
     public boolean isTransient()
     {
         return _transient;
     }
 
+    @Override
     public void setTransient(boolean transientValue)
     {
         _transient = transientValue;
     }
 
     // RESTORE & SAVE STATE
+    @Override
     public Object saveState(FacesContext context)
     {
         if (context == null)
@@ -179,6 +182,7 @@ public class LengthValidator
         return null;
     }
 
+    @Override
     public void restoreState(FacesContext context,
                              Object state)
     {
@@ -230,18 +234,19 @@ public class LengthValidator
         return result;
     }
 
-    private boolean _initialStateMarked = false;
-
+    @Override
     public void clearInitialState()
     {
         _initialStateMarked = false;
     }
 
+    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
+    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;

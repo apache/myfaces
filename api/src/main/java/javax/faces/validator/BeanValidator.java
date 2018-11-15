@@ -219,8 +219,8 @@ public class BeanValidator implements Validator, PartialStateHolder
         Set constraintViolations = validator.validateValue(valueBaseClass, valueProperty, value, validationGroupsArray);
         if (!constraintViolations.isEmpty())
         {
-            Set<FacesMessage> messages = new LinkedHashSet<FacesMessage>(constraintViolations.size());
-            for (Object violation: constraintViolations)
+            Set<FacesMessage> messages = new LinkedHashSet<>(constraintViolations.size());
+            for (Object violation : constraintViolations)
             {
                 ConstraintViolation constraintViolation = (ConstraintViolation) violation;
                 String message = constraintViolation.getMessage();
@@ -256,7 +256,7 @@ public class BeanValidator implements Validator, PartialStateHolder
                         .getTransientStateHelper().getTransient(CANDIDATE_COMPONENT_VALUES_MAP);
                 if (candidatesMap == null)
                 {
-                    candidatesMap = new LinkedHashMap<String, Object>();
+                    candidatesMap = new LinkedHashMap<>();
                     context.getViewRoot().getTransientStateHelper().putTransient(
                             CANDIDATE_COMPONENT_VALUES_MAP, candidatesMap);
                 }
@@ -364,7 +364,7 @@ public class BeanValidator implements Validator, PartialStateHolder
         else
         {
             String[] classes = this.validationGroups.split(VALIDATION_GROUPS_DELIMITER);
-            List<Class<?>> validationGroupsList = new ArrayList<Class<?>>(classes.length);
+            List<Class<?>> validationGroupsList = new ArrayList<>(classes.length);
 
             for (String clazz : classes)
             {
