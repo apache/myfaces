@@ -63,14 +63,22 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
 
     private char xmlEncode(char c)
     {
-        if (Character.isSurrogate(c))
+        if (Character.isSurrogate(c)) 
+        {
             return ' ';
-        if (c == '\u0009' || c == '\n' || c == '\r')
+        }
+        if (c == '\u0009' || c == '\n' || c == '\r') 
+        {
             return c;
-        if (c > '\u0020' && c < '\uD7FF')
+        }
+        if (c > '\u0020' && c < '\uD7FF') 
+        {
             return c;
-        if (c > '\uE000' && c < '\uFFFD')
+        }
+        if (c > '\uE000' && c < '\uFFFD') 
+        {
             return c;
+        }
         return ' ';
     }
 }

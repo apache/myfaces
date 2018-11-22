@@ -286,8 +286,6 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         }
     }
 
-
-
     public void testDelete() {
         _writer = createTestProbe();
         try {
@@ -298,10 +296,6 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         }
     }
 
-    public void testIssue4266() {
-        
-    }
-    
     public void testWriteIllegalXmlUnicodeCharacters() {
         _writer = createTestProbe();
         try {
