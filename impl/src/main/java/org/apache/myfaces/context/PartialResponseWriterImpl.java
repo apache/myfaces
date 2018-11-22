@@ -105,12 +105,14 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
     }
 
     ResponseWriter _cdataDoubleBufferWriter = null;
+    ResponseWriter _illegalXmlCharacterFilterWriter = null;
     Writer _doubleBuffer = null;
     List<StackEntry> _nestingStack = new ArrayList<StackEntry>(4);
 
     public PartialResponseWriterImpl(ResponseWriter writer)
     {
         super(writer);
+        _illegalXmlCharacterFilterWriter = getWrapped().cloneWithWriter(writer);
     }
 
     @Override
