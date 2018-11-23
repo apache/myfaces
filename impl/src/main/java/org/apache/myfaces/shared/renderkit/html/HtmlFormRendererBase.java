@@ -31,6 +31,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
@@ -51,7 +52,7 @@ public class HtmlFormRendererBase
     public void encodeBegin(FacesContext facesContext, UIComponent component)
             throws IOException
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, component, UIForm.class);
+        RendererUtils.checkParamValidity(facesContext, component, UIForm.class);
 
         UIForm htmlForm = (UIForm)component;
 
@@ -235,7 +236,7 @@ public class HtmlFormRendererBase
     @Override
     public void decode(FacesContext facesContext, UIComponent component)
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, component, UIForm.class);
+        RendererUtils.checkParamValidity(facesContext, component, UIForm.class);
 
         /*
         if (HTMLUtil.isDisabled(component))

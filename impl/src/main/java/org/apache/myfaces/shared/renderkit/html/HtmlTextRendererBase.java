@@ -52,7 +52,7 @@ public class HtmlTextRendererBase
     public void encodeEnd(FacesContext facesContext, UIComponent component)
         throws IOException
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext,component,null);
+        RendererUtils.checkParamValidity(facesContext,component,null);
         
         Map<String, List<ClientBehavior>> behaviors = null;
         if (component instanceof ClientBehaviorHolder)
@@ -83,7 +83,7 @@ public class HtmlTextRendererBase
         throws IOException
     {
         
-        String text = org.apache.myfaces.shared.renderkit.RendererUtils.getStringValue(facesContext, component);
+        String text = RendererUtils.getStringValue(facesContext, component);
         if (log.isLoggable(Level.FINE))
         {
             log.fine("renderOutput '" + text + '\'');
@@ -300,7 +300,7 @@ public class HtmlTextRendererBase
             return ((HtmlInputText)component).isDisabled();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, 
+        return RendererUtils.getBooleanAttribute(component, 
                 HTML.DISABLED_ATTR, false);
         
     }
@@ -349,7 +349,7 @@ public class HtmlTextRendererBase
     public Object getConvertedValue(FacesContext facesContext, UIComponent component, Object submittedValue)
         throws ConverterException
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, component, UIOutput.class);
+        RendererUtils.checkParamValidity(facesContext, component, UIOutput.class);
         return RendererUtils.getConvertedUIOutputValue(facesContext,
                                                        (UIOutput)component,
                                                        submittedValue);

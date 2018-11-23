@@ -45,6 +45,7 @@ public class HtmlSecretRendererBase
 {
     private static final String AUTOCOMPLETE_VALUE_OFF = "off";
 
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
     {
@@ -213,6 +214,7 @@ public class HtmlSecretRendererBase
         return false;
     }
 
+    @Override
     public void decode(FacesContext facesContext, UIComponent component)
     {
         org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, component, UIInput.class);
@@ -224,6 +226,7 @@ public class HtmlSecretRendererBase
         }
     }
 
+    @Override
     public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue)
         throws ConverterException
     {

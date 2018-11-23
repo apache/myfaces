@@ -38,6 +38,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
+import org.apache.myfaces.shared.renderkit.RendererUtils;
 
 import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
@@ -53,10 +54,11 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
 
     private static final String EXTERNAL_TRUE_VALUE = "true";
 
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, uiComponent, null);
+        RendererUtils.checkParamValidity(facesContext, uiComponent, null);
         
         Map<String, List<ClientBehavior>> behaviors = null;
         if (uiComponent instanceof ClientBehaviorHolder)
@@ -70,7 +72,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         
         if (uiComponent instanceof UISelectBoolean)
         {
-            Boolean value = org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanValue( uiComponent );
+            Boolean value = RendererUtils.getBooleanValue( uiComponent );
             boolean isChecked = value != null ? value.booleanValue() : false;
             renderCheckbox(facesContext, uiComponent, EXTERNAL_TRUE_VALUE, false,isChecked, true, null); 
                 //TODO: the selectBoolean is never disabled
@@ -137,20 +139,20 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         
         Converter converter = getConverter(facesContext, selectMany);
 
-        Set lookupSet = org.apache.myfaces.shared.renderkit.RendererUtils.getSubmittedValuesAsSet(
+        Set lookupSet = RendererUtils.getSubmittedValuesAsSet(
                 facesContext, selectMany, converter, selectMany);
         boolean useSubmittedValues = lookupSet != null;
 
         if (!useSubmittedValues)
         {
-            lookupSet = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectedValuesAsSet(
+            lookupSet = RendererUtils.getSelectedValuesAsSet(
                     facesContext, selectMany, converter, selectMany);
         }
 
         int itemNum = 0;
 
         
-        List<SelectItem> selectItemList = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(
+        List<SelectItem> selectItemList = RendererUtils.getSelectItemList(
                 selectMany, facesContext);
 
         for (int i = 0; i < selectItemList.size(); i++)
@@ -264,7 +266,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         {
             Object itemValue = selectItem.getValue(); // TODO : Check here for getSubmittedValue. 
                                                       // Look at RendererUtils.getValue
-            String itemStrValue = org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedStringValue(
+            String itemStrValue = RendererUtils.getConvertedStringValue(
                     facesContext, selectMany, converter, itemValue);
             
             boolean checked = lookupSet.contains(itemStrValue);
@@ -476,14 +478,15 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         }
         else
         {
-            return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component,
+            return RendererUtils.getBooleanAttribute(component,
                     HTML.DISABLED_ATTR, false);
         }
     }
 
+    @Override
     public void decode(FacesContext facesContext, UIComponent component)
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, component, null);
+        RendererUtils.checkParamValidity(facesContext, component, null);
         if (component instanceof UISelectBoolean)
         {
             HtmlRendererUtils.decodeUISelectBoolean(facesContext, component);
@@ -504,18 +507,19 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         }
     }
 
+    @Override
     public Object getConvertedValue(FacesContext facesContext,
             UIComponent component, Object submittedValue)
             throws ConverterException
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, component, null);
+        RendererUtils.checkParamValidity(facesContext, component, null);
         if (component instanceof UISelectBoolean)
         {
             return submittedValue;
         }
         else if (component instanceof UISelectMany)
         {
-            return org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedUISelectManyValue(facesContext,
+            return RendererUtils.getConvertedUISelectManyValue(facesContext,
                     (UISelectMany) component, submittedValue);
         }
         else

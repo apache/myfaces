@@ -80,6 +80,7 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
         {
             writer.writeAttribute(HTML.SIZE_ATTR, Integer.toString(size), null);
         }
+
         Map<String, List<ClientBehavior>> behaviors = null;
         if (uiComponent instanceof ClientBehaviorHolder)
         {

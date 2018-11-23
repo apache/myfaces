@@ -56,8 +56,7 @@ public class HtmlImageRendererBase
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(
-                facesContext, uiComponent, UIGraphic.class);
+        RendererUtils.checkParamValidity(facesContext, uiComponent, UIGraphic.class);
 
         ResponseWriter writer = facesContext.getResponseWriter();
         

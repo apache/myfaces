@@ -377,6 +377,7 @@ public abstract class HtmlMessagesRendererBase
         return style;
     }
 
+    @Override
     protected String getTitle(UIComponent component)
     {
         if (component instanceof HtmlMessages)
@@ -389,6 +390,7 @@ public abstract class HtmlMessagesRendererBase
         }
     }
 
+    @Override
     protected boolean isTooltip(UIComponent component)
     {
         if (component instanceof HtmlMessages)
@@ -397,11 +399,11 @@ public abstract class HtmlMessagesRendererBase
         }
         else
         {
-            return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, 
-                    JSFAttr.TOOLTIP_ATTR, false);
+            return RendererUtils.getBooleanAttribute(component, JSFAttr.TOOLTIP_ATTR, false);
         }
     }
 
+    @Override
     protected boolean isShowSummary(UIComponent component)
     {
         if (component instanceof UIMessages)
@@ -414,6 +416,7 @@ public abstract class HtmlMessagesRendererBase
         }
     }
 
+    @Override
     protected boolean isShowDetail(UIComponent component)
     {
         if (component instanceof UIMessages)
@@ -422,8 +425,7 @@ public abstract class HtmlMessagesRendererBase
         }
         else
         {
-            return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(
-                    component, JSFAttr.SHOW_DETAIL_ATTR, false);
+            return RendererUtils.getBooleanAttribute(component, JSFAttr.SHOW_DETAIL_ATTR, false);
         }
     }
 
@@ -435,7 +437,7 @@ public abstract class HtmlMessagesRendererBase
         }
         else
         {
-            return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(
+            return RendererUtils.getBooleanAttribute(
                     component, JSFAttr.GLOBAL_ONLY_ATTR, false);
         }
     }
@@ -452,6 +454,7 @@ public abstract class HtmlMessagesRendererBase
         }
     }
     
+    @Override
     protected String getFor(UIComponent component)
     {
         if (component instanceof UIMessages)
@@ -462,6 +465,7 @@ public abstract class HtmlMessagesRendererBase
         return (String) component.getAttributes().get(JSFAttr.FOR_ATTR); 
     }
 
+    @Override
     protected boolean isRedisplay(UIComponent component)
     {
         if (component instanceof UIMessages)
@@ -469,7 +473,7 @@ public abstract class HtmlMessagesRendererBase
             return ((UIMessages) component).isRedisplay();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(
+        return RendererUtils.getBooleanAttribute(
                 component, JSFAttr.REDISPLAY_ATTR, true);
         
     }
@@ -516,6 +520,7 @@ public abstract class HtmlMessagesRendererBase
             _next = null;
         }
 
+        @Override
         public boolean hasNext()
         {
             if(_next != null)
@@ -568,6 +573,7 @@ public abstract class HtmlMessagesRendererBase
             return false;
         }
 
+        @Override
         public Object next()
         {
             if(this.hasNext()) 
@@ -579,6 +585,7 @@ public abstract class HtmlMessagesRendererBase
             throw new NoSuchElementException();
         }
 
+        @Override
         public void remove()
         {
             throw new UnsupportedOperationException(this.getClass().getName() + " UnsupportedOperationException");

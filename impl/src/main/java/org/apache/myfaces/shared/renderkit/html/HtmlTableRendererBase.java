@@ -817,6 +817,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
     protected void afterRow(FacesContext facesContext, UIData uiData) throws IOException
     {
     }
+    
     /**
      * Perform any operations necessary immediately before each column child is rendered
      *
@@ -827,6 +828,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
     protected void beforeColumn(FacesContext facesContext, UIData uiData, int columnIndex) throws IOException
     {        
     }
+    
     /**
      * Perform any operations necessary immediately after each column child is rendered
      *
@@ -837,6 +839,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
     protected void afterColumn(FacesContext facesContext, UIData uiData, int columnIndex) throws IOException
     {        
     }
+
     /**
      * Indicates the number of columns the component represents. By default each UIColumn instance
      * is 1 column

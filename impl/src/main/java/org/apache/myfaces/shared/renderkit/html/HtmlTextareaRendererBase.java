@@ -43,6 +43,7 @@ public class HtmlTextareaRendererBase
 {
     private static final String ADD_NEW_LINE_AT_START_ATTR = "org.apache.myfaces.addNewLineAtStart";
     
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
             throws IOException
     {
@@ -183,7 +184,7 @@ public class HtmlTextareaRendererBase
             }
         }
         
-        String strValue = org.apache.myfaces.shared.renderkit.RendererUtils.getStringValue(facesContext, uiComponent);
+        String strValue = RendererUtils.getStringValue(facesContext, uiComponent);
         if (strValue != null)
         {
             writer.writeText(strValue, JSFAttr.VALUE_ATTR);
@@ -204,11 +205,10 @@ public class HtmlTextareaRendererBase
             return ((HtmlInputTextarea)uiComponent).isDisabled();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(
-                uiComponent, HTML.DISABLED_ATTR, false);
-        
+        return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
     }
 
+    @Override
     public void decode(FacesContext facesContext, UIComponent component)
     {
         RendererUtils.checkParamValidity(facesContext, component, UIInput.class);
@@ -220,11 +220,12 @@ public class HtmlTextareaRendererBase
         }
     }
 
+    @Override
     public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue)
         throws ConverterException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UIOutput.class);
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedUIOutputValue(facesContext,
+        return RendererUtils.getConvertedUIOutputValue(facesContext,
                                                        (UIOutput)uiComponent,
                                                        submittedValue);
     }

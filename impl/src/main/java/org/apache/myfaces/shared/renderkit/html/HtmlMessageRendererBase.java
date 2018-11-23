@@ -444,9 +444,7 @@ public abstract class HtmlMessageRendererBase
             return ((HtmlMessage) component).isTooltip();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, 
-                JSFAttr.TOOLTIP_ATTR, false);
-        
+        return RendererUtils.getBooleanAttribute(component, JSFAttr.TOOLTIP_ATTR, false);
     }
 
     protected boolean isShowSummary(UIComponent component)
@@ -456,9 +454,7 @@ public abstract class HtmlMessageRendererBase
             return ((UIMessage) component).isShowSummary();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, 
-                JSFAttr.SHOW_SUMMARY_ATTR, false);
-        
+        return RendererUtils.getBooleanAttribute(component, JSFAttr.SHOW_SUMMARY_ATTR, false);
     }
 
     protected boolean isShowDetail(UIComponent component)
@@ -468,9 +464,7 @@ public abstract class HtmlMessageRendererBase
             return ((UIMessage) component).isShowDetail();
         }
 
-        return RendererUtils.getBooleanAttribute(component, 
-                JSFAttr.SHOW_DETAIL_ATTR, false);
-        
+        return RendererUtils.getBooleanAttribute(component, JSFAttr.SHOW_DETAIL_ATTR, false);
     }
     
     protected boolean isRedisplay(UIComponent component)
@@ -480,9 +474,7 @@ public abstract class HtmlMessageRendererBase
             return ((UIMessage) component).isRedisplay();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(component, 
-                JSFAttr.REDISPLAY_ATTR, true);
-        
+        return RendererUtils.getBooleanAttribute(component, JSFAttr.REDISPLAY_ATTR, true);
     }
 
 }

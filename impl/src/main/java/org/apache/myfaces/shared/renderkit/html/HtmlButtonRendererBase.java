@@ -54,8 +54,7 @@ public class HtmlButtonRendererBase
     @Override
     public void decode(FacesContext facesContext, UIComponent uiComponent)
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(
-                facesContext, uiComponent, UICommand.class);
+        RendererUtils.checkParamValidity(facesContext, uiComponent, UICommand.class);
 
         //super.decode must not be called, because value is handled here
         boolean disabled = isDisabled(facesContext, uiComponent);
@@ -105,7 +104,7 @@ public class HtmlButtonRendererBase
     @Override
     public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(
+        RendererUtils.checkParamValidity(
                 facesContext, uiComponent, UICommand.class);
 
         String clientId = uiComponent.getClientId(facesContext);
@@ -545,7 +544,7 @@ public class HtmlButtonRendererBase
             return ((HtmlCommandButton)uiComponent).isDisabled();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(
+        return RendererUtils.getBooleanAttribute(
                 uiComponent, HTML.DISABLED_ATTR, false);
         
     }
@@ -556,7 +555,7 @@ public class HtmlButtonRendererBase
         {
             return ((HtmlCommandButton)uiComponent).isReadonly();
         }
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(
+        return RendererUtils.getBooleanAttribute(
                 uiComponent, HTML.READONLY_ATTR, false);
     }
 
