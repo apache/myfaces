@@ -41,6 +41,7 @@ import org.apache.myfaces.shared.util.CommentUtils;
 import org.apache.myfaces.shared.util.ComponentUtils;
 import org.apache.myfaces.shared.util.StreamCharBuffer;
 import org.apache.myfaces.shared.renderkit.html.util.HTML;
+import org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder;
 
 public class HtmlResponseWriterImpl
         extends ResponseWriter
@@ -206,8 +207,7 @@ public class HtmlResponseWriterImpl
     }
     
     public HtmlResponseWriterImpl(Writer writer, String contentType, String characterEncoding,
-             boolean wrapScriptContentWithXmlCommentTag, String writerContentTypeMode)
-    throws FacesException
+             boolean wrapScriptContentWithXmlCommentTag, String writerContentTypeMode) throws FacesException
     {
         _outputWriter = writer;
         //The current writer to be used is the one used as output 
@@ -224,17 +224,18 @@ public class HtmlResponseWriterImpl
             _contentType = DEFAULT_CONTENT_TYPE;
         }
         _writerContentTypeMode = writerContentTypeMode;
-        _isXhtmlContentType = writerContentTypeMode.indexOf(ContentTypeUtils.XHTML_CONTENT_TYPE) != -1;
+        _isXhtmlContentType = writerContentTypeMode.contains(ContentTypeUtils.XHTML_CONTENT_TYPE);
         
-        _useStraightXml = _isXhtmlContentType && (_contentType.indexOf(APPLICATION_XML_CONTENT_TYPE) != -1 ||
-                          _contentType.indexOf(TEXT_XML_CONTENT_TYPE) != -1);
+        _useStraightXml = _isXhtmlContentType
+                && (_contentType.contains(APPLICATION_XML_CONTENT_TYPE)
+                    || _contentType.contains(TEXT_XML_CONTENT_TYPE));
 
         if (characterEncoding == null)
         {
             if (log.isLoggable(Level.FINE))
             {
-                log.fine("No character encoding given, using default character encoding " +
-                        DEFAULT_CHARACTER_ENCODING);
+                log.fine("No character encoding given, using default character encoding "
+                        + DEFAULT_CHARACTER_ENCODING);
             }
             _characterEncoding = DEFAULT_CHARACTER_ENCODING;
         }
@@ -258,12 +259,9 @@ public class HtmlResponseWriterImpl
     public static boolean supportsContentType(String contentType)
     {
         String[] supportedContentTypes = HtmlRendererUtils.getSupportedContentTypes();
-
-        for (int i = 0; i < supportedContentTypes.length; i++)
+        for (String supportedContentType : supportedContentTypes)
         {
-            String supportedContentType = supportedContentTypes[i];
-
-            if(supportedContentType.indexOf(contentType)!=-1)
+            if (supportedContentType.contains(contentType))
             {
                 return true;
             }
@@ -271,6 +269,7 @@ public class HtmlResponseWriterImpl
         return false;
     }
 
+    @Override
     public String getContentType()
     {
         return _contentType;
@@ -281,11 +280,13 @@ public class HtmlResponseWriterImpl
         return _writerContentTypeMode;
     }
 
+    @Override
     public String getCharacterEncoding()
     {
         return _characterEncoding;
     }
 
+    @Override
     public void flush() throws IOException
     {
         // API doc says we should not flush the underlying writer
@@ -294,11 +295,13 @@ public class HtmlResponseWriterImpl
         closeStartTagIfNecessary();
     }
 
+    @Override
     public void startDocument()
     {
         // do nothing
     }
 
+    @Override
     public void endDocument() throws IOException
     {
         MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(
@@ -310,6 +313,7 @@ public class HtmlResponseWriterImpl
         _facesContext = null;
     }
 
+    @Override
     public void startElement(String name, UIComponent uiComponent) throws IOException
     {
         if (name == null)
@@ -517,6 +521,7 @@ public class HtmlResponseWriterImpl
         _isTextArea = null;
     }
 
+    @Override
     public void endElement(String name) throws IOException
     {
         if (name == null)
@@ -544,8 +549,8 @@ public class HtmlResponseWriterImpl
                 !elementName.equals(_startElementName))
             {
                 log.warning("HTML nesting warning on closing " + elementName + ": element " + _startElementName +
-                        (_startElementUIComponent==null?"":(" rendered by component : "+
-                        ComponentUtils.getPathToComponent(_startElementUIComponent)))+" not explicitly closed");
+                        (_startElementUIComponent==null ? "" : (" rendered by component : " +
+                        ComponentUtils.getPathToComponent(_startElementUIComponent))) + " not explicitly closed");
             }
         }
 
@@ -770,8 +775,7 @@ public class HtmlResponseWriterImpl
     }
     
 
-    private void writeEndTag(String name)
-        throws IOException
+    private void writeEndTag(String name) throws IOException
     {
         /*
         if(isScript(name)) 
@@ -807,6 +811,7 @@ public class HtmlResponseWriterImpl
         _currentWriter.write('>');
     }
 
+    @Override
     public void writeAttribute(String name, Object value, String componentPropertyName) throws IOException
     {
         if (name == null)
@@ -827,7 +832,7 @@ public class HtmlResponseWriterImpl
 
         if (value instanceof Boolean)
         {
-            if (((Boolean)value).booleanValue())
+            if (((Boolean) value).booleanValue())
             {
                 // name as value for XHTML compatibility
                 _currentWriter.write(' ');
@@ -839,12 +844,11 @@ public class HtmlResponseWriterImpl
         }
         else
         {
-            String strValue = (value==null)?"":value.toString();
+            String strValue = (value == null) ? "" : value.toString();
             _currentWriter.write(' ');
             _currentWriter.write(name);
             _currentWriter.write("=\"");
-            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(_currentWriter,
-                    strValue, false, false, !_isUTF8);
+            HTMLEncoder.encode(_currentWriter, strValue, false, false, !_isUTF8);
             _currentWriter.write('"');
         }
     }
@@ -855,11 +859,11 @@ public class HtmlResponseWriterImpl
         _currentWriter.write(' ');
         _currentWriter.write(name);
         _currentWriter.write("=\"");
-        org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(_currentWriter,
-                strValue, false, false, !_isUTF8);
+        HTMLEncoder.encode(_currentWriter, strValue, false, false, !_isUTF8);
         _currentWriter.write('"');
     }
 
+    @Override
     public void writeURIAttribute(String name, Object value, String componentPropertyName) throws IOException
     {
         if (name == null)
@@ -889,8 +893,7 @@ public class HtmlResponseWriterImpl
         _currentWriter.write("=\"");
         if (strValue.toLowerCase().startsWith("javascript:"))
         {
-            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(_currentWriter,
-                    strValue, false, false, !_isUTF8);
+            HTMLEncoder.encode(_currentWriter, strValue, false, false, !_isUTF8);
         }
         else
         {
@@ -922,12 +925,12 @@ public class HtmlResponseWriterImpl
             }
             */
             //_writer.write(strValue);
-            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encodeURIAttribute(_currentWriter,
-                            strValue, _characterEncoding);
+            HTMLEncoder.encodeURIAttribute(_currentWriter, strValue, _characterEncoding);
         }
         _currentWriter.write('"');
     }
 
+    @Override
     public void writeComment(Object value) throws IOException
     {
         if (value == null)
@@ -941,6 +944,7 @@ public class HtmlResponseWriterImpl
         _currentWriter.write("-->");
     }
 
+    @Override
     public void writeText(Object value, String componentPropertyName) throws IOException
     {
         if (value == null)
@@ -966,11 +970,11 @@ public class HtmlResponseWriterImpl
         }
         else
         {
-            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(_currentWriter,
-                      strValue, false, false, !_isUTF8);
+            HTMLEncoder.encode(_currentWriter, strValue, false, false, !_isUTF8);
         }
     }
 
+    @Override
     public void writeText(char cbuf[], int off, int len) throws IOException
     {
         if (cbuf == null)
@@ -1000,14 +1004,12 @@ public class HtmlResponseWriterImpl
         else if (isTextarea())
         {
             // For textareas we must *not* map successive spaces to &nbsp or Newlines to <br/>
-            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
-                    cbuf, off, len, false, false, !_isUTF8, _currentWriter);
+            HTMLEncoder.encode(cbuf, off, len, false, false, !_isUTF8, _currentWriter);
         }
         else
         {
             // We map successive spaces to &nbsp; and Newlines to <br/>
-            org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
-                    cbuf, off, len, true, true, !_isUTF8, _currentWriter);
+            HTMLEncoder.encode(cbuf, off, len, true, true, !_isUTF8, _currentWriter);
         }
     }
 
@@ -1082,6 +1084,7 @@ public class HtmlResponseWriterImpl
         }
     }
 
+    @Override
     public ResponseWriter cloneWithWriter(Writer writer)
     {
         HtmlResponseWriterImpl newWriter
@@ -1095,6 +1098,7 @@ public class HtmlResponseWriterImpl
 
     // Writer methods
 
+    @Override
     public void close() throws IOException
     {
         closeStartTagIfNecessary();
@@ -1102,6 +1106,7 @@ public class HtmlResponseWriterImpl
         _facesContext = null;
     }
 
+    @Override
     public void write(char cbuf[], int off, int len) throws IOException
     {
         closeStartTagIfNecessary();
@@ -1116,12 +1121,14 @@ public class HtmlResponseWriterImpl
         }
     }
 
+    @Override
     public void write(int c) throws IOException
     {
         closeStartTagIfNecessary();
         _currentWriter.write(c);
     }
 
+    @Override
     public void write(char cbuf[]) throws IOException
     {
         closeStartTagIfNecessary();
@@ -1136,6 +1143,7 @@ public class HtmlResponseWriterImpl
         }
     }
 
+    @Override
     public void write(String str) throws IOException
     {
         closeStartTagIfNecessary();
@@ -1155,6 +1163,7 @@ public class HtmlResponseWriterImpl
         }
     }
 
+    @Override
     public void write(String str, int off, int len) throws IOException
     {
         closeStartTagIfNecessary();
@@ -1174,6 +1183,7 @@ public class HtmlResponseWriterImpl
      * <code>writeText(Object,String)</code>
      * @since 1.2
      */
+    @Override
     public void writeText(Object object, UIComponent component, String string) throws IOException
     {
         writeText(object,string);
@@ -1215,4 +1225,5 @@ public class HtmlResponseWriterImpl
     {
         _currentWriter.flush();
     }
+
 }
