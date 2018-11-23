@@ -46,6 +46,7 @@ public final class CompositeTagDecorator implements TagDecorator
      * 
      * @see javax.faces.view.facelets.TagDecorator#decorate(javax.faces.view.facelets.Tag)
      */
+    @Override
     public Tag decorate(Tag tag)
     {
         Tag t = null;

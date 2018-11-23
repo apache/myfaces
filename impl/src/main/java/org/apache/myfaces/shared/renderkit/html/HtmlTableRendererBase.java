@@ -1428,6 +1428,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
         }
     }
 
+    @Override
     public void decode(FacesContext context, UIComponent component)
     {
         super.decode(context, component);

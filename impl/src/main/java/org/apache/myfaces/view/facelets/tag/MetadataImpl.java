@@ -37,9 +37,9 @@ public final class MetadataImpl extends Metadata
         _size = mappers.length;
     }
 
+    @Override
     public void applyMetadata(FaceletContext ctx, Object instance)
     {
-        // TODO: PROFILE - Check if saving the _size worth it or if an enhanced for is better
         for (int i = 0; i < _size; i++)
         {
             _mappers[i].applyMetadata(ctx, instance);

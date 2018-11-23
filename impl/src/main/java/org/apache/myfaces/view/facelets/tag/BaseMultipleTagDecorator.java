@@ -37,6 +37,7 @@ public class BaseMultipleTagDecorator implements TagDecorator
         this.compositeTagDecorator = normalTagDecorator;
     }
     
+    @Override
     public Tag decorate(Tag tag)
     {
         // The default tag decorator is special, because a non null return value does not

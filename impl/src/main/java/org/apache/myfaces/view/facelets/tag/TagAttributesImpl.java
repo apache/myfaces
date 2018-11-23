@@ -45,9 +45,7 @@ public final class TagAttributesImpl extends TagAttributes
     private final static TagAttribute[] EMPTY = new TagAttribute[0];
 
     private final TagAttribute[] _attributes;
-
     private final String[] _namespaces;
-
     private final List<TagAttribute[]> _nsattrs;
 
     /**
@@ -93,6 +91,7 @@ public final class TagAttributesImpl extends TagAttributes
      * 
      * @return a non-null array of TagAttributes
      */
+    @Override
     public TagAttribute[] getAll()
     {
         return _attributes;
@@ -106,6 +105,7 @@ public final class TagAttributesImpl extends TagAttributes
      *            tag attribute name
      * @return the TagAttribute found, otherwise null
      */
+    @Override
     public TagAttribute get(String localName)
     {
         return get("", localName);
@@ -120,6 +120,7 @@ public final class TagAttributesImpl extends TagAttributes
      *            local name of the attribute
      * @return a TagAttribute found, otherwise null
      */
+    @Override
     public TagAttribute get(String ns, String localName)
     {
         if (ns != null && localName != null)
@@ -147,6 +148,7 @@ public final class TagAttributesImpl extends TagAttributes
      *            namespace to search
      * @return a non-null array of TagAttributes
      */
+    @Override
     public TagAttribute[] getAll(String namespace)
     {
         int idx = 0;
@@ -172,6 +174,7 @@ public final class TagAttributesImpl extends TagAttributes
      * 
      * @return a list of Namespaces found in this set
      */
+    @Override
     public String[] getNamespaces()
     {
         return _namespaces;

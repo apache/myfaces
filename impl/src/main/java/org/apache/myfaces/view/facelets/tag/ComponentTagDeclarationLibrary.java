@@ -50,6 +50,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
      * 
      * See org.apache.myfaces.view.facelets.tag.TagLibrary#containsNamespace(java.lang.String)
      */
+    @Override
     public boolean containsNamespace(String ns)
     {
         return _factories.containsKey(ns);
@@ -60,6 +61,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
      * 
      * See org.apache.myfaces.view.facelets.tag.TagLibrary#containsTagHandler(java.lang.String, java.lang.String)
      */
+    @Override
     public boolean containsTagHandler(String ns, String localName)
     {
         if (containsNamespace(ns))
@@ -83,6 +85,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
      * See org.apache.myfaces.view.facelets.tag.TagLibrary#createTagHandler(java.lang.String, java.lang.String,
      * org.apache.myfaces.view.facelets.tag.TagConfig)
      */
+    @Override
     public TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException
     {
         if (containsNamespace(ns))
@@ -108,6 +111,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
      * 
      * See org.apache.myfaces.view.facelets.tag.TagLibrary#containsFunction(java.lang.String, java.lang.String)
      */
+    @Override
     public boolean containsFunction(String ns, String name)
     {
         return false;
@@ -118,16 +122,11 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
      * 
      * See org.apache.myfaces.view.facelets.tag.TagLibrary#createFunction(java.lang.String, java.lang.String)
      */
+    @Override
     public Method createFunction(String ns, String name)
     {
         return null;
     }
-
-    /*
-    public String getNamespace()
-    {
-        return _namespace;
-    }*/
 
     /**
      * Add a ComponentHandler with the specified componentType and rendererType, aliased by the tag name.
@@ -180,11 +179,8 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
 
     private static class ComponentConfigWrapper implements ComponentConfig
     {
-
         protected final TagConfig parent;
-
         protected final String componentType;
-
         protected final String rendererType;
 
         public ComponentConfigWrapper(TagConfig parent, String componentType, String rendererType)
@@ -194,26 +190,31 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
             this.rendererType = rendererType;
         }
 
+        @Override
         public String getComponentType()
         {
             return this.componentType;
         }
 
+        @Override
         public String getRendererType()
         {
             return this.rendererType;
         }
 
+        @Override
         public FaceletHandler getNextHandler()
         {
             return this.parent.getNextHandler();
         }
 
+        @Override
         public Tag getTag()
         {
             return this.parent.getTag();
         }
 
+        @Override
         public String getTagId()
         {
             return this.parent.getTagId();
@@ -222,9 +223,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
 
     private static class ComponentHandlerFactory implements TagHandlerFactory
     {
-
         protected final String componentType;
-
         protected final String renderType;
 
         /**
@@ -236,6 +235,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
             this.renderType = renderType;
         }
 
+        @Override
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException
         {
             ComponentConfig ccfg = new ComponentConfigWrapper(cfg, this.componentType, this.renderType);
@@ -249,11 +249,8 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
         private final static Class<?>[] CONS_SIG = new Class[] { ComponentConfig.class };
 
         protected final String componentType;
-
         protected final String renderType;
-
         protected final Class<? extends TagHandler> type;
-
         protected final Constructor<? extends TagHandler> constructor;
 
         /**
@@ -274,6 +271,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
             }
         }
 
+        @Override
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException
         {
             try

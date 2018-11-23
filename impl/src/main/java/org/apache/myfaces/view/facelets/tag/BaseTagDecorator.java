@@ -34,6 +34,7 @@ public class BaseTagDecorator implements TagDecorator
         this.defaultTagDecorator = defaultTagDecorator;
     }
 
+    @Override
     public Tag decorate(Tag tag)
     {
         Tag processedTag = defaultTagDecorator.decorate(tag);

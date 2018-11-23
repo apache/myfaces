@@ -104,17 +104,11 @@ public final class MetaRulesetImpl extends MetaRuleset
     private final static TagAttribute[] EMPTY = new TagAttribute[0];
     
     private final Map<String, TagAttribute> _attributes;
-    
     private final TagAttribute[] _passthroughAttributes;
-
     private final List<Metadata> _mappers;
-
     private final List<MetaRule> _rules;
-
     private final Tag _tag;
-
     private final Class<?> _type;
-    
     private final List<MetaRule> _passthroughRules;
     
     public MetaRulesetImpl(Tag tag, Class<?> type)
@@ -179,6 +173,7 @@ public final class MetaRulesetImpl extends MetaRuleset
         _rules.add(BeanPropertyTagRule.INSTANCE);
     }
 
+    @Override
     public MetaRuleset add(Metadata mapper)
     {
         Assert.notNull("mapper", mapper);
@@ -191,6 +186,7 @@ public final class MetaRulesetImpl extends MetaRuleset
         return this;
     }
 
+    @Override
     public MetaRuleset addRule(MetaRule rule)
     {
         Assert.notNull("rule", rule);
@@ -207,6 +203,7 @@ public final class MetaRulesetImpl extends MetaRuleset
         return this;
     }
 
+    @Override
     public MetaRuleset alias(String attribute, String property)
     {
         Assert.notNull("attribute", attribute);
@@ -221,6 +218,7 @@ public final class MetaRulesetImpl extends MetaRuleset
         return this;
     }
 
+    @Override
     public Metadata finish()
     {
         MetadataTarget target = null;
@@ -311,6 +309,7 @@ public final class MetaRulesetImpl extends MetaRuleset
         }
     }
 
+    @Override
     public MetaRuleset ignore(String attribute)
     {
         Assert.notNull("attribute", attribute);
@@ -320,6 +319,7 @@ public final class MetaRulesetImpl extends MetaRuleset
         return this;
     }
 
+    @Override
     public MetaRuleset ignoreAll()
     {
         _attributes.clear();

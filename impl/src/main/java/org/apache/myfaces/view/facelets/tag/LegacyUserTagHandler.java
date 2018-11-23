@@ -52,9 +52,7 @@ final class LegacyUserTagHandler extends TagHandler implements TemplateClient, C
 {
 
     protected final TagAttribute[] _vars;
-
     protected final URL _location;
-
     protected final Map<String, DefineHandler> _handlers;
 
     /**
@@ -89,6 +87,7 @@ final class LegacyUserTagHandler extends TagHandler implements TemplateClient, C
      * @see VariableMapper
      * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
      */
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
@@ -140,6 +139,7 @@ final class LegacyUserTagHandler extends TagHandler implements TemplateClient, C
         }
     }
 
+    @Override
     public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException, FacesException,
             FaceletException, ELException
     {

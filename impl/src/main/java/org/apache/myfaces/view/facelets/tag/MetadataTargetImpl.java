@@ -35,7 +35,6 @@ import javax.faces.view.facelets.MetadataTarget;
 public final class MetadataTargetImpl extends MetadataTarget
 {
     private final Map<String, PropertyDescriptor> _pd;
-    
     private final Class<?> _type;
 
     public MetadataTargetImpl(Class<?> type) throws IntrospectionException
@@ -49,11 +48,13 @@ public final class MetadataTargetImpl extends MetadataTarget
         }
     }
 
+    @Override
     public PropertyDescriptor getProperty(String name)
     {
         return _pd.get(name);
     }
 
+    @Override
     public Class<?> getPropertyType(String name)
     {
         PropertyDescriptor pd = getProperty(name);
@@ -65,6 +66,7 @@ public final class MetadataTargetImpl extends MetadataTarget
         return null;
     }
 
+    @Override
     public Method getReadMethod(String name)
     {
         PropertyDescriptor pd = getProperty(name);
@@ -76,11 +78,13 @@ public final class MetadataTargetImpl extends MetadataTarget
         return null;
     }
 
+    @Override
     public Class<?> getTargetClass()
     {
         return _type;
     }
 
+    @Override
     public Method getWriteMethod(String name)
     {
         PropertyDescriptor pd = getProperty(name);
@@ -92,6 +96,7 @@ public final class MetadataTargetImpl extends MetadataTarget
         return null;
     }
 
+    @Override
     public boolean isTargetInstanceOf(Class type)
     {
         return type.isAssignableFrom(_type);

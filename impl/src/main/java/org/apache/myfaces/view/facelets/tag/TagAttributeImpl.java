@@ -53,7 +53,7 @@ public final class TagAttributeImpl extends TagAttribute
 {
 
     private final static int EL_LITERAL = 1;
-    
+   
     private final static int EL_CC = 2;
     
     private final static int EL_CC_ATTR_ME = 4;
@@ -61,17 +61,11 @@ public final class TagAttributeImpl extends TagAttribute
     private final static int EL_RESOURCE = 8;
     
     private final int capabilities;
-
     private final String localName;
-
     private final Location location;
-
     private final String namespace;
-
     private final String qName;
-
     private final String value;
-
     private String string;
 
     /**
@@ -128,6 +122,7 @@ public final class TagAttributeImpl extends TagAttribute
      *            FaceletContext to use
      * @return boolean value
      */
+    @Override
     public boolean getBoolean(FaceletContext ctx)
     {
         if ((this.capabilities & EL_LITERAL) != 0)
@@ -150,6 +145,7 @@ public final class TagAttributeImpl extends TagAttribute
      *            FaceletContext to use
      * @return int value
      */
+    @Override
     public int getInt(FaceletContext ctx)
     {
         if ((this.capabilities & EL_LITERAL) != 0)
@@ -167,6 +163,7 @@ public final class TagAttributeImpl extends TagAttribute
      * 
      * @return local name of this attribute
      */
+    @Override
     public String getLocalName()
     {
         return this.localName;
@@ -177,6 +174,7 @@ public final class TagAttributeImpl extends TagAttribute
      * 
      * @return the TagAttribute's location
      */
+    @Override
     public Location getLocation()
     {
         return this.location;
@@ -196,6 +194,7 @@ public final class TagAttributeImpl extends TagAttribute
      *            parameter type
      * @return a MethodExpression instance
      */
+    @Override
     public MethodExpression getMethodExpression(FaceletContext ctx, Class type, Class[] paramTypes)
     {
         AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
@@ -347,6 +346,7 @@ public final class TagAttributeImpl extends TagAttribute
      * 
      * @return resolved Namespace
      */
+    @Override
     public String getNamespace()
     {
         return this.namespace;
@@ -360,6 +360,7 @@ public final class TagAttributeImpl extends TagAttribute
      *            FaceletContext to use
      * @return Object representation of this attribute's value
      */
+    @Override
     public Object getObject(FaceletContext ctx)
     {
         return this.getObject(ctx, Object.class);
@@ -370,6 +371,7 @@ public final class TagAttributeImpl extends TagAttribute
      * 
      * @return the qualified name for this attribute
      */
+    @Override
     public String getQName()
     {
         return this.qName;
@@ -380,6 +382,7 @@ public final class TagAttributeImpl extends TagAttribute
      * 
      * @return literal value
      */
+    @Override
     public String getValue()
     {
         return this.value;
@@ -393,6 +396,7 @@ public final class TagAttributeImpl extends TagAttribute
      *            FaceletContext to use
      * @return String value of this attribute
      */
+    @Override
     public String getValue(FaceletContext ctx)
     {
         if ((this.capabilities & EL_LITERAL) != 0)
@@ -418,6 +422,7 @@ public final class TagAttributeImpl extends TagAttribute
      *            expected return type
      * @return Object value of this attribute
      */
+    @Override
     public Object getObject(FaceletContext ctx, Class type)
     {
         if ((this.capabilities & EL_LITERAL) != 0)
@@ -463,6 +468,7 @@ public final class TagAttributeImpl extends TagAttribute
      *            expected return type
      * @return ValueExpression instance
      */
+    @Override
     public ValueExpression getValueExpression(FaceletContext ctx, Class type)
     {
         AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
@@ -585,6 +591,7 @@ public final class TagAttributeImpl extends TagAttribute
      * 
      * @return true if this attribute is literal
      */
+    @Override
     public boolean isLiteral()
     {
         return (this.capabilities & EL_LITERAL) != 0;
@@ -595,6 +602,7 @@ public final class TagAttributeImpl extends TagAttribute
      * 
      * See java.lang.Object#toString()
      */
+    @Override
     public String toString()
     {
         if (this.string == null)

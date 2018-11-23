@@ -58,9 +58,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
 {
 
     protected final TagAttribute[] _vars;
-
     protected final URL _location;
-
     protected final Map<String, DefineHandler> _handlers;
 
     /**
