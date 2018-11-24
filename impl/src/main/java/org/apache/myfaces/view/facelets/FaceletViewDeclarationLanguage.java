@@ -1558,8 +1558,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
             if (mctx.isUsingPSSOnThisView())
             {
-                valueChangeListener = new PartialMethodExpressionValueChangeListener(
-                        methodExpression, methodExpression2);
+                valueChangeListener = new PartialMethodExpressionValueChangeListener(methodExpression,
+                        methodExpression2);
             }
             else
             {
@@ -1579,8 +1579,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             boolean ccAttrMeRedirection,
             String[] targetsArray)
     {
-        UIComponent topLevelComponentBase = topLevelComponent.getFacet(
-                UIComponent.COMPOSITE_FACET_NAME);
+        UIComponent topLevelComponentBase = topLevelComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME);
 
         for (String target : targetsArray)
         {
@@ -2051,13 +2050,14 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         //else if (!_buildBeforeRestore)
         //{
         
+        Application application = context.getApplication();
+        ViewHandler viewHandler = application.getViewHandler();
+        
         // When partial state saving is not used, createView() is not called. To ensure
         // everything is in place it is necessary to calculate the resource library 
         // contracts and set them into facesContext.
-        ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().
-            getViewDeclarationLanguage(context, viewId);
-        List<String> contracts = vdl.calculateResourceLibraryContracts(
-            context, viewId);
+        ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(context, viewId);
+        List<String> contracts = vdl.calculateResourceLibraryContracts(context, viewId);
         context.setResourceLibraryContracts(contracts);
         
         // JSF 2.2 stateless views
@@ -2065,12 +2065,10 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         // note we cannot do this in DefaultFaceletsStateManagementStrategy because it is only used
         // when PSS is enabled, but stateless views can be used without PSS. If the view is stateless,
         // there is no need to ask to the StateManager.
-        Application application = context.getApplication();
-        ViewHandler applicationViewHandler = application.getViewHandler();
-        String renderKitId = applicationViewHandler.calculateRenderKitId(context);
+        String renderKitId = viewHandler.calculateRenderKitId(context);
 
-        ResponseStateManager manager = getRenderKitFactory().getRenderKit(
-            context, renderKitId).getResponseStateManager();
+        ResponseStateManager manager = getRenderKitFactory().getRenderKit(context, renderKitId)
+                .getResponseStateManager();
         
         if (manager.isStateless(context, viewId))
         {
@@ -2078,14 +2076,14 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             UIViewRoot view = null;
             try
             {
-                ViewMetadata metadata = vdl.getViewMetadata (context, viewId);
+                ViewMetadata metadata = vdl.getViewMetadata(context, viewId);
                 if (metadata != null)
                 {
                     view = metadata.createMetadataView(context);
                 }
                 if (view == null)
                 {
-                    view = context.getApplication().getViewHandler().createView(context, viewId);
+                    view = viewHandler.createView(context, viewId);
                 }
                 // If the view is not transient, then something is wrong. Throw an exception.
                 if (!view.isTransient())
@@ -2103,7 +2101,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     }
                     finally
                     {
-                        context.setProcessingEvents (oldContextEventState);
+                        context.setProcessingEvents(oldContextEventState);
                     } 
                 }
             }
