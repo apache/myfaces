@@ -377,12 +377,6 @@ public class UIInput extends UIOutput implements EditableValueHolder
     {
         // invoke standard listeners attached to this component first
         super.broadcast(event);
-
-        // Check if the event is applicable for ValueChangeListener
-        if (event instanceof ValueChangeEvent)
-        {
-
-        }
     }
 
     public void updateModel(FacesContext context)

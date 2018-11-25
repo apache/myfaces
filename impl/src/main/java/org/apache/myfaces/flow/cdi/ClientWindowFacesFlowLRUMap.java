@@ -28,6 +28,8 @@ import org.apache.myfaces.shared.util.LRULinkedHashMap;
  */
 class ClientWindowFacesFlowLRUMap extends LRULinkedHashMap<String, String> implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     private transient FlowScopeBeanHolder holder;
 
     public ClientWindowFacesFlowLRUMap(int capacity)

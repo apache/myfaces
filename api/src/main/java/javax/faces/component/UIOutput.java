@@ -192,8 +192,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
                 // so if the parent returns null, this part will return
                 // null and when is restored, it will return null, but it prevents
                 // add the attached object into the state.
-                if (!_isSetConverter() && _converter != null &&
-                    !(_converter instanceof StateHolder))
+                if (!_isSetConverter() && _converter != null && !(_converter instanceof StateHolder))
                 {
                     //No op. Note converterSaved is not taken into account if
                     //nullDelta is true.

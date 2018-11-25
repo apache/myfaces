@@ -23,7 +23,6 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import javax.faces.application.ResourceVisitOption;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.shared.resource.ContractResourceLoader;
@@ -44,11 +43,6 @@ public class ViewResourceIterator implements Iterator<String>
     private int maxDepth;
     private ResourceVisitOption[] options;
     private FacesContext facesContext;
-
-    /**
-     * register a set 
-     */
-    private Set<String> pathSet;
 
     public ViewResourceIterator(FacesContext facesContext, ResourceHandlerSupport support, 
             String localePrefix, List<String> contracts, String contractPreferred, 
@@ -161,30 +155,8 @@ public class ViewResourceIterator implements Iterator<String>
             {
                 return currentIterator.next();
             }
-            else
-            {
-                //Should not happen, return null
-                return null;
-            }
         }
-        else
-        {
-            return null;
-        }
-        /*
-        if (currentIterator == null)
-        {
-            ResourceLoader loader = (ResourceLoader) stack.pop();
-            if (loader != null)
-            {
-                currentIterator = loader.iterator(facesContext, basePath, maxDepth, options);
-            }
-            else
-            {
-                return null;
-            }
-        }
-        return currentIterator.next();
-        */
+
+        return null;
     }
 }

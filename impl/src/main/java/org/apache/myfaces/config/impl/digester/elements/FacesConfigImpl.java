@@ -44,6 +44,8 @@ import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
  */
 public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConfig implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     private static final Logger log = Logger.getLogger(FacesConfigImpl.class.getName());
 
     private List<Application> applications;

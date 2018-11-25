@@ -273,6 +273,8 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
     
     private static class ViewActionEvent extends ActionEvent
     {
+        private static final long serialVersionUID = 1L;
+
         private transient FacesContext facesContext;
 
         public ViewActionEvent(FacesContext facesContext, UIComponent uiComponent)

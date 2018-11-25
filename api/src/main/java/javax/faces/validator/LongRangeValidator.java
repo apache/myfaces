@@ -176,7 +176,7 @@ public class LongRangeValidator
 
     public void setMinimum(long minimum)
     {
-        _minimum = new Long(minimum);
+        _minimum = Long.valueOf(minimum);
         clearInitialState();
     }
 

@@ -29,6 +29,8 @@ import org.apache.myfaces.config.element.ContractMapping;
  */
 public class ContractMappingImpl extends ContractMapping
 {
+    private static final long serialVersionUID = 1L;
+
     private List<String> urlPatternList;
     private List<String> contractsList;
     

@@ -103,7 +103,7 @@ public abstract class MockResourceLoader
                     if (o1.length() > 0)
                     {
                         p1 = false;
-                        n1 = Integer.valueOf(o1);
+                        n1 = Integer.parseInt(o1);
                         o1 = "";
                     }
                     else

@@ -207,7 +207,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         {
             String attrName = attrNames.next();
             
-            _wrapped.writeAttribute (attrName, attributes.get (attrName), null);
+            _wrapped.writeAttribute(attrName, attributes.get(attrName), null);
         }
         
         // Leave open; caller will write extension elements.
