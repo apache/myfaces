@@ -49,7 +49,7 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
     @Override
     public void write(String str, int off, int len) throws IOException 
     {
-        super.write(xmlEncode(str.toCharArray()), off, len);
+        super.write(new String(xmlEncode(str.toCharArray())), off, len);
     }
 
     private char[] xmlEncode(char[] ca)
