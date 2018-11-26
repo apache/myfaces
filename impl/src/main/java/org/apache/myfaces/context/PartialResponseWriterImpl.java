@@ -29,6 +29,7 @@ import javax.faces.context.PartialResponseWriter;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.util.CDataEndEscapeFilterWriter;
+import org.apache.myfaces.util.IllegalXmlCharacterFilterWriter;
 
 /**
  * <p>
@@ -110,7 +111,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
 
     public PartialResponseWriterImpl(ResponseWriter writer)
     {
-        super(writer);
+        super(writer.cloneWithWriter(new IllegalXmlCharacterFilterWriter(writer)));
     }
 
     @Override
@@ -129,7 +130,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
 
     private void openDoubleBuffer()
     {
-        _doubleBuffer = new CDataEndEscapeFilterWriter(_cdataDoubleBufferWriter == null ? 
+        _doubleBuffer = new CDataEndEscapeFilterWriter(_cdataDoubleBufferWriter == null ?
                 this.getWrapped() : _cdataDoubleBufferWriter );
         _cdataDoubleBufferWriter = getWrapped().cloneWithWriter(_doubleBuffer);
 
