@@ -23,8 +23,10 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * There are unicodes outside the ranges defined in the <a href="https://www.w3.org/TR/REC-xml/#charsets">XML 1.0 specification</a> that break XML parsers
- * and therefore must be filtered out when writing partial responses. Otherwise this may lead to Denial of Service attacks.
+ * There are unicodes outside the ranges defined in the
+ * <a href="https://www.w3.org/TR/REC-xml/#charsets">XML 1.0 specification</a> that break XML parsers
+ * and therefore must be filtered out when writing partial responses. Otherwise this may lead to
+ * Denial of Service attacks.
  * @see https://issues.apache.org/jira/browse/MYFACES-4266
  */
 public class IllegalXmlCharacterFilterWriter extends FilterWriter
