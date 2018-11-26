@@ -688,7 +688,7 @@ public class HtmlResponseWriterImpl
 
                 if (_cdataOpen)
                 {
-                    _outputWriter.write("\n");
+                    _outputWriter.write('\n');
                 }
                 else
                 {
@@ -726,7 +726,7 @@ public class HtmlResponseWriterImpl
 
                 if (_cdataOpen)
                 {
-                    _outputWriter.write("\n");
+                    _outputWriter.write('\n');
                 }
                 else
                 {
@@ -897,34 +897,6 @@ public class HtmlResponseWriterImpl
         }
         else
         {
-            /*
-            Todo: what is this section about? still needed?
-            client side state saving is now done via javascript...
-
-            if (_startElementName.equalsIgnoreCase(HTML.ANCHOR_ELEM) && //Also support image and button urls?
-                name.equalsIgnoreCase(HTML.HREF_ATTR) &&
-                !strValue.startsWith("#"))
-            {
-                FacesContext facesContext = FacesContext.getCurrentInstance();
-                if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
-                {
-                    // saving state in url depends on the work together
-                    // of 3 (theoretically) pluggable components:
-                    // ViewHandler, ResponseWriter and ViewTag
-                    // We should try to make this HtmlResponseWriterImpl able
-                    // to handle this alone!
-                    if (strValue.indexOf('?') < 0)
-                    {
-                        strValue = strValue + '?' + JspViewHandlerImpl.URL_STATE_MARKER;
-                    }
-                    else
-                    {
-                        strValue = strValue + '&' + JspViewHandlerImpl.URL_STATE_MARKER;
-                    }
-                }
-            }
-            */
-            //_writer.write(strValue);
             HTMLEncoder.encodeURIAttribute(_currentWriter, strValue, _characterEncoding);
         }
         _currentWriter.write('"');

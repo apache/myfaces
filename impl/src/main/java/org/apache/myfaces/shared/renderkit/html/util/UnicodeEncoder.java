@@ -86,7 +86,7 @@ public abstract class UnicodeEncoder
                 //encode all non basic latin characters
                 writer.write("&#");
                 writer.write(Integer.toString((int)c));
-                writer.write(";");
+                writer.write(';');
             }
         }
 
@@ -122,7 +122,7 @@ public abstract class UnicodeEncoder
                 //encode all non basic latin characters
                 writer.write("&#");
                 writer.write(Integer.toString((int)c));
-                writer.write(";");
+                writer.write(';');
             }
         }
 
@@ -158,7 +158,7 @@ public abstract class UnicodeEncoder
                 //encode all non basic latin characters
                 writer.write("&#");
                 writer.write(Integer.toString((int)c));
-                writer.write(";");
+                writer.write(';');
             }
         }
 

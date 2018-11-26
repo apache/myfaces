@@ -90,8 +90,7 @@ public abstract class HTMLEncoder
                     case '<': app = "&lt;"; break;      //<
                     case '>': app = "&gt;"; break;      //>
                     case ' ':
-                        if (encodeSubsequentBlanksToNbsp &&
-                                prevC == ' ')
+                        if (encodeSubsequentBlanksToNbsp && prevC == ' ')
                         {
                             //Space at beginning or after another space
                             app = "&#160;";
@@ -277,11 +276,6 @@ public abstract class HTMLEncoder
             }
             if (app != null)
             {
-                //if (sb == null)
-                //{
-                //    sb = new StringBuilder(string.substring(0, i));
-                //}
-                //sb.append(app);
                 if (start < i)
                 {
                     writer.write(string, start, i-start);
@@ -289,23 +283,8 @@ public abstract class HTMLEncoder
                 start = i+1;
                 writer.write(app);
             }
-            //else
-            //{
-            //    if (sb != null)
-            //    {
-            //        sb.append(c);
-            //    }
-            //}
         }
 
-        //if (sb == null)
-        //{
-        //    return string;
-        //}
-        //else
-        //{
-        //    return sb.toString();
-        //}
         if (start == 0)
         {
             writer.write(string);
@@ -438,12 +417,6 @@ public abstract class HTMLEncoder
             }
             if (app != null)
             {
-                //if (sb == null)
-                //{
-                //    sb = new StringBuilder(realLength*2);
-                //    sb.append(string, offset, i - offset);
-                //}
-                //sb.append(app);
                 if (start < i)
                 {
                     writer.write(string, start, i-start);
@@ -451,24 +424,8 @@ public abstract class HTMLEncoder
                 start = i+1;
                 writer.write(app);
             }
-            /*
-            else
-            {
-                if (sb != null)
-                {
-                    sb.append(c);
-                }
-            }*/
         }
 
-        //if (sb == null)
-        //{
-        //    writer.write(string, offset, realLength);
-        //}
-        //else
-        //{
-        //    writer.write(sb.toString());
-        //}
         if (start == offset)
         {
             writer.write(string, offset, realLength);
@@ -1098,11 +1055,6 @@ public abstract class HTMLEncoder
                         
             if (app != null)
             {
-                //if (sb == null)
-                //{
-                //    sb = new StringBuilder(string.substring(0, i));
-                //}
-                //sb.append(app);
                 if (start < i)
                 {
                     writer.write(string, start, i-start);
@@ -1110,27 +1062,13 @@ public abstract class HTMLEncoder
                 start = i+1;
                 writer.write(app);
             }
-            //else
-            //{
-            //    if (sb != null)
-            //    {
-            //        sb.append(c);
-            //    }
-            //}
             if (endLoop)
             {
                 start = length;
                 break;
             }
         }
-        //if (sb == null)
-        //{
-        //    return string;
-        //}
-        //else
-        //{
-        //    return sb.toString();
-        //}
+
         if (start == 0)
         {
             writer.write(string);
@@ -1308,11 +1246,6 @@ public abstract class HTMLEncoder
                         
             if (app != null)
             {
-                //if (sb == null)
-                //{
-                //    sb = new StringBuilder(string.substring(0, i));
-                //}
-                //sb.append(app);
                 if (start < i)
                 {
                     writer.write(string, start, i-start);
@@ -1320,27 +1253,8 @@ public abstract class HTMLEncoder
                 start = i+1;
                 writer.write(app);
             }
-            //else
-            //{
-            //    if (sb != null)
-            //    {
-            //        sb.append(c);
-            //    }
-            //}
-            //if (endLoop)
-            //{
-            //    break;
-            //}
         }
-        
-        //if (sb == null)
-        //{
-        //    return string;
-        //}
-        //else
-        //{
-        //    return sb.toString();
-        //}
+
         if (start == offset)
         {
             writer.write(string, offset, realLength);

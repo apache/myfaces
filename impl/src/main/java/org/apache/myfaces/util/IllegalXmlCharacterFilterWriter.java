@@ -66,11 +66,15 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
 
     private static String encodeString(String str, int off, int len)
     {
+        if (str == null)
+        {
+            return null;
+        }
+        
         boolean containsInvalidChar = false;
         char[] encodedCharArray = EMPTY_CHAR_ARRAY;
-        
-        int to = off + len;
-        for (int i = off; i < to; i++)
+
+        for (int i = off; i < off + len; i++)
         {
             if (isInvalidChar(str.charAt(i)))
             {
@@ -93,8 +97,12 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
     
     private static char[] encodeCharArray(char[] cbuf, int off, int len)
     {
-        int to = off + len;
-        for (int i = off; i < to; i++)
+        if (cbuf == null)
+        {
+            return null;
+        }        
+
+        for (int i = off; i < off + len; i++)
         {
             if (isInvalidChar(cbuf[i]))
             {
