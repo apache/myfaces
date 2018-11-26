@@ -32,6 +32,7 @@ import java.io.Writer;
 public class IllegalXmlCharacterFilterWriter extends FilterWriter
 {
     private static final char[] EMPTY_CHAR_ARRAY = new char[0];
+    private static final char BLANK_CHAR = ' ';
     
     public IllegalXmlCharacterFilterWriter(Writer out)
     {
@@ -41,7 +42,14 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
     @Override
     public void write(int c) throws IOException 
     {
-        super.write(encodeChar((char) c));
+        if (isInvalidChar((char) c))
+        {
+            super.write((int) BLANK_CHAR);
+        }
+        else
+        {
+            super.write(c);
+        }
     }
 
     @Override
@@ -64,17 +72,14 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
         int to = off + len;
         for (int i = off; i < to; i++)
         {
-            char charOld = str.charAt(i);
-            char charNew = encodeChar(charOld);
-            
-            if (charNew != charOld)
+            if (isInvalidChar(str.charAt(i)))
             {
                 if (!containsInvalidChar)
                 {
                     containsInvalidChar = true;
                     encodedCharArray = str.toCharArray();
                 }
-                encodedCharArray[i] = charNew;
+                encodedCharArray[i] = BLANK_CHAR;
             }
         }
 
@@ -91,29 +96,32 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
         int to = off + len;
         for (int i = off; i < to; i++)
         {
-            cbuf[i] = encodeChar(cbuf[i]);
+            if (isInvalidChar(cbuf[i]))
+            {
+                cbuf[i] = BLANK_CHAR;
+            }
         }
         return cbuf;
     }
 
-    private static char encodeChar(char c)
+    private static boolean isInvalidChar(char c)
     {
         if (Character.isSurrogate(c)) 
         {
-            return ' ';
+            return true;
         }
         if (c == '\u0009' || c == '\n' || c == '\r') 
         {
-            return c;
+            return false;
         }
         if (c > '\u0020' && c < '\uD7FF') 
         {
-            return c;
+            return false;
         }
         if (c > '\uE000' && c < '\uFFFD') 
         {
-            return c;
+            return false;
         }
-        return ' ';
+        return true;
     }
 }
