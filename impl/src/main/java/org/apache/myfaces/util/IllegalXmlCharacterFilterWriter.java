@@ -31,6 +31,9 @@ import java.io.Writer;
  */
 public class IllegalXmlCharacterFilterWriter extends FilterWriter
 {
+    private static final char[] EMPTY_CHAR_ARRAY = new char[0];
+    private static final char BLANK_CHAR = ' ';
+    
     public IllegalXmlCharacterFilterWriter(Writer out)
     {
         super(out);
@@ -39,48 +42,86 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
     @Override
     public void write(int c) throws IOException 
     {
-        super.write(xmlEncode((char) c));
+        if (isInvalidChar((char) c))
+        {
+            super.write((int) BLANK_CHAR);
+        }
+        else
+        {
+            super.write(c);
+        }
     }
 
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException 
     {
-        super.write(xmlEncode(cbuf), off, len);
+        super.write(encodeCharArray(cbuf, off, len), off, len);
     }
 
     @Override
     public void write(String str, int off, int len) throws IOException 
     {
-        super.write(new String(xmlEncode(str.toCharArray())), off, len);
+        super.write(encodeString(str, off, len), off, len);
     }
 
-    private char[] xmlEncode(char[] ca)
+    private static String encodeString(String str, int off, int len)
     {
-        for (int i = 0; i < ca.length; i++)
+        boolean containsInvalidChar = false;
+        char[] encodedCharArray = EMPTY_CHAR_ARRAY;
+        
+        int to = off + len;
+        for (int i = off; i < to; i++)
         {
-            ca[i] = xmlEncode(ca[i]);
+            if (isInvalidChar(str.charAt(i)))
+            {
+                if (!containsInvalidChar)
+                {
+                    containsInvalidChar = true;
+                    encodedCharArray = str.toCharArray();
+                }
+                encodedCharArray[i] = BLANK_CHAR;
+            }
         }
-        return ca;
+
+        if (containsInvalidChar)
+        {
+            return String.valueOf(encodedCharArray);
+        }
+
+        return str;
+    }
+    
+    private static char[] encodeCharArray(char[] cbuf, int off, int len)
+    {
+        int to = off + len;
+        for (int i = off; i < to; i++)
+        {
+            if (isInvalidChar(cbuf[i]))
+            {
+                cbuf[i] = BLANK_CHAR;
+            }
+        }
+        return cbuf;
     }
 
-    private char xmlEncode(char c)
+    private static boolean isInvalidChar(char c)
     {
         if (Character.isSurrogate(c)) 
         {
-            return ' ';
+            return true;
         }
         if (c == '\u0009' || c == '\n' || c == '\r') 
         {
-            return c;
+            return false;
         }
         if (c > '\u0020' && c < '\uD7FF') 
         {
-            return c;
+            return false;
         }
         if (c > '\uE000' && c < '\uFFFD') 
         {
-            return c;
+            return false;
         }
-        return ' ';
+        return true;
     }
 }
