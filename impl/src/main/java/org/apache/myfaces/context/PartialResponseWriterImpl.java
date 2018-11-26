@@ -29,6 +29,7 @@ import javax.faces.context.PartialResponseWriter;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.util.CDataEndEscapeFilterWriter;
+import org.apache.myfaces.util.IllegalXmlCharacterFilterWriter;
 
 /**
  * <p/>
@@ -109,7 +110,7 @@ public class PartialResponseWriterImpl extends PartialResponseWriter
 
     public PartialResponseWriterImpl(ResponseWriter writer)
     {
-        super(writer);
+        super(writer.cloneWithWriter(new IllegalXmlCharacterFilterWriter(writer)));
     }
 
     @Override
