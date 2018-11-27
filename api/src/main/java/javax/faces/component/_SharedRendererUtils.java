@@ -49,8 +49,7 @@ class _SharedRendererUtils
     static final String COLLECTION_TYPE_KEY = "collectionType";
     static final String VALUE_TYPE_KEY = "valueType";
 
-    static Converter findUIOutputConverter(FacesContext facesContext,
-            UIOutput component)
+    static Converter findUIOutputConverter(FacesContext facesContext, UIOutput component)
     {
         // Attention!
         // This code is duplicated in jsfapi component package.
@@ -95,8 +94,7 @@ class _SharedRendererUtils
     static Object getConvertedUISelectManyValue(FacesContext facesContext, UISelectMany component,
             String[] submittedValue) throws ConverterException
     {
-        return  getConvertedUISelectManyValue(facesContext, component,
-            submittedValue, false);
+        return getConvertedUISelectManyValue(facesContext, component, submittedValue, false);
     }
 
     /**

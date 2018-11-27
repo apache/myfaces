@@ -417,7 +417,6 @@ public class MyfacesConfig
     private boolean _renderViewStateId;
     private boolean _strictXhtmlLinks;
     private boolean _renderClearJavascriptOnButton;
-    private boolean _saveFormSubmitLinkIE;
     private String _delegateFacesServlet;
     private boolean _refreshTransientBuildOnPSS;
     private boolean _refreshTransientBuildOnPSSAuto;

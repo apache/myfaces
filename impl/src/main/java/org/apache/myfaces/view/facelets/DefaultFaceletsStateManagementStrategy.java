@@ -978,6 +978,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             uiViewRoot.visitTree( getVisitContextFactory().getVisitContext(
                     facesContext, null, VISIT_HINTS), new VisitCallback()
             {
+                @Override
                 public VisitResult visit(VisitContext context, UIComponent target)
                 {
                     FacesContext facesContext = context.getFacesContext();
