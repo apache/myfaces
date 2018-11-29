@@ -62,21 +62,25 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
         _startupTime = System.currentTimeMillis();
     }
     
+    @Override
     public ResourceLoader[] getResourceLoaders()
     {
         return EMPTY_RESOURCE_LOADERS;
     }
     
+    @Override
     public ContractResourceLoader[] getContractResourceLoaders()
     {
         return EMPTY_CONTRACT_RESOURCE_LOADERS;
     }
     
+    @Override
     public ResourceLoader[] getViewResourceLoaders()
     {
         return EMPTY_RESOURCE_LOADERS;
     }
 
+    @Override
     public String calculateResourceBasePath(FacesContext facesContext)
     {        
         FacesServletMapping mapping = getFacesServletMapping(facesContext);
@@ -126,10 +130,10 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
         }
     }
 
+    @Override
     public boolean isExtensionMapping()
     {
-        FacesServletMapping mapping = getFacesServletMapping(
-                FacesContext.getCurrentInstance());
+        FacesServletMapping mapping = getFacesServletMapping(FacesContext.getCurrentInstance());
         if (mapping != null)
         {
             if (mapping.isExtensionMapping())
@@ -140,10 +144,10 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
         return false;
     }
     
+    @Override
     public String getMapping()
     {
-        FacesServletMapping mapping = getFacesServletMapping(
-                FacesContext.getCurrentInstance());
+        FacesServletMapping mapping = getFacesServletMapping(FacesContext.getCurrentInstance());
         if (mapping != null)
         {
             if (mapping.isExtensionMapping())
@@ -181,12 +185,13 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
         return mapping;
     }
     
-    
+    @Override
     public long getStartupTime()
     {
         return _startupTime;
     }
     
+    @Override
     public long getMaxTimeExpires()
     {
         if (_maxTimeExpires == null)

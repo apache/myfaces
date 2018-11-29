@@ -289,8 +289,7 @@ public class FlashELResolver extends ELResolver
     }
 
     @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context,
-            Object base)
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
     {
         ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>(1);
 
