@@ -204,7 +204,7 @@
             <url>scp://localhost/${user.home}/myfaces-site/${siteModule.path}</url>
         </site>
     </distributionManagement>
-    
+
     <properties>
         <siteModule.path>core30/module</siteModule.path>
         <site.mainDirectory>${user.home}/myfaces-site/checkout</site.mainDirectory>
