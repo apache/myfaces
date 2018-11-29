@@ -37,7 +37,7 @@ public class FacesServletMapping
      */
     private String extension;
     
-    private boolean exact;
+    private String exact;
 
     /**
      * Creates a new FacesServletMapping object using prefix mapping.
@@ -68,6 +68,13 @@ public class FacesServletMapping
         return mapping;
     }
 
+    public static FacesServletMapping createExactMapping(String exact)
+    {
+        FacesServletMapping mapping = new FacesServletMapping();
+        mapping.setExact(exact);
+        return mapping;
+    }
+    
     /**
      * Returns the path ("/faces", for example) which has been specified in
      * the url-pattern of the FacesServlet mapping. If this mapping is based
@@ -157,19 +164,19 @@ public class FacesServletMapping
         }
     }
 
-    public boolean isExact()
+    public String getExact()
     {
         return exact;
     }
 
-    public void setExact(boolean exact)
+    public void setExact(String exact)
     {
         this.exact = exact;
     }
 
     public boolean isExactMapping()
     {
-        return exact;
+        return exact != null;
     }
     
 }

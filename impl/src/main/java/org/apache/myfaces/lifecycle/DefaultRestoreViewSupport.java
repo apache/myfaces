@@ -290,14 +290,22 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         {
             return null;
         }
+
         FacesServletMapping mapping = getFacesServletMapping(context);
         if (mapping == null || mapping.isExtensionMapping())
         {
             viewId = handleSuffixMapping(context, viewId);
         }
+        else if (mapping.isExactMapping())
+        {
+            if (viewId.equals(mapping.getExact()))
+            {
+                viewId = handleSuffixMapping(context, viewId + ".jsf");
+            }
+        }
         else if(mapping.isPrefixMapping())
         {
-            viewId = handlePrefixMapping(viewId,mapping.getPrefix());
+            viewId = handlePrefixMapping(viewId, mapping.getPrefix());
             
             // A viewId that is equals to the prefix mapping on servlet mode is
             // considered invalid, because jsp vdl will use RequestDispatcher and cause
@@ -309,17 +317,12 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
                 throw new InvalidViewIdException();
             }
         }
-        else if (viewId != null && mapping.getUrlPattern().startsWith(viewId))
+        else if (mapping.getUrlPattern().startsWith(viewId))
         {
             throw new InvalidViewIdException(viewId);
         }
 
-        //if(viewId != null)
-        //{
-        //    return (checkResourceExists(context,viewId) ? viewId : null);
-        //}
-
-        return viewId;    // return null if no physical resource exists
+        return viewId; // return null if no physical resource exists
     }
     
     protected String[] getContextSuffix(FacesContext context)

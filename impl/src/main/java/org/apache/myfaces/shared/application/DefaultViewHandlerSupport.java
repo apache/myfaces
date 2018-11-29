@@ -33,6 +33,7 @@ import javax.faces.view.ViewDeclarationLanguage;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 import org.apache.myfaces.shared.util.ConcurrentLRUCache;
+import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.shared.util.ViewProtectionUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
@@ -106,25 +107,33 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         {
             return null;
         }
+
         FacesServletMapping mapping = getFacesServletMapping(context);
         if (mapping == null || mapping.isExtensionMapping())
         {
             viewId = handleSuffixMapping(context, viewId);
         }
-        else if(mapping.isPrefixMapping())
+        else if (mapping.isExactMapping())
         {
-            viewId = handlePrefixMapping(viewId,mapping.getPrefix());
+            if (viewId.equals(mapping.getExact()))
+            {
+                viewId = handleSuffixMapping(context, viewId + ".jsf");
+            }
+        }
+        else if (mapping.isPrefixMapping())
+        {
+            viewId = handlePrefixMapping(viewId, mapping.getPrefix());
             
             // A viewId that is equals to the prefix mapping on servlet mode is
             // considered invalid, because jsp vdl will use RequestDispatcher and cause
             // a loop that ends in a exception. Note in portlet mode the view
             // could be encoded as a query param, so the viewId could be valid.
-            //if (viewId != null && viewId.equals(mapping.getPrefix()) &&
-            //    !ExternalContextUtils.isPortlet(context.getExternalContext()))
-            //{
-            //    throw new InvalidViewIdException();
-            //}
-            
+            if (viewId != null && viewId.equals(mapping.getPrefix()) &&
+                !ExternalContextUtils.isPortlet(context.getExternalContext()))
+            {
+                throw new InvalidViewIdException();
+            }
+
             // In JSF 2.3 some changes were done in the VDL to avoid the jsp vdl
             // RequestDispatcher redirection (only accept viewIds with jsp extension).
             // If we have this case
@@ -138,7 +147,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             throw new InvalidViewIdException(viewId);
         }
 
-        return viewId;    // return null if no physical resource exists
+        return viewId; // return null if no physical resource exists
     }
     
     @Override
@@ -154,11 +163,18 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         {
             viewId = handleSuffixMapping(context, viewId);
         }
-        else if(mapping.isPrefixMapping())
+        else if (mapping.isExactMapping())
         {
-            viewId = handlePrefixMapping(viewId,mapping.getPrefix());
+            if (viewId.equals(mapping.getExact()))
+            {
+                viewId = handleSuffixMapping(context, viewId + ".jsf");
+            }
+        }
+        else if (mapping.isPrefixMapping())
+        {
+            viewId = handlePrefixMapping(viewId, mapping.getPrefix());
 
-            if(viewId != null)
+            if (viewId != null)
             {
                 // A viewId that is equals to the prefix mapping on servlet mode is
                 // considered invalid, because jsp vdl will use RequestDispatcher and cause
@@ -216,97 +232,91 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             builder.append(contextPath);
         }
         
+        
         // In JSF 2.3 we could have cases where the viewId can be bound to an url-pattern that is not
         // prefix or suffix, but exact mapping. In this part we need to take the viewId and check if
         // the viewId is bound or not with a mapping.
-        String prefixedExactMappingViewId = calculatePrefixedExactMapping(context, viewId);
-        boolean prefixedExactMappingFound = false;
-        if (prefixedExactMappingViewId != null && prefixedExactMappingViewId.length() > 0)
+        FacesServletMapping exactMapping = null;
+        String exactMappingViewId = calculatePrefixedExactMapping(context, viewId);
+        if (exactMappingViewId != null && exactMappingViewId.length() > 0)
         {
-            FacesServletMapping exactMapping = FacesServletMappingUtils.getExactMapping(
-                    context, prefixedExactMappingViewId);
-            if (exactMapping != null)
+            exactMapping = FacesServletMappingUtils.getExactMapping(context, exactMappingViewId);
+        }
+        
+        // no exactMapping for the requested viewId available BUT the current view is exactMapping
+        // we need a new mapping to a prefix or suffix mapping
+        if (exactMapping == null && (mapping != null && mapping.isExactMapping()))
+        {
+            mapping = FacesServletMappingUtils.getPrefixOrSuffixMapping(context, viewId);
+            if (mapping == null)
             {
-                mapping = exactMapping;
-                prefixedExactMappingFound = true;
+                throw new IllegalStateException(
+                        "No generic (either prefix or suffix) servlet-mapping found for FacesServlet."
+                        + "This is required serve views, that are not exact mapped.");
             }
         }
-        if (prefixedExactMappingFound)
-        {
-            builder.append(mapping.getPrefix());
-        }
-        else
-        {
-            if (mapping != null)
-            {
-                if (mapping.isExact())
-                {
-                    // it means that the currentView is a exact mapping
-                    // but the view to resolve is not exact - we must fallback to a prefix or suffix mapping
-                    mapping = FacesServletMappingUtils.getPrefixOrSuffixMapping(context, viewId);
-                    if (mapping == null)
-                    {
-                        throw new IllegalStateException(
-                                "No generic (either prefix or suffix) servlet-mapping found for FacesServlet."
-                                + "This is required serve views, that are not exact mapped.");
-                    }
-                }
 
-                if (mapping.isExtensionMapping())
+        if (mapping != null)
+        {
+            if (mapping.isExactMapping())
+            {
+                builder.append(mapping.getExact());
+            }
+            else if (mapping.isExtensionMapping())
+            {
+                //See JSF 2.0 section 7.5.2 
+                String[] contextSuffixes = _initialized ? _contextSuffixes : getContextSuffix(context); 
+                boolean founded = false;
+                for (String contextSuffix : contextSuffixes)
                 {
-                    //See JSF 2.0 section 7.5.2 
-                    String[] contextSuffixes = _initialized ? _contextSuffixes : getContextSuffix(context); 
-                    boolean founded = false;
-                    for (String contextSuffix : contextSuffixes)
+                    if (viewId.endsWith(contextSuffix))
                     {
-                        if (viewId.endsWith(contextSuffix))
-                        {
-                            builder.append(viewId.substring(0, viewId.indexOf(contextSuffix)));
-                            builder.append(mapping.getExtension());
-                            founded = true;
-                            break;
-                        }
-                    }
-                    if (!founded)
-                    {   
-                        //See JSF 2.0 section 7.5.2
-                        // - If the argument viewId has an extension, and this extension is mapping, 
-                        // the result is contextPath + viewId
-                        //
-                        // -= Leonardo Uribe =- It is evident that when the page is generated, the derived 
-                        // viewId will end with the 
-                        // right contextSuffix, and a navigation entry on faces-config.xml should use such id,
-                        // this is just a workaroud
-                        // for usability. There is a potential risk that change the mapping in a webapp make 
-                        // the same application fail,
-                        // so use viewIds ending with mapping extensions is not a good practice.
-                        if (viewId.endsWith(mapping.getExtension()))
-                        {
-                            builder.append(viewId);
-                        }
-                        else if(viewId.lastIndexOf('.') != -1 )
-                        {
-                            builder.append(viewId.substring(0, viewId.lastIndexOf('.')));
-                            builder.append(contextSuffixes[0]);
-                        }
-                        else
-                        {
-                            builder.append(viewId);
-                            builder.append(contextSuffixes[0]);
-                        }
+                        builder.append(viewId.substring(0, viewId.indexOf(contextSuffix)));
+                        builder.append(mapping.getExtension());
+                        founded = true;
+                        break;
                     }
                 }
-                else
-                {
-                    builder.append(mapping.getPrefix());
-                    builder.append(viewId);
+                if (!founded)
+                {   
+                    //See JSF 2.0 section 7.5.2
+                    // - If the argument viewId has an extension, and this extension is mapping, 
+                    // the result is contextPath + viewId
+                    //
+                    // -= Leonardo Uribe =- It is evident that when the page is generated, the derived 
+                    // viewId will end with the 
+                    // right contextSuffix, and a navigation entry on faces-config.xml should use such id,
+                    // this is just a workaroud
+                    // for usability. There is a potential risk that change the mapping in a webapp make 
+                    // the same application fail,
+                    // so use viewIds ending with mapping extensions is not a good practice.
+                    if (viewId.endsWith(mapping.getExtension()))
+                    {
+                        builder.append(viewId);
+                    }
+                    else if(viewId.lastIndexOf('.') != -1 )
+                    {
+                        builder.append(viewId.substring(0, viewId.lastIndexOf('.')));
+                        builder.append(contextSuffixes[0]);
+                    }
+                    else
+                    {
+                        builder.append(viewId);
+                        builder.append(contextSuffixes[0]);
+                    }
                 }
             }
-            else
+            else if (mapping.isPrefixMapping())
             {
+                builder.append(mapping.getPrefix());
                 builder.append(viewId);
             }
         }
+        else
+        {
+            builder.append(viewId);
+        }
+        
         
         //JSF 2.2 check view protection.
         if (ViewProtectionUtils.isViewProtected(context, viewId))
