@@ -171,9 +171,10 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
         if (mapping == null)
         {
             ExternalContext externalContext = context.getExternalContext();
-            mapping = FacesServletMappingUtils.calculateGenericFacesServletMapping(
+            mapping = FacesServletMappingUtils.calculateFacesServletMapping(
                     context, externalContext.getRequestServletPath(),
-                    externalContext.getRequestPathInfo());
+                    externalContext.getRequestPathInfo(),
+                    false);
 
             attributes.put(CACHED_SERVLET_MAPPING, mapping);
         }

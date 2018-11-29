@@ -21,82 +21,94 @@ package org.apache.myfaces.shared.application;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
+import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.shared.webapp.webxml.DelegatedFacesServlet;
 import org.apache.myfaces.shared.webapp.webxml.WebXml;
 
-/**
- *
- */
 public class FacesServletMappingUtils
 {
-    // Key used to store a map of servlet class names with boolean values that indicate whether the
-    // the servlet is a FacesServlet.
-    private static final String IS_FACES_SERVLET_CLASS_NAME_MAP = "org.apache.myfaces.IS_FACES_SERVLET_CLASS_NAME_MAP";
-
-    public static FacesServletMapping calculateGenericFacesServletMapping(
-        FacesContext facesContext, String servletPath, String pathInfo)
+    private static final String FACES_SERVLET_REGISTRATION = "org.apache.myfaces.FACES_SERVLET_REGISTRATION";
+    private static final String FACES_SERVLET_MAPPINGS = "org.apache.myfaces.FACES_SERVLET_MAPPINGS";
+    
+    public static ServletRegistration getFacesServletRegistration(FacesContext facesContext,
+            ServletContext servletContext)
     {
-        if (ExternalContextUtils.isPortlet(facesContext.getExternalContext()))
+        Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
+        
+        ServletRegistration servletRegistration = (ServletRegistration) applicationMap.get(FACES_SERVLET_REGISTRATION);
+        if (servletRegistration == null)
         {
-            return calculateFacesServletMapping(servletPath, pathInfo);
-        }
-        else
-        {
-            Object context = facesContext.getExternalContext().getContext();
-            if (context instanceof ServletContext)
+            Map<String, ? extends ServletRegistration> registrations = servletContext.getServletRegistrations();
+            if (registrations != null)
             {
-                if (pathInfo != null)
+                for (Map.Entry<String, ? extends ServletRegistration> entry : registrations.entrySet())
                 {
-                    // If there is a "extra path", it's definitely no extension mapping.
-                    // Now we just have to determine the path which has been specified
-                    // in the url-pattern, but that's easy as it's the same as the
-                    // current servletPath. It doesn't even matter if "/*" has been used
-                    // as in this case the servletPath is just an empty string according
-                    // to the Servlet Specification (SRV 4.4).
-                    return createMappingFromServletRegistration(facesContext, 
-                            (ServletContext)context, servletPath, pathInfo, false);
-                }
-                else
-                {
-                    // In the case of extension mapping, no "extra path" is available.
-                    // Still it's possible that prefix-based mapping has been used.
-                    // Actually, if there was an exact match no "extra path"
-                    // is available (e.g. if the url-pattern is "/faces/*"
-                    // and the request-uri is "/context/faces").
-                    int slashPos = servletPath.lastIndexOf('/');
-                    int extensionPos = servletPath.lastIndexOf('.');
-                    if (extensionPos > -1 && extensionPos > slashPos)
+                    if (isFacesServlet(facesContext, entry.getValue().getClassName()))
                     {
-                        String extension = servletPath.substring(extensionPos);
-                        return FacesServletMapping.createExtensionMapping(extension);
-                    }
-                    else
-                    {
-                        // There is no extension in the given servletPath and therefore
-                        // we assume that it's an exact match using prefix-based mapping.
-                        return createMappingFromServletRegistration(facesContext, 
-                                (ServletContext)context, servletPath, pathInfo, false);
+                        servletRegistration = entry.getValue();
+                        break;
                     }
                 }
             }
-            else
-            {
-                return calculateFacesServletMapping(servletPath, pathInfo);
-            }
+            
+            applicationMap.put(FACES_SERVLET_REGISTRATION, servletRegistration);
         }
-        //return null;
+
+        return servletRegistration;
     }
     
+    public static String[] getFacesServletMappings(FacesContext facesContext,ServletContext servletContext)
+    {
+        Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
+        
+        String[] mappings = (String[]) applicationMap.get(FACES_SERVLET_MAPPINGS);
+        if (mappings == null)
+        {
+            ServletRegistration servletRegistration = getFacesServletRegistration(facesContext, servletContext);
+            if (servletRegistration != null)
+            {
+                Collection<String> mappingsCollection = servletRegistration.getMappings();
+                mappings = mappingsCollection.toArray(new String[mappingsCollection.size()]);
+            }
+            
+            if (mappings == null)
+            {
+                mappings = new String[]{ };
+            }
+
+            applicationMap.put(FACES_SERVLET_MAPPINGS, mappings);
+        }
+        
+        return mappings;
+    }
+    
+    public static boolean isFacesServlet(FacesContext facesContext, String servletClassName)
+    {
+        Class servletClass = ClassUtils.simpleClassForName(servletClassName, false);
+        if (servletClass != null)
+        {
+            ExternalContext externalContext = facesContext.getExternalContext();
+            
+            return FacesServlet.class.isAssignableFrom(servletClass)
+                    || DelegatedFacesServlet.class.isAssignableFrom(servletClass)
+                    || servletClass.getName().equals(WebXml.getWebXml(externalContext).getDelegateFacesServlet());
+        }
+        return false;
+    }
+    
+    
+    
+    
+
     public static FacesServletMapping calculateFacesServletMapping(
-        FacesContext facesContext, String servletPath, String pathInfo)
+        FacesContext facesContext, String servletPath, String pathInfo, boolean allowExactMapping)
     {
         if (ExternalContextUtils.isPortlet(facesContext.getExternalContext()))
         {
@@ -116,7 +128,7 @@ public class FacesServletMappingUtils
                     // as in this case the servletPath is just an empty string according
                     // to the Servlet Specification (SRV 4.4).
                     return createMappingFromServletRegistration(facesContext, 
-                            (ServletContext)context, servletPath, pathInfo, true);
+                            (ServletContext)context, servletPath, pathInfo, allowExactMapping);
                 }
                 else
                 {
@@ -125,11 +137,9 @@ public class FacesServletMappingUtils
                     // Actually, if there was an exact match no "extra path"
                     // is available (e.g. if the url-pattern is "/faces/*"
                     // and the request-uri is "/context/faces").
-                    int slashPos = servletPath.lastIndexOf('/');
-                    int extensionPos = servletPath.lastIndexOf('.');
-                    if (extensionPos > -1 && extensionPos > slashPos)
+                    String extension = extractExtensionFromUrl(servletPath);
+                    if (extension != null)
                     {
-                        String extension = servletPath.substring(extensionPos);
                         return FacesServletMapping.createExtensionMapping(extension);
                     }
                     else
@@ -137,7 +147,7 @@ public class FacesServletMappingUtils
                         // There is no extension in the given servletPath and therefore
                         // we assume that it's an exact match using prefix-based mapping.
                         return createMappingFromServletRegistration(facesContext, 
-                                (ServletContext)context, servletPath, pathInfo, true);
+                                (ServletContext)context, servletPath, pathInfo, allowExactMapping);
                     }
                 }
             }
@@ -154,63 +164,39 @@ public class FacesServletMappingUtils
     {
         try
         {
-            Map<String, ? extends ServletRegistration> map = servletContext.getServletRegistrations();
-            if (map != null)
+            ServletRegistration facesServletRegistration = getFacesServletRegistration(
+                    facesContext, servletContext);
+            if (facesServletRegistration != null)
             {
                 FacesServletMapping facesExtensionMapping = null;
                 FacesServletMapping facesPrefixMapping = null;
                 FacesServletMapping facesExactMapping = null;
-                
-                for (Map.Entry<String, ? extends ServletRegistration> entry : map.entrySet())
+
+                try
                 {
-                    try
+                    String[] mappings = getFacesServletMappings(facesContext, servletContext);
+                    for (String mapping : mappings)
                     {
-                        Collection<String> mappings = entry.getValue().getMappings();
-                        
-                        if (isFacesServlet(facesContext, (String)entry.getValue().getClassName()))
+                        if (isExtensionMapping(mapping))
                         {
-                            for (String mapping : mappings)
-                            {
-                                if (mapping.startsWith("*."))
-                                {
-                                    // extension mapping, use it.
-                                    facesExtensionMapping = FacesServletMapping.createExtensionMapping(
-                                            mapping.substring(1));
-                                }
-                                else if (mapping.startsWith("/") && mapping.endsWith("/*"))
-                                {
-                                    // prefix mapping, use it.
-                                    facesPrefixMapping = FacesServletMapping.createPrefixMapping(
-                                            mapping.substring(0, mapping.length()-2));
-                                }
-                                else if (allowExactMatch && mapping.startsWith("/") && mapping.equals(servletPath))
-                                {
-                                    facesExactMapping = FacesServletMapping.createPrefixMapping(servletPath);
-                                }
-                            }                            
+                            facesExtensionMapping = FacesServletMapping.createExtensionMapping(
+                                    extractExtension(mapping));
                         }
-                        else
+                        else if (isPrefixMapping(mapping))
                         {
-                            //This is not a FacesServlet mapping.  It could be a non-faces request
-                            //Need to look for exact mapping to servletPath
-                            String servletPrefixMapping = null;
-                            for (String mapping : mappings)
-                            {                                
-                                if (mapping.startsWith("/") && mapping.endsWith("/*"))
-                                {
-                                    mapping = mapping.substring(0, mapping.length()-2);
-                                }                                
-                                if (mapping.equals(servletPath))
-                                {
-                                    return FacesServletMapping.createPrefixMapping(mapping);
-                                }
-                            }
-                       }
+                            facesPrefixMapping = FacesServletMapping.createPrefixMapping(
+                                    extractPrefix(mapping));
+                        }
+                        else if (allowExactMatch && mapping.startsWith("/") && mapping.equals(servletPath))
+                        {
+                            facesExactMapping = FacesServletMapping.createPrefixMapping(servletPath);
+                            facesExactMapping.setExact(true);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        //No op
-                    }
+                }
+                catch (Exception ex)
+                {
+                    //No op
                 }
 
                 // Choose exact mapping if preferred.
@@ -241,49 +227,7 @@ public class FacesServletMappingUtils
             return FacesServletMapping.createPrefixMapping(servletPath);
         }
     }
-    
-    public static boolean isFacesServlet(FacesContext facesContext, String servletClassName)
-    {
-        ExternalContext eContext = facesContext.getExternalContext();
 
-        // Map used for caching purposes
-        Map<String, Boolean> servletClassNameMap = (Map<String, Boolean>) 
-                                eContext.getApplicationMap().get(IS_FACES_SERVLET_CLASS_NAME_MAP);
-
-        if (servletClassNameMap == null)
-        {
-            // Create the map if it has not been created yet
-            servletClassNameMap = new ConcurrentHashMap<String, Boolean>();
-            eContext.getApplicationMap().put(IS_FACES_SERVLET_CLASS_NAME_MAP, servletClassNameMap);
-        }
-
-        Boolean isFacesServlet = servletClassNameMap.get(servletClassName);
-
-        // if isFacesServlet is null, that means that we haven't cached the servletClassName boolean value
-        if (isFacesServlet == null)
-        {
-            Class servletClass = org.apache.myfaces.shared.util.ClassUtils.simpleClassForName(
-                    servletClassName, false);
-
-            if (servletClass != null)
-            {
-                isFacesServlet = (FacesServlet.class.isAssignableFrom(servletClass) ||
-                                DelegatedFacesServlet.class.isAssignableFrom(servletClass) ||
-                                servletClass.getName().equals(
-                                WebXml.getWebXml(eContext).getDelegateFacesServlet())) ? Boolean.TRUE : Boolean.FALSE;
-
-                servletClassNameMap.put(servletClassName, isFacesServlet);
-            }
-            else
-            {
-                isFacesServlet = Boolean.FALSE;
-                servletClassNameMap.put(servletClassName, isFacesServlet);
-            }
-        }
-
-        return isFacesServlet;
-    }
-    
     /**
      * Determines the mapping of the FacesServlet in the web.xml configuration
      * file. However, there is no need to actually parse this configuration file
@@ -293,8 +237,7 @@ public class FacesServletMappingUtils
      * @param pathInfo    The pathInfo of the current request
      * @return the mapping of the FacesServlet in the web.xml configuration file
      */
-    private static FacesServletMapping calculateFacesServletMapping(
-        String servletPath, String pathInfo)
+    private static FacesServletMapping calculateFacesServletMapping(String servletPath, String pathInfo)
     {
         if (pathInfo != null)
         {
@@ -313,59 +256,108 @@ public class FacesServletMappingUtils
             // Actually, if there was an exact match no "extra path"
             // is available (e.g. if the url-pattern is "/faces/*"
             // and the request-uri is "/context/faces").
-            int slashPos = servletPath.lastIndexOf('/');
-            int extensionPos = servletPath.lastIndexOf('.');
-            if (extensionPos > -1 && extensionPos > slashPos)
+            String extension = extractExtensionFromUrl(servletPath);
+            if (extension != null)
             {
-                String extension = servletPath.substring(extensionPos);
                 return FacesServletMapping.createExtensionMapping(extension);
             }
             else
             {
                 // There is no extension in the given servletPath and therefore
                 // we assume that it's an exact match using prefix-based mapping.
-                return FacesServletMapping.createPrefixMapping(servletPath);
+                FacesServletMapping mapping = FacesServletMapping.createPrefixMapping(servletPath);
+                mapping.setExact(true);
+                return mapping;
             }
         }
     }
     
-    public static FacesServletMapping calculateFacesServletMappingFromPrefixedExactMappingViewId(
-        FacesContext facesContext, String prefixedExactMappingViewId)
+    public static FacesServletMapping getExactMapping(FacesContext facesContext, String prefixedExactMappingViewId)
     {
-        FacesServletMapping mapping = null;
         if (!ExternalContextUtils.isPortlet(facesContext.getExternalContext()))
         {
             Object context = facesContext.getExternalContext().getContext();
             if (context instanceof ServletContext)
             {
-                Map<String, ? extends ServletRegistration> map = ((ServletContext)context).getServletRegistrations();
-                if (map != null)
+                String[] mappings = getFacesServletMappings(facesContext, (ServletContext) context);
+                for (String mapping : mappings)
                 {
-                    for (Map.Entry<String, ? extends ServletRegistration> entry : map.entrySet())
+                    if (!mapping.contains("*") && prefixedExactMappingViewId.equals(mapping))
                     {
-                        try
-                        {
-                            if (isFacesServlet(facesContext, (String)entry.getValue().getClassName()))
-                            {
-                                Collection<String> mappings = entry.getValue().getMappings();
-                                for (String m : mappings)
-                                {
-                                    if ((!m.contains("*")) && prefixedExactMappingViewId.equals(m))
-                                    {
-                                        mapping = FacesServletMapping.createPrefixMapping(prefixedExactMappingViewId);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            //No op
-                        }
+                        FacesServletMapping facesServletMapping =
+                                FacesServletMapping.createPrefixMapping(prefixedExactMappingViewId);
+                        facesServletMapping.setExact(true);
+                        return facesServletMapping;
                     }
                 }
             }
         }
-        return mapping;
+
+        return null;
+    }
+    
+    
+    public static FacesServletMapping getPrefixOrSuffixMapping(FacesContext facesContext, String viewId)
+    {
+        if (!ExternalContextUtils.isPortlet(facesContext.getExternalContext()))
+        {
+            Object context = facesContext.getExternalContext().getContext();
+            if (context instanceof ServletContext)
+            {
+                String[] mappings = getFacesServletMappings(facesContext, (ServletContext) context);
+                for (String mapping : mappings)
+                {
+                    if (isExtensionMapping(mapping))
+                    {
+                        String extension = extractExtension(mapping);
+                        if (viewId.endsWith(extension))
+                        {
+                            return FacesServletMapping.createExtensionMapping(extension);
+                        }
+                    }
+                    else if (isPrefixMapping(mapping))
+                    {
+                        String prefix = extractPrefix(mapping);
+                        return FacesServletMapping.createPrefixMapping(prefix);
+                    }
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    
+    
+    private static String extractExtensionFromUrl(String url)
+    {
+        int slashPos = url.lastIndexOf('/');
+        int extensionPos = url.lastIndexOf('.');
+        if (extensionPos > -1 && extensionPos > slashPos)
+        {
+            return url.substring(extensionPos);
+        }
+        
+        return null;
+    }
+    
+    private static boolean isExtensionMapping(String mapping)
+    {
+        return mapping.startsWith("*.");
+    }
+    
+    private static String extractExtension(String mapping)
+    {
+        return mapping.substring(1);
+    }
+    
+    private static boolean isPrefixMapping(String mapping)
+    {
+        return mapping.startsWith("/") && mapping.endsWith("/*");
+    }
+    
+    private static String extractPrefix(String mapping)
+    {
+        return mapping.substring(0, mapping.length() - 2);
     }
 }

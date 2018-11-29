@@ -226,11 +226,11 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         boolean prefixedExactMappingFound = false;
         if (prefixedExactMappingViewId != null && prefixedExactMappingViewId.length() > 0)
         {
-            FacesServletMapping alternateMapping = FacesServletMappingUtils.
-                    calculateFacesServletMappingFromPrefixedExactMappingViewId(context, prefixedExactMappingViewId);
-            if (alternateMapping != null)
+            FacesServletMapping exactMapping = FacesServletMappingUtils.getExactMapping(
+                    context, prefixedExactMappingViewId);
+            if (exactMapping != null)
             {
-                mapping = alternateMapping;
+                mapping = exactMapping;
                 prefixedExactMappingFound = true;
             }
         }
@@ -242,6 +242,19 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         {
             if (mapping != null)
             {
+                if (mapping.isExact())
+                {
+                    // it means that the currentView is a exact mapping
+                    // but the view to resolve is not exact - we must fallback to a prefix or suffix mapping
+                    mapping = FacesServletMappingUtils.getPrefixOrSuffixMapping(context, viewId);
+                    if (mapping == null)
+                    {
+                        throw new IllegalStateException(
+                                "No generic (either prefix or suffix) servlet-mapping found for FacesServlet."
+                                + "This is required serve views, that are not exact mapped.");
+                    }
+                }
+
                 if (mapping.isExtensionMapping())
                 {
                     //See JSF 2.0 section 7.5.2 
@@ -355,7 +368,8 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             ExternalContext externalContext = context.getExternalContext();
             mapping = FacesServletMappingUtils.calculateFacesServletMapping(
                     context, externalContext.getRequestServletPath(),
-                    externalContext.getRequestPathInfo());
+                    externalContext.getRequestPathInfo(),
+                    true);
 
             attributes.put(CACHED_SERVLET_MAPPING, mapping);
         }

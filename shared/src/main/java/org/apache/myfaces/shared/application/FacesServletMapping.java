@@ -36,6 +36,8 @@ public class FacesServletMapping
      * url-pattern of the FacesServlet mapping.
      */
     private String extension;
+    
+    private boolean exact;
 
     /**
      * Creates a new FacesServletMapping object using prefix mapping.
@@ -155,4 +157,18 @@ public class FacesServletMapping
         }
     }
 
+    public boolean isExact()
+    {
+        return exact;
+    }
+
+    public void setExact(boolean exact)
+    {
+        this.exact = exact;
+    }
+
+    public boolean isExactMapping()
+    {
+        return exact;
+    }
 }
