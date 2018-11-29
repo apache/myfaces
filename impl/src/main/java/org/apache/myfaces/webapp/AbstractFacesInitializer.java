@@ -750,7 +750,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
      */
     protected void initAutomaticExtensionlessMapping(FacesContext facesContext, ServletContext servletContext)
     {
-        final ServletRegistration facesServletRegistration = getFacesServletRegistration(facesContext, servletContext); 
+        final ServletRegistration facesServletRegistration = FacesServletMappingUtils.getFacesServletRegistration(
+                facesContext, servletContext); 
         if (facesServletRegistration != null)
         {
             facesContext.getApplication().getViewHandler().getViews(facesContext, "/", 
@@ -759,24 +760,6 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                     });
         }
     }
-    
-    private ServletRegistration getFacesServletRegistration(FacesContext facesContext, 
-            ServletContext servletContext)
-    {
-        ServletRegistration facesServletRegistration = null;
-        Map<String, ? extends ServletRegistration> map = servletContext.getServletRegistrations();
-        if (map != null)
-        {
-            for (Map.Entry<String, ? extends ServletRegistration> entry : map.entrySet())
-            {
-                if (FacesServletMappingUtils.isFacesServlet(facesContext, entry.getValue().getClassName()))
-                {
-                    facesServletRegistration = entry.getValue();
-                    break;
-                }
-            }
-        }
-        return facesServletRegistration;
-    }
+
 
 }

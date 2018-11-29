@@ -98,6 +98,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         _initialized = true;
     }
 
+    @Override
     public String calculateViewId(FacesContext context, String viewId)
     {
         //If no viewId found, don't try to derive it, just continue.
@@ -137,14 +138,10 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             throw new InvalidViewIdException(viewId);
         }
 
-        //if(viewId != null)
-        //{
-        //    return (checkResourceExists(context,viewId) ? viewId : null);
-        //}
-
         return viewId;    // return null if no physical resource exists
     }
     
+    @Override
     public String calculateAndCheckViewId(FacesContext context, String viewId)
     {
         //If no viewId found, don't try to derive it, just continue.
@@ -199,6 +196,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         return viewId;    // return null if no physical resource exists
     }
 
+    @Override
     public String calculateActionURL(FacesContext context, String viewId)
     {
         if (viewId == null || !viewId.startsWith("/"))
@@ -225,11 +223,11 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         boolean prefixedExactMappingFound = false;
         if (prefixedExactMappingViewId != null && prefixedExactMappingViewId.length() > 0)
         {
-            FacesServletMapping alternateMapping = FacesServletMappingUtils.
-                    calculateFacesServletMappingFromPrefixedExactMappingViewId(context, prefixedExactMappingViewId);
-            if (alternateMapping != null)
+            FacesServletMapping exactMapping = FacesServletMappingUtils.getExactMapping(
+                    context, prefixedExactMappingViewId);
+            if (exactMapping != null)
             {
-                mapping = alternateMapping;
+                mapping = exactMapping;
                 prefixedExactMappingFound = true;
             }
         }
@@ -241,6 +239,19 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         {
             if (mapping != null)
             {
+                if (mapping.isExact())
+                {
+                    // it means that the currentView is a exact mapping
+                    // but the view to resolve is not exact - we must fallback to a prefix or suffix mapping
+                    mapping = FacesServletMappingUtils.getPrefixOrSuffixMapping(context, viewId);
+                    if (mapping == null)
+                    {
+                        throw new IllegalStateException(
+                                "No generic (either prefix or suffix) servlet-mapping found for FacesServlet."
+                                + "This is required serve views, that are not exact mapped.");
+                    }
+                }
+
                 if (mapping.isExtensionMapping())
                 {
                     //See JSF 2.0 section 7.5.2 
@@ -353,8 +364,10 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         {
             ExternalContext externalContext = context.getExternalContext();
             mapping = FacesServletMappingUtils.calculateFacesServletMapping(
-                    context, externalContext.getRequestServletPath(),
-                    externalContext.getRequestPathInfo());
+                    context,
+                    externalContext.getRequestServletPath(),
+                    externalContext.getRequestPathInfo(),
+                    true);
 
             attributes.put(CACHED_SERVLET_MAPPING, mapping);
         }
