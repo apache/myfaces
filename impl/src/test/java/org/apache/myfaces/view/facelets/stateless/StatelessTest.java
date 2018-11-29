@@ -20,6 +20,8 @@ package org.apache.myfaces.view.facelets.stateless;
 
 import javax.faces.application.StateManager;
 import javax.faces.component.UIComponent;
+import javax.faces.render.ResponseStateManager;
+
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.junit.Assert;
@@ -42,87 +44,47 @@ public class StatelessTest extends AbstractMyFacesRequestTestCase
     {
         super.setUpWebConfigParams();
         servletContext.addInitParameter("org.apache.myfaces.annotation.SCAN_PACKAGES","org.apache.myfaces.view.facelets.stateless");
-        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
+        servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER);
         servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
         servletContext.addInitParameter(MyfacesConfig.INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
         servletContext.addInitParameter("org.apache.myfaces.STRICT_JSF_2_REFRESH_TARGET_AJAX", "true");
     }
     
+    /**
+     * Verify that a view with a template that has transient set can be restored
+     * 
+     * @throws Exception
+     */
     @Test
-    public void postWithoutPrependFormId() throws Exception
+    public void restoreStatelessTemplateView() throws Exception
     {
         startViewRequest("/stateless.xhtml");
         processLifecycleExecuteAndRender();
-        
+
         Assert.assertTrue(facesContext.getViewRoot().isTransient());
-        
-        UIComponent form = facesContext.getViewRoot().findComponent("form1");
-        UIComponent formButton = facesContext.getViewRoot().findComponent("form1:smt");
-        
+
+        // set the view state param so this context is treated as a postback
+        client.getParameters().put(ResponseStateManager.VIEW_STATE_PARAM, "stateless");
+        UIComponent formButton = facesContext.getViewRoot().findComponent("smt");
         client.submit(formButton);
-        
-        processLifecycleExecuteAndRender();
+
+        try {
+            // this will cause an exception without the fix in MYFACES-4267
+            restoreView();
+        } catch (Exception e) {
+            Assert.fail("caught an exception trying to restore a stateless view: " + e.getMessage());
+            endRequest();
+            return;
+        }
+
+        Assert.assertNotNull(facesContext.getViewRoot());
+
+        // render the response and make sure the view contains the expected text
+        renderResponse();
         String text = getRenderedContent(facesContext);
+
+        Assert.assertTrue(text.contains("success"));
 
         endRequest();
     }
-    
-    @Test
-    public void postAjaxWithoutPrependFormId() throws Exception
-    {
-        startViewRequest("/stateless.xhtml");
-        processLifecycleExecuteAndRender();
-        
-        Assert.assertTrue(facesContext.getViewRoot().isTransient());
-        
-        UIComponent form = facesContext.getViewRoot().findComponent("form1");
-        UIComponent formButton = facesContext.getViewRoot().findComponent("form1:smtAjax");
-        
-        client.ajax(formButton, "action", formButton.getClientId(facesContext), form.getClientId(facesContext), true);
-        
-        processLifecycleExecuteAndRender();
-        String text = getRenderedContent(facesContext);
-
-        endRequest();
-    }
-    
-    @Test
-    public void postWithPrependFormId() throws Exception
-    {
-        startViewRequest("/stateless.xhtml");
-        processLifecycleExecuteAndRender();
-        
-        Assert.assertTrue(facesContext.getViewRoot().isTransient());
-        
-        UIComponent form = facesContext.getViewRoot().findComponent("form2");
-        UIComponent formButton = facesContext.getViewRoot().findComponent("form2:smt");
-        
-        client.submit(formButton);
-        
-        processLifecycleExecuteAndRender();
-        String text = getRenderedContent(facesContext);
-
-        endRequest();
-    }
-
-    @Test
-    public void postAjaxWithPrependFormId() throws Exception
-    {
-        startViewRequest("/stateless.xhtml");
-        processLifecycleExecuteAndRender();
-        
-        Assert.assertTrue(facesContext.getViewRoot().isTransient());
-        
-        UIComponent form = facesContext.getViewRoot().findComponent("form2");
-        UIComponent formButton = facesContext.getViewRoot().findComponent("form2:smtAjax");
-        
-        client.ajax(formButton, "action", formButton.getClientId(facesContext), form.getClientId(facesContext), true);
-        
-        processLifecycleExecuteAndRender();
-        String text = getRenderedContent(facesContext);
-
-        endRequest();
-    }
-    
-    
 }
