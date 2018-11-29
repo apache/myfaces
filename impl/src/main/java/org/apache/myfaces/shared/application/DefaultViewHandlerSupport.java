@@ -243,8 +243,8 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             exactMapping = FacesServletMappingUtils.getExactMapping(context, exactMappingViewId);
         }
         
-        // no exactMapping for the requested viewId available BUT the current view is exactMapping
-        // we need a new mapping to a prefix or suffix mapping
+        // no exactMapping for the requested viewId available BUT the current view is a exactMapping
+        // we need a new mapping to a prefix or extension mapping
         if (exactMapping == null && (mapping != null && mapping.isExactMapping()))
         {
             mapping = FacesServletMappingUtils.getPrefixOrSuffixMapping(context, viewId);
