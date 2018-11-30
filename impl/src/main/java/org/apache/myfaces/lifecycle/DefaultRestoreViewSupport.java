@@ -247,37 +247,38 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         }
     }
 
-    protected boolean checkResourceExists(FacesContext context, String viewId)
+    @Override
+    public boolean checkViewExists(FacesContext facesContext, String viewId)
     {
-        try
+      try
         {
-            if (isCheckedViewIdCachingEnabled(context))
+            if (isCheckedViewIdCachingEnabled(facesContext))
             {
-                Boolean resourceExists = getCheckedViewIDMap(context).get(viewId);
+                Boolean resourceExists = getCheckedViewIDMap(facesContext).get(viewId);
                 if (resourceExists == null)
                 {
-                    ViewDeclarationLanguage vdl = context.getApplication().getViewHandler()
-                            .getViewDeclarationLanguage(context, viewId);
+                    ViewDeclarationLanguage vdl = facesContext.getApplication().getViewHandler()
+                            .getViewDeclarationLanguage(facesContext, viewId);
                     if (vdl != null)
                     {
-                        resourceExists = vdl.viewExists(context, viewId);
+                        resourceExists = vdl.viewExists(facesContext, viewId);
                     }
                     else
                     {
                         // Fallback to default strategy
-                        resourceExists = context.getExternalContext().getResource(viewId) != null;
+                        resourceExists = facesContext.getExternalContext().getResource(viewId) != null;
                     }
-                    getCheckedViewIDMap(context).put(viewId, resourceExists);
+                    getCheckedViewIDMap(facesContext).put(viewId, resourceExists);
                 }
                 return resourceExists;
             }
             else
             {
-                ViewDeclarationLanguage vdl = context.getApplication().getViewHandler()
-                            .getViewDeclarationLanguage(context, viewId);
+                ViewDeclarationLanguage vdl = facesContext.getApplication().getViewHandler()
+                            .getViewDeclarationLanguage(facesContext, viewId);
                 if (vdl != null)
                 {
-                    if (vdl.viewExists(context, viewId))
+                    if (vdl.viewExists(facesContext, viewId))
                     {
                         return true;
                     }
@@ -285,7 +286,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
                 else
                 {
                     // Fallback to default strategy
-                    if (context.getExternalContext().getResource(viewId) != null)
+                    if (facesContext.getExternalContext().getResource(viewId) != null)
                     {
                         return true;
                     }
@@ -297,12 +298,6 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
             //ignore and move on
         }     
         return false;
-    }
-
-    @Override
-    public boolean checkViewExists(FacesContext facesContext, String viewId)
-    {
-        return checkResourceExists(facesContext, viewId);
     }
 
     
