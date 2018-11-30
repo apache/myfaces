@@ -49,6 +49,7 @@ final class NamespaceHandler extends FunctionMapper implements FaceletHandler
         this.next = next;
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
@@ -64,6 +65,7 @@ final class NamespaceHandler extends FunctionMapper implements FaceletHandler
         }
     }
 
+    @Override
     public Method resolveFunction(String prefix, String localName)
     {
         String uri = (String) this.ns.get(prefix);

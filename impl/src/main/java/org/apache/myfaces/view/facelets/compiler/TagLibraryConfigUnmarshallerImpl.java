@@ -184,6 +184,7 @@ public class TagLibraryConfigUnmarshallerImpl
             return this.library;
         }
 
+        @Override
         public void endElement(String uri, String localName, String qName) throws SAXException
         {
             try
@@ -416,6 +417,7 @@ public class TagLibraryConfigUnmarshallerImpl
             return s;
         }        
 
+        @Override
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException
         {
             if ("-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN".equals(publicId))
@@ -426,11 +428,13 @@ public class TagLibraryConfigUnmarshallerImpl
             return null;
         }
 
+        @Override
         public void characters(char[] ch, int start, int length) throws SAXException
         {
             this.buffer.append(ch, start, length);
         }
 
+        @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
             this.buffer.setLength(0);
@@ -449,22 +453,26 @@ public class TagLibraryConfigUnmarshallerImpl
             }
         }
 
+        @Override
         public void error(SAXParseException e) throws SAXException
         {
             throw new SAXException(
                     "Error Handling [" + this.source + '@' + e.getLineNumber() + ',' + e.getColumnNumber() + ']', e);
         }
 
+        @Override
         public void setDocumentLocator(Locator locator)
         {
             this.locator = locator;
         }
 
+        @Override
         public void fatalError(SAXParseException e) throws SAXException
         {
             throw e;
         }
 
+        @Override
         public void warning(SAXParseException e) throws SAXException
         {
             throw e;

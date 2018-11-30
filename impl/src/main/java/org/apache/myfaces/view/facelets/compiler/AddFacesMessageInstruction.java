@@ -46,10 +46,12 @@ final class AddFacesMessageInstruction implements Instruction
         this.detail = detail;
     }
 
+    @Override
     public void write(FacesContext context) throws IOException
     {
     }
 
+    @Override
     public Instruction apply(ExpressionFactory factory, ELContext ctx)
     {
         FacesContext facesContext = ((AbstractFaceletContext)ctx).getFacesContext();
@@ -57,6 +59,7 @@ final class AddFacesMessageInstruction implements Instruction
         return this;
     }
 
+    @Override
     public boolean isLiteral()
     {
         return false;

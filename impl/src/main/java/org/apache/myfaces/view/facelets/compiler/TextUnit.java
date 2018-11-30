@@ -373,6 +373,7 @@ final class TextUnit extends CompilationUnit
         }
     }
 
+    @Override
     public void addChild(CompilationUnit unit)
     {
         // if we are adding some other kind of unit

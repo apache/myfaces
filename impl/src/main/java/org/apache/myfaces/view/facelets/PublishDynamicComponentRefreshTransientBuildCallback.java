@@ -29,6 +29,7 @@ import javax.faces.component.visit.VisitResult;
  */
 public class PublishDynamicComponentRefreshTransientBuildCallback implements VisitCallback
 {
+    @Override
     public VisitResult visit(VisitContext context, UIComponent target)
     {
         if (target.getAttributes().containsKey(DynamicComponentRefreshTransientBuildEvent.DYN_COMP_REFRESH_FLAG))

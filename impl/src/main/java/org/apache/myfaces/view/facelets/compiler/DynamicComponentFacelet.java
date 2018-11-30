@@ -39,6 +39,7 @@ public class DynamicComponentFacelet implements FaceletHandler
         this.next = next;
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
         /*

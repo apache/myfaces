@@ -50,6 +50,7 @@ final class DoctypeUnit extends CompilationUnit
         this.html5Doctype = html5Doctype;
     }
     
+    @Override
     public FaceletHandler createFaceletHandler()
     {
         FaceletHandler[] h = new FaceletHandler[2];

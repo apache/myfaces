@@ -82,12 +82,12 @@ public final class CheckDuplicateIdFaceletUtils
         }
     }
 
-    public static void checkIds (FacesContext context, UIComponent view)
+    public static void checkIds(FacesContext context, UIComponent view)
     {
         checkIds (context, view, new HashSet<String>());
     }
     
-    private static void checkIds (FacesContext context, UIComponent component, Set<String> existingIds)
+    private static void checkIds(FacesContext context, UIComponent component, Set<String> existingIds)
     {
         String id;
         

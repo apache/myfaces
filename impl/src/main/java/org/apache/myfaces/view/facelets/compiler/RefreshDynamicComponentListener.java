@@ -62,6 +62,7 @@ public final class RefreshDynamicComponentListener implements
     {
     }
     
+    @Override
     public void processEvent(ComponentSystemEvent event)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -157,6 +158,7 @@ public final class RefreshDynamicComponentListener implements
         }
     }
 
+    @Override
     public Object saveState(FacesContext context)
     {
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(
@@ -185,6 +187,7 @@ public final class RefreshDynamicComponentListener implements
         return values;
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state)
     {
         Object[] values = (Object[]) state;
@@ -211,11 +214,13 @@ public final class RefreshDynamicComponentListener implements
         baseKey = (String)values[3];
     }
 
+    @Override
     public boolean isTransient()
     {
         return false;
     }
 
+    @Override
     public void setTransient(boolean newTransientValue)
     {
     }

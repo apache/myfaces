@@ -27,7 +27,7 @@ import java.util.Comparator;
  */
 public class FaceletsVDLUtils
 {
-        /**
+    /**
      * As specified in JSF 2.2 section 11.4.2.1, note it is different from the
      * allowed format in xml url-pattern type.
      * 
@@ -92,6 +92,7 @@ public class FaceletsVDLUtils
     
     public static final class KeyComparator implements Comparator<String>
     {
+        @Override
         public int compare(String s1, String s2)
         {
             return -s1.compareTo(s2);
@@ -100,33 +101,39 @@ public class FaceletsVDLUtils
     
     public static class NullWriter extends Writer
     {
-
         static final NullWriter INSTANCE = new NullWriter();
 
+        @Override
         public void write(char[] buffer)
         {
         }
 
+        @Override
         public void write(char[] buffer, int off, int len)
         {
         }
 
+        @Override
         public void write(String str)
         {
         }
 
+        @Override
         public void write(int c)
         {
         }
 
+        @Override
         public void write(String str, int off, int len)
         {
         }
 
+        @Override
         public void close()
         {
         }
 
+        @Override
         public void flush()
         {
         }

@@ -36,6 +36,7 @@ final class BodyEndElementInstruction implements Instruction
         this.element = element;
     }
 
+    @Override
     public void write(FacesContext context) throws IOException
     {
         // render all unhandled FacesMessages when ProjectStage is Development
@@ -47,11 +48,13 @@ final class BodyEndElementInstruction implements Instruction
         context.getResponseWriter().endElement(this.element);
     }
 
+    @Override
     public Instruction apply(ExpressionFactory factory, ELContext ctx)
     {
         return this;
     }
 
+    @Override
     public boolean isLiteral()
     {
         return true;

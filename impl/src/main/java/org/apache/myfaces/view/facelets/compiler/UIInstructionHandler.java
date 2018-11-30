@@ -76,6 +76,7 @@ final class UIInstructionHandler extends AbstractUIHandler
         this.literal = literal;
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
@@ -195,16 +196,19 @@ final class UIInstructionHandler extends AbstractUIHandler
         }
     }
 
+    @Override
     public String toString()
     {
         return this.txt.toString();
     }
 
+    @Override
     public String getText()
     {
         return this.txt.toString();
     }
 
+    @Override
     public String getText(FaceletContext ctx)
     {
         Writer writer = new FastWriter(this.length);

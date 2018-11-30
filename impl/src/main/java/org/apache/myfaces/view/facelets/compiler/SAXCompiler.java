@@ -95,6 +95,7 @@ public final class SAXCompiler extends Compiler
             this.alias = alias;
         }
 
+        @Override
         public void characters(char[] ch, int start, int length) throws SAXException
         {
             if (this.inDocument && (!consumingCDATA || (consumingCDATA && !swallowCDATAContent)))
@@ -103,6 +104,7 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public void comment(char[] ch, int start, int length) throws SAXException
         {
             if (this.inDocument && !unit.getFaceletsProcessingInstructions().isConsumeXMLComments())
@@ -128,6 +130,7 @@ public final class SAXCompiler extends Compiler
             return new Location(this.alias, this.locator.getLineNumber(), this.locator.getColumnNumber());
         }
 
+        @Override
         public void endCDATA() throws SAXException
         {
             if (this.inDocument)
@@ -144,25 +147,30 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public void endDTD() throws SAXException
         {
             this.inDocument = true;
         }
 
+        @Override
         public void endElement(String uri, String localName, String qName) throws SAXException
         {
             this.unit.popTag();
         }
 
+        @Override
         public void endEntity(String name) throws SAXException
         {
         }
 
+        @Override
         public void endPrefixMapping(String prefix) throws SAXException
         {
             this.unit.popNamespace(prefix);
         }
 
+        @Override
         public void fatalError(SAXParseException e) throws SAXException
         {
             if (this.locator != null)
@@ -175,6 +183,7 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException
         {
             if (this.inDocument)
@@ -183,6 +192,7 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException
         {
             String dtd = "org/apache/myfaces/resource/default.dtd";
@@ -194,11 +204,13 @@ public final class SAXCompiler extends Compiler
             return new InputSource(url.toString());
         }
 
+        @Override
         public void setDocumentLocator(Locator locator)
         {
             this.locator = locator;
         }
 
+        @Override
         public void startCDATA() throws SAXException
         {
             if (this.inDocument)
@@ -215,11 +227,13 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public void startDocument() throws SAXException
         {
             this.inDocument = true;
         }
 
+        @Override
         public void startDTD(String name, String publicId, String systemId) throws SAXException
         {
             if (this.inDocument && !unit.getFaceletsProcessingInstructions().isConsumeXmlDocType())
@@ -247,20 +261,24 @@ public final class SAXCompiler extends Compiler
             this.inDocument = false;
         }
 
+        @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
             this.unit.pushTag(new Tag(this.createLocation(), uri, localName, qName, this.createAttributes(attributes)));
         }
 
+        @Override
         public void startEntity(String name) throws SAXException
         {
         }
 
+        @Override
         public void startPrefixMapping(String prefix, String uri) throws SAXException
         {
             this.unit.pushNamespace(prefix, uri);
         }
 
+        @Override
         public void processingInstruction(String target, String data) throws SAXException
         {
             if (this.inDocument && !this.unit.getFaceletsProcessingInstructions().isConsumeProcessingInstructions())
@@ -300,6 +318,7 @@ public final class SAXCompiler extends Compiler
             this.alias = alias;
         }
 
+        @Override
         public void characters(char[] ch, int start, int length) throws SAXException
         {
             if (this.inDocument && inMetadata && (!consumingCDATA || (consumingCDATA && !swallowCDATAContent)))
@@ -308,6 +327,7 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public void comment(char[] ch, int start, int length) throws SAXException
         {
             if (this.inDocument && inMetadata && !unit.getFaceletsProcessingInstructions().isConsumeXMLComments())
@@ -333,6 +353,7 @@ public final class SAXCompiler extends Compiler
             return new Location(this.alias, this.locator.getLineNumber(), this.locator.getColumnNumber());
         }
 
+        @Override
         public void endCDATA() throws SAXException
         {
             if (this.inDocument && inMetadata)
@@ -349,19 +370,20 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public void endDTD() throws SAXException
         {
             this.inDocument = true;
         }
 
+        @Override
         public void endElement(String uri, String localName, String qName) throws SAXException
         {
             if (inMetadata)
             {
                 this.unit.popTag();
             }
-            if ( (CoreLibrary.NAMESPACE.equals(uri) ||
-                CoreLibrary.ALIAS_NAMESPACE.equals(uri)))
+            if ((CoreLibrary.NAMESPACE.equals(uri) || CoreLibrary.ALIAS_NAMESPACE.equals(uri)))
             {
                 if ("metadata".equals(localName))
                 {
@@ -372,8 +394,7 @@ public final class SAXCompiler extends Compiler
                     this.unit.popTag();
                 }
             }
-            else if (UILibrary.NAMESPACE.equals(uri) ||
-                    UILibrary.ALIAS_NAMESPACE.equals(uri))
+            else if (UILibrary.NAMESPACE.equals(uri) || UILibrary.ALIAS_NAMESPACE.equals(uri))
             {
                 if (!inMetadata && "remove".equals(localName))
                 {
@@ -382,15 +403,18 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public void endEntity(String name) throws SAXException
         {
         }
 
+        @Override
         public void endPrefixMapping(String prefix) throws SAXException
         {
             this.unit.popNamespace(prefix);
         }
 
+        @Override
         public void fatalError(SAXParseException e) throws SAXException
         {
             if (this.locator != null)
@@ -403,6 +427,7 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException
         {
             if (this.inDocument && inMetadata)
@@ -411,6 +436,7 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException
         {
             String dtd = "org/apache/myfaces/resource/default.dtd";
@@ -422,11 +448,13 @@ public final class SAXCompiler extends Compiler
             return new InputSource(url.toString());
         }
 
+        @Override
         public void setDocumentLocator(Locator locator)
         {
             this.locator = locator;
         }
 
+        @Override
         public void startCDATA() throws SAXException
         {
             if (this.inDocument && inMetadata)
@@ -443,17 +471,20 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public void startDocument() throws SAXException
         {
             this.inDocument = true;
         }
 
+        @Override
         public void startDTD(String name, String publicId, String systemId) throws SAXException
         {
             // metadata does not require output doctype
             this.inDocument = false;
         }
 
+        @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
             if ( (CoreLibrary.NAMESPACE.equals(uri) ||
@@ -482,15 +513,18 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public void startEntity(String name) throws SAXException
         {
         }
 
+        @Override
         public void startPrefixMapping(String prefix, String uri) throws SAXException
         {
             this.unit.pushNamespace(prefix, uri);
         }
 
+        @Override
         public void processingInstruction(String target, String data) throws SAXException
         {
             if (inDocument && inMetadata && !unit.getFaceletsProcessingInstructions().isConsumeProcessingInstructions())
@@ -534,6 +568,7 @@ public final class SAXCompiler extends Compiler
             this.alias = alias;
         }
 
+        @Override
         public void characters(char[] ch, int start, int length) throws SAXException
         {
             if (this.inDocument && inCompositeInterface && 
@@ -543,6 +578,7 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public void comment(char[] ch, int start, int length) throws SAXException
         {
             if (inDocument && inCompositeInterface && 
@@ -569,6 +605,7 @@ public final class SAXCompiler extends Compiler
             return new Location(this.alias, this.locator.getLineNumber(), this.locator.getColumnNumber());
         }
 
+        @Override
         public void endCDATA() throws SAXException
         {
             if (this.inDocument && inCompositeInterface)
@@ -585,11 +622,13 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public void endDTD() throws SAXException
         {
             this.inDocument = true;
         }
 
+        @Override
         public void endElement(String uri, String localName, String qName) throws SAXException
         {
             if (inCompositeInterface)
@@ -621,15 +660,18 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public void endEntity(String name) throws SAXException
         {
         }
 
+        @Override
         public void endPrefixMapping(String prefix) throws SAXException
         {
             this.unit.popNamespace(prefix);
         }
 
+        @Override
         public void fatalError(SAXParseException e) throws SAXException
         {
             if (this.locator != null)
@@ -642,6 +684,7 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException
         {
             if (this.inDocument && inCompositeInterface)
@@ -650,6 +693,7 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException
         {
             String dtd = "org/apache/myfaces/resource/default.dtd";
@@ -661,11 +705,13 @@ public final class SAXCompiler extends Compiler
             return new InputSource(url.toString());
         }
 
+        @Override
         public void setDocumentLocator(Locator locator)
         {
             this.locator = locator;
         }
 
+        @Override
         public void startCDATA() throws SAXException
         {
             if (this.inDocument && inCompositeInterface)
@@ -682,17 +728,20 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public void startDocument() throws SAXException
         {
             this.inDocument = true;
         }
 
+        @Override
         public void startDTD(String name, String publicId, String systemId) throws SAXException
         {
             // metadata does not require output doctype
             this.inDocument = false;
         }
 
+        @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
             if (CompositeLibrary.NAMESPACE.equals(uri) || CompositeLibrary.ALIAS_NAMESPACE.equals(uri))
@@ -724,15 +773,18 @@ public final class SAXCompiler extends Compiler
             }
         }
 
+        @Override
         public void startEntity(String name) throws SAXException
         {
         }
 
+        @Override
         public void startPrefixMapping(String prefix, String uri) throws SAXException
         {
             this.unit.pushNamespace(prefix, uri);
         }
 
+        @Override
         public void processingInstruction(String target, String data) throws SAXException
         {
             if (inDocument && inCompositeInterface
@@ -750,6 +802,7 @@ public final class SAXCompiler extends Compiler
         super();
     }
 
+    @Override
     public FaceletHandler doCompile(URL src, String alias)
             throws IOException, FaceletException, ELException, FacesException
     {

@@ -36,16 +36,19 @@ final class LiteralAttributeInstruction implements Instruction
         this.text = text;
     }
 
+    @Override
     public void write(FacesContext context) throws IOException
     {
         context.getResponseWriter().writeAttribute(this.attr, this.text, null);
     }
 
+    @Override
     public Instruction apply(ExpressionFactory factory, ELContext ctx)
     {
         return this;
     }
 
+    @Override
     public boolean isLiteral()
     {
         return true;

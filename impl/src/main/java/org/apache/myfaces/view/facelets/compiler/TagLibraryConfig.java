@@ -373,26 +373,31 @@ public final class TagLibraryConfig
             this.rendererType = rendererType;
         }
 
+        @Override
         public String getComponentType()
         {
             return this.componentType;
         }
 
+        @Override
         public String getRendererType()
         {
             return this.rendererType;
         }
 
+        @Override
         public FaceletHandler getNextHandler()
         {
             return this.parent.getNextHandler();
         }
 
+        @Override
         public Tag getTag()
         {
             return this.parent.getTag();
         }
 
+        @Override
         public String getTagId()
         {
             return this.parent.getTagId();

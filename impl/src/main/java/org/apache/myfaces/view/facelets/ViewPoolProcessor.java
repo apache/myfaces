@@ -451,8 +451,7 @@ public class ViewPoolProcessor
         }
     }
     
-    public ViewStructureMetadata retrieveViewStructureMetadata(FacesContext context,
-            UIViewRoot root)
+    public ViewStructureMetadata retrieveViewStructureMetadata(FacesContext context, UIViewRoot root)
     {
         ViewPool viewPool = getViewPool(context, root);
         if (viewPool != null)
@@ -527,8 +526,7 @@ public class ViewPoolProcessor
         }        
     }
     
-    protected void clearTransientAndNonFaceletComponentsForStaticView(final FacesContext context, 
-            final UIViewRoot root)
+    protected void clearTransientAndNonFaceletComponentsForStaticView(FacesContext context, UIViewRoot root)
     {
         // In a static view, clear components that are both transient and non bound to any facelet tag handler
         // is quite simple. Since the structure of the view is static, there is no need to check component resources.
@@ -625,8 +623,7 @@ public class ViewPoolProcessor
             {
                 UIComponent child = component.getChildren().get(i);
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
-                if (child != null && child.isTransient() &&
-                    id == null)
+                if (child != null && child.isTransient() && id == null)
                 {
                     //Remove both transient not facelets bound components
                     component.getChildren().remove(i);
@@ -651,8 +648,7 @@ public class ViewPoolProcessor
                 else
                 {
                     // Check if the component instance was created using a @ResourceDependency annotation
-                    Object[] rdk = (Object[]) child.getAttributes().get(
-                                RequestViewMetadata.RESOURCE_DEPENDENCY_KEY);
+                    Object[] rdk = (Object[]) child.getAttributes().get(RequestViewMetadata.RESOURCE_DEPENDENCY_KEY);
                     if (rdk != null)
                     {
                         boolean found = false;
@@ -767,8 +763,7 @@ public class ViewPoolProcessor
 
         try
         {
-            root.getAttributes().put(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY, 
-                        ViewPoolProcessor.RESET_MODE_HARD);
+            root.getAttributes().put(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY, ViewPoolProcessor.RESET_MODE_HARD);
             if (childCount > 0)
             {
                 for (int i = 0; i < childCount; i++)
@@ -973,8 +968,8 @@ public class ViewPoolProcessor
     
     public void processDeferredNavigation(FacesContext facesContext)
     {
-            Object[] command = (Object[]) facesContext.getAttributes().get(
-                ViewPoolProcessor.INVOKE_DEFERRED_NAVIGATION);
+        Object[] command = (Object[]) facesContext.getAttributes().get(
+            ViewPoolProcessor.INVOKE_DEFERRED_NAVIGATION);
         if (command != null)
         {
             try

@@ -38,6 +38,7 @@ public class XMLInstruction implements Instruction
         _text = text;
     }
 
+    @Override
     public void write(FacesContext context) throws IOException
     {
         ResponseWriter rw = context.getResponseWriter();
@@ -45,11 +46,13 @@ public class XMLInstruction implements Instruction
         _text.write(rw, context.getELContext());
     }
 
+    @Override
     public Instruction apply(ExpressionFactory factory, ELContext ctx)
     {
         return new XMLInstruction(_text.apply(factory, ctx));
     }
 
+    @Override
     public boolean isLiteral()
     {
         return false;

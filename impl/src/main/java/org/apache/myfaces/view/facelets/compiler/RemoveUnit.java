@@ -33,11 +33,13 @@ final class RemoveUnit extends CompilationUnit
         super();
     }
 
+    @Override
     public void addChild(CompilationUnit unit)
     {
         // do nothing
     }
 
+    @Override
     public FaceletHandler createFaceletHandler()
     {
         return LEAF;

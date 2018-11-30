@@ -41,6 +41,7 @@ final class NamespaceUnit extends CompilationUnit
         this.library = library;
     }
 
+    @Override
     public FaceletHandler createFaceletHandler()
     {
         FaceletHandler next = this.getNextFaceletHandler();

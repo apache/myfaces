@@ -38,6 +38,7 @@ final class UIInstructions extends UILeaf
         this.instructions = instructions;
     }
 
+    @Override
     public void encodeBegin(FacesContext context) throws IOException
     {
         int size = this.instructions.length;
@@ -47,6 +48,7 @@ final class UIInstructions extends UILeaf
         }
     }
 
+    @Override
     public String toString()
     {
         return (this.txt != null) ? this.txt.toString() : "UIInstructions[" + Arrays.asList(instructions) + ']';

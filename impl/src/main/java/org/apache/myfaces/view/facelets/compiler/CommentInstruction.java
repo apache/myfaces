@@ -35,16 +35,19 @@ final class CommentInstruction implements Instruction
         _text = text;
     }
 
+    @Override
     public void write(FacesContext context) throws IOException
     {
         context.getResponseWriter().writeComment(_text.toString(context.getELContext()));
     }
 
+    @Override
     public Instruction apply(ExpressionFactory factory, ELContext ctx)
     {
         return new CommentInstruction(_text.apply(factory, ctx));
     }
-
+    
+    @Override
     public boolean isLiteral()
     {
         return false;

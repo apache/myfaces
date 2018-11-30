@@ -39,12 +39,14 @@ final class TextInstruction implements Instruction
         this.txt = txt;
     }
 
+    @Override
     public void write(FacesContext context) throws IOException
     {
         ResponseWriter out = context.getResponseWriter();
         txt.writeText(out, context.getELContext());
     }
 
+    @Override
     public Instruction apply(ExpressionFactory factory, ELContext ctx)
     {
         ELText nt = this.txt.apply(factory, ctx);
@@ -56,6 +58,7 @@ final class TextInstruction implements Instruction
         return new TextInstruction(alias, nt);
     }
 
+    @Override
     public boolean isLiteral()
     {
         return txt.isLiteral();

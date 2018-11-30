@@ -39,6 +39,7 @@ final class LiteralXMLInstruction implements Instruction
         this.len = this.instruction.length;
     }
 
+    @Override
     public void write(FacesContext context) throws IOException
     {
         ResponseWriter rw = context.getResponseWriter();
@@ -46,11 +47,13 @@ final class LiteralXMLInstruction implements Instruction
         rw.write(this.instruction, 0, this.len);
     }
 
+    @Override
     public Instruction apply(ExpressionFactory factory, ELContext ctx)
     {
         return this;
     }
 
+    @Override
     public boolean isLiteral()
     {
         return true;

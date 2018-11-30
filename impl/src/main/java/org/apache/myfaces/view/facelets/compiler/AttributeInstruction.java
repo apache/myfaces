@@ -43,6 +43,7 @@ final class AttributeInstruction implements Instruction
         _txt = txt;
     }
 
+    @Override
     public void write(FacesContext context) throws IOException
     {
         ResponseWriter out = context.getResponseWriter();
@@ -60,6 +61,7 @@ final class AttributeInstruction implements Instruction
         }
     }
 
+    @Override
     public Instruction apply(ExpressionFactory factory, ELContext ctx)
     {
         ELText nt = _txt.apply(factory, ctx);
@@ -71,6 +73,7 @@ final class AttributeInstruction implements Instruction
         return new AttributeInstruction(_alias, _attr, nt);
     }
 
+    @Override
     public boolean isLiteral()
     {
         return _txt.isLiteral();
