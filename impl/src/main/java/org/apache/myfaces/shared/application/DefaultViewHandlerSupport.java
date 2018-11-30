@@ -384,52 +384,6 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         return mapping;
     }
 
-    /**
-     * Determines the mapping of the FacesServlet in the web.xml configuration
-     * file. However, there is no need to actually parse this configuration file
-     * as runtime information is sufficient.
-     *
-     * @param servletPath The servletPath of the current request
-     * @param pathInfo    The pathInfo of the current request
-     * @return the mapping of the FacesServlet in the web.xml configuration file
-     */
-    @Deprecated
-    protected static FacesServletMapping calculateFacesServletMapping(
-        String servletPath, String pathInfo)
-    {
-        if (pathInfo != null)
-        {
-            // If there is a "extra path", it's definitely no extension mapping.
-            // Now we just have to determine the path which has been specified
-            // in the url-pattern, but that's easy as it's the same as the
-            // current servletPath. It doesn't even matter if "/*" has been used
-            // as in this case the servletPath is just an empty string according
-            // to the Servlet Specification (SRV 4.4).
-            return FacesServletMapping.createPrefixMapping(servletPath);
-        }
-        else
-        {
-            // In the case of extension mapping, no "extra path" is available.
-            // Still it's possible that prefix-based mapping has been used.
-            // Actually, if there was an exact match no "extra path"
-            // is available (e.g. if the url-pattern is "/faces/*"
-            // and the request-uri is "/context/faces").
-            int slashPos = servletPath.lastIndexOf('/');
-            int extensionPos = servletPath.lastIndexOf('.');
-            if (extensionPos > -1 && extensionPos > slashPos)
-            {
-                String extension = servletPath.substring(extensionPos);
-                return FacesServletMapping.createExtensionMapping(extension);
-            }
-            else
-            {
-                // There is no extension in the given servletPath and therefore
-                // we assume that it's an exact match using prefix-based mapping.
-                return FacesServletMapping.createPrefixMapping(servletPath);
-            }
-        }
-    }
-
     protected String[] getContextSuffix(FacesContext context)
     {
         String defaultSuffix = context.getExternalContext().getInitParameter(ViewHandler.DEFAULT_SUFFIX_PARAM_NAME);

@@ -36,7 +36,6 @@ import org.apache.myfaces.view.facelets.compiler.Compiler;
 
 public class MockMyFacesFaceletViewDeclarationLanguage extends FaceletViewDeclarationLanguage
 {
-    private String _renderedViewId;
     private Map<Resource, Resource> _scriptComponentResources;
 
     public MockMyFacesFaceletViewDeclarationLanguage(FacesContext context)
@@ -51,32 +50,16 @@ public class MockMyFacesFaceletViewDeclarationLanguage extends FaceletViewDeclar
     }
     
     @Override
-    public void buildView(FacesContext context, UIViewRoot view)
-            throws IOException
+    public void buildView(FacesContext context, UIViewRoot view) throws IOException
     {
-        _renderedViewId = null;
         super.buildView(context, view);
     }
 
     public void buildView(FacesContext context, UIViewRoot view, String xmlFile) throws IOException
     {
-        _renderedViewId = xmlFile;
         view.setViewId(xmlFile);
         super.buildView(context, view);
     }
-    
-    @Override
-    public String getRenderedViewId(FacesContext context, String actionId)
-    {
-        if (_renderedViewId != null)
-        {
-            return _renderedViewId;//super.getRenderedViewId(context, actionId);
-        }
-        else
-        {
-            return super.getRenderedViewId(context, actionId);
-        }
-    }    
 
     @Override
     public String calculateViewId(FacesContext context, String viewId)
@@ -108,13 +91,6 @@ public class MockMyFacesFaceletViewDeclarationLanguage extends FaceletViewDeclar
             throws IOException, FacesException
     {
         return super.createResponseWriter(context);
-    }
-
-    @Override
-    public String getDefaultSuffix(FacesContext context)
-            throws FacesException
-    {
-        return super.getDefaultSuffix(context);
     }
 
     @Override

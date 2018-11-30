@@ -226,8 +226,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
     private ViewHandlerSupport _cachedViewHandlerSupport;
 
-    private String _defaultSuffix;
-
     private FaceletFactory _faceletFactory;
 
     private StateManagementStrategy _stateMgmtStrategy;
@@ -339,7 +337,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
         // setup our viewId
         String previousViewId = view.getViewId();
-        String renderedViewId = getRenderedViewId(context, previousViewId);
+        String renderedViewId = previousViewId;
 
         if (renderedViewId == null)
         {
@@ -2273,36 +2271,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         writer = writer.cloneWithWriter(extContext.getResponseOutputWriter());
 
         return writer;
-    }
-
-    /**
-     * @deprecated this code is not used anymore
-     */
-    @Deprecated
-    protected String getDefaultSuffix(FacesContext context) throws FacesException
-    {
-        if (_defaultSuffix == null)
-        {
-            ExternalContext eContext = context.getExternalContext();
-
-            String viewSuffix = eContext.getInitParameter(ViewHandler.DEFAULT_SUFFIX_PARAM_NAME);
-
-            _defaultSuffix = viewSuffix == null ? ViewHandler.DEFAULT_FACELETS_SUFFIX : viewSuffix;
-        }
-
-        return _defaultSuffix;
-    }
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    protected String getRenderedViewId(FacesContext context, String actionId)
-    {
-        // The previous code comes from Facelets 1.1.x but now it becomes invalid. In JSF 2.1, it is possible
-        // to have multiple file extensions, and to make work correctly viewExists(), it is necessary to return
-        // the viewId without changes
-        return actionId;
     }
 
     /**

@@ -42,7 +42,6 @@ public class MockFaceletViewDeclarationLanguage extends
         FaceletViewDeclarationLanguage
 {
 
-    private String _renderedViewId;
     private Map<Resource, Resource> _scriptComponentResources;
     
     public MockFaceletViewDeclarationLanguage(FacesContext context)
@@ -52,15 +51,9 @@ public class MockFaceletViewDeclarationLanguage extends
     
     public void buildView(FacesContext context, UIViewRoot view, String xmlFile) throws IOException
     {
-        _renderedViewId = xmlFile;
+        view.setViewId(xmlFile);
         buildView(context, view);
     }
-    
-    @Override
-    public String getRenderedViewId(FacesContext context, String actionId)
-    {
-        return _renderedViewId;//super.getRenderedViewId(context, actionId);
-    }    
 
     @Override
     public String calculateViewId(FacesContext context, String viewId)
@@ -92,13 +85,6 @@ public class MockFaceletViewDeclarationLanguage extends
             throws IOException, FacesException
     {
         return super.createResponseWriter(context);
-    }
-
-    @Override
-    public String getDefaultSuffix(FacesContext context)
-            throws FacesException
-    {
-        return super.getDefaultSuffix(context);
     }
 
     @Override

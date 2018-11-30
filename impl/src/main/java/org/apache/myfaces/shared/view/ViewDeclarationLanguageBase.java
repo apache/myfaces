@@ -38,10 +38,10 @@ public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguag
      * @param context
      * @param viewId
      */
+    @Override
     public UIViewRoot createView(FacesContext context, String viewId)
     {
         checkNull(context, "context");
-        //checkNull(viewId, "viewId");
 
         try
         {
