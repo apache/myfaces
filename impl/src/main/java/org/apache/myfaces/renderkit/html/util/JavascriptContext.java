@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.html.base;
+package org.apache.myfaces.renderkit.html.util;
 
 /**
  * The ScriptContext offers methods and fields
@@ -153,6 +153,7 @@ public class JavascriptContext
         return this;
     }
 
+    @Override
     public String toString()
     {
         return buffer.toString();

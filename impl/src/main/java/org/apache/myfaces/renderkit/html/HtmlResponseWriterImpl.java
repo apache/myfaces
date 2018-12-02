@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.html.base;
+package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -36,12 +36,14 @@ import javax.faces.render.Renderer;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.ContentTypeUtils;
+import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.UnicodeEncoder;
 import org.apache.myfaces.util.CommentUtils;
 import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.util.StreamCharBuffer;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.HTMLEncoder;
+import org.apache.myfaces.util.Assert;
 
 public class HtmlResponseWriterImpl
         extends ResponseWriter
@@ -316,10 +318,7 @@ public class HtmlResponseWriterImpl
     @Override
     public void startElement(String name, UIComponent uiComponent) throws IOException
     {
-        if (name == null)
-        {
-            throw new NullPointerException("elementName name must not be null");
-        }
+        Assert.notNull(name, "name");
 
         closeStartTagIfNecessary();
         _currentWriter.write('<');
@@ -524,10 +523,7 @@ public class HtmlResponseWriterImpl
     @Override
     public void endElement(String name) throws IOException
     {
-        if (name == null)
-        {
-            throw new NullPointerException("elementName name must not be null");
-        }
+        Assert.notNull(name, "name");
 
         String elementName = name;
 
@@ -814,10 +810,8 @@ public class HtmlResponseWriterImpl
     @Override
     public void writeAttribute(String name, Object value, String componentPropertyName) throws IOException
     {
-        if (name == null)
-        {
-            throw new NullPointerException("attributeName name must not be null");
-        }
+        Assert.notNull(name, "name");
+
         if (!_startTagOpen)
         {
             throw new IllegalStateException("Must be called before the start element is closed (attribute '"
@@ -866,10 +860,8 @@ public class HtmlResponseWriterImpl
     @Override
     public void writeURIAttribute(String name, Object value, String componentPropertyName) throws IOException
     {
-        if (name == null)
-        {
-            throw new NullPointerException("attributeName name must not be null");
-        }
+        Assert.notNull(name, "name");
+
         if (!_startTagOpen)
         {
             throw new IllegalStateException("Must be called before the start element is closed (attribute '"
@@ -905,10 +897,7 @@ public class HtmlResponseWriterImpl
     @Override
     public void writeComment(Object value) throws IOException
     {
-        if (value == null)
-        {
-            throw new NullPointerException("comment name must not be null");
-        }
+        Assert.notNull(value, "value");
 
         closeStartTagIfNecessary();
         _currentWriter.write("<!--");
@@ -919,10 +908,7 @@ public class HtmlResponseWriterImpl
     @Override
     public void writeText(Object value, String componentPropertyName) throws IOException
     {
-        if (value == null)
-        {
-            throw new NullPointerException("Text must not be null.");
-        }
+        Assert.notNull(value, "value");
 
         closeStartTagIfNecessary();
 
@@ -949,10 +935,8 @@ public class HtmlResponseWriterImpl
     @Override
     public void writeText(char cbuf[], int off, int len) throws IOException
     {
-        if (cbuf == null)
-        {
-            throw new NullPointerException("cbuf name must not be null");
-        }
+        Assert.notNull(cbuf, "cbuf");
+
         if (cbuf.length < off + len)
         {
             throw new IndexOutOfBoundsException((off + len) + " > " + cbuf.length);

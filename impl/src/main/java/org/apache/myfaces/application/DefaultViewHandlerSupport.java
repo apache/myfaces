@@ -31,7 +31,7 @@ import javax.faces.render.ResponseStateManager;
 import javax.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.renderkit.html.util.SharedStringBuilder;
+import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ConcurrentLRUCache;
 import org.apache.myfaces.util.ExternalContextUtils;
 import org.apache.myfaces.util.StringUtils;

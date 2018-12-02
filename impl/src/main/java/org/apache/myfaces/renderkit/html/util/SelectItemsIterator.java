@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.util;
+package org.apache.myfaces.renderkit.html.util;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import javax.faces.component.UISelectItems;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
+import org.apache.myfaces.util.ComponentUtils;
 
 // ATTENTION
 // This class is associated with javax.faces.component._SelectItemsIterator.

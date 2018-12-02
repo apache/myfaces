@@ -47,6 +47,7 @@ import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.util.serial.SerialFactory;
 
 /**
@@ -215,25 +216,19 @@ public final class StateUtils
 
     }
     
-    public static boolean enableCompression(ExternalContext ctx)
+    public static boolean enableCompression(ExternalContext externalContext)
     {
-        if(ctx == null)
-        {
-            throw new NullPointerException("ExternalContext ctx");
-        }
+        Assert.notNull(externalContext, "externalContext");
+
     
-        return "true".equals(ctx.getInitParameter(COMPRESS_STATE_IN_CLIENT));
+        return "true".equals(externalContext.getInitParameter(COMPRESS_STATE_IN_CLIENT));
     }
     
-    public static boolean isSecure(ExternalContext ctx)
+    public static boolean isSecure(ExternalContext externalContext)
     {
+        Assert.notNull(externalContext, "externalContext");
         
-        if(ctx == null)
-        {
-            throw new NullPointerException("ExternalContext ctx");
-        }
-        
-        return ! "false".equals(ctx.getInitParameter(USE_ENCRYPTION));
+        return !"false".equals(externalContext.getInitParameter(USE_ENCRYPTION));
     }
 
     /**
@@ -278,10 +273,7 @@ public final class StateUtils
         // get the Factory that was instantiated @ startup
         SerialFactory serialFactory = (SerialFactory) ctx.getApplicationMap().get(SERIAL_FACTORY);
         
-        if(serialFactory == null)
-        {
-            throw new NullPointerException("serialFactory");
-        }
+        Assert.notNull(serialFactory, "serialFactory");
         
         try
         {
@@ -300,23 +292,19 @@ public final class StateUtils
         }
     }
 
-    public static byte[] encrypt(byte[] insecure, ExternalContext ctx)
+    public static byte[] encrypt(byte[] insecure, ExternalContext externalContext)
     {
+        Assert.notNull(externalContext, "externalContext");
 
-        if (ctx == null)
-        {
-            throw new NullPointerException("ExternalContext ctx");
-        }
-
-        testConfiguration(ctx);
+        testConfiguration(externalContext);
         
-        SecretKey secretKey = (SecretKey) getSecret(ctx);
-        String algorithm = findAlgorithm(ctx);
-        String algorithmParams = findAlgorithmParams(ctx);
-        byte[] iv = findInitializationVector(ctx);
+        SecretKey secretKey = (SecretKey) getSecret(externalContext);
+        String algorithm = findAlgorithm(externalContext);
+        String algorithmParams = findAlgorithmParams(externalContext);
+        byte[] iv = findInitializationVector(externalContext);
         
-        SecretKey macSecretKey = (SecretKey) getMacSecret(ctx);
-        String macAlgorithm = findMacAlgorithm(ctx);
+        SecretKey macSecretKey = (SecretKey) getMacSecret(externalContext);
+        String macAlgorithm = findMacAlgorithm(externalContext);
                 
         try
         {
@@ -421,10 +409,7 @@ public final class StateUtils
 
     public static final byte[] decompress(byte[] bytes)
     {
-        if(bytes == null)
-        {
-            throw new NullPointerException("byte[] bytes");
-        }
+        Assert.notNull(bytes, "bytes");
         
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -454,22 +439,19 @@ public final class StateUtils
         }
     }
     
-    public static byte[] decrypt(byte[] secure, ExternalContext ctx)
+    public static byte[] decrypt(byte[] secure, ExternalContext externalContext)
     {
-        if (ctx == null)
-        {
-            throw new NullPointerException("ExternalContext ctx");
-        }
+        Assert.notNull(externalContext, "externalContext");
 
-        testConfiguration(ctx);
+        testConfiguration(externalContext);
                 
-        SecretKey secretKey = (SecretKey) getSecret(ctx);
-        String algorithm = findAlgorithm(ctx);
-        String algorithmParams = findAlgorithmParams(ctx);
-        byte[] iv = findInitializationVector(ctx);
+        SecretKey secretKey = (SecretKey) getSecret(externalContext);
+        String algorithm = findAlgorithm(externalContext);
+        String algorithmParams = findAlgorithmParams(externalContext);
+        byte[] iv = findInitializationVector(externalContext);
         
-        SecretKey macSecretKey = (SecretKey) getMacSecret(ctx);
-        String macAlgorithm = findMacAlgorithm(ctx);
+        SecretKey macSecretKey = (SecretKey) getMacSecret(externalContext);
+        String macAlgorithm = findMacAlgorithm(externalContext);
 
         try
         {
@@ -545,11 +527,8 @@ public final class StateUtils
             // get the Factory that was instantiated @ startup
             SerialFactory serialFactory = (SerialFactory) ctx.getApplicationMap().get(SERIAL_FACTORY);
             
-            if(serialFactory == null)
-            {
-                throw new NullPointerException("serialFactory");
-            }
-            
+            Assert.notNull(serialFactory, "serialFactory");
+
             ObjectInputStream s = null;
             Exception pendingException = null;
             try
@@ -750,13 +729,9 @@ public final class StateUtils
      * stored in application scope where it can be used for all requests.
      */
     
-    public static void initSecret(ServletContext ctx)
+    public static void initSecret(ServletContext servletContext)
     {
-        
-        if(ctx == null)
-        {
-            throw new NullPointerException("ServletContext ctx");
-        }
+        Assert.notNull(servletContext, "servletContext");
         
         if (log.isLoggable(Level.FINE))
         {
@@ -764,19 +739,19 @@ public final class StateUtils
         }
 
         // Create and store SecretKey on application scope
-        String cache = ctx.getInitParameter(INIT_SECRET_KEY_CACHE);
+        String cache = servletContext.getInitParameter(INIT_SECRET_KEY_CACHE);
         
         if(cache == null)
         {
-            cache = ctx.getInitParameter(INIT_SECRET_KEY_CACHE.toLowerCase());
+            cache = servletContext.getInitParameter(INIT_SECRET_KEY_CACHE.toLowerCase());
         }
         
         if (!"false".equals(cache))
         {
-            String algorithm = findAlgorithm(ctx);
+            String algorithm = findAlgorithm(servletContext);
             // you want to create this as few times as possible
-            ctx.setAttribute(INIT_SECRET_KEY_CACHE, new SecretKeySpec(
-                    findSecret(ctx, algorithm), algorithm));
+            servletContext.setAttribute(INIT_SECRET_KEY_CACHE, new SecretKeySpec(
+                    findSecret(servletContext, algorithm), algorithm));
         }
 
         if (log.isLoggable(Level.FINE))
@@ -784,19 +759,19 @@ public final class StateUtils
             log.fine("Storing SecretKey @ " + INIT_MAC_SECRET_KEY_CACHE);
         }
         
-        String macCache = ctx.getInitParameter(INIT_MAC_SECRET_KEY_CACHE);
+        String macCache = servletContext.getInitParameter(INIT_MAC_SECRET_KEY_CACHE);
         
         if(macCache == null)
         {
-            macCache = ctx.getInitParameter(INIT_MAC_SECRET_KEY_CACHE.toLowerCase());
+            macCache = servletContext.getInitParameter(INIT_MAC_SECRET_KEY_CACHE.toLowerCase());
         }
         
         if (!"false".equals(macCache))
         {
-            String macAlgorithm = findMacAlgorithm(ctx);
+            String macAlgorithm = findMacAlgorithm(servletContext);
             // init mac secret and algorithm 
-            ctx.setAttribute(INIT_MAC_SECRET_KEY_CACHE, new SecretKeySpec(
-                    findMacSecret(ctx, macAlgorithm), macAlgorithm));
+            servletContext.setAttribute(INIT_MAC_SECRET_KEY_CACHE, new SecretKeySpec(
+                    findMacSecret(servletContext, macAlgorithm), macAlgorithm));
         }
     }
     

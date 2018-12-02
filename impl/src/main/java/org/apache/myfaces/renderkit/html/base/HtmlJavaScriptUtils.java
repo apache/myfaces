@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.renderkit.html.base;
 
+import org.apache.myfaces.renderkit.html.util.JavascriptContext;
 import java.util.logging.Logger;
 
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils.ScriptContext;
 import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 
 public final class HtmlJavaScriptUtils
@@ -32,12 +32,10 @@ public final class HtmlJavaScriptUtils
     public static void appendClearHiddenCommandFormParamsFunctionCall(
             StringBuilder buf, String formName)
     {
-        appendClearHiddenCommandFormParamsFunctionCall(new ScriptContext(buf,
-                false), formName);
+        appendClearHiddenCommandFormParamsFunctionCall(new JavascriptContext(buf, false), formName);
     }
     
-    private static void appendClearHiddenCommandFormParamsFunctionCall(
-            ScriptContext context, String formName)
+    private static void appendClearHiddenCommandFormParamsFunctionCall(JavascriptContext context, String formName)
     {
         String functionName = HtmlRendererUtils
                 .getClearHiddenCommandFormParamsFunctionName(formName);
@@ -72,8 +70,7 @@ public final class HtmlJavaScriptUtils
      * @param formName
      * @return String
      */
-    public static String getClearHiddenCommandFormParamsFunctionName(
-            String formName)
+    public static String getClearHiddenCommandFormParamsFunctionName(String formName)
     {
         final char separatorChar = FacesContext.getCurrentInstance().getNamingContainerSeparatorChar();
         if (formName == null)
@@ -88,11 +85,9 @@ public final class HtmlJavaScriptUtils
                         + formName.replace(separatorChar, '_'));
     }
 
-    public static String getClearHiddenCommandFormParamsFunctionNameMyfacesLegacy(
-            String formName)
+    public static String getClearHiddenCommandFormParamsFunctionNameMyfacesLegacy(String formName)
     {
-        return "clear_"
-                + JavascriptUtils.getValidJavascriptName(formName, false);
+        return "clear_" + JavascriptUtils.getValidJavascriptName(formName, false);
     }
     
     /**

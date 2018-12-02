@@ -37,6 +37,7 @@ import javax.faces.lifecycle.ClientWindowFactory;
 import javax.faces.lifecycle.Lifecycle;
 
 import org.apache.myfaces.config.FacesConfigurator;
+import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.webapp.webxml.WebXml;
 import org.apache.myfaces.util.DebugUtils;
 
@@ -332,10 +333,8 @@ public class LifecycleImpl extends Lifecycle
     @Override
     public void addPhaseListener(PhaseListener phaseListener)
     {
-        if (phaseListener == null)
-        {
-            throw new NullPointerException("PhaseListener must not be null.");
-        }
+        Assert.notNull(phaseListener, "phaseListener");
+        
         //synchronized (_phaseListenerList)
         //{
             _phaseListenerList.add(phaseListener);
@@ -346,10 +345,8 @@ public class LifecycleImpl extends Lifecycle
     @Override
     public void removePhaseListener(PhaseListener phaseListener)
     {
-        if (phaseListener == null)
-        {
-            throw new NullPointerException("PhaseListener must not be null.");
-        }
+        Assert.notNull(phaseListener, "phaseListener");
+
         //synchronized (_phaseListenerList)
         //{
             _phaseListenerList.remove(phaseListener);

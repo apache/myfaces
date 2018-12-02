@@ -51,6 +51,7 @@ import javax.faces.view.ViewMetadata;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.application.viewstate.StateCacheUtils;
+import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.view.facelets.StateWriter;
 
 /**
@@ -243,37 +244,37 @@ public class ViewHandlerImpl extends ViewHandler
     @Override
     public UIViewRoot createView(FacesContext context, String viewId)
     {
-       checkNull(context, "facesContext");
-       String calculatedViewId = getViewHandlerSupport(context).calculateViewId(context, viewId);
+        Assert.notNull(context, "facesContext");
+        String calculatedViewId = getViewHandlerSupport(context).calculateViewId(context, viewId);
        
-       // we cannot use this.getVDL() directly (see getViewHandler())
-       //return getViewHandler(context)
-       //        .getViewDeclarationLanguage(context, calculatedViewId)
-       //            .createView(context, calculatedViewId);
-       // -= Leonardo Uribe =- Temporally reverted by TCK issues.
-       ViewDeclarationLanguage vdl = getViewDeclarationLanguage(context,calculatedViewId);
-       if (vdl == null)
-       {
-           // If there is no VDL that can handle the view, throw 404 response.
-           sendSourceNotFound(context, viewId);
-           return null;
-       }
-       return vdl.createView(context,calculatedViewId);
+        // we cannot use this.getVDL() directly (see getViewHandler())
+        //return getViewHandler(context)
+        //        .getViewDeclarationLanguage(context, calculatedViewId)
+        //            .createView(context, calculatedViewId);
+        // -= Leonardo Uribe =- Temporally reverted by TCK issues.
+        ViewDeclarationLanguage vdl = getViewDeclarationLanguage(context,calculatedViewId);
+        if (vdl == null)
+        {
+            // If there is no VDL that can handle the view, throw 404 response.
+            sendSourceNotFound(context, viewId);
+            return null;
+        }
+        return vdl.createView(context,calculatedViewId);
     }
 
     @Override
     public String getActionURL(FacesContext context, String viewId)
     {
-        checkNull(context, "facesContext");
-        checkNull(viewId, "viewId");
+        Assert.notNull(context, "facesContext");
+        Assert.notNull(viewId, "viewId");
         return getViewHandlerSupport(context).calculateActionURL(context, viewId);
     }
 
     @Override
     public String getResourceURL(FacesContext facesContext, String path)
     {
-        checkNull(facesContext, "facesContext");
-        checkNull(path, "path");
+        Assert.notNull(facesContext, "facesContext");
+        Assert.notNull(path, "path");
         if (path.length() > 0 && path.charAt(0) == '/')
         {
             String contextPath = facesContext.getExternalContext().getRequestContextPath();
@@ -301,8 +302,8 @@ public class ViewHandlerImpl extends ViewHandler
             throws IOException, FacesException
     {
 
-        checkNull(context, "context");
-        checkNull(viewToRender, "viewToRender");
+        Assert.notNull(context, "context");
+        Assert.notNull(viewToRender, "viewToRender");
 
         // we cannot use this.getVDL() directly (see getViewHandler())
         //String viewId = viewToRender.getViewId();
@@ -315,7 +316,7 @@ public class ViewHandlerImpl extends ViewHandler
     @Override
     public UIViewRoot restoreView(FacesContext context, String viewId)
     {
-        checkNull(context, "context");
+        Assert.notNull(context, "context");
     
         String calculatedViewId = getViewHandlerSupport(context).calculateViewId(context, viewId);
         
@@ -338,7 +339,7 @@ public class ViewHandlerImpl extends ViewHandler
     @Override
     public void writeState(FacesContext context) throws IOException
     {
-        checkNull(context, "context");
+        Assert.notNull(context, "context");
 
         if(context.getPartialViewContext().isAjaxRequest())
         {
@@ -514,14 +515,6 @@ public class ViewHandlerImpl extends ViewHandler
             }
         }        
         return parameters;
-    }
-    
-    private void checkNull(final Object o, final String param)
-    {
-        if (o == null)
-        {
-            throw new NullPointerException(param + " can not be null.");
-        }
     }
     
     private void sendSourceNotFound(FacesContext context, String message)

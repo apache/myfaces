@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.shared.renderkit.html;
 
-import org.apache.myfaces.renderkit.html.base.HtmlResponseWriterImpl;
+import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Field;

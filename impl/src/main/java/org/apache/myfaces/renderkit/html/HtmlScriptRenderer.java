@@ -42,6 +42,7 @@ import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
@@ -113,14 +114,8 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
     public void encodeChildren(FacesContext facesContext, UIComponent component)
             throws IOException
     {
-        if (facesContext == null)
-        {
-            throw new NullPointerException("context");
-        }
-        if (component == null)
-        {
-            throw new NullPointerException("component");
-        }
+        Assert.notNull(facesContext, "facesContext");
+        Assert.notNull(component, "component");
 
         Map<String, Object> componentAttributesMap = component.getAttributes();
         String resourceName = (String) componentAttributesMap.get(JSFAttr.NAME_ATTR);

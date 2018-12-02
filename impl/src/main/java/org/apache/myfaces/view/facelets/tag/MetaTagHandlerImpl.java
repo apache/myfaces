@@ -45,7 +45,7 @@ public abstract class MetaTagHandlerImpl extends MetaTagHandler
     @Override
     protected MetaRuleset createMetaRuleset(Class type)
     {
-        Assert.notNull("type", type);
+        Assert.notNull(type, "type");
         
         return new MetaRulesetImpl(this.tag, type);
     }

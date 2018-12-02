@@ -61,7 +61,7 @@ import java.util.stream.StreamSupport;
 import javax.faces.application.ResourceVisitOption;
 import javax.faces.application.ViewHandler;
 import javax.faces.view.ViewDeclarationLanguage;
-import org.apache.myfaces.renderkit.html.util.SharedStringBuilder;
+import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.resource.ContractResource;
 import org.apache.myfaces.resource.ContractResourceLoader;
 import org.apache.myfaces.resource.ResourceCachedInfo;

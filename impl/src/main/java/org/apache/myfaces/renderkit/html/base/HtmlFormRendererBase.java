@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html.base;
 
+import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
+import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +36,7 @@ import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.renderkit.html.util.SharedStringBuilder;
+import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.renderkit.html.util.HTML;
 
 public class HtmlFormRendererBase

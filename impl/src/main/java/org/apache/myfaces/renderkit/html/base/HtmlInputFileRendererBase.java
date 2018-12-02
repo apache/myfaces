@@ -19,6 +19,8 @@
 
 package org.apache.myfaces.renderkit.html.base;
 
+import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
+import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
@@ -46,6 +48,7 @@ import org.apache.myfaces.renderkit.html.util.FormInfo;
 import org.apache.myfaces.renderkit.html.util.HttpPartWrapper;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
+import org.apache.myfaces.util.Assert;
 
 public class HtmlInputFileRendererBase extends HtmlRenderer
 {
@@ -113,14 +116,9 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue)
             throws ConverterException
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        if (component == null)
-        {
-            throw new NullPointerException("component");
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(component, "component");
+
         return submittedValue;
     }
 

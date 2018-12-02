@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html.base;
 
+import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;

@@ -33,6 +33,7 @@ class ApplyRequestValuesExecutor extends PhaseExecutor
     private ViewPoolProcessor viewPoolProcessor;
     private boolean initialized = false;
 
+    @Override
     public boolean execute(FacesContext facesContext)
     {
         if (facesContext.getViewRoot() == null)
@@ -49,6 +50,7 @@ class ApplyRequestValuesExecutor extends PhaseExecutor
         return false;
     }
 
+    @Override
     public PhaseId getPhase()
     {
         return PhaseId.APPLY_REQUEST_VALUES;

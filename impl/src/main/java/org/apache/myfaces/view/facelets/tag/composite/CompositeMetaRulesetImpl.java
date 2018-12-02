@@ -61,7 +61,7 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
 
         if (metadata == null)
         {
-            metadata = new HashMap<String, MetadataTarget>();
+            metadata = new HashMap<>();
             applicationMap.put(METADATA_KEY, metadata);
         }
 
@@ -69,15 +69,10 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
     }
 
     private final Map<String, TagAttribute> _attributes;
-
     private final List<Metadata> _mappers;
-
     private final List<MetaRule> _rules;
-
     private final Tag _tag;
-
     private final Class<?> _type;
-    
     private final MetadataTarget _meta;
 
     public CompositeMetaRulesetImpl(Tag tag, Class<?> type, BeanInfo beanInfo)
@@ -107,9 +102,10 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
         }
     }
 
+    @Override
     public MetaRuleset add(Metadata mapper)
     {
-        Assert.notNull("mapper", mapper);
+        Assert.notNull(mapper, "mapper");
 
         if (!_mappers.contains(mapper))
         {
@@ -119,19 +115,21 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
         return this;
     }
 
+    @Override
     public MetaRuleset addRule(MetaRule rule)
     {
-        Assert.notNull("rule", rule);
+        Assert.notNull(rule, "rule");
 
         _rules.add(rule);
 
         return this;
     }
 
+    @Override
     public MetaRuleset alias(String attribute, String property)
     {
-        Assert.notNull("attribute", attribute);
-        Assert.notNull("property", property);
+        Assert.notNull(attribute, "attribute");
+        Assert.notNull(property, "property");
 
         TagAttribute attr = (TagAttribute) _attributes.remove(attribute);
         if (attr != null)
@@ -142,6 +140,7 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
         return this;
     }
 
+    @Override
     public Metadata finish()
     {
         assert !_rules.isEmpty();
@@ -190,15 +189,17 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
         }
     }
 
+    @Override
     public MetaRuleset ignore(String attribute)
     {
-        Assert.notNull("attribute", attribute);
+        Assert.notNull(attribute, "attribute");
 
         _attributes.remove(attribute);
 
         return this;
     }
 
+    @Override
     public MetaRuleset ignoreAll()
     {
         _attributes.clear();

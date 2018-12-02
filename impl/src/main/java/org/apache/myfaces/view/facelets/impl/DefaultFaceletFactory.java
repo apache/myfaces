@@ -83,8 +83,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
     public DefaultFaceletFactory(Compiler compiler, ResourceResolver resolver, long refreshPeriod)
     {
-        Assert.notNull("compiler", compiler);
-        Assert.notNull("resolver", resolver);
+        Assert.notNull(compiler, "compiler");
+        Assert.notNull(resolver, "resolver");
 
         _compiler = compiler;
 
@@ -562,7 +562,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
         }
         else
         {
-            Assert.notNull("url", url);
+            Assert.notNull(url, "url");
 
             String key = url.toString();
 

@@ -28,6 +28,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.myfaces.context.servlet.ServletExternalContextImpl;
+import org.apache.myfaces.util.Assert;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -50,21 +51,11 @@ public class ExternalContextFactoryImpl extends ExternalContextFactory
     }
     
     @Override
-    public ExternalContext getExternalContext(Object context, Object request,
-            Object response) throws FacesException
+    public ExternalContext getExternalContext(Object context, Object request, Object response) throws FacesException
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        if (request == null)
-        {
-            throw new NullPointerException("request");
-        }
-        if (response == null)
-        {
-            throw new NullPointerException("response");
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(request, "request");
+        Assert.notNull(response, "response");
 
         if (context instanceof ServletContext)
         {

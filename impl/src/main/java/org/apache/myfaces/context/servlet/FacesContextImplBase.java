@@ -40,6 +40,7 @@ import javax.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.el.unified.FacesELContext;
 import org.apache.myfaces.context.ReleasableExternalContext;
+import org.apache.myfaces.util.Assert;
 
 /**
  * Provides a base implementation of the FacesContext for the use
@@ -281,10 +282,8 @@ public abstract class FacesContextImplBase extends FacesContext
     {
         assertNotReleased();
 
-        if (viewRoot == null)
-        {
-            throw new NullPointerException("viewRoot");
-        }
+        Assert.notNull(viewRoot, "viewRoot");
+        
         // If the current UIViewRoot is non-null, and calling equals() on the argument root,
         // passing the current UIViewRoot returns false
         // the clear method must be called on the Map returned from UIViewRoot.getViewMap().

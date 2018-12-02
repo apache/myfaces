@@ -72,7 +72,7 @@ class FaceletCacheImpl extends FaceletCache<DefaultFacelet>
     @Override
     public DefaultFacelet getFacelet(URL url) throws IOException
     {
-        Assert.notNull("url", url);
+        Assert.notNull(url, "url");
         
         String key = url.toString();
         
@@ -102,7 +102,7 @@ class FaceletCacheImpl extends FaceletCache<DefaultFacelet>
     @Override
     public DefaultFacelet getViewMetadataFacelet(URL url) throws IOException
     {
-        Assert.notNull("url", url);
+        Assert.notNull(url, "url");
         
         String key = url.toString();
         

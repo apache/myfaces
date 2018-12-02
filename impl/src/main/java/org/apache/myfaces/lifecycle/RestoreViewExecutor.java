@@ -83,6 +83,7 @@ class RestoreViewExecutor extends PhaseExecutor
         facesContext.getApplication().getViewHandler().initView(facesContext);
     }
 
+    @Override
     public boolean execute(FacesContext facesContext)
     {
         if (facesContext == null)
@@ -588,6 +589,7 @@ class RestoreViewExecutor extends PhaseExecutor
         _restoreViewSupport = restoreViewSupport;
     }
 
+    @Override
     public PhaseId getPhase()
     {
         return PhaseId.RESTORE_VIEW;

@@ -24,7 +24,7 @@ import org.junit.Assert;
 
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.renderkit.html.base.HtmlResponseWriterImpl;
+import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.Test;
 

@@ -17,14 +17,14 @@
  * under the License.
  */
 
-package org.apache.myfaces.component.validate;
+package org.apache.myfaces.el;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.el.ValueReference;
 import javax.faces.el.CompositeComponentExpressionHolder;
 
-final class _ValueReferenceResolver
+public class ValueReferenceResolver
 {
     /**
      * This method can be used to extract the ValueReference from the given ValueExpression.

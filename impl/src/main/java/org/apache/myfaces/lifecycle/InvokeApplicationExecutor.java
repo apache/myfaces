@@ -33,6 +33,7 @@ class InvokeApplicationExecutor extends PhaseExecutor
     private ViewPoolProcessor viewPoolProcessor;
     private boolean initialized = false;
     
+    @Override
     public boolean execute(FacesContext facesContext)
     {
         if (facesContext.getViewRoot() == null)
@@ -50,6 +51,7 @@ class InvokeApplicationExecutor extends PhaseExecutor
         return false;
     }
 
+    @Override
     public PhaseId getPhase()
     {
         return PhaseId.INVOKE_APPLICATION;

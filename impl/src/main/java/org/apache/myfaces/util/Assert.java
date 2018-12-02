@@ -27,8 +27,8 @@ public class Assert
             throw new NullPointerException("The instance is null.");
         }
     }
-
-    public static void notNull(String fieldName, Object value)
+    
+    public static void notNull(Object value, String fieldName)
     {
         if (value == null)
         {

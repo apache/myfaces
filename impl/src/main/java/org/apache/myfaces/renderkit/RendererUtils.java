@@ -40,7 +40,6 @@ import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
 import javax.faces.component.EditableValueHolder;
-import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIForm;
 import javax.faces.component.UIOutput;
@@ -55,11 +54,13 @@ import javax.faces.model.SelectItem;
 import org.apache.myfaces.renderkit.html.util.FormInfo;
 import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.util.HashMapUtils;
-import org.apache.myfaces.util.SelectItemsIterator;
+import org.apache.myfaces.renderkit.html.util.SelectItemsIterator;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
+import org.apache.myfaces.util.Assert;
 
 public final class RendererUtils
 {
+
     private RendererUtils()
     {
         //nope
@@ -73,45 +74,6 @@ public final class RendererUtils
 
     // This nice constant is "specified" 13.1.1.2 The Resource API Approach in Spec as an example
     public static final String RES_NOT_FOUND = "RES_NOT_FOUND";
-
-    public static String getConcatenatedId(FacesContext context,
-            UIComponent container, String clientId)
-    {
-        UIComponent child = container.findComponent(clientId);
-
-        if (child == null)
-        {
-            return clientId;
-        }
-
-        return getConcatenatedId(context, child);
-    }
-
-    public static String getConcatenatedId(FacesContext context,
-            UIComponent component)
-    {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-
-        StringBuilder idBuf = new StringBuilder();
-
-        idBuf.append(component.getId());
-
-        UIComponent parent;
-
-        while ((parent = component.getParent()) != null)
-        {
-            if (parent instanceof NamingContainer)
-            {
-                idBuf.insert(0, context.getNamingContainerSeparatorChar());
-                idBuf.insert(0, parent.getId());
-            }
-        }
-
-        return idBuf.toString();
-    }
 
     public static Boolean getBooleanValue(UIComponent component)
     {
@@ -539,14 +501,8 @@ public final class RendererUtils
     public static void checkParamValidity(FacesContext facesContext,
             UIComponent uiComponent, Class compClass)
     {
-        if (facesContext == null)
-        {
-            throw new NullPointerException("facesContext may not be null");
-        }
-        if (uiComponent == null)
-        {
-            throw new NullPointerException("uiComponent may not be null");
-        }
+        Assert.notNull(facesContext, "facesContext");
+        Assert.notNull(uiComponent, "uiComponent");
 
         //if (compClass != null && !(compClass.isAssignableFrom(uiComponent.getClass())))
         // why isAssignableFrom with additional getClass method call if isInstance does the same?

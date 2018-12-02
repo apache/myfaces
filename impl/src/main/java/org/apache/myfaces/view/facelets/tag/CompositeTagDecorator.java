@@ -36,7 +36,7 @@ public final class CompositeTagDecorator implements TagDecorator
 
     public CompositeTagDecorator(TagDecorator[] decorators)
     {
-        Assert.notNull("decorators", decorators);
+        Assert.notNull(decorators, "decorators");
         this.decorators = decorators;
     }
 

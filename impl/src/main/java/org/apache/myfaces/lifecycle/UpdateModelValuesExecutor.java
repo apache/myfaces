@@ -29,6 +29,7 @@ import javax.faces.event.PhaseId;
  */
 class UpdateModelValuesExecutor extends PhaseExecutor
 {
+    @Override
     public boolean execute(FacesContext facesContext)
     {
         if (facesContext.getViewRoot() == null)
@@ -39,6 +40,7 @@ class UpdateModelValuesExecutor extends PhaseExecutor
         return false;
     }
 
+    @Override
     public PhaseId getPhase()
     {
         return PhaseId.UPDATE_MODEL_VALUES;

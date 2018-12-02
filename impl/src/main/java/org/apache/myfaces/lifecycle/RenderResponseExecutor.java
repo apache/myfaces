@@ -43,9 +43,9 @@ import javax.faces.view.ViewDeclarationLanguage;
  */
 class RenderResponseExecutor extends PhaseExecutor
 {
-    
     private static final Logger log = Logger.getLogger(RenderResponseExecutor.class.getName());
     
+    @Override
     public boolean execute(FacesContext facesContext)
     {
         Application application = facesContext.getApplication();
@@ -153,6 +153,7 @@ class RenderResponseExecutor extends PhaseExecutor
         return false;
     }
 
+    @Override
     public PhaseId getPhase()
     {
         return PhaseId.RENDER_RESPONSE;

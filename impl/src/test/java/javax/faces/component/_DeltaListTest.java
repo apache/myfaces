@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.FacesListener;
+import org.apache.myfaces.util.Assert;
 
 public class _DeltaListTest extends AbstractComponentTest
 {
@@ -49,10 +50,8 @@ public class _DeltaListTest extends AbstractComponentTest
         
         public void addTestFacesListener(FacesListener listener)
         {
-            if (listener == null)
-            {
-                throw new NullPointerException("listener");
-            }
+            Assert.notNull(listener, "listener");
+
             if (_facesListeners == null)
             {
                 _facesListeners = new _DeltaList<FacesListener>();
@@ -62,10 +61,8 @@ public class _DeltaListTest extends AbstractComponentTest
         
         public FacesListener[] getTestFacesListeners(Class clazz)
         {
-            if (clazz == null)
-            {
-                throw new NullPointerException("Class is null");
-            }
+            Assert.notNull(clazz, "clazz");
+
             if (!FacesListener.class.isAssignableFrom(clazz))
             {
                 throw new IllegalArgumentException("Class " + clazz.getName() + " must implement " + FacesListener.class);

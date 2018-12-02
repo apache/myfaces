@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html.base;
 
+import org.apache.myfaces.renderkit.html.util.JavascriptContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1480,7 +1481,7 @@ public final class HtmlRendererUtils
     private static boolean getClientBehaviorScript(FacesContext facesContext,
             UIComponent uiComponent, String sourceId, String eventName,
             Map<String, List<ClientBehavior>> clientBehaviors,
-            ScriptContext target,
+            JavascriptContext target,
             Collection<ClientBehaviorContext.Parameter> params)
     {
         if (!(uiComponent instanceof ClientBehaviorHolder))
@@ -1531,7 +1532,7 @@ public final class HtmlRendererUtils
         return submitting;
     }
 
-    private static boolean _appendClientBehaviourScript(ScriptContext target, ClientBehaviorContext context, 
+    private static boolean _appendClientBehaviourScript(JavascriptContext target, ClientBehaviorContext context, 
             boolean submitting, boolean hasNext, ClientBehavior clientBehavior)
     {
         String script = clientBehavior.getScript(context);
@@ -1576,7 +1577,7 @@ public final class HtmlRendererUtils
             Map<String, List<ClientBehavior>> clientBehaviors,
             String userEventCode, String serverEventCode)
     {
-        List<String> finalParams = new ArrayList<String>(3);
+        List<String> finalParams = new ArrayList<>(3);
         if (userEventCode != null && !userEventCode.trim().isEmpty())
         {
             // escape every ' in the user event code since it will
@@ -1584,8 +1585,8 @@ public final class HtmlRendererUtils
             finalParams.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
         }
         
-        ScriptContext behaviorCode = new ScriptContext();
-        ScriptContext retVal = new ScriptContext();
+        JavascriptContext behaviorCode = new JavascriptContext();
+        JavascriptContext retVal = new JavascriptContext();
         getClientBehaviorScript(facesContext, uiComponent, sourceId,
                 eventName, clientBehaviors, behaviorCode, params);
         
@@ -1668,12 +1669,12 @@ public final class HtmlRendererUtils
             finalParams.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
         }
 
-        ScriptContext behaviorCode = new ScriptContext();
-        ScriptContext retVal = new ScriptContext();
+        JavascriptContext behaviorCode = new JavascriptContext();
+        JavascriptContext retVal = new JavascriptContext();
         boolean submitting1 = getClientBehaviorScript(facesContext,
                 uiComponent, sourceId, eventName1, clientBehaviors,
                 behaviorCode, params);
-        ScriptContext behaviorCode2 = new ScriptContext();
+        JavascriptContext behaviorCode2 = new JavascriptContext();
         boolean submitting2 = getClientBehaviorScript(facesContext,
                 uiComponent, sourceId, eventName2, clientBehaviors,
                 behaviorCode2, params2);
@@ -2434,26 +2435,5 @@ public final class HtmlRendererUtils
         messages.setRedisplay(false);
         // render the component
         messages.encodeAll(facesContext);
-    }
-
-    /**
-     * The ScriptContext offers methods and fields
-     * to help with rendering out a script and keeping a
-     * proper formatting.
-     */
-    public static class ScriptContext extends JavascriptContext
-    {
-        public ScriptContext()
-        {
-            super();
-        }
-        public ScriptContext(boolean prettyPrint)
-        {
-            super(prettyPrint);
-        }
-        public ScriptContext(StringBuilder buf, boolean prettyPrint)
-        {
-            super(buf, prettyPrint);
-        }
     }
 }

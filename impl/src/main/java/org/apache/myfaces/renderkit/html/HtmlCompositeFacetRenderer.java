@@ -25,6 +25,7 @@ import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
+import org.apache.myfaces.util.Assert;
 
 /**
  * 
@@ -50,15 +51,9 @@ public class HtmlCompositeFacetRenderer extends HtmlRenderer
     public void encodeChildren(FacesContext context, UIComponent component)
             throws IOException
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        if (component == null)
-        {
-            throw new NullPointerException("component");
-        }
-        
+        Assert.notNull(context, "context");
+        Assert.notNull(component, "component");
+
         String facetName = (String) component.getAttributes().get(UIComponent.FACETS_KEY);
         
         if (facetName == null)

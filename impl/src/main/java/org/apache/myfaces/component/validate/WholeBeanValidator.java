@@ -19,6 +19,8 @@
 
 package org.apache.myfaces.component.validate;
 
+import org.apache.myfaces.el.ELContextDecorator;
+import org.apache.myfaces.el.ValueReferenceResolver;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -61,6 +63,7 @@ import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 import javax.validation.metadata.BeanDescriptor;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.util.MessageUtils;
 import org.apache.myfaces.util.MyFacesObjectInputStream;
 import org.apache.myfaces.util.ExternalSpecifications;
@@ -85,14 +88,8 @@ public class WholeBeanValidator implements Validator
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        if (component == null)
-        {
-            throw new NullPointerException("component");
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(component, "component");
 
         ValueExpression valueExpression = component.getValueExpression("value");
         if (valueExpression == null)
@@ -278,7 +275,7 @@ public class WholeBeanValidator implements Validator
     {
         ELContext elCtx = context.getELContext();
         
-        return _ValueReferenceResolver.resolve(valueExpression, elCtx);
+        return ValueReferenceResolver.resolve(valueExpression, elCtx);
     }
 
     /**
@@ -499,7 +496,7 @@ public class WholeBeanValidator implements Validator
             if (base == this.wholeBeanBase || base.equals(this.wholeBeanBase))
             {
                 // Do the trick over ELResolver and apply it to the copy.
-                ELContext elCtxDecorator = new _ELContextDecorator(context.getFacesContext().getELContext(),
+                ELContext elCtxDecorator = new ELContextDecorator(context.getFacesContext().getELContext(),
                         new CopyBeanInterceptorELResolver(context.getFacesContext().getApplication().getELResolver(),
                             this.wholeBeanBase, this.wholeBeanBaseCopy));
                 

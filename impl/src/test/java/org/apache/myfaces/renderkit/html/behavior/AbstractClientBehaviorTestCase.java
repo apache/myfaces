@@ -26,7 +26,7 @@ import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.ResponseWriter;
 
-import org.apache.myfaces.renderkit.html.base.HtmlResponseWriterImpl;
+import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.util.FastWriter;
 import org.apache.myfaces.test.config.ConfigParser;
 import org.apache.myfaces.view.facelets.FaceletTestCase;

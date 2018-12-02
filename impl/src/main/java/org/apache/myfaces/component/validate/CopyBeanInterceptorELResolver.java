@@ -24,15 +24,11 @@ import java.util.Iterator;
 import javax.el.ELContext;
 import javax.el.ELResolver;
 
-/**
- *
- */
 public class CopyBeanInterceptorELResolver extends ELResolver
 {
     private final ELResolver resolver;
     private final Object base;
     private final Object copy;
-
 
     /**
      * Constructor is only used internally.
@@ -60,26 +56,31 @@ public class CopyBeanInterceptorELResolver extends ELResolver
         }
     }
 
+    @Override
     public Class<?> getType(final ELContext ctx, final Object base, final Object property)
     {
         return resolver.getType(ctx, base, property);
     }
 
+    @Override
     public void setValue(final ELContext ctx, final Object base, final Object property, final Object value)
     {
         resolver.setValue(ctx, base, property, value);
     }
 
+    @Override
     public boolean isReadOnly(final ELContext ctx, final Object base, final Object property)
     {
         return resolver.isReadOnly(ctx, base, property);
     }
 
+    @Override
     public Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext ctx, final Object base)
     {
         return resolver.getFeatureDescriptors(ctx, base);
     }
 
+    @Override
     public Class<?> getCommonPropertyType(final ELContext ctx, final Object base)
     {
         return resolver.getCommonPropertyType(ctx, base);

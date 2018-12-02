@@ -16,14 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.html.base;
+package org.apache.myfaces.renderkit.html.util;
 
 import java.io.IOException;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ResponseWriter;
-import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
 
 public final class CommonPropertyUtils
 {

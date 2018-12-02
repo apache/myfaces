@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.myfaces.component.validate;
+package org.apache.myfaces.el;
 
 import java.util.Locale;
 import javax.el.ELContext;
@@ -29,7 +29,7 @@ import javax.el.VariableMapper;
  * This ELContext is used to hook into the EL handling, by decorating the
  * ELResolver chain with a custom ELResolver.
  */
-final class _ELContextDecorator extends ELContext
+public class ELContextDecorator extends ELContext
 {
     private final ELContext ctx;
     private final ELResolver interceptingResolver;
@@ -40,7 +40,7 @@ final class _ELContextDecorator extends ELContext
      * @param elContext The standard ELContext. All method calls, except getELResolver, are delegated to it.
      * @param interceptingResolver The ELResolver to be returned by getELResolver.
      */
-    _ELContextDecorator(final ELContext elContext, final ELResolver interceptingResolver)
+    public ELContextDecorator(final ELContext elContext, final ELResolver interceptingResolver)
     {
         this.ctx = elContext;
         this.interceptingResolver = interceptingResolver;

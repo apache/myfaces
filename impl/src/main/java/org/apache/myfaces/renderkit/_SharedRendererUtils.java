@@ -44,7 +44,7 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
 import org.apache.myfaces.util.ComponentUtils;
-import org.apache.myfaces.util.SelectItemsIterator;
+import org.apache.myfaces.renderkit.html.util.SelectItemsIterator;
 
 /**
  * The util methods in this class are shared between the javax.faces.component package and

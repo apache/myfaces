@@ -29,6 +29,7 @@ import javax.faces.event.PhaseId;
  */
 class ProcessValidationsExecutor extends PhaseExecutor
 {
+    @Override
     public boolean execute(FacesContext facesContext)
     {
         if (facesContext.getViewRoot() == null)
@@ -39,6 +40,7 @@ class ProcessValidationsExecutor extends PhaseExecutor
         return false;
     }
 
+    @Override
     public PhaseId getPhase()
     {
         return PhaseId.PROCESS_VALIDATIONS;

@@ -44,7 +44,7 @@ import org.apache.myfaces.renderkit.LazyRenderKit;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.ContentTypeUtils;
 import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
-import org.apache.myfaces.renderkit.html.base.HtmlResponseWriterImpl;
+import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.util.ClassUtils;
 
 /**
@@ -76,14 +76,8 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
     @Override
     public void addClientBehaviorRenderer(String type, ClientBehaviorRenderer renderer)
     {
-        if (type == null)
-        {
-            throw new NullPointerException("client behavior renderer type must not be null");
-        }
-        if ( renderer == null)
-        {
-            throw new NullPointerException("client behavior renderer must not be null");
-        }
+        Assert.notNull(type, "type");
+        Assert.notNull(renderer, "renderer");
         
         _clientBehaviorRenderers.put(type, renderer);
     }
@@ -91,10 +85,7 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
     @Override
     public ClientBehaviorRenderer getClientBehaviorRenderer(String type)
     {
-        if (type == null)
-        {
-            throw new NullPointerException("client behavior renderer type must not be null");
-        }
+        Assert.notNull(type, "type");
         
         return _clientBehaviorRenderers.get(type);
     }
@@ -108,15 +99,8 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
     @Override
     public Renderer getRenderer(String componentFamily, String rendererType)
     {
-        if (componentFamily == null)
-        {
-            throw new NullPointerException("component family must not be null.");
-        }
-        
-        if (rendererType == null)
-        {
-            throw new NullPointerException("renderer type must not be null.");
-        }
+        Assert.notNull(componentFamily, "componentFamily");
+        Assert.notNull(rendererType, "rendererType");
         
         Map <String,Renderer> familyRendererMap = _renderers.get(componentFamily); 
         Renderer renderer = null;
@@ -139,22 +123,10 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
     @Override
     public void addRenderer(String componentFamily, String rendererType, Renderer renderer)
     {
-        if (componentFamily == null)
-        {
-            log.severe("addRenderer: componentFamily = null is not allowed");
-            throw new NullPointerException("component family must not be null.");
-        }
-        if (rendererType == null)
-        {
-            log.severe("addRenderer: rendererType = null is not allowed");
-            throw new NullPointerException("renderer type must not be null.");
-        }
-        if (renderer == null)
-        {
-            log.severe("addRenderer: renderer = null is not allowed");
-            throw new NullPointerException("renderer must not be null.");
-        }
-        
+        Assert.notNull(componentFamily, "componentFamily");
+        Assert.notNull(rendererType, "rendererType");
+        Assert.notNull(renderer, "renderer");
+
         _put(componentFamily, rendererType, renderer);
 
         if (log.isLoggable(Level.FINEST))
@@ -167,21 +139,9 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
     @Override
     public void addRenderer(String componentFamily, String rendererType, String rendererClass)
     {
-        if (componentFamily == null)
-        {
-            log.severe("addRenderer: componentFamily = null is not allowed");
-            throw new NullPointerException("component family must not be null.");
-        }
-        if (rendererType == null)
-        {
-            log.severe("addRenderer: rendererType = null is not allowed");
-            throw new NullPointerException("renderer type must not be null.");
-        }
-        if (rendererClass == null)
-        {
-            log.severe("addRenderer: renderer = null is not allowed");
-            throw new NullPointerException("renderer must not be null.");
-        }
+        Assert.notNull(componentFamily, "componentFamily");
+        Assert.notNull(rendererType, "rendererType");
+        Assert.notNull(rendererClass, "rendererClass");
 
         _put(componentFamily, rendererType, new LazyRendererWrapper(rendererClass));
 

@@ -39,7 +39,7 @@ public final class CompositeTagLibrary implements TagLibrary
 
     public CompositeTagLibrary(TagLibrary[] libraries)
     {
-        Assert.notNull("libraries", libraries);
+        Assert.notNull(libraries, "libraries");
         this.libraries = libraries;
     }
 

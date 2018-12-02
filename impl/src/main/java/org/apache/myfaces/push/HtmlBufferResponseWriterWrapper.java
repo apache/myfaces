@@ -21,7 +21,7 @@ package org.apache.myfaces.push;
 
 import javax.faces.context.ResponseWriter;
 import java.io.*;
-import org.apache.myfaces.renderkit.html.base.HtmlResponseWriterImpl;
+import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 
 /**A buffer for content which should not directly be rendered to the page.
  *

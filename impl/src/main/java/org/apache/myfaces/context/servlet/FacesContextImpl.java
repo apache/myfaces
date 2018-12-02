@@ -45,6 +45,7 @@ import org.apache.myfaces.cdi.scope.FacesScopeProvider;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.context.ReleasableFacesContextFactory;
 import org.apache.myfaces.context.ReleasableExternalContext;
+import org.apache.myfaces.util.Assert;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -171,10 +172,7 @@ public class FacesContextImpl extends FacesContextImplBase
     {
         assertNotReleased();
 
-        if (message == null)
-        {
-            throw new NullPointerException("message");
-        }
+        Assert.notNull(message, "message");
 
         if (_messages == null)
         {
@@ -344,10 +342,8 @@ public class FacesContextImpl extends FacesContextImplBase
     {
         assertNotReleased();
 
-        if (responseStream == null)
-        {
-            throw new NullPointerException("responseStream");
-        }
+        Assert.notNull(responseStream, "responseStream");
+        
         _responseStream = responseStream;
     }
 

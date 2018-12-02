@@ -135,7 +135,7 @@ public abstract class Compiler
 
     public final void addTagDecorator(TagDecorator decorator)
     {
-        Assert.notNull("decorator", decorator);
+        Assert.notNull(decorator, "decorator");
         if (!this.decorators.contains(decorator))
         {
             this.decorators.add(decorator);
@@ -195,7 +195,7 @@ public abstract class Compiler
 
     public final void addTagLibrary(TagLibrary library)
     {
-        Assert.notNull("library", library);
+        Assert.notNull(library, "library");
         if (!this.libraries.contains(library))
         {
             this.libraries.add(library);

@@ -30,6 +30,7 @@ import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import javax.faces.context.ExternalContext;
+import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.util.StringUtils;
 
 /**
@@ -473,10 +474,9 @@ public class GAEUtils
          */
         public int checkCompareTo(String str1, String str2)
         {
-            if (str1 == null || str2 == null)
-            {
-                throw new NullPointerException("The strings must not be null");
-            }
+            Assert.notNull(str1, "str1");
+            Assert.notNull(str2, "str2");
+
             return sensitive ? str1.compareTo(str2) : str1.compareToIgnoreCase(str2);
         }
 

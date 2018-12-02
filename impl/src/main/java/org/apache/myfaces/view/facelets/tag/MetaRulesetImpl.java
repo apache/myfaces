@@ -176,7 +176,7 @@ public final class MetaRulesetImpl extends MetaRuleset
     @Override
     public MetaRuleset add(Metadata mapper)
     {
-        Assert.notNull("mapper", mapper);
+        Assert.notNull(mapper, "mapper");
 
         if (!_mappers.contains(mapper))
         {
@@ -189,7 +189,7 @@ public final class MetaRulesetImpl extends MetaRuleset
     @Override
     public MetaRuleset addRule(MetaRule rule)
     {
-        Assert.notNull("rule", rule);
+        Assert.notNull(rule, "rule");
 
         if (rule instanceof PassthroughRule)
         {
@@ -206,8 +206,8 @@ public final class MetaRulesetImpl extends MetaRuleset
     @Override
     public MetaRuleset alias(String attribute, String property)
     {
-        Assert.notNull("attribute", attribute);
-        Assert.notNull("property", property);
+        Assert.notNull(attribute, "attribute");
+        Assert.notNull(property, "property");
 
         TagAttribute attr = (TagAttribute) _attributes.remove(attribute);
         if (attr != null)
@@ -312,7 +312,7 @@ public final class MetaRulesetImpl extends MetaRuleset
     @Override
     public MetaRuleset ignore(String attribute)
     {
-        Assert.notNull("attribute", attribute);
+        Assert.notNull(attribute, "attribute");
 
         _attributes.remove(attribute);
 

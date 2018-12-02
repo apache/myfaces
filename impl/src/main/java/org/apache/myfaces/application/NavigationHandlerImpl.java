@@ -67,7 +67,7 @@ import javax.faces.view.ViewMetadata;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.flow.FlowHandlerImpl;
-import org.apache.myfaces.renderkit.html.util.SharedStringBuilder;
+import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.util.HashMapUtils;
 import org.apache.myfaces.util.StringUtils;

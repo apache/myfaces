@@ -44,10 +44,11 @@ import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
 import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
+import org.apache.myfaces.renderkit.html.util.JavascriptContext;
 import org.apache.myfaces.renderkit.html.util.FormInfo;
 import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.renderkit.html.util.SharedStringBuilder;
+import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.StringUtils;
 
 @JSFRenderer(
@@ -87,7 +88,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         writer.startElement(HTML.SCRIPT_ELEM, component);
         writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
         
-        HtmlRendererUtils.ScriptContext script = new HtmlRendererUtils.ScriptContext();
+        JavascriptContext script = new JavascriptContext();
         
         //Write content
         String cmdName = commandScript.getName();

@@ -28,6 +28,7 @@ import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
+import org.apache.myfaces.util.Assert;
 
 /**
  * RenderKitFactory implementation as defined in Spec. JSF.7.3
@@ -53,14 +54,9 @@ public class RenderKitFactoryImpl extends RenderKitFactory
     @Override
     public void addRenderKit(String renderKitId, RenderKit renderKit)
     {
-        if (renderKitId == null)
-        {
-            throw new NullPointerException("renderKitId");
-        }
-        if (renderKit == null)
-        {
-            throw new NullPointerException("renderKit");
-        }
+        Assert.notNull(renderKitId, "renderKitId");
+        Assert.notNull(renderKit, "renderKit");
+
         if (log.isLoggable(Level.INFO))
         {
             if (_renderkits.containsKey(renderKitId))

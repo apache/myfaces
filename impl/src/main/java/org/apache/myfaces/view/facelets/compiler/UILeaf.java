@@ -46,7 +46,7 @@ import javax.faces.render.Renderer;
 
 import javax.faces.view.Location;
 
-import org.apache.myfaces.renderkit.html.util.SharedStringBuilder;
+import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 

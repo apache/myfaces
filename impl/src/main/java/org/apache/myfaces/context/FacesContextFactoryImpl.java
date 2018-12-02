@@ -35,6 +35,7 @@ import javax.faces.lifecycle.Lifecycle;
 import javax.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
+import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.util.ClassUtils;
 
 /**
@@ -129,24 +130,12 @@ public class FacesContextFactoryImpl extends FacesContextFactory implements Rele
 
     @Override
     public FacesContext getFacesContext(Object context, Object request, Object response, Lifecycle lifecycle)
-        throws FacesException
+            throws FacesException
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
-        if (request == null)
-        {
-            throw new NullPointerException("request");
-        }
-        if (response == null)
-        {
-            throw new NullPointerException("response");
-        }
-        if (lifecycle == null)
-        {
-            throw new NullPointerException("lifecycle");
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(request, "request");
+        Assert.notNull(response, "response");
+        Assert.notNull(lifecycle, "lifecycle");
         
         ExternalContext externalContext = _externalContextFactory.getExternalContext(context, request, response);
 

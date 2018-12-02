@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.html.util;
+package org.apache.myfaces.util;
 
 import java.util.Map;
 import javax.faces.context.FacesContext;

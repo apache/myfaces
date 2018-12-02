@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.renderkit.html.base;
 
+import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
+import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
+import org.apache.myfaces.renderkit.html.util.CommonPropertyConstants;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
