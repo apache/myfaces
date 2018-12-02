@@ -335,25 +335,14 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             }
         }
 
-        // setup our viewId
-        String previousViewId = view.getViewId();
-        String renderedViewId = previousViewId;
-
-        if (renderedViewId == null)
-        {
-            view.setViewId(renderedViewId);
-        }
-        else if (!renderedViewId.equals(previousViewId))
-        {
-            view.setViewId(renderedViewId);
-        }
+        String viewId = view.getViewId();
 
         if (log.isLoggable(Level.FINEST))
         {
-            log.finest("Building View: " + renderedViewId);
+            log.finest("Building View: " + viewId);
         }
 
-        boolean usePartialStateSavingOnThisView = _usePartialStateSavingOnThisView(renderedViewId);
+        boolean usePartialStateSavingOnThisView = _usePartialStateSavingOnThisView(viewId);
         boolean refreshTransientBuild = (view.getChildCount() > 0);
         boolean refreshTransientBuildOnPSS = (usePartialStateSavingOnThisView && _refreshTransientBuildOnPSS);
         boolean refreshPartialView = false;
@@ -441,7 +430,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 //context.setProcessingEvents(false);
             }
             // populate UIViewRoot
-            _getFacelet(context, renderedViewId).apply(context, view);
+            _getFacelet(context, viewId).apply(context, view);
         }
         finally
         {

@@ -178,5 +178,14 @@ public class FacesServletMapping
     {
         return exact != null;
     }
-    
+
+    @Override
+    public String toString()
+    {
+        return "FacesServletMapping{" +
+                "prefix='" + prefix + '\'' +
+                ", extension='" + extension + '\'' +
+                ", exact='" + exact + '\'' +
+                '}';
+    }
 }

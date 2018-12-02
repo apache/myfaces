@@ -290,7 +290,7 @@ public class FacesServletMappingUtils
     }
     
     
-    public static FacesServletMapping getPrefixOrSuffixMapping(FacesContext facesContext, String viewId)
+    public static FacesServletMapping getGenericPrefixOrSuffixMapping(FacesContext facesContext)
     {
         if (!ExternalContextUtils.isPortlet(facesContext.getExternalContext()))
         {
@@ -303,10 +303,7 @@ public class FacesServletMappingUtils
                     if (isExtensionMapping(mapping))
                     {
                         String extension = extractExtension(mapping);
-                        if (viewId.endsWith(extension))
-                        {
-                            return FacesServletMapping.createExtensionMapping(extension);
-                        }
+                        return FacesServletMapping.createExtensionMapping(extension);
                     }
                     else if (isPrefixMapping(mapping))
                     {
