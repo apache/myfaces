@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.view;
+package org.apache.myfaces.view;
 
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;

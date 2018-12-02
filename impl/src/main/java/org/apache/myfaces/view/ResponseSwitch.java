@@ -16,12 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.view;
+package org.apache.myfaces.view;
 
-import java.io.IOException;
-import java.io.Writer;
-
-public interface ViewResponseWrapper
+/**
+ * Responses which can be enabled or disabled implement this interface.
+ */
+public interface ResponseSwitch
 {
-  void flushToWriter(Writer writer,String encoding) throws IOException;
+
+    /**
+     * Enables or disables the Response's Writer and OutputStream.
+     * @param enabled
+     */
+    public void setEnabled(boolean enabled);
+
+    /**
+     * Are the Response's Writer and OutputStream currently enabled?
+     * @return
+     */
+    public boolean isEnabled();
+    
 }

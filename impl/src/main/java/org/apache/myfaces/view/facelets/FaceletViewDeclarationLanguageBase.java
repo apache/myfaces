@@ -23,7 +23,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitContextFactory;
 import javax.faces.context.FacesContext;
 import javax.faces.render.RenderKitFactory;
-import org.apache.myfaces.shared.view.ViewDeclarationLanguageBase;
+import org.apache.myfaces.view.ViewDeclarationLanguageBase;
 
 /**
  *

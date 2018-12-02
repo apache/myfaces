@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.view;
+package org.apache.myfaces.view.jsp;
 
 import java.beans.BeanInfo;
 import java.io.IOException;
@@ -45,6 +45,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.shared.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.shared.application.ViewHandlerSupport;
 import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.view.HttpServletResponseSwitch;
+import org.apache.myfaces.view.ResponseSwitch;
+import org.apache.myfaces.view.ServletResponseSwitch;
+import org.apache.myfaces.view.ViewDeclarationLanguageBase;
+import org.apache.myfaces.view.ViewResponseWrapper;
 
 
 public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLanguageBase

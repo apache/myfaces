@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.view;
+package org.apache.myfaces.view;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -48,6 +48,7 @@ public class ServletResponseSwitch extends ServletResponseWrapper implements Res
      * Enables or disables the Response's Writer and OutputStream.
      * @param enabled
      */
+    @Override
     public void setEnabled(boolean enabled)
     {
         _enabled = enabled;
@@ -57,6 +58,7 @@ public class ServletResponseSwitch extends ServletResponseWrapper implements Res
      * Are the Response's Writer and OutputStream currently enabled?
      * @return
      */
+    @Override
     public boolean isEnabled()
     {
         return _enabled;

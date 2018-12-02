@@ -34,16 +34,19 @@ public final class EnumerationIterator<T> implements Iterator<T>
         _enumeration = enumeration;
     }
 
+    @Override
     public boolean hasNext()
     {
         return _enumeration.hasMoreElements();
     }
 
+    @Override
     public T next()
     {
         return _enumeration.nextElement();
     }
 
+    @Override
     public void remove()
     {
         throw new UnsupportedOperationException(this.getClass().getName() + " UnsupportedOperationException");

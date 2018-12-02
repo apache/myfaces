@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.application.jsp;
 
-import org.apache.myfaces.shared.view.ViewResponseWrapper;
+import org.apache.myfaces.view.ViewResponseWrapper;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
