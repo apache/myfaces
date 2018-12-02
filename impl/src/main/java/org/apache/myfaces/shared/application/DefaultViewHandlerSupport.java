@@ -236,23 +236,30 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         // In JSF 2.3 we could have cases where the viewId can be bound to an url-pattern that is not
         // prefix or suffix, but exact mapping. In this part we need to take the viewId and check if
         // the viewId is bound or not with a mapping.
-        FacesServletMapping exactMapping = null;
-        String exactMappingViewId = calculatePrefixedExactMapping(context, viewId);
-        if (exactMappingViewId != null && exactMappingViewId.length() > 0)
+        if (mapping != null && mapping.isExactMapping())
         {
-            exactMapping = FacesServletMappingUtils.getExactMapping(context, exactMappingViewId);
-        }
-
-        // no exactMapping for the requested viewId available BUT the current view is a exactMapping
-        // we need a new mapping to a prefix or extension mapping
-        if (exactMapping == null && (mapping != null && mapping.isExactMapping()))
-        {
-            mapping = FacesServletMappingUtils.getGenericPrefixOrSuffixMapping(context);
-            if (mapping == null)
+            String exactMappingViewId = calculatePrefixedExactMapping(context, viewId);
+            if (exactMappingViewId != null && !exactMappingViewId.isEmpty())
             {
-                throw new IllegalStateException(
-                        "No generic (either prefix or suffix) servlet-mapping found for FacesServlet."
-                        + "This is required serve views, that are not exact mapped.");
+                // if the current exactMapping already matches the requested viewId -> same view, skip....
+                if (!mapping.getExact().equals(exactMappingViewId))
+                {
+                    // different viewId -> lets try to lookup a exact mapping
+                    mapping = FacesServletMappingUtils.getExactMapping(context, exactMappingViewId);
+
+                    // no exactMapping for the requested viewId available BUT the current view is a exactMapping
+                    // we need a to search for a prefix or extension mapping
+                    if (mapping == null)
+                    {
+                        mapping = FacesServletMappingUtils.getGenericPrefixOrSuffixMapping(context);
+                        if (mapping == null)
+                        {
+                            throw new IllegalStateException(
+                                    "No generic (either prefix or suffix) servlet-mapping found for FacesServlet."
+                                    + "This is required serve views, that are not exact mapped.");
+                        }
+                    }
+                }
             }
         }
 
