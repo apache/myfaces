@@ -24,9 +24,9 @@ import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
-import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.renderkit.html.util.JSFAttr;
+import org.apache.myfaces.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.util.ClassUtils;
 
 /**
  * Utility methods used in FaceletsViewDeclarationLanguage

@@ -1326,22 +1326,9 @@ public class FacesConfigurator
         }
     }
 
-    /*
-    private String getLifecycleId()
-    {
-        String id = _externalContext.getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
-
-        if (id != null)
-        {
-            return id;
-        }
-
-        return LifecycleFactory.DEFAULT_LIFECYCLE;
-    }*/
 
     private void handleSerialFactory()
     {
-
         String serialProvider = _externalContext.getInitParameter(StateUtils.SERIAL_FACTORY);
         SerialFactory serialFactory = null;
 

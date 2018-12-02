@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.el.FunctionMapper;
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 
 
 /**
