@@ -445,7 +445,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 {
                     VisitContext visitContext = (VisitContext) getVisitContextFactory().
                         getVisitContext(context, null, VISIT_HINTS_DYN_REFRESH);
-                    view.visitTree(visitContext, new PublishDynamicComponentRefreshTransientBuildCallback());
+                    view.visitTree(visitContext, PublishDynamicComponentRefreshTransientBuildCallback.INSTANCE);
                 }
                 if (!usePartialStateSavingOnThisView || refreshTransientBuildOnPSS)
                 {

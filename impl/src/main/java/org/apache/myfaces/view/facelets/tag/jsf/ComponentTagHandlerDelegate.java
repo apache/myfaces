@@ -259,7 +259,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             {
                 VisitContext visitContext = (VisitContext) mctx.getVisitContextFactory().
                     getVisitContext(facesContext, null, VISIT_HINTS_DYN_REFRESH);
-                c.visitTree(visitContext, new PublishFaceletDynamicComponentRefreshTransientBuildCallback());
+                c.visitTree(visitContext, PublishFaceletDynamicComponentRefreshTransientBuildCallback.INSTANCE);
             }
             
             mctx.incrementUniqueComponentId();
@@ -965,6 +965,10 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
     
     private static class PublishFaceletDynamicComponentRefreshTransientBuildCallback implements VisitCallback
     {
+        public static final PublishFaceletDynamicComponentRefreshTransientBuildCallback INSTANCE
+                = new PublishFaceletDynamicComponentRefreshTransientBuildCallback();
+        
+        @Override
         public VisitResult visit(VisitContext context, UIComponent target)
         {
             context.getFacesContext().getApplication().publishEvent(

@@ -1176,21 +1176,14 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     private class SaveStateAndResetViewCallback implements VisitCallback
     {
         private final Map<String, Object> states;
-        
         private final UIViewRoot view;
-        
         private boolean viewResetable;
-        
         private boolean skipRoot;
-        
         private int count;
-        
         private boolean forceHardReset;
-        
         private boolean removeAddedComponents;
         
-        public SaveStateAndResetViewCallback(UIViewRoot view, Map<String, Object> states,
-                boolean forceHardReset)
+        public SaveStateAndResetViewCallback(UIViewRoot view, Map<String, Object> states, boolean forceHardReset)
         {
             this.states = states;
             this.view = view;

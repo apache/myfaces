@@ -320,8 +320,7 @@ public class NavigationHandlerImpl
                         facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
 
                         VisitContext visitContext = VisitContext.createVisitContext(facesContext, null, VISIT_HINTS);
-                        facesContext.getViewRoot().visitTree(visitContext,
-                                                             new PreDisposeViewCallback());
+                        facesContext.getViewRoot().visitTree(visitContext, PreDisposeViewCallback.INSTANCE);
                     }
                     finally
                     {
@@ -425,7 +424,9 @@ public class NavigationHandlerImpl
 
     private static class PreDisposeViewCallback implements VisitCallback
     {
-
+        public static final PreDisposeViewCallback INSTANCE = new PreDisposeViewCallback();
+        
+        @Override
         public VisitResult visit(VisitContext context, UIComponent target)
         {
             context.getFacesContext().getApplication().publishEvent(context.getFacesContext(),
