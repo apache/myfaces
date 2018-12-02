@@ -19,7 +19,7 @@
 package org.apache.myfaces.spi.impl;
 
 import org.apache.myfaces.resource.DefaultResourceLibraryContractsProvider;
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.spi.ResourceLibraryContractsProvider;
 import org.apache.myfaces.spi.ResourceLibraryContractsProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;

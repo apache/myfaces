@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.application;
 
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;

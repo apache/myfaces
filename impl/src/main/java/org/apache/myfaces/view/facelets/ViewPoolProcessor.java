@@ -42,7 +42,7 @@ import org.apache.myfaces.context.RequestViewMetadata;
 import org.apache.myfaces.lifecycle.DefaultRestoreViewSupport;
 import org.apache.myfaces.lifecycle.RestoreViewSupport;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 import org.apache.myfaces.view.facelets.pool.ViewPool;
 import org.apache.myfaces.view.facelets.pool.ViewPoolFactory;

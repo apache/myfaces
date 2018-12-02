@@ -22,7 +22,7 @@ import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 
 /**
  * <p>{@link javax.faces.FactoryFinder} is a class with three methods:</p>

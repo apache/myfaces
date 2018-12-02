@@ -32,7 +32,7 @@ import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 
 /**
  * Copied from org.apache.shale.tiger.view.faces.PackageInfo

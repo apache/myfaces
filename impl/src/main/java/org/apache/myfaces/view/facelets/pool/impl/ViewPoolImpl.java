@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.context.RequestViewContext;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.pool.RestoreViewFromPoolResult;
 import org.apache.myfaces.view.facelets.pool.ViewPool;
 import org.apache.myfaces.view.facelets.pool.ViewEntry;

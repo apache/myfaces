@@ -25,7 +25,7 @@ import javax.faces.validator.BeanValidator;
 import javax.faces.validator.Validator;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
  *

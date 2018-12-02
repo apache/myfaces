@@ -31,7 +31,7 @@ import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagException;
 
-import org.apache.myfaces.shared.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.view.facelets.el.ELText;
 
 /**

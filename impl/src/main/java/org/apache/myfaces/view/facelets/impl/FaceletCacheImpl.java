@@ -28,8 +28,8 @@ import java.util.Map;
 import javax.faces.view.facelets.FaceletCache;
 import javax.faces.view.facelets.FaceletException;
 
-import org.apache.myfaces.shared.resource.ResourceLoaderUtils;
-import org.apache.myfaces.shared.util.Assert;
+import org.apache.myfaces.resource.ResourceLoaderUtils;
+import org.apache.myfaces.util.Assert;
 
 /**
  * TODO: Note MyFaces core has another type of Facelet for read composite component

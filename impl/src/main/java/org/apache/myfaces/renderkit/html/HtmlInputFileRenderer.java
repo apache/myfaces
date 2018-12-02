@@ -22,7 +22,7 @@ package org.apache.myfaces.renderkit.html;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.shared.renderkit.html.HtmlInputFileRendererBase;
+import org.apache.myfaces.renderkit.html.base.HtmlInputFileRendererBase;
 
 /**
  * @author Werner Punz (latest modification by $Author$)

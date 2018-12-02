@@ -18,8 +18,6 @@
  */
 package org.apache.myfaces.resource;
 
-import org.apache.myfaces.shared.resource.ClassLoaderResourceLoader;
-
 /**
  *
  * @author lu4242

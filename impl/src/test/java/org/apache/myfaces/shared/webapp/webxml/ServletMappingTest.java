@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.shared.webapp.webxml;
 
+import org.apache.myfaces.webapp.webxml.ServletMapping;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -22,7 +22,7 @@ import org.apache.myfaces.spi.FacesFlowProvider;
 import org.apache.myfaces.spi.FacesFlowProviderFactory;
 import javax.faces.context.ExternalContext;
 import org.apache.myfaces.flow.impl.DefaultFacesFlowProvider;
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
 
 /**

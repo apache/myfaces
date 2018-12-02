@@ -122,7 +122,7 @@ public class PartialVisitContext extends VisitContext
 
     // Finally, populate the clientIds collection.  This has the
     // side effect of populating all of the other collections.
-    org.apache.myfaces.shared.util.ArrayUtils.addAll(_clientIds, clientIds);
+    org.apache.myfaces.util.ArrayUtils.addAll(_clientIds, clientIds);
     //_clientIds.addAll(clientIdSet);
 
     // Copy and store hints - ensure unmodifiable and non-empty

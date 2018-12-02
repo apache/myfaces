@@ -19,8 +19,8 @@
 package org.apache.myfaces.view.facelets.mock;
 
 import org.apache.myfaces.application.DefaultResourceHandlerSupport;
-import org.apache.myfaces.shared.resource.ClassLoaderResourceLoader;
-import org.apache.myfaces.shared.resource.ResourceLoader;
+import org.apache.myfaces.resource.ClassLoaderResourceLoader;
+import org.apache.myfaces.resource.ResourceLoader;
 
 /**
  * Redirect resource request to the directory where the test class is,

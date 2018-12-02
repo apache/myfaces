@@ -23,8 +23,8 @@ import java.util.stream.Stream;
 import javax.faces.application.StateManager;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.shared.resource.ClassLoaderResourceLoader;
-import org.apache.myfaces.shared.resource.ExternalContextResourceLoader;
+import org.apache.myfaces.resource.ClassLoaderResourceLoader;
+import org.apache.myfaces.resource.ExternalContextResourceLoader;
 import org.junit.Test;
 
 /**

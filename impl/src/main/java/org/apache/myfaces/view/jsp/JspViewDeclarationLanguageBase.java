@@ -42,8 +42,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.ServletResponseWrapper;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.myfaces.shared.application.DefaultViewHandlerSupport;
-import org.apache.myfaces.shared.application.ViewHandlerSupport;
+import org.apache.myfaces.application.DefaultViewHandlerSupport;
+import org.apache.myfaces.application.ViewHandlerSupport;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.view.HttpServletResponseSwitch;
 import org.apache.myfaces.view.ResponseSwitch;

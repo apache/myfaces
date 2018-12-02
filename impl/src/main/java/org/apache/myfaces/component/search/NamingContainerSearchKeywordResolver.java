@@ -24,7 +24,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchKeywordContext;
 import javax.faces.component.search.SearchKeywordResolver;
-import org.apache.myfaces.shared.util.ComponentUtils;
+import org.apache.myfaces.util.ComponentUtils;
 
 /**
  *

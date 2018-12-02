@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.lifecycle.ViewNotFoundException;
 import org.apache.myfaces.renderkit.ErrorPageWriter;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.WebConfigProvider;
 import org.apache.myfaces.spi.WebConfigProviderFactory;
 

@@ -122,7 +122,7 @@ import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.flow.FlowHandlerImpl;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.ELText;
 

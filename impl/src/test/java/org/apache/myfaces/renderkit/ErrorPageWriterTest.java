@@ -29,8 +29,8 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.shared.util.StateUtils;
-import org.apache.myfaces.shared.util.serial.DefaultSerialFactory;
+import org.apache.myfaces.util.StateUtils;
+import org.apache.myfaces.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;

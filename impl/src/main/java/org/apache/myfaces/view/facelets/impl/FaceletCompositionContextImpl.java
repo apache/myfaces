@@ -36,7 +36,7 @@ import javax.faces.view.EditableValueHolderAttachedObjectHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletFactory;

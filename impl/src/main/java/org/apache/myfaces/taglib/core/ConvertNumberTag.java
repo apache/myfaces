@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.myfaces.shared.util.LocaleUtils;
+import org.apache.myfaces.util.LocaleUtils;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;

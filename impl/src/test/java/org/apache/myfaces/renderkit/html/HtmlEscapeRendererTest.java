@@ -35,7 +35,7 @@ import javax.faces.model.SelectItem;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
+import org.apache.myfaces.renderkit.html.base.HtmlResponseWriterImpl;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 

@@ -45,9 +45,9 @@ import org.apache.myfaces.application.viewstate.token.ServiceSideStateTokenProce
 import org.apache.myfaces.application.viewstate.token.StateTokenProcessor;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.util.MyFacesObjectInputStream;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.renderkit.RendererUtils;
+import org.apache.myfaces.util.MyFacesObjectInputStream;
+import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.ViewScopeProvider;
 import org.apache.myfaces.spi.ViewScopeProviderFactory;
 import org.apache.myfaces.view.ViewScopeProxyMap;

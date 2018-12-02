@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 import javax.faces.FacesException;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
-import org.apache.myfaces.shared.util.Assert;
+import org.apache.myfaces.util.Assert;
 
 /**
  * A TagLibrary that is composed of 1 or more TagLibrary children. Uses the chain of responsibility pattern to stop

@@ -33,8 +33,8 @@ import javax.faces.component.search.SearchExpressionHandler;
 import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.component.search.SearchKeywordContext;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
-import org.apache.myfaces.shared.util.ComponentUtils;
+import org.apache.myfaces.renderkit.html.util.SharedStringBuilder;
+import org.apache.myfaces.util.ComponentUtils;
 
 /**
  *

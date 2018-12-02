@@ -35,7 +35,7 @@ import javax.faces.lifecycle.Lifecycle;
 import javax.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 
 /**
  * DOCUMENT ME!

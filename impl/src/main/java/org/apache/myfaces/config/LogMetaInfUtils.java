@@ -19,7 +19,7 @@
 
 package org.apache.myfaces.config;
 
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 
 import javax.faces.FacesException;
 import java.net.URL;

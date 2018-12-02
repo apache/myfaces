@@ -36,7 +36,7 @@ import javax.faces.convert.Converter;
 import javax.faces.event.MethodExpressionActionListener;
 import javax.faces.event.MethodExpressionValueChangeListener;
 import javax.faces.validator.MethodExpressionValidator;
-import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
+import org.apache.myfaces.renderkit.html.util.JSFAttr;
 
 /**
  * @since 1.2

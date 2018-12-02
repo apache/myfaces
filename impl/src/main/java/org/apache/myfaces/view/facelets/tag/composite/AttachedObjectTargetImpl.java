@@ -26,7 +26,7 @@ import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.view.AttachedObjectTarget;
-import org.apache.myfaces.shared.util.StringUtils;
+import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
@@ -124,7 +124,7 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
         {
             return StringUtils.splitShortString((String) _targets.getValue(context.getELContext()), ' ');
         }
-        return org.apache.myfaces.shared.util.ArrayUtils.EMPTY_STRING_ARRAY;
+        return org.apache.myfaces.util.ArrayUtils.EMPTY_STRING_ARRAY;
     }
     
     public void setName(ValueExpression ve)

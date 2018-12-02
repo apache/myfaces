@@ -35,10 +35,7 @@ import javax.faces.application.Resource;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.application.ResourceHandlerImpl;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.shared.resource.ResourceLoader;
-import org.apache.myfaces.shared.resource.ResourceLoaderWrapper;
-import org.apache.myfaces.shared.resource.ResourceMeta;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
  * ResourceLoader that uses a temporal folder to cache resources, avoiding the problem

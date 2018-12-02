@@ -37,7 +37,7 @@ import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewMetadata;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.myfaces.shared.application.InvalidViewIdException;
+import org.apache.myfaces.application.InvalidViewIdException;
 
 /**
  * It is a vdl that is just provided as fallback, to ensure if

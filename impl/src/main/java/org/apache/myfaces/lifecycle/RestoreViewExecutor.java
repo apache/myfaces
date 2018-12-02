@@ -53,8 +53,8 @@ import org.apache.myfaces.event.PostClientWindowAndViewInitializedEvent;
 
 import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.shared.util.ExternalContextUtils;
-import org.apache.myfaces.shared.util.ViewProtectionUtils;
+import org.apache.myfaces.util.ExternalContextUtils;
+import org.apache.myfaces.util.ViewProtectionUtils;
 
 /**
  * Implements the Restore View Phase (JSF Spec 2.2.1)

@@ -29,9 +29,9 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.myfaces.shared.resource.ResourceLoader;
-import org.apache.myfaces.shared.resource.ResourceMeta;
-import org.apache.myfaces.shared.resource.ResourceMetaImpl;
+import org.apache.myfaces.resource.ResourceLoader;
+import org.apache.myfaces.resource.ResourceMeta;
+import org.apache.myfaces.resource.ResourceMetaImpl;
 
 /**
  * Test cases for org.apache.myfaces.application.ResourceHandlerImpl.

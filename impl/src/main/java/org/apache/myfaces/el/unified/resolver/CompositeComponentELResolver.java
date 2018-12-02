@@ -36,7 +36,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.el.CompositeComponentExpressionHolder;
 
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentBeanInfo;
 
 /**

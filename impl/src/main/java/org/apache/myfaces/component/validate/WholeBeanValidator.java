@@ -61,8 +61,8 @@ import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 import javax.validation.metadata.BeanDescriptor;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
-import org.apache.myfaces.shared.util.MessageUtils;
-import org.apache.myfaces.shared.util.MyFacesObjectInputStream;
+import org.apache.myfaces.util.MessageUtils;
+import org.apache.myfaces.util.MyFacesObjectInputStream;
 import org.apache.myfaces.util.ExternalSpecifications;
 
 /**

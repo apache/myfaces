@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 
-import org.apache.myfaces.shared.renderkit.RendererUtils;
+import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.apache.myfaces.test.mock.MockHttpServletResponse;
 import org.junit.Assert;

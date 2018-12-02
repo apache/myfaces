@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.shared.util;
 
+import org.apache.myfaces.util.LRULinkedHashMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;

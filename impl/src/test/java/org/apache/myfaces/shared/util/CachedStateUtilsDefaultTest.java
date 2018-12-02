@@ -20,6 +20,8 @@
 
 package org.apache.myfaces.shared.util;
 
+import org.apache.myfaces.util.StateUtils;
+
 public class CachedStateUtilsDefaultTest extends AbstractStateUtilsTest
 {
 

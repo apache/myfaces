@@ -25,8 +25,8 @@ import javax.faces.context.FacesContext;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.myfaces.application.StateCache;
-import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.renderkit.RendererUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
  * @since 2.2

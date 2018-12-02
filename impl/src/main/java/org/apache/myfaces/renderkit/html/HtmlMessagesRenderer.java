@@ -29,8 +29,8 @@ import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.shared.renderkit.html.HtmlMessagesRendererBase;
-import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.renderkit.html.base.HtmlMessagesRendererBase;
+import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 
 /**
  * 

@@ -22,7 +22,7 @@ import org.apache.commons.digester.Digester;
 import org.apache.myfaces.config.FacesConfigUnmarshaller;
 import org.apache.myfaces.config.impl.FacesConfigEntityResolver;
 import org.apache.myfaces.config.impl.digester.elements.*;
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 

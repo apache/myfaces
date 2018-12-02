@@ -37,7 +37,7 @@ import javax.faces.lifecycle.ClientWindowFactory;
 import javax.faces.lifecycle.Lifecycle;
 
 import org.apache.myfaces.config.FacesConfigurator;
-import org.apache.myfaces.shared.webapp.webxml.WebXml;
+import org.apache.myfaces.webapp.webxml.WebXml;
 import org.apache.myfaces.util.DebugUtils;
 
 /**

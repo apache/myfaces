@@ -22,7 +22,7 @@ import javax.faces.context.FacesContext;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.myfaces.application.StateCache;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
  * This factory generate a key composed by a counter and a random number. The

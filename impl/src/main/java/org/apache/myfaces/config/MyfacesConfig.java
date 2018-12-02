@@ -24,8 +24,8 @@ import java.util.logging.Logger;
 import javax.faces.context.ExternalContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.shared.util.ClassUtils;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
  * Holds all configuration init parameters (from web.xml) that are independent

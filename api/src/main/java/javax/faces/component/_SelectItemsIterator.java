@@ -34,7 +34,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
 // ATTENTION
-// This class is associated with org.apache.myfaces.shared.util.SelectItemsIterator.
+// This class is associated with org.apache.myfaces.util.SelectItemsIterator.
 // Changes here should also be applied to this class.
 
 class _SelectItemsIterator implements Iterator<SelectItem>
@@ -44,7 +44,7 @@ class _SelectItemsIterator implements Iterator<SelectItem>
     
     private static final Iterator<UIComponent> _EMPTY_UICOMPONENT_ITERATOR = Collections.<UIComponent>emptyIterator();
     
-    // org.apache.myfaces.shared.util.SelectItemsIterator uses JSFAttr
+    // org.apache.myfaces.util.SelectItemsIterator uses JSFAttr
     private static final String VAR_ATTR = "var";
     private static final String ITEM_VALUE_ATTR = "itemValue";
     private static final String ITEM_LABEL_ATTR = "itemLabel";

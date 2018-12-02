@@ -16,6 +16,7 @@
 
 package org.apache.myfaces.shared.renderkit.html.util;
 
+import org.apache.myfaces.renderkit.html.util.HTMLEncoder;
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.StringWriter;

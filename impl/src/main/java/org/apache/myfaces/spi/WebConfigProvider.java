@@ -21,7 +21,7 @@ package org.apache.myfaces.spi;
 import java.util.List;
 
 import javax.faces.context.ExternalContext;
-import org.apache.myfaces.shared.webapp.webxml.ServletMapping;
+import org.apache.myfaces.webapp.webxml.ServletMapping;
 
 /**
  * SPI to provide a custom WebConfigProvider implementation.

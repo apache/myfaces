@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.spi.impl;
 
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.spi.FaceletConfigResourceProvider;
 import org.apache.myfaces.spi.FaceletConfigResourceProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;

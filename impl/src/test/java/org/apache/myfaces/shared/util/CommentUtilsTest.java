@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.shared.util;
 
+import org.apache.myfaces.util.CommentUtils;
 import java.io.IOException;
 
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;

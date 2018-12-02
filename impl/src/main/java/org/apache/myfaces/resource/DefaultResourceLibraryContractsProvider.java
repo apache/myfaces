@@ -24,8 +24,8 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.faces.application.ResourceHandler;
 import javax.faces.context.ExternalContext;
-import org.apache.myfaces.shared.util.ClassUtils;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.ResourceLibraryContractsProvider;
 import org.apache.myfaces.view.facelets.util.Classpath;
 

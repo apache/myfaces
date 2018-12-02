@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 import javax.faces.context.ExternalContext;
 
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 
 /**

@@ -26,10 +26,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import javax.faces.application.ResourceVisitOption;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.shared.resource.ContractResourceLoader;
-import org.apache.myfaces.shared.resource.ExternalContextResourceLoaderIterator;
-import org.apache.myfaces.shared.resource.ResourceMeta;
-import org.apache.myfaces.shared.resource.ResourceMetaImpl;
 
 /**
  *

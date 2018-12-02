@@ -35,7 +35,7 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.security.AccessController;

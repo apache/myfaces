@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.context.ExternalContext;
-import org.apache.myfaces.shared.webapp.webxml.ServletMapping;
-import org.apache.myfaces.shared.webapp.webxml.WebXml;
+import org.apache.myfaces.webapp.webxml.ServletMapping;
+import org.apache.myfaces.webapp.webxml.WebXml;
 
 import org.apache.myfaces.spi.WebConfigProvider;
 

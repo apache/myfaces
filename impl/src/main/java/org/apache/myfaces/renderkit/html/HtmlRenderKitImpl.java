@@ -42,10 +42,10 @@ import javax.faces.render.ResponseStateManager;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderKit;
 import org.apache.myfaces.renderkit.LazyRenderKit;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.shared.renderkit.ContentTypeUtils;
-import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
-import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.renderkit.ContentTypeUtils;
+import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
+import org.apache.myfaces.renderkit.html.base.HtmlResponseWriterImpl;
+import org.apache.myfaces.util.ClassUtils;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

@@ -34,10 +34,7 @@ import javax.faces.FacesException;
 import javax.faces.application.Resource;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.application.ResourceHandlerImpl;
-import org.apache.myfaces.shared.resource.ContractResourceLoader;
-import org.apache.myfaces.shared.resource.ContractResourceLoaderWrapper;
-import org.apache.myfaces.shared.resource.ResourceMeta;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
  * ResourceLoader that uses a temporal folder to cache resources, avoiding the problem

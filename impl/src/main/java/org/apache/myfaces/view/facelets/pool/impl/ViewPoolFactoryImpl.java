@@ -27,7 +27,7 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.ViewPoolParameter;
-import org.apache.myfaces.shared.util.ViewProtectionUtils;
+import org.apache.myfaces.util.ViewProtectionUtils;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.pool.ViewPool;
 import org.apache.myfaces.view.facelets.pool.ViewPoolFactory;

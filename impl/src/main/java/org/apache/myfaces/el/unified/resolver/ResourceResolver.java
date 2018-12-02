@@ -29,9 +29,9 @@ import javax.faces.application.ResourceHandler;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.view.Location;
-import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.shared.resource.ContractResource;
-import org.apache.myfaces.shared.resource.ResourceELUtils;
+import org.apache.myfaces.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.resource.ContractResource;
+import org.apache.myfaces.resource.ResourceELUtils;
 
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 

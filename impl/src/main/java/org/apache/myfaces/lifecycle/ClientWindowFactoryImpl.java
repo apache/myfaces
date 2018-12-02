@@ -23,7 +23,7 @@ import javax.faces.lifecycle.ClientWindow;
 import javax.faces.lifecycle.ClientWindowFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.FacesConfigurator;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
  *

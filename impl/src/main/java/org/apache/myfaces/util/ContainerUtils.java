@@ -21,7 +21,6 @@ package org.apache.myfaces.util;
 import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 
-import org.apache.myfaces.shared.util.ExternalContextUtils;
 
 /**
  * Utilities for determining the current container and for the unified

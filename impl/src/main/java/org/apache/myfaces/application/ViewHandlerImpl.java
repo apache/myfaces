@@ -51,9 +51,6 @@ import javax.faces.view.ViewMetadata;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.application.viewstate.StateCacheUtils;
-import org.apache.myfaces.shared.application.DefaultViewHandlerSupport;
-import org.apache.myfaces.shared.application.InvalidViewIdException;
-import org.apache.myfaces.shared.application.ViewHandlerSupport;
 import org.apache.myfaces.view.facelets.StateWriter;
 
 /**

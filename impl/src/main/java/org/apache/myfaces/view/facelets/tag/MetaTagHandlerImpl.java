@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.tag;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.MetaTagHandler;
 import javax.faces.view.facelets.TagConfig;
-import org.apache.myfaces.shared.util.Assert;
+import org.apache.myfaces.util.Assert;
 
 /**
  * A base tag for wiring state to an object instance based on rules populated at the time of creating a MetaRuleset.

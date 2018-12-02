@@ -44,7 +44,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.myfaces.config.element.FaceletsProcessing;
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.TagAttributeImpl;
 import org.apache.myfaces.view.facelets.tag.TagAttributesImpl;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;

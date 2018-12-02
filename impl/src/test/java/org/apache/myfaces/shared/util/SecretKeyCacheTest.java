@@ -17,6 +17,7 @@
 
 package org.apache.myfaces.shared.util;
 
+import org.apache.myfaces.util.StateUtils;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 import javax.crypto.SecretKey;

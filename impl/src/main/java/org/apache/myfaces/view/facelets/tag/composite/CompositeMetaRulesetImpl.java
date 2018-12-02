@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.myfaces.shared.util.Assert;
+import org.apache.myfaces.util.Assert;
 
 public class CompositeMetaRulesetImpl extends MetaRuleset
 {

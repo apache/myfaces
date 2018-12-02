@@ -20,7 +20,7 @@ package org.apache.myfaces.spi.impl;
 
 import javax.faces.context.ExternalContext;
 import org.apache.myfaces.cdi.view.CDIViewScopeProviderImpl;
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.spi.ViewScopeProvider;
 import org.apache.myfaces.spi.ViewScopeProviderFactory;
 import org.apache.myfaces.util.ExternalSpecifications;

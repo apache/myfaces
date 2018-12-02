@@ -34,14 +34,14 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
-import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.renderkit.html.CommonPropertyConstants;
-import org.apache.myfaces.shared.renderkit.html.CommonPropertyUtils;
-import org.apache.myfaces.shared.renderkit.html.util.HTML;
-import org.apache.myfaces.shared.renderkit.html.HtmlRenderer;
-import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
-import org.apache.myfaces.shared.util.ComponentUtils;
+import org.apache.myfaces.renderkit.html.util.JSFAttr;
+import org.apache.myfaces.renderkit.RendererUtils;
+import org.apache.myfaces.renderkit.html.base.CommonPropertyConstants;
+import org.apache.myfaces.renderkit.html.base.CommonPropertyUtils;
+import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
+import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
+import org.apache.myfaces.util.ComponentUtils;
 
 /**
  * 

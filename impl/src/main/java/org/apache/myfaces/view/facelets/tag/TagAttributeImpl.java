@@ -29,7 +29,7 @@ import javax.faces.view.Location;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagAttributeException;
-import org.apache.myfaces.shared.resource.ResourceELUtils;
+import org.apache.myfaces.resource.ResourceELUtils;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;

@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.shared.renderkit;
 
+import org.apache.myfaces.renderkit.RendererUtils;
 import java.io.IOException;
 import java.io.StringWriter;
 
@@ -34,8 +35,8 @@ import javax.faces.component.html.HtmlGraphicImage;
 import javax.faces.context.FacesContext;
 
 import org.junit.Assert;
-import org.apache.myfaces.shared.renderkit.html.util.HTML;
-import org.apache.myfaces.shared.renderkit.html.util.JSFAttr;
+import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.easymock.classextension.EasyMock;

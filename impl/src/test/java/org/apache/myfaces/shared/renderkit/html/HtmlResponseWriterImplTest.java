@@ -18,12 +18,13 @@
  */
 package org.apache.myfaces.shared.renderkit.html;
 
+import org.apache.myfaces.renderkit.html.base.HtmlResponseWriterImpl;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 
-import org.apache.myfaces.shared.util.CommentUtils;
-import org.apache.myfaces.shared.renderkit.html.util.HTML;
+import org.apache.myfaces.util.CommentUtils;
+import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 /**

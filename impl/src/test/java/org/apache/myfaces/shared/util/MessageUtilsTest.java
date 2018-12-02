@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
 
-import org.apache.myfaces.shared.util.MessageUtils;
+import org.apache.myfaces.util.MessageUtils;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 /**
@@ -104,7 +104,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
     {
         facesContext.getViewRoot().setLocale(Locale.ENGLISH);
 
-        FacesMessage msg = org.apache.myfaces.shared.util.MessageUtils.getMessage(Locale.ENGLISH,
+        FacesMessage msg = org.apache.myfaces.util.MessageUtils.getMessage(Locale.ENGLISH,
                 "javax.faces.component.UIInput.CONVERSION", null);
         assertEquals("{0}: Conversion error occurred.", msg.getSummary());
 

@@ -35,7 +35,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.shared.util.StringUtils;
+import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**

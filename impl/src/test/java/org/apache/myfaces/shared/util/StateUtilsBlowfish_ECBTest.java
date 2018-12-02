@@ -15,6 +15,8 @@
  */
 package org.apache.myfaces.shared.util;
 
+import org.apache.myfaces.util.StateUtils;
+
 /**
  * This TestCase uses Blowfish in Electronic CodeBook mode
  * with PKCS5 padding.

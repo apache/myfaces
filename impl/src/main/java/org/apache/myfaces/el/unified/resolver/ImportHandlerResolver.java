@@ -26,7 +26,7 @@ import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
 
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 
 /**
  * See JSF 2.2 section 5.6.2.8

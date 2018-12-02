@@ -23,8 +23,8 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.xml.bind.DatatypeConverter;
 
-import org.apache.myfaces.shared.renderkit.RendererUtils;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.renderkit.RendererUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
  * This factory generate a key composed by a counter and a random number. The

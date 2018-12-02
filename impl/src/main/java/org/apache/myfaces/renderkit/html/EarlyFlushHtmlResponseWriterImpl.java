@@ -24,8 +24,8 @@ import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-import org.apache.myfaces.shared.renderkit.html.util.HTML;
-import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
+import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.base.HtmlResponseWriterImpl;
 
 /**
  * This implementation is just the default html response writer with the early flush logic. The

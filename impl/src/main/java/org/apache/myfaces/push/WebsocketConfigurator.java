@@ -28,7 +28,7 @@ import javax.websocket.server.ServerEndpointConfig;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.push.cdi.WebsocketSessionBean;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
  *

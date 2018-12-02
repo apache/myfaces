@@ -27,11 +27,7 @@ import javax.faces.application.ResourceHandler;
 import javax.faces.application.ResourceVisitOption;
 
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.shared.resource.ExternalContextResourceLoaderIterator;
-import org.apache.myfaces.shared.resource.ResourceLoader;
-import org.apache.myfaces.shared.resource.ResourceMeta;
-import org.apache.myfaces.shared.resource.ResourceMetaImpl;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.util.SkipMatchIterator;
 
 /**

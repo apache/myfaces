@@ -25,9 +25,9 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.faces.application.ResourceVisitOption;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.shared.resource.ContractResourceLoader;
-import org.apache.myfaces.shared.resource.ResourceHandlerSupport;
-import org.apache.myfaces.shared.resource.ResourceLoader;
+import org.apache.myfaces.resource.ContractResourceLoader;
+import org.apache.myfaces.resource.ResourceHandlerSupport;
+import org.apache.myfaces.resource.ResourceLoader;
 
 /**
  *

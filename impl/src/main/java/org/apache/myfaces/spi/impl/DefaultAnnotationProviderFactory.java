@@ -19,7 +19,7 @@
 package org.apache.myfaces.spi.impl;
 
 import org.apache.myfaces.config.annotation.DefaultAnnotationProvider;
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;

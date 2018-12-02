@@ -28,14 +28,9 @@ import javax.faces.application.ResourceVisitOption;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.shared.resource.AliasResourceMetaImpl;
-import org.apache.myfaces.shared.resource.ResourceLoader;
-import org.apache.myfaces.shared.resource.ResourceMeta;
-import org.apache.myfaces.shared.resource.ResourceMetaImpl;
-import org.apache.myfaces.shared.util.ClassUtils;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
-import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.shared.resource.ClassLoaderResourceLoaderIterator;
+import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
+import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 
 /**
  * A resource loader implementation which loads resources from the thread ClassLoader.

@@ -44,9 +44,9 @@ import javax.faces.render.ResponseStateManager;
 import javax.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.shared.util.Assert;
-import org.apache.myfaces.shared.util.ConcurrentLRUCache;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.ConcurrentLRUCache;
+import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)

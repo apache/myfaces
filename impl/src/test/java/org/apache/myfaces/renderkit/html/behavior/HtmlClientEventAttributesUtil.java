@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html.behavior;
 
-import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
-import org.apache.myfaces.shared.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.ClientBehaviorEvents;
+import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 
 /**
@@ -56,7 +56,7 @@ public class HtmlClientEventAttributesUtil
         HtmlRenderedClientEventAttr[] attrs = null;
         if (isOnSelectNeeded)
         {
-            attrs = (HtmlRenderedClientEventAttr[]) org.apache.myfaces.shared.util.ArrayUtils.concat( 
+            attrs = (HtmlRenderedClientEventAttr[]) org.apache.myfaces.util.ArrayUtils.concat( 
                 generateClientBehaviorEventAttrs(),
                 new HtmlRenderedClientEventAttr[]{
                     new HtmlRenderedClientEventAttr(HTML.ONBLUR_ATTR, ClientBehaviorEvents.BLUR),
@@ -70,7 +70,7 @@ public class HtmlClientEventAttributesUtil
         {
             // Note that on JSF 2.3, some components don't need onselect attribute
             // Please see https://issues.apache.org/jira/browse/MYFACES-4190
-            attrs = (HtmlRenderedClientEventAttr[]) org.apache.myfaces.shared.util.ArrayUtils.concat( 
+            attrs = (HtmlRenderedClientEventAttr[]) org.apache.myfaces.util.ArrayUtils.concat( 
                 generateClientBehaviorEventAttrs(),
                 new HtmlRenderedClientEventAttr[]{
                     new HtmlRenderedClientEventAttr(HTML.ONBLUR_ATTR, ClientBehaviorEvents.BLUR),

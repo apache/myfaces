@@ -25,7 +25,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletCache;
 import javax.faces.view.facelets.FaceletCacheFactory;
 
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 

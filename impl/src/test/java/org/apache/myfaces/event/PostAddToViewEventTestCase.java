@@ -27,7 +27,7 @@ import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.PhaseId;
 
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;

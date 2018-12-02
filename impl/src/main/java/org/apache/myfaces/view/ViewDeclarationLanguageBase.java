@@ -24,7 +24,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
 
-import org.apache.myfaces.shared.application.InvalidViewIdException;
+import org.apache.myfaces.application.InvalidViewIdException;
 
 /**
  * @since 2.0

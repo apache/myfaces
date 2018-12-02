@@ -29,13 +29,13 @@ import org.apache.myfaces.resource.InternalClassLoaderResourceLoader;
 import org.apache.myfaces.resource.RootExternalContextResourceLoader;
 import org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader;
 import org.apache.myfaces.resource.TempDirFileCacheResourceLoader;
-import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.shared.resource.BaseResourceHandlerSupport;
-import org.apache.myfaces.shared.resource.ClassLoaderResourceLoader;
-import org.apache.myfaces.shared.resource.ContractResourceLoader;
-import org.apache.myfaces.shared.resource.ExternalContextResourceLoader;
-import org.apache.myfaces.shared.resource.ResourceLoader;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.resource.BaseResourceHandlerSupport;
+import org.apache.myfaces.resource.ClassLoaderResourceLoader;
+import org.apache.myfaces.resource.ContractResourceLoader;
+import org.apache.myfaces.resource.ExternalContextResourceLoader;
+import org.apache.myfaces.resource.ResourceLoader;
+import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
  * A ResourceHandlerSupport implementation for use with standard Java Servlet engines,

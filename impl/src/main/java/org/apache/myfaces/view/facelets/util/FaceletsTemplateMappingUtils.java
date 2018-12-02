@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets.util;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.FaceletsTemplateMapping;
-import org.apache.myfaces.shared.util.ViewProtectionUtils;
+import org.apache.myfaces.util.ViewProtectionUtils;
 
 /**
  *

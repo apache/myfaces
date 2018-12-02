@@ -57,7 +57,7 @@ import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandlerDelegate;
 import javax.faces.view.facelets.ValidatorHandler;
 
-import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.ComponentState;

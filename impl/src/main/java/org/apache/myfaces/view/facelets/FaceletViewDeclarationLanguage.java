@@ -95,12 +95,12 @@ import org.apache.myfaces.application.StateManagerImpl;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.shared.application.DefaultViewHandlerSupport;
-import org.apache.myfaces.shared.application.ViewHandlerSupport;
+import org.apache.myfaces.application.DefaultViewHandlerSupport;
+import org.apache.myfaces.application.ViewHandlerSupport;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.shared.util.ClassUtils;
-import org.apache.myfaces.shared.util.StringUtils;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.ViewMetadataBase;
 import org.apache.myfaces.view.facelets.compiler.Compiler;

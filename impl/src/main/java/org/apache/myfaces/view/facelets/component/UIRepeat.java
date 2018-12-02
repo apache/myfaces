@@ -58,7 +58,7 @@ import javax.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.cdi.model.DataModelBuilderProxy;
-import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
+import org.apache.myfaces.renderkit.html.util.SharedStringBuilder;
 import org.apache.myfaces.util.ExternalSpecifications;
 
 /**

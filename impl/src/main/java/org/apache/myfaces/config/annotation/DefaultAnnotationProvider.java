@@ -54,13 +54,13 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProviderFactory;
 import org.apache.myfaces.util.ContainerUtils;
 import org.apache.myfaces.config.util.GAEUtils;
 import org.apache.myfaces.config.util.JarUtils;
-import org.apache.myfaces.shared.util.StringUtils;
+import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.view.facelets.util.Classpath;
 
 /**

@@ -34,9 +34,9 @@ import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
-import org.apache.myfaces.shared.util.ArrayUtils;
-import org.apache.myfaces.shared.util.StringUtils;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.ArrayUtils;
+import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 
 /**

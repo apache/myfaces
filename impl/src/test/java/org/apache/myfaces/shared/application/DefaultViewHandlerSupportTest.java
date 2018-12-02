@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.shared.application;
 
+import org.apache.myfaces.application.DefaultViewHandlerSupport;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
