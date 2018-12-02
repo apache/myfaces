@@ -30,8 +30,6 @@ import javax.servlet.ServletRegistration;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.util.ExternalContextUtils;
 import org.apache.myfaces.webapp.webxml.DelegatedFacesServlet;
-import org.apache.myfaces.webapp.webxml.DelegatedFacesServlet;
-import org.apache.myfaces.webapp.webxml.WebXml;
 import org.apache.myfaces.webapp.webxml.WebXml;
 
 public class FacesServletMappingUtils
