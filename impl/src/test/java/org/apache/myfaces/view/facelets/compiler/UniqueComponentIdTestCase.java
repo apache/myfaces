@@ -33,7 +33,7 @@ import javax.faces.render.ResponseStateManager;
 import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.StateUtils;
+import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.test.mock.MockFacesContext20;
 import org.apache.myfaces.test.mock.MockRenderKit;

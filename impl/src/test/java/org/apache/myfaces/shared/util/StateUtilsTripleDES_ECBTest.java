@@ -15,7 +15,7 @@
  */
 package org.apache.myfaces.shared.util;
 
-import org.apache.myfaces.util.StateUtils;
+import org.apache.myfaces.application.viewstate.StateUtils;
 
 /**
  * This TestCase uses the 3DES algorithm in Electronic CodeBook mode

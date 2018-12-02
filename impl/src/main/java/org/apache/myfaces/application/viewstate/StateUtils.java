@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.util;
+package org.apache.myfaces.application.viewstate;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

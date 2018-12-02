@@ -120,7 +120,7 @@ import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
 import org.apache.myfaces.resource.ResourceLoaderUtils;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.util.LocaleUtils;
-import org.apache.myfaces.util.StateUtils;
+import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.cdi.util.BeanEntry;

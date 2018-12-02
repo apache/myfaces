@@ -68,7 +68,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.lifecycle.ViewNotFoundException;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ClassUtils;
-import org.apache.myfaces.util.StateUtils;
+import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
 import org.apache.myfaces.view.facelets.el.ContextAware;
 

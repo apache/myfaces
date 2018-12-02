@@ -21,7 +21,7 @@ package org.apache.myfaces.application.viewstate.token;
 import java.io.UnsupportedEncodingException;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.util.StateUtils;
+import org.apache.myfaces.application.viewstate.StateUtils;
 
 /**
  *

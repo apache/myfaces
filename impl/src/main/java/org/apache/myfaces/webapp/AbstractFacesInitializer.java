@@ -26,7 +26,7 @@ import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.application.FacesServletMappingUtils;
 import org.apache.myfaces.context.ExceptionHandlerImpl;
-import org.apache.myfaces.util.StateUtils;
+import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.cdi.util.BeanEntry;
 import org.apache.myfaces.spi.InjectionProvider;

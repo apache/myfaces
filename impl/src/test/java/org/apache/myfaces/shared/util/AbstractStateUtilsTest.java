@@ -20,7 +20,7 @@ package org.apache.myfaces.shared.util;
  * Running this TestCase directly will blow up.
  */
 
-import org.apache.myfaces.util.StateUtils;
+import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
@@ -77,7 +77,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
     public void testConstruction()
     {
         String constructed = StateUtils.construct(TEST_DATA, externalContext);
-        Object object = org.apache.myfaces.util.StateUtils.reconstruct(constructed, externalContext);
+        Object object = org.apache.myfaces.application.viewstate.StateUtils.reconstruct(constructed, externalContext);
         assertTrue(TEST_DATA.equals(object));
     }
 

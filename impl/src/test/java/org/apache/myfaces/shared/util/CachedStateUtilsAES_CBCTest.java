@@ -20,7 +20,7 @@
 
 package org.apache.myfaces.shared.util;
 
-import org.apache.myfaces.util.StateUtils;
+import org.apache.myfaces.application.viewstate.StateUtils;
 
 /**
  * <p>This TestCase uses the Advanced Encryption Standard with

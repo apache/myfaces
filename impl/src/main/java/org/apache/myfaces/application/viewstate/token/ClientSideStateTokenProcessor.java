@@ -19,7 +19,7 @@
 package org.apache.myfaces.application.viewstate.token;
 
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.util.StateUtils;
+import org.apache.myfaces.application.viewstate.StateUtils;
 
 /**
  *
