@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIParameter;
-import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlOutputFormat;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -120,13 +119,13 @@ public class HtmlFormatRenderer extends HtmlRenderer
             }
             else
             {
-                if(component.getId()!=null && !component.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
+                if (shouldRenderId(facesContext, component))
                 {
                     span = true;
     
                     writer.startElement(HTML.SPAN_ELEM, component);
     
-                    HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
+                    HtmlRendererUtils.writeId(writer, component, facesContext);
     
                     HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
     

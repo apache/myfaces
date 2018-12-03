@@ -23,7 +23,6 @@ import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
 import org.apache.myfaces.renderkit.RendererUtils;
 
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlPanelGroup;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -87,8 +86,7 @@ public class HtmlGroupRendererBase
             ResourceUtils.renderDefaultJsfJsInlineIfNecessary(context, writer);
         }
 
-        if( (!behaviors.isEmpty()) || 
-                (component.getId()!=null && !component.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX)))
+        if (!behaviors.isEmpty() || shouldRenderId(context, component))
         {
             span = true;
 

@@ -838,22 +838,26 @@ public class HtmlResponseWriterImpl
         }
         else
         {
-            String strValue = (value == null) ? "" : value.toString();
             _currentWriter.write(' ');
             _currentWriter.write(name);
             _currentWriter.write("=\"");
-            HTMLEncoder.encode(_currentWriter, strValue, false, false, !_isUTF8);
+            if (value != null)
+            {
+                HTMLEncoder.encode(_currentWriter, value.toString(), false, false, !_isUTF8);
+            }
             _currentWriter.write('"');
         }
     }
     
     private void encodeAndWriteAttribute(String name, Object value) throws IOException
     {
-        String strValue = (value==null)?"":value.toString();
         _currentWriter.write(' ');
         _currentWriter.write(name);
         _currentWriter.write("=\"");
-        HTMLEncoder.encode(_currentWriter, strValue, false, false, !_isUTF8);
+        if (value != null)
+        {
+            HTMLEncoder.encode(_currentWriter, value.toString(), false, false, !_isUTF8);
+        }
         _currentWriter.write('"');
     }
 

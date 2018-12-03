@@ -31,7 +31,7 @@ public abstract class HTMLEncoder
     /**
      * Variant of {@link #encode} where encodeNewline is false and encodeNbsp is true.
      */
-    public static String encode (String string)
+    public static String encode(String string)
     {
         return encode(string, false, true);
     }
@@ -39,7 +39,7 @@ public abstract class HTMLEncoder
     /**
      * Variant of {@link #encode} where encodeNbsp is true.
      */
-    public static String encode (String string, boolean encodeNewline)
+    public static String encode(String string, boolean encodeNewline)
     {
         return encode(string, encodeNewline, true);
     }
@@ -47,7 +47,7 @@ public abstract class HTMLEncoder
     /**
      * Variant of {@link #encode} where encodeNbsp and encodeNonLatin are true 
      */
-    public static String encode (String string, boolean encodeNewline, boolean encodeSubsequentBlanksToNbsp)
+    public static String encode(String string, boolean encodeNewline, boolean encodeSubsequentBlanksToNbsp)
     {
         return encode(string, encodeNewline, encodeSubsequentBlanksToNbsp, true);
     }
@@ -59,10 +59,10 @@ public abstract class HTMLEncoder
      * @param encodeSubsequentBlanksToNbsp if true subsequent blanks are converted to &amp;nbsp;'s
      * @param encodeNonLatin if true encode non-latin characters as numeric character references
      */
-    public static String encode (String string,
-                                 boolean encodeNewline,
-                                 boolean encodeSubsequentBlanksToNbsp,
-                                 boolean encodeNonLatin)
+    public static String encode(String string,
+                                boolean encodeNewline,
+                                boolean encodeSubsequentBlanksToNbsp,
+                                boolean encodeNonLatin)
     {
         if (string == null)
         {

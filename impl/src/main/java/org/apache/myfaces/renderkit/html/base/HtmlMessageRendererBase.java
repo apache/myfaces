@@ -120,8 +120,7 @@ public abstract class HtmlMessageRendererBase
                 HtmlRendererUtils.renderHTMLStringAttribute(writer, message, JSFAttr.STYLE_CLASS_ATTR, HTML.CLASS_ATTR);
                 writer.endElement(HTML.SPAN_ELEM);
             }
-            else if (renderDivWhenNoMessagesAndIdSet && message.getId() != null && 
-                    !message.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
+            else if (renderDivWhenNoMessagesAndIdSet && shouldRenderId(facesContext, message))
             {
                 // show span anyways in case there's a client side update, ie: ajax
                 ResponseWriter writer = facesContext.getResponseWriter();

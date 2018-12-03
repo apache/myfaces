@@ -224,19 +224,16 @@ public class HtmlButtonRendererBase
             }
         }
         
-        //if (javascriptAllowed)
-        //{
-            if (isCommonPropertiesOptimizationEnabled(facesContext))
-            {
-                CommonPropertyUtils.renderButtonPassthroughPropertiesWithoutDisabledAndEvents(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
-            }
-            else
-            {
-                HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
-                                                       HTML.BUTTON_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
-            }
-        //}
+        if (isCommonPropertiesOptimizationEnabled(facesContext))
+        {
+            CommonPropertyUtils.renderButtonPassthroughPropertiesWithoutDisabledAndEvents(writer, 
+                    CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+        }
+        else
+        {
+            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
+                                                   HTML.BUTTON_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
+        }
 
         if (behaviors != null && !behaviors.isEmpty())
         {
@@ -263,14 +260,12 @@ public class HtmlButtonRendererBase
 
         if (isDisabled(facesContext, uiComponent))
         {
-            writer.writeAttribute(HTML.DISABLED_ATTR, Boolean.TRUE, 
-                    JSFAttr.DISABLED_ATTR);
+            writer.writeAttribute(HTML.DISABLED_ATTR, Boolean.TRUE, JSFAttr.DISABLED_ATTR);
         }
         
         if (isReadonly(facesContext, uiComponent))
         {
-            writer.writeAttribute(HTML.READONLY_ATTR, Boolean.TRUE, 
-                    JSFAttr.READONLY_ATTR);
+            writer.writeAttribute(HTML.READONLY_ATTR, Boolean.TRUE, JSFAttr.READONLY_ATTR);
         }
     }
     

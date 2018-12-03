@@ -533,6 +533,7 @@ public abstract class UIComponent
 
     public abstract String getId();
 
+    @Override
     public List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> eventClass)
     {
         List<SystemEventListener> listeners;
@@ -1093,11 +1094,13 @@ public abstract class UIComponent
         return _stateHelper;
     }
 
+    @Override
     public void restoreTransientState(FacesContext context, Object state)
     {
         getTransientStateHelper().restoreTransientState(context, state);
     }
 
+    @Override
     public Object saveTransientState(FacesContext context)
     {
         return getTransientStateHelper().saveTransientState(context);
@@ -1206,7 +1209,7 @@ public abstract class UIComponent
             {
                 // Recalculate the current composite component
                 UIComponent previousCompositeComponent = null;
-                for (int i = componentStack.size()-1; i >= 0; i--)
+                for (int i = componentStack.size() - 1; i >= 0; i--)
                 {
                     UIComponent component = componentStack.get(i);
                     if (component._isCompositeComponent())

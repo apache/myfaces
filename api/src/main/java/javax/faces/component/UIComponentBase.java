@@ -414,6 +414,7 @@ public abstract class UIComponentBase extends UIComponent
         }
     }
     
+    @Override
     public void clearInitialState()
     {
         super.clearInitialState();
@@ -1024,7 +1025,7 @@ public abstract class UIComponentBase extends UIComponent
     {
         if (_facetMap == null)
         {
-            _facetMap = new _ComponentFacetMap<UIComponent>(this);
+            _facetMap = new _ComponentFacetMap<>(this);
         }
         return _facetMap;
     }
@@ -1062,6 +1063,7 @@ public abstract class UIComponentBase extends UIComponent
      * component. The id is not necessarily unique across all components in the current view.
      */
     @JSFProperty(rtexprvalue = true)
+    @Override
     public String getId()
     {
         return _id;
@@ -1172,11 +1174,13 @@ public abstract class UIComponentBase extends UIComponent
     }
 
     @JSFProperty(literalOnly = true, istransient = true, tagExcluded = true)
+    @Override
     public boolean isTransient()
     {
         return _transient;
     }
     
+    @Override
     public void markInitialState()
     {
         super.markInitialState();
@@ -2360,11 +2364,12 @@ public abstract class UIComponentBase extends UIComponent
         }
 
         // 2. First character must be a letter or an underscore ('_').
-        if (!Character.isLetter(string.charAt(0)) && string.charAt(0) != '_')
+        char firstChar = string.charAt(0);
+        if (!Character.isLetter(firstChar) && firstChar != '_')
         {
             throw new IllegalArgumentException("component identifier's first character must be a letter "
                                                + "or an underscore ('_')! But it is \""
-                                               + string.charAt(0) + '"');
+                                               + firstChar + '"');
         }
         for (int i = 1; i < string.length(); i++)
         {
@@ -2391,11 +2396,13 @@ public abstract class UIComponentBase extends UIComponent
         return isRendered();
     }
 
+    @Override
     boolean isCachedFacesContext()
     {
         return _facesContext != null;
     }
     
+    @Override
     void setCachedFacesContext(FacesContext facesContext)
     {
         _facesContext = facesContext;

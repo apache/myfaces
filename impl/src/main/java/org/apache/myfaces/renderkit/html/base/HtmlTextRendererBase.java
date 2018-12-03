@@ -131,13 +131,13 @@ public class HtmlTextRendererBase
             }
             else
             {
-                if(component.getId()!=null && !component.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
+                if (shouldRenderId(facesContext, component))
                 {
                     span = true;
     
                     writer.startElement(HTML.SPAN_ELEM, component);
     
-                    HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
+                    HtmlRendererUtils.writeId(writer, component, facesContext);
     
                     HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
     

@@ -41,7 +41,8 @@ public final class CommonPropertyUtils
     
     public static boolean isIdRenderingNecessary(UIComponent component)
     {
-        return component.getId() != null && !component.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX);
+        String id = component.getId();
+        return id != null && !id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX);
     }
 
     public static void renderUniversalProperties(ResponseWriter writer,

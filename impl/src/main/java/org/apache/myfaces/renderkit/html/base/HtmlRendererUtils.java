@@ -836,12 +836,17 @@ public final class HtmlRendererUtils
         return false;
     }
 
-    public static void writeIdIfNecessary(ResponseWriter writer,
-            UIComponent component, FacesContext facesContext)
+    public static void writeId(ResponseWriter writer, UIComponent component, FacesContext facesContext)
             throws IOException
     {
-        if (component.getId() != null
-                && !component.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
+        writer.writeAttribute(HTML.ID_ATTR, component.getClientId(facesContext), null);
+    }
+    
+    public static void writeIdIfNecessary(ResponseWriter writer, UIComponent component, FacesContext facesContext)
+            throws IOException
+    {
+        String id = component.getId();
+        if (id != null && !id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
         {
             writer.writeAttribute(HTML.ID_ATTR, component.getClientId(facesContext), null);
         }

@@ -32,7 +32,6 @@ import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIMessages;
-import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlMessages;
@@ -127,8 +126,7 @@ public abstract class HtmlMessagesRendererBase
         }
         else
         {
-            if (renderDivWhenNoMessagesAndIdSet && messages.getId() != null && 
-                    !messages.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
+            if (renderDivWhenNoMessagesAndIdSet && shouldRenderId(facesContext, messages))
             {
                 ResponseWriter writer = facesContext.getResponseWriter();
                 writer.startElement(HTML.DIV_ELEM, messages);
