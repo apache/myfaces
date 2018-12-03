@@ -23,9 +23,10 @@ package org.apache.myfaces.resource;
  */
 public class AliasResourceMetaImpl extends ResourceMetaImpl
 {
-    private String _realResourceName;
+    private final String _realResourceName;
+    private final boolean _couldContainValueExpressions;
     
-    private boolean _couldContainValueExpressions;
+    private String resourceIdentifier = null;
 
     public AliasResourceMetaImpl(String prefix, String libraryName, String libraryVersion,
             String resourceName, String resourceVersion, String realResourceName, boolean couldContainValueExpressions)
@@ -48,61 +49,60 @@ public class AliasResourceMetaImpl extends ResourceMetaImpl
     {
         return _realResourceName;
     }
-
-    public void setRealResourceName(String realResourceName)
-    {
-        _realResourceName = realResourceName;
-    }
     
     @Override
     public String getResourceIdentifier()
     {
-        StringBuilder builder = new StringBuilder();
-        boolean firstSlashAdded = false;
-        if (getLocalePrefix() != null && getLocalePrefix().length() > 0)
+        if (resourceIdentifier == null)
         {
-            builder.append(getLocalePrefix());
-            firstSlashAdded = true;
-        }
-        if (getLibraryName() != null)
-        {
-            if (firstSlashAdded)
+            StringBuilder builder = new StringBuilder();
+            boolean firstSlashAdded = false;
+            if (getLocalePrefix() != null && getLocalePrefix().length() > 0)
             {
-                builder.append('/');
+                builder.append(getLocalePrefix());
+                firstSlashAdded = true;
             }
-            builder.append(getLibraryName());
-            firstSlashAdded = true;
-        }
-        if (getLibraryVersion() != null)
-        {
-            if (firstSlashAdded)
+            if (getLibraryName() != null)
             {
-                builder.append('/');
+                if (firstSlashAdded)
+                {
+                    builder.append('/');
+                }
+                builder.append(getLibraryName());
+                firstSlashAdded = true;
             }
-            builder.append(getLibraryVersion());
-            firstSlashAdded = true;
-        }
-        if (getRealResourceName() != null)
-        {
-            if (firstSlashAdded)
+            if (getLibraryVersion() != null)
             {
-                builder.append('/');
+                if (firstSlashAdded)
+                {
+                    builder.append('/');
+                }
+                builder.append(getLibraryVersion());
+                firstSlashAdded = true;
             }
-            builder.append(getRealResourceName());
-            firstSlashAdded = true;
-        }
-        if (getResourceVersion() != null)
-        {
-            if (firstSlashAdded)
+            if (getRealResourceName() != null)
             {
-                builder.append('/');
+                if (firstSlashAdded)
+                {
+                    builder.append('/');
+                }
+                builder.append(getRealResourceName());
+                firstSlashAdded = true;
             }
-            builder.append(getResourceVersion());
-            builder.append(
-                    getRealResourceName().substring(getRealResourceName().lastIndexOf('.')));
-            firstSlashAdded = true;
+            if (getResourceVersion() != null)
+            {
+                if (firstSlashAdded)
+                {
+                    builder.append('/');
+                }
+                builder.append(getResourceVersion());
+                builder.append(getRealResourceName().substring(getRealResourceName().lastIndexOf('.')));
+                firstSlashAdded = true;
+            }
+            resourceIdentifier = builder.toString();
         }
-        return builder.toString();
+        
+        return resourceIdentifier;
     }
 
     @Override

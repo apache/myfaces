@@ -624,7 +624,6 @@ public class ResourceHandlerImpl extends ResourceHandler
         {
             InputStream in = resource.getInputStream();
             OutputStream out = httpServletResponse.getOutputStream();
-            //byte[] buffer = new byte[_BUFFER_SIZE];
             byte[] buffer = new byte[this.getResourceBufferSize()];
 
             try
@@ -677,8 +676,7 @@ public class ResourceHandlerImpl extends ResourceHandler
      * Reads the specified input stream into the provided byte array storage and
      * writes it to the output stream.
      */
-    private static int pipeBytes(InputStream in, OutputStream out, byte[] buffer)
-            throws IOException
+    private static int pipeBytes(InputStream in, OutputStream out, byte[] buffer) throws IOException
     {
         int count = 0;
         int length;
@@ -743,8 +741,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             
             if (isResourceRequest || context.getViewRoot() == null)
             {
-                locale = context.getApplication().getViewHandler()
-                                .calculateLocale(context);
+                locale = context.getApplication().getViewHandler().calculateLocale(context);
             }
             else
             {
@@ -753,8 +750,8 @@ public class ResourceHandlerImpl extends ResourceHandler
 
             try
             {
-                ResourceBundle bundle = ResourceBundle
-                        .getBundle(bundleName, locale, ClassUtils.getContextClassLoader());
+                ResourceBundle bundle = ResourceBundle.getBundle(bundleName, locale,
+                        ClassUtils.getContextClassLoader());
 
                 if (bundle != null)
                 {
@@ -859,8 +856,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             {
                 for (String contract : contracts)
                 {
-                    for (ContractResourceLoader loader : getResourceHandlerSupport()
-                            .getContractResourceLoaders())
+                    for (ContractResourceLoader loader : getResourceHandlerSupport().getContractResourceLoaders())
                     {
                         if (loader.libraryExists(pathToLib, contract))
                         {
@@ -871,8 +867,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                 }
             }
             
-            for (ResourceLoader loader : getResourceHandlerSupport()
-                    .getResourceLoaders())
+            for (ResourceLoader loader : getResourceHandlerSupport().getResourceLoaders())
             {
                 if (loader.libraryExists(pathToLib))
                 {
@@ -887,8 +882,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         {
             for (String contract : contracts)
             {
-                for (ContractResourceLoader loader : getResourceHandlerSupport()
-                        .getContractResourceLoaders())
+                for (ContractResourceLoader loader : getResourceHandlerSupport().getContractResourceLoaders())
                 {
                     if (loader.libraryExists(libraryName, contract))
                     {
@@ -899,8 +893,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             }
         }
 
-        for (ResourceLoader loader : getResourceHandlerSupport()
-                .getResourceLoaders())
+        for (ResourceLoader loader : getResourceHandlerSupport().getResourceLoaders())
         {
             if (loader.libraryExists(libraryName))
             {
@@ -925,8 +918,7 @@ public class ResourceHandlerImpl extends ResourceHandler
      * @param resourceHandlerSupport
      *            the resourceHandlerSupport to set
      */
-    public void setResourceHandlerSupport(
-            ResourceHandlerSupport resourceHandlerSupport)
+    public void setResourceHandlerSupport(ResourceHandlerSupport resourceHandlerSupport)
     {
         _resourceHandlerSupport = resourceHandlerSupport;
     }
@@ -1045,8 +1037,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         // a contract.
         if (contractPreferred != null)
         {
-            resourceValue = getResourceLoaderCache().getResource(
-                    resourceId, contractPreferred);
+            resourceValue = getResourceLoaderCache().getResource(resourceId, contractPreferred);
         }
         if (resourceValue == null && !contracts.isEmpty())
         {
@@ -1066,7 +1057,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             resourceValue = getResourceLoaderCache().getResource(resourceId);
         }
         
-        if(resourceValue != null)
+        if (resourceValue != null)
         {        
             //Resolve contentType using ExternalContext.getMimeType
             String contentType = facesContext.getExternalContext().getMimeType(
