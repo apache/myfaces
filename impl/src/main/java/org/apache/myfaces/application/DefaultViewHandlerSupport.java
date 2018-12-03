@@ -23,20 +23,17 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.ProjectStage;
 import javax.faces.application.ViewHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.render.ResponseStateManager;
 import javax.faces.view.ViewDeclarationLanguage;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.lifecycle.CheckedViewIdsCache;
 import org.apache.myfaces.util.SharedStringBuilder;
-import org.apache.myfaces.util.ConcurrentLRUCache;
 import org.apache.myfaces.util.ExternalContextUtils;
 import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.util.ViewProtectionUtils;
-import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
  * A ViewHandlerSupport implementation for use with standard Java Servlet engines,
@@ -51,37 +48,14 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         DefaultViewHandlerSupport.class.getName() + ".CACHED_SERVLET_MAPPING";
 
     private static final Logger log = Logger.getLogger(DefaultViewHandlerSupport.class.getName());
-
-    /**
-     * Controls the size of the cache used to "remember" if a view exists or not.
-     */
-    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="viewhandler", tags="performance", 
-            classType="java.lang.Integer",
-            desc="Controls the size of the cache used to 'remember' if a view exists or not.")
-    private static final String CHECKED_VIEWID_CACHE_SIZE_ATTRIBUTE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_SIZE";
-    private static final int CHECKED_VIEWID_CACHE_DEFAULT_SIZE = 500;
-
-    /**
-     * Enable or disable a cache used to "remember" if a view exists or not and reduce the impact of
-     * sucesive calls to ExternalContext.getResource().
-     */
-    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", expectedValues="true, false", group="viewhandler", 
-            tags="performance",
-            desc="Enable or disable a cache used to 'remember' if a view exists or not and reduce the impact " +
-                 "of sucesive calls to ExternalContext.getResource().")
-    private static final String CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE = 
-        "org.apache.myfaces.CHECKED_VIEWID_CACHE_ENABLED";
-    private static final boolean CHECKED_VIEWID_CACHE_ENABLED_DEFAULT = true;
     
     private static final String VIEW_HANDLER_SUPPORT_SB = "oam.viewhandler.SUPPORT_SB";
-
-    private volatile ConcurrentLRUCache<String, Boolean> _checkedViewIdMap = null;
-    private Boolean _checkedViewIdCacheEnabled = null;
     
     private final String[] _faceletsViewMappings;
     private final String[] _contextSuffixes;
     private final String _faceletsContextSufix;
     private final boolean _initialized;
+    private CheckedViewIdsCache checkedViewIdsCache = null;
     
     public DefaultViewHandlerSupport()
     {
@@ -194,7 +168,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
                     viewId = handleSuffixMapping(context, viewId+".jsf");
                 }
 
-                return (checkResourceExists(context,viewId) ? viewId : null);
+                return (checkViewExists(context,viewId) ? viewId : null);
             }
         }
         else if (mapping.getUrlPattern().startsWith(viewId))
@@ -205,7 +179,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         {
             if(viewId != null)
             {
-                return (checkResourceExists(context,viewId) ? viewId : null);
+                return (checkViewExists(context,viewId) ? viewId : null);
             }
         }
 
@@ -527,7 +501,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
                         builder.append(candidateViewId); 
                         builder.replace(candidateViewId.lastIndexOf('.'), candidateViewId.length(), mapping);
                         String tempViewId = builder.toString();
-                        if(checkResourceExists(context,tempViewId))
+                        if (checkViewExists(context, tempViewId))
                         {
                             return tempViewId;
                         }
@@ -536,7 +510,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             }
 
             // forced facelets mappings did not match or there were no entries in faceletsViewMappings array
-            if(checkResourceExists(context,candidateViewId))
+            if (checkViewExists(context,candidateViewId))
             {
                 return candidateViewId;
             }
@@ -572,14 +546,14 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             }
             
             String candidateViewId = builder.toString();
-            if (checkResourceExists(context,candidateViewId))
+            if (checkViewExists(context,candidateViewId))
             {
                 return candidateViewId;
             }
         }
 
         // Otherwise, if a physical resource exists with the name requestViewId let that value be viewId.
-        if(checkResourceExists(context,requestViewId))
+        if (checkViewExists(context,requestViewId))
         {
             return requestViewId;
         }
@@ -588,101 +562,48 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         return null;
     }
     
-    protected boolean checkResourceExists(FacesContext context, String viewId)
+    protected boolean checkViewExists(FacesContext facesContext, String viewId)
     {
+        if (checkedViewIdsCache == null)
+        {
+            checkedViewIdsCache = CheckedViewIdsCache.getInstance(facesContext);
+        }
+        
         try
         {
-            if (isCheckedViewIdCachingEnabled(context))
+            Boolean resourceExists = null;
+            if (checkedViewIdsCache.isEnabled())
             {
-                Boolean resourceExists = getCheckedViewIDMap(context).get(
-                        viewId);
-                if (resourceExists == null)
-                {
-                    ViewDeclarationLanguage vdl = context.getApplication().getViewHandler()
-                            .getViewDeclarationLanguage(context, viewId);
-                    if (vdl != null)
-                    {
-                        resourceExists = vdl.viewExists(context, viewId);
-                    }
-                    else
-                    {
-                        // Fallback to default strategy
-                        resourceExists = context.getExternalContext().getResource(
-                                viewId) != null;
-                    }
-                    getCheckedViewIDMap(context).put(viewId, resourceExists);
-                }
-                return resourceExists;
+                resourceExists = checkedViewIdsCache.getCache().get(viewId);
             }
-            else
+
+            if (resourceExists == null)
             {
-                ViewDeclarationLanguage vdl = context.getApplication().getViewHandler()
-                            .getViewDeclarationLanguage(context, viewId);
+                ViewDeclarationLanguage vdl = facesContext.getApplication().getViewHandler()
+                        .getViewDeclarationLanguage(facesContext, viewId);
                 if (vdl != null)
                 {
-                    if (vdl.viewExists(context, viewId))
-                    {
-                        return true;
-                    }
+                    resourceExists = vdl.viewExists(facesContext, viewId);
                 }
                 else
                 {
                     // Fallback to default strategy
-                    if (context.getExternalContext().getResource(viewId) != null)
-                    {
-                        return true;
-                    }
+                    resourceExists = facesContext.getExternalContext().getResource(viewId) != null;
+                }
+
+                if (checkedViewIdsCache.isEnabled())
+                {
+                    checkedViewIdsCache.getCache().put(viewId, resourceExists);
                 }
             }
+
+            return resourceExists;
         }
-        catch(MalformedURLException e)
+        catch (MalformedURLException e)
         {
             //ignore and move on
         }     
         return false;
     }
 
-    private ConcurrentLRUCache<String, Boolean> getCheckedViewIDMap(FacesContext context)
-    {
-        if (_checkedViewIdMap == null)
-        {
-            int maxSize = getViewIDCacheMaxSize(context);
-            _checkedViewIdMap = new ConcurrentLRUCache<String, Boolean>((maxSize * 4 + 3) / 3, maxSize);
-        }
-        return _checkedViewIdMap;
-    }
-
-    private boolean isCheckedViewIdCachingEnabled(FacesContext context)
-    {
-        if (_checkedViewIdCacheEnabled == null)
-        {
-            // first, check if the ProjectStage is development and skip caching in this case
-            if (context.isProjectStage(ProjectStage.Development))
-            {
-                _checkedViewIdCacheEnabled = Boolean.FALSE;
-            }
-            else
-            {
-                // in all ohter cases, make sure that the cache is not explicitly disabled via context param
-                _checkedViewIdCacheEnabled = WebConfigParamUtils.getBooleanInitParameter(context.getExternalContext(),
-                        CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE,
-                        CHECKED_VIEWID_CACHE_ENABLED_DEFAULT);
-            }
-
-            if (log.isLoggable(Level.FINE))
-            {
-                log.log(Level.FINE, "MyFaces ViewID Caching Enabled="
-                        + _checkedViewIdCacheEnabled);
-            }
-        }
-        return _checkedViewIdCacheEnabled;
-    }
-
-    private int getViewIDCacheMaxSize(FacesContext context)
-    {
-        ExternalContext externalContext = context.getExternalContext();
-
-        return WebConfigParamUtils.getIntegerInitParameter(externalContext,
-                CHECKED_VIEWID_CACHE_SIZE_ATTRIBUTE, CHECKED_VIEWID_CACHE_DEFAULT_SIZE);
-    }
 }
