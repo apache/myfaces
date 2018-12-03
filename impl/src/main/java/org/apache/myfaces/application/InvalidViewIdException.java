@@ -21,40 +21,23 @@ package org.apache.myfaces.application;
 public class InvalidViewIdException extends RuntimeException
 {
 
-    /**
-     * 
-     */
     public InvalidViewIdException()
     {
-        // TODO Auto-generated constructor stub
+
     }
 
-    /**
-     * @param message
-     */
     public InvalidViewIdException(String message)
     {
         super(message);
-        // TODO Auto-generated constructor stub
     }
 
-    /**
-     * @param cause
-     */
     public InvalidViewIdException(Throwable cause)
     {
         super(cause);
-        // TODO Auto-generated constructor stub
     }
 
-    /**
-     * @param message
-     * @param cause
-     */
     public InvalidViewIdException(String message, Throwable cause)
     {
         super(message, cause);
-        // TODO Auto-generated constructor stub
     }
-
 }
