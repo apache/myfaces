@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.el.FunctionMapper;
+import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.util.ClassUtils;
 
 
@@ -115,34 +116,20 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
         private static final long serialVersionUID = 1L;
 
         protected transient Method _m;
-
         protected String _owner;
-
         protected String _name;
-
         protected String[] _types;
-
         protected String _prefix;
-
         protected String _localName;
 
-        /**
-         * 
-         */
-        public Function(String prefix, String localName, Method m)
+        public Function(String prefix, String localName, Method method)
         {
-            if (localName == null)
-            {
-                throw new NullPointerException("LocalName cannot be null");
-            }
-            if (m == null)
-            {
-                throw new NullPointerException("Method cannot be null");
-            }
+            Assert.notNull(localName, "localName");
+            Assert.notNull(method, "method");
             
             _prefix = prefix;
             _localName = localName;
-            _m = m;
+            _m = method;
         }
 
         public Function()

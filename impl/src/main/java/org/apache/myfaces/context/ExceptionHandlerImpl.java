@@ -31,6 +31,7 @@ import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.event.SystemEvent;
+import org.apache.myfaces.util.Assert;
 
 /**
  * DOCUMENT ME!
@@ -80,22 +81,19 @@ public class ExceptionHandlerImpl extends ExceptionHandler
      * {@inheritDoc}
      */
     @Override
-    public Throwable getRootCause(Throwable t)
+    public Throwable getRootCause(Throwable throwable)
     {
-        if (t == null)
+        Assert.notNull(throwable, "throwable");
+
+        while (throwable != null)
         {
-            throw new NullPointerException("t");
-        }
-        
-        while (t != null)
-        {
-            Class<?> clazz = t.getClass();
+            Class<?> clazz = throwable.getClass();
             if (!clazz.equals(FacesException.class) && !clazz.equals(ELException.class))
             {
-                return t;
+                return throwable;
             }
             
-            t = t.getCause();
+            throwable = throwable.getCause();
         }
         
         return null;

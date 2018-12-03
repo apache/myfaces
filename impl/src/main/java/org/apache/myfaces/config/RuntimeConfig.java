@@ -44,6 +44,7 @@ import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.ResourceBundle;
 import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
+import org.apache.myfaces.util.Assert;
 
 /**
  * Holds all configuration information (from the faces-config xml files) that is needed later during runtime. The config
@@ -210,9 +211,8 @@ public class RuntimeConfig
     public final void addConverterConfiguration(final String converterClassName,
             final org.apache.myfaces.config.element.Converter configuration)
     {
-        checkNull(converterClassName, "converterClassName");
-        checkEmpty(converterClassName, "converterClassName");
-        checkNull(configuration, "configuration");
+        Assert.notEmpty(converterClassName, "converterClassName");
+        Assert.notNull(configuration, "configuration");
 
         _converterClassNameToConfigurationMap.put(converterClassName, configuration);
     }
@@ -221,22 +221,6 @@ public class RuntimeConfig
     {
         return (org.apache.myfaces.config.element.Converter)
                 _converterClassNameToConfigurationMap.get(converterClassName);
-    }
-    
-    private void checkNull(final Object param, final String paramName)
-    {
-        if (param == null)
-        {
-            throw new NullPointerException(paramName + " can not be null.");
-        }
-    }
-
-    private void checkEmpty(final String param, final String paramName)
-    {
-        if (param.length() == 0)
-        {
-            throw new NullPointerException("String " + paramName + " can not be empty.");
-        }
     }
 
     /**
@@ -356,9 +340,8 @@ public class RuntimeConfig
     
     public void addFaceletProcessingConfiguration(String fileExtension, FaceletsProcessing configuration)
     {
-        checkNull(fileExtension, "fileExtension");
-        checkEmpty(fileExtension, "fileExtension");
-        checkNull(configuration, "configuration");
+        Assert.notEmpty(fileExtension, "fileExtension");
+        Assert.notNull(configuration, "configuration");
 
         this._faceletsProcessingByFileExtension.put(fileExtension, configuration);
     }

@@ -58,6 +58,7 @@ import javax.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.cdi.model.DataModelBuilderProxy;
+import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ExternalSpecifications;
 
@@ -282,11 +283,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     @Override
     public void setValueExpression(String name, ValueExpression binding)
     {
-        if (name == null)
-        {
-            throw new NullPointerException("name");
-        }
-        else if (name.equals("value"))
+        Assert.notNull(name, "name");
+
+        if (name.equals("value"))
         {
             _dataModelMap.clear();
         }
@@ -1111,10 +1110,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     public boolean invokeOnComponent(FacesContext context, String clientId,
             ContextCallback callback) throws FacesException
     {
-        if (context == null || clientId == null || callback == null)
-        {
-            throw new NullPointerException();
-        }
+        Assert.notNull(context, "context");
+        Assert.notNull(clientId, "clientId");
+        Assert.notNull(callback, "callback");
         
         final String baseClientId = getClientId(context);
 

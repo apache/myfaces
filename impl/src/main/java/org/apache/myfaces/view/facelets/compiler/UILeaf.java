@@ -45,6 +45,7 @@ import javax.faces.event.FacesListener;
 import javax.faces.render.Renderer;
 
 import javax.faces.view.Location;
+import org.apache.myfaces.util.Assert;
 
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ComponentUtils;
@@ -63,10 +64,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
     @Override
     public String getClientId(FacesContext context)
     {
-        if (context == null)
-        {
-            throw new NullPointerException("context");
-        }
+        Assert.notNull(context, "context");
 
         if (_clientId != null)
         {
@@ -166,54 +164,11 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
         // UILeaf instance are just a wrapper for html markup. It never has 
         // an user defined id. The validation check here is just useless, 
         // because facelets algorithm ensures that.
-        //isIdValid(id);
+
         _id = id;
         _clientId = null;
     }
-    /*
-    private void isIdValid(String string)
-    {
-
-        // is there any component identifier ?
-        if (string == null)
-        {
-            return;
-        }
-
-        // Component identifiers must obey the following syntax restrictions:
-        // 1. Must not be a zero-length String.
-        if (string.length() == 0)
-        {
-            throw new IllegalArgumentException("component identifier must not be a zero-length String");
-        }
-
-        // If new id is the same as old it must be valid
-        if (string.equals(_id))
-        {
-            return;
-        }
-
-        // 2. First character must be a letter or an underscore ('_').
-        if (!Character.isLetter(string.charAt(0)) && string.charAt(0) != '_')
-        {
-            throw new IllegalArgumentException("component identifier's first character must be a letter "
-                                               + "or an underscore ('_')! But it is \""
-                                               + string.charAt(0) + "\"");
-        }
-        for (int i = 1; i < string.length(); i++)
-        {
-            char c = string.charAt(i);
-            // 3. Subsequent characters must be a letter, a digit, an underscore ('_'), or a dash ('-').
-            if (!Character.isLetterOrDigit(c) && c != '-' && c != '_')
-            {
-                throw new IllegalArgumentException("Subsequent characters of component identifier must be a letter, "
-                                                   + "a digit, an underscore ('_'), or a dash ('-')! "
-                                                   + "But component identifier contains \""
-                                                   + c + "\"");
-            }
-        }
-    }*/
-    
+ 
     private String getComponentLocation(UIComponent component)
     {
         Location location = (Location) component.getAttributes()
@@ -675,10 +630,8 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
 
     private void checkKey(Object key)
     {
-        if (key == null)
-        {
-            throw new NullPointerException("key");
-        }
+        Assert.notNull(key, "key");
+        
         if (!(key instanceof String))
         {
             throw new ClassCastException("key is not a String");
@@ -689,7 +642,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
     {
         if (_attributes == null)
         {
-            _attributes = new HashMap<String, Object>(2,1);
+            _attributes = new HashMap<>(2, 1);
         }
         return _attributes;
     }

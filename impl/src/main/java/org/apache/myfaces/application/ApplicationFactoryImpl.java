@@ -25,6 +25,7 @@ import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.util.Assert;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -81,10 +82,8 @@ public class ApplicationFactoryImpl extends ApplicationFactory
     @Override
     public void setApplication(Application application)
     {
-        if (application == null)
-        {
-            throw new NullPointerException("Cannot set a null application in the ApplicationFactory");
-        }
+        Assert.notNull(application, "application");
+        
         _application = application;
         putApplicationOnMap();
     }

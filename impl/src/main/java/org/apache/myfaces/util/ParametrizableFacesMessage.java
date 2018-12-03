@@ -31,9 +31,6 @@ import javax.faces.context.FacesContext;
  */
 public class ParametrizableFacesMessage extends FacesMessage
 {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 7792947730961657948L;
 
     private final Object _args[];
@@ -46,10 +43,9 @@ public class ParametrizableFacesMessage extends FacesMessage
             String summary, String detail, Object[] args, Locale locale)
     {
         super(summary, detail);
-        if(locale == null)
-        {
-            throw new NullPointerException("locale");
-        }
+
+        Assert.notNull(locale, "locale");
+        
         _locale = locale;
         _args = args;
     }
@@ -58,10 +54,9 @@ public class ParametrizableFacesMessage extends FacesMessage
             String summary, String detail, Object[] args, Locale locale)
     {
         super(severity, summary, detail);
-        if(locale == null)
-        {
-            throw new NullPointerException("locale");
-        }
+
+        Assert.notNull(locale, "locale");
+        
         _locale = locale;
         _args = args;
     }

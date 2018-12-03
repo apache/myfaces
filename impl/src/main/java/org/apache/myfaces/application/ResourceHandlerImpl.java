@@ -65,6 +65,7 @@ import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.resource.ContractResource;
 import org.apache.myfaces.resource.ContractResourceLoader;
 import org.apache.myfaces.resource.ResourceCachedInfo;
+import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.util.SkipMatchIterator;
 
 /**
@@ -135,13 +136,10 @@ public class ResourceHandlerImpl extends ResourceHandler
     public Resource createResource(String resourceName, String libraryName,
             String contentType)
     {
+        Assert.notNull(resourceName, "resourceName");
+        
         Resource resource = null;
         
-        if (resourceName == null) 
-        {
-            throw new NullPointerException();
-        }
-
         if (resourceName.length() == 0)
         {
             return null;
@@ -1024,10 +1022,7 @@ public class ResourceHandlerImpl extends ResourceHandler
     {
         Resource resource = null;
 
-        if (resourceId == null)
-        {
-            throw new NullPointerException();
-        }
+        Assert.notNull(resourceId, "resourceId");
         
         // Later in deriveResourceMeta the resourceId is decomposed and
         // its elements validated properly.
@@ -1621,10 +1616,8 @@ public class ResourceHandlerImpl extends ResourceHandler
         
         Resource resource = null;
 
-        if (resourceName == null)
-        {
-            throw new NullPointerException();
-        }
+        Assert.notNull(resourceName, "resourceName");
+        
         if (resourceName.charAt(0) == '/')
         {
             // If resourceName starts with '/', remove that character because it

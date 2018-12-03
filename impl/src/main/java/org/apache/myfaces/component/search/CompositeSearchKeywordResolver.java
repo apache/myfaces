@@ -23,14 +23,11 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchKeywordContext;
 import javax.faces.component.search.SearchKeywordResolver;
+import org.apache.myfaces.util.Assert;
 
-/**
- *
- */
 public class CompositeSearchKeywordResolver extends SearchKeywordResolver
 {
     private int size;
-
     private SearchKeywordResolver[] resolvers;
 
     public CompositeSearchKeywordResolver()
@@ -39,20 +36,17 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver
         this.resolvers = new SearchKeywordResolver[2];
     }
 
-    public void add(SearchKeywordResolver elResolver)
+    public void add(SearchKeywordResolver keywordResolver)
     {
-        if (elResolver == null)
-        {
-            throw new NullPointerException();
-        }
-
+        Assert.notNull(keywordResolver, "keywordResolver");
+        
         if (this.size >= this.resolvers.length)
         {
             SearchKeywordResolver[] nr = new SearchKeywordResolver[this.size * 2];
             System.arraycopy(this.resolvers, 0, nr, 0, this.size);
             this.resolvers = nr;
         }
-        this.resolvers[this.size++] = elResolver;
+        this.resolvers[this.size++] = keywordResolver;
     }
 
     @Override

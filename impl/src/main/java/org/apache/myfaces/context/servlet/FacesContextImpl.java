@@ -54,8 +54,6 @@ import org.apache.myfaces.util.Assert;
  */
 public class FacesContextImpl extends FacesContextImplBase
 {
-
-    private static final String METHOD_RESPONSEWRITER = "responseWriter";
     static final String RE_SPLITTER = "[\\s\\t\\r\\n]*\\,[\\s\\t\\r\\n]*";
     
     // ~ Instance fields ----------------------------------------------------------------------------
@@ -176,14 +174,14 @@ public class FacesContextImpl extends FacesContextImplBase
 
         if (_messages == null)
         {
-            _messages = new LinkedHashMap<String, List<FacesMessage>>();
-            _orderedMessages = new ArrayList<FacesMessage>();
+            _messages = new LinkedHashMap<>();
+            _orderedMessages = new ArrayList<>();
         }
         
         List<FacesMessage> lst = _messages.get(clientId); 
         if (lst == null)
         {
-            lst = new ArrayList<FacesMessage>();
+            lst = new ArrayList<>();
             _messages.put(clientId, lst);
         }
         
@@ -360,10 +358,8 @@ public class FacesContextImpl extends FacesContextImplBase
     {
         assertNotReleased();
 
-        if (responseWriter == null)
-        {
-            throw new NullPointerException(METHOD_RESPONSEWRITER);
-        }
+        Assert.notNull(responseWriter, "responseWriter");
+        
         _responseWriter = responseWriter;
     }
 

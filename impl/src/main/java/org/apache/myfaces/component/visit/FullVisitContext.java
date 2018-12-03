@@ -30,6 +30,7 @@ import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.util.Assert;
 
 /**
  * <p>
@@ -70,10 +71,7 @@ public class FullVisitContext extends VisitContext
      */
     public FullVisitContext(FacesContext facesContext, Set<VisitHint> hints)
     {
-        if (facesContext == null)
-        {
-            throw new NullPointerException();
-        }
+        Assert.notNull(facesContext, "facesContext");
 
         _facesContext = facesContext;
 

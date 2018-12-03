@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.URL;
 import javax.faces.view.facelets.FaceletCache;
 import javax.faces.view.facelets.FaceletContext;
+import org.apache.myfaces.util.Assert;
 
 /**
  * Extended FaceletCache contract that supports additional Myfaces specific concepts
@@ -79,10 +80,8 @@ public abstract class AbstractFaceletCache<V> extends FaceletCache<V>
                                       FaceletCache.MemberFactory<V> viewMetadataFaceletFactory,
                                       FaceletCache.MemberFactory<V> compositeComponentMetadataFaceletFactory)
     {
-        if  (compositeComponentMetadataFaceletFactory == null)
-        {
-            throw new NullPointerException("viewMetadataFaceletFactory is null");
-        }
+        Assert.notNull(compositeComponentMetadataFaceletFactory, "compositeComponentMetadataFaceletFactory");
+        
         _compositeComponentMetadataFaceletFactory = compositeComponentMetadataFaceletFactory;
         setCacheFactories(faceletFactory, viewMetadataFaceletFactory);
     }
