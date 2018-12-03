@@ -122,6 +122,7 @@ import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.flow.FlowHandlerImpl;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.ELText;
@@ -409,8 +410,8 @@ public class ApplicationImpl extends Application
             throws FacesException, NullPointerException
     {
 
-        checkNull(facesContext, "facesContext");
-        checkNull(name, "name");
+        Assert.notNull(facesContext, "facesContext");
+        Assert.notNull(name, "name");
 
         final String bundleName = getBundleName(facesContext, name);
 
@@ -488,9 +489,9 @@ public class ApplicationImpl extends Application
          * be returned for any of the afore mentioned annotations. Such inspection is the province of
          */
 
-        checkNull(componentExpression, "componentExpression");
-        checkNull(facesContext, "facesContext");
-        checkNull(componentType, "componentType");
+        Assert.notNull(componentExpression, "componentExpression");
+        Assert.notNull(facesContext, "facesContext");
+        Assert.notNull(componentType, "componentType");
 
         ELContext elContext = facesContext.getELContext();
 
@@ -569,8 +570,8 @@ public class ApplicationImpl extends Application
     public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass,
                              Class<?> sourceBaseType, Object source)
     {
-        checkNull(systemEventClass, "systemEventClass");
-        checkNull(source, "source");
+        Assert.notNull(systemEventClass, "systemEventClass");
+        Assert.notNull(source, "source");
         
         //Call events only if event processing is enabled.
         if (!facesContext.isProcessingEvents())
@@ -651,7 +652,7 @@ public class ApplicationImpl extends Application
     @Override
     public final void setActionListener(final ActionListener actionListener)
     {
-        checkNull(actionListener, "actionListener");
+        Assert.notNull(actionListener, "actionListener");
 
         _actionListener = actionListener;
         if (log.isLoggable(Level.FINEST))
@@ -693,7 +694,7 @@ public class ApplicationImpl extends Application
     @Override
     public final void setDefaultLocale(final Locale locale)
     {
-        checkNull(locale, "locale");
+        Assert.notNull(locale, "locale");
 
         _defaultLocale = locale;
         if (log.isLoggable(Level.FINEST))
@@ -711,7 +712,7 @@ public class ApplicationImpl extends Application
     @Override
     public final void setMessageBundle(final String messageBundle)
     {
-        checkNull(messageBundle, "messageBundle");
+        Assert.notNull(messageBundle, "messageBundle");
 
         _messageBundle = messageBundle;
         if (log.isLoggable(Level.FINEST))
@@ -729,7 +730,7 @@ public class ApplicationImpl extends Application
     @Override
     public final void setNavigationHandler(final NavigationHandler navigationHandler)
     {
-        checkNull(navigationHandler, "navigationHandler");
+        Assert.notNull(navigationHandler, "navigationHandler");
 
         _navigationHandler = navigationHandler;
         if (log.isLoggable(Level.FINEST))
@@ -846,7 +847,7 @@ public class ApplicationImpl extends Application
     @Override
     public final void setResourceHandler(ResourceHandler resourceHandler)
     {
-        checkNull(resourceHandler, "resourceHandler");
+        Assert.notNull(resourceHandler, "resourceHandler");
 
         if(isFirstRequestProcessed())
         {
@@ -865,7 +866,7 @@ public class ApplicationImpl extends Application
     @Override
     public final void setSupportedLocales(final Collection<Locale> locales)
     {
-        checkNull(locales, "locales");
+        Assert.notNull(locales, "locales");
 
         _supportedLocales = locales;
         if (log.isLoggable(Level.FINEST))
@@ -889,7 +890,7 @@ public class ApplicationImpl extends Application
     @Override
     public final void setViewHandler(final ViewHandler viewHandler)
     {
-        checkNull(viewHandler, "viewHandler");
+        Assert.notNull(viewHandler, "viewHandler");
 
         if(isFirstRequestProcessed())
         {
@@ -913,8 +914,8 @@ public class ApplicationImpl extends Application
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
                                  SystemEventListener listener)
     {
-        checkNull(systemEventClass, "systemEventClass");
-        checkNull(listener, "listener");
+        Assert.notNull(systemEventClass, "systemEventClass");
+        Assert.notNull(listener, "listener");
 
         SystemListenerEntry systemListenerEntry;
         synchronized (_systemEventListenerClassMap)
@@ -940,8 +941,8 @@ public class ApplicationImpl extends Application
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
                                      SystemEventListener listener)
     {
-        checkNull(systemEventClass, "systemEventClass");
-        checkNull(listener, "listener");
+        Assert.notNull(systemEventClass, "systemEventClass");
+        Assert.notNull(listener, "listener");
 
         SystemListenerEntry systemListenerEntry = _systemEventListenerClassMap.get(systemEventClass);
         if (systemListenerEntry != null)
@@ -959,10 +960,8 @@ public class ApplicationImpl extends Application
     @Override
     public void addBehavior(String behaviorId, String behaviorClass)
     {
-        checkNull(behaviorId, "behaviorId");
-        checkEmpty(behaviorId, "behaviorId");
-        checkNull(behaviorClass, "behaviorClass");
-        checkEmpty(behaviorClass, "behaviorClass");
+        Assert.notEmpty(behaviorId, "behaviorId");
+        Assert.notEmpty(behaviorClass, "behaviorClass");
 
         try
         {
@@ -990,10 +989,8 @@ public class ApplicationImpl extends Application
     @Override
     public final void addComponent(final String componentType, final String componentClassName)
     {
-        checkNull(componentType, "componentType");
-        checkEmpty(componentType, "componentType");
-        checkNull(componentClassName, "componentClassName");
-        checkEmpty(componentClassName, "componentClassName");
+        Assert.notEmpty(componentType, "componentType");
+        Assert.notEmpty(componentClassName, "componentClassName");
 
         try
         {
@@ -1020,10 +1017,8 @@ public class ApplicationImpl extends Application
     @Override
     public final void addConverter(final String converterId, final String converterClass)
     {
-        checkNull(converterId, "converterId");
-        checkEmpty(converterId, "converterId");
-        checkNull(converterClass, "converterClass");
-        checkEmpty(converterClass, "converterClass");
+        Assert.notEmpty(converterId, "converterId");
+        Assert.notEmpty(converterClass, "converterClass");
 
         try
         {
@@ -1049,9 +1044,8 @@ public class ApplicationImpl extends Application
     @Override
     public final void addConverter(final Class<?> targetClass, final String converterClass)
     {
-        checkNull(targetClass, "targetClass");
-        checkNull(converterClass, "converterClass");
-        checkEmpty(converterClass, "converterClass");
+        Assert.notNull(targetClass, "targetClass");
+        Assert.notEmpty(converterClass, "converterClass");
 
         try
         {
@@ -1079,10 +1073,8 @@ public class ApplicationImpl extends Application
     @Override
     public final void addValidator(final String validatorId, final String validatorClass)
     {
-        checkNull(validatorId, "validatorId");
-        checkEmpty(validatorId, "validatorId");
-        checkNull(validatorClass, "validatorClass");
-        checkEmpty(validatorClass, "validatorClass");
+        Assert.notEmpty(validatorId, "validatorId");
+        Assert.notEmpty(validatorClass, "validatorClass");
 
         try
         {
@@ -1109,8 +1101,7 @@ public class ApplicationImpl extends Application
     @Override
     public Behavior createBehavior(String behaviorId) throws FacesException
     {
-        checkNull(behaviorId, "behaviorId");
-        checkEmpty(behaviorId, "behaviorId");
+        Assert.notEmpty(behaviorId, "behaviorId");
 
         final Class<? extends Behavior> behaviorClass =
                 getObjectFromClassMap(behaviorId, _behaviorClassMap);
@@ -1192,8 +1183,8 @@ public class ApplicationImpl extends Application
     @Override
     public UIComponent createComponent(FacesContext context, Resource componentResource)
     {
-        checkNull(context, "context");
-        checkNull(componentResource, "componentResource");
+        Assert.notNull(context, "context");
+        Assert.notNull(componentResource, "componentResource");
         
         UIComponent component = null;
         Resource resource;
@@ -1369,8 +1360,8 @@ public class ApplicationImpl extends Application
     @Override
     public UIComponent createComponent(FacesContext context, String componentType, String rendererType)
     {
-        checkNull(context, "context");
-        checkNull(componentType, "componentType");
+        Assert.notNull(context, "context");
+        Assert.notNull(componentType, "componentType");
 
         // Like createComponent(String)
         UIComponent component = createComponent(context, componentType);
@@ -1397,8 +1388,7 @@ public class ApplicationImpl extends Application
     private final UIComponent createComponent(FacesContext facesContext, 
             final String componentType) throws FacesException
     {
-        checkNull(componentType, "componentType");
-        checkEmpty(componentType, "componentType");
+        Assert.notEmpty(componentType, "componentType");
 
         final Class<? extends UIComponent> componentClass =
                 getObjectFromClassMap(componentType, _componentClassMap);
@@ -1424,8 +1414,7 @@ public class ApplicationImpl extends Application
     @Override
     public final UIComponent createComponent(final String componentType) throws FacesException
     {
-        checkNull(componentType, "componentType");
-        checkEmpty(componentType, "componentType");
+        Assert.notEmpty(componentType, "componentType");
 
         final Class<? extends UIComponent> componentClass =
                 getObjectFromClassMap(componentType, _componentClassMap);
@@ -1475,8 +1464,7 @@ public class ApplicationImpl extends Application
     @Override
     public final Converter createConverter(final String converterId)
     {
-        checkNull(converterId, "converterId");
-        checkEmpty(converterId, "converterId");
+        Assert.notEmpty(converterId, "converterId");
 
         final Class<? extends Converter> converterClass =
                 getObjectFromClassMap(converterId, _converterIdToClassMap);
@@ -1538,7 +1526,7 @@ public class ApplicationImpl extends Application
     @Override
     public final Converter createConverter(final Class<?> targetClass)
     {
-        checkNull(targetClass, "targetClass");
+        Assert.notNull(targetClass, "targetClass");
 
         return internalCreateConverter(targetClass);
     }
@@ -1964,8 +1952,7 @@ public class ApplicationImpl extends Application
     @Override
     public final Validator createValidator(final String validatorId) throws FacesException
     {
-        checkNull(validatorId, "validatorId");
-        checkEmpty(validatorId, "validatorId");
+        Assert.notEmpty(validatorId, "validatorId");
 
         Class<? extends Validator> validatorClass =
                 getObjectFromClassMap(validatorId, _validatorClassMap);
@@ -2050,7 +2037,7 @@ public class ApplicationImpl extends Application
     @Override
     public final void setStateManager(final StateManager stateManager)
     {
-        checkNull(stateManager, "stateManager");
+        Assert.notNull(stateManager, "stateManager");
 
         if(isFirstRequestProcessed())
         {
@@ -2064,7 +2051,7 @@ public class ApplicationImpl extends Application
     @Override
     public final void setFlowHandler(FlowHandler flowHandler)
     {
-        checkNull(flowHandler, "flowHandler");
+        Assert.notNull(flowHandler, "flowHandler");
 
         if(isFirstRequestProcessed())
         {
@@ -2078,22 +2065,6 @@ public class ApplicationImpl extends Application
     public final FlowHandler getFlowHandler()
     {
         return _flowHandler;
-    }
-
-    private void checkNull(final Object param, final String paramName)
-    {
-        if (param == null)
-        {
-            throw new NullPointerException(paramName + " cannot be null.");
-        }
-    }
-
-    private void checkEmpty(final String param, final String paramName)
-    {
-        if (param.length() == 0)
-        {
-            throw new NullPointerException("String " + paramName + " cannot be empty.");
-        }
     }
 
     private void _handleAnnotations(FacesContext context, Object inspected, UIComponent component)
@@ -2660,7 +2631,7 @@ public class ApplicationImpl extends Application
     @Override
     public final void setSearchExpressionHandler(SearchExpressionHandler searchExpressionHandler)
     {
-        checkNull(searchExpressionHandler, "searchExpressionHandler");
+        Assert.notNull(searchExpressionHandler, "searchExpressionHandler");
 
         if(isFirstRequestProcessed())
         {

@@ -29,6 +29,7 @@ import javax.faces.lifecycle.ClientWindow;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.context.ReleasableExternalContext;
+import org.apache.myfaces.util.Assert;
 
 /**
  * Provides a base implementation of the ExternalContext for Servlet
@@ -58,6 +59,7 @@ public abstract class ServletExternalContextImplBase extends ExternalContext
         _clientWindow = null;
     }
     
+    @Override
     public void release()
     {
         _servletContext = null;
@@ -81,7 +83,7 @@ public abstract class ServletExternalContextImplBase extends ExternalContext
     @Override
     public String getMimeType(String file)
     {
-        checkNull(file, "file");
+        Assert.notNull(file, "file");
         return _servletContext.getMimeType(file);
     }
     
@@ -98,13 +100,10 @@ public abstract class ServletExternalContextImplBase extends ExternalContext
     }
     
     @Override
-    public String getInitParameter(final String s)
+    public String getInitParameter(final String name)
     {
-        if (s == null)
-        {
-            throw new NullPointerException("Init parameter name cannot be null");
-        }
-        return _servletContext.getInitParameter(s);
+        Assert.notNull(name, "name");
+        return _servletContext.getInitParameter(name);
     }
 
     @Override
@@ -127,14 +126,14 @@ public abstract class ServletExternalContextImplBase extends ExternalContext
     @Override
     public URL getResource(final String path) throws MalformedURLException
     {
-        checkNull(path, "path");
+        Assert.notNull(path, "path");
         return _servletContext.getResource(path);
     }
 
     @Override
     public InputStream getResourceAsStream(final String path)
     {
-        checkNull(path, "path");
+        Assert.notNull(path, "path");
         return _servletContext.getResourceAsStream(path);
     }
 
@@ -142,37 +141,39 @@ public abstract class ServletExternalContextImplBase extends ExternalContext
     @SuppressWarnings("unchecked")
     public Set<String> getResourcePaths(final String path)
     {
-        checkNull(path, "path");
+        Assert.notNull(path, "path");
         return _servletContext.getResourcePaths(path);
     }
 
     @Override
     public void log(final String message)
     {
-        checkNull(message, "message");
+        Assert.notNull(message, "message");
         _servletContext.log(message);
     }
 
     @Override
     public void log(final String message, final Throwable exception)
     {
-        checkNull(message, "message");
-        checkNull(exception, "exception");
+        Assert.notNull(message, "message");
+        Assert.notNull(exception, "exception");
         _servletContext.log(message, exception);
     }
     
     @Override
     public String getRealPath(String path)
     {
-        checkNull(path, "path");
+        Assert.notNull(path, "path");
         return _servletContext.getRealPath(path);
     }
     
+    @Override
     public ClientWindow getClientWindow()
     {
         return _clientWindow;
     }
     
+    @Override
     public void setClientWindow(ClientWindow window)
     {
         _clientWindow = window;
@@ -183,16 +184,5 @@ public abstract class ServletExternalContextImplBase extends ExternalContext
     {
         return _servletContext.getContextPath();
         
-    }
-    
-    // ~ Methods which verify some required behavior---------------------------
-    
-    protected void checkNull(final Object o, final String param)
-    {
-        if (o == null)
-        {
-            throw new NullPointerException(param + " can not be null.");
-        }
-    }
-    
+    }    
 }

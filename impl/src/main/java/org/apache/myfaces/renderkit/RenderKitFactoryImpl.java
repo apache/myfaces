@@ -70,10 +70,8 @@ public class RenderKitFactoryImpl extends RenderKitFactory
     @Override
     public RenderKit getRenderKit(FacesContext context, String renderKitId) throws FacesException
     {
-        if (renderKitId == null)
-        {
-            throw new NullPointerException("renderKitId");
-        }
+        Assert.notNull(renderKitId, "renderKitId");
+
         RenderKit renderkit = _renderkits.get(renderKitId);
         if (renderkit == null)
         {

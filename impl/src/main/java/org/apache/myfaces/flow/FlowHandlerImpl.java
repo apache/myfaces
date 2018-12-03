@@ -42,6 +42,7 @@ import javax.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.event.PostClientWindowAndViewInitializedEvent;
 import org.apache.myfaces.spi.FacesFlowProvider;
 import org.apache.myfaces.spi.FacesFlowProviderFactory;
+import org.apache.myfaces.util.Assert;
 
 /**
  *
@@ -71,9 +72,9 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
     @Override
     public Flow getFlow(FacesContext context, String definingDocumentId, String id)
     {
-        checkNull(context, "context");
-        checkNull(definingDocumentId, "definingDocumentId");
-        checkNull(id, "id");
+        Assert.notNull(context, "context");
+        Assert.notNull(definingDocumentId, "definingDocumentId");
+        Assert.notNull(id, "id");
         
         // First try the combination.
         Map<String, Flow> flowMap = _flowMapByDocumentId.get(definingDocumentId);
@@ -97,8 +98,8 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
     @Override
     public void addFlow(FacesContext context, Flow toAdd)
     {
-        checkNull(context, "context");
-        checkNull(toAdd, "toAdd");
+        Assert.notNull(context, "context");
+        Assert.notNull(toAdd, "toAdd");
         
         String id = toAdd.getId();
         String definingDocumentId = toAdd.getDefiningDocumentId();
@@ -191,8 +192,8 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
     public void transition(FacesContext context, Flow sourceFlow, Flow targetFlow, 
         FlowCallNode outboundCallNode, String toViewId)
     {
-        checkNull(context, "context");
-        checkNull(toViewId, "toViewId");
+        Assert.notNull(context, "context");
+        Assert.notNull(toViewId, "toViewId");
         ClientWindow clientWindow = context.getExternalContext().getClientWindow();
         boolean outboundCallNodeProcessed = false;
         if (clientWindow == null)
@@ -425,9 +426,9 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
     @Override
     public boolean isActive(FacesContext context, String definingDocumentId, String id)
     {
-        checkNull(context, "context");
-        checkNull(definingDocumentId, "definingDocumentId");
-        checkNull(id, "id");
+        Assert.notNull(context, "context");
+        Assert.notNull(definingDocumentId, "definingDocumentId");
+        Assert.notNull(id, "id");
         
         Object session = context.getExternalContext().getSession(false);
         if (session == null)
@@ -768,15 +769,7 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
             }
         }
     }
-    
-    private void checkNull(final Object o, final String param)
-    {
-        if (o == null)
-        {
-            throw new NullPointerException(param + " can not be null.");
-        }
-    }
-    
+
     private void invokeInspectFlow(FacesContext context, NavigationHandler navHandler, Flow toAdd)
     {
         if (navHandler instanceof ConfigurableNavigationHandler)

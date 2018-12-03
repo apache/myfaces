@@ -45,6 +45,7 @@ import javax.faces.model.SelectItemGroup;
 
 import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.renderkit.html.util.SelectItemsIterator;
+import org.apache.myfaces.util.Assert;
 
 /**
  * The util methods in this class are shared between the javax.faces.component package and
@@ -125,10 +126,7 @@ class _SharedRendererUtils
         // This code is duplicated in jsfapi component package (except for considerValueType).
         // If you change something here please do the same in the other class!
 
-        if (submittedValue == null)
-        {
-            throw new NullPointerException("submittedValue");
-        }
+        Assert.notNull(submittedValue, "submittedValue");
 
         ValueExpression expression = component.getValueExpression("value");
         Object targetForConvertedValues = null;

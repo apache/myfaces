@@ -28,11 +28,19 @@ public class Assert
         }
     }
     
-    public static void notNull(Object value, String fieldName)
+    public static void notNull(Object value, String name)
     {
         if (value == null)
         {
-            throw new NullPointerException(fieldName + " is null.");
+            throw new NullPointerException(name + " is null.");
+        }
+    }
+    
+    public static void notEmpty(String param, String name)
+    {
+        if (param == null || param.isEmpty())
+        {
+            throw new NullPointerException(name + " is empty.");
         }
     }
 }

@@ -57,6 +57,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.context.flash.FlashImpl;
+import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.util.EnumerationIterator;
 import org.apache.myfaces.util.ExternalSpecifications;
@@ -358,7 +359,8 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     @Override
     public String encodeActionURL(final String url)
     {
-        checkNull(url, "url");
+        Assert.notNull(url, "url");
+
         checkHttpServletRequest();
         String encodedUrl = ((HttpServletResponse) _servletResponse).encodeURL(url);
         encodedUrl = encodeURL(encodedUrl, null);
@@ -374,7 +376,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     @Override
     public String encodeResourceURL(final String url)
     {
-        checkNull(url, "url");
+        Assert.notNull(url, "url");
         checkHttpServletRequest();
         String encodedUrl = ((HttpServletResponse) _servletResponse).encodeURL(url);
         
@@ -444,7 +446,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     @Override
     public String encodePartialActionURL(String url)
     {
-        checkNull(url, "url");
+        Assert.notNull(url, "url");
         checkHttpServletRequest();
         return encodeURL(((HttpServletResponse) _servletResponse).encodeURL(url), null);
     }
@@ -458,8 +460,8 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     @Override
     public String encodeWebsocketURL(String url)
     {
+        Assert.notNull(url, "url");
 
-        checkNull(url, "url");
         FacesContext facesContext = getCurrentFacesContext();
         Integer port = WebConfigParamUtils.getIntegerInitParameter(
                 getCurrentFacesContext().getExternalContext(), WEBSOCKET_ENDPOINT_PORT);
@@ -549,7 +551,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     @Override
     public boolean isUserInRole(final String role)
     {
-        checkNull(role, "role");
+        Assert.notNull(role, "role");
         checkHttpServletRequest();
         return _httpServletRequest.isUserInRole(role);
     }
@@ -860,7 +862,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
 
     private String encodeURL(String baseUrl, Map<String, List<String>> parameters)
     {
-        checkNull(baseUrl, "url");
+        Assert.notNull(baseUrl, "url");
         checkHttpServletRequest();
 
         String fragment = null;
