@@ -76,52 +76,45 @@ public abstract class HtmlRenderer
     /**
      * Renders the client ID as an "id".
      */
-    protected void renderId(
-      FacesContext context,
-      UIComponent  component) throws IOException
+    protected void renderId(FacesContext context, UIComponent  component) throws IOException
     {
-      if (shouldRenderId(context, component))
-      {
-        String clientId = getClientId(context, component);
-        context.getResponseWriter().writeAttribute(HTML.ID_ATTR, clientId, JSFAttr.ID_ATTR);
-      }
+        if (shouldRenderId(context, component))
+        {
+            String clientId = getClientId(context, component);
+            context.getResponseWriter().writeAttribute(HTML.ID_ATTR, clientId, JSFAttr.ID_ATTR);
+        }
     }
 
     /**
      * Returns the client ID that should be used for rendering (if
      * {@link #shouldRenderId} returns true).
      */
-    protected String getClientId(
-      FacesContext context,
-      UIComponent  component)
+    protected String getClientId(FacesContext context, UIComponent component)
     {
-      return component.getClientId(context);
+        return component.getClientId(context);
     }
 
     /**
      * Returns true if the component should render an ID.  Components
      * that deliver events should always return "true".
-     * TODO: Is this a bottleneck?  If so, optimize!
      */
-    protected boolean shouldRenderId(
-      FacesContext context,
-      UIComponent  component)
+    protected boolean shouldRenderId(FacesContext context, UIComponent  component)
     {
-      String id = component.getId();
+        String id = component.getId();
 
-      // Otherwise, if ID isn't set, don't bother
-      if (id == null)
-      {
-          return false;
-      }
+        // Otherwise, if ID isn't set, don't bother
+        if (id == null)
+        {
+            return false;
+        }
 
-      // ... or if the ID was generated, don't bother
-      if (id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
-      {
-          return false;
-      }
+        // ... or if the ID was generated, don't bother
+        if (id.startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
+        {
+            return false;
+        }
 
-      return true;
+        return true;
     }
     
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)

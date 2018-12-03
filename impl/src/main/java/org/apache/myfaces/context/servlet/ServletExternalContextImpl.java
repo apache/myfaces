@@ -936,7 +936,6 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         ClientWindow window = facesContext.getExternalContext().getClientWindow();
         if (window != null)
         {
-            //TODO: Use StringBuilder or some optimization.
             if (window.isClientWindowRenderModeEnabled(facesContext))
             {
                 Map<String, String> map = window.getQueryURLParameters(facesContext);
@@ -944,7 +943,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                 {
                     for (Map.Entry<String , String> entry : map.entrySet())
                     {
-                        ArrayList<String> value = new ArrayList<String>(1);
+                        ArrayList<String> value = new ArrayList<>(1);
                         value.add(entry.getValue());
                         if (paramMap == null)
                         {
