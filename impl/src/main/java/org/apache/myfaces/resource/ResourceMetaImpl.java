@@ -23,13 +23,14 @@ package org.apache.myfaces.resource;
  */
 public class ResourceMetaImpl extends ResourceMeta
 {
-
     private final String _prefix;
     private final String _libraryName;
     private final String _libraryVersion;
     private final String _resourceName;
     private final String _resourceVersion;
     private final String _contractName;
+    
+    private String resourceIdentifier = null;
 
     public ResourceMetaImpl(String prefix, String libraryName, String libraryVersion,
             String resourceName, String resourceVersion)
@@ -48,31 +49,37 @@ public class ResourceMetaImpl extends ResourceMeta
         _contractName = contractName;
     }
 
+    @Override
     public String getLibraryName()
     {
         return _libraryName;
     }    
     
+    @Override
     public String getResourceName()
     {
         return _resourceName;
     }    
 
+    @Override
     public String getLocalePrefix()
     {
         return _prefix;
     }
 
+    @Override
     public String getLibraryVersion()
     {
         return _libraryVersion;
     }
 
+    @Override
     public String getResourceVersion()
     {
         return _resourceVersion;
     }
 
+    @Override
     public String getContractName()
     {
         return _contractName;
@@ -81,53 +88,57 @@ public class ResourceMetaImpl extends ResourceMeta
     @Override
     public String getResourceIdentifier()
     {
-        StringBuilder builder = new StringBuilder();
-        boolean firstSlashAdded = false;
-        if (_prefix != null && _prefix.length() > 0)
+        if (resourceIdentifier == null)
         {
-            builder.append(_prefix);
-            firstSlashAdded = true;
-        }
-        if (_libraryName != null)
-        {
-            if (firstSlashAdded)
+            StringBuilder builder = new StringBuilder();
+            boolean firstSlashAdded = false;
+            if (_prefix != null && _prefix.length() > 0)
             {
-                builder.append('/');
+                builder.append(_prefix);
+                firstSlashAdded = true;
             }
-            builder.append(_libraryName);
-            firstSlashAdded = true;
-        }
-        if (_libraryVersion != null)
-        {
-            if (firstSlashAdded)
+            if (_libraryName != null)
             {
-                builder.append('/');
+                if (firstSlashAdded)
+                {
+                    builder.append('/');
+                }
+                builder.append(_libraryName);
+                firstSlashAdded = true;
             }
-            builder.append(_libraryVersion);
-            firstSlashAdded = true;
-        }
-        if (_resourceName != null)
-        {
-            if (firstSlashAdded)
+            if (_libraryVersion != null)
             {
-                builder.append('/');
+                if (firstSlashAdded)
+                {
+                    builder.append('/');
+                }
+                builder.append(_libraryVersion);
+                firstSlashAdded = true;
             }
-            builder.append(_resourceName);
-            firstSlashAdded = true;
-        }
-        if (_resourceVersion != null)
-        {
-            if (firstSlashAdded)
+            if (_resourceName != null)
             {
-                builder.append('/');
+                if (firstSlashAdded)
+                {
+                    builder.append('/');
+                }
+                builder.append(_resourceName);
+                firstSlashAdded = true;
             }
-            builder.append(_resourceVersion);
-            builder.append(
-                    _resourceName.substring(_resourceName.lastIndexOf('.')));
-            firstSlashAdded = true;
+            if (_resourceVersion != null)
+            {
+                if (firstSlashAdded)
+                {
+                    builder.append('/');
+                }
+                builder.append(_resourceVersion);
+                builder.append(_resourceName.substring(_resourceName.lastIndexOf('.')));
+                firstSlashAdded = true;
+            }
+
+            resourceIdentifier = builder.toString();
         }
 
-        return builder.toString();
+        return resourceIdentifier;
     }
 
     @Override

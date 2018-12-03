@@ -54,7 +54,6 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
         new ContractResourceLoader[]{}; 
     
     private Long _startupTime;
-    
     private Long _maxTimeExpires;
         
     public BaseResourceHandlerSupport()
