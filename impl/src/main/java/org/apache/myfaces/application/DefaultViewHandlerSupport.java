@@ -470,16 +470,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
                 uri = uri.substring(1);
             }
         }
-        
-        //now delete any remaining leading '/'
-        // TODO: CJH: I don't think this is correct, considering that getActionURL() expects everything to
-        // start with '/', and in the suffix case we only mess with the suffix and leave leading
-        // slashes alone.  Please review...
-        /*if(uri.startsWith("/"))
-        {
-            uri = uri.substring(1);
-        }*/
-        
+
         return uri;
     }
     
@@ -515,21 +506,22 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             {
                 builder.append(defaultSuffix);
             }
+
             String candidateViewId = builder.toString();
             
-            if( faceletsViewMappings != null && faceletsViewMappings.length > 0 )
+            if (faceletsViewMappings != null && faceletsViewMappings.length > 0 )
             {
                 for (String mapping : faceletsViewMappings)
                 {
-                    if(mapping.startsWith("/"))
+                    if (mapping.startsWith("/"))
                     {
                         continue;   //skip this entry, its a prefix mapping
                     }
-                    if(mapping.equals(candidateViewId))
+                    if (mapping.equals(candidateViewId))
                     {
                         return candidateViewId;
                     }
-                    if(mapping.startsWith(".")) //this is a wildcard entry
+                    if (mapping.startsWith(".")) //this is a wildcard entry
                     {
                         builder.setLength(0); //reset/reuse the builder object 
                         builder.append(candidateViewId); 
@@ -580,7 +572,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             }
             
             String candidateViewId = builder.toString();
-            if(checkResourceExists(context,candidateViewId))
+            if (checkResourceExists(context,candidateViewId))
             {
                 return candidateViewId;
             }

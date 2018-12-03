@@ -53,7 +53,7 @@ public class ContentTypeUtils
         }
         for (int i = 0; i < allowedContentTypes.length; i++)
         {
-            if (allowedContentTypes[i].indexOf(contentType) != -1)
+            if (allowedContentTypes[i].contains(contentType))
             {
                 return true;
             }
@@ -74,8 +74,7 @@ public class ContentTypeUtils
             for (int j = 0; j < contentTypeList.length; j++)
             {
                 String contentType = (String) contentTypeList[j];
-
-                if (contentType.indexOf(supportedContentType) != -1)
+                if (contentType.contains(supportedContentType))
                 {
                     if (containsContentType(contentType, htmlContentTypes))
                     {
@@ -120,8 +119,7 @@ public class ContentTypeUtils
         // "application/vnd.wap.mms-message,*/*" ,
         // so this is bug of the client. Anyway, this is a workaround ...
         if (contentTypeListString != null
-                && contentTypeListString
-                        .startsWith("application/vnd.wap.mms-message;*/*"))
+                && contentTypeListString.startsWith("application/vnd.wap.mms-message;*/*"))
         {
             contentTypeListString = "*/*";
         }

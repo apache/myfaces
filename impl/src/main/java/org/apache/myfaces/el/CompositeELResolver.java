@@ -58,7 +58,7 @@ public class CompositeELResolver extends javax.el.CompositeELResolver
 
         if (_elResolvers == null)
         {
-            _elResolvers = new ArrayList<ELResolver>();
+            _elResolvers = new ArrayList<>();
         }
 
         _elResolvers.add(elResolver);
@@ -71,7 +71,6 @@ public class CompositeELResolver extends javax.el.CompositeELResolver
         private final Iterator<ELResolver> _elResolvers;
 
         private FeatureDescriptor _nextFD;
-
         private Iterator<FeatureDescriptor> _currentFDIter;
 
         public CompositeIterator(final ELContext context, final Object base, final Iterator<ELResolver> elResolvers)
@@ -81,6 +80,7 @@ public class CompositeELResolver extends javax.el.CompositeELResolver
             _elResolvers = elResolvers;
         }
 
+        @Override
         public boolean hasNext()
         {
             if (_nextFD != null)
@@ -108,6 +108,7 @@ public class CompositeELResolver extends javax.el.CompositeELResolver
             return hasNext();
         }
 
+        @Override
         public FeatureDescriptor next()
         {
             if (!hasNext())
@@ -119,6 +120,7 @@ public class CompositeELResolver extends javax.el.CompositeELResolver
             return next;
         }
 
+        @Override
         public void remove()
         {
             throw new UnsupportedOperationException();
