@@ -375,7 +375,7 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
   {
       if (_cachedViewHandlerSupport == null)
       {
-          _cachedViewHandlerSupport = new DefaultViewHandlerSupport();
+          _cachedViewHandlerSupport = new DefaultViewHandlerSupport(context);
       }
   
       return _cachedViewHandlerSupport.calculateViewId(context, viewId);
