@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets;
 
-import org.apache.myfaces.view.facelets.util.FastWriter;
+import org.apache.myfaces.util.FastWriter;
 
 import javax.faces.context.FacesContext;
 import java.io.IOException;

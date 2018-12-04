@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 import javax.faces.component.UIViewRoot;
 
-import org.apache.myfaces.view.facelets.util.FastWriter;
+import org.apache.myfaces.util.FastWriter;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.Test;
 

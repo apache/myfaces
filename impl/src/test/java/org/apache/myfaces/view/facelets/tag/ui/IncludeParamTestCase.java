@@ -32,7 +32,7 @@ import org.apache.myfaces.renderkit.html.HtmlCompositeFacetRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
-import org.apache.myfaces.view.facelets.util.FastWriter;
+import org.apache.myfaces.util.FastWriter;
 import org.junit.Assert;
 import org.junit.Test;
 

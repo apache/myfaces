@@ -30,8 +30,7 @@ import java.io.Writer;
  */
 public final class FastWriter extends Writer
 {
-
-    private char[] buff;
+   private char[] buff;
     private int size;
 
     public FastWriter()
@@ -48,17 +47,19 @@ public final class FastWriter extends Writer
         this.buff = new char[initialSize];
     }
 
+    @Override
     public void close() throws IOException
     {
         // do nothing
     }
 
+    @Override
     public void flush() throws IOException
     {
         // do nothing
     }
 
-    private final void overflow(int len)
+    private void overflow(int len)
     {
         if (this.size + len > this.buff.length)
         {
@@ -68,6 +69,7 @@ public final class FastWriter extends Writer
         }
     }
 
+    @Override
     public void write(char[] cbuf, int off, int len) throws IOException
     {
         overflow(len);
@@ -75,11 +77,13 @@ public final class FastWriter extends Writer
         this.size += len;
     }
 
+    @Override
     public void write(char[] cbuf) throws IOException
     {
         this.write(cbuf, 0, cbuf.length);
     }
 
+    @Override
     public void write(int c) throws IOException
     {
         this.overflow(1);
@@ -87,6 +91,7 @@ public final class FastWriter extends Writer
         this.size++;
     }
 
+    @Override
     public void write(String str, int off, int len) throws IOException
     {
         overflow(len);
@@ -94,6 +99,7 @@ public final class FastWriter extends Writer
         this.size += len;
     }
 
+    @Override
     public void write(String str) throws IOException
     {
         this.write(str, 0, str.length());
@@ -104,6 +110,7 @@ public final class FastWriter extends Writer
         this.size = 0;
     }
 
+    @Override
     public String toString()
     {
         return new String(this.buff, 0, this.size);

@@ -35,7 +35,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.renderkit.ErrorPageWriter;
-import org.apache.myfaces.view.facelets.util.FastWriter;
+import org.apache.myfaces.util.FastWriter;
 
 /**
  * The debug tag will capture the component tree and variables when it is encoded, 

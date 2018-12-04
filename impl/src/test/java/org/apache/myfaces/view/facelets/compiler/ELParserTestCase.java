@@ -27,7 +27,7 @@ import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.apache.myfaces.view.facelets.util.FastWriter;
+import org.apache.myfaces.util.FastWriter;
 import org.junit.Test;
 
 public class ELParserTestCase extends FaceletTestCase {
