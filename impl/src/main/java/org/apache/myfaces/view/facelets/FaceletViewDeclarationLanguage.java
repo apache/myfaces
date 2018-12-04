@@ -2167,7 +2167,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     {
         if (_cachedViewHandlerSupport == null)
         {
-            _cachedViewHandlerSupport = new DefaultViewHandlerSupport();
+            _cachedViewHandlerSupport = new DefaultViewHandlerSupport(context);
         }
 
         return _cachedViewHandlerSupport.calculateViewId(context, viewId);

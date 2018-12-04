@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
-import javax.faces.application.ProjectStage;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
 import javax.faces.component.visit.VisitCallback;
@@ -43,13 +42,11 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 import javax.faces.view.ViewDeclarationLanguage;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.application.FacesServletMapping;
 import org.apache.myfaces.shared.application.InvalidViewIdException;
 import org.apache.myfaces.shared.util.Assert;
 import org.apache.myfaces.shared.util.ConcurrentLRUCache;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.shared.application.CheckedViewIdsCache;
 
 /**
