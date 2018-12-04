@@ -23,19 +23,16 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.ProjectStage;
 import javax.faces.application.ViewHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.render.ResponseStateManager;
 import javax.faces.view.ViewDeclarationLanguage;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
-import org.apache.myfaces.shared.util.ConcurrentLRUCache;
+import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.shared.util.ViewProtectionUtils;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 /**
  * A ViewHandlerSupport implementation for use with standard Java Servlet engines,
@@ -51,37 +48,14 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
 
     //private static final Log log = LogFactory.getLog(DefaultViewHandlerSupport.class);
     private static final Logger log = Logger.getLogger(DefaultViewHandlerSupport.class.getName());
-
-    /**
-     * Controls the size of the cache used to "remember" if a view exists or not.
-     */
-    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="viewhandler", tags="performance", 
-            classType="java.lang.Integer",
-            desc="Controls the size of the cache used to 'remember' if a view exists or not.")
-    private static final String CHECKED_VIEWID_CACHE_SIZE_ATTRIBUTE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_SIZE";
-    private static final int CHECKED_VIEWID_CACHE_DEFAULT_SIZE = 500;
-
-    /**
-     * Enable or disable a cache used to "remember" if a view exists or not and reduce the impact of
-     * sucesive calls to ExternalContext.getResource().
-     */
-    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", expectedValues="true, false", group="viewhandler", 
-            tags="performance",
-            desc="Enable or disable a cache used to 'remember' if a view exists or not and reduce the impact " +
-                 "of sucesive calls to ExternalContext.getResource().")
-    private static final String CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE = 
-        "org.apache.myfaces.CHECKED_VIEWID_CACHE_ENABLED";
-    private static final boolean CHECKED_VIEWID_CACHE_ENABLED_DEFAULT = true;
     
     private static final String VIEW_HANDLER_SUPPORT_SB = "oam.viewhandler.SUPPORT_SB";
-
-    private volatile ConcurrentLRUCache<String, Boolean> _checkedViewIdMap = null;
-    private Boolean _checkedViewIdCacheEnabled = null;
     
     private final String[] _faceletsViewMappings;
     private final String[] _contextSuffixes;
     private final String _faceletsContextSufix;
     private final boolean _initialized;
+    private CheckedViewIdsCache checkedViewIdsCache = null;
     
     public DefaultViewHandlerSupport()
     {
@@ -119,11 +93,11 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             // considered invalid, because jsp vdl will use RequestDispatcher and cause
             // a loop that ends in a exception. Note in portlet mode the view
             // could be encoded as a query param, so the viewId could be valid.
-            //if (viewId != null && viewId.equals(mapping.getPrefix()) &&
-            //    !ExternalContextUtils.isPortlet(context.getExternalContext()))
-            //{
-            //    throw new InvalidViewIdException();
-            //}
+            if (viewId != null && viewId.equals(mapping.getPrefix()) &&
+                !ExternalContextUtils.isPortlet(context.getExternalContext()))
+            {
+                throw new InvalidViewIdException();
+            }
             
             // In JSF 2.3 some changes were done in the VDL to avoid the jsp vdl
             // RequestDispatcher redirection (only accept viewIds with jsp extension).
@@ -222,93 +196,92 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         // In JSF 2.3 we could have cases where the viewId can be bound to an url-pattern that is not
         // prefix or suffix, but exact mapping. In this part we need to take the viewId and check if
         // the viewId is bound or not with a mapping.
-        String prefixedExactMappingViewId = calculatePrefixedExactMapping(context, viewId);
-        boolean prefixedExactMappingFound = false;
-        if (prefixedExactMappingViewId != null && prefixedExactMappingViewId.length() > 0)
+        if (mapping != null && mapping.isExactMapping())
         {
-            FacesServletMapping exactMapping = FacesServletMappingUtils.getExactMapping(
-                    context, prefixedExactMappingViewId);
-            if (exactMapping != null)
+            String exactMappingViewId = calculatePrefixedExactMapping(context, viewId);
+            if (exactMappingViewId != null && !exactMappingViewId.isEmpty())
             {
-                mapping = exactMapping;
-                prefixedExactMappingFound = true;
+                // if the current exactMapping already matches the requested viewId -> same view, skip....
+                if (!mapping.getExact().equals(exactMappingViewId))
+                {
+                    // different viewId -> lets try to lookup a exact mapping
+                    mapping = FacesServletMappingUtils.getExactMapping(context, exactMappingViewId);
+
+                    // no exactMapping for the requested viewId available BUT the current view is a exactMapping
+                    // we need a to search for a prefix or extension mapping
+                    if (mapping == null)
+                    {
+                        mapping = FacesServletMappingUtils.getGenericPrefixOrSuffixMapping(context);
+                        if (mapping == null)
+                        {
+                            throw new IllegalStateException(
+                                    "No generic (either prefix or suffix) servlet-mapping found for FacesServlet."
+                                    + "This is required serve views, that are not exact mapped.");
+                        }
+                    }
+                }
             }
         }
-        if (prefixedExactMappingFound)
+        
+        if (mapping != null)
         {
-            builder.append(mapping.getPrefix());
+            if (mapping.isExactMapping())
+            {
+                builder.append(mapping.getExact());
+            }
+            else if (mapping.isExtensionMapping())
+            {
+                //See JSF 2.0 section 7.5.2 
+                String[] contextSuffixes = _initialized ? _contextSuffixes : getContextSuffix(context); 
+                boolean founded = false;
+                for (String contextSuffix : contextSuffixes)
+                {
+                    if (viewId.endsWith(contextSuffix))
+                    {
+                        builder.append(viewId.substring(0, viewId.indexOf(contextSuffix)));
+                        builder.append(mapping.getExtension());
+                        founded = true;
+                        break;
+                    }
+                }
+                if (!founded)
+                {   
+                    //See JSF 2.0 section 7.5.2
+                    // - If the argument viewId has an extension, and this extension is mapping, 
+                    // the result is contextPath + viewId
+                    //
+                    // -= Leonardo Uribe =- It is evident that when the page is generated, the derived 
+                    // viewId will end with the 
+                    // right contextSuffix, and a navigation entry on faces-config.xml should use such id,
+                    // this is just a workaroud
+                    // for usability. There is a potential risk that change the mapping in a webapp make 
+                    // the same application fail,
+                    // so use viewIds ending with mapping extensions is not a good practice.
+                    if (viewId.endsWith(mapping.getExtension()))
+                    {
+                        builder.append(viewId);
+                    }
+                    else if(viewId.lastIndexOf('.') != -1 )
+                    {
+                        builder.append(viewId.substring(0, viewId.lastIndexOf('.')));
+                        builder.append(contextSuffixes[0]);
+                    }
+                    else
+                    {
+                        builder.append(viewId);
+                        builder.append(contextSuffixes[0]);
+                    }
+                }
+            }
+            else if (mapping.isPrefixMapping())
+            {
+                builder.append(mapping.getPrefix());
+                builder.append(viewId);
+            }
         }
         else
         {
-            if (mapping != null)
-            {
-                if (mapping.isExact())
-                {
-                    // it means that the currentView is a exact mapping
-                    // but the view to resolve is not exact - we must fallback to a prefix or suffix mapping
-                    mapping = FacesServletMappingUtils.getPrefixOrSuffixMapping(context, viewId);
-                    if (mapping == null)
-                    {
-                        throw new IllegalStateException(
-                                "No generic (either prefix or suffix) servlet-mapping found for FacesServlet."
-                                + "This is required serve views, that are not exact mapped.");
-                    }
-                }
-
-                if (mapping.isExtensionMapping())
-                {
-                    //See JSF 2.0 section 7.5.2 
-                    String[] contextSuffixes = _initialized ? _contextSuffixes : getContextSuffix(context); 
-                    boolean founded = false;
-                    for (String contextSuffix : contextSuffixes)
-                    {
-                        if (viewId.endsWith(contextSuffix))
-                        {
-                            builder.append(viewId.substring(0, viewId.indexOf(contextSuffix)));
-                            builder.append(mapping.getExtension());
-                            founded = true;
-                            break;
-                        }
-                    }
-                    if (!founded)
-                    {   
-                        //See JSF 2.0 section 7.5.2
-                        // - If the argument viewId has an extension, and this extension is mapping, 
-                        // the result is contextPath + viewId
-                        //
-                        // -= Leonardo Uribe =- It is evident that when the page is generated, the derived 
-                        // viewId will end with the 
-                        // right contextSuffix, and a navigation entry on faces-config.xml should use such id,
-                        // this is just a workaroud
-                        // for usability. There is a potential risk that change the mapping in a webapp make 
-                        // the same application fail,
-                        // so use viewIds ending with mapping extensions is not a good practice.
-                        if (viewId.endsWith(mapping.getExtension()))
-                        {
-                            builder.append(viewId);
-                        }
-                        else if(viewId.lastIndexOf('.') != -1 )
-                        {
-                            builder.append(viewId.substring(0, viewId.lastIndexOf('.')));
-                            builder.append(contextSuffixes[0]);
-                        }
-                        else
-                        {
-                            builder.append(viewId);
-                            builder.append(contextSuffixes[0]);
-                        }
-                    }
-                }
-                else
-                {
-                    builder.append(mapping.getPrefix());
-                    builder.append(viewId);
-                }
-            }
-            else
-            {
-                builder.append(viewId);
-            }
+            builder.append(viewId);
         }
         
         //JSF 2.2 check view protection.
@@ -374,52 +347,6 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             attributes.put(CACHED_SERVLET_MAPPING, mapping);
         }
         return mapping;
-    }
-
-    /**
-     * Determines the mapping of the FacesServlet in the web.xml configuration
-     * file. However, there is no need to actually parse this configuration file
-     * as runtime information is sufficient.
-     *
-     * @param servletPath The servletPath of the current request
-     * @param pathInfo    The pathInfo of the current request
-     * @return the mapping of the FacesServlet in the web.xml configuration file
-     */
-    @Deprecated
-    protected static FacesServletMapping calculateFacesServletMapping(
-        String servletPath, String pathInfo)
-    {
-        if (pathInfo != null)
-        {
-            // If there is a "extra path", it's definitely no extension mapping.
-            // Now we just have to determine the path which has been specified
-            // in the url-pattern, but that's easy as it's the same as the
-            // current servletPath. It doesn't even matter if "/*" has been used
-            // as in this case the servletPath is just an empty string according
-            // to the Servlet Specification (SRV 4.4).
-            return FacesServletMapping.createPrefixMapping(servletPath);
-        }
-        else
-        {
-            // In the case of extension mapping, no "extra path" is available.
-            // Still it's possible that prefix-based mapping has been used.
-            // Actually, if there was an exact match no "extra path"
-            // is available (e.g. if the url-pattern is "/faces/*"
-            // and the request-uri is "/context/faces").
-            int slashPos = servletPath.lastIndexOf('/');
-            int extensionPos = servletPath.lastIndexOf('.');
-            if (extensionPos > -1 && extensionPos > slashPos)
-            {
-                String extension = servletPath.substring(extensionPos);
-                return FacesServletMapping.createExtensionMapping(extension);
-            }
-            else
-            {
-                // There is no extension in the given servletPath and therefore
-                // we assume that it's an exact match using prefix-based mapping.
-                return FacesServletMapping.createPrefixMapping(servletPath);
-            }
-        }
     }
 
     protected String[] getContextSuffix(FacesContext context)
@@ -627,101 +554,48 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         return null;
     }
     
-    protected boolean checkResourceExists(FacesContext context, String viewId)
+    protected boolean checkResourceExists(FacesContext facesContext, String viewId)
     {
+        if (checkedViewIdsCache == null)
+        {
+            checkedViewIdsCache = CheckedViewIdsCache.getInstance(facesContext);
+        }
+
         try
         {
-            if (isCheckedViewIdCachingEnabled(context))
+            Boolean resourceExists = null;
+            if (checkedViewIdsCache.isEnabled())
             {
-                Boolean resourceExists = getCheckedViewIDMap(context).get(
-                        viewId);
-                if (resourceExists == null)
-                {
-                    ViewDeclarationLanguage vdl = context.getApplication().getViewHandler()
-                            .getViewDeclarationLanguage(context, viewId);
-                    if (vdl != null)
-                    {
-                        resourceExists = vdl.viewExists(context, viewId);
-                    }
-                    else
-                    {
-                        // Fallback to default strategy
-                        resourceExists = context.getExternalContext().getResource(
-                                viewId) != null;
-                    }
-                    getCheckedViewIDMap(context).put(viewId, resourceExists);
-                }
-                return resourceExists;
+                resourceExists = checkedViewIdsCache.getCache().get(viewId);
             }
-            else
+
+            if (resourceExists == null)
             {
-                ViewDeclarationLanguage vdl = context.getApplication().getViewHandler()
-                            .getViewDeclarationLanguage(context, viewId);
+                ViewDeclarationLanguage vdl = facesContext.getApplication().getViewHandler()
+                        .getViewDeclarationLanguage(facesContext, viewId);
                 if (vdl != null)
                 {
-                    if (vdl.viewExists(context, viewId))
-                    {
-                        return true;
-                    }
+                    resourceExists = vdl.viewExists(facesContext, viewId);
                 }
                 else
                 {
                     // Fallback to default strategy
-                    if (context.getExternalContext().getResource(viewId) != null)
-                    {
-                        return true;
-                    }
+                    resourceExists = facesContext.getExternalContext().getResource(viewId) != null;
+                }
+
+                if (checkedViewIdsCache.isEnabled())
+                {
+                    checkedViewIdsCache.getCache().put(viewId, resourceExists);
                 }
             }
+
+            return resourceExists;
         }
-        catch(MalformedURLException e)
+        catch (MalformedURLException e)
         {
             //ignore and move on
         }     
         return false;
     }
 
-    private ConcurrentLRUCache<String, Boolean> getCheckedViewIDMap(FacesContext context)
-    {
-        if (_checkedViewIdMap == null)
-        {
-            int maxSize = getViewIDCacheMaxSize(context);
-            _checkedViewIdMap = new ConcurrentLRUCache<String, Boolean>((maxSize * 4 + 3) / 3, maxSize);
-        }
-        return _checkedViewIdMap;
-    }
-
-    private boolean isCheckedViewIdCachingEnabled(FacesContext context)
-    {
-        if (_checkedViewIdCacheEnabled == null)
-        {
-            // first, check if the ProjectStage is development and skip caching in this case
-            if (context.isProjectStage(ProjectStage.Development))
-            {
-                _checkedViewIdCacheEnabled = Boolean.FALSE;
-            }
-            else
-            {
-                // in all ohter cases, make sure that the cache is not explicitly disabled via context param
-                _checkedViewIdCacheEnabled = WebConfigParamUtils.getBooleanInitParameter(context.getExternalContext(),
-                        CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE,
-                        CHECKED_VIEWID_CACHE_ENABLED_DEFAULT);
-            }
-
-            if (log.isLoggable(Level.FINE))
-            {
-                log.log(Level.FINE, "MyFaces ViewID Caching Enabled="
-                        + _checkedViewIdCacheEnabled);
-            }
-        }
-        return _checkedViewIdCacheEnabled;
-    }
-
-    private int getViewIDCacheMaxSize(FacesContext context)
-    {
-        ExternalContext externalContext = context.getExternalContext();
-
-        return WebConfigParamUtils.getIntegerInitParameter(externalContext,
-                CHECKED_VIEWID_CACHE_SIZE_ATTRIBUTE, CHECKED_VIEWID_CACHE_DEFAULT_SIZE);
-    }
 }

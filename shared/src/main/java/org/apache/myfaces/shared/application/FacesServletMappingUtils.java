@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.myfaces.shared.application;
 
 import java.util.Collection;
@@ -156,7 +155,6 @@ public class FacesServletMappingUtils
                 return calculateFacesServletMapping(servletPath, pathInfo);
             }
         }
-        //return null;
     }
     
     private static FacesServletMapping createMappingFromServletRegistration(FacesContext facesContext, 
@@ -189,8 +187,7 @@ public class FacesServletMappingUtils
                         }
                         else if (allowExactMatch && mapping.startsWith("/") && mapping.equals(servletPath))
                         {
-                            facesExactMapping = FacesServletMapping.createPrefixMapping(servletPath);
-                            facesExactMapping.setExact(true);
+                            facesExactMapping = FacesServletMapping.createExactMapping(servletPath);
                         }
                     }
                 }
@@ -265,9 +262,7 @@ public class FacesServletMappingUtils
             {
                 // There is no extension in the given servletPath and therefore
                 // we assume that it's an exact match using prefix-based mapping.
-                FacesServletMapping mapping = FacesServletMapping.createPrefixMapping(servletPath);
-                mapping.setExact(true);
-                return mapping;
+                return FacesServletMapping.createExactMapping(servletPath);
             }
         }
     }
@@ -284,10 +279,7 @@ public class FacesServletMappingUtils
                 {
                     if (!mapping.contains("*") && prefixedExactMappingViewId.equals(mapping))
                     {
-                        FacesServletMapping facesServletMapping =
-                                FacesServletMapping.createPrefixMapping(prefixedExactMappingViewId);
-                        facesServletMapping.setExact(true);
-                        return facesServletMapping;
+                        return FacesServletMapping.createExactMapping(prefixedExactMappingViewId);
                     }
                 }
             }
@@ -297,7 +289,7 @@ public class FacesServletMappingUtils
     }
     
     
-    public static FacesServletMapping getPrefixOrSuffixMapping(FacesContext facesContext, String viewId)
+    public static FacesServletMapping getGenericPrefixOrSuffixMapping(FacesContext facesContext)
     {
         if (!ExternalContextUtils.isPortlet(facesContext.getExternalContext()))
         {
@@ -310,10 +302,7 @@ public class FacesServletMappingUtils
                     if (isExtensionMapping(mapping))
                     {
                         String extension = extractExtension(mapping);
-                        if (viewId.endsWith(extension))
-                        {
-                            return FacesServletMapping.createExtensionMapping(extension);
-                        }
+                        return FacesServletMapping.createExtensionMapping(extension);
                     }
                     else if (isPrefixMapping(mapping))
                     {

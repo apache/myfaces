@@ -50,6 +50,7 @@ import org.apache.myfaces.shared.util.Assert;
 import org.apache.myfaces.shared.util.ConcurrentLRUCache;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.shared.application.CheckedViewIdsCache;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -110,6 +111,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     private final String[] _contextSuffixes;
     private final String _faceletsContextSufix;
     private final boolean _initialized;
+    private CheckedViewIdsCache checkedViewIdsCache = null;
     
     public DefaultRestoreViewSupport()
     {
@@ -518,54 +520,44 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         //Otherwise return null.
         return null;
     }
-    protected boolean checkResourceExists(FacesContext context, String viewId)
+    protected boolean checkResourceExists(FacesContext facesContext, String viewId)
     {
+        if (checkedViewIdsCache == null)
+        {
+            checkedViewIdsCache = CheckedViewIdsCache.getInstance(facesContext);
+        }
+        
         try
         {
-            if (isCheckedViewIdCachingEnabled(context))
+            Boolean resourceExists = null;
+            if (checkedViewIdsCache.isEnabled())
             {
-                Boolean resourceExists = getCheckedViewIDMap(context).get(
-                        viewId);
-                if (resourceExists == null)
-                {
-                    ViewDeclarationLanguage vdl = context.getApplication().getViewHandler()
-                            .getViewDeclarationLanguage(context, viewId);
-                    if (vdl != null)
-                    {
-                        resourceExists = vdl.viewExists(context, viewId);
-                    }
-                    else
-                    {
-                        // Fallback to default strategy
-                        resourceExists = context.getExternalContext().getResource(
-                                viewId) != null;
-                    }
-                    getCheckedViewIDMap(context).put(viewId, resourceExists);
-                }
-                return resourceExists;
+                resourceExists = checkedViewIdsCache.getCache().get(viewId);
             }
-            else
+
+            if (resourceExists == null)
             {
-                ViewDeclarationLanguage vdl = context.getApplication().getViewHandler()
-                            .getViewDeclarationLanguage(context, viewId);
+                ViewDeclarationLanguage vdl = facesContext.getApplication().getViewHandler()
+                        .getViewDeclarationLanguage(facesContext, viewId);
                 if (vdl != null)
                 {
-                    if (vdl.viewExists(context, viewId))
-                    {
-                        return true;
-                    }
+                    resourceExists = vdl.viewExists(facesContext, viewId);
                 }
                 else
                 {
                     // Fallback to default strategy
-                    if (context.getExternalContext().getResource(viewId) != null)
-                    {
-                        return true;
-                    }
+                    resourceExists = facesContext.getExternalContext().getResource(viewId) != null;
+                }
+
+                if (checkedViewIdsCache.isEnabled())
+                {
+                    checkedViewIdsCache.getCache().put(viewId, resourceExists);
                 }
             }
+
+            return resourceExists;
         }
-        catch(MalformedURLException e)
+        catch (MalformedURLException e)
         {
             //ignore and move on
         }     
