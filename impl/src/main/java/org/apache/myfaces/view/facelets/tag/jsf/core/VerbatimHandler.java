@@ -44,6 +44,7 @@ public final class VerbatimHandler extends ComponentHandler
         super(config);
     }
 
+    @Override
     public void onComponentCreated(FaceletContext ctx, UIComponent c, UIComponent parent)
     {
         StringBuilder content = new StringBuilder();
@@ -57,6 +58,7 @@ public final class VerbatimHandler extends ComponentHandler
         c.setTransient(true);
     }
 
+    @Override
     public void applyNextHandler(FaceletContext ctx, UIComponent c)
     {
     }

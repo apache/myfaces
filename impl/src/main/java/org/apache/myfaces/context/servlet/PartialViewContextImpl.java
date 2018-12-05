@@ -282,20 +282,33 @@ public class PartialViewContextImpl extends PartialViewContext
 
     private String _replaceTabOrEnterCharactersWithSpaces(String mode)
     {
-        StringBuilder builder = new StringBuilder(mode.length());
-        for (int i = 0; i < mode.length(); i++)
+        if (mode == null)
         {
-            if (mode.charAt(i) == '\t' ||
-                    mode.charAt(i) == '\n')
+            return null;
+        }
+        
+        char[] escaped = null;
+        
+        int modeLength = mode.length();
+        for (int i = 0; i < modeLength; i++)
+        {
+            char c = mode.charAt(i);
+            if (c == '\t' || c == '\n')
             {
-                builder.append(' ');
-            }
-            else
-            {
-                builder.append(mode.charAt(i));
+                if (escaped == null)
+                {
+                    escaped = mode.toCharArray();
+                }
+                escaped[i] = ' ';
             }
         }
-        return builder.toString();
+
+        if (escaped != null)
+        {
+            return String.valueOf(escaped);
+        }
+        
+        return mode;
     }
 
     @Override

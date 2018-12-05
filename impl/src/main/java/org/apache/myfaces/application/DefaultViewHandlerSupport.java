@@ -197,7 +197,6 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         FacesServletMapping mapping = getFacesServletMapping(context);
         ExternalContext externalContext = context.getExternalContext();
         String contextPath = externalContext.getRequestContextPath();
-        //StringBuilder builder = new StringBuilder(contextPath);
         StringBuilder builder = SharedStringBuilder.get(context, VIEW_HANDLER_SUPPORT_SB);
         // If the context path is root, it is not necessary to append it, otherwise
         // and extra '/' will be set.
@@ -468,7 +467,6 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         //Try to locate any resource that match with the expected id
         for (String defaultSuffix : jspDefaultSuffixes)
         {
-            //StringBuilder builder = new StringBuilder(requestViewId);
             builder.setLength(0);
             builder.append(requestViewId);
            
@@ -532,7 +530,6 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         }
         if (faceletsDefaultSuffix != null)
         {
-            //StringBuilder builder = new StringBuilder(requestViewId);
             builder.setLength(0);
             builder.append(requestViewId);
             

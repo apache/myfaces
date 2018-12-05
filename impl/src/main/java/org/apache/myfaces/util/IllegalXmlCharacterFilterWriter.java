@@ -31,7 +31,6 @@ import java.io.Writer;
  */
 public class IllegalXmlCharacterFilterWriter extends FilterWriter
 {
-    private static final char[] EMPTY_CHAR_ARRAY = new char[0];
     private static final char BLANK_CHAR = ' ';
     
     public IllegalXmlCharacterFilterWriter(Writer out)
@@ -70,26 +69,25 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
         {
             return null;
         }
-        
-        boolean containsInvalidChar = false;
-        char[] encodedCharArray = EMPTY_CHAR_ARRAY;
 
-        for (int i = off; i < off + len; i++)
+        char[] encoded = null;
+        
+        int to = off + len;
+        for (int i = off; i < to; i++)
         {
             if (isInvalidChar(str.charAt(i)))
             {
-                if (!containsInvalidChar)
+                if (encoded == null)
                 {
-                    containsInvalidChar = true;
-                    encodedCharArray = str.toCharArray();
+                    encoded = str.toCharArray();
                 }
-                encodedCharArray[i] = BLANK_CHAR;
+                encoded[i] = BLANK_CHAR;
             }
         }
 
-        if (containsInvalidChar)
+        if (encoded != null)
         {
-            return String.valueOf(encodedCharArray);
+            return String.valueOf(encoded);
         }
 
         return str;

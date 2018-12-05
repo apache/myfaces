@@ -46,10 +46,18 @@ import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.util.ComponentUtils;
+import org.apache.myfaces.util.SharedStringBuilder;
 
 public class HtmlButtonRendererBase
     extends HtmlRenderer
 {
+    private static final String SB_BUILD_BEHAVIORIZED_ONCLICK = HtmlButtonRendererBase.class.getName()
+            + "#buildBehaviorizedOnClick";
+    private static final String SB_BUILD_ONCLICK = HtmlButtonRendererBase.class.getName()
+            + "#buildOnClick";
+    private static final String SB_ADD_CHILD_PARAMETERS = HtmlButtonRendererBase.class.getName() +
+            "#addChildParameters";
+    
     private static final String IMAGE_BUTTON_SUFFIX_X = ".x";
     private static final String IMAGE_BUTTON_SUFFIX_Y = ".y";
 
@@ -303,19 +311,19 @@ public class HtmlButtonRendererBase
                                               UIComponent form, List<UIParameter> validParams)
         throws IOException
     {
-        //we can omit autoscroll here for now maybe we should check if it is an ajax 
-        //behavior and omit it only in this case
-        StringBuilder userOnClick = new StringBuilder();
+        StringBuilder sb = SharedStringBuilder.get(facesContext, SB_BUILD_BEHAVIORIZED_ONCLICK);
+        
         //user onclick part 
         String commandOnClick = (String) uiComponent.getAttributes().get(HTML.ONCLICK_ATTR);
-
         if (commandOnClick != null)
         {
-            userOnClick.append(commandOnClick);
-            userOnClick.append(';');
+            sb.append(commandOnClick);
+            sb.append(';');
         }
+        String userOnClick = sb.toString();
 
-        StringBuilder rendererOnClick = new StringBuilder();
+        // reset SB and reuse
+        sb.setLength(0);
 
         if (form != null) 
         {
@@ -335,7 +343,7 @@ public class HtmlButtonRendererBase
                 if (JavascriptUtils.isRenderClearJavascriptOnButton(facesContext.getExternalContext()))
                 {
                     //call the script to clear the form (clearFormHiddenParams_<formName>) method
-                    HtmlRendererUtils.appendClearHiddenCommandFormParamsFunctionCall(rendererOnClick,
+                    HtmlRendererUtils.appendClearHiddenCommandFormParamsFunctionCall(sb,
                             form.getClientId(facesContext));
                 }
             //}
@@ -348,40 +356,13 @@ public class HtmlButtonRendererBase
         
         return HtmlRendererUtils.buildBehaviorChain(facesContext, uiComponent,
                 ClientBehaviorEvents.CLICK, paramList, ClientBehaviorEvents.ACTION, paramList, behaviors,
-                userOnClick.toString() , rendererOnClick.toString());
+                userOnClick , sb.toString());
     }
-    
-    protected String buildServerOnclick(FacesContext facesContext, UIComponent component, 
-            String clientId, UIComponent form, List<UIParameter> validParams) throws IOException
-    {
-        StringBuilder onClick = new StringBuilder();
 
-        StringBuilder params = addChildParameters(facesContext, form, validParams);
-
-        String target = getTarget(component);
-
-        onClick.append("return ").
-            append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
-            append(form.getClientId(facesContext)).append("','").
-            append(component.getClientId(facesContext)).append('\'');
-
-        if (params.length() > 2 || target != null)
-        {
-            onClick.append(',').
-                append(target == null ? "null" : ('\'' + target + '\'')).append(',').
-                append(params);
-        }
-        onClick.append(");");
-
-        
-        return onClick.toString();
-    }
-    
-    private StringBuilder addChildParameters(FacesContext context, 
-            UIComponent nestingForm, List<UIParameter> validParams)
+    private StringBuilder addChildParameters(FacesContext context, List<UIParameter> validParams)
     {
         //add child parameters
-        StringBuilder params = new StringBuilder();
+        StringBuilder params = SharedStringBuilder.get(context, SB_ADD_CHILD_PARAMETERS);
         params.append('[');
         
         for (int i = 0, size = validParams.size(); i < size; i++)
@@ -463,7 +444,7 @@ public class HtmlButtonRendererBase
                                         ResponseWriter writer, List<UIParameter> validParams)
         throws IOException
     {
-        StringBuilder onClick = new StringBuilder();
+        StringBuilder onClick = SharedStringBuilder.get(facesContext, SB_BUILD_ONCLICK);
         String commandOnClick = (String) uiComponent.getAttributes().get(HTML.ONCLICK_ATTR);
 
         if (commandOnClick != null)
@@ -480,7 +461,7 @@ public class HtmlButtonRendererBase
         {
             if (validParams != null && !validParams.isEmpty() )
             {
-                StringBuilder params = addChildParameters(facesContext, form, validParams);
+                StringBuilder params = addChildParameters(facesContext, validParams);
 
                 String target = getTarget(uiComponent);
 

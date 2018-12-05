@@ -476,16 +476,6 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         strVal = strVal.trim();
         if (!EMPTY.equals(strVal))
         {
-            /*
-            if (!strVal.startsWith(IDENTIFYER_MARKER))
-            {
-                String componentId = getComponentId(context, strVal);
-                retVal.append(componentId);
-            }
-            else
-            {
-                retVal.append(strVal);
-            }*/
             SearchExpressionHandler handler = context.getFacesContext().getApplication().getSearchExpressionHandler();
             String clientId = handler.resolveClientId(searchExpressionContext, strVal);
             retVal.append(clientId);
@@ -495,25 +485,6 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
             }
         }
     }
-
-    /*
-    private String getComponentId(ClientBehaviorContext context, String id)
-    {
-
-        UIComponent contextComponent = context.getComponent();
-        UIComponent target = contextComponent.findComponent(id);
-        if (target == null)
-        {
-            target = contextComponent.findComponent(
-                context.getFacesContext().getNamingContainerSeparatorChar() + id);
-        }
-        if (target != null)
-        {
-            return target.getClientId(context.getFacesContext());
-        }
-        throw new FacesException("Component with id:" + id + " not found");
-    }
-    */
 
     private void assertBehavior(ClientBehavior behavior)
     {
