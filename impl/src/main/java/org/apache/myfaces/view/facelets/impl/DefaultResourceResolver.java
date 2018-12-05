@@ -34,6 +34,7 @@ public class DefaultResourceResolver extends ResourceResolver
         super();
     }
 
+    @Override
     public URL resolveUrl(String path)
     {
         return resolveUrl(FacesContext.getCurrentInstance(), path);
@@ -41,15 +42,6 @@ public class DefaultResourceResolver extends ResourceResolver
     
     public URL resolveUrl(FacesContext facesContext, String path)
     {
-        /*
-        try
-        {
-            return Resource.getResourceUrl(FacesContext.getCurrentInstance(), path);
-        }
-        catch (IOException e)
-        {
-            throw new FacesException(e);
-        }*/
         ViewResource resource = facesContext.getApplication().
             getResourceHandler().createViewResource(facesContext, path);
         //return resource == null ? null : resource.getURL();
