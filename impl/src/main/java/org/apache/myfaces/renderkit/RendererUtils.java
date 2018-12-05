@@ -41,7 +41,6 @@ import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UISelectMany;
 import javax.faces.component.UISelectOne;
@@ -859,31 +858,6 @@ public final class RendererUtils
     {
         Integer i = (Integer) component.getAttributes().get(attrName);
         return i != null ? i.intValue() : defaultValue;
-    }
-
-    /**
-     * Find the enclosing form of a component
-     * in the view-tree.
-     * All Subclasses of <code>UIForm</code> and all known
-     * form-families are searched for.
-     * <p>
-     * There might be additional form families
-     * which have to be explicitly entered here.</p>
-     *
-     * @param uiComponent
-     * @param facesContext
-     * @return FormInfo Information about the form - the form itself and its name.
-     */
-    public static UIComponent findNestingForm(UIComponent uiComponent,
-            FacesContext facesContext)
-    {
-        UIComponent parent = uiComponent.getParent();
-        while (parent != null && !(parent instanceof UIForm))
-        {
-            parent = parent.getParent();
-        }
-
-        return parent;
     }
 
     public static boolean getBooleanValue(String attribute, Object value,

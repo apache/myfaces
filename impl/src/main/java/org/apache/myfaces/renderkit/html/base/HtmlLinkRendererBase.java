@@ -31,6 +31,7 @@ import java.util.RandomAccess;
 
 import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIForm;
 import javax.faces.component.UIOutcomeTarget;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIParameter;
@@ -50,6 +51,7 @@ import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.util.ComponentUtils;
 
 public abstract class HtmlLinkRendererBase
     extends HtmlRenderer
@@ -74,7 +76,7 @@ public abstract class HtmlLinkRendererBase
         if (component instanceof UICommand)
         {
             String clientId = component.getClientId(facesContext);
-            UIComponent form = RendererUtils.findNestingForm(component, facesContext);
+            UIForm form = ComponentUtils.closest(UIForm.class, component);
             boolean disabled = HtmlRendererUtils.isDisabled(component);
             // MYFACES-3960 Decode, decode client behavior and queue action event at the end
             boolean activateActionEvent = false;
@@ -190,8 +192,7 @@ public abstract class HtmlLinkRendererBase
         {
             renderCommandLinkEnd(facesContext, component);
 
-            UIComponent form = RendererUtils.findNestingForm(component, facesContext);
-            
+            UIForm form = ComponentUtils.closest(UIForm.class, component);
             if (form != null)
             {
                 HtmlFormRendererBase.renderScrollHiddenInputIfNecessary(
@@ -223,7 +224,7 @@ public abstract class HtmlLinkRendererBase
         Map<String, List<ClientBehavior>> behaviors = null;
 
         // h:commandLink can be rendered outside a form, but with warning (jsf 2.0 TCK)
-        UIComponent form = RendererUtils.findNestingForm(component, facesContext);
+        UIForm form = ComponentUtils.closest(UIForm.class, component);
         
         boolean disabled = HtmlRendererUtils.isDisabled(component);
         
@@ -1157,12 +1158,11 @@ public abstract class HtmlLinkRendererBase
     protected void renderCommandLinkEnd(FacesContext facesContext, UIComponent component)
             throws IOException
     {
-        UIComponent form = RendererUtils.findNestingForm(component, facesContext);
+        UIForm form = ComponentUtils.closest(UIForm.class, component);
         
         ResponseWriter writer = facesContext.getResponseWriter();
         if (HtmlRendererUtils.isDisabled(component) || form == null)
         {
-
             writer.endElement(HTML.SPAN_ELEM);
         }
         else

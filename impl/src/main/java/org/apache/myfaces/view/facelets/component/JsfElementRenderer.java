@@ -62,6 +62,7 @@ public class JsfElementRenderer extends HtmlRenderer
         HtmlRendererUtils.decodeClientBehaviors(context, component);
     }
 
+    @Override
     public void encodeBegin(FacesContext facesContext, UIComponent component)
         throws IOException
     {
@@ -118,12 +119,14 @@ public class JsfElementRenderer extends HtmlRenderer
         
     }
 
+    @Override
     public void encodeChildren(FacesContext facesContext, UIComponent component)
         throws IOException
     {
         RendererUtils.renderChildren(facesContext, component);
     }
 
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent component)
         throws IOException
     {
@@ -133,11 +136,13 @@ public class JsfElementRenderer extends HtmlRenderer
         writer.endElement(elementName);
     }
     
+    @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
     {
         return true;
     }
     
+    @Override
     protected boolean isCommonEventsOptimizationEnabled(FacesContext facesContext)
     {
         return true;

@@ -27,6 +27,7 @@ import java.util.Map;
 
 import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIForm;
 import javax.faces.component.UIParameter;
 import javax.faces.component.ValueHolder;
 import javax.faces.component.behavior.ClientBehavior;
@@ -44,6 +45,7 @@ import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.util.ComponentUtils;
 
 public class HtmlButtonRendererBase
     extends HtmlRenderer
@@ -87,9 +89,9 @@ public class HtmlButtonRendererBase
     {
         String clientId = uiComponent.getClientId(facesContext);
         Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
-        UIComponent form = RendererUtils.findNestingForm(uiComponent, facesContext);
         String hiddenLink = null;
-         
+
+        UIForm form = ComponentUtils.closest(UIForm.class, uiComponent);
         if (form != null)
         {
             hiddenLink = (String) facesContext.getExternalContext().getRequestParameterMap().get(
@@ -112,7 +114,7 @@ public class HtmlButtonRendererBase
         ResponseWriter writer = facesContext.getResponseWriter();
         
         // commandButton does not need to be nested in a form since JSF 2.0
-        UIComponent form = RendererUtils.findNestingForm(uiComponent, facesContext);
+        UIForm form = ComponentUtils.closest(UIForm.class, uiComponent);
 
         boolean reset = isReset(uiComponent);
         boolean button = isButton(uiComponent);
@@ -276,7 +278,7 @@ public class HtmlButtonRendererBase
 
         writer.endElement(HTML.INPUT_ELEM);
         
-        UIComponent form = RendererUtils.findNestingForm(uiComponent, facesContext);
+        UIForm form = ComponentUtils.closest(UIForm.class, uiComponent);
         if (form != null)
         {
             HtmlFormRendererBase.renderScrollHiddenInputIfNecessary(
@@ -472,9 +474,8 @@ public class HtmlButtonRendererBase
             onClick.append(';');
             onClick.append("var oamSF = function(){");
         }
-        
-        UIComponent form = RendererUtils.findNestingForm(uiComponent, facesContext);
-        
+
+        UIForm form = ComponentUtils.closest(UIForm.class, uiComponent);        
         if (form != null)
         {
             if (validParams != null && !validParams.isEmpty() )

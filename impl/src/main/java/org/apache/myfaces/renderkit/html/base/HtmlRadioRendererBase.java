@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import javax.faces.FacesException;
 
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIForm;
 import javax.faces.component.UIInput;
 import javax.faces.component.UISelectOne;
 import javax.faces.component.behavior.ClientBehavior;
@@ -142,7 +143,7 @@ public class HtmlRadioRendererBase
             else
             {
                 // Deferred case: find real component with attached selectItems
-                UIComponent form = RendererUtils.findNestingForm(uiComponent, facesContext);
+                UIForm form = ComponentUtils.closest(UIForm.class, uiComponent);
                 GetSelectItemListCallback callback = new GetSelectItemListCallback(selectOne, group);
                 form.visitTree(
                         VisitContext.createVisitContext(facesContext, null, FIND_SELECT_LIST_HINTS),
@@ -409,7 +410,7 @@ public class HtmlRadioRendererBase
         String group = uiComponent instanceof HtmlSelectOneRadio ? ((HtmlSelectOneRadio) uiComponent).getGroup() : null;
         if (group != null && !group.isEmpty())
         {
-            UIComponent form = RendererUtils.findNestingForm(uiComponent, facesContext);
+            UIForm form = ComponentUtils.closest(UIForm.class, uiComponent);
             writer.writeAttribute(HTML.NAME_ATTR, form.getClientId(facesContext) +
                     facesContext.getNamingContainerSeparatorChar() + group, null);
         }

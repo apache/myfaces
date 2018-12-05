@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 import javax.faces.FacesException;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIForm;
 import javax.faces.component.UIInput;
 import javax.faces.component.UIOutcomeTarget;
 import javax.faces.component.UIOutput;
@@ -256,7 +257,7 @@ public final class HtmlRendererUtils
             String group = ((UISelectOne) component).getGroup();
             if (group != null && !group.isEmpty())
             {
-                UIComponent form = RendererUtils.findNestingForm(component, facesContext);
+                UIForm form = ComponentUtils.closest(UIForm.class, component);
                 String fullGroupId = form.getClientId(facesContext) +
                         facesContext.getNamingContainerSeparatorChar() + group;
                 if (paramMap.containsKey(fullGroupId))

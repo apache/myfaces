@@ -37,17 +37,18 @@ import java.util.logging.Logger;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
+import javax.faces.component.UIForm;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlForm;
 import javax.faces.component.html.HtmlInputText;
 
-import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.HttpPartWrapper;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.ComponentUtils;
 
 public class HtmlInputFileRendererBase extends HtmlRenderer
 {
@@ -96,7 +97,7 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
              (facesContext.getPartialViewContext().isPartialRequest() ||
               facesContext.getPartialViewContext().isAjaxRequest()))
         {
-            UIComponent form = RendererUtils.findNestingForm(component, facesContext);
+            UIForm form = ComponentUtils.closest(UIForm.class, component);
             if (form != null && form instanceof HtmlForm)
             {
                 String content = ((HtmlForm) form).getEnctype();
