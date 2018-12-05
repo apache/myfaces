@@ -45,7 +45,6 @@ import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
 import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.JavascriptContext;
-import org.apache.myfaces.renderkit.html.util.FormInfo;
 import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.SharedStringBuilder;
@@ -180,12 +179,12 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
             if (component.getClientId(facesContext).equals(clientId))
             {
                 boolean disabled = HtmlRendererUtils.isDisabled(component);
-                FormInfo formInfo = RendererUtils.findNestingForm(component, facesContext);
+                UIComponent form = RendererUtils.findNestingForm(component, facesContext);
                 boolean activateActionEvent = false;
-                if (formInfo != null && !disabled)
+                if (form != null && !disabled)
                 {
                     String reqValue = (String) facesContext.getExternalContext().getRequestParameterMap().get(
-                            HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo, facesContext));
+                            HtmlRendererUtils.getHiddenCommandLinkFieldName(form, facesContext));
                     activateActionEvent = reqValue != null && reqValue.equals(clientId)
                         || HtmlRendererUtils.isPartialOrBehaviorSubmit(facesContext, clientId);
                 }

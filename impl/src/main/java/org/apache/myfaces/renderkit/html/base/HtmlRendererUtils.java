@@ -66,7 +66,6 @@ import javax.faces.model.SelectItemGroup;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.renderkit.html.util.FormInfo;
 import org.apache.myfaces.renderkit.html.util.HTMLEncoder;
 import org.apache.myfaces.renderkit.html.util.OutcomeTargetUtils;
 import org.apache.myfaces.util.ComponentUtils;
@@ -257,8 +256,8 @@ public final class HtmlRendererUtils
             String group = ((UISelectOne) component).getGroup();
             if (group != null && !group.isEmpty())
             {
-                FormInfo formInfo = RendererUtils.findNestingForm(component, facesContext);
-                String fullGroupId = formInfo.getFormName() +
+                UIComponent form = RendererUtils.findNestingForm(component, facesContext);
+                String fullGroupId = form.getClientId(facesContext) +
                         facesContext.getNamingContainerSeparatorChar() + group;
                 if (paramMap.containsKey(fullGroupId))
                 {
@@ -273,7 +272,7 @@ public final class HtmlRendererUtils
                                         submittedValue,
                                         component.getClientId(facesContext),
                                         component.getValueExpression("value") != null);
-                        formInfo.getForm().visitTree(
+                        form.visitTree(
                                 VisitContext.createVisitContext(facesContext, null, FIND_SELECT_LIST_HINTS), callback);
                     }
                 }
@@ -1333,15 +1332,9 @@ public final class HtmlRendererUtils
      * both necessary and sufficient to determine the full name of the
      * field.</p>
      */
-    public static String getHiddenCommandLinkFieldName(FormInfo formInfo)
+    public static String getHiddenCommandLinkFieldName(UIComponent form, FacesContext facesContext)
     {
-        return formInfo.getFormName() + ':' + HIDDEN_COMMANDLINK_FIELD_NAME;
-    }
-    
-    public static String getHiddenCommandLinkFieldName(
-            FormInfo formInfo, FacesContext facesContext)
-    {
-        return formInfo.getFormName() + ':' + HIDDEN_COMMANDLINK_FIELD_NAME;
+        return form.getClientId(facesContext) + ':' + HIDDEN_COMMANDLINK_FIELD_NAME;
     }
 
     public static boolean isPartialOrBehaviorSubmit(FacesContext facesContext,

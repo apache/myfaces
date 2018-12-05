@@ -44,7 +44,6 @@ import javax.faces.component.html.HtmlForm;
 import javax.faces.component.html.HtmlInputText;
 
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.renderkit.html.util.FormInfo;
 import org.apache.myfaces.renderkit.html.util.HttpPartWrapper;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
@@ -97,12 +96,11 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
              (facesContext.getPartialViewContext().isPartialRequest() ||
               facesContext.getPartialViewContext().isAjaxRequest()))
         {
-            FormInfo formInfo = RendererUtils.findNestingForm(component, facesContext);
-            if (formInfo != null && formInfo.getForm() instanceof HtmlForm)
+            UIComponent form = RendererUtils.findNestingForm(component, facesContext);
+            if (form != null && form instanceof HtmlForm)
             {
-                HtmlForm form = (HtmlForm) formInfo.getForm();
-                String content = form.getEnctype();
-                if (content==null || !content.contains("multipart/form-data"))
+                String content = ((HtmlForm) form).getEnctype();
+                if (content == null || !content.contains("multipart/form-data"))
                 {
                      FacesMessage message = new FacesMessage("file upload requires a form with"+
                             " enctype equal to multipart/form-data");

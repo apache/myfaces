@@ -50,7 +50,6 @@ import javax.faces.model.SelectItemGroup;
 
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.renderkit.html.util.FormInfo;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.util.ComponentUtils;
@@ -143,9 +142,9 @@ public class HtmlRadioRendererBase
             else
             {
                 // Deferred case: find real component with attached selectItems
-                FormInfo formInfo = RendererUtils.findNestingForm(uiComponent, facesContext);
+                UIComponent form = RendererUtils.findNestingForm(uiComponent, facesContext);
                 GetSelectItemListCallback callback = new GetSelectItemListCallback(selectOne, group);
-                formInfo.getForm().visitTree(
+                form.visitTree(
                         VisitContext.createVisitContext(facesContext, null, FIND_SELECT_LIST_HINTS),
                         callback);                
                 renderGroupOrItemRadio(facesContext, selectOne, callback.getSelectItem(),
@@ -410,8 +409,8 @@ public class HtmlRadioRendererBase
         String group = uiComponent instanceof HtmlSelectOneRadio ? ((HtmlSelectOneRadio) uiComponent).getGroup() : null;
         if (group != null && !group.isEmpty())
         {
-            FormInfo formInfo = RendererUtils.findNestingForm(uiComponent, facesContext);
-            writer.writeAttribute(HTML.NAME_ATTR, formInfo.getFormName()+
+            UIComponent form = RendererUtils.findNestingForm(uiComponent, facesContext);
+            writer.writeAttribute(HTML.NAME_ATTR, form.getClientId(facesContext) +
                     facesContext.getNamingContainerSeparatorChar() + group, null);
         }
         else

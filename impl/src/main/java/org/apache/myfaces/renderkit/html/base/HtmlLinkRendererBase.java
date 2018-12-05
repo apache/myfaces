@@ -48,7 +48,6 @@ import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.renderkit.html.util.FormInfo;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 
@@ -59,6 +58,7 @@ public abstract class HtmlLinkRendererBase
     public static final String END_LINK_OUTCOME_AS_SPAN = 
         "oam.shared.HtmlLinkRendererBase.END_LINK_OUTCOME_AS_SPAN";
 
+    @Override
     public boolean getRendersChildren()
     {
         // We must be able to render the children without a surrounding anchor
@@ -66,6 +66,7 @@ public abstract class HtmlLinkRendererBase
         return true;
     }
 
+    @Override
     public void decode(FacesContext facesContext, UIComponent component)
     {
         super.decode(facesContext, component);  //check for NP
@@ -73,14 +74,14 @@ public abstract class HtmlLinkRendererBase
         if (component instanceof UICommand)
         {
             String clientId = component.getClientId(facesContext);
-            FormInfo formInfo = findNestingForm(component, facesContext);
+            UIComponent form = RendererUtils.findNestingForm(component, facesContext);
             boolean disabled = HtmlRendererUtils.isDisabled(component);
             // MYFACES-3960 Decode, decode client behavior and queue action event at the end
             boolean activateActionEvent = false;
-            if (formInfo != null && !disabled)
+            if (form != null && !disabled)
             {
                 String reqValue = (String) facesContext.getExternalContext().getRequestParameterMap().get(
-                        HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo, facesContext));
+                        HtmlRendererUtils.getHiddenCommandLinkFieldName(form, facesContext));
                 activateActionEvent = reqValue != null && reqValue.equals(clientId)
                     || HtmlRendererUtils.isPartialOrBehaviorSubmit(facesContext, clientId);
             }
@@ -108,7 +109,7 @@ public abstract class HtmlLinkRendererBase
         }
     }
 
-
+    @Override
     public void encodeBegin(FacesContext facesContext, UIComponent component) throws IOException
     {
         super.encodeBegin(facesContext, component);  //check for NP
@@ -174,11 +175,13 @@ public abstract class HtmlLinkRendererBase
 
     }
 
+    @Override
     public void encodeChildren(FacesContext facesContext, UIComponent component) throws IOException
     {
         RendererUtils.renderChildren(facesContext, component);
     }
 
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
     {
         super.encodeEnd(facesContext, component);  //check for NP
@@ -187,12 +190,12 @@ public abstract class HtmlLinkRendererBase
         {
             renderCommandLinkEnd(facesContext, component);
 
-            FormInfo formInfo = findNestingForm(component, facesContext);
+            UIComponent form = RendererUtils.findNestingForm(component, facesContext);
             
-            if (formInfo != null)
+            if (form != null)
             {
                 HtmlFormRendererBase.renderScrollHiddenInputIfNecessary(
-                        formInfo.getForm(), facesContext, facesContext.getResponseWriter());
+                        form, facesContext, facesContext.getResponseWriter());
             }
         }
         else if (component instanceof UIOutcomeTarget)
@@ -220,11 +223,11 @@ public abstract class HtmlLinkRendererBase
         Map<String, List<ClientBehavior>> behaviors = null;
 
         // h:commandLink can be rendered outside a form, but with warning (jsf 2.0 TCK)
-        FormInfo formInfo = findNestingForm(component, facesContext);
+        UIComponent form = RendererUtils.findNestingForm(component, facesContext);
         
         boolean disabled = HtmlRendererUtils.isDisabled(component);
         
-        if (disabled || formInfo == null)
+        if (disabled || form == null)
         {
             writer.startElement(HTML.SPAN_ELEM, component);
             if (component instanceof ClientBehaviorHolder)
@@ -334,7 +337,7 @@ public abstract class HtmlLinkRendererBase
             {
                 behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
                 renderBehaviorizedJavaScriptAnchorStart(
-                        facesContext, writer, component, clientId, behaviors, formInfo);
+                        facesContext, writer, component, clientId, behaviors, form);
                 if (!behaviors.isEmpty())
                 {
                     HtmlRendererUtils.writeIdAndName(writer, component, facesContext);
@@ -396,7 +399,7 @@ public abstract class HtmlLinkRendererBase
             }
             else
             {
-                renderJavaScriptAnchorStart(facesContext, writer, component, clientId, formInfo);
+                renderJavaScriptAnchorStart(facesContext, writer, component, clientId, form);
                 HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
                 if (isCommonPropertiesOptimizationEnabled(facesContext))
                 {
@@ -426,7 +429,7 @@ public abstract class HtmlLinkRendererBase
         }
         
         // render warning message for a h:commandLink with no nesting form
-        if (formInfo == null)
+        if (form == null)
         {
             writer.writeText(": This link is deactivated, because it is not embedded in a JSF form.", null);
         }
@@ -436,12 +439,9 @@ public abstract class HtmlLinkRendererBase
                                                ResponseWriter writer,
                                                UIComponent component,
                                                String clientId,
-                                               FormInfo formInfo)
+                                               UIComponent form)
         throws IOException
     {
-        UIComponent nestingForm = formInfo.getForm();
-        String formName = formInfo.getFormName();
-
         StringBuilder onClick = new StringBuilder();
 
         String commandOnclick;
@@ -462,13 +462,13 @@ public abstract class HtmlLinkRendererBase
             onClick.append("var oamSF = function(){");
         }
 
-        StringBuilder params = addChildParameters(facesContext, component, nestingForm);
+        StringBuilder params = addChildParameters(facesContext, component, form);
 
         String target = getTarget(component);
 
         onClick.append("return ").
             append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
-            append(formName).append("','").
+            append(form.getClientId(facesContext)).append("','").
             append(clientId).append('\'');
 
         if (params.length() > 2 || target != null)
@@ -498,8 +498,7 @@ public abstract class HtmlLinkRendererBase
             UIComponent component,
             String clientId,
             Map<String, List<ClientBehavior>> behaviors,
-            FormInfo formInfo)
-    throws IOException
+            UIComponent formInfo) throws IOException
     {
         String commandOnclick;
         if (component instanceof HtmlCommandLink)
@@ -582,20 +581,17 @@ public abstract class HtmlLinkRendererBase
     }
 
     protected String buildServerOnclick(FacesContext facesContext, UIComponent component, 
-            String clientId, FormInfo formInfo) throws IOException
+            String clientId, UIComponent form) throws IOException
     {
-        UIComponent nestingForm = formInfo.getForm();
-        String formName = formInfo.getFormName();
-
         StringBuilder onClick = new StringBuilder();
 
-        StringBuilder params = addChildParameters(facesContext, component, nestingForm);
+        StringBuilder params = addChildParameters(facesContext, component, form);
 
         String target = getTarget(component);
 
         onClick.append("return ").
             append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
-            append(formName).append("','").
+            append(form.getClientId(facesContext)).append("','").
             append(clientId).append('\'');
 
         if (params.length() > 2 || target != null)
@@ -701,13 +697,6 @@ public abstract class HtmlLinkRendererBase
         return params;
     }
 
-    /**
-     * find nesting form<p>
-     */
-    protected FormInfo findNestingForm(UIComponent uiComponent, FacesContext facesContext)
-    {
-        return RendererUtils.findNestingForm(uiComponent, facesContext);
-    }
 
     private void addChildParametersToHref(FacesContext facesContext,
                                           UIComponent linkComponent,
@@ -1168,10 +1157,10 @@ public abstract class HtmlLinkRendererBase
     protected void renderCommandLinkEnd(FacesContext facesContext, UIComponent component)
             throws IOException
     {
-        FormInfo formInfo = findNestingForm(component, facesContext);
+        UIComponent form = RendererUtils.findNestingForm(component, facesContext);
         
         ResponseWriter writer = facesContext.getResponseWriter();
-        if (HtmlRendererUtils.isDisabled(component) || formInfo == null)
+        if (HtmlRendererUtils.isDisabled(component) || form == null)
         {
 
             writer.endElement(HTML.SPAN_ELEM);

@@ -41,7 +41,6 @@ import javax.faces.event.ActionEvent;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.renderkit.html.util.FormInfo;
 import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
@@ -88,13 +87,13 @@ public class HtmlButtonRendererBase
     {
         String clientId = uiComponent.getClientId(facesContext);
         Map paramMap = facesContext.getExternalContext().getRequestParameterMap();
-        FormInfo formInfo = RendererUtils.findNestingForm(uiComponent, facesContext);
+        UIComponent form = RendererUtils.findNestingForm(uiComponent, facesContext);
         String hiddenLink = null;
          
-        if (formInfo != null)
+        if (form != null)
         {
             hiddenLink = (String) facesContext.getExternalContext().getRequestParameterMap().get(
-                HtmlRendererUtils.getHiddenCommandLinkFieldName(formInfo, facesContext));
+                HtmlRendererUtils.getHiddenCommandLinkFieldName(form, facesContext));
         }
         return paramMap.containsKey(clientId) || paramMap.containsKey(clientId + IMAGE_BUTTON_SUFFIX_X) 
             || paramMap.containsKey(clientId + IMAGE_BUTTON_SUFFIX_Y)
@@ -113,7 +112,7 @@ public class HtmlButtonRendererBase
         ResponseWriter writer = facesContext.getResponseWriter();
         
         // commandButton does not need to be nested in a form since JSF 2.0
-        FormInfo formInfo = findNestingForm(uiComponent, facesContext);
+        UIComponent form = RendererUtils.findNestingForm(uiComponent, facesContext);
 
         boolean reset = isReset(uiComponent);
         boolean button = isButton(uiComponent);
@@ -180,7 +179,7 @@ public class HtmlButtonRendererBase
             if (!reset && !button)
             {
                 String onClick = buildBehaviorizedOnClick(
-                        uiComponent, behaviors, facesContext, writer, formInfo, validParams);
+                        uiComponent, behaviors, facesContext, writer, form, validParams);
                 if (onClick.length() != 0)
                 {
                     writer.writeAttribute(HTML.ONCLICK_ATTR, onClick, null);
@@ -277,11 +276,11 @@ public class HtmlButtonRendererBase
 
         writer.endElement(HTML.INPUT_ELEM);
         
-        FormInfo formInfo = findNestingForm(uiComponent, facesContext);
-        if (formInfo != null)
+        UIComponent form = RendererUtils.findNestingForm(uiComponent, facesContext);
+        if (form != null)
         {
             HtmlFormRendererBase.renderScrollHiddenInputIfNecessary(
-                    formInfo.getForm(), facesContext, writer);
+                    form, facesContext, writer);
         }
         
         // render the UIParameter children of the commandButton (since 2.0)
@@ -299,7 +298,7 @@ public class HtmlButtonRendererBase
 
     protected String buildBehaviorizedOnClick(UIComponent uiComponent, Map<String, List<ClientBehavior>> behaviors, 
                                               FacesContext facesContext, ResponseWriter writer, 
-                                              FormInfo nestedFormInfo, List<UIParameter> validParams)
+                                              UIComponent form, List<UIParameter> validParams)
         throws IOException
     {
         //we can omit autoscroll here for now maybe we should check if it is an ajax 
@@ -316,7 +315,7 @@ public class HtmlButtonRendererBase
 
         StringBuilder rendererOnClick = new StringBuilder();
 
-        if (nestedFormInfo != null) 
+        if (form != null) 
         {
             // There is no clean way to detect if a "submit" behavior has been added to the component, 
             // so to keep things simple, if the button is submit type, it is responsibility of the 
@@ -331,11 +330,11 @@ public class HtmlButtonRendererBase
             //}
             //else
             //{
-                String formName = nestedFormInfo.getFormName();
                 if (JavascriptUtils.isRenderClearJavascriptOnButton(facesContext.getExternalContext()))
                 {
                     //call the script to clear the form (clearFormHiddenParams_<formName>) method
-                    HtmlRendererUtils.appendClearHiddenCommandFormParamsFunctionCall(rendererOnClick, formName);
+                    HtmlRendererUtils.appendClearHiddenCommandFormParamsFunctionCall(rendererOnClick,
+                            form.getClientId(facesContext));
                 }
             //}
         }
@@ -351,20 +350,17 @@ public class HtmlButtonRendererBase
     }
     
     protected String buildServerOnclick(FacesContext facesContext, UIComponent component, 
-            String clientId, FormInfo formInfo, List<UIParameter> validParams) throws IOException
+            String clientId, UIComponent form, List<UIParameter> validParams) throws IOException
     {
-        UIComponent nestingForm = formInfo.getForm();
-        String formName = formInfo.getFormName();
-
         StringBuilder onClick = new StringBuilder();
 
-        StringBuilder params = addChildParameters(facesContext, nestingForm, validParams);
+        StringBuilder params = addChildParameters(facesContext, form, validParams);
 
         String target = getTarget(component);
 
         onClick.append("return ").
             append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
-            append(formName).append("','").
+            append(form.getClientId(facesContext)).append("','").
             append(component.getClientId(facesContext)).append('\'');
 
         if (params.length() > 2 || target != null)
@@ -477,22 +473,19 @@ public class HtmlButtonRendererBase
             onClick.append("var oamSF = function(){");
         }
         
-        FormInfo nestedFormInfo = findNestingForm(uiComponent, facesContext);
+        UIComponent form = RendererUtils.findNestingForm(uiComponent, facesContext);
         
-        if (nestedFormInfo != null)
+        if (form != null)
         {
-            String formName = nestedFormInfo.getFormName();
-            
             if (validParams != null && !validParams.isEmpty() )
             {
-                StringBuilder params = addChildParameters(
-                        facesContext, nestedFormInfo.getForm(), validParams);
+                StringBuilder params = addChildParameters(facesContext, form, validParams);
 
                 String target = getTarget(uiComponent);
 
                 onClick.append("return ").
                     append(HtmlRendererUtils.SUBMIT_FORM_FN_NAME_JSF2).append("('").
-                    append(formName).append("','").
+                    append(form.getClientId(facesContext)).append("','").
                     append(uiComponent.getClientId(facesContext)).append('\'');
 
                 if (params.length() > 2 || target != null)
@@ -509,7 +502,8 @@ public class HtmlButtonRendererBase
                 if (JavascriptUtils.isRenderClearJavascriptOnButton(facesContext.getExternalContext()))
                 {
                     //call the script to clear the form (clearFormHiddenParams_<formName>) method
-                    HtmlRendererUtils.appendClearHiddenCommandFormParamsFunctionCall(onClick, formName);
+                    HtmlRendererUtils.appendClearHiddenCommandFormParamsFunctionCall(onClick,
+                            form.getClientId(facesContext));
                 }
             }
         }
@@ -524,13 +518,6 @@ public class HtmlButtonRendererBase
         return onClick;
     }
 
-    /**
-     * find nesting form
-     */
-    protected FormInfo findNestingForm(UIComponent uiComponent, FacesContext facesContext)
-    {
-        return RendererUtils.findNestingForm(uiComponent, facesContext);
-    }
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent uiComponent)
     {

@@ -51,7 +51,6 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.model.SelectItem;
 
-import org.apache.myfaces.renderkit.html.util.FormInfo;
 import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.util.HashMapUtils;
 import org.apache.myfaces.renderkit.html.util.SelectItemsIterator;
@@ -875,7 +874,7 @@ public final class RendererUtils
      * @param facesContext
      * @return FormInfo Information about the form - the form itself and its name.
      */
-    public static FormInfo findNestingForm(UIComponent uiComponent,
+    public static UIComponent findNestingForm(UIComponent uiComponent,
             FacesContext facesContext)
     {
         UIComponent parent = uiComponent.getParent();
@@ -884,14 +883,7 @@ public final class RendererUtils
             parent = parent.getParent();
         }
 
-        if (parent != null)
-        {
-            //link is nested inside a form
-            String formName = parent.getClientId(facesContext);
-            return new FormInfo(parent, formName);
-        }
-
-        return null;
+        return parent;
     }
 
     public static boolean getBooleanValue(String attribute, Object value,
