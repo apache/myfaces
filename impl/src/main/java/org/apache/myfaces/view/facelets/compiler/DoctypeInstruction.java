@@ -45,6 +45,7 @@ public class DoctypeInstruction implements Instruction
         this.html5Doctype = html5Doctype;
     }
 
+    @Override
     public void write(FacesContext context) throws IOException
     {
         StringBuilder sb = new StringBuilder(64);
@@ -72,11 +73,13 @@ public class DoctypeInstruction implements Instruction
         context.getResponseWriter().writeDoctype(sb.toString());
     }
 
+    @Override
     public Instruction apply(ExpressionFactory factory, ELContext ctx)
     {
         return this;
     }
 
+    @Override
     public boolean isLiteral()
     {
         return true;
