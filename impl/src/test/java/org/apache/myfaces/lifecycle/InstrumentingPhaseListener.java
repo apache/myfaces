@@ -26,6 +26,7 @@ import javax.faces.event.PhaseListener;
 public class InstrumentingPhaseListener implements PhaseListener
 {
     private static final long serialVersionUID = -3222250142846233648L;
+
     private PhaseId listenPhaseId = null;
     private PhaseId eventPhaseId = null;
     private boolean before = true;
@@ -44,6 +45,7 @@ public class InstrumentingPhaseListener implements PhaseListener
         this.listenPhaseId = interestingPhaseId;
     }
 
+    @Override
     public void afterPhase(PhaseEvent event)
     {
         afterPhases.add(event.getPhaseId());
@@ -60,6 +62,7 @@ public class InstrumentingPhaseListener implements PhaseListener
         }
     }
 
+    @Override
     public void beforePhase(PhaseEvent event)
     {
         beforePhases.add(event.getPhaseId());

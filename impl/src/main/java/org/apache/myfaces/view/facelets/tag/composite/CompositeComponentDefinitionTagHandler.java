@@ -103,6 +103,7 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
         }
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {

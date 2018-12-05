@@ -49,6 +49,7 @@ final class CompositeComponentRule extends MetaRule
             _value = value;
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             ((UIComponent) instance).getAttributes().put(_name, _value);
@@ -68,6 +69,7 @@ final class CompositeComponentRule extends MetaRule
             _type = type;
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             ((UIComponent) instance).getAttributes().put(_name, _attr.getObject(ctx, _type));
@@ -89,6 +91,7 @@ final class CompositeComponentRule extends MetaRule
             _type = type;
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             // Call setValueExpression to set ValueExpression instances
@@ -115,6 +118,7 @@ final class CompositeComponentRule extends MetaRule
         super();
     }
 
+    @Override
     public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta)
     {
         if (meta.isTargetInstanceOf(UIComponent.class))

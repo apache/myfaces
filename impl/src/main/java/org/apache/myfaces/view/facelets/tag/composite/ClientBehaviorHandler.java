@@ -123,6 +123,7 @@ public class ClientBehaviorHandler extends TagHandler implements InterfaceDescri
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
@@ -176,11 +177,13 @@ public class ClientBehaviorHandler extends TagHandler implements InterfaceDescri
         this.nextHandler.apply(ctx, parent);
     }
     
+    @Override
     public boolean isCacheable()
     {
         return _cacheable;
     }
     
+    @Override
     public void setCacheable(boolean cacheable)
     {
         _cacheable = cacheable;
