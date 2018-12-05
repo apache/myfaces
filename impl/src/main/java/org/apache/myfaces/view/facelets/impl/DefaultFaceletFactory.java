@@ -113,6 +113,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
         
         FaceletCache.MemberFactory<Facelet> faceletFactory = new FaceletCache.MemberFactory<Facelet>()
         {
+            @Override
             public Facelet newInstance(URL url) throws IOException
             {
                 return _createFacelet(url);
@@ -120,6 +121,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
         };
         FaceletCache.MemberFactory<Facelet> viewMetadataFaceletFactory = new FaceletCache.MemberFactory<Facelet>()
         {
+            @Override
             public Facelet newInstance(URL url) throws IOException
             {
                 return _createViewMetadataFacelet(url);
@@ -133,6 +135,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
             FaceletCache.MemberFactory<Facelet> compositeComponentMetadataFaceletFactory = 
                 new FaceletCache.MemberFactory<Facelet>()
             {
+                @Override
                 public Facelet newInstance(URL url) throws IOException
                 {
                     return _createCompositeComponentMetadataFacelet(url);
@@ -595,6 +598,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
         }
     }
 
+    @Override
     public Facelet compileComponentFacelet(String taglibURI, String tagName, Map<String,Object> attributes)
     {
         FaceletHandler handler = _compiler.compileComponent(taglibURI, tagName, attributes);

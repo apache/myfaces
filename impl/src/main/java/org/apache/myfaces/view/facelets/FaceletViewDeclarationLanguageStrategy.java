@@ -55,6 +55,7 @@ public class FaceletViewDeclarationLanguageStrategy implements ViewDeclarationLa
     /**
      * {@inheritDoc}
      */
+    @Override
     public ViewDeclarationLanguage getViewDeclarationLanguage()
     {
         return _language;
@@ -63,6 +64,7 @@ public class FaceletViewDeclarationLanguageStrategy implements ViewDeclarationLa
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean handles(String viewId)
     {
         if (viewId == null)

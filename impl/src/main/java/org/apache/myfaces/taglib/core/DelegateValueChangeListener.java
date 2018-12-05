@@ -61,11 +61,13 @@ public class DelegateValueChangeListener implements ValueChangeListener, StateHo
         _binding = binding;
     }
 
+    @Override
     public boolean isTransient()
     {
         return false;
     }
 
+    @Override
     public void restoreState(FacesContext facesContext, Object state)
     {
         Object[] values = (Object[]) state;
@@ -73,6 +75,7 @@ public class DelegateValueChangeListener implements ValueChangeListener, StateHo
         _binding = (ValueExpression) values[1];
     }
 
+    @Override
     public Object saveState(FacesContext facesContext)
     {
         Object[] values = new Object[2];
@@ -81,6 +84,7 @@ public class DelegateValueChangeListener implements ValueChangeListener, StateHo
         return values;
     }
 
+    @Override
     public void setTransient(boolean arg0)
     {
         // Do nothing
@@ -154,6 +158,7 @@ public class DelegateValueChangeListener implements ValueChangeListener, StateHo
         return listener;
     }
 
+    @Override
     public void processValueChange(ValueChangeEvent event) throws AbortProcessingException
     {
         _getDelegate().processValueChange(event);

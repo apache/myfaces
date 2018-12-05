@@ -46,7 +46,6 @@ class PhaseListenerManager
     // an exception should not have its afterPhase called
     private Map<PhaseId, boolean[]> listenerSuccessMap = new HashMap<PhaseId, boolean[]>();
 
-    /** Creates a new instance of PhaseListenerManager */
     PhaseListenerManager(Lifecycle lifecycle, FacesContext facesContext, PhaseListener[] phaseListeners)
     {
         this.lifecycle = lifecycle;
@@ -120,7 +119,7 @@ class PhaseListenerManager
                 {
                     // JSF 2.0: publish exceptions instead of logging them.
                     
-                    publishException (e, phaseId, ExceptionQueuedEventContext.IN_AFTER_PHASE_KEY);
+                    publishException(e, phaseId, ExceptionQueuedEventContext.IN_AFTER_PHASE_KEY);
                 }
             }
         }
@@ -129,10 +128,10 @@ class PhaseListenerManager
     
     private void publishException (Throwable e, PhaseId phaseId, String key)
     {
-        ExceptionQueuedEventContext context = new ExceptionQueuedEventContext (facesContext, e, null, phaseId);
+        ExceptionQueuedEventContext context = new ExceptionQueuedEventContext(facesContext, e, null, phaseId);
         
-        context.getAttributes().put (key, Boolean.TRUE);
+        context.getAttributes().put(key, Boolean.TRUE);
         
-        facesContext.getApplication().publishEvent (facesContext, ExceptionQueuedEvent.class, context);
+        facesContext.getApplication().publishEvent(facesContext, ExceptionQueuedEvent.class, context);
     }
 }

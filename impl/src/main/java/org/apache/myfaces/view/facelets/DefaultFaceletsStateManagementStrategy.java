@@ -151,9 +151,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     
     private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
     
-    private static final String SERIALIZED_VIEW_REQUEST_ATTR = 
-        StateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
-    
     private static final Object[] EMPTY_STATES = new Object[]{null, null};
     
     private static final Set<VisitHint> VISIT_HINTS = Collections.unmodifiableSet( 
@@ -696,7 +693,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         }
         
         Object serializedView = context.getAttributes()
-            .get(SERIALIZED_VIEW_REQUEST_ATTR);
+            .get(StateManagerImpl.SERIALIZED_VIEW_REQUEST_ATTR);
         
         //Note on ajax case the method saveState could be called twice: once before start
         //document rendering and the other one when it is called StateManager.getViewState method.
@@ -801,7 +798,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 }
             }
             
-            context.getAttributes().put(SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
+            context.getAttributes().put(StateManagerImpl.SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
 
         }
         

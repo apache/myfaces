@@ -454,45 +454,4 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
       return null;
   }
 
-  /**
-   * Writes the response and replaces the state marker tags with the state information for the current context
-   */
-/*  private static class StateMarkerAwareWriter extends Writer
-  {
-    private StringBuilder buf;
-
-    public StateMarkerAwareWriter()
-    {
-        this.buf = new StringBuilder();
-    }
-
-    @Override
-    public void close() throws IOException
-    {
-    }
-
-    @Override
-    public void flush() throws IOException
-    {
-    }
-
-    @Override
-    public void write(char[] cbuf, int off, int len) throws IOException
-    {
-      if ((off < 0) || (off > cbuf.length) || (len < 0) || ((off + len) > cbuf.length) || ((off + len) < 0))
-      {
-        throw new IndexOutOfBoundsException();
-      }
-      else if (len == 0)
-      {
-        return;
-      }
-      buf.append(cbuf, off, len);
-    }
-
-    public StringBuilder getStringBuilder()
-    {
-      return buf;
-    }
-  }*/
 }

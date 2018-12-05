@@ -56,6 +56,7 @@ public class DefaultResourceResolver extends ResourceResolver
         }
     }
 
+    @Override
     public String toString()
     {
         return "DefaultResourceResolver";

@@ -68,11 +68,13 @@ public class DelegateValidator implements Validator, StateHolder
         _validatorIdString = converterIdString;
     }
 
+    @Override
     public boolean isTransient()
     {
         return false;
     }
 
+    @Override
     public void restoreState(FacesContext facesContext, Object state)
     {
         Object[] values = (Object[]) state;
@@ -81,6 +83,7 @@ public class DelegateValidator implements Validator, StateHolder
         _validatorIdString = (String) values[2];
     }
 
+    @Override
     public Object saveState(FacesContext facesContext)
     {
         Object[] values = new Object[3];
@@ -90,6 +93,7 @@ public class DelegateValidator implements Validator, StateHolder
         return values;
     }
 
+    @Override
     public void setTransient(boolean arg0)
     {
         // Do nothing        
@@ -151,6 +155,7 @@ public class DelegateValidator implements Validator, StateHolder
         throw new ValidatorException(new FacesMessage("validatorId and/or binding must be specified"));
     }
 
+    @Override
     public void validate(FacesContext facesContext, UIComponent component, Object value)
             throws ValidatorException
     {

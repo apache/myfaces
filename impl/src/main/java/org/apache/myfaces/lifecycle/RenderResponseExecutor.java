@@ -72,8 +72,7 @@ class RenderResponseExecutor extends PhaseExecutor
                 previousRoot = root;
                 viewId = root.getViewId();
                 
-                ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(
-                        facesContext, viewId);
+                ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, viewId);
                 if (vdl != null)
                 {
                     vdl.buildView(facesContext, root);

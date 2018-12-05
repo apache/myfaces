@@ -60,21 +60,8 @@ public class LifecycleImpl extends Lifecycle
     
     private final PhaseExecutor[] lifecycleExecutors;
     private final PhaseExecutor renderExecutor;
-
-    /**
-     * Initially, for ensure thread safety we used synchronization blocks and a cached 
-     * _phaseListenerArray and that works. The intention is ensure atomicity between
-     * _phaseListenerList and _phaseListenerArray, but thinking more about it use
-     * CopyOnWriteArrayList and do not use _phaseListenerArray is a lot better. 
-     * 
-     * Most times, we have few instances of PhaseListener registered, so the advantage of 
-     * use _phaseListenerArray is overcome by do not have a synchronization block on getPhaseListeners().
-     * Additionally, it is more often to perform traversals than insertions/removals and 
-     * we can expect only 2 calls for getPhaseListeners() per request (so only two copy 
-     * operations of a very small list).
-     */
-    private final List<PhaseListener> _phaseListenerList
-            = new CopyOnWriteArrayList<PhaseListener>(); // new ArrayList();
+    private final ClientWindowFactory clientWindowFactory;
+    private final List<PhaseListener> phaseListeners;
 
     /**
      * This variable should be marked as volatile to ensure all threads can see it
@@ -85,8 +72,6 @@ public class LifecycleImpl extends Lifecycle
      * note in this case the semantic of the variable must be preserved.
      */
     private volatile boolean _firstRequestProcessed = false;
-
-    private ClientWindowFactory clientWindowFactory;
     
     public LifecycleImpl()
     {
@@ -96,6 +81,7 @@ public class LifecycleImpl extends Lifecycle
 
         renderExecutor = new RenderResponseExecutor();
         clientWindowFactory = (ClientWindowFactory) FactoryFinder.getFactory(FactoryFinder.CLIENT_WINDOW_FACTORY);
+        phaseListeners = new CopyOnWriteArrayList<>();
     }
     
     @Override
@@ -121,30 +107,20 @@ public class LifecycleImpl extends Lifecycle
     @Override
     public void execute(FacesContext facesContext) throws FacesException
     {
-        //try
-        //{
-            // check for updates of web.xml and faces-config descriptors 
-            // only if project state is not production
-            if(!facesContext.isProjectStage(ProjectStage.Production))
+        if(!facesContext.isProjectStage(ProjectStage.Production))
+        {
+            WebXml.update(facesContext.getExternalContext());
+            new FacesConfigurator(facesContext.getExternalContext()).update();
+        }
+
+        PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
+        for (PhaseExecutor executor : lifecycleExecutors)
+        {
+            if (executePhase(facesContext, executor, phaseListenerMgr))
             {
-                WebXml.update(facesContext.getExternalContext());
-                new FacesConfigurator(facesContext.getExternalContext()).update();
+                return;
             }
-            
-            PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
-            for (PhaseExecutor executor : lifecycleExecutors)
-            {
-                if (executePhase(facesContext, executor, phaseListenerMgr))
-                {
-                    return;
-                }
-            }
-        //}
-        //catch (Throwable ex)
-        //{
-            // handle the Throwable accordingly. Maybe generate an error page.
-            //ErrorPageWriter.handleThrowable(facesContext, ex);
-        //}
+        }
     }
 
     private boolean executePhase(FacesContext context, PhaseExecutor executor, PhaseListenerManager phaseListenerMgr)
@@ -227,75 +203,67 @@ public class LifecycleImpl extends Lifecycle
     @Override
     public void render(FacesContext facesContext) throws FacesException
     {
-        //try
-        //{
-            // if the response is complete we should not be invoking the phase listeners
+        // if the response is complete we should not be invoking the phase listeners
+        if (isResponseComplete(facesContext, renderExecutor.getPhase(), true))
+        {
+            return;
+        }
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("entering " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
+        }
+
+        PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
+        Flash flash = facesContext.getExternalContext().getFlash();
+
+        try
+        {
+            facesContext.setCurrentPhaseId(renderExecutor.getPhase());
+
+            flash.doPrePhaseActions(facesContext);
+
+            // let the PhaseExecutor do some pre-phase actions
+            renderExecutor.doPrePhaseActions(facesContext);
+
+            phaseListenerMgr.informPhaseListenersBefore(renderExecutor.getPhase());
+            // also possible that one of the listeners completed the response
             if (isResponseComplete(facesContext, renderExecutor.getPhase(), true))
             {
                 return;
             }
-            if (log.isLoggable(Level.FINEST))
-            {
-                log.finest("entering " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
-            }
-    
-            PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this, facesContext, getPhaseListeners());
-            Flash flash = facesContext.getExternalContext().getFlash();
-            
-            try
-            {
-                facesContext.setCurrentPhaseId(renderExecutor.getPhase());
-                
-                flash.doPrePhaseActions(facesContext);
-                
-                // let the PhaseExecutor do some pre-phase actions
-                renderExecutor.doPrePhaseActions(facesContext);
-                
-                phaseListenerMgr.informPhaseListenersBefore(renderExecutor.getPhase());
-                // also possible that one of the listeners completed the response
-                if (isResponseComplete(facesContext, renderExecutor.getPhase(), true))
-                {
-                    return;
-                }
-                
-                renderExecutor.execute(facesContext);
-            }
-            
-            catch (Throwable e)
-            {
-                // JSF 2.0: publish the executor's exception (if any).
-                
-                publishException (e, renderExecutor.getPhase(), facesContext);
-            }
-            
-            finally
-            {
-                phaseListenerMgr.informPhaseListenersAfter(renderExecutor.getPhase());
-                flash.doPostPhaseActions(facesContext);
-                
-                // publish a field in the application map to indicate
-                // that the first request has been processed
-                requestProcessed(facesContext);
-            }
-            
-            facesContext.getExceptionHandler().handle();
-            
-            if (log.isLoggable(Level.FINEST))
-            {
-                // Note: DebugUtils Logger must also be in trace level
-                DebugUtils.traceView("View after rendering");
-            }
-    
-            if (log.isLoggable(Level.FINEST))
-            {
-                log.finest("exiting " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
-            }
-        //}
-        //catch (Throwable ex)
-        //{
-            // handle the Throwable accordingly. Maybe generate an error page.
-            //ErrorPageWriter.handleThrowable(facesContext, ex);
-        //}
+
+            renderExecutor.execute(facesContext);
+        }
+
+        catch (Throwable e)
+        {
+            // JSF 2.0: publish the executor's exception (if any).
+
+            publishException (e, renderExecutor.getPhase(), facesContext);
+        }
+
+        finally
+        {
+            phaseListenerMgr.informPhaseListenersAfter(renderExecutor.getPhase());
+            flash.doPostPhaseActions(facesContext);
+
+            // publish a field in the application map to indicate
+            // that the first request has been processed
+            requestProcessed(facesContext);
+        }
+
+        facesContext.getExceptionHandler().handle();
+
+        if (log.isLoggable(Level.FINEST))
+        {
+            // Note: DebugUtils Logger must also be in trace level
+            DebugUtils.traceView("View after rendering");
+        }
+
+        if (log.isLoggable(Level.FINEST))
+        {
+            log.finest("exiting " + renderExecutor.getPhase() + " in " + LifecycleImpl.class.getName());
+        }
     }
 
     private boolean isResponseComplete(FacesContext facesContext, PhaseId phase, boolean before)
@@ -334,12 +302,8 @@ public class LifecycleImpl extends Lifecycle
     public void addPhaseListener(PhaseListener phaseListener)
     {
         Assert.notNull(phaseListener, "phaseListener");
-        
-        //synchronized (_phaseListenerList)
-        //{
-            _phaseListenerList.add(phaseListener);
-            //_phaseListenerArray = null; // reset lazy cache array
-        //}
+
+        phaseListeners.add(phaseListener);
     }
 
     @Override
@@ -347,29 +311,16 @@ public class LifecycleImpl extends Lifecycle
     {
         Assert.notNull(phaseListener, "phaseListener");
 
-        //synchronized (_phaseListenerList)
-        //{
-            _phaseListenerList.remove(phaseListener);
-            //_phaseListenerArray = null; // reset lazy cache array
-        //}
+        phaseListeners.remove(phaseListener);
     }
 
     @Override
     public PhaseListener[] getPhaseListeners()
     {
-        //synchronized (_phaseListenerList)
-        //{
-            // (re)build lazy cache array if necessary
-            //if (_phaseListenerArray == null)
-            //{
-            //    _phaseListenerArray = _phaseListenerList.toArray(new PhaseListener[_phaseListenerList.size()]);
-            //}
-            //return _phaseListenerArray;
-        //}
-        return _phaseListenerList.toArray(new PhaseListener[_phaseListenerList.size()]);
+        return phaseListeners.toArray(new PhaseListener[phaseListeners.size()]);
     }
     
-    private void publishException (Throwable e, PhaseId phaseId, FacesContext facesContext)
+    private void publishException(Throwable e, PhaseId phaseId, FacesContext facesContext)
     {
         ExceptionQueuedEventContext context = new ExceptionQueuedEventContext (facesContext, e, null, phaseId);
         
@@ -385,7 +336,7 @@ public class LifecycleImpl extends Lifecycle
      */
     private void requestProcessed(FacesContext facesContext)
     {
-        if(!_firstRequestProcessed)
+        if (!_firstRequestProcessed)
         {
             // The order here is important. First it is necessary to put
             // the value on application map before change the value here.

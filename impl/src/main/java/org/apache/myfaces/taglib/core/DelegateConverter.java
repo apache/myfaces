@@ -63,11 +63,13 @@ public class DelegateConverter implements Converter, StateHolder
         _converterIdString = converterIdString;
     }
 
+    @Override
     public boolean isTransient()
     {
         return false;
     }
 
+    @Override
     public void restoreState(FacesContext facesContext, Object state)
     {
         Object[] values = (Object[]) state;
@@ -76,6 +78,7 @@ public class DelegateConverter implements Converter, StateHolder
         _converterIdString = (String) values[2];
     }
 
+    @Override
     public Object saveState(FacesContext facesContext)
     {
         Object[] values = new Object[3];
@@ -85,19 +88,20 @@ public class DelegateConverter implements Converter, StateHolder
         return values;
     }
 
+    @Override
     public void setTransient(boolean arg0)
     {
         // Do nothing        
     }
 
-    public Object getAsObject(FacesContext facesContext, UIComponent component,
-            String value)
+    @Override
+    public Object getAsObject(FacesContext facesContext, UIComponent component, String value)
     {
         return _getDelegate().getAsObject(facesContext, component, value);
     }
 
-    public String getAsString(FacesContext facesContext, UIComponent component,
-            Object value)
+    @Override
+    public String getAsString(FacesContext facesContext, UIComponent component, Object value)
     {
         return _getDelegate().getAsString(facesContext, component, value);
     }

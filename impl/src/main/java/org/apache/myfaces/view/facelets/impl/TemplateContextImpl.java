@@ -106,6 +106,7 @@ public class TemplateContextImpl extends TemplateContext
         _lastClient = _clients.get(0);
     }
 
+    @Override
     public TemplateManager popExtendedClient(final AbstractFaceletContext actx)
     {
         _lastClient = null;
@@ -163,6 +164,7 @@ public class TemplateContextImpl extends TemplateContext
             this._pageContext = pageContext;
         }
 
+        @Override
         public boolean apply(FaceletContext ctx, UIComponent parent, String name)
                 throws IOException, FacesException, FaceletException,
                 ELException
@@ -232,6 +234,7 @@ public class TemplateContextImpl extends TemplateContext
             return _knownParameters == null ? true : _knownParameters.isEmpty();
         }
         
+        @Override
         public boolean equals(Object o)
         {
             if (this._owner != null)
@@ -259,11 +262,13 @@ public class TemplateContextImpl extends TemplateContext
     }
     
     
+    @Override
     public TemplateManager getCompositeComponentClient()
     {
         return _compositeComponentClient;
     }
 
+    @Override
     public void setCompositeComponentClient(
             TemplateManager compositeComponentClient)
     {
@@ -328,11 +333,13 @@ public class TemplateContextImpl extends TemplateContext
         return true;
     }
     
+    @Override
     public Map<String, ValueExpression> getParameterMap()
     {
         return _templateClientAttributeMap;
     }
     
+    @Override
     public boolean isKnownParametersEmpty()
     {
         TemplateManagerImpl client;
@@ -347,6 +354,7 @@ public class TemplateContextImpl extends TemplateContext
         return true;
     }
     
+    @Override
     public Set<String> getKnownParameters()
     {
         return _templateClientKnownParameterMap.keySet();
@@ -442,11 +450,13 @@ public class TemplateContextImpl extends TemplateContext
             _length = parameterNames.length;
         }
 
+        @Override
         public boolean hasMoreElements()
         {
             return _index < _length;
         }
 
+        @Override
         public String nextElement()
         {
             if (!hasMoreElements())
@@ -517,6 +527,7 @@ public class TemplateContextImpl extends TemplateContext
      */
     public static final class InitialTemplateClient implements TemplateClient
     {
+        @Override
         public boolean apply(FaceletContext ctx, UIComponent parent, String name)
                 throws IOException, FacesException, FaceletException, ELException
         {

@@ -47,7 +47,7 @@ public class StateManagerImpl extends StateManager
 {
     private static final Logger log = Logger.getLogger(StateManagerImpl.class.getName());
     
-    private static final String SERIALIZED_VIEW_REQUEST_ATTR = 
+    public static final String SERIALIZED_VIEW_REQUEST_ATTR = 
         StateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
     
     private RenderKitFactory _renderKitFactory = null;

@@ -98,8 +98,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     private static final PhaseProcessor APPLY_REQUEST_VALUES_PROCESSOR = new ApplyRequestValuesPhaseProcessor();
     private static final PhaseProcessor PROCESS_VALIDATORS_PROCESSOR = new ProcessValidatorPhaseProcessor();
     private static final PhaseProcessor UPDATE_MODEL_PROCESSOR = new UpdateModelPhaseProcessor();
-
-    private static final VisitCallback RESET_VALUES_CALLBACK = new ResetValuesCallback();
     
     /**
      * Class that is used to create the view scope map. This strategy
@@ -1470,12 +1468,11 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      * @param context
      * @param clientIds 
      */
-    public void resetValues(FacesContext context,
-                        java.util.Collection<java.lang.String> clientIds)    
+    public void resetValues(FacesContext context, java.util.Collection<java.lang.String> clientIds)    
     {
         VisitContext visitContext = (VisitContext) VisitContext.createVisitContext(
             context, clientIds, null);
-        this.visitTree(visitContext, RESET_VALUES_CALLBACK);
+        this.visitTree(visitContext, ResetValuesCallback.INSTANCE);
     }
 
     /**
@@ -1835,6 +1832,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
     private static class ApplyRequestValuesPhaseProcessor implements PhaseProcessor
     {
+        @Override
         public void process(FacesContext context, UIViewRoot root)
         {
             PartialViewContext pvc = context.getPartialViewContext();
@@ -1861,6 +1859,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
     private static class ProcessValidatorPhaseProcessor implements PhaseProcessor
     {
+        @Override
         public void process(FacesContext context, UIViewRoot root)
         {
             PartialViewContext pvc = context.getPartialViewContext();
@@ -1887,6 +1886,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
     private static class UpdateModelPhaseProcessor implements PhaseProcessor
     {
+        @Override
         public void process(FacesContext context, UIViewRoot root)
         {
             PartialViewContext pvc = context.getPartialViewContext();
@@ -1945,9 +1945,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     private static class Events
     {
-        
         private final List<FacesEvent> _anyPhase;
-        
         private final List<FacesEvent> _onPhase;
         
         public Events(List<FacesEvent> anyPhase, List<FacesEvent> onPhase)
@@ -1975,6 +1973,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     
     private static class ResetValuesCallback implements VisitCallback
     {
+        private static final ResetValuesCallback INSTANCE = new ResetValuesCallback();
+        
+        @Override
         public VisitResult visit(VisitContext context, UIComponent target)
         {
             if (target instanceof EditableValueHolder)
@@ -1985,7 +1986,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         }
     }
     
-    private void publishException (FacesContext facesContext, Throwable e, PhaseId phaseId, String key)
+    private void publishException(FacesContext facesContext, Throwable e, PhaseId phaseId, String key)
     {
         ExceptionQueuedEventContext context = new ExceptionQueuedEventContext (facesContext, e, null, phaseId);
         

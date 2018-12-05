@@ -420,8 +420,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
     
     public UIViewRoot saveAndRestore(StateManagementStrategy stateManagement, UIViewRoot viewRoot)
     {
-        facesContext.getAttributes()
-            .remove(StateManagerImpl.class.getName() + ".SERIALIZED_VIEW");        
+        facesContext.getAttributes().remove(StateManagerImpl.SERIALIZED_VIEW_REQUEST_ATTR);        
         Object state1 = stateManagement.saveView(facesContext);
         stateToRestore = state1;
         facesContext.setViewRoot(null);

@@ -127,6 +127,7 @@ final class DefaultFacelet extends AbstractFacelet
      * @see org.apache.myfaces.view.facelets.Facelet#apply(javax.faces.context.FacesContext,
      *      javax.faces.component.UIComponent)
      */
+    @Override
     public void apply(FacesContext facesContext, UIComponent parent) throws IOException, FacesException,
             FaceletException, ELException
     {
@@ -238,6 +239,7 @@ final class DefaultFacelet extends AbstractFacelet
         }
     }
     
+    @Override
     public void applyDynamicComponentHandler(FacesContext facesContext, 
             UIComponent parent, String baseKey)
          throws IOException, FacesException, FaceletException, ELException
@@ -421,11 +423,13 @@ final class DefaultFacelet extends AbstractFacelet
      * 
      * @return alias name
      */
+    @Override
     public String getAlias()
     {
         return _alias;
     }
     
+    @Override
     public String getFaceletId()
     {
         return _faceletId;
@@ -436,6 +440,7 @@ final class DefaultFacelet extends AbstractFacelet
      * 
      * @return internal ExpressionFactory instance
      */
+    @Override
     public ExpressionFactory getExpressionFactory()
     {
         return _elFactory;
@@ -544,6 +549,7 @@ final class DefaultFacelet extends AbstractFacelet
      * @throws FaceletException
      * @throws ELException
      */
+    @Override
     public void include(AbstractFaceletContext ctx, UIComponent parent, String path)
             throws IOException, FacesException, FaceletException, ELException
     {
@@ -566,6 +572,7 @@ final class DefaultFacelet extends AbstractFacelet
      * @throws FaceletException
      * @throws ELException
      */
+    @Override
     public void include(AbstractFaceletContext ctx, UIComponent parent, URL url) throws IOException, FacesException,
             FaceletException, ELException
     {
@@ -573,6 +580,7 @@ final class DefaultFacelet extends AbstractFacelet
         f.include(ctx, parent);
     }
     
+    @Override
     public void applyCompositeComponent(AbstractFaceletContext ctx, UIComponent parent, Resource resource)
             throws IOException, FacesException, FaceletException, ELException
     {
@@ -637,12 +645,14 @@ final class DefaultFacelet extends AbstractFacelet
             _time = time;
         }
 
+        @Override
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
         {
             _alias = in.readUTF();
             _time = in.readLong();
         }
 
+        @Override
         public void writeExternal(ObjectOutput out) throws IOException
         {
             out.writeUTF(_alias);
@@ -650,6 +660,7 @@ final class DefaultFacelet extends AbstractFacelet
         }
     }
 
+    @Override
     public String toString()
     {
         return _alias;

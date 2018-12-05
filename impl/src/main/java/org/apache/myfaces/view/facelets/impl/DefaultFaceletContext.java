@@ -342,6 +342,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         }
     }
     
+    @Override
     public String generateUniqueFaceletTagId(String count, String base)    
     {
         initPrefix();
@@ -440,6 +441,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         _isolatedTemplateContext.get(_currentTemplateContext).pushClient(this, this._facelet, client);
     }
 
+    @Override
     public TemplateManager popExtendedClient(TemplateClient client)
     {
         //return _clients.removeLast();
@@ -680,6 +682,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
             this._pageContext = pageContext;
         }
 
+        @Override
         public boolean apply(FaceletContext ctx, UIComponent parent, String name)
                 throws IOException, FacesException, FaceletException,
                 ELException
@@ -827,11 +830,13 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         return _facelet.isBuildingCompositeComponentMetadata();
     }
     
+    @Override
     public FaceletCompositionContext getFaceletCompositionContext()
     {
         return _mctx;
     }
     
+    @Override
     public boolean isAnyFaceletsVariableResolved()
     {
         //if (isAllowCacheELExpressions() && _varMapperBase != null)
@@ -842,12 +847,14 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         return true;
     }
     
+    @Override
     public boolean isAllowCacheELExpressions()
     {
         return _isCacheELExpressions && getTemplateContext().isAllowCacheELExpressions() 
                 && getPageContext().isAllowCacheELExpressions();
     }
     
+    @Override
     public void beforeConstructELExpression()
     {
         //if (isAllowCacheELExpressions() && _varMapperBase != null)
@@ -857,6 +864,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         }
     }
     
+    @Override
     public void afterConstructELExpression()
     {
         //if (isAllowCacheELExpressions() && _varMapperBase != null)
@@ -866,6 +874,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         }
     }
     
+    @Override
     public ELExpressionCacheMode getELExpressionCacheMode()
     {
         return _elExpressionCacheMode;

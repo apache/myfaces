@@ -996,9 +996,6 @@ public class ViewPoolProcessor
         }
     }
     
-    private static final String SERIALIZED_VIEW_REQUEST_ATTR = 
-        StateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
-
     public void disposeView(FacesContext facesContext, UIViewRoot root)
     {
         if (root == null)
@@ -1046,7 +1043,7 @@ public class ViewPoolProcessor
                     }
 
                     // Clear the calculated value from the application map
-                    facesContext.getAttributes().remove(SERIALIZED_VIEW_REQUEST_ATTR);
+                    facesContext.getAttributes().remove(StateManagerImpl.SERIALIZED_VIEW_REQUEST_ATTR);
                 }
             }
         }
