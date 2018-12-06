@@ -57,12 +57,16 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.application.ViewVisitOption;
 import javax.faces.push.PushContext;
 import javax.servlet.ServletRegistration;
 import javax.websocket.DeploymentException;
 import javax.websocket.server.ServerContainer;
 import javax.websocket.server.ServerEndpointConfig;
+import org.apache.myfaces.cdi.util.BeanProvider;
+import org.apache.myfaces.cdi.util.CDIUtils;
+import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.push.EndpointImpl;
 import org.apache.myfaces.push.WebsocketConfigurator;
 import org.apache.myfaces.push.WebsocketFacesInit;
@@ -142,8 +146,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             ExternalContext externalContext = facesContext.getExternalContext();
 
             // Setup ServiceProviderFinder
-            ServiceProviderFinder spf = ServiceProviderFinderFactory.getServiceProviderFinder(
-                externalContext);
+            ServiceProviderFinder spf = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext);
             Map<String, List<String>> spfConfig = spf.calculateKnownServiceProviderMapInfo(
                 externalContext, ServiceProviderFinder.KNOWN_SERVICES);
             if (spfConfig != null)
@@ -274,6 +277,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                 log.log(Level.WARNING, message.toString());
             }
 
+            cleanupAfterStartup(facesContext);
         }
         catch (Exception ex)
         {
@@ -282,6 +286,22 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         }
     }
 
+    protected void cleanupAfterStartup(FacesContext facesContext)
+    {
+        ExternalContext externalContext = facesContext.getExternalContext();
+        
+        if (ExternalSpecifications.isCDIAvailable(externalContext))
+        {
+            BeanManager beanManager = CDIUtils.getBeanManager(externalContext);
+            CdiAnnotationProviderExtension extension =
+                    BeanProvider.getContextualReference(beanManager, CdiAnnotationProviderExtension.class, false);
+            if (extension != null)
+            {
+                extension.clear();
+            }
+        }
+    }
+    
     /**
      * Eventually we can use our plugin infrastructure for this as well
      * it would be a cleaner interception point than the base class

@@ -42,16 +42,16 @@ public class CdiAnnotationProviderExtension implements Extension
     /**
      * Defines if CDI should be used for annotation scanning to improve the startup performance.
      */
-    @JSFWebConfigParam(since="2.2.9")
+    @JSFWebConfigParam(since="2.2.9", tags = "performance", defaultValue = "false")
     public static final String USE_CDI_FOR_ANNOTATION_SCANNING
             = "org.apache.myfaces.annotation.USE_CDI_FOR_ANNOTATION_SCANNING";
 
-    private final Map<Class<? extends Annotation>, Set<Class<?>>> map;
-    private final Class<? extends Annotation>[] annotationsToScan;
+    private Map<Class<? extends Annotation>, Set<Class<?>>> map;
+    private Class<? extends Annotation>[] annotationsToScan;
 
     public CdiAnnotationProviderExtension()
     {
-        map = new HashMap<Class<? extends Annotation>, Set<Class<?>>>();
+        map = new HashMap<>();
         annotationsToScan = new Class[] {
             FacesComponent.class,
             FacesBehavior.class,
@@ -75,7 +75,7 @@ public class CdiAnnotationProviderExtension implements Extension
                 Set<Class<?>> set = map.get(annotation);
                 if (set == null)
                 {
-                    set = new HashSet<Class<?>>();
+                    set = new HashSet<>();
                     map.put(annotation, set);
                 }
 
@@ -87,5 +87,13 @@ public class CdiAnnotationProviderExtension implements Extension
     public Map<Class<? extends Annotation>, Set<Class<?>>> getMap()
     {
         return map;
+    }
+    
+    public void clear()
+    {
+        map.clear();
+        map = null;
+
+        annotationsToScan = null;
     }
 }
