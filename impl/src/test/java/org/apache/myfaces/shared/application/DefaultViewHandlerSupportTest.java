@@ -76,7 +76,7 @@ public class DefaultViewHandlerSupportTest extends AbstractJsfTestCase
 
         DefaultViewHandlerSupport support = new DefaultViewHandlerSupport();
         
-        String derivedViewId = support.calculateAndCheckViewId(facesContext, "/view1.jsf");
+        String derivedViewId = support.deriveViewId(facesContext, "/view1.jsf");
         
         Assert.assertNotNull(derivedViewId);
     }
@@ -88,7 +88,7 @@ public class DefaultViewHandlerSupportTest extends AbstractJsfTestCase
         
         request.setPathElements("/testwebapp", "/faces", "/view1.jsp" , null);
         
-        String derivedViewId = support.calculateAndCheckViewId(facesContext, "/view1.jsp");
+        String derivedViewId = support.deriveViewId(facesContext, "/view1.jsp");
         
         Assert.assertNotNull(derivedViewId);
     }
@@ -100,7 +100,7 @@ public class DefaultViewHandlerSupportTest extends AbstractJsfTestCase
         
         request.setPathElements("/testwebapp", "/faces", "/faces/view1.jsp" , null);
         
-        String derivedViewId = support.calculateAndCheckViewId(facesContext, "/faces/view1.jsp");
+        String derivedViewId = support.deriveViewId(facesContext, "/faces/view1.jsp");
         
         Assert.assertNotNull(derivedViewId);
     }    
@@ -112,7 +112,7 @@ public class DefaultViewHandlerSupportTest extends AbstractJsfTestCase
         
         request.setPathElements("/testwebapp", "/view2.jsf", null , null);
         
-        String derivedViewId = support.calculateAndCheckViewId(facesContext, "/view2.jsf");
+        String derivedViewId = support.deriveViewId(facesContext, "/view2.jsf");
         
         Assert.assertNotNull(derivedViewId);
     }
@@ -124,7 +124,7 @@ public class DefaultViewHandlerSupportTest extends AbstractJsfTestCase
         
         request.setPathElements("/testwebapp", "/faces", "/view2.xhtml" , null);
         
-        String derivedViewId = support.calculateAndCheckViewId(facesContext, "/view2.xhtml");
+        String derivedViewId = support.deriveViewId(facesContext, "/view2.xhtml");
         
         Assert.assertNotNull(derivedViewId);
     }
@@ -137,7 +137,7 @@ public class DefaultViewHandlerSupportTest extends AbstractJsfTestCase
 
         DefaultViewHandlerSupport support = new DefaultViewHandlerSupport();
         
-        String derivedViewId = support.calculateAndCheckViewId(facesContext, "/noview1.jsf");
+        String derivedViewId = support.deriveViewId(facesContext, "/noview1.jsf");
         
         Assert.assertNull(derivedViewId);
     }
@@ -153,7 +153,7 @@ public class DefaultViewHandlerSupportTest extends AbstractJsfTestCase
         
         request.setPathElements("/testwebapp", "", "/view2.xhtml" , null);
         
-        String derivedViewId = support.calculateAndCheckViewId(facesContext, "/view2.xhtml");
+        String derivedViewId = support.deriveViewId(facesContext, "/view2.xhtml");
         
         Assert.assertEquals("/view2.xhtml", derivedViewId);
     }
@@ -171,7 +171,7 @@ public class DefaultViewHandlerSupportTest extends AbstractJsfTestCase
         
         request.setPathElements("/testwebapp", "", "//view2.xhtml" , null);
         
-        String derivedViewId = support.calculateAndCheckViewId(facesContext, "//view2.xhtml");
+        String derivedViewId = support.deriveViewId(facesContext, "//view2.xhtml");
         
         Assert.assertEquals("/view2.xhtml", derivedViewId);
     }

@@ -31,9 +31,9 @@ import javax.faces.context.FacesContext;
  */
 public interface ViewHandlerSupport
 {
-    String calculateViewId(FacesContext context, String viewId);
+    String deriveLogicalViewId(FacesContext context, String viewId);
     
-    String calculateAndCheckViewId(FacesContext context, String viewId);
+    String deriveViewId(FacesContext context, String viewId);
 
     /**
      * Return a string containing a webapp-relative URL that the user can invoke

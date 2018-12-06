@@ -102,7 +102,7 @@ public class ViewHandlerImpl extends ViewHandler
         {
             try
             {
-                return getViewHandlerSupport(context).calculateAndCheckViewId(context, input);
+                return getViewHandlerSupport(context).deriveViewId(context, input);
             }
             catch (InvalidViewIdException e)
             {
@@ -119,7 +119,7 @@ public class ViewHandlerImpl extends ViewHandler
         {
             try
             {
-                return getViewHandlerSupport(context).calculateViewId(context, rawViewId);
+                return getViewHandlerSupport(context).deriveLogicalViewId(context, rawViewId);
             }
             catch (InvalidViewIdException e)
             {
@@ -245,7 +245,7 @@ public class ViewHandlerImpl extends ViewHandler
     public UIViewRoot createView(FacesContext context, String viewId)
     {
         Assert.notNull(context, "facesContext");
-        String calculatedViewId = getViewHandlerSupport(context).calculateViewId(context, viewId);
+        String calculatedViewId = getViewHandlerSupport(context).deriveLogicalViewId(context, viewId);
        
         // we cannot use this.getVDL() directly (see getViewHandler())
         //return getViewHandler(context)
@@ -318,7 +318,7 @@ public class ViewHandlerImpl extends ViewHandler
     {
         Assert.notNull(context, "context");
     
-        String calculatedViewId = getViewHandlerSupport(context).calculateViewId(context, viewId);
+        String calculatedViewId = getViewHandlerSupport(context).deriveLogicalViewId(context, viewId);
         
         // we cannot use this.getVDL() directly (see getViewHandler())
         //return getViewHandler(context)
@@ -448,7 +448,7 @@ public class ViewHandlerImpl extends ViewHandler
         }
         else
         {
-            String calculatedViewId = getViewHandlerSupport(context).calculateViewId(context, viewId);  
+            String calculatedViewId = getViewHandlerSupport(context).deriveLogicalViewId(context, viewId);  
             // we cannot use this.getVDL() directly (see getViewHandler())
             //ViewDeclarationLanguage vdl = getViewHandler(context).
             //        getViewDeclarationLanguage(context, calculatedViewId);

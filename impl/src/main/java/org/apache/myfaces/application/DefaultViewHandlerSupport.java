@@ -74,7 +74,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
     }
 
     @Override
-    public String calculateViewId(FacesContext context, String viewId)
+    public String deriveLogicalViewId(FacesContext context, String viewId)
     {
         //If no viewId found, don't try to derive it, just continue.
         if (viewId == null)
@@ -125,7 +125,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
     }
     
     @Override
-    public String calculateAndCheckViewId(FacesContext context, String viewId)
+    public String deriveViewId(FacesContext context, String viewId)
     {
         //If no viewId found, don't try to derive it, just continue.
         if (viewId == null)

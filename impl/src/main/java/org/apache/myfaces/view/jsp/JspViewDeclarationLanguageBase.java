@@ -378,7 +378,7 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
           _cachedViewHandlerSupport = new DefaultViewHandlerSupport(context);
       }
   
-      return _cachedViewHandlerSupport.calculateViewId(context, viewId);
+      return _cachedViewHandlerSupport.deriveLogicalViewId(context, viewId);
   }
   
   /**

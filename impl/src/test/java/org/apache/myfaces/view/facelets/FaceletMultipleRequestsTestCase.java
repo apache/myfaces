@@ -232,18 +232,21 @@ public abstract class FaceletMultipleRequestsTestCase extends AbstractJsfConfigu
         ViewHandlerImpl viewHandler = (ViewHandlerImpl) application.getViewHandler();
         viewHandler.setViewHandlerSupport(new ViewHandlerSupport(){
 
+            @Override
             public String calculateActionURL(FacesContext facesContext,
                     String viewId)
             {
                 return viewId;
             }
 
-            public String calculateViewId(FacesContext context, String viewId)
+            @Override
+            public String deriveLogicalViewId(FacesContext context, String viewId)
             {
                 return viewId;
             }
             
-            public String calculateAndCheckViewId(FacesContext context, String viewId)
+            @Override
+            public String deriveViewId(FacesContext context, String viewId)
             {
                 return viewId;
             }
