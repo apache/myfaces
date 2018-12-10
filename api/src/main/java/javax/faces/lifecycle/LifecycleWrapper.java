@@ -37,36 +37,43 @@ public abstract class LifecycleWrapper extends Lifecycle implements FacesWrapper
         this.delegate = delegate;
     }
     
+    @Override
     public void render(FacesContext context) throws FacesException
     {
         getWrapped().render(context);
     }
 
+    @Override
     public void removePhaseListener(PhaseListener listener)
     {
         getWrapped().removePhaseListener(listener);
     }
 
+    @Override
     public PhaseListener[] getPhaseListeners()
     {
         return getWrapped().getPhaseListeners();
     }
 
+    @Override
     public void execute(FacesContext context) throws FacesException
     {
         getWrapped().execute(context);
     }
 
+    @Override
     public void attachWindow(FacesContext context)
     {
         getWrapped().attachWindow(context);
     }
 
+    @Override
     public void addPhaseListener(PhaseListener listener)
     {
         getWrapped().addPhaseListener(listener);
     }
     
+    @Override
     public Lifecycle getWrapped()
     {
         return delegate;

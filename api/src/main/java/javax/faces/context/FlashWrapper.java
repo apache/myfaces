@@ -88,66 +88,79 @@ public abstract class FlashWrapper extends Flash implements FacesWrapper<Flash>
         getWrapped().doPostPhaseActions(context);
     }
 
+    @Override
     public int size()
     {
         return getWrapped().size();
     }
 
+    @Override
     public boolean isEmpty()
     {
         return getWrapped().isEmpty();
     }
 
+    @Override
     public boolean containsKey(Object key)
     {
         return getWrapped().containsKey(key);
     }
 
+    @Override
     public boolean containsValue(Object value)
     {
         return getWrapped().containsValue(value);
     }
 
+    @Override
     public Object get(Object key)
     {
         return getWrapped().get(key);
     }
 
+    @Override
     public Object put(String key, Object value)
     {
         return getWrapped().put(key, value);
     }
 
+    @Override
     public Object remove(Object key)
     {
         return getWrapped().remove(key);
     }
 
+    @Override
     public void putAll(Map<? extends String, ? extends Object> m)
     {
         getWrapped().putAll(m);
     }
 
+    @Override
     public void clear()
     {
         getWrapped().clear();
     }
 
+    @Override
     public Set<String> keySet()
     {
         return getWrapped().keySet();
     }
 
+    @Override
     public Collection<Object> values()
     {
         return getWrapped().values();
     }
 
+    @Override
     public Set<Entry<String, Object>> entrySet()
     {
         return getWrapped().entrySet();
     }
     
+    @Override
     public Flash getWrapped()
     {
         return delegate;

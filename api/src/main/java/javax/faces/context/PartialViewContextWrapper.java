@@ -19,6 +19,7 @@
 package javax.faces.context;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.faces.FacesWrapper;
 import javax.faces.event.PhaseId;
@@ -128,7 +129,8 @@ public abstract class PartialViewContextWrapper extends PartialViewContext imple
         getWrapped().setPartialRequest(isPartialRequest);
     }
  
-    public java.util.List<java.lang.String> getEvalScripts()
+    @Override
+    public List<java.lang.String> getEvalScripts()
     {
         return getWrapped().getEvalScripts();
     }

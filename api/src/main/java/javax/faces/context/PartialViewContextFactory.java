@@ -39,6 +39,7 @@ public abstract class PartialViewContextFactory implements FacesWrapper<PartialV
     
     public abstract PartialViewContext getPartialViewContext(FacesContext context);
     
+    @Override
     public PartialViewContextFactory getWrapped()
     {
         return delegate;

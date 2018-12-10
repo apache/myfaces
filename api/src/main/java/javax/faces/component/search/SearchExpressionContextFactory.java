@@ -40,6 +40,7 @@ public abstract class SearchExpressionContextFactory implements FacesWrapper<Sea
             FacesContext context,  UIComponent source,
             Set<SearchExpressionHint> expressionHints, Set<VisitHint> visitHints);
 
+    @Override
     public SearchExpressionContextFactory getWrapped()
     {
         return this.delegate;

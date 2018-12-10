@@ -78,6 +78,7 @@ public final class FacesServlet implements Servlet
         super();
     }
 
+    @Override
     public void destroy()
     {
         _servletConfig = null;
@@ -89,11 +90,13 @@ public final class FacesServlet implements Servlet
         }
     }
 
+    @Override
     public ServletConfig getServletConfig()
     {
         return _servletConfig;
     }
 
+    @Override
     public String getServletInfo()
     {
         return SERVLET_INFO;
@@ -110,6 +113,7 @@ public final class FacesServlet implements Servlet
         return appLifecycleId != null ? appLifecycleId : LifecycleFactory.DEFAULT_LIFECYCLE;
     }
 
+    @Override
     public void init(ServletConfig servletConfig) throws ServletException
     {
         if (log.isLoggable(Level.FINEST))
@@ -131,6 +135,7 @@ public final class FacesServlet implements Servlet
         }
     }
 
+    @Override
     public void service(ServletRequest request, ServletResponse response) throws IOException, ServletException
     {
         // If the request and response arguments to this method are not instances of HttpServletRequest and 

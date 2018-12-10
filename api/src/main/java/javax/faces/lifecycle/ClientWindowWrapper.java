@@ -41,36 +41,43 @@ public abstract class ClientWindowWrapper extends ClientWindow
     {
     }
 
+    @Override
     public void decode(FacesContext context)
     {
         getWrapped().decode(context);
     }
 
+    @Override
     public String getId()
     {
         return getWrapped().getId();
     }
 
+    @Override
     public Map<String, String> getQueryURLParameters(FacesContext context)
     {
         return getWrapped().getQueryURLParameters(context);
     }
 
+    @Override
     public boolean isClientWindowRenderModeEnabled(FacesContext context)
     {
         return getWrapped().isClientWindowRenderModeEnabled(context);
     }
 
+    @Override
     public void disableClientWindowRenderMode(FacesContext context)
     {
         getWrapped().disableClientWindowRenderMode(context);
     }
 
+    @Override
     public void enableClientWindowRenderMode(FacesContext context)
     {
         getWrapped().enableClientWindowRenderMode(context);
     }
     
+    @Override
     public ClientWindow getWrapped()
     {
         return delegate;

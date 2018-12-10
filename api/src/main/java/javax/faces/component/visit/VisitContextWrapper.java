@@ -79,6 +79,7 @@ public abstract class VisitContextWrapper extends VisitContext implements FacesW
         return getWrapped().getSubtreeIdsToVisit(component);
     }
     
+    @Override
     public VisitContext getWrapped()
     {
         return delegate;

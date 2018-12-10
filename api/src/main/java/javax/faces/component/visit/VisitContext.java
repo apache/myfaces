@@ -60,66 +60,79 @@ public abstract class VisitContext
 
     private static class AllIdsCollection implements Collection<String>, Serializable
     {
+        @Override
         public boolean add(String e)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean addAll(Collection<? extends String> c)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void clear()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean contains(Object o)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean containsAll(Collection<?> c)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean isEmpty()
         {
             return false;
         }
 
+        @Override
         public Iterator<String> iterator()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean remove(Object o)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean removeAll(Collection<?> c)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean retainAll(Collection<?> c)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public int size()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Object[] toArray()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public <T> T[] toArray(T[] a)
         {
             throw new UnsupportedOperationException();

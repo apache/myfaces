@@ -43,6 +43,7 @@ public abstract class VisitContextFactory implements FacesWrapper<VisitContextFa
     
     public abstract VisitContext getVisitContext(FacesContext context, Collection<String> ids, Set<VisitHint> hints);
 
+    @Override
     public VisitContextFactory getWrapped()
     {
         return delegate;

@@ -39,6 +39,7 @@ public abstract class ClientWindowFactory implements FacesWrapper<ClientWindowFa
         this.delegate = delegate;
     }
 
+    @Override
     public ClientWindowFactory getWrapped()
     {
         return delegate;
