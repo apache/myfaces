@@ -1316,7 +1316,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         {
             resourceMeta = null;
         }
-        //}
+
         return resourceMeta;
     }
     
@@ -1743,6 +1743,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         return resource;
     }
 
+    @Override
     public Stream<java.lang.String> getViewResources(FacesContext facesContext, 
             String path, int maxDepth, ResourceVisitOption... options)   
     {
@@ -1762,9 +1763,9 @@ public class ResourceHandlerImpl extends ResourceHandler
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(it,Spliterator.DISTINCT), false);
     }
     
-    private Set<String> loadSuffixes (ExternalContext context)
+    private Set<String> loadSuffixes(ExternalContext context)
     {
-        Set<String> result = new HashSet<String>();
+        Set<String> result = new HashSet<>();
         String definedSuffixes = WebConfigParamUtils.getStringInitParameter(context, 
                 ViewHandler.DEFAULT_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_SUFFIX);
         StringTokenizer tokenizer;
@@ -1860,6 +1861,7 @@ public class ResourceHandlerImpl extends ResourceHandler
      * @param libraryName
      * @return 
      */
+    @Override
     public boolean isResourceRendered(FacesContext facesContext, String resourceName, String libraryName)
     {
         return getRenderedResources(facesContext).containsKey(
@@ -1898,7 +1900,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                 .getTransient(RENDERED_RESOURCES_SET);
         if (map == null)
         {
-            map = new HashMap<String, Boolean>();
+            map = new HashMap<>();
             facesContext.getViewRoot().getTransientStateHelper().putTransient(RENDERED_RESOURCES_SET,map);
         }
         return map;
