@@ -61,7 +61,6 @@ public class ResourceHandlerCache
     private volatile ConcurrentLRUCache<Object, ResourceValue> _viewResourceCacheMap = null;
     private volatile ConcurrentLRUCache<Object, Boolean> _libraryExistsCacheMap = null;
 
-
     public ResourceHandlerCache()
     {
         if (log.isLoggable(Level.FINE))
@@ -93,9 +92,7 @@ public class ResourceHandlerCache
                     RESOURCE_HANDLER_CACHE_DEFAULT_SIZE);
 
             _resourceCacheMap = new ConcurrentLRUCache<>((maxSize * 4 + 3) / 3, maxSize);
-
             _viewResourceCacheMap = new ConcurrentLRUCache<>((maxSize * 4 + 3) / 3, maxSize);
-
             _libraryExistsCacheMap = new ConcurrentLRUCache<>((maxSize * 4 + 3) / 3, maxSize / 5);
         }
     }
