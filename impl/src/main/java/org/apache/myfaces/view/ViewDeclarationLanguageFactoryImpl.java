@@ -28,7 +28,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewDeclarationLanguageFactory;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.jsp.JspViewDeclarationLanguageStrategy;
@@ -44,12 +43,6 @@ import org.apache.myfaces.view.jsp.JspViewDeclarationLanguageStrategy;
  */
 public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageFactory
 {
-    /**
-     * Disable facelets VDL from the current application project. 
-     */
-    @JSFWebConfigParam(since="2.0", defaultValue="false", expectedValues="true,false", group="viewhandler")
-    public static final String PARAM_DISABLE_JSF_FACELET = "javax.faces.DISABLE_FACELET_JSF_VIEWHANDLER";
-
     private static final String FACELETS_1_VIEW_HANDLER = "com.sun.facelets.FaceletViewHandler";
 
     private static final Logger LOGGER = Logger.getLogger(ViewDeclarationLanguageFactoryImpl.class.getName());
@@ -99,7 +92,7 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
         
         if (_supportedVDLs == null)
         {
-            List<ViewDeclarationLanguage> list = new ArrayList<ViewDeclarationLanguage>();
+            List<ViewDeclarationLanguage> list = new ArrayList<>();
             for (ViewDeclarationLanguageStrategy strategy : _supportedLanguages)
             {        
                 list.add(strategy.getViewDeclarationLanguage());
@@ -118,28 +111,18 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
         {
             FacesContext context = FacesContext.getCurrentInstance();
 
-            if (isFacelets2Enabled(context))
-            {
-                logWarningIfLegacyFaceletViewHandlerIsPresent(context);
+            logWarningIfLegacyFaceletViewHandlerIsPresent(context);
 
-                if (MyfacesConfig.getCurrentInstance(
-                        context.getExternalContext()).isSupportJSPAndFacesEL())
-                {
-                    _supportedLanguages = new ViewDeclarationLanguageStrategy[2];
-                    _supportedLanguages[0] = new FaceletViewDeclarationLanguageStrategy();
-                    _supportedLanguages[1] = new JspViewDeclarationLanguageStrategy();
-                }
-                else
-                {
-                    _supportedLanguages = new ViewDeclarationLanguageStrategy[1];
-                    _supportedLanguages[0] = new FaceletViewDeclarationLanguageStrategy();
-                }
+            if (MyfacesConfig.getCurrentInstance(context.getExternalContext()).isSupportJSPAndFacesEL())
+            {
+                _supportedLanguages = new ViewDeclarationLanguageStrategy[2];
+                _supportedLanguages[0] = new FaceletViewDeclarationLanguageStrategy();
+                _supportedLanguages[1] = new JspViewDeclarationLanguageStrategy();
             }
             else
             {
-                // Support JSP only
                 _supportedLanguages = new ViewDeclarationLanguageStrategy[1];
-                _supportedLanguages[0] = new JspViewDeclarationLanguageStrategy();
+                _supportedLanguages[0] = new FaceletViewDeclarationLanguageStrategy();
             }
 
             _initialized = true;
@@ -147,24 +130,7 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
     }
     
     /**
-     * Determines if the current application uses Facelets-2.
-     * To accomplish that it looks at the init param javax.faces.DISABLE_FACELET_JSF_VIEWHANDLER,
-     * 
-     * @param context the <code>FacesContext</code>
-     * @return <code>true</code> if the current application uses the built in Facelets-2,
-     *         <code>false</code> otherwise (e.g. it uses Facelets-1 or only JSP).
-     */
-    private boolean isFacelets2Enabled(FacesContext context)
-    {
-        String param = context.getExternalContext().getInitParameter(PARAM_DISABLE_JSF_FACELET);
-        boolean facelets2ParamDisabled = (param != null && Boolean.parseBoolean(param.toLowerCase()));
-        
-        return !facelets2ParamDisabled;
-    }
-    
-    /**
-     * If the Facelets-1 ViewHandler com.sun.facelets.FaceletViewHandler is present <b>AND</b>
-     * the new Facelets-2 is <b>NOT</b> disabled, we log a <code>WARNING</code>. 
+     * If the Facelets-1 ViewHandler com.sun.facelets.FaceletViewHandler is present, log a error.
      * 
      * @param context the <code>FacesContext</code>
      */
@@ -178,8 +144,7 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
             if (LOGGER.isLoggable(Level.WARNING))
             {
                 LOGGER.log(Level.WARNING, "Your faces-config.xml contains the " + FACELETS_1_VIEW_HANDLER + " class."
-                    + "\nYou need to remove it since you have not disabled the \"new\" Facelets-2 version with the "
-                    + PARAM_DISABLE_JSF_FACELET + " context parameter");
+                    + "\nYou need to remove it since it's not supported anymore since JSF 2.0");
             }
         }
     }

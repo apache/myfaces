@@ -91,15 +91,7 @@ public abstract class ViewHandler
      */
     @JSFWebConfigParam(since="2.0", group="viewhandler")
     public static final String FACELETS_VIEW_MAPPINGS_PARAM_NAME = "javax.faces.FACELETS_VIEW_MAPPINGS";
-    // TODO: Notify EG on that last constant. Using the Facelets' param as well for backward compatiblity is 
-    //       silly. If an application uses Facelets then they'll be using facelets.jar. Once they chose to 
-    //       remove that JAR, they ought to be aware that some changes could be needed, like fixing their 
-    //       context-param. -= Simon Lessard =-
 
-    @JSFWebConfigParam(since="2.2")
-    public static final java.lang.String DISABLE_FACELET_JSF_VIEWHANDLER_PARAM_NAME = 
-        "javax.faces.DISABLE_FACELET_JSF_VIEWHANDLER";
-    
     /**
      * Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in a
      * servlet environment to HttpServletResponse.setBufferSize().
