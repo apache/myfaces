@@ -45,16 +45,6 @@ public class MyfacesConfig
     private static final String APPLICATION_MAP_PARAM_NAME = MyfacesConfig.class.getName();
 
     /**
-     * If true, rendered HTML code will be formatted, so that it is "human readable".
-     * i.e. additional line separators and whitespace will be written, that do not
-     * influence the HTML code. Default: "true"
-     */
-    @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1",
-            ignoreUpperLowerCase=true, group="render")
-    private static final String  INIT_PARAM_PRETTY_HTML = "org.apache.myfaces.PRETTY_HTML";
-    private static final boolean INIT_PARAM_PRETTY_HTML_DEFAULT = true;
-
-    /**
      * Set the time in seconds that check for updates of web.xml and faces-config descriptors and 
      * refresh the configuration.
      * This param is valid only if project stage is not production. Set this param to 0 disable this feature.
@@ -412,7 +402,6 @@ public class MyfacesConfig
             "org.apache.myfaces.STRICT_JSF_2_ORIGIN_HEADER_APP_PATH";
     public final static boolean STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT = false;
 
-    private boolean _prettyHtml;
     private long _configRefreshPeriod;
     private boolean _renderViewStateId;
     private boolean _strictXhtmlLinks;
@@ -495,7 +484,6 @@ public class MyfacesConfig
     
     public MyfacesConfig()
     {
-        setPrettyHtml(INIT_PARAM_PRETTY_HTML_DEFAULT);
         setRenderClearJavascriptOnButton(INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT);
         setRenderViewStateId(INIT_PARAM_RENDER_VIEWSTATE_ID_DEFAULT);
         setStrictXhtmlLinks(INIT_PARAM_STRICT_XHTML_LINKS_DEFAULT);
@@ -532,9 +520,6 @@ public class MyfacesConfig
     {
         
         MyfacesConfig myfacesConfig = new MyfacesConfig();
-
-        myfacesConfig.setPrettyHtml(getBooleanInitParameter(extCtx, INIT_PARAM_PRETTY_HTML,
-                                                            INIT_PARAM_PRETTY_HTML_DEFAULT));
 
         myfacesConfig.setRenderClearJavascriptOnButton(getBooleanInitParameter(extCtx, 
                                                             INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON,
@@ -780,16 +765,6 @@ public class MyfacesConfig
            }
            return defaultValue;
        }
-    }
-
-    public boolean isPrettyHtml()
-    {
-        return _prettyHtml;
-    }
-
-    private void setPrettyHtml(boolean prettyHtml)
-    {
-        _prettyHtml = prettyHtml;
     }
 
     public long getConfigRefreshPeriod()
