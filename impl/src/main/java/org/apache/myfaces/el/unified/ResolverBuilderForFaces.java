@@ -68,18 +68,11 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
             staticFieldELResolverClass = ClassUtils.classForName("javax.el.StaticFieldELResolver");
             getStreamELResolverMethod = ExpressionFactory.class.getMethod("getStreamELResolver");
         }
-        catch (NoSuchMethodException ex)
+        catch (NoSuchMethodException | SecurityException | ClassNotFoundException ex)
         {
             //No op
         }
-        catch (SecurityException ex)
-        {
-            //No op
-        }
-        catch (ClassNotFoundException ex)
-        {
-            //No op
-        }
+
         STATIC_FIELD_EL_RESOLVER_CLASS = staticFieldELResolverClass;
         GET_STREAM_EL_RESOLVER_METHOD = getStreamELResolverMethod;
     }
@@ -89,6 +82,7 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
         super(config);
     }
 
+    @Override
     public void build(CompositeELResolver compositeElResolver)
     {
         build(FacesContext.getCurrentInstance(), compositeElResolver);
@@ -144,16 +138,10 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
                 }
                 list.add((ELResolver) STATIC_FIELD_EL_RESOLVER_CLASS.newInstance());
             } 
-            catch (IllegalAccessException ex)
-            {
-            }
-            catch (IllegalArgumentException ex)
-            {
-            }
-            catch (InvocationTargetException ex)
-            {
-            }
-            catch (InstantiationException ex)
+            catch (IllegalAccessException
+                    | IllegalArgumentException
+                    | InvocationTargetException
+                    | InstantiationException ex)
             {
             }
         }

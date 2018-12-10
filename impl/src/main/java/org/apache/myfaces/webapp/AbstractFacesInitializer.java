@@ -469,6 +469,11 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
      */
     protected static ExpressionFactory loadExpressionFactory(String expressionFactoryClassName)
     {
+        return loadExpressionFactory(expressionFactoryClassName, true);
+    }
+    
+    protected static ExpressionFactory loadExpressionFactory(String expressionFactoryClassName, boolean logMissing)
+    {
         try
         {
             ClassLoader cl = ClassUtils.getContextClassLoader();
