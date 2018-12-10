@@ -55,10 +55,51 @@ public class ResourceHandlerCache
         "org.apache.myfaces.RESOURCE_HANDLER_CACHE_ENABLED";
     private static final boolean RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT = true;
 
-    private Boolean _resourceCacheEnabled = null;
+    private boolean _resourceCacheEnabled = false;
+
     private volatile ConcurrentLRUCache<Object, ResourceValue> _resourceCacheMap = null;
     private volatile ConcurrentLRUCache<Object, ResourceValue> _viewResourceCacheMap = null;
     private volatile ConcurrentLRUCache<Object, Boolean> _libraryExistsCacheMap = null;
+
+
+    public ResourceHandlerCache()
+    {
+        if (log.isLoggable(Level.FINE))
+        {
+            log.log(Level.FINE, "Initializing ResourceHandlerCache");
+        }
+     
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+
+        // skip cache when ProjectStage != Production
+        if (facesContext.isProjectStage(ProjectStage.Production))
+        {
+            //if in production, make sure that the cache is not explicitly disabled via context param
+            _resourceCacheEnabled = WebConfigParamUtils.getBooleanInitParameter(externalContext, 
+                    ResourceHandlerCache.RESOURCE_HANDLER_CACHE_ENABLED_ATTRIBUTE,
+                    ResourceHandlerCache.RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT);
+
+            if (log.isLoggable(Level.FINE))
+            {
+                log.log(Level.FINE, "MyFaces ResourceHandlerCache enabled = " + _resourceCacheEnabled);
+            }
+        }
+        
+        if (_resourceCacheEnabled)
+        {
+            int maxSize = WebConfigParamUtils.getIntegerInitParameter(externalContext, 
+                    RESOURCE_HANDLER_CACHE_SIZE_ATTRIBUTE,
+                    RESOURCE_HANDLER_CACHE_DEFAULT_SIZE);
+
+            _resourceCacheMap = new ConcurrentLRUCache<>((maxSize * 4 + 3) / 3, maxSize);
+
+            _viewResourceCacheMap = new ConcurrentLRUCache<>((maxSize * 4 + 3) / 3, maxSize);
+
+            _libraryExistsCacheMap = new ConcurrentLRUCache<>((maxSize * 4 + 3) / 3, maxSize / 5);
+        }
+    }
+    
     
     public ResourceValue getResource(String resourceName, String libraryName, String contentType, String localePrefix)
     {
@@ -68,15 +109,14 @@ public class ResourceHandlerCache
     public ResourceValue getResource(String resourceName, String libraryName, String contentType, String localePrefix,
             String contractName)
     {
-        if (!isResourceCachingEnabled() || _resourceCacheMap == null)
+        if (!_resourceCacheEnabled)
         {
             return null;
         }
 
         if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.FINE, "Attemping to get resource from cache for "
-                    + resourceName);
+            log.log(Level.FINE, "Attemping to get resource from cache for " + resourceName);
         }
 
         ResourceKey key = new ResourceKey(resourceName, libraryName, contentType, localePrefix, contractName);
@@ -92,7 +132,7 @@ public class ResourceHandlerCache
     public boolean containsResource(String resourceName, String libraryName, String contentType, String localePrefix,
             String contractName)
     {
-        if (!isResourceCachingEnabled() || _resourceCacheMap == null)
+        if (!_resourceCacheEnabled)
         {
             return false;
         }
@@ -110,7 +150,7 @@ public class ResourceHandlerCache
     public void putResource(String resourceName, String libraryName, String contentType, String localePrefix,
             String contractName, ResourceMeta resource, ResourceLoader loader, ResourceCachedInfo info)
     {
-        if (!isResourceCachingEnabled())
+        if (!_resourceCacheEnabled)
         {
             return;
         }
@@ -120,23 +160,13 @@ public class ResourceHandlerCache
             log.log(Level.FINE, "Attemping to put resource to cache for " + resourceName);
         }
 
-        if (_resourceCacheMap == null)
-        {
-            if (log.isLoggable(Level.FINE))
-            {
-                log.log(Level.FINE, "Initializing resource cache map");
-            }
-            int maxSize = getMaxSize();
-            _resourceCacheMap = new ConcurrentLRUCache<>((maxSize * 4 + 3) / 3, maxSize);
-        }
-
         _resourceCacheMap.put(new ResourceKey(resourceName, libraryName,
                 contentType, localePrefix, contractName), new ResourceValue(resource, loader, info));
     }
     
     public ResourceValue getResource(String resourceId)
     {
-        if (!isResourceCachingEnabled() || _resourceCacheMap == null)
+        if (!_resourceCacheEnabled)
         {
             return null;
         }
@@ -151,7 +181,7 @@ public class ResourceHandlerCache
 
     public ResourceValue getResource(String resourceId, String contractName)
     {
-        if (!isResourceCachingEnabled() || _resourceCacheMap == null)
+        if (!_resourceCacheEnabled)
         {
             return null;
         }
@@ -166,17 +196,17 @@ public class ResourceHandlerCache
     
     public boolean containsResource(String resourceId, String contractName)
     {
-        if (!isResourceCachingEnabled() || _resourceCacheMap == null)
+        if (!_resourceCacheEnabled)
         {
             return false;
         }
 
-        return _resourceCacheMap.get(contractName+':'+resourceId) != null;
+        return _resourceCacheMap.get(contractName + ':' + resourceId) != null;
     }
     
     public boolean containsResource(String resourceId)
     {
-        if (!isResourceCachingEnabled() || _resourceCacheMap == null)
+        if (!_resourceCacheEnabled)
         {
             return false;
         }
@@ -186,7 +216,7 @@ public class ResourceHandlerCache
 
     public void putResource(String resourceId, ResourceMeta resource, ResourceLoader loader, ResourceCachedInfo info)
     {
-        if (!isResourceCachingEnabled())
+        if (!_resourceCacheEnabled)
         {
             return;
         }
@@ -196,19 +226,9 @@ public class ResourceHandlerCache
             log.log(Level.FINE, "Attemping to put resource to cache for " + resourceId);
         }
 
-        if (_resourceCacheMap == null)
-        {
-            if (log.isLoggable(Level.FINE))
-            {
-                log.log(Level.FINE, "Initializing resource cache map");
-            }
-            int maxSize = getMaxSize();
-            _resourceCacheMap = new ConcurrentLRUCache<>((maxSize * 4 + 3) / 3, maxSize);
-        }
-
         if (resource.getContractName() != null)
         {
-            _resourceCacheMap.put(resource.getContractName()+':'+resourceId, new ResourceValue(resource, loader));
+            _resourceCacheMap.put(resource.getContractName() + ':' + resourceId, new ResourceValue(resource, loader));
         }
         else
         {
@@ -224,7 +244,7 @@ public class ResourceHandlerCache
     public boolean containsViewResource(String resourceName, String contentType, String localePrefix,
             String contractName)
     {
-        if (!isResourceCachingEnabled() || _viewResourceCacheMap == null)
+        if (!_resourceCacheEnabled)
         {
             return false;
         }
@@ -241,7 +261,7 @@ public class ResourceHandlerCache
     public ResourceValue getViewResource(String resourceName, String contentType, String localePrefix,
             String contractName)
     {
-        if (!isResourceCachingEnabled() || _viewResourceCacheMap == null)
+        if (!_resourceCacheEnabled)
         {
             return null;
         }
@@ -265,26 +285,14 @@ public class ResourceHandlerCache
         String localePrefix, String contractName, ResourceMeta resource, ResourceLoader loader,
         ResourceCachedInfo info)
     {
-        if (!isResourceCachingEnabled())
+        if (!_resourceCacheEnabled)
         {
             return;
         }
 
         if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.FINE, "Attemping to put resource to cache for "
-                    + resourceName);
-        }
-
-        if (_viewResourceCacheMap == null)
-        {
-            if (log.isLoggable(Level.FINE))
-            {
-                log.log(Level.FINE, "Initializing resource cache map");
-            }
-            int maxSize = getMaxSize();
-            _viewResourceCacheMap = new ConcurrentLRUCache<Object, ResourceValue>(
-                    (maxSize * 4 + 3) / 3, maxSize);
+            log.log(Level.FINE, "Attemping to put resource to cache for " + resourceName);
         }
 
         _viewResourceCacheMap.put(new ResourceKey(resourceName, null,
@@ -293,15 +301,14 @@ public class ResourceHandlerCache
     
     public Boolean libraryExists(String libraryName)
     {
-        if (!isResourceCachingEnabled() || _libraryExistsCacheMap == null)
+        if (!_resourceCacheEnabled)
         {
             return null;
         }
 
         if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.FINE, "Attemping to get libraryExists from cache for "
-                    + libraryName);
+            log.log(Level.FINE, "Attemping to get libraryExists from cache for " + libraryName);
         }
 
         return _libraryExistsCacheMap.get(libraryName);
@@ -309,26 +316,14 @@ public class ResourceHandlerCache
     
     public void confirmLibraryExists(String libraryName)
     {
-        if (!isResourceCachingEnabled())
+        if (!_resourceCacheEnabled)
         {
             return;
         }
         
         if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.FINE, "Attemping to set confirmLibraryExists on cache "
-                    + libraryName);
-        }
-
-        if (_libraryExistsCacheMap == null)
-        {
-            if (log.isLoggable(Level.FINE))
-            {
-                log.log(Level.FINE, "Initializing resource cache map");
-            }
-            int maxSize = getMaxSize()/10;
-            _libraryExistsCacheMap = new ConcurrentLRUCache<Object, Boolean>(
-                    (maxSize * 4 + 3) / 3, maxSize);
+            log.log(Level.FINE, "Attemping to set confirmLibraryExists on cache " + libraryName);
         }
 
         _libraryExistsCacheMap.put(libraryName, Boolean.TRUE);
@@ -336,71 +331,19 @@ public class ResourceHandlerCache
     
     public void confirmLibraryNotExists(String libraryName)
     {
-        if (!isResourceCachingEnabled())
+        if (!_resourceCacheEnabled)
         {
             return;
         }
         
         if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.FINE, "Attemping to set confirmLibraryExists on cache "
-                    + libraryName);
-        }
-
-        if (_libraryExistsCacheMap == null)
-        {
-            if (log.isLoggable(Level.FINE))
-            {
-                log.log(Level.FINE, "Initializing resource cache map");
-            }
-            int maxSize = getMaxSize()/5;
-            _libraryExistsCacheMap = new ConcurrentLRUCache<Object, Boolean>(
-                    (maxSize * 4 + 3) / 3, maxSize);
+            log.log(Level.FINE, "Attemping to set confirmLibraryExists on cache " + libraryName);
         }
 
         _libraryExistsCacheMap.put(libraryName, Boolean.FALSE);
     }    
 
-    private boolean isResourceCachingEnabled()
-    {
-        if (_resourceCacheEnabled == null)
-        {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-
-            //first, check to make sure that ProjectStage is production, if not, skip caching
-            if (!facesContext.isProjectStage(ProjectStage.Production))
-            {
-                _resourceCacheEnabled = Boolean.FALSE;
-                return _resourceCacheEnabled;
-            }
-
-            ExternalContext externalContext = facesContext.getExternalContext();
-            if (externalContext == null)
-            {
-                return false; //don't cache right now, but don't disable it yet either
-            }
-
-            //if in production, make sure that the cache is not explicitly disabled via context param
-            _resourceCacheEnabled = WebConfigParamUtils.getBooleanInitParameter(externalContext, 
-                    ResourceHandlerCache.RESOURCE_HANDLER_CACHE_ENABLED_ATTRIBUTE,
-                    ResourceHandlerCache.RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT);
-
-            if (log.isLoggable(Level.FINE))
-            {
-                log.log(Level.FINE, "MyFaces Resource Caching Enabled="
-                        + _resourceCacheEnabled);
-            }
-        }
-        return _resourceCacheEnabled;
-    }
-
-    private int getMaxSize()
-    {
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        return WebConfigParamUtils.getIntegerInitParameter(externalContext, 
-                RESOURCE_HANDLER_CACHE_SIZE_ATTRIBUTE,
-                RESOURCE_HANDLER_CACHE_DEFAULT_SIZE);
-    }
 
     public static class ResourceKey
     {
