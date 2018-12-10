@@ -18,11 +18,12 @@
  */
 package org.apache.myfaces.webapp;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
-
 /**
  * This initializer initializes only Facelets. Specially checks for
  * org.apache.myfaces.EXPRESSION_FACTORY parameter.
@@ -31,18 +32,38 @@ import javax.servlet.ServletContext;
  */
 public class FaceletsInitilializer extends org.apache.myfaces.webapp.AbstractFacesInitializer
 {
+    private static final Logger log = Logger.getLogger(FaceletsInitilializer.class.getName());
 
     @Override
     protected void initContainerIntegration(ServletContext servletContext, ExternalContext externalContext)
     {
-
         ExpressionFactory expressionFactory = getUserDefinedExpressionFactory(externalContext);
+        if (expressionFactory == null)
+        {
+            String[] candidates = new String[] { "org.apache.el.ExpressionFactoryImpl",
+                "com.sun.el.ExpressionFactoryImpl", "de.odysseus.el.ExpressionFactoryImpl",
+                "org.jboss.el.ExpressionFactoryImpl", "com.caucho.el.ExpressionFactoryImpl" };
+            
+            for (String candidate : candidates)
+            {
+                expressionFactory = loadExpressionFactory(candidate, false);
+                if (expressionFactory != null)
+                {
+                    if (log.isLoggable(Level.FINE))
+                    {
+                        log.fine("javax.el.ExpressionFactory implementation found: " + candidate);
+                    }
+                    break;
+                }
+            }
+        }
+
         if (expressionFactory == null)
         {
             throw new FacesException("No javax.el.ExpressionFactory found. Please provide" +
                     " <context-param> in web.xml: org.apache.myfaces.EXPRESSION_FACTORY");
         }
-
+        
         buildConfiguration(servletContext, externalContext, expressionFactory);
     }
 
