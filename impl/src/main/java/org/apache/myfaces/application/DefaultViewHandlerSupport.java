@@ -571,7 +571,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             Boolean resourceExists = null;
             if (checkedViewIdsCache.isEnabled())
             {
-                resourceExists = checkedViewIdsCache.getCache().get(viewId);
+                resourceExists = checkedViewIdsCache.get(viewId);
             }
 
             if (resourceExists == null)
@@ -590,7 +590,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
 
                 if (checkedViewIdsCache.isEnabled())
                 {
-                    checkedViewIdsCache.getCache().put(viewId, resourceExists);
+                    checkedViewIdsCache.put(viewId, resourceExists);
                 }
             }
 

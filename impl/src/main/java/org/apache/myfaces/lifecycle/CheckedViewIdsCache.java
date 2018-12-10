@@ -90,9 +90,14 @@ public class CheckedViewIdsCache
         return enabled;
     }
     
-    public ConcurrentLRUCache<String, Boolean> getCache()
+    public Boolean get(String viewId)
     {
-        return cache;
+        return cache.get(viewId);
+    }
+    
+    public Boolean put(String viewId, Boolean exists)
+    {
+        return cache.put(viewId, exists);
     }
     
     public static CheckedViewIdsCache getInstance(FacesContext facesContext)

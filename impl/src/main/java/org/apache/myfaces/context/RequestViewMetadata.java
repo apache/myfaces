@@ -59,18 +59,16 @@ public class RequestViewMetadata implements Serializable
     public RequestViewMetadata cloneInstance()
     {
         RequestViewMetadata rvm = new RequestViewMetadata();
-        rvm.initialProcessedClasses = new HashMap<Class<?>, Boolean>(
+        rvm.initialProcessedClasses = new HashMap<>(
                 this.initialProcessedClasses != null ? 
                     this.initialProcessedClasses : this.processedClasses);
         if (this.initialAddedResources != null)
         {
-            rvm.initialAddedResources = new HashMap<ResourceDependency, Boolean>(
-                    this.initialAddedResources);
+            rvm.initialAddedResources = new HashMap<>(this.initialAddedResources);
         }
         else if (this.addedResources != null)
         {
-            rvm.initialAddedResources = new HashMap<ResourceDependency, Boolean>(
-                    this.addedResources);
+            rvm.initialAddedResources = new HashMap<>(this.addedResources);
         }
         return rvm;
     }
@@ -95,7 +93,7 @@ public class RequestViewMetadata implements Serializable
     {
         if (addedResources == null)
         {
-            addedResources = new HashMap<ResourceDependency,Boolean>();
+            addedResources = new HashMap<>();
         }
         addedResources.put(dependency, true);
     }
@@ -123,8 +121,8 @@ public class RequestViewMetadata implements Serializable
         {
             return Collections.emptyMap();
         }
-        Map<String, List<ResourceDependency>> map = new HashMap<String, List<ResourceDependency>>();
-        //List<ResourceDependency> list = new ArrayList<ResourceDependency>();
+        
+        Map<String, List<ResourceDependency>> map = new HashMap<>();
         if (initialAddedResources != null)
         {
             for (ResourceDependency annotation : initialAddedResources.keySet())
@@ -142,7 +140,7 @@ public class RequestViewMetadata implements Serializable
                 List<ResourceDependency> list = map.get(target);
                 if (list == null)
                 {
-                    list = new ArrayList<ResourceDependency>();
+                    list = new ArrayList<>();
                     map.put(target, list);
                 }
                 list.add(annotation);
@@ -162,10 +160,11 @@ public class RequestViewMetadata implements Serializable
                 {
                     target = "head";
                 }
+
                 List<ResourceDependency> list = map.get(target);
                 if (list == null)
                 {
-                    list = new ArrayList<ResourceDependency>();
+                    list = new ArrayList<>();
                     map.put(target, list);
                 }
                 list.add(annotation);

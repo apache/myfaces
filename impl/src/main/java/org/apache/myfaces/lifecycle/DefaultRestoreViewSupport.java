@@ -232,7 +232,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
             Boolean resourceExists = null;
             if (checkedViewIdsCache.isEnabled())
             {
-                resourceExists = checkedViewIdsCache.getCache().get(viewId);
+                resourceExists = checkedViewIdsCache.get(viewId);
             }
 
             if (resourceExists == null)
@@ -251,7 +251,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
 
                 if (checkedViewIdsCache.isEnabled())
                 {
-                    checkedViewIdsCache.getCache().put(viewId, resourceExists);
+                    checkedViewIdsCache.put(viewId, resourceExists);
                 }
             }
 

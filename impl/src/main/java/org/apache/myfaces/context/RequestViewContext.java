@@ -87,7 +87,7 @@ public class RequestViewContext
         RequestViewContext rvc = null;        
         if (map == null)
         {
-            map = new HashMap<UIViewRoot, RequestViewContext>();
+            map = new HashMap<>();
             rvc = new RequestViewContext();
             map.put(root, rvc);
             ctx.getAttributes().put(VIEW_CONTEXT_KEY, map);
@@ -132,7 +132,7 @@ public class RequestViewContext
                 = (Map<UIViewRoot, RequestViewContext>) ctx.getAttributes().get(VIEW_CONTEXT_KEY);
         if (map == null)
         {
-            map = new HashMap<UIViewRoot, RequestViewContext>();
+            map = new HashMap<>();
             rvc = new RequestViewContext();
             map.put(root, rvc);
             ctx.getAttributes().put(VIEW_CONTEXT_KEY, map);
@@ -176,17 +176,17 @@ public class RequestViewContext
     {
         if (renderTargetMap == null)
         {
-            renderTargetMap = new HashMap<String, Boolean>(8);
+            renderTargetMap = new HashMap<>(8);
         }
         renderTargetMap.put(target, value);
         if (renderTargetMapComponents == null)
         {
-            renderTargetMapComponents = new HashMap<String, List<UIComponent>>(8);
+            renderTargetMapComponents = new HashMap<>(8);
         }
         List<UIComponent> componentList = renderTargetMapComponents.get(target);
         if (componentList == null)
         {
-            componentList = new ArrayList<UIComponent>(8);
+            componentList = new ArrayList<>(8);
             renderTargetMapComponents.put(target, componentList);
         }
         if (!componentList.contains(component))
