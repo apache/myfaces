@@ -240,8 +240,7 @@ final class DefaultFacelet extends AbstractFacelet
     }
     
     @Override
-    public void applyDynamicComponentHandler(FacesContext facesContext, 
-            UIComponent parent, String baseKey)
+    public void applyDynamicComponentHandler(FacesContext facesContext, UIComponent parent, String baseKey)
          throws IOException, FacesException, FaceletException, ELException
     {
         FaceletCompositionContext fcctx = null;
@@ -250,8 +249,7 @@ final class DefaultFacelet extends AbstractFacelet
         boolean pushDynCompSection = false;
         if (fcctx == null)
         {
-            fcctx = new FaceletCompositionContextImpl(_factory, facesContext, 
-                baseKey);
+            fcctx = new FaceletCompositionContextImpl(_factory, facesContext, baseKey);
             fcctx.init(facesContext);
             faceletCompositionContextInitialized = true;
         }
@@ -289,12 +287,8 @@ final class DefaultFacelet extends AbstractFacelet
                 ctx.getFaceletCompositionContext().pushUniqueIdVendorToStack((UniqueIdVendor) parent);
                 pushedUniqueIdVendor = true;
             }
-            
-            //this.refresh(parent);
-            //myFaceletContext.markForDeletion(parent);
+
             _root.apply(ctx, parent);
-            //myFaceletContext.finalizeForDeletion(parent);
-            //this.markApplied(parent);
             
             // remove the UniqueIdVendor from the stack again
             if (pushedUniqueIdVendor)
@@ -322,7 +316,6 @@ final class DefaultFacelet extends AbstractFacelet
     {
         if (_refreshPeriod > 0)
         {
-
             // finally remove any children marked as deleted
             int sz = c.getChildCount();
             if (sz > 0)
@@ -632,7 +625,6 @@ final class DefaultFacelet extends AbstractFacelet
     private static class ApplyToken implements Externalizable
     {
         public String _alias;
-
         public long _time;
 
         public ApplyToken()

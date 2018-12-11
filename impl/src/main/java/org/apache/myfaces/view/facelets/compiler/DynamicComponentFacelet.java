@@ -30,8 +30,6 @@ import org.apache.myfaces.view.facelets.FaceletCompositionContext;
  */
 public class DynamicComponentFacelet implements FaceletHandler
 {
-    //public static final String CREATE_CC_ON_POST_ADD_TO_VIEW = "oam.facelet.cc.CREATE_CC_ON_POST_ADD_TO_VIEW";
-    
     private NamespaceHandler next;
 
     public DynamicComponentFacelet(NamespaceHandler next)
@@ -42,11 +40,6 @@ public class DynamicComponentFacelet implements FaceletHandler
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
-        /*
-        if (isNextHandlerCompositeComponent())
-        {
-            ctx.getFacesContext().getAttributes().put(CREATE_CC_ON_POST_ADD_TO_VIEW, Boolean.TRUE);
-        }*/
         FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
         boolean nextHandlerCompositeComponent = isNextHandlerCompositeComponent();
         try

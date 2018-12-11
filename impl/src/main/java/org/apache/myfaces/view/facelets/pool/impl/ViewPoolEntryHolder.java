@@ -41,14 +41,12 @@ import org.apache.myfaces.view.facelets.pool.ViewEntry;
 public class ViewPoolEntryHolder
 {
     private Queue<ViewEntry> queue;
-    
     private AtomicInteger count;
-    
     private int maxCount;
     
     public ViewPoolEntryHolder(int maxCount)
     {
-        this.queue = new ConcurrentLinkedQueue<ViewEntry>();
+        this.queue = new ConcurrentLinkedQueue<>();
         this.count = new AtomicInteger();
         this.maxCount = maxCount;
     }

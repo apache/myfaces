@@ -30,26 +30,23 @@ import org.apache.myfaces.view.facelets.pool.ViewEntry;
 public class WeakViewEntry extends ViewEntry
 {
     private WeakReference<UIViewRoot> viewRootRef;
-    
     private UIViewRoot viewRoot;
-    
     private RestoreViewFromPoolResult result;
 
     public WeakViewEntry(UIViewRoot viewRoot)
     {
-        this.viewRootRef = new WeakReference<UIViewRoot>(viewRoot);
+        this.viewRootRef = new WeakReference<>(viewRoot);
     }
     
+    @Override
     public boolean activate()
     {
         viewRoot = viewRootRef.get();
         viewRootRef = null;
         return viewRoot != null;
     }
-    
-    /**
-     * @return the viewRoot
-     */
+
+    @Override
     public UIViewRoot getViewRoot()
     {
         if (viewRootRef != null)
@@ -59,26 +56,19 @@ public class WeakViewEntry extends ViewEntry
         return viewRoot;
     }
 
-    /**
-     * @param viewRoot the viewRoot to set
-     */
     public void setViewRoot(UIViewRoot viewRoot)
     {
-        this.viewRootRef = new WeakReference<UIViewRoot>(viewRoot);
+        this.viewRootRef = new WeakReference<>(viewRoot);
         this.viewRoot = null;
     }
 
-    /**
-     * @return the result
-     */
+    @Override
     public RestoreViewFromPoolResult getResult()
     {
         return result;
     }
 
-    /**
-     * @param result the result to set
-     */
+    @Override
     public void setResult(RestoreViewFromPoolResult result)
     {
         this.result = result;

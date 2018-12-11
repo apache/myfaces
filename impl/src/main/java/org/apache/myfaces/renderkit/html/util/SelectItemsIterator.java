@@ -73,6 +73,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public boolean hasNext()
     {
         if (_nextItem != null)
@@ -218,6 +219,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
         return false;
     }
 
+    @Override
     public SelectItem next()
     {
         if (!hasNext())
@@ -312,6 +314,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
         throw new NoSuchElementException();
     }
 
+    @Override
     public void remove()
     {
         throw new UnsupportedOperationException();

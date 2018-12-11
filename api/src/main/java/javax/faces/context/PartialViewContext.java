@@ -28,7 +28,6 @@ import javax.faces.event.PhaseId;
 public abstract class PartialViewContext
 {
     public static final String ALL_PARTIAL_PHASE_CLIENT_IDS = "@all";
-    //public static final String NO_PARTIAL_PHASE_CLIENT_IDS = "@none";
     public static final String PARTIAL_EXECUTE_PARAM_NAME = "javax.faces.partial.execute";
     public static final String PARTIAL_RENDER_PARAM_NAME = "javax.faces.partial.render";
     
@@ -40,8 +39,7 @@ public abstract class PartialViewContext
     /**
      * @since 2.3
      */
-    public static final String PARTIAL_EVENT_PARAM_NAME =
-          "javax.faces.partial.event";
+    public static final String PARTIAL_EVENT_PARAM_NAME = "javax.faces.partial.event";
     
     public abstract Collection<String> getExecuteIds();
     

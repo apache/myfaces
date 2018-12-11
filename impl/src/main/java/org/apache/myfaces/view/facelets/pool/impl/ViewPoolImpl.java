@@ -42,11 +42,11 @@ public class ViewPoolImpl extends ViewPool
     
     private static final String SKIP_VIEW_MAP_SAVE_STATE = "oam.viewPool.SKIP_VIEW_MAP_SAVE_STATE";    
             
-    private Map<MetadataViewKey, ViewPoolEntryHolder > staticStructureViewPool;
+    private Map<MetadataViewKey, ViewPoolEntryHolder> staticStructureViewPool;
     
     private Map<MetadataViewKey, Map<DynamicViewKey, ViewPoolEntryHolder>> dynamicStructureViewPool;
     
-    private Map<MetadataViewKey, ViewPoolEntryHolder > partialStructureViewPool;
+    private Map<MetadataViewKey, ViewPoolEntryHolder> partialStructureViewPool;
     
     private final int maxCount;
     private final int dynamicPartialLimit;
@@ -61,9 +61,9 @@ public class ViewPoolImpl extends ViewPool
     
     public ViewPoolImpl(FacesContext facesContext, Map<String, String> parameters)
     {
-        staticStructureViewPool = new ConcurrentHashMap<MetadataViewKey, ViewPoolEntryHolder>();
-        partialStructureViewPool = new ConcurrentHashMap<MetadataViewKey, ViewPoolEntryHolder>();
-        dynamicStructureViewPool = new ConcurrentHashMap<MetadataViewKey, Map<DynamicViewKey, ViewPoolEntryHolder>>();
+        staticStructureViewPool = new ConcurrentHashMap<>();
+        partialStructureViewPool = new ConcurrentHashMap<>();
+        dynamicStructureViewPool = new ConcurrentHashMap<>();
         maxCount = WebConfigParamUtils.getIntegerInitParameter(facesContext.getExternalContext(),
                 INIT_PARAM_VIEW_POOL_MAX_POOL_SIZE, 
                 parameters.containsKey(INIT_PARAM_VIEW_POOL_MAX_POOL_SIZE) ? 
@@ -87,9 +87,8 @@ public class ViewPoolImpl extends ViewPool
                 "false");
         deferredNavigation = Boolean.valueOf(deferredNavigationVal);
         
-        staticStructureViewMetadataMap = new ConcurrentHashMap<MetadataViewKey, ViewStructureMetadata>();
-        dynamicStructureViewMetadataMap = new ConcurrentHashMap<MetadataViewKey, 
-                Map<DynamicViewKey, ViewStructureMetadata>>();
+        staticStructureViewMetadataMap = new ConcurrentHashMap<>();
+        dynamicStructureViewMetadataMap = new ConcurrentHashMap<>();
     }
     
     protected void pushStaticStructureView(FacesContext context, MetadataViewKey key, ViewEntry entry)
@@ -145,11 +144,13 @@ public class ViewPoolImpl extends ViewPool
         {
             return null;
         }
+
         ViewEntry entry = q.poll();
         if (entry == null)
         {
             return null;
         }
+
         do
         {
             if (entry.activate())
@@ -157,7 +158,8 @@ public class ViewPoolImpl extends ViewPool
                 return entry;
             }
             entry = q.poll();
-        }while (entry != null);
+        } while (entry != null);
+
         return null;
     }
 
@@ -171,8 +173,7 @@ public class ViewPoolImpl extends ViewPool
      * @param root
      * @return 
      */
-    protected MetadataViewKey deriveViewKey(FacesContext facesContext,
-                    UIViewRoot root)
+    protected MetadataViewKey deriveViewKey(FacesContext facesContext, UIViewRoot root)
     {
         MetadataViewKey viewKey; 
         if (!facesContext.getResourceLibraryContracts().isEmpty())
@@ -188,8 +189,7 @@ public class ViewPoolImpl extends ViewPool
         return viewKey;
     }
 
-    protected ViewEntry generateViewEntry(FacesContext facesContext,
-                    UIViewRoot root)
+    protected ViewEntry generateViewEntry(FacesContext facesContext, UIViewRoot root)
     {
         return entryWeak ? new WeakViewEntry(root) : new SoftViewEntry(root);
     }
@@ -206,9 +206,10 @@ public class ViewPoolImpl extends ViewPool
         Map<DynamicViewKey, ViewPoolEntryHolder> map = dynamicStructureViewPool.get(ordinaryKey);
         if (map == null)
         {
-            map = new ConcurrentHashMap<DynamicViewKey, ViewPoolEntryHolder>();
+            map = new ConcurrentHashMap<>();
             dynamicStructureViewPool.put(ordinaryKey, map);
         }
+
         ViewPoolEntryHolder q = map.get(key);
         if (q == null)
         {
@@ -229,11 +230,13 @@ public class ViewPoolImpl extends ViewPool
         {
             return null;
         }
+
         ViewPoolEntryHolder q = map.get(key);
         if (q == null)
         {
             return null;
         }
+
         ViewEntry entry = q.poll();
         while (entry != null)
         {
@@ -313,7 +316,7 @@ public class ViewPoolImpl extends ViewPool
                             }
                         }
                     }
-                    catch(ConcurrentModificationException ex)
+                    catch (ConcurrentModificationException ex)
                     {
                         //do nothing
                     }
@@ -324,8 +327,7 @@ public class ViewPoolImpl extends ViewPool
     }
 
     @Override
-    public void pushDynamicStructureView(FacesContext context, UIViewRoot root, 
-            FaceletState faceletDynamicState)
+    public void pushDynamicStructureView(FacesContext context, UIViewRoot root, FaceletState faceletDynamicState)
     {
         DynamicViewKey key = (DynamicViewKey) generateDynamicStructureViewKey(context, root, faceletDynamicState);
         MetadataViewKey ordinaryKey = deriveViewKey(context, root);
@@ -338,8 +340,7 @@ public class ViewPoolImpl extends ViewPool
     }
 
     @Override
-    public ViewEntry popDynamicStructureView(FacesContext context, UIViewRoot root, 
-            FaceletState faceletDynamicState)
+    public ViewEntry popDynamicStructureView(FacesContext context, UIViewRoot root, FaceletState faceletDynamicState)
     {
         DynamicViewKey key = generateDynamicStructureViewKey(context, root, faceletDynamicState);
         ViewEntry entry = popDynamicStructureView(context, root, key);
@@ -371,8 +372,7 @@ public class ViewPoolImpl extends ViewPool
     }
 
     @Override
-    public void storeStaticViewStructureMetadata(FacesContext context, UIViewRoot root,
-                FaceletState faceletState)
+    public void storeStaticViewStructureMetadata(FacesContext context, UIViewRoot root, FaceletState faceletState)
     {
         MetadataViewKey key = deriveViewKey(context, root);
         if (!staticStructureViewMetadataMap.containsKey(key))
@@ -426,7 +426,7 @@ public class ViewPoolImpl extends ViewPool
             Map<DynamicViewKey, ViewStructureMetadata> map = dynamicStructureViewMetadataMap.get(ordinaryKey);
             if (map == null)
             {
-                map = new ConcurrentHashMap<DynamicViewKey, ViewStructureMetadata>();
+                map = new ConcurrentHashMap<>();
                 dynamicStructureViewMetadataMap.put(ordinaryKey, map);
             }
             RequestViewContext rvc = RequestViewContext.getCurrentInstance(context);

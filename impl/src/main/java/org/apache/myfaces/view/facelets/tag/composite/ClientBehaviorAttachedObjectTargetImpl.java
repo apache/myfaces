@@ -56,6 +56,7 @@ public class ClientBehaviorAttachedObjectTargetImpl
     {
     }
 
+    @Override
     public String getName()
     {
         if (_name != null)
@@ -65,6 +66,7 @@ public class ClientBehaviorAttachedObjectTargetImpl
         return null;
     }
 
+    @Override
     public List<UIComponent> getTargets(UIComponent topLevelComponent)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -144,6 +146,7 @@ public class ClientBehaviorAttachedObjectTargetImpl
         _targets = ve;
     }
     
+    @Override
     public String getEvent()
     {
         if (_event != null)
@@ -158,6 +161,7 @@ public class ClientBehaviorAttachedObjectTargetImpl
         this._event = event;
     }
 
+    @Override
     public boolean isDefaultEvent()
     {
         return _default;

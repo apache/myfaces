@@ -68,11 +68,9 @@ class CacheELFaceletCacheImpl extends AbstractFaceletCache<DefaultFacelet>
     {
         _refreshPeriod = refreshPeriod < 0 ? INFINITE_DELAY : refreshPeriod * 1000;
 
-        _facelets = new ConcurrentHashMap<String, FaceletNode>();
-        
-        _viewMetadataFacelets = new ConcurrentHashMap<String, DefaultFacelet>();
-        
-        _compositeComponentMetadataFacelets = new ConcurrentHashMap<String, DefaultFacelet>();
+        _facelets = new ConcurrentHashMap<>();
+        _viewMetadataFacelets = new ConcurrentHashMap<>();
+        _compositeComponentMetadataFacelets = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -87,7 +85,6 @@ class CacheELFaceletCacheImpl extends AbstractFaceletCache<DefaultFacelet>
         
         if (f == null || this.needsToBeRefreshed(f))
         {
-            //f = this._createFacelet(url);
             Set<String> paramsSet = null;
             if (node != null)
             {
@@ -96,10 +93,6 @@ class CacheELFaceletCacheImpl extends AbstractFaceletCache<DefaultFacelet>
             f = getMemberFactory().newInstance(url);
             if (_refreshPeriod != NO_CACHE_DELAY)
             {
-                //Map<String, FaceletNode> newLoc = new HashMap<String, FaceletNode>(_facelets);
-                //newLoc.put(key, (paramsSet != null && !paramsSet.isEmpty()) ? 
-                //        new FaceletNode(f, paramsSet) : new FaceletNode(f) );
-                //_facelets = newLoc;
                 _facelets.put(key, (paramsSet != null && !paramsSet.isEmpty()) ? 
                         new FaceletNode(f, paramsSet) : new FaceletNode(f) );
             }
@@ -142,30 +135,24 @@ class CacheELFaceletCacheImpl extends AbstractFaceletCache<DefaultFacelet>
         
         if (f == null || this.needsToBeRefreshed(f) || create)
         {
-            //f = this._createFacelet(url);
             f = getMemberFactory().newInstance(url);
             if (_refreshPeriod != NO_CACHE_DELAY)
             {
-                //Map<String, FaceletNode> newLoc = new HashMap<String, FaceletNode>(_facelets);
                 if (!paramsSet.isEmpty()|| !knownParameters.isEmpty() )
                 {
                     paramsSet = new HashSet(paramsSet);
                     paramsSet.addAll(knownParameters);
-                    //newLoc.put(key, new FaceletNode(f, paramsSet));
                     _facelets.put(key, new FaceletNode(f, paramsSet));
                 }
                 else
                 {
-                    //newLoc.put(key, new FaceletNode(f));
                     _facelets.put(key, new FaceletNode(f));
                 }
-                //_facelets = newLoc;
             }
         }
 
         if (!paramsSet.isEmpty())
         {
-            //actx.getTemplateContext().getKnownParameters().addAll(paramsSet);
             for (String param : paramsSet)
             {
                 if (!actx.getTemplateContext().containsKnownParameter(param))
@@ -195,13 +182,9 @@ class CacheELFaceletCacheImpl extends AbstractFaceletCache<DefaultFacelet>
         
         if (f == null || this.needsToBeRefreshed(f))
         {
-            //f = this._createViewMetadataFacelet(url);
             f = getMetadataMemberFactory().newInstance(url);
             if (_refreshPeriod != NO_CACHE_DELAY)
             {
-                //Map<String, DefaultFacelet> newLoc = new HashMap<String, DefaultFacelet>(_viewMetadataFacelets);
-                //newLoc.put(key, f);
-                //_viewMetadataFacelets = newLoc;
                 _viewMetadataFacelets.put(key, f);
             }
         }
@@ -240,7 +223,6 @@ class CacheELFaceletCacheImpl extends AbstractFaceletCache<DefaultFacelet>
         if (System.currentTimeMillis() > target)
         {
             // Should check for file modification
-
             try
             {
                 URLConnection conn = facelet.getSource().openConnection();
@@ -303,38 +285,25 @@ class CacheELFaceletCacheImpl extends AbstractFaceletCache<DefaultFacelet>
             this.facelet = facelet;
             this.params = params;
         }
-        
-        /**
-         * @return the facelet
-         */
+
         public DefaultFacelet getFacelet()
         {
             return facelet;
         }
 
-        /**
-         * @param facelet the facelet to set
-         */
         public void setFacelet(DefaultFacelet facelet)
         {
             this.facelet = facelet;
         }
 
-        /**
-         * @return the params
-         */
         public Set<String> getParams()
         {
             return params;
         }
 
-        /**
-         * @param params the params to set
-         */
         public void setParams(Set<String> params)
         {
             this.params = params;
         }
-        
     }
 }

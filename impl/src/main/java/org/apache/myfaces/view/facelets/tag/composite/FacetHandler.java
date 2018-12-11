@@ -202,8 +202,8 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
     }
 
     @SuppressWarnings("unchecked")
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException
+    @Override
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
         CompositeComponentBeanInfo beanInfo = 
             (CompositeComponentBeanInfo) parent.getAttributes()
@@ -322,19 +322,16 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
         }
     }
 
+    @Override
     public boolean isCacheable()
     {
         return _cacheable;
     }
     
+    @Override
     public void setCacheable(boolean cacheable)
     {
         _cacheable = cacheable;
     }
 
-    //@Override
-    //public FaceletHandler getNextHandler()
-    //{
-    //    return nextHandler;
-    //}
 }

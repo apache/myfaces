@@ -744,24 +744,10 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         {
             throw new FacesException(e);
         }
-        //finally
-        //{
-        //context.getAttributes().remove(BUILDING_COMPOSITE_COMPONENT_METADATA);
-        //}
 
         return beanInfo;
     }
 
-    /**
-     * Check if the current facelet applied is used to build composite component metadata.
-     *
-     * @param context
-     * @return
-     */
-    //public static boolean isBuildingCompositeComponentMetadata(FacesContext context)
-    //{
-    //    return context.getAttributes().containsKey(BUILDING_COMPOSITE_COMPONENT_METADATA);
-    //}
 
     /**
      * Check if the current facelet applied is used to build view metadata.

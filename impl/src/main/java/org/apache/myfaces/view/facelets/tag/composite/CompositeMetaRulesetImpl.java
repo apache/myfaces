@@ -53,8 +53,7 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
     private static Map<String, MetadataTarget> getMetaData()
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        Map<String, Object> applicationMap = facesContext
-                .getExternalContext().getApplicationMap();
+        Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
 
         Map<String, MetadataTarget> metadata =
                 (Map<String, MetadataTarget>) applicationMap.get(METADATA_KEY);

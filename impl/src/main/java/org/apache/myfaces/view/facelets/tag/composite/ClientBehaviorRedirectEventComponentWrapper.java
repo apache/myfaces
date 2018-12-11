@@ -76,11 +76,13 @@ public class ClientBehaviorRedirectEventComponentWrapper extends UIComponent
         _targetEvent = targetEvent;
     }
 
+    @Override
     public UIComponent getWrapped()
     {
         return _delegate;
     }
 
+    @Override
     public void addClientBehavior(String eventName, ClientBehavior behavior)
     {
         if (_sourceEvent.equals(eventName))
@@ -92,6 +94,7 @@ public class ClientBehaviorRedirectEventComponentWrapper extends UIComponent
         }
     }
 
+    @Override
     public Map<String, List<ClientBehavior>> getClientBehaviors()
     {
         Map<String, List<ClientBehavior>> clientBehaviors = new HashMap<String, List<ClientBehavior>>(1);
@@ -99,6 +102,7 @@ public class ClientBehaviorRedirectEventComponentWrapper extends UIComponent
         return Collections.unmodifiableMap(clientBehaviors);
     }
 
+    @Override
     public String getDefaultEventName()
     {
         if (_targetEvent == null )
@@ -125,272 +129,322 @@ public class ClientBehaviorRedirectEventComponentWrapper extends UIComponent
         }
     }
 
+    @Override
     public Collection<String> getEventNames()
     {
         return Collections.singletonList(_sourceEvent);
     }
     
-    // UIComponent wrapping. Just delegate.    
+    @Override
     public void broadcast(FacesEvent event) throws AbortProcessingException
     {
         _delegate.broadcast(event);
     }
 
+    @Override
     public void clearInitialState()
     {
         _delegate.clearInitialState();
     }
 
+    @Override
     public void decode(FacesContext context)
     {
         _delegate.decode(context);
     }
 
+    @Override
     public void encodeAll(FacesContext context) throws IOException
     {
         _delegate.encodeAll(context);
     }
 
+    @Override
     public void encodeBegin(FacesContext context) throws IOException
     {
         _delegate.encodeBegin(context);
     }
 
+    @Override
     public void encodeChildren(FacesContext context) throws IOException
     {
         _delegate.encodeChildren(context);
     }
 
+    @Override
     public void encodeEnd(FacesContext context) throws IOException
     {
         _delegate.encodeEnd(context);
     }
 
+    @Override
     public UIComponent findComponent(String expr)
     {
         return _delegate.findComponent(expr);
     }
 
+    @Override
     public Map<String, Object> getAttributes()
     {
         return _delegate.getAttributes();
     }
 
+    @Override
     public int getChildCount()
     {
         return _delegate.getChildCount();
     }
 
+    @Override
     public List<UIComponent> getChildren()
     {
         return _delegate.getChildren();
     }
 
+    @Override
     public String getClientId()
     {
         return _delegate.getClientId();
     }
 
+    @Override
     public String getClientId(FacesContext context)
     {
         return _delegate.getClientId(context);
     }
 
+    @Override
     public String getContainerClientId(FacesContext ctx)
     {
         return _delegate.getContainerClientId(ctx);
     }
 
+    @Override
     public UIComponent getFacet(String name)
     {
         return _delegate.getFacet(name);
     }
 
+    @Override
     public int getFacetCount()
     {
         return _delegate.getFacetCount();
     }
 
+    @Override
     public Map<String, UIComponent> getFacets()
     {
         return _delegate.getFacets();
     }
 
+    @Override
     public Iterator<UIComponent> getFacetsAndChildren()
     {
         return _delegate.getFacetsAndChildren();
     }
-
+    
+    @Override
     public String getFamily()
     {
         return _delegate.getFamily();
     }
 
+    @Override
     public String getId()
     {
         return _delegate.getId();
     }
 
-    public List<SystemEventListener> getListenersForEventClass(
-            Class<? extends SystemEvent> eventClass)
+    @Override
+    public List<SystemEventListener> getListenersForEventClass(Class<? extends SystemEvent> eventClass)
     {
         return _delegate.getListenersForEventClass(eventClass);
     }
 
+    @Override
     public UIComponent getNamingContainer()
     {
         return _delegate.getNamingContainer();
     }
 
+    @Override
     public UIComponent getParent()
     {
         return _delegate.getParent();
     }
 
+    @Override
     public String getRendererType()
     {
         return _delegate.getRendererType();
     }
 
+    @Override
     public boolean getRendersChildren()
     {
         return _delegate.getRendersChildren();
     }
 
+    @Override
     public Map<String, String> getResourceBundleMap()
     {
         return _delegate.getResourceBundleMap();
     }
 
+    @Override
     public ValueExpression getValueExpression(String name)
     {
         return _delegate.getValueExpression(name);
     }
 
+    @Override
     public boolean initialStateMarked()
     {
         return _delegate.initialStateMarked();
     }
 
+    @Override
     public boolean invokeOnComponent(FacesContext context, String clientId,
             ContextCallback callback) throws FacesException
     {
         return _delegate.invokeOnComponent(context, clientId, callback);
     }
 
+    @Override
     public boolean isInView()
     {
         return _delegate.isInView();
     }
 
+    @Override
     public boolean isRendered()
     {
         return _delegate.isRendered();
     }
 
+    @Override
     public boolean isTransient()
     {
         return _delegate.isTransient();
     }
 
+    @Override
     public void markInitialState()
     {
         _delegate.markInitialState();
     }
 
+    @Override
     public void processDecodes(FacesContext context)
     {
         _delegate.processDecodes(context);
     }
 
-    public void processEvent(ComponentSystemEvent event)
-            throws AbortProcessingException
+    @Override
+    public void processEvent(ComponentSystemEvent event) throws AbortProcessingException
     {
         _delegate.processEvent(event);
     }
 
+    @Override
     public void processRestoreState(FacesContext context, Object state)
     {
         _delegate.processRestoreState(context, state);
     }
 
+    @Override
     public Object processSaveState(FacesContext context)
     {
         return _delegate.processSaveState(context);
     }
 
+    @Override
     public void processUpdates(FacesContext context)
     {
         _delegate.processUpdates(context);
     }
 
+    @Override
     public void processValidators(FacesContext context)
     {
         _delegate.processValidators(context);
     }
 
+    @Override
     public void queueEvent(FacesEvent event)
     {
         _delegate.queueEvent(event);
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state)
     {
         _delegate.restoreState(context, state);
     }
 
+    @Override
     public Object saveState(FacesContext context)
     {
         return _delegate.saveState(context);
     }
 
+    @Override
     public void setId(String id)
     {
         _delegate.setId(id);
     }
 
+    @Override
     public void setInView(boolean isInView)
     {
         _delegate.setInView(isInView);
     }
 
+    @Override
     public void setParent(UIComponent parent)
     {
         _delegate.setParent(parent);
     }
 
+    @Override
     public void setRendered(boolean rendered)
     {
         _delegate.setRendered(rendered);
     }
 
+    @Override
     public void setRendererType(String rendererType)
     {
         _delegate.setRendererType(rendererType);
     }
 
+    @Override
     public void setTransient(boolean newTransientValue)
     {
         _delegate.setTransient(newTransientValue);
     }
 
+    @Override
     public void setValueExpression(String name, ValueExpression expression)
     {
         _delegate.setValueExpression(name, expression);
     }
 
+    @Override
     public void subscribeToEvent(Class<? extends SystemEvent> eventClass,
             ComponentSystemEventListener componentListener)
     {
         _delegate.subscribeToEvent(eventClass, componentListener);
     }
 
+    @Override
     public void unsubscribeFromEvent(Class<? extends SystemEvent> eventClass,
             ComponentSystemEventListener componentListener)
     {
         _delegate.unsubscribeFromEvent(eventClass, componentListener);
     }
 
+    @Override
     public boolean visitTree(VisitContext context, VisitCallback callback)
     {
         return _delegate.visitTree(context, callback);

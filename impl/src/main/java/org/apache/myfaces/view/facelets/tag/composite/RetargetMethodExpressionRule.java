@@ -39,7 +39,6 @@ final class RetargetMethodExpressionRule extends MetaRule
     final static class RetargetValueExpressionMapper extends Metadata
     {
         private final TagAttribute _attr;
-        
         private final String _name;
 
         public RetargetValueExpressionMapper(TagAttribute attr, String name)
@@ -48,6 +47,7 @@ final class RetargetMethodExpressionRule extends MetaRule
             this._name = name;
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             ValueExpression expr = _attr.getValueExpression(ctx, Object.class);
@@ -62,6 +62,7 @@ final class RetargetMethodExpressionRule extends MetaRule
         super();
     }
 
+    @Override
     public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta)
     {
         // ViewDeclarationLanguage.retargetMethodExpressions only works when a method-signature 

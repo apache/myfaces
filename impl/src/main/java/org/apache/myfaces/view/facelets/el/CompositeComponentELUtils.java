@@ -36,12 +36,6 @@ public final class CompositeComponentELUtils
 {
     
     /**
-     * The key under which the component stack is stored in the FacesContext.
-     * ATTENTION: this constant is duplicate in UIComponent.
-     */
-    //public static final String COMPONENT_STACK = "componentStack:" + UIComponent.class.getName();
-    
-    /**
      * The key under which the current composite component is stored in the attribute
      * map of the FacesContext.
      */

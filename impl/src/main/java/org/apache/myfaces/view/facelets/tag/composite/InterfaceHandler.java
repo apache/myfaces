@@ -193,6 +193,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
                 _displayName, _shortDescription, _expert, _hidden, _preferred);
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
@@ -258,11 +259,13 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
         }
     }
     
+    @Override
     public boolean isCacheable()
     {
         return _cacheable;
     }
 
+    @Override
     public void setCacheable(boolean cacheable)
     {
         _cacheable = cacheable;

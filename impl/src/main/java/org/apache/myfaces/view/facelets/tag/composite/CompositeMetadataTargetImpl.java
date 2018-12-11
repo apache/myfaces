@@ -69,6 +69,7 @@ final class CompositeMetadataTargetImpl extends MetadataTarget
         return pd;
     }
 
+    @Override
     public Class<?> getPropertyType(String name)
     {
         PropertyDescriptor pd = getProperty(name);
@@ -97,6 +98,7 @@ final class CompositeMetadataTargetImpl extends MetadataTarget
         return null;
     }
 
+    @Override
     public Method getReadMethod(String name)
     {
         PropertyDescriptor pd = getProperty(name);
@@ -108,11 +110,13 @@ final class CompositeMetadataTargetImpl extends MetadataTarget
         return null;
     }
 
+    @Override
     public Class<?> getTargetClass()
     {
         return _delegate.getTargetClass();
     }
 
+    @Override
     public Method getWriteMethod(String name)
     {
         PropertyDescriptor pd = getProperty(name);
@@ -124,6 +128,7 @@ final class CompositeMetadataTargetImpl extends MetadataTarget
         return null;
     }
 
+    @Override
     public boolean isTargetInstanceOf(Class type)
     {
         return _delegate.isTargetInstanceOf(type);

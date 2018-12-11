@@ -251,7 +251,7 @@ public class SectionUniqueIdCounter
         {
             long i = this.counter;
             this.counter++;
-            //_builder.delete(0, _builder.length());
+
             if (base != null)
             {
                 builder.append(base);
@@ -263,9 +263,7 @@ public class SectionUniqueIdCounter
             }
             // By performance reasons, Long.toString is a very expensive
             // operation in this location, because it triggers a new String()
-            //_builder.append(Long.toString(i, _radix));
             appendToBuilder(i, _radix, builder, _bufferConversion);
-            //return _builder.toString();
         }
         
         public String generateUniqueId(String base)
@@ -289,9 +287,6 @@ public class SectionUniqueIdCounter
             return _builder.toString();
         }
 
-        /**
-         * @return the prefix
-         */
         public String getPrefix()
         {
             return prefix;
@@ -354,6 +349,5 @@ public class SectionUniqueIdCounter
         {
             builder.append(buffer[i]);
         }
-        //return new String(0, buffer.length, buffer);
     }
 }

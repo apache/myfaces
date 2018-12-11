@@ -63,32 +63,37 @@ public final class CompositeResouceWrapper extends Resource
         setContentType(delegate.getContentType());
     }
 
-
+    @Override
     public InputStream getInputStream() throws IOException
     {
         return getWrapped().getInputStream();
     }
 
+    @Override
     public String getRequestPath()
     {
         return getWrapped().getRequestPath();
     }
 
+    @Override
     public Map<String, String> getResponseHeaders()
     {
         return getWrapped().getResponseHeaders();
     }
 
+    @Override
     public URL getURL()
     {
         return getWrapped().getURL();
     }
 
+    @Override
     public boolean userAgentNeedsUpdate(FacesContext context)
     {
         return getWrapped().userAgentNeedsUpdate(context);
     }
 
+    @Override
     public Resource getWrapped()
     {
         if (_delegate == null)
@@ -102,14 +107,15 @@ public final class CompositeResouceWrapper extends Resource
         return _delegate;
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         setResourceName((String) in.readObject());
         setLibraryName((String) in.readObject());
         setContentType((String) in.readObject());
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeObject(getResourceName());

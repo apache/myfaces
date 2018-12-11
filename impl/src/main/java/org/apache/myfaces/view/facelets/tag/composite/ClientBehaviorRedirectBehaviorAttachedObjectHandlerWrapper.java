@@ -46,11 +46,13 @@ public class ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper
         _eventName = eventName;
     }
 
+    @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
         _delegate.applyAttachedObject(context, parent);
     }
 
+    @Override
     public String getEventName()
     {
         return _eventName;
@@ -68,11 +70,13 @@ public class ClientBehaviorRedirectBehaviorAttachedObjectHandlerWrapper
         }
     }
 
+    @Override
     public String getFor()
     {
         return _delegate.getFor();
     }
 
+    @Override
     public BehaviorHolderAttachedObjectHandler getWrapped()
     {
         return _delegate;

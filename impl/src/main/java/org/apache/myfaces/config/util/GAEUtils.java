@@ -367,18 +367,7 @@ public class GAEUtils
          * The constant for case insensitive regardless of operating system.
          */
         public static final IOCase INSENSITIVE = new IOCase("Insensitive", false);
-        /**
-         * The constant for case sensitivity determined by the current operating
-         * system. Windows is case-insensitive when comparing filenames, Unix is
-         * case-sensitive. <p> <strong>Note:</strong> This only caters for
-         * Windows and Unix. Other operating systems (e.g. OSX and OpenVMS) are
-         * treated as case sensitive if they use the Unix file separator and
-         * case-insensitive if they use the Windows file separator (see {@link java.io.File#separatorChar}).
-         * <p> If you derialize this constant of Windows, and deserialize on
-         * Unix, or vice versa, then the value of the case-sensitivity flag will
-         * change.
-         */
-        //public static final IOCase SYSTEM = new IOCase("System", !FilenameUtils.isSystemWindows());
+
         /**
          * Serialization version.
          */

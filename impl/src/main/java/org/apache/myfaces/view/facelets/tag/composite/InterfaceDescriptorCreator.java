@@ -32,5 +32,4 @@ interface InterfaceDescriptorCreator
     
     void setCacheable(boolean cacheable);
     
-    //FaceletHandler getNextHandler();
 }

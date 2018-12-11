@@ -39,17 +39,14 @@ public class BehaviorBase implements Behavior, PartialStateHolder
     
     private transient boolean _transient;
 
-    /**
-     * 
-     */
     public BehaviorBase()
     {
     }
     
-    //public abstract String getRendererType();
     /**
      * {@inheritDoc}
      */
+    @Override
     public void broadcast(BehaviorEvent event)
     {
         if (event == null)
@@ -73,6 +70,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         }
     }
 
+    @Override
     public void clearInitialState()
     {
         _initialState = false;
@@ -82,16 +80,19 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         }
     }
 
+    @Override
     public boolean initialStateMarked()
     {
         return _initialState;
     }
 
+    @Override
     public boolean isTransient()
     {
         return _transient;
     }
 
+    @Override
     public void markInitialState()
     {
         _initialState = true;
@@ -101,6 +102,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         }
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state)
     {
         if (state == null)
@@ -125,6 +127,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         }
     }
 
+    @Override
     public Object saveState(FacesContext context)
     {
         return saveBehaviorListenersList(context);
@@ -249,6 +252,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         }
     }
 
+    @Override
     public void setTransient(boolean newTransientValue)
     {
         _transient = newTransientValue;

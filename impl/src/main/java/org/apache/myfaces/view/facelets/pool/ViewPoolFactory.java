@@ -29,9 +29,9 @@ import javax.faces.context.FacesContext;
 public abstract class ViewPoolFactory implements FacesWrapper<ViewPoolFactory>
 {
     
-    public abstract ViewPool getViewPool(FacesContext context, 
-            UIViewRoot recyclableRoot);
+    public abstract ViewPool getViewPool(FacesContext context, UIViewRoot recyclableRoot);
 
+    @Override
     public ViewPoolFactory getWrapped()
     {
         return null;

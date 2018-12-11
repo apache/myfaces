@@ -44,8 +44,8 @@ public class ExtensionHandler extends TagHandler
         super(config);
     }
 
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException
+    @Override
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
         // TODO: In theory the xml data inside this tag should be saved,
         // but the spec does not say where and how this should be done.
@@ -64,8 +64,6 @@ public class ExtensionHandler extends TagHandler
             }
             return;
         }
-        
-        //BeanDescriptor beanDescriptor = beanInfo.getBeanDescriptor();
     }
 
 }

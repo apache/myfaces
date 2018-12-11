@@ -30,16 +30,15 @@ import org.apache.myfaces.view.facelets.pool.ViewEntry;
 public class SoftViewEntry extends ViewEntry
 {
     private SoftReference<UIViewRoot> viewRootRef;
-    
     private UIViewRoot viewRoot;
-    
     private RestoreViewFromPoolResult result;
 
     public SoftViewEntry(UIViewRoot viewRoot)
     {
-        this.viewRootRef = new SoftReference<UIViewRoot>(viewRoot);
+        this.viewRootRef = new SoftReference<>(viewRoot);
     }
     
+    @Override
     public boolean activate()
     {
         viewRoot = viewRootRef.get();
@@ -47,9 +46,8 @@ public class SoftViewEntry extends ViewEntry
         return viewRoot != null;
     }
     
-    /**
-     * @return the viewRoot
-     */
+
+    @Override
     public UIViewRoot getViewRoot()
     {
         if (viewRootRef != null)
@@ -59,29 +57,21 @@ public class SoftViewEntry extends ViewEntry
         return viewRoot;
     }
 
-    /**
-     * @param viewRoot the viewRoot to set
-     */
     public void setViewRoot(UIViewRoot viewRoot)
     {
-        this.viewRootRef = new SoftReference<UIViewRoot>(viewRoot);
+        this.viewRootRef = new SoftReference<>(viewRoot);
         this.viewRoot = null;
     }
 
-    /**
-     * @return the result
-     */
+    @Override
     public RestoreViewFromPoolResult getResult()
     {
         return result;
     }
 
-    /**
-     * @param result the result to set
-     */
+    @Override
     public void setResult(RestoreViewFromPoolResult result)
     {
         this.result = result;
     }
-
 }

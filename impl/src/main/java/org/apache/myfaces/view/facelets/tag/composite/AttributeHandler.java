@@ -232,8 +232,8 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
                 _displayName, _shortDescription, _expert, _hidden, _preferred);
     }
     
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException
+    @Override
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
         UIComponent compositeBaseParent
                 = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
@@ -405,11 +405,13 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
         }
     }
 
+    @Override
     public boolean isCacheable()
     {
         return _cacheable;
     }
     
+    @Override
     public void setCacheable(boolean cacheable)
     {
         _cacheable = cacheable;

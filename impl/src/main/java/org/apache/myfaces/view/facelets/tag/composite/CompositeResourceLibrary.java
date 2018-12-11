@@ -183,12 +183,14 @@ public class CompositeResourceLibrary implements TagLibrary
         return _acceptPatterns != null && _acceptPatterns.matcher(resourceName).matches();
     }
 
+    @Override
     public boolean containsFunction(String ns, String name)
     {
         // Composite component tag library does not suport functions
         return false;
     }
 
+    @Override
     public boolean containsNamespace(String ns)
     {
         if (ns != null && ns.startsWith(_namespacePrefix))
@@ -202,6 +204,7 @@ public class CompositeResourceLibrary implements TagLibrary
         return false;
     }
 
+    @Override
     public boolean containsTagHandler(String ns, String localName)
     {
         if (ns != null && ns.startsWith(_namespacePrefix))
@@ -229,14 +232,15 @@ public class CompositeResourceLibrary implements TagLibrary
         return false;
     }
 
+    @Override
     public Method createFunction(String ns, String name)
     {
         // Composite component tag library does not suport functions
         return null;
     }
 
-    public TagHandler createTagHandler(String ns, String localName,
-            TagConfig tag) throws FacesException
+    @Override
+    public TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException
     {
         if (ns != null && ns.startsWith(_namespacePrefix))
         {
@@ -292,26 +296,31 @@ public class CompositeResourceLibrary implements TagLibrary
             this.rendererType = rendererType;
         }
 
+        @Override
         public String getComponentType()
         {
             return this.componentType;
         }
 
+        @Override
         public String getRendererType()
         {
             return this.rendererType;
         }
 
+        @Override
         public FaceletHandler getNextHandler()
         {
             return this.parent.getNextHandler();
         }
 
+        @Override
         public Tag getTag()
         {
             return this.parent.getTag();
         }
 
+        @Override
         public String getTagId()
         {
             return this.parent.getTagId();

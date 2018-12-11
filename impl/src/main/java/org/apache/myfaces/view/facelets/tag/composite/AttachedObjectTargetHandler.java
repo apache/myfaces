@@ -95,8 +95,8 @@ public abstract class AttachedObjectTargetHandler<T extends AttachedObjectTarget
     }
 
     @SuppressWarnings("unchecked")
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException
+    @Override
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
         UIComponent compositeBaseParent
                 = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
@@ -148,21 +148,17 @@ public abstract class AttachedObjectTargetHandler<T extends AttachedObjectTarget
         this.nextHandler.apply(ctx, parent);
     }
     
+    @Override
     public boolean isCacheable()
     {
         return _cacheable;
     }
     
+    @Override
     public void setCacheable(boolean cacheable)
     {
         _cacheable = cacheable;
     }
-    
-    //@Override
-    //public FaceletHandler getNextHandler()
-    //{
-    //    return nextHandler;
-    //}
 
     /**
      * Create a new AttachedObjectTarget instance to be added on the 

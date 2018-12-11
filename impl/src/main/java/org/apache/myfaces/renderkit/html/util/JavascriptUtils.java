@@ -182,10 +182,11 @@ public final class JavascriptUtils
         {
             return "";
         }
-        StringBuilder sb = null;    //create later on demand
+
+        StringBuilder sb = null;
         String app;
         char c;
-        for (int i = 0; i < string.length (); ++i)
+        for (int i = 0; i < string.length(); ++i)
         {
             app = null;
             c = string.charAt(i);
@@ -228,13 +229,6 @@ public final class JavascriptUtils
     public static boolean isRenderClearJavascriptOnButton(ExternalContext externalContext)
     {
         MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(externalContext);
-        if (myfacesConfig.isRenderClearJavascriptOnButton())
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return myfacesConfig.isRenderClearJavascriptOnButton();
     }
 }

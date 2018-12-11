@@ -52,34 +52,25 @@ public class MetadataViewKeyImpl extends MetadataViewKey implements Serializable
         this.contracts = contracts;
     }
 
-    /**
-     * @return the locale
-     */
+    @Override
     public Locale getLocale()
     {
         return locale;
     }
 
-    /**
-     * @return the viewId
-     */
     @Override
     public String getViewId()
     {
         return viewId;
     }
 
-    /**
-     * @return the contracts
-     */
+    @Override
     public String[] getContracts()
     {
         return Arrays.copyOf(contracts, contracts.length);
     }
 
-    /**
-     * @return the renderKitId
-     */
+    @Override
     public String getRenderKitId()
     {
         return renderKitId;

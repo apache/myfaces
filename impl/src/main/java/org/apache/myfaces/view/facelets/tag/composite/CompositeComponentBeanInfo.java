@@ -275,63 +275,73 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo
      */
     public class PropertyDescriptorMap implements Map<String, PropertyDescriptor>
     {
-        
+        @Override
         public int size()
         {
             return getPropertyDescriptorsMap().size();
         }
 
+        @Override
         public boolean isEmpty()
         {
             return getPropertyDescriptorsMap().isEmpty();
         }
 
-       
+        @Override
         public boolean containsKey(Object key)
         {
             return getPropertyDescriptorsMap().containsKey(key);
         }
 
+        @Override
         public boolean containsValue(Object value)
         {
             return getPropertyDescriptorsMap().containsValue(value);
         }
 
+        @Override
         public PropertyDescriptor get(Object key)
         {
             return getPropertyDescriptorsMap().get(key);
         }
 
+        @Override
         public PropertyDescriptor put(String key, PropertyDescriptor value)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public PropertyDescriptor remove(Object key)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void putAll(Map<? extends String, ? extends PropertyDescriptor> m)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void clear()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Set<String> keySet()
         {
             return getPropertyDescriptorsMap().keySet();
         }
 
+        @Override
         public Collection<PropertyDescriptor> values()
         {
             return getPropertyDescriptorsMap().values();
         }
 
+        @Override
         public Set<Entry<String, PropertyDescriptor>> entrySet()
         {
             return getPropertyDescriptorsMap().entrySet();

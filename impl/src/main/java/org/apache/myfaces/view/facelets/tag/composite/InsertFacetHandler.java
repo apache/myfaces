@@ -50,10 +50,6 @@ import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 @JSFFaceletTag(name="composite:insertFacet")
 public class InsertFacetHandler extends TagHandler
 {
-    //public static String USES_INSERT_FACET = "org.apache.myfaces.USES_INSERT_FACET";
-    //public static String INSERT_FACET_TARGET_ID = "org.apache.myfaces.INSERT_FACET_TARGET_ID.";
-    //public static String INSERT_FACET_ORDERING = "org.apache.myfaces.INSERT_FACET_ORDERING.";
-    
     public static final String INSERT_FACET_USED = "org.apache.myfaces.INSERT_FACET_USED";
     
     /**
@@ -95,8 +91,8 @@ public class InsertFacetHandler extends TagHandler
     }
 
     @SuppressWarnings("unchecked")
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException
+    @Override
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
         if (((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata())
         {

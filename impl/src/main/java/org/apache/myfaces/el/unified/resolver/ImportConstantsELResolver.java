@@ -52,7 +52,7 @@ public final class ImportConstantsELResolver extends ELResolver
 
     private static final String IMPORT_CONSTANTS = "oam.importConstants";
     
-    private Map<String, Map<String, Object> > constantsTypeMap = new ConcurrentHashMap<String, Map<String, Object> >();
+    private Map<String, Map<String, Object>> constantsTypeMap = new ConcurrentHashMap<String, Map<String, Object>>();
 
     @Override
     public Object getValue(final ELContext context, final Object base,
@@ -91,7 +91,7 @@ public final class ImportConstantsELResolver extends ELResolver
             Collection<UIImportConstants> constants = ViewMetadata.getImportConstants(viewRoot);
             if (constants != null && !constants.isEmpty())
             {
-                importConstantsMap = new HashMap<String, String>();
+                importConstantsMap = new HashMap<>();
                 for (UIImportConstants c : constants)
                 {
                     String var = c.getVar();
@@ -186,7 +186,7 @@ public final class ImportConstantsELResolver extends ELResolver
      */
     private static Map<String, Object> collectConstants(final String type)
     {
-        Map<String, Object> constants = new HashMap<String, Object>();
+        Map<String, Object> constants = new HashMap<>();
 
         for (Field field : toClass(type).getFields())
         {

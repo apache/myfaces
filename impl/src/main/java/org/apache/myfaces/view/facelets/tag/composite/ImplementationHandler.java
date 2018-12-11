@@ -54,8 +54,8 @@ public class ImplementationHandler extends TagHandler
         super(config);
     }
 
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException
+    @Override
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
         if (!((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata())
         {

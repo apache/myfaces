@@ -88,10 +88,6 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         _compiler = compiler;
 
-        //_facelets = new HashMap<String, DefaultFacelet>();
-        
-        //_viewMetadataFacelets = new HashMap<String, DefaultFacelet>();
-        
         _compositeComponentMetadataFacelets = new HashMap<String, DefaultFacelet>();
 
         _relativeLocations = new HashMap<String, URL>();

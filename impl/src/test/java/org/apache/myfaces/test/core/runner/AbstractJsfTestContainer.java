@@ -1332,7 +1332,6 @@ public class AbstractJsfTestContainer
     protected TestClass testClass;
     protected Object testInstance;
 
-    //protected WebBeansConfigurationListener owbListener;
     protected InjectionProvider injectionProvider;
 
     /**

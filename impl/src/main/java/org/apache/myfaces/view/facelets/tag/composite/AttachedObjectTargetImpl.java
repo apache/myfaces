@@ -49,6 +49,7 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
     {
     }
 
+    @Override
     public String getName()
     {
         if (_name != null)

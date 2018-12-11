@@ -28,13 +28,9 @@ import org.apache.myfaces.spi.InjectionProviderFactory;
 import org.apache.myfaces.spi.impl.CDIAnnotationDelegateInjectionProvider;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 
-/**
- *
- */
 public class AbstractMyFacesCDIRequestTestCase extends AbstractMyFacesRequestTestCase
 {
-    
-    //protected WebBeansConfigurationListener owbListener;
+
     private Object owbListener;
     protected InjectionProvider injectionProvider;
     

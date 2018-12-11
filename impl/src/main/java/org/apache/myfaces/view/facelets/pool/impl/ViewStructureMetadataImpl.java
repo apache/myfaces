@@ -57,6 +57,7 @@ public class ViewStructureMetadataImpl extends ViewStructureMetadata
     /**
      * @return the rvc
      */
+    @Override
     public RequestViewMetadata getRequestViewMetadata()
     {
         return rvc;

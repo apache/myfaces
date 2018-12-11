@@ -48,8 +48,8 @@ public class InsertChildrenHandler extends TagHandler implements ComponentContai
         super(config);
     }
 
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException
+    @Override
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
         UIComponent parentCompositeComponent
                 = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
