@@ -133,19 +133,7 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
                 }
             }
         }
-        catch (ClassNotFoundException e)
-        {
-            log.log(Level.SEVERE, "", e);
-        }
-        catch (InstantiationException e)
-        {
-            log.log(Level.SEVERE, "", e);
-        }
-        catch (IllegalAccessException e)
-        {
-            log.log(Level.SEVERE, "", e);
-        }
-        catch (InvocationTargetException e)
+        catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException e)
         {
             log.log(Level.SEVERE, "", e);
         }
@@ -164,6 +152,7 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
             {
                 returnValue = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>()
                         {
+                            @Override
                             public Boolean run() throws ClassNotFoundException,
                                     NoClassDefFoundError,
                                     InstantiationException,
@@ -218,23 +207,11 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
                 }
             }
         }
-        catch (ClassNotFoundException e)
+        catch (ClassNotFoundException | NoClassDefFoundError e)
         {
             // ignore
         }
-        catch (NoClassDefFoundError e)
-        {
-            // ignore
-        }
-        catch (InstantiationException e)
-        {
-            log.log(Level.SEVERE, "", e);
-        }
-        catch (IllegalAccessException e)
-        {
-            log.log(Level.SEVERE, "", e);
-        }
-        catch (InvocationTargetException e)
+        catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
         {
             log.log(Level.SEVERE, "", e);
         }

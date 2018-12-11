@@ -54,8 +54,7 @@ public class Tomcat7AnnotationInjectionProvider extends InjectionProvider
     @Override
     public void preDestroy(Object instance, Object creationMetaData) throws InjectionProviderException
     {
-        InstanceManager manager = instanceManagers
-                .get(ClassUtils.getContextClassLoader());
+        InstanceManager manager = instanceManagers.get(ClassUtils.getContextClassLoader());
 
         if (manager != null)
         {
@@ -63,11 +62,7 @@ public class Tomcat7AnnotationInjectionProvider extends InjectionProvider
             {
                 manager.destroyInstance(instance);
             }
-            catch (IllegalAccessException ex)
-            {
-                throw new InjectionProviderException(ex);
-            }
-            catch (InvocationTargetException ex)
+            catch (IllegalAccessException | InvocationTargetException ex)
             {
                 throw new InjectionProviderException(ex);
             }
@@ -77,8 +72,7 @@ public class Tomcat7AnnotationInjectionProvider extends InjectionProvider
     @Override
     public void postConstruct(Object instance, Object creationMetaData) throws InjectionProviderException
     {
-        InstanceManager manager = instanceManagers
-                .get(ClassUtils.getContextClassLoader());
+        InstanceManager manager = instanceManagers.get(ClassUtils.getContextClassLoader());
         if (manager == null)
         {
             //Initialize manager
@@ -93,17 +87,9 @@ public class Tomcat7AnnotationInjectionProvider extends InjectionProvider
             {
                 manager.newInstance(instance);
             }
-            catch (IllegalAccessException ex)
+            catch (IllegalAccessException | InvocationTargetException | NamingException ex)
             {
                 throw new InjectionProviderException(ex);
-            }
-            catch (InvocationTargetException ex)
-            {
-                throw new InjectionProviderException(ex);
-            }
-            catch (NamingException e)
-            {
-                throw new InjectionProviderException(e);
             }
         }
     }
@@ -183,8 +169,7 @@ public class Tomcat7AnnotationInjectionProvider extends InjectionProvider
                 applicationMap.get(InstanceManager.class.getName());
         if (instanceManager != null)
         {
-            instanceManagers.put(ClassUtils.getContextClassLoader(),
-                    instanceManager);
+            instanceManagers.put(ClassUtils.getContextClassLoader(), instanceManager);
         }
 
         return instanceManager;

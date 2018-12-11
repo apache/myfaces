@@ -92,6 +92,7 @@ public abstract class StateCacheProviderFactory implements FacesWrapper<StateCac
     
     public abstract StateCacheProvider createStateCacheProvider(ExternalContext externalContext);
     
+    @Override
     public StateCacheProviderFactory getWrapped()
     {
         return null;

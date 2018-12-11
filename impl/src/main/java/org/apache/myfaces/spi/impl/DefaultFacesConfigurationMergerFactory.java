@@ -78,23 +78,11 @@ public class DefaultFacesConfigurationMergerFactory extends FacesConfigurationMe
                 // cache the result on the ApplicationMap
                 externalContext.getApplicationMap().put(FACES_CONFIGURATION_MERGER_INSTANCE_KEY, returnValue);
             }
-            catch (ClassNotFoundException e)
+            catch (ClassNotFoundException | NoClassDefFoundError e)
             {
                 // ignore
             }
-            catch (NoClassDefFoundError e)
-            {
-                // ignore
-            }
-            catch (InstantiationException e)
-            {
-                getLogger().log(Level.SEVERE, "", e);
-            }
-            catch (IllegalAccessException e)
-            {
-                getLogger().log(Level.SEVERE, "", e);
-            }
-            catch (InvocationTargetException e)
+            catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
             {
                 getLogger().log(Level.SEVERE, "", e);
             }
@@ -103,7 +91,6 @@ public class DefaultFacesConfigurationMergerFactory extends FacesConfigurationMe
                 throw new FacesException(e);
             }
         }
-
 
         return returnValue;
     }

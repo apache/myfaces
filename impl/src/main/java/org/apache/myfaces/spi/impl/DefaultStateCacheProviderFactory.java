@@ -75,6 +75,7 @@ public class DefaultStateCacheProviderFactory extends StateCacheProviderFactory
             {
                 returnValue = AccessController.doPrivileged(new PrivilegedExceptionAction<StateCacheProvider>()
                         {
+                            @Override
                             public StateCacheProvider run() throws ClassNotFoundException,
                                     NoClassDefFoundError,
                                     InstantiationException,
@@ -91,23 +92,11 @@ public class DefaultStateCacheProviderFactory extends StateCacheProviderFactory
                 returnValue = resolveStateCacheProviderFromService(extContext);
             }
         }
-        catch (ClassNotFoundException e)
+        catch (ClassNotFoundException | NoClassDefFoundError e)
         {
             // ignore
         }
-        catch (NoClassDefFoundError e)
-        {
-            // ignore
-        }
-        catch (InstantiationException e)
-        {
-            getLogger().log(Level.SEVERE, "", e);
-        }
-        catch (IllegalAccessException e)
-        {
-            getLogger().log(Level.SEVERE, "", e);
-        }
-        catch (InvocationTargetException e)
+        catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
         {
             getLogger().log(Level.SEVERE, "", e);
         }

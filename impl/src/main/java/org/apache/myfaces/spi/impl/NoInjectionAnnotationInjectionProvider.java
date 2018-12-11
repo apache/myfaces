@@ -91,15 +91,7 @@ public class NoInjectionAnnotationInjectionProvider extends InjectionProvider
         {
             processAnnotations(instance);
         }
-        catch (IllegalAccessException ex)
-        {
-            throw new InjectionProviderException(ex);
-        }
-        catch (InvocationTargetException ex)
-        {
-            throw new InjectionProviderException(ex);
-        }
-        catch (NamingException ex)
+        catch (IllegalAccessException | InvocationTargetException | NamingException ex)
         {
             throw new InjectionProviderException(ex);
         }
@@ -167,11 +159,7 @@ public class NoInjectionAnnotationInjectionProvider extends InjectionProvider
         {
             invokeAnnotatedMethod(postConstruct, instance);
         }
-        catch (IllegalAccessException ex)
-        {
-            throw new InjectionProviderException(ex);
-        }
-        catch (InvocationTargetException ex)
+        catch (IllegalAccessException | InvocationTargetException ex)
         {
             throw new InjectionProviderException(ex);
         }
@@ -213,11 +201,7 @@ public class NoInjectionAnnotationInjectionProvider extends InjectionProvider
         {
             invokeAnnotatedMethod(preDestroy, instance);
         }
-        catch (IllegalAccessException ex)
-        {
-            throw new InjectionProviderException(ex);
-        }
-        catch (InvocationTargetException ex)
+        catch (IllegalAccessException | InvocationTargetException ex)
         {
             throw new InjectionProviderException(ex);
         }

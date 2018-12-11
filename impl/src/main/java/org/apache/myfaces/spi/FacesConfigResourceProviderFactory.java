@@ -58,6 +58,7 @@ public abstract class FacesConfigResourceProviderFactory
                 lpf = (FacesConfigResourceProviderFactory)
                         AccessController.doPrivileged(new PrivilegedExceptionAction<Object>()
                         {
+                            @Override
                             public Object run() throws PrivilegedActionException
                             {
                                 return SpiUtils.build(ectx,

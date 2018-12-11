@@ -88,6 +88,7 @@ public abstract class ViewScopeProviderFactory implements FacesWrapper<ViewScope
     
     public abstract ViewScopeProvider getViewScopeHandler(ExternalContext ctx);
     
+    @Override
     public ViewScopeProviderFactory getWrapped()
     {
         return null;

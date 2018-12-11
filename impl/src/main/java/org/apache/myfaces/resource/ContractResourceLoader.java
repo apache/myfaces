@@ -32,11 +32,13 @@ public abstract class ContractResourceLoader extends ResourceLoader
         super(prefix);
     }
     
+    @Override
     public String getResourceVersion(String path)
     {
         return null;
     }
 
+    @Override
     public String getLibraryVersion(String path)
     {
         return null;
@@ -50,15 +52,18 @@ public abstract class ContractResourceLoader extends ResourceLoader
      */
     public abstract String getLibraryVersion(String path, String contractName);
 
+    @Override
     public ResourceMeta createResourceMeta(String prefix, String libraryName, 
             String libraryVersion, String resourceName, String resourceVersion)
     {
         return null;
     }
     
+    @Override
     public abstract ResourceMeta createResourceMeta(String prefix, String libraryName, 
             String libraryVersion, String resourceName, String resourceVersion, String contractName);
     
+    @Override
     public boolean libraryExists(String libraryName)
     {
         return false;

@@ -34,6 +34,7 @@ public abstract class StateCacheProvider implements FacesWrapper<StateCacheProvi
     
     public abstract StateCache getStateCache(FacesContext facesContext);
 
+    @Override
     public StateCacheProvider getWrapped()
     {
         return null;

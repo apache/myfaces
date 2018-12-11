@@ -63,6 +63,7 @@ public class DefaultFaceletConfigResourceProviderFactory extends FaceletConfigRe
                 returnValue
                         = AccessController.doPrivileged(new PrivilegedExceptionAction<FaceletConfigResourceProvider>()
                         {
+                            @Override
                             public FaceletConfigResourceProvider run() throws ClassNotFoundException,
                                     NoClassDefFoundError,
                                     InstantiationException,
@@ -79,23 +80,11 @@ public class DefaultFaceletConfigResourceProviderFactory extends FaceletConfigRe
                 returnValue = resolveFaceletConfigResourceProviderFromService(extContext);
             }
         }
-        catch (ClassNotFoundException e)
+        catch (ClassNotFoundException | NoClassDefFoundError e)
         {
             // ignore
         }
-        catch (NoClassDefFoundError e)
-        {
-            // ignore
-        }
-        catch (InstantiationException e)
-        {
-            getLogger().log(Level.SEVERE, "", e);
-        }
-        catch (IllegalAccessException e)
-        {
-            getLogger().log(Level.SEVERE, "", e);
-        }
-        catch (InvocationTargetException e)
+        catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
         {
             getLogger().log(Level.SEVERE, "", e);
         }

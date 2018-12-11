@@ -87,23 +87,11 @@ public class DefaultFacesConfigurationProviderFactory extends FacesConfiguration
                 }
                 externalContext.getApplicationMap().put(FACES_CONFIGURATION_PROVIDER_INSTANCE_KEY, returnValue);
             }
-            catch (ClassNotFoundException e)
+            catch (ClassNotFoundException | NoClassDefFoundError e)
             {
                 // ignore
             }
-            catch (NoClassDefFoundError e)
-            {
-                // ignore
-            }
-            catch (InstantiationException e)
-            {
-                getLogger().log(Level.SEVERE, "", e);
-            }
-            catch (IllegalAccessException e)
-            {
-                getLogger().log(Level.SEVERE, "", e);
-            }
-            catch (InvocationTargetException e)
+            catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
             {
                 getLogger().log(Level.SEVERE, "", e);
             }
@@ -112,7 +100,6 @@ public class DefaultFacesConfigurationProviderFactory extends FacesConfiguration
                 throw new FacesException(e);
             }
         }
-
 
         return returnValue;
     }

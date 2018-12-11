@@ -66,6 +66,7 @@ public class DefaultWebConfigProviderFactory extends WebConfigProviderFactory
             {
                 returnValue = AccessController.doPrivileged(new PrivilegedExceptionAction<WebConfigProvider>()
                         {
+                            @Override
                             public WebConfigProvider run() throws ClassNotFoundException,
                                     NoClassDefFoundError,
                                     InstantiationException,
@@ -82,23 +83,11 @@ public class DefaultWebConfigProviderFactory extends WebConfigProviderFactory
                 returnValue = resolveWebXmlProviderFromService(extContext);
             }
         }
-        catch (ClassNotFoundException e)
+        catch (ClassNotFoundException | NoClassDefFoundError e)
         {
             // ignore
         }
-        catch (NoClassDefFoundError e)
-        {
-            // ignore
-        }
-        catch (InstantiationException e)
-        {
-            getLogger().log(Level.SEVERE, "", e);
-        }
-        catch (IllegalAccessException e)
-        {
-            getLogger().log(Level.SEVERE, "", e);
-        }
-        catch (InvocationTargetException e)
+        catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
         {
             getLogger().log(Level.SEVERE, "", e);
         }

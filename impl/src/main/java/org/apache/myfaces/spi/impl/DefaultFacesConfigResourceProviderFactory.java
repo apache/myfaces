@@ -62,6 +62,7 @@ public class DefaultFacesConfigResourceProviderFactory extends FacesConfigResour
             {
                 returnValue = AccessController.doPrivileged(new PrivilegedExceptionAction<FacesConfigResourceProvider>()
                         {
+                            @Override
                             public FacesConfigResourceProvider run() throws ClassNotFoundException,
                                     NoClassDefFoundError,
                                     InstantiationException,
@@ -78,23 +79,11 @@ public class DefaultFacesConfigResourceProviderFactory extends FacesConfigResour
                 returnValue = resolveFacesConfigResourceProviderFromService(extContext);
             }
         }
-        catch (ClassNotFoundException e)
+        catch (ClassNotFoundException | NoClassDefFoundError e)
         {
             // ignore
         }
-        catch (NoClassDefFoundError e)
-        {
-            // ignore
-        }
-        catch (InstantiationException e)
-        {
-            getLogger().log(Level.SEVERE, "", e);
-        }
-        catch (IllegalAccessException e)
-        {
-            getLogger().log(Level.SEVERE, "", e);
-        }
-        catch (InvocationTargetException e)
+        catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
         {
             getLogger().log(Level.SEVERE, "", e);
         }
