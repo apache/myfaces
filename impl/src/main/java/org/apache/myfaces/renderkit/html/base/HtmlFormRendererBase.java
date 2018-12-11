@@ -82,11 +82,9 @@ public class HtmlFormRendererBase
         {
             writer.writeAttribute(HTML.ACCEPT_CHARSET_ATTR, acceptCharset, null);
         }
-        String encodedActionURL = facesContext.getExternalContext().encodeActionURL(actionURL);
         
-        writer.writeURIAttribute(HTML.ACTION_ATTR,
-                encodedActionURL,
-                null);
+        String encodedActionURL = facesContext.getExternalContext().encodeActionURL(actionURL);
+        writer.writeURIAttribute(HTML.ACTION_ATTR, encodedActionURL, null);
         
         if (htmlForm instanceof ClientBehaviorHolder)
         {
