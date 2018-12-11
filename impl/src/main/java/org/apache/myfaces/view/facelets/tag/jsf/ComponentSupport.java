@@ -700,10 +700,6 @@ public final class ComponentSupport
                                                 UIComponent parent, String uniqueId)
     {
         Object value = null;
-        //if (fcc.isUsingPSSOnThisView() &&
-        //    PhaseId.RESTORE_VIEW.equals(ctx.getFacesContext().getCurrentPhaseId()) &&
-        //    !MyfacesConfig.getCurrentInstance(
-        //            ctx.getFacesContext().getExternalContext()).isRefreshTransientBuildOnPSSPreserveState())
         if (fcc.isUsingPSSOnThisView() && !fcc.isRefreshTransientBuildOnPSSPreserveState())
         {
             UIViewRoot root = getViewRoot(ctx, parent);
@@ -758,8 +754,7 @@ public final class ComponentSupport
         return map;
     }
     
-    public static void setCachedFacesContext(UIComponent component,
-        FacesContext context)
+    public static void setCachedFacesContext(UIComponent component, FacesContext context)
     {
         if (SET_CACHED_FACES_CONTEXT != null)
         {
@@ -767,13 +762,7 @@ public final class ComponentSupport
             {
                 SET_CACHED_FACES_CONTEXT.invoke(component, context);
             }
-            catch (IllegalAccessException ex)
-            {
-            }
-            catch (IllegalArgumentException ex)
-            {
-            }
-            catch (InvocationTargetException ex)
+            catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
             {
             }
         }

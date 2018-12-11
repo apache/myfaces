@@ -119,38 +119,29 @@ public class MethodExpressionValueChangeListener implements ValueChangeListener,
             }
             //for any other exception publish ExceptionQueuedEvent and continue broadcast processing.
             throw e;
-            //Throwable cause = e.getCause();
-            //if (cause == null)
-            //{
-            //    cause = e;
-            //}
-            //if (cause instanceof AbortProcessingException)
-            //{
-            //    throw (AbortProcessingException) cause;
-            //}
-            //else
-            //{
-            //    throw new AbortProcessingException(cause);
-            //}
         }
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state)
     {
         methodExpressionOneArg = (MethodExpression) ((Object[]) state)[0];
         methodExpressionZeroArg = (MethodExpression) ((Object[]) state)[1];
     }
 
+    @Override
     public Object saveState(FacesContext context)
     {
         return new Object[] {methodExpressionOneArg, methodExpressionZeroArg};
     }
 
+    @Override
     public void setTransient(boolean newTransientValue)
     {
         isTransient = newTransientValue;
     }
 
+    @Override
     public boolean isTransient()
     {
         return isTransient;

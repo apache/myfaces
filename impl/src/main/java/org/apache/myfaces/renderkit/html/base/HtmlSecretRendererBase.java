@@ -38,12 +38,10 @@ import java.util.List;
 import java.util.Map;
 import org.apache.myfaces.renderkit.html.util.HTML;
 
-
 /**
  * see Spec.1.0 EA - JSF.7.6.4 Renderer Types for UIInput Components
  */
-public class HtmlSecretRendererBase
-        extends HtmlRenderer
+public class HtmlSecretRendererBase extends HtmlRenderer
 {
     private static final String AUTOCOMPLETE_VALUE_OFF = "off";
 
@@ -72,8 +70,7 @@ public class HtmlSecretRendererBase
 
 
     //Subclasses can set the value of an attribute before, or can render a custom attribute after calling this method
-    protected void renderInputBegin(FacesContext facesContext,
-            UIComponent uiComponent) throws IOException
+    protected void renderInputBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
         
@@ -83,15 +80,13 @@ public class HtmlSecretRendererBase
         if (uiComponent instanceof ClientBehaviorHolder
                 && !((ClientBehaviorHolder) uiComponent).getClientBehaviors().isEmpty())
         {
-            writer.writeAttribute(HTML.ID_ATTR, 
-                                  uiComponent.getClientId(facesContext), null);
+            writer.writeAttribute(HTML.ID_ATTR, uiComponent.getClientId(facesContext), null);
         }
         else
         {
             HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
         }
-        writer.writeAttribute(HTML.NAME_ATTR,
-                              uiComponent.getClientId(facesContext), null);
+        writer.writeAttribute(HTML.NAME_ATTR, uiComponent.getClientId(facesContext), null);
 
         boolean isRedisplay;
         if (uiComponent instanceof HtmlInputSecret)

@@ -146,11 +146,6 @@ public interface JSFAttr
     // HtmlColumn attributes
     String ROW_HEADER_ATTR             = "rowHeader";
 
-    // Alternate locations (instead of using AddResource)
-    String JAVASCRIPT_LOCATION         = "javascriptLocation";
-    String IMAGE_LOCATION              = "imageLocation";
-    String STYLE_LOCATION              = "styleLocation";
-
     String ACCEPTCHARSET_ATTR          = "acceptcharset";
     
     //~ Myfaces Extensions -------------------------------------------------------------------------------

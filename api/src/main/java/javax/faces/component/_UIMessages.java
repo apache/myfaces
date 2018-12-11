@@ -33,60 +33,60 @@ defaultRendererType = "javax.faces.Messages"
 abstract class _UIMessages extends UIComponentBase
 {
 
-  static public final String COMPONENT_FAMILY =
-    "javax.faces.Messages";
-  static public final String COMPONENT_TYPE =
-    "javax.faces.Messages";
+    static public final String COMPONENT_FAMILY =
+      "javax.faces.Messages";
+    static public final String COMPONENT_TYPE =
+      "javax.faces.Messages";
 
-  /**
-   * Specifies whether only messages (FacesMessage objects) not associated with a
-   * specific component should be displayed, ie whether messages should be ignored
-   * if they are attached to a particular component. Defaults to false.
-   *
-   * @return  the new globalOnly value
-   */
-  @JSFProperty
-  (defaultValue = "false")
-  public abstract boolean isGlobalOnly();
+    /**
+     * Specifies whether only messages (FacesMessage objects) not associated with a
+     * specific component should be displayed, ie whether messages should be ignored
+     * if they are attached to a particular component. Defaults to false.
+     *
+     * @return  the new globalOnly value
+     */
+    @JSFProperty
+    (defaultValue = "false")
+    public abstract boolean isGlobalOnly();
 
-  /**
-   * Specifies whether the detailed information from the message should be shown. 
-   * Default to false.
-   *
-   * @return  the new showDetail value
-   */
-  @JSFProperty
-  (defaultValue = "false")
-  public abstract boolean isShowDetail();
+    /**
+     * Specifies whether the detailed information from the message should be shown. 
+     * Default to false.
+     *
+     * @return  the new showDetail value
+     */
+    @JSFProperty
+    (defaultValue = "false")
+    public abstract boolean isShowDetail();
 
-  /**
-   * Specifies whether the summary information from the message should be shown.
-   * Defaults to true.
-   *
-   * @return  the new showSummary value
-   */
-  @JSFProperty
-  (defaultValue = "true")
-  public abstract boolean isShowSummary();
-  
-  /**
-   * Indicate this component should render already handled messages.
-   * Default value is true
-   * 
-   * @since 2.0
-   * @return
-   */
-  @JSFProperty
-  (defaultValue = "true", tagExcluded=true)  
-  public abstract boolean isRedisplay();
+    /**
+     * Specifies whether the summary information from the message should be shown.
+     * Defaults to true.
+     *
+     * @return  the new showSummary value
+     */
+    @JSFProperty
+    (defaultValue = "true")
+    public abstract boolean isShowSummary();
 
-  /**
-   * The ID of the component whose attached FacesMessage object (if present) 
-   * should be diplayed by this component. It takes precedence over globalOnly.
-   *
-   * @since 2.0
-   * @return  the new for value
-   */
-  @JSFProperty
-  public abstract String getFor();  
+    /**
+     * Indicate this component should render already handled messages.
+     * Default value is true
+     * 
+     * @since 2.0
+     * @return
+     */
+    @JSFProperty
+    (defaultValue = "true", tagExcluded=true)  
+    public abstract boolean isRedisplay();
+
+    /**
+     * The ID of the component whose attached FacesMessage object (if present) 
+     * should be diplayed by this component. It takes precedence over globalOnly.
+     *
+     * @since 2.0
+     * @return  the new for value
+     */
+    @JSFProperty
+    public abstract String getFor();  
 }

@@ -111,12 +111,7 @@ public abstract class ServiceProviderFinder
     public Map<String, List<String>> calculateKnownServiceProviderMapInfo(ExternalContext ectx, 
         String[] knownServices)
     {
-        //Map<String, List<String>> map = new HashMap<String, List<String>>();
-        //for (String service : knownServices)
-        //{
-        //    map.put(service, this.getServiceProviderList(service));
-        //}
-        //return map;
+
         return null;
     }
 }

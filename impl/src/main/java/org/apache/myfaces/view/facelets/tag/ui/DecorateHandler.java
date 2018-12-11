@@ -122,17 +122,6 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
-        //VariableMapper orig = ctx.getVariableMapper();
-        //if (_params != null)
-        //{
-        //    VariableMapper vm = new VariableMapperWrapper(orig);
-        //    ctx.setVariableMapper(vm);
-        //    for (int i = 0; i < _params.length; i++)
-        //    {
-        //        _params[i].apply(ctx, parent);
-        //    }
-        //}
-
         AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
         actx.pushClient(this);
         FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
@@ -151,8 +140,6 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
             }
             if (_params != null)
             {
-                //VariableMapper vm = new VariableMapperWrapper(orig);
-                //ctx.setVariableMapper(vm);
                 for (int i = 0; i < _params.length; i++)
                 {
                     _params[i].apply(ctx, parent, _params[i].getName(ctx), _params[i].getValue(ctx), uniqueId);

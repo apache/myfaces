@@ -30,18 +30,11 @@ import org.apache.myfaces.renderkit.html.base.HtmlCheckboxRendererBase;
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-@JSFRenderers(renderers={
-    @JSFRenderer(
-        renderKitId="HTML_BASIC",
-        family="javax.faces.SelectBoolean",
-        type="javax.faces.Checkbox"),   
-    @JSFRenderer(
-        renderKitId="HTML_BASIC",
-        family="javax.faces.SelectMany",
-        type="javax.faces.Checkbox")
+@JSFRenderers(renderers = {
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.SelectBoolean", type = "javax.faces.Checkbox"),   
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.SelectMany", type = "javax.faces.Checkbox")
 })
-public class HtmlCheckboxRenderer
-        extends HtmlCheckboxRendererBase
+public class HtmlCheckboxRenderer extends HtmlCheckboxRendererBase
 {
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)

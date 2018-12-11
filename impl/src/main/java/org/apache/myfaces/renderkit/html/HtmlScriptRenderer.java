@@ -89,7 +89,6 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
 
         if (event instanceof PreRenderViewEvent)
         {
-            //TODO target check here
             UIComponent component = event.getComponent();
             String target = (String) component.getAttributes().get(JSFAttr.TARGET_ATTR);
             if (target != null)
@@ -145,8 +144,7 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
             }
             else
             {
-                if (!facesContext.getApplication().getProjectStage().equals(
-                        ProjectStage.Production))
+                if (!facesContext.isProjectStage(ProjectStage.Production))
                 {
                     facesContext.addMessage(component.getClientId(facesContext),
                             new FacesMessage("Component with no name and no body content, so nothing rendered."));
@@ -223,8 +221,8 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
             ResourceUtils.markScriptAsRendered(facesContext, resource.getLibraryName(), resource.getResourceName());
             ResponseWriter writer = facesContext.getResponseWriter();
             writer.startElement(HTML.SCRIPT_ELEM, component);
-// We can't render the content type, because usually it returns "application/x-javascript"
-// and this is not compatible with IE. We should force render "text/javascript".
+            // We can't render the content type, because usually it returns "application/x-javascript"
+            // and this is not compatible with IE. We should force render "text/javascript".
             writer.writeAttribute(HTML.SCRIPT_TYPE_ATTR, HTML.SCRIPT_TYPE_TEXT_JAVASCRIPT, null);
             String path = resource.getRequestPath();
             if (additionalQueryParams != null)

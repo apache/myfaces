@@ -23,24 +23,16 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderers;
 import org.apache.myfaces.renderkit.html.base.HtmlMenuRendererBase;
 
-
 /**
  *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 @JSFRenderers(renderers={
-    @JSFRenderer(
-        renderKitId="HTML_BASIC",
-        family="javax.faces.SelectOne",
-        type="javax.faces.Menu"),    
-    @JSFRenderer(
-        renderKitId="HTML_BASIC",
-        family="javax.faces.SelectMany",
-        type="javax.faces.Menu")
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.SelectOne", type = "javax.faces.Menu"),    
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.SelectMany",type = "javax.faces.Menu")
 })
-public class HtmlMenuRenderer
-        extends HtmlMenuRendererBase
+public class HtmlMenuRenderer extends HtmlMenuRendererBase
 {
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)

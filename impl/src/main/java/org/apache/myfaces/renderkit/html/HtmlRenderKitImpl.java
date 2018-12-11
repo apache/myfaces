@@ -318,7 +318,7 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
         {
             // If HTTP Accept header has application/xml or text/xml, that does not means the writer
             // content type mode should be set to application/xhtml+xml.
-            writerContentType = selectedContentType.indexOf(ContentTypeUtils.XHTML_CONTENT_TYPE) != -1 ?
+            writerContentType = selectedContentType.contains(ContentTypeUtils.XHTML_CONTENT_TYPE) ?
                     ContentTypeUtils.XHTML_CONTENT_TYPE : ContentTypeUtils.HTML_CONTENT_TYPE;
         }
         else
@@ -332,18 +332,15 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
             characterEncoding = HtmlRendererUtils.DEFAULT_CHAR_ENCODING;
         }
 
-        if (myfacesConfig.isEarlyFlushEnabled() &&
-                facesContext.isProjectStage(ProjectStage.Production))
+        if (myfacesConfig.isEarlyFlushEnabled() && facesContext.isProjectStage(ProjectStage.Production))
         {
             return new EarlyFlushHtmlResponseWriterImpl(writer, selectedContentType, characterEncoding, 
-                myfacesConfig.isWrapScriptContentWithXmlCommentTag(),
-                        writerContentType);
+                myfacesConfig.isWrapScriptContentWithXmlCommentTag(), writerContentType);
         }
         else
         {
             return new HtmlResponseWriterImpl(writer, selectedContentType, characterEncoding, 
-                myfacesConfig.isWrapScriptContentWithXmlCommentTag(),
-                        writerContentType);
+                myfacesConfig.isWrapScriptContentWithXmlCommentTag(), writerContentType);
         }
     }
 

@@ -113,11 +113,8 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         {
             //Delta: check for null is not necessary since _behaviorListener field
             //is only set once and never reset
-            //if (_behaviorListeners != null)
-            //{
-                ((StateHolder)_behaviorListeners).restoreState(context,
-                        ((_AttachedDeltaWrapper) state).getWrappedStateObject());
-            //}
+            ((StateHolder)_behaviorListeners).restoreState(context,
+                    ((_AttachedDeltaWrapper) state).getWrappedStateObject());
         }
         else
         {

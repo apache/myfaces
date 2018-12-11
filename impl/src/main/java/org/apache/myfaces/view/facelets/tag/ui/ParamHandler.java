@@ -86,7 +86,6 @@ public class ParamHandler extends TagHandler
     {
         String nameStr = getName(ctx);
         ValueExpression valueVE = getValue(ctx);
-        //ctx.getVariableMapper().setVariable(nameStr, valueVE);
         apply(ctx, parent, nameStr, valueVE);
     }
     
@@ -106,8 +105,7 @@ public class ParamHandler extends TagHandler
         }
     }
     
-    public void apply(FaceletContext ctx, UIComponent parent, String nameStr, ValueExpression valueVE,
-        String uniqueId)
+    public void apply(FaceletContext ctx, UIComponent parent, String nameStr, ValueExpression valueVE, String uniqueId)
             throws IOException, FacesException, FaceletException, ELException
     {
         AbstractFaceletContext actx = ((AbstractFaceletContext) ctx);

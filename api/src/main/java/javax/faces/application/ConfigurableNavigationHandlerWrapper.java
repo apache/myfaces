@@ -86,6 +86,7 @@ public abstract class ConfigurableNavigationHandlerWrapper extends ConfigurableN
         return getWrapped().getNavigationCase(context, fromAction, outcome, toFlowDocumentId);
     }
 
+    @Override
     public ConfigurableNavigationHandler getWrapped()
     {
         return delegate;

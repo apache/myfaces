@@ -376,10 +376,8 @@ public final class HtmlRendererUtils
             Map<String, List<ClientBehavior>> clientBehaviors = clientBehaviorHolder.getClientBehaviors();
             if (clientBehaviors != null && !clientBehaviors.isEmpty())
             {
-                Map<String, String> paramMap = facesContext
-                        .getExternalContext().getRequestParameterMap();
-                String behaviorEventName = paramMap
-                        .get(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME);
+                Map<String, String> paramMap = facesContext.getExternalContext().getRequestParameterMap();
+                String behaviorEventName = paramMap.get(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME);
                 if (behaviorEventName != null)
                 {
                     List<ClientBehavior> clientBehaviorList = clientBehaviors.get(behaviorEventName);
@@ -880,8 +878,8 @@ public final class HtmlRendererUtils
             UIComponent component, String componentProperty, String htmlAttrName)
             throws IOException
     {
-        String value = (String) component.getAttributes().get(componentProperty);
-        if (!isDefaultStringPreserveEmptyAttributeValue(value))
+        String value = (String) component.getAttributes().get(componentProperty);        
+        if (value != null)
         {
             writer.writeAttribute(htmlAttrName, value, componentProperty);
             return true;
@@ -903,31 +901,12 @@ public final class HtmlRendererUtils
             String componentProperty, String htmlAttrName, String value)
             throws IOException
     {
-        if (!isDefaultStringPreserveEmptyAttributeValue(value))
+        if (value != null)
         {
             writer.writeAttribute(htmlAttrName, value, componentProperty);
             return true;
         }
         return false;
-    }
-
-    /**
-     * Check if the value is the default for String type attributes that requires preserve "" as
-     * a valid value.
-     * 
-     * @param value
-     * @return
-     */
-    private static boolean isDefaultStringPreserveEmptyAttributeValue(String value)
-    {
-        if (value == null)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
     }
 
     /**
@@ -946,7 +925,7 @@ public final class HtmlRendererUtils
             throws IOException
     {
         String value = (String) component.getAttributes().get(componentProperty);
-        if (!isDefaultStringAttributeValue(value))
+        if (value != null && !value.isEmpty())
         {
             writer.writeAttribute(htmlAttrName, value, componentProperty);
             return true;
@@ -969,27 +948,11 @@ public final class HtmlRendererUtils
             String componentProperty, String htmlAttrName, String value)
             throws IOException
     {
-        if (!isDefaultStringAttributeValue(value))
+        if (value != null && !value.isEmpty())
         {
             writer.writeAttribute(htmlAttrName, value, componentProperty);
             return true;
         }
-        return false;
-    }
-    
-    /**
-     * Check if the value is the default for String type attributes (null or "").
-     * 
-     * @param value
-     * @return
-     */
-    private static boolean isDefaultStringAttributeValue(String value)
-    {
-        if (value == null || value.length() == 0)
-        {
-            return true;
-        }
-
         return false;
     }
     
@@ -1395,36 +1358,9 @@ public final class HtmlRendererUtils
 
     public static boolean isXHTMLContentType(String contentType)
     {
-        return contentType.indexOf(XHTML_CONTENT_TYPE) != -1
-                || contentType.indexOf(APPLICATION_XML_CONTENT_TYPE) != -1
-                || contentType.indexOf(TEXT_XML_CONTENT_TYPE) != -1;
-    }
-
-    public static String getJavascriptLocation(UIComponent component)
-    {
-        if (component == null)
-        {
-            return null;
-        }
-        return (String) component.getAttributes().get(JSFAttr.JAVASCRIPT_LOCATION);
-    }
-
-    public static String getImageLocation(UIComponent component)
-    {
-        if (component == null)
-        {
-            return null;
-        }
-        return (String) component.getAttributes().get(JSFAttr.IMAGE_LOCATION);
-    }
-
-    public static String getStyleLocation(UIComponent component)
-    {
-        if (component == null)
-        {
-            return null;
-        }
-        return (String) component.getAttributes().get(JSFAttr.STYLE_LOCATION);
+        return contentType.contains(XHTML_CONTENT_TYPE)
+                || contentType.contains(APPLICATION_XML_CONTENT_TYPE)
+                || contentType.contains(TEXT_XML_CONTENT_TYPE);
     }
 
     /**

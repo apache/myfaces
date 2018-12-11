@@ -223,7 +223,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
             resetValues = null;
         }
 
-        String sourceId = null;
+        String sourceId;
         if (context.getSourceId() == null)
         {
             sourceId = AJAX_VAL_THIS;

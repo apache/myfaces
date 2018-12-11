@@ -507,7 +507,6 @@ public abstract class UIComponentBase extends UIComponent
 
         try
         {
-            //if (isRendered()) {
             this.encodeBegin(context);
 
             // rendering children
@@ -537,7 +536,6 @@ public abstract class UIComponentBase extends UIComponent
                 }
             }
             this.encodeEnd(context);
-            //}
         }
         finally
         {
@@ -2008,11 +2006,8 @@ public abstract class UIComponentBase extends UIComponent
         {
             //Delta: check for null is not necessary since _facesListener field
             //is only set once and never reset
-            //if (_facesListeners != null)
-            //{
-                ((StateHolder)_facesListeners).restoreState(context,
-                        ((_AttachedDeltaWrapper) values[0]).getWrappedStateObject());
-            //}
+            ((StateHolder)_facesListeners).restoreState(context,
+                    ((_AttachedDeltaWrapper) values[0]).getWrappedStateObject());
         }
         else if (values[0] != null || (values.length == FULL_STATE_ARRAY_SIZE))
         {

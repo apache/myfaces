@@ -648,21 +648,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         {
             return null;
         }
-        
-        /*
-        int stateHolderKeyCount = 0;
-        if (isInitalStateMarked())
-        {
-            for (Iterator<Serializable> it = _stateHolderKeys.iterator(); it.hasNext();)
-            {
-                Serializable key = it.next();
-                if (!_deltas.containsKey(key))
-                {
-                    stateHolderKeyCount++;
-                }
-            }
-        }*/
-        
+
         Map.Entry<Serializable, Object> entry;
         //entry == key, value, key, value
         Object[] retArr = new Object[serializableMap.entrySet().size() * 2];
@@ -695,39 +681,6 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
             cnt += 2;
         }
         
-        /*
-        if (isInitalStateMarked())
-        {
-            for (Iterator<Serializable> it2 = _stateHolderKeys.iterator(); it.hasNext();)
-            {
-                Serializable key = it2.next();
-                if (!_deltas.containsKey(key))
-                {
-                    retArr[cnt] = key;
-                    Object value = _fullState.get(key);
-                    if (value instanceof PartialStateHolder)
-                    {
-                        //Could contain delta, save it as _AttachedDeltaState
-                        PartialStateHolder holder = (PartialStateHolder) value;
-                        if (holder.isTransient())
-                        {
-                            retArr[cnt + 1] = null;
-                        }
-                        else
-                        {
-                            retArr[cnt + 1] = new _AttachedDeltaWrapper(value.getClass(), holder.saveState(context));
-                        }
-                    }
-                    else
-                    {
-                        //Save everything
-                        retArr[cnt + 1] = UIComponentBase.saveAttachedState(context, _fullState.get(key));
-                    }
-                    cnt += 2;
-                }
-            }
-        }
-        */
         return retArr;
     }
 
@@ -781,16 +734,6 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
                         this.put(key, mapEntry.getKey(), mapEntry.getValue());
                     }
                 }
-                /*
-                else if (savedValue instanceof _AttachedDeltaWrapper)
-                {
-                    _AttachedStateWrapper wrapper = (_AttachedStateWrapper) savedValue;
-                    //Restore delta state
-                    ((PartialStateHolder)_fullState.get(key)).restoreState(context, wrapper.getWrappedStateObject());
-                    //Add this key as StateHolder key 
-                    _stateHolderKeys.add(key);
-                }
-                */
                 else
                 {
                     put(key, savedValue);
@@ -1027,11 +970,13 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         }
     }
 
+    @Override
     public Object getTransient(Object key)
     {
         return (_transientState == null) ? null : _transientState.get(key);
     }
 
+    @Override
     public Object getTransient(Object key, Object defaultValue)
     {
         Object returnValue = (_transientState == null) ? null : _transientState.get(key);

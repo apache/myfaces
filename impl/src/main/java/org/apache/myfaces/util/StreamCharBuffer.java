@@ -520,9 +520,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
     public void writeTo(Writer target, boolean flushTarget, boolean emptyAfter)
             throws IOException
     {
-        //if (target instanceof GrailsWrappedWriter) {
-        //    target = ((GrailsWrappedWriter)target).unwrap();
-        //}
+
         if (target instanceof StreamCharBufferWriter)
         {
             if (target == writer)

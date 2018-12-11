@@ -122,29 +122,18 @@ public final class VariableMapperWrapper extends VariableMapperBase implements F
             }
             else
             {
-                //Otherwise check parent variable mapper 
-                //if (_checkTargetBase)
-                //{
-                    if (_targetBase != null)
-                    {
-                        return _targetBase.isAnyFaceletsVariableResolved();
-                    }
-                    else
-                    {
-                        // Another VariableMapper not extending from the base one was used. 
-                        // (that's the reason why _targetBase is null).
-                        // It is not possible to be sure the EL expression could use that mapper, 
-                        // so return true to force EL expression creation.
-                        return true;
-                    }
-                //}
-                //else
-                //{
-                    // If no check for targetBase is required, we are in a context that suppose there will not
-                    // be variables resolved that could affect the expressions. So return false, indicating
-                    // the resulting expression can be cached.
-                    //return false;
-                //}
+                if (_targetBase != null)
+                {
+                    return _targetBase.isAnyFaceletsVariableResolved();
+                }
+                else
+                {
+                    // Another VariableMapper not extending from the base one was used. 
+                    // (that's the reason why _targetBase is null).
+                    // It is not possible to be sure the EL expression could use that mapper, 
+                    // so return true to force EL expression creation.
+                    return true;
+                }
             }
         }
         else
@@ -154,6 +143,7 @@ public final class VariableMapperWrapper extends VariableMapperBase implements F
         }
     }
 
+    @Override
     public VariableMapper getWrapped()
     {
         return _target;
@@ -164,7 +154,6 @@ public final class VariableMapperWrapper extends VariableMapperBase implements F
     {
         _trackResolveVariables = true;
         _variableResolved = false;
-        //if (_checkTargetBase && _targetBase != null)
         if (_targetBase != null)
         {
             _targetBase.beforeConstructELExpression();
@@ -174,7 +163,6 @@ public final class VariableMapperWrapper extends VariableMapperBase implements F
     @Override
     public void afterConstructELExpression()
     {
-        //if (_checkTargetBase && _targetBase != null)
         if (_targetBase != null)
         {
             _targetBase.afterConstructELExpression();

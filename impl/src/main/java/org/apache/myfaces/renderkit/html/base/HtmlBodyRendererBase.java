@@ -54,8 +54,7 @@ public class HtmlBodyRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void encodeBegin(FacesContext facesContext, UIComponent component)
-            throws IOException
+    public void encodeBegin(FacesContext facesContext, UIComponent component) throws IOException
     {
         super.encodeBegin(facesContext, component); //check for NP
 
@@ -137,8 +136,7 @@ public class HtmlBodyRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component)
-            throws IOException
+    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
     {
         super.encodeEnd(facesContext, component); //check for NP
 
@@ -146,8 +144,7 @@ public class HtmlBodyRendererBase extends HtmlRenderer
         UIViewRoot root = facesContext.getViewRoot();
         // Perf: use indexes for iteration over children,
         // componentResources are javax.faces.component._ComponentChildrenList._ComponentChildrenList(UIComponent)  
-        List<UIComponent> componentResources = root.getComponentResources(facesContext,
-                HTML.BODY_TARGET);
+        List<UIComponent> componentResources = root.getComponentResources(facesContext, HTML.BODY_TARGET);
         int childrenCount = componentResources.size();
         if (childrenCount > 0)
         {

@@ -53,39 +53,36 @@ public class HtmlHeadRenderer extends Renderer
             HTML.LANG_ATTR, PROFILE_ATTR};
 
     @Override
-    public void encodeBegin(FacesContext facesContext, UIComponent component)
-            throws IOException
+    public void encodeBegin(FacesContext facesContext, UIComponent component) throws IOException
     {
         super.encodeBegin(facesContext, component); //check for NP
 
         ResponseWriter writer = facesContext.getResponseWriter();
         writer.startElement(HEAD_ELEM, component);
         HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
-        HtmlRendererUtils.renderHTMLAttributes(writer, component,
-                HEAD_PASSTHROUGH_ATTRIBUTES);
+        HtmlRendererUtils.renderHTMLAttributes(writer, component, HEAD_PASSTHROUGH_ATTRIBUTES);
         HtmlRendererUtils.renderHTMLAttribute(writer, component, HTML.XMLNS_ATTR , HTML.XMLNS_ATTR);
     }
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component)
-            throws IOException
+    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
     {
-        super.encodeEnd(facesContext, component); //check for NP
+        super.encodeEnd(facesContext, component);  //check for NP
 
         ResponseWriter writer = facesContext.getResponseWriter();
         UIViewRoot root = facesContext.getViewRoot();
-        List<UIComponent> componentResources = root.getComponentResources(facesContext,
-                HEAD_TARGET);
-        
+
+        List<UIComponent> componentResources = root.getComponentResources(facesContext, HEAD_TARGET);
         for (int i = 0, childCount = componentResources.size(); i < childCount; i++)
         {
             UIComponent child = componentResources.get(i);
             child.encodeAll(facesContext);
         }
+        
         writer.endElement(HEAD_ELEM);
 
-        if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isEarlyFlushEnabled() &&
-                facesContext.isProjectStage(ProjectStage.Production))
+        if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isEarlyFlushEnabled()
+                && facesContext.isProjectStage(ProjectStage.Production))
         {
             writer.flush();
         }

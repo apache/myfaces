@@ -41,8 +41,7 @@ import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.util.ComponentUtils;
 
 
-public class HtmlImageRendererBase
-        extends HtmlRenderer
+public class HtmlImageRendererBase extends HtmlRenderer
 {
     private static final Logger log = Logger.getLogger(HtmlImageRendererBase.class.getName());
     
@@ -55,8 +54,7 @@ public class HtmlImageRendererBase
     }
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
-            throws IOException
+    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UIGraphic.class);
 

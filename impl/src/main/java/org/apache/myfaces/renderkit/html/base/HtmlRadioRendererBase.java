@@ -55,8 +55,7 @@ import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.util.ComponentUtils;
 
-public class HtmlRadioRendererBase
-        extends HtmlRenderer
+public class HtmlRadioRendererBase extends HtmlRenderer
 {
     private static final Logger log = Logger.getLogger(HtmlRadioRendererBase.class.getName());
 

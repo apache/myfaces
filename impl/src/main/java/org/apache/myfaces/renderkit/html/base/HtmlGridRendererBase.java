@@ -43,9 +43,7 @@ import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 
-
-public class HtmlGridRendererBase
-        extends HtmlRenderer
+public class HtmlGridRendererBase extends HtmlRenderer
 {
     private static final Logger log = Logger.getLogger(HtmlGridRendererBase.class.getName());
     

@@ -294,6 +294,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
         return getWrapped().getViewHandler();
     }
 
+    @Override
     public Application getWrapped()
     {
         return delegate;

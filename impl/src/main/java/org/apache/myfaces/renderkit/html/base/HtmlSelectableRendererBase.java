@@ -58,8 +58,7 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
             HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent,
                     facesContext);
         }
-        writer.writeAttribute(HTML.NAME_ATTR,
-                uiComponent.getClientId(facesContext), null);
+        writer.writeAttribute(HTML.NAME_ATTR, uiComponent.getClientId(facesContext), null);
         List<SelectItemInfo> selectItemList;
         if (selectMany)
         {
@@ -164,8 +163,7 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
         Set lookupSet = HtmlRendererUtils.getSubmittedOrSelectedValuesAsSet(selectMany,
                 uiComponent, facesContext, converter);
 
-        SelectItemsUtils.renderSelectOptions(facesContext, uiComponent, converter, lookupSet,
-                selectItemList);
+        SelectItemsUtils.renderSelectOptions(facesContext, uiComponent, converter, lookupSet, selectItemList);
         // bug #970747: force separate end tag
         writer.writeText(RendererUtils.EMPTY_STRING, null);
         writer.endElement(HTML.SELECT_ELEM);

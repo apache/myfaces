@@ -62,6 +62,7 @@ public abstract class ViewHandlerWrapper extends ViewHandler
         getWrapped().initView(context);
     }
 
+    @Override
     public ViewHandler getWrapped()
     {
         return delegate;

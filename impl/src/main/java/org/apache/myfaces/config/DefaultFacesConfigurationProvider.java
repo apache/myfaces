@@ -650,11 +650,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
         {
             if (MyfacesConfig.getCurrentInstance(ectx).isValidateXML())
             {
-                //URL url = ectx.getResource(systemId);
-                //if (url != null)
-                //{
-                    validateFacesConfig(ectx, url);
-                //}
+                validateFacesConfig(ectx, url);
             }            
         }
         catch (IOException e)
@@ -692,11 +688,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 flow.setDefiningDocumentId(systemId);
                 
                 String startNodePath = systemId.substring(0, systemId.lastIndexOf('/')+1)+flowName+".xhtml";
-                //URL startNodeUrl = ectx.getResource(startNodePath);
-                //if (startNodeUrl != null)
-                //{
                 flow.setStartNode(startNodePath);
-                //}
                 
                 // There is a default return node with name [flow-name]-return and 
                 // that by default points to an outer /[flow-name]-return outcome

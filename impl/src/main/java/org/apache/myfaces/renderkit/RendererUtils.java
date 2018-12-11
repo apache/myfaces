@@ -299,8 +299,6 @@ public final class RendererUtils
             {
                 if (value == null)
                 {
-                    //if (log.isLoggable(Level.FINE))
-                    //    log.fine("returning an empty string");
                     return null;
                 }
 
@@ -502,8 +500,6 @@ public final class RendererUtils
         Assert.notNull(facesContext, "facesContext");
         Assert.notNull(uiComponent, "uiComponent");
 
-        //if (compClass != null && !(compClass.isAssignableFrom(uiComponent.getClass())))
-        // why isAssignableFrom with additional getClass method call if isInstance does the same?
         if (compClass != null && !(compClass.isInstance(uiComponent)))
         {
             throw new IllegalArgumentException("uiComponent : "

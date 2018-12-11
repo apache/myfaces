@@ -703,8 +703,6 @@ public class MyfacesConfig
         String strValue = externalContext.getInitParameter(paramName);
         if (strValue == null)
         {
-            //if (log.isLoggable(Level.INFO)) log.info("No context init parameter '" + 
-            // paramName + "' found, using default value " + defaultValue);
             return defaultValue;
         }
         else if (strValue.equalsIgnoreCase("true") || strValue.equalsIgnoreCase("on") || 
@@ -719,8 +717,6 @@ public class MyfacesConfig
         }
         else
         {
-            //if (log.isLoggable(Level.WARNING)) log.warning("Wrong context init parameter '" + 
-            //paramName + "' (='" + strValue + "'), using default value " + defaultValue);
             return defaultValue;
         }
     }
@@ -732,9 +728,6 @@ public class MyfacesConfig
         String strValue = externalContext.getInitParameter(paramName);
         if (strValue == null)
         {
-            //if (log.isLoggable(Level.INFO)) log.info("No context init parameter '" + paramName +
-            //"' found, using default value " + defaultValue); //defaultValue==null should not be 
-            //a problem here
             return defaultValue;
         }
         
@@ -748,8 +741,6 @@ public class MyfacesConfig
        String strValue = externalContext.getInitParameter(paramName);
        if (strValue == null)
        {
-           //if (log.isLoggable(Level.INFO)) log.info("No context init parameter '" +paramName +
-           //"' found, using default value " +defaultValue);
            return defaultValue;
        }
        else
@@ -760,8 +751,6 @@ public class MyfacesConfig
            }
            catch (NumberFormatException e)
            {
-               //if (log.isLoggable(Level.WARNING)) log.warning("Wrong context init parameter '" +
-               //paramName + "' (='" + strValue + "'), using default value " + defaultValue);
            }
            return defaultValue;
        }

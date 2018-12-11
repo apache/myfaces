@@ -42,20 +42,17 @@ public class HtmlCompositeFacetRenderer extends HtmlRenderer
     }
 
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-            throws IOException
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException
     {
     }
 
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component)
-            throws IOException
+    public void encodeChildren(FacesContext context, UIComponent component) throws IOException
     {
         Assert.notNull(context, "context");
         Assert.notNull(component, "component");
 
         String facetName = (String) component.getAttributes().get(UIComponent.FACETS_KEY);
-        
         if (facetName == null)
         {
             throw new IOException("Composite facet name under key UIComponent.FACETS_KEY not found "+
@@ -63,7 +60,6 @@ public class HtmlCompositeFacetRenderer extends HtmlRenderer
         }
         
         UIComponent compositeComponent = UIComponent.getCurrentCompositeComponent(context);
-        
         if (compositeComponent == null)
         {
             throw new IOException("parent Composite Component not found when rendering composite component facet "+
@@ -71,7 +67,6 @@ public class HtmlCompositeFacetRenderer extends HtmlRenderer
         }
         
         UIComponent compositeFacet = (UIComponent) compositeComponent.getFacet(facetName);
-        
         if (compositeFacet != null)
         {
             compositeFacet.encodeAll(context);
@@ -79,8 +74,7 @@ public class HtmlCompositeFacetRenderer extends HtmlRenderer
     }
 
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-            throws IOException
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException
     {
     }
 }

@@ -49,26 +49,31 @@ class _ViewAttributeMap implements Map<String, Object>, Serializable
         this._root = root;
     }
 
+    @Override
     public int size()
     {
         return _delegate.size();
     }
 
+    @Override
     public boolean isEmpty()
     {
         return _delegate.isEmpty();
     }
 
+    @Override
     public boolean containsKey(Object key)
     {
         return _delegate.containsKey(key);
     }
 
+    @Override
     public boolean containsValue(Object value)
     {
         return _delegate.containsValue(value);
     }
 
+    @Override
     public Object get(Object key)
     {
         checkKey(key);
@@ -92,6 +97,7 @@ class _ViewAttributeMap implements Map<String, Object>, Serializable
         return _delegate.get(key);
     }
 
+    @Override
     public Object put(String key, Object value)
     {
         int keyLength = ((String)key).length();
@@ -120,50 +126,60 @@ class _ViewAttributeMap implements Map<String, Object>, Serializable
         return _delegate.put(key, value);
     }
 
+    @Override
     public Object remove(Object key)
     {
         return _delegate.remove(key);
     }
 
+    @Override
     public void putAll(Map<? extends String, ? extends Object> m)
     {
         _delegate.putAll(m);
     }
 
+    @Override
     public void clear()
     {
         _delegate.clear();
     }
 
+    @Override
     public Set<String> keySet()
     {
         return _delegate.keySet();
     }
 
+    @Override
     public Collection<Object> values()
     {
         return _delegate.values();
     }
 
+    @Override
     public Set<Entry<String, Object>> entrySet()
     {
         return _delegate.entrySet();
     }
 
+    @Override
     public boolean equals(Object o)
     {
         return _delegate.equals(o);
     }
 
+    @Override
     public int hashCode()
     {
         return _delegate.hashCode();
     }
 
+    @Override
     public String toString()
     {
         return _delegate.toString();
     }
+    
     
     private void checkKey(Object key)
     {

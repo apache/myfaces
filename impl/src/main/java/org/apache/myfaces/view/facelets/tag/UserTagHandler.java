@@ -160,11 +160,9 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
         }
         finally
         {
-
             // make sure we undo our changes
             actx.popClient(this);
             actx.popTemplateContext();
-            //ctx.setVariableMapper(orig);
         }
     }
 

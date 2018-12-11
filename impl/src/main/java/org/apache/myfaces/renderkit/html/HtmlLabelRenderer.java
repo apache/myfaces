@@ -59,6 +59,9 @@ public class HtmlLabelRenderer extends HtmlRenderer
 {
     private static final Logger log = Logger.getLogger(HtmlLabelRenderer.class.getName());
 
+    private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
+            EnumSet.of(SearchExpressionHint.RESOLVE_SINGLE_COMPONENT, SearchExpressionHint.IGNORE_NO_RESULT);
+    
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
     {
@@ -74,8 +77,7 @@ public class HtmlLabelRenderer extends HtmlRenderer
     @Override
     public void decode(FacesContext context, UIComponent component)
     {
-        // Check for npe
-        super.decode(context, component);
+        super.decode(context, component);  // check for NP
         
         HtmlRendererUtils.decodeClientBehaviors(context, component);
     }
@@ -117,10 +119,8 @@ public class HtmlLabelRenderer extends HtmlRenderer
             }
             if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderEventProperties(writer, 
-                        commonPropertiesMarked, uiComponent);
-                CommonPropertyUtils.renderFocusBlurEventProperties(writer,
-                        commonPropertiesMarked, uiComponent);
+                CommonPropertyUtils.renderEventProperties(writer, commonPropertiesMarked, uiComponent);
+                CommonPropertyUtils.renderFocusBlurEventProperties(writer,commonPropertiesMarked, uiComponent);
             }
             else
             {
@@ -135,9 +135,8 @@ public class HtmlLabelRenderer extends HtmlRenderer
                 else
                 {
                     HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
-                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
-                            facesContext, writer,
-                            uiComponent, behaviors);
+                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(facesContext,
+                            writer, uiComponent, behaviors);
                 }
             }
             if (isCommonPropertiesOptimizationEnabled(facesContext))
@@ -166,10 +165,10 @@ public class HtmlLabelRenderer extends HtmlRenderer
         }
 
         String forAttr = getFor(uiComponent);
-
         if (forAttr != null)
         {
-            writer.writeAttribute(HTML.FOR_ATTR, getClientId(facesContext, uiComponent, forAttr), JSFAttr.FOR_ATTR);
+            String forClientId = getClientId(facesContext, uiComponent, forAttr);
+            writer.writeAttribute(HTML.FOR_ATTR, forClientId, JSFAttr.FOR_ATTR);
         }
         else
         {
@@ -191,13 +190,13 @@ public class HtmlLabelRenderer extends HtmlRenderer
                 boolean escape;
                 if (uiComponent instanceof HtmlOutputLabel)
                 {
-                    escape = ((HtmlOutputLabel)uiComponent).isEscape();
+                    escape = ((HtmlOutputLabel) uiComponent).isEscape();
                 }
                 else
                 {
-                    escape = RendererUtils.getBooleanAttribute(uiComponent, JSFAttr.ESCAPE_ATTR,
-                                                               true); //default is to escape
-                }                
+                    escape = RendererUtils.getBooleanAttribute(uiComponent, JSFAttr.ESCAPE_ATTR, true);
+                }
+
                 if (escape)
                 {
                     writer.writeText(text, JSFAttr.VALUE_ATTR);
@@ -214,17 +213,11 @@ public class HtmlLabelRenderer extends HtmlRenderer
         encodeAfterStart(facesContext, writer, uiComponent);
     }
 
-    /**
-     * @throws IOException  
-     */
     protected void encodeAfterStart(FacesContext facesContext, ResponseWriter writer, UIComponent uiComponent)
         throws IOException
     {
     }
 
-    /**
-     * @throws IOException  
-     */
     protected void encodeBefore(FacesContext facesContext, ResponseWriter writer, UIComponent uiComponent)
         throws IOException
     {
@@ -237,13 +230,10 @@ public class HtmlLabelRenderer extends HtmlRenderer
             return ((HtmlOutputLabel)component).getFor();
         }
 
-        return (String)component.getAttributes().get(JSFAttr.FOR_ATTR);
+        return (String) component.getAttributes().get(JSFAttr.FOR_ATTR);
 
     }
 
-    private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
-            EnumSet.of(SearchExpressionHint.RESOLVE_SINGLE_COMPONENT, SearchExpressionHint.IGNORE_NO_RESULT);
-    
     protected String getClientId(FacesContext facesContext, UIComponent uiComponent, String forAttr)
     {
         SearchExpressionContext searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
@@ -267,17 +257,11 @@ public class HtmlLabelRenderer extends HtmlRenderer
         encodeAfter(facesContext, writer, uiComponent);
     }
 
-    /**
-     * @throws IOException  
-     */
     protected void encodeBeforeEnd(FacesContext facesContext, ResponseWriter writer, UIComponent uiComponent)
         throws IOException
     {
     }
 
-    /**
-     * @throws IOException  
-     */
     protected void encodeAfter(FacesContext facesContext, ResponseWriter writer, UIComponent uiComponent)
         throws IOException
     {

@@ -142,7 +142,7 @@ public abstract class Renderer
     }
 
     public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue)
-        throws ConverterException
+            throws ConverterException
     {
         if (context == null)
         {

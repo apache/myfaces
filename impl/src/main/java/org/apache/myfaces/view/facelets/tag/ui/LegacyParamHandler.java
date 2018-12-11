@@ -84,7 +84,6 @@ public class LegacyParamHandler extends TagHandler
     {
         String nameStr = getName(ctx);
         ValueExpression valueVE = getValue(ctx);
-        //ctx.getVariableMapper().setVariable(nameStr, valueVE);
         apply(ctx, parent, nameStr, valueVE);
     }
     

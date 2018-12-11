@@ -41,8 +41,7 @@ public class SelectItemsUtils
 {
     private static final char TABULATOR = '\t';
 
-    public static List<SelectItemInfo> getSelectItemInfoList(UISelectMany uiSelectMany,
-            FacesContext facesContext)
+    public static List<SelectItemInfo> getSelectItemInfoList(UISelectMany uiSelectMany, FacesContext facesContext)
     {
         List<SelectItemInfo> list = new ArrayList<SelectItemInfo>();
 
@@ -53,8 +52,7 @@ public class SelectItemsUtils
         return list;
     }
 
-    public static List<SelectItemInfo> getSelectItemInfoList(UISelectOne uiSelectOne,
-            FacesContext facesContext)
+    public static List<SelectItemInfo> getSelectItemInfoList(UISelectOne uiSelectOne, FacesContext facesContext)
     {
         List<SelectItemInfo> list = new ArrayList<SelectItemInfo>();
         for (SelectItemsIterator iter = new SelectItemsIterator(uiSelectOne, facesContext); iter.hasNext();)

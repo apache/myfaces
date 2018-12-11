@@ -48,8 +48,7 @@ import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.util.SharedStringBuilder;
 
-public class HtmlButtonRendererBase
-    extends HtmlRenderer
+public class HtmlButtonRendererBase extends HtmlRenderer
 {
     private static final String SB_BUILD_BEHAVIORIZED_ONCLICK = HtmlButtonRendererBase.class.getName()
             + "#buildBehaviorizedOnClick";
@@ -114,8 +113,7 @@ public class HtmlButtonRendererBase
     @Override
     public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
-        RendererUtils.checkParamValidity(
-                facesContext, uiComponent, UICommand.class);
+        RendererUtils.checkParamValidity(facesContext, uiComponent, UICommand.class);
 
         String clientId = uiComponent.getClientId(facesContext);
 

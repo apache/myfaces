@@ -296,11 +296,7 @@ public final class ErrorPageWriter
             else if ("message".equals(errorParts[i]))
             {
                 boolean printed = false;
-                //Iterator<UIComponent> iterator = null;
-                //if (components != null)
-                //{ 
-                //    iterator = components.iterator();
-                //}
+
                 for (Throwable e : exs)
                 {
                     String msg = e.getMessage();

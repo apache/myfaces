@@ -40,14 +40,12 @@ public class HtmlDoctypeRenderer extends Renderer
 {
 
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component)
-            throws IOException
+    public void encodeChildren(FacesContext context, UIComponent component) throws IOException
     {
     }
     
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-            throws IOException
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException
     {
         super.encodeEnd(context, component);
         

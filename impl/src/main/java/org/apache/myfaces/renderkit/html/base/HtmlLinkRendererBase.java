@@ -99,8 +99,7 @@ public abstract class HtmlLinkRendererBase
         else if (component instanceof UIOutput)
         {
             //do nothing
-            if (component instanceof ClientBehaviorHolder &&
-                    !HtmlRendererUtils.isDisabled(component))
+            if (component instanceof ClientBehaviorHolder && !HtmlRendererUtils.isDisabled(component))
             {
                 HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
             }

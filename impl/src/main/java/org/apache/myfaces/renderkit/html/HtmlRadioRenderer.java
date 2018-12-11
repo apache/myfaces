@@ -22,19 +22,14 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.renderkit.html.base.HtmlRadioRendererBase;
 
-
 /**
  * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Thomas Spiegl
  * @version $Revision$ $Date$
  */
-@JSFRenderer(
-    renderKitId="HTML_BASIC",
-    family="javax.faces.SelectOne",
-    type="javax.faces.Radio")
-public class HtmlRadioRenderer
-        extends HtmlRadioRendererBase
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.SelectOne", type = "javax.faces.Radio")
+public class HtmlRadioRenderer extends HtmlRadioRendererBase
 {
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)

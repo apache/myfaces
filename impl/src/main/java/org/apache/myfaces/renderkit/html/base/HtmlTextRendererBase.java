@@ -52,8 +52,7 @@ public class HtmlTextRendererBase
     private static final String AUTOCOMPLETE_VALUE_OFF = "off";
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component)
-        throws IOException
+    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext,component,null);
         
@@ -81,9 +80,7 @@ public class HtmlTextRendererBase
         }
     }
 
-
-    protected void renderOutput(FacesContext facesContext, UIComponent component)
-        throws IOException
+    protected void renderOutput(FacesContext facesContext, UIComponent component) throws IOException
     {
         
         String text = RendererUtils.getStringValue(facesContext, component);
@@ -183,8 +180,7 @@ public class HtmlTextRendererBase
     }
 
     //Subclasses can set the value of an attribute before, or can render a custom attribute after calling this method
-    protected void renderInputBegin(FacesContext facesContext,
-            UIComponent component) throws IOException
+    protected void renderInputBegin(FacesContext facesContext, UIComponent component) throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
 

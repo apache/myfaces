@@ -70,17 +70,12 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
            }
            ((UIInput) component).setSubmittedValue(new HttpPartWrapper(part));
         }
-        catch (IOException e)
-        {
-            throw new FacesException(e);
-        }
-        catch (ServletException e)
+        catch (IOException | ServletException e)
         {
             throw new FacesException(e);
         }
         
-        if (component instanceof ClientBehaviorHolder &&
-                !HtmlRendererUtils.isDisabled(component))
+        if (component instanceof ClientBehaviorHolder && !HtmlRendererUtils.isDisabled(component))
         {
             HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
         }
@@ -92,10 +87,10 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
     {   
         renderInput(facesContext, component);
         
-        if(!facesContext.isProjectStage(ProjectStage.Production) 
-              && facesContext.isPostback() &&
-             (facesContext.getPartialViewContext().isPartialRequest() ||
-              facesContext.getPartialViewContext().isAjaxRequest()))
+        if(!facesContext.isProjectStage(ProjectStage.Production)
+                && facesContext.isPostback()
+                && (facesContext.getPartialViewContext().isPartialRequest() ||
+                    facesContext.getPartialViewContext().isAjaxRequest()))
         {
             UIForm form = ComponentUtils.closest(UIForm.class, component);
             if (form != null && form instanceof HtmlForm)
@@ -277,8 +272,7 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         return false;
     }
 
-    public static void renderOutputText(FacesContext facesContext,
-            UIComponent component, String text, boolean escape)
+    public static void renderOutputText(FacesContext facesContext, UIComponent component, String text, boolean escape)
             throws IOException
     {
         if (text != null)
@@ -286,9 +280,7 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
             ResponseWriter writer = facesContext.getResponseWriter();
             boolean span = false;
 
-            if (component.getId() != null
-                    && !component.getId().startsWith(
-                            UIViewRoot.UNIQUE_ID_PREFIX))
+            if (component.getId() != null && !component.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
             {
                 span = true;
 
@@ -303,10 +295,8 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
             }
             else
             {
-                span = HtmlRendererUtils
-                        .renderHTMLAttributesWithOptionalStartElement(writer,
-                                component, HTML.SPAN_ELEM,
-                                HTML.COMMON_PASSTROUGH_ATTRIBUTES);
+                span = HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(writer,
+                                component, HTML.SPAN_ELEM, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
             }
 
             if (escape)

@@ -134,8 +134,7 @@ public class HtmlStylesheetRenderer extends Renderer implements
     }
     
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component)
-            throws IOException
+    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
     {
         super.encodeEnd(facesContext, component); //check for NP
         
@@ -203,7 +202,6 @@ public class HtmlStylesheetRenderer extends Renderer implements
             writer.startElement(HTML.LINK_ELEM, component);
             writer.writeAttribute(HTML.REL_ATTR, HTML.STYLESHEET_VALUE,null );
             String media = (String) component.getAttributes().get("media");
-            //writer.writeAttribute("media", media == null ? "screen" : media ,null );
             if (media != null)
             {
                 writer.writeAttribute("media", media ,null );

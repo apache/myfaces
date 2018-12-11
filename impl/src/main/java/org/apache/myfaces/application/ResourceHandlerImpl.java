@@ -1155,14 +1155,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         String libraryVersion = null;
         String resourceName = null;
         String resourceVersion = null;
-        
-        // Check if resource exists. It avoids additional 
-        // checks and it can be done very quickly because the 
-        // loader always uses the resourceId structure to
-        // organize resources. But decompose the resourceId is
-        // even faster.
-        //if (resourceLoader.resourceIdExists(resourceId))
-        //{
+
         int lastSlash = resourceId.lastIndexOf('/');
         if (lastSlash < 0)
         {
@@ -1229,7 +1222,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                 token = resourceId.substring(start, firstSlash);
                 int minResourceNameSlash = (resourceVersion != null) ?
                     resourceId.lastIndexOf('/', lastSlash-1) : lastSlash;
-                //if (resourceLoader.libraryExists(token))
+
                 if (start < minResourceNameSlash)
                 {
                     libraryName = token;
@@ -1330,14 +1323,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         String libraryVersion = null;
         String resourceName = null;
         String resourceVersion = null;
-        
-        // Check if resource exists. It avoids additional 
-        // checks and it can be done very quickly because the 
-        // loader always uses the resourceId structure to
-        // organize resources. But decompose the resourceId is
-        // even faster.
-        //if (resourceLoader.resourceIdExists(resourceId))
-        //{
+
         int lastSlash = resourceId.lastIndexOf('/');
         if (lastSlash < 0)
         {
@@ -1404,7 +1390,6 @@ public class ResourceHandlerImpl extends ResourceHandler
                 token = resourceId.substring(start, firstSlash);
                 int minResourceNameSlash = (resourceVersion != null) ?
                     resourceId.lastIndexOf('/', lastSlash-1) : lastSlash;
-                //if (resourceLoader.libraryExists(token))
                 if (start < minResourceNameSlash)
                 {
                     libraryName = token;

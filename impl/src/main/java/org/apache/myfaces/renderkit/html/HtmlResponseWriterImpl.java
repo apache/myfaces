@@ -45,8 +45,7 @@ import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.HTMLEncoder;
 import org.apache.myfaces.util.Assert;
 
-public class HtmlResponseWriterImpl
-        extends ResponseWriter
+public class HtmlResponseWriterImpl extends ResponseWriter
 {
     private static final Logger log = Logger.getLogger(HtmlResponseWriterImpl.class.getName());
 

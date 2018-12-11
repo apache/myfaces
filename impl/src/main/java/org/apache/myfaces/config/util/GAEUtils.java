@@ -399,9 +399,7 @@ public class GAEUtils
             {
                 return IOCase.INSENSITIVE;
             }
-            //if (IOCase.SYSTEM.name.equals(name)){
-            //    return IOCase.SYSTEM;
-            //}
+
             throw new IllegalArgumentException("Invalid IOCase name: " + name);
         }
 

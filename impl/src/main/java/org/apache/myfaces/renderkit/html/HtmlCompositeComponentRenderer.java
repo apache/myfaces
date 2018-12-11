@@ -45,14 +45,12 @@ public class HtmlCompositeComponentRenderer extends HtmlRenderer
     }
 
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component)
-            throws IOException
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException
     {
     }
 
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component)
-            throws IOException
+    public void encodeChildren(FacesContext context, UIComponent component) throws IOException
     {
         UIComponent compositeFacet = (UIComponent) component.getFacet(UIComponent.COMPOSITE_FACET_NAME);
         
@@ -69,9 +67,7 @@ public class HtmlCompositeComponentRenderer extends HtmlRenderer
     }
 
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component)
-            throws IOException
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException
     {
     }
-
 }

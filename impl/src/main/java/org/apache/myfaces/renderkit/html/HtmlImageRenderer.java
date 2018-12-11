@@ -23,19 +23,14 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.renderkit.html.base.HtmlImageRendererBase;
 
-
 /**
  *   
  * @author Thomas Spiegl (latest modification by $Author$)
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-@JSFRenderer(
-    renderKitId="HTML_BASIC",
-    family="javax.faces.Graphic",
-    type="javax.faces.Image")
-public class HtmlImageRenderer
-extends HtmlImageRendererBase
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Graphic", type = "javax.faces.Image")
+public class HtmlImageRenderer extends HtmlImageRendererBase
 {
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)

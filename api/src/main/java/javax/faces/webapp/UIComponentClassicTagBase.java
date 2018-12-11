@@ -1257,14 +1257,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
 
         getFacesContext().getAttributes().put(componentId, iCurrentCounter);
 
-        //if (isIncludedOrForwarded())
-        //{
-        //    componentId = componentId + "pc" + iCurrentCounter;
-        //}
-        //else
-        //{
         componentId = componentId + UNIQUE_ID_PREFIX + iCurrentCounter;            
-        //}
 
         return componentId;
     }

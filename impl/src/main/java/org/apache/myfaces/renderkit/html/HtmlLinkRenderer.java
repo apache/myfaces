@@ -24,28 +24,17 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderers;
 import org.apache.myfaces.renderkit.html.base.HtmlLinkRendererBase;
 
-
 /**
  * 
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@JSFRenderers(renderers={
-    @JSFRenderer(
-        renderKitId="HTML_BASIC",
-        family="javax.faces.Output",
-        type="javax.faces.Link"),    
-    @JSFRenderer(
-        renderKitId="HTML_BASIC",
-        family="javax.faces.Command",
-        type="javax.faces.Link"),
-    @JSFRenderer(
-        renderKitId = "HTML_BASIC",
-        family = "javax.faces.OutcomeTarget",
-        type = "javax.faces.Link")
+@JSFRenderers(renderers = {
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.Link"),    
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Command", type = "javax.faces.Link"),
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.OutcomeTarget", type = "javax.faces.Link")
 })
-public class HtmlLinkRenderer
-    extends HtmlLinkRendererBase
+public class HtmlLinkRenderer extends HtmlLinkRendererBase
 {    
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
@@ -58,5 +47,4 @@ public class HtmlLinkRenderer
     {
         return true;
     }
-
 }

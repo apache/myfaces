@@ -57,8 +57,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
     private static final String EXTERNAL_TRUE_VALUE = "true";
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
-            throws IOException
+    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, null);
         
@@ -77,7 +76,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             Boolean value = RendererUtils.getBooleanValue( uiComponent );
             boolean isChecked = value != null ? value.booleanValue() : false;
             renderCheckbox(facesContext, uiComponent, EXTERNAL_TRUE_VALUE, false,isChecked, true, null); 
-                //TODO: the selectBoolean is never disabled
+            //TODO: the selectBoolean is never disabled
         }
         else if (uiComponent instanceof UISelectMany)
         {
@@ -136,7 +135,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
 
         if (!pageDirectionLayout)
         {
-            writer.startElement(HTML.TR_ELEM, null); //selectMany);
+            writer.startElement(HTML.TR_ELEM, null);
         }
         
         Converter converter = getConverter(facesContext, selectMany);
@@ -182,20 +181,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         
         return (String) selectMany.getAttributes().get(JSFAttr.LAYOUT_ATTR);
     }
-    
-    /**
-     * 
-     * @param facesContext
-     * @param uiComponent
-     * @param selectItem
-     * @param useSubmittedValues
-     * @param lookupSet
-     * @param converter
-     * @param pageDirectionLayout
-     * @param itemNum
-     * @return the itemNum for the next option
-     * @throws IOException
-     */
+
     protected int renderGroupOrItemCheckbox(FacesContext facesContext,
                                              UIComponent uiComponent, SelectItem selectItem,
                                              boolean useSubmittedValues, Set lookupSet,
@@ -213,10 +199,10 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         {
             if (pageDirectionLayout)
             {
-                writer.startElement(HTML.TR_ELEM, null); // selectMany);
+                writer.startElement(HTML.TR_ELEM, null);
             }
 
-            writer.startElement(HTML.TD_ELEM, null); // selectMany);
+            writer.startElement(HTML.TD_ELEM, null);
             if (selectItem.isEscape())
             {
                 writer.writeText(selectItem.getLabel(),HTML.LABEL_ATTR);
@@ -230,16 +216,16 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             if (pageDirectionLayout)
             {
                 writer.endElement(HTML.TR_ELEM);
-                writer.startElement(HTML.TR_ELEM, null); // selectMany);
+                writer.startElement(HTML.TR_ELEM, null);
             }
-            writer.startElement(HTML.TD_ELEM, null); // selectMany);
+            writer.startElement(HTML.TD_ELEM, null);
 
-            writer.startElement(HTML.TABLE_ELEM, null); // selectMany);
+            writer.startElement(HTML.TABLE_ELEM, null);
             writer.writeAttribute(HTML.BORDER_ATTR, "0", null);
             
             if(!pageDirectionLayout)
             {
-                writer.startElement(HTML.TR_ELEM, null); // selectMany);
+                writer.startElement(HTML.TR_ELEM, null);
             }
 
             SelectItemGroup group = (SelectItemGroup) selectItem;
@@ -287,9 +273,9 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             writer.write("\t\t");
             if (pageDirectionLayout)
             {
-                writer.startElement(HTML.TR_ELEM, null); // selectMany);
+                writer.startElement(HTML.TR_ELEM, null);
             }
-            writer.startElement(HTML.TD_ELEM, null); // selectMany);
+            writer.startElement(HTML.TD_ELEM, null);
 
             boolean disabled = selectItem.isDisabled();
 
@@ -465,8 +451,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         return itemId;
     }
 
-    protected boolean isDisabled(FacesContext facesContext,
-            UIComponent component)
+    protected boolean isDisabled(FacesContext facesContext, UIComponent component)
     {
         //TODO: overwrite in extended HtmlCheckboxRenderer and check for
         // enabledOnUserRole
@@ -480,8 +465,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         }
         else
         {
-            return RendererUtils.getBooleanAttribute(component,
-                    HTML.DISABLED_ATTR, false);
+            return RendererUtils.getBooleanAttribute(component, HTML.DISABLED_ATTR, false);
         }
     }
 
@@ -510,8 +494,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
     }
 
     @Override
-    public Object getConvertedValue(FacesContext facesContext,
-            UIComponent component, Object submittedValue)
+    public Object getConvertedValue(FacesContext facesContext, UIComponent component, Object submittedValue)
             throws ConverterException
     {
         RendererUtils.checkParamValidity(facesContext, component, null);
@@ -537,8 +520,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
      * @param component
      * @return
      */
-    protected Converter getConverter(FacesContext facesContext,
-            UIComponent component)
+    protected Converter getConverter(FacesContext facesContext, UIComponent component)
     {
         if (component instanceof UISelectMany)
         {

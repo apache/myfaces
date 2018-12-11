@@ -34,10 +34,7 @@ import org.apache.myfaces.renderkit.html.base.HtmlFormRendererBase;
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-@JSFRenderer(
-    renderKitId="HTML_BASIC",
-    family="javax.faces.Form",
-    type="javax.faces.Form")
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Form", type = "javax.faces.Form")
 public class HtmlFormRenderer
         extends HtmlFormRendererBase
 {

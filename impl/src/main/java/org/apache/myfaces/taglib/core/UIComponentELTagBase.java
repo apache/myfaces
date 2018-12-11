@@ -27,16 +27,12 @@ import javax.faces.webapp.UIComponentELTag;
 
 public abstract class UIComponentELTagBase extends UIComponentELTag
 {
-
     //UIComponent attributes
     private ValueExpression _forceId;
 
     private ValueExpression _forceIdIndex;
     private static final Boolean DEFAULT_FORCE_ID_INDEX_VALUE = Boolean.TRUE;
 
-    private ValueExpression _javascriptLocation;
-    private ValueExpression _imageLocation;
-    private ValueExpression _styleLocation;
 
     //Special UIComponent attributes (ValueHolder, ConvertibleValueHolder)
     private ValueExpression _value;
@@ -44,6 +40,7 @@ public abstract class UIComponentELTagBase extends UIComponentELTag
 
     //attributes id, rendered and binding are handled by UIComponentTag
 
+    @Override
     public void release()
     {
         super.release();
@@ -53,12 +50,9 @@ public abstract class UIComponentELTagBase extends UIComponentELTag
 
         _value = null;
         _converter = null;
-
-        _javascriptLocation = null;
-        _imageLocation = null;
-        _styleLocation = null;
     }
 
+    @Override
     protected void setProperties(UIComponent component)
     {
         super.setProperties(component);
@@ -70,19 +64,6 @@ public abstract class UIComponentELTagBase extends UIComponentELTag
                 component,
                 JSFAttr.FORCE_ID_INDEX_ATTR,
                 _forceIdIndex, DEFAULT_FORCE_ID_INDEX_VALUE);
-        if (_javascriptLocation != null)
-        {
-            setStringProperty(component, JSFAttr.JAVASCRIPT_LOCATION,
-                    _javascriptLocation);
-        }
-        if (_imageLocation != null)
-        {
-            setStringProperty(component, JSFAttr.IMAGE_LOCATION, _imageLocation);
-        }
-        if (_styleLocation != null)
-        {
-            setStringProperty(component, JSFAttr.STYLE_LOCATION, _styleLocation);
-        }
 
         //rendererType already handled by UIComponentTag
 
@@ -121,39 +102,6 @@ public abstract class UIComponentELTagBase extends UIComponentELTag
     public void setConverter(ValueExpression converter)
     {
         _converter = converter;
-    }
-
-    /**
-     * Sets the javascript location attribute of the tag.  NOTE: Not every tag that extends this class will
-     * actually make use of this attribute.  Check the TLD to see which components actually implement it.
-     *
-     * @param aJavascriptLocation The alternate javascript location to use.
-     */
-    public void setJavascriptLocation(ValueExpression aJavascriptLocation)
-    {
-        _javascriptLocation = aJavascriptLocation;
-    }
-
-    /**
-     * Sets the image location attribute of the tag.  NOTE: Not every tag that extends this class will
-     * actually make use of this attribute.  Check the TLD to see which components actually implement it.
-     *
-     * @param aImageLocation The alternate image location to use.
-     */
-    public void setImageLocation(ValueExpression aImageLocation)
-    {
-        _imageLocation = aImageLocation;
-    }
-
-    /**
-     * Sets the style location attribute of the tag.  NOTE: Not every tag that extends this class will
-     * actually make use of this attribute.  Check the TLD to see which components actually implement it.
-     *
-     * @param aStyleLocation The alternate style location to use.
-     */
-    public void setStyleLocation(ValueExpression aStyleLocation)
-    {
-        _styleLocation = aStyleLocation;
     }
 
     // sub class helpers

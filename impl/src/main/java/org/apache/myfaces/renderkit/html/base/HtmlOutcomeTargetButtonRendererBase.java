@@ -39,9 +39,6 @@ import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 
-/**
- * @since 2.0
- */
 public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
 {
     @Override
@@ -51,8 +48,7 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void encodeBegin(FacesContext facesContext, UIComponent uiComponent)
-            throws IOException
+    public void encodeBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
         super.encodeBegin(facesContext, uiComponent); //check for NP
 
@@ -195,15 +191,13 @@ public class HtmlOutcomeTargetButtonRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void encodeChildren(FacesContext facesContext, UIComponent component)
-            throws IOException
+    public void encodeChildren(FacesContext facesContext, UIComponent component) throws IOException
     {
         RendererUtils.renderChildren(facesContext, component);
     }
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component)
-            throws IOException
+    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
     {
         super.encodeEnd(facesContext, component); //check for NP
 

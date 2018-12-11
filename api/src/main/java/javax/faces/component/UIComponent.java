@@ -200,6 +200,7 @@ public abstract class UIComponent
      *
      * @since 2.0
      */
+    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
@@ -312,6 +313,7 @@ public abstract class UIComponent
 
     public abstract boolean isRendered();
 
+    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;
@@ -726,6 +728,7 @@ public abstract class UIComponent
      *
      * @since 2.0
      */
+    @Override
     public void clearInitialState()
     {
         _initialStateMarked = false;
@@ -759,7 +762,6 @@ public abstract class UIComponent
             popComponentFromEL(context);
         }
 
-        //if (isRendered()) {
         this.encodeBegin(context);
 
         // rendering children
@@ -779,7 +781,6 @@ public abstract class UIComponent
             }
         }
         this.encodeEnd(context);
-        //}
     }
 
     protected abstract void addFacesListener(FacesListener listener);
@@ -794,6 +795,7 @@ public abstract class UIComponent
 
     public abstract void processDecodes(FacesContext context);
 
+    @Override
     public void processEvent(ComponentSystemEvent event) throws AbortProcessingException
     {
         // The default implementation performs the following action. If the argument event is an instance of
@@ -1134,7 +1136,6 @@ public abstract class UIComponent
                     int componentIndex = componentStack.lastIndexOf(this);
                     if (componentIndex >= 0)
                     {
-                        //for (int i = 0; i < (componentIndex + 1); i++)
                         for (int i = componentStack.size()-1; i >= componentIndex ; i--)
                         {
                             newCurrent = componentStack.remove(componentStack.size()-1);
@@ -1347,6 +1348,7 @@ public abstract class UIComponent
         }
 
         // Optimized methods
+        @Override
         public String get(Object key)
         {
             try
@@ -1359,11 +1361,13 @@ public abstract class UIComponent
             }
         }
 
+        @Override
         public boolean isEmpty()
         {
             return !_bundle.getKeys().hasMoreElements();
         }
 
+        @Override
         public boolean containsKey(Object key)
         {
             try
@@ -1377,6 +1381,7 @@ public abstract class UIComponent
         }
 
         // Unoptimized methods
+        @Override
         public Collection<String> values()
         {
             if (_values == null)
@@ -1391,16 +1396,19 @@ public abstract class UIComponent
             return _values;
         }
 
+        @Override
         public int size()
         {
             return values().size();
         }
 
+        @Override
         public boolean containsValue(Object value)
         {
             return values().contains(value);
         }
 
+        @Override
         public Set<Map.Entry<String, String>> entrySet()
         {
             Set<Entry<String, String>> set = new HashSet<Entry<String, String>>();
@@ -1409,17 +1417,19 @@ public abstract class UIComponent
                 final String k = enumer.nextElement();
                 set.add(new Map.Entry<String, String>()
                 {
-
+                    @Override
                     public String getKey()
                     {
                         return k;
                     }
 
+                    @Override
                     public String getValue()
                     {
                         return (String) _bundle.getObject(k);
                     }
-
+                    
+                    @Override
                     public String setValue(String value)
                     {
                         throw new UnsupportedOperationException();
@@ -1430,6 +1440,7 @@ public abstract class UIComponent
             return set;
         }
 
+        @Override
         public Set<String> keySet()
         {
             Set<String> set = new HashSet<String>();
@@ -1440,22 +1451,25 @@ public abstract class UIComponent
             return set;
         }
 
-        // Unsupported methods
+        @Override
         public String remove(Object key)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void putAll(Map<? extends String, ? extends String> t)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public String put(String key, String value)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void clear()
         {
             throw new UnsupportedOperationException();
@@ -1564,6 +1578,7 @@ public abstract class UIComponent
             return componentClass.hashCode() + listener.hashCode();
         }
 
+        @Override
         public boolean isListenerForSource(Object source)
         {
             // and its implementation of SystemEventListener.isListenerForSource(java.lang.Object) must return true
@@ -1577,19 +1592,19 @@ public abstract class UIComponent
             return listener;
         }
 
+        @Override
         public void processEvent(SystemEvent event)
         {
             // This inner class must call through to the argument componentListener in its implementation of
             // SystemEventListener.processEvent(javax.faces.event.SystemEvent)
-
             assert event instanceof ComponentSystemEvent;
 
             listener.processEvent((ComponentSystemEvent) event);
         }
 
+        @Override
         public void clearInitialState()
         {
-            //if (!(listener instanceof UIComponent) && listener instanceof PartialStateHolder)
             if ((listenerCapability & LISTENER_SAVE_PARTIAL_STATE_HOLDER) != 0)
             {
                 ((PartialStateHolder) listener).clearInitialState();
@@ -1597,20 +1612,19 @@ public abstract class UIComponent
             _initialStateMarked = false;
         }
 
+        @Override
         public boolean initialStateMarked()
         {
-            //if (!(listener instanceof UIComponent) && listener instanceof PartialStateHolder)
             if ((listenerCapability & LISTENER_SAVE_PARTIAL_STATE_HOLDER) != 0)
             {
                 return ((PartialStateHolder) listener).initialStateMarked();
             }
-            //return false;
             return _initialStateMarked;
         }
 
+        @Override
         public void markInitialState()
         {
-            //if (!(listener instanceof UIComponent) && listener instanceof PartialStateHolder)
             if ((listenerCapability & LISTENER_SAVE_PARTIAL_STATE_HOLDER) != 0)
             {
                 ((PartialStateHolder) listener).markInitialState();
@@ -1618,9 +1632,9 @@ public abstract class UIComponent
             _initialStateMarked = true;
         }
 
+        @Override
         public boolean isTransient()
         {
-            //if ( listener instanceof StateHolder)
             if ((listenerCapability & LISTENER_SAVE_PARTIAL_STATE_HOLDER) != 0 ||
                     (listenerCapability & LISTENER_SAVE_STATE_HOLDER) != 0)
             {
@@ -1629,6 +1643,7 @@ public abstract class UIComponent
             return false;
         }
 
+        @Override
         public void restoreState(FacesContext context, Object state)
         {
             if (state == null)
@@ -1673,27 +1688,14 @@ public abstract class UIComponent
                     listener = (ComponentSystemEventListener)
                             UIComponentBase.restoreAttachedState(context, values[1]);
                 }
-                /*
-                listener = values[1] == null ? 
-                        UIComponent.getCurrentComponent(context) : 
-                            (ComponentSystemEventListener) UIComponentBase.restoreAttachedState(context, values[1]);
-                            */
             }
         }
 
+        @Override
         public Object saveState(FacesContext context)
         {
             if (!initialStateMarked())
             {
-                /*
-                Object[] state = new Object[2];
-                state[0] = componentClass;
-                if (!(listener instanceof UIComponent))
-                {
-                    state[1] = UIComponentBase.saveAttachedState(context, listener);
-                }
-                return state;
-                */
                 Object[] state = new Object[3];
                 state[0] = componentClass;
                 //If this is not a component or a renderer, save it calling UIComponent.saveAttachedState
@@ -1771,17 +1773,10 @@ public abstract class UIComponent
                         return null;
                     }
                 }
-                /*
-                Object listenerSaved = ((StateHolder) listener).saveState(context);
-                if (listenerSaved == null)
-                {
-                    return null;
-                }
-                return new Object[]{componentClass, new _AttachedDeltaWrapper(listener.getClass(), listenerSaved)};
-                */
             }
         }
 
+        @Override
         public void setTransient(boolean newTransientValue)
         {
             if ((listenerCapability & LISTENER_SAVE_PARTIAL_STATE_HOLDER) != 0 ||

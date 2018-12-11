@@ -32,10 +32,7 @@ import org.apache.myfaces.renderkit.html.base.HtmlGridRendererBase;
  * @author Thomas Spiegl
  * @version $Revision$ $Date$
  */
-@JSFRenderer(
-    renderKitId="HTML_BASIC",
-    family="javax.faces.Panel",
-    type="javax.faces.Grid")
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Panel", type = "javax.faces.Grid")
 public class HtmlGridRenderer
     extends HtmlGridRendererBase
 {

@@ -33,11 +33,11 @@ import javax.faces.component.behavior.ClientBehavior;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 
-public class HtmlGroupRendererBase
-        extends HtmlRenderer 
+public class HtmlGroupRendererBase extends HtmlRenderer 
 {
     private static final String LAYOUT_BLOCK_VALUE = "block";
 
+    @Override
     public boolean getRendersChildren()
     {
         return true;
@@ -52,18 +52,18 @@ public class HtmlGroupRendererBase
         HtmlRendererUtils.decodeClientBehaviors(context, component);
     }
 
-    public void encodeBegin(FacesContext context, UIComponent component)
-            throws IOException
+    @Override
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException
     {
     }
 
-    public void encodeChildren(FacesContext context, UIComponent component)
-        throws IOException
+    @Override
+    public void encodeChildren(FacesContext context, UIComponent component) throws IOException
     {
     }
 
-    public void encodeEnd(FacesContext context, UIComponent component)
-            throws IOException
+    @Override
+    public void encodeEnd(FacesContext context, UIComponent component) throws IOException
     {
         ResponseWriter writer = context.getResponseWriter();
         boolean span = false;
@@ -141,7 +141,7 @@ public class HtmlGroupRendererBase
             }
             else
             {
-                span=HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(writer,
+                span = HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(writer,
                                                                                  component,
                                                                                  layoutElement,
                                                                                  HTML.COMMON_PASSTROUGH_ATTRIBUTES);

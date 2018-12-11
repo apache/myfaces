@@ -39,15 +39,12 @@ import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 
-
-public class HtmlTextareaRendererBase
-        extends HtmlRenderer
+public class HtmlTextareaRendererBase extends HtmlRenderer
 {
     private static final String ADD_NEW_LINE_AT_START_ATTR = "org.apache.myfaces.addNewLineAtStart";
     
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
-            throws IOException
+    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UIInput.class);
 
@@ -66,8 +63,7 @@ public class HtmlTextareaRendererBase
 
     }
 
-    protected void encodeTextArea(FacesContext facesContext, UIComponent uiComponent) 
-        throws IOException
+    protected void encodeTextArea(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
        //allow subclasses to render custom attributes by separating rendering begin and end
         renderTextAreaBegin(facesContext, uiComponent);
@@ -77,8 +73,7 @@ public class HtmlTextareaRendererBase
     }
 
     //Subclasses can set the value of an attribute before, or can render a custom attribute after calling this method
-    protected void renderTextAreaBegin(FacesContext facesContext,
-            UIComponent uiComponent) throws IOException
+    protected void renderTextAreaBegin(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
         writer.startElement(HTML.TEXTAREA_ELEM, uiComponent);
@@ -224,7 +219,7 @@ public class HtmlTextareaRendererBase
 
     @Override
     public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue)
-        throws ConverterException
+            throws ConverterException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UIOutput.class);
         return RendererUtils.getConvertedUIOutputValue(facesContext,

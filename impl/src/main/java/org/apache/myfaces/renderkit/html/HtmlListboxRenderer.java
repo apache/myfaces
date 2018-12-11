@@ -23,24 +23,16 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderers;
 import org.apache.myfaces.renderkit.html.base.HtmlListboxRendererBase;
 
-
 /**
  *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 @JSFRenderers(renderers={
-    @JSFRenderer(
-        renderKitId="HTML_BASIC",
-        family="javax.faces.SelectOne",
-        type="javax.faces.Listbox"),   
-    @JSFRenderer(
-        renderKitId="HTML_BASIC",
-        family="javax.faces.SelectMany",
-        type="javax.faces.Listbox")
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.SelectOne", type = "javax.faces.Listbox"),   
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.SelectMany", type = "javax.faces.Listbox")
 })
-public class HtmlListboxRenderer
-        extends HtmlListboxRendererBase
+public class HtmlListboxRenderer extends HtmlListboxRendererBase
 {
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
@@ -53,5 +45,4 @@ public class HtmlListboxRenderer
     {
         return true;
     }
-
 }

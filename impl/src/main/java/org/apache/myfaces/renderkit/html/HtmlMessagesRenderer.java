@@ -42,8 +42,6 @@ import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Messages", type = "javax.faces.Messages")
 public class HtmlMessagesRenderer extends HtmlMessagesRendererBase
 {
-    // private static final Log log = LogFactory.getLog(HtmlMessagesRenderer.class);
-
     @Override
     public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
     {

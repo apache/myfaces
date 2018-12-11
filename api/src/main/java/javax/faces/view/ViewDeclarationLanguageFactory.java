@@ -42,6 +42,7 @@ public abstract class ViewDeclarationLanguageFactory implements FacesWrapper<Vie
     
     public abstract ViewDeclarationLanguage getViewDeclarationLanguage(String viewId);
 
+    @Override
     public ViewDeclarationLanguageFactory getWrapped()
     {
         return delegate;

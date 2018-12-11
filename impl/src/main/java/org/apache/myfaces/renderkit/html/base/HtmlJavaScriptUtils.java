@@ -100,15 +100,6 @@ public final class HtmlJavaScriptUtils
      */
     public static String escapeJavaScriptForChain(String javaScript)
     {
-        // first replace \' with \\'
-        //String escaped = StringUtils.replace(javaScript, "\\'", "\\\\'");
-
-        // then replace ' with \'
-        // (this will replace every \' in the original to \\\')
-        //escaped = StringUtils.replace(escaped, '\'', "\\'");
-
-        //return escaped;
-
         StringBuilder out = null;
         for (int pos = 0; pos < javaScript.length(); pos++)
         {

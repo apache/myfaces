@@ -23,19 +23,14 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.renderkit.html.base.HtmlGroupRendererBase;
 
-
 /**
  *   
  * @author Thomas Spiegl (latest modification by $Author$)
  * @author Manfred Geiler
  * @version $Revision$ $Date$
  */
-@JSFRenderer(
-    renderKitId="HTML_BASIC",
-    family="javax.faces.Panel",
-    type="javax.faces.Group")
-public class HtmlGroupRenderer
-    extends HtmlGroupRendererBase
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Panel", type = "javax.faces.Group")
+public class HtmlGroupRenderer extends HtmlGroupRendererBase
 {
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)

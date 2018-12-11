@@ -24,24 +24,16 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderers;
 import org.apache.myfaces.renderkit.html.base.HtmlTextRendererBase;
 
-
 /**
  *   
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@JSFRenderers(renderers={
-    @JSFRenderer(
-        renderKitId="HTML_BASIC",
-        family="javax.faces.Input",
-        type="javax.faces.Text"),
-    @JSFRenderer(
-        renderKitId="HTML_BASIC",
-        family="javax.faces.Output",
-        type="javax.faces.Text")
+@JSFRenderers(renderers = {
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Input", type = "javax.faces.Text"),
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.Text")
 })
-public class HtmlTextRenderer
-        extends HtmlTextRendererBase
+public class HtmlTextRenderer extends HtmlTextRendererBase
 {    
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)

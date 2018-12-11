@@ -41,8 +41,6 @@ import org.apache.myfaces.renderkit.html.base.HtmlMessageRendererBase;
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Message", type = "javax.faces.Message")
 public class HtmlMessageRenderer extends HtmlMessageRendererBase
 {
-    // private static final Log log = LogFactory.getLog(HtmlMessageRenderer.class);
-
     @Override
     public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
     {
@@ -63,14 +61,14 @@ public class HtmlMessageRenderer extends HtmlMessageRendererBase
 
     @Override
     protected String getSummary(FacesContext facesContext, UIComponent message, FacesMessage facesMessage,
-                                String msgClientId)
+            String msgClientId)
     {
         return facesMessage.getSummary();
     }
 
     @Override
     protected String getDetail(FacesContext facesContext, UIComponent message, FacesMessage facesMessage,
-                               String msgClientId)
+            String msgClientId)
     {
         return facesMessage.getDetail();
     }

@@ -49,6 +49,7 @@ public abstract class ApplicationFactory implements FacesWrapper<ApplicationFact
      * 
      * @since 2.0
      */
+    @Override
     public ApplicationFactory getWrapped()
     {
         return delegate;

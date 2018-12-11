@@ -51,10 +51,7 @@ import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.StringUtils;
 
-@JSFRenderer(
-    renderKitId="HTML_BASIC",
-    family="javax.faces.Command",
-    type="javax.faces.Script")
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Command", type = "javax.faces.Script")
 public class HtmlCommandScriptRenderer extends HtmlRenderer
 {
     private static final Set<SearchExpressionHint> EXPRESSION_HINTS =

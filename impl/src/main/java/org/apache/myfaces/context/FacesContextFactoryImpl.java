@@ -155,39 +155,34 @@ public class FacesContextFactoryImpl extends FacesContextFactory implements Rele
                 _firstExternalContextInstance.set(defaultExternalContext);
             }
         }
-        
-        //if (context instanceof ServletContext)
-        //{
-            FacesContext facesContext;
-            if (externalContext instanceof ReleasableExternalContext)
-            {
-                facesContext = new FacesContextImpl(externalContext, (ReleasableExternalContext) externalContext,
-                                                    this, _applicationFactory, _renderKitFactory, 
-                                                    _partialViewContextFactory);
-            }
-            else if (defaultExternalContext != null && defaultExternalContext instanceof ReleasableExternalContext)
-            {
-                facesContext = new FacesContextImpl(externalContext,
-                                                    (ReleasableExternalContext) defaultExternalContext, this,
-                                                    _applicationFactory, _renderKitFactory, 
-                                                    _partialViewContextFactory);
-            }
-            else
-            {
-                facesContext = new FacesContextImpl(externalContext, null, this,
-                                                    _applicationFactory, _renderKitFactory, 
-                                                    _partialViewContextFactory);
-            }
-            
-            facesContext.setExceptionHandler(_exceptionHandlerFactory.getExceptionHandler());
-            
-            return facesContext;
-            //return new FacesContextImpl((ServletContext)context, (ServletRequest)request, (ServletResponse)response);
-        //}
 
-        //throw new FacesException("Unsupported context type " + context.getClass().getName());
+        FacesContext facesContext;
+        if (externalContext instanceof ReleasableExternalContext)
+        {
+            facesContext = new FacesContextImpl(externalContext, (ReleasableExternalContext) externalContext,
+                                                this, _applicationFactory, _renderKitFactory, 
+                                                _partialViewContextFactory);
+        }
+        else if (defaultExternalContext != null && defaultExternalContext instanceof ReleasableExternalContext)
+        {
+            facesContext = new FacesContextImpl(externalContext,
+                                                (ReleasableExternalContext) defaultExternalContext, this,
+                                                _applicationFactory, _renderKitFactory, 
+                                                _partialViewContextFactory);
+        }
+        else
+        {
+            facesContext = new FacesContextImpl(externalContext, null, this,
+                                                _applicationFactory, _renderKitFactory, 
+                                                _partialViewContextFactory);
+        }
+
+        facesContext.setExceptionHandler(_exceptionHandlerFactory.getExceptionHandler());
+
+        return facesContext;
     }
 
+    @Override
     public void release()
     {
         if (_firstExternalContextInstance != null)

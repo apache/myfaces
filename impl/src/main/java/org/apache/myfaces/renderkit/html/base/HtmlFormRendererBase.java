@@ -39,8 +39,7 @@ import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.renderkit.html.util.HTML;
 
-public class HtmlFormRendererBase
-        extends HtmlRenderer
+public class HtmlFormRendererBase extends HtmlRenderer
 {
     private static final String FORM_TARGET = HTML.FORM_ELEM;
     private static final String HIDDEN_SUBMIT_INPUT_SUFFIX = "_SUBMIT";
@@ -51,8 +50,7 @@ public class HtmlFormRendererBase
     private static final String SHARED_STRING_BUILDER = HtmlFormRendererBase.class.getName() + ".SHARED_STRING_BUILDER";
     
     @Override
-    public void encodeBegin(FacesContext facesContext, UIComponent component)
-            throws IOException
+    public void encodeBegin(FacesContext facesContext, UIComponent component) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, component, UIForm.class);
 
@@ -173,8 +171,7 @@ public class HtmlFormRendererBase
     }
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component)
-            throws IOException
+    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
 
@@ -191,12 +188,11 @@ public class HtmlFormRendererBase
         writer.endElement(HTML.FORM_ELEM);
     }
     
-    protected void renderViewStateAndHiddenFields(FacesContext facesContext, UIComponent component)
-            throws IOException
+    protected void renderViewStateAndHiddenFields(FacesContext facesContext, UIComponent component) throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
         
-                //write hidden input to determine "submitted" value on decode
+        //write hidden input to determine "submitted" value on decode
         writer.startElement(HTML.INPUT_ELEM, null); // component);
         writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
         StringBuilder sb = SharedStringBuilder.get(facesContext, SHARED_STRING_BUILDER);
@@ -237,13 +233,6 @@ public class HtmlFormRendererBase
     public void decode(FacesContext facesContext, UIComponent component)
     {
         RendererUtils.checkParamValidity(facesContext, component, UIForm.class);
-
-        /*
-        if (HTMLUtil.isDisabled(component))
-        {
-            return;
-        }
-        */
 
         UIForm htmlForm = (UIForm)component;
 

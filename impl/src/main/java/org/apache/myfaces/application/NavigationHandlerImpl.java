@@ -1087,7 +1087,6 @@ public class NavigationHandlerImpl
         // If viewIdToTest does not start with "/", look for the last "/" in viewId.  If not found, simply prepend "/".
         // Otherwise, prepend everything before and including the last "/" in viewId.
         
-        //if (!viewIdToTest.startsWith ("/") && viewId != null)
         boolean startWithSlash = false;
         if (viewIdToTest.length() > 0)
         {

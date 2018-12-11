@@ -46,23 +46,19 @@ import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.util.ComponentUtils;
 
-public abstract class HtmlMessagesRendererBase
-        extends HtmlMessageRendererBase
+public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
 {
     private static final Logger log = Logger.getLogger(HtmlMessagesRendererBase.class.getName());
 
     protected static final String LAYOUT_LIST  = "list";
     protected static final String LAYOUT_TABLE = "table";
 
-    protected void renderMessages(FacesContext facesContext,
-                                  UIComponent messages)
-            throws IOException
+    protected void renderMessages(FacesContext facesContext, UIComponent messages) throws IOException
     {
         renderMessages(facesContext, messages, false);
     }
 
-    protected void renderMessages(FacesContext facesContext,
-            UIComponent messages, boolean alwaysRenderSpan)
+    protected void renderMessages(FacesContext facesContext, UIComponent messages, boolean alwaysRenderSpan)
             throws IOException
     {
         renderMessages(facesContext, messages, alwaysRenderSpan, false);
@@ -70,8 +66,7 @@ public abstract class HtmlMessagesRendererBase
 
     protected void renderMessages(FacesContext facesContext,
                                   UIComponent messages, boolean alwaysRenderSpan, 
-                                  boolean renderDivWhenNoMessagesAndIdSet)
-            throws IOException
+                                  boolean renderDivWhenNoMessagesAndIdSet) throws IOException
     {
         // check the for attribute
         String forAttr = getFor(messages);
@@ -213,9 +208,7 @@ public abstract class HtmlMessagesRendererBase
     }
 
 
-    private void renderTable(FacesContext facesContext,
-                             UIComponent messages,
-                             MessagesIterator messagesIterator)
+    private void renderTable(FacesContext facesContext, UIComponent messages, MessagesIterator messagesIterator)
             throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
@@ -296,16 +289,6 @@ public abstract class HtmlMessagesRendererBase
                 style = ((HtmlMessages)messages).getFatalStyle();
                 styleClass = ((HtmlMessages)messages).getFatalClass();
             }
-
-            //if (style == null)
-            //{
-            //    style = ((HtmlMessages)messages).getStyle();
-            //}
-
-            //if (styleClass == null)
-            //{
-            //    styleClass = ((HtmlMessages)messages).getStyleClass();
-            //}
         }
         else
         {
@@ -330,16 +313,6 @@ public abstract class HtmlMessagesRendererBase
                 style = (String)attr.get(JSFAttr.FATAL_STYLE_ATTR);
                 styleClass = (String)attr.get(JSFAttr.FATAL_CLASS_ATTR);
             }
-
-            //if (style == null)
-            //{
-            //    style = (String)attr.get(JSFAttr.STYLE_ATTR);
-            //}
-
-            //if (styleClass == null)
-            //{
-            //    styleClass = (String)attr.get(JSFAttr.STYLE_CLASS_ATTR);
-            //}
         }
 
         return new String[] {style, styleClass};
@@ -354,8 +327,7 @@ public abstract class HtmlMessagesRendererBase
         }
         else
         {
-            Map attr = messages.getAttributes();
-            styleClass = (String)attr.get(JSFAttr.STYLE_CLASS_ATTR);
+            styleClass = (String) messages.getAttributes().get(JSFAttr.STYLE_CLASS_ATTR);
         }
         return styleClass;
     }
@@ -369,8 +341,7 @@ public abstract class HtmlMessagesRendererBase
         }
         else
         {
-            Map attr = messages.getAttributes();
-            style = (String)attr.get(JSFAttr.STYLE_ATTR);
+            style = (String) messages.getAttributes().get(JSFAttr.STYLE_ATTR);
         }
         return style;
     }
@@ -486,8 +457,7 @@ public abstract class HtmlMessagesRendererBase
         private boolean _redisplay;
         private Object _next;
 
-        public MessagesIterator(FacesContext facesContext, boolean globalOnly, boolean redisplay,
-                String clientId)
+        public MessagesIterator(FacesContext facesContext, boolean globalOnly, boolean redisplay, String clientId)
         {
             _facesContext = facesContext;
             // The for attribute is mutually exclusive with globalOnly and take precedence if used.

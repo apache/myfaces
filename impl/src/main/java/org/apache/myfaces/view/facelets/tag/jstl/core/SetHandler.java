@@ -136,12 +136,10 @@ public class SetHandler extends TagHandler
             }
             else
             {
-                //ctx.getVariableMapper().setVariable(varStr, veObj);
                 AbstractFaceletContext actx = ((AbstractFaceletContext) ctx);
                 if (ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))
                 {
-                    actx.getPageContext().getAttributes().put(varStr, 
-                        new CacheableValueExpressionWrapper(veObj));
+                    actx.getPageContext().getAttributes().put(varStr, new CacheableValueExpressionWrapper(veObj));
                 }
                 else
                 {

@@ -28,10 +28,7 @@ import org.apache.myfaces.renderkit.html.base.HtmlInputFileRendererBase;
  * @author Werner Punz (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@JSFRenderer(
-        renderKitId = "HTML_BASIC",
-        family = "javax.faces.Input",
-        type = "javax.faces.File")
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Input", type = "javax.faces.File")
 public class HtmlInputFileRenderer extends HtmlInputFileRendererBase
 {
     @Override
