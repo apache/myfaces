@@ -18,6 +18,8 @@
  */
 package javax.faces.application;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+
 /**
  * @since 2.0
  */
@@ -30,11 +32,8 @@ public enum ProjectStage
     
     public static final String PROJECT_STAGE_JNDI_NAME = "java:comp/env/jsf/ProjectStage";
 
-    /**
-     * 
-     */
-    //@JSFWebConfigParam(defaultValue="Production",
-    //        expectedValues="Development, Production, SystemTest, UnitTest",
-    //        since="2.0")
+    @JSFWebConfigParam(defaultValue="Production",
+            expectedValues="Development, Production, SystemTest, UnitTest",
+            since="2.0")
     public static final String PROJECT_STAGE_PARAM_NAME = "javax.faces.PROJECT_STAGE";
 }

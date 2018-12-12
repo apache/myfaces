@@ -54,11 +54,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.apache.myfaces.config.MyfacesConfig;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.context.flash.FlashImpl;
 import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.util.EnumerationIterator;
 import org.apache.myfaces.util.ExternalSpecifications;
 
@@ -79,12 +78,6 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     private static final String URL_NAME_VALUE_PAIR_SEPERATOR="=";
     private static final String PUSHED_RESOURCE_URLS = "oam.PUSHED_RESOURCE_URLS";
     private static final String PUSH_SUPPORTED = "oam.PUSH_SUPPORTED";
-
-    /**
-     * Indicates the port used for websocket connections.
-     */
-    @JSFWebConfigParam(since = "2.3")
-    public static final java.lang.String WEBSOCKET_ENDPOINT_PORT = "javax.faces.WEBSOCKET_ENDPOINT_PORT";
 
     private ServletRequest _servletRequest;
     private ServletResponse _servletResponse;
@@ -463,11 +456,9 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         Assert.notNull(url, "url");
 
         FacesContext facesContext = getCurrentFacesContext();
-        Integer port = WebConfigParamUtils.getIntegerInitParameter(
-                getCurrentFacesContext().getExternalContext(), WEBSOCKET_ENDPOINT_PORT);
+        Integer port = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).getWebsocketEndpointPort();
         port = (port == 0) ? null : port;
-        if (port != null && 
-            !port.equals(facesContext.getExternalContext().getRequestServerPort()))
+        if (port != null && !port.equals(facesContext.getExternalContext().getRequestServerPort()))
         {
             String scheme = facesContext.getExternalContext().getRequestScheme();
             String serverName = facesContext.getExternalContext().getRequestServerName();

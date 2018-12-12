@@ -145,14 +145,6 @@ public class ApplicationImpl extends Application
     public final static String PROJECT_STAGE_SYSTEM_PROPERTY_NAME = "faces.PROJECT_STAGE";
 
     /**
-     * Indicate the stage of the initialized application.
-     */
-    @JSFWebConfigParam(defaultValue="Production",
-            expectedValues="Development, Production, SystemTest, UnitTest",
-            since="2.0")
-    private static final String PROJECT_STAGE_PARAM_NAME = "javax.faces.PROJECT_STAGE";
-
-    /**
      * Indicate if the classes associated to components, converters, validators or behaviors
      * should be loaded as soon as they are added to the current application instance or instead
      * loaded in a lazy way.

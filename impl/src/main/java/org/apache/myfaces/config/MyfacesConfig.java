@@ -457,7 +457,6 @@ public class MyfacesConfig
     private static final String RESOURCE_HANDLER_CACHE_ENABLED = 
         "org.apache.myfaces.RESOURCE_HANDLER_CACHE_ENABLED";
     private static final boolean RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT = true;
-
     
     /**
      * Servlet context init parameter which defines which packages to scan
@@ -465,6 +464,12 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since="2.0")
     public static final String SCAN_PACKAGES = "org.apache.myfaces.annotation.SCAN_PACKAGES";
+ 
+    /**
+     * Indicates the port used for websocket connections.
+     */
+    @JSFWebConfigParam(since = "2.3")
+    public static final java.lang.String WEBSOCKET_ENDPOINT_PORT = "javax.faces.WEBSOCKET_ENDPOINT_PORT";
     
     private boolean strictJsf2AllowSlashLibraryName;
     private long configRefreshPeriod = CONFIG_REFRESH_PERIOD_DEFAULT;
@@ -502,6 +507,7 @@ public class MyfacesConfig
     private boolean resourceHandlerCacheEnabled = RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT;
     private int resourceHandlerCacheSize = RESOURCE_HANDLER_CACHE_SIZE_DEFAULT;
     private String scanPackages;
+    private Integer websocketEndpointPort;
 
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -683,14 +689,14 @@ public class MyfacesConfig
             myfacesConfig.numberOfSequentialViewsInSession = getIntegerInitParameter(extCtx, 
                     NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION,
                     NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT);
-            Integer views = myfacesConfig.getNumberOfSequentialViewsInSession();
-            if (views == null || views < 0)
+            if (myfacesConfig.numberOfSequentialViewsInSession == null
+                    || myfacesConfig.numberOfSequentialViewsInSession < 0)
             {
                 Logger.getLogger(MyfacesConfig.class.getName()).severe(
                         "Configured value for " + NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION
                           + " is not valid, must be an value >= 0, using default value ("
                           + NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT);
-                views = NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT;
+                myfacesConfig.numberOfSequentialViewsInSession = NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT;
             }
         }
         catch (Throwable e)
@@ -769,6 +775,13 @@ public class MyfacesConfig
         myfacesConfig.scanPackages = getStringInitParameter(extCtx,
                 SCAN_PACKAGES,
                 null);
+        
+        String websocketEndpointPort = extCtx.getInitParameter(WEBSOCKET_ENDPOINT_PORT);
+        if (websocketEndpointPort != null && !websocketEndpointPort.isEmpty())
+        {
+            myfacesConfig.websocketEndpointPort = Integer.valueOf(websocketEndpointPort);
+        }
+        
         
         return myfacesConfig;
     }
@@ -1043,6 +1056,11 @@ public class MyfacesConfig
     public String getScanPackages()
     {
         return scanPackages;
+    }
+
+    public Integer getWebsocketEndpointPort()
+    {
+        return websocketEndpointPort;
     }
 
     
