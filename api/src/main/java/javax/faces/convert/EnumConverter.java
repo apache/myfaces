@@ -65,6 +65,7 @@ public class EnumConverter implements Converter, PartialStateHolder
         this.targetClass = targetClass;
     }
 
+    @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
         throws ConverterException
     {
@@ -103,6 +104,7 @@ public class EnumConverter implements Converter, PartialStateHolder
         throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, ENUM_ID, params));
     }
 
+    @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
         throws ConverterException
     {
@@ -162,6 +164,7 @@ public class EnumConverter implements Converter, PartialStateHolder
         return ""; // if empty Enum
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state)
     {
         if (state != null)
@@ -170,6 +173,7 @@ public class EnumConverter implements Converter, PartialStateHolder
         }
     }
 
+    @Override
     public Object saveState(FacesContext context)
     {
         if (!initialStateMarked())
@@ -179,11 +183,13 @@ public class EnumConverter implements Converter, PartialStateHolder
         return null;
     }
 
+    @Override
     public void setTransient(boolean newTransientValue)
     {
         isTransient = newTransientValue;
     }
 
+    @Override
     public boolean isTransient()
     {
         return isTransient;
@@ -191,16 +197,19 @@ public class EnumConverter implements Converter, PartialStateHolder
     
     private boolean _initialStateMarked = false;
 
+    @Override
     public void clearInitialState()
     {
         _initialStateMarked = false;
     }
 
+    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
+    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;

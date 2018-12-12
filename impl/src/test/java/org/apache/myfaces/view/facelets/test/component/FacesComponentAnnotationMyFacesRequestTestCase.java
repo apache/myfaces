@@ -43,7 +43,7 @@ public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFa
         servletContext.addInitParameter("org.apache.myfaces.annotation.SCAN_PACKAGES","org.apache.myfaces.view.facelets.test.component");
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
         servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
-        servletContext.addInitParameter(MyfacesConfig.INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
+        servletContext.addInitParameter(MyfacesConfig.REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
     }
     
     protected ExpressionFactory createExpressionFactory()

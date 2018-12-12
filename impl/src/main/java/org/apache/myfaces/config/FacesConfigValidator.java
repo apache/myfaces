@@ -26,22 +26,11 @@ import java.util.List;
 
 import javax.faces.context.ExternalContext;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.element.NavigationCase;
 import org.apache.myfaces.config.element.NavigationRule;
 
 public class FacesConfigValidator
 {
-
-    /**
-     * Validate if the managed beans and navigations rules are correct.
-     * 
-     * <p>For example, it checks if the managed bean classes really exists, or if the 
-     * navigation rules points to existing view files.</p>
-     */
-    @JSFWebConfigParam(since="2.0", defaultValue="false", expectedValues="true, false")
-    public static final String VALIDATE_CONTEXT_PARAM = "org.apache.myfaces.VALIDATE";
-    
     private FacesConfigValidator()
     {
         // hidden 
@@ -49,13 +38,11 @@ public class FacesConfigValidator
 
     public static List<String> validate(ExternalContext ctx)
     {
-        
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(ctx);
         
         Collection<? extends NavigationRule> navRules = runtimeConfig.getNavigationRules();
         
         return validate(navRules, ctx);
-        
     }
     
     public static List<String> validate(Collection<? extends NavigationRule> navRules, ExternalContext ctx)

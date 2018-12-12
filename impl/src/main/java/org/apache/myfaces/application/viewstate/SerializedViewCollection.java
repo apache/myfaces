@@ -39,11 +39,9 @@ class SerializedViewCollection implements Serializable
     private static final Object[] EMPTY_STATES = new Object[]{null, null};
 
     private static final long serialVersionUID = -3734849062185115847L;
-    private final List<SerializedViewKey> _keys = 
-        new ArrayList<SerializedViewKey>(
-            MyfacesConfig.INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT);
-    private final Map<SerializedViewKey, Object> _serializedViews = 
-        new HashMap<SerializedViewKey, Object>();
+    private final List<SerializedViewKey> _keys = new ArrayList<>(MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION_DEFAULT);
+    private final Map<SerializedViewKey, Object> _serializedViews = new HashMap<>();
+
     /**
      * The viewScopeIds can be shared between multiple entries of the same
      * view. To store it into session, the best is use two maps, one to 
@@ -55,12 +53,10 @@ class SerializedViewCollection implements Serializable
     private HashMap<SerializedViewKey, String> _viewScopeIds = null;
     private HashMap<String, Integer> _viewScopeIdCounts = null;
 
-    private final Map<SerializedViewKey, SerializedViewKey> _precedence =
-        new HashMap<SerializedViewKey, SerializedViewKey>();
+    private final Map<SerializedViewKey, SerializedViewKey> _precedence = new HashMap<>();
     private Map<String, SerializedViewKey> _lastWindowKeys = null;
 
-    public void put(FacesContext context, Object state, 
-        SerializedViewKey key, SerializedViewKey previousRestoredKey)
+    public void put(FacesContext context, Object state, SerializedViewKey key, SerializedViewKey previousRestoredKey)
     {
         put(context, state, key, previousRestoredKey, null, null);
     }

@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.application;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.resource.ResourceHandlerCache;
 import org.apache.myfaces.resource.ResourceHandlerCache.ResourceValue;
@@ -61,6 +60,7 @@ import java.util.stream.StreamSupport;
 import javax.faces.application.ResourceVisitOption;
 import javax.faces.application.ViewHandler;
 import javax.faces.view.ViewDeclarationLanguage;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.resource.ContractResource;
 import org.apache.myfaces.resource.ContractResourceLoader;
@@ -77,7 +77,6 @@ import org.apache.myfaces.util.SkipMatchIterator;
  */
 public class ResourceHandlerImpl extends ResourceHandler
 {
-
     private static final String IS_RESOURCE_REQUEST = "org.apache.myfaces.IS_RESOURCE_REQUEST";
 
     private ResourceHandlerSupport _resourceHandlerSupport;
@@ -86,24 +85,6 @@ public class ResourceHandlerImpl extends ResourceHandler
 
     private static final Logger log = Logger.getLogger(ResourceHandlerImpl.class.getName());
 
-    /**
-     * Allow slash in the library name of a Resource. 
-     */
-    @JSFWebConfigParam(since="2.1.6, 2.0.12", defaultValue="false", 
-            expectedValues="true, false", group="resources")
-    public static final String INIT_PARAM_STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME = 
-            "org.apache.myfaces.STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME";
-    public static final boolean INIT_PARAM_STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME_DEFAULT = false;
-    
-    /**
-     * Define the default buffer size that is used between Resource.getInputStream() and 
-     * httpServletResponse.getOutputStream() when rendering resources using the default
-     * ResourceHandler.
-     */
-    @JSFWebConfigParam(since="2.1.10, 2.0.16", defaultValue="2048", group="resources")
-    public static final String INIT_PARAM_RESOURCE_BUFFER_SIZE = "org.apache.myfaces.RESOURCE_BUFFER_SIZE";
-    public static final int INIT_PARAM_RESOURCE_BUFFER_SIZE_DEFAULT = 2048;
-    
     public static final Pattern LIBRARY_VERSION_CHECKER = Pattern.compile("\\p{Digit}+(_\\p{Digit}*)*");
     public static final Pattern RESOURCE_VERSION_CHECKER = Pattern.compile("\\p{Digit}+(_\\p{Digit}*)*\\..*");    
     
@@ -989,10 +970,7 @@ public class ResourceHandlerImpl extends ResourceHandler
     {
         if (_allowSlashLibraryName == null)
         {
-            _allowSlashLibraryName = WebConfigParamUtils.getBooleanInitParameter(
-                    FacesContext.getCurrentInstance().getExternalContext(), 
-                    INIT_PARAM_STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME,
-                    INIT_PARAM_STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME_DEFAULT);
+            _allowSlashLibraryName = MyfacesConfig.getCurrentInstance().isStrictJsf2AllowSlashLibraryName();
         }
         return _allowSlashLibraryName;
     }
@@ -1001,10 +979,7 @@ public class ResourceHandlerImpl extends ResourceHandler
     {
         if (_resourceBufferSize == -1)
         {
-            _resourceBufferSize = WebConfigParamUtils.getIntegerInitParameter(
-                FacesContext.getCurrentInstance().getExternalContext(),
-                INIT_PARAM_RESOURCE_BUFFER_SIZE,
-                INIT_PARAM_RESOURCE_BUFFER_SIZE_DEFAULT);
+            _resourceBufferSize = MyfacesConfig.getCurrentInstance().getResourceBufferSize();
         }
         return _resourceBufferSize;
     }

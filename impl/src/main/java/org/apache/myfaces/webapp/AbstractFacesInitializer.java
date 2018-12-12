@@ -66,6 +66,7 @@ import javax.websocket.server.ServerContainer;
 import javax.websocket.server.ServerEndpointConfig;
 import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.push.EndpointImpl;
 import org.apache.myfaces.push.WebsocketConfigurator;
@@ -420,11 +421,10 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
 
     protected void validateFacesConfig(ServletContext servletContext, ExternalContext externalContext)
     {
-        String validate = servletContext.getInitParameter(FacesConfigValidator.VALIDATE_CONTEXT_PARAM);
-        if ("true".equals(validate) && log.isLoggable(Level.WARNING))
-        { // the default value is false
-            List<String> warnings = FacesConfigValidator.validate(
-                    externalContext);
+        String validate = servletContext.getInitParameter(MyfacesConfig.VALIDATE);
+        if ("true".equals(validate) && log.isLoggable(Level.WARNING)) // the default value is false
+        {
+            List<String> warnings = FacesConfigValidator.validate(externalContext);
 
             for (String warning : warnings)
             {

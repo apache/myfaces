@@ -53,7 +53,7 @@ public class TagLibraryTestCase extends FaceletTestCase
     @Test
     public void testLoadValidLibraryWithValidation() throws Exception
     {
-        servletContext.addInitParameter(MyfacesConfig.INIT_PARAM_VALIDATE_XML, "true");
+        servletContext.addInitParameter(MyfacesConfig.VALIDATE_XML, "true");
 
         FaceletTagLibrary faceletTagLib = TagLibraryConfigUnmarshallerImpl.create(
             externalContext, _validLibUrl);
@@ -64,7 +64,7 @@ public class TagLibraryTestCase extends FaceletTestCase
     @Test
     public void testLoadValidLibraryWithoutValidation() throws Exception
     {
-        servletContext.addInitParameter(MyfacesConfig.INIT_PARAM_VALIDATE_XML, "false");
+        servletContext.addInitParameter(MyfacesConfig.VALIDATE_XML, "false");
 
         FaceletTagLibrary faceletTagLib = TagLibraryConfigUnmarshallerImpl.create(
             externalContext, _validLibUrl);

@@ -62,7 +62,7 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesCDIRequestTestCas
         servletContext.addInitParameter("javax.faces.FACELETS_LIBRARIES", "/WEB-INF/testcomponent.taglib.xml");
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
         servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
-        servletContext.addInitParameter(MyfacesConfig.INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
+        servletContext.addInitParameter(MyfacesConfig.REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
     }
     
     protected ExpressionFactory createExpressionFactory()

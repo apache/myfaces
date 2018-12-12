@@ -48,7 +48,7 @@ public class BeanValidationCDIRequestTestCase extends AbstractMyFacesCDIRequestT
                 "org.apache.myfaces.view.facelets.tag.jsf.core.validation");
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
         servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
-        servletContext.addInitParameter(MyfacesConfig.INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
+        servletContext.addInitParameter(MyfacesConfig.REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
         servletContext.addInitParameter("javax.faces.CLIENT_WINDOW_MODE", "url");
         servletContext.addInitParameter("org.apache.myfaces.validator.BEAN_BEFORE_JSF_VALIDATION", "true");
     }

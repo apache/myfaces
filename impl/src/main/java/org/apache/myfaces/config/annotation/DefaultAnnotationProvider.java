@@ -50,7 +50,6 @@ import javax.faces.render.FacesRenderer;
 import javax.faces.validator.FacesValidator;
 import javax.faces.view.facelets.FaceletsResourceResolver;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.MyfacesConfig;
@@ -71,13 +70,6 @@ import org.apache.myfaces.view.facelets.util.Classpath;
 public class DefaultAnnotationProvider extends AnnotationProvider
 {
     private static final Logger log = Logger.getLogger(DefaultAnnotationProvider.class.getName());
-    
-    /**
-     * Servlet context init parameter which defines which packages to scan
-     * for beans, separated by commas.
-     */
-    @JSFWebConfigParam(since="2.0")
-    public static final String SCAN_PACKAGES = "org.apache.myfaces.annotation.SCAN_PACKAGES";
 
     /**
      * <p>Prefix path used to locate web application classes for this
@@ -151,9 +143,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
     @Override
     public Map<Class<? extends Annotation>, Set<Class<?>>> getAnnotatedClasses(ExternalContext ctx)
     {
-        String useCdiForAnnotationScanning =
-                ctx.getInitParameter(CdiAnnotationProviderExtension.USE_CDI_FOR_ANNOTATION_SCANNING);
-        if (useCdiForAnnotationScanning != null && "true".equalsIgnoreCase(useCdiForAnnotationScanning.trim()))
+        if (MyfacesConfig.getCurrentInstance(ctx).isUseCdiForAnnotationScanning())
         {
             BeanManager beanManager = CDIUtils.getBeanManager(ctx);
             CdiAnnotationProviderExtension extension =
@@ -209,22 +199,6 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         {
             processClass(map, clazz);
         }
-        
-        //3. Scan on myfaces-impl for annotations available on myfaces-impl.
-        //Also scan jar including META-INF/standard-faces-config.xml
-        //(myfaces-impl jar file)
-        // -= Leonardo Uribe =- No annotations in MyFaces jars, code not
-        // necessary, because all config is already in standard-faces-config.xml
-        //URL url = getClassLoader().getResource(STANDARD_FACES_CONFIG_RESOURCE);
-        //if (url == null)
-        //{
-        //    url = getClass().getClassLoader().getResource(STANDARD_FACES_CONFIG_RESOURCE);
-        //}
-        //classes = getAnnotatedMyfacesImplClasses(ctx, url);
-        //for (Class<?> clazz : classes)
-        //{
-        //    processClass(map, clazz);
-        //}
         
         return map;
     }
@@ -343,29 +317,11 @@ public class DefaultAnnotationProvider extends AnnotationProvider
     protected Collection<Class<?>> getAnnotatedMyfacesImplClasses(ExternalContext ctx, URL url)
     {
         return Collections.emptyList();
-        /*
-        try
-        {
-            List<Class<?>> list = new ArrayList<Class<?>>();
-            JarFile jarFile = getJarFile(url);
-            if (jarFile == null)
-            {
-                return list;
-            }
-            else
-            {
-                return archiveClasses(ctx, jarFile, list);
-            }
-        }
-        catch(IOException e)
-        {
-            throw new FacesException("cannot scan jar file for annotations:"+url, e);
-        }*/
     }
 
     protected Collection<Class<?>> getAnnotatedWebInfClasses(ExternalContext ctx) throws IOException
     {
-        String scanPackages = ctx.getInitParameter(SCAN_PACKAGES);
+        String scanPackages = MyfacesConfig.getCurrentInstance(ctx).getScanPackages();
         if (scanPackages != null)
         {
             try
@@ -407,12 +363,10 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         {
             if (scanPackageToken.toLowerCase().endsWith(".jar"))
             {
-                URL jarResource = externalContext.getResource(WEB_LIB_PREFIX
-                        + scanPackageToken);
+                URL jarResource = externalContext.getResource(WEB_LIB_PREFIX + scanPackageToken);
                 String jarURLString = "jar:" + jarResource.toString() + "!/";
                 URL url = new URL(jarURLString);
-                JarFile jarFile = ((JarURLConnection) url.openConnection())
-                        .getJarFile();
+                JarFile jarFile = ((JarURLConnection) url.openConnection()).getJarFile();
 
                 archiveClasses(jarFile, list);
             }
@@ -470,9 +424,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
             try
             {
                 in = new DataInputStream(jar.getInputStream(entry));
-                couldContainAnnotation = _filter
-                        .couldContainAnnotationsOnClassDef(in,
-                                byteCodeAnnotationsNames);
+                couldContainAnnotation = _filter.couldContainAnnotationsOnClassDef(in, byteCodeAnnotationsNames);
             }
             catch (IOException e)
             {
@@ -483,8 +435,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                 couldContainAnnotation = true;
                 if (log.isLoggable(Level.FINE))
                 {
-                    log.fine("IOException when filtering class " + name
-                            + " for annotations");
+                    log.fine("IOException when filtering class " + name + " for annotations");
                 }
             }
             finally
@@ -587,7 +538,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                                 + " ."
                                 + " This could happen because maven jetty plugin is used"
                                 + " (goal jetty:run). Try configure "
-                                + SCAN_PACKAGES + " init parameter "
+                                + MyfacesConfig.SCAN_PACKAGES + " init parameter "
                                 + "or use jetty:run-exploded instead.");
             }
         }
@@ -606,11 +557,9 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                     boolean couldContainAnnotation = false;
                     try
                     {
-                        in = new DataInputStream(externalContext
-                                .getResourceAsStream(path));
-                        couldContainAnnotation = _filter
-                                .couldContainAnnotationsOnClassDef(in,
-                                        byteCodeAnnotationsNames);
+                        in = new DataInputStream(externalContext.getResourceAsStream(path));
+                        couldContainAnnotation = _filter.couldContainAnnotationsOnClassDef(in,
+                                byteCodeAnnotationsNames);
                     }
                     catch (IOException e)
                     {
@@ -621,8 +570,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                         couldContainAnnotation = true;
                         if (log.isLoggable(Level.FINE))
                         {
-                            log.fine("IOException when filtering class " + path
-                                    + " for annotations");
+                            log.fine("IOException when filtering class " + path + " for annotations");
                         }
                     }
                     finally

@@ -1243,7 +1243,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
         if (_flashScopeDisabled)
         {
             throw new FlashScopeDisabledException("Flash scope was disabled by context param " 
-                + MyfacesConfig.INIT_PARAM_FLASH_SCOPE_DISABLED + " but erroneously accessed");
+                + MyfacesConfig.FLASH_SCOPE_DISABLED + " but erroneously accessed");
         }
     }
     

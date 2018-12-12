@@ -70,13 +70,14 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     public static final String RESTORED_VIEW_KEY_REQUEST_ATTR = 
         ServerSideStateCacheImpl.class.getName() + ".RESTORED_VIEW_KEY";
     
-    public static final String NUMBER_OF_VIEWS_IN_SESSION_PARAM = MyfacesConfig.INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION;
+    public static final String NUMBER_OF_VIEWS_IN_SESSION_PARAM
+            = MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION;
 
     public static final String NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM
-            = MyfacesConfig.INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION;
-    
+            = MyfacesConfig.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION;
+
     public static final int DEFAULT_NUMBER_OF_VIEWS_IN_SESSION = 
-            MyfacesConfig.INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT;
+            MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION_DEFAULT;
 
     /**
      * Indicates that the serialized state will be compressed before it is written to the session. By default true.

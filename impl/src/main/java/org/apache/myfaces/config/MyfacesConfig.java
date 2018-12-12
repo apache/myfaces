@@ -18,14 +18,13 @@
  */
 package org.apache.myfaces.config;
 
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.util.ClassUtils;
-import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
  * Holds all configuration init parameters (from web.xml) that are independent
@@ -50,8 +49,8 @@ public class MyfacesConfig
      * This param is valid only if project stage is not production. Set this param to 0 disable this feature.
      */
     @JSFWebConfigParam(defaultValue="2",since="1.1", classType="java.lang.Long")
-    public static final String INIT_PARAM_CONFIG_REFRESH_PERIOD = "org.apache.myfaces.CONFIG_REFRESH_PERIOD";
-    public static final long INIT_PARAM_CONFIG_REFRESH_PERIOD_DEFAULT = 2;
+    public static final String CONFIG_REFRESH_PERIOD = "org.apache.myfaces.CONFIG_REFRESH_PERIOD";
+    public static final long CONFIG_REFRESH_PERIOD_DEFAULT = 2;
 
     /**
      * Define if the input field that should store the state (javax.faces.ViewState) should render 
@@ -70,8 +69,8 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1", 
             ignoreUpperLowerCase=true, group="state")
-    private static final String  INIT_PARAM_RENDER_VIEWSTATE_ID = "org.apache.myfaces.RENDER_VIEWSTATE_ID";
-    private static final boolean INIT_PARAM_RENDER_VIEWSTATE_ID_DEFAULT = true;
+    private static final String  RENDER_VIEWSTATE_ID = "org.apache.myfaces.RENDER_VIEWSTATE_ID";
+    private static final boolean RENDER_VIEWSTATE_ID_DEFAULT = true;
 
     /**
      * Use "&amp;amp;" entity instead a plain "&amp;" character within HTML.
@@ -90,8 +89,8 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1.6", 
             ignoreUpperLowerCase=true, group="render")
-    private static final String  INIT_PARAM_STRICT_XHTML_LINKS = "org.apache.myfaces.STRICT_XHTML_LINKS";
-    private static final boolean INIT_PARAM_STRICT_XHTML_LINKS_DEFAULT = true;
+    private static final String  STRICT_XHTML_LINKS = "org.apache.myfaces.STRICT_XHTML_LINKS";
+    private static final boolean STRICT_XHTML_LINKS_DEFAULT = true;
     
     /**
      * This param renders the clear javascript on button necessary only for
@@ -101,9 +100,9 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false, on, off, yes, no",since="1.2.3",
             ignoreUpperLowerCase=true, group="render")
-    private static final String INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON = 
+    private static final String RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON = 
         "org.apache.myfaces.RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON";
-    private static final boolean INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT= false;
+    private static final boolean RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT= false;
 
     /**
      * Define an alternate class name that will be used to initialize MyFaces, instead the default 
@@ -114,7 +113,7 @@ public class MyfacesConfig
      * </p>
      */
     @JSFWebConfigParam(since="1.2.7")
-    private static final String INIT_PARAM_DELEGATE_FACES_SERVLET = "org.apache.myfaces.DELEGATE_FACES_SERVLET";
+    private static final String DELEGATE_FACES_SERVLET = "org.apache.myfaces.DELEGATE_FACES_SERVLET";
 
     /**
      * Indicate if the facelet associated to the view should be reapplied when the view is refreshed.
@@ -129,9 +128,9 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since="2.0", defaultValue="auto", expectedValues="true,false,auto", tags="performance", 
             ignoreUpperLowerCase=true, group="state")
-    public final static String INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS = 
+    public final static String REFRESH_TRANSIENT_BUILD_ON_PSS = 
         "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS"; 
-    public final static String INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_DEFAULT = "auto";
+    public final static String REFRESH_TRANSIENT_BUILD_ON_PSS_DEFAULT = "auto";
 
     /**
      * Enable or disable a special mode that enable full state for parent components containing c:if, c:forEach, 
@@ -144,35 +143,35 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since="2.0", defaultValue="false", expectedValues="true, false, on, off, yes, no", 
             tags="performance", ignoreUpperLowerCase=true, group="state")
-    public final static String INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE = 
+    public final static String REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE = 
         "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE";
-    public final static boolean INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE_DEFAULT = false;
+    public final static boolean REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE_DEFAULT = false;
     
     /**
      * If set to <code>true</code>, tag library XML files and faces config XML files using schema 
      * will be validated during application start up
      */
     @JSFWebConfigParam(since="2.0", expectedValues="true, false, on, off, yes, no", ignoreUpperLowerCase=true)
-    public final static String INIT_PARAM_VALIDATE_XML = "org.apache.myfaces.VALIDATE_XML";
-    public final static boolean INIT_PARAM_VALIDATE_XML_DEFAULT = false;
+    public final static String VALIDATE_XML = "org.apache.myfaces.VALIDATE_XML";
+    public final static boolean VALIDATE_XML_DEFAULT = false;
     
     /**
      * Wrap content inside script with xml comment to prevent old browsers to display it. By default it is true. 
      */
     @JSFWebConfigParam(since="2.0.1", expectedValues="true, false, on, off, yes, no", defaultValue="false",
             ignoreUpperLowerCase=true, group="render")
-    public final static String INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG = 
+    public final static String WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG = 
         "org.apache.myfaces.WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG";
-    public final static boolean INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT = false;
+    public final static boolean WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT = false;
     
     /**
      * If set true, render the form submit script inline, as in myfaces core 1.2 and earlier versions 
      */
     @JSFWebConfigParam(since="2.0.2", expectedValues="true, false, on, off, yes, no", defaultValue="false", 
             ignoreUpperLowerCase=true, group="render")
-    public final static String INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE = 
+    public final static String RENDER_FORM_SUBMIT_SCRIPT_INLINE = 
         "org.apache.myfaces.RENDER_FORM_SUBMIT_SCRIPT_INLINE";
-    public final static boolean INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT = false;
+    public final static boolean RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT = false;
     
     /**
      * Enable/disable DebugPhaseListener feature, with provide useful information about ValueHolder 
@@ -182,8 +181,8 @@ public class MyfacesConfig
      * This param only has effect when project stage is Development.     
      */
     @JSFWebConfigParam(since="2.0.8")
-    public final static String INIT_PARAM_DEBUG_PHASE_LISTENER = "org.apache.myfaces.DEBUG_PHASE_LISTENER";
-    public final static boolean INIT_PARAM_DEBUG_PHASE_LISTENER_DEFAULT = false;
+    public final static String DEBUG_PHASE_LISTENER = "org.apache.myfaces.DEBUG_PHASE_LISTENER";
+    public final static boolean DEBUG_PHASE_LISTENER_DEFAULT = false;
     
     /**
      * Change default getType() behavior for composite component EL resolver, from return null 
@@ -196,9 +195,9 @@ public class MyfacesConfig
      * so the change is enabled by default). 
      */
     @JSFWebConfigParam(since="2.0.10", expectedValues="true, false", defaultValue="false", group="EL")
-    public final static String INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER = 
+    public final static String STRICT_JSF_2_CC_EL_RESOLVER = 
         "org.apache.myfaces.STRICT_JSF_2_CC_EL_RESOLVER";
-    public final static boolean INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT = false;
+    public final static boolean STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT = false;
     
     /**
      * Define the default content type that the default ResponseWriter generates, when no match can be derived from
@@ -206,9 +205,9 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since="2.0.11,2.1.5", expectedValues="text/html, application/xhtml+xml", 
             defaultValue="text/html", group="render")
-    public final static String INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE = 
+    public final static String DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE = 
         "org.apache.myfaces.DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE";
-    public final static String INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT = "text/html";
+    public final static String DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT = "text/html";
 
     /**
      * Enable or disable a cache used to "remember" the generated facelets unique ids and reduce 
@@ -218,9 +217,9 @@ public class MyfacesConfig
             group="viewhandler", tags="performance",
             desc="Enable or disable a cache used to 'remember'  the generated facelets unique ids " + 
                  "and reduce the impact over memory usage.")
-    public static final String INIT_PARAM_VIEW_UNIQUE_IDS_CACHE_ENABLED = 
+    public static final String VIEW_UNIQUE_IDS_CACHE_ENABLED = 
         "org.apache.myfaces.VIEW_UNIQUE_IDS_CACHE_ENABLED";
-    public static final boolean INIT_PARAM_VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT = true;
+    public static final boolean VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT = true;
     
     /**
      * Set the size of the cache used to store strings generated using SectionUniqueIdCounter
@@ -228,9 +227,9 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(defaultValue = "100", since = "2.0.13, 2.1.7",
             group="viewhandler", tags="performance")
-    public static final String INIT_PARAM_COMPONENT_UNIQUE_IDS_CACHE_SIZE =
+    public static final String COMPONENT_UNIQUE_IDS_CACHE_SIZE =
         "org.apache.myfaces.COMPONENT_UNIQUE_IDS_CACHE_SIZE";
-    public static final int INIT_PARAM_COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT = 100;
+    public static final int COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT = 100;
 
     /**
     * If set false, myfaces won't support JSP and javax.faces.el. JSP are deprecated in JSF 2.X, javax.faces.el in 
@@ -243,8 +242,8 @@ public class MyfacesConfig
          desc="If set false, myfaces won't support JSP and javax.faces.el. JSP are deprecated in " +
          "JSF 2.X, javax.faces.el in in JSF 1.2. Default value is true.",
          group="EL", tags="performance ")
-    public final static String INIT_PARAM_SUPPORT_JSP_AND_FACES_EL = "org.apache.myfaces.SUPPORT_JSP_AND_FACES_EL";
-    public final static boolean INIT_PARAM_SUPPORT_JSP_AND_FACES_EL_DEFAULT = true;
+    public final static String SUPPORT_JSP_AND_FACES_EL = "org.apache.myfaces.SUPPORT_JSP_AND_FACES_EL";
+    public final static boolean SUPPORT_JSP_AND_FACES_EL_DEFAULT = true;
     
     /**
      * When the application runs inside Google Application Engine container (GAE),
@@ -255,8 +254,8 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since = "2.1.8, 2.0.14", expectedValues="none, myfavoritejsflib-*.jar",
             tags="performance, GAE")
-    public static final String INIT_PARAM_GAE_JSF_JAR_FILES = "org.apache.myfaces.GAE_JSF_JAR_FILES";
-    public final static String INIT_PARAM_GAE_JSF_JAR_FILES_DEFAULT = null;
+    public static final String GAE_JSF_JAR_FILES = "org.apache.myfaces.GAE_JSF_JAR_FILES";
+    public final static String GAE_JSF_JAR_FILES_DEFAULT = null;
 
     /**
      * When the application runs inside Google Application Engine container (GAE),
@@ -270,9 +269,9 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since = "2.1.8, 2.0.14", expectedValues="none, myfavoritejsflib-*.jar",
             tags="performance, GAE")
-    public static final String INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES = 
+    public static final String GAE_JSF_ANNOTATIONS_JAR_FILES = 
             "org.apache.myfaces.GAE_JSF_ANNOTATIONS_JAR_FILES";
-    public final static String INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT = null;
+    public final static String GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT = null;
     
     /**
      * If this param is set to true, a check will be done in Restore View Phase to check
@@ -283,17 +282,17 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since = "2.1.13", defaultValue="false", expectedValues="true,false", 
             group="viewhandler")
-    public static final String INIT_PARAM_STRICT_JSF_2_VIEW_NOT_FOUND = 
+    public static final String STRICT_JSF_2_VIEW_NOT_FOUND = 
             "org.apache.myfaces.STRICT_JSF_2_VIEW_NOT_FOUND";
-    public final static boolean INIT_PARAM_STRICT_JSF_2_VIEW_NOT_FOUND_DEFAULT = false;
+    public final static boolean STRICT_JSF_2_VIEW_NOT_FOUND_DEFAULT = false;
 
     @JSFWebConfigParam(defaultValue = "false", since = "2.2.0", expectedValues="true, false", group="render",
             tags="performance",
             desc="Enable or disable an early flush which allows to send e.g. the HTML-Head to the client " +
                     "while the rest gets rendered. It's a well known technique to reduce the time for loading a page.")
-    private static final String INIT_PARAM_EARLY_FLUSH_ENABLED =
+    private static final String EARLY_FLUSH_ENABLED =
         "org.apache.myfaces.EARLY_FLUSH_ENABLED";
-    private static final boolean INIT_PARAM_EARLY_FLUSH_ENABLED_DEFAULT = false;
+    private static final boolean EARLY_FLUSH_ENABLED_DEFAULT = false;
     
     /**
      * This param makes components like c:set, ui:param and templating components like ui:decorate,
@@ -302,9 +301,9 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since = "2.2.0", defaultValue="false", expectedValues="true,false", 
             group="viewhandler")
-    public static final String INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY = 
+    public static final String STRICT_JSF_2_FACELETS_COMPATIBILITY = 
             "org.apache.myfaces.STRICT_JSF_2_FACELETS_COMPATIBILITY";
-    public final static boolean INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT = false;    
+    public final static boolean STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT = false;    
     
     /**
      * This param makes h:form component to render the view state and other hidden fields
@@ -313,9 +312,9 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since = "2.2.4", defaultValue = "false", expectedValues = "true,false",
             group="render")
-    public static final String INIT_PARAM_RENDER_FORM_VIEW_STATE_AT_BEGIN =
+    public static final String RENDER_FORM_VIEW_STATE_AT_BEGIN =
             "org.apache.myfaces.RENDER_FORM_VIEW_STATE_AT_BEGIN";
-    public final static boolean INIT_PARAM_RENDER_FORM_VIEW_STATE_AT_BEGIN_DEFAULT = false;
+    public final static boolean RENDER_FORM_VIEW_STATE_AT_BEGIN_DEFAULT = false;
     
     /**
      * Defines whether flash scope is disabled, preventing add the Flash cookie to the response. 
@@ -323,8 +322,8 @@ public class MyfacesConfig
      * <p>This is useful for applications that does not require to use flash scope, and instead uses other scopes.</p>
      */
     @JSFWebConfigParam(defaultValue="false",since="2.0.5")
-    public static final String INIT_PARAM_FLASH_SCOPE_DISABLED = "org.apache.myfaces.FLASH_SCOPE_DISABLED";
-    public static final boolean INIT_PARAM_FLASH_SCOPE_DISABLED_DEFAULT = false;
+    public static final String FLASH_SCOPE_DISABLED = "org.apache.myfaces.FLASH_SCOPE_DISABLED";
+    public static final boolean FLASH_SCOPE_DISABLED_DEFAULT = false;
     
     /**
      * Defines the amount (default = 20) of the latest views are stored in session.
@@ -334,12 +333,11 @@ public class MyfacesConfig
      * 
      */
     @JSFWebConfigParam(defaultValue="20",since="1.1", classType="java.lang.Integer", group="state", tags="performance")
-    public static final String INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION = "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION";
-
+    public static final String NUMBER_OF_VIEWS_IN_SESSION = "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION";
     /**
      * Default value for <code>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</code> context parameter.
      */
-    public static final int INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT = 20;    
+    public static final int NUMBER_OF_VIEWS_IN_SESSION_DEFAULT = 20;    
 
     /**
      * Indicates the amount of views (default is not active) that should be stored in session between sequential
@@ -356,9 +354,9 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since="2.0.6", classType="java.lang.Integer", group="state", tags="performance", 
             defaultValue = "4")
-    public static final String INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION
+    public static final String NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION
             = "org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION";
-    public static final Integer INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT = 4;
+    public static final Integer NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT = 4;
     
     /**
      * Indicate the max number of flash tokens stored into session. It is only active when 
@@ -370,7 +368,7 @@ public class MyfacesConfig
      * org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION) + 1 = 6.
      */
     @JSFWebConfigParam(since="2.2.6", group="state", tags="performance")
-    static final String INIT_PARAM_NUMBER_OF_FLASH_TOKENS_IN_SESSION = 
+    static final String NUMBER_OF_FLASH_TOKENS_IN_SESSION = 
             "org.apache.myfaces.NUMBER_OF_FLASH_TOKENS_IN_SESSION";
     
     /**
@@ -384,7 +382,7 @@ public class MyfacesConfig
      * org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION) + 1 = 6.
      */
     @JSFWebConfigParam(since="2.2.6", group="state", tags="performance")
-    static final String INIT_PARAM_NUMBER_OF_FACES_FLOW_CLIENT_WINDOW_IDS_IN_SESSION = 
+    static final String NUMBER_OF_FACES_FLOW_CLIENT_WINDOW_IDS_IN_SESSION = 
             "org.apache.myfaces.FACES_FLOW_CLIENT_WINDOW_IDS_IN_SESSION";
     
     /**
@@ -402,36 +400,108 @@ public class MyfacesConfig
             "org.apache.myfaces.STRICT_JSF_2_ORIGIN_HEADER_APP_PATH";
     public final static boolean STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT = false;
 
-    private long _configRefreshPeriod;
-    private boolean _renderViewStateId;
-    private boolean _strictXhtmlLinks;
-    private boolean _renderClearJavascriptOnButton;
-    private String _delegateFacesServlet;
-    private boolean _refreshTransientBuildOnPSS;
-    private boolean _refreshTransientBuildOnPSSAuto;
-    private boolean refreshTransientBuildOnPSSPreserveState;
-    private boolean _validateXML;
-    private boolean _wrapScriptContentWithXmlCommentTag;
-    private boolean _renderFormSubmitScriptInline;
-    private boolean _debugPhaseListenerEnabled;
-    private boolean _strictJsf2CCELResolver;
-    private String _defaultResponseWriterContentTypeMode;
-    private boolean _viewUniqueIdsCacheEnabled;
-    private int _componentUniqueIdsCacheSize;
-    private boolean _supportJSPAndFacesEL;
-    private String _gaeJsfJarFiles;
-    private String _gaeJsfAnnotationsJarFiles;
-    private boolean _strictJsf2ViewNotFound;
-    private boolean _earlyFlushEnabled;
-    private boolean _strictJsf2FaceletsCompatibility;
-    private boolean _renderFormViewStateAtBegin;
-    private boolean _flashScopeDisabled;
-    private Integer _numberOfViewsInSession;
-    private Integer _numberOfSequentialViewsInSession;
-    private Integer _numberOfFlashTokensInSession;
-    private Integer _numberOfFacesFlowClientWindowIdsInSession;
-    private boolean _supportEL3ImportHandler;
-    private boolean _strictJsf2OriginHeaderAppPath;
+    /**
+     * Allow slash in the library name of a Resource. 
+     */
+    @JSFWebConfigParam(since="2.1.6, 2.0.12", defaultValue="false", 
+            expectedValues="true, false", group="resources")
+    public static final String STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME = 
+            "org.apache.myfaces.STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME";
+    public static final boolean STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME_DEFAULT = false;
+    
+    /**
+     * Define the default buffer size that is used between Resource.getInputStream() and 
+     * httpServletResponse.getOutputStream() when rendering resources using the default
+     * ResourceHandler.
+     */
+    @JSFWebConfigParam(since="2.1.10, 2.0.16", defaultValue="2048", group="resources")
+    public static final String RESOURCE_BUFFER_SIZE = "org.apache.myfaces.RESOURCE_BUFFER_SIZE";
+    public static final int RESOURCE_BUFFER_SIZE_DEFAULT = 2048;
+    
+    /**
+     * Validate if the managed beans and navigations rules are correct.
+     * 
+     * <p>For example, it checks if the managed bean classes really exists, or if the 
+     * navigation rules points to existing view files.</p>
+     */
+    @JSFWebConfigParam(since="2.0", defaultValue="false", expectedValues="true, false")
+    public static final String VALIDATE = "org.apache.myfaces.VALIDATE";
+    
+    /**
+     * Defines if CDI should be used for annotation scanning to improve the startup performance.
+     */
+    @JSFWebConfigParam(since="2.2.9", tags = "performance", defaultValue = "false")
+    public static final String USE_CDI_FOR_ANNOTATION_SCANNING
+            = "org.apache.myfaces.annotation.USE_CDI_FOR_ANNOTATION_SCANNING";
+    public static final boolean USE_CDI_FOR_ANNOTATION_SCANNING_DEFAULT = false;
+    
+    
+    /**
+     * Controls the size of the cache used to check if a resource exists or not. 
+     * 
+     * <p>See org.apache.myfaces.RESOURCE_HANDLER_CACHE_ENABLED for details.</p>
+     */
+    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="resources", 
+            classType="java.lang.Integer", tags="performance")
+    private static final String RESOURCE_HANDLER_CACHE_SIZE = 
+        "org.apache.myfaces.RESOURCE_HANDLER_CACHE_SIZE";
+    private static final int RESOURCE_HANDLER_CACHE_SIZE_DEFAULT = 500;
+
+    /**
+     * Enable or disable the cache used to "remember" if a resource handled by 
+     * the default ResourceHandler exists or not.
+     * 
+     */
+    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", group="resources", 
+            expectedValues="true,false", tags="performance")
+    private static final String RESOURCE_HANDLER_CACHE_ENABLED = 
+        "org.apache.myfaces.RESOURCE_HANDLER_CACHE_ENABLED";
+    private static final boolean RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT = true;
+
+    
+    /**
+     * Servlet context init parameter which defines which packages to scan
+     * for beans, separated by commas.
+     */
+    @JSFWebConfigParam(since="2.0")
+    public static final String SCAN_PACKAGES = "org.apache.myfaces.annotation.SCAN_PACKAGES";
+    
+    private boolean strictJsf2AllowSlashLibraryName;
+    private long configRefreshPeriod = CONFIG_REFRESH_PERIOD_DEFAULT;
+    private boolean renderViewStateId = RENDER_VIEWSTATE_ID_DEFAULT;
+    private boolean strictXhtmlLinks = STRICT_XHTML_LINKS_DEFAULT;
+    private boolean renderClearJavascriptOnButton = RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT;
+    private String delegateFacesServlet;
+    private boolean refreshTransientBuildOnPSS = true;
+    private boolean refreshTransientBuildOnPSSAuto = true;
+    private boolean refreshTransientBuildOnPSSPreserveState = REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE_DEFAULT;
+    private boolean validateXML = VALIDATE_XML_DEFAULT;
+    private boolean wrapScriptContentWithXmlCommentTag = WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT;
+    private boolean renderFormSubmitScriptInline = RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT;
+    private boolean debugPhaseListenerEnabled = DEBUG_PHASE_LISTENER_DEFAULT;
+    private boolean strictJsf2CCELResolver = STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT;
+    private String defaultResponseWriterContentTypeMode = DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT;
+    private boolean viewUniqueIdsCacheEnabled = VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT;
+    private int componentUniqueIdsCacheSize = COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT;
+    private boolean supportJSPAndFacesEL = SUPPORT_JSP_AND_FACES_EL_DEFAULT;
+    private String gaeJsfJarFiles = GAE_JSF_JAR_FILES_DEFAULT;
+    private String gaeJsfAnnotationsJarFiles = GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT;
+    private boolean strictJsf2ViewNotFound = STRICT_JSF_2_VIEW_NOT_FOUND_DEFAULT;
+    private boolean earlyFlushEnabled = EARLY_FLUSH_ENABLED_DEFAULT;
+    private boolean strictJsf2FaceletsCompatibility = STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT;
+    private boolean renderFormViewStateAtBegin = RENDER_FORM_VIEW_STATE_AT_BEGIN_DEFAULT;
+    private boolean flashScopeDisabled = FLASH_SCOPE_DISABLED_DEFAULT;
+    private Integer numberOfViewsInSession = NUMBER_OF_VIEWS_IN_SESSION_DEFAULT;
+    private Integer numberOfSequentialViewsInSession = NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT;
+    private Integer numberOfFlashTokensInSession;
+    private Integer numberOfFacesFlowClientWindowIdsInSession;
+    private boolean supportEL3ImportHandler = SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT;
+    private boolean strictJsf2OriginHeaderAppPath = STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT;
+    private int resourceBufferSize = RESOURCE_BUFFER_SIZE_DEFAULT;
+    private boolean useCdiForAnnotationScanning = USE_CDI_FOR_ANNOTATION_SCANNING_DEFAULT;
+    private boolean resourceHandlerCacheEnabled = RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT;
+    private int resourceHandlerCacheSize = RESOURCE_HANDLER_CACHE_SIZE_DEFAULT;
+    private String scanPackages;
 
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -449,10 +519,7 @@ public class MyfacesConfig
             myfacesImplAvailable = false;
         }
         MYFACES_IMPL_AVAILABLE = myfacesImplAvailable;
-    }
-
-    static
-    {
+        
         boolean riImplAvailable;
         try
         {
@@ -466,17 +533,18 @@ public class MyfacesConfig
         RI_IMPL_AVAILABLE = riImplAvailable;
     }
 
+    public static MyfacesConfig getCurrentInstance()
+    {
+        return getCurrentInstance(FacesContext.getCurrentInstance().getExternalContext());
+    }
+    
     public static MyfacesConfig getCurrentInstance(ExternalContext extCtx)
     {
-        MyfacesConfig myfacesConfig = (MyfacesConfig) extCtx
-                .getApplicationMap().get(APPLICATION_MAP_PARAM_NAME);
+        MyfacesConfig myfacesConfig = (MyfacesConfig) extCtx.getApplicationMap().get(APPLICATION_MAP_PARAM_NAME);
         if (myfacesConfig == null)
         {
-
             myfacesConfig = createAndInitializeMyFacesConfig(extCtx);
-
             extCtx.getApplicationMap().put(APPLICATION_MAP_PARAM_NAME, myfacesConfig);
-
         }
 
         return myfacesConfig;
@@ -484,36 +552,8 @@ public class MyfacesConfig
     
     public MyfacesConfig()
     {
-        setRenderClearJavascriptOnButton(INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT);
-        setRenderViewStateId(INIT_PARAM_RENDER_VIEWSTATE_ID_DEFAULT);
-        setStrictXhtmlLinks(INIT_PARAM_STRICT_XHTML_LINKS_DEFAULT);
-        setConfigRefreshPeriod(INIT_PARAM_CONFIG_REFRESH_PERIOD_DEFAULT);
-        setRefreshTransientBuildOnPSS(true);
-        setRefreshTransientBuildOnPSSAuto(true);
-        setRefreshTransientBuildOnPSSPreserveState(INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE_DEFAULT);
-        setValidateXML(INIT_PARAM_VALIDATE_XML_DEFAULT);
-        setWrapScriptContentWithXmlCommentTag(INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT);
-        setRenderFormSubmitScriptInline(INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT);
-        setDebugPhaseListenerEnabled(INIT_PARAM_DEBUG_PHASE_LISTENER_DEFAULT);
-        setStrictJsf2CCELResolver(INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT);
-        setDefaultResponseWriterContentTypeMode(INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT);
-        setViewUniqueIdsCacheEnabled(INIT_PARAM_VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT);
-        setComponentUniqueIdsCacheSize(INIT_PARAM_COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT);
-        setSupportJSPAndFacesEL(INIT_PARAM_SUPPORT_JSP_AND_FACES_EL_DEFAULT);
-        setGaeJsfJarFiles(INIT_PARAM_GAE_JSF_JAR_FILES_DEFAULT);
-        setGaeJsfAnnotationsJarFiles(INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT);
-        setStrictJsf2ViewNotFound(INIT_PARAM_STRICT_JSF_2_VIEW_NOT_FOUND_DEFAULT);
-        setEarlyFlushEnabled(INIT_PARAM_EARLY_FLUSH_ENABLED_DEFAULT);
-        setStrictJsf2FaceletsCompatibility(INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT);
-        setRenderFormViewStateAtBegin(INIT_PARAM_RENDER_FORM_VIEW_STATE_AT_BEGIN_DEFAULT);
-        setFlashScopeDisabled(INIT_PARAM_FLASH_SCOPE_DISABLED_DEFAULT);
-        setNumberOfViewsInSession(INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT);
-        setNumberOfSequentialViewsInSession(INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT);
-        setNumberOfFlashTokensInSession(
-                (INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT / 
-                        INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT)+1);
-        setSupportEL3ImportHandler(SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT);
-        setStrictJsf2OriginHeaderAppPath(STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT);
+        numberOfFlashTokensInSession = (NUMBER_OF_VIEWS_IN_SESSION_DEFAULT
+                / NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT) + 1;
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -521,178 +561,215 @@ public class MyfacesConfig
         
         MyfacesConfig myfacesConfig = new MyfacesConfig();
 
-        myfacesConfig.setRenderClearJavascriptOnButton(getBooleanInitParameter(extCtx, 
-                                                            INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON,
-                                                            INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT));
+        myfacesConfig.renderClearJavascriptOnButton = getBooleanInitParameter(extCtx,
+                RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON,
+                RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT);
 
-        myfacesConfig.setRenderViewStateId(getBooleanInitParameter(extCtx, INIT_PARAM_RENDER_VIEWSTATE_ID,
-                                                                   INIT_PARAM_RENDER_VIEWSTATE_ID_DEFAULT));
-        myfacesConfig.setStrictXhtmlLinks(getBooleanInitParameter(extCtx, INIT_PARAM_STRICT_XHTML_LINKS,
-                                                                  INIT_PARAM_STRICT_XHTML_LINKS_DEFAULT));
-        myfacesConfig.setRenderFormSubmitScriptInline(getBooleanInitParameter(extCtx,
-                                                                  INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE,
-                                                                  INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT));
+        myfacesConfig.renderViewStateId = getBooleanInitParameter(extCtx,
+                RENDER_VIEWSTATE_ID,
+                RENDER_VIEWSTATE_ID_DEFAULT);
         
-        myfacesConfig.setConfigRefreshPeriod(getLongInitParameter(extCtx, INIT_PARAM_CONFIG_REFRESH_PERIOD,
-                INIT_PARAM_CONFIG_REFRESH_PERIOD_DEFAULT));
+        myfacesConfig.strictXhtmlLinks = getBooleanInitParameter(extCtx,
+                STRICT_XHTML_LINKS,
+                STRICT_XHTML_LINKS_DEFAULT);
 
-        myfacesConfig.setDelegateFacesServlet(extCtx.getInitParameter(INIT_PARAM_DELEGATE_FACES_SERVLET));
+        myfacesConfig.renderFormSubmitScriptInline = getBooleanInitParameter(extCtx,
+                RENDER_FORM_SUBMIT_SCRIPT_INLINE,
+                RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT);
+        
+        myfacesConfig.configRefreshPeriod = getLongInitParameter(extCtx,
+                CONFIG_REFRESH_PERIOD,
+                CONFIG_REFRESH_PERIOD_DEFAULT);
+
+        myfacesConfig.delegateFacesServlet = extCtx.getInitParameter(DELEGATE_FACES_SERVLET);
         
         String refreshTransientBuildOnPSS = getStringInitParameter(extCtx, 
-                INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS, 
-                INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_DEFAULT);
+                REFRESH_TRANSIENT_BUILD_ON_PSS, 
+                REFRESH_TRANSIENT_BUILD_ON_PSS_DEFAULT);
         
         if (refreshTransientBuildOnPSS == null)
         {
-            myfacesConfig.setRefreshTransientBuildOnPSS(false);
-            myfacesConfig.setRefreshTransientBuildOnPSSAuto(false);
+            myfacesConfig.refreshTransientBuildOnPSS = false;
+            myfacesConfig.refreshTransientBuildOnPSSAuto = false;
         }
         else if ("auto".equalsIgnoreCase(refreshTransientBuildOnPSS))
         {
-            myfacesConfig.setRefreshTransientBuildOnPSS(true);
-            myfacesConfig.setRefreshTransientBuildOnPSSAuto(true);
+            myfacesConfig.refreshTransientBuildOnPSS = true;
+            myfacesConfig.refreshTransientBuildOnPSSAuto = true;
         }
         else if (refreshTransientBuildOnPSS.equalsIgnoreCase("true") || 
                 refreshTransientBuildOnPSS.equalsIgnoreCase("on") || 
                 refreshTransientBuildOnPSS.equalsIgnoreCase("yes"))
         {
-            myfacesConfig.setRefreshTransientBuildOnPSS(true);
-            myfacesConfig.setRefreshTransientBuildOnPSSAuto(false);
+            myfacesConfig.refreshTransientBuildOnPSS = true;
+            myfacesConfig.refreshTransientBuildOnPSSAuto = false;
         }
         else
         {
-            myfacesConfig.setRefreshTransientBuildOnPSS(false);
-            myfacesConfig.setRefreshTransientBuildOnPSSAuto(false);
+            myfacesConfig.refreshTransientBuildOnPSS = false;
+            myfacesConfig.refreshTransientBuildOnPSSAuto = false;
         }
         
-        myfacesConfig.setRefreshTransientBuildOnPSSPreserveState(getBooleanInitParameter(extCtx,
-                INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE, 
-                INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE_DEFAULT));
+        myfacesConfig.refreshTransientBuildOnPSSPreserveState = getBooleanInitParameter(extCtx,
+                REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE, 
+                REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE_DEFAULT);
         
-        myfacesConfig.setValidateXML(getBooleanInitParameter(extCtx, INIT_PARAM_VALIDATE_XML, 
-                INIT_PARAM_VALIDATE_XML_DEFAULT));
+        myfacesConfig.validateXML = getBooleanInitParameter(extCtx,
+                VALIDATE_XML, 
+                VALIDATE_XML_DEFAULT);
         
-        myfacesConfig.setWrapScriptContentWithXmlCommentTag(getBooleanInitParameter(extCtx, 
-                INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG, 
-                INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT));
+        myfacesConfig.wrapScriptContentWithXmlCommentTag = getBooleanInitParameter(extCtx, 
+                WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG, 
+                WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT);
         
-        myfacesConfig.setDebugPhaseListenerEnabled(getBooleanInitParameter(extCtx, INIT_PARAM_DEBUG_PHASE_LISTENER,
-                INIT_PARAM_DEBUG_PHASE_LISTENER_DEFAULT));
+        myfacesConfig.debugPhaseListenerEnabled = getBooleanInitParameter(extCtx,
+                DEBUG_PHASE_LISTENER,
+                DEBUG_PHASE_LISTENER_DEFAULT);
                 
-        myfacesConfig.setStrictJsf2CCELResolver(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
-                INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER, INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT));
+        myfacesConfig.strictJsf2CCELResolver = getBooleanInitParameter(extCtx, 
+                STRICT_JSF_2_CC_EL_RESOLVER,
+                STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT);
         
-        myfacesConfig.setDefaultResponseWriterContentTypeMode(WebConfigParamUtils.getStringInitParameter(
-                extCtx, INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE,
-                INIT_PARAM_DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT));
+        myfacesConfig.defaultResponseWriterContentTypeMode = getStringInitParameter(extCtx, 
+                DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE,
+                DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT);
 
-        myfacesConfig.setViewUniqueIdsCacheEnabled(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
-                INIT_PARAM_VIEW_UNIQUE_IDS_CACHE_ENABLED, INIT_PARAM_VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT));
-        myfacesConfig.setComponentUniqueIdsCacheSize(
-                WebConfigParamUtils.getIntegerInitParameter(extCtx,
-                INIT_PARAM_COMPONENT_UNIQUE_IDS_CACHE_SIZE, 
-                INIT_PARAM_COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT));
-        myfacesConfig.setSupportJSPAndFacesEL(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
-                INIT_PARAM_SUPPORT_JSP_AND_FACES_EL, INIT_PARAM_SUPPORT_JSP_AND_FACES_EL_DEFAULT));
+        myfacesConfig.viewUniqueIdsCacheEnabled = getBooleanInitParameter(extCtx, 
+                VIEW_UNIQUE_IDS_CACHE_ENABLED,
+                VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT);
+
+        myfacesConfig.componentUniqueIdsCacheSize = getIntegerInitParameter(extCtx,
+                COMPONENT_UNIQUE_IDS_CACHE_SIZE, 
+                COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT);
+        
+        myfacesConfig.supportJSPAndFacesEL = getBooleanInitParameter(extCtx, 
+                SUPPORT_JSP_AND_FACES_EL,
+                SUPPORT_JSP_AND_FACES_EL_DEFAULT);
                 
-        myfacesConfig.setGaeJsfJarFiles(WebConfigParamUtils.getStringInitParameter(extCtx, 
-                INIT_PARAM_GAE_JSF_JAR_FILES, INIT_PARAM_GAE_JSF_JAR_FILES_DEFAULT));
-        myfacesConfig.setGaeJsfAnnotationsJarFiles(WebConfigParamUtils.getStringInitParameter(extCtx, 
-                INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES, INIT_PARAM_GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT));
-
-        myfacesConfig.setStrictJsf2ViewNotFound(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
-                INIT_PARAM_STRICT_JSF_2_VIEW_NOT_FOUND, INIT_PARAM_STRICT_JSF_2_VIEW_NOT_FOUND_DEFAULT));
+        myfacesConfig.gaeJsfJarFiles = getStringInitParameter(extCtx, 
+                GAE_JSF_JAR_FILES,
+                GAE_JSF_JAR_FILES_DEFAULT);
         
-        myfacesConfig.setEarlyFlushEnabled(WebConfigParamUtils.getBooleanInitParameter(extCtx,
-                INIT_PARAM_EARLY_FLUSH_ENABLED, INIT_PARAM_EARLY_FLUSH_ENABLED_DEFAULT));
+        myfacesConfig.gaeJsfAnnotationsJarFiles = getStringInitParameter(extCtx, 
+                GAE_JSF_ANNOTATIONS_JAR_FILES,
+                GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT);
 
+        myfacesConfig.strictJsf2ViewNotFound = getBooleanInitParameter(extCtx, 
+                STRICT_JSF_2_VIEW_NOT_FOUND,
+                STRICT_JSF_2_VIEW_NOT_FOUND_DEFAULT);
+        
+        myfacesConfig.earlyFlushEnabled = getBooleanInitParameter(extCtx,
+                EARLY_FLUSH_ENABLED,
+                EARLY_FLUSH_ENABLED_DEFAULT);
 
-        myfacesConfig.setStrictJsf2FaceletsCompatibility(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
-                INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY, 
-                INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT));
+        myfacesConfig.strictJsf2FaceletsCompatibility = getBooleanInitParameter(extCtx, 
+                STRICT_JSF_2_FACELETS_COMPATIBILITY, 
+                STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT);
         
-        myfacesConfig.setRenderFormViewStateAtBegin(WebConfigParamUtils.getBooleanInitParameter(extCtx,
-                INIT_PARAM_RENDER_FORM_VIEW_STATE_AT_BEGIN,
-                INIT_PARAM_RENDER_FORM_VIEW_STATE_AT_BEGIN_DEFAULT));
+        myfacesConfig.renderFormViewStateAtBegin = getBooleanInitParameter(extCtx,
+                RENDER_FORM_VIEW_STATE_AT_BEGIN,
+                RENDER_FORM_VIEW_STATE_AT_BEGIN_DEFAULT);
         
-        myfacesConfig.setFlashScopeDisabled(WebConfigParamUtils.getBooleanInitParameter(extCtx,
-                INIT_PARAM_FLASH_SCOPE_DISABLED,
-                INIT_PARAM_FLASH_SCOPE_DISABLED_DEFAULT));
+        myfacesConfig.flashScopeDisabled = getBooleanInitParameter(extCtx,
+                FLASH_SCOPE_DISABLED,
+                FLASH_SCOPE_DISABLED_DEFAULT);
+        
+        myfacesConfig.strictJsf2AllowSlashLibraryName = getBooleanInitParameter(extCtx, 
+                    STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME,
+                    STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME_DEFAULT);
         
         try
         {
-            myfacesConfig.setNumberOfSequentialViewsInSession(WebConfigParamUtils.getIntegerInitParameter(
-                    extCtx, 
-                    INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION,
-                    INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT));
+            myfacesConfig.numberOfSequentialViewsInSession = getIntegerInitParameter(extCtx, 
+                    NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION,
+                    NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT);
             Integer views = myfacesConfig.getNumberOfSequentialViewsInSession();
             if (views == null || views < 0)
             {
                 Logger.getLogger(MyfacesConfig.class.getName()).severe(
-                        "Configured value for " + INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION
+                        "Configured value for " + NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION
                           + " is not valid, must be an value >= 0, using default value ("
-                          + INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT);
-                views = INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT;
+                          + NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT);
+                views = NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT;
             }
         }
         catch (Throwable e)
         {
             Logger.getLogger(MyfacesConfig.class.getName()).log(Level.SEVERE, "Error determining the value for "
-                   + INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION
+                   + NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION
                    + ", expected an integer value > 0, using default value ("
-                   + INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT + "): " + e.getMessage(), e);
+                   + NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT + "): " + e.getMessage(), e);
         }        
         try
         {
-            myfacesConfig.setNumberOfViewsInSession(WebConfigParamUtils.getIntegerInitParameter(
-                        extCtx, 
-                        INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION,
-                        INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT));
-            Integer views = myfacesConfig.getNumberOfViewsInSession();
-            if (views == null || views <= 0)
+            myfacesConfig.numberOfViewsInSession = getIntegerInitParameter(extCtx, 
+                    NUMBER_OF_VIEWS_IN_SESSION,
+                    NUMBER_OF_VIEWS_IN_SESSION_DEFAULT);
+            if (myfacesConfig.numberOfViewsInSession == null || myfacesConfig.numberOfViewsInSession <= 0)
             {
                 Logger.getLogger(MyfacesConfig.class.getName()).severe(
-                        "Configured value for " + INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION
+                        "Configured value for " + NUMBER_OF_VIEWS_IN_SESSION
                           + " is not valid, must be an value > 0, using default value ("
-                          + INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT);
-                views = INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT;
+                          + NUMBER_OF_VIEWS_IN_SESSION_DEFAULT);
+                myfacesConfig.numberOfViewsInSession = NUMBER_OF_VIEWS_IN_SESSION_DEFAULT;
             }
         }
         catch (Throwable e)
         {
             Logger.getLogger(MyfacesConfig.class.getName()).log(Level.SEVERE, "Error determining the value for "
-                   + INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION
+                   + NUMBER_OF_VIEWS_IN_SESSION
                    + ", expected an integer value > 0, using default value ("
-                   + INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT + "): " + e.getMessage(), e);
+                   + NUMBER_OF_VIEWS_IN_SESSION_DEFAULT + "): " + e.getMessage(), e);
         }
 
         Integer numberOfFlashTokensInSessionDefault;
-        Integer i = myfacesConfig.getNumberOfSequentialViewsInSession();
-        int j = myfacesConfig.getNumberOfViewsInSession();
-        if (i != null && i.intValue() > 0)
+        if (myfacesConfig.numberOfSequentialViewsInSession != null
+                && myfacesConfig.numberOfSequentialViewsInSession > 0)
         {
-            numberOfFlashTokensInSessionDefault = (j / i.intValue()) + 1;
+            numberOfFlashTokensInSessionDefault = (myfacesConfig.numberOfViewsInSession
+                    / myfacesConfig.numberOfSequentialViewsInSession) + 1;
         }
         else
         {
-            numberOfFlashTokensInSessionDefault = j + 1;
+            numberOfFlashTokensInSessionDefault = myfacesConfig.numberOfViewsInSession + 1;
         }
-        myfacesConfig.setNumberOfFlashTokensInSession(WebConfigParamUtils.getIntegerInitParameter(
-                        extCtx, 
-                        INIT_PARAM_NUMBER_OF_FLASH_TOKENS_IN_SESSION, numberOfFlashTokensInSessionDefault));
-        myfacesConfig.setNumberOfFacesFlowClientWindowIdsInSession(WebConfigParamUtils.getIntegerInitParameter(
-                        extCtx, 
-                        INIT_PARAM_NUMBER_OF_FACES_FLOW_CLIENT_WINDOW_IDS_IN_SESSION, 
-                        numberOfFlashTokensInSessionDefault));
+
+        myfacesConfig.numberOfFlashTokensInSession = getIntegerInitParameter(extCtx, 
+                NUMBER_OF_FLASH_TOKENS_IN_SESSION,
+                numberOfFlashTokensInSessionDefault);
+
+        myfacesConfig.numberOfFacesFlowClientWindowIdsInSession = getIntegerInitParameter(extCtx, 
+                NUMBER_OF_FACES_FLOW_CLIENT_WINDOW_IDS_IN_SESSION, 
+                numberOfFlashTokensInSessionDefault);
                         
-        myfacesConfig.setSupportEL3ImportHandler(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
-                       SUPPORT_EL_3_IMPORT_HANDLER, 
-                       SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT)); 
+        myfacesConfig.supportEL3ImportHandler = getBooleanInitParameter(extCtx, 
+                SUPPORT_EL_3_IMPORT_HANDLER, 
+                SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT); 
 
-        myfacesConfig.setStrictJsf2OriginHeaderAppPath(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
-                        STRICT_JSF_2_ORIGIN_HEADER_APP_PATH, 
-                        STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT));
+        myfacesConfig.strictJsf2OriginHeaderAppPath = getBooleanInitParameter(extCtx, 
+                STRICT_JSF_2_ORIGIN_HEADER_APP_PATH, 
+                STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT);
 
+        myfacesConfig.resourceBufferSize = getIntegerInitParameter(extCtx, 
+                RESOURCE_BUFFER_SIZE, 
+                RESOURCE_BUFFER_SIZE_DEFAULT);
+        
+        myfacesConfig.useCdiForAnnotationScanning = getBooleanInitParameter(extCtx,
+                USE_CDI_FOR_ANNOTATION_SCANNING,
+                USE_CDI_FOR_ANNOTATION_SCANNING_DEFAULT);
+        
+        myfacesConfig.resourceHandlerCacheEnabled = getBooleanInitParameter(extCtx,
+                RESOURCE_HANDLER_CACHE_ENABLED,
+                RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT);
+        
+        myfacesConfig.resourceHandlerCacheSize = getIntegerInitParameter(extCtx,
+                RESOURCE_HANDLER_CACHE_SIZE,
+                RESOURCE_HANDLER_CACHE_SIZE_DEFAULT);
+        
+        myfacesConfig.scanPackages = getStringInitParameter(extCtx,
+                SCAN_PACKAGES,
+                null);
+        
         return myfacesConfig;
     }
 
@@ -734,6 +811,28 @@ public class MyfacesConfig
         return strValue;
     }
 
+    private static int getIntegerInitParameter(ExternalContext externalContext,
+                                                  String paramName,
+                                                  int defaultValue)
+    {
+       String strValue = externalContext.getInitParameter(paramName);
+       if (strValue == null)
+       {
+           return defaultValue;
+       }
+       else
+       {
+           try
+           {
+               return Integer.parseInt(strValue);
+           }
+           catch (NumberFormatException e)
+           {
+           }
+           return defaultValue;
+       }
+    }
+    
     private static long getLongInitParameter(ExternalContext externalContext,
                                                   String paramName,
                                                   long defaultValue)
@@ -756,63 +855,6 @@ public class MyfacesConfig
        }
     }
 
-    public long getConfigRefreshPeriod()
-    {
-        return _configRefreshPeriod;
-    }
-
-    public void setConfigRefreshPeriod(long configRefreshPeriod)
-    {
-        _configRefreshPeriod = configRefreshPeriod;
-    }
-
-    /**
-     * JSF API 1.2 defines a "javax.faces.ViewState" client parameter, that must be rendered as both the "name"
-     * and the "id" attribute of the hidden input that is rendered for the purpose of state saving
-     * (see ResponseStateManager.VIEW_STATE_PARAM).
-     * Actually this causes duplicate id attributes and thus invalid XHTML pages when multiple forms are rendered on
-     * one page. With the {@link #INIT_PARAM_RENDER_VIEWSTATE_ID} context parameter you can tune this behaviour.
-     * <p>Set it to:</p>
-     * <ul><li>true - to render JSF 1.2 compliant id attributes (that might cause invalid XHTML), or</li>
-     * <li>false - to omit rendering of the id attribute (which is only needed for very special AJAX/Javascript 
-     * components)</li></ul>
-     * <p>Default value is: true (for backwards compatibility and JSF 1.2 compliancy) </p>
-     * @return true, if the client state hidden input "javax.faces.ViewState" id attribute should be rendered
-     */
-    public boolean isRenderViewStateId()
-    {
-        return _renderViewStateId;
-    }
-
-    public void setRenderViewStateId(boolean renderViewStateId)
-    {
-        _renderViewStateId = renderViewStateId;
-    }
-
-    /**
-     * <p>W3C recommends to use the "&amp;amp;" entity instead of a plain "&amp;" character within HTML.
-     * This also applies to attribute values and thus to the "href" attribute of &lt;a&gt; elements as well.
-     * Even more, when XHTML is used as output the usage of plain "&amp;" characters is forbidden and would lead to
-     * invalid XML code.
-     * Therefore, since version 1.1.6 MyFaces renders the correct "&amp;amp;" entity for links.</p>
-     * <p>The init parameter
-     * {@link #INIT_PARAM_STRICT_XHTML_LINKS} makes it possible to restore the old behaviour and to make MyFaces
-     * "bug compatible" to the Sun RI which renders plain "&amp;" chars in links as well.</p>
-     * @see <a href="http://www.w3.org/TR/html401/charset.html#h-5.3.2">HTML 4.01 Specification</a>
-     * @see <a href="http://issues.apache.org/jira/browse/MYFACES-1774">Jira: MYFACES-1774</a>
-     * @return true if ampersand characters ("&amp;") should be correctly rendered as "&amp;amp;" entities 
-     *         within link urls (=default), false for old (XHTML incompatible) behaviour
-     */
-    public boolean isStrictXhtmlLinks()
-    {
-        return _strictXhtmlLinks;
-    }
-
-    public void setStrictXhtmlLinks(boolean strictXhtmlLinks)
-    {
-        _strictXhtmlLinks = strictXhtmlLinks;
-    }
-
     public boolean isMyfacesImplAvailable()
     {
         return MYFACES_IMPL_AVAILABLE;
@@ -823,54 +865,44 @@ public class MyfacesConfig
         return RI_IMPL_AVAILABLE;
     }
 
-    public void setRenderClearJavascriptOnButton(
-            boolean renderClearJavascriptOnButton)
+    public boolean isStrictJsf2AllowSlashLibraryName()
     {
-        _renderClearJavascriptOnButton = renderClearJavascriptOnButton;
+        return strictJsf2AllowSlashLibraryName;
     }
 
-    /**
-     * This param renders the clear javascript on button necessary only for
-     * compatibility with hidden fields feature of myfaces. This is done 
-     * because jsf ri does not render javascript on onclick method for button,
-     * so myfaces should do this.
-     * 
-     * @return
-     */
+    public long getConfigRefreshPeriod()
+    {
+        return configRefreshPeriod;
+    }
+
+    public boolean isRenderViewStateId()
+    {
+        return renderViewStateId;
+    }
+
+    public boolean isStrictXhtmlLinks()
+    {
+        return strictXhtmlLinks;
+    }
+
     public boolean isRenderClearJavascriptOnButton()
     {
-        return _renderClearJavascriptOnButton;
+        return renderClearJavascriptOnButton;
     }
-    
+
     public String getDelegateFacesServlet()
     {
-        return _delegateFacesServlet;
-    }
-    
-    public void setDelegateFacesServlet(String delegateFacesServlet)
-    {
-        _delegateFacesServlet = delegateFacesServlet;
+        return delegateFacesServlet;
     }
 
     public boolean isRefreshTransientBuildOnPSS()
     {
-        return _refreshTransientBuildOnPSS;
-    }
-
-    public void setRefreshTransientBuildOnPSS(boolean refreshTransientBuildOnPSS)
-    {
-        this._refreshTransientBuildOnPSS = refreshTransientBuildOnPSS;
+        return refreshTransientBuildOnPSS;
     }
 
     public boolean isRefreshTransientBuildOnPSSAuto()
     {
-        return _refreshTransientBuildOnPSSAuto;
-    }
-
-    public void setRefreshTransientBuildOnPSSAuto(
-            boolean refreshTransientBuildOnPSSAuto)
-    {
-        this._refreshTransientBuildOnPSSAuto = refreshTransientBuildOnPSSAuto;
+        return refreshTransientBuildOnPSSAuto;
     }
 
     public boolean isRefreshTransientBuildOnPSSPreserveState()
@@ -878,262 +910,140 @@ public class MyfacesConfig
         return refreshTransientBuildOnPSSPreserveState;
     }
 
-    public void setRefreshTransientBuildOnPSSPreserveState(
-            boolean refreshTransientBuildOnPSSPreserveState)
-    {
-        this.refreshTransientBuildOnPSSPreserveState = refreshTransientBuildOnPSSPreserveState;
-    }
-    
     public boolean isValidateXML()
     {
-        return _validateXML;
-    }
-
-    public void setValidateXML(boolean validateXML)
-    {
-        _validateXML = validateXML;
+        return validateXML;
     }
 
     public boolean isWrapScriptContentWithXmlCommentTag()
     {
-        return _wrapScriptContentWithXmlCommentTag;
-    }
-
-    public void setWrapScriptContentWithXmlCommentTag(
-            boolean wrapScriptContentWithXmlCommentTag)
-    {
-        this._wrapScriptContentWithXmlCommentTag = wrapScriptContentWithXmlCommentTag;
+        return wrapScriptContentWithXmlCommentTag;
     }
 
     public boolean isRenderFormSubmitScriptInline()
     {
-        return _renderFormSubmitScriptInline;
-    }
-
-    public void setRenderFormSubmitScriptInline(
-            boolean renderFormSubmitScriptInline)
-    {
-        _renderFormSubmitScriptInline = renderFormSubmitScriptInline;
+        return renderFormSubmitScriptInline;
     }
 
     public boolean isDebugPhaseListenerEnabled()
     {
-        return _debugPhaseListenerEnabled;
-    }
-
-    public void setDebugPhaseListenerEnabled(boolean debugPhaseListener)
-    {
-        this._debugPhaseListenerEnabled = debugPhaseListener;
+        return debugPhaseListenerEnabled;
     }
 
     public boolean isStrictJsf2CCELResolver()
     {
-        return _strictJsf2CCELResolver;
-    }
-
-    public void setStrictJsf2CCELResolver(boolean strictJsf2CCELResolver)
-    {
-        this._strictJsf2CCELResolver = strictJsf2CCELResolver;
+        return strictJsf2CCELResolver;
     }
 
     public String getDefaultResponseWriterContentTypeMode()
     {
-        return _defaultResponseWriterContentTypeMode;
-    }
-
-    public void setDefaultResponseWriterContentTypeMode(
-            String defaultResponseWriterContentTypeMode)
-    {
-        this._defaultResponseWriterContentTypeMode = defaultResponseWriterContentTypeMode;
+        return defaultResponseWriterContentTypeMode;
     }
 
     public boolean isViewUniqueIdsCacheEnabled()
     {
-        return _viewUniqueIdsCacheEnabled;
-    }
-
-    public void setViewUniqueIdsCacheEnabled(boolean viewUniqueIdsCacheEnabled)
-    {
-        _viewUniqueIdsCacheEnabled = viewUniqueIdsCacheEnabled;
-    }
-
-    public boolean isSupportJSPAndFacesEL()
-    {
-        return _supportJSPAndFacesEL;
-    }
-
-    public void setSupportJSPAndFacesEL(boolean supportJSPANDFacesEL)
-    {
-        _supportJSPAndFacesEL = supportJSPANDFacesEL;
+        return viewUniqueIdsCacheEnabled;
     }
 
     public int getComponentUniqueIdsCacheSize()
     {
-        return _componentUniqueIdsCacheSize;
+        return componentUniqueIdsCacheSize;
     }
 
-    public void setComponentUniqueIdsCacheSize(int componentUniqueIdsCacheSize)
+    public boolean isSupportJSPAndFacesEL()
     {
-        this._componentUniqueIdsCacheSize = componentUniqueIdsCacheSize;
+        return supportJSPAndFacesEL;
     }
 
     public String getGaeJsfJarFiles()
     {
-        return _gaeJsfJarFiles;
-    }
-
-    public void setGaeJsfJarFiles(String gaeJsfJarFiles)
-    {
-        this._gaeJsfJarFiles = gaeJsfJarFiles;
+        return gaeJsfJarFiles;
     }
 
     public String getGaeJsfAnnotationsJarFiles()
     {
-        return _gaeJsfAnnotationsJarFiles;
-    }
-
-    public void setGaeJsfAnnotationsJarFiles(String gaeJsfAnnotationsJarFiles)
-    {
-        this._gaeJsfAnnotationsJarFiles = gaeJsfAnnotationsJarFiles;
+        return gaeJsfAnnotationsJarFiles;
     }
 
     public boolean isStrictJsf2ViewNotFound()
     {
-        return _strictJsf2ViewNotFound;
-    }
-
-    public void setStrictJsf2ViewNotFound(boolean strictJsf2ViewNotFound)
-    {
-        this._strictJsf2ViewNotFound = strictJsf2ViewNotFound;
+        return strictJsf2ViewNotFound;
     }
 
     public boolean isEarlyFlushEnabled()
     {
-        return _earlyFlushEnabled;
-    }
-
-    public void setEarlyFlushEnabled(boolean earlyFlushEnabled)
-    {
-        this._earlyFlushEnabled = earlyFlushEnabled;
+        return earlyFlushEnabled;
     }
 
     public boolean isStrictJsf2FaceletsCompatibility()
     {
-        return _strictJsf2FaceletsCompatibility;
-    }
-
-    public void setStrictJsf2FaceletsCompatibility(boolean strictJsf2FaceletsCompatibility)
-    {
-        this._strictJsf2FaceletsCompatibility = strictJsf2FaceletsCompatibility;
+        return strictJsf2FaceletsCompatibility;
     }
 
     public boolean isRenderFormViewStateAtBegin()
     {
-        return _renderFormViewStateAtBegin;
-    }
-
-    public void setRenderFormViewStateAtBegin(boolean renderFormViewStateAtBegin)
-    {
-        this._renderFormViewStateAtBegin = renderFormViewStateAtBegin;
+        return renderFormViewStateAtBegin;
     }
 
     public boolean isFlashScopeDisabled()
     {
-        return _flashScopeDisabled;
+        return flashScopeDisabled;
     }
 
-    public void setFlashScopeDisabled(boolean flashScopeDisabled)
-    {
-        this._flashScopeDisabled = flashScopeDisabled;
-    }
-
-    /**
-     * @return the _numberOfViewsInSession
-     */
     public Integer getNumberOfViewsInSession()
     {
-        return _numberOfViewsInSession;
+        return numberOfViewsInSession;
     }
 
-    /**
-     * @param numberOfViewsInSession the _numberOfViewsInSession to set
-     */
-    public void setNumberOfViewsInSession(Integer numberOfViewsInSession)
-    {
-        this._numberOfViewsInSession = numberOfViewsInSession;
-    }
-
-    /**
-     * @return the _numberOfSequentialViewsInSession
-     */
     public Integer getNumberOfSequentialViewsInSession()
     {
-        return _numberOfSequentialViewsInSession;
+        return numberOfSequentialViewsInSession;
     }
 
-    /**
-     * @param numberOfSequentialViewsInSession the _numberOfSequentialViewsInSession to set
-     */
-    public void setNumberOfSequentialViewsInSession(Integer numberOfSequentialViewsInSession)
-    {
-        this._numberOfSequentialViewsInSession = numberOfSequentialViewsInSession;
-    }
-
-    /**
-     * @return the _numberOfFlashTokensInSession
-     */
     public Integer getNumberOfFlashTokensInSession()
     {
-        return _numberOfFlashTokensInSession;
+        return numberOfFlashTokensInSession;
     }
 
-    /**
-     * @param numberOfFlashTokensInSession the _numberOfFlashTokensInSession to set
-     */
-    public void setNumberOfFlashTokensInSession(Integer numberOfFlashTokensInSession)
-    {
-        this._numberOfFlashTokensInSession = numberOfFlashTokensInSession;
-    }
-
-    /**
-     * @return the _numberOfFacesFlowClientWindowIdsInSession
-     */
     public Integer getNumberOfFacesFlowClientWindowIdsInSession()
     {
-        return _numberOfFacesFlowClientWindowIdsInSession;
+        return numberOfFacesFlowClientWindowIdsInSession;
     }
 
-    /**
-     * @param numberOfFacesFlowClientWindowIdsInSession the _numberOfFacesFlowClientWindowIdsInSession to set
-     */
-    public void setNumberOfFacesFlowClientWindowIdsInSession(Integer numberOfFacesFlowClientWindowIdsInSession)
-    {
-        this._numberOfFacesFlowClientWindowIdsInSession = numberOfFacesFlowClientWindowIdsInSession;
-    }
-    
-    /**
-     * @return the _supportEL3ImportHandler
-     */
     public boolean isSupportEL3ImportHandler()
     {
-        return _supportEL3ImportHandler;
-    }
-    
-    /**
-     * @param supportEL3ImportHandler the _supportEL3ImportHandler to set
-     */
-    public void setSupportEL3ImportHandler(boolean supportEL3ImportHandler)
-    {
-        this._supportEL3ImportHandler = supportEL3ImportHandler;
+        return supportEL3ImportHandler;
     }
 
     public boolean isStrictJsf2OriginHeaderAppPath()
     {
-        return _strictJsf2OriginHeaderAppPath;
+        return strictJsf2OriginHeaderAppPath;
     }
-    
-    public void setStrictJsf2OriginHeaderAppPath(boolean strictJsf2OriginHeaderAppPath)
+
+    public int getResourceBufferSize()
     {
-        this._strictJsf2OriginHeaderAppPath = strictJsf2OriginHeaderAppPath;
+        return resourceBufferSize;
     }
+
+    public boolean isUseCdiForAnnotationScanning()
+    {
+        return useCdiForAnnotationScanning;
+    }
+
+    public boolean isResourceHandlerCacheEnabled()
+    {
+        return resourceHandlerCacheEnabled;
+    }
+
+    public int getResourceHandlerCacheSize()
+    {
+        return resourceHandlerCacheSize;
+    }
+
+    public String getScanPackages()
+    {
+        return scanPackages;
+    }
+
+    
 }

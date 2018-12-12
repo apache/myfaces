@@ -33,8 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.faces.FacesException;
 import javax.faces.application.Resource;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.application.ResourceHandlerImpl;
-import org.apache.myfaces.util.WebConfigParamUtils;
+import org.apache.myfaces.config.MyfacesConfig;
 
 /**
  * ResourceLoader that uses a temporal folder to cache resources, avoiding the problem
@@ -295,14 +294,12 @@ public class TempDirFileCacheContractResourceLoader extends ContractResourceLoad
     {
         if (_resourceBufferSize == -1)
         {
-            _resourceBufferSize = WebConfigParamUtils.getIntegerInitParameter(
-                FacesContext.getCurrentInstance().getExternalContext(),
-                ResourceHandlerImpl.INIT_PARAM_RESOURCE_BUFFER_SIZE,
-                ResourceHandlerImpl.INIT_PARAM_RESOURCE_BUFFER_SIZE_DEFAULT);
+            _resourceBufferSize = MyfacesConfig.getCurrentInstance().getResourceBufferSize();
         }
         return _resourceBufferSize;
     }
     
+    @Override
     public ContractResourceLoader getWrapped()
     {
         return delegate;

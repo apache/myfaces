@@ -25,35 +25,12 @@ import javax.faces.application.ProjectStage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ConcurrentLRUCache;
-import org.apache.myfaces.util.WebConfigParamUtils;
 
 public class ResourceHandlerCache
 {
     private static final Logger log = Logger.getLogger(ResourceHandlerCache.class.getName());
-
-    /**
-     * Controls the size of the cache used to check if a resource exists or not. 
-     * 
-     * <p>See org.apache.myfaces.RESOURCE_HANDLER_CACHE_ENABLED for details.</p>
-     */
-    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="resources", 
-            classType="java.lang.Integer", tags="performance")
-    private static final String RESOURCE_HANDLER_CACHE_SIZE_ATTRIBUTE = 
-        "org.apache.myfaces.RESOURCE_HANDLER_CACHE_SIZE";
-    private static final int RESOURCE_HANDLER_CACHE_DEFAULT_SIZE = 500;
-
-    /**
-     * Enable or disable the cache used to "remember" if a resource handled by 
-     * the default ResourceHandler exists or not.
-     * 
-     */
-    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", group="resources", 
-            expectedValues="true,false", tags="performance")
-    private static final String RESOURCE_HANDLER_CACHE_ENABLED_ATTRIBUTE = 
-        "org.apache.myfaces.RESOURCE_HANDLER_CACHE_ENABLED";
-    private static final boolean RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT = true;
 
     private boolean _resourceCacheEnabled = false;
 
@@ -75,9 +52,7 @@ public class ResourceHandlerCache
         if (facesContext.isProjectStage(ProjectStage.Production))
         {
             //if in production, make sure that the cache is not explicitly disabled via context param
-            _resourceCacheEnabled = WebConfigParamUtils.getBooleanInitParameter(externalContext, 
-                    ResourceHandlerCache.RESOURCE_HANDLER_CACHE_ENABLED_ATTRIBUTE,
-                    ResourceHandlerCache.RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT);
+            _resourceCacheEnabled = MyfacesConfig.getCurrentInstance(externalContext).isResourceHandlerCacheEnabled();
 
             if (log.isLoggable(Level.FINE))
             {
@@ -87,9 +62,7 @@ public class ResourceHandlerCache
         
         if (_resourceCacheEnabled)
         {
-            int maxSize = WebConfigParamUtils.getIntegerInitParameter(externalContext, 
-                    RESOURCE_HANDLER_CACHE_SIZE_ATTRIBUTE,
-                    RESOURCE_HANDLER_CACHE_DEFAULT_SIZE);
+            int maxSize = MyfacesConfig.getCurrentInstance(externalContext).getResourceHandlerCacheSize();
 
             _resourceCacheMap = new ConcurrentLRUCache<>((maxSize * 4 + 3) / 3, maxSize);
             _viewResourceCacheMap = new ConcurrentLRUCache<>((maxSize * 4 + 3) / 3, maxSize);

@@ -34,18 +34,10 @@ import javax.faces.render.FacesBehaviorRenderer;
 import javax.faces.render.FacesRenderer;
 import javax.faces.validator.FacesValidator;
 import javax.faces.view.facelets.FaceletsResourceResolver;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.element.NamedEvent;
 
 public class CdiAnnotationProviderExtension implements Extension
 {
-    /**
-     * Defines if CDI should be used for annotation scanning to improve the startup performance.
-     */
-    @JSFWebConfigParam(since="2.2.9", tags = "performance", defaultValue = "false")
-    public static final String USE_CDI_FOR_ANNOTATION_SCANNING
-            = "org.apache.myfaces.annotation.USE_CDI_FOR_ANNOTATION_SCANNING";
-
     private Map<Class<? extends Annotation>, Set<Class<?>>> map;
     private Class<? extends Annotation>[] annotationsToScan;
 

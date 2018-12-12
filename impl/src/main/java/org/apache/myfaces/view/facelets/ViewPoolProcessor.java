@@ -195,7 +195,7 @@ public class ViewPoolProcessor
             if (MyfacesConfig.getCurrentInstance(context.getExternalContext()).isStrictJsf2FaceletsCompatibility())
             {
                 Logger.getLogger(ViewPoolProcessor.class.getName()).log(
-                    Level.INFO, MyfacesConfig.INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY +
+                    Level.INFO, MyfacesConfig.STRICT_JSF_2_FACELETS_COMPATIBILITY +
                     " web config parameter is set to \"" + "true" +
                     "\". To enable view pooling this param "+
                     " must be set to \"false\". View Pooling disabled.");

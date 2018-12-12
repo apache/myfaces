@@ -46,8 +46,10 @@ public class HtmlRenderKitImplTest extends AbstractJsfTestCase
     @Test
     public void testCreateResponseWriterContentType2()
     {
-        MyfacesConfig config = new MyfacesConfig();
-        config.setDefaultResponseWriterContentTypeMode(ContentTypeUtils.XHTML_CONTENT_TYPE);
+        servletContext.setInitParameter(MyfacesConfig.DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE,
+                ContentTypeUtils.XHTML_CONTENT_TYPE);
+        
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
         facesContext.getExternalContext().getApplicationMap().put(MyfacesConfig.class.getName(), config);
         HtmlRenderKitImpl renderKit = new HtmlRenderKitImpl();
         StringWriter writer = new StringWriter();
