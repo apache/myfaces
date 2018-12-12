@@ -198,15 +198,7 @@ public class StartupServletContextListener implements ServletContextListener
         {
 
         }
-        catch (NoSuchMethodException e)
-        {
-            log.log(Level.SEVERE, e.getMessage(), e);
-        }
-        catch (InvocationTargetException e)
-        {
-            log.log(Level.SEVERE, e.getMessage(), e);
-        }
-        catch (IllegalAccessException e)
+        catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e)
         {
             log.log(Level.SEVERE, e.getMessage(), e);
         }
@@ -239,15 +231,7 @@ public class StartupServletContextListener implements ServletContextListener
                 }
                 listeners.add((StartupListener) pluginClass.newInstance());
             }
-            catch (ClassNotFoundException e)
-            {
-                log.log(Level.SEVERE, e.getMessage(), e);
-            }
-            catch (InstantiationException e)
-            {
-                log.log(Level.SEVERE, e.getMessage(), e);
-            }
-            catch (IllegalAccessException e)
+            catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
             {
                 log.log(Level.SEVERE, e.getMessage(), e);
             }

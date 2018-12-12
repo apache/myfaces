@@ -445,8 +445,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     {
         String expressionFactoryClassName
                 = WebConfigParamUtils.getStringInitParameter(externalContext, EXPRESSION_FACTORY);
-        if (expressionFactoryClassName != null
-                && expressionFactoryClassName.trim().length() > 0)
+        if (expressionFactoryClassName != null && !expressionFactoryClassName.trim().isEmpty())
         {
             if (log.isLoggable(Level.FINE))
             {
