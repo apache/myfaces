@@ -124,60 +124,16 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
             // So I use the same way as f:ajax for this problem. -=Jakob Korherr=-
             
             String validatorId = _delegate.getValidatorConfig().getValidatorId();
-            /*
-            boolean disabled = _delegate.isDisabled(ctx);
-            if (disabled)
+
+            try
             {
-                // the validator is disabled --> add its id to the exclusion stack
-                boolean validatorIdAvailable = validatorId != null && !"".equals(validatorId);
-                try
-                {
-                    if (validatorIdAvailable)
-                    {
-                        mctx.pushExcludedValidatorIdToStack(validatorId);
-                    }
-                    _delegate.getValidatorConfig().getNextHandler().apply(ctx, parent);
-                }
-                finally
-                {
-                    if (validatorIdAvailable)
-                    {
-                        mctx.popExcludedValidatorIdToStack();
-                    }
-                }
+                mctx.pushEnclosingValidatorIdToStack(validatorId, this);
+                _delegate.applyNextHandler(ctx, parent);
             }
-            else
-            {*/
-                // the validator is enabled 
-                // --> add the validation groups and the validatorId to the stack
-                //String groups = getValidationGroups(ctx);
-                // spec: don't save the validation groups string if it is null or empty string
-                //boolean groupsAvailable = groups != null 
-                        //&& !groups.matches(BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN);
-                //try
-                //{
-                    //if (groupsAvailable)
-                    //{
-                    //    mctx.pushValidationGroupsToStack(groups);
-                    //}
-                    try
-                    {
-                        mctx.pushEnclosingValidatorIdToStack(validatorId, this);
-                        _delegate.applyNextHandler(ctx, parent);
-                    }
-                    finally
-                    {
-                        mctx.popEnclosingValidatorIdToStack();
-                    }
-                //}
-                //finally
-                //{
-                    //if (groupsAvailable)
-                    //{
-                        //mctx.popValidationGroupsToStack();
-                    //}
-                //}
-            /*}*/
+            finally
+            {
+                mctx.popEnclosingValidatorIdToStack();
+            }
         }
         else
         {
@@ -239,6 +195,7 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
         // Retrieve the current FaceletContext from FacesContext object
@@ -310,6 +267,7 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
     }
             
 
+    @Override
     public String getFor()
     {
         TagAttribute forAttribute = _delegate.getTagAttribute("for");
@@ -338,6 +296,7 @@ public class ValidatorTagHandlerDelegate extends TagHandlerDelegate
         }
     }
 
+    @Override
     public ValidatorHandler getWrapped()
     {
         return _delegate;

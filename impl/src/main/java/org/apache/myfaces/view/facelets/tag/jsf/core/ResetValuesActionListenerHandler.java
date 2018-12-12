@@ -55,15 +55,10 @@ import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
  *
  * @author Leonardo Uribe
  */
-@JSFFaceletTag(
-            name = "f:resetValues",
-            bodyContent = "empty")
-public class ResetValuesActionListenerHandler extends TagHandler
-    implements ActionSource2AttachedObjectHandler
+@JSFFaceletTag(name = "f:resetValues", bodyContent = "empty")
+public class ResetValuesActionListenerHandler extends TagHandler implements ActionSource2AttachedObjectHandler
 {
-    /**
-     * 
-     */
+
     @JSFFaceletAttribute(name = "render", className = "javax.el.ValueExpression",
                          deferredValueType = "java.lang.Object")
     private final TagAttribute _render;
@@ -99,6 +94,7 @@ public class ResetValuesActionListenerHandler extends TagHandler
      * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, 
      * javax.faces.component.UIComponent)
      */
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
@@ -128,6 +124,7 @@ public class ResetValuesActionListenerHandler extends TagHandler
         }
     }
 
+    @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
         applyAttachedObject(context, parent, true);
@@ -179,10 +176,8 @@ public class ResetValuesActionListenerHandler extends TagHandler
         as.addActionListener(listener);
     }
 
-    /**
-     * TODO: Document me!
-     */
     @JSFFaceletAttribute
+    @Override
     public String getFor()
     {
         TagAttribute forAttribute = getAttribute("for");
@@ -202,7 +197,6 @@ public class ResetValuesActionListenerHandler extends TagHandler
         private static final long serialVersionUID = -9200000013153262119L;
 
         private ValueExpression renderExpression;
-        
         private Location topCompositeComponentReference;
         
         private ResetValuesActionListener()
@@ -215,6 +209,7 @@ public class ResetValuesActionListenerHandler extends TagHandler
             this.topCompositeComponentReference = location;
         }
 
+        @Override
         public void processAction(ActionEvent event) throws AbortProcessingException
         {
             FacesContext faces = FacesContext.getCurrentInstance();
@@ -227,6 +222,7 @@ public class ResetValuesActionListenerHandler extends TagHandler
             {
                 return;
             }
+            
             Object value = renderExpression.getValue(faces.getELContext());
             Collection<String> clientIds = null;
             if (value == null)
@@ -296,6 +292,7 @@ public class ResetValuesActionListenerHandler extends TagHandler
             this.topCompositeComponentReference = location;
         }
 
+        @Override
         public void processAction(ActionEvent event) throws AbortProcessingException
         {
             FacesContext faces = FacesContext.getCurrentInstance();
@@ -338,8 +335,7 @@ public class ResetValuesActionListenerHandler extends TagHandler
         }
     }
     
-    private static final String getComponentId(FacesContext facesContext, 
-        UIComponent contextComponent, String id)
+    private static String getComponentId(FacesContext facesContext, UIComponent contextComponent, String id)
     {
         UIComponent target = contextComponent.findComponent(id);
         if (target == null)

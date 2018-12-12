@@ -55,9 +55,7 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
 
-        Map<String, MetadataTarget> metadata =
-                (Map<String, MetadataTarget>) applicationMap.get(METADATA_KEY);
-
+        Map<String, MetadataTarget> metadata = (Map<String, MetadataTarget>) applicationMap.get(METADATA_KEY);
         if (metadata == null)
         {
             metadata = new HashMap<>();
@@ -236,9 +234,6 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
 
     private static class NullMetadata extends Metadata
     {
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {

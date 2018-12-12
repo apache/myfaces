@@ -380,45 +380,41 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         {
             mctx.finalizeForDeletion(c);
 
-            //if (!componentFoundInserted)
-            //{
-                if (mctx.isRefreshingSection())
+            if (mctx.isRefreshingSection())
+            {
+                facesContext.setProcessingEvents(false);
+                if (_relocatableResourceHandler != null && parent != null && !parent.equals(c.getParent()))
                 {
-                    facesContext.setProcessingEvents(false);
-                    if (_relocatableResourceHandler != null &&
-                        parent != null && !parent.equals(c.getParent()))
+                    // Replace parent with the relocated parent.
+                    parent = c.getParent();
+                    // Since we changed the parent, the facetName becomes invalid, because it points
+                    // to the component before relocation. We need to find the right facetName (if any) so we can
+                    // refresh the component properly.
+                    UIComponent c1 = ComponentSupport.findChildInChildrenByTagId(parent, id);
+                    if (c1 == null)
                     {
-                        // Replace parent with the relocated parent.
-                        parent = c.getParent();
-                        // Since we changed the parent, the facetName becomes invalid, because it points
-                        // to the component before relocation. We need to find the right facetName (if any) so we can
-                        // refresh the component properly.
-                        UIComponent c1 = ComponentSupport.findChildInChildrenByTagId(parent, id);
-                        if (c1 == null)
-                        {
-                            facetName = ComponentSupport.findChildInFacetsByTagId(parent, id);
-                        }
-                        else
-                        {
-                            facetName = null;
-                        }
+                        facetName = ComponentSupport.findChildInFacetsByTagId(parent, id);
                     }
-                    ComponentSupport.setCachedFacesContext(c, facesContext);
+                    else
+                    {
+                        facetName = null;
+                    }
                 }
-                if (facetName == null)
-                {
-                    parent.getChildren().remove(c);
-                }
-                else
-                {
-                    ComponentSupport.removeFacet(ctx, parent, c, facetName);
-                }
-                if (mctx.isRefreshingSection())
-                {
-                    ComponentSupport.setCachedFacesContext(c, null);
-                    facesContext.setProcessingEvents(oldProcessingEvents);
-                }
-            //}
+                ComponentSupport.setCachedFacesContext(c, facesContext);
+            }
+            if (facetName == null)
+            {
+                parent.getChildren().remove(c);
+            }
+            else
+            {
+                ComponentSupport.removeFacet(ctx, parent, c, facetName);
+            }
+            if (mctx.isRefreshingSection())
+            {
+                ComponentSupport.setCachedFacesContext(c, null);
+                facesContext.setProcessingEvents(oldProcessingEvents);
+            }
         }
 
 
@@ -582,7 +578,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                         // or not.
                         c.getAttributes().put(
                                 FaceletDynamicComponentRefreshTransientBuildEvent.
-                                    DYNAMIC_COMPONENT_BINDING_NEEDS_REFRESH,
+                                        DYNAMIC_COMPONENT_BINDING_NEEDS_REFRESH,
                                 Boolean.TRUE);
                     }
                 }
@@ -595,15 +591,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             // Saves 1 call per component without rendererType (f:viewParam, h:column, f:selectItem, ...)
             // and it does not have any side effects (the spec javadoc mentions in a explicit way
             // that rendererType can be null!).
-            /*
-            if (this._rendererType == null)
-            {
-                c = app.createComponent(this._componentType);
-            }
-            else
-            {*/
-                c = app.createComponent(faces, this._componentType, this._rendererType);
-            //}
+            c = app.createComponent(faces, this._componentType, this._rendererType);
         }
         return c;
     }
@@ -810,21 +798,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 }
             }
         }
-        
-        // check if the validatorId is on the exclusion list on the stack
-        /*
-        Iterator<String> it = mctx.getExcludedValidatorIds();
-        if (it != null)
-        {            
-            while (it.hasNext())
-            {
-                String excludedId = it.next();
-                if (excludedId.equals(validatorId))
-                {
-                    return false;
-                }
-            }
-        }*/
+
         Iterator<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> enclosingValidatorIds =
             mctx.getEnclosingValidatorIdsAndHandlers();
         if (enclosingValidatorIds != null)

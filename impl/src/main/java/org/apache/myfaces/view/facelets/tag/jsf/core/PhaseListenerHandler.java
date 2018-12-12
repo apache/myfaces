@@ -53,11 +53,9 @@ public class PhaseListenerHandler extends TagHandler
 
     private final static class LazyPhaseListener implements PhaseListener, Serializable
     {
-
         private static final long serialVersionUID = -6496143057319213401L;
 
         private final String type;
-
         private final ValueExpression binding;
 
         public LazyPhaseListener(String type, ValueExpression binding)

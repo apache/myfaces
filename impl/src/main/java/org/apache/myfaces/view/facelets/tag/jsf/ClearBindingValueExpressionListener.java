@@ -37,10 +37,6 @@ import javax.faces.event.ComponentSystemEventListener;
  */
 public class ClearBindingValueExpressionListener implements ComponentSystemEventListener, Serializable
 {
-    
-    /**
-     * 
-     */
     private static final long serialVersionUID = -6066524284031941519L;
     
     public ClearBindingValueExpressionListener()
@@ -48,6 +44,7 @@ public class ClearBindingValueExpressionListener implements ComponentSystemEvent
         super();
     }
 
+    @Override
     public void processEvent(ComponentSystemEvent event)
     {
         try
@@ -55,7 +52,7 @@ public class ClearBindingValueExpressionListener implements ComponentSystemEvent
             event.getComponent().getValueExpression("binding").setValue(
                     FacesContext.getCurrentInstance().getELContext(), null);
         }
-        catch(ELException e)
+        catch (ELException e)
         {
             Logger log = Logger.getLogger(ClearBindingValueExpressionListener.class.getName());
             if (log.isLoggable(Level.FINE))
@@ -63,7 +60,7 @@ public class ClearBindingValueExpressionListener implements ComponentSystemEvent
                 log.log(Level.FINE, "Cannot reset binding for: " + event.getComponent().getClientId(), e);
             }
         }
-        catch(NullPointerException e)
+        catch (NullPointerException e)
         {
             Logger log = Logger.getLogger(ClearBindingValueExpressionListener.class.getName());
             if (log.isLoggable(Level.FINE))

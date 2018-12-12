@@ -98,65 +98,41 @@ public class AjaxHandler extends TagHandler implements
     public final static String STANDARD_JSF_AJAX_LIBRARY_LOADED
             = "org.apache.myfaces.STANDARD_JSF_AJAX_LIBRARY_LOADED";
 
-    /**
-     * 
-     */
     @JSFFaceletAttribute(name = "disabled", className = "javax.el.ValueExpression",
                          deferredValueType = "java.lang.Boolean")
     private final TagAttribute _disabled;
 
-    /**
-     * 
-     */
     @JSFFaceletAttribute(name = "event", className = "javax.el.ValueExpression",
                          deferredValueType = "java.lang.String")
     private final TagAttribute _event;
 
-    /**
-     * 
-     */
     @JSFFaceletAttribute(name = "execute", className = "javax.el.ValueExpression",
                          deferredValueType = "java.lang.Object")
     private final TagAttribute _execute;
 
-    /**
-     * 
-     */
     @JSFFaceletAttribute(name = "immediate", className = "javax.el.ValueExpression",
                          deferredValueType = "java.lang.Boolean")
     private final TagAttribute _immediate;
 
-    /**
-     * 
-     */
     @JSFFaceletAttribute(name = "listener", className = "javax.el.MethodExpression",
             deferredMethodSignature = "public void m(javax.faces.event.AjaxBehaviorEvent evt) "
                                       + "throws javax.faces.event.AbortProcessingException")
     private final TagAttribute _listener;
 
-    /**
-     * 
-     */
+
     @JSFFaceletAttribute(name = "onevent", className = "javax.el.ValueExpression",
                          deferredValueType = "java.lang.String")
     private final TagAttribute _onevent;
 
-    /**
-     * 
-     */
+
     @JSFFaceletAttribute(name = "onerror", className = "javax.el.ValueExpression",
                          deferredValueType = "java.lang.String")
     private final TagAttribute _onerror;
 
-    /**
-     * 
-     */
     @JSFFaceletAttribute(name = "render", className = "javax.el.ValueExpression",
                          deferredValueType = "java.lang.Object")
     private final TagAttribute _render;
-    /**
-     * 
-     */
+
     @JSFFaceletAttribute(name = "delay", className = "javax.el.ValueExpression",
                          deferredValueType = "java.lang.String")
     private final TagAttribute _delay;
@@ -200,6 +176,7 @@ public class AjaxHandler extends TagHandler implements
         _wrapMode = !compHandlerList.isEmpty();
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent)
             throws IOException
     {
@@ -249,8 +226,7 @@ public class AjaxHandler extends TagHandler implements
                 // understand as an implementation detail, after all there exists a key
                 // called AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY that could be
                 // used to create a tag outside jsf implementation to attach targets.
-                mctx.addAttachedObjectHandler(
-                        parent, this);
+                mctx.addAttachedObjectHandler(parent, this);
             }
             else
             {
@@ -309,6 +285,7 @@ public class AjaxHandler extends TagHandler implements
      * ViewDeclarationLanguage.retargetAttachedObjects uses it to check
      * if the the target to be processed is applicable for this handler
      */
+    @Override
     public String getEventName()
     {
         if (_event == null)
@@ -338,6 +315,7 @@ public class AjaxHandler extends TagHandler implements
      * to the selected component through ClientBehaviorHolder.getEventNames() or
      * ClientBehaviorHolder.getDefaultEventName()
      */
+    @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
         // Retrieve the current FaceletContext from FacesContext object
@@ -521,6 +499,7 @@ public class AjaxHandler extends TagHandler implements
      * taken into account. Instead, getEventName is used on 
      * ViewDeclarationLanguage.retargetAttachedObjects.
      */
+    @Override
     public String getFor()
     {
         return null;
@@ -529,8 +508,7 @@ public class AjaxHandler extends TagHandler implements
     /**
      * Wraps a method expression in a AjaxBehaviorListener
      */
-    public final static class AjaxBehaviorListenerImpl implements
-            AjaxBehaviorListener, PartialStateHolder
+    public final static class AjaxBehaviorListenerImpl implements AjaxBehaviorListener, PartialStateHolder
     {
         private MethodExpression _expr;
         private boolean _transient;
@@ -545,18 +523,19 @@ public class AjaxHandler extends TagHandler implements
             _expr = expr;
         }
 
-        public void processAjaxBehavior(AjaxBehaviorEvent event)
-                throws AbortProcessingException
+        @Override
+        public void processAjaxBehavior(AjaxBehaviorEvent event) throws AbortProcessingException
         {
-            _expr.invoke(FacesContext.getCurrentInstance().getELContext(),
-                    new Object[] { event });
+            _expr.invoke(FacesContext.getCurrentInstance().getELContext(), new Object[] { event });
         }
 
+        @Override
         public boolean isTransient()
         {
             return _transient;
         }
 
+        @Override
         public void restoreState(FacesContext context, Object state)
         {
             if (state == null)
@@ -566,6 +545,7 @@ public class AjaxHandler extends TagHandler implements
             _expr = (MethodExpression) state;
         }
 
+        @Override
         public Object saveState(FacesContext context)
         {
             if (initialStateMarked())
@@ -575,21 +555,25 @@ public class AjaxHandler extends TagHandler implements
             return _expr;
         }
 
+        @Override
         public void setTransient(boolean newTransientValue)
         {
             _transient = newTransientValue;
         }
         
+        @Override
         public void clearInitialState()
         {
             _initialStateMarked = false;
         }
 
+        @Override
         public boolean initialStateMarked()
         {
             return _initialStateMarked;
         }
 
+        @Override
         public void markInitialState()
         {
             _initialStateMarked = true;

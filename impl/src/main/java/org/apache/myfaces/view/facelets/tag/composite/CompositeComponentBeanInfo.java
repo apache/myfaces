@@ -160,8 +160,8 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo
         _propertyDescriptors = descriptors;
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         Class beanClass = (Class) in.readObject();
         Class customizerClass = (Class) in.readObject();
@@ -189,6 +189,7 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo
         _propertyDescriptors = (List<PropertyDescriptor>) in.readObject();
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeObject(_descriptor.getBeanClass());

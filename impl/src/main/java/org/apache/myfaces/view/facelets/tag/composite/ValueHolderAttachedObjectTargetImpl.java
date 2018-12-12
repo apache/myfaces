@@ -29,9 +29,6 @@ public class ValueHolderAttachedObjectTargetImpl extends
         AttachedObjectTargetImpl implements ValueHolderAttachedObjectTarget
 {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -8906008286971349133L;
 
 }

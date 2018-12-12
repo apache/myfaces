@@ -37,6 +37,7 @@ public class JsfElementHandler extends javax.faces.view.facelets.ComponentHandle
         super(config);
     }
     
+    @Override
     protected MetaRuleset createMetaRuleset(Class type)
     {
         MetaRuleset rules = super.createMetaRuleset(type);

@@ -61,6 +61,7 @@ public final class PassThroughAttributeHandler extends TagHandler
      * 
      * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
      */
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
@@ -84,6 +85,7 @@ public final class PassThroughAttributeHandler extends TagHandler
         }
     }
 
+    @Override
     public String getAttributeName(FaceletContext ctx)
     {
         return _name.getValue(ctx);

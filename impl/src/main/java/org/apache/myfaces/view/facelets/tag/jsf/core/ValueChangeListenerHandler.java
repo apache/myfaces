@@ -66,7 +66,6 @@ public final class ValueChangeListenerHandler extends TagHandler
         private static final long serialVersionUID = 7613811124326963180L;
 
         private final String type;
-
         private final ValueExpression binding;
 
         public LazyValueChangeListener(String type, ValueExpression binding)
@@ -75,6 +74,7 @@ public final class ValueChangeListenerHandler extends TagHandler
             this.binding = binding;
         }
 
+        @Override
         public void processValueChange(ValueChangeEvent event) throws AbortProcessingException
         {
             ValueChangeListener instance = null;
@@ -150,6 +150,7 @@ public final class ValueChangeListenerHandler extends TagHandler
      * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, 
      * javax.faces.component.UIComponent)
      */
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
@@ -173,6 +174,7 @@ public final class ValueChangeListenerHandler extends TagHandler
         }
     }
 
+    @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
         // Retrieve the current FaceletContext from FacesContext object
@@ -189,10 +191,8 @@ public final class ValueChangeListenerHandler extends TagHandler
         evh.addValueChangeListener(listener);
     }
 
-    /**
-     * TODO: Document me!
-     */
     @JSFFaceletAttribute
+    @Override
     public String getFor()
     {
         TagAttribute forAttribute = getAttribute("for");

@@ -38,8 +38,7 @@ public class ValueHolderHandler extends AttachedObjectTargetHandler<ValueHolderA
     }
 
     @Override
-    protected ValueHolderAttachedObjectTarget createAttachedObjectTarget(
-            FaceletContext ctx)
+    protected ValueHolderAttachedObjectTarget createAttachedObjectTarget(FaceletContext ctx)
     {
         ValueHolderAttachedObjectTargetImpl target = new ValueHolderAttachedObjectTargetImpl();
         

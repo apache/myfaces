@@ -48,8 +48,8 @@ public final class ViewMetadataHandler extends TagHandler
         super(config);
     }
 
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException
+    @Override
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
         if (parent == null)
         {
@@ -59,6 +59,7 @@ public final class ViewMetadataHandler extends TagHandler
         {
             throw new TagException(this.tag, "Parent UIComponent "+parent.getId()+" should be instance of UIViewRoot");
         }
+
         FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
         if (mctx.isBuildingViewMetadata())
         {

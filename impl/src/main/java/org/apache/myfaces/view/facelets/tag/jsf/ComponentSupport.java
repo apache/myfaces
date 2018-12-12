@@ -64,11 +64,7 @@ public final class ComponentSupport
             method = UIComponent.class.getDeclaredMethod("setCachedFacesContext", FacesContext.class);
             method.setAccessible(true);
         }
-        catch (NoSuchMethodException ex)
-        {
-            method = null;
-        }
-        catch (SecurityException ex)
+        catch (NoSuchMethodException | SecurityException ex)
         {
             method = null;
         }
@@ -586,7 +582,7 @@ public final class ComponentSupport
             component.getAttributes().put(DefaultFaceletsStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW,
                                           ComponentState.REMOVE_ADD);
         }
-        //component.subscribeToEvent(PostAddToViewEvent.class, new RestoreComponentFullyListener());
+
         if (FaceletViewDeclarationLanguage.isRefreshTransientBuildOnPSSAuto(context))
         {
             FaceletViewDeclarationLanguage.cleanTransientBuildOnRestore(context);

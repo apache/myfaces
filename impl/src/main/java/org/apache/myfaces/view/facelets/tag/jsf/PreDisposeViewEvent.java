@@ -36,10 +36,6 @@ import javax.faces.event.SystemEventListener;
  */
 public class PreDisposeViewEvent extends ComponentSystemEvent
 {
-
-    /**
-     * 
-     */
     private static final long serialVersionUID = 8124621389770967678L;
 
     public PreDisposeViewEvent(UIComponent component)

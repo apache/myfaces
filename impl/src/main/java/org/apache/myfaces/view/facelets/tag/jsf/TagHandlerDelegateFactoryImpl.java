@@ -35,29 +35,25 @@ public class TagHandlerDelegateFactoryImpl extends TagHandlerDelegateFactory
 {
 
     @Override
-    public TagHandlerDelegate createBehaviorHandlerDelegate(
-            BehaviorHandler owner)
+    public TagHandlerDelegate createBehaviorHandlerDelegate(BehaviorHandler owner)
     {
         return new BehaviorTagHandlerDelegate(owner);
     }
 
     @Override
-    public TagHandlerDelegate createComponentHandlerDelegate(
-            ComponentHandler owner)
+    public TagHandlerDelegate createComponentHandlerDelegate(ComponentHandler owner)
     {
         return new ComponentTagHandlerDelegate(owner);
     }
 
     @Override
-    public TagHandlerDelegate createConverterHandlerDelegate(
-            ConverterHandler owner)
+    public TagHandlerDelegate createConverterHandlerDelegate(ConverterHandler owner)
     {
         return new ConverterTagHandlerDelegate(owner);
     }
 
     @Override
-    public TagHandlerDelegate createValidatorHandlerDelegate(
-            ValidatorHandler owner)
+    public TagHandlerDelegate createValidatorHandlerDelegate(ValidatorHandler owner)
     {
         return new ValidatorTagHandlerDelegate(owner);
     }

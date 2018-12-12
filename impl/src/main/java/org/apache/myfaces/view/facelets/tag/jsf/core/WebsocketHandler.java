@@ -37,10 +37,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
         bodyContent = "empty")
 public class WebsocketHandler extends ComponentHandler/* implements RelocatableResourceHandler*/
 {
-   
-    /**
-     * 
-     */
+
     @JSFFaceletAttribute(name = "channel", className = "javax.el.ValueExpression",
                          deferredValueType = "java.lang.String")
     private final TagAttribute _channel;
@@ -52,8 +49,7 @@ public class WebsocketHandler extends ComponentHandler/* implements RelocatableR
     }
 
     @Override
-    public void onComponentCreated(FaceletContext ctx, UIComponent c,
-            UIComponent parent)
+    public void onComponentCreated(FaceletContext ctx, UIComponent c, UIComponent parent)
     {
         UIWebsocket component = (UIWebsocket) c;
         component.getAttributes().put("initComponentId", 

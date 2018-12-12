@@ -46,6 +46,7 @@ public final class PassThroughAttributesHandler extends TagHandler
         _value = getRequiredAttribute("value");
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
         if (parent == null)

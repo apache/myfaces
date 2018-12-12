@@ -127,6 +127,7 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements V
         return new MetaRulesetImpl(_delegate.getTag(), type).ignore("binding").ignore("for");
     }
 
+    @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
         // Retrieve the current FaceletContext from FacesContext object
@@ -164,6 +165,7 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements V
         }
     }
 
+    @Override
     public String getFor()
     {
         TagAttribute forAttribute = _delegate.getTagAttribute("for");

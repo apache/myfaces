@@ -34,9 +34,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * @since 2.2
  * @author Leonardo Uribe
  */
-@JSFFaceletTag(
-        name = "f:attributes",
-        bodyContent = "empty")
+@JSFFaceletTag(name = "f:attributes", bodyContent = "empty")
 public final class AttributesHandler extends TagHandler 
 {
     private final TagAttribute _value;
@@ -47,6 +45,7 @@ public final class AttributesHandler extends TagHandler
         _value = getRequiredAttribute("value");
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
         if (parent == null)

@@ -24,7 +24,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.validator.MethodExpressionValidator;
 
 public class PartialMethodExpressionValidator extends MethodExpressionValidator
-    implements PartialStateHolder
+        implements PartialStateHolder
 {
     private boolean _initialStateMarked;
 
@@ -38,21 +38,25 @@ public class PartialMethodExpressionValidator extends MethodExpressionValidator
         super(methodExpression);
     }
 
+    @Override
     public void clearInitialState()
     {
         _initialStateMarked = false;
     }
 
+    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
+    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state)
     {
         if (state == null)
@@ -62,6 +66,7 @@ public class PartialMethodExpressionValidator extends MethodExpressionValidator
         super.restoreState(context, state);
     }
 
+    @Override
     public Object saveState(FacesContext context)
     {
         if (initialStateMarked())

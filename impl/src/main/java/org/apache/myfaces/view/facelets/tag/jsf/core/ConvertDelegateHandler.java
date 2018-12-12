@@ -42,12 +42,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
         tagClass="org.apache.myfaces.taglib.core.ConverterImplTag")
 public final class ConvertDelegateHandler extends ConverterHandler
 {
-
     private final TagAttribute converterId;
 
-    /**
-     * @param config
-     */
     public ConvertDelegateHandler(ConverterConfig config)
     {
         super(config);
@@ -66,6 +62,7 @@ public final class ConvertDelegateHandler extends ConverterHandler
         return ctx.getFacesContext().getApplication().createConverter(this.getConverterId(ctx));
     }
 
+    @Override
     protected MetaRuleset createMetaRuleset(Class type)
     {
         return super.createMetaRuleset(type).ignoreAll();

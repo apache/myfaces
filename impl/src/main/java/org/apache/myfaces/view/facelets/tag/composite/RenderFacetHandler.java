@@ -88,8 +88,7 @@ public class RenderFacetHandler extends ComponentHandler
                     = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
             
             CompositeComponentBeanInfo beanInfo = 
-                (CompositeComponentBeanInfo) compositeBaseParent.getAttributes()
-                .get(UIComponent.BEANINFO_KEY);
+                (CompositeComponentBeanInfo) compositeBaseParent.getAttributes().get(UIComponent.BEANINFO_KEY);
             
             if (beanInfo == null)
             {

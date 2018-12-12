@@ -281,15 +281,11 @@ public class CompositeResourceLibrary implements TagLibrary
 
     private static class ComponentConfigWrapper implements ComponentConfig
     {
-
         protected final TagConfig parent;
-
         protected final String componentType;
-
         protected final String rendererType;
 
-        public ComponentConfigWrapper(TagConfig parent, String componentType,
-                                      String rendererType)
+        public ComponentConfigWrapper(TagConfig parent, String componentType, String rendererType)
         {
             this.parent = parent;
             this.componentType = componentType;

@@ -64,7 +64,6 @@ public final class ActionListenerHandler extends TagHandler
 
     private final static class LazyActionListener implements ActionListener, Serializable
     {
-
         private static final long serialVersionUID = -9202120013153262119L;
 
         private final String type;
@@ -76,6 +75,7 @@ public final class ActionListenerHandler extends TagHandler
             this.binding = binding;
         }
 
+        @Override
         public void processAction(ActionEvent event) throws AbortProcessingException
         {
             ActionListener instance = null;
@@ -111,12 +111,8 @@ public final class ActionListenerHandler extends TagHandler
     }
 
     private final TagAttribute binding;
-
     private final String listenerType;
 
-    /**
-     * @param config
-     */
     public ActionListenerHandler(TagConfig config)
     {
         super(config);
@@ -154,6 +150,7 @@ public final class ActionListenerHandler extends TagHandler
      * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, 
      * javax.faces.component.UIComponent)
      */
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
@@ -183,6 +180,7 @@ public final class ActionListenerHandler extends TagHandler
         }
     }
 
+    @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
         // Retrieve the current FaceletContext from FacesContext object
@@ -199,10 +197,8 @@ public final class ActionListenerHandler extends TagHandler
         as.addActionListener(listener);
     }
 
-    /**
-     * TODO: Document me!
-     */
     @JSFFaceletAttribute
+    @Override
     public String getFor()
     {
         TagAttribute forAttribute = getAttribute("for");

@@ -43,7 +43,6 @@ public final class EditableValueHolderRule extends MetaRule
 
     final static class LiteralValidatorMetadata extends Metadata
     {
-
         private final String validatorId;
 
         public LiteralValidatorMetadata(String validatorId)
@@ -51,6 +50,7 @@ public final class EditableValueHolderRule extends MetaRule
             this.validatorId = validatorId;
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             ((EditableValueHolder) instance).addValidator(ctx.getFacesContext().getApplication()
@@ -67,6 +67,7 @@ public final class EditableValueHolderRule extends MetaRule
             this.attr = attr;
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             // From JSF 2.0 it is possible to have valueChangeListener method without ValueChangeEvent parameter. 
@@ -99,6 +100,7 @@ public final class EditableValueHolderRule extends MetaRule
             this.attr = attr;
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             if (FaceletCompositionContext.getCurrentInstance(ctx).isUsingPSSOnThisView())
@@ -122,12 +124,11 @@ public final class EditableValueHolderRule extends MetaRule
 
     public final static EditableValueHolderRule INSTANCE = new EditableValueHolderRule();
 
+    @Override
     public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta)
     {
-
         if (meta.isTargetInstanceOf(EditableValueHolder.class))
         {
-
             if ("validator".equals(name))
             {
                 if (attribute.isLiteral())

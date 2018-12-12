@@ -44,12 +44,8 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
         converterClass="javax.faces.convert.NumberConverter")
 public final class ConvertNumberHandler extends ConverterHandler
 {
-
     private final TagAttribute locale;
 
-    /**
-     * @param config
-     */
     public ConvertNumberHandler(ConverterConfig config)
     {
         super(config);
@@ -74,6 +70,7 @@ public final class ConvertNumberHandler extends ConverterHandler
      * See org.apache.myfaces.view.facelets.tag.ObjectHandler#setAttributes(javax.faces.view.facelets.FaceletContext,
      * java.lang.Object)
      */
+    @Override
     public void setAttributes(FaceletContext ctx, Object obj)
     {
         super.setAttributes(ctx, obj);
@@ -84,6 +81,7 @@ public final class ConvertNumberHandler extends ConverterHandler
         }
     }
 
+    @Override
     protected MetaRuleset createMetaRuleset(Class type)
     {
         return super.createMetaRuleset(type).ignore("locale");

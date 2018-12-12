@@ -44,6 +44,7 @@ final class PassthroughRuleImpl extends MetaRule implements PassthroughRule
             _value = value;
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             ((UIComponent) instance).getPassThroughAttributes().put(_name, _value);
@@ -53,9 +54,7 @@ final class PassthroughRuleImpl extends MetaRule implements PassthroughRule
     final static class ValueExpressionMetadata extends Metadata
     {
         private final String _name;
-
         private final TagAttribute _attr;
-
         private final Class<?> _type;
 
         public ValueExpressionMetadata(String name, Class<?> type, TagAttribute attr)
@@ -65,6 +64,7 @@ final class PassthroughRuleImpl extends MetaRule implements PassthroughRule
             _type = type;
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             ((UIComponent) instance).getPassThroughAttributes().put(
@@ -79,6 +79,7 @@ final class PassthroughRuleImpl extends MetaRule implements PassthroughRule
         super();
     }
 
+    @Override
     public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta)
     {
         if (meta.isTargetInstanceOf(UIComponent.class))

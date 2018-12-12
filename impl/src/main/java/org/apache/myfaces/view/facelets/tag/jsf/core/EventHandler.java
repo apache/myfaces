@@ -100,7 +100,8 @@ public final class EventHandler extends TagHandler
         type = getRequiredAttribute("type");
     }
     
-    public void apply (FaceletContext ctx, UIComponent parent)
+    @Override
+    public void apply(FaceletContext ctx, UIComponent parent)
             throws ELException, FacesException, FaceletException, IOException
     {
         //Apply only if we are creating a new component
@@ -259,7 +260,6 @@ public final class EventHandler extends TagHandler
     
     public static class Listener implements ComponentSystemEventListener, Serializable 
     {
-
         private static final long serialVersionUID = 7318240026355007052L;
         
         private MethodExpression methodExpOneArg;
@@ -282,6 +282,7 @@ public final class EventHandler extends TagHandler
             this.methodExpZeroArg = methodExpZeroArg;
         }
         
+        @Override
         public void processEvent(ComponentSystemEvent event)
         {
             ELContext elContext = FacesContext.getCurrentInstance().getELContext();
@@ -308,9 +309,6 @@ public final class EventHandler extends TagHandler
     
     public static class CompositeComponentRelativeListener  implements ComponentSystemEventListener, Serializable 
     {
-        /**
-         * 
-         */
         private static final long serialVersionUID = 3822330995358746099L;
         
         private String _compositeComponentExpression;
@@ -331,6 +329,7 @@ public final class EventHandler extends TagHandler
             this._compositeComponentExpression = compositeComponentExpression;
         }
         
+        @Override
         public void processEvent(ComponentSystemEvent event)
         {
             FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -421,6 +420,7 @@ public final class EventHandler extends TagHandler
             this._targetComponent = targetComponent;
         }
         
+        @Override
         public void processEvent(ComponentSystemEvent event)
         {
             UIComponent parentCompositeComponent = event.getComponent();
@@ -460,6 +460,7 @@ public final class EventHandler extends TagHandler
             }
         }
         
+        @Override
         public Object saveState(FacesContext context)
         {
             if (!initialStateMarked())
@@ -478,6 +479,7 @@ public final class EventHandler extends TagHandler
             return null;
         }
 
+        @Override
         public void restoreState(FacesContext context, Object state)
         {
             if (state == null)
@@ -491,26 +493,31 @@ public final class EventHandler extends TagHandler
             methodExpOneArg = (MethodExpression) values[3];
         }
 
+        @Override
         public boolean isTransient()
         {
             return false;
         }
 
+        @Override
         public void setTransient(boolean newTransientValue)
         {
             // no-op as listener is transient
         }
         
+        @Override
         public void clearInitialState()
         {
             markInitialState = false;
         }
 
+        @Override
         public boolean initialStateMarked()
         {
             return markInitialState;
         }
 
+        @Override
         public void markInitialState()
         {
             markInitialState = true;

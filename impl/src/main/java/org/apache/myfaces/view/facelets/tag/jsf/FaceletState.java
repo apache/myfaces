@@ -30,9 +30,6 @@ import javax.faces.context.FacesContext;
 
 public class FaceletState implements StateHolder, Serializable
 {
-    /**
-     * 
-     */
     private static final long serialVersionUID = -7823771271935942737L;
     
     private Map<String, Object> stateMap;
@@ -62,6 +59,7 @@ public class FaceletState implements StateHolder, Serializable
     }
     
 
+    @Override
     public Object saveState(FacesContext context)
     {
         UIViewRoot root = context.getViewRoot();
@@ -89,6 +87,7 @@ public class FaceletState implements StateHolder, Serializable
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public void restoreState(FacesContext context, Object state)
     {
         if (state == null)
@@ -118,11 +117,13 @@ public class FaceletState implements StateHolder, Serializable
         }
     }
 
+    @Override
     public boolean isTransient()
     {
         return false;
     }
 
+    @Override
     public void setTransient(boolean newTransientValue)
     {
     }

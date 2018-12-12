@@ -49,22 +49,13 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
         converterClass="javax.faces.convert.DateTimeConverter")
 public final class ConvertDateTimeHandler extends ConverterHandler
 {
-
     private final TagAttribute dateStyle;
-
     private final TagAttribute locale;
-
     private final TagAttribute pattern;
-
     private final TagAttribute timeStyle;
-
     private final TagAttribute timeZone;
-
     private final TagAttribute type;
 
-    /**
-     * @param config
-     */
     public ConvertDateTimeHandler(ConverterConfig config)
     {
         super(config);
@@ -94,6 +85,7 @@ public final class ConvertDateTimeHandler extends ConverterHandler
      * See org.apache.myfaces.view.facelets.tag.ObjectHandler#setAttributes(javax.faces.view.facelets.FaceletContext,
      * java.lang.Object)
      */
+    @Override
     public void setAttributes(FaceletContext ctx, Object obj)
     {
         DateTimeConverter c = (DateTimeConverter) obj;
@@ -142,6 +134,7 @@ public final class ConvertDateTimeHandler extends ConverterHandler
         }
     }
 
+    @Override
     protected MetaRuleset createMetaRuleset(Class type)
     {
         return super.createMetaRuleset(type).ignoreAll();

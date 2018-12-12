@@ -104,8 +104,7 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
     }
 
     @Override
-    public void apply(FaceletContext ctx, UIComponent parent)
-            throws IOException
+    public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
         FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
         AbstractFaceletContext actx = (AbstractFaceletContext)ctx;
@@ -145,8 +144,7 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
                     if (_cachedBeanInfo == null)
                     {
                         tempBeanInfo  = _createCompositeComponentMetadata(compositeBaseParent);
-                        compositeBaseParent.getAttributes().put(
-                                UIComponent.BEANINFO_KEY, tempBeanInfo);
+                        compositeBaseParent.getAttributes().put(UIComponent.BEANINFO_KEY, tempBeanInfo);
                         
                         try
                         {
@@ -192,15 +190,13 @@ public final class CompositeComponentDefinitionTagHandler implements FaceletHand
                     {
                         // Put the cached instance, but in that case it is not necessary to call
                         // nextHandler
-                        compositeBaseParent.getAttributes().put(
-                                UIComponent.BEANINFO_KEY, _cachedBeanInfo);
+                        compositeBaseParent.getAttributes().put(UIComponent.BEANINFO_KEY, _cachedBeanInfo);
                     }
                 }
                 else
                 {
                     tempBeanInfo = _createCompositeComponentMetadata(compositeBaseParent);
-                    compositeBaseParent.getAttributes().put(
-                            UIComponent.BEANINFO_KEY, tempBeanInfo);
+                    compositeBaseParent.getAttributes().put(UIComponent.BEANINFO_KEY, tempBeanInfo);
                     
                     try
                     {

@@ -23,8 +23,8 @@ import javax.faces.component.PartialStateHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.event.MethodExpressionActionListener;
 
-public class PartialMethodExpressionActionListener extends 
-    MethodExpressionActionListener implements PartialStateHolder
+public class PartialMethodExpressionActionListener extends MethodExpressionActionListener
+        implements PartialStateHolder
 {
     private boolean _initialStateMarked;
 
@@ -33,34 +33,36 @@ public class PartialMethodExpressionActionListener extends
         super();
     }
 
-    public PartialMethodExpressionActionListener(
-            MethodExpression methodExpression1,
+    public PartialMethodExpressionActionListener(MethodExpression methodExpression1,
             MethodExpression methodExpression2)
     {
         super(methodExpression1, methodExpression2);
     }
 
-    public PartialMethodExpressionActionListener(
-            MethodExpression methodExpression)
+    public PartialMethodExpressionActionListener(MethodExpression methodExpression)
     {
         super(methodExpression);
     }
 
+    @Override
     public void clearInitialState()
     {
         _initialStateMarked = false;
     }
 
+    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
+    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state)
     {
         if (state == null)
@@ -70,6 +72,7 @@ public class PartialMethodExpressionActionListener extends
         super.restoreState(context, state);
     }
 
+    @Override
     public Object saveState(FacesContext context)
     {
         if (initialStateMarked())

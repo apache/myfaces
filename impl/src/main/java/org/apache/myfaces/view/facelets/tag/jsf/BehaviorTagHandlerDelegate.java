@@ -48,7 +48,6 @@ import org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler;
  */
 public class BehaviorTagHandlerDelegate extends TagHandlerDelegate implements BehaviorHolderAttachedObjectHandler
 {
-
     private BehaviorHandler _delegate;
     
     public BehaviorTagHandlerDelegate(BehaviorHandler delegate)
@@ -95,9 +94,7 @@ public class BehaviorTagHandlerDelegate extends TagHandlerDelegate implements Be
     {
         if (_delegate.getBehaviorId() == null)
         {
-            throw new TagException(
-                                   _delegate.getTag(),
-                                   "No behavior id defined");
+            throw new TagException(_delegate.getTag(), "No behavior id defined");
         }
         return ctx.getFacesContext().getApplication().createBehavior(_delegate.getBehaviorId());
     }
@@ -119,6 +116,7 @@ public class BehaviorTagHandlerDelegate extends TagHandlerDelegate implements Be
     /**
      * Create a ClientBehavior and attach it to the component
      */
+    @Override
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
         // Retrieve the current FaceletContext from FacesContext object
@@ -181,6 +179,7 @@ public class BehaviorTagHandlerDelegate extends TagHandlerDelegate implements Be
         }
     }
 
+    @Override
     public String getFor()
     {
         TagAttribute forAttribute = _delegate.getTagAttribute("for");
@@ -195,6 +194,7 @@ public class BehaviorTagHandlerDelegate extends TagHandlerDelegate implements Be
         }
     }
 
+    @Override
     public String getEventName()
     {
         return _delegate.getEventName();

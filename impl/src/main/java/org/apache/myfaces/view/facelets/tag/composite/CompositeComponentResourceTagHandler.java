@@ -175,10 +175,8 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
 
     @SuppressWarnings("unchecked")
     @Override
-    public void applyNextHandler(FaceletContext ctx, UIComponent c)
-            throws IOException
+    public void applyNextHandler(FaceletContext ctx, UIComponent c) throws IOException
     {
-        //super.applyNextHandler(ctx, c);
         FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
         
         // Since JSF 2.2, there are two cases here:
@@ -397,8 +395,8 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
     {
         FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(faceletContext);
         AbstractFaceletContext actx = (AbstractFaceletContext) faceletContext;
-        UIPanel compositeFacetPanel
-                = (UIPanel) compositeComponentBase.getFacets().get(UIComponent.COMPOSITE_FACET_NAME);
+        UIPanel compositeFacetPanel =
+                (UIPanel) compositeComponentBase.getFacets().get(UIComponent.COMPOSITE_FACET_NAME);
         if (compositeFacetPanel == null)
         {
             compositeFacetPanel = (UIPanel)
@@ -436,10 +434,9 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         Iterator<AjaxHandler> it = ((AbstractFaceletContext) faceletContext).getAjaxHandlers();
         if (it != null)
         {
-            while(it.hasNext())
+            while (it.hasNext())
             {
-                mctx.addAttachedObjectHandler(
-                        compositeComponentBase, it.next());
+                mctx.addAttachedObjectHandler(compositeComponentBase, it.next());
             }
         }    
         
@@ -510,7 +507,6 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         if (ValueHolder.class.isAssignableFrom(type))
         {
             m.addRule(ValueHolderRule.INSTANCE);
-
             if (EditableValueHolder.class.isAssignableFrom(type))
             {
                 m.ignore("submittedValue");
@@ -527,16 +523,16 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         if (_facetHandlersMap == null)
         {
             Map<String, FaceletHandler> map = new HashMap<String, FaceletHandler>();
-            
+
             for (FaceletHandler handler : _facetHandlers)
             {
                 if (handler instanceof javax.faces.view.facelets.FacetHandler )
                 {
-                    map.put( ((javax.faces.view.facelets.FacetHandler)handler).getFacetName(ctx), handler);
+                    map.put(((javax.faces.view.facelets.FacetHandler) handler).getFacetName(ctx), handler);
                 }
                 else if (handler instanceof InsertFacetHandler)
                 {
-                    map.put( ((InsertFacetHandler)handler).getFacetName(ctx), handler);
+                    map.put(((InsertFacetHandler) handler).getFacetName(ctx), handler);
                 }
             }
             _facetHandlersMap = map;

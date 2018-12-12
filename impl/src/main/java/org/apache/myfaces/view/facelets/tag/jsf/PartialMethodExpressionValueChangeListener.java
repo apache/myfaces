@@ -45,21 +45,25 @@ public class PartialMethodExpressionValueChangeListener extends MethodExpression
         super(methodExpression);
     }
 
+    @Override
     public void clearInitialState()
     {
         _initialStateMarked = false;
     }
 
+    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
+    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state)
     {
         if (state == null)
@@ -69,6 +73,7 @@ public class PartialMethodExpressionValueChangeListener extends MethodExpression
         super.restoreState(context, state);
     }
 
+    @Override
     public Object saveState(FacesContext context)
     {
         if (initialStateMarked())

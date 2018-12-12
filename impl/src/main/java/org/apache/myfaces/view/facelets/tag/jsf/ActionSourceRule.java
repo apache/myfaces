@@ -44,7 +44,6 @@ public final class ActionSourceRule extends MetaRule
 
     final static class ActionMapper extends Metadata
     {
-
         private final TagAttribute attr;
 
         public ActionMapper(TagAttribute attr)
@@ -52,6 +51,7 @@ public final class ActionSourceRule extends MetaRule
             this.attr = attr;
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
 
@@ -67,6 +67,7 @@ public final class ActionSourceRule extends MetaRule
             this._attr = attr;
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             MethodExpression expr = _attr.getMethodExpression(ctx, null, ActionSourceRule.ACTION_SIG);
@@ -76,7 +77,6 @@ public final class ActionSourceRule extends MetaRule
 
     final static class ActionListenerMapper extends Metadata
     {
-
         private final TagAttribute attr;
 
         public ActionListenerMapper(TagAttribute attr)
@@ -84,11 +84,11 @@ public final class ActionSourceRule extends MetaRule
             this.attr = attr;
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
 
         }
-
     }
 
     final static class ActionListenerMapper2 extends Metadata
@@ -100,6 +100,7 @@ public final class ActionSourceRule extends MetaRule
             _attr = attr;
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             // From JSF 2.0 it is possible to have actionListener method without ActionEvent parameter. 
@@ -132,6 +133,7 @@ public final class ActionSourceRule extends MetaRule
         super();
     }
 
+    @Override
     public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta)
     {
         if (meta.isTargetInstanceOf(ActionSource.class))

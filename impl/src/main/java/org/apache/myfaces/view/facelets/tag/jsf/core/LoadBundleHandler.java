@@ -62,9 +62,7 @@ public final class LoadBundleHandler extends TagHandler
     {
         private final static class ResourceEntry implements Map.Entry<String, String>
         {
-
             protected final String key;
-
             protected final String value;
 
             public ResourceEntry(String key, String value)
@@ -73,26 +71,31 @@ public final class LoadBundleHandler extends TagHandler
                 this.value = value;
             }
 
+            @Override
             public String getKey()
             {
                 return this.key;
             }
 
+            @Override
             public String getValue()
             {
                 return this.value;
             }
 
+            @Override
             public String setValue(String value)
             {
                 throw new UnsupportedOperationException();
             }
 
+            @Override
             public int hashCode()
             {
                 return this.key.hashCode();
             }
 
+            @Override
             public boolean equals(Object obj)
             {
                 return (obj instanceof ResourceEntry && this.hashCode() == obj.hashCode());
@@ -106,11 +109,13 @@ public final class LoadBundleHandler extends TagHandler
             this.bundle = bundle;
         }
 
+        @Override
         public void clear()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean containsKey(Object key)
         {
             try
@@ -124,11 +129,13 @@ public final class LoadBundleHandler extends TagHandler
             }
         }
 
+        @Override
         public boolean containsValue(Object value)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Set<Map.Entry<String, String>> entrySet()
         {
             Enumeration<String> e = this.bundle.getKeys();
@@ -142,6 +149,7 @@ public final class LoadBundleHandler extends TagHandler
             return s;
         }
 
+        @Override
         public String get(Object key)
         {
             try
@@ -154,11 +162,13 @@ public final class LoadBundleHandler extends TagHandler
             }
         }
 
+        @Override
         public boolean isEmpty()
         {
             return false;
         }
 
+        @Override
         public Set<String> keySet()
         {
             Enumeration<String> e = this.bundle.getKeys();
@@ -170,26 +180,31 @@ public final class LoadBundleHandler extends TagHandler
             return s;
         }
 
+        @Override
         public String put(String key, String value)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void putAll(Map<? extends String, ? extends String> t)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public String remove(Object key)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public int size()
         {
             return this.keySet().size();
         }
 
+        @Override
         public Collection<String> values()
         {
             Enumeration<String> e = this.bundle.getKeys();
@@ -222,6 +237,7 @@ public final class LoadBundleHandler extends TagHandler
      * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, 
      * javax.faces.component.UIComponent)
      */
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {

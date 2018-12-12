@@ -79,9 +79,7 @@ final class CompositeComponentRule extends MetaRule
     final static class ValueExpressionMetadata extends Metadata
     {
         private final String _name;
-
         private final TagAttribute _attr;
-
         private final Class<?> _type;
 
         public ValueExpressionMetadata(String name, Class<?> type, TagAttribute attr)

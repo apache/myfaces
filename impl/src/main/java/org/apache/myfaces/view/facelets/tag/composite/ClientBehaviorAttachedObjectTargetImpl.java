@@ -28,6 +28,7 @@ import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.util.ArrayUtils;
 
 import org.apache.myfaces.util.StringUtils;
 
@@ -35,21 +36,13 @@ import org.apache.myfaces.util.StringUtils;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ClientBehaviorAttachedObjectTargetImpl 
-    implements ClientBehaviorAttachedObjectTarget, Serializable
+public class ClientBehaviorAttachedObjectTargetImpl implements ClientBehaviorAttachedObjectTarget, Serializable
 {
-
-    /**
-     * 
-     */
     private static final long serialVersionUID = -4645087262404844925L;
 
     protected ValueExpression _name;
-    
     protected ValueExpression _targets;
-    
     protected ValueExpression _event;
-    
     protected boolean _default;
 
     public ClientBehaviorAttachedObjectTargetImpl()
@@ -81,8 +74,8 @@ public class ClientBehaviorAttachedObjectTargetImpl
                 
                 if (innerComponent != null)
                 {
-                    if (innerComponent instanceof ClientBehaviorHolder ||
-                        UIComponent.isCompositeComponent(innerComponent))
+                    if (innerComponent instanceof ClientBehaviorHolder
+                            || UIComponent.isCompositeComponent(innerComponent))
                     {
                         targetsList.add(
                                 new ClientBehaviorRedirectEventComponentWrapper(innerComponent, getName(), getEvent()));
@@ -133,7 +126,7 @@ public class ClientBehaviorAttachedObjectTargetImpl
         {
             return StringUtils.splitShortString((String) _targets.getValue(context.getELContext()), ' ');
         }
-        return org.apache.myfaces.util.ArrayUtils.EMPTY_STRING_ARRAY;
+        return ArrayUtils.EMPTY_STRING_ARRAY;
     }
     
     public void setName(ValueExpression name)

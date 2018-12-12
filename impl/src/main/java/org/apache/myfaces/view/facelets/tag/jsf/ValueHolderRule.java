@@ -37,7 +37,6 @@ public final class ValueHolderRule extends MetaRule
 
     final static class LiteralConverterMetadata extends Metadata
     {
-
         private final String converterId;
 
         public LiteralConverterMetadata(String converterId)
@@ -45,6 +44,7 @@ public final class ValueHolderRule extends MetaRule
             this.converterId = converterId;
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             ((ValueHolder) instance).setConverter(ctx.getFacesContext().getApplication()
@@ -54,7 +54,6 @@ public final class ValueHolderRule extends MetaRule
 
     final static class DynamicConverterMetadata2 extends Metadata
     {
-
         private final TagAttribute attr;
 
         public DynamicConverterMetadata2(TagAttribute attr)
@@ -62,6 +61,7 @@ public final class ValueHolderRule extends MetaRule
             this.attr = attr;
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             ((UIComponent) instance).setValueExpression("converter", attr.getValueExpression(ctx, Converter.class));
@@ -70,7 +70,6 @@ public final class ValueHolderRule extends MetaRule
 
     final static class LiteralValueMetadata extends Metadata
     {
-
         private final String value;
 
         public LiteralValueMetadata(String value)
@@ -78,6 +77,7 @@ public final class ValueHolderRule extends MetaRule
             this.value = value;
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             ((ValueHolder) instance).setValue(this.value);
@@ -86,7 +86,6 @@ public final class ValueHolderRule extends MetaRule
 
     final static class DynamicValueExpressionMetadata extends Metadata
     {
-
         private final TagAttribute attr;
 
         public DynamicValueExpressionMetadata(TagAttribute attr)
@@ -94,6 +93,7 @@ public final class ValueHolderRule extends MetaRule
             this.attr = attr;
         }
 
+        @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             ((UIComponent) instance).setValueExpression("value", attr.getValueExpression(ctx, Object.class));
@@ -102,11 +102,11 @@ public final class ValueHolderRule extends MetaRule
 
     public final static ValueHolderRule INSTANCE = new ValueHolderRule();
 
+    @Override
     public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta)
     {
         if (meta.isTargetInstanceOf(ValueHolder.class))
         {
-
             if ("converter".equals(name))
             {
                 if (attribute.isLiteral())
