@@ -80,9 +80,6 @@ public final class CompositeComponentELUtils
     
     public static final String CC_FIND_COMPONENT_EXPRESSION = "oam.CC_FIND_COMPONENT_EXPRESSION";
     
-    /**
-     * private constructor
-     */
     private CompositeComponentELUtils()
     {
         // no instantiation of this class
@@ -252,8 +249,7 @@ public final class CompositeComponentELUtils
         UIComponent currentComponent = baseComponent;
         while (currentComponent != null)
         {
-            Location componentLocation = (Location) currentComponent.getAttributes().get(
-                LOCATION_KEY);
+            Location componentLocation = (Location) currentComponent.getAttributes().get(LOCATION_KEY);
             if (componentLocation != null 
                     && componentLocation.getPath().equals(location.getPath()))
             {
@@ -286,8 +282,8 @@ public final class CompositeComponentELUtils
         {
             Location componentLocation = (Location) currentCompositeComponent.getAttributes().get(LOCATION_KEY);
             if (componentLocation != null 
-                    && componentLocation.getPath().equals(location.getPath()) && 
-                    (ccLevel == getCCLevel(currentCompositeComponent)) )
+                    && componentLocation.getPath().equals(location.getPath())
+                    && ccLevel == getCCLevel(currentCompositeComponent))
             {
                 return currentCompositeComponent;
             }
@@ -333,8 +329,8 @@ public final class CompositeComponentELUtils
                     {
                         Location foundComponentLocation = (Location) currentComponent.getAttributes().get(LOCATION_KEY);
                         if (foundComponentLocation != null 
-                                && foundComponentLocation.getPath().equals(location.getPath()) &&
-                                ccLevel == getCCLevel(foundComponent))
+                                && foundComponentLocation.getPath().equals(location.getPath())
+                                && ccLevel == getCCLevel(foundComponent))
                         {
                             return foundComponent;
                         }
@@ -345,8 +341,8 @@ public final class CompositeComponentELUtils
                                 Location componentLocation
                                         = (Location) foundComponent.getAttributes().get(LOCATION_KEY);
                                 if (componentLocation != null 
-                                        && componentLocation.getPath().equals(location.getPath()) &&
-                                        ccLevel == getCCLevel(foundComponent))
+                                        && componentLocation.getPath().equals(location.getPath())
+                                        && ccLevel == getCCLevel(foundComponent))
                                 {
                                     return foundComponent;
                                 }
@@ -374,8 +370,8 @@ public final class CompositeComponentELUtils
         {
             Location componentLocation = (Location) currentComponent.getAttributes().get(LOCATION_KEY);
             if (componentLocation != null 
-                    && componentLocation.getPath().equals(location.getPath()) &&
-                    ccLevel == getCCLevel(currentComponent))
+                    && componentLocation.getPath().equals(location.getPath())
+                    && ccLevel == getCCLevel(currentComponent))
             {
                 return currentComponent;
             }
@@ -395,8 +391,8 @@ public final class CompositeComponentELUtils
         {
             Location componentLocation = (Location) currentComponent.getAttributes().get(LOCATION_KEY);
             if (componentLocation != null 
-                    && componentLocation.getPath().equals(location.getPath()) &&
-                    (ccLevel == getCCLevel(currentComponent)) )
+                    && componentLocation.getPath().equals(location.getPath())
+                    && ccLevel == getCCLevel(currentComponent))
             {
                 return currentComponent;
             }
@@ -407,7 +403,7 @@ public final class CompositeComponentELUtils
             UIComponent c = UIComponent.getCurrentComponent(facesContext);
             if (c != null)
             {
-                return lookForCompositeComponentOnStack( facesContext, location, ccLevel, c);
+                return lookForCompositeComponentOnStack(facesContext, location, ccLevel, c);
             }
             else
             {

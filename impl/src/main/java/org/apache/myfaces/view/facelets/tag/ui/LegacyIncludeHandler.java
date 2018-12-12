@@ -61,7 +61,6 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * @author Jacob Hookom
  * @version $Id$
  */
-//@JSFFaceletTag(name="ui:include", bodyContent="JSP")
 public final class LegacyIncludeHandler extends TagHandler implements ComponentContainerHandler
 {
 
@@ -72,17 +71,10 @@ public final class LegacyIncludeHandler extends TagHandler implements ComponentC
      * A literal or EL expression that specifies the target Facelet that you 
      * would like to include into your document.
      */
-    //@JSFFaceletAttribute(
-    //        className="javax.el.ValueExpression",
-    //        deferredValueType="java.lang.String",
-    //        required=true)
     private final TagAttribute src;
     
     private final LegacyParamHandler[] _params;
 
-    /**
-     * @param config
-     */
     public LegacyIncludeHandler(TagConfig config)
     {
         super(config);

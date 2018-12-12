@@ -62,11 +62,8 @@ public final class LegacyForEachHandler extends TagHandler implements ComponentC
 
     private static class ArrayIterator implements Iterator<Object>
     {
-
         protected final Object array;
-
         protected int i;
-
         protected final int len;
 
         public ArrayIterator(Object src)
@@ -104,7 +101,6 @@ public final class LegacyForEachHandler extends TagHandler implements ComponentC
      * Iteration begins with index set at the value
      * specified.
      */
-    //@JSFFaceletAttribute(className="int")
     private final TagAttribute begin;
 
     /**
@@ -115,20 +111,17 @@ public final class LegacyForEachHandler extends TagHandler implements ComponentC
      * Iteration ends when index reaches the value
      * specified.
      */
-    //@JSFFaceletAttribute(className="int")
     private final TagAttribute end;
 
     /**
      * Collection of items to iterate over.
      */
-    //@JSFFaceletAttribute(className="javax.el.ValueExpression")
     private final TagAttribute items;
 
     /**
      * Iteration will only process every step items of
      * the collection, starting with the first one.
      */
-    //@JSFFaceletAttribute(className="int")
     private final TagAttribute step;
 
     private final TagAttribute tranzient;
@@ -139,19 +132,14 @@ public final class LegacyForEachHandler extends TagHandler implements ComponentC
      * variable has nested visibility. Its type depends
      * on the object of the underlying collection.
      */
-    //@JSFFaceletAttribute(className="java.lang.String")
     private final TagAttribute var;
 
     /**
      * Name of the exported scoped variable for the
      * status of the iteration. 
      */
-    //@JSFFaceletAttribute(className="java.lang.String")
     private final TagAttribute varStatus;
 
-    /**
-     * @param config
-     */
     public LegacyForEachHandler(TagConfig config)
     {
         super(config);
@@ -336,7 +324,7 @@ public final class LegacyForEachHandler extends TagHandler implements ComponentC
         }
     }
 
-    private final ValueExpression capture(String name, PageContext pctx)
+    private ValueExpression capture(String name, PageContext pctx)
     {
         if (name != null)
         {
@@ -345,7 +333,7 @@ public final class LegacyForEachHandler extends TagHandler implements ComponentC
         return null;
     }
 
-    private final int getBegin(FaceletContext ctx)
+    private int getBegin(FaceletContext ctx)
     {
         if (this.begin != null)
         {
@@ -354,7 +342,7 @@ public final class LegacyForEachHandler extends TagHandler implements ComponentC
         return 0;
     }
 
-    private final int getEnd(FaceletContext ctx)
+    private int getEnd(FaceletContext ctx)
     {
         if (this.end != null)
         {
@@ -363,7 +351,7 @@ public final class LegacyForEachHandler extends TagHandler implements ComponentC
         return Integer.MAX_VALUE - 1; // hotspot bug in the JVM
     }
 
-    private final int getStep(FaceletContext ctx)
+    private int getStep(FaceletContext ctx)
     {
         if (this.step != null)
         {
@@ -372,7 +360,7 @@ public final class LegacyForEachHandler extends TagHandler implements ComponentC
         return 1;
     }
 
-    private final boolean getTransient(FaceletContext ctx)
+    private boolean getTransient(FaceletContext ctx)
     {
         if (this.tranzient != null)
         {
@@ -381,7 +369,7 @@ public final class LegacyForEachHandler extends TagHandler implements ComponentC
         return false;
     }
 
-    private final ValueExpression getVarExpr(ValueExpression ve, Object src, Object value, int i)
+    private ValueExpression getVarExpr(ValueExpression ve, Object src, Object value, int i)
     {
         if (src instanceof List || src.getClass().isArray())
         {
@@ -398,7 +386,7 @@ public final class LegacyForEachHandler extends TagHandler implements ComponentC
         throw new IllegalStateException("Cannot create VE for: " + src);
     }
 
-    private final String getVarName(FaceletContext ctx)
+    private String getVarName(FaceletContext ctx)
     {
         if (this.var != null)
         {
@@ -407,7 +395,7 @@ public final class LegacyForEachHandler extends TagHandler implements ComponentC
         return null;
     }
 
-    private final String getVarStatusName(FaceletContext ctx)
+    private String getVarStatusName(FaceletContext ctx)
     {
         if (this.varStatus != null)
         {
@@ -416,7 +404,7 @@ public final class LegacyForEachHandler extends TagHandler implements ComponentC
         return null;
     }
 
-    private final Iterator<?> toIterator(Object src)
+    private Iterator<?> toIterator(Object src)
     {
         if (src == null)
         {

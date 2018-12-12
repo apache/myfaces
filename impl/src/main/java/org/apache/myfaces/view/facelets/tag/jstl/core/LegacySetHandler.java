@@ -55,35 +55,17 @@ public class LegacySetHandler extends TagHandler
      * specified in the action. The type of the scoped variable is
      * whatever type the value expression evaluates to.
      */
-    //@JSFFaceletAttribute(className="java.lang.String")
     private final TagAttribute var;
 
     /**
      * Expression to be evaluated.
      */
-    //@JSFFaceletAttribute(
-    //        className="javax.el.ValueExpression",
-    //        deferredValueType="java.lang.Object")
     private final TagAttribute value;
 
-    //@JSFFaceletAttribute(
-    //        name="scope",
-    //        className="java.lang.String",
-    //        longDescription="Scope for var.")
     private final TagAttribute scope;
 
-    //@JSFFaceletAttribute(
-    //    name="target",
-    //    className="java.lang.String",
-    //    longDescription="Target object whose property will be set."+
-    //    " Must evaluate to a JavaBeans object with setter property"+
-    //    "property, or to a java.util.Map object.")
     private final TagAttribute target;
 
-    //@JSFFaceletAttribute(
-    //    name="property",
-    //    className="java.lang.String",
-    //    longDescription="Name of the property to be set in the target object.")
     private final TagAttribute property;
 
     public LegacySetHandler(TagConfig config)

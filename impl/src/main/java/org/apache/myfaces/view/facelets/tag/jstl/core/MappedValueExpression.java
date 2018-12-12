@@ -64,7 +64,6 @@ public final class MappedValueExpression extends ValueExpression
     private static final long serialVersionUID = 1L;
 
     private final Object key;
-
     private final ValueExpression orig;
 
     public MappedValueExpression(ValueExpression orig, Map.Entry entry)

@@ -161,6 +161,7 @@ public class DebugPhaseListener implements PhaseListener
     private class DebugVisitCallback implements VisitCallback
     {
 
+        @Override
         public VisitResult visit(VisitContext context, UIComponent target)
         {
             if (target instanceof EditableValueHolder)

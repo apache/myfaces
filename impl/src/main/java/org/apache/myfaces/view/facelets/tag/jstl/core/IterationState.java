@@ -42,33 +42,21 @@ public class IterationState implements Serializable
         this.valueList = new ArrayList<Object[]>();
     }
 
-    /**
-     * @return the valueList
-     */
     public List<Object[]> getValueList()
     {
         return valueList;
     }
 
-    /**
-     * @param valueList the valueList to set
-     */
     public void setValueList(List<Object[]> valueList)
     {
         this.valueList = valueList;
     }
 
-    /**
-     * @return the counter
-     */
     public int getCounter()
     {
         return counter;
     }
 
-    /**
-     * @param counter the counter to set
-     */
     public void setCounter(int counter)
     {
         this.counter = counter;

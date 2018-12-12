@@ -48,7 +48,6 @@ import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
  * @author Jacob Hookom
  * @version $Id: CompositionHandler.java,v 1.14 2008/07/13 19:01:42 rlubke Exp $
  */
-//@JSFFaceletTag(name="ui:composition")
 public final class LegacyCompositionHandler extends TagHandler implements TemplateClient
 {
 
@@ -60,19 +59,12 @@ public final class LegacyCompositionHandler extends TagHandler implements Templa
      * The resolvable URI of the template to use. The content within the composition tag will 
      * be used in populating the template specified.
      */
-    //@JSFFaceletAttribute(
-    //        name="template",
-    //        className="javax.el.ValueExpression",
-    //        deferredValueType="java.lang.String")
     protected final TagAttribute _template;
 
     protected final Map<String, DefineHandler> _handlers;
 
     protected final LegacyParamHandler[] _params;
 
-    /**
-     * @param config
-     */
     public LegacyCompositionHandler(TagConfig config)
     {
         super(config);

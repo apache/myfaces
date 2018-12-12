@@ -31,8 +31,9 @@ public class ServletMapping
         _servletName = servletName;
         _servletClass = servletClass;
         _urlPattern = urlPattern;
-        _extension = _urlPattern != null && _urlPattern.startsWith("*.") ? _urlPattern.substring(_urlPattern
-                .indexOf('.')) : null;
+        _extension = _urlPattern != null && _urlPattern.startsWith("*.")
+                ? _urlPattern.substring(_urlPattern.indexOf('.'))
+                : null;
         if (_extension == null)
         {
             int index = _urlPattern.indexOf("/*");

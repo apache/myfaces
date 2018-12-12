@@ -33,13 +33,9 @@ public class ContextAwarePropertyNotFoundException
         implements ContextAwareExceptionWrapper
 {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -4194177998555929451L;
 
     private ContextAwareExceptionWrapper _delegate;
-
 
     public ContextAwarePropertyNotFoundException(Location location,
                                                  String expressionString, String qName,
@@ -49,42 +45,27 @@ public class ContextAwarePropertyNotFoundException
         _delegate = new DefaultContextAwareELException(location, expressionString, qName, wrapped);
     }
 
+    @Override
     public Location getLocation()
     {
         return _delegate.getLocation();
     }
 
+    @Override
     public String getExpressionString()
     {
         return _delegate.getExpressionString();
     }
 
+    @Override
     public String getQName()
     {
         return _delegate.getQName();
     }
 
+    @Override
     public Throwable getWrapped()
     {
         return _delegate.getWrapped();
     }
-
-    /*
-    @Override
-    public String getLocalizedMessage()
-    {
-        return _localizedMessage;
-    }
-
-    @Override
-    public Throwable getCause()
-    {
-        return _wrappedException.getCause();
-    }
-
-    @Override
-    public synchronized Throwable initCause(Throwable cause)
-    {
-        return _wrappedException.initCause(cause);
-    }*/
 }

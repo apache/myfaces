@@ -67,10 +67,7 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
 
     private final ViewDeclarationLanguageStrategy _strategy;
     private LinkedList<String> _suffixes;
-    
-    /**
-     * 
-     */
+
     public JspViewDeclarationLanguage()
     {
         if (log.isLoggable(Level.FINEST))
@@ -208,9 +205,6 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
         context.getApplication().publishEvent(context, PostAddToViewEvent.class, UIViewRoot.class, view);
     }
 
-    /**
-     * 
-     */
     @Override
     protected boolean isViewStateAlreadyEncoded(FacesContext context)
     {

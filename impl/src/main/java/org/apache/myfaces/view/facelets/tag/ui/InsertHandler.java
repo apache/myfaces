@@ -57,9 +57,6 @@ public final class InsertHandler extends TagHandler implements TemplateClient, C
             required=true)
     private final String name;
 
-    /**
-     * @param config
-     */
     public InsertHandler(TagConfig config)
     {
         super(config);
@@ -104,6 +101,7 @@ public final class InsertHandler extends TagHandler implements TemplateClient, C
         }
     }
 
+    @Override
     public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException, FacesException,
             FaceletException, ELException
     {

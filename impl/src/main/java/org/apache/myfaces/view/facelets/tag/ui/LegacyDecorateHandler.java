@@ -58,7 +58,6 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * @author Jacob Hookom
  * @version $Id: DecorateHandler.java,v 1.16 2008/07/13 19:01:41 rlubke Exp $
  */
-//@JSFFaceletTag(name="ui:decorate")
 public final class LegacyDecorateHandler extends TagHandler implements TemplateClient
 {
 
@@ -68,19 +67,12 @@ public final class LegacyDecorateHandler extends TagHandler implements TemplateC
      * The resolvable URI of the template to use. The content within the decorate tag 
      * will be used in populating the template specified.
      */
-    //@JSFFaceletAttribute(
-    //        name="template",
-    //        className="javax.el.ValueExpression",
-    //        deferredValueType="java.lang.String")
     private final TagAttribute _template;
 
     private final Map<String, DefineHandler> _handlers;
 
     private final LegacyParamHandler[] _params;
 
-    /**
-     * @param config
-     */
     public LegacyDecorateHandler(TagConfig config)
     {
         super(config);

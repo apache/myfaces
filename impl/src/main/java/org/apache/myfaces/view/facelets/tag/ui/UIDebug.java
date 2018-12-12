@@ -83,11 +83,13 @@ public final class UIDebug extends UIComponentBase
     {
         return new ArrayList<UIComponent>()
         {
+            @Override
             public boolean add(UIComponent o)
             {
                 throw new IllegalStateException("<ui:debug> does not support children");
             }
 
+            @Override
             public void add(int index, UIComponent o)
             {
                 throw new IllegalStateException("<ui:debug> does not support children");
@@ -95,6 +97,7 @@ public final class UIDebug extends UIComponentBase
         };
     }
 
+    @Override
     public void encodeBegin(FacesContext faces) throws IOException
     {
         boolean partialRequest = faces.getPartialViewContext().isPartialRequest();
@@ -152,6 +155,7 @@ public final class UIDebug extends UIComponentBase
         {
             debugs = new LinkedHashMap<String, String>()
             {
+                @Override
                 protected boolean removeEldestEntry(Entry<String, String> eldest)
                 {
                     return (this.size() > 5);
@@ -222,7 +226,6 @@ public final class UIDebug extends UIComponentBase
     @Override
     public String getId()
     {
-        // TODO Auto-generated method stub
         return super.getId();
     }
 

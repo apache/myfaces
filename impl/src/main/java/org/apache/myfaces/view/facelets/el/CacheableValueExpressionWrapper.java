@@ -27,9 +27,6 @@ import javax.el.ValueExpression;
 import javax.el.ValueReference;
 import javax.faces.FacesWrapper;
 
-/**
- *
- */
 public class CacheableValueExpressionWrapper extends ValueExpression
     implements FacesWrapper<ValueExpression>, Externalizable, CacheableValueExpression
 {

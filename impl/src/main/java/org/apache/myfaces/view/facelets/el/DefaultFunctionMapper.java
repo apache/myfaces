@@ -81,6 +81,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
      * 
      * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
      */
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeObject(_functions);
@@ -92,6 +93,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
      * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
      */
     @SuppressWarnings("unchecked")
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         _functions = (Map<String, Function>) in.readObject();
@@ -142,6 +144,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
          * 
          * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
          */
+        @Override
         public void writeExternal(ObjectOutput out) throws IOException
         {
             out.writeUTF(_prefix != null ? _prefix : "");
@@ -156,6 +159,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
          * 
          * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
          */
+        @Override
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
         {
             _prefix = in.readUTF();

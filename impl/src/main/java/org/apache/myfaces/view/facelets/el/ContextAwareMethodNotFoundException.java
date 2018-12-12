@@ -31,10 +31,6 @@ import javax.faces.view.Location;
  */
 public class ContextAwareMethodNotFoundException extends MethodNotFoundException implements ContextAwareExceptionWrapper
 {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = -8172862923048615707L;
 
     private ContextAwareExceptionWrapper _delegate;
@@ -47,42 +43,27 @@ public class ContextAwareMethodNotFoundException extends MethodNotFoundException
         _delegate = new DefaultContextAwareELException(location, expressionString, qName, wrapped);
     }
 
+    @Override
     public Throwable getWrapped()
     {
         return _delegate.getWrapped();
     }
 
+    @Override
     public Location getLocation()
     {
         return _delegate.getLocation();
     }
 
+    @Override
     public String getExpressionString()
     {
         return _delegate.getExpressionString();
     }
 
+    @Override
     public String getQName()
     {
         return _delegate.getQName();
     }
-
-    /*
-    @Override
-    public String getLocalizedMessage()
-    {
-        return _localizedMessage;
-    }
-
-    @Override
-    public Throwable getCause()
-    {
-        return _wrappedException.getCause();
-    }
-
-    @Override
-    public synchronized Throwable initCause(Throwable cause)
-    {
-        return _wrappedException.initCause(cause);
-    }*/
 }

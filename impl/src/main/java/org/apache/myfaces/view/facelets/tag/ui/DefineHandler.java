@@ -54,9 +54,6 @@ public final class DefineHandler extends TagHandler
             required=true)
     private final String name;
 
-    /**
-     * @param config
-     */
     public DefineHandler(TagConfig config)
     {
         super(config);
@@ -78,7 +75,6 @@ public final class DefineHandler extends TagHandler
             ELException
     {
         // no-op
-        // this.nextHandler.apply(ctx, parent);
     }
 
     public void applyDefinition(FaceletContext ctx, UIComponent parent) throws IOException, FacesException,

@@ -43,21 +43,25 @@ public class ContextAwarePropertyNotWritableException
         _delegate = new DefaultContextAwareELException(location, expressionString, qName, wrapped);
     }
 
+    @Override
     public String getExpressionString()
     {
         return _delegate.getExpressionString();
     }
 
+    @Override
     public String getQName()
     {
         return _delegate.getQName();
     }
 
+    @Override
     public Throwable getWrapped()
     {
         return _delegate.getWrapped();
     }
 
+    @Override
     public Location getLocation()
     {
         return _delegate.getLocation();

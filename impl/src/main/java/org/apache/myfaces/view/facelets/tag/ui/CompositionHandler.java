@@ -68,9 +68,6 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
 
     protected final ParamHandler[] _params;
 
-    /**
-     * @param config
-     */
     public CompositionHandler(TagConfig config)
     {
         super(config);

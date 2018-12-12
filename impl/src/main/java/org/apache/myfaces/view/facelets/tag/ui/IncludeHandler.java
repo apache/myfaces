@@ -78,9 +78,6 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
     
     private final ParamHandler[] _params;
 
-    /**
-     * @param config
-     */
     public IncludeHandler(TagConfig config)
     {
         super(config);

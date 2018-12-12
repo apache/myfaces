@@ -25,9 +25,7 @@ public class FilterMapping
     private String _urlPattern;
     private boolean _isExtensionMapping = false;
 
-    public FilterMapping(String filterName,
-                          Class filterClass,
-                          String urlPattern)
+    public FilterMapping(String filterName, Class filterClass, String urlPattern)
     {
         _filterName = filterName;
         _filterClass = filterClass;

@@ -40,31 +40,19 @@ import org.apache.myfaces.view.facelets.AbstractFaceletContext;
  * @author Jacob Hookom
  * @version $Id: ParamHandler.java,v 1.6 2008/07/13 19:01:42 rlubke Exp $
  */
-//@JSFFaceletTag(name="ui:param")
 public class LegacyParamHandler extends TagHandler
 {
 
     /**
      * The name of the variable to pass to the included Facelet.
      */
-    //@JSFFaceletAttribute(
-    //        className="javax.el.ValueExpression",
-    //        deferredValueType="java.lang.String",
-    //        required=true)
     private final TagAttribute name;
 
     /**
      * The literal or EL expression value to assign to the named variable.
      */
-    //@JSFFaceletAttribute(
-    //        className="javax.el.ValueExpression",
-    //        deferredValueType="java.lang.String",
-    //        required=true)
     private final TagAttribute value;
 
-    /**
-     * @param config
-     */
     public LegacyParamHandler(TagConfig config)
     {
         super(config);
