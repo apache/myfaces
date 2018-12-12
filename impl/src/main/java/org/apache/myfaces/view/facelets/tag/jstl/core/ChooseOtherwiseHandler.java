@@ -38,7 +38,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * @author Jacob Hookom
  * @version $Id$
  */
-@JSFFaceletTag(name="c:otherwise")
+@JSFFaceletTag(name = "c:otherwise")
 public final class ChooseOtherwiseHandler extends TagHandler
 {
 

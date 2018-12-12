@@ -40,7 +40,7 @@ import org.apache.myfaces.view.facelets.tag.ComponentContainerHandler;
  * @author Jacob Hookom
  * @version $Id$
  */
-@JSFFaceletTag(name="c:when")
+@JSFFaceletTag(name = "c:when")
 public final class ChooseWhenHandler extends TagHandler implements ComponentContainerHandler
 {
 

@@ -49,8 +49,7 @@ public class HtmlOutputStylesheetHandler extends HtmlComponentHandler implements
     }
 
     @Override
-    public UIComponent findChildByTagId(FaceletContext ctx, UIComponent parent,
-            String id)
+    public UIComponent findChildByTagId(FaceletContext ctx, UIComponent parent, String id)
     {
         UIComponent c = null;
         UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
@@ -67,8 +66,7 @@ public class HtmlOutputStylesheetHandler extends HtmlComponentHandler implements
     }
 
     @Override
-    public void onComponentCreated(FaceletContext ctx, UIComponent c,
-            UIComponent parent)
+    public void onComponentCreated(FaceletContext ctx, UIComponent c, UIComponent parent)
     {
         UIComponent parentCompositeComponent
                 = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();

@@ -64,11 +64,8 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
 
     private static class ArrayIterator implements Iterator<Object>
     {
-
         protected final Object array;
-
         protected int i;
-
         protected final int len;
 
         public ArrayIterator(Object src)
@@ -141,19 +138,16 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
      * variable has nested visibility. Its type depends
      * on the object of the underlying collection.
      */
-    @JSFFaceletAttribute(className="java.lang.String")
+    @JSFFaceletAttribute(className = "java.lang.String")
     private final TagAttribute var;
 
     /**
      * Name of the exported scoped variable for the
      * status of the iteration. 
      */
-    @JSFFaceletAttribute(className="java.lang.String")
+    @JSFFaceletAttribute(className = "java.lang.String")
     private final TagAttribute varStatus;
 
-    /**
-     * @param config
-     */
     public ForEachHandler(TagConfig config)
     {
         super(config);
@@ -242,9 +236,8 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         }
     }
     
-    private void setVar(FaceletContext ctx, UIComponent parent,
-        String uniqueId, String base, boolean t, Object src, 
-        ValueExpression srcVE, Object value, String v, int i)
+    private void setVar(FaceletContext ctx, UIComponent parent, String uniqueId, String base,
+            boolean t, Object src, ValueExpression srcVE, Object value, String v, int i)
     {
         // set the var
         if (v != null)
@@ -258,8 +251,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                 }
                 else
                 {
-                    ve = ctx.getExpressionFactory().createValueExpression(
-                                value, Object.class);
+                    ve = ctx.getExpressionFactory().createValueExpression(value, Object.class);
                 }
             }
             else
@@ -275,8 +267,6 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
     {
         AbstractFaceletContext actx = ((AbstractFaceletContext) ctx);
         PageContext pctx = actx.getPageContext();
-        //if (ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))
-        //{
         if (srcVE != null)
         {
             FaceletState faceletState = ComponentSupport.getFaceletState(ctx, parent, true);

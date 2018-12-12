@@ -156,29 +156,7 @@ public class DefaultTagDecorator implements TagDecorator
       LOCAL_NAME_ARR['t'] = T_NAMES;
       LOCAL_NAME_ARR['T'] = T_NAMES;
     }
-    
-    static private final String[][] RESERVED_JSF_ATTRS_ARR =  new String[256][];
-    
-    static private final String[] JSF_ATTRS_B_NAMES = {"binding"};
 
-    static private final String[] JSF_ATTRS_I_NAMES = {"id"};
-    
-    static private final String[] JSF_ATTRS_R_NAMES = {"rendered"};
-    
-    static private final String[] JSF_ATTRS_T_NAMES = {"transient"};
-
-    static 
-    {
-      RESERVED_JSF_ATTRS_ARR['b'] = JSF_ATTRS_B_NAMES;
-      RESERVED_JSF_ATTRS_ARR['B'] = JSF_ATTRS_B_NAMES;
-      RESERVED_JSF_ATTRS_ARR['i'] = JSF_ATTRS_I_NAMES;
-      RESERVED_JSF_ATTRS_ARR['I'] = JSF_ATTRS_I_NAMES;
-      RESERVED_JSF_ATTRS_ARR['r'] = JSF_ATTRS_R_NAMES;
-      RESERVED_JSF_ATTRS_ARR['R'] = JSF_ATTRS_R_NAMES;
-      RESERVED_JSF_ATTRS_ARR['t'] = JSF_ATTRS_T_NAMES;
-      RESERVED_JSF_ATTRS_ARR['T'] = JSF_ATTRS_T_NAMES;
-    }
-    
     private static final TagDecoratorExecutor NO_MATCH_SELECTOR = new TagSelectorImpl(null, "jsf:element");
     
     @Override
@@ -202,8 +180,7 @@ public class DefaultTagDecorator implements TagDecorator
         
         // One or many attributes has the JSF_NAMESPACE attribute set. Check empty or
         // xhtml namespace
-        if (EMPTY_NAMESPACE.equals(tag.getNamespace()) ||
-            XHTML_NAMESPACE.equals(tag.getNamespace()))
+        if (EMPTY_NAMESPACE.equals(tag.getNamespace()) || XHTML_NAMESPACE.equals(tag.getNamespace()))
         {
             String localName = tag.getLocalName();
             boolean processed = false;
@@ -394,26 +371,9 @@ public class DefaultTagDecorator implements TagDecorator
         return false;
     }
 
-    private boolean isReservedJSFAttribute(String attr)
-    {
-        String[] array = RESERVED_JSF_ATTRS_ARR[attr.charAt(0)];
-        if (array != null)
-        {
-            for (int i = array.length - 1; i >= 0; i-=1)
-            {
-                if (attr.equalsIgnoreCase((String)array[i]))
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
     private static interface TagDecoratorExecutor
     {
         public Tag decorate(Tag orig, TagAttributes attributes);
-        
     }
     
     private static abstract class TagSelector

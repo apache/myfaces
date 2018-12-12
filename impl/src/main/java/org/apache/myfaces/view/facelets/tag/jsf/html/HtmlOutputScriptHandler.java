@@ -49,8 +49,7 @@ public class HtmlOutputScriptHandler extends HtmlComponentHandler implements Rel
     }
 
     @Override
-    public UIComponent findChildByTagId(FaceletContext ctx, UIComponent parent,
-            String id)
+    public UIComponent findChildByTagId(FaceletContext ctx, UIComponent parent, String id)
     {
         //Script with no target and no relocation is possible
         UIComponent c = ComponentSupport.findChildByTagId(parent, id);

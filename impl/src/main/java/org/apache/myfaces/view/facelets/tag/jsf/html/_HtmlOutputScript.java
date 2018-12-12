@@ -24,7 +24,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
- * TODO: DOCUMENT ME!
  * <p>
  * This tag is backed using a javax.faces.component.UIOutput component instance.
  * In other words, instances of this component class are created when it is resolved
@@ -32,9 +31,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * but there exists a concrete renderer for it.
  * </p>
  */
-@JSFComponent(
-        configExcluded=true,
-        defaultRendererType="javax.faces.resource.Script")
+@JSFComponent(configExcluded = true, defaultRendererType = "javax.faces.resource.Script")
 abstract class _HtmlOutputScript extends UIOutput
 {
 

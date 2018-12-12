@@ -49,7 +49,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * @author Jacob Hookom
  * @version $Id$
  */
-@JSFFaceletTag(name="c:choose")
+@JSFFaceletTag(name = "c:choose")
 public final class ChooseHandler extends TagHandler implements ComponentContainerHandler
 {
 
@@ -89,8 +89,7 @@ public final class ChooseHandler extends TagHandler implements ComponentContaine
         boolean processed = false;
         //assign an unique id for this section
         AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-        String uniqueId = actx.generateUniqueFaceletTagId(
-            fcc.startComponentUniqueIdSection(), tagId);
+        String uniqueId = actx.generateUniqueFaceletTagId(fcc.startComponentUniqueIdSection(), tagId);
         Integer savedOption = null;
         try
         {
@@ -146,7 +145,6 @@ public final class ChooseHandler extends TagHandler implements ComponentContaine
                                     }
                                     processed = true;
                                     savedOption = i;
-                                    //return;
                                 }
                             }
                         }
@@ -172,7 +170,6 @@ public final class ChooseHandler extends TagHandler implements ComponentContaine
                                     this.when[i].apply(ctx, parent);
                                     processed = true;
                                     savedOption = i;
-                                    //return;
                                 }
                             }
                         }
@@ -198,7 +195,6 @@ public final class ChooseHandler extends TagHandler implements ComponentContaine
                                 this.when[i].apply(ctx, parent);
                                 processed = true;
                                 savedOption = i;
-                                //return;
                             }
                         }
                     }
