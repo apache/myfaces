@@ -32,9 +32,7 @@ public class DefaultContextAwareELException implements ContextAwareExceptionWrap
     private String _qName;
     private Throwable _wrapped;
 
-    public DefaultContextAwareELException(Location location,
-                                          String expressionString, String qName,
-                                          Throwable wrapped)
+    public DefaultContextAwareELException(Location location, String expressionString, String qName, Throwable wrapped)
     {
         _location = location;
         _expressionString = expressionString;

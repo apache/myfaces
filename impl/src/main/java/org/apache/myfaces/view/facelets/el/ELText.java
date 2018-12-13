@@ -239,15 +239,12 @@ public class ELText
     
     private static final class ELCacheableTextVariable extends ELText
     {
-        private final ValueExpression ve;
-        
         //Just like TagAttributeImpl
         private final static int EL_CC = 2;
-        
         private final static int EL_RESOURCE = 8;
         
+        private final ValueExpression ve;
         private final int capabilities;
-        
         private volatile ELTextVariable cached;
         
         public ELCacheableTextVariable(ValueExpression ve)
@@ -457,8 +454,6 @@ public class ELText
      */
     public static boolean isLiteral(String in)
     {
-        //ELText txt = parse(in);
-        //return txt == null || txt.isLiteral();
         return isLiteral(null, null, in);
     }
 

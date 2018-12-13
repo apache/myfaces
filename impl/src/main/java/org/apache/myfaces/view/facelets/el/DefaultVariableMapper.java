@@ -40,15 +40,10 @@ import org.apache.myfaces.view.facelets.TemplateContext;
 public final class DefaultVariableMapper extends VariableMapperBase
 {
     private Map<String, ValueExpression> _vars;
-    
     private PageContext _pageContext;
-    
     private TemplateContext _templateContext;
-    
     private VariableMapper _delegate;
-    
     public boolean _trackResolveVariables;
-    
     public boolean _variableResolved;
 
     public DefaultVariableMapper()
@@ -92,8 +87,7 @@ public final class DefaultVariableMapper extends VariableMapperBase
                         {
                             if (returnValue instanceof CacheableValueExpressionWrapper)
                             {
-                                returnValue = ((CacheableValueExpressionWrapper)returnValue).
-                                    getWrapped();
+                                returnValue = ((CacheableValueExpressionWrapper)returnValue).getWrapped();
                             }
                         }
                         else
@@ -107,19 +101,16 @@ public final class DefaultVariableMapper extends VariableMapperBase
             
             if (_templateContext != null)
             {
-                if (!_templateContext.isParameterEmpty() &&
-                    _templateContext.containsParameter(name))
+                if (!_templateContext.isParameterEmpty() &&_templateContext.containsParameter(name))
                 {
                     returnValue = _templateContext.getParameter(name);
-                    if (_trackResolveVariables &&
-                        !(returnValue instanceof CacheableValueExpression))
+                    if (_trackResolveVariables && !(returnValue instanceof CacheableValueExpression))
                     {
                         _variableResolved = true;
                     }
                     return returnValue;
                 }
-                else if (!_templateContext.isKnownParametersEmpty() &&
-                    _templateContext.containsKnownParameter(name))
+                else if (!_templateContext.isKnownParametersEmpty() && _templateContext.containsKnownParameter(name))
                 {
                     // This part is the most important in alwaysRecompile EL cache hack.
                     // The idea is maintain a list of the parameters used in a template,

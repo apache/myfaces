@@ -34,9 +34,6 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
 
-/**
- *
- */
 public class FaceletStateValueExpression extends ValueExpression 
     implements Externalizable, FacesWrapper<ValueExpression>
 {
