@@ -48,7 +48,6 @@ import javax.faces.view.Location;
 public class LocationValueExpression extends ValueExpression
     implements FacesWrapper<ValueExpression>, Externalizable
 {
-    
     private static final long serialVersionUID = -5636849184764526288L;
     
     // location and delegate need to be available in LocationValueExpressionUEL

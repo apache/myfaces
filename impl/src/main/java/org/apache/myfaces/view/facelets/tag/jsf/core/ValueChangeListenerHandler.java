@@ -62,7 +62,6 @@ public final class ValueChangeListenerHandler extends TagHandler
 
     private static class LazyValueChangeListener implements ValueChangeListener, Serializable
     {
-
         private static final long serialVersionUID = 7613811124326963180L;
 
         private final String type;
@@ -77,15 +76,16 @@ public final class ValueChangeListenerHandler extends TagHandler
         @Override
         public void processValueChange(ValueChangeEvent event) throws AbortProcessingException
         {
-            ValueChangeListener instance = null;
-            FacesContext faces = FacesContext.getCurrentInstance();
-            if (faces == null)
+            FacesContext facesContext = event.getFacesContext();
+            if (facesContext == null)
             {
                 return;
             }
+
+            ValueChangeListener instance = null;
             if (this.binding != null)
             {
-                instance = (ValueChangeListener) binding.getValue(faces.getELContext());
+                instance = (ValueChangeListener) binding.getValue(facesContext.getELContext());
             }
             if (instance == null && this.type != null)
             {
@@ -99,7 +99,7 @@ public final class ValueChangeListenerHandler extends TagHandler
                 }
                 if (this.binding != null)
                 {
-                    binding.setValue(faces.getELContext(), instance);
+                    binding.setValue(facesContext.getELContext(), instance);
                 }
             }
             if (instance != null)

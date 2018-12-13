@@ -36,20 +36,12 @@ import javax.faces.FacesWrapper;
  */
 public final class VariableMapperWrapper extends VariableMapperBase implements FacesWrapper<VariableMapper>
 {
-
     private final VariableMapper _target;
-    
     private final VariableMapperBase _targetBase;
-
     private Map<String, ValueExpression> _vars;
-
     public boolean _trackResolveVariables;
-    
     public boolean _variableResolved;
 
-    /**
-     * 
-     */
     public VariableMapperWrapper(VariableMapper orig)
     {
         super();
@@ -65,6 +57,7 @@ public final class VariableMapperWrapper extends VariableMapperBase implements F
      * 
      * @see javax.el.VariableMapper#resolveVariable(java.lang.String)
      */
+    @Override
     public ValueExpression resolveVariable(String variable)
     {
         ValueExpression ve = null;
@@ -100,6 +93,7 @@ public final class VariableMapperWrapper extends VariableMapperBase implements F
      * 
      * @see javax.el.VariableMapper#setVariable(java.lang.String, javax.el.ValueExpression)
      */
+    @Override
     public ValueExpression setVariable(String variable, ValueExpression expression)
     {
         if (_vars == null)

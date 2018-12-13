@@ -27,12 +27,10 @@ public class ValueChangeListenerImpl implements ValueChangeListener {
 
     public ValueChangeListenerImpl() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-    public void processValueChange(ValueChangeEvent event)
-            throws AbortProcessingException {
-        // TODO Auto-generated method stub
+    @Override
+    public void processValueChange(ValueChangeEvent event) throws AbortProcessingException {
 
     }
 

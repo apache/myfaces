@@ -47,10 +47,6 @@ public class ELText
 
     private static final class LiteralValueExpression extends ValueExpression
     {
-
-        /**
-         * 
-         */
         private static final long serialVersionUID = 1L;
 
         private final String text;
@@ -65,45 +61,52 @@ public class ELText
             return false;
         }
 
+        @Override
         public int hashCode()
         {
             return 0;
         }
 
+        @Override
         public String getExpressionString()
         {
             return this.text;
         }
 
+        @Override
         public boolean equals(Object obj)
         {
             return false;
         }
 
+        @Override
         public void setValue(ELContext context, Object value)
         {
         }
 
+        @Override
         public boolean isReadOnly(ELContext context)
         {
             return false;
         }
 
+        @Override
         public Object getValue(ELContext context)
         {
             return null;
         }
 
+        @Override
         public Class<?> getType(ELContext context)
         {
             return null;
         }
 
+        @Override
         public Class<?> getExpectedType()
         {
             return null;
         }
-
     }
 
     private static final class ELTextComposite extends ELText
@@ -116,6 +119,7 @@ public class ELText
             this.txt = txt;
         }
 
+        @Override
         public void write(Writer out, ELContext ctx) throws ELException, IOException
         {
             for (int i = 0; i < this.txt.length; i++)
@@ -124,6 +128,7 @@ public class ELText
             }
         }
 
+        @Override
         public void writeText(ResponseWriter out, ELContext ctx) throws ELException, IOException
         {
             for (int i = 0; i < this.txt.length; i++)
@@ -132,6 +137,7 @@ public class ELText
             }
         }
 
+        @Override
         public String toString(ELContext ctx)
         {
             StringBuilder sb = new StringBuilder();
@@ -146,7 +152,7 @@ public class ELText
          * public String toString(ELContext ctx) { StringBuffer sb = new StringBuffer(); for (int i = 0; i <
          * this.txt.length; i++) { sb.append(this.txt[i].toString(ctx)); } return sb.toString(); }
          */
-
+        @Override
         public String toString()
         {
             StringBuilder sb = new StringBuilder();
@@ -157,11 +163,13 @@ public class ELText
             return sb.toString();
         }
 
+        @Override
         public boolean isLiteral()
         {
             return false;
         }
 
+        @Override
         public ELText apply(ExpressionFactory factory, ELContext ctx)
         {
             int len = this.txt.length;
@@ -184,16 +192,19 @@ public class ELText
             this.ve = ve;
         }
 
+        @Override
         public boolean isLiteral()
         {
             return false;
         }
 
+        @Override
         public ELText apply(ExpressionFactory factory, ELContext ctx)
         {
             return new ELTextVariable(factory.createValueExpression(ctx, this.ve.getExpressionString(), String.class));
         }
 
+        @Override
         public void write(Writer out, ELContext ctx) throws ELException, IOException
         {
             Object v = this.ve.getValue(ctx);
@@ -203,6 +214,7 @@ public class ELText
             }
         }
 
+        @Override
         public String toString(ELContext ctx) throws ELException
         {
             Object v = this.ve.getValue(ctx);
@@ -214,6 +226,7 @@ public class ELText
             return null;
         }
 
+        @Override
         public void writeText(ResponseWriter out, ELContext ctx) throws ELException, IOException
         {
             Object v = this.ve.getValue(ctx);
@@ -247,11 +260,13 @@ public class ELText
             this.capabilities = (compositeComponentExpression ? EL_CC : 0) | ( resourceExpression ? EL_RESOURCE : 0);
         }
 
+        @Override
         public boolean isLiteral()
         {
             return false;
         }
 
+        @Override
         public ELText apply(ExpressionFactory factory, ELContext ctx)
         {
             AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
@@ -330,6 +345,7 @@ public class ELText
             }
         }
 
+        @Override
         public void write(Writer out, ELContext ctx) throws ELException, IOException
         {
             Object v = this.ve.getValue(ctx);
@@ -339,6 +355,7 @@ public class ELText
             }
         }
 
+        @Override
         public String toString(ELContext ctx) throws ELException
         {
             Object v = this.ve.getValue(ctx);
@@ -350,6 +367,7 @@ public class ELText
             return null;
         }
 
+        @Override
         public void writeText(ResponseWriter out, ELContext ctx) throws ELException, IOException
         {
             Object v = this.ve.getValue(ctx);
@@ -424,6 +442,7 @@ public class ELText
         return this.literal;
     }
 
+    @Override
     public String toString()
     {
         return this.literal;

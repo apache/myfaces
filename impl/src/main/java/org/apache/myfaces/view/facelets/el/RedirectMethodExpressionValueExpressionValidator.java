@@ -50,18 +50,13 @@ public class RedirectMethodExpressionValueExpressionValidator
         this.valueExpression = valueExpression;
     }
 
-    public void validate(FacesContext context, UIComponent component,
-            Object value) throws ValidatorException
+    @Override
+    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException
     {
-        getMethodExpression().invoke(FacesContext.getCurrentInstance().getELContext(),
-                                     new Object[]{context,component,value});
+        ELContext elContext = context.getELContext();
+        getMethodExpression(elContext).invoke(elContext, new Object[]{context,component,value});
     }
 
-    private MethodExpression getMethodExpression()
-    {
-        return getMethodExpression(FacesContext.getCurrentInstance().getELContext());
-    }
-    
     private MethodExpression getMethodExpression(ELContext context)
     {
         Object meOrVe = valueExpression.getValue(context);
@@ -83,15 +78,19 @@ public class RedirectMethodExpressionValueExpressionValidator
         }
     }
 
+    @Override
     public ValueExpression getWrapped()
     {
         return valueExpression;
     }
+
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         this.valueExpression = (ValueExpression) in.readObject();
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeObject(this.valueExpression);

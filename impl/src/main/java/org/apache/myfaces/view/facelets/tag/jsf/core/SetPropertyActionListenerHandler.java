@@ -108,8 +108,7 @@ public class SetPropertyActionListenerHandler extends TagHandler
         @Override
         public void processAction(ActionEvent evt) throws AbortProcessingException
         {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            
+            FacesContext facesContext = evt.getFacesContext();
             ELContext elContext = facesContext.getELContext();
             
             // Spec f:setPropertyActionListener: 

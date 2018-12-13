@@ -27,13 +27,9 @@ import javax.faces.view.Location;
  */
 public class DefaultContextAwareELException implements ContextAwareExceptionWrapper
 {
-
     private Location _location;
-
     private String _expressionString;
-
     private String _qName;
-
     private Throwable _wrapped;
 
     public DefaultContextAwareELException(Location location,
@@ -46,21 +42,25 @@ public class DefaultContextAwareELException implements ContextAwareExceptionWrap
         _wrapped = wrapped;
     }
 
+    @Override
     public Location getLocation()
     {
         return _location;
     }
 
+    @Override
     public String getExpressionString()
     {
         return _expressionString;
     }
 
+    @Override
     public String getQName()
     {
         return _qName;
     }
 
+    @Override
     public Throwable getWrapped()
     {
         return _wrapped;

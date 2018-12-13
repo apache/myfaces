@@ -51,6 +51,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
      * 
      * @see javax.el.FunctionMapper#resolveFunction(java.lang.String, java.lang.String)
      */
+    @Override
     public Method resolveFunction(String prefix, String localName)
     {
         if (_functions != null)

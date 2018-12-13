@@ -67,6 +67,7 @@ public final class DefaultVariableMapper extends VariableMapperBase
     /**
      * @see javax.el.VariableMapper#resolveVariable(java.lang.String)
      */
+    @Override
     public ValueExpression resolveVariable(String name)
     {
         ValueExpression returnValue = null;
@@ -152,6 +153,7 @@ public final class DefaultVariableMapper extends VariableMapperBase
     /**
      * @see javax.el.VariableMapper#setVariable(java.lang.String, javax.el.ValueExpression)
      */
+    @Override
     public ValueExpression setVariable(String name, ValueExpression expression)
     {
         if (_vars == null)

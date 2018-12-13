@@ -34,14 +34,13 @@ import javax.faces.event.ActionListener;
  */
 public class SetPropertyActionListener implements ActionListener, StateHolder
 {
-
     private ValueExpression target;
-    
     private ValueExpression value;
-    
     private boolean _transient ;
     
-    public SetPropertyActionListener(){}
+    public SetPropertyActionListener()
+    {
+    }
     
     public SetPropertyActionListener(ValueExpression target, ValueExpression value)
     {
@@ -49,29 +48,26 @@ public class SetPropertyActionListener implements ActionListener, StateHolder
         this.value = value;
     }
     
+    @Override
     public void processAction(ActionEvent actionEvent) throws AbortProcessingException
     {
-        
-        if( target == null )
+        if (target == null)
         {
             throw new AbortProcessingException("@target has not been set");
         }
-
-        if( value == null )
+        if (value == null)
         {
             throw new AbortProcessingException("@value has not been set");
         }
         
-        FacesContext ctx = FacesContext.getCurrentInstance();
-        
-        if( ctx == null )
+        FacesContext ctx = actionEvent.getFacesContext();
+        if (ctx == null)
         {
             throw new AbortProcessingException("FacesContext ctx is null");
         }
         
         ELContext ectx = ctx.getELContext();
-        
-        if( ectx == null )
+        if (ectx == null)
         {
             throw new AbortProcessingException("ELContext ectx is null");
         }
@@ -82,6 +78,7 @@ public class SetPropertyActionListener implements ActionListener, StateHolder
         
     }
 
+    @Override
     public Object saveState(FacesContext context)
     {
         Object[] state = new Object[2];
@@ -90,6 +87,7 @@ public class SetPropertyActionListener implements ActionListener, StateHolder
         return state;
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state)
     {
         Object[] values = (Object[]) state;
@@ -97,11 +95,13 @@ public class SetPropertyActionListener implements ActionListener, StateHolder
         value = (ValueExpression) values[1];
     }
 
+    @Override
     public boolean isTransient()
     {
         return _transient;
     }
 
+    @Override
     public void setTransient(boolean trans)
     {
         this._transient = trans;

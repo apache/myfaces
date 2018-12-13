@@ -38,8 +38,7 @@ import javax.faces.view.facelets.TagAttribute;
  * @author Jacob Hookom
  * @version $Id$
  */
-public final class TagMethodExpression
-        extends MethodExpression
+public final class TagMethodExpression extends MethodExpression
         implements Externalizable, FacesWrapper<MethodExpression>
 {
 
@@ -59,6 +58,7 @@ public final class TagMethodExpression
         this.orig = orig;
     }
 
+    @Override
     public MethodInfo getMethodInfo(ELContext context)
     {
         try
@@ -79,6 +79,7 @@ public final class TagMethodExpression
         }
     }
 
+    @Override
     public Object invoke(ELContext context, Object[] params)
     {
         try
@@ -99,43 +100,51 @@ public final class TagMethodExpression
         }
     }
 
+    @Override
     public String getExpressionString()
     {
         return this.orig.getExpressionString();
     }
 
+    @Override
     public boolean equals(Object obj)
     {
         return this.orig.equals(obj);
     }
 
+    @Override
     public int hashCode()
     {
         return this.orig.hashCode();
     }
 
+    @Override
     public boolean isLiteralText()
     {
         return this.orig.isLiteralText();
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeObject(this.orig);
         out.writeUTF(this.attr);
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         this.orig = (MethodExpression) in.readObject();
         this.attr = in.readUTF();
     }
 
+    @Override
     public String toString()
     {
         return this.attr + ": " + this.orig;
     }
 
+    @Override
     public MethodExpression getWrapped()
     {
         return this.orig;

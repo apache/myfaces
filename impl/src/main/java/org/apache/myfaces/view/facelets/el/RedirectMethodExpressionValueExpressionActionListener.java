@@ -26,7 +26,6 @@ import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.faces.FacesWrapper;
-import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
@@ -49,16 +48,13 @@ public class RedirectMethodExpressionValueExpressionActionListener
         this.valueExpression = valueExpression;
     }
 
+    @Override
     public void processAction(ActionEvent actionEvent) throws AbortProcessingException
     {
-        getMethodExpression().invoke(FacesContext.getCurrentInstance().getELContext(), new Object[]{actionEvent});
+        ELContext elContext = actionEvent.getFacesContext().getELContext();
+        getMethodExpression(elContext).invoke(elContext, new Object[]{actionEvent});
     }
-    
-    private MethodExpression getMethodExpression()
-    {
-        return getMethodExpression(FacesContext.getCurrentInstance().getELContext());
-    }
-    
+
     private MethodExpression getMethodExpression(ELContext context)
     {
         Object meOrVe = valueExpression.getValue(context);
@@ -80,15 +76,19 @@ public class RedirectMethodExpressionValueExpressionActionListener
         }
     }
 
+    @Override
     public ValueExpression getWrapped()
     {
         return valueExpression;
     }
+
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         this.valueExpression = (ValueExpression) in.readObject();
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeObject(this.valueExpression);

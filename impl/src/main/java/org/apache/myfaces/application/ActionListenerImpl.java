@@ -42,9 +42,10 @@ import org.apache.myfaces.view.facelets.pool.ViewPool;
  */
 public class ActionListenerImpl implements ActionListener
 {
+    @Override
     public void processAction(ActionEvent actionEvent) throws AbortProcessingException
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesContext facesContext = actionEvent.getFacesContext();
         Application application = facesContext.getApplication();
         UIComponent component = actionEvent.getComponent();
         

@@ -23,10 +23,12 @@ import javax.faces.FacesWrapper;
 public abstract class ActionListenerWrapper implements ActionListener, FacesWrapper<ActionListener>
 {
 
+    @Override
     public void processAction(ActionEvent actionEvent) throws AbortProcessingException
     {
         getWrapped().processAction(actionEvent);
     }
     
+    @Override
     public abstract ActionListener getWrapped();
 }

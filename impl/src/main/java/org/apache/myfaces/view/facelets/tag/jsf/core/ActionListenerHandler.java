@@ -79,14 +79,14 @@ public final class ActionListenerHandler extends TagHandler
         public void processAction(ActionEvent event) throws AbortProcessingException
         {
             ActionListener instance = null;
-            FacesContext faces = FacesContext.getCurrentInstance();
-            if (faces == null)
+            FacesContext facesContext = event.getFacesContext();
+            if (facesContext == null)
             {
                 return;
             }
             if (this.binding != null)
             {
-                instance = (ActionListener) binding.getValue(faces.getELContext());
+                instance = (ActionListener) binding.getValue(facesContext.getELContext());
             }
             if (instance == null && this.type != null)
             {
@@ -100,7 +100,7 @@ public final class ActionListenerHandler extends TagHandler
                 }
                 if (this.binding != null)
                 {
-                    binding.setValue(faces.getELContext(), instance);
+                    binding.setValue(facesContext.getELContext(), instance);
                 }
             }
             if (instance != null)

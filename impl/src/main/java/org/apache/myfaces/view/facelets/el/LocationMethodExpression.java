@@ -74,6 +74,7 @@ public class LocationMethodExpression extends MethodExpression
         this.ccLevel = ccLevel;
     }
 
+    @Override
     public Location getLocation()
     {
         return location;
@@ -157,11 +158,13 @@ public class LocationMethodExpression extends MethodExpression
         return delegate.isLiteralText();
     }
 
+    @Override
     public MethodExpression getWrapped()
     {
         return delegate;
     }
     
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         this.delegate = (MethodExpression) in.readObject();
@@ -169,6 +172,7 @@ public class LocationMethodExpression extends MethodExpression
         this.ccLevel = in.readInt();
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeObject(this.delegate);

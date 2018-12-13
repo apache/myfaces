@@ -212,7 +212,7 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
         @Override
         public void processAction(ActionEvent event) throws AbortProcessingException
         {
-            FacesContext faces = FacesContext.getCurrentInstance();
+            FacesContext faces = event.getFacesContext();
             if (faces == null)
             {
                 return;
@@ -295,7 +295,7 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
         @Override
         public void processAction(ActionEvent event) throws AbortProcessingException
         {
-            FacesContext faces = FacesContext.getCurrentInstance();
+            FacesContext faces = event.getFacesContext();
             if (faces == null)
             {
                 return;
