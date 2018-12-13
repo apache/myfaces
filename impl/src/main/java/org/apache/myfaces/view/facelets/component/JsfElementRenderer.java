@@ -48,6 +48,7 @@ import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 public class JsfElementRenderer extends HtmlRenderer
 {
 
+    @Override
     public boolean getRendersChildren()
     {
         return true;

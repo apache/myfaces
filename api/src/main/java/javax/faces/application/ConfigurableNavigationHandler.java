@@ -30,9 +30,6 @@ import javax.faces.flow.Flow;
 public abstract class ConfigurableNavigationHandler extends NavigationHandler
 {
 
-    /**
-     * 
-     */
     public ConfigurableNavigationHandler()
     {
     }

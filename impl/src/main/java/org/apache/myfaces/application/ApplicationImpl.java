@@ -289,7 +289,7 @@ public class ApplicationImpl extends Application
             log.finest("New Application instance created");
         }
         
-        String configParam = getFaceContext().getExternalContext().
+        String configParam = getFacesContext().getExternalContext().
                 getInitParameter(Converter.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE_PARAM_NAME);
         if (configParam != null && configParam.toLowerCase().equals("true"))
         {
@@ -367,7 +367,7 @@ public class ApplicationImpl extends Application
 
     private ELResolver createFacesResolver()
     {
-        FacesContext facesContext = getFaceContext();
+        FacesContext facesContext = getFacesContext();
         boolean supportJSPAndFacesEL = MyfacesConfig.getCurrentInstance(
                                 facesContext.getExternalContext()).isSupportJSPAndFacesEL();
         CompositeELResolver resolver;
@@ -460,7 +460,7 @@ public class ApplicationImpl extends Application
         return RuntimeConfig.getCurrentInstance(facesContext.getExternalContext());
     }
 
-    final FacesContext getFaceContext()
+    final FacesContext getFacesContext()
     {
         return FacesContext.getCurrentInstance();
     }
@@ -794,8 +794,8 @@ public class ApplicationImpl extends Application
              */
             if (stageName == null)
             {
-                FacesContext context = FacesContext.getCurrentInstance();
-                stageName = context.getExternalContext().getInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME);
+                stageName = getFacesContext().getExternalContext()
+                        .getInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME);
             }
 
             // If a value is found
@@ -1131,7 +1131,7 @@ public class ApplicationImpl extends Application
                 }
                 Behavior innerBehavior = ((FacesWrapper<Behavior>)behavior).getWrapped();
 
-                FacesContext facesContext = FacesContext.getCurrentInstance();
+                FacesContext facesContext = getFacesContext();
                 _handleAttachedResourceDependencyAnnotations(facesContext, innerBehavior);
 
                 if (innerBehavior instanceof ClientBehaviorBase)
@@ -1148,7 +1148,7 @@ public class ApplicationImpl extends Application
             else
             {
                 behavior = behaviorClass.newInstance();
-                FacesContext facesContext = FacesContext.getCurrentInstance();
+                FacesContext facesContext = getFacesContext();
                 _handleAttachedResourceDependencyAnnotations(facesContext, behavior);
 
                 if (behavior instanceof ClientBehaviorBase)
@@ -1419,7 +1419,7 @@ public class ApplicationImpl extends Application
         try
         {
             UIComponent component = componentClass.newInstance();
-            _handleAnnotations(FacesContext.getCurrentInstance(), component, component);
+            _handleAnnotations(getFacesContext(), component, component);
             return component;
         }
         catch (Exception e)
@@ -1488,7 +1488,7 @@ public class ApplicationImpl extends Application
                 
                 setConverterProperties(converterClass, ((FacesWrapper<Converter>)converter).getWrapped());
 
-                _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), 
+                _handleAttachedResourceDependencyAnnotations(getFacesContext(), 
                         ((FacesWrapper<Converter>)converter).getWrapped());
             }
             else
@@ -1497,7 +1497,7 @@ public class ApplicationImpl extends Application
 
                 setConverterProperties(converterClass, converter);
 
-                _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), converter);
+                _handleAttachedResourceDependencyAnnotations(getFacesContext(), converter);
             }
 
             return converter;
@@ -1976,14 +1976,14 @@ public class ApplicationImpl extends Application
             {
                 validator = new FacesValidatorCDIWrapper(validatorClass, validatorId);
                 
-                _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), 
+                _handleAttachedResourceDependencyAnnotations(getFacesContext(), 
                         ((FacesWrapper<Validator>)validator).getWrapped());
             }
             else
             {
                 validator = createValidatorInstance(validatorClass);
         
-                _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), validator);
+                _handleAttachedResourceDependencyAnnotations(getFacesContext(), validator);
             }
             
             return validator;
@@ -1999,13 +1999,6 @@ public class ApplicationImpl extends Application
             throws InstantiationException, IllegalAccessException
     {
         return validatorClass.newInstance();
-    }
-
-
-    // gets the elContext from the current FacesContext()
-    private final ELContext threadELContext()
-    {
-        return getFaceContext().getELContext();
     }
 
     @Override
@@ -2442,7 +2435,7 @@ public class ApplicationImpl extends Application
      */
     private boolean isFirstRequestProcessed()
     {
-        FacesContext context = FacesContext.getCurrentInstance();
+        FacesContext context = getFacesContext();
         
         //if firstRequestProcessed is not set, check the application map
         if(!_firstRequestProcessed && context != null 
@@ -2611,7 +2604,7 @@ public class ApplicationImpl extends Application
         if (_lazyLoadConfigObjects == null)
         {
             String configParam
-                    = getFaceContext().getExternalContext().getInitParameter(LAZY_LOAD_CONFIG_OBJECTS_PARAM_NAME);
+                    = getFacesContext().getExternalContext().getInitParameter(LAZY_LOAD_CONFIG_OBJECTS_PARAM_NAME);
             _lazyLoadConfigObjects = configParam == null
                                      ? LAZY_LOAD_CONFIG_OBJECTS_DEFAULT_VALUE
                                      : Boolean.parseBoolean(configParam);

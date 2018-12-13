@@ -535,11 +535,6 @@ public class ViewHandlerImpl extends ViewHandler
     {
         _viewHandlerSupport = viewHandlerSupport;
     }    
-    
-    protected ViewHandlerSupport getViewHandlerSupport()
-    {
-        return getViewHandlerSupport(FacesContext.getCurrentInstance());
-    }
 
     protected ViewHandlerSupport getViewHandlerSupport(FacesContext context)
     {

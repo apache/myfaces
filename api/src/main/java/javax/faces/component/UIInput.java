@@ -863,6 +863,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
     }
 
     /** See getValidator. */
+    @Override
     public void addValidator(Validator validator)
     {
         if (validator == null)
@@ -883,6 +884,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
     }
 
     /** See getValidator. */
+    @Override
     public void removeValidator(Validator validator)
     {
         if (validator == null || _validatorList == null)
@@ -894,6 +896,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
     }
 
     /** See getValidator. */
+    @Override
     public Validator[] getValidators()
     {
         if (_ExternalSpecifications.isBeanValidationAvailable() &&
@@ -988,6 +991,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * If false, values are being retrieved from any attached ValueBinding.
      */
     @JSFProperty(defaultValue = "false", tagExcluded = true)
+    @Override
     public boolean isLocalValueSet()
     {
         Object value = getStateHelper().get(PropertyKeys.localValueSet);
@@ -1016,12 +1020,14 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * instance. This method should only be used by the decode() and validate() method of this component, or its
      * corresponding Renderer; however, user code may manually set it to null to erase any submitted value.
      */
+    @Override
     @JSFProperty(tagExcluded = true)
     public Object getSubmittedValue()
     {
         return  getStateHelper().get(PropertyKeys.submittedValue);
     }
 
+    @Override
     public void setSubmittedValue(Object submittedValue)
     {
         FacesContext facesContext = getFacesContext();
@@ -1034,11 +1040,13 @@ public class UIInput extends UIOutput implements EditableValueHolder
         getStateHelper().put(PropertyKeys.submittedValue, submittedValue );
     }
 
+    @Override
     public void addValueChangeListener(ValueChangeListener listener)
     {
         addFacesListener(listener);
     }
 
+    @Override
     public void removeValueChangeListener(ValueChangeListener listener)
     {
         removeFacesListener(listener);
@@ -1095,6 +1103,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         }
     }
     
+    @Override
     public void clearInitialState()
     {
         if (initialStateMarked())
@@ -1277,8 +1286,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         {
             debugStackTraceElements.add(stackTraceElements[i]);
             
-            if (FacesServlet.class.getCanonicalName()
-                    .equals(stackTraceElements[i].getClassName()))
+            if (FacesServlet.class.getCanonicalName().equals(stackTraceElements[i].getClassName()))
             {
                 // stop after the FacesServlet
                 break;

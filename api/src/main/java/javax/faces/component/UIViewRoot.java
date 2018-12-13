@@ -892,16 +892,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         if (_viewScope == null && create)
         {
-            if (VIEW_SCOPE_PROXY_MAP_CLASS != null)
-            {
-                _viewScope = (Map<String, Object>)
-                    _ClassUtils.newInstance(VIEW_SCOPE_PROXY_MAP_CLASS);
-            }
-            else
-            {
-                //Default to map for testing purposes
-                _viewScope = new ViewScope();
-            }
+            _viewScope = (Map<String, Object>) _ClassUtils.newInstance(VIEW_SCOPE_PROXY_MAP_CLASS);
             FacesContext facesContext = getFacesContext();
             if (facesContext != null)
             {
@@ -1909,35 +1900,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 root._processUpdatesDefault(context);
             }
         }
-    }
-
-
-    // we cannot make this class a inner class, because the 
-    // enclosing class (UIViewRoot) would also have to be serialized.
-    /**
-     * @deprecated replaced by org.apache.myfaces.view.ViewScopeProxyMap
-     */
-    @Deprecated
-    private static class ViewScope extends HashMap<String, Object>
-    {
-        
-        private static final long serialVersionUID = -1088893802269478164L;
-        
-        @Override
-        public void clear()
-        {
-            /*
-             * The returned Map must be implemented such that calling clear() on the Map causes
-             * Application.publishEvent(java.lang.Class, java.lang.Object) to be called, passing
-             * ViewMapDestroyedEvent.class as the first argument and this UIViewRoot instance as the second argument.
-             */
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            facesContext.getApplication().publishEvent(facesContext, 
-                    PreDestroyViewMapEvent.class, facesContext.getViewRoot());
-            
-            super.clear();
-        }
-        
     }
 
     /**
