@@ -34,7 +34,6 @@ import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import javax.faces.FacesWrapper;
-import javax.faces.application.StateManager;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -43,11 +42,9 @@ import javax.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.application.viewstate.token.ServiceSideStateTokenProcessor;
 import org.apache.myfaces.application.viewstate.token.StateTokenProcessor;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.util.MyFacesObjectInputStream;
-import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.ViewScopeProvider;
 import org.apache.myfaces.spi.ViewScopeProviderFactory;
 import org.apache.myfaces.view.ViewScopeProxyMap;
@@ -56,7 +53,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 {
     private static final Logger log = Logger.getLogger(ServerSideStateCacheImpl.class.getName());
     
-    public static final String SERIALIZED_VIEW_SESSION_ATTR= 
+    public static final String SERIALIZED_VIEW_SESSION_ATTR = 
         ServerSideStateCacheImpl.class.getName() + ".SERIALIZED_VIEW";
     
     public static final String RESTORED_SERIALIZED_VIEW_REQUEST_ATTR = 
@@ -69,140 +66,51 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
     public static final String RESTORED_VIEW_KEY_REQUEST_ATTR = 
         ServerSideStateCacheImpl.class.getName() + ".RESTORED_VIEW_KEY";
-    
-    public static final String NUMBER_OF_VIEWS_IN_SESSION_PARAM
-            = MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION;
 
-    public static final String NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM
-            = MyfacesConfig.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION;
-
-    public static final int DEFAULT_NUMBER_OF_VIEWS_IN_SESSION = 
-            MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION_DEFAULT;
-
-    /**
-     * Indicates that the serialized state will be compressed before it is written to the session. By default true.
-     * 
-     * Only applicable if state saving method is "server" (= default) and if
-     * <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> is <code>true</code> (= default).
-     * If <code>true</code> (default) the serialized state will be compressed before it is written to the session.
-     * If <code>false</code> the state will not be compressed.
-     */
-    @JSFWebConfigParam(defaultValue="true",since="1.1", expectedValues="true,false", group="state", tags="performance")
-    public static final String COMPRESS_SERVER_STATE_PARAM = "org.apache.myfaces.COMPRESS_STATE_IN_SESSION";
-
-    /**
-     * Default value for <code>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</code> context parameter.
-     */
-    public static final boolean DEFAULT_COMPRESS_SERVER_STATE_PARAM = true;
-
-    /**
-     * Default value for <code>javax.faces.SERIALIZE_SERVER_STATE and 
-     * org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> context parameter.
-     */
-    public static final boolean DEFAULT_SERIALIZE_STATE_IN_SESSION = false;
-    
-    /**
-     * Allow use flash scope to keep track of the views used in session and the previous ones,
-     * so server side state saving can delete old views even if POST-REDIRECT-GET pattern is used.
-     * 
-     * <p>
-     * Only applicable if state saving method is "server" (= default).
-     * The default value is false.</p>
-     */
-    @JSFWebConfigParam(since="2.0.6", defaultValue="false", expectedValues="true, false", group="state")
-    public static final String USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION
-            = "org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION";
-
-    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
-    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM = "random";
-    
-    /**
-     * Adds a random key to the generated view state session token.
-     */
-    @JSFWebConfigParam(since="2.1.9, 2.0.15", expectedValues="secureRandom, random", 
-            defaultValue="random", group="state")
-    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM
-            = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN";
-    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM_DEFAULT = 
-            RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM;
-
-    /**
-     * Set the default length of the random key added to the view state session token.
-     * By default is 8. 
-     */
-    @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="8", group="state")
-    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM 
-            = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH";
-    public static final int RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM_DEFAULT = 8;
-
-    /**
-     * Sets the random class to initialize the secure random id generator. 
-     * By default it uses java.security.SecureRandom
-     */
-    @JSFWebConfigParam(since="2.1.9, 2.0.15", group="state")
-    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_CLASS_PARAM
-            = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_CLASS";
-    
-    /**
-     * Sets the random provider to initialize the secure random id generator.
-     */
-    @JSFWebConfigParam(since="2.1.9, 2.0.15", group="state")
-    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_PROVIDER_PARAM
-            = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_PROVIDER";
-    
-    /**
-     * Sets the random algorithm to initialize the secure random id generator. 
-     * By default is SHA1PRNG
-     */
-    @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="SHA1PRNG", group="state")
-    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM 
-            = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITM";
-    
-    
     public static final int UNCOMPRESSED_FLAG = 0;
     public static final int COMPRESSED_FLAG = 1;
 
-    private Boolean _useFlashScopePurgeViewsInSession = null;
+    private final boolean useFlashScopePurgeViewsInSession;
+    private final int numberOfSequentialViewsInSession;
+    private final boolean serializeStateInSession;
+    private final boolean compressStateInSession;
     
-    private Integer _numberOfSequentialViewsInSession = null;
-    private boolean _numberOfSequentialViewsInSessionSet = false;
-
-    private SessionViewStorageFactory sessionViewStorageFactory;
-    private CsrfSessionTokenFactory csrfSessionTokenFactory;
-    private StateTokenProcessor stateTokenProcessor;
-
+    private final SessionViewStorageFactory sessionViewStorageFactory;
+    private final CsrfSessionTokenFactory csrfSessionTokenFactory;
+    private final StateTokenProcessor stateTokenProcessor;
+    
     public ServerSideStateCacheImpl()
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        String randomMode = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
-                RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM, 
-                RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM_DEFAULT);
-        if (RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM.equals(randomMode))
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext);
+        
+        useFlashScopePurgeViewsInSession = config.isUseFlashScopePurgeViewsInSession();
+        numberOfSequentialViewsInSession = config.getNumberOfSequentialViewsInSession();
+        serializeStateInSession = config.isSerializeStateInSession();
+        compressStateInSession = config.isCompressStateInSession();
+        
+        String randomMode = config.getRandomKeyInViewStateSessionToken();
+        if (MyfacesConfig.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM.equals(randomMode))
         {
-            sessionViewStorageFactory = new RandomSessionViewStorageFactory(
-                    new SecureRandomKeyFactory(facesContext));
+            sessionViewStorageFactory = new RandomSessionViewStorageFactory( new SecureRandomKeyFactory(facesContext));
         }
-        else if (RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM.equals(randomMode))
+        else if (MyfacesConfig.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM.equals(randomMode))
         {
-            sessionViewStorageFactory = new RandomSessionViewStorageFactory(
-                    new RandomKeyFactory(facesContext));
+            sessionViewStorageFactory = new RandomSessionViewStorageFactory(new RandomKeyFactory(facesContext));
         }
         else
         {
             if (randomMode != null && !randomMode.isEmpty())
             {
-                log.warning(RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_PARAM + " \""
+                log.warning(MyfacesConfig.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN + " \""
                         + randomMode + "\" is not supported (anymore)."
                         + " Fallback to \"random\"");
             }
-            sessionViewStorageFactory = new RandomSessionViewStorageFactory(
-                    new RandomKeyFactory(facesContext));
+            sessionViewStorageFactory = new RandomSessionViewStorageFactory(new RandomKeyFactory(facesContext));
         }
         
-        String csrfRandomMode = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
-                RANDOM_KEY_IN_CSRF_SESSION_TOKEN_PARAM, 
-                RANDOM_KEY_IN_CSRF_SESSION_TOKEN_PARAM_DEFAULT);
-        if (RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM.equals(csrfRandomMode))
+        String csrfRandomMode = config.getRandomKeyInCsrfSessionToken();
+        if (MyfacesConfig.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM.equals(csrfRandomMode))
         {
             csrfSessionTokenFactory = new SecureRandomCsrfSessionTokenFactory(facesContext);
         }
@@ -218,30 +126,28 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
     protected Object getServerStateId(FacesContext facesContext, Object state)
     {
-      if (state != null)
-      {
-          return getKeyFactory(facesContext).decode((String) state);
-      }
-      return null;
+        if (state != null)
+        {
+            return sessionViewStorageFactory.getKeyFactory().decode((String) state);
+        }
+        return null;
     }
 
-    protected void saveSerializedViewInServletSession(FacesContext context,
-                                                      Object serializedView)
+    protected void saveSerializedViewInServletSession(FacesContext context, Object serializedView)
     {
         Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
         SerializedViewCollection viewCollection = (SerializedViewCollection) sessionMap
                 .get(SERIALIZED_VIEW_SESSION_ATTR);
         if (viewCollection == null)
         {
-            viewCollection = getSessionViewStorageFactory().createSerializedViewCollection(context);
+            viewCollection = sessionViewStorageFactory.createSerializedViewCollection(context);
             sessionMap.put(SERIALIZED_VIEW_SESSION_ATTR, viewCollection);
         }
 
         Map<Object,Object> attributeMap = context.getAttributes();
         
         SerializedViewKey key = null;
-        if (getNumberOfSequentialViewsInSession(context.getExternalContext()) != null &&
-            getNumberOfSequentialViewsInSession(context.getExternalContext()) > 0)
+        if (numberOfSequentialViewsInSession > 0)
         {
             key = (SerializedViewKey) attributeMap.get(RESTORED_VIEW_KEY_REQUEST_ATTR);
             
@@ -253,12 +159,10 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 ClientWindow clientWindow = context.getExternalContext().getClientWindow();
                 if (clientWindow != null)
                 {
-                    key = (SerializedViewKey) viewCollection.
-                            getLastWindowKey(context, clientWindow.getId());
+                    key = (SerializedViewKey) viewCollection.getLastWindowKey(context, clientWindow.getId());
                 }
-                else if (isUseFlashScopePurgeViewsInSession(context.getExternalContext()) && 
-                    Boolean.TRUE.equals(context.getExternalContext().getRequestMap()
-                            .get("oam.Flash.REDIRECT.PREVIOUSREQUEST")))
+                else if (useFlashScopePurgeViewsInSession && Boolean.TRUE.equals(
+                        context.getExternalContext().getRequestMap().get("oam.Flash.REDIRECT.PREVIOUSREQUEST")))
                 {
                     key = (SerializedViewKey)
                             context.getExternalContext().getFlash().get(RESTORED_VIEW_KEY_REQUEST_ATTR);
@@ -266,7 +170,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             }
         }
         
-        SerializedViewKey nextKey = getSessionViewStorageFactory().createSerializedViewKey(
+        SerializedViewKey nextKey = sessionViewStorageFactory.createSerializedViewKey(
                 context, context.getViewRoot().getViewId(), getNextViewSequence(context));
         // Get viewScopeMapId
         ViewScopeProxyMap viewScopeProxyMap = null;
@@ -329,8 +233,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 if (sequence != null)
                 {
                     Object state = viewCollection.get(
-                            getSessionViewStorageFactory().createSerializedViewKey(
-                            context, viewId, sequence));
+                            sessionViewStorageFactory.createSerializedViewKey(context, viewId, sequence));
                     if (state != null)
                     {
                         serializedView = deserializeView(state);
@@ -339,22 +242,19 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             }
             attributeMap.put(RESTORED_SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
             
-            if (getNumberOfSequentialViewsInSession(externalContext) != null &&
-                getNumberOfSequentialViewsInSession(externalContext) > 0)
+            if (numberOfSequentialViewsInSession > 0)
             {
-                SerializedViewKey key = getSessionViewStorageFactory().
-                        createSerializedViewKey(context, viewId, sequence);
+                SerializedViewKey key = sessionViewStorageFactory.createSerializedViewKey(context, viewId, sequence);
                 attributeMap.put(RESTORED_VIEW_KEY_REQUEST_ATTR, key);
                 
-                if (isUseFlashScopePurgeViewsInSession(externalContext))
+                if (useFlashScopePurgeViewsInSession)
                 {
                     externalContext.getFlash().put(RESTORED_VIEW_KEY_REQUEST_ATTR, key);
                     externalContext.getFlash().keep(RESTORED_VIEW_KEY_REQUEST_ATTR);
                 }
             }
 
-            if (context.getPartialViewContext().isAjaxRequest() ||
-                context.getPartialViewContext().isPartialRequest())
+            if (context.getPartialViewContext().isAjaxRequest() || context.getPartialViewContext().isPartialRequest())
             {
                 // Save the information used to restore. The idea is use this information later
                 // to decide if it is necessary to generate a new view sequence or use the existing
@@ -404,7 +304,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
     protected Object nextViewSequence(FacesContext facescontext)
     {
-        Object sequence = getKeyFactory(facescontext).generateKey(facescontext);
+        Object sequence = sessionViewStorageFactory.getKeyFactory().generateKey(facescontext);
         facescontext.getAttributes().put(RendererUtils.SEQUENCE_PARAM, sequence);
         return sequence;
     }
@@ -416,7 +316,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             log.finest("Entering serializeView");
         }
 
-        if(isSerializeStateInSession(context))
+        if (serializeStateInSession)
         {
             if (log.isLoggable(Level.FINEST))
             {
@@ -427,7 +327,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             try
             {
                 OutputStream os = baos;
-                if(isCompressStateInSession(context))
+                if (compressStateInSession)
                 {
                     if (log.isLoggable(Level.FINEST))
                     {
@@ -448,9 +348,9 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                 }
 
                 ObjectOutputStream out = new ObjectOutputStream(os);
-                
                 out.writeObject(serializedView);
                 out.close();
+                
                 baos.close();
 
                 if (log.isLoggable(Level.FINEST))
@@ -476,45 +376,6 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
 
     }
 
-    /**
-     * Reads the value of the <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> context parameter.
-     * @see #SERIALIZE_STATE_IN_SESSION_PARAM
-     * @param context <code>FacesContext</code> for the request we are processing.
-     * @return boolean true, if the server state should be serialized in the session
-     */
-    protected boolean isSerializeStateInSession(FacesContext context)
-    {
-        String value = context.getExternalContext().getInitParameter(
-                StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME);
-        
-        boolean serialize = DEFAULT_SERIALIZE_STATE_IN_SESSION;
-        if (value != null)
-        {
-            serialize = value.toLowerCase().equals("true");
-            return serialize;
-        }
-
-        return serialize;
-    }
-
-    /**
-     * Reads the value of the <code>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</code> context parameter.
-     * @see #COMPRESS_SERVER_STATE_PARAM
-     * @param context <code>FacesContext</code> for the request we are processing.
-     * @return boolean true, if the server state steam should be compressed
-     */
-    protected boolean isCompressStateInSession(FacesContext context)
-    {
-        String value = context.getExternalContext().getInitParameter(
-                COMPRESS_SERVER_STATE_PARAM);
-        boolean compress = DEFAULT_COMPRESS_SERVER_STATE_PARAM;
-        if (value != null)
-        {
-           compress = Boolean.valueOf(value);
-        }
-        return compress;
-    }
-
     protected Object deserializeView(Object state)
     {
         if (log.isLoggable(Level.FINEST))
@@ -527,7 +388,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             if (log.isLoggable(Level.FINEST))
             {
                 log.finest("Processing deserializeView - deserializing serialized state. Bytes : "
-                           + ((byte[]) state).length);
+                        + ((byte[]) state).length);
             }
 
             try
@@ -548,16 +409,15 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                     {
                         object = AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() 
                         {
+                            @Override
                             public Object run() throws PrivilegedActionException, IOException, ClassNotFoundException
                             {
-                                //return new Object[] {in.readObject(), in.readObject()};
                                 return in.readObject();
                             }
                         });
                     }
                     else
                     {
-                        //object = new Object[] {in.readObject(), in.readObject()};
                         object = in.readObject();
                     }
                     return object;
@@ -637,47 +497,13 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     @Override
     public Object encodeSerializedState(FacesContext facesContext, Object serializedView)
     {
-        return getKeyFactory(facesContext).encode(getNextViewSequence(facesContext));
+        return sessionViewStorageFactory.getKeyFactory().encode(getNextViewSequence(facesContext));
     }
     
     @Override
     public boolean isWriteStateAfterRenderViewRequired(FacesContext facesContext)
     {
         return false;
-    }
-
-    //------------------------------------- Custom methods -----------------------------------------------------
-    
-    private boolean isUseFlashScopePurgeViewsInSession(ExternalContext externalContext)
-    {
-        if (_useFlashScopePurgeViewsInSession == null)
-        {
-            _useFlashScopePurgeViewsInSession = WebConfigParamUtils.getBooleanInitParameter(
-                    externalContext, USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION, false);
-        }
-        return _useFlashScopePurgeViewsInSession;
-    }
-    
-    private Integer getNumberOfSequentialViewsInSession(ExternalContext externalContext)
-    {
-        if (!_numberOfSequentialViewsInSessionSet)
-        {
-            _numberOfSequentialViewsInSession = MyfacesConfig.getCurrentInstance(externalContext)
-                    .getNumberOfSequentialViewsInSession();
-            _numberOfSequentialViewsInSessionSet = true;
-        }
-        return _numberOfSequentialViewsInSession;
-    }
-    
-    protected KeyFactory getKeyFactory(FacesContext facesContext)
-    {
-        //return keyFactory;
-        return sessionViewStorageFactory.getKeyFactory();
-    }
-    
-    protected SessionViewStorageFactory getSessionViewStorageFactory()
-    {
-        return sessionViewStorageFactory;
     }
 
     @Override

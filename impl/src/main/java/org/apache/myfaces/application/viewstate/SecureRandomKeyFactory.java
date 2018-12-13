@@ -22,9 +22,9 @@ import java.util.Map;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.xml.bind.DatatypeConverter;
+import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
  * This factory generate a key composed by a counter and a random number. The
@@ -38,29 +38,25 @@ class SecureRandomKeyFactory extends KeyFactory<byte[]>
 
     public SecureRandomKeyFactory(FacesContext facesContext)
     {
-        length = WebConfigParamUtils.getIntegerInitParameter(
-            facesContext.getExternalContext(), 
-            ServerSideStateCacheImpl.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM, 
-            ServerSideStateCacheImpl.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM_DEFAULT);
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext);
+        
+        length = config.getRandomKeyInViewStateSessionTokenLength();
         sessionIdGenerator = new SessionIdGenerator();
         sessionIdGenerator.setSessionIdLength(length);
-        String secureRandomClass = WebConfigParamUtils.getStringInitParameter(
-            facesContext.getExternalContext(), 
-            ServerSideStateCacheImpl.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_CLASS_PARAM);
+
+        String secureRandomClass = config.getRandomKeyInViewStateSessionTokenSecureRandomClass();
         if (secureRandomClass != null)
         {
             sessionIdGenerator.setSecureRandomClass(secureRandomClass);
         }
-        String secureRandomProvider = WebConfigParamUtils.getStringInitParameter(
-            facesContext.getExternalContext(), 
-            ServerSideStateCacheImpl.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_PROVIDER_PARAM);
+
+        String secureRandomProvider = config.getRandomKeyInViewStateSessionTokenSecureRandomProvider();
         if (secureRandomProvider != null)
         {
             sessionIdGenerator.setSecureRandomProvider(secureRandomProvider);
         }
-        String secureRandomAlgorithm = WebConfigParamUtils.getStringInitParameter(
-            facesContext.getExternalContext(), 
-            ServerSideStateCacheImpl.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM);
+
+        String secureRandomAlgorithm = config.getRandomKeyInViewStateSessionTokenSecureRandomAlgorithm();
         if (secureRandomAlgorithm != null)
         {
             sessionIdGenerator.setSecureRandomAlgorithm(secureRandomAlgorithm);

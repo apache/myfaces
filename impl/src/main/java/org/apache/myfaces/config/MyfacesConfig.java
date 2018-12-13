@@ -20,6 +20,7 @@ package org.apache.myfaces.config;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.application.StateManager;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
@@ -470,6 +471,100 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since = "2.3")
     public static final java.lang.String WEBSOCKET_ENDPOINT_PORT = "javax.faces.WEBSOCKET_ENDPOINT_PORT";
+        
+    /**
+     * Define the time in minutes where the view state is valid when
+     * client side state saving is used. By default it is set to 0
+     * (infinite).
+     */
+    @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="0", group="state")
+    public static final String CLIENT_VIEW_STATE_TIMEOUT = 
+            "org.apache.myfaces.CLIENT_VIEW_STATE_TIMEOUT";
+    public static final Long CLIENT_VIEW_STATE_TIMEOUT_DEFAULT = 0L;
+   
+    
+    /**
+     * Adds a random key to the generated view state session token.
+     */
+    @JSFWebConfigParam(since="2.1.9, 2.0.15", expectedValues="secureRandom, random", 
+            defaultValue="random", group="state")
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN
+            = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN";
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_DEFAULT = "random";
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM = "random";
+    
+    /**
+     * Set the default length of the random key added to the view state session token.
+     * By default is 8. 
+     */
+    @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="8", group="state")
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH
+            = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH";
+    public static final int RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_DEFAULT = 8;
+    
+    /**
+     * Sets the random class to initialize the secure random id generator. 
+     * By default it uses java.security.SecureRandom
+     */
+    @JSFWebConfigParam(since="2.1.9, 2.0.15", group="state")
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_CLASS
+            = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_CLASS";
+    
+    /**
+     * Sets the random provider to initialize the secure random id generator.
+     */
+    @JSFWebConfigParam(since="2.1.9, 2.0.15", group="state")
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_PROVIDER
+            = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_PROVIDER";
+    
+    /**
+     * Sets the random algorithm to initialize the secure random id generator. 
+     * By default is SHA1PRNG
+     */
+    @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="SHA1PRNG", group="state")
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM
+            = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM";
+    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_DEFAULT = "SHA1PRNG";
+    
+    /**
+     * Defines how to generate the csrf session token.
+     */
+    @JSFWebConfigParam(since="2.2.0", expectedValues="secureRandom, random", defaultValue="none", group="state")
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN
+            = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN";
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_DEFAULT = "random";
+    
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_RANDOM = "random";
+    
+    /**
+     * Indicates that the serialized state will be compressed before it is written to the session. By default true.
+     * 
+     * Only applicable if state saving method is "server" (= default) and if
+     * <code>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> is <code>true</code> (= default).
+     * If <code>true</code> (default) the serialized state will be compressed before it is written to the session.
+     * If <code>false</code> the state will not be compressed.
+     */
+    @JSFWebConfigParam(defaultValue="true",since="1.1", expectedValues="true,false", group="state", tags="performance")
+    public static final String COMPRESS_STATE_IN_SESSION = "org.apache.myfaces.COMPRESS_STATE_IN_SESSION";
+    public static final boolean COMPRESS_STATE_IN_SESSION_DEFAULT = true;
+    
+    /**
+     * Allow use flash scope to keep track of the views used in session and the previous ones,
+     * so server side state saving can delete old views even if POST-REDIRECT-GET pattern is used.
+     * 
+     * <p>
+     * Only applicable if state saving method is "server" (= default).
+     * The default value is false.</p>
+     */
+    @JSFWebConfigParam(since="2.0.6", defaultValue="false", expectedValues="true, false", group="state")
+    public static final String USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION
+            = "org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION";
+    public static final boolean USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION_DEFAULT = false;
+    
+    
+    
     
     private boolean strictJsf2AllowSlashLibraryName;
     private long configRefreshPeriod = CONFIG_REFRESH_PERIOD_DEFAULT;
@@ -508,6 +603,17 @@ public class MyfacesConfig
     private int resourceHandlerCacheSize = RESOURCE_HANDLER_CACHE_SIZE_DEFAULT;
     private String scanPackages;
     private Integer websocketEndpointPort;
+    private long clientViewStateTimeout = CLIENT_VIEW_STATE_TIMEOUT_DEFAULT;
+    private String randomKeyInViewStateSessionToken = RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_DEFAULT;
+    private int randomKeyInViewStateSessionTokenLength = RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_DEFAULT;
+    private String randomKeyInViewStateSessionTokenSecureRandomClass;
+    private String randomKeyInViewStateSessionTokenSecureRandomProvider;
+    private String randomKeyInViewStateSessionTokenSecureRandomAlgorithm
+            = RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_DEFAULT;
+    private String randomKeyInCsrfSessionToken = RANDOM_KEY_IN_CSRF_SESSION_TOKEN_DEFAULT;
+    private boolean serializeStateInSession = false;
+    private boolean compressStateInSession = COMPRESS_STATE_IN_SESSION_DEFAULT;
+    private boolean useFlashScopePurgeViewsInSession = USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION_DEFAULT;
 
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -542,6 +648,11 @@ public class MyfacesConfig
     public static MyfacesConfig getCurrentInstance()
     {
         return getCurrentInstance(FacesContext.getCurrentInstance().getExternalContext());
+    }
+    
+    public static MyfacesConfig getCurrentInstance(FacesContext facesContext)
+    {
+        return getCurrentInstance(facesContext.getExternalContext());
     }
     
     public static MyfacesConfig getCurrentInstance(ExternalContext extCtx)
@@ -782,7 +893,50 @@ public class MyfacesConfig
             myfacesConfig.websocketEndpointPort = Integer.valueOf(websocketEndpointPort);
         }
         
+        myfacesConfig.clientViewStateTimeout = getLongInitParameter(extCtx,
+                CLIENT_VIEW_STATE_TIMEOUT,
+                CLIENT_VIEW_STATE_TIMEOUT_DEFAULT);
+        if (myfacesConfig.clientViewStateTimeout < 0L)
+        {
+            myfacesConfig.clientViewStateTimeout = 0L;
+        }
         
+        myfacesConfig.randomKeyInViewStateSessionToken = getStringInitParameter(extCtx,
+                RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN,
+                RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_DEFAULT);
+        
+        myfacesConfig.randomKeyInViewStateSessionTokenLength = getIntegerInitParameter(extCtx,
+                RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH,
+                RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_DEFAULT);
+        
+        myfacesConfig.randomKeyInViewStateSessionTokenSecureRandomClass = getStringInitParameter(extCtx,
+                RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_CLASS,
+                null);
+        
+        myfacesConfig.randomKeyInViewStateSessionTokenSecureRandomProvider = getStringInitParameter(extCtx,
+                RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_PROVIDER,
+                null);
+        
+        myfacesConfig.randomKeyInViewStateSessionTokenSecureRandomAlgorithm = getStringInitParameter(extCtx,
+                RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM,
+                RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_DEFAULT);
+        
+        myfacesConfig.randomKeyInCsrfSessionToken = getStringInitParameter(extCtx,
+                RANDOM_KEY_IN_CSRF_SESSION_TOKEN,
+                RANDOM_KEY_IN_CSRF_SESSION_TOKEN_DEFAULT);
+        
+        myfacesConfig.serializeStateInSession = getBooleanInitParameter(extCtx,
+                StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME,
+                false);
+        
+        myfacesConfig.compressStateInSession = getBooleanInitParameter(extCtx,
+                COMPRESS_STATE_IN_SESSION,
+                COMPRESS_STATE_IN_SESSION_DEFAULT);
+        
+        myfacesConfig.useFlashScopePurgeViewsInSession = getBooleanInitParameter(extCtx,
+                USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION,
+                USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION_DEFAULT);
+
         return myfacesConfig;
     }
 
@@ -1061,6 +1215,56 @@ public class MyfacesConfig
     public Integer getWebsocketEndpointPort()
     {
         return websocketEndpointPort;
+    }
+
+    public long getClientViewStateTimeout()
+    {
+        return clientViewStateTimeout;
+    }
+
+    public String getRandomKeyInViewStateSessionToken()
+    {
+        return randomKeyInViewStateSessionToken;
+    }
+
+    public int getRandomKeyInViewStateSessionTokenLength()
+    {
+        return randomKeyInViewStateSessionTokenLength;
+    }
+
+    public String getRandomKeyInViewStateSessionTokenSecureRandomClass()
+    {
+        return randomKeyInViewStateSessionTokenSecureRandomClass;
+    }
+
+    public String getRandomKeyInViewStateSessionTokenSecureRandomProvider()
+    {
+        return randomKeyInViewStateSessionTokenSecureRandomProvider;
+    }
+
+    public String getRandomKeyInViewStateSessionTokenSecureRandomAlgorithm()
+    {
+        return randomKeyInViewStateSessionTokenSecureRandomAlgorithm;
+    }
+
+    public String getRandomKeyInCsrfSessionToken()
+    {
+        return randomKeyInCsrfSessionToken;
+    }
+
+    public boolean isSerializeStateInSession()
+    {
+        return serializeStateInSession;
+    }
+
+    public boolean isCompressStateInSession()
+    {
+        return compressStateInSession;
+    }
+
+    public boolean isUseFlashScopePurgeViewsInSession()
+    {
+        return useFlashScopePurgeViewsInSession;
     }
 
     

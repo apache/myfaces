@@ -18,6 +18,7 @@ package org.apache.myfaces.application.viewstate;
 
 import java.util.Map;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.spi.ViewScopeProvider;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.Assert;
@@ -32,7 +33,7 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
     @Test
     public void testSerializedViewCollection1()
     {
-        servletContext.addInitParameter(ServerSideStateCacheImpl.NUMBER_OF_VIEWS_IN_SESSION_PARAM, "1");
+        servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION, "1");
         
         SerializedViewCollection collection = new SerializedViewCollection();
         String viewId = "/test.xhtml";
@@ -53,8 +54,8 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
     @Test
     public void testSerializedViewCollection2()
     {
-        servletContext.addInitParameter(ServerSideStateCacheImpl.NUMBER_OF_VIEWS_IN_SESSION_PARAM, "2");
-        servletContext.addInitParameter(ServerSideStateCacheImpl.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM, "1");
+        servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION, "2");
+        servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION, "1");
         
         SerializedViewCollection collection = new SerializedViewCollection();
         String viewId = "/test.xhtml";
@@ -80,7 +81,7 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
     @Test
     public void testSerializedViewCollection3()
     {
-        servletContext.addInitParameter(ServerSideStateCacheImpl.NUMBER_OF_VIEWS_IN_SESSION_PARAM, "1");
+        servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION, "1");
         
         SerializedViewCollection collection = new SerializedViewCollection();
         String viewId = "/test.xhtml";
@@ -107,8 +108,8 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
     @Test
     public void testSerializedViewCollection4()
     {
-        servletContext.addInitParameter(ServerSideStateCacheImpl.NUMBER_OF_VIEWS_IN_SESSION_PARAM, "2");
-        servletContext.addInitParameter(ServerSideStateCacheImpl.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM, "1");
+        servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION, "2");
+        servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION, "1");
         
         SerializedViewCollection collection = new SerializedViewCollection();
         String viewId = "/test.xhtml";
@@ -134,8 +135,8 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
     @Test
     public void testSerializedViewCollection5()
     {
-        servletContext.addInitParameter(ServerSideStateCacheImpl.NUMBER_OF_VIEWS_IN_SESSION_PARAM, "3");
-        servletContext.addInitParameter(ServerSideStateCacheImpl.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM, "1");
+        servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION, "3");
+        servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION, "1");
         
         SerializedViewCollection collection = new SerializedViewCollection();
         String viewId = "/test.xhtml";
@@ -175,8 +176,8 @@ public class SerializedViewCollectionTestCase extends AbstractJsfTestCase
     @Test
     public void testSerializedViewCollection6()
     {
-        servletContext.addInitParameter(ServerSideStateCacheImpl.NUMBER_OF_VIEWS_IN_SESSION_PARAM, "4");
-        servletContext.addInitParameter(ServerSideStateCacheImpl.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_PARAM, "2");
+        servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION, "4");
+        servletContext.addInitParameter(MyfacesConfig.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION, "2");
         
         SerializedViewCollection collection = new SerializedViewCollection();
         String viewId = "/test.xhtml";

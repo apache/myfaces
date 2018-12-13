@@ -20,6 +20,7 @@ package org.apache.myfaces.application.viewstate;
 
 import javax.faces.application.StateManager;
 import org.apache.myfaces.application.StateCache;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMultipleRequestsTestCase;
 import org.junit.Assert;
 import org.junit.Test;
@@ -168,7 +169,7 @@ public class ClientSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
     public void testSaveRestoreStateClientTimeout() throws Exception
     {
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
-        servletContext.addInitParameter(ClientSideStateCacheImpl.INIT_PARAM_CLIENT_VIEW_STATE_TIMEOUT, "2");
+        servletContext.addInitParameter(MyfacesConfig.CLIENT_VIEW_STATE_TIMEOUT, "2");
 
         // Initialization
         setupRequest();

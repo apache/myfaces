@@ -23,13 +23,10 @@ import java.util.Random;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.xml.bind.DatatypeConverter;
+import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.util.WebConfigParamUtils;
 
-/**
- *
- */
 class RandomKeyFactory extends KeyFactory<byte[]>
 {
     private final Random random;
@@ -37,10 +34,7 @@ class RandomKeyFactory extends KeyFactory<byte[]>
 
     public RandomKeyFactory(FacesContext facesContext)
     {
-        length = WebConfigParamUtils.getIntegerInitParameter(
-            facesContext.getExternalContext(), 
-            ServerSideStateCacheImpl.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM, 
-            ServerSideStateCacheImpl.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_PARAM_DEFAULT);
+        length = MyfacesConfig.getCurrentInstance(facesContext).getRandomKeyInViewStateSessionTokenLength();
         random = new Random(((int) System.nanoTime()) + this.hashCode());
     }
 

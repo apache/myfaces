@@ -114,8 +114,7 @@ public class ResourceHandlerImpl extends ResourceHandler
     }
 
     @Override
-    public Resource createResource(String resourceName, String libraryName,
-            String contentType)
+    public Resource createResource(String resourceName, String libraryName, String contentType)
     {
         Assert.notNull(resourceName, "resourceName");
         

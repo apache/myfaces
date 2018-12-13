@@ -30,21 +30,15 @@ public final class IterationStatus implements Serializable
     private static final long serialVersionUID = 1L;
 
     private final int index;
-
     private final boolean first;
-
     private final boolean last;
-
     private final Integer begin;
-
     private final Integer end;
-
     private final Integer step;
-    
     private final Object value;
 
     public IterationStatus(boolean first, boolean last, int index, Integer begin, Integer end,
-                           Integer step, Object value)
+            Integer step, Object value)
     {
         this.index = index;
         this.begin = begin;
