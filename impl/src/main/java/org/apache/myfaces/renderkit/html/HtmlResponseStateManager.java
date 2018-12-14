@@ -30,11 +30,9 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.application.StateCache;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.StateCacheProvider;
 import org.apache.myfaces.spi.StateCacheProviderFactory;
 
@@ -45,24 +43,13 @@ import org.apache.myfaces.spi.StateCacheProviderFactory;
 public class HtmlResponseStateManager extends MyfacesResponseStateManager
 {
     private static final Logger log = Logger.getLogger(HtmlResponseStateManager.class.getName());
-
-    public static final String STANDARD_STATE_SAVING_PARAM = "javax.faces.ViewState";
     
     private static final String VIEW_STATE_COUNTER = "oam.partial.VIEW_STATE_COUNTER";
     private static final String CLIENT_WINDOW_COUNTER = "oam.partial.CLIENT_WINDOW_COUNTER";
     
     private static final String SESSION_TOKEN = "oam.rsm.SESSION_TOKEN";
-    
-    /**
-     * Add autocomplete="off" to the view state hidden field. Enabled by default.
-     */
-    @JSFWebConfigParam(since="2.2.8, 2.1.18, 2.0.24", expectedValues="true, false", 
-           defaultValue="true", group="state")
-    public static final String INIT_PARAM_AUTOCOMPLETE_OFF_VIEW_STATE = 
-            "org.apache.myfaces.AUTOCOMPLETE_OFF_VIEW_STATE";
-            
+
     private StateCacheProvider _stateCacheFactory;
-    
     private Boolean _autoCompleteOffViewState;
     
     public HtmlResponseStateManager()
@@ -126,7 +113,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
         responseWriter.startElement(HTML.INPUT_ELEM, null);
         responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-        responseWriter.writeAttribute(HTML.NAME_ATTR, STANDARD_STATE_SAVING_PARAM, null);
+        responseWriter.writeAttribute(HTML.NAME_ATTR, ResponseStateManager.VIEW_STATE_PARAM, null);
         if (myfacesConfig.isRenderViewStateId())
         {
             // responseWriter.writeAttribute(HTML.ID_ATTR, STANDARD_STATE_SAVING_PARAM, null);
@@ -181,7 +168,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     private Object getSavedState(FacesContext facesContext)
     {
         Object encodedState = 
-            facesContext.getExternalContext().getRequestParameterMap().get(STANDARD_STATE_SAVING_PARAM);
+            facesContext.getExternalContext().getRequestParameterMap().get(ResponseStateManager.VIEW_STATE_PARAM);
         if(encodedState==null || (((String) encodedState).length() == 0))
         {
             return null;
@@ -231,8 +218,8 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         if (context.isPostback())
         {
             String encodedState = 
-                context.getExternalContext().getRequestParameterMap().get(STANDARD_STATE_SAVING_PARAM);
-            if(encodedState==null || (((String) encodedState).length() == 0))
+                context.getExternalContext().getRequestParameterMap().get(ResponseStateManager.VIEW_STATE_PARAM);
+            if (encodedState==null || ((String) encodedState).length() == 0)
             {
                 return false;
             }
@@ -340,8 +327,8 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     {
         if (_autoCompleteOffViewState == null)
         {
-            _autoCompleteOffViewState = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
-                    INIT_PARAM_AUTOCOMPLETE_OFF_VIEW_STATE, true);
+            _autoCompleteOffViewState = MyfacesConfig.getCurrentInstance(facesContext)
+                    .isAutocompleteOffViewState();
         }
         return _autoCompleteOffViewState;
     }

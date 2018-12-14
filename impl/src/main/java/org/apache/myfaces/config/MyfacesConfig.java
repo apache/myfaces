@@ -563,6 +563,34 @@ public class MyfacesConfig
             = "org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION";
     public static final boolean USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION_DEFAULT = false;
     
+    /**
+     * Add autocomplete="off" to the view state hidden field. Enabled by default.
+     */
+    @JSFWebConfigParam(since="2.2.8, 2.1.18, 2.0.24", expectedValues="true, false", 
+           defaultValue="true", group="state")
+    public static final String AUTOCOMPLETE_OFF_VIEW_STATE = 
+            "org.apache.myfaces.AUTOCOMPLETE_OFF_VIEW_STATE";
+    public static final boolean AUTOCOMPLETE_OFF_VIEW_STATE_DEFAULT = true;
+    
+    /**
+     * Set the max time in miliseconds set on the "Expires" header for a resource rendered by 
+     * the default ResourceHandler.
+     * (default to one week in miliseconds or 604800000) 
+     */
+    @JSFWebConfigParam(since="2.0", defaultValue="604800000", group="resources", tags="performance")
+    public static final String RESOURCE_MAX_TIME_EXPIRES = "org.apache.myfaces.RESOURCE_MAX_TIME_EXPIRES";
+    public static final long RESOURCE_MAX_TIME_EXPIRES_DEFAULT = 604800000L;
+    
+
+    /**
+     * Indicate if the classes associated to components, converters, validators or behaviors
+     * should be loaded as soon as they are added to the current application instance or instead
+     * loaded in a lazy way.
+     */
+    @JSFWebConfigParam(defaultValue="true",since="2.0",tags="performance")
+    private static final String LAZY_LOAD_CONFIG_OBJECTS = "org.apache.myfaces.LAZY_LOAD_CONFIG_OBJECTS";
+    private static final boolean LAZY_LOAD_CONFIG_OBJECTS_DEFAULT = true;
+
     
     
     
@@ -614,6 +642,10 @@ public class MyfacesConfig
     private boolean serializeStateInSession = false;
     private boolean compressStateInSession = COMPRESS_STATE_IN_SESSION_DEFAULT;
     private boolean useFlashScopePurgeViewsInSession = USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION_DEFAULT;
+    private boolean autocompleteOffViewState = AUTOCOMPLETE_OFF_VIEW_STATE_DEFAULT;
+    private long resourceMaxTimeExpires = RESOURCE_MAX_TIME_EXPIRES_DEFAULT;
+    private boolean lazyLoadConfigObjects = LAZY_LOAD_CONFIG_OBJECTS_DEFAULT;
+    
 
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -937,6 +969,19 @@ public class MyfacesConfig
                 USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION,
                 USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION_DEFAULT);
 
+        myfacesConfig.autocompleteOffViewState = getBooleanInitParameter(extCtx,
+                AUTOCOMPLETE_OFF_VIEW_STATE,
+                AUTOCOMPLETE_OFF_VIEW_STATE_DEFAULT);
+        
+        myfacesConfig.resourceMaxTimeExpires = getLongInitParameter(extCtx,
+                RESOURCE_MAX_TIME_EXPIRES,
+                RESOURCE_MAX_TIME_EXPIRES_DEFAULT);
+        
+        myfacesConfig.lazyLoadConfigObjects = getBooleanInitParameter(extCtx,
+                LAZY_LOAD_CONFIG_OBJECTS,
+                LAZY_LOAD_CONFIG_OBJECTS_DEFAULT);
+        
+        
         return myfacesConfig;
     }
 
@@ -1265,6 +1310,21 @@ public class MyfacesConfig
     public boolean isUseFlashScopePurgeViewsInSession()
     {
         return useFlashScopePurgeViewsInSession;
+    }
+
+    public boolean isAutocompleteOffViewState()
+    {
+        return autocompleteOffViewState;
+    }
+
+    public long getResourceMaxTimeExpires()
+    {
+        return resourceMaxTimeExpires;
+    }
+
+    public boolean isLazyLoadConfigObjects()
+    {
+        return lazyLoadConfigObjects;
     }
 
     

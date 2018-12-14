@@ -23,10 +23,9 @@ import java.util.Map;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.application.FacesServletMapping;
 import org.apache.myfaces.application.FacesServletMappingUtils;
-import org.apache.myfaces.util.WebConfigParamUtils;
+import org.apache.myfaces.config.MyfacesConfig;
 
 /**
  * A ResourceHandlerSupport implementation for use with standard Java Servlet engines,
@@ -34,15 +33,6 @@ import org.apache.myfaces.util.WebConfigParamUtils;
  */
 public class BaseResourceHandlerSupport extends ResourceHandlerSupport
 {
-
-    /**
-     * Set the max time in miliseconds set on the "Expires" header for a resource rendered by 
-     * the default ResourceHandler.
-     * (default to one week in miliseconds or 604800000) 
-     */
-    @JSFWebConfigParam(since="2.0", defaultValue="604800000", group="resources", tags="performance")
-    public static final String RESOURCE_MAX_TIME_EXPIRES = "org.apache.myfaces.RESOURCE_MAX_TIME_EXPIRES";
-
     /**
      * Identifies the FacesServlet mapping in the current request map.
      */
@@ -195,9 +185,7 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
     {
         if (_maxTimeExpires == null)
         {
-            _maxTimeExpires = WebConfigParamUtils.getLongInitParameter(
-                    FacesContext.getCurrentInstance().getExternalContext(), 
-                    RESOURCE_MAX_TIME_EXPIRES, 604800000L);
+            _maxTimeExpires = MyfacesConfig.getCurrentInstance().getResourceMaxTimeExpires();
         }
         return _maxTimeExpires;
     }

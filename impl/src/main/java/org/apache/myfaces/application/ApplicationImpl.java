@@ -91,7 +91,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.cdi.behavior.FacesBehaviorCDIWrapper;
 import org.apache.myfaces.cdi.behavior.FacesClientBehaviorCDIWrapper;
 import org.apache.myfaces.cdi.converter.FacesConverterCDIWrapper;
@@ -145,17 +144,6 @@ public class ApplicationImpl extends Application
     public final static String PROJECT_STAGE_SYSTEM_PROPERTY_NAME = "faces.PROJECT_STAGE";
 
     /**
-     * Indicate if the classes associated to components, converters, validators or behaviors
-     * should be loaded as soon as they are added to the current application instance or instead
-     * loaded in a lazy way.
-     */
-    @JSFWebConfigParam(defaultValue="true",since="2.0",tags="performance")
-    private static final String LAZY_LOAD_CONFIG_OBJECTS_PARAM_NAME = "org.apache.myfaces.LAZY_LOAD_CONFIG_OBJECTS";
-    private static final boolean LAZY_LOAD_CONFIG_OBJECTS_DEFAULT_VALUE = true;
-    private Boolean _lazyLoadConfigObjects = null;
-    
-    
-    /**
      * Key under UIViewRoot to generated unique ids for components added 
      * by @ResourceDependency effect.
      */
@@ -178,27 +166,28 @@ public class ApplicationImpl extends Application
     private StateManager _stateManager;
     private FlowHandler _flowHandler;
 
+    private final boolean _lazyLoadConfigObjects;
+
     private ArrayList<ELContextListener> _elContextListeners;
 
     // components, converters, and validators can be added at runtime--must
     // synchronize, uses ConcurrentHashMap to allow concurrent read of map
-    private final Map<String, Object> _converterIdToClassMap = new ConcurrentHashMap<String, Object>();
+    private final Map<String, Object> _converterIdToClassMap = new ConcurrentHashMap<>();
 
-    private final Map<Class<?>, Object> _converterTargetClassToConverterClassMap
-            = new ConcurrentHashMap<Class<?>, Object>();
+    private final Map<Class<?>, Object> _converterTargetClassToConverterClassMap = new ConcurrentHashMap<>();
     
-    private final Map<String, Object> _componentClassMap = new ConcurrentHashMap<String, Object>();
+    private final Map<String, Object> _componentClassMap = new ConcurrentHashMap<>();
 
-    private final Map<String, Object> _validatorClassMap = new ConcurrentHashMap<String, Object>();
+    private final Map<String, Object> _validatorClassMap = new ConcurrentHashMap<>();
 
     private final Map<Class<? extends SystemEvent>, SystemListenerEntry> _systemEventListenerClassMap
-            = new ConcurrentHashMap<Class<? extends SystemEvent>, SystemListenerEntry>();
+            = new ConcurrentHashMap<>();
 
-    private final Map<String, String> _defaultValidatorsIds = new HashMap<String, String>();
+    private final Map<String, String> _defaultValidatorsIds = new HashMap<>();
     
     private volatile Map<String, String> _cachedDefaultValidatorsIds = null;
     
-    private final Map<String, Object> _behaviorClassMap = new ConcurrentHashMap<String, Object>();
+    private final Map<String, Object> _behaviorClassMap = new ConcurrentHashMap<>();
 
     private final RuntimeConfig _runtimeConfig;
 
@@ -213,23 +202,17 @@ public class ApplicationImpl extends Application
     // MYFACES-3442 If HashMap or other non thread-safe structure is used, it is
     // possible to fall in a infinite loop under heavy load unless a synchronized block
     // is used to modify it or a ConcurrentHashMap.
-    private final Map<Class<?>, List<ListenerFor>> _classToListenerForMap
-            = new ConcurrentHashMap<Class<?>, List<ListenerFor>>() ;
+    private final Map<Class<?>, List<ListenerFor>> _classToListenerForMap = new ConcurrentHashMap<>() ;
 
-    private final Map<Class<?>, List<ResourceDependency>> _classToResourceDependencyMap
-            = new ConcurrentHashMap<Class<?>, List<ResourceDependency>>() ;
+    private final Map<Class<?>, List<ResourceDependency>> _classToResourceDependencyMap = new ConcurrentHashMap<>();
     
-    private List<Class<? extends Converter>> _noArgConstructorConverterClasses 
-            = new CopyOnWriteArrayList<Class<? extends Converter>>();
+    private List<Class<? extends Converter>> _noArgConstructorConverterClasses = new CopyOnWriteArrayList<>();
     
-    private Map<Class<? extends Converter>, Boolean> _cdiManagedConverterMap
-            = new ConcurrentHashMap<Class<? extends Converter>, Boolean>();
+    private Map<Class<? extends Converter>, Boolean> _cdiManagedConverterMap = new ConcurrentHashMap<>();
     
-    private Map<Class<? extends Validator>, Boolean> _cdiManagedValidatorMap
-            = new ConcurrentHashMap<Class<? extends Validator>, Boolean>();
+    private Map<Class<? extends Validator>, Boolean> _cdiManagedValidatorMap = new ConcurrentHashMap<>();
     
-    private Map<Class<? extends Behavior>, Boolean> _cdiManagedBehaviorMap
-            = new ConcurrentHashMap<Class<? extends Behavior>, Boolean>();
+    private Map<Class<? extends Behavior>, Boolean> _cdiManagedBehaviorMap = new ConcurrentHashMap<>();
     
     /** Value of javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE parameter */
     private boolean _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = false; 
@@ -295,6 +278,8 @@ public class ApplicationImpl extends Application
         {
             _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = true;
         }
+        
+        _lazyLoadConfigObjects = MyfacesConfig.getCurrentInstance(getFacesContext()).isLazyLoadConfigObjects();
     }
 
     // ~ Methods
@@ -957,7 +942,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            if(isLazyLoadConfigObjects())
+            if (_lazyLoadConfigObjects)
             {
                 _behaviorClassMap.put(behaviorId, behaviorClass);
             }
@@ -986,7 +971,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            if(isLazyLoadConfigObjects())
+            if (_lazyLoadConfigObjects)
             {
                 _componentClassMap.put(componentType, componentClassName);
             }
@@ -1014,7 +999,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            if(isLazyLoadConfigObjects())
+            if (_lazyLoadConfigObjects)
             {
                 _converterIdToClassMap.put(converterId, converterClass);
             }
@@ -1041,7 +1026,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            if(isLazyLoadConfigObjects())
+            if (_lazyLoadConfigObjects)
             {
                 _converterTargetClassToConverterClassMap.put(targetClass, converterClass);
             }
@@ -1070,7 +1055,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            if(isLazyLoadConfigObjects())
+            if (_lazyLoadConfigObjects)
             {
                 _validatorClassMap.put(validatorId, validatorClass);
             }
@@ -2598,20 +2583,7 @@ public class ApplicationImpl extends Application
         classMap.remove(id);
         return null;        
     }
-    
-    private boolean isLazyLoadConfigObjects()
-    {
-        if (_lazyLoadConfigObjects == null)
-        {
-            String configParam
-                    = getFacesContext().getExternalContext().getInitParameter(LAZY_LOAD_CONFIG_OBJECTS_PARAM_NAME);
-            _lazyLoadConfigObjects = configParam == null
-                                     ? LAZY_LOAD_CONFIG_OBJECTS_DEFAULT_VALUE
-                                     : Boolean.parseBoolean(configParam);
-        }
-        return _lazyLoadConfigObjects;
-    }
-    
+
     
     @Override
     public final void setSearchExpressionHandler(SearchExpressionHandler searchExpressionHandler)
