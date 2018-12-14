@@ -22,33 +22,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.ProjectStage;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ConcurrentLRUCache;
-import org.apache.myfaces.util.WebConfigParamUtils;
 
 public class CheckedViewIdsCache
 {
     private static final Logger LOG = Logger.getLogger(CheckedViewIdsCache.class.getName());
     private static final String INSTANCE_KEY = CheckedViewIdsCache.class.getName();
-    
-    /**
-     * Controls the size of the cache used to "remember" if a view exists or not.
-     */
-    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="viewhandler", tags="performance", 
-            classType="java.lang.Integer",
-            desc="Controls the size of the cache used to 'remember' if a view exists or not.")
-    private static final String CHECKED_VIEWID_CACHE_SIZE_ATTRIBUTE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_SIZE";
-
-    /**
-     * Enable or disable a cache used to "remember" if a view exists or not and reduce the impact of
-     * sucesive calls to ExternalContext.getResource().
-     */
-    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", expectedValues="true, false", group="viewhandler", 
-            tags="performance",
-            desc="Enable or disable a cache used to 'remember' if a view exists or not and reduce the impact " +
-                 "of sucesive calls to ExternalContext.getResource().")
-    private static final String CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE = 
-        "org.apache.myfaces.CHECKED_VIEWID_CACHE_ENABLED";
 
     private volatile ConcurrentLRUCache<String, Boolean> cache = null;
     private boolean enabled;
@@ -68,14 +48,10 @@ public class CheckedViewIdsCache
         else
         {
             // in all ohter cases, make sure that the cache is not explicitly disabled via context param
-            enabled = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
-                    CHECKED_VIEWID_CACHE_ENABLED_ATTRIBUTE,
-                    true);
+            enabled = MyfacesConfig.getCurrentInstance(facesContext).isCheckedViewIdCacheEnabled();
         }
         
-        size = WebConfigParamUtils.getIntegerInitParameter(facesContext.getExternalContext(),
-                CHECKED_VIEWID_CACHE_SIZE_ATTRIBUTE,
-                500);
+        size = MyfacesConfig.getCurrentInstance(facesContext).getCheckedViewIdCacheSize();
 
         cache = new ConcurrentLRUCache<>((size * 4 + 3) / 3, size);
         

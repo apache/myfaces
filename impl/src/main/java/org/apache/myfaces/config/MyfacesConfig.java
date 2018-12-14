@@ -40,6 +40,7 @@ import org.apache.myfaces.util.ClassUtils;
  * (or omitting the extended init parameters) all config properties will simply have
  * their default values.
  */
+//CHECKSTYLE:OFF
 public class MyfacesConfig
 {
     private static final String APPLICATION_MAP_PARAM_NAME = MyfacesConfig.class.getName();
@@ -592,7 +593,55 @@ public class MyfacesConfig
     private static final boolean LAZY_LOAD_CONFIG_OBJECTS_DEFAULT = true;
 
     
+    /**
+     * Define a custom comparator class used to sort the ELResolvers.
+     * 
+     * <p>This is useful when it is necessary to put an ELResolver on top of other resolvers. Note set
+     * this param override the default ordering described by JSF spec section 5. 
+     * </p>
+     */
+    @JSFWebConfigParam(since = "1.2.10, 2.0.2", group="EL",
+            desc = "The Class of an Comparator&lt;ELResolver&gt; implementation.")
+    public static final String EL_RESOLVER_COMPARATOR = "org.apache.myfaces.EL_RESOLVER_COMPARATOR";
     
+    @JSFWebConfigParam(since = "2.1.0", group="EL",
+        desc="The Class of an java.util.function.Predicate&lt;ELResolver&gt; implementation."
+             + "If used and returns false for a ELResolver instance, such resolver will not be installed in "
+             + "ELResolvers chain. Use with caution - can break functionality defined in JSF specification "
+             + "'ELResolver Instances Provided by Faces'")
+    public static final String EL_RESOLVER_PREDICATE = "org.apache.myfaces.EL_RESOLVER_PREDICATE";
+    
+    /**
+     * Controls the size of the cache used to "remember" if a view exists or not.
+     */
+    @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="viewhandler", tags="performance", 
+            classType="java.lang.Integer",
+            desc="Controls the size of the cache used to 'remember' if a view exists or not.")
+    private static final String CHECKED_VIEWID_CACHE_SIZE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_SIZE";
+    private static final int CHECKED_VIEWID_CACHE_SIZE_DEFAULT = 500;
+
+    /**
+     * Enable or disable a cache used to "remember" if a view exists or not and reduce the impact of
+     * sucesive calls to ExternalContext.getResource().
+     */
+    @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", expectedValues="true, false", group="viewhandler", 
+            tags="performance",
+            desc="Enable or disable a cache used to 'remember' if a view exists or not and reduce the impact " +
+                 "of sucesive calls to ExternalContext.getResource().")
+    private static final String CHECKED_VIEWID_CACHE_ENABLED = "org.apache.myfaces.CHECKED_VIEWID_CACHE_ENABLED";
+    private static final boolean CHECKED_VIEWID_CACHE_ENABLED_DEFAULT = true;
+    
+    @JSFWebConfigParam(defaultValue=".jsp", since="2.3", group="viewhandler")
+    public static final String JSP_SUFFIX = "org.apache.myfaces.JSP_SUFFIX";
+    public static final String JSP_SUFFIX_DEFAULT = ".jsp";
+
+    /**
+     * Enforce f:validateBean to be called first before any JSF validator.
+     */
+    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since = "2.2.10", group="validation")
+    private final static String BEAN_BEFORE_JSF_VALIDATION
+            = "org.apache.myfaces.validator.BEAN_BEFORE_JSF_VALIDATION";
+    private final static boolean BEAN_BEFORE_JSF_VALIDATION_DEFAULT = false;
     
     private boolean strictJsf2AllowSlashLibraryName;
     private long configRefreshPeriod = CONFIG_REFRESH_PERIOD_DEFAULT;
@@ -645,8 +694,14 @@ public class MyfacesConfig
     private boolean autocompleteOffViewState = AUTOCOMPLETE_OFF_VIEW_STATE_DEFAULT;
     private long resourceMaxTimeExpires = RESOURCE_MAX_TIME_EXPIRES_DEFAULT;
     private boolean lazyLoadConfigObjects = LAZY_LOAD_CONFIG_OBJECTS_DEFAULT;
+    private String elResolverComparator;
+    private String elResolverPredicate;
+    private boolean checkedViewIdCacheEnabled = CHECKED_VIEWID_CACHE_ENABLED_DEFAULT;
+    private int checkedViewIdCacheSize = CHECKED_VIEWID_CACHE_SIZE_DEFAULT;
+    private String jspSuffix = JSP_SUFFIX_DEFAULT;
+    private boolean beanBeforeJsfValidation = BEAN_BEFORE_JSF_VALIDATION_DEFAULT;
     
-
+    
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
 
@@ -981,6 +1036,29 @@ public class MyfacesConfig
                 LAZY_LOAD_CONFIG_OBJECTS,
                 LAZY_LOAD_CONFIG_OBJECTS_DEFAULT);
         
+        myfacesConfig.elResolverComparator = getStringInitParameter(extCtx,
+                EL_RESOLVER_COMPARATOR,
+                null);
+        
+        myfacesConfig.elResolverPredicate = getStringInitParameter(extCtx,
+                EL_RESOLVER_PREDICATE,
+                null);
+        
+        myfacesConfig.checkedViewIdCacheEnabled = getBooleanInitParameter(extCtx,
+                CHECKED_VIEWID_CACHE_ENABLED,
+                CHECKED_VIEWID_CACHE_ENABLED_DEFAULT);
+        
+        myfacesConfig.checkedViewIdCacheSize = getIntegerInitParameter(extCtx,
+                CHECKED_VIEWID_CACHE_SIZE,
+                CHECKED_VIEWID_CACHE_SIZE_DEFAULT);
+        
+        myfacesConfig.jspSuffix = getStringInitParameter(extCtx,
+                JSP_SUFFIX,
+                JSP_SUFFIX_DEFAULT);
+        
+        myfacesConfig.beanBeforeJsfValidation = getBooleanInitParameter(extCtx,
+                BEAN_BEFORE_JSF_VALIDATION,
+                BEAN_BEFORE_JSF_VALIDATION_DEFAULT);
         
         return myfacesConfig;
     }
@@ -1327,5 +1405,36 @@ public class MyfacesConfig
         return lazyLoadConfigObjects;
     }
 
+    public String getElResolverComparator()
+    {
+        return elResolverComparator;
+    }
+
+    public String getElResolverPredicate()
+    {
+        return elResolverPredicate;
+    }
+
+    public boolean isCheckedViewIdCacheEnabled()
+    {
+        return checkedViewIdCacheEnabled;
+    }
+
+    public int getCheckedViewIdCacheSize()
+    {
+        return checkedViewIdCacheSize;
+    }
+
+    public String getJspSuffix()
+    {
+        return jspSuffix;
+    }
+
+    public boolean isBeanBeforeJsfValidation()
+    {
+        return beanBeforeJsfValidation;
+    }
+
     
 }
+

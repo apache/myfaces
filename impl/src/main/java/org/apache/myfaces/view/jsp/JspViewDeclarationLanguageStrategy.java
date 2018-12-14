@@ -23,7 +23,7 @@ import java.util.StringTokenizer;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 
@@ -37,13 +37,6 @@ public class JspViewDeclarationLanguageStrategy implements ViewDeclarationLangua
 {
     private ViewDeclarationLanguage _language;
     private LinkedList<String> _suffixes;
-    
-    /**
-     * 
-     */
-    @JSFWebConfigParam(defaultValue=".jsp", since="2.3", group="viewhandler")
-    public static final String JSP_SUFFIX_PARAM_NAME = "org.apache.myfaces.JSP_SUFFIX";
-    public static final String JSP_SUFFIX_DEFAULT = ".jsp";
     
     public JspViewDeclarationLanguageStrategy()
     {
@@ -68,33 +61,16 @@ public class JspViewDeclarationLanguageStrategy implements ViewDeclarationLangua
     @Override
     public boolean handles(String viewId)
     {
-        /*
-        for (String suffix : _suffixes)
-        {
-            if (viewId != null && viewId.endsWith (suffix)) 
-            {
-                return true;
-            }
-        }
-        */
-        
         return true;
     }
     
     static LinkedList<String> loadSuffixes (ExternalContext context) 
     {
         LinkedList<String> result = new LinkedList<String>();
-        String definedSuffixes = context.getInitParameter (JSP_SUFFIX_PARAM_NAME);
-        StringTokenizer tokenizer;
-        
-        if (definedSuffixes == null) 
-        {
-            definedSuffixes = JSP_SUFFIX_DEFAULT;
-        }
-        
+        String definedSuffixes = MyfacesConfig.getCurrentInstance(context).getJspSuffix();
+
         // This is a space-separated list of suffixes, so parse them out.
-        
-        tokenizer = new StringTokenizer (definedSuffixes, " ");
+        StringTokenizer tokenizer = new StringTokenizer (definedSuffixes, " ");
         
         while (tokenizer.hasMoreTokens()) 
         {

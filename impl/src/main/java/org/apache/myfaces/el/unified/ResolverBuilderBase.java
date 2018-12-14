@@ -29,7 +29,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.annotation.FacesConfig;
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -40,30 +39,10 @@ import org.apache.myfaces.util.ExternalSpecifications;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@SuppressWarnings("deprecation")
 public class ResolverBuilderBase
 {
-    
     private static final Logger log = Logger.getLogger(ResolverBuilderBase.class.getName());
-    
-    /**
-     * Define a custom comparator class used to sort the ELResolvers.
-     * 
-     * <p>This is useful when it is necessary to put an ELResolver on top of other resolvers. Note set
-     * this param override the default ordering described by JSF spec section 5. 
-     * </p>
-     */
-    @JSFWebConfigParam(since = "1.2.10, 2.0.2", group="EL",
-            desc = "The Class of an Comparator&lt;ELResolver&gt; implementation.")
-    public static final String EL_RESOLVER_COMPARATOR = "org.apache.myfaces.EL_RESOLVER_COMPARATOR";
-    
-    @JSFWebConfigParam(since = "2.1.0", group="EL",
-        desc="The Class of an java.util.function.Predicate&lt;ELResolver&gt; implementation."
-             + "If used and returns false for a ELResolver instance, such resolver will not be installed in "
-             + "ELResolvers chain. Use with caution - can break functionality defined in JSF specification "
-             + "'ELResolver Instances Provided by Faces'")
-    public static final String EL_RESOLVER_PREDICATE = "org.apache.myfaces.EL_RESOLVER_PREDICATE";
-    
+
     private final RuntimeConfig _config;
 
     public ResolverBuilderBase(RuntimeConfig config)

@@ -102,7 +102,6 @@ import org.apache.myfaces.context.ExternalContextFactoryImpl;
 import org.apache.myfaces.context.FacesContextFactoryImpl;
 import org.apache.myfaces.context.PartialViewContextFactoryImpl;
 import org.apache.myfaces.context.servlet.ServletFlashFactoryImpl;
-import org.apache.myfaces.el.unified.ResolverBuilderBase;
 import org.apache.myfaces.lifecycle.ClientWindowFactoryImpl;
 import org.apache.myfaces.flow.FlowCallNodeImpl;
 import org.apache.myfaces.flow.FlowHandlerFactoryImpl;
@@ -1002,7 +1001,7 @@ public class FacesConfigurator
         }
 
         String elResolverComparatorClass =
-                _externalContext.getInitParameter(ResolverBuilderBase.EL_RESOLVER_COMPARATOR);
+                MyfacesConfig.getCurrentInstance(_externalContext).getElResolverComparator();
         if (elResolverComparatorClass != null && !elResolverComparatorClass.isEmpty())
         {
             try
@@ -1017,7 +1016,7 @@ public class FacesConfigurator
                 if (log.isLoggable(Level.SEVERE))
                 {
                     log.log(Level.SEVERE, "Cannot instantiate EL Resolver Comparator " + elResolverComparatorClass
-                            + " . Check " + ResolverBuilderBase.EL_RESOLVER_COMPARATOR + " web config param. "
+                            + " . Check " + MyfacesConfig.EL_RESOLVER_COMPARATOR + " web config param. "
                             + "Initialization continues with no comparator used.", e);
                 }
             }
@@ -1027,7 +1026,8 @@ public class FacesConfigurator
             runtimeConfig.setELResolverComparator(null);
         }
 
-        String elResolverPredicateClass = _externalContext.getInitParameter(ResolverBuilderBase.EL_RESOLVER_PREDICATE);
+        String elResolverPredicateClass =
+                MyfacesConfig.getCurrentInstance(_externalContext).getElResolverPredicate();
         if (elResolverPredicateClass != null && !elResolverPredicateClass.isEmpty())
         {
             try
@@ -1044,7 +1044,7 @@ public class FacesConfigurator
                     {
                         log.log(Level.SEVERE, "EL Resolver Predicate " + elResolverPredicateClass
                                 + " must implement " + Predicate.class.getName()
-                                + " . Check " + ResolverBuilderBase.EL_RESOLVER_PREDICATE + " web config param. "
+                                + " . Check " + MyfacesConfig.EL_RESOLVER_PREDICATE + " web config param. "
                                 + "Initialization continues with no predicate used.");
                     }
                 }
@@ -1054,7 +1054,7 @@ public class FacesConfigurator
                 if (log.isLoggable(Level.SEVERE))
                 {
                     log.log(Level.SEVERE, "Cannot instantiate EL Resolver Predicate " + elResolverPredicateClass
-                            + " . Check " + ResolverBuilderBase.EL_RESOLVER_PREDICATE + " web config param. "
+                            + " . Check " + MyfacesConfig.EL_RESOLVER_PREDICATE + " web config param. "
                             + "Initialization continues with no predicate used.", e);
                 }
             }
