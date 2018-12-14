@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.webapp;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.myfaces.util.ClassUtils;
 
@@ -37,6 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.myfaces.config.MyfacesConfig;
 
 /**
  * Initialise the MyFaces system.
@@ -58,12 +58,6 @@ import java.util.logging.Logger;
 public class StartupServletContextListener implements ServletContextListener
 {
     static final String FACES_INIT_DONE = "org.apache.myfaces.webapp.StartupServletContextListener.FACES_INIT_DONE";
-
-    /**
-     * comma delimited list of plugin classes which can be hooked into myfaces
-     */
-    @JSFWebConfigParam(since = "2.0")
-    static final String FACES_INIT_PLUGINS = "org.apache.myfaces.FACES_INIT_PLUGINS";
 
     private static final byte FACES_INIT_PHASE_PREINIT = 0;
     private static final byte FACES_INIT_PHASE_POSTINIT = 1;
@@ -191,7 +185,7 @@ public class StartupServletContextListener implements ServletContextListener
                 listeners.add(it.next());
             }
 
-            _servletContext.setAttribute(FACES_INIT_PLUGINS, listeners);
+            _servletContext.setAttribute(MyfacesConfig.FACES_INIT_PLUGINS, listeners);
             return true;
         }
         catch (ClassNotFoundException e)
@@ -210,7 +204,7 @@ public class StartupServletContextListener implements ServletContextListener
      */
     private void loadFacesInitViaContextParam()
     {
-        String plugins = (String) _servletContext.getInitParameter(FACES_INIT_PLUGINS);
+        String plugins = (String) _servletContext.getInitParameter(MyfacesConfig.FACES_INIT_PLUGINS);
         if (plugins == null)
         {
             return;
@@ -237,7 +231,7 @@ public class StartupServletContextListener implements ServletContextListener
             }
         }
 
-        _servletContext.setAttribute(FACES_INIT_PLUGINS, listeners);
+        _servletContext.setAttribute(MyfacesConfig.FACES_INIT_PLUGINS, listeners);
 
     }
 
@@ -258,7 +252,8 @@ public class StartupServletContextListener implements ServletContextListener
             }
         }
 
-        List<StartupListener> pluginEntries = (List<StartupListener>) _servletContext.getAttribute(FACES_INIT_PLUGINS);
+        List<StartupListener> pluginEntries = (List<StartupListener>)
+                _servletContext.getAttribute(MyfacesConfig.FACES_INIT_PLUGINS);
         if (pluginEntries == null)
         {
             return;

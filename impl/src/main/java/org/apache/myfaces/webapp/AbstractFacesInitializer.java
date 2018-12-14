@@ -87,18 +87,6 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     private static final Logger log = Logger.getLogger(AbstractFacesInitializer.class.getName());
 
     /**
-     * This parameter specifies the ExpressionFactory implementation to use.
-     */
-    @JSFWebConfigParam(since="1.2.7", group="EL")
-    protected static final String EXPRESSION_FACTORY = "org.apache.myfaces.EXPRESSION_FACTORY";
-    
-    /**
-     * If this param is set to true, the check for faces servlet mapping is not done 
-     */
-    @JSFWebConfigParam(since="2.0.3", defaultValue="false")
-    protected static final String INITIALIZE_ALWAYS_STANDALONE = "org.apache.myfaces.INITIALIZE_ALWAYS_STANDALONE";
-    
-    /**
      * Indicate if log all web config params should be done before initialize the webapp. 
      * <p>
      * If is set in "auto" mode, web config params are only logged on "Development" and "Production" project stages.
@@ -157,7 +145,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             
             // Parse and validate the web.xml configuration file
             
-            if (!WebConfigParamUtils.getBooleanInitParameter(externalContext, INITIALIZE_ALWAYS_STANDALONE, false))
+            if (!WebConfigParamUtils.getBooleanInitParameter(externalContext,
+                    MyfacesConfig.INITIALIZE_ALWAYS_STANDALONE, false))
             {
                 WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebConfigProviderFactory(
                         facesContext.getExternalContext()).getWebConfigProvider(facesContext.getExternalContext());
@@ -335,7 +324,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         FacesContext facesContext = FacesContext.getCurrentInstance();
 
         if (!WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
-                                                         INITIALIZE_ALWAYS_STANDALONE, false))
+                                                         MyfacesConfig.INITIALIZE_ALWAYS_STANDALONE, false))
         {
             //We need to check if the current application was initialized by myfaces
             WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebConfigProviderFactory(
@@ -444,7 +433,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     protected static ExpressionFactory getUserDefinedExpressionFactory(ExternalContext externalContext)
     {
         String expressionFactoryClassName
-                = WebConfigParamUtils.getStringInitParameter(externalContext, EXPRESSION_FACTORY);
+                = MyfacesConfig.getCurrentInstance(externalContext).getExpressionFactory();
         if (expressionFactoryClassName != null && !expressionFactoryClassName.trim().isEmpty())
         {
             if (log.isLoggable(Level.FINE))

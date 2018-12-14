@@ -25,19 +25,13 @@ import javax.faces.context.ExternalContext;
 import javax.websocket.HandshakeResponse;
 import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpointConfig;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.cdi.util.CDIUtils;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.push.cdi.WebsocketSessionBean;
-import org.apache.myfaces.util.WebConfigParamUtils;
 
-/**
- *
- */
 public class WebsocketConfigurator extends ServerEndpointConfig.Configurator
 {
-    @JSFWebConfigParam(defaultValue = "300000")
-    public static final String INIT_PARAM_WEBSOCKET_MAX_IDLE_TIMEOUT = "org.apache.myfaces.WEBSOCKET_MAX_IDLE_TIMEOUT";
-    
+
     public static final String MAX_IDLE_TIMEOUT = "oam.websocket.maxIdleTimeout";
     
     public static final String WEBSOCKET_VALID = "oam.websocket.valid";
@@ -48,8 +42,7 @@ public class WebsocketConfigurator extends ServerEndpointConfig.Configurator
     
     public WebsocketConfigurator(ExternalContext context)
     {
-        this.maxIdleTimeout = WebConfigParamUtils.getLongInitParameter(context, 
-                INIT_PARAM_WEBSOCKET_MAX_IDLE_TIMEOUT);
+        this.maxIdleTimeout = MyfacesConfig.getCurrentInstance(context).getWebsocketMaxIdleTimeout();
     }
 
     @Override

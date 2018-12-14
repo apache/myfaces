@@ -51,7 +51,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 import javax.servlet.annotation.HandlesTypes;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.webapp.webxml.DelegatedFacesServlet;
@@ -101,19 +101,7 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
      * is stored under this key in the ServletContext.
      */
     public static final String FACES_SERVLET_FOUND = "org.apache.myfaces.FACES_SERVLET_FOUND";
-    
-    private static final String INITIALIZE_ALWAYS_STANDALONE = "org.apache.myfaces.INITIALIZE_ALWAYS_STANDALONE";
-    
-    /**
-     * If the flag is true, the algoritm skip jar scanning for faces-config files to check if the current
-     * application requires FacesServlet to be added dynamically (servlet spec 3). This param can be set using 
-     * a system property with the same name too.
-     */
-    @JSFWebConfigParam(since="2.2.10", expectedValues = "true, false", defaultValue = "false", 
-            tags = "performance")
-    private static final String INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN = 
-            "org.apache.myfaces.INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN";
-    
+
     private static final String FACES_CONFIG_RESOURCE = "/WEB-INF/faces-config.xml";
     private static final Logger log = Logger.getLogger(MyFacesContainerInitializer.class.getName());
     private static final String[] FACES_SERVLET_MAPPINGS = { "/faces/*", "*.jsf", "*.faces" };
@@ -160,8 +148,7 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
             for (Map.Entry<String, ? extends ServletRegistration> servletEntry : servlets.entrySet())
             {
                 String className = servletEntry.getValue().getClassName();
-                if (FACES_SERVLET_CLASS.getName().equals(className)
-                        || isDelegatedFacesServlet(className))
+                if (FACES_SERVLET_CLASS.getName().equals(className) || isDelegatedFacesServlet(className))
                 {
                     // we found a FacesServlet; set an attribute for use during initialization
                     servletContext.setAttribute(FACES_SERVLET_FOUND, Boolean.TRUE);                    
@@ -194,8 +181,7 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
                 servletContext.setAttribute(FACES_SERVLET_ADDED_ATTRIBUTE, Boolean.TRUE);
 
                 // add a log message
-                log.log(Level.INFO, "Added FacesServlet with mappings="
-                        + Arrays.toString(mappings));
+                log.log(Level.INFO, "Added FacesServlet with mappings=" + Arrays.toString(mappings));
             }
         }
     }
@@ -209,9 +195,8 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
     {
         try
         {
-            String standaloneStartup = servletContext.getInitParameter(INITIALIZE_ALWAYS_STANDALONE);
+            String standaloneStartup = servletContext.getInitParameter(MyfacesConfig.INITIALIZE_ALWAYS_STANDALONE);
 
-            // "true".equalsIgnoreCase(param) is faster than Boolean.valueOf()
             return "true".equalsIgnoreCase(standaloneStartup);
         }
         catch (Exception e)
@@ -229,11 +214,11 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
     {
         try
         {
-            String skipJarScan = servletContext.getInitParameter(INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN);
+            String skipJarScan = servletContext.getInitParameter(MyfacesConfig.INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN);
 
             if (skipJarScan == null)
             {
-                skipJarScan = System.getProperty(INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN);
+                skipJarScan = System.getProperty(MyfacesConfig.INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN);
             }
             return "true".equalsIgnoreCase(skipJarScan);
         }
