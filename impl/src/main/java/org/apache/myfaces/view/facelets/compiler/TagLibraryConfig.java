@@ -52,6 +52,7 @@ import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.element.facelets.FaceletValidatorTag;
 import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.LangUtils;
 
 /**
  * Handles creating a {@link org.apache.myfaces.view.facelets.tag.TagLibrary TagLibrary}
@@ -224,8 +225,7 @@ public final class TagLibraryConfig
         }
         
         @Override
-        public TagHandler createTagHandler(String ns, String localName,
-                TagConfig tag) throws FacesException
+        public TagHandler createTagHandler(String ns, String localName, TagConfig tag) throws FacesException
         {
             TagHandler tagHandler = super.createTagHandler(ns, localName, tag);
             
@@ -358,15 +358,11 @@ public final class TagLibraryConfig
     
     private static class ComponentConfigWrapper implements ComponentConfig
     {
-
         protected final TagConfig parent;
-
         protected final String componentType;
-
         protected final String rendererType;
 
-        public ComponentConfigWrapper(TagConfig parent, String componentType,
-                String rendererType)
+        public ComponentConfigWrapper(TagConfig parent, String componentType, String rendererType)
         {
             this.parent = parent;
             this.componentType = componentType;
@@ -411,7 +407,7 @@ public final class TagLibraryConfig
     
     public static TagLibrary create(FacesContext facesContext, FaceletTagLibrary faceletTagLibrary)
     {
-        if (isNotEmpty(faceletTagLibrary.getLibraryClass()))
+        if (LangUtils.isNotEmpty(faceletTagLibrary.getLibraryClass()))
         {
             TagLibrary t = null;
             Class<?> type;
@@ -487,8 +483,8 @@ public final class TagLibraryConfig
                     FaceletConverterTag tag = (FaceletConverterTag) ft.getTagDefinition();
                     if (tag.getHandlerClass() != null)
                     {
-                        Class<? extends TagHandler> handlerClass = 
-                            createClass(TagHandler.class, tag.getHandlerClass());
+                        Class<? extends TagHandler> handlerClass =
+                                createClass(TagHandler.class, tag.getHandlerClass());
                         impl.putConverter(ft.getName(), tag.getConverterId(), handlerClass);
                     }
                     else
@@ -597,11 +593,6 @@ public final class TagLibraryConfig
 
             }
         }
-    }
-
-    private static boolean isNotEmpty(String value)
-    {
-        return value != null && value.length() > 0;
     }
 
 }
