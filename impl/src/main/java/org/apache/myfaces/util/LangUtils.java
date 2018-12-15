@@ -25,8 +25,35 @@ public class LangUtils
         return value == null || value.isEmpty();
     }
     
+    public static boolean isBlank(String str)
+    {
+        if (str == null)
+        {
+            return true;
+        }
+        int strLen = str.length();
+        if (strLen == 0)
+        {
+            return true;
+        }
+
+        for (int i = 0; i < strLen; i++) 
+        {
+            if (!Character.isWhitespace(str.charAt(i)))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static boolean isNotEmpty(String value)
     {
         return !isEmpty(value);
+    }
+    
+    public static boolean isNotBlank(String value)
+    {
+        return !isBlank(value);
     }
 }

@@ -123,6 +123,7 @@ import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.LangUtils;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.ELText;
 
@@ -1869,10 +1870,10 @@ public class ApplicationImpl extends Application
             // Get the annotation instance from the class and obtain the values of the name, library, and 
             // target attributes.
             String name = annotation.name();
-            if (name != null && name.length() > 0)
+            if (LangUtils.isNotEmpty(name))
             {
-                name = ELText.parse(getExpressionFactory(),
-                                    context.getELContext(), name).toString(context.getELContext());
+                name = ELText.parse(getExpressionFactory(),context.getELContext(), name)
+                        .toString(context.getELContext());
             }
             
             // Obtain the renderer-type for the resource name by passing name to 
@@ -1894,10 +1895,10 @@ public class ApplicationImpl extends Application
             
             // If library is the empty string, let library be null.
             String library = annotation.library();
-            if (library != null && library.length() > 0)
+            if (LangUtils.isNotEmpty(library))
             {
-                library = ELText.parse(getExpressionFactory(),
-                                       context.getELContext(), library).toString(context.getELContext());
+                library = ELText.parse(getExpressionFactory(), context.getELContext(), library)
+                        .toString(context.getELContext());
                 // If library is non-null, store it under the key "library".
                 attributes.put("library", library);
             }
@@ -1908,10 +1909,10 @@ public class ApplicationImpl extends Application
             
             // If target is the empty string, let target be null.
             String target = annotation.target();
-            if (target != null && target.length() > 0)
+            if (LangUtils.isNotEmpty(target))
             {
-                target = ELText.parse(getExpressionFactory(),
-                                      context.getELContext(), target).toString(context.getELContext());
+                target = ELText.parse(getExpressionFactory(),context.getELContext(), target)
+                        .toString(context.getELContext());
                 // If target is non-null, store it under the key "target".
                 attributes.put("target", target);
                 context.getViewRoot().addComponentResource(context, output, target);
@@ -2309,10 +2310,10 @@ public class ApplicationImpl extends Application
             // Get the annotation instance from the class and obtain the values of the name, library, and
             // target attributes.
             String name = annotation.name();
-            if (name != null && name.length() > 0)
+            if (LangUtils.isNotEmpty(name))
             {
-                name = ELText.parse(getExpressionFactory(),
-                                    context.getELContext(), name).toString(context.getELContext());
+                name = ELText.parse(getExpressionFactory(), context.getELContext(), name)
+                        .toString(context.getELContext());
             }
 
             // Obtain the renderer-type for the resource name by passing name to
@@ -2335,10 +2336,10 @@ public class ApplicationImpl extends Application
 
             // If library is the empty string, let library be null.
             String library = annotation.library();
-            if (library != null && library.length() > 0)
+            if (LangUtils.isNotEmpty(library))
             {
-                library = ELText.parse(getExpressionFactory(),
-                                       context.getELContext(), library).toString(context.getELContext());
+                library = ELText.parse(getExpressionFactory(), context.getELContext(), library)
+                        .toString(context.getELContext());
                 // If library is non-null, store it under the key "library".
                 if ("this".equals(library))
                 {
@@ -2361,10 +2362,10 @@ public class ApplicationImpl extends Application
 
             // If target is the empty string, let target be null.
             String target = annotation.target();
-            if (target != null && target.length() > 0)
+            if (LangUtils.isNotEmpty(target))
             {
-                target = ELText.parse(getExpressionFactory(),
-                                      context.getELContext(), target).toString(context.getELContext());
+                target = ELText.parse(getExpressionFactory(), context.getELContext(), target)
+                        .toString(context.getELContext());
                 // If target is non-null, store it under the key "target".
                 attributes.put("target", target);
                 context.getViewRoot().addComponentResource(context, output, target);

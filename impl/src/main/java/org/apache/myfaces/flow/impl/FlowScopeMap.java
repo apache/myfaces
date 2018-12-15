@@ -53,6 +53,7 @@ class FlowScopeMap implements Map<Object,Object>
         return _delegate;
     }
 
+    @Override
     public int size()
     {
         Map<Object,Object> map = getWrapped(false);
@@ -63,6 +64,7 @@ class FlowScopeMap implements Map<Object,Object>
         return map.size();
     }
 
+    @Override
     public boolean isEmpty()
     {
         Map<Object,Object> map = getWrapped(false);
@@ -73,6 +75,7 @@ class FlowScopeMap implements Map<Object,Object>
         return map.isEmpty();
     }
 
+    @Override
     public boolean containsKey(Object key)
     {
         Map<Object,Object> map = getWrapped(false);
@@ -83,6 +86,7 @@ class FlowScopeMap implements Map<Object,Object>
         return map.containsKey(key);
     }
 
+    @Override
     public boolean containsValue(Object value)
     {
         Map<Object,Object> map = getWrapped(false);
@@ -93,6 +97,7 @@ class FlowScopeMap implements Map<Object,Object>
         return map.containsValue(value);
     }
 
+    @Override
     public Object get(Object key)
     {
         Map<Object,Object> map = getWrapped(false);
@@ -103,11 +108,13 @@ class FlowScopeMap implements Map<Object,Object>
         return map.get(key);
     }
 
+    @Override
     public Object put(Object key, Object value)
     {
         return getWrapped(true).put(key, value);
     }
 
+    @Override
     public Object remove(Object key)
     {
         Map<Object,Object> map = getWrapped(false);
@@ -118,11 +125,13 @@ class FlowScopeMap implements Map<Object,Object>
         return map.remove(key);
     }
 
+    @Override
     public void putAll(Map<? extends Object, ? extends Object> m)
     {
         getWrapped(true).putAll(m);
     }
 
+    @Override
     public void clear()
     {
         Map<Object,Object> map = getWrapped(false);
@@ -133,16 +142,19 @@ class FlowScopeMap implements Map<Object,Object>
         map.clear();
     }
 
+    @Override
     public Set<Object> keySet()
     {
         return getWrapped(true).keySet();
     }
 
+    @Override
     public Collection<Object> values()
     {
         return getWrapped(true).values();
     }
 
+    @Override
     public Set<Entry<Object, Object>> entrySet()
     {
         return getWrapped(true).entrySet();

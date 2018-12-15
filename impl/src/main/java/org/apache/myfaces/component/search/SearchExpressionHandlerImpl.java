@@ -35,6 +35,7 @@ import javax.faces.component.search.SearchKeywordContext;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ComponentUtils;
+import org.apache.myfaces.util.LangUtils;
 
 /**
  *
@@ -597,7 +598,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     @Override
     public boolean isPassthroughExpression(SearchExpressionContext searchExpressionContext, String topExpression)
     {
-        if (topExpression == null || topExpression.trim().isEmpty())
+        if (LangUtils.isBlank(topExpression))
         {
             return false;
         }
@@ -655,7 +656,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     @Override
     public boolean isValidExpression(SearchExpressionContext searchExpressionContext, String topExpression)
     {
-        if (topExpression == null || topExpression.trim().isEmpty())
+        if (LangUtils.isBlank(topExpression))
         {
             return true;
         }

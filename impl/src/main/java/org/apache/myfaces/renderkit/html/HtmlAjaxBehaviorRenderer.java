@@ -40,6 +40,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.render.ClientBehaviorRenderer;
+import org.apache.myfaces.util.LangUtils;
 import org.apache.myfaces.util.SharedStringBuilder;
 
 /**
@@ -48,9 +49,6 @@ import org.apache.myfaces.util.SharedStringBuilder;
  */
 public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
 {
-
-    private static final String QUOTE = "'";
-    private static final String BLANK = " ";
 
     private static final String AJAX_KEY_ONERROR = "onerror";
     private static final String AJAX_KEY_ONEVENT = "onevent";
@@ -63,13 +61,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
     private static final String AJAX_VAL_EVENT = "event";
     private static final String JS_AJAX_REQUEST = "jsf.ajax.request";
 
-    private static final String COLON = ":";
-    private static final String EMPTY = "";
-    private static final String COMMA = ",";
-
     private static final String ERR_NO_AJAX_BEHAVIOR = "The behavior must be an instance of AjaxBehavior";
-    private static final String L_PAREN = "(";
-    private static final String R_PAREN = ")";
 
     private static final String AJAX_SB = "oam.renderkit.AJAX_SB";
     private static final String AJAX_PARAM_SB = "oam.renderkit.AJAX_PARAM_SB";
@@ -155,12 +147,11 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         String render = mapToString(context, paramBuffer, AJAX_KEY_RENDER, behavior.getRender());
 
         String onError = behavior.getOnerror();
-        if (onError != null && !onError.trim().equals(EMPTY))
+        if (LangUtils.isNotBlank(onError))
         {
-            //onError = AJAX_KEY_ONERROR + COLON + onError;
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_ONERROR);
-            paramBuffer.append(COLON);
+            paramBuffer.append(':');
             paramBuffer.append(onError);
             onError = paramBuffer.toString();
         }
@@ -168,12 +159,13 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         {
             onError = null;
         }
+        
         String onEvent = behavior.getOnevent();
-        if (onEvent != null && !onEvent.trim().equals(EMPTY))
+        if (LangUtils.isNotBlank(onEvent))
         {
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_ONEVENT);
-            paramBuffer.append(COLON);
+            paramBuffer.append(':');
             paramBuffer.append(onEvent);
             onEvent = paramBuffer.toString();
         }
@@ -181,15 +173,13 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         {
             onEvent = null;
         }
-        /*
-         * since version 2.2
-         */
+
         String delay = behavior.getDelay();
-        if (delay != null && !delay.trim().equals(EMPTY))
+        if (LangUtils.isNotBlank(delay))
         {
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_DELAY);
-            paramBuffer.append(COLON);
+            paramBuffer.append(':');
             if ("none".equals(delay))
             {
                 paramBuffer.append('\'');
@@ -206,15 +196,13 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         {
             delay = null;
         }
-        /*
-         * since version 2.2
-         */
+
         String resetValues = Boolean.toString(behavior.isResetValues());
         if (resetValues.equals("true"))
         {
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_RESETVALUES);
-            paramBuffer.append(COLON);
+            paramBuffer.append(':');
             paramBuffer.append(resetValues);
             resetValues = paramBuffer.toString();
         }
@@ -266,11 +254,11 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         String event = context.getEventName();
 
         retVal.append(JS_AJAX_REQUEST);
-        retVal.append(L_PAREN);
+        retVal.append('(');
         retVal.append(sourceId);
-        retVal.append(COMMA);
+        retVal.append(',');
         retVal.append(AJAX_VAL_EVENT);
-        retVal.append(COMMA);
+        retVal.append(',');
 
         Collection<ClientBehaviorContext.Parameter> params = context.getParameters();
         int paramSize = (params != null) ? params.size() : 0;
@@ -332,15 +320,14 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
             }
         }
 
-        //parameterList.add(QUOTE + BEHAVIOR_EVENT + QUOTE + COLON + QUOTE + event + QUOTE);
         paramBuffer.setLength(0);
-        paramBuffer.append(QUOTE);
+        paramBuffer.append('\'');
         paramBuffer.append(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME);
-        paramBuffer.append(QUOTE);
-        paramBuffer.append(COLON);
-        paramBuffer.append(QUOTE);
+        paramBuffer.append('\'');
+        paramBuffer.append(':');
+        paramBuffer.append('\'');
         paramBuffer.append(event);
-        paramBuffer.append(QUOTE);
+        paramBuffer.append('\'');
         parameterList.add(paramBuffer.toString());
 
         /**
@@ -350,7 +337,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
          */
         retVal.append(buildOptions(paramBuffer, parameterList));
 
-        retVal.append(R_PAREN);
+        retVal.append(')');
 
         return retVal;
     }
@@ -363,13 +350,13 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         //and the rest is up to the toString properly implemented
         //ANS: Both name and value should be quoted
         paramBuffer.setLength(0);
-        paramBuffer.append(QUOTE);
+        paramBuffer.append('\'');
         paramBuffer.append(param.getName());
-        paramBuffer.append(QUOTE);
-        paramBuffer.append(COLON);
-        paramBuffer.append(QUOTE);
+        paramBuffer.append('\'');
+        paramBuffer.append(':');
+        paramBuffer.append('\'');
         paramBuffer.append(param.getValue().toString());
-        paramBuffer.append(QUOTE);
+        paramBuffer.append('\'');
         parameterList.add(paramBuffer.toString());
     }
 
@@ -385,11 +372,11 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         for (int i = 0, size = options.size(); i < size; i++)
         {
             String option = options.get(i);
-            if (option != null && !option.trim().equals(EMPTY))
+            if (LangUtils.isNotBlank(option))
             {
                 if (!first)
                 {
-                    retVal.append(COMMA);
+                    retVal.append(',');
                 }
                 else
                 {
@@ -417,8 +404,8 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         {
 
             retVal.append(target);
-            retVal.append(COLON);
-            retVal.append(QUOTE);
+            retVal.append(':');
+            retVal.append('\'');
 
             int cnt = 0;
 
@@ -459,7 +446,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
                 }
             }
 
-            retVal.append(QUOTE);
+            retVal.append('\'');
             return retVal.toString();
         }
         return null;
@@ -473,15 +460,14 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
             int size, StringBuilder retVal, int cnt,
             String strVal, SearchExpressionContext searchExpressionContext)
     {
-        strVal = strVal.trim();
-        if (!EMPTY.equals(strVal))
+        if (LangUtils.isNotBlank(strVal))
         {
             SearchExpressionHandler handler = context.getFacesContext().getApplication().getSearchExpressionHandler();
-            String clientId = handler.resolveClientId(searchExpressionContext, strVal);
+            String clientId = handler.resolveClientId(searchExpressionContext, strVal.trim());
             retVal.append(clientId);
             if (cnt < size)
             {
-                retVal.append(BLANK);
+                retVal.append(' ');
             }
         }
     }

@@ -48,6 +48,7 @@ import org.apache.myfaces.renderkit.html.util.JavascriptContext;
 import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.ComponentUtils;
+import org.apache.myfaces.util.LangUtils;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.StringUtils;
 
@@ -222,9 +223,8 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                 searchExpressionContext);
 
         String onError = behavior.getOnerror();
-        if (onError != null && !onError.trim().isEmpty())
+        if (LangUtils.isNotBlank(onError))
         {
-            //onError = AJAX_KEY_ONERROR + COLON + onError;
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_ONERROR);
             paramBuffer.append(':');
@@ -235,8 +235,9 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         {
             onError = null;
         }
+
         String onEvent = behavior.getOnevent();
-        if (onEvent != null && !onEvent.trim().isEmpty())
+        if (LangUtils.isNotBlank(onEvent))
         {
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_ONEVENT);
@@ -250,7 +251,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         }
 
         String delay = behavior.getDelay();
-        if (delay != null && !delay.trim().isEmpty())
+        if (LangUtils.isNotBlank(delay))
         {
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_DELAY);
@@ -447,7 +448,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         for (int i = 0, size = options.size(); i < size; i++)
         {
             String option = options.get(i);
-            if (option != null && !option.trim().isEmpty())
+            if (LangUtils.isNotBlank(option))
             {
                 if (!first)
                 {
@@ -467,7 +468,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
     private String resolveExpressionsAsParameter(StringBuilder retVal, String target, String expressions,
             SearchExpressionContext searchExpressionContext)
     {
-        if (expressions != null && !expressions.trim().isEmpty())
+        if (LangUtils.isNotBlank(expressions))
         {
             retVal.setLength(0);
             retVal.append(target);

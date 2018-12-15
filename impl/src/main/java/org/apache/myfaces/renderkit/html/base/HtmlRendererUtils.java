@@ -72,6 +72,7 @@ import org.apache.myfaces.renderkit.html.util.OutcomeTargetUtils;
 import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.util.LangUtils;
 
 public final class HtmlRendererUtils
 {
@@ -1513,7 +1514,7 @@ public final class HtmlRendererUtils
             String userEventCode, String serverEventCode)
     {
         List<String> finalParams = new ArrayList<>(3);
-        if (userEventCode != null && !userEventCode.trim().isEmpty())
+        if (LangUtils.isNotBlank(userEventCode))
         {
             // escape every ' in the user event code since it will
             // be a string attribute of jsf.util.chain
@@ -1525,11 +1526,12 @@ public final class HtmlRendererUtils
         getClientBehaviorScript(facesContext, uiComponent, sourceId,
                 eventName, clientBehaviors, behaviorCode, params);
         
-        if (behaviorCode != null && !behaviorCode.toString().trim().isEmpty())
+        String behaviorCodeStr = behaviorCode.toString();
+        if (LangUtils.isNotBlank(behaviorCodeStr))
         {
-            finalParams.add(behaviorCode.toString());
+            finalParams.add(behaviorCodeStr);
         }
-        if (serverEventCode != null && !serverEventCode.trim().isEmpty())
+        if (LangUtils.isNotBlank(serverEventCode))
         {
             finalParams.add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
         }
@@ -1547,8 +1549,7 @@ public final class HtmlRendererUtils
             }
             else
             {
-                retVal.append("jsf.util.chain(document.getElementById('"
-                        + sourceId + "'), event,");
+                retVal.append("jsf.util.chain(document.getElementById('" + sourceId + "'), event,");
             }
             while (it.hasNext())
             {
@@ -1599,7 +1600,7 @@ public final class HtmlRendererUtils
             String userEventCode, String serverEventCode)
     {
         List<String> finalParams = new ArrayList<String>(3);
-        if (userEventCode != null && !userEventCode.trim().isEmpty())
+        if (LangUtils.isNotBlank(userEventCode))
         {
             finalParams.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
         }
@@ -1616,15 +1617,20 @@ public final class HtmlRendererUtils
 
         // ClientBehaviors for both events have to be checked for the Submitting hint
         boolean submitting = submitting1 || submitting2;
-        if (behaviorCode != null && !behaviorCode.toString().trim().isEmpty())
+        
+        String behaviorCodeStr = behaviorCode.toString();
+        if (LangUtils.isNotBlank(behaviorCodeStr))
         {
-            finalParams.add(behaviorCode.toString());
+            finalParams.add(behaviorCodeStr);
         }
-        if (behaviorCode2 != null && !behaviorCode2.toString().trim().isEmpty())
+
+        String behaviorCode2Str = behaviorCode2.toString();
+        if (LangUtils.isNotBlank(behaviorCode2Str))
         {
-            finalParams.add(behaviorCode2.toString());
+            finalParams.add(behaviorCode2Str);
         }
-        if (serverEventCode != null && !serverEventCode.trim().isEmpty())
+
+        if (LangUtils.isNotBlank(serverEventCode))
         {
             finalParams.add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
         }
