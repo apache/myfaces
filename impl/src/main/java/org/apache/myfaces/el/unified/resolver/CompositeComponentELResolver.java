@@ -37,6 +37,7 @@ import javax.faces.el.CompositeComponentExpressionHolder;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.LangUtils;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentBeanInfo;
 
 /**
@@ -46,7 +47,7 @@ import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentBeanInfo
 public final class CompositeComponentELResolver extends ELResolver
 {
     private static final String ATTRIBUTES_MAP = "attrs";
-    
+ 
     private static final String PARENT_COMPOSITE_COMPONENT = "parent";
     
     private static final String COMPOSITE_COMPONENT_ATTRIBUTES_MAPS = 
@@ -56,25 +57,23 @@ public final class CompositeComponentELResolver extends ELResolver
     public Class<?> getCommonPropertyType(ELContext context, Object base)
     {
         // Per the spec, return String.class.
-
         return String.class;
     }
 
     @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context,
-            Object base)
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
     {
         // Per the spec, do nothing.
-
         return null;
     }
 
     @Override
     public Class<?> getType(ELContext context, Object base, Object property)
     {
-        if (base != null && property != null &&
-             base instanceof CompositeComponentAttributesMapWrapper &&
-             property instanceof String)
+        if (base != null
+                && property != null
+                && base instanceof CompositeComponentAttributesMapWrapper
+                && property instanceof String)
         {
             FacesContext facesContext = facesContext(context);
             if (facesContext == null)
@@ -100,7 +99,7 @@ public final class CompositeComponentELResolver extends ELResolver
                     exprType = ve.getType(context);
                 }
 
-                if (!"".equals(property))
+                if (LangUtils.isNotBlank((String) property))
                 {
                     if (evalMap._propertyDescriptors != null)
                     {
@@ -165,9 +164,10 @@ public final class CompositeComponentELResolver extends ELResolver
         // Per the spec: base must not be null, an instance of UIComponent, and a composite
         // component.  Property must be a String.
 
-        if ((base != null) && (base instanceof UIComponent)
-                && UIComponent.isCompositeComponent((UIComponent) base)
-                && (property != null))
+        if (base != null
+                && base instanceof UIComponent
+                && property != null
+                && UIComponent.isCompositeComponent((UIComponent) base))
         {
             String propName = property.toString();
             UIComponent baseComponent = (UIComponent) base;
@@ -200,8 +200,7 @@ public final class CompositeComponentELResolver extends ELResolver
     private Map<String, Object> _getCompositeComponentAttributesMapWrapper(
             UIComponent baseComponent, ELContext elContext)
     {
-        Map<Object, Object> contextMap = (Map<Object, Object>) facesContext(
-                elContext).getAttributes();
+        Map<Object, Object> contextMap = (Map<Object, Object>) facesContext(elContext).getAttributes();
 
         // We use a WeakHashMap<UIComponent, WeakReference<Map<String, Object>>> to
         // hold attribute map wrappers by two reasons:
@@ -211,8 +210,7 @@ public final class CompositeComponentELResolver extends ELResolver
         //    with WeakReference.
         //
         Map<UIComponent, WeakReference<Map<String, Object>>> compositeComponentAttributesMaps = 
-            (Map<UIComponent, WeakReference<Map<String, Object>>>) contextMap
-                .get(COMPOSITE_COMPONENT_ATTRIBUTES_MAPS);
+            (Map<UIComponent, WeakReference<Map<String, Object>>>) contextMap.get(COMPOSITE_COMPONENT_ATTRIBUTES_MAPS);
 
         Map<String, Object> attributesMap = null;
         WeakReference<Map<String, Object>> weakReference;
@@ -226,22 +224,17 @@ public final class CompositeComponentELResolver extends ELResolver
             if (attributesMap == null)
             {
                 //create a wrapper map
-                attributesMap = new CompositeComponentAttributesMapWrapper(
-                        baseComponent);
-                compositeComponentAttributesMaps.put(baseComponent,
-                        new WeakReference<Map<String, Object>>(attributesMap));
+                attributesMap = new CompositeComponentAttributesMapWrapper(baseComponent);
+                compositeComponentAttributesMaps.put(baseComponent, new WeakReference<>(attributesMap));
             }
         }
         else
         {
             //Create both required maps
-            attributesMap = new CompositeComponentAttributesMapWrapper(
-                    baseComponent);
-            compositeComponentAttributesMaps = new WeakHashMap<UIComponent, WeakReference<Map<String, Object>>>();
-            compositeComponentAttributesMaps.put(baseComponent,
-                    new WeakReference<Map<String, Object>>(attributesMap));
-            contextMap.put(COMPOSITE_COMPONENT_ATTRIBUTES_MAPS,
-                    compositeComponentAttributesMaps);
+            attributesMap = new CompositeComponentAttributesMapWrapper(baseComponent);
+            compositeComponentAttributesMaps = new WeakHashMap<>();
+            compositeComponentAttributesMaps.put(baseComponent, new WeakReference<>(attributesMap));
+            contextMap.put(COMPOSITE_COMPONENT_ATTRIBUTES_MAPS, compositeComponentAttributesMaps);
         }
         return attributesMap;
     }
@@ -288,6 +281,7 @@ public final class CompositeComponentELResolver extends ELResolver
                 (CompositeComponentBeanInfo) this._beanInfo : null;
         }
 
+        @Override
         public ValueExpression getExpression(String name)
         {
             ValueExpression valueExpr = _component.getValueExpression(name);
@@ -295,11 +289,13 @@ public final class CompositeComponentELResolver extends ELResolver
             return valueExpr;
         }
 
+        @Override
         public void clear()
         {
             _originalMap.clear();
         }
 
+        @Override
         public boolean containsKey(Object key)
         {
             boolean value = _originalMap.containsKey(key);
@@ -331,16 +327,19 @@ public final class CompositeComponentELResolver extends ELResolver
             return false;
         }
 
+        @Override
         public boolean containsValue(Object value)
         {
             return _originalMap.containsValue(value);
         }
 
+        @Override
         public Set<java.util.Map.Entry<String, Object>> entrySet()
         {
             return _originalMap.entrySet();
         }
 
+        @Override
         public Object get(Object key)
         {
             Object obj = _originalMap.get(key);
@@ -390,16 +389,19 @@ public final class CompositeComponentELResolver extends ELResolver
             }
         }
         
+        @Override
         public boolean isEmpty()
         {
             return _originalMap.isEmpty();
         }
 
+        @Override
         public Set<String> keySet()
         {
             return _originalMap.keySet();
         }
 
+        @Override
         public Object put(String key, Object value)
         {
             ValueExpression valueExpression = _component.getValueExpression(key);
@@ -418,6 +420,7 @@ public final class CompositeComponentELResolver extends ELResolver
             return _originalMap.put(key, value);
         }
 
+        @Override
         public void putAll(Map<? extends String, ? extends Object> m)
         {
             for (Entry<? extends String, ? extends Object> entry : m.entrySet())
@@ -426,16 +429,19 @@ public final class CompositeComponentELResolver extends ELResolver
             }
         }
 
+        @Override
         public Object remove(Object key)
         {
             return _originalMap.remove(key);
         }
 
+        @Override
         public int size()
         {
             return _originalMap.size();
         }
 
+        @Override
         public Collection<Object> values()
         {
             return _originalMap.values();

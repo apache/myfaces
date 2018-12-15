@@ -748,8 +748,7 @@ public final class RendererUtils
         //To be compatible with jsf ri, and according to issue 69
         //[  Permit the passing of a null value to SelectItem.setValue()  ]
         //If submittedValue == "" then convert to null.
-        if ((submittedValue != null)
-                && ("".equals(submittedValue)))
+        if (submittedValue != null && "".equals(submittedValue))
         {
             //Replace "" by null value
             submittedValue = null;
@@ -801,13 +800,11 @@ public final class RendererUtils
      * @return
      * @throws ConverterException
      */
-    public static Object getConvertedUISelectManyValue(
-            FacesContext facesContext, UISelectMany selectMany,
+    public static Object getConvertedUISelectManyValue(FacesContext facesContext, UISelectMany selectMany,
             Object submittedValue) throws ConverterException
     {
         // do not consider the valueType attribute
-        return getConvertedUISelectManyValue(facesContext, selectMany,
-                submittedValue, false);
+        return getConvertedUISelectManyValue(facesContext, selectMany, submittedValue, false);
     }
 
     /**
@@ -856,8 +853,7 @@ public final class RendererUtils
         return i != null ? i.intValue() : defaultValue;
     }
 
-    public static boolean getBooleanValue(String attribute, Object value,
-            boolean defaultValue)
+    public static boolean getBooleanValue(String attribute, Object value, boolean defaultValue)
     {
         if (value instanceof Boolean)
         {

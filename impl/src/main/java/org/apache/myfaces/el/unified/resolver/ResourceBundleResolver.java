@@ -90,7 +90,6 @@ public final class ResourceBundleResolver extends ELResolver
     public boolean isReadOnly(final ELContext context, final Object base, final Object property)
         throws NullPointerException, PropertyNotFoundException, ELException
     {
-
         if (base != null)
         {
             return false;
@@ -119,7 +118,6 @@ public final class ResourceBundleResolver extends ELResolver
     public Object getValue(final ELContext context, final Object base, final Object property)
         throws NullPointerException, PropertyNotFoundException, ELException
     {
-
         if (base != null)
         {
             return null;
@@ -148,7 +146,6 @@ public final class ResourceBundleResolver extends ELResolver
     public Class<?> getType(final ELContext context, final Object base, final Object property)
         throws NullPointerException, PropertyNotFoundException, ELException
     {
-
         if (base != null)
         {
             return null;
@@ -176,7 +173,6 @@ public final class ResourceBundleResolver extends ELResolver
     @Override
     public Iterator<FeatureDescriptor> getFeatureDescriptors(final ELContext context, final Object base)
     {
-
         if (base != null)
         {
             return null;
@@ -198,7 +194,6 @@ public final class ResourceBundleResolver extends ELResolver
     @Override
     public Class<?> getCommonPropertyType(final ELContext context, final Object base)
     {
-
         if (base != null)
         {
             return null;
@@ -238,8 +233,7 @@ public final class ResourceBundleResolver extends ELResolver
         return runtimeConfig;
     }
 
-    private static FeatureDescriptor makeDescriptor(
-                                                    org.apache.myfaces.config.element.ResourceBundle bundle)
+    private static FeatureDescriptor makeDescriptor(org.apache.myfaces.config.element.ResourceBundle bundle)
     {
         final FeatureDescriptor fd = new FeatureDescriptor();
         fd.setValue(ELResolver.RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);

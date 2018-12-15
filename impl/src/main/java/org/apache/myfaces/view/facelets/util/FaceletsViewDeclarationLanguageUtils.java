@@ -27,6 +27,7 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.LangUtils;
 
 /**
  * Utility methods used in FaceletsViewDeclarationLanguage
@@ -82,12 +83,12 @@ public class FaceletsViewDeclarationLanguageUtils
                 }
                 lastArg = true;
             }
-            String arg = signature.substring(start, p).trim();
-            if (!"".equals(arg))
+            String arg = signature.substring(start, p);
+            if (LangUtils.isNotBlank(arg))
             {
                 try
                 {
-                    params.add(ClassUtils.javaDefaultTypeToClass(arg));
+                    params.add(ClassUtils.javaDefaultTypeToClass(arg.trim()));
                 }
                 catch (ClassNotFoundException e)
                 {

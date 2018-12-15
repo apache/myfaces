@@ -72,6 +72,7 @@ import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.util.HashMapUtils;
 import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.util.FilenameUtils;
+import org.apache.myfaces.util.LangUtils;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
 
@@ -886,10 +887,9 @@ public class NavigationHandlerImpl
         targetFlow = flowHandler.getFlow(facesContext, 
             calledFlowDocumentId, 
             flowCallNode.getCalledFlowId(facesContext));
-        if (targetFlow == null && !"".equals(calledFlowDocumentId))
+        if (targetFlow == null && LangUtils.isNotBlank(calledFlowDocumentId))
         {
-            targetFlow = flowHandler.getFlow(facesContext, "", 
-                flowCallNode.getCalledFlowId(facesContext));
+            targetFlow = flowHandler.getFlow(facesContext, "", flowCallNode.getCalledFlowId(facesContext));
         }
         return targetFlow;
     }
@@ -1155,9 +1155,8 @@ public class NavigationHandlerImpl
             // Append all params from the queryString
             // (excluding faces-redirect, includeViewParams and faces-include-view-params)
             Map<String, List<String>> params = null;
-            if (queryString != null && !"".equals(queryString))
+            if (queryString != null && LangUtils.isNotBlank(queryString))
             {
-                //String[] splitQueryParams = queryString.split("&(amp;)?"); // "&" or "&amp;"
                 String[] splitQueryParams = AMP_PATTERN.split(queryString); // "&" or "&amp;"
                 params = new HashMap<String, List<String>>(splitQueryParams.length, 
                         (splitQueryParams.length* 4 + 3) / 3);
@@ -1280,7 +1279,6 @@ public class NavigationHandlerImpl
                         else
                         {
                             firstCase = caze;
-                            //return caze;
                         }
                     }
                 }
@@ -1290,13 +1288,11 @@ public class NavigationHandlerImpl
                     {
                         // Third case: if only <from-action> specified, match against action.
                         // Caveat: if <if> is available, evaluate.  If not, only match if outcome is not null.
-
                         if (cazeIf != null)
                         {
                             if (ifMatches)
                             {
                                 thirdCaseIf = caze;
-                                //return caze;
                             }
                             
                             continue;
@@ -1306,7 +1302,6 @@ public class NavigationHandlerImpl
                             if (outcome != null)
                             {
                                 thirdCase = caze;
-                                //return caze;
                             }
                             
                             continue;
@@ -1334,7 +1329,6 @@ public class NavigationHandlerImpl
                         if (ifMatches)
                         {
                             secondCaseIf = caze;
-                            //return caze;
                         }
 
                         continue;
@@ -1342,20 +1336,17 @@ public class NavigationHandlerImpl
                     else
                     {
                         secondCase = caze;
-                        //return caze;
                     }
                 }
             }
 
             // Fourth case: anything else matches if outcome is not null or <if> is specified.
-
             if (outcome != null && cazeIf != null)
             {
                 // Again, if <if> present, evaluate.
                 if (ifMatches)
                 {
                     fourthCaseIf = caze;
-                    //return caze;
                 }
 
                 continue;
@@ -1364,7 +1355,6 @@ public class NavigationHandlerImpl
             if ((cazeIf != null) && ifMatches)
             {
                 fourthCase = caze;
-                //return caze;
             }
         }
         
@@ -1497,8 +1487,7 @@ public class NavigationHandlerImpl
             Collection<? extends NavigationRule> rules = runtimeConfig.getNavigationRules();
             int rulesSize = rules.size();
 
-            Map<String, Set<NavigationCase>> cases = new HashMap<String, Set<NavigationCase>>(
-                    HashMapUtils.calcCapacity(rulesSize));
+            Map<String, Set<NavigationCase>> cases = new HashMap<>(HashMapUtils.calcCapacity(rulesSize));
 
             List<_WildcardPattern> wildcardPatterns = new ArrayList<_WildcardPattern>();
 
@@ -1550,6 +1539,7 @@ public class NavigationHandlerImpl
 
     private static final class KeyComparator implements Comparator<_WildcardPattern>
     {
+        @Override
         public int compare(_WildcardPattern s1, _WildcardPattern s2)
         {
             return -s1.getPattern().compareTo(s2.getPattern());
