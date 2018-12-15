@@ -66,8 +66,7 @@ public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
     }
     
     @Override
-    public AnnotationProvider createAnnotationProvider(
-            ExternalContext externalContext)
+    public AnnotationProvider createAnnotationProvider(ExternalContext externalContext)
     {
         AnnotationProvider returnValue = null;
         final ExternalContext extContext = externalContext;

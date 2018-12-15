@@ -796,20 +796,20 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 
     private static String[] split(FacesContext context, String value, char... separators)
     {
-        if (value == null)
+        if (LangUtils.isBlank(value))
         {
             return null;
         }
 
-        List<String> tokens = new ArrayList<String>();
+        List<String> tokens = new ArrayList<String>(5);
         StringBuilder buffer = SharedStringBuilder.get(context, SB_SPLIT);
 
         int parenthesesCounter = 0;
 
-        char[] charArray = value.toCharArray();
-
-        for (char c : charArray)
+        int length = value.length();
+        for (int i = 0; i < length; i++)
         {
+            char c = value.charAt(i);
             if (c == '(')
             {
                 parenthesesCounter++;

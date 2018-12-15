@@ -51,8 +51,7 @@ public class DefaultFacesConfigResourceProviderFactory extends FacesConfigResour
     }    
     
     @Override
-    public FacesConfigResourceProvider createFacesConfigResourceProvider(
-            ExternalContext externalContext)
+    public FacesConfigResourceProvider createFacesConfigResourceProvider(ExternalContext externalContext)
     {
         FacesConfigResourceProvider returnValue = null;
         final ExternalContext extContext = externalContext;

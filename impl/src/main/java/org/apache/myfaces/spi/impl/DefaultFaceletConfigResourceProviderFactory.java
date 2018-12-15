@@ -51,8 +51,7 @@ public class DefaultFaceletConfigResourceProviderFactory extends FaceletConfigRe
     }
     
     @Override
-    public FaceletConfigResourceProvider createFaceletConfigResourceProvider(
-            ExternalContext externalContext)
+    public FaceletConfigResourceProvider createFaceletConfigResourceProvider(ExternalContext externalContext)
     {
         FaceletConfigResourceProvider returnValue = null;
         final ExternalContext extContext = externalContext;

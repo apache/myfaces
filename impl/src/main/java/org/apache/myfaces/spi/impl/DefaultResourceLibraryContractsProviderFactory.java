@@ -51,8 +51,7 @@ public class DefaultResourceLibraryContractsProviderFactory extends ResourceLibr
     }
     
     @Override
-    public ResourceLibraryContractsProvider createResourceLibraryContractsProvider(
-            ExternalContext externalContext)
+    public ResourceLibraryContractsProvider createResourceLibraryContractsProvider(ExternalContext externalContext)
     {
         ResourceLibraryContractsProvider returnValue = null;
         final ExternalContext extContext = externalContext;
