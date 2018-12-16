@@ -136,8 +136,7 @@ public final class RendererUtils
         return null;
     }
 
-    public static String getStringValue(FacesContext facesContext,
-            UIComponent component)
+    public static String getStringValue(FacesContext facesContext, UIComponent component)
     {
         if (!(component instanceof ValueHolder))
         {
@@ -185,8 +184,7 @@ public final class RendererUtils
 
             try
             {
-                converter = facesContext.getApplication().createConverter(
-                        value.getClass());
+                converter = facesContext.getApplication().createConverter(value.getClass());
                 if (log.isLoggable(Level.FINE))
                 {
                     log.fine("the created converter is " + converter);
@@ -198,7 +196,6 @@ public final class RendererUtils
                         + value.getClass().getName()
                         + " found (component id=" + component.getId()
                         + ").", e);
-                // converter stays null
             }
         }
 
@@ -228,8 +225,8 @@ public final class RendererUtils
         return converter.getAsString(facesContext, component, value);
     }
 
-    public static String getStringFromSubmittedValueOrLocalValueReturnNull(
-            FacesContext facesContext, UIComponent component)
+    public static String getStringFromSubmittedValueOrLocalValueReturnNull(FacesContext facesContext,
+            UIComponent component)
     {
         try
         {
@@ -275,7 +272,6 @@ public final class RendererUtils
             Converter converter = ((ValueHolder) component).getConverter();
             if (converter == null && value != null)
             {
-
                 try
                 {
                     converter = facesContext.getApplication().createConverter(
@@ -692,13 +688,10 @@ public final class RendererUtils
         {
             //primitive array
             int len = Array.getLength(values);
-            HashSet set = new HashSet(
-                    org.apache.myfaces.util.HashMapUtils
-                            .calcCapacity(len));
+            HashSet set = new HashSet(HashMapUtils.calcCapacity(len));
             for (int i = 0; i < len; i++)
             {
-                set.add(getConvertedStringValue(context, component, converter,
-                        Array.get(values, i)));
+                set.add(getConvertedStringValue(context, component, converter, Array.get(values, i)));
             }
             return set;
         }
@@ -713,8 +706,7 @@ public final class RendererUtils
             HashSet set = new HashSet(HashMapUtils.calcCapacity(col.size()));
             for (Iterator i = col.iterator(); i.hasNext();)
             {
-                set.add(getConvertedStringValue(context, component, converter,
-                        i.next()));
+                set.add(getConvertedStringValue(context, component, converter, i.next()));
             }
 
             return set;

@@ -30,7 +30,6 @@ import java.util.Set;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIForm;
 import javax.faces.component.UIParameter;
-import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlCommandScript;
@@ -62,7 +61,6 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
     private static final String AJAX_KEY_ONEVENT = "onevent";
     private static final String AJAX_KEY_EXECUTE = "execute";
     private static final String AJAX_KEY_RENDER = "render";
-    private static final String AJAX_KEY_DELAY = "delay";
     private static final String AJAX_KEY_RESETVALUES = "resetValues";
 
     private static final String AJAX_VAL_THIS = "this";
@@ -105,15 +103,6 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         script.append("var "+name+" = function(o){var o=(typeof o==='object')&&o?o:{};");
         script.prettyLine();
         
-        // TODO ajaxBehavior not required actually....
-        AjaxBehavior ajaxBehavior = new AjaxBehavior();
-        Boolean resetValues = commandScript.getResetValues();
-        if (resetValues != null)
-        {
-            ajaxBehavior.setResetValues(resetValues);
-        }
-        ajaxBehavior.setOnerror(commandScript.getOnerror());
-        ajaxBehavior.setOnevent(commandScript.getOnevent());
         
         Collection<ClientBehaviorContext.Parameter> eventParameters = null;    
         //eventParameters.add(new ClientBehaviorContext.Parameter("params", "o"));
@@ -121,7 +110,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                                     context, component, "action",
                                     commandScript.getClientId(context), eventParameters);
         
-        script.append(makeAjax(context, ccc, ajaxBehavior, commandScript).toString());
+        script.append(makeAjax(context, ccc, commandScript).toString());
         script.decreaseIndent();
         script.append("}");
         
@@ -208,7 +197,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
      * @param commandScript the component
      * @return a fully working javascript with calls into jsf.js
      */
-    private StringBuilder makeAjax(FacesContext facesContext, ClientBehaviorContext context, AjaxBehavior behavior,
+    private StringBuilder makeAjax(FacesContext facesContext, ClientBehaviorContext context,
             HtmlCommandScript commandScript)
     {
         StringBuilder retVal = SharedStringBuilder.get(context.getFacesContext(), AJAX_SB, 60);
@@ -222,7 +211,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         String render = resolveExpressionsAsParameter(paramBuffer, AJAX_KEY_RENDER, commandScript.getRender(),
                 searchExpressionContext);
 
-        String onError = behavior.getOnerror();
+        String onError = commandScript.getOnerror();
         if (LangUtils.isNotBlank(onError))
         {
             paramBuffer.setLength(0);
@@ -236,7 +225,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
             onError = null;
         }
 
-        String onEvent = behavior.getOnevent();
+        String onEvent = commandScript.getOnevent();
         if (LangUtils.isNotBlank(onEvent))
         {
             paramBuffer.setLength(0);
@@ -250,41 +239,14 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
             onEvent = null;
         }
 
-        String delay = behavior.getDelay();
-        if (LangUtils.isNotBlank(delay))
-        {
-            paramBuffer.setLength(0);
-            paramBuffer.append(AJAX_KEY_DELAY);
-            paramBuffer.append(':');
-            if ("none".equals(delay))
-            {
-                paramBuffer.append('\'');
-                paramBuffer.append(delay);
-                paramBuffer.append('\'');
-            }
-            else
-            {
-                paramBuffer.append(delay);
-            }
-            delay = paramBuffer.toString();
-        }
-        else
-        {
-            delay = null;
-        }
-
-        String resetValues = Boolean.toString(behavior.isResetValues());
-        if (resetValues.equals("true"))
+        String resetValues = null;
+        if (Boolean.TRUE.equals(commandScript.getResetValues()))
         {
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_RESETVALUES);
             paramBuffer.append(':');
-            paramBuffer.append(resetValues);
+            paramBuffer.append("true");
             resetValues = paramBuffer.toString();
-        }
-        else
-        {
-            resetValues = null;
         }
 
         String sourceId = null;
@@ -351,10 +313,6 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         if (onEvent != null)
         {
             parameterList.add(onEvent);
-        }
-        if (delay != null)
-        {
-            parameterList.add(delay);
         }
         if (resetValues != null)
         {
