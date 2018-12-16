@@ -27,8 +27,7 @@ import org.xml.sax.SAXParseException;
 /**
  * Convenient error handler for xml sax parsing.
  */
-public class WebXmlParserErrorHandler
-        implements ErrorHandler
+public class WebXmlParserErrorHandler implements ErrorHandler
 {
     private Logger _log;
 
