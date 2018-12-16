@@ -22,19 +22,17 @@ package org.apache.myfaces.push.cdi;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- *
- */
 public class WebsocketChannelMetadata implements Serializable
 {
     private String channel;
-    
     private String scope;
-    
     private Serializable user;
-    
     private boolean connected;
 
+    public WebsocketChannelMetadata()
+    {
+    }
+    
     public WebsocketChannelMetadata(String channel, String scope, Serializable user, boolean connected)
     {
         this.channel = channel;
@@ -43,69 +41,41 @@ public class WebsocketChannelMetadata implements Serializable
         this.connected = connected;
     }
 
-    public WebsocketChannelMetadata()
-    {
-    }
-
-    /**
-     * @return the channel
-     */
     public String getChannel()
     {
         return channel;
     }
 
-    /**
-     * @param channel the channel to set
-     */
     public void setChannel(String channel)
     {
         this.channel = channel;
     }
 
-    /**
-     * @return the scope
-     */
     public String getScope()
     {
         return scope;
     }
 
-    /**
-     * @param scope the scope to set
-     */
     public void setScope(String scope)
     {
         this.scope = scope;
     }
 
-    /**
-     * @return the user
-     */
     public Serializable getUser()
     {
         return user;
     }
 
-    /**
-     * @param user the user to set
-     */
     public void setUser(Serializable user)
     {
         this.user = user;
     }
 
-    /**
-     * @return the connected
-     */
     public boolean isConnected()
     {
         return connected;
     }
 
-    /**
-     * @param connected the connected to set
-     */
     public void setConnected(boolean connected)
     {
         this.connected = connected;
