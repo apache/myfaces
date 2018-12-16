@@ -53,23 +53,26 @@ public class MyFacesServlet implements Servlet, DelegatedFacesServlet
         _facesInitializer = facesInitializer;
     }
 
+    @Override
     public void destroy()
     {
         delegate.destroy();
     }
 
+    @Override
     public ServletConfig getServletConfig()
     {
         return delegate.getServletConfig();
     }
 
+    @Override
     public String getServletInfo()
     {
         return delegate.getServletInfo();
     }
 
-    public void init(ServletConfig servletConfig)
-        throws ServletException
+    @Override
+    public void init(ServletConfig servletConfig) throws ServletException
     {
         ServletContext servletContext = servletConfig.getServletContext();
         
@@ -100,8 +103,8 @@ public class MyFacesServlet implements Servlet, DelegatedFacesServlet
                  + "' initialized.");
     }
     
-    public void service(ServletRequest request, ServletResponse response)
-            throws IOException, ServletException
+    @Override
+    public void service(ServletRequest request, ServletResponse response) throws IOException, ServletException
     {
         if (log.isLoggable(Level.FINEST))
         {
