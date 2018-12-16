@@ -64,7 +64,7 @@ public class FacesServletMappingUtils
         return servletRegistration;
     }
     
-    public static String[] getFacesServletMappings(FacesContext facesContext,ServletContext servletContext)
+    public static String[] getFacesServletMappings(FacesContext facesContext, ServletContext servletContext)
     {
         Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
         

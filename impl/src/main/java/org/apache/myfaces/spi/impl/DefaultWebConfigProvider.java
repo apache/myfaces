@@ -18,11 +18,7 @@
  */
 package org.apache.myfaces.spi.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.faces.context.ExternalContext;
-import org.apache.myfaces.webapp.webxml.ServletMapping;
 import org.apache.myfaces.webapp.webxml.WebXml;
 
 import org.apache.myfaces.spi.WebConfigProvider;
@@ -36,20 +32,6 @@ import org.apache.myfaces.spi.WebConfigProvider;
  */
 public class DefaultWebConfigProvider extends WebConfigProvider
 {
-
-    @Override
-    public List<ServletMapping> getFacesServletMappings(
-            ExternalContext externalContext)
-    {
-        WebXml webXml = WebXml.getWebXml(externalContext);
-       
-        List mapping = webXml.getFacesServletMappings();
-     
-        // In MyFaces 2.0, getFacesServletMappins is used only at startup
-        // time, so we don't need to cache this result.
-        return new ArrayList<ServletMapping>(mapping);
-    }
-
     @Override
     public boolean isErrorPagePresent(ExternalContext externalContext)
     {

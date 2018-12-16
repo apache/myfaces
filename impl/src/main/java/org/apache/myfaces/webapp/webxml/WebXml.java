@@ -45,7 +45,6 @@ public class WebXml
     private Map _filterMappings = new HashMap();
 
     private volatile List _facesServletMappings = null;
-    private volatile List _facesExtensionsFilterMappings = null;
     
     private String _delegateFacesServlet = null;
     private boolean errorPagePresent = false;
@@ -162,54 +161,6 @@ public class WebXml
         _facesServletMappings = tempFacesServletMappings;
         
         return _facesServletMappings;
-    }
-
-    /**
-     * returns a list of {@link org.apache.myfaces.webapp.webxml.FilterMapping}s representing a
-     * extensions filter entry
-     */
-    public List getFacesExtensionsFilterMappings()
-    {
-        if (_facesExtensionsFilterMappings != null)
-        {
-            return _facesExtensionsFilterMappings;
-        }
-
-        List tempExtensionsFilterMappings = new ArrayList();
-        for (Iterator it = _filters.entrySet().iterator(); it.hasNext(); )
-        {
-            Map.Entry entry = (Map.Entry)it.next();
-            String filterName = (String)entry.getKey();
-            String filterClassName = (String)entry.getValue();
-            
-            if (!"org.apache.myfaces.component.html.util.ExtensionsFilter".equals(filterClassName) &&
-                !"org.apache.myfaces.webapp.filter.ExtensionsFilter".equals(filterClassName))
-            {
-                // not an extensions filter
-                continue;
-            }
-            
-            Class filterClass = org.apache.myfaces.util.ClassUtils.simpleClassForName(filterClassName);
-            List urlPatterns = (List)_filterMappings.get(filterName);
-            if( urlPatterns != null )
-            {
-                for (Iterator it2 = urlPatterns.iterator(); it2.hasNext(); )
-                {
-                    String urlpattern = (String)it2.next();
-                    tempExtensionsFilterMappings.add(new org.apache.myfaces.webapp.webxml.FilterMapping(
-                        filterName, filterClass, urlpattern));
-                    if (log.isLoggable(Level.FINEST))
-                    {
-                        log.finest("adding mapping for filter + " + filterName + " urlpattern = " + urlpattern);
-                    }
-                }
-            }
-        }
-        
-        //Expose to all threads
-        _facesExtensionsFilterMappings = tempExtensionsFilterMappings;
-        
-        return _facesExtensionsFilterMappings;
     }
 
     protected void setParsingTime(long parsingTime)

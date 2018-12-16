@@ -34,8 +34,6 @@ import org.apache.myfaces.spi.InjectionProviderException;
 import org.apache.myfaces.spi.InjectionProviderFactory;
 import org.apache.myfaces.spi.ViewScopeProvider;
 import org.apache.myfaces.spi.ViewScopeProviderFactory;
-import org.apache.myfaces.spi.WebConfigProvider;
-import org.apache.myfaces.spi.WebConfigProviderFactory;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 
@@ -149,10 +147,9 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             if (!WebConfigParamUtils.getBooleanInitParameter(externalContext,
                     MyfacesConfig.INITIALIZE_ALWAYS_STANDALONE, false))
             {
-                WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebConfigProviderFactory(
-                        facesContext.getExternalContext()).getWebConfigProvider(facesContext.getExternalContext());
 
-                if (webConfigProvider.getFacesServletMappings(facesContext.getExternalContext()).isEmpty())
+                String[] mappings = FacesServletMappingUtils.getFacesServletMappings(facesContext, servletContext);
+                if (mappings == null || mappings.length == 0)
                 {
                     // check to see if the FacesServlet was found by MyFacesContainerInitializer
                     Boolean mappingAdded = (Boolean) servletContext.getAttribute(
@@ -327,11 +324,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         if (!WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
                                                          MyfacesConfig.INITIALIZE_ALWAYS_STANDALONE, false))
         {
-            //We need to check if the current application was initialized by myfaces
-            WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebConfigProviderFactory(
-                    facesContext.getExternalContext()).getWebConfigProvider(facesContext.getExternalContext());
-
-            if (webConfigProvider.getFacesServletMappings(facesContext.getExternalContext()).isEmpty())
+            String[] mappings = FacesServletMappingUtils.getFacesServletMappings(facesContext, servletContext);
+            if (mappings == null || mappings.length == 0)
             {
                 // check to see if the FacesServlet was found by MyFacesContainerInitializer
                 Boolean mappingAdded = (Boolean) servletContext.getAttribute(

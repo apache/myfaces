@@ -74,6 +74,7 @@ public class Jsp21FacesInitializerTest extends AbstractJsfTestCase
         expect(context.getInitParameter(eq(FacesServlet.CONFIG_FILES_ATTR))).andReturn(null);
         expect(context.getResourceAsStream(eq("/WEB-INF/faces-config.xml"))).andReturn(null);
         expect(context.getInitParameter(eq(FacesServlet.LIFECYCLE_ID_ATTR))).andReturn(null);
+        expect(context.getServletRegistrations()).andReturn(null);
 
         // TODO: add myfaces specific tests
         expect(context.getResource(isA(String.class))).andReturn(null);
