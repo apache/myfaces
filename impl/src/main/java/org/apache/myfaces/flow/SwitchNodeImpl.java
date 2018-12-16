@@ -77,6 +77,7 @@ public class SwitchNodeImpl extends SwitchNode implements Freezable
         return _id;
     }
 
+    @Override
     public void freeze()
     {
         _initialized = true;

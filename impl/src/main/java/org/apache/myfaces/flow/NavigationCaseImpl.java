@@ -31,7 +31,6 @@ import javax.faces.context.FacesContext;
  */
 public class NavigationCaseImpl extends NavigationCase implements Freezable
 {
-
     private String _condition;
     private String _fromAction;
     private String _fromOutcome;
@@ -86,193 +85,135 @@ public class NavigationCaseImpl extends NavigationCase implements Freezable
 
     }
 
-    /**
-     * @return the _condition
-     */
     public String getCondition()
     {
         return _condition;
     }
 
-    /**
-     * @param condition the _condition to set
-     */
     public void setCondition(String condition)
     {
         checkInitialized();
         this._condition = condition;
     }
 
-    /**
-     * @return the _fromAction
-     */
+    @Override
     public String getFromAction()
     {
         return _fromAction;
     }
 
-    /**
-     * @param fromAction the _fromAction to set
-     */
     public void setFromAction(String fromAction)
     {
         checkInitialized();
         this._fromAction = fromAction;
     }
 
-    /**
-     * @return the _fromOutcome
-     */
+    @Override
     public String getFromOutcome()
     {
         return _fromOutcome;
     }
 
-    /**
-     * @param fromOutcome the _fromOutcome to set
-     */
     public void setFromOutcome(String fromOutcome)
     {
         checkInitialized();
         this._fromOutcome = fromOutcome;
     }
 
-    /**
-     * @return the _fromViewId
-     */
+    @Override
     public String getFromViewId()
     {
         return _fromViewId;
     }
 
-    /**
-     * @param fromViewId the _fromViewId to set
-     */
     public void setFromViewId(String fromViewId)
     {
         checkInitialized();
         this._fromViewId = fromViewId;
     }
 
-    /**
-     * @return the _toViewId
-     */
     public String getToViewId()
     {
         return _toViewId;
     }
 
-    /**
-     * @param toViewId the _toViewId to set
-     */
     public void setToViewId(String toViewId)
     {
         checkInitialized();
         this._toViewId = toViewId;
     }
 
-    /**
-     * @return the _toFlowDocumentId
-     */
+    @Override
     public String getToFlowDocumentId()
     {
         return _toFlowDocumentId;
     }
 
-    /**
-     * @param toFlowDocumentId the _toFlowDocumentId to set
-     */
     public void setToFlowDocumentId(String toFlowDocumentId)
     {
         checkInitialized();
         this._toFlowDocumentId = toFlowDocumentId;
     }
 
-    /**
-     * @return the _includeViewParams
-     */
+    @Override
     public boolean isIncludeViewParams()
     {
         return _includeViewParams;
     }
 
-    /**
-     * @param includeViewParams the _includeViewParams to set
-     */
     public void setIncludeViewParams(boolean includeViewParams)
     {
         checkInitialized();
         this._includeViewParams = includeViewParams;
     }
 
-    /**
-     * @return the _redirect
-     */
+    @Override
     public boolean isRedirect()
     {
         return _redirect;
     }
 
-    /**
-     * @param redirect the _redirect to set
-     */
     public void setRedirect(boolean redirect)
     {
         checkInitialized();
         this._redirect = redirect;
     }
-
-    /**
-     * @return the _parameters
-     */
+    
+    @Override
     public Map<String, List<String>> getParameters()
     {
         return _parameters;
     }
 
-    /**
-     * @param parameters the _parameters to set
-     */
     public void setParameters(Map<String, List<String>> parameters)
     {
         checkInitialized();
         this._parameters = parameters;
     }
 
-    /**
-     * @return the _conditionExpression
-     */
     public ValueExpression getConditionExpression()
     {
         return _conditionExpression;
     }
 
-    /**
-     * @param conditionExpression the _conditionExpression to set
-     */
     public void setConditionExpression(ValueExpression conditionExpression)
     {
         checkInitialized();
         this._conditionExpression = conditionExpression;
     }
 
-    /**
-     * @return the _toViewIdExpression
-     */
     public ValueExpression getToViewIdExpression()
     {
         return _toViewIdExpression;
     }
 
-    /**
-     * @param toViewIdExpression the _toViewIdExpression to set
-     */
     public void setToViewIdExpression(ValueExpression toViewIdExpression)
     {
         checkInitialized();
         this._toViewIdExpression = toViewIdExpression;
     }
 
+    @Override
     public Boolean getCondition(FacesContext context)
     {
         if (_condition == null)
@@ -298,6 +239,7 @@ public class NavigationCaseImpl extends NavigationCase implements Freezable
         return _conditionExpression;
     }
 
+    @Override
     public String getToViewId(FacesContext context)
     {
         if (_toViewId == null)
@@ -324,6 +266,7 @@ public class NavigationCaseImpl extends NavigationCase implements Freezable
         return _toViewIdExpression;
     }
 
+    @Override
     public boolean hasCondition()
     {
         return _condition != null && _condition.length() > 0;
@@ -411,6 +354,7 @@ public class NavigationCaseImpl extends NavigationCase implements Freezable
         return true;
     }
 
+    @Override
     public void freeze()
     {
         _initialized = true;

@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
@@ -46,8 +45,7 @@ public class FlowScopeCDIExtension implements Extension
         flowBeanReferences = new ConcurrentHashMap<Class, FlowReference>();
     }
     
-    void beforeBeanDiscovery(
-        @Observes final BeforeBeanDiscovery event, BeanManager beanManager)
+    void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager)
     {
         event.addScope(FlowScoped.class, true, true);
         // Register FlowBuilderFactoryBean as a bean with CDI annotations, so the system
@@ -78,12 +76,5 @@ public class FlowScopeCDIExtension implements Extension
         flowScopedContext = new FlowScopedContextImpl(manager, flowBeanReferences);
         event.addContext(flowScopedContext);
     }
-    
-    void initializeFlowContexts(@Observes AfterDeploymentValidation adv, BeanManager beanManager)
-    {
-        //FlowScopeBeanHolder flowScopeBeanHolder = BeanProvider.getContextualReference(
-        //    beanManager, FlowScopeBeanHolder.class, false);
-        
-        //flowScopedContext.initFlowContext(flowScopeBeanHolder);
-    }
+
 }

@@ -56,6 +56,7 @@ public class ReturnNodeImpl extends ReturnNode implements Freezable
         return _id;
     }
     
+    @Override
     public void freeze()
     {
         _initialized = true;

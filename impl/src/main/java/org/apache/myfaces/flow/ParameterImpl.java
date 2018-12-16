@@ -51,6 +51,7 @@ public class ParameterImpl extends Parameter implements Freezable
         return _value;
     }
     
+    @Override
     public void freeze()
     {
         _initialized = true;

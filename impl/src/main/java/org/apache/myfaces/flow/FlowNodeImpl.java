@@ -48,6 +48,7 @@ public class FlowNodeImpl extends FlowNode implements Freezable
         this._id = id;
     }
 
+    @Override
     public void freeze()
     {
         _initialized = true;

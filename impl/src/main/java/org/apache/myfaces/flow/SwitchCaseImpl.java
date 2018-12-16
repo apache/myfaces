@@ -57,6 +57,7 @@ public class SwitchCaseImpl extends SwitchCase implements Freezable
         return _condition;
     }
     
+    @Override
     public void freeze()
     {
         _initialized = true;

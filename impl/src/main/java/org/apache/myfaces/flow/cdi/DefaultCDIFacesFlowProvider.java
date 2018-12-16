@@ -138,7 +138,7 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
                 mapKey);
             if (map == null)
             {
-                map = new FlowScopeMap(getBeanManager(), FlowUtils.getFlowMapKey(facesContext, flow));
+                map = new FlowScopeMap(getBeanManager(facesContext), FlowUtils.getFlowMapKey(facesContext, flow));
                 
                 facesContext.getAttributes().put(mapKey, map);
             }
@@ -167,23 +167,11 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
         }
     }
     
-    public BeanManager getBeanManager()
-    {
-        if (_beanManager == null && !_initialized)
-        {
-            _beanManager = CDIUtils.getBeanManager(
-                FacesContext.getCurrentInstance().getExternalContext());
-            _initialized = true;
-        }
-        return _beanManager;
-    }
-    
     public BeanManager getBeanManager(FacesContext facesContext)
     {
         if (_beanManager == null && !_initialized)
         {
-            _beanManager = CDIUtils.getBeanManager(
-                facesContext.getExternalContext());
+            _beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
             _initialized = true;
         }
         return _beanManager;

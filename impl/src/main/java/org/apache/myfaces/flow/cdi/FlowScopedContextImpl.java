@@ -355,22 +355,6 @@ public class FlowScopedContextImpl implements Context
     }
 
     /**
-     * destroys all the Contextual Instances in the Storage returned by
-     * {@link #getContextualStorage(boolean)}.
-     */
-    /*
-    public void destroyAllActive()
-    {
-        ContextualStorage storage = getContextualStorage(false);
-        if (storage == null)
-        {
-            return;
-        }
-
-        destroyAllActive(storage);
-    }*/
-
-    /**
      * Destroys all the Contextual Instances in the specified ContextualStorage.
      * This is a static method to allow various holder objects to cleanup
      * properly in &#064;PreDestroy.

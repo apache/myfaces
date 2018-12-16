@@ -94,8 +94,7 @@ public class FlowScopeBeanHolder implements Serializable
         
         FacesContext facesContext = FacesContext.getCurrentInstance();
         this.refreshClientWindow(facesContext);
-        facesContext.getExternalContext().getSessionMap().put(FLOW_SCOPE_PREFIX_KEY,
-            1);
+        facesContext.getExternalContext().getSessionMap().put(FLOW_SCOPE_PREFIX_KEY, 1);
     }
     
     /**
@@ -133,8 +132,7 @@ public class FlowScopeBeanHolder implements Serializable
         return storageMap;
     }
     
-    public Map<Object, Object> getFlowScopeMap(
-        BeanManager beanManager, String flowClientWindowId, boolean create)
+    public Map<Object, Object> getFlowScopeMap(BeanManager beanManager, String flowClientWindowId, boolean create)
     {
         Map<Object, Object> map = null;
         if (create)

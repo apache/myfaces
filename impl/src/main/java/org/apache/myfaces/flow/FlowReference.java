@@ -28,9 +28,7 @@ import java.io.Serializable;
  */
 public class FlowReference implements Serializable
 {
-    
     private String _documentId;
-
     private String _id;
 
     public FlowReference(String documentId, String id)
@@ -39,33 +37,21 @@ public class FlowReference implements Serializable
         this._id = id;
     }
 
-    /**
-     * @return the documentId
-     */
     public String getDocumentId()
     {
         return _documentId;
     }
 
-    /**
-     * @param documentId the documentId to set
-     */
     public void setDocumentId(String documentId)
     {
         this._documentId = documentId;
     }
 
-    /**
-     * @return the id
-     */
     public String getId()
     {
         return _id;
     }
 
-    /**
-     * @param id the id to set
-     */
     public void setId(String id)
     {
         this._id = id;

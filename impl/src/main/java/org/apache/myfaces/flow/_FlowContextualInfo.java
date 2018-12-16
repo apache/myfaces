@@ -77,51 +77,32 @@ class _FlowContextualInfo implements Serializable
         }
         return true;
     }
-    
 
-    /**
-     * @return the flowReference
-     */
     public FlowReference getFlowReference()
     {
         return flowReference;
     }
 
-    /**
-     * @param flowReference the flowReference to set
-     */
     public void setFlowReference(FlowReference flowReference)
     {
         this.flowReference = flowReference;
     }
 
-    /**
-     * @return the lastDisplayedViewId
-     */
     public String getLastDisplayedViewId()
     {
         return lastDisplayedViewId;
     }
 
-    /**
-     * @param lastDisplayedViewId the lastDisplayedViewId to set
-     */
     public void setLastDisplayedViewId(String lastDisplayedViewId)
     {
         this.lastDisplayedViewId = lastDisplayedViewId;
     }
 
-    /**
-     * @return the sourceFlowReference
-     */
     public FlowReference getSourceFlowReference()
     {
         return sourceFlowReference;
     }
 
-    /**
-     * @param sourceFlowReference the sourceFlowReference to set
-     */
     public void setSourceFlowReference(FlowReference sourceFlowReference)
     {
         this.sourceFlowReference = sourceFlowReference;

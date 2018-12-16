@@ -23,9 +23,6 @@ import java.io.Serializable;
 import java.util.Map;
 import org.apache.myfaces.util.LRULinkedHashMap;
 
-/**
- *
- */
 class ClientWindowFacesFlowLRUMap extends LRULinkedHashMap<String, String> implements Serializable
 {
     private static final long serialVersionUID = 1L;

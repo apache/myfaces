@@ -22,9 +22,6 @@ import java.util.List;
 import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
 
-/**
- *
- */
 public class FlowUtils
 {
     public static String getFlowMapKey(FacesContext facesContext, FlowReference flowReference)
@@ -32,8 +29,7 @@ public class FlowUtils
         Flow flow = null;
         if (flowReference.getDocumentId() == null)
         {
-            flow = facesContext.getApplication().getFlowHandler().getFlow(
-                facesContext, "", flowReference.getId());
+            flow = facesContext.getApplication().getFlowHandler().getFlow(facesContext, "", flowReference.getId());
         }
         else
         {
@@ -49,8 +45,7 @@ public class FlowUtils
     
     public static String getFlowMapKey(FacesContext facesContext, Flow flow)
     {
-        String flowMapKey = flow.getClientWindowFlowId(
-            facesContext.getExternalContext().getClientWindow());
+        String flowMapKey = flow.getClientWindowFlowId(facesContext.getExternalContext().getClientWindow());
         int flowIndex = getFlowIndex(facesContext, flow);
         if (flowIndex > 0)
         {
@@ -61,8 +56,7 @@ public class FlowUtils
     
     private static int getFlowIndex(FacesContext facesContext, Flow flow)
     {
-        List<Flow> list = FlowHandlerImpl.getActiveFlows(facesContext, 
-                facesContext.getApplication().getFlowHandler());
+        List<Flow> list = FlowHandlerImpl.getActiveFlows(facesContext, facesContext.getApplication().getFlowHandler());
         FlowReference flowRef = new FlowReference(flow.getDefiningDocumentId(), flow.getId());
         int flowIndex = 0;
         for (Flow f : list)

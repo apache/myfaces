@@ -50,8 +50,7 @@ public class FlowBuilderCDIExtension implements Extension
         return flowProducers;
     }
 
-    void beforeBeanDiscovery(
-        @Observes final BeforeBeanDiscovery event, BeanManager beanManager)
+    void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager)
     {
         // Register FlowBuilderFactoryBean as a bean with CDI annotations, so the system
         // can take it into account, and use it later when necessary.
