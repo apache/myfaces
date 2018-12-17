@@ -234,7 +234,7 @@ public final class ErrorPageWriter
 
     /**
      * Indicate if myfaces is responsible to handle errors. 
-     * See http://wiki.apache.org/myfaces/Handling_Server_Errors for details.
+     * See https://cwiki.apache.org/confluence/display/MYFACES/Handling+Server+Errors for details.
      */
     @JSFWebConfigParam(defaultValue="false, on Development Project stage: true",
                        expectedValues="true,false", since="1.2.4")

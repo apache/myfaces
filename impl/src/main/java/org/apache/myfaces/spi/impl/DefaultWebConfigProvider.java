@@ -18,24 +18,37 @@
  */
 package org.apache.myfaces.spi.impl;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.faces.context.ExternalContext;
-import org.apache.myfaces.webapp.webxml.WebXml;
+import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.spi.WebConfigProvider;
+import org.apache.myfaces.util.WebXmlParser;
 
 /**
  * The default WebXmlProvider implementation.
- *
- * This impl uses the WebXmlParser to create a new instance of WebXmlImpl.
  *
  * @author Jakob Korherr
  */
 public class DefaultWebConfigProvider extends WebConfigProvider
 {
+    private Map<String, String> errorPages = new HashMap<>();
+    
+    public DefaultWebConfigProvider()
+    {
+        errorPages = WebXmlParser.getErrorPages(FacesContext.getCurrentInstance().getExternalContext());
+    }
+  
     @Override
     public boolean isErrorPagePresent(ExternalContext externalContext)
     {
-        return WebXml.getWebXml(externalContext).isErrorPagePresent();
+        if (errorPages == null)
+        {
+            return false;
+        }
+        
+        return !errorPages.isEmpty();
     }
 
 }

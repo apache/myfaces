@@ -54,6 +54,7 @@ public abstract class StateCacheProviderFactory implements FacesWrapper<StateCac
                 lpf = (StateCacheProviderFactory)
                         AccessController.doPrivileged(new PrivilegedExceptionAction<Object>()
                         {
+                            @Override
                             public Object run() throws PrivilegedActionException
                             {
                                 return SpiUtils.build(ectx,

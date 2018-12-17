@@ -60,6 +60,7 @@ public abstract class InjectionProviderFactory
                 lpf = (InjectionProviderFactory)
                         AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Object>()
                         {
+                            @Override
                             public Object run() throws PrivilegedActionException
                             {
                                 return SpiUtils.build(ectx,

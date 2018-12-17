@@ -61,6 +61,7 @@ public abstract class FacesFlowProviderFactory
                 factory = (FacesFlowProviderFactory) AccessController.doPrivileged(
                         new java.security.PrivilegedExceptionAction<Object>()
                         {
+                            @Override
                             public Object run() throws PrivilegedActionException
                             {
                                 return SpiUtils.build(ectx,

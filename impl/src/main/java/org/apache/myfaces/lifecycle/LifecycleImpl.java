@@ -38,7 +38,6 @@ import javax.faces.lifecycle.Lifecycle;
 
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.webapp.webxml.WebXml;
 import org.apache.myfaces.util.DebugUtils;
 
 /**
@@ -109,7 +108,6 @@ public class LifecycleImpl extends Lifecycle
     {
         if(!facesContext.isProjectStage(ProjectStage.Production))
         {
-            WebXml.update(facesContext.getExternalContext());
             new FacesConfigurator(facesContext.getExternalContext()).update();
         }
 

@@ -61,9 +61,9 @@ public abstract class FacesConfigurationProviderFactory
                 factory = (FacesConfigurationProviderFactory) AccessController.doPrivileged(
                         new java.security.PrivilegedExceptionAction<Object>()
                         {
+                            @Override
                             public Object run() throws PrivilegedActionException
                             {
-                                //return DiscoverSingleton.find(
                                 return SpiUtils.build(ectx,
                                         FacesConfigurationProviderFactory.class,
                                         FACTORY_DEFAULT);

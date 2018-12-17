@@ -61,9 +61,9 @@ public abstract class WebConfigProviderFactory
                 factory = (WebConfigProviderFactory) AccessController.doPrivileged(
                         new java.security.PrivilegedExceptionAction<Object>()
                         {
+                            @Override
                             public Object run() throws PrivilegedActionException
                             {
-                                //return DiscoverSingleton.find(
                                 return SpiUtils.build(ectx,
                                         WebConfigProviderFactory.class,
                                         FACTORY_DEFAULT);

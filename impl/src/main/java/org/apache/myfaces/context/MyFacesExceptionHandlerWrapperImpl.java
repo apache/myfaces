@@ -74,14 +74,7 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
     {
         if (!_inited)
         {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebConfigProviderFactory(
-                    facesContext.getExternalContext()).getWebConfigProvider(facesContext.getExternalContext());
-    
-            _isErrorPagePresent = webConfigProvider.isErrorPagePresent(facesContext.getExternalContext());
-            _useMyFacesErrorHandling = WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
-                    ErrorPageWriter.ERROR_HANDLING_PARAMETER, facesContext.isProjectStage(ProjectStage.Development));
-            _inited = true;
+            init(FacesContext.getCurrentInstance());
         }
     }
     
@@ -121,7 +114,7 @@ public class MyFacesExceptionHandlerWrapperImpl extends ExceptionHandlerWrapper
                     }
                 }
             }
-            init(FacesContext.getCurrentInstance());
+            init(exceptionQueuedEvent.getFacesContext());
         }
     }
     

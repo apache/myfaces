@@ -55,6 +55,7 @@ public abstract class ViewScopeProviderFactory implements FacesWrapper<ViewScope
                 lpf = (ViewScopeProviderFactory)
                         AccessController.doPrivileged(new PrivilegedExceptionAction<Object>()
                         {
+                            @Override
                             public Object run() throws PrivilegedActionException
                             {
                                 return SpiUtils.build(ectx,
