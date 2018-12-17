@@ -22,15 +22,14 @@ package org.apache.myfaces.application;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.util.ExternalContextUtils;
-import org.apache.myfaces.webapp.webxml.DelegatedFacesServlet;
-import org.apache.myfaces.webapp.webxml.WebXml;
+import org.apache.myfaces.webapp.DelegatedFacesServlet;
 
 public class FacesServletMappingUtils
 {
@@ -94,11 +93,11 @@ public class FacesServletMappingUtils
         Class servletClass = ClassUtils.simpleClassForName(servletClassName, false);
         if (servletClass != null)
         {
-            ExternalContext externalContext = facesContext.getExternalContext();
+            MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext);
             
             return FacesServlet.class.isAssignableFrom(servletClass)
                     || DelegatedFacesServlet.class.isAssignableFrom(servletClass)
-                    || servletClass.getName().equals(WebXml.getWebXml(externalContext).getDelegateFacesServlet());
+                    || servletClass.getName().equals(config.getDelegateFacesServlet());
         }
         return false;
     }

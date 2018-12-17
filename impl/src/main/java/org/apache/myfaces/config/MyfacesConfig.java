@@ -852,7 +852,8 @@ public class MyfacesConfig
         cfg.configRefreshPeriod = getLong(extCtx, CONFIG_REFRESH_PERIOD,
                 CONFIG_REFRESH_PERIOD_DEFAULT);
 
-        cfg.delegateFacesServlet = extCtx.getInitParameter(DELEGATE_FACES_SERVLET);
+        cfg.delegateFacesServlet = getString(extCtx, DELEGATE_FACES_SERVLET,
+                null);
         
         String refreshTransientBuildOnPSS = getString(extCtx, REFRESH_TRANSIENT_BUILD_ON_PSS, 
                 REFRESH_TRANSIENT_BUILD_ON_PSS_DEFAULT);

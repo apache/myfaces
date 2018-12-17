@@ -54,7 +54,6 @@ import javax.servlet.annotation.HandlesTypes;
 import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
-import org.apache.myfaces.webapp.webxml.DelegatedFacesServlet;
 import org.apache.myfaces.spi.FacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
 

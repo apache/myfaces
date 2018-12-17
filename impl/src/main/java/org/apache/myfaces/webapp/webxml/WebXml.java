@@ -31,24 +31,13 @@ public class WebXml
     private static long refreshPeriod;
     private long parsingTime;
 
-    private String _delegateFacesServlet = null;
     private boolean errorPagePresent = false;
 
     protected void setParsingTime(long parsingTime)
     {
         this.parsingTime = parsingTime;
     }
-    
-    private void setDelegateFacesServlet(String delegateFacesServlet)
-    {
-        this._delegateFacesServlet = delegateFacesServlet;
-    }
-    
-    public String getDelegateFacesServlet()
-    {
-        return this._delegateFacesServlet;
-    }
-    
+
     /**
      * Sets if, the web.xml contains an error-page entry
      * @param errorPagePresent
@@ -105,7 +94,6 @@ public class WebXml
         MyfacesConfig mfconfig = MyfacesConfig.getCurrentInstance(context);
         long configRefreshPeriod = mfconfig.getConfigRefreshPeriod();
         webXml.setParsingTime(System.currentTimeMillis());
-        webXml.setDelegateFacesServlet(mfconfig.getDelegateFacesServlet());
         refreshPeriod = (configRefreshPeriod * 1000);
     }
 

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.webapp.webxml;
+package org.apache.myfaces.webapp;
 
 public interface DelegatedFacesServlet
 {
