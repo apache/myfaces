@@ -30,17 +30,11 @@ import java.util.List;
 public class SectionUniqueIdCounter
 {
     private List<Section> _counterStack;
-    
     private int _activeSection;
-    
     private final String _prefix;
-    
     private final StringBuilder _builder;
-    
     private char[] _bufferConversion;
-    
     private final int _radix;
-    
     private final String[] _uniqueIdsCache;
     
     public SectionUniqueIdCounter()

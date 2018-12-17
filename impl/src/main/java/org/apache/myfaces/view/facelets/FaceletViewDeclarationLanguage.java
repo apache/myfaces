@@ -2397,8 +2397,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         {
             String[] componentIdsCached = SectionUniqueIdCounter.generateUniqueIdCache("_", 
                     mfConfig.getComponentUniqueIdsCacheSize());
-            eContext.getApplicationMap().put(
-                    CACHED_COMPONENT_IDS, componentIdsCached);
+            eContext.getApplicationMap().put(CACHED_COMPONENT_IDS, componentIdsCached);
         }
         
         _viewPoolProcessor = ViewPoolProcessor.getInstance(context);

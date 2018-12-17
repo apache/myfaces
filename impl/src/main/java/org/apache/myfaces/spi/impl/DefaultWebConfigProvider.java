@@ -42,7 +42,7 @@ public class DefaultWebConfigProvider extends WebConfigProvider
         Map<String, String> errorPages
                 = WebXmlParser.getErrorPages(FacesContext.getCurrentInstance().getExternalContext());
 
-        return !errorPages.isEmpty();
+        return errorPages != null && !errorPages.isEmpty();
     }
 
 }

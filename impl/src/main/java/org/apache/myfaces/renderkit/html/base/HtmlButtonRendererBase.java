@@ -149,7 +149,7 @@ public class HtmlButtonRendererBase extends HtmlRenderer
 
         String commandOnclick = (String)uiComponent.getAttributes().get(HTML.ONCLICK_ATTR);
         
-        if (commandOnclick != null && (validParams != null && !validParams.isEmpty() ) )
+        if (commandOnclick != null && (validParams != null && !validParams.isEmpty()))
         {
             ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
         }
@@ -181,13 +181,13 @@ public class HtmlButtonRendererBase extends HtmlRenderer
             }
         }
         
-        if ((HtmlRendererUtils.hasClientBehavior(ClientBehaviorEvents.CLICK, behaviors, facesContext) ||
-             HtmlRendererUtils.hasClientBehavior(ClientBehaviorEvents.ACTION, behaviors, facesContext)))
+        if (HtmlRendererUtils.hasClientBehavior(ClientBehaviorEvents.CLICK, behaviors, facesContext)
+                || HtmlRendererUtils.hasClientBehavior(ClientBehaviorEvents.ACTION, behaviors, facesContext))
         {
             if (!reset && !button)
             {
-                String onClick = buildBehaviorizedOnClick(
-                        uiComponent, behaviors, facesContext, writer, form, validParams);
+                String onClick = buildBehaviorizedOnClick(uiComponent, behaviors, facesContext, writer,
+                        form, validParams);
                 if (onClick.length() != 0)
                 {
                     writer.writeAttribute(HTML.ONCLICK_ATTR, onClick, null);
@@ -210,9 +210,8 @@ public class HtmlButtonRendererBase extends HtmlRenderer
             
             Map<String, Object> attributes = uiComponent.getAttributes(); 
             
-            HtmlRendererUtils.buildBehaviorChain(
-                    facesContext, uiComponent, ClientBehaviorEvents.DBLCLICK, null, behaviors,   
-                        (String) attributes.get(HTML.ONDBLCLICK_ATTR), "");
+            HtmlRendererUtils.buildBehaviorChain(facesContext, uiComponent, ClientBehaviorEvents.DBLCLICK, null,
+                    behaviors, (String) attributes.get(HTML.ONDBLCLICK_ATTR), "");
         }
         else
         {
@@ -277,8 +276,7 @@ public class HtmlButtonRendererBase extends HtmlRenderer
     }
     
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent)
-            throws IOException
+    public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
 
@@ -287,21 +285,8 @@ public class HtmlButtonRendererBase extends HtmlRenderer
         UIForm form = ComponentUtils.closest(UIForm.class, uiComponent);
         if (form != null)
         {
-            HtmlFormRendererBase.renderScrollHiddenInputIfNecessary(
-                    form, facesContext, writer);
+            HtmlFormRendererBase.renderScrollHiddenInputIfNecessary(form, facesContext, writer);
         }
-        
-        // render the UIParameter children of the commandButton (since 2.0)
-        /*
-        List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
-                facesContext, uiComponent.getChildren(), false, false);
-        for (UIParameter param : validParams)
-        {
-            HtmlInputHidden parameterComponent = new HtmlInputHidden();
-            parameterComponent.setId(param.getName());
-            parameterComponent.setValue(param.getValue());
-            parameterComponent.encodeAll(facesContext);
-        }*/
     }
 
     protected String buildBehaviorizedOnClick(UIComponent uiComponent, Map<String, List<ClientBehavior>> behaviors, 
