@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.spi.impl;
 
-import java.util.HashMap;
 import java.util.Map;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -33,21 +32,16 @@ import org.apache.myfaces.util.WebXmlParser;
  */
 public class DefaultWebConfigProvider extends WebConfigProvider
 {
-    private Map<String, String> errorPages = new HashMap<>();
-    
     public DefaultWebConfigProvider()
     {
-        errorPages = WebXmlParser.getErrorPages(FacesContext.getCurrentInstance().getExternalContext());
     }
   
     @Override
     public boolean isErrorPagePresent(ExternalContext externalContext)
     {
-        if (errorPages == null)
-        {
-            return false;
-        }
-        
+        Map<String, String> errorPages
+                = WebXmlParser.getErrorPages(FacesContext.getCurrentInstance().getExternalContext());
+
         return !errorPages.isEmpty();
     }
 

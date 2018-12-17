@@ -45,6 +45,8 @@ public class WebXmlParser
 {
     private static final Logger LOGGER = Logger.getLogger(WebXmlParser.class.getName());
 
+    private static final String KEY_ERROR_PAGES = WebXmlParser.class.getName() + ".errorpages";
+    
     private WebXmlParser()
     {
     }
@@ -58,6 +60,15 @@ public class WebXmlParser
      */
     public static Map<String, String> getErrorPages(ExternalContext context)
     {
+        // it would be nicer if the cache would probably directly in DefaultWebConfigProvider
+        // as its currently the only caller of the method
+        // however it's recreated every request, we have to refactor the SPI thing a bit probably.
+        Map<String, String> cached = (Map<String, String>) context.getApplicationMap().get(KEY_ERROR_PAGES);
+        if (cached != null)
+        {
+            return cached;
+        }
+        
         Map<String, String> webXmlErrorPages = getWebXmlErrorPages(context);
         Map<String, String> webFragmentXmlsErrorPages = getWebFragmentXmlsErrorPages(context);
 
@@ -76,6 +87,9 @@ public class WebXmlParser
                 }
             }
         }
+
+        context.getApplicationMap().put(KEY_ERROR_PAGES, errorPages);
+        
         return errorPages;
     }
 
