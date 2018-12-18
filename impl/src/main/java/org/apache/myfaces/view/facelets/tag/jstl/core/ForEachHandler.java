@@ -327,8 +327,7 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
 
                     if (value instanceof Serializable)
                     {
-                        iterationState.getValueList().add(
-                            new Object[]{base, value, i});
+                        iterationState.getValueList().add(new Object[]{base, value, i});
                     }
                     else
                     {
@@ -354,15 +353,14 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                                 }
                                 else
                                 {
-                                    ve = ctx.getExpressionFactory().createValueExpression(
-                                                itrS, Object.class);
+                                    ve = ctx.getExpressionFactory().createValueExpression(itrS, Object.class);
                                 }
                             }
                             else
                             {
                                 ve = new IterationStatusExpression(itrS);
                             }
-                            setVar(ctx, parent, uniqueId, base+"_vs", vs, ve, srcVE);
+                            setVar(ctx, parent, uniqueId, base + "_vs", vs, ve, srcVE);
                         }
 
                         // execute body
@@ -447,15 +445,14 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
                             }
                             else
                             {
-                                ve = ctx.getExpressionFactory().createValueExpression(
-                                            itrS, Object.class);
+                                ve = ctx.getExpressionFactory().createValueExpression(itrS, Object.class);
                             }
                         }
                         else
                         {
                             ve = new IterationStatusExpression(itrS);
                         }
-                        setVar(ctx, parent, uniqueId, base+"_vs", vs, ve, srcVE);
+                        setVar(ctx, parent, uniqueId, base + "_vs", vs, ve, srcVE);
                     }
 
                     // execute body

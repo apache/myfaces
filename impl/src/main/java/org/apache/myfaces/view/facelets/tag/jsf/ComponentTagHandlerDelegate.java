@@ -223,7 +223,6 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 
         // grab our component
         UIComponent c = null;
-        //boolean componentFoundInserted = false;
 
         //Used to preserve the original parent. Note when the view is being refreshed, the real parent could be
         //another component.
