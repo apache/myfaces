@@ -21,11 +21,13 @@ package org.apache.myfaces.config;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.StateManager;
+import javax.faces.application.ViewHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.StringUtils;
 
 /**
  * Holds all configuration init parameters (from web.xml) that are independent
@@ -710,6 +712,18 @@ public class MyfacesConfig
     public static final String CHECK_ID_PRODUCTION_MODE_TRUE = "true";
     public static final String CHECK_ID_PRODUCTION_MODE_AUTO = "auto";
     
+    @JSFWebConfigParam(since = "2.1", defaultValue = "false", expectedValues = "true, false", tags = "performance")
+    public final static String MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW
+            = "org.apache.myfaces.MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW";
+    public static final boolean MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW_DEFAULT = false;
+  
+    /**
+     * Class implementing ResourceResolver interface used to locate facelet resources. 
+     */
+    @JSFWebConfigParam(since = "2.0", alias = "facelets.RESOURCE_RESOLVER")
+    public final static String RESOURCE_RESOLVER = "javax.faces.FACELETS_RESOURCE_RESOLVER";
+    
+    
     private boolean strictJsf2AllowSlashLibraryName;
     private long configRefreshPeriod = CONFIG_REFRESH_PERIOD_DEFAULT;
     private boolean renderViewStateId = RENDER_VIEWSTATE_ID_DEFAULT;
@@ -773,6 +787,11 @@ public class MyfacesConfig
     private boolean initializeSkipJarFacesConfigScan = INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN_DEFAULT;
     private String expressionFactory;
     private String checkIdProductionMode = CHECK_ID_PRODUCTION_MODE_DEFAULT;
+    private boolean partialStateSaving = true;
+    private String[] fullStateSavingViewIds;
+    private int faceletsBufferSize = 1024;
+    private boolean markInitialStateWhenApplyBuildView = MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW_DEFAULT;
+    private String resourceResolver;
     
     
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -1099,7 +1118,26 @@ public class MyfacesConfig
         
         cfg.checkIdProductionMode = getString(extCtx, CHECK_ID_PRODUCTION_MODE,
                 CHECK_ID_PRODUCTION_MODE_DEFAULT);
+        
+        // Per spec section 11.1.3, the default value for the partial state saving feature needs
+        // to be true if 2.0, false otherwise.
+        // lets ignore this on 3.x
+        cfg.partialStateSaving = getBoolean(extCtx, StateManager.PARTIAL_STATE_SAVING_PARAM_NAME,
+                true);
 
+        cfg.fullStateSavingViewIds = StringUtils.splitShortString(
+                getString(extCtx, StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME, null),
+                ',');
+        
+        cfg.faceletsBufferSize = getInt(extCtx, ViewHandler.FACELETS_BUFFER_SIZE_PARAM_NAME,
+                1024);
+        
+        cfg.markInitialStateWhenApplyBuildView = getBoolean(extCtx, MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW,
+                MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW_DEFAULT);
+        
+        cfg.resourceResolver = getString(extCtx, RESOURCE_RESOLVER,
+                null);
+        
         return cfg;
     }
 
@@ -1488,6 +1526,31 @@ public class MyfacesConfig
     public String getCheckIdProductionMode()
     {
         return checkIdProductionMode;
+    }
+
+    public boolean isPartialStateSaving()
+    {
+        return partialStateSaving;
+    }
+
+    public String[] getFullStateSavingViewIds()
+    {
+        return fullStateSavingViewIds;
+    }
+
+    public int getFaceletsBufferSize()
+    {
+        return faceletsBufferSize;
+    }
+
+    public boolean isMarkInitialStateWhenApplyBuildView()
+    {
+        return markInitialStateWhenApplyBuildView;
+    }
+
+    public String getResourceResolver()
+    {
+        return resourceResolver;
     }
 
     

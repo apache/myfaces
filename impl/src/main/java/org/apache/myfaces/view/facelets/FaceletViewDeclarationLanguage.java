@@ -93,7 +93,6 @@ import javax.faces.view.facelets.ResourceResolver;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.application.StateManagerImpl;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.application.DefaultViewHandlerSupport;
 import org.apache.myfaces.application.ViewHandlerSupport;
@@ -172,15 +171,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
      */
     public final static String PARAM_ENCODING = "facelets.Encoding";
 
-    /**
-     * Class implementing ResourceResolver interface used to locate facelet resources. 
-     */
-    @JSFWebConfigParam(since = "2.0", alias = "facelets.RESOURCE_RESOLVER")
-    public final static String PARAM_RESOURCE_RESOLVER = "javax.faces.FACELETS_RESOURCE_RESOLVER";
 
-    @JSFWebConfigParam(since = "2.1", defaultValue = "false", expectedValues = "true, false", tags = "performance")
-    private final static String PARAM_MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW
-            = "org.apache.myfaces.MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW";
 
     //BEGIN CONSTANTS SET ON BUILD VIEW
 
@@ -253,14 +244,9 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     
     private ViewPoolProcessor _viewPoolProcessor;
 
-    /**
-     *
-     */
     public FaceletViewDeclarationLanguage(FacesContext context)
     {
-        _config = MyfacesConfig.getCurrentInstance(context.getExternalContext());
-        initialize(context);
-        _strategy = new FaceletViewDeclarationLanguageStrategy();
+        this(context, new FaceletViewDeclarationLanguageStrategy());
     }
 
     public FaceletViewDeclarationLanguage(FacesContext context, ViewDeclarationLanguageStrategy strategy)
@@ -1734,7 +1720,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     {
         checkNull(context, "context");
         checkNull(componentResource, "componentResource");
-        // TODO Auto-generated method stub
+
         return null;
     }
 
@@ -1957,7 +1943,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 stateWriter.release(context);
             }
         }
-        catch (FileNotFoundException fnfe)
+        catch (FileNotFoundException e)
         {
             handleFaceletNotFound(context, view.getViewId());
         }
@@ -2015,14 +2001,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         // is a postback, which will never be true for a debug page.
         // The only point where valid debug output can be produced by now
         // is in createView() -= Jakob Korherr =-
-        //if (UIDebug.debugRequest(context))
-        //{
-        //    return new UIViewRoot();
-        //}
 
-        //else if (!_buildBeforeRestore)
-        //{
-        
         Application application = context.getApplication();
         ViewHandler viewHandler = application.getViewHandler();
         
@@ -2156,18 +2135,20 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         // resource resolver
         ResourceResolver resolver = new DefaultResourceResolver();
         ArrayList<String> classNames = new ArrayList<String>();
-        String faceletsResourceResolverClassName = WebConfigParamUtils.getStringInitParameter(eContext,
-                PARAM_RESOURCE_RESOLVER, null);
-        List<String> resourceResolversFromAnnotations = RuntimeConfig.getCurrentInstance(
-            context.getExternalContext()).getResourceResolvers();
+
+        String faceletsResourceResolverClassName = _config.getResourceResolver();
         if (faceletsResourceResolverClassName != null)
         {
             classNames.add(faceletsResourceResolverClassName);
         }
+        
+        List<String> resourceResolversFromAnnotations = RuntimeConfig.getCurrentInstance(
+            context.getExternalContext()).getResourceResolvers();
         if (!resourceResolversFromAnnotations.isEmpty())
         {
             classNames.addAll(resourceResolversFromAnnotations);
         }
+        
         if (!classNames.isEmpty())
         {
             resolver = ClassUtils.buildApplicationObject(ResourceResolver.class, classNames, resolver);
@@ -2207,28 +2188,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         // to make old RI versions work, but since this is for JSF 2.0 it is not necessary that code.
         ResponseWriter writer = renderKit.createResponseWriter(FaceletsVDLUtils.NullWriter.INSTANCE,
             contentType, encoding);
-
-        //ResponseWriter writer;
-        // append */* to the contentType so createResponseWriter will succeed no matter
-        // the requested contentType.
-        //if (contentType != null && !contentType.equals("*/*"))
-        //{
-        //    contentType += ",*/*";
-        //}
-        // Create a dummy ResponseWriter with a bogus writer,
-        // so we can figure out what content type the ReponseWriter
-        // is really going to ask for
-        //try
-        //{
-        //    writer = renderKit.createResponseWriter(NullWriter.Instance, contentType, encoding);
-        //}
-        // catch (IllegalArgumentException e)
-        //{
-        // Added because of an RI bug prior to 1.2_05-b3. Might as well leave it in case other
-        // impls have the same problem. https://javaserverfaces.dev.java.net/issues/show_bug.cgi?id=613
-        //log.finest("The impl didn't correctly handled '*/*' in the content type list.  Trying '*/*' directly.");
-        //writer = renderKit.createResponseWriter(NullWriter.Instance, "*/*", encoding);
-        //}
 
         // Override the JSF provided content type if necessary
         contentType = getResponseContentType(context, writer.getContentType());
@@ -2345,20 +2304,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     protected void handleRenderException(FacesContext context, Exception e)
             throws IOException, ELException, FacesException
     {
-        /*
-        UIViewRoot root = context.getViewRoot();
-        StringBuffer sb = new StringBuffer(64);
-        sb.append("Error Rendering View");
-        if (root != null)
-        {
-            sb.append('[');
-            sb.append(root.getViewId());
-            sb.append(']');
-        }
-        
-        log.log(Level.SEVERE, sb.toString(), e);
-        */
-
         // rethrow the Exception to be handled by the ExceptionHandler
         if (e instanceof RuntimeException)
         {
@@ -2386,17 +2331,28 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         _faceletFactory = createFaceletFactory(context, compiler);
 
         ExternalContext eContext = context.getExternalContext();
-        _initializeBuffer(eContext);
-        _initializeMode(eContext);
+
+        _bufferSize = _config.getFaceletsBufferSize();
+        _partialStateSaving = _config.isPartialStateSaving();
+        _refreshTransientBuildOnPSS = _config.isRefreshTransientBuildOnPSS();
+        _refreshTransientBuildOnPSSAuto = _config.isRefreshTransientBuildOnPSSAuto();
+        _markInitialStateWhenApplyBuildView = _config.isMarkInitialStateWhenApplyBuildView();
+        
+        String[] viewIds = _config.getFullStateSavingViewIds();
+        if (viewIds != null && viewIds.length > 0)
+        {
+            _viewIds = new HashSet<>(viewIds.length, 1.0f);
+            Collections.addAll(_viewIds, viewIds);
+        }
+
         _initializeContractMappings(eContext);
         
         // Create a component ids cache and store it on application map to
         // reduce the overhead associated with create such ids over and over.
-        MyfacesConfig mfConfig = MyfacesConfig.getCurrentInstance(eContext);
-        if (mfConfig.getComponentUniqueIdsCacheSize() > 0)
+        if (_config.getComponentUniqueIdsCacheSize() > 0)
         {
             String[] componentIdsCached = SectionUniqueIdCounter.generateUniqueIdCache("_", 
-                    mfConfig.getComponentUniqueIdsCacheSize());
+                    _config.getComponentUniqueIdsCacheSize());
             eContext.getApplicationMap().put(CACHED_COMPONENT_IDS, componentIdsCached);
         }
         
@@ -2514,53 +2470,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         }
     }
 
-    private void _initializeBuffer(ExternalContext context)
-    {
-        _bufferSize = WebConfigParamUtils.getIntegerInitParameter(context,
-                ViewHandler.FACELETS_BUFFER_SIZE_PARAM_NAME, 1024);
-    }
 
-    private void _initializeMode(ExternalContext context)
-    {
-        String facesVersion = RuntimeConfig.getCurrentInstance(context).getFacesVersion();
-        boolean partialStateSavingDefault;
-
-        // Per spec section 11.1.3, the default value for the partial state saving feature needs
-        // to be true if 2.0, false otherwise.
-
-        partialStateSavingDefault = "2.0".equals(facesVersion) || "2.1".equals(facesVersion) || 
-            "2.2".equals(facesVersion) || (facesVersion == null);
-
-        // In jsf 2.0 this code evolve as PartialStateSaving feature
-        //_buildBeforeRestore = _getBooleanParameter(context, PARAM_BUILD_BEFORE_RESTORE, false);
-        _partialStateSaving = WebConfigParamUtils.getBooleanInitParameter(context,
-                StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, partialStateSavingDefault);
-
-        String[] viewIds = StringUtils.splitShortString(WebConfigParamUtils.getStringInitParameter(context,
-                StateManager.FULL_STATE_SAVING_VIEW_IDS_PARAM_NAME), ',');
-
-        if (viewIds.length > 0)
-        {
-            _viewIds = new HashSet<String>(viewIds.length, 1.0f);
-            Collections.addAll(_viewIds, viewIds);
-        }
-        else
-        {
-            _viewIds = null;
-        }
-
-        if (_partialStateSaving)
-        {
-            _refreshTransientBuildOnPSS = MyfacesConfig.getCurrentInstance(context).isRefreshTransientBuildOnPSS();
-
-            _refreshTransientBuildOnPSSAuto
-                    = MyfacesConfig.getCurrentInstance(context).isRefreshTransientBuildOnPSSAuto();
-
-            _markInitialStateWhenApplyBuildView = WebConfigParamUtils.getBooleanInitParameter(context,
-                    PARAM_MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW, false);
-        }
-    }
-    
     private void _initializeContractMappings(ExternalContext context)
     {
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(context);
