@@ -40,6 +40,7 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.ResourceResolver;
+import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.resource.ResourceLoaderUtils;
 import org.apache.myfaces.util.Assert;
@@ -61,13 +62,9 @@ public final class DefaultFaceletFactory extends FaceletFactory
     protected final Logger log = Logger.getLogger(DefaultFaceletFactory.class.getName());
 
     private URL _baseUrl;
-
     private Compiler _compiler;
-
     private Map<String, DefaultFacelet> _compositeComponentMetadataFacelets;
-
     private long _refreshPeriod;
-
     private Map<String, URL> _relativeLocations;
 
     private javax.faces.view.facelets.ResourceResolver _resolver;
@@ -75,6 +72,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
     
     private FaceletCache<Facelet> _faceletCache;
     private AbstractFaceletCache<Facelet> _abstractFaceletCache;
+    private boolean viewUniqueIdsCacheEnabled;
     
     public DefaultFaceletFactory(Compiler compiler, ResourceResolver resolver) throws IOException
     {
@@ -97,8 +95,6 @@ public final class DefaultFaceletFactory extends FaceletFactory
         {
             _defaultResolver = (DefaultResourceResolver) _resolver;
         }
-
-        //_baseUrl = resolver.resolveUrl("/");
 
         _refreshPeriod = refreshPeriod < 0 ? INFINITE_DELAY : refreshPeriod * 1000;
         
@@ -174,6 +170,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
             log.fine("Using ResourceResolver: " + _resolver);
             log.fine("Using Refresh Period: " + _refreshPeriod);
         }
+
+        this.viewUniqueIdsCacheEnabled = MyfacesConfig.getCurrentInstance().isViewUniqueIdsCacheEnabled();
     }
 
     /**
@@ -380,7 +378,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
         try
         {
             FaceletHandler h = _compiler.compile(url, alias);
-            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, alias, h);
+            DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, alias, h,
+                viewUniqueIdsCacheEnabled);
             return f;
         }
         catch (FileNotFoundException fnfe)
@@ -414,7 +413,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
         {
             FaceletHandler h = _compiler.compileViewMetadata(url, alias);
             DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias, 
-                    faceletId, h);
+                    faceletId, h, viewUniqueIdsCacheEnabled);
             return f;
         }
         catch (FileNotFoundException fnfe)
@@ -448,7 +447,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
         {
             FaceletHandler h = _compiler.compileCompositeComponentMetadata(url, alias);
             DefaultFacelet f = new DefaultFacelet(this, _compiler.createExpressionFactory(), url, alias,
-                    alias, h, true);
+                    alias, h, true, viewUniqueIdsCacheEnabled);
             return f;
         }
         catch (FileNotFoundException fnfe)
@@ -599,7 +598,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
     {
         FaceletHandler handler = _compiler.compileComponent(taglibURI, tagName, attributes);
         String alias = "/component/oamf:"+tagName;
-        return new DefaultFacelet(this, _compiler.createExpressionFactory(), getBaseUrl(), alias, alias, handler);
+        return new DefaultFacelet(this, _compiler.createExpressionFactory(), getBaseUrl(), alias, alias, handler,
+                viewUniqueIdsCacheEnabled);
     }
     
     /**

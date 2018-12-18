@@ -47,7 +47,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
-import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.view.facelets.AbstractFacelet;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
@@ -70,29 +69,20 @@ final class DefaultFacelet extends AbstractFacelet
     private final static String APPLIED_KEY = "org.apache.myfaces.view.facelets.APPLIED";
 
     private final String _alias;
-    
     private final String _faceletId;
-
     private final ExpressionFactory _elFactory;
-
     private final DefaultFaceletFactory _factory;
-
     private final long _createTime;
-
     private final long _refreshPeriod;
-
     private final Map<String, URL> _relativePaths;
-
     private final FaceletHandler _root;
-
     private final URL _src;
-
     private final boolean _isBuildingCompositeComponentMetadata; 
-    
     private final boolean _encodingHandler;
+    private final boolean viewUniqueIdsCacheEnabled;
 
     public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias,
-                          String faceletId, FaceletHandler root)
+                          String faceletId, FaceletHandler root, boolean viewUniqueIdsCacheEnabled)
     {
         _factory = factory;
         _elFactory = el;
@@ -102,13 +92,16 @@ final class DefaultFacelet extends AbstractFacelet
         _faceletId = faceletId;
         _createTime = System.currentTimeMillis();
         _refreshPeriod = _factory.getRefreshPeriod();
+        
         _relativePaths = Collections.synchronizedMap(new WeakHashMap());
         _isBuildingCompositeComponentMetadata = false;
         _encodingHandler = (root instanceof EncodingHandler);
+        this.viewUniqueIdsCacheEnabled = viewUniqueIdsCacheEnabled;
     }
 
     public DefaultFacelet(DefaultFaceletFactory factory, ExpressionFactory el, URL src, String alias,
-            String faceletId, FaceletHandler root, boolean isBuildingCompositeComponentMetadata)
+            String faceletId, FaceletHandler root, boolean isBuildingCompositeComponentMetadata,
+            boolean viewUniqueIdsCacheEnabled)
     {
         _factory = factory;
         _elFactory = el;
@@ -118,9 +111,11 @@ final class DefaultFacelet extends AbstractFacelet
         _faceletId = faceletId;
         _createTime = System.currentTimeMillis();
         _refreshPeriod = _factory.getRefreshPeriod();
+        
         _relativePaths = Collections.synchronizedMap(new WeakHashMap());
         _isBuildingCompositeComponentMetadata = isBuildingCompositeComponentMetadata;
         _encodingHandler = (root instanceof EncodingHandler);
+        this.viewUniqueIdsCacheEnabled = viewUniqueIdsCacheEnabled;
     }    
 
     /**
@@ -140,10 +135,10 @@ final class DefaultFacelet extends AbstractFacelet
             myFaceletContext = new FaceletCompositionContextImpl(_factory, facesContext);
             myFaceletContext.init(facesContext);
             faceletCompositionContextInitialized = true;
-            if (_encodingHandler && !myFaceletContext.isBuildingViewMetadata()
-                    && MyfacesConfig.getCurrentInstance(
-                    facesContext.getExternalContext()).isViewUniqueIdsCacheEnabled() && 
-                    _refreshPeriod <= 0)
+            if (_encodingHandler
+                    && !myFaceletContext.isBuildingViewMetadata()
+                    && viewUniqueIdsCacheEnabled
+                    && _refreshPeriod <= 0)
             {
                 List<String> uniqueIdList = ((EncodingHandler)_root).getUniqueIdList();
                 if (uniqueIdList == null)
