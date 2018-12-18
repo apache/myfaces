@@ -97,10 +97,6 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     
     private LinkedList<UniqueIdVendor> _uniqueIdVendorStack;
     
-    private LinkedList<String> _validationGroupsStack; 
-    
-    private LinkedList<String> _excludedValidatorIdsStack;
-    
     private LinkedList<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> _enclosingValidatorIdsStack;
     
     private Boolean _isRefreshingTransientBuild;
@@ -279,9 +275,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _facesContext = null;
         _compositeComponentStack = null;
         _enclosingValidatorIdsStack = null;
-        _excludedValidatorIdsStack = null;
         _uniqueIdVendorStack = null;
-        _validationGroupsStack = null;
         _componentsMarkedForDeletion = null;
         _relocatableResourceForDeletion = null;
         _sectionUniqueIdCounter = null;
@@ -363,110 +357,6 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     }
     
     /**
-     * Gets the top of the validationGroups stack.
-     * @return
-     * @since 2.0
-     */
-    @Override
-    public String getFirstValidationGroupFromStack()
-    {
-        if (_validationGroupsStack != null && !_validationGroupsStack.isEmpty())
-        {
-            return _validationGroupsStack.getFirst(); // top-of-stack
-        }
-        return null;
-    }
-    
-    /**
-     * Removes top of stack.
-     * @since 2.0
-     */
-    @Override
-    public void popValidationGroupsToStack()
-    {
-        if (_validationGroupsStack != null && !_validationGroupsStack.isEmpty())
-        {
-            _validationGroupsStack.removeFirst();
-        }
-    }
-    
-    /**
-     * Pushes validationGroups to the stack.
-     * @param validationGroups
-     * @since 2.0
-     */
-    @Override
-    public void pushValidationGroupsToStack(String validationGroups)
-    {
-        if (_validationGroupsStack == null)
-        {
-            _validationGroupsStack = new LinkedList<String>();
-        }
-
-        _validationGroupsStack.addFirst(validationGroups);
-    }
-    
-    /**
-     * Gets all validationIds on the stack.
-     * @return
-     * @since 2.0
-     */
-    @Override
-    public Iterator<String> getExcludedValidatorIds()
-    {
-        if (_excludedValidatorIdsStack != null && !_excludedValidatorIdsStack.isEmpty())
-        {
-            return _excludedValidatorIdsStack.iterator();
-        }
-        return null;
-    }
-    
-    /**
-     * Removes top of stack.
-     * @since 2.0
-     */
-    @Override
-    public void popExcludedValidatorIdToStack()
-    {
-        if (_excludedValidatorIdsStack != null && !_excludedValidatorIdsStack.isEmpty())
-        {
-            _excludedValidatorIdsStack.removeFirst();
-        }
-    }
-    
-    /**
-     * Pushes validatorId to the stack of excluded validatorIds.
-     * @param validatorId
-     * @since 2.0
-     */
-    @Override
-    public void pushExcludedValidatorIdToStack(String validatorId)
-    {
-        if (_excludedValidatorIdsStack == null)
-        {
-            _excludedValidatorIdsStack = new LinkedList<String>();
-        }
-
-        _excludedValidatorIdsStack.addFirst(validatorId);
-    }
-    
-    /**
-     * Gets all validationIds on the stack.
-     * @return
-     * @since 2.0
-     */
-    @Override
-    public Iterator<String> getEnclosingValidatorIds()
-    {
-        if (_enclosingValidatorIdsStack != null && !_enclosingValidatorIdsStack.isEmpty())
-        {
-            return new KeyEntryIterator<String, EditableValueHolderAttachedObjectHandler>
-                (_enclosingValidatorIdsStack.iterator()); 
-        }
-        return null;
-    }
-    
-    /**
      * Removes top of stack.
      * @since 2.0
      */
@@ -477,17 +367,6 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         {
             _enclosingValidatorIdsStack.removeFirst();
         }
-    }
-    
-    /**
-     * Pushes validatorId to the stack of all enclosing validatorIds.
-     * @param validatorId
-     * @since 2.0
-     */
-    @Override
-    public void pushEnclosingValidatorIdToStack(String validatorId)
-    {
-        pushEnclosingValidatorIdToStack(validatorId, null);
     }
     
     @Override

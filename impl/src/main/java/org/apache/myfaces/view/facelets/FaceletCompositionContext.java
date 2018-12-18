@@ -137,73 +137,11 @@ abstract public class FaceletCompositionContext
     public abstract void popUniqueIdVendorToStack();
     
     /**
-     * Gets the top of the validationGroups stack.
-     * @return
-     * @since 2.0.1
-     */
-    @Deprecated
-    public abstract String getFirstValidationGroupFromStack();
-    
-    /**
-     * Removes top of stack.
-     * @since 2.0.1
-     */
-    @Deprecated
-    public abstract void popValidationGroupsToStack();
-    
-    /**
-     * Pushes validationGroups to the stack.
-     * @param validationGroups
-     * @since 2.0.1
-     */
-    @Deprecated
-    public abstract void pushValidationGroupsToStack(String validationGroups);
-    
-    /**
-     * Gets all validationIds on the stack.
-     * @return
-     * @since 2.0.1
-     */
-    @Deprecated
-    public abstract Iterator<String> getExcludedValidatorIds();
-    
-    /**
-     * Removes top of stack.
-     * @since 2.0.1
-     */
-    @Deprecated
-    public abstract void popExcludedValidatorIdToStack();
-    
-    /**
-     * Pushes validatorId to the stack of excluded validatorIds.
-     * @param validatorId
-     * @since 2.0.1
-     */
-    @Deprecated
-    public abstract void pushExcludedValidatorIdToStack(String validatorId);
-    
-    /**
-     * Gets all validationIds on the stack.
-     * @return
-     * @since 2.0.1
-     */
-    @Deprecated
-    public abstract Iterator<String> getEnclosingValidatorIds();
-    
-    /**
      * Removes top of stack.
      * @since 2.0.1
      */
     public abstract void popEnclosingValidatorIdToStack();
-    
-    /**
-     * Pushes validatorId to the stack of all enclosing validatorIds.
-     * @param validatorId
-     * @since 2.0.1
-     */
-    @Deprecated
-    public abstract void pushEnclosingValidatorIdToStack(String validatorId);
-    
+        
     /**
      * Pushes validatorId to the stack of all enclosing validatorIds.
      * 
