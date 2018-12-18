@@ -213,23 +213,19 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     public final static String CACHED_COMPONENT_IDS = "oam.CACHED_COMPONENT_IDS"; 
     
     private static final String ASTERISK = "*";
-
-    private FaceletFactory _faceletFactory;
-
-    private StateManagementStrategy _stateMgmtStrategy;
-
-    private ResourceResolver _resourceResolver;
     
-    private Map<String, List<String>> _contractMappings;
-    private List<String> _prefixWildcardKeys;
-    
+    private final FaceletFactory faceletFactory;
     private final ViewDeclarationLanguageStrategy strategy;
     private final FaceletsCompilerSupport faceletsCompilerSupport;
     private final MyfacesConfig config;
     private final ViewPoolProcessor viewPoolProcessor;
     private final ViewHandlerSupport viewHandlerSupport;
     
+    private StateManagementStrategy stateManagementStrategy;
     private Set<String> fullStateSavingViewIds;
+    private ResourceResolver _resourceResolver;
+    private Map<String, List<String>> _contractMappings;
+    private List<String> _prefixWildcardKeys;
 
     public FaceletViewDeclarationLanguage(FacesContext context)
     {
@@ -248,18 +244,23 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
         Compiler compiler = createCompiler(context);
 
-        _faceletFactory = createFaceletFactory(context, compiler);
+        faceletFactory = createFaceletFactory(context, compiler);
 
-        ExternalContext eContext = context.getExternalContext();
-        
-        String[] viewIds = config.getFullStateSavingViewIds();
-        if (viewIds != null && viewIds.length > 0)
+        if (config.isPartialStateSaving())
         {
-            fullStateSavingViewIds = new HashSet<>(viewIds.length, 1.0f);
-            Collections.addAll(fullStateSavingViewIds, viewIds);
+            stateManagementStrategy = new DefaultFaceletsStateManagementStrategy(context);
         }
 
-        _initializeContractMappings(eContext);
+        ExternalContext externalContext = context.getExternalContext();
+        
+        String[] fullStateSavingViewIds = config.getFullStateSavingViewIds();
+        if (fullStateSavingViewIds != null && fullStateSavingViewIds.length > 0)
+        {
+            this.fullStateSavingViewIds = new HashSet<>(fullStateSavingViewIds.length, 1.0f);
+            Collections.addAll(this.fullStateSavingViewIds, fullStateSavingViewIds);
+        }
+
+        _initializeContractMappings(externalContext);
         
         // Create a component ids cache and store it on application map to
         // reduce the overhead associated with create such ids over and over.
@@ -267,7 +268,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         {
             String[] componentIdsCached = SectionUniqueIdCounter.generateUniqueIdCache("_", 
                     config.getComponentUniqueIdsCacheSize());
-            eContext.getApplicationMap().put(CACHED_COMPONENT_IDS, componentIdsCached);
+            externalContext.getApplicationMap().put(CACHED_COMPONENT_IDS, componentIdsCached);
         }
 
         log.finest("Initialization Successful");
@@ -695,11 +696,11 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         try
         {
             Facelet compositeComponentFacelet;
-            FaceletFactory.setInstance(_faceletFactory);
+            FaceletFactory.setInstance(faceletFactory);
             try
             {
                 compositeComponentFacelet
-                        = _faceletFactory.getCompositeComponentMetadataFacelet(componentResource.getURL());
+                        = faceletFactory.getCompositeComponentMetadataFacelet(componentResource.getURL());
             }
             finally
             {
@@ -1742,12 +1743,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     {
         // Use partial state saving strategy only if javax.faces.PARTIAL_STATE_SAVING is "true" and
         // the current view is not on javax.faces.FULL_STATE_SAVING_VIEW_IDS.
-        if (config.isPartialStateSaving() && _stateMgmtStrategy == null)
-        {
-            _stateMgmtStrategy = new DefaultFaceletsStateManagementStrategy(context);
-        }
-
-        return _usePartialStateSavingOnThisView(viewId) ? _stateMgmtStrategy : null;
+        return _usePartialStateSavingOnThisView(viewId) ? stateManagementStrategy : null;
     }
 
     /**
@@ -2385,10 +2381,10 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     private Facelet _getFacelet(FacesContext context, String viewId) throws IOException
     {
         // grab our FaceletFactory and create a Facelet
-        FaceletFactory.setInstance(_faceletFactory);
+        FaceletFactory.setInstance(faceletFactory);
         try
         {
-            return _faceletFactory.getFacelet(context, viewId);
+            return faceletFactory.getFacelet(context, viewId);
         }
         finally
         {
@@ -2399,10 +2395,10 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     private Facelet _getViewMetadataFacelet(FacesContext context, String viewId) throws IOException
     {
         // grab our FaceletFactory and create a Facelet used to create view metadata
-        FaceletFactory.setInstance(_faceletFactory);
+        FaceletFactory.setInstance(faceletFactory);
         try
         {
-            return _faceletFactory.getViewMetadataFacelet(context, viewId);
+            return faceletFactory.getViewMetadataFacelet(context, viewId);
         }
         finally
         {
@@ -2540,7 +2536,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     
     public FaceletFactory getFaceletFactory()
     {
-        return _faceletFactory;
+        return faceletFactory;
     }
 
     @Override
@@ -2552,11 +2548,11 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         try
         {
             Facelet componentFacelet;
-            FaceletFactory.setInstance(_faceletFactory);
+            FaceletFactory.setInstance(faceletFactory);
             try
             {
                 componentFacelet
-                        = _faceletFactory.compileComponentFacelet(taglibURI, tagName, attributes);
+                        = faceletFactory.compileComponentFacelet(taglibURI, tagName, attributes);
             }
             finally
             {
