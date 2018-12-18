@@ -36,6 +36,7 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
@@ -148,11 +149,12 @@ public final class ViewHandler extends TagHandler
             if (this.encoding != null)
             {
                 String v = this.encoding.getValue(ctx);
-                ctx.getFacesContext().getAttributes().put("facelets.Encoding", v);
+                ctx.getFacesContext().getAttributes().put(FaceletViewDeclarationLanguage.PARAM_ENCODING, v);
             }
             else if (encodingValue != null)
             {
-                ctx.getFacesContext().getAttributes().put("facelets.Encoding", encodingValue);
+                ctx.getFacesContext().getAttributes().put(FaceletViewDeclarationLanguage.PARAM_ENCODING,
+                        encodingValue);
             }
             if (this.beforePhase != null)
             {

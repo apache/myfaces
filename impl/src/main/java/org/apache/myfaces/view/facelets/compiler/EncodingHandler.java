@@ -27,10 +27,10 @@ import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 
 public class EncodingHandler implements FaceletHandler
 {
-
     private final FaceletHandler next;
     private final String encoding;
     
@@ -42,35 +42,30 @@ public class EncodingHandler implements FaceletHandler
         this.encoding = encoding;
     }
 
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException
     {
         this.next.apply(ctx, parent);
         if (this.encoding == null)
         {
-            if (!ctx.getFacesContext().getAttributes().containsKey("facelets.Encoding"))
+            if (!ctx.getFacesContext().getAttributes().containsKey(FaceletViewDeclarationLanguage.PARAM_ENCODING))
             {
-                ctx.getFacesContext().getAttributes().put("facelets.Encoding", "UTF-8");
+                ctx.getFacesContext().getAttributes().put(FaceletViewDeclarationLanguage.PARAM_ENCODING, "UTF-8");
             }
         }
         else
         {
             //Encoding of document takes precedence over f:view contentType
-            ctx.getFacesContext().getAttributes().put("facelets.Encoding", this.encoding);
+            ctx.getFacesContext().getAttributes().put(FaceletViewDeclarationLanguage.PARAM_ENCODING, this.encoding);
         }
     }
 
-    /**
-     * @return the _uniqueIdList
-     */
     public List<String> getUniqueIdList()
     {
         return _uniqueIdList;
     }
 
-    /**
-     * @param uniqueIdList the _uniqueIdList to set
-     */
     public void setUniqueIdList(List<String> uniqueIdList)
     {
         this._uniqueIdList = uniqueIdList;

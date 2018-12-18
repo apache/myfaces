@@ -172,9 +172,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     public final static String PARAM_ENCODING = "facelets.Encoding";
 
 
-
     //BEGIN CONSTANTS SET ON BUILD VIEW
-
     public final static String BUILDING_VIEW_METADATA = "org.apache.myfaces.BUILDING_VIEW_METADATA";
 
     public final static String REFRESHING_TRANSIENT_BUILD = "org.apache.myfaces.REFRESHING_TRANSIENT_BUILD";
@@ -206,6 +204,9 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     private static final Set<VisitHint> VISIT_HINTS_DYN_REFRESH = Collections.unmodifiableSet( 
             EnumSet.of(VisitHint.SKIP_ITERATION));
     
+    private static final String SERIALIZED_VIEW_REQUEST_ATTR = 
+        StateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
+    
     /**
      * Key used to cache component ids for the counter
      */
@@ -213,36 +214,22 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     
     private static final String ASTERISK = "*";
 
-    private int _bufferSize;
-
-    private ViewHandlerSupport _cachedViewHandlerSupport;
-
     private FaceletFactory _faceletFactory;
 
     private StateManagementStrategy _stateMgmtStrategy;
-    
-    private boolean _partialStateSaving;
-
-    private boolean _refreshTransientBuildOnPSS;
-
-    private boolean _refreshTransientBuildOnPSSAuto;
-
-    private Set<String> _viewIds;
-
-    private boolean _markInitialStateWhenApplyBuildView;
-
-    private final ViewDeclarationLanguageStrategy _strategy;
 
     private ResourceResolver _resourceResolver;
     
     private Map<String, List<String>> _contractMappings;
     private List<String> _prefixWildcardKeys;
     
-    private FaceletsCompilerSupport _faceletsCompilerSupport;
+    private final ViewDeclarationLanguageStrategy strategy;
+    private final FaceletsCompilerSupport faceletsCompilerSupport;
+    private final MyfacesConfig config;
+    private final ViewPoolProcessor viewPoolProcessor;
+    private final ViewHandlerSupport viewHandlerSupport;
     
-    private MyfacesConfig _config;
-    
-    private ViewPoolProcessor _viewPoolProcessor;
+    private Set<String> fullStateSavingViewIds;
 
     public FaceletViewDeclarationLanguage(FacesContext context)
     {
@@ -251,9 +238,39 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
     public FaceletViewDeclarationLanguage(FacesContext context, ViewDeclarationLanguageStrategy strategy)
     {
-        _config = MyfacesConfig.getCurrentInstance(context);
-        initialize(context);
-        _strategy = strategy;
+        log.finest("Initializing");
+        
+        this.config = MyfacesConfig.getCurrentInstance(context);
+        this.strategy = strategy;
+        this.viewPoolProcessor = ViewPoolProcessor.getInstance(context);
+        this.viewHandlerSupport = new DefaultViewHandlerSupport(context);
+        this.faceletsCompilerSupport = new FaceletsCompilerSupport();
+
+        Compiler compiler = createCompiler(context);
+
+        _faceletFactory = createFaceletFactory(context, compiler);
+
+        ExternalContext eContext = context.getExternalContext();
+        
+        String[] viewIds = config.getFullStateSavingViewIds();
+        if (viewIds != null && viewIds.length > 0)
+        {
+            fullStateSavingViewIds = new HashSet<>(viewIds.length, 1.0f);
+            Collections.addAll(fullStateSavingViewIds, viewIds);
+        }
+
+        _initializeContractMappings(eContext);
+        
+        // Create a component ids cache and store it on application map to
+        // reduce the overhead associated with create such ids over and over.
+        if (config.getComponentUniqueIdsCacheSize() > 0)
+        {
+            String[] componentIdsCached = SectionUniqueIdCounter.generateUniqueIdCache("_", 
+                    config.getComponentUniqueIdsCacheSize());
+            eContext.getApplicationMap().put(CACHED_COMPONENT_IDS, componentIdsCached);
+        }
+
+        log.finest("Initialization Successful");
     }
 
 
@@ -266,7 +283,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     @Override
     public boolean viewExists(FacesContext facesContext, String viewId)
     {
-        if (_strategy.handles(viewId))
+        if (strategy.handles(viewId))
         {
             if (_resourceResolver instanceof DefaultResourceResolver)
             {
@@ -282,9 +299,9 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
     private RestoreViewFromPoolResult tryRestoreViewFromCache(FacesContext context, UIViewRoot view)
     {
-        if (_viewPoolProcessor != null)
+        if (viewPoolProcessor != null)
         {
-            ViewPool viewPool = _viewPoolProcessor.getViewPool(context, view);
+            ViewPool viewPool = viewPoolProcessor.getViewPool(context, view);
             if (viewPool != null)
             {
                 ViewStructureMetadata metadata = viewPool.retrieveStaticViewStructureMetadata(context, view);
@@ -293,7 +310,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     ViewEntry entry = viewPool.popStaticOrPartialStructureView(context, view);
                     if (entry != null)
                     {
-                        _viewPoolProcessor.cloneAndRestoreView(context, view, entry, metadata);
+                        viewPoolProcessor.cloneAndRestoreView(context, view, entry, metadata);
                         return entry.getResult();
                     }
                 }
@@ -329,11 +346,11 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         }
 
         boolean usePartialStateSavingOnThisView = _usePartialStateSavingOnThisView(viewId);
-        boolean refreshTransientBuild = (view.getChildCount() > 0);
-        boolean refreshTransientBuildOnPSS = (usePartialStateSavingOnThisView && _refreshTransientBuildOnPSS);
+        boolean refreshTransientBuild = view.getChildCount() > 0;
+        boolean refreshTransientBuildOnPSS = usePartialStateSavingOnThisView && config.isRefreshTransientBuildOnPSS();
         boolean refreshPartialView = false;
 
-        if (_viewPoolProcessor != null && !refreshTransientBuild)
+        if (viewPoolProcessor != null && !refreshTransientBuild)
         {
             RestoreViewFromPoolResult result = tryRestoreViewFromCache(context, view);
             if (result != null)
@@ -357,7 +374,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                         setFilledView(context, view);
                     }
                     //At this point refreshTransientBuild = false && refreshTransientBuildOnPSS is true
-                    else if (_refreshTransientBuildOnPSSAuto &&
+                    else if (config.isRefreshTransientBuildOnPSSAuto() &&
                              !context.getAttributes().containsKey(CLEAN_TRANSIENT_BUILD_ON_RESTORE))
                     {
                         setFilledView(context, view);
@@ -392,7 +409,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 context.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
                 context.getAttributes().put(IS_BUILDING_INITIAL_STATE_KEY_ALIAS, Boolean.TRUE);
             }
-            if (!refreshTransientBuild && _markInitialStateWhenApplyBuildView)
+            if (!refreshTransientBuild && config.isMarkInitialStateWhenApplyBuildView())
             {
                 context.getAttributes().put(MARK_INITIAL_STATE_KEY, Boolean.TRUE);
             }
@@ -400,7 +417,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             {
                 //This value is only set when _refreshTransientBuildOnPSSMode is "auto" or "true" 
                 context.getAttributes().put(REFRESH_TRANSIENT_BUILD_ON_PSS,
-                                            _refreshTransientBuildOnPSSAuto ? "auto" : "true");
+                                            config.isRefreshTransientBuildOnPSSAuto() ? "auto" : "true");
             }
         }
 
@@ -470,8 +487,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             setFilledView(context, view);
         }
         //At this point refreshTransientBuild = false && refreshTransientBuildOnPSS is true
-        else if (_refreshTransientBuildOnPSSAuto &&
-                 !context.getAttributes().containsKey(CLEAN_TRANSIENT_BUILD_ON_RESTORE))
+        else if (config.isRefreshTransientBuildOnPSSAuto()
+                && !context.getAttributes().containsKey(CLEAN_TRANSIENT_BUILD_ON_RESTORE))
         {
             setFilledView(context, view);
         }
@@ -485,12 +502,12 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             if (!refreshTransientBuild || refreshPartialView)
             {
                 // Save the state
-                if (_viewPoolProcessor != null &&
-                    _viewPoolProcessor.isViewPoolEnabledForThisView(context, view))
+                if (viewPoolProcessor != null &&
+                    viewPoolProcessor.isViewPoolEnabledForThisView(context, view))
                 {
-                    _viewPoolProcessor.storeViewStructureMetadata(context, view);
+                    viewPoolProcessor.storeViewStructureMetadata(context, view);
                 }
-                if (_markInitialStateWhenApplyBuildView)
+                if (config.isMarkInitialStateWhenApplyBuildView())
                 {
                     if (!refreshTransientBuildOnPSS ||
                         !view.getAttributes().containsKey(COMPONENT_ADDED_AFTER_BUILD_VIEW))
@@ -986,8 +1003,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             }
 
             String attributeName = propertyDescriptor.getName();
-            //boolean isKnownMethod = "action".equals(attributeName) || "actionListener".equals(attributeName)  
-            //        || "validator".equals(attributeName) || "valueChangeListener".equals(attributeName);
 
             // <composite:attribute> method-signature attribute is 
             // ValueExpression that must evaluate to String
@@ -1049,7 +1064,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 // inner code will cause a ClassCastException.
                 if (!mctx.isMethodExpressionAttributeApplied(topLevelComponent, attributeName))
                 {
-
                     ValueExpression attributeNameValueExpression =
                             (ValueExpression) topLevelComponent.getAttributes().get(attributeName);
 
@@ -1544,7 +1558,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         {
             UIComponent innerComponent = ComponentSupport.findComponentChildOrFacetFrom(context, 
                     topLevelComponentBase, target);
-
             if (innerComponent == null)
             {
                 continue;
@@ -1618,9 +1631,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
                 if (attributeName.equals(propertyDescriptor.getName()))
                 {
-                    //boolean isKnownMethod = "action".equals(attributeName) || "actionListener".equals(attributeName)  
-                    //|| "validator".equals(attributeName) || "valueChangeListener".equals(attributeName);
-
                     // <composite:attribute> method-signature attribute is 
                     // ValueExpression that must evaluate to String
                     ValueExpression methodSignatureExpression
@@ -1634,8 +1644,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     }
 
                     String targetAttributeName = null;
-                    ValueExpression targetAttributeNameVE = (ValueExpression) 
-                        propertyDescriptor.getValue("targetAttributeName");
+                    ValueExpression targetAttributeNameVE = (ValueExpression)
+                            propertyDescriptor.getValue("targetAttributeName");
                     if (targetAttributeNameVE != null)
                     {
                         targetAttributeName = (String) targetAttributeNameVE.getValue(context.getELContext());
@@ -1732,7 +1742,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     {
         // Use partial state saving strategy only if javax.faces.PARTIAL_STATE_SAVING is "true" and
         // the current view is not on javax.faces.FULL_STATE_SAVING_VIEW_IDS.
-        if (_partialStateSaving && _stateMgmtStrategy == null)
+        if (config.isPartialStateSaving() && _stateMgmtStrategy == null)
         {
             _stateMgmtStrategy = new DefaultFaceletsStateManagementStrategy(context);
         }
@@ -1899,8 +1909,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     {
                         // GET case without any form that trigger state saving.
                         // Try to store it into cache.
-                        if (_viewPoolProcessor != null && 
-                            _viewPoolProcessor.isViewPoolEnabledForThisView(context, view))
+                        if (viewPoolProcessor != null && 
+                            viewPoolProcessor.isViewPoolEnabledForThisView(context, view))
                         {
                             ViewDeclarationLanguage vdl = context.getApplication().
                                     getViewHandler().getViewDeclarationLanguage(
@@ -1952,9 +1962,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             handleRenderException(context, e);
         }
     }
-    
-    private static final String SERIALIZED_VIEW_REQUEST_ATTR = 
-        StateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
 
     /**
      * {@inheritDoc}
@@ -2047,7 +2054,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     // If the view is not transient, then something is wrong. Throw an exception.
                     if (!view.isTransient())
                     {
-                        throw new FacesException ("unable to create view \"" + viewId + "\"");
+                        throw new FacesException("unable to create view \"" + viewId + "\"");
                     }
                 }
                 finally
@@ -2057,7 +2064,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             }
             catch (Throwable e)
             {
-                throw new FacesException ("unable to create view \"" + viewId + '"', e);
+                throw new FacesException("unable to create view \"" + viewId + '"', e);
             }
             FaceletsViewDeclarationLanguageUtils.markRenderedResources(context, view);
             return view;
@@ -2076,12 +2083,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     @Override
     protected String calculateViewId(FacesContext context, String viewId)
     {
-        if (_cachedViewHandlerSupport == null)
-        {
-            _cachedViewHandlerSupport = new DefaultViewHandlerSupport(context);
-        }
-
-        return _cachedViewHandlerSupport.deriveLogicalViewId(context, viewId);
+        return viewHandlerSupport.deriveLogicalViewId(context, viewId);
     }
 
     /**
@@ -2136,7 +2138,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         ResourceResolver resolver = new DefaultResourceResolver();
         ArrayList<String> classNames = new ArrayList<String>();
 
-        String faceletsResourceResolverClassName = _config.getResourceResolver();
+        String faceletsResourceResolverClassName = config.getResourceResolver();
         if (faceletsResourceResolverClassName != null)
         {
             classNames.add(faceletsResourceResolverClassName);
@@ -2173,16 +2175,17 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         }
 
         // set the buffer for content
-        if (_bufferSize != -1)
+        int faceletsBufferSize = config.getFaceletsBufferSize();
+        if (faceletsBufferSize != -1)
         {
-            extContext.setResponseBufferSize(_bufferSize);
+            extContext.setResponseBufferSize(faceletsBufferSize);
         }
 
         // get our content type
         String contentType = (String) context.getAttributes().get("facelets.ContentType");
 
         // get the encoding
-        String encoding = (String) context.getAttributes().get("facelets.Encoding");
+        String encoding = (String) context.getAttributes().get(PARAM_ENCODING);
 
         // -= Leonardo Uribe =- Add */* to the contentType is a fix done from FaceletViewHandler
         // to make old RI versions work, but since this is for JSF 2.0 it is not necessary that code.
@@ -2298,7 +2301,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         String actualId = context.getApplication().getViewHandler().getActionURL(context, viewId);
         context.getExternalContext().responseSendError(HttpServletResponse.SC_NOT_FOUND, actualId);
         context.responseComplete();
-
     }
 
     protected void handleRenderException(FacesContext context, Exception e)
@@ -2320,98 +2322,36 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     }
 
     /**
-     * Initialize the ViewHandler during its first request.
-     */
-    protected void initialize(FacesContext context)
-    {
-        log.finest("Initializing");
-
-        Compiler compiler = createCompiler(context);
-
-        _faceletFactory = createFaceletFactory(context, compiler);
-
-        ExternalContext eContext = context.getExternalContext();
-
-        _bufferSize = _config.getFaceletsBufferSize();
-        _partialStateSaving = _config.isPartialStateSaving();
-        _refreshTransientBuildOnPSS = _config.isRefreshTransientBuildOnPSS();
-        _refreshTransientBuildOnPSSAuto = _config.isRefreshTransientBuildOnPSSAuto();
-        _markInitialStateWhenApplyBuildView = _config.isMarkInitialStateWhenApplyBuildView();
-        
-        String[] viewIds = _config.getFullStateSavingViewIds();
-        if (viewIds != null && viewIds.length > 0)
-        {
-            _viewIds = new HashSet<>(viewIds.length, 1.0f);
-            Collections.addAll(_viewIds, viewIds);
-        }
-
-        _initializeContractMappings(eContext);
-        
-        // Create a component ids cache and store it on application map to
-        // reduce the overhead associated with create such ids over and over.
-        if (_config.getComponentUniqueIdsCacheSize() > 0)
-        {
-            String[] componentIdsCached = SectionUniqueIdCounter.generateUniqueIdCache("_", 
-                    _config.getComponentUniqueIdsCacheSize());
-            eContext.getApplicationMap().put(CACHED_COMPONENT_IDS, componentIdsCached);
-        }
-        
-        _viewPoolProcessor = ViewPoolProcessor.getInstance(context);
-
-        log.finest("Initialization Successful");
-    }
-
-    /**
      * Load the various decorators for Facelets.
      *
-     * @param context
-     *            the current FacesContext
-     * @param compiler
-     *            the page compiler
+     * @param context the current FacesContext
+     * @param compiler the page compiler
      */
     protected void loadDecorators(FacesContext context, Compiler compiler)
     {
-        getFaceletsCompilerSupport().loadDecorators(context, compiler);
-    }
-
-    protected FaceletsCompilerSupport getFaceletsCompilerSupport()
-    {
-        if (_faceletsCompilerSupport == null)
-        {
-            _faceletsCompilerSupport = new FaceletsCompilerSupport();
-        }
-        return _faceletsCompilerSupport;
-    }
-    
-    public void setFaceletsCompilerSupport(FaceletsCompilerSupport support)
-    {
-        _faceletsCompilerSupport = support;
+        faceletsCompilerSupport.loadDecorators(context, compiler);
     }
 
     /**
      * Load the various tag libraries for Facelets.
      *
-     * @param context
-     *            the current FacesContext
-     * @param compiler
-     *            the page compiler
+     * @param context the current FacesContext
+     * @param compiler the page compiler
      */
     protected void loadLibraries(FacesContext context, Compiler compiler)
     {
-        getFaceletsCompilerSupport().loadLibraries(context, compiler);
+        faceletsCompilerSupport.loadLibraries(context, compiler);
     }
 
     /**
      * Load the various options for Facelets compiler. Currently only comment skipping is supported.
      *
-     * @param context
-     *            the current FacesContext
-     * @param compiler
-     *            the page compiler
+     * @param context the current FacesContext
+     * @param compiler the page compiler
      */
     protected void loadOptions(FacesContext context, Compiler compiler)
     {
-        getFaceletsCompilerSupport().loadOptions(context, compiler);
+        faceletsCompilerSupport.loadOptions(context, compiler);
     }
 
     /**
@@ -2495,7 +2435,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
     private boolean _usePartialStateSavingOnThisView(String viewId)
     {
-        return _partialStateSaving && !(_viewIds != null && _viewIds.contains(viewId));
+        return config.isPartialStateSaving()
+                && !(fullStateSavingViewIds != null && fullStateSavingViewIds.contains(viewId));
     }
 
     @Override
@@ -2766,12 +2707,12 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     {
         Stream<String> stream = super.getViews(facesContext, path, maxDepth, options);
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(facesContext.getExternalContext());
-            stream = stream.filter(f -> (_strategy.handles(f) && 
+            stream = stream.filter(f -> (strategy.handles(f) && 
                     !FaceletsTemplateMappingUtils.matchTemplate(runtimeConfig, f) ) );
         if (options != null &&
             Arrays.binarySearch(options, ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME) >= 0)
         {
-            stream = stream.map(f -> _strategy.getMinimalImplicitOutcome(f));
+            stream = stream.map(f -> strategy.getMinimalImplicitOutcome(f));
         }
         return stream;
     }

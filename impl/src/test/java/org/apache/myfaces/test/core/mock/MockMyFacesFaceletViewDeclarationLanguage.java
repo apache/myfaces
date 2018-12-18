@@ -120,12 +120,6 @@ public class MockMyFacesFaceletViewDeclarationLanguage extends FaceletViewDeclar
     }
 
     @Override
-    public void initialize(FacesContext context)
-    {
-        super.initialize(context);
-    }
-
-    @Override
     public void loadDecorators(FacesContext context, Compiler compiler)
     {
         super.loadDecorators(context, compiler);

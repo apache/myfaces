@@ -151,7 +151,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
             return extension.getMap();
         }
 
-        Map<Class<? extends Annotation>,Set<Class<?>>> map = new HashMap<Class<? extends Annotation>, Set<Class<?>>>();
+        Map<Class<? extends Annotation>,Set<Class<?>>> map = new HashMap<>();
         Collection<Class<?>> classes = null;
 
         //1. Scan for annotations on /WEB-INF/classes

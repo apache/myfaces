@@ -149,8 +149,7 @@ public class ViewPoolProcessor
     
     public static ViewPoolProcessor getInstance(FacesContext context)
     {
-        return (ViewPoolProcessor) context.getExternalContext().
-                getApplicationMap().get(INSTANCE);
+        return (ViewPoolProcessor) context.getExternalContext().getApplicationMap().get(INSTANCE);
     }
     
     /**
@@ -1058,9 +1057,6 @@ public class ViewPoolProcessor
             count = 0;
         }
 
-        /**
-         * @return the count
-         */
         public int getCount()
         {
             return count;
@@ -1070,9 +1066,7 @@ public class ViewPoolProcessor
         {
             return count++;
         }
-        /**
-         * @param count the count to set
-         */
+
         public void setCount(int count)
         {
             this.count = count;
