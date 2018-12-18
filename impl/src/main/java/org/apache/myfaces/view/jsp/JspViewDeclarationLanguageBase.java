@@ -266,7 +266,7 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
   
   protected boolean isViewStateAlreadyEncoded(FacesContext context)
   {
-    if (MyfacesConfig.getCurrentInstance(context.getExternalContext()).isMyfacesImplAvailable())
+    if (MyfacesConfig.getCurrentInstance(context).isMyfacesImplAvailable())
     {
       // In MyFaces the viewState key is already encoded is server side state saving is being used
       return !context.getApplication().getStateManager().isSavingStateInClient(context);

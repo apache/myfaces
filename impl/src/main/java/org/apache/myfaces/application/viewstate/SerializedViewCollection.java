@@ -228,7 +228,7 @@ class SerializedViewCollection implements Serializable
 
     protected Integer getNumberOfSequentialViewsInSession(FacesContext context)
     {
-        return MyfacesConfig.getCurrentInstance(context.getExternalContext()).getNumberOfSequentialViewsInSession();
+        return MyfacesConfig.getCurrentInstance(context).getNumberOfSequentialViewsInSession();
     }
 
     /**
@@ -239,7 +239,7 @@ class SerializedViewCollection implements Serializable
      */
     protected int getNumberOfViewsInSession(FacesContext context)
     {
-        return MyfacesConfig.getCurrentInstance(context.getExternalContext()).getNumberOfViewsInSession();
+        return MyfacesConfig.getCurrentInstance(context).getNumberOfViewsInSession();
     }
 
     public synchronized void putLastWindowKey(FacesContext context, String id, SerializedViewKey key)

@@ -174,8 +174,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _deletionLevel = -1;
         _sectionUniqueIdCounter = new SectionUniqueIdCounter();
         //Cached at facelet view
-        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(
-                facesContext.getExternalContext());
+        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext);
         if (myfacesConfig.getComponentUniqueIdsCacheSize() > 0)
         {
             String[] componentIdsCache = (String [])facesContext.getExternalContext().
@@ -576,7 +575,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         if (_refreshTransientBuildOnPSSPreserveState == null)
         {
             _refreshTransientBuildOnPSSPreserveState = MyfacesConfig.getCurrentInstance(
-                    _facesContext.getExternalContext()).isRefreshTransientBuildOnPSSPreserveState();
+                    _facesContext).isRefreshTransientBuildOnPSSPreserveState();
         }
         return _refreshTransientBuildOnPSSPreserveState;
     }

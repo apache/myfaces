@@ -280,8 +280,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
     {
         if (_strictJsf2FaceletsCompatibility == null)
         {
-            MyfacesConfig config = MyfacesConfig.getCurrentInstance(
-                    FacesContext.getCurrentInstance().getExternalContext());
+            MyfacesConfig config = MyfacesConfig.getCurrentInstance(FacesContext.getCurrentInstance());
 
             _strictJsf2FaceletsCompatibility = config.isStrictJsf2FaceletsCompatibility();
         }

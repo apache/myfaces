@@ -1430,8 +1430,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         {
             if (_isRefreshOnTransientBuildPreserveState == null)
             {
-                _isRefreshOnTransientBuildPreserveState = MyfacesConfig.getCurrentInstance(
-                        _facesContext.getExternalContext()).isRefreshTransientBuildOnPSSPreserveState();
+                _isRefreshOnTransientBuildPreserveState = MyfacesConfig.getCurrentInstance(_facesContext)
+                        .isRefreshTransientBuildOnPSSPreserveState();
             }
             return _isRefreshOnTransientBuildPreserveState;
         }

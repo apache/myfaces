@@ -422,7 +422,7 @@ class RestoreViewExecutor extends PhaseExecutor
                     matchPort = (serverPort == port);
                 }
                 boolean isStrictJsf2OriginHeaderAppPath = 
-                                MyfacesConfig.getCurrentInstance(ectx).isStrictJsf2OriginHeaderAppPath();
+                                MyfacesConfig.getCurrentInstance(facesContext).isStrictJsf2OriginHeaderAppPath();
                 if (!path.isEmpty())
                 {
                     if (serverHost.equals(host) && matchPort && path.contains(appContextPath))
@@ -600,8 +600,7 @@ class RestoreViewExecutor extends PhaseExecutor
         if (_viewNotFoundCheck == null)
         {
             
-            _viewNotFoundCheck = MyfacesConfig.getCurrentInstance(
-                facesContext.getExternalContext()).isStrictJsf2ViewNotFound();
+            _viewNotFoundCheck = MyfacesConfig.getCurrentInstance(facesContext).isStrictJsf2ViewNotFound();
         }
         return _viewNotFoundCheck;
     }

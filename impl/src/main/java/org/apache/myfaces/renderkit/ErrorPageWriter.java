@@ -645,7 +645,7 @@ public final class ErrorPageWriter
         {
             _writeVariables(writer, ctx.getSessionMap(), "Session Attributes");
         }
-        MyfacesConfig config = MyfacesConfig.getCurrentInstance(ctx);
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance(faces);
         if(config!=null && !config.isFlashScopeDisabled() && ctx.getFlash() != null)
         {
             _writeVariables(writer, ctx.getFlash(), "Flash Attributes");

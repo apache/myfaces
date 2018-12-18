@@ -706,7 +706,7 @@ public abstract class HtmlLinkRendererBase
             throws IOException
     {
         boolean strictXhtmlLinks
-                = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isStrictXhtmlLinks();
+                = MyfacesConfig.getCurrentInstance(facesContext).isStrictXhtmlLinks();
         List<UIComponent> childrenList = null;
         if (getChildCount(linkComponent) > 0)
         {

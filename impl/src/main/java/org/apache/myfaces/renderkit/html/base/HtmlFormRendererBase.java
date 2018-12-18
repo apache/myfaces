@@ -146,7 +146,7 @@ public class HtmlFormRendererBase extends HtmlRenderer
         // However, might be needed in the future
         beforeFormElementsStart(facesContext, component);
         
-        MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext);
         if (config.isRenderFormViewStateAtBegin())
         {
             renderViewStateAndHiddenFields(facesContext, component);
@@ -177,7 +177,7 @@ public class HtmlFormRendererBase extends HtmlRenderer
 
         beforeFormElementsEnd(facesContext, component);
 
-        MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext);
         if (!config.isRenderFormViewStateAtBegin())
         {
             renderViewStateAndHiddenFields(facesContext, component);

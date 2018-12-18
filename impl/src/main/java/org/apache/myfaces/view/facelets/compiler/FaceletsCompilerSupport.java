@@ -68,7 +68,7 @@ public class FaceletsCompilerSupport
     public void loadLibraries(FacesContext context, Compiler compiler)
     {
         ExternalContext eContext = context.getExternalContext();
-        MyfacesConfig config = MyfacesConfig.getCurrentInstance(eContext);
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance(context);
 
         // Initialize Runtime Libraries
         compiler.addTagLibrary(new CoreLibrary());

@@ -113,7 +113,7 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
 
             logWarningIfLegacyFaceletViewHandlerIsPresent(context);
 
-            if (MyfacesConfig.getCurrentInstance(context.getExternalContext()).isSupportJSPAndFacesEL())
+            if (MyfacesConfig.getCurrentInstance(context).isSupportJSPAndFacesEL())
             {
                 _supportedLanguages = new ViewDeclarationLanguageStrategy[2];
                 _supportedLanguages[0] = new FaceletViewDeclarationLanguageStrategy();

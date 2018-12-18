@@ -457,7 +457,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         Assert.notNull(url, "url");
 
         FacesContext facesContext = getCurrentFacesContext();
-        Integer port = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).getWebsocketEndpointPort();
+        Integer port = MyfacesConfig.getCurrentInstance(facesContext).getWebsocketEndpointPort();
         port = (port == 0) ? null : port;
         if (port != null && !port.equals(facesContext.getExternalContext().getRequestServerPort()))
         {

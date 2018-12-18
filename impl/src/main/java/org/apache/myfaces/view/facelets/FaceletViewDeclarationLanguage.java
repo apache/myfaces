@@ -251,7 +251,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
     public FaceletViewDeclarationLanguage(FacesContext context, ViewDeclarationLanguageStrategy strategy)
     {
-        _config = MyfacesConfig.getCurrentInstance(context.getExternalContext());
+        _config = MyfacesConfig.getCurrentInstance(context);
         initialize(context);
         _strategy = strategy;
     }

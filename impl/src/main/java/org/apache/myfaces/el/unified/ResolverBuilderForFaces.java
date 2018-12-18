@@ -91,8 +91,7 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
     @Override
     public void build(FacesContext facesContext, CompositeELResolver compositeElResolver)
     {
-        MyfacesConfig config = MyfacesConfig.getCurrentInstance(
-                     FacesContext.getCurrentInstance().getExternalContext());
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance(FacesContext.getCurrentInstance());
         
         // add the ELResolvers to a List first to be able to sort them
         List<ELResolver> list = new ArrayList<>();

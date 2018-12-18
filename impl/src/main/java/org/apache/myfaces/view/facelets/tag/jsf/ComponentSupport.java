@@ -577,7 +577,7 @@ public final class ComponentSupport
 
     public static void markComponentToRestoreFully(FacesContext context, UIComponent component)
     {
-        if (MyfacesConfig.getCurrentInstance(context.getExternalContext()).isRefreshTransientBuildOnPSSPreserveState())
+        if (MyfacesConfig.getCurrentInstance(context).isRefreshTransientBuildOnPSSPreserveState())
         {
             component.getAttributes().put(DefaultFaceletsStateManagementStrategy.COMPONENT_ADDED_AFTER_BUILD_VIEW,
                                           ComponentState.REMOVE_ADD);

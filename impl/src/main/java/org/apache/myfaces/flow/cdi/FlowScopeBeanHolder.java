@@ -263,7 +263,7 @@ public class FlowScopeBeanHolder implements Serializable
     {
         if (windowCollection == null)
         {
-            Integer ft = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).
+            Integer ft = MyfacesConfig.getCurrentInstance(facesContext).
                     getNumberOfFacesFlowClientWindowIdsInSession();
             windowCollection = new FacesFlowClientWindowCollection(new ClientWindowFacesFlowLRUMap(ft));
         }

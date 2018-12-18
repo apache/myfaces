@@ -192,7 +192,7 @@ public class ViewPoolProcessor
                 initialize = false;
             }
             
-            if (MyfacesConfig.getCurrentInstance(context.getExternalContext()).isStrictJsf2FaceletsCompatibility())
+            if (MyfacesConfig.getCurrentInstance(context).isStrictJsf2FaceletsCompatibility())
             {
                 Logger.getLogger(ViewPoolProcessor.class.getName()).log(
                     Level.INFO, MyfacesConfig.STRICT_JSF_2_FACELETS_COMPATIBILITY +

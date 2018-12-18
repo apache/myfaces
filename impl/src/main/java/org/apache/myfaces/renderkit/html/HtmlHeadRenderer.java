@@ -81,7 +81,7 @@ public class HtmlHeadRenderer extends Renderer
         
         writer.endElement(HEAD_ELEM);
 
-        if (MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isEarlyFlushEnabled()
+        if (MyfacesConfig.getCurrentInstance(facesContext).isEarlyFlushEnabled()
                 && facesContext.isProjectStage(ProjectStage.Production))
         {
             writer.flush();

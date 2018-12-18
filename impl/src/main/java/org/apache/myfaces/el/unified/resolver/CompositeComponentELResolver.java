@@ -84,7 +84,7 @@ public final class CompositeComponentELResolver extends ELResolver
             {
                 return null;
             }
-            if (!MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isStrictJsf2CCELResolver())
+            if (!MyfacesConfig.getCurrentInstance(facesContext).isStrictJsf2CCELResolver())
             {
                 // handle JSF 2.2 spec revisions:
                 // code resembles that found in Mojarra because it originates from

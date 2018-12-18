@@ -219,7 +219,7 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
     public ResponseWriter createResponseWriter(Writer writer, String contentTypeListString, String characterEncoding)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
+        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext);
         String selectedContentType = null;
         String writerContentType = null;
         boolean isAjaxRequest = facesContext.getPartialViewContext().isAjaxRequest();

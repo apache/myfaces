@@ -1319,7 +1319,7 @@ public class FacesConfigurator
             // if ProjectStage is Development, install the DebugPhaseListener
             FacesContext facesContext = getFacesContext();
             if (facesContext.isProjectStage(ProjectStage.Development) &&
-                    MyfacesConfig.getCurrentInstance(facesContext.getExternalContext()).isDebugPhaseListenerEnabled())
+                    MyfacesConfig.getCurrentInstance(facesContext).isDebugPhaseListenerEnabled())
             {
                 lifecycle.addPhaseListener(new DebugPhaseListener());
             }
