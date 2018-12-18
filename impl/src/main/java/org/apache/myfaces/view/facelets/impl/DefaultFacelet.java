@@ -126,19 +126,18 @@ final class DefaultFacelet extends AbstractFacelet
     public void apply(FacesContext facesContext, UIComponent parent) throws IOException, FacesException,
             FaceletException, ELException
     {
-        FaceletCompositionContext myFaceletContext = null;
+        FaceletCompositionContext myFaceletContext = FaceletCompositionContext.getCurrentInstance(facesContext);
         boolean faceletCompositionContextInitialized = false;
         boolean recordUniqueIds = false;
-        myFaceletContext = FaceletCompositionContext.getCurrentInstance(facesContext);
         if (myFaceletContext == null)
         {
             myFaceletContext = new FaceletCompositionContextImpl(_factory, facesContext);
             myFaceletContext.init(facesContext);
             faceletCompositionContextInitialized = true;
             if (_encodingHandler
-                    && !myFaceletContext.isBuildingViewMetadata()
                     && viewUniqueIdsCacheEnabled
-                    && _refreshPeriod <= 0)
+                    && _refreshPeriod <= 0
+                    && !myFaceletContext.isBuildingViewMetadata())
             {
                 List<String> uniqueIdList = ((EncodingHandler)_root).getUniqueIdList();
                 if (uniqueIdList == null)
@@ -221,8 +220,7 @@ final class DefaultFacelet extends AbstractFacelet
                 List<String> uniqueIdList = ((EncodingHandler)_root).getUniqueIdList();
                 if (recordUniqueIds &&  uniqueIdList == null)
                 {
-                    uniqueIdList = Collections.unmodifiableList(
-                            myFaceletContext.getUniqueIdList());
+                    uniqueIdList = Collections.unmodifiableList(myFaceletContext.getUniqueIdList());
                     ((EncodingHandler)_root).setUniqueIdList(uniqueIdList);
                 }
             }

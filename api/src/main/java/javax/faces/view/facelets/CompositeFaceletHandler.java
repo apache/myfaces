@@ -39,6 +39,7 @@ public final class CompositeFaceletHandler implements FaceletHandler
     /**
      * {@inheritDoc}
      */
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
         for (int i = 0; i < len; i++)
