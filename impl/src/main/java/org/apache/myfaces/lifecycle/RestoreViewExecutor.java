@@ -212,14 +212,13 @@ class RestoreViewExecutor extends PhaseExecutor
             }
         }
         else
-        { // If the request is a non-postback
+        { 
+            // If the request is a non-postback
             if (log.isLoggable(Level.FINEST))
             {
                 log.finest("Request is not a postback. New UIViewRoot will be created");
             }
-            
-            //viewHandler.deriveViewId(facesContext, viewId)
-            //restoreViewSupport.deriveViewId(facesContext, viewId)
+
             String logicalViewId = viewHandler.deriveLogicalViewId(facesContext, viewId);
             ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, logicalViewId);
             
