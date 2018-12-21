@@ -48,29 +48,7 @@ _MF_CLS(_PFX_CORE+"Object", Object, {
         }
     },
 
-    /**
-     * ie6 cleanup
-     * This method disposes all properties manually in case of ie6
-     * hence reduces the chance of running into a gc problem tremendously
-     * on other browsers this method does nothing
-     */
-    _finalize: function() {
-        try {
-            if (this._isGCed || !this._RT.browser.isIE || !this._resettableContent) {
-                //no ie, no broken garbage collector
-                return;
-            }
 
-            for (var key in this._resettableContent) {
-                if (this._RT.exists(this[key], "_finalize")) {
-                    this[key]._finalize();
-                }
-                delete this[key];
-            }
-        } finally {
-            this._isGCed = true;
-        }
-    },
 
     attr: function(name, value) {
        return this._Lang.attr(this, name, value);
