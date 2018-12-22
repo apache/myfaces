@@ -20,6 +20,7 @@ package org.apache.myfaces.config;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.application.ProjectStage;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
 import javax.faces.context.ExternalContext;
@@ -42,6 +43,7 @@ import org.apache.myfaces.util.StringUtils;
  * (or omitting the extended init parameters) all config properties will simply have
  * their default values.
  */
+//CHECKSTYLE:OFF
 public class MyfacesConfig
 {
     private static final String APPLICATION_MAP_PARAM_NAME = MyfacesConfig.class.getName();
@@ -723,7 +725,8 @@ public class MyfacesConfig
     @JSFWebConfigParam(since = "2.0", alias = "facelets.RESOURCE_RESOLVER")
     public final static String RESOURCE_RESOLVER = "javax.faces.FACELETS_RESOURCE_RESOLVER";
     
-    
+    // we need it, applicationImpl not ready probably
+    private ProjectStage projectStage = ProjectStage.Production;
     private boolean strictJsf2AllowSlashLibraryName;
     private long configRefreshPeriod = CONFIG_REFRESH_PERIOD_DEFAULT;
     private boolean renderViewStateId = RENDER_VIEWSTATE_ID_DEFAULT;
@@ -792,6 +795,9 @@ public class MyfacesConfig
     private int faceletsBufferSize = 1024;
     private boolean markInitialStateWhenApplyBuildView = MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW_DEFAULT;
     private String resourceResolver;
+    private String[] viewSuffix = new String[] { ViewHandler.DEFAULT_SUFFIX };
+    private String[] faceletsViewMappings = new String[] {};
+    private String faceletsViewSuffix = ViewHandler.DEFAULT_FACELETS_SUFFIX;
     
     
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -855,6 +861,19 @@ public class MyfacesConfig
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
     {
         MyfacesConfig cfg = new MyfacesConfig();
+
+        try
+        {
+            cfg.projectStage = ProjectStage.valueOf(getString(extCtx, ProjectStage.PROJECT_STAGE_PARAM_NAME, null));
+        }
+        catch (IllegalArgumentException e)
+        {
+            // ignore, it's logged in ApplicationImpl
+        }
+        if (cfg.projectStage == null)
+        {
+            cfg.projectStage = ProjectStage.Production;
+        }
 
         cfg.renderClearJavascriptOnButton = getBoolean(extCtx, RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON,
                 RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT);
@@ -1097,7 +1116,11 @@ public class MyfacesConfig
         
         cfg.checkedViewIdCacheEnabled = getBoolean(extCtx, CHECKED_VIEWID_CACHE_ENABLED,
                 CHECKED_VIEWID_CACHE_ENABLED_DEFAULT);
-        
+        if (cfg.projectStage == ProjectStage.Development)
+        {
+            cfg.checkedViewIdCacheEnabled = false;
+        }
+
         cfg.checkedViewIdCacheSize = getInt(extCtx, CHECKED_VIEWID_CACHE_SIZE,
                 CHECKED_VIEWID_CACHE_SIZE_DEFAULT);
         
@@ -1137,6 +1160,17 @@ public class MyfacesConfig
         
         cfg.resourceResolver = getString(extCtx, RESOURCE_RESOLVER,
                 null);
+        
+        cfg.viewSuffix = StringUtils.splitShortString(
+                getString(extCtx, ViewHandler.DEFAULT_SUFFIX_PARAM_NAME, ViewHandler.DEFAULT_SUFFIX),
+                ' ');
+        
+        cfg.faceletsViewMappings = StringUtils.splitShortString(
+                getString(extCtx, ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME, null),
+                ';');
+        
+        cfg.faceletsViewSuffix = getString(extCtx, ViewHandler.FACELETS_SUFFIX_PARAM_NAME,
+                ViewHandler.DEFAULT_FACELETS_SUFFIX);
         
         return cfg;
     }
@@ -1552,6 +1586,24 @@ public class MyfacesConfig
     {
         return resourceResolver;
     }
+
+    public String[] getViewSuffix()
+    {
+        return viewSuffix;
+    }
+
+    public String[] getFaceletsViewMappings()
+    {
+        return faceletsViewMappings;
+    }
+
+    public String getFaceletsViewSuffix()
+    {
+        return faceletsViewSuffix;
+    }
+
+
+ 
 
     
 }
