@@ -866,7 +866,7 @@ public class MyfacesConfig
         {
             cfg.projectStage = ProjectStage.valueOf(getString(extCtx, ProjectStage.PROJECT_STAGE_PARAM_NAME, null));
         }
-        catch (IllegalArgumentException e)
+        catch (Exception e)
         {
             // ignore, it's logged in ApplicationImpl
         }
