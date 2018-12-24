@@ -57,6 +57,7 @@ import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.VisitHintsHelper;
 
 public class PartialViewContextImpl extends PartialViewContext
 {
@@ -75,10 +76,6 @@ public class PartialViewContextImpl extends PartialViewContext
     
     private static final  Set<VisitHint> PARTIAL_EXECUTE_HINTS = Collections.unmodifiableSet( 
             EnumSet.of(VisitHint.EXECUTE_LIFECYCLE, VisitHint.SKIP_UNRENDERED));
-    
-    // unrendered have to be skipped, transient definitely must be added to our list!
-    private static final  Set<VisitHint> PARTIAL_RENDER_HINTS = 
-            Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED));
 
     private FacesContext _facesContext = null;
     private boolean _released = false;
@@ -528,7 +525,7 @@ public class PartialViewContextImpl extends PartialViewContext
                         processRenderResource(_facesContext, writer, rvc, updatedComponents, "form");
 
                         VisitContext visitCtx = getVisitContextFactory().getVisitContext(
-                                _facesContext, renderIds, PARTIAL_RENDER_HINTS);
+                                _facesContext, renderIds, VisitHintsHelper.SKIP_UNRENDERED_VISIT_HINTS);
                         viewRoot.visitTree(visitCtx,
                                            new PhaseAwareVisitCallback(_facesContext, phaseId, updatedComponents));
                     }

@@ -30,4 +30,7 @@ public class VisitHintsHelper
     
     public static final Set<VisitHint> SKIP_ITERATION_VISIT_HINTS = Collections.unmodifiableSet( 
             EnumSet.of(VisitHint.SKIP_ITERATION));
+    
+    public static final Set<VisitHint> SKIP_UNRENDERED_VISIT_HINTS = Collections.unmodifiableSet( 
+            EnumSet.of(VisitHint.SKIP_UNRENDERED));
 }

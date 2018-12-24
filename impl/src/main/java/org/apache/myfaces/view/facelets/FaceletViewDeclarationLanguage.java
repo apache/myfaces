@@ -27,7 +27,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -57,7 +56,6 @@ import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitHint;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -98,6 +96,7 @@ import org.apache.myfaces.application.ViewIdSupport;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.VisitHintsHelper;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.ViewMetadataBase;
@@ -199,9 +198,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     private final static String STATE_KEY = "<!--@@JSF_FORM_STATE_MARKER@@-->";
 
     private final static int STATE_KEY_LEN = STATE_KEY.length();
-    
-    private static final Set<VisitHint> VISIT_HINTS_DYN_REFRESH = Collections.unmodifiableSet( 
-            EnumSet.of(VisitHint.SKIP_ITERATION));
     
     private static final String SERIALIZED_VIEW_REQUEST_ATTR = 
         StateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
@@ -447,7 +443,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 if (FaceletViewDeclarationLanguageBase.isDynamicComponentRefreshTransientBuildActive(context))
                 {
                     VisitContext visitContext = (VisitContext) getVisitContextFactory().
-                        getVisitContext(context, null, VISIT_HINTS_DYN_REFRESH);
+                        getVisitContext(context, null, VisitHintsHelper.SKIP_ITERATION_VISIT_HINTS);
                     view.visitTree(visitContext, PublishDynamicComponentRefreshTransientBuildCallback.INSTANCE);
                 }
                 if (!usePartialStateSavingOnThisView || refreshTransientBuildOnPSS)

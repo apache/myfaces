@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -56,7 +55,6 @@ import javax.faces.component.UIData;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -69,6 +67,7 @@ import org.apache.myfaces.lifecycle.ViewNotFoundException;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.application.viewstate.StateUtils;
+import org.apache.myfaces.util.VisitHintsHelper;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
 import org.apache.myfaces.view.facelets.el.ContextAware;
 
@@ -783,7 +782,7 @@ public final class ErrorPageWriter
             FacesContext facesContext) throws IOException
     {
         VisitContext visitContext = VisitContext.createVisitContext(
-                facesContext, null, EnumSet.of(VisitHint.SKIP_UNRENDERED));
+                facesContext, null, VisitHintsHelper.SKIP_UNRENDERED_VISIT_HINTS);
         facesContext.getViewRoot().visitTree(visitContext, new ExtendedComponentTreeVisitCallback(writer));
         _clearVisitedFacetCountMap(facesContext);
     }
