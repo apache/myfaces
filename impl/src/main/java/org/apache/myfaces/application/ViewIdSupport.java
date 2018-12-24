@@ -35,7 +35,7 @@ import org.apache.myfaces.util.ConcurrentLRUCache;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ExternalContextUtils;
 import org.apache.myfaces.util.LangUtils;
-import org.apache.myfaces.util.ViewProtectionUtils;
+import org.apache.myfaces.util.UrlPatternMatcher;
 
 /**
  * A ViewHandlerSupport implementation for use with standard Java Servlet engines,
@@ -629,7 +629,7 @@ public class ViewIdSupport
             {
                 for (String urlPattern : protectedViews)
                 {
-                    if (ViewProtectionUtils.matchPattern(viewId, urlPattern))
+                    if (UrlPatternMatcher.match(viewId, urlPattern))
                     {
                         protectedView = true;
                         break;

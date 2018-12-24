@@ -18,13 +18,8 @@
  */
 package org.apache.myfaces.util;
 
-/**
- *
- * @since 2.2
- */
-public class ViewProtectionUtils
+public class UrlPatternMatcher
 {
-    
     /**
      * NOTE: Taken from org.apache.catalina.deploy.SecurityConstraint
      * 
@@ -36,7 +31,7 @@ public class ViewProtectionUtils
      *  (must start with '/')
      * @param pattern URL pattern to be compared against
      */
-    public static boolean matchPattern(String path, String pattern)
+    public static boolean match(String path, String pattern)
     {
         // Normalize the argument strings
         if ((path == null) || (path.length() == 0))

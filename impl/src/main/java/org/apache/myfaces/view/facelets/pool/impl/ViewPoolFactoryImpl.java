@@ -27,7 +27,7 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.ViewPoolParameter;
-import org.apache.myfaces.util.ViewProtectionUtils;
+import org.apache.myfaces.util.UrlPatternMatcher;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.pool.ViewPool;
 import org.apache.myfaces.view.facelets.pool.ViewPoolFactory;
@@ -69,7 +69,7 @@ public class ViewPoolFactoryImpl extends ViewPoolFactory
         for (int i = 0; i < urlPatterns.size(); i++)
         {
             String urlPattern = urlPatterns.get(i);
-            if (ViewProtectionUtils.matchPattern(root.getViewId(), urlPattern))
+            if (UrlPatternMatcher.match(root.getViewId(), urlPattern))
             {
                 return viewPoolList.get(i);
             }
