@@ -57,7 +57,7 @@ import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.StringUtils;
-import org.apache.myfaces.util.VisitHintsHelper;
+import org.apache.myfaces.component.visit.MyFacesVisitHints;
 
 public class PartialViewContextImpl extends PartialViewContext
 {
@@ -524,8 +524,8 @@ public class PartialViewContextImpl extends PartialViewContext
                         processRenderResource(_facesContext, writer, rvc, updatedComponents, "body");
                         processRenderResource(_facesContext, writer, rvc, updatedComponents, "form");
 
-                        VisitContext visitCtx = getVisitContextFactory().getVisitContext(
-                                _facesContext, renderIds, VisitHintsHelper.SKIP_UNRENDERED_VISIT_HINTS);
+                        VisitContext visitCtx = getVisitContextFactory().getVisitContext(_facesContext, renderIds,
+                                MyFacesVisitHints.SET_SKIP_UNRENDERED);
                         viewRoot.visitTree(visitCtx,
                                            new PhaseAwareVisitCallback(_facesContext, phaseId, updatedComponents));
                     }

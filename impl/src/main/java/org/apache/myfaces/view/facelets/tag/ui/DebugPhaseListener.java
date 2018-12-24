@@ -38,7 +38,7 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 
 import org.apache.myfaces.renderkit.ErrorPageWriter;
-import org.apache.myfaces.util.VisitHintsHelper;
+import org.apache.myfaces.component.visit.MyFacesVisitHints;
 
 /**
  * PhaseListener to create extended debug information.
@@ -311,8 +311,8 @@ public class DebugPhaseListener implements PhaseListener
         {
             // skip all unrendered components to really only show
             // the rendered components and to circumvent data access problems
-            viewroot.visitTree(VisitContext.createVisitContext(
-                    event.getFacesContext(), null, VisitHintsHelper.SKIP_UNRENDERED_VISIT_HINTS),
+            viewroot.visitTree(VisitContext.createVisitContext(event.getFacesContext(), null,
+                    MyFacesVisitHints.SET_SKIP_UNRENDERED),
                     _visitCallback);
         }
     }

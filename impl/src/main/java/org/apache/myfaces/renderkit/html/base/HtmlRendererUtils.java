@@ -71,7 +71,7 @@ import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.util.LangUtils;
-import org.apache.myfaces.util.VisitHintsHelper;
+import org.apache.myfaces.component.visit.MyFacesVisitHints;
 
 public final class HtmlRendererUtils
 {
@@ -274,7 +274,7 @@ public final class HtmlRendererUtils
                                         component.getClientId(facesContext),
                                         component.getValueExpression("value") != null);
                         form.visitTree(VisitContext.createVisitContext(facesContext,
-                                null, VisitHintsHelper.SKIP_UNRENDERED_VISIT_HINTS),
+                                null, MyFacesVisitHints.SET_SKIP_UNRENDERED),
                                 callback);
                     }
                 }

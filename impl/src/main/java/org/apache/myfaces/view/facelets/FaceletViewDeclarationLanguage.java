@@ -96,7 +96,7 @@ import org.apache.myfaces.application.ViewIdSupport;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.util.StringUtils;
-import org.apache.myfaces.util.VisitHintsHelper;
+import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.ViewMetadataBase;
@@ -443,7 +443,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 if (FaceletViewDeclarationLanguageBase.isDynamicComponentRefreshTransientBuildActive(context))
                 {
                     VisitContext visitContext = (VisitContext) getVisitContextFactory().
-                        getVisitContext(context, null, VisitHintsHelper.SKIP_ITERATION_VISIT_HINTS);
+                        getVisitContext(context, null, MyFacesVisitHints.SET_SKIP_ITERATION);
                     view.visitTree(visitContext, PublishDynamicComponentRefreshTransientBuildCallback.INSTANCE);
                 }
                 if (!usePartialStateSavingOnThisView || refreshTransientBuildOnPSS)

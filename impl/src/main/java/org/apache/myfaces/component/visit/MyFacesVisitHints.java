@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.util;
+package org.apache.myfaces.component.visit;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -24,13 +24,13 @@ import java.util.Set;
 import javax.faces.component.visit.VisitHint;
 
 
-public class VisitHintsHelper
+public class MyFacesVisitHints
 {
     public static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
     
-    public static final Set<VisitHint> SKIP_ITERATION_VISIT_HINTS = Collections.unmodifiableSet( 
+    public static final Set<VisitHint> SET_SKIP_ITERATION = Collections.unmodifiableSet( 
             EnumSet.of(VisitHint.SKIP_ITERATION));
     
-    public static final Set<VisitHint> SKIP_UNRENDERED_VISIT_HINTS = Collections.unmodifiableSet( 
+    public static final Set<VisitHint> SET_SKIP_UNRENDERED = Collections.unmodifiableSet( 
             EnumSet.of(VisitHint.SKIP_UNRENDERED));
 }

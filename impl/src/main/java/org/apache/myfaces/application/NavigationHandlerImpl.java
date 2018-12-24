@@ -71,7 +71,7 @@ import org.apache.myfaces.util.HashMapUtils;
 import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.util.FilenameUtils;
 import org.apache.myfaces.util.LangUtils;
-import org.apache.myfaces.util.VisitHintsHelper;
+import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
 
@@ -310,15 +310,15 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 {
                     try
                     {
-                        facesContext.getAttributes().put(VisitHintsHelper.SKIP_ITERATION_HINT, Boolean.TRUE);
+                        facesContext.getAttributes().put(MyFacesVisitHints.SKIP_ITERATION_HINT, Boolean.TRUE);
 
                         VisitContext visitContext = VisitContext.createVisitContext(facesContext,
-                                null, VisitHintsHelper.SKIP_ITERATION_VISIT_HINTS);
+                                null, MyFacesVisitHints.SET_SKIP_ITERATION);
                         facesContext.getViewRoot().visitTree(visitContext, PreDisposeViewCallback.INSTANCE);
                     }
                     finally
                     {
-                        facesContext.getAttributes().remove(VisitHintsHelper.SKIP_ITERATION_HINT);
+                        facesContext.getAttributes().remove(MyFacesVisitHints.SKIP_ITERATION_HINT);
                     }
                 }
                 

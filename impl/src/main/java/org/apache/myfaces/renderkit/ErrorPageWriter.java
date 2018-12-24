@@ -67,7 +67,7 @@ import org.apache.myfaces.lifecycle.ViewNotFoundException;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.application.viewstate.StateUtils;
-import org.apache.myfaces.util.VisitHintsHelper;
+import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
 import org.apache.myfaces.view.facelets.el.ContextAware;
 
@@ -781,8 +781,8 @@ public final class ErrorPageWriter
     private static void _writeExtendedComponentTree(Writer writer,
             FacesContext facesContext) throws IOException
     {
-        VisitContext visitContext = VisitContext.createVisitContext(
-                facesContext, null, VisitHintsHelper.SKIP_UNRENDERED_VISIT_HINTS);
+        VisitContext visitContext = VisitContext.createVisitContext(facesContext, null,
+                MyFacesVisitHints.SET_SKIP_UNRENDERED);
         facesContext.getViewRoot().visitTree(visitContext, new ExtendedComponentTreeVisitCallback(writer));
         _clearVisitedFacetCountMap(facesContext);
     }

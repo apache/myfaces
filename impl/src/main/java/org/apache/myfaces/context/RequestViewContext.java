@@ -31,7 +31,7 @@ import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.util.VisitHintsHelper;
+import org.apache.myfaces.component.visit.MyFacesVisitHints;
 
 /**
  *
@@ -214,17 +214,17 @@ public class RequestViewContext
             {
                 try
                 {
-                    facesContext.getAttributes().put(VisitHintsHelper.SKIP_ITERATION_HINT, Boolean.TRUE);
+                    facesContext.getAttributes().put(MyFacesVisitHints.SKIP_ITERATION_HINT, Boolean.TRUE);
 
                     VisitContext visitContext = VisitContext.createVisitContext(facesContext,
-                            null, VisitHintsHelper.SKIP_ITERATION_VISIT_HINTS);
+                            null, MyFacesVisitHints.SET_SKIP_ITERATION);
                     facet.visitTree(visitContext, new RefreshViewContext());
                 }
                 finally
                 {
                     // We must remove hint in finally, because an exception can break this phase,
                     // but lifecycle can continue, if custom exception handler swallows the exception
-                    facesContext.getAttributes().remove(VisitHintsHelper.SKIP_ITERATION_HINT);
+                    facesContext.getAttributes().remove(MyFacesVisitHints.SKIP_ITERATION_HINT);
                 }
             }
         }

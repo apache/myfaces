@@ -55,7 +55,7 @@ import javax.faces.view.facelets.ValidatorHandler;
 
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
-import org.apache.myfaces.util.VisitHintsHelper;
+import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.ComponentState;
 import org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy;
@@ -251,7 +251,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                     FaceletDynamicComponentRefreshTransientBuildEvent.DYNAMIC_COMPONENT_BINDING_NEEDS_REFRESH))
             {
                 VisitContext visitContext = (VisitContext) mctx.getVisitContextFactory().
-                    getVisitContext(facesContext, null, VisitHintsHelper.SKIP_ITERATION_VISIT_HINTS);
+                    getVisitContext(facesContext, null, MyFacesVisitHints.SET_SKIP_ITERATION);
                 c.visitTree(visitContext, PublishFaceletDynamicComponentRefreshTransientBuildCallback.INSTANCE);
             }
             

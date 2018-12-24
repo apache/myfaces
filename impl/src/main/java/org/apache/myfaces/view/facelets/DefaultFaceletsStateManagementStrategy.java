@@ -54,7 +54,7 @@ import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.util.HashMapUtils;
-import org.apache.myfaces.util.VisitHintsHelper;
+import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.view.facelets.compiler.CheckDuplicateIdFaceletUtils;
 import org.apache.myfaces.view.facelets.pool.ViewEntry;
 import org.apache.myfaces.view.facelets.pool.ViewPool;
@@ -935,11 +935,11 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     private void saveStateOnMapVisitTree(final FacesContext facesContext, final Map<String,Object> states,
             final UIViewRoot uiViewRoot)
     {
-        facesContext.getAttributes().put(VisitHintsHelper.SKIP_ITERATION_HINT, Boolean.TRUE);
+        facesContext.getAttributes().put(MyFacesVisitHints.SKIP_ITERATION_HINT, Boolean.TRUE);
         try
         {
-            uiViewRoot.visitTree( getVisitContextFactory().getVisitContext(
-                    facesContext, null, VisitHintsHelper.SKIP_ITERATION_VISIT_HINTS), new VisitCallback()
+            uiViewRoot.visitTree(getVisitContextFactory().getVisitContext(facesContext, null,
+                    MyFacesVisitHints.SET_SKIP_ITERATION), new VisitCallback()
             {
                 @Override
                 public VisitResult visit(VisitContext context, UIComponent target)
@@ -1035,7 +1035,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         }
         finally
         {
-            facesContext.getAttributes().remove(VisitHintsHelper.SKIP_ITERATION_HINT);
+            facesContext.getAttributes().remove(MyFacesVisitHints.SKIP_ITERATION_HINT);
         }
         if (!uiViewRoot.isTransient())
         {
@@ -1053,7 +1053,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     private SaveStateAndResetViewCallback saveStateOnMapVisitTreeAndReset(final FacesContext facesContext,
             final Map<String,Object> states, final UIViewRoot uiViewRoot, boolean forceHardReset)
     {
-        facesContext.getAttributes().put(VisitHintsHelper.SKIP_ITERATION_HINT, Boolean.TRUE);
+        facesContext.getAttributes().put(MyFacesVisitHints.SKIP_ITERATION_HINT, Boolean.TRUE);
         SaveStateAndResetViewCallback callback = new SaveStateAndResetViewCallback(
                 facesContext.getViewRoot(), states, forceHardReset);
         if (forceHardReset)
@@ -1088,12 +1088,13 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
 
             try
             {
-                uiViewRoot.visitTree( getVisitContextFactory().getVisitContext(
-                        facesContext, null, VisitHintsHelper.SKIP_ITERATION_VISIT_HINTS), callback);
+                uiViewRoot.visitTree(getVisitContextFactory().getVisitContext(
+                        facesContext, null, MyFacesVisitHints.SET_SKIP_ITERATION),
+                        callback);
             }
             finally
             {
-                facesContext.getAttributes().remove(VisitHintsHelper.SKIP_ITERATION_HINT);
+                facesContext.getAttributes().remove(MyFacesVisitHints.SKIP_ITERATION_HINT);
             }
             
             if (callback.isViewResetable() && callback.isRemoveAddedComponents())

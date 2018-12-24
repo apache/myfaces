@@ -31,7 +31,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.PostRestoreStateEvent;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
-import org.apache.myfaces.util.VisitHintsHelper;
+import org.apache.myfaces.component.visit.MyFacesVisitHints;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -60,17 +60,17 @@ public class RestoreViewSupport
         // hint, JSF21-based libraries can use both.
         try
         {
-            facesContext.getAttributes().put(VisitHintsHelper.SKIP_ITERATION_HINT, Boolean.TRUE);
+            facesContext.getAttributes().put(MyFacesVisitHints.SKIP_ITERATION_HINT, Boolean.TRUE);
 
             VisitContext visitContext = (VisitContext) visitContextFactory.getVisitContext(facesContext,
-                    null, VisitHintsHelper.SKIP_ITERATION_VISIT_HINTS);
+                    null, MyFacesVisitHints.SET_SKIP_ITERATION);
             component.visitTree(visitContext, new RestoreStateCallback());
         }
         finally
         {
             // We must remove hint in finally, because an exception can break this phase,
             // but lifecycle can continue, if custom exception handler swallows the exception
-            facesContext.getAttributes().remove(VisitHintsHelper.SKIP_ITERATION_HINT);
+            facesContext.getAttributes().remove(MyFacesVisitHints.SKIP_ITERATION_HINT);
         }
     }
 
