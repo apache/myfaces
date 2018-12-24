@@ -43,10 +43,6 @@ import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.Head")
 public class HtmlHeadRenderer extends Renderer
 {
-    //TODO: Move constants to shared HTML class
-    private final static String HEAD_ELEM = "head";
-    private final static String HEAD_TARGET = HEAD_ELEM;
-
     private final static String PROFILE_ATTR = "profile";
 
     private final static String[] HEAD_PASSTHROUGH_ATTRIBUTES = { HTML.DIR_ATTR,
@@ -58,7 +54,7 @@ public class HtmlHeadRenderer extends Renderer
         super.encodeBegin(facesContext, component); //check for NP
 
         ResponseWriter writer = facesContext.getResponseWriter();
-        writer.startElement(HEAD_ELEM, component);
+        writer.startElement(HTML.HEAD_ELEM, component);
         HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
         HtmlRendererUtils.renderHTMLAttributes(writer, component, HEAD_PASSTHROUGH_ATTRIBUTES);
         HtmlRendererUtils.renderHTMLAttribute(writer, component, HTML.XMLNS_ATTR , HTML.XMLNS_ATTR);
@@ -72,14 +68,14 @@ public class HtmlHeadRenderer extends Renderer
         ResponseWriter writer = facesContext.getResponseWriter();
         UIViewRoot root = facesContext.getViewRoot();
 
-        List<UIComponent> componentResources = root.getComponentResources(facesContext, HEAD_TARGET);
+        List<UIComponent> componentResources = root.getComponentResources(facesContext, "head");
         for (int i = 0, childCount = componentResources.size(); i < childCount; i++)
         {
             UIComponent child = componentResources.get(i);
             child.encodeAll(facesContext);
         }
         
-        writer.endElement(HEAD_ELEM);
+        writer.endElement(HTML.HEAD_ELEM);
 
         if (MyfacesConfig.getCurrentInstance(facesContext).isEarlyFlushEnabled()
                 && facesContext.isProjectStage(ProjectStage.Production))

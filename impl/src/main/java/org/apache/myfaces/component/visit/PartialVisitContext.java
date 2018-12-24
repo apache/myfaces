@@ -284,7 +284,7 @@ public class PartialVisitContext extends VisitContext
         // is more expensive than just getting the local id.
         String id = component.getId();
 
-        if ((id != null) && !_ids.contains(id))
+        if (id != null && !_ids.contains(id))
         {
             return null;
         }

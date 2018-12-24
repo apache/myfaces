@@ -1202,18 +1202,6 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         return this.getNavigationCase(context, fromAction, outcome).getToViewId(context);
     }
 
-    /**
-     * TODO
-     * Invoked by the navigation handler before the new view component is created.
-     * @param viewId The view ID to be created
-     * @return The view ID that should be used instead. If null, the view ID passed
-     * in will be used without modification.
-     */
-    public String beforeNavigation(String viewId)
-    {
-        return null;
-    }
-
     private NavigationCase calcMatchingNavigationCase(FacesContext context,
                                                       Set<? extends NavigationCase> casesList,
                                                       String actionRef,
