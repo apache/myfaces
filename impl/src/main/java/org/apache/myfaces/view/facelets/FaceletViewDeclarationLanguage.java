@@ -456,7 +456,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     // facelets refreshing algorithm do the opposite.
                     //FaceletViewDeclarationLanguage._publishPreRemoveFromViewEvent(context, view);
                     //FaceletViewDeclarationLanguage._publishPostAddToViewEvent(context, view);
-                    FaceletViewDeclarationLanguage._publishPostBuildComponentTreeOnRestoreViewEvent(context, view);
                 }
 
                 context.getAttributes().remove(REFRESHING_TRANSIENT_BUILD);
@@ -527,11 +526,10 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
             // We need to suscribe the listeners of changes in the component tree
             // only the first time here. Later we suscribe this listeners on
-            // DefaultFaceletsStateManagement.restoreView after calling 
-            // _publishPostBuildComponentTreeOnRestoreViewEvent(), to ensure 
+            // DefaultFaceletsStateManagement.restoreView, to ensure 
             // relocated components are not retrieved later on getClientIdsRemoved().
-            if (!(refreshTransientBuild && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId())) &&
-                !view.isTransient())
+            if (!(refreshTransientBuild && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId()))
+                    && !view.isTransient())
             {
                 ((DefaultFaceletsStateManagementStrategy) getStateManagementStrategy(context, view.getViewId())).
                         suscribeListeners(view);
@@ -612,44 +610,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 }
             }
 
-        }
-    }
-
-    public static void _publishPostBuildComponentTreeOnRestoreViewEvent(FacesContext context, UIComponent component)
-    {
-        context.getApplication().publishEvent(context, PostBuildComponentTreeOnRestoreViewEvent.class,
-                                              component.getClass(), component);
-
-        if (component.getChildCount() > 0)
-        {
-            // PostAddToViewEvent could cause component relocation
-            // (h:outputScript, h:outputStylesheet, composite:insertChildren, composite:insertFacet)
-            // so we need to check if the component was relocated or not
-            List<UIComponent> children = component.getChildren();
-            UIComponent child = null;
-            UIComponent currentChild = null;
-            int i = 0;
-            while (i < children.size())
-            {
-                child = children.get(i);
-                // Iterate over the same index if the component was removed
-                // This prevents skip components when processing
-                do
-                {
-                    _publishPostBuildComponentTreeOnRestoreViewEvent(context, child);
-                    currentChild = child;
-                    child = children.get(i);
-                }
-                while ((i < children.size()) && child != currentChild);
-                i++;
-            }
-        }
-        if (component.getFacetCount() > 0)
-        {
-            for (UIComponent child : component.getFacets().values())
-            {
-                _publishPostBuildComponentTreeOnRestoreViewEvent(context, child);
-            }
         }
     }
 

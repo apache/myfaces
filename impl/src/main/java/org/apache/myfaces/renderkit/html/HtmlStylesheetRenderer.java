@@ -46,11 +46,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**
  * Renderer used by h:outputStylesheet component 
- * 
- * Note: originally this component required PostBuildComponentTreeOnRestoreViewEvent,
- * but that is no longer true because a tag handler implementing RelocatableResourceHandler
- * interface was associated, so the component is really marked and refreshed.
- * 
+ *
  * @since 2.0
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
