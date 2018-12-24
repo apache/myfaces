@@ -209,7 +209,7 @@ public class ViewIdSupport
         // the viewId is bound or not with a mapping.
         if (mapping != null && mapping.isExactMapping())
         {
-            String exactMappingViewId = calculatePrefixedExactMapping(context, viewId);
+            String exactMappingViewId = calculateExactMapping(context, viewId);
             if (exactMappingViewId != null && !exactMappingViewId.isEmpty())
             {
                 // if the current exactMapping already matches the requested viewId -> same view, skip....
@@ -321,7 +321,7 @@ public class ViewIdSupport
         return calculatedActionURL;
     }
     
-    private String calculatePrefixedExactMapping(FacesContext context, String viewId)
+    private String calculateExactMapping(FacesContext context, String viewId)
     {
         String prefixedExactMapping = null;
         for (String contextSuffix : config.getViewSuffix())
