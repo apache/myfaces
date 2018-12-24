@@ -51,7 +51,7 @@ import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
 import org.apache.myfaces.context.PartialViewContextFactoryImpl;
-import org.apache.myfaces.application.ViewHandlerSupport;
+import org.apache.myfaces.application.ViewIdSupport;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigurationProviderFactory;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMultipleRequestsTestCase;
@@ -230,7 +230,7 @@ public abstract class FaceletMultipleRequestsTestCase extends AbstractJsfConfigu
         ((MockFacesContext)facesContext).setApplication(application);
         
         ViewHandlerImpl viewHandler = (ViewHandlerImpl) application.getViewHandler();
-        viewHandler.setViewHandlerSupport(new ViewHandlerSupport(){
+        viewHandler.setViewIdSupport(new ViewIdSupport(facesContext){
 
             @Override
             public String calculateActionURL(FacesContext facesContext,

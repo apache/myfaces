@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +45,6 @@ import javax.faces.component.UIViewAction;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -73,6 +71,7 @@ import org.apache.myfaces.util.HashMapUtils;
 import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.util.FilenameUtils;
 import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.VisitHintsHelper;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
 
@@ -81,16 +80,10 @@ import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-public class NavigationHandlerImpl
-    extends ConfigurableNavigationHandler
+public class NavigationHandlerImpl extends ConfigurableNavigationHandler
 {
     private static final Logger log = Logger.getLogger(NavigationHandlerImpl.class.getName());
 
-    private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
-    
-    private static final Set<VisitHint> VISIT_HINTS = Collections.unmodifiableSet(
-            EnumSet.of(VisitHint.SKIP_ITERATION));    
-    
     private static final String OUTCOME_NAVIGATION_SB = "oam.navigation.OUTCOME_NAVIGATION_SB";
     
     private static final Pattern AMP_PATTERN = Pattern.compile("&(amp;)?"); // "&" or "&amp;"
@@ -104,7 +97,7 @@ public class NavigationHandlerImpl
     private Map<String, _FlowNavigationStructure> _flowNavigationStructureMap = 
         new ConcurrentHashMap<String, _FlowNavigationStructure>();
     
-    private NavigationHandlerSupport navigationHandlerSupport;
+    private ViewIdSupport viewIdSupport;
 
     public NavigationHandlerImpl()
     {
@@ -317,14 +310,15 @@ public class NavigationHandlerImpl
                 {
                     try
                     {
-                        facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
+                        facesContext.getAttributes().put(VisitHintsHelper.SKIP_ITERATION_HINT, Boolean.TRUE);
 
-                        VisitContext visitContext = VisitContext.createVisitContext(facesContext, null, VISIT_HINTS);
+                        VisitContext visitContext = VisitContext.createVisitContext(facesContext,
+                                null, VisitHintsHelper.SKIP_ITERATION_VISIT_HINTS);
                         facesContext.getViewRoot().visitTree(visitContext, PreDisposeViewCallback.INSTANCE);
                     }
                     finally
                     {
-                        facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
+                        facesContext.getAttributes().remove(VisitHintsHelper.SKIP_ITERATION_HINT);
                     }
                 }
                 
@@ -405,26 +399,27 @@ public class NavigationHandlerImpl
         }
     }
 
-    /**
-    * @return the navigationHandlerSupport
-    */
-    protected NavigationHandlerSupport getNavigationHandlerSupport()
+    protected ViewIdSupport getViewIdSupport()
     {
-        if (navigationHandlerSupport == null)
+        if (viewIdSupport == null)
         {
-            navigationHandlerSupport = new DefaultNavigationHandlerSupport();
+            viewIdSupport = ViewIdSupport.getInstance(FacesContext.getCurrentInstance());
         }
-        return navigationHandlerSupport;
+        return viewIdSupport;
     }
 
-    public void setNavigationHandlerSupport(NavigationHandlerSupport navigationHandlerSupport)
+    public void setViewIdSupport(ViewIdSupport viewIdSupport)
     {
-        this.navigationHandlerSupport = navigationHandlerSupport;
+        this.viewIdSupport = viewIdSupport;
     }
 
     private static class PreDisposeViewCallback implements VisitCallback
     {
         public static final PreDisposeViewCallback INSTANCE = new PreDisposeViewCallback();
+        
+        private PreDisposeViewCallback()
+        {
+        }
         
         @Override
         public VisitResult visit(VisitContext context, UIComponent target)
@@ -439,6 +434,7 @@ public class NavigationHandlerImpl
     /**
      * Returns the navigation case that applies for the given action and outcome
      */
+    @Override
     public NavigationCase getNavigationCase(FacesContext facesContext, String fromAction, String outcome)
     {
         NavigationContext navigationContext = new NavigationContext();
@@ -1068,7 +1064,7 @@ public class NavigationHandlerImpl
                 // In this case, it should try to derive the viewId of the view that was
                 // not able to restore, to get the extension and apply it to
                 // the implicit navigation.
-                String tempViewId = getNavigationHandlerSupport().calculateViewId(facesContext);
+                String tempViewId = getViewIdSupport().calculateViewId(facesContext);
                 if (tempViewId != null)
                 {
                     index = tempViewId.lastIndexOf('.');
@@ -1158,8 +1154,7 @@ public class NavigationHandlerImpl
             if (queryString != null && LangUtils.isNotBlank(queryString))
             {
                 String[] splitQueryParams = AMP_PATTERN.split(queryString); // "&" or "&amp;"
-                params = new HashMap<String, List<String>>(splitQueryParams.length, 
-                        (splitQueryParams.length* 4 + 3) / 3);
+                params = new HashMap<>(splitQueryParams.length, (splitQueryParams.length* 4 + 3) / 3);
                 for (String queryParam : splitQueryParams)
                 {
                     String[] splitParam = StringUtils.splitShortString(queryParam, '=');

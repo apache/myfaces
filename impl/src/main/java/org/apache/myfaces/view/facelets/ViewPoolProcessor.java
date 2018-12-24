@@ -39,7 +39,6 @@ import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.component.ComponentResourceContainer;
 import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.context.RequestViewMetadata;
-import org.apache.myfaces.lifecycle.DefaultRestoreViewSupport;
 import org.apache.myfaces.lifecycle.RestoreViewSupport;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.WebConfigParamUtils;
@@ -144,7 +143,7 @@ public class ViewPoolProcessor
     public ViewPoolProcessor(FacesContext context)
     {
         viewPoolFactory = new ViewPoolFactoryImpl(context);
-        restoreViewSupport = new DefaultRestoreViewSupport(context);
+        restoreViewSupport = new RestoreViewSupport(context);
     }
     
     public static ViewPoolProcessor getInstance(FacesContext context)

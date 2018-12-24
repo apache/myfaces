@@ -16,9 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.application;
+package org.apache.myfaces.application;
 
-import org.apache.myfaces.application.DefaultViewHandlerSupport;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
@@ -28,16 +27,26 @@ import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DefaultViewHandlerSupportTest extends AbstractJsfTestCase
+public class ViewIdSupportTest extends AbstractJsfTestCase
 {
     private final String filePath = this.getDirectory();
+    private ViewIdSupport viewHandlerSupport;
     
     @Override
     protected void setUpServletObjects() throws Exception
     {
         URI context = this.getContext();
         super.setUpServletObjects();
+        
+        //setup document root to correctly resolve viewExists
         servletContext.setDocumentRoot(new File(context));
+    }
+    
+    @Override
+    public void setUp() throws Exception
+    {
+        super.setUp();
+        viewHandlerSupport = ViewIdSupport.getInstance(facesContext);
     }
     
     private String getDirectory()
@@ -73,34 +82,28 @@ public class DefaultViewHandlerSupportTest extends AbstractJsfTestCase
     public void testDeriveViewId1() throws Exception
     {
         request.setPathElements("/testwebapp", "/view1.jsf", null , null);
-
-        DefaultViewHandlerSupport support = new DefaultViewHandlerSupport();
         
-        String derivedViewId = support.deriveViewId(facesContext, "/view1.jsf");
+        String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/view1.jsf");
         
         Assert.assertNotNull(derivedViewId);
     }
     
     @Test
     public void testDeriveViewId2() throws Exception
-    {
-        DefaultViewHandlerSupport support = new DefaultViewHandlerSupport();
-        
+    {        
         request.setPathElements("/testwebapp", "/faces", "/view1.jsp" , null);
         
-        String derivedViewId = support.deriveViewId(facesContext, "/view1.jsp");
+        String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/view1.jsp");
         
         Assert.assertNotNull(derivedViewId);
     }
     
     @Test
     public void testDeriveViewId21() throws Exception
-    {
-        DefaultViewHandlerSupport support = new DefaultViewHandlerSupport();
-        
+    {        
         request.setPathElements("/testwebapp", "/faces", "/faces/view1.jsp" , null);
         
-        String derivedViewId = support.deriveViewId(facesContext, "/faces/view1.jsp");
+        String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/faces/view1.jsp");
         
         Assert.assertNotNull(derivedViewId);
     }    
@@ -108,23 +111,19 @@ public class DefaultViewHandlerSupportTest extends AbstractJsfTestCase
     @Test
     public void testDeriveViewId3() throws Exception
     {
-        DefaultViewHandlerSupport support = new DefaultViewHandlerSupport();
-        
         request.setPathElements("/testwebapp", "/view2.jsf", null , null);
         
-        String derivedViewId = support.deriveViewId(facesContext, "/view2.jsf");
+        String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/view2.jsf");
         
         Assert.assertNotNull(derivedViewId);
     }
     
     @Test
     public void testDeriveViewId4() throws Exception
-    {
-        DefaultViewHandlerSupport support = new DefaultViewHandlerSupport();
-        
+    {        
         request.setPathElements("/testwebapp", "/faces", "/view2.xhtml" , null);
         
-        String derivedViewId = support.deriveViewId(facesContext, "/view2.xhtml");
+        String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/view2.xhtml");
         
         Assert.assertNotNull(derivedViewId);
     }
@@ -134,10 +133,8 @@ public class DefaultViewHandlerSupportTest extends AbstractJsfTestCase
     public void testDeriveViewId5() throws Exception
     {
         request.setPathElements("/testwebapp", "/noview1.jsf", null , null);
-
-        DefaultViewHandlerSupport support = new DefaultViewHandlerSupport();
         
-        String derivedViewId = support.deriveViewId(facesContext, "/noview1.jsf");
+        String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/noview1.jsf");
         
         Assert.assertNull(derivedViewId);
     }
@@ -148,12 +145,10 @@ public class DefaultViewHandlerSupportTest extends AbstractJsfTestCase
      */
     @Test
     public void testEmptyPrefixMapping() throws Exception
-    {
-        DefaultViewHandlerSupport support = new DefaultViewHandlerSupport();
-        
+    {        
         request.setPathElements("/testwebapp", "", "/view2.xhtml" , null);
         
-        String derivedViewId = support.deriveViewId(facesContext, "/view2.xhtml");
+        String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "/view2.xhtml");
         
         Assert.assertEquals("/view2.xhtml", derivedViewId);
     }
@@ -166,13 +161,12 @@ public class DefaultViewHandlerSupportTest extends AbstractJsfTestCase
      */
     @Test
     public void testEmptyPrefixMappingDoubleSlash() throws Exception
-    {
-        DefaultViewHandlerSupport support = new DefaultViewHandlerSupport();
-        
+    {        
         request.setPathElements("/testwebapp", "", "//view2.xhtml" , null);
         
-        String derivedViewId = support.deriveViewId(facesContext, "//view2.xhtml");
+        String derivedViewId = viewHandlerSupport.deriveViewId(facesContext, "//view2.xhtml");
         
         Assert.assertEquals("/view2.xhtml", derivedViewId);
     }
+
 }

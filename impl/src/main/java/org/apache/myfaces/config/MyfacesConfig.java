@@ -629,26 +629,33 @@ public class MyfacesConfig
              + "ELResolvers chain. Use with caution - can break functionality defined in JSF specification "
              + "'ELResolver Instances Provided by Faces'")
     public static final String EL_RESOLVER_PREDICATE = "org.apache.myfaces.EL_RESOLVER_PREDICATE";
-    
-    /**
-     * Controls the size of the cache used to "remember" if a view exists or not.
-     */
+
     @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="viewhandler", tags="performance", 
             classType="java.lang.Integer",
-            desc="Controls the size of the cache used to 'remember' if a view exists or not.")
-    private static final String CHECKED_VIEWID_CACHE_SIZE = "org.apache.myfaces.CHECKED_VIEWID_CACHE_SIZE";
-    private static final int CHECKED_VIEWID_CACHE_SIZE_DEFAULT = 500;
+            desc="Controls the size of the viewId related caches: " + 
+                    "VIEWID_EXISTS_CACHE_ENABLED, VIEWID_PROTECTED_CACHE_ENABLED, VIEWID_DERIVE_CACHE_ENABLED")
+    private static final String VIEWID_CACHE_SIZE = "org.apache.myfaces.VIEWID_CACHE_SIZE";
+    private static final int VIEWID_CACHE_SIZE_DEFAULT = 500;
 
-    /**
-     * Enable or disable a cache used to "remember" if a view exists or not and reduce the impact of
-     * sucesive calls to ExternalContext.getResource().
-     */
     @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", expectedValues="true, false", group="viewhandler", 
             tags="performance",
-            desc="Enable or disable a cache used to 'remember' if a view exists or not and reduce the impact " +
+            desc="Enable or disable the cache used to 'remember' if a view exists or not and reduce the impact " +
                  "of sucesive calls to ExternalContext.getResource().")
-    private static final String CHECKED_VIEWID_CACHE_ENABLED = "org.apache.myfaces.CHECKED_VIEWID_CACHE_ENABLED";
-    private static final boolean CHECKED_VIEWID_CACHE_ENABLED_DEFAULT = true;
+    private static final String VIEWID_EXISTS_CACHE_ENABLED = "org.apache.myfaces.VIEWID_EXISTS_CACHE_ENABLED";
+    private static final boolean VIEWID_EXISTS_CACHE_ENABLED_DEFAULT = true;
+    
+
+    @JSFWebConfigParam(defaultValue = "true", since = "3.0.0", expectedValues="true, false", group="viewhandler", 
+            tags="performance",
+            desc="Enable or disable the cache used to 'remember' if a view is protected or not.")
+    private static final String VIEWID_PROTECTED_CACHE_ENABLED = "org.apache.myfaces.VIEWID_PROTECTED_CACHE_ENABLED";
+    private static final boolean VIEWID_PROTECTED_CACHE_ENABLED_DEFAULT = true;
+    
+    @JSFWebConfigParam(defaultValue = "true", since = "3.0.0", expectedValues="true, false", group="viewhandler", 
+            tags="performance",
+            desc="Enable or disable the cache used to 'remember' the derived viewId from the rawViewId.")
+    private static final String VIEWID_DERIVE_CACHE_ENABLED = "org.apache.myfaces.VIEWID_DERIVE_CACHE_ENABLED";
+    private static final boolean VIEWID_DERIVE_CACHE_ENABLED_DEFAULT = true;
     
     @JSFWebConfigParam(defaultValue=".jsp", since="2.3", group="viewhandler")
     public static final String JSP_SUFFIX = "org.apache.myfaces.JSP_SUFFIX";
@@ -782,8 +789,10 @@ public class MyfacesConfig
     private boolean lazyLoadConfigObjects = LAZY_LOAD_CONFIG_OBJECTS_DEFAULT;
     private String elResolverComparator;
     private String elResolverPredicate;
-    private boolean checkedViewIdCacheEnabled = CHECKED_VIEWID_CACHE_ENABLED_DEFAULT;
-    private int checkedViewIdCacheSize = CHECKED_VIEWID_CACHE_SIZE_DEFAULT;
+    private boolean viewIdExistsCacheEnabled = VIEWID_EXISTS_CACHE_ENABLED_DEFAULT;
+    private boolean viewIdProtectedCacheEnabled = VIEWID_PROTECTED_CACHE_ENABLED_DEFAULT;
+    private boolean viewIdDeriveCacheEnabled = VIEWID_DERIVE_CACHE_ENABLED_DEFAULT;
+    private int viewIdCacheSize = VIEWID_CACHE_SIZE_DEFAULT;
     private String jspSuffix = JSP_SUFFIX_DEFAULT;
     private boolean beanBeforeJsfValidation = BEAN_BEFORE_JSF_VALIDATION_DEFAULT;
     private String facesInitPlugins;
@@ -1114,15 +1123,29 @@ public class MyfacesConfig
         cfg.elResolverPredicate = getString(extCtx, EL_RESOLVER_PREDICATE,
                 null);
         
-        cfg.checkedViewIdCacheEnabled = getBoolean(extCtx, CHECKED_VIEWID_CACHE_ENABLED,
-                CHECKED_VIEWID_CACHE_ENABLED_DEFAULT);
+        cfg.viewIdExistsCacheEnabled = getBoolean(extCtx, VIEWID_EXISTS_CACHE_ENABLED,
+                VIEWID_EXISTS_CACHE_ENABLED_DEFAULT);
         if (cfg.projectStage == ProjectStage.Development)
         {
-            cfg.checkedViewIdCacheEnabled = false;
+            cfg.viewIdExistsCacheEnabled = false;
+        }
+        
+        cfg.viewIdProtectedCacheEnabled = getBoolean(extCtx, VIEWID_PROTECTED_CACHE_ENABLED,
+                VIEWID_PROTECTED_CACHE_ENABLED_DEFAULT);
+        if (cfg.projectStage == ProjectStage.Development)
+        {
+            cfg.viewIdProtectedCacheEnabled = false;
         }
 
-        cfg.checkedViewIdCacheSize = getInt(extCtx, CHECKED_VIEWID_CACHE_SIZE,
-                CHECKED_VIEWID_CACHE_SIZE_DEFAULT);
+        cfg.viewIdDeriveCacheEnabled = getBoolean(extCtx, VIEWID_DERIVE_CACHE_ENABLED,
+                VIEWID_DERIVE_CACHE_ENABLED_DEFAULT);
+        if (cfg.projectStage == ProjectStage.Development)
+        {
+            cfg.viewIdDeriveCacheEnabled = false;
+        }
+        
+        cfg.viewIdCacheSize = getInt(extCtx, VIEWID_CACHE_SIZE,
+                VIEWID_CACHE_SIZE_DEFAULT);
         
         cfg.jspSuffix = getString(extCtx, JSP_SUFFIX,
                 JSP_SUFFIX_DEFAULT);
@@ -1517,14 +1540,9 @@ public class MyfacesConfig
         return elResolverPredicate;
     }
 
-    public boolean isCheckedViewIdCacheEnabled()
+    public int getViewIdCacheSize()
     {
-        return checkedViewIdCacheEnabled;
-    }
-
-    public int getCheckedViewIdCacheSize()
-    {
-        return checkedViewIdCacheSize;
+        return viewIdCacheSize;
     }
 
     public String getJspSuffix()
@@ -1602,8 +1620,20 @@ public class MyfacesConfig
         return faceletsViewSuffix;
     }
 
+    public boolean isViewIdExistsCacheEnabled()
+    {
+        return viewIdExistsCacheEnabled;
+    }
 
- 
+    public boolean isViewIdProtectedCacheEnabled()
+    {
+        return viewIdProtectedCacheEnabled;
+    }
+
+    public boolean isViewIdDeriveCacheEnabled()
+    {
+        return viewIdDeriveCacheEnabled;
+    }
 
     
 }

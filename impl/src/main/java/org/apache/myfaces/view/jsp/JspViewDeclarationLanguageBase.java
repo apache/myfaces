@@ -42,8 +42,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.ServletResponseWrapper;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.myfaces.application.DefaultViewHandlerSupport;
-import org.apache.myfaces.application.ViewHandlerSupport;
+import org.apache.myfaces.application.ViewIdSupport;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.view.HttpServletResponseSwitch;
 import org.apache.myfaces.view.ResponseSwitch;
@@ -61,7 +60,7 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
               + ".AFTER_VIEW_TAG_CONTENT";
   private static final int FORM_STATE_MARKER_LEN = FORM_STATE_MARKER.length();
 
-  private ViewHandlerSupport _cachedViewHandlerSupport;
+  private ViewIdSupport viewIdSupport;
   
   @Override
   public String getId()
@@ -373,12 +372,12 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
   @Override
   protected String calculateViewId(FacesContext context, String viewId)
   {
-      if (_cachedViewHandlerSupport == null)
+      if (viewIdSupport == null)
       {
-          _cachedViewHandlerSupport = new DefaultViewHandlerSupport(context);
+          viewIdSupport = ViewIdSupport.getInstance(context);
       }
   
-      return _cachedViewHandlerSupport.deriveLogicalViewId(context, viewId);
+      return viewIdSupport.deriveLogicalViewId(context, viewId);
   }
   
   /**

@@ -18,9 +18,6 @@
  */
 package org.apache.myfaces.util;
 
-import java.util.Set;
-import javax.faces.context.FacesContext;
-
 /**
  *
  * @since 2.2
@@ -107,25 +104,5 @@ public class ViewProtectionUtils
         return (false);
     }
     
-    public static boolean isViewProtected(FacesContext context, String viewId)
-    {
-        Set<String> protectedViews = context.getApplication().getViewHandler().getProtectedViewsUnmodifiable();
-        if (!protectedViews.isEmpty())
-        {
-            boolean matchFound = false;
-            for (String urlPattern : protectedViews)
-            {
-                if (ViewProtectionUtils.matchPattern(viewId, urlPattern))
-                {
-                    matchFound = true;
-                    break;
-                }
-            }
-            return matchFound;
-        }
-        else
-        {
-            return false;
-        }
-    }
+
 }

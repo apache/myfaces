@@ -26,8 +26,7 @@ import javax.faces.context.FacesContext;
 import junit.framework.TestCase;
 
 import org.apache.myfaces.test.mock.MockFacesContext12;
-import org.easymock.classextension.EasyMock;
-import org.easymock.classextension.IMocksControl;
+import org.mockito.Mockito;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -36,19 +35,17 @@ import org.easymock.classextension.IMocksControl;
 public abstract class FacesTestCase extends TestCase
 {
     protected FacesContext _facesContext;
-    protected IMocksControl _mocksControl;
     protected ExternalContext _externalContext;
     protected Application _application;
     protected ELContext _elContext;
 
     protected void setUp() throws Exception
     {
-        _mocksControl = EasyMock.createControl();
-        _externalContext = _mocksControl.createMock(ExternalContext.class);
-        _facesContext = _mocksControl.createMock(FacesContext.class);
+        _externalContext = Mockito.mock(ExternalContext.class);
+        _facesContext = Mockito.mock(FacesContext.class);
         MockFacesContext12.setCurrentInstance(_facesContext);
-        _application = _mocksControl.createMock(Application.class);
-        _elContext = _mocksControl.createMock(ELContext.class);        
+        _application = Mockito.mock(Application.class);
+        _elContext = Mockito.mock(ELContext.class);        
     }
     
     @Override

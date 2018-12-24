@@ -18,8 +18,6 @@
  */
 package org.apache.myfaces.resource;
 
-import java.util.Map;
-
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
@@ -32,13 +30,7 @@ import org.apache.myfaces.config.MyfacesConfig;
  * ie an engine that supports javax.servlet, and uses a standard web.xml file.
  */
 public class BaseResourceHandlerSupport extends ResourceHandlerSupport
-{
-    /**
-     * Identifies the FacesServlet mapping in the current request map.
-     */
-    private static final String CACHED_SERVLET_MAPPING =
-        BaseResourceHandlerSupport.class.getName() + ".CACHED_SERVLET_MAPPING";
-    
+{    
     private static final ResourceLoader[] EMPTY_RESOURCE_LOADERS = new ResourceLoader[]{}; 
     private static final ContractResourceLoader[] EMPTY_CONTRACT_RESOURCE_LOADERS = 
         new ContractResourceLoader[]{}; 
@@ -72,7 +64,7 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
     @Override
     public String calculateResourceBasePath(FacesContext facesContext)
     {        
-        FacesServletMapping mapping = getFacesServletMapping(facesContext);
+        FacesServletMapping mapping = FacesServletMappingUtils.getCurrentRequestFacesServletMapping(facesContext);
         ExternalContext externalContext = facesContext.getExternalContext();      
         
         if (mapping != null)
@@ -122,7 +114,8 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
     @Override
     public boolean isExtensionMapping()
     {
-        FacesServletMapping mapping = getFacesServletMapping(FacesContext.getCurrentInstance());
+        FacesServletMapping mapping = FacesServletMappingUtils.getCurrentRequestFacesServletMapping(
+                FacesContext.getCurrentInstance());
         if (mapping != null)
         {
             if (mapping.isExtensionMapping())
@@ -136,7 +129,8 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
     @Override
     public String getMapping()
     {
-        FacesServletMapping mapping = getFacesServletMapping(FacesContext.getCurrentInstance());
+        FacesServletMapping mapping = FacesServletMappingUtils.getCurrentRequestFacesServletMapping(
+                FacesContext.getCurrentInstance());
         if (mapping != null)
         {
             if (mapping.isExtensionMapping())
@@ -149,29 +143,6 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
             }
         }
         return "";
-    }
-
-    /**
-     * Read the web.xml file that is in the classpath and parse its internals to
-     * figure out how the FacesServlet is mapped for the current webapp.
-     */
-    protected FacesServletMapping getFacesServletMapping(FacesContext context)
-    {
-        Map<Object, Object> attributes = context.getAttributes();
-
-        // Has the mapping already been determined during this request?
-        FacesServletMapping mapping = (FacesServletMapping) attributes.get(CACHED_SERVLET_MAPPING);
-        if (mapping == null)
-        {
-            ExternalContext externalContext = context.getExternalContext();
-            mapping = FacesServletMappingUtils.calculateFacesServletMapping(
-                    context, externalContext.getRequestServletPath(),
-                    externalContext.getRequestPathInfo(),
-                    false);
-
-            attributes.put(CACHED_SERVLET_MAPPING, mapping);
-        }
-        return mapping;
     }
     
     @Override

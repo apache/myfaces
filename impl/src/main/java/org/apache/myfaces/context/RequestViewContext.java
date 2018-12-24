@@ -20,20 +20,18 @@ package org.apache.myfaces.context;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.faces.application.ResourceDependency;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.util.VisitHintsHelper;
 
 /**
  *
@@ -43,15 +41,9 @@ import javax.faces.context.FacesContext;
  */
 public class RequestViewContext
 {
-
     public static final String VIEW_CONTEXT_KEY = "oam.VIEW_CONTEXT";
     
     public static final String RESOURCE_DEPENDENCY_INSPECTED_CLASS = "oam.RDClass";
-    
-    private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
-    
-    private static final Set<VisitHint> VISIT_HINTS = Collections.unmodifiableSet( 
-            EnumSet.of(VisitHint.SKIP_ITERATION));
 
     private RequestViewMetadata requestViewMetadata;
     
@@ -222,16 +214,17 @@ public class RequestViewContext
             {
                 try
                 {
-                    facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
+                    facesContext.getAttributes().put(VisitHintsHelper.SKIP_ITERATION_HINT, Boolean.TRUE);
 
-                    VisitContext visitContext = VisitContext.createVisitContext(facesContext, null, VISIT_HINTS);
+                    VisitContext visitContext = VisitContext.createVisitContext(facesContext,
+                            null, VisitHintsHelper.SKIP_ITERATION_VISIT_HINTS);
                     facet.visitTree(visitContext, new RefreshViewContext());
                 }
                 finally
                 {
                     // We must remove hint in finally, because an exception can break this phase,
                     // but lifecycle can continue, if custom exception handler swallows the exception
-                    facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
+                    facesContext.getAttributes().remove(VisitHintsHelper.SKIP_ITERATION_HINT);
                 }
             }
         }

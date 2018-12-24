@@ -94,8 +94,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.application.StateManagerImpl;
 
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.application.DefaultViewHandlerSupport;
-import org.apache.myfaces.application.ViewHandlerSupport;
+import org.apache.myfaces.application.ViewIdSupport;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.util.StringUtils;
@@ -219,7 +218,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     private final FaceletsCompilerSupport faceletsCompilerSupport;
     private final MyfacesConfig config;
     private final ViewPoolProcessor viewPoolProcessor;
-    private final ViewHandlerSupport viewHandlerSupport;
+    private final ViewIdSupport viewIdSupport;
     
     private StateManagementStrategy stateManagementStrategy;
     private Set<String> fullStateSavingViewIds;
@@ -239,7 +238,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         this.config = MyfacesConfig.getCurrentInstance(context);
         this.strategy = strategy;
         this.viewPoolProcessor = ViewPoolProcessor.getInstance(context);
-        this.viewHandlerSupport = new DefaultViewHandlerSupport(context);
+        this.viewIdSupport = ViewIdSupport.getInstance(context);
         this.faceletsCompilerSupport = new FaceletsCompilerSupport();
 
         Compiler compiler = createCompiler(context);
@@ -2079,7 +2078,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     @Override
     protected String calculateViewId(FacesContext context, String viewId)
     {
-        return viewHandlerSupport.deriveLogicalViewId(context, viewId);
+        return viewIdSupport.deriveLogicalViewId(context, viewId);
     }
 
     /**
