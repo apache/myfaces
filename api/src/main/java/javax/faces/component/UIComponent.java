@@ -812,8 +812,7 @@ public abstract class UIComponent
                 expression.setValue(getFacesContext().getELContext(), this);
             }
 
-            //we issue a PostRestoreStateEvent
-            //we issue it here because the spec clearly states what UIComponent is allowed to do
+            //we issue a PostRestoreStateEvent, because the spec clearly states what UIComponent is allowed to do
             //the main issue is that the spec does not say anything about a global dispatch on this level
             //but a quick blackbox test against the ri revealed that the event clearly is dispatched
             //at restore level for every component so we either issue it here or in UIViewRoot and/or the facelet
@@ -843,7 +842,7 @@ public abstract class UIComponent
                         // avoid StackoverflowException
                         boolean shouldProcessEvent = true;
                         if (listener instanceof EventListenerWrapper && 
-                            ((EventListenerWrapper)listener).listenerCapability == 
+                            ((EventListenerWrapper)listener).listenerCapability ==
                                 EventListenerWrapper.LISTENER_TYPE_COMPONENT)
                         {
                             shouldProcessEvent = false;

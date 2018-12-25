@@ -453,8 +453,6 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent component)
     {
-        //TODO: overwrite in extended HtmlCheckboxRenderer and check for
-        // enabledOnUserRole
         if (component instanceof HtmlSelectBooleanCheckbox)
         {
             return ((HtmlSelectBooleanCheckbox) component).isDisabled();
@@ -463,10 +461,8 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         {
             return ((HtmlSelectManyCheckbox) component).isDisabled();
         }
-        else
-        {
-            return RendererUtils.getBooleanAttribute(component, HTML.DISABLED_ATTR, false);
-        }
+
+        return RendererUtils.getBooleanAttribute(component, HTML.DISABLED_ATTR, false);
     }
 
     @Override

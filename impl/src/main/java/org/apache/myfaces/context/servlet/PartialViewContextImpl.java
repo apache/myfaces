@@ -50,6 +50,7 @@ import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.view.ViewMetadata;
 import org.apache.myfaces.application.ResourceHandlerImpl;
+import org.apache.myfaces.application.viewstate.token.StateTokenProcessor;
 
 import org.apache.myfaces.context.PartialResponseWriterImpl;
 import org.apache.myfaces.context.RequestViewContext;
@@ -448,18 +449,6 @@ public class PartialViewContextImpl extends PartialViewContext
 
     private void processPartialRendering(UIViewRoot viewRoot, PhaseId phaseId)
     {
-        //TODO process partial rendering
-        //https://issues.apache.org/jira/browse/MYFACES-2118
-        //Collection<String> renderIds = getRenderIds();
-
-        // We need to always update the view state marker when processing partial
-        // rendering, because there is no way to check when the state has been changed
-        // or not. Anyway, if we return empty response, according to the spec a javascript
-        // message displayed, so we need to return something.
-        //if (renderIds == null || renderIds.isEmpty()) {
-        //    return;
-        //}
-
         // note that we cannot use this.getPartialResponseWriter(), because
         // this could cause problems if PartialResponseWriter is wrapped
         PartialResponseWriter writer = _facesContext.getPartialViewContext().getPartialResponseWriter();
@@ -575,12 +564,10 @@ public class PartialViewContextImpl extends PartialViewContext
             }
             else if (viewRoot.isTransient())
             {
-                //TODO: fix javascript side, so the field is not removed on ajax form update
                 writer.startUpdate(HtmlResponseStateManager.generateUpdateViewStateId(
                     _facesContext));
-                writer.write("stateless");
+                writer.write(StateTokenProcessor.STATELESS_TOKEN);
                 writer.endUpdate();
-                //END TODO
             }
             
             

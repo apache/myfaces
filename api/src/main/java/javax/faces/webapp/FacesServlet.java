@@ -122,7 +122,6 @@ public final class FacesServlet implements Servlet
         }
         _servletConfig = servletConfig;
         _facesContextFactory = (FacesContextFactory)FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-        // TODO: null-check for Weblogic, that tries to initialize Servlet before ContextListener
 
         // Javadoc says: Lifecycle instance is shared across multiple simultaneous requests, it must be implemented in a
         // thread-safe manner.

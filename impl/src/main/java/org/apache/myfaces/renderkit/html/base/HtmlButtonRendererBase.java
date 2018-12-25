@@ -486,15 +486,12 @@ public class HtmlButtonRendererBase extends HtmlRenderer
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent uiComponent)
     {
-        //TODO: overwrite in extended HtmlButtonRenderer and check for enabledOnUserRole
         if (uiComponent instanceof HtmlCommandButton)
         {
-            return ((HtmlCommandButton)uiComponent).isDisabled();
+            return ((HtmlCommandButton) uiComponent).isDisabled();
         }
 
-        return RendererUtils.getBooleanAttribute(
-                uiComponent, HTML.DISABLED_ATTR, false);
-        
+        return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
     }
 
     protected boolean isReadonly(FacesContext facesContext, UIComponent uiComponent)

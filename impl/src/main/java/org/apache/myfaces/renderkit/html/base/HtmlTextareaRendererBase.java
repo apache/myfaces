@@ -196,7 +196,6 @@ public class HtmlTextareaRendererBase extends HtmlRenderer
     
     protected boolean isDisabled(FacesContext facesContext, UIComponent uiComponent)
     {
-        //TODO: overwrite in extended HtmlTextareaRenderer and check for enabledOnUserRole
         if (uiComponent instanceof HtmlInputTextarea)
         {
             return ((HtmlInputTextarea)uiComponent).isDisabled();

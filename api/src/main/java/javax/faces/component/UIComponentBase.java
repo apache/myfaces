@@ -897,7 +897,6 @@ public abstract class UIComponentBase extends UIComponent
             return _clientId;
         }
 
-        //boolean idWasNull = false;
         String id = getId();
         if (id == null)
         {
@@ -932,8 +931,6 @@ public abstract class UIComponentBase extends UIComponent
                 id = parentUniqueIdVendor.createUniqueId(context, null);
             }
             setId(id);
-            // We remember that the id was null and log a warning down below
-            // idWasNull = true;
         }
 
         UIComponent namingContainer = _ComponentUtils.findParentNamingContainer(this, false);
@@ -2484,7 +2481,7 @@ public abstract class UIComponentBase extends UIComponent
         }
     }
 
-/**
+    /**
      * <p>
      * This gets a single FacesContext-local shared stringbuilder instance, each time you call
      * _getSharedStringBuilder it sets the length of the stringBuilder instance to 0.
@@ -2522,7 +2519,6 @@ public abstract class UIComponentBase extends UIComponent
         return _getSharedStringBuilder(FacesContext.getCurrentInstance());
     }
 
-    // TODO checkstyle complains; does this have to lead with __ ?
     static StringBuilder _getSharedStringBuilder(FacesContext facesContext)
     {
         Map<Object, Object> attributes = facesContext.getAttributes();
