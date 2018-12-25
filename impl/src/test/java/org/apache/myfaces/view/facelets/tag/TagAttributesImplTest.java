@@ -48,4 +48,12 @@ public class TagAttributesImplTest
         Assert.assertTrue(Arrays.asList(impl.getAll()).contains(test1));
         Assert.assertTrue(Arrays.asList(impl.getAll()).contains(test2));
     }
+    
+    @Test
+    public void testNotAvailable()
+    {
+        TagAttributesImpl impl = new TagAttributesImpl(new TagAttribute[] { });
+        Assert.assertEquals(null, impl.get("test1"));
+        Assert.assertEquals(null, impl.get("test", "test2"));
+    }
 }
