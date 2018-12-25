@@ -101,6 +101,7 @@ public class DateTimeConverter
     }
 
     // METHODS
+    @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
     {
         if (facesContext == null)
@@ -214,6 +215,7 @@ public class DateTimeConverter
         return null;
     }
 
+    @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
     {
         if (facesContext == null)
@@ -481,6 +483,7 @@ public class DateTimeConverter
     }
 
     // STATE SAVE/RESTORE
+    @Override
     public void restoreState(FacesContext facesContext, Object state)
     {
         if (state != null)
@@ -495,6 +498,7 @@ public class DateTimeConverter
         }
     }
 
+    @Override
     public Object saveState(FacesContext facesContext)
     {
         if (!initialStateMarked())
@@ -526,7 +530,6 @@ public class DateTimeConverter
 
     public void setDateStyle(String dateStyle)
     {
-        //TODO: validate timeStyle
         _dateStyle = dateStyle;
         clearInitialState();
     }
@@ -581,7 +584,6 @@ public class DateTimeConverter
 
     public void setTimeStyle(String timeStyle)
     {
-        //TODO: validate timeStyle
         _timeStyle = timeStyle;
         clearInitialState();
     }
@@ -630,23 +632,25 @@ public class DateTimeConverter
 
     public void setType(String type)
     {
-        //TODO: validate type
         _type = type;
         clearInitialState();
     }
     
     private boolean _initialStateMarked = false;
 
+    @Override
     public void clearInitialState()
     {
         _initialStateMarked = false;
     }
 
+    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
+    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;

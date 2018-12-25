@@ -113,45 +113,4 @@ public class DoubleConverterTest extends AbstractJsfTestCase {
         }
     }
 
-
-    /**
-     * This tests a workaround which got introduced for the jvm bug
-     * described in MYFACES-3024. This is necessary as long as the jvm
-     * contains this bug resulting in the whole thread basically stalling
-     * at 100% CPU conumption and never return from the
-     * @link http://www.exploringbinary.com/java-hangs-when-converting-2-2250738585072012e-308/
-     *
-     *
-     */
-    @Test
-    public void testDoubleParsingJvmBugWorkaround()
-    {
-        String[] baaadValues = new String[] {
-                "0.00022250738585072012e-304",
-                "2.225073858507201200000e-308",
-                "2.225073858507201200000e-308",
-                "2.2250738585072012e-00308",
-                "2.2250738585072012997800001e-308"
-        };
-
-        FacesContext.getCurrentInstance().getViewRoot().setLocale(Locale.US);
-        UIInput input = new UIInput();
-        Double d;
-
-        for (String badVal : baaadValues)
-        {
-            try
-            {
-                d = (Double) mock.getAsObject(FacesContext.getCurrentInstance(), input, badVal);
-                fail();
-            }
-            catch(ConverterException cex)
-            {
-                // all is well, we expect the Converter to detect the baaad values...
-            }
-        }
-    }
-
-
-
 }

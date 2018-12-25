@@ -43,46 +43,39 @@ public abstract class ViewMetadata
     {
         LinkedList<UIViewParameter> result = null;
         UIComponent metadataFacet = root.getFacet (UIViewRoot.METADATA_FACET_NAME);
-        Iterator<UIComponent> children;
-        
+
         if (metadataFacet == null)
         {
              // No metadata, so return an empty collection.
-             
              return Collections.emptyList();
         }
         
         // Iterate over all the children, keep only the view parameters.
-        
         if (metadataFacet.getChildCount() > 0)
         {
-            children = metadataFacet.getChildren().iterator();
-            
+            Iterator<UIComponent> children = metadataFacet.getChildren().iterator();
             while (children.hasNext())
             {
                  UIComponent component = children.next();
-                 
                  if (result == null)
                  {
                      result = new LinkedList<UIViewParameter>();
                  }
-                 
                  if (component instanceof UIViewParameter)
                  {
-                      result.add ((UIViewParameter) component);
+                      result.add((UIViewParameter) component);
                  }
             }
         }
         
-        // TODO: does this need to be immutable?  Spec does not indicate either
-        // way.
+        // TODO: does this need to be immutable?  Spec does not indicate either way.
         if (result == null)
         {
             return Collections.emptyList();
         }
         else
         {
-            return Collections.unmodifiableCollection (result);
+            return Collections.unmodifiableCollection(result);
         }
     }
     
@@ -95,30 +88,24 @@ public abstract class ViewMetadata
     {
         LinkedList<UIViewAction> result = null;
         UIComponent metadataFacet = root.getFacet (UIViewRoot.METADATA_FACET_NAME);
-        Iterator<UIComponent> children;
-        
+
         if (metadataFacet == null)
         {
              // No metadata, so return an empty collection.
-             
              return Collections.emptyList();
         }
         
         // Iterate over all the children, keep only the view parameters.
-        
         if (metadataFacet.getChildCount() > 0)
         {
-            children = metadataFacet.getChildren().iterator();
-            
+            Iterator<UIComponent> children = metadataFacet.getChildren().iterator();
             while (children.hasNext())
             {
                  UIComponent component = children.next();
-                 
                  if (result == null)
                  {
                      result = new LinkedList<UIViewAction>();
                  }
-                 
                  if (component instanceof UIViewAction)
                  {
                       result.add ((UIViewAction) component);
@@ -126,8 +113,7 @@ public abstract class ViewMetadata
             }
         }
         
-        // TODO: does this need to be immutable?  Spec does not indicate either
-        // way.
+        // TODO: does this need to be immutable?  Spec does not indicate either way.
         if (result == null)
         {
             return Collections.emptyList();
@@ -157,31 +143,25 @@ public abstract class ViewMetadata
     public static Collection<UIImportConstants> getImportConstants(UIViewRoot root)
     {
         LinkedList<UIImportConstants> result = null;
-        UIComponent metadataFacet = root.getFacet (UIViewRoot.METADATA_FACET_NAME);
-        Iterator<UIComponent> children;
+        UIComponent metadataFacet = root.getFacet(UIViewRoot.METADATA_FACET_NAME);
         
         if (metadataFacet == null)
         {
              // No metadata, so return an empty collection.
-             
              return Collections.emptyList();
         }
         
         // Iterate over all the children, keep only the view parameters.
-        
         if (metadataFacet.getChildCount() > 0)
         {
-            children = metadataFacet.getChildren().iterator();
-            
+            Iterator<UIComponent> children = metadataFacet.getChildren().iterator();
             while (children.hasNext())
             {
                  UIComponent component = children.next();
-                 
                  if (result == null)
                  {
                      result = new LinkedList<UIImportConstants>();
                  }
-                 
                  if (component instanceof UIImportConstants)
                  {
                       result.add ((UIImportConstants) component);
@@ -189,15 +169,14 @@ public abstract class ViewMetadata
             }
         }
         
-        // TODO: does this need to be immutable?  Spec does not indicate either
-        // way.
+        // TODO: does this need to be immutable?  Spec does not indicate either way.
         if (result == null)
         {
             return Collections.emptyList();
         }
         else
         {
-            return Collections.unmodifiableCollection (result);
+            return Collections.unmodifiableCollection(result);
         }
     }
 
