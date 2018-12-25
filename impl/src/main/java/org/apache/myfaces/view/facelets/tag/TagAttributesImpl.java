@@ -48,9 +48,6 @@ public final class TagAttributesImpl extends TagAttributes
     private final String[] _namespaces;
     private final List<TagAttribute[]> _nsattrs;
 
-    /**
-     * 
-     */
     public TagAttributesImpl(TagAttribute[] attrs)
     {
         _attributes = attrs;

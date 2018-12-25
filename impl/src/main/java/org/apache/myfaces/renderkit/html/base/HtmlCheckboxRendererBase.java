@@ -84,15 +84,12 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         }
         else
         {
-            throw new IllegalArgumentException("Unsupported component class "
-                    + uiComponent.getClass().getName());
+            throw new IllegalArgumentException("Unsupported component class " + uiComponent.getClass().getName());
         }
     }
 
-    public void renderCheckboxList(FacesContext facesContext,
-            UISelectMany selectMany) throws IOException
+    public void renderCheckboxList(FacesContext facesContext, UISelectMany selectMany) throws IOException
     {
-
         String layout = getLayout(selectMany);
         boolean pageDirectionLayout = false; //Default to lineDirection
         if (layout != null)
@@ -115,8 +112,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         ResponseWriter writer = facesContext.getResponseWriter();
 
         writer.startElement(HTML.TABLE_ELEM, selectMany);
-        HtmlRendererUtils.renderHTMLAttributes(writer, selectMany,
-                HTML.SELECT_TABLE_PASSTHROUGH_ATTRIBUTES);
+        HtmlRendererUtils.renderHTMLAttributes(writer, selectMany, HTML.SELECT_TABLE_PASSTHROUGH_ATTRIBUTES);
         
         Map<String, List<ClientBehavior>> behaviors = null;
         if (selectMany instanceof ClientBehaviorHolder)
@@ -140,21 +136,18 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         
         Converter converter = getConverter(facesContext, selectMany);
 
-        Set lookupSet = RendererUtils.getSubmittedValuesAsSet(
-                facesContext, selectMany, converter, selectMany);
+        Set lookupSet = RendererUtils.getSubmittedValuesAsSet(facesContext, selectMany, converter, selectMany);
         boolean useSubmittedValues = lookupSet != null;
 
         if (!useSubmittedValues)
         {
-            lookupSet = RendererUtils.getSelectedValuesAsSet(
-                    facesContext, selectMany, converter, selectMany);
+            lookupSet = RendererUtils.getSelectedValuesAsSet(facesContext, selectMany, converter, selectMany);
         }
 
         int itemNum = 0;
 
         
-        List<SelectItem> selectItemList = RendererUtils.getSelectItemList(
-                selectMany, facesContext);
+        List<SelectItem> selectItemList = RendererUtils.getSelectItemList(selectMany, facesContext);
 
         for (int i = 0; i < selectItemList.size(); i++)
         {
@@ -263,8 +256,10 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             // AND this selectItem is the "no selection option"
             // AND there are currently selected items
             // AND this item (the "no selection option") is not selected
-            if (HtmlRendererUtils.isHideNoSelectionOption(uiComponent) && selectItem.isNoSelectionOption() 
-                    && !lookupSet.isEmpty() && !checked)
+            if (HtmlRendererUtils.isHideNoSelectionOption(uiComponent)
+                    && selectItem.isNoSelectionOption() 
+                    && !lookupSet.isEmpty()
+                    && !checked)
             {
                 // do not render this selectItem
                 return itemNum;
@@ -479,11 +474,10 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         }
         else
         {
-            throw new IllegalArgumentException("Unsupported component class "
-                    + component.getClass().getName());
+            throw new IllegalArgumentException("Unsupported component class " + component.getClass().getName());
         }
-        if (component instanceof ClientBehaviorHolder &&
-                !HtmlRendererUtils.isDisabled(component))
+
+        if (component instanceof ClientBehaviorHolder && !HtmlRendererUtils.isDisabled(component))
         {
             HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
         }
@@ -500,13 +494,11 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         }
         else if (component instanceof UISelectMany)
         {
-            return RendererUtils.getConvertedUISelectManyValue(facesContext,
-                    (UISelectMany) component, submittedValue);
+            return RendererUtils.getConvertedUISelectManyValue(facesContext, (UISelectMany) component, submittedValue);
         }
         else
         {
-            throw new IllegalArgumentException("Unsupported component class "
-                    + component.getClass().getName());
+            throw new IllegalArgumentException("Unsupported component class " + component.getClass().getName());
         }
     }
     
@@ -520,8 +512,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
     {
         if (component instanceof UISelectMany)
         {
-            return HtmlRendererUtils.findUISelectManyConverterFailsafe(facesContext, 
-                    (UISelectMany) component);
+            return HtmlRendererUtils.findUISelectManyConverterFailsafe(facesContext, (UISelectMany) component);
         }
         else if (component instanceof UISelectOne)
         {

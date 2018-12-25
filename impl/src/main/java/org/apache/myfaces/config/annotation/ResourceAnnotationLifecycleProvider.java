@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import org.apache.myfaces.util.ClassUtils;
 
-// TODO @Resources
 public class ResourceAnnotationLifecycleProvider extends NoInjectionAnnotationLifecycleProvider
 {
     /**
