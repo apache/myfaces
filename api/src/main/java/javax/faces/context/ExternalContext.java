@@ -743,9 +743,7 @@ public abstract class ExternalContext
         
         if (ctx == null)
         {
-            return null;
-            // TODO fix FlashImplTest and readd the throw here...
-            //throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException();
         }
         
         return ctx.getClientWindow();

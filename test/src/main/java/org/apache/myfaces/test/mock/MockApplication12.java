@@ -58,7 +58,7 @@ import org.apache.myfaces.test.el.ReservedWordsELResolver;
  *
  * @since 1.0.0
  */
-public class MockApplication12 extends MockApplication
+public abstract class MockApplication12 extends MockApplication10
 {
 
     // ------------------------------------------------------------ Constructors

@@ -221,13 +221,12 @@ public abstract class FaceletMultipleRequestsTestCase extends AbstractJsfConfigu
                 servletContext, request, response, lifecycle);
         if (facesContext.getExternalContext() != null)
         {
-            externalContext = (MockExternalContext) facesContext
-                    .getExternalContext();
+            externalContext = (MockExternalContext) facesContext.getExternalContext();
         }
 
         super.setUpApplication();
         
-        ((MockFacesContext)facesContext).setApplication(application);
+        ((MockFacesContext) facesContext).setApplication(application);
         
         ViewHandlerImpl viewHandler = (ViewHandlerImpl) application.getViewHandler();
         viewHandler.setViewIdSupport(new ViewIdSupport(facesContext){

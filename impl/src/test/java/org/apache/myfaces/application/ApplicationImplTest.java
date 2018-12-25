@@ -44,6 +44,7 @@ import org.apache.myfaces.test.MyFacesAsserts;
 import org.apache.myfaces.test.TestRunner;
 
 import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.test.mock.MockFacesContext;
 import org.apache.myfaces.test.mock.MockFacesContext12;
 
 /**
@@ -56,12 +57,12 @@ public class ApplicationImplTest extends TestCase
     //remove from excludes list in pom.xml after complete
     
     private ApplicationImpl app;
-    private MockFacesContext12 context;
+    private MockFacesContext context;
 
     protected void setUp() throws Exception
     {
         app = new ApplicationImpl(new RuntimeConfig());
-        context = new MockFacesContext12();
+        context = new MockFacesContext();
     }
 
     /**

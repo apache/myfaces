@@ -44,7 +44,7 @@ import javax.servlet.http.HttpSession;
  * @since 1.0.0
  *
  */
-public class MockExternalContext20 extends MockExternalContext12
+public abstract class MockExternalContext20 extends MockExternalContext12
 {
 
     // ------------------------------------------------------------ Constructors

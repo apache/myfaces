@@ -36,7 +36,7 @@ import org.apache.myfaces.test.el.MockELContext;
  *
  * @since 1.0.0
  */
-public class MockFacesContext12 extends MockFacesContext
+public abstract class MockFacesContext12 extends MockFacesContext10
 {
 
     // ------------------------------------------------------------ Constructors

@@ -28,6 +28,7 @@ import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
+import org.apache.myfaces.test.mock.MockFacesContext;
 
 import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
@@ -46,7 +47,7 @@ public class _MessageUtilsTest
     public void testErrorMessage()
     {
         UIViewRoot root = new UIViewRoot();
-        MockFacesContext12 facesContext = new MockFacesContext12();
+        MockFacesContext facesContext = new MockFacesContext();
         IMocksControl mocksControl = EasyMock.createControl();
         Application application = mocksControl.createMock(Application.class);
         ViewHandler viewHandler = mocksControl.createMock(ViewHandler.class);

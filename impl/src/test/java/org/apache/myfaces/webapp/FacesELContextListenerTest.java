@@ -25,6 +25,7 @@ import javax.el.ELContextEvent;
 import javax.el.ELContextListener;
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.test.mock.MockFacesContext;
 
 import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.IMocksControl;
@@ -47,7 +48,7 @@ public class FacesELContextListenerTest
         FacesELContextListener listener = new FacesELContextListener();
         IMocksControl mockControl = EasyMock.createControl();
         ELContext elctx = mockControl.createMock(ELContext.class);
-        MockFacesContext12 facesctx = new MockFacesContext12();
+        MockFacesContext facesctx = new MockFacesContext();
         Application app = mockControl.createMock(Application.class);
         facesctx.setApplication(app);
         ELContextEvent event = mockControl.createMock(ELContextEvent.class);

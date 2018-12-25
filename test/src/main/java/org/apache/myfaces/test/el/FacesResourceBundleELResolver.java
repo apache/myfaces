@@ -29,8 +29,7 @@ import javax.el.ELContext;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 import javax.faces.context.FacesContext;
-
-import org.apache.myfaces.test.mock.MockApplication12;
+import org.apache.myfaces.test.mock.MockApplication;
 
 /**
  * <p><code>ELResolver</code> implementation that accesses resource bundles
@@ -79,8 +78,7 @@ public class FacesResourceBundleELResolver extends AbstractELResolver
         List descriptors = new ArrayList();
         FacesContext fcontext = (FacesContext) context
                 .getContext(FacesContext.class);
-        MockApplication12 application = (MockApplication12) fcontext
-                .getApplication();
+        MockApplication application = (MockApplication) fcontext.getApplication();
         String key = null;
         Object value = null;
 

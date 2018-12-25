@@ -212,8 +212,7 @@ public abstract class AbstractJsfTestCase extends TestCase
      */
     protected void setUpExternalContext() throws Exception
     {
-        externalContext = new MockExternalContext(servletContext, request,
-                response);
+        externalContext = new MockExternalContext(servletContext, request, response);
     }
 
     /**

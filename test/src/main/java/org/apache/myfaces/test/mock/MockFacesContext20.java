@@ -42,7 +42,7 @@ import javax.faces.lifecycle.Lifecycle;
  * @since 1.0.0
  *
  */
-public class MockFacesContext20 extends MockFacesContext12
+public abstract class MockFacesContext20 extends MockFacesContext12
 {
 
     // ------------------------------------------------------------ Constructors
