@@ -49,8 +49,8 @@ public final class TagAttributesImpl extends TagAttributes
     public TagAttributesImpl(TagAttribute[] attributes)
     {
         this.attributes = attributes;
-        this.namespaceAttributes = new HashMap<>(3);
-        this.namespaceLocalNameAttributes = new HashMap<>(3);
+        this.namespaceAttributes = new HashMap<>(1);
+        this.namespaceLocalNameAttributes = new HashMap<>(1);
         
         Set<String> namespacesSet = new HashSet<>();
         HashMap<String, List<TagAttribute>> namespaceAttributesAsList = new HashMap<>();
