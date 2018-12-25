@@ -347,8 +347,7 @@ public class PartialVisitContext extends VisitContext
 
                 if (c == null)
                 {
-                    // TODO: smarter initial size?
-                    c = new ArrayList<String>();
+                    c = new ArrayList<String>(5);
                     _subtreeClientIds.put(namingContainerClientId, c);
                 }
 
