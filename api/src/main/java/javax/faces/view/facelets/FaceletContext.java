@@ -39,7 +39,6 @@ import javax.faces.context.FacesContext;
  */
 public abstract class FaceletContext extends ELContext
 {
-    // TODO: REPORT this aberration to the EG
     public static final String FACELET_CONTEXT_KEY = "javax.faces.FACELET_CONTEXT".intern();
     
     /**
