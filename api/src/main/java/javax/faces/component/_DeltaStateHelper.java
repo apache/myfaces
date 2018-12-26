@@ -184,7 +184,6 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         _transientState = null;
         _initialFullState = null;
         _copyFullInitialState = false;
-        //_stateHolderKeys = new HashSet<Serializable>();
     }
 
     /**
@@ -225,13 +224,6 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
                         // to skip resetState() if the view cannot be recycled.
                         _initialFullState = new HashMap<Serializable, Object>();
                         copyMap(_component.getFacesContext(), _fullState, _initialFullState);
-                        /*
-                        for (int i = 0; i < _initialState.length; i+=2)
-                        {
-                            Serializable key2 = (Serializable) _initialState[i];
-                            Object defaultValue = _initialState[i+1];
-                            _initialFullState.put(key2, defaultValue);
-                        }*/
                     }
                 }
             }
@@ -250,8 +242,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         _copyFullInitialState = value;
     }
     
-    private static void copyMap(FacesContext context, 
-            Map<Serializable, Object> sourceMap, 
+    private static void copyMap(FacesContext context, Map<Serializable, Object> sourceMap,
             Map<Serializable, Object> targetMap)
     {
         Map serializableMap = sourceMap;
@@ -267,9 +258,9 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
             // The condition in which the call to saveAttachedState
             // is to handle List, StateHolder or non Serializable instances.
             // we check it here, to prevent unnecessary calls.
-            if (value instanceof StateHolder ||
-                value instanceof List ||
-                !(value instanceof Serializable))
+            if (value instanceof StateHolder
+                    || value instanceof List
+                    || !(value instanceof Serializable))
             {
                 Object savedValue = UIComponentBase.saveAttachedState(context, value);
 
@@ -392,12 +383,6 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         }
         else
         {
-            /*
-            if (value instanceof StateHolder)
-            {
-                _stateHolderKeys.add(key);
-            }
-            */
             returnValue = _fullState.put(key, value);
         }
         return returnValue;

@@ -21,10 +21,10 @@ package javax.faces.component;
 import java.io.Serializable;
 import java.util.List;
 
-class _AttachedCollectionStateWrapper
-        implements Serializable
+class _AttachedCollectionStateWrapper implements Serializable
 {
     private static final long serialVersionUID = -3958718149793179776L;
+
     private Class<?> _class;
     private List<Object> _wrappedStateList;
 

@@ -1004,7 +1004,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
      * 
      * TODO: cache results?
      */
-    private NavigationCase getOutcomeNavigationCase (FacesContext facesContext, String fromAction, String outcome)
+    private NavigationCase getOutcomeNavigationCase(FacesContext facesContext, String fromAction, String outcome)
     {
         String implicitViewId = null;
         boolean includeViewParams = false;
@@ -1013,7 +1013,6 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         String queryString = null;
         NavigationCase result = null;
         String viewId = facesContext.getViewRoot() != null ? facesContext.getViewRoot().getViewId() : null;
-        //String viewIdToTest = outcome;
         StringBuilder viewIdToTest = SharedStringBuilder.get(facesContext, OUTCOME_NAVIGATION_SB);
         viewIdToTest.append(outcome);
         
