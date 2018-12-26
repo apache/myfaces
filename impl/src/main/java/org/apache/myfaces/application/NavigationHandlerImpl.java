@@ -117,13 +117,12 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
     public void handleNavigation(FacesContext facesContext, String fromAction, 
         String outcome, String toFlowDocumentId)
     {
-        //NavigationCase navigationCase = getNavigationCase(facesContext, fromAction, outcome);
         NavigationContext navigationContext = new NavigationContext();
         NavigationCase navigationCase = null;
         try
         {
             navigationCase = getNavigationCommand(facesContext, navigationContext, fromAction, outcome,
-                toFlowDocumentId);
+                    toFlowDocumentId);
         }
         finally
         {
@@ -257,10 +256,10 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 // are included on navigation.
                 PartialViewContext partialViewContext = facesContext.getPartialViewContext();
                 String viewId = facesContext.getViewRoot() != null ? facesContext.getViewRoot().getViewId() : null;
-                if ( partialViewContext.isPartialRequest() && 
-                     !partialViewContext.isRenderAll() && 
-                     toViewId != null &&
-                     !toViewId.equals(viewId))
+                if (partialViewContext.isPartialRequest()
+                        && !partialViewContext.isRenderAll()
+                        && toViewId != null
+                        && !toViewId.equals(viewId))
                 {
                     partialViewContext.setRenderAll(true);
                 }
@@ -1017,39 +1016,36 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         viewIdToTest.append(outcome);
         
         // If viewIdToTest contains a query string, remove it and set queryString with that value.
-        index = viewIdToTest.indexOf ("?");
+        index = viewIdToTest.indexOf("?");
         if (index != -1)
         {
-            queryString = viewIdToTest.substring (index + 1);
-            //viewIdToTest = viewIdToTest.substring (0, index);
+            queryString = viewIdToTest.substring(index + 1);
             viewIdToTest.setLength(index);
             
             // If queryString contains "faces-redirect=true", set isRedirect to true.
-            if (queryString.indexOf ("faces-redirect=true") != -1)
+            if (queryString.contains("faces-redirect=true"))
             {
                 isRedirect = true;
             }
             
             // If queryString contains "includeViewParams=true" or 
             // "faces-include-view-params=true", set includeViewParams to true.
-            if (queryString.indexOf("includeViewParams=true") != -1 
-                    || queryString.indexOf("faces-include-view-params=true") != -1)
+            if (queryString.contains("includeViewParams=true")
+                    || queryString.contains("faces-include-view-params=true"))
             {
                 includeViewParams = true;
             }
         }
         
         // If viewIdToTest does not have a "file extension", use the one from the current viewId.
-        index = viewIdToTest.indexOf (".");
+        index = viewIdToTest.indexOf(".");
         if (index == -1)
         {
             if (viewId != null)
             {
                 index = viewId.lastIndexOf('.');
-
                 if (index != -1)
                 {
-                    //viewIdToTest += viewId.substring (index);
                     viewIdToTest.append(viewId.substring (index));
                 }
             }
@@ -1069,7 +1065,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                     index = tempViewId.lastIndexOf('.');
                     if(index != -1)
                     {
-                        viewIdToTest.append(tempViewId.substring (index));
+                        viewIdToTest.append(tempViewId.substring(index));
                     }
                 }
             }
@@ -1085,25 +1081,22 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         boolean startWithSlash = false;
         if (viewIdToTest.length() > 0)
         {
-            startWithSlash = (viewIdToTest.charAt(0) == '/');
+            startWithSlash = viewIdToTest.charAt(0) == '/';
         } 
         if (!startWithSlash) 
         {
             index = -1;
-            if( viewId != null )
+            if (viewId != null)
             {
                index = viewId.lastIndexOf('/');
             }
             
             if (index == -1)
             {
-                //viewIdToTest = "/" + viewIdToTest;
                 viewIdToTest.insert(0, '/');
             }
-            
             else
             {
-                //viewIdToTest = viewId.substring (0, index + 1) + viewIdToTest;
                 viewIdToTest.insert(0, viewId, 0, index + 1);
             }
         }
@@ -1111,8 +1104,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         // Apply normalization 
         String viewIdToTestString = null;
         boolean applyNormalization = false;
-        
-        for (int i = 0; i < viewIdToTest.length()-1; i++)
+        for (int i = 0; i < viewIdToTest.length() - 1; i++)
         {
             if (viewIdToTest.charAt(i) == '.' &&
                 viewIdToTest.charAt(i+1) == '/')
@@ -1131,26 +1123,13 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         }
         
         // Call ViewHandler.deriveViewId() and set the result as implicitViewId.
-        try
-        {
-            implicitViewId = facesContext.getApplication().getViewHandler().deriveViewId (
-                    facesContext, viewIdToTestString);
-        }
-        
-        catch (UnsupportedOperationException e)
-        {
-            // This is the case when a pre-JSF 2.0 ViewHandler is used.
-            // In this case, the default algorithm must be used.
-            // FIXME: I think we're always calling the "default" ViewHandler.deriveViewId() algorithm and we don't
-            // distinguish between pre-JSF 2.0 and JSF 2.0 ViewHandlers.  This probably needs to be addressed.
-        }
-        
+        implicitViewId = facesContext.getApplication().getViewHandler().deriveViewId(facesContext, viewIdToTestString);
         if (implicitViewId != null)
         {
             // Append all params from the queryString
             // (excluding faces-redirect, includeViewParams and faces-include-view-params)
             Map<String, List<String>> params = null;
-            if (queryString != null && LangUtils.isNotBlank(queryString))
+            if (LangUtils.isNotBlank(queryString))
             {
                 String[] splitQueryParams = AMP_PATTERN.split(queryString); // "&" or "&amp;"
                 params = new HashMap<>(splitQueryParams.length, (splitQueryParams.length* 4 + 3) / 3);
@@ -1179,17 +1158,16 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                     else
                     {
                         // invalid parameter
-                        throw new FacesException("Invalid parameter \"" + 
-                                queryParam + "\" in outcome " + outcome);
+                        throw new FacesException("Invalid parameter \"" + queryParam + "\" in outcome " + outcome);
                     }
                 }
             }
             
             // Finally, create the NavigationCase.
-            result = new NavigationCase (viewId, fromAction, outcome, null, 
-                    implicitViewId, params, isRedirect, includeViewParams);
+            result = new NavigationCase (viewId, fromAction, outcome, null, implicitViewId, params, isRedirect,
+                    includeViewParams);
         }
-        
+
         return result;
     }
     
