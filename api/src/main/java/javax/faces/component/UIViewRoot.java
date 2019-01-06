@@ -1461,8 +1461,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     public void resetValues(FacesContext context, java.util.Collection<java.lang.String> clientIds)    
     {
-        VisitContext visitContext = (VisitContext) VisitContext.createVisitContext(
-            context, clientIds, null);
+        VisitContext visitContext = (VisitContext) VisitContext.createVisitContext(context, clientIds, null);
         this.visitTree(visitContext, ResetValuesCallback.INSTANCE);
     }
 

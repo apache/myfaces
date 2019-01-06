@@ -153,8 +153,7 @@ public class SetPropertyActionListenerHandler extends TagHandler
                         ContextAware contextAware = (ContextAware) _value;
                         location = contextAware.getLocation();
                     }
-                    throw new ContextAwareELException(location,
-                            _value.getExpressionString(), "value", e);
+                    throw new ContextAwareELException(location, _value.getExpressionString(), "value", e);
                 }
             }
 
@@ -182,14 +181,11 @@ public class SetPropertyActionListenerHandler extends TagHandler
     public String getFor()
     {
         TagAttribute forAttribute = getAttribute("for");
-        
         if (forAttribute == null)
         {
             return null;
         }
-        else
-        {
-            return forAttribute.getValue();
-        }
+
+        return forAttribute.getValue();
     }
 }

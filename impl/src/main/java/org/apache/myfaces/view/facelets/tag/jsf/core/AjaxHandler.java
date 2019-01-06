@@ -259,8 +259,6 @@ public class AjaxHandler extends TagHandler implements
             outputScript.getAttributes().put(JSFAttr.LIBRARY_ATTR, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME);
             outputScript.getAttributes().put(JSFAttr.TARGET_ATTR, "head");
 
-            //AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-
             // Since this component will be relocated, we need a generated clientId from the
             // viewRoot, so when this one is relocated, its parent will be this UIViewRoot instance
             // and prevent a duplicate id exception.
@@ -319,8 +317,8 @@ public class AjaxHandler extends TagHandler implements
     public void applyAttachedObject(FacesContext context, UIComponent parent)
     {
         // Retrieve the current FaceletContext from FacesContext object
-        FaceletContext faceletContext = (FaceletContext) context
-                .getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
+        FaceletContext faceletContext = (FaceletContext) context.getAttributes()
+                .get(FaceletContext.FACELET_CONTEXT_KEY);
 
         // cast to a ClientBehaviorHolder
         ClientBehaviorHolder cvh = (ClientBehaviorHolder) parent;
@@ -403,26 +401,25 @@ public class AjaxHandler extends TagHandler implements
             }
             else
             {
-                ajaxBehavior.setValueExpression("disabled", _disabled
-                        .getValueExpression(faceletContext, Boolean.class));
+                ajaxBehavior.setValueExpression("disabled",
+                        _disabled.getValueExpression(faceletContext, Boolean.class));
             }
         }
         if (_execute != null)
         {
-            ajaxBehavior.setValueExpression("execute", _execute
-                    .getValueExpression(faceletContext, Object.class));
+            ajaxBehavior.setValueExpression("execute", 
+                    _execute.getValueExpression(faceletContext, Object.class));
         }
         if (_immediate != null)
         {
             if (_immediate.isLiteral())
             {
-                ajaxBehavior
-                        .setImmediate(_immediate.getBoolean(faceletContext));
+                ajaxBehavior.setImmediate(_immediate.getBoolean(faceletContext));
             }
             else
             {
-                ajaxBehavior.setValueExpression("immediate", _immediate
-                        .getValueExpression(faceletContext, Boolean.class));
+                ajaxBehavior.setValueExpression("immediate",
+                        _immediate.getValueExpression(faceletContext, Boolean.class));
             }
         }
         if (_listener != null)
@@ -440,8 +437,8 @@ public class AjaxHandler extends TagHandler implements
             }
             else
             {
-                ajaxBehavior.setValueExpression("onerror", _onerror
-                        .getValueExpression(faceletContext, String.class));
+                ajaxBehavior.setValueExpression("onerror",
+                        _onerror.getValueExpression(faceletContext, String.class));
             }
         }
         if (_onevent != null)
@@ -452,14 +449,14 @@ public class AjaxHandler extends TagHandler implements
             }
             else
             {
-                ajaxBehavior.setValueExpression("onevent", _onevent
-                        .getValueExpression(faceletContext, String.class));
+                ajaxBehavior.setValueExpression("onevent",
+                        _onevent.getValueExpression(faceletContext, String.class));
             }
         }
         if (_render != null)
         {
-            ajaxBehavior.setValueExpression("render", _render
-                    .getValueExpression(faceletContext, Object.class));
+            ajaxBehavior.setValueExpression("render",
+                    _render.getValueExpression(faceletContext, Object.class));
         }
         if (_delay != null)
         {
@@ -469,21 +466,20 @@ public class AjaxHandler extends TagHandler implements
             }
             else
             {
-                ajaxBehavior.setValueExpression("delay", _delay
-                    .getValueExpression(faceletContext, String.class));
+                ajaxBehavior.setValueExpression("delay",
+                        _delay.getValueExpression(faceletContext, String.class));
             }
         }
        if (_resetValues != null)
         {
             if (_resetValues.isLiteral())
             {
-                ajaxBehavior
-                        .setResetValues(_resetValues.getBoolean(faceletContext));
+                ajaxBehavior.setResetValues(_resetValues.getBoolean(faceletContext));
             }
             else
             {
-                ajaxBehavior.setValueExpression("resetValues", _resetValues
-                        .getValueExpression(faceletContext, Boolean.class));
+                ajaxBehavior.setValueExpression("resetValues",
+                        _resetValues.getValueExpression(faceletContext, Boolean.class));
             }
         }
         cvh.addClientBehavior(eventName, ajaxBehavior);

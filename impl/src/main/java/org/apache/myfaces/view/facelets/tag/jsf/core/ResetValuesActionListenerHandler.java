@@ -161,17 +161,17 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
         if (_render.isLiteral())
         {
             listener = new LiteralResetValuesActionListener(_clientIds,
-                topParentComponent != null ? 
-                (Location) topParentComponent.getAttributes().get(
-                    CompositeComponentELUtils.LOCATION_KEY) : null);
+                topParentComponent != null
+                        ? (Location) topParentComponent.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY)
+                        : null);
         }
         else
         {
-            listener = new ResetValuesActionListener(_render
-                .getValueExpression(faceletContext, Object.class) ,
-                topParentComponent != null ? 
-                (Location) topParentComponent.getAttributes().get(
-                    CompositeComponentELUtils.LOCATION_KEY) : null);
+            listener = new ResetValuesActionListener(
+                    _render.getValueExpression(faceletContext, Object.class),
+                    topParentComponent != null
+                            ? (Location) topParentComponent.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY)
+                            : null);
         }
         as.addActionListener(listener);
     }
@@ -181,15 +181,12 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
     public String getFor()
     {
         TagAttribute forAttribute = getAttribute("for");
-        
         if (forAttribute == null)
         {
             return null;
         }
-        else
-        {
-            return forAttribute.getValue();
-        }
+
+        return forAttribute.getValue();
     }
     
     private final static class ResetValuesActionListener implements ActionListener, Serializable
@@ -340,8 +337,7 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
         UIComponent target = contextComponent.findComponent(id);
         if (target == null)
         {
-            target = contextComponent.findComponent(
-                facesContext.getNamingContainerSeparatorChar() + id);
+            target = contextComponent.findComponent(facesContext.getNamingContainerSeparatorChar() + id);
         }
         if (target != null)
         {

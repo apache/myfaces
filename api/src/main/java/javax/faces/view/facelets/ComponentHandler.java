@@ -104,6 +104,7 @@ public class ComponentHandler extends DelegatingMetaTagHandler
         // no-op.
     }
 
+    @Override
     protected TagHandlerDelegate getTagHandlerDelegate()
     {
         if (helper == null)
