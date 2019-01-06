@@ -163,7 +163,6 @@ class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
         this._target = target;
         _fullState = new HashMap<Serializable, Object>();
         _deltas = null;
-        //_stateHolderKeys = new HashSet<Serializable>();
     }
 
     /**
@@ -196,8 +195,7 @@ class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
         if (_createDeltas())
         {
             //Track delta case
-            Map<Object, Boolean> deltaListMapValues = (Map<Object, Boolean>) _deltas
-                    .get(key);
+            Map<Object, Boolean> deltaListMapValues = (Map<Object, Boolean>) _deltas.get(key);
             if (deltaListMapValues == null)
             {
                 deltaListMapValues = new InternalDeltaListMap<Object, Boolean>(3);
@@ -453,6 +451,7 @@ class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
         return returnValue;
     }
 
+    @Override
     public boolean isTransient()
     {
         return _transient;
@@ -498,8 +497,7 @@ class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
                 value instanceof List ||
                 !(value instanceof Serializable))
             {
-                Object savedValue = saveAttachedState(context,
-                    value);
+                Object savedValue = saveAttachedState(context, value);
                 retArr[cnt + 1] = savedValue;
             }
             else
@@ -512,6 +510,7 @@ class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
         return retArr;
     }
 
+    @Override
     public void restoreState(FacesContext context, Object state)
     {
         if (state == null)

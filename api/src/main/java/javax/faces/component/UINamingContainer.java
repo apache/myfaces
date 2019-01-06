@@ -69,6 +69,7 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
      * 
      * @since 2.0
      */
+    @Override
     public String createUniqueId(FacesContext context, String seed)
     {
         StringBuilder bld = _getSharedStringBuilder(context);

@@ -283,12 +283,6 @@ public abstract class UIComponent
      */
     public static boolean isCompositeComponent(UIComponent component)
     {
-
-        //since _isCompositeComponent does it the same way we do it here also although I
-        //would prefer following method
-
-        //return component.getRendererType().equals("javax.faces.Composite");
-
         return component.getAttributes().containsKey(Resource.COMPONENT_RESOURCE_KEY);
     }
 
@@ -336,7 +330,6 @@ public abstract class UIComponent
      */
     protected boolean isVisitable(VisitContext context)
     {
-
         Collection<VisitHint> hints = context.getHints();
 
         if (hints.contains(VisitHint.SKIP_TRANSIENT) && this.isTransient())
@@ -416,7 +409,6 @@ public abstract class UIComponent
      */
     public static UIComponent getCompositeComponentParent(UIComponent component)
     {
-
         if (component == null)
         {
             return null;

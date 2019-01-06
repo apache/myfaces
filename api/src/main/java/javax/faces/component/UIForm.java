@@ -378,8 +378,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
 
     private String getComponentLocation(UIComponent component)
     {
-        Location location = (Location) component.getAttributes()
-                .get(UIComponent.VIEW_LOCATION_KEY);
+        Location location = (Location) component.getAttributes().get(UIComponent.VIEW_LOCATION_KEY);
         if (location != null)
         {
             return location.toString();

@@ -496,8 +496,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     }
 
     private static Object _removeValueOrKeyFromCollectionDelta(
-            Map<Serializable, Object> stateMap, Serializable key,
-            Object valueOrKey)
+            Map<Serializable, Object> stateMap, Serializable key, Object valueOrKey)
     {
         Object returnValue = null;
         Map<Object, Boolean> c = (Map<Object, Boolean>) stateMap.get(key);
@@ -513,8 +512,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     }
 
     private static Object _removeValueOrKeyFromCollection(
-            Map<Serializable, Object> stateMap, Serializable key,
-            Object valueOrKey)
+            Map<Serializable, Object> stateMap, Serializable key, Object valueOrKey)
     {
         Object returnValue = null;
         Collection c = (Collection) stateMap.get(key);
@@ -533,8 +531,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     }
 
     private static Object _removeValueOrKeyFromMap(
-            Map<Serializable, Object> stateMap, Serializable key,
-            Object valueOrKey, boolean delta)
+            Map<Serializable, Object> stateMap, Serializable key, Object valueOrKey, boolean delta)
     {
         if (valueOrKey == null)
         {
@@ -635,9 +632,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         }
 
         Map.Entry<Serializable, Object> entry;
-        //entry == key, value, key, value
         Object[] retArr = new Object[serializableMap.entrySet().size() * 2];
-        //Object[] retArr = new Object[serializableMap.entrySet().size() * 2 + stateHolderKeyCount]; 
 
         Iterator<Map.Entry<Serializable, Object>> it = serializableMap.entrySet().iterator();
         int cnt = 0;
@@ -655,8 +650,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
                 value instanceof List ||
                 !(value instanceof Serializable))
             {
-                Object savedValue = UIComponentBase.saveAttachedState(context,
-                    value);
+                Object savedValue = UIComponentBase.saveAttachedState(context, value);
                 retArr[cnt + 1] = savedValue;
             }
             else
@@ -964,7 +958,7 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
     @Override
     public Object getTransient(Object key, Object defaultValue)
     {
-        Object returnValue = (_transientState == null) ? null : _transientState.get(key);
+        Object returnValue = _transientState == null ? null : _transientState.get(key);
         if (returnValue != null)
         {
             return returnValue;

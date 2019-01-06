@@ -119,8 +119,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         else
         {
             //Full
-            _behaviorListeners = (_DeltaList<BehaviorListener>)
-                restoreAttachedState(context, state);
+            _behaviorListeners = (_DeltaList<BehaviorListener>) restoreAttachedState(context, state);
         }
     }
 
@@ -138,8 +137,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
             Object attachedState = holder.saveState(facesContext);
             if (attachedState != null)
             {
-                return new _AttachedDeltaWrapper(_behaviorListeners.getClass(),
-                        attachedState);
+                return new _AttachedDeltaWrapper(_behaviorListeners.getClass(), attachedState);
             }
             //_behaviorListeners instances once is created never changes, we can return null
             return null;

@@ -1305,55 +1305,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
     }
     
-    /**
-     * Overwrite the state of the child components of this component with data previously saved by method
-     * saveDescendantComponentStates.
-     * <p>
-     * The saved state info only covers those fields that are expected to vary between rows of a table. Other fields are
-     * not modified.
-     */
-    @SuppressWarnings("unchecked")
-    /*
-    private void restoreTransientDescendantComponentStates(FacesContext facesContext,
-    Iterator<UIComponent> childIterator, Object state,
-                                                  boolean restoreChildFacets)
-    {
-        Iterator<? extends Object[]> descendantStateIterator = null;
-        while (childIterator.hasNext())
-        {
-            if (descendantStateIterator == null && state != null)
-            {
-                descendantStateIterator = ((Collection<? extends Object[]>) state).iterator();
-            }
-            UIComponent component = childIterator.next();
-
-            // reset the client id (see spec 3.1.6)
-            component.setId(component.getId());
-            if (!component.isTransient())
-            {
-                Object childState = null;
-                Object descendantState = null;
-                if (descendantStateIterator != null && descendantStateIterator.hasNext())
-                {
-                    Object[] object = descendantStateIterator.next();
-                    childState = object[0];
-                    descendantState = object[1];
-                }
-                component.restoreTransientState(facesContext, childState);
-                Iterator<UIComponent> childsIterator;
-                if (restoreChildFacets)
-                {
-                    childsIterator = component.getFacetsAndChildren();
-                }
-                else
-                {
-                    childsIterator = component.getChildren().iterator();
-                }
-                restoreTransientDescendantComponentStates(facesContext, childsIterator, descendantState, true);
-            }
-        }
-    }*/
-    
     private void restoreTransientDescendantComponentStates(FacesContext facesContext,
                                                            Iterator<UIComponent> childIterator,
                                                            Map<String, Object> state,
@@ -1386,57 +1337,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
 
     }
-
-    /**
-     * Walk the tree of child components of this UIData, saving the parts of their state that can vary between rows.
-     * <p>
-     * This is very similar to the process that occurs for normal components when the view is serialized. Transient
-     * components are skipped (no state is saved for them).
-     * <p>
-     * If there are no children then null is returned. If there are one or more children, and all children are transient
-     * then an empty collection is returned; this will happen whenever a table contains only read-only components.
-     * <p>
-     * Otherwise a collection is returned which contains an object for every non-transient child component; that object
-     * may itself contain a collection of the state of that child's child components.
-     */
-    /*
-    private Collection<Object[]> saveTransientDescendantComponentStates(FacesContext facesContext,
-                                                               Iterator<UIComponent> childIterator,
-                                                               boolean saveChildFacets)
-    {
-        Collection<Object[]> childStates = null;
-        while (childIterator.hasNext())
-        {
-            if (childStates == null)
-            {
-                childStates = new ArrayList<Object[]>();
-            }
-            
-            UIComponent child = childIterator.next();
-            if (!child.isTransient())
-            {
-                // Add an entry to the collection, being an array of two
-                // elements. The first element is the state of the children
-                // of this component; the second is the state of the current
-                // child itself.
-
-                Iterator<UIComponent> childsIterator;
-                if (saveChildFacets)
-                {
-                    childsIterator = child.getFacetsAndChildren();
-                }
-                else
-                {
-                    childsIterator = child.getChildren().iterator();
-                }
-                Object descendantState = saveTransientDescendantComponentStates(facesContext, childsIterator, true);
-                Object state = null;
-                    state = child.saveTransientState(facesContext);
-                childStates.add(new Object[] { state, descendantState });
-            }
-        }
-        return childStates;
-    }*/
     
     private Map<String, Object> saveTransientDescendantComponentStates(FacesContext facesContext,
                                                                        Map<String, Object> childStates,
@@ -1620,21 +1520,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
         super.setValueExpression(name, binding);
     }
-
-    /*
-    @Override
-    public String getClientId(FacesContext context)
-    {
-        String clientId = super.getClientId(context);
-        int rowIndex = getRowIndex();
-        if (rowIndex == -1)
-        {
-            return clientId;
-        }
-
-        StringBuilder bld = _getSharedStringBuilder();
-        return bld.append(clientId).append(UINamingContainer.getSeparatorChar(context)).append(rowIndex).toString();
-    }*/
 
     @Override
     public String getContainerClientId(FacesContext context)
@@ -2118,19 +2003,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                     dataModel = (DataModel) DATAMODEL_BUILDER_CREATE_DATAMODEL_METHOD.invoke(dataModelBuilderProxy, 
                             getFacesContext(), value.getClass(), value);
                 }
-                catch (InstantiationException ex)
-                {
-                    //No op
-                } 
-                catch (IllegalAccessException ex)
-                {
-                    //No op
-                }
-                catch (IllegalArgumentException ex)
-                {
-                    //No op
-                }
-                catch (InvocationTargetException ex)
+                catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                        | InvocationTargetException ex)
                 {
                     //No op
                 }
@@ -2315,10 +2189,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                     //accept
                 default:
                     // determine if we need to visit our children
-                    Collection<String> subtreeIdsToVisit = context
-                            .getSubtreeIdsToVisit(this);
-                    boolean doVisitChildren = subtreeIdsToVisit != null
-                            && !subtreeIdsToVisit.isEmpty();
+                    Collection<String> subtreeIdsToVisit = context.getSubtreeIdsToVisit(this);
+                    boolean doVisitChildren = subtreeIdsToVisit != null && !subtreeIdsToVisit.isEmpty();
                     if (doVisitChildren)
                     {
                         // visit the facets of the component
