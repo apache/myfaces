@@ -52,7 +52,7 @@ public class RequiredValidator implements Validator
     // VALIDATE
     @Override
     public void validate(FacesContext facesContext, UIComponent uiComponent,
-            Object value) throws ValidatorException
+            Object value)
     {
         if (facesContext == null)
         {
