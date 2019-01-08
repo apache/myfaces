@@ -110,26 +110,11 @@ public class ImportHandlerResolver extends ScopedAttributeResolver
                     }
                 }
             } 
-            catch (IllegalAccessException ex) 
+            catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException
+                    | InstantiationException ex) 
             {
                 //No op
-            } 
-            catch (IllegalArgumentException ex) 
-            {
-                //No op
-            } 
-            catch (InvocationTargetException ex) 
-            {
-                //No op
-            } 
-            catch (SecurityException ex) 
-            {
-                //No op
-            } 
-            catch (InstantiationException e) 
-            {
-                //No op
-            }
+            }            
         }
         return null;
     }
