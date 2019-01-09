@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.lifecycle.ClientWindow;
@@ -49,12 +48,17 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     
     private static final String SESSION_TOKEN = "oam.rsm.SESSION_TOKEN";
 
-    private StateCacheProvider _stateCacheFactory;
-    private Boolean _autoCompleteOffViewState;
+    private StateCacheProvider stateCacheFactory;
+    private MyfacesConfig myfacesConfig;
     
     public HtmlResponseStateManager()
-    {
-        _autoCompleteOffViewState = null;
+    {        
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
+        
+        stateCacheFactory = StateCacheProviderFactory
+                .getStateCacheProviderFactory(facesContext.getExternalContext())
+                .getStateCacheProvider(facesContext.getExternalContext());
     }
     
     @Override
@@ -108,8 +112,6 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     {
         String serializedState = getStateCache(facesContext).getStateTokenProcessor(facesContext)
                 .encode(facesContext, savedState);
-        ExternalContext extContext = facesContext.getExternalContext();
-        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(extContext);
 
         responseWriter.startElement(HTML.INPUT_ELEM, null);
         responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
@@ -120,11 +122,11 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
             // JSF 2.2 if javax.faces.ViewState is used as the id, in portlet
             // case it will be duplicate ids and that not xml friendly.
             responseWriter.writeAttribute(HTML.ID_ATTR,
-                HtmlResponseStateManager.generateUpdateViewStateId(
-                    facesContext), null);
+                HtmlResponseStateManager.generateUpdateViewStateId(facesContext),
+                null);
         }
         responseWriter.writeAttribute(HTML.VALUE_ATTR, serializedState, null);
-        if (this.isAutocompleteOffViewState(facesContext))
+        if (myfacesConfig.isAutocompleteOffViewState())
         {
             responseWriter.writeAttribute(HTML.AUTOCOMPLETE_ATTR, "off", null);
         }
@@ -258,13 +260,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
     protected StateCache getStateCache(FacesContext facesContext)
     {
-        if (_stateCacheFactory == null)
-        {
-            _stateCacheFactory = StateCacheProviderFactory
-                    .getStateCacheProviderFactory(facesContext.getExternalContext())
-                    .getStateCacheProvider(facesContext.getExternalContext());
-        }
-        return _stateCacheFactory.getStateCache(facesContext);
+        return stateCacheFactory.getStateCache(facesContext);
     }
 
     public static String generateUpdateClientWindowId(FacesContext facesContext)
@@ -321,15 +317,5 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
             separator + ResponseStateManager.VIEW_STATE_PARAM + separator + count;
         facesContext.getAttributes().put(VIEW_STATE_COUNTER, count);
         return id;
-    }
-
-    private boolean isAutocompleteOffViewState(FacesContext facesContext)
-    {
-        if (_autoCompleteOffViewState == null)
-        {
-            _autoCompleteOffViewState = MyfacesConfig.getCurrentInstance(facesContext)
-                    .isAutocompleteOffViewState();
-        }
-        return _autoCompleteOffViewState;
     }
 }

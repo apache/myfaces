@@ -34,6 +34,7 @@ import javax.faces.component.html.HtmlForm;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
@@ -42,7 +43,6 @@ import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Employee;
-import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -202,7 +202,7 @@ public final class JstlCoreTestCase extends FaceletTestCase {
     @Test
     public void testForEach2CacheAlways() throws Exception
     {
-        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+        servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
         testForEach2();
     }
@@ -249,7 +249,7 @@ public final class JstlCoreTestCase extends FaceletTestCase {
     @Test
     public void testForEach3CacheAlways() throws Exception
     {
-        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+        servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
         testForEach3();
     }
@@ -297,7 +297,7 @@ public final class JstlCoreTestCase extends FaceletTestCase {
     @Test
     public void testForEach4CacheAlways() throws Exception
     {
-        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+        servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
         testForEach4();
     }

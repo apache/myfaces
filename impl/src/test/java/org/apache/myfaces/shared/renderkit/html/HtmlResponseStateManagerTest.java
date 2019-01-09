@@ -32,10 +32,11 @@ public class HtmlResponseStateManagerTest extends FacesTestCase
     @Test
     public void testIsPostback()
     {
-        HtmlResponseStateManager hrsm = Mockito.spy(HtmlResponseStateManager.class);
-        
         Mockito.when(_facesContext.getExternalContext()).thenReturn(_externalContext);
+        Mockito.when(_externalContext.getApplicationMap()).thenReturn(new HashMap<>());
         
+        HtmlResponseStateManager hrsm = Mockito.spy(HtmlResponseStateManager.class);
+
         Map<String, String> map = new HashMap<>();
         map.put(ResponseStateManager.VIEW_STATE_PARAM, "seomthing");
         Mockito.when(_externalContext.getRequestParameterMap()).thenReturn(map);
@@ -46,12 +47,11 @@ public class HtmlResponseStateManagerTest extends FacesTestCase
     @Test
     public void testIsNoPostback()
     {
-        HtmlResponseStateManager hrsm = Mockito.spy(HtmlResponseStateManager.class);
-        
         Mockito.when(_facesContext.getExternalContext()).thenReturn(_externalContext);
+        Mockito.when(_externalContext.getApplicationMap()).thenReturn(new HashMap<>());
+        Mockito.when(_externalContext.getRequestParameterMap()).thenReturn(new HashMap<>());
         
-        Map<String, String> map = new HashMap<>();
-        Mockito.when(_externalContext.getRequestParameterMap()).thenReturn(map);
+        HtmlResponseStateManager hrsm = Mockito.spy(HtmlResponseStateManager.class);
 
         assertEquals(false, hrsm.isPostback(_facesContext));
     }

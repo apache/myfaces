@@ -97,8 +97,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
 
     private final List<PageContext> _isolatedPageContext;
     
-    public DefaultFaceletContext(DefaultFaceletContext ctx,
-            AbstractFacelet facelet, boolean ccWrap)
+    public DefaultFaceletContext(DefaultFaceletContext ctx, AbstractFacelet facelet, boolean ccWrap)
     {
         _ctx = ctx._ctx;
         _faces = ctx._faces;
@@ -195,7 +194,6 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     @Override
     public void setVariableMapper(VariableMapper varMapper)
     {
-        // Assert.param("varMapper", varMapper);
         _varMapper = varMapper;
         _varMapperBase = (_varMapper instanceof VariableMapperBase) ? (VariableMapperBase) varMapper : null;
     }
@@ -206,7 +204,6 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     @Override
     public void setFunctionMapper(FunctionMapper fnMapper)
     {
-        // Assert.param("fnMapper", fnMapper);
         _fnMapper = fnMapper;
     }
 

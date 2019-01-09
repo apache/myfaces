@@ -61,6 +61,7 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
     private Map<String, Map<String, Renderer>> _renderers;
     private ResponseStateManager _responseStateManager;
     private Map<String, ClientBehaviorRenderer> _clientBehaviorRenderers;
+    private MyfacesConfig myfacesConfig;
     
     // ~ Constructors -------------------------------------------------------------------------------
 
@@ -69,6 +70,7 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
         _renderers = new ConcurrentHashMap<>(64, 0.75f, 1);
         _responseStateManager = new HtmlResponseStateManager();
         _clientBehaviorRenderers = new HashMap<>();
+        myfacesConfig = MyfacesConfig.getCurrentInstance(FacesContext.getCurrentInstance());
     }
 
     // ~ Methods ------------------------------------------------------------------------------------
@@ -219,7 +221,6 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
     public ResponseWriter createResponseWriter(Writer writer, String contentTypeListString, String characterEncoding)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext);
         String selectedContentType = null;
         String writerContentType = null;
         boolean isAjaxRequest = facesContext.getPartialViewContext().isAjaxRequest();

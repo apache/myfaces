@@ -35,6 +35,7 @@ import javax.faces.component.html.HtmlGraphicImage;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.event.PostRenderViewEvent;
 import javax.faces.event.PreRenderViewEvent;
+import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.config.NamedEventManager;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -43,7 +44,6 @@ import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
-import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -817,7 +817,7 @@ public class CompositeComponentTestCase extends FaceletTestCase
     public void testsCompositeRefVE() throws Exception {
         
         servletContext.addInitParameter(
-                FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+                MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 "always");
         
         UIViewRoot root = facesContext.getViewRoot();

@@ -24,11 +24,11 @@ import java.io.StringWriter;
 import javax.el.ExpressionFactory;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
+import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -76,7 +76,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
     @Test
     public void testCompositeNestedCC1Cache() throws Exception
     {
-        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+        servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testCompositeNestedCC1.xhtml");
@@ -129,7 +129,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
     @Test
     public void testCompositeNestedCC2Cache() throws Exception
     {
-        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+        servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testCompositeNestedCC2.xhtml");
@@ -187,7 +187,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
     @Test
     public void testCompositeNestedCC3Cache() throws Exception
     {
-        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+        servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString()); //allowCset
         
         UIViewRoot root = facesContext.getViewRoot();
@@ -242,7 +242,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
     @Test
     public void testCompositeNestedCC4Cache() throws Exception
     {
-        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+        servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
 
         UIViewRoot root = facesContext.getViewRoot();
@@ -292,7 +292,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
     @Test
     public void testCompositeNestedCC5Cache() throws Exception
     {
-        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+        servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testCompositeNestedCC5.xhtml");
@@ -345,7 +345,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
     @Test
     public void testCompositeNestedCC6Cache() throws Exception
     {
-        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+        servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
         UIViewRoot root = facesContext.getViewRoot();
         vdl.buildView(facesContext, root, "testCompositeNestedCC6.xhtml");
@@ -403,7 +403,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
     @Test
     public void testCompositeNestedCC7Cache() throws Exception
     {
-        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+        servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString()); //allowCset
         
         UIViewRoot root = facesContext.getViewRoot();
@@ -458,7 +458,7 @@ public class CompositeComponentNestedCCTestCase extends FaceletTestCase
     @Test
     public void testCompositeNestedCC8Cache() throws Exception
     {
-        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+        servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.always.toString());
 
         UIViewRoot root = facesContext.getViewRoot();

@@ -21,10 +21,10 @@ package org.apache.myfaces.view.facelets.el;
 import java.io.StringWriter;
 import javax.el.ExpressionFactory;
 import javax.faces.component.UIViewRoot;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -44,7 +44,7 @@ public class CacheELExpressionsTestCase extends FaceletTestCase
     public void testUIParamCaching1() throws Exception
     {
         // Works in "none", "allowCset", and "strict" but it does not in always.
-        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+        servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.allowCset.toString());
         
         UIViewRoot root = facesContext.getViewRoot();
@@ -66,7 +66,7 @@ public class CacheELExpressionsTestCase extends FaceletTestCase
     public void testUIParamCaching2() throws Exception
     {
         // Works in "none", "allowCset", and "strict" but it does not in always.
-        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+        servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 ELExpressionCacheMode.strict.toString());
         
         UIViewRoot root = facesContext.getViewRoot();

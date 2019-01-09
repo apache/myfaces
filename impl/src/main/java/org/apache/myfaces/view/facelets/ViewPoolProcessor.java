@@ -42,7 +42,6 @@ import org.apache.myfaces.context.RequestViewMetadata;
 import org.apache.myfaces.lifecycle.RestoreViewSupport;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.WebConfigParamUtils;
-import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 import org.apache.myfaces.view.facelets.pool.ViewPool;
 import org.apache.myfaces.view.facelets.pool.ViewPoolFactory;
 import org.apache.myfaces.view.facelets.pool.ViewEntry;
@@ -161,18 +160,19 @@ public class ViewPoolProcessor
     {
         if (context.isProjectStage(ProjectStage.Production))
         {
+            MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(context);
+            
             boolean initialize = true;
-            String elMode = WebConfigParamUtils.getStringInitParameter(
-                        context.getExternalContext(),
-                        FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
-                            ELExpressionCacheMode.noCache.name());
-            if (!elMode.equals(ELExpressionCacheMode.alwaysRecompile.name()))
+
+            if (myfacesConfig.getELExpressionCacheMode() != ELExpressionCacheMode.alwaysRecompile)
             {
-                Logger.getLogger(ViewPoolProcessor.class.getName()).log(
-                    Level.INFO, FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS +
-                    " web config parameter is set to \"" + ( (elMode == null) ? "none" : elMode) +
-                    "\". To enable view pooling this param"+
-                    " must be set to \"alwaysRecompile\". View Pooling disabled.");
+                Logger.getLogger(ViewPoolProcessor.class.getName()).log(Level.INFO,
+                        MyfacesConfig.CACHE_EL_EXPRESSIONS
+                                + " web config parameter is set to \""
+                                + ((myfacesConfig.getELExpressionCacheMode() == null)
+                                        ? "none" : myfacesConfig.getELExpressionCacheMode())
+                                + "\". To enable view pooling this param"
+                                + " must be set to \"alwaysRecompile\". View Pooling disabled.");
                 initialize = false;
             }
             

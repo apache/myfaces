@@ -22,10 +22,10 @@ import java.io.StringWriter;
 import javax.el.ExpressionFactory;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -39,7 +39,7 @@ public class CacheELExpressionsAlwaysRecompileTestCase extends FaceletTestCase
     protected void setUpServletObjects() throws Exception
     {
         super.setUpServletObjects();
-        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS,
+        servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS,
             ELExpressionCacheMode.alwaysRecompile.toString());
         servletContext.addInitParameter(ViewHandler.FACELETS_SKIP_COMMENTS_PARAM_NAME, "true");
         servletContext.addInitParameter(ViewHandler.FACELETS_LIBRARIES_PARAM_NAME, "/user.taglib.xml");
