@@ -471,7 +471,7 @@ public class ApplicationImpl extends Application
 
     String getBundleName(final FacesContext facesContext, final String name)
     {
-        ResourceBundle bundle = getRuntimeConfig(facesContext).getResourceBundle(name);
+        ResourceBundle bundle = _runtimeConfig.getResourceBundle(name);
         return bundle != null ? bundle.getBaseName() : null;
     }
 
