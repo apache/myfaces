@@ -36,6 +36,7 @@ import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.FaceletsProcessing;
@@ -118,6 +119,11 @@ public class RuntimeConfig
     
     private List<String> _faceletTemplates = new ArrayList<String>();
 
+    public static RuntimeConfig getCurrentInstance(FacesContext facesContext)
+    {
+        return getCurrentInstance(facesContext.getExternalContext());
+    }
+    
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
         RuntimeConfig runtimeConfig = (RuntimeConfig) externalContext.getApplicationMap().get(
