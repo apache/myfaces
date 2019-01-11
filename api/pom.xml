@@ -36,32 +36,11 @@
 
     <build>
 
+
         <resources>
             <!-- standard resources -->
             <resource>
                 <directory>src/main/resources</directory>
-            </resource>
-
-            <!-- javascript resources -->
-            <resource>
-                <directory>src/main/javascript/META-INF/resources/myfaces/_impl/_util</directory>
-                <targetPath>META-INF/internal-resources/org.apache.myfaces.core.impl.util</targetPath>
-            </resource>
-            <resource>
-                <directory>src/main/javascript/META-INF/resources/myfaces/_impl/i18n</directory>
-                <targetPath>META-INF/internal-resources/org.apache.myfaces.core.impl.i18n</targetPath>
-            </resource>
-            <resource>
-                <directory>src/main/javascript/META-INF/resources/myfaces/_impl/core</directory>
-                <targetPath>META-INF/internal-resources/org.apache.myfaces.core.impl.core</targetPath>
-            </resource>
-            <resource>
-                <directory>src/main/javascript/META-INF/resources/myfaces/_impl/xhrCore</directory>
-                <targetPath>META-INF/internal-resources/org.apache.myfaces.core.impl.xhrCore</targetPath>
-            </resource>
-            <resource>
-                <directory>src/main/javascript/META-INF/resources/myfaces/api</directory>
-                <targetPath>META-INF/internal-resources/org.apache.myfaces.core.api</targetPath>
             </resource>
 
         </resources>
@@ -113,6 +92,7 @@
                 <version>1.0.1</version>
                 <extensions>true</extensions>
                 <executions>
+
                      <execution>
                         <id>compile</id>
                         <goals>
@@ -120,29 +100,14 @@
                         </goals>
                         <phase>process-resources</phase>
                         <configuration>
+                            <sourceDirectory>${basedir}/src/main/javascript/META-INF/resources</sourceDirectory>
                             <descriptor>${basedir}/src/assembler/jsfscripts-compiler.xml</descriptor>
                             <excludes>
                                 <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
                             </excludes>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>compile-uncompressed</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <descriptor>${basedir}/src/assembler/jsfscripts-uncompressed-compiler.xml</descriptor>
-                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
-                            <excludes>
-                                <exclude>**/myfaces/_impl/core/Impl.js</exclude>
-                                <exclude>**/myfaces/_impl/_util/*</exclude>
-                                <exclude>**/myfaces/_impl/xhrCore/*</exclude>
-                                <exclude>**/myfaces/api/*</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
+
                     <execution>
                         <id>compile-uncompressed-full</id>
                         <goals>
@@ -150,6 +115,7 @@
                         </goals>
                         <phase>process-resources</phase>
                         <configuration>
+                            <sourceDirectory>${basedir}/src/main/javascript/META-INF/resources</sourceDirectory>
                             <descriptor>${basedir}/src/assembler/jsfscripts-uncompressed-full-compiler.xml</descriptor>
                             <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
                             <excludes>
@@ -164,6 +130,7 @@
                         </goals>
                         <phase>process-resources</phase>
                         <configuration>
+                            <sourceDirectory>${basedir}/src/main/javascript/META-INF/resources</sourceDirectory>
                             <descriptor>${basedir}/src/assembler/jsfscripts-minimal-compiler.xml</descriptor>
                             <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
                             <excludes>
@@ -179,10 +146,12 @@
                         </goals>
                         <phase>process-resources</phase>
                         <configuration>
+                            <sourceDirectory>${basedir}/src/main/javascript/META-INF/resources</sourceDirectory>
                             <descriptor>${basedir}/src/assembler/jsfscripts-i18n-compiler.xml</descriptor>
                             <outputDirectory>${basedir}/target/classes/META-INF/resources/myfaces/</outputDirectory>
                             <excludes>
                                 <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
+
                             </excludes>
                         </configuration>
                     </execution>
@@ -199,6 +168,7 @@
                             <excludes>
                                 <exclude>jsf-uncompressed.js</exclude>
                                 <exclude>jsf-uncompressed-full.js</exclude>
+
                             </excludes>
                             <compressor>yahooUI</compressor>
 
@@ -216,11 +186,14 @@
                             <excludes>
                                 <exclude>jsf-uncompressed.js</exclude>
                                 <exclude>jsf-uncompressed-full.js</exclude>
+
                             </excludes>
                             <compressor>yahooUI</compressor>
 
                         </configuration>
                     </execution>
+
+
 
                 <execution>
                         <id>compress-alternatives</id>
@@ -232,8 +205,9 @@
                         <configuration>
                             <scripts>target/classes/META-INF/internal-resources/javax.faces/</scripts>
                             <excludes>
-                                <exclude>jsf-uncompressed.js</exclude>
                                 <exclude>jsf-uncompressed-full.js</exclude>
+                                <exclude>META-INF/**/*.js</exclude>
+
                             </excludes>
                             <compressor>yahooUI</compressor>
 
@@ -247,6 +221,7 @@
                     <outputDirectory>${basedir}/target/classes/META-INF/resources/javax.faces/</outputDirectory>
                 </configuration>
             </plugin>
+
 
             <!-- we want to use the test cases also in myfacse-impl, thus creating a test-jar -->
             <plugin>
@@ -263,8 +238,31 @@
                     <archive>
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                     </archive>
+                    <!-- we need to clean up some junk left by the myfaces javascript assembly -->
+
                 </configuration>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>**/META-INF/resources/myfaces/myfaces/**</exclude>
+                        <exclude>**/META-INF/resources/javax.faces/myfaces/**</exclude>
+                        <exclude>**/META-INF/resources/javax.faces/myfaces/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+
 
             <!--
                 berlios jsunit under apache2 license to cover javascript core routines which
