@@ -153,17 +153,6 @@ public class AjaxBehavior extends ClientBehaviorBase
 
     public void setValueExpression(String name, ValueExpression expression) 
     {
-        /*
-        if (item == null) 
-        {
-            getValueExpressionMap().remove(name);
-            getStateHelper().remove(name);
-        } 
-        else 
-        {
-            getValueExpressionMap().put(name, item);
-        }
-        */
         if (name == null)
         {
             throw new NullPointerException("name");

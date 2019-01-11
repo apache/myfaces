@@ -240,13 +240,7 @@ public class ApplicationImpl extends Application
 
     public ApplicationImpl()
     {
-        this(getRuntimeConfig());
-    }
-
-    private static RuntimeConfig getRuntimeConfig()
-    {
-        return RuntimeConfig.getCurrentInstance(
-                FacesContext.getCurrentInstance().getExternalContext());
+        this(RuntimeConfig.getCurrentInstance(FacesContext.getCurrentInstance()));
     }
 
     ApplicationImpl(final RuntimeConfig runtimeConfig)
@@ -430,7 +424,7 @@ public class ApplicationImpl extends Application
 
     String getBundleName(final FacesContext facesContext, final String name)
     {
-        ResourceBundle bundle = getRuntimeConfig(facesContext).getResourceBundle(name);
+        ResourceBundle bundle = _runtimeConfig.getResourceBundle(name);
         return bundle != null ? bundle.getBaseName() : null;
     }
 
@@ -438,11 +432,6 @@ public class ApplicationImpl extends Application
             throws MissingResourceException
     {
         return java.util.ResourceBundle.getBundle(name, locale, loader);
-    }
-
-    final RuntimeConfig getRuntimeConfig(final FacesContext facesContext)
-    {
-        return RuntimeConfig.getCurrentInstance(facesContext.getExternalContext());
     }
 
     final FacesContext getFacesContext()
@@ -2621,7 +2610,7 @@ public class ApplicationImpl extends Application
         // Chain of responsibility pattern
         CompositeSearchKeywordResolver baseResolver = new CompositeSearchKeywordResolver();
         
-        for (SearchKeywordResolver child : getRuntimeConfig().getApplicationSearchExpressionResolvers())
+        for (SearchKeywordResolver child : _runtimeConfig.getApplicationSearchExpressionResolvers())
         {
             baseResolver.add(child);
         }

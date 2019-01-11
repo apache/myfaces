@@ -21,6 +21,41 @@ package org.apache.myfaces.util;
 import java.util.Map;
 import javax.faces.context.FacesContext;
 
+/**
+ * <p>
+ * This gets a single FacesContext-local shared stringbuilder instance, each
+ * time you call _getSharedStringBuilder it sets the length of the stringBuilder
+ * instance to 0.
+ * </p><p>
+ * This allows you to use the same StringBuilder instance over and over. You
+ * must call toString on the instance before calling _getSharedStringBuilder
+ * again.
+ * </p>
+ * Example that works
+ * <pre><code>
+ * StringBuilder sb1 = _getSharedStringBuilder();
+ * sb1.append(a).append(b);
+ * String c = sb1.toString();
+ *
+ * StringBuilder sb2 = _getSharedStringBuilder();
+ * sb2.append(b).append(a);
+ * String d = sb2.toString();
+ * </code></pre>
+ * <br><br>
+ * Example that doesn't work, you must call toString on sb1 before calling
+ * _getSharedStringBuilder again.
+ * <pre><code>
+ * StringBuilder sb1 = _getSharedStringBuilder();
+ * StringBuilder sb2 = _getSharedStringBuilder();
+ *
+ * sb1.append(a).append(b);
+ * String c = sb1.toString();
+ *
+ * sb2.append(b).append(a);
+ * String d = sb2.toString();
+ * </code></pre>
+ *
+ */
 public class SharedStringBuilder
 {
     public static StringBuilder get(String stringBuilderKey)

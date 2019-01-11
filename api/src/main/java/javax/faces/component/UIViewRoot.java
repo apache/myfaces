@@ -52,7 +52,6 @@ import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.faces.event.PostConstructViewMapEvent;
-import javax.faces.event.PreDestroyViewMapEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.lifecycle.Lifecycle;
@@ -1461,8 +1460,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
      */
     public void resetValues(FacesContext context, java.util.Collection<java.lang.String> clientIds)    
     {
-        VisitContext visitContext = (VisitContext) VisitContext.createVisitContext(
-            context, clientIds, null);
+        VisitContext visitContext = (VisitContext) VisitContext.createVisitContext(context, clientIds, null);
         this.visitTree(visitContext, ResetValuesCallback.INSTANCE);
     }
 

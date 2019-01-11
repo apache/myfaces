@@ -108,7 +108,6 @@ public abstract class ExternalContext
      */
     public String encodePartialActionURL(String url)
     {
-        // TODO: IMPLEMENT IMPL
         ExternalContext ctx = _MyFacesExternalContextHelper.firstInstance.get();
         
         if (ctx == null)
@@ -744,10 +743,7 @@ public abstract class ExternalContext
         
         if (ctx == null)
         {
-            /*throw new UnsupportedOperationException();*/
-            // TODO: Return null for now, but it should throw exception
-            // in JSF 2.2
-            return null;
+            throw new UnsupportedOperationException();
         }
         
         return ctx.getClientWindow();
@@ -759,8 +755,6 @@ public abstract class ExternalContext
      */
     public void setClientWindow(ClientWindow window)
     {
-        // No op for now.
-        /*
         ExternalContext ctx = _MyFacesExternalContextHelper.firstInstance.get();
         
         if (ctx == null)
@@ -769,7 +763,6 @@ public abstract class ExternalContext
         }
         
         ctx.setClientWindow(window);
-        */
     }
     
     /**

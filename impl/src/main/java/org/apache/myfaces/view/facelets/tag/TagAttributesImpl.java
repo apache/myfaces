@@ -20,8 +20,10 @@ package org.apache.myfaces.view.facelets.tag;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.faces.view.facelets.TagAttribute;
@@ -29,12 +31,7 @@ import javax.faces.view.facelets.TagAttributes;
 
 /**
  * A set of TagAttributes, usually representing all attributes on a Tag.
- * 
- * TODO: PROFILE - Explore the possibility of using HashMap instead of sorted arrays. 
- *       The footprint should be higher, but the instanciation and access speed should be faster 
- *       Instanciation: from O(n log n) to O(1)
- *       Access: from O(log n) to O(1)
- * 
+ *
  * See org.apache.myfaces.view.facelets.tag.Tag
  * See org.apache.myfaces.view.facelets.tag.TagAttributeImpl
  * @author Jacob Hookom
@@ -44,45 +41,52 @@ public final class TagAttributesImpl extends TagAttributes
 {
     private final static TagAttribute[] EMPTY = new TagAttribute[0];
 
-    private final TagAttribute[] _attributes;
-    private final String[] _namespaces;
-    private final List<TagAttribute[]> _nsattrs;
+    private final TagAttribute[] attributes;
+    private final String[] namespaces;
+    private final HashMap<String, TagAttribute[]> namespaceAttributes;
+    private final HashMap<String, Map<String, TagAttribute>> namespaceLocalNameAttributes;
 
-    /**
-     * 
-     */
-    public TagAttributesImpl(TagAttribute[] attrs)
+    public TagAttributesImpl(TagAttribute[] attributes)
     {
-        _attributes = attrs;
+        this.attributes = attributes;
+        this.namespaceAttributes = new HashMap<>(1);
+        this.namespaceLocalNameAttributes = new HashMap<>(1);
+        
+        Set<String> namespacesSet = new HashSet<>();
+        HashMap<String, List<TagAttribute>> namespaceAttributesAsList = new HashMap<>();
+        
+        for (TagAttribute attribute : attributes)
+        {
+            namespacesSet.add(attribute.getNamespace());
 
-        // grab namespaces
-        Set<String> set = new HashSet<String>();
-        for (TagAttribute attribute : _attributes)
-        {
-            set.add(attribute.getNamespace());
+            
+            List<TagAttribute> tagAttributes = namespaceAttributesAsList.get(attribute.getNamespace());
+            if (tagAttributes == null)
+            {
+                tagAttributes = new ArrayList<>(attributes.length);
+                namespaceAttributesAsList.put(attribute.getNamespace(), tagAttributes);
+            }
+            tagAttributes.add(attribute);
+            
+            
+            Map<String, TagAttribute> localeNameAttributes = namespaceLocalNameAttributes.get(attribute.getNamespace());
+            if (localeNameAttributes == null)
+            {
+                localeNameAttributes = new HashMap<>(attributes.length);
+                namespaceLocalNameAttributes.put(attribute.getNamespace(), localeNameAttributes);
+            }
+            localeNameAttributes.put(attribute.getLocalName(), attribute);
         }
-        
-        _namespaces = set.toArray(new String[set.size()]);
-        Arrays.sort(_namespaces);
 
-        // assign attrs
-        int size = _namespaces.length;
-        List<List<TagAttribute>> temp = new ArrayList<List<TagAttribute>>(size);
-        for (int i = 0; i < size; i++)
-        {
-            temp.add(new ArrayList<TagAttribute>());
-        }
+
+        this.namespaces = namespacesSet.toArray(new String[namespacesSet.size()]);
+        Arrays.sort(this.namespaces);
         
-        for (TagAttribute attribute : _attributes)
+        for (Map.Entry<String, List<TagAttribute>> entry : namespaceAttributesAsList.entrySet())
         {
-            temp.get(Arrays.binarySearch(_namespaces, attribute.getNamespace())).add(attribute);
-        }
-        
-        _nsattrs = new ArrayList<TagAttribute[]>(size);
-        for (int i = 0; i < size; i++)
-        {
-            List<TagAttribute> l = temp.get(i);
-            _nsattrs.add(l.toArray(new TagAttribute[l.size()]));
+            String key = entry.getKey();
+            List<TagAttribute> value = entry.getValue();
+            this.namespaceAttributes.put(key, value.toArray(new TagAttribute[value.size()]));
         }
     }
 
@@ -94,15 +98,14 @@ public final class TagAttributesImpl extends TagAttributes
     @Override
     public TagAttribute[] getAll()
     {
-        return _attributes;
+        return attributes;
     }
 
     /**
      * Using no namespace, find the TagAttribute
      * 
      * See #get(String, String)
-     * @param localName
-     *            tag attribute name
+     * @param localName tag attribute name
      * @return the TagAttribute found, otherwise null
      */
     @Override
@@ -114,59 +117,33 @@ public final class TagAttributesImpl extends TagAttributes
     /**
      * Find a TagAttribute that matches the passed namespace and local name.
      * 
-     * @param ns
-     *            namespace of the desired attribute
-     * @param localName
-     *            local name of the attribute
+     * @param ns namespace of the desired attribute
+     * @param localName local name of the attribute
      * @return a TagAttribute found, otherwise null
      */
     @Override
     public TagAttribute get(String ns, String localName)
     {
-        if (ns != null && localName != null)
+        Map<String, TagAttribute> nsAttributes = namespaceLocalNameAttributes.get(ns);
+        if (nsAttributes != null)
         {
-            int idx = Arrays.binarySearch(_namespaces, ns);
-            if (idx >= 0)
-            {
-                for (TagAttribute attribute : _nsattrs.get(idx))
-                {
-                    if (localName.equals(attribute.getLocalName()))
-                    {
-                        return attribute;
-                    }
-                }
-            }
+            return nsAttributes.get(localName);
         }
-        
+
         return null;
     }
 
     /**
      * Get all TagAttributes for the passed namespace
      * 
-     * @param namespace
-     *            namespace to search
+     * @param namespace namespace to search
      * @return a non-null array of TagAttributes
      */
     @Override
     public TagAttribute[] getAll(String namespace)
     {
-        int idx = 0;
-        if (namespace == null)
-        {
-            idx = Arrays.binarySearch(_namespaces, "");
-        }
-        else
-        {
-            idx = Arrays.binarySearch(_namespaces, namespace);
-        }
-        
-        if (idx >= 0)
-        {
-            return _nsattrs.get(idx);
-        }
-        
-        return EMPTY;
+        TagAttribute[] retVal = namespaceAttributes.get(namespace);
+        return retVal == null ? EMPTY : retVal;
     }
 
     /**
@@ -177,7 +154,7 @@ public final class TagAttributesImpl extends TagAttributes
     @Override
     public String[] getNamespaces()
     {
-        return _namespaces;
+        return namespaces;
     }
 
     /*
@@ -189,7 +166,7 @@ public final class TagAttributesImpl extends TagAttributes
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        for (TagAttribute attribute : _attributes)
+        for (TagAttribute attribute : attributes)
         {
             sb.append(attribute);
             sb.append(' ');

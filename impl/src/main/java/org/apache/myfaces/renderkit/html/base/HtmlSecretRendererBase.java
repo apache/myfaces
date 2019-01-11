@@ -185,7 +185,6 @@ public class HtmlSecretRendererBase extends HtmlRenderer
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent uiComponent)
     {
-        //TODO: overwrite in extended HtmlSecretRenderer and check for enabledOnUserRole
         if (uiComponent instanceof HtmlInputSecret)
         {
             return ((HtmlInputSecret)uiComponent).isDisabled();

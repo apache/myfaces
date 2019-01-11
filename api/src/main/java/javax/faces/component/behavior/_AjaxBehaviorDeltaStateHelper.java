@@ -95,17 +95,16 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         return _target.initialStateMarked();
     }
 
+    @Override
     public void add(Serializable key, Object value)
     {
         if (_createDeltas())
         {
             //Track delta case
-            Map<Object, Boolean> deltaListMapValues = (Map<Object, Boolean>) _deltas
-                    .get(key);
+            Map<Object, Boolean> deltaListMapValues = (Map<Object, Boolean>) _deltas.get(key);
             if (deltaListMapValues == null)
             {
-                deltaListMapValues = new InternalDeltaListMap<Object, Boolean>(
-                        3);
+                deltaListMapValues = new InternalDeltaListMap<Object, Boolean>(3);
                 _deltas.put(key, deltaListMapValues);
             }
             deltaListMapValues.put(value, Boolean.TRUE);
@@ -121,6 +120,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         fullListValues.add(value);
     }
 
+    @Override
     public Object eval(Serializable key)
     {
         Object returnValue = _fullState.get(key);
@@ -128,16 +128,15 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         {
             return returnValue;
         }
-        ValueExpression expression = _target.getValueExpression(key
-                .toString());
+        ValueExpression expression = _target.getValueExpression(key.toString());
         if (expression != null)
         {
-            return expression.getValue(FacesContext.getCurrentInstance()
-                    .getELContext());
+            return expression.getValue(FacesContext.getCurrentInstance().getELContext());
         }
         return null;
     }
 
+    @Override
     public Object eval(Serializable key, Object defaultValue)
     {
         Object returnValue = _fullState.get(key);
@@ -145,21 +144,21 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         {
             return returnValue;
         }
-        ValueExpression expression = _target.getValueExpression(key
-                .toString());
+        ValueExpression expression = _target.getValueExpression(key.toString());
         if (expression != null)
         {
-            return expression.getValue(FacesContext.getCurrentInstance()
-                    .getELContext());
+            return expression.getValue(FacesContext.getCurrentInstance().getELContext());
         }
         return defaultValue;
     }
 
+    @Override
     public Object get(Serializable key)
     {
         return _fullState.get(key);
     }
 
+    @Override
     public Object put(Serializable key, Object value)
     {
         Object returnValue = null;
@@ -178,17 +177,12 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         }
         else
         {
-            /*
-            if (value instanceof StateHolder)
-            {
-                _stateHolderKeys.add(key);
-            }
-            */
             returnValue = _fullState.put(key, value);
         }
         return returnValue;
     }
 
+    @Override
     public Object put(Serializable key, String mapKey, Object value)
     {
         boolean returnSet = false;
@@ -196,8 +190,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         if (_createDeltas())
         {
             //Track delta case
-            Map<String, Object> mapValues = (Map<String, Object>) _deltas
-                    .get(key);
+            Map<String, Object> mapValues = (Map<String, Object>) _deltas.get(key);
             if (mapValues == null)
             {
                 mapValues = new InternalMap<String, Object>();
@@ -215,8 +208,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         }
 
         //Handle change on full map
-        Map<String, Object> mapValues = (Map<String, Object>) _fullState
-                .get(key);
+        Map<String, Object> mapValues = (Map<String, Object>) _fullState.get(key);
         if (mapValues == null)
         {
             mapValues = new InternalMap<String, Object>();
@@ -233,6 +225,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         return returnValue;
     }
 
+    @Override
     public Object remove(Serializable key)
     {
         Object returnValue = null;
@@ -258,6 +251,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         return returnValue;
     }
 
+    @Override
     public Object remove(Serializable key, Object valueOrKey)
     {
         // Comment by lu4242 : The spec javadoc says if it is a Collection
@@ -272,36 +266,31 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         {
             if (_createDeltas())
             {
-                returnValue = _removeValueOrKeyFromMap(_deltas, key,
-                        valueOrKey, true);
+                returnValue = _removeValueOrKeyFromMap(_deltas, key, valueOrKey, true);
                 _removeValueOrKeyFromMap(_fullState, key, valueOrKey, false);
             }
             else
             {
-                returnValue = _removeValueOrKeyFromMap(_fullState, key,
-                        valueOrKey, false);
+                returnValue = _removeValueOrKeyFromMap(_fullState, key, valueOrKey, false);
             }
         }
         else if (collectionOrMap instanceof InternalList)
         {
             if (_createDeltas())
             {
-                returnValue = _removeValueOrKeyFromCollectionDelta(_deltas,
-                        key, valueOrKey);
+                returnValue = _removeValueOrKeyFromCollectionDelta(_deltas, key, valueOrKey);
                 _removeValueOrKeyFromCollection(_fullState, key, valueOrKey);
             }
             else
             {
-                returnValue = _removeValueOrKeyFromCollection(_fullState, key,
-                        valueOrKey);
+                returnValue = _removeValueOrKeyFromCollection(_fullState, key, valueOrKey);
             }
         }
         return returnValue;
     }
 
     private static Object _removeValueOrKeyFromCollectionDelta(
-            Map<Serializable, Object> stateMap, Serializable key,
-            Object valueOrKey)
+            Map<Serializable, Object> stateMap, Serializable key, Object valueOrKey)
     {
         Object returnValue = null;
         Map<Object, Boolean> c = (Map<Object, Boolean>) stateMap.get(key);
@@ -317,8 +306,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
     }
 
     private static Object _removeValueOrKeyFromCollection(
-            Map<Serializable, Object> stateMap, Serializable key,
-            Object valueOrKey)
+            Map<Serializable, Object> stateMap, Serializable key, Object valueOrKey)
     {
         Object returnValue = null;
         Collection c = (Collection) stateMap.get(key);
@@ -337,8 +325,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
     }
 
     private static Object _removeValueOrKeyFromMap(
-            Map<Serializable, Object> stateMap, Serializable key,
-            Object valueOrKey, boolean delta)
+            Map<Serializable, Object> stateMap, Serializable key, Object valueOrKey, boolean delta)
     {
         if (valueOrKey == null)
         {
@@ -368,6 +355,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         return returnValue;
     }
 
+    @Override
     public boolean isTransient()
     {
         return _transient;
@@ -383,7 +371,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
      * <p/>
      * the internal Map again is then mapped to a map with key value pairs
      */
-
+    @Override
     public Object saveState(FacesContext context)
     {
         Map serializableMap = (isInitialStateMarked()) ? _deltas : _fullState;
@@ -393,24 +381,8 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
             return null;
         }
 
-        /*
-        int stateHolderKeyCount = 0;
-        if (isInitalStateMarked())
-        {
-            for (Iterator<Serializable> it = _stateHolderKeys.iterator(); it.hasNext();)
-            {
-                Serializable key = it.next();
-                if (!_deltas.containsKey(key))
-                {
-                    stateHolderKeyCount++;
-                }
-            }
-        }*/
-
         Map.Entry<Serializable, Object> entry;
-        //entry == key, value, key, value
         Object[] retArr = new Object[serializableMap.entrySet().size() * 2];
-        //Object[] retArr = new Object[serializableMap.entrySet().size() * 2 + stateHolderKeyCount];
 
         Iterator<Map.Entry<Serializable, Object>> it = serializableMap.entrySet().iterator();
         int cnt = 0;
@@ -428,8 +400,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
                     value instanceof List ||
                     !(value instanceof Serializable))
             {
-                Object savedValue = UIComponentBase.saveAttachedState(context,
-                        value);
+                Object savedValue = UIComponentBase.saveAttachedState(context, value);
                 retArr[cnt + 1] = savedValue;
             }
             else
@@ -439,43 +410,10 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
             cnt += 2;
         }
 
-        /*
-        if (isInitalStateMarked())
-        {
-            for (Iterator<Serializable> it2 = _stateHolderKeys.iterator(); it.hasNext();)
-            {
-                Serializable key = it2.next();
-                if (!_deltas.containsKey(key))
-                {
-                    retArr[cnt] = key;
-                    Object value = _fullState.get(key);
-                    if (value instanceof PartialStateHolder)
-                    {
-                        //Could contain delta, save it as _AttachedDeltaState
-                        PartialStateHolder holder = (PartialStateHolder) value;
-                        if (holder.isTransient())
-                        {
-                            retArr[cnt + 1] = null;
-                        }
-                        else
-                        {
-                            retArr[cnt + 1] = new _AttachedDeltaWrapper(value.getClass(), holder.saveState(context));
-                        }
-                    }
-                    else
-                    {
-                        //Save everything
-                        retArr[cnt + 1] = UIComponentBase.saveAttachedState(context, _fullState.get(key));
-                    }
-                    cnt += 2;
-                }
-            }
-        }
-        */
         return retArr;
     }
 
-
+    @Override
     public void restoreState(FacesContext context, Object state)
     {
         if (state == null)
@@ -489,15 +427,13 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         {
             Serializable key = (Serializable) serializedState[cnt];
 
-            Object savedValue = UIComponentBase.restoreAttachedState(context,
-                    serializedState[cnt + 1]);
+            Object savedValue = UIComponentBase.restoreAttachedState(context, serializedState[cnt + 1]);
 
             if (isInitialStateMarked())
             {
                 if (savedValue instanceof InternalDeltaListMap)
                 {
-                    for (Map.Entry<Object, Boolean> mapEntry : ((Map<Object, Boolean>) savedValue)
-                            .entrySet())
+                    for (Map.Entry<Object, Boolean> mapEntry : ((Map<Object, Boolean>) savedValue).entrySet())
                     {
                         boolean addOrRemove = mapEntry.getValue();
                         if (addOrRemove)
@@ -542,6 +478,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         }
     }
 
+    @Override
     public void setTransient(boolean transientValue)
     {
         _transient = transientValue;
@@ -571,26 +508,29 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
             super(initialSize);
         }
 
+        @Override
         public boolean isTransient()
         {
             return false;
         }
 
+        @Override
         public void setTransient(boolean newTransientValue)
         {
             // No op
         }
 
+        @Override
         public void restoreState(FacesContext context, Object state)
         {
             Object[] listAsMap = (Object[]) state;
             for (int cnt = 0; cnt < listAsMap.length; cnt += 2)
             {
-                this.put((K) listAsMap[cnt], (V) UIComponentBase
-                        .restoreAttachedState(context, listAsMap[cnt + 1]));
+                this.put((K) listAsMap[cnt], (V) UIComponentBase.restoreAttachedState(context, listAsMap[cnt + 1]));
             }
         }
 
+        @Override
         public Object saveState(FacesContext context)
         {
             int cnt = 0;
@@ -660,15 +600,18 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
             super(initialSize);
         }
 
+        @Override
         public boolean isTransient()
         {
             return false;
         }
 
+        @Override
         public void setTransient(boolean newTransientValue)
         {
         }
 
+        @Override
         public void restoreState(FacesContext context, Object state)
         {
             Object[] listAsArr = (Object[]) state;
@@ -680,6 +623,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
             }
         }
 
+        @Override
         public Object saveState(FacesContext context)
         {
             Object[] values = new Object[size()];

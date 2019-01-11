@@ -27,13 +27,12 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.myfaces.config.MyfacesConfig;
@@ -158,45 +157,30 @@ public class StartupServletContextListener implements ServletContextListener
     }
 
     /**
-     * loads the faces init plugins per reflection and Service loader
-     * in a jdk6 environment
-     *
-     * @return false in case of a failed attempt or no listeners found
-     *         which then will cause the jdk5 context.xml code to trigger
+     * Loads the faces init plugins per Service loader.
+     * 
+     * @return false if there are not plugins defined via ServiceLoader.
      */
     private boolean loadFacesInitPluginsViaServiceLoader()
-    {
-        try
-        {
-            Class serviceLoader = ClassUtils.getContextClassLoader().loadClass("java.util.ServiceLoader");
-            Method m = serviceLoader.getDeclaredMethod("load", Class.class, ClassLoader.class);
-            
-            Object loader = m.invoke(serviceLoader, StartupListener.class, ClassUtils.getContextClassLoader());
-            m = loader.getClass().getDeclaredMethod("iterator");
-            
-            Iterator<StartupListener> it = (Iterator<StartupListener>) m.invoke(loader);
-            List<StartupListener> listeners = new LinkedList<StartupListener>();
-            if (!it.hasNext())
-            {
-                return false;
-            }
-            while (it.hasNext())
-            {
-                listeners.add(it.next());
-            }
+    {   
+        ServiceLoader<StartupListener> loader = ServiceLoader.load(StartupListener.class,
+                ClassUtils.getContextClassLoader());
 
-            _servletContext.setAttribute(MyfacesConfig.FACES_INIT_PLUGINS, listeners);
-            return true;
-        }
-        catch (ClassNotFoundException e)
+        Iterator<StartupListener> it = (Iterator<StartupListener>) loader.iterator();
+        if (!it.hasNext())
         {
+            return false;
+        }
+        
+        List<StartupListener> listeners = new LinkedList<StartupListener>();
+        while (it.hasNext())
+        {
+            listeners.add(it.next());
+        }
 
-        }
-        catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e)
-        {
-            log.log(Level.SEVERE, e.getMessage(), e);
-        }
-        return false;
+        _servletContext.setAttribute(MyfacesConfig.FACES_INIT_PLUGINS, listeners);
+        
+        return true;
     }
 
     /**

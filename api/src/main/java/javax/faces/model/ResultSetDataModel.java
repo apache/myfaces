@@ -36,8 +36,6 @@ import java.util.TreeMap;
  */
 public class ResultSetDataModel extends DataModel<Map<String,Object>>
 {
-    // FIELDS
-
     private int _currentIndex = -1;
 
     /**
@@ -55,7 +53,6 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
      */
     private boolean _currentRowUpdated = false;
 
-    // CONSTRUCTORS
     public ResultSetDataModel()
     {
         this(null);
@@ -63,10 +60,8 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
 
     public ResultSetDataModel(ResultSet resultSet)
     {
-
         super();
         setWrappedData(resultSet);
-
     }
 
     /**
@@ -244,7 +239,6 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
     /*
      * A map wrapping the result set and calling the corresponding operations on the result set, first setting the
      * correct row index.
-     * TODO: Implement Map, use internal TreeMap for keys instead, it's cleaner
      */
     private class WrapResultSetMap extends TreeMap<String, Object>
     {
@@ -307,17 +301,11 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
                 return null;
             }
 
-            return basicGet(key);
-        }
-
-        private Object basicGet(Object key)
-        { // #################################################### remove
             try
             {
                 _resultSet.absolute(_currentIndex + 1);
 
                 return _resultSet.getObject((String) getUnderlyingKey(key));
-
             }
             catch (SQLException e)
             {
@@ -487,7 +475,6 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
 
     private static class WrapResultSetEntriesIterator implements Iterator<Map.Entry<String, Object>>
     {
-
         private WrapResultSetMap _wrapMap = null;
         private Iterator<String> _keyIterator = null;
 
@@ -497,16 +484,19 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
             _keyIterator = _wrapMap.keySet().iterator();
         }
 
+        @Override
         public boolean hasNext()
         {
             return _keyIterator.hasNext();
         }
 
+        @Override
         public Map.Entry<String, Object> next()
         {
             return new WrapResultSetEntry(_wrapMap, _keyIterator.next());
         }
 
+        @Override
         public void remove()
         {
             throw new UnsupportedOperationException("It is not allowed to remove from this iterator");
@@ -552,11 +542,13 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
             return value == null ? cmpValue != null : value.equals(cmpValue);
         }
 
+        @Override
         public String getKey()
         {
             return _entryKey;
         }
 
+        @Override
         public Object getValue()
         {
             return _wrapMap.get(_entryKey);
@@ -571,6 +563,7 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
             return result;
         }
 
+        @Override
         public Object setValue(Object value)
         {
             Object oldValue = _wrapMap.get(_entryKey);
@@ -658,16 +651,19 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
             _keyIterator = map.getUnderlyingKeys();
         }
 
+        @Override
         public boolean hasNext()
         {
             return _keyIterator.hasNext();
         }
 
+        @Override
         public String next()
         {
             return _keyIterator.next();
         }
 
+        @Override
         public void remove()
         {
             throw new UnsupportedOperationException("it is not allowed to remove from this iterator");
@@ -742,7 +738,6 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
 
     private static class WrapResultSetValuesIterator implements Iterator<Object>
     {
-
         private WrapResultSetMap _wrapMap;
         private Iterator<String> _keyIterator;
 
@@ -752,21 +747,23 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
             _keyIterator = _wrapMap.keySet().iterator();
         }
 
+        @Override
         public boolean hasNext()
         {
             return _keyIterator.hasNext();
         }
 
+        @Override
         public Object next()
         {
             return _wrapMap.get(_keyIterator.next());
         }
 
+        @Override
         public void remove()
         {
             throw new UnsupportedOperationException("it is not allowed to remove from this map");
         }
-
     }
 
 }

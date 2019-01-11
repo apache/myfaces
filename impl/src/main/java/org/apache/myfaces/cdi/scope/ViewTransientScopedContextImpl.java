@@ -79,11 +79,13 @@ public class ViewTransientScopedContextImpl implements Context
         }
     }
 
+    @Override
     public Class<? extends Annotation> getScope()
     {
         return ViewTransientScoped.class;
     }
 
+    @Override
     public boolean isActive()
     {
         return isActive(FacesContext.getCurrentInstance());
@@ -130,6 +132,7 @@ public class ViewTransientScopedContextImpl implements Context
         return null;
     }
 
+    @Override
     public <T> T get(Contextual<T> bean, CreationalContext<T> creationalContext)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();

@@ -807,7 +807,7 @@ public abstract class HtmlLinkRendererBase
         else
         { 
             //calculate href
-            String href = org.apache.myfaces.renderkit.RendererUtils.getStringValue(facesContext, output);
+            String href = RendererUtils.getStringValue(facesContext, output);
             
             //check if there is an anchor # in it
             int index = href.indexOf('#');
@@ -1131,8 +1131,7 @@ public abstract class HtmlLinkRendererBase
         }
         else
         {
-            writer.writeText (org.apache.myfaces.renderkit.RendererUtils.getStringValue
-                 (facesContext, component), null);
+            writer.writeText (RendererUtils.getStringValue(facesContext, component), null);
             writer.endElement(HTML.ANCHOR_ELEM);
         }
     }

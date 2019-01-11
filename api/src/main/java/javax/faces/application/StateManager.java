@@ -250,7 +250,7 @@ public abstract class StateManager
     }
     
     /**
-     * TODO: This method should be called from somewhere when ajax response is created to update the state saving param
+     * This method should be called from somewhere when ajax response is created to update the state saving param
      * on client. The place where this method is called is an implementation detail, so there is no references about
      * from where in the spec javadoc. 
      * 

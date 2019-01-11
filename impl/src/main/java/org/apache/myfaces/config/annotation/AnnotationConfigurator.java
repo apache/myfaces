@@ -166,7 +166,6 @@ public class AnnotationConfigurator
                     }
                     else
                     {
-                        // TODO MartinKoci MYFACES-3053
                         throw new FacesException("@FacesConverter must have value, forClass or both. Check annotation "
                                                  + "@FacesConverter on class: " + clazz.getName());
                     }

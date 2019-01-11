@@ -120,12 +120,9 @@ public abstract class AbstractJmockJsfTestCase extends MockObjectTestCase
      */
     protected void setUpClassloader() throws Exception
     {
-        threadContextClassLoader = Thread.currentThread()
-                .getContextClassLoader();
-        Thread.currentThread()
-                .setContextClassLoader(
-                        new URLClassLoader(new URL[0], this.getClass()
-                                .getClassLoader()));
+        threadContextClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(
+                new URLClassLoader(new URL[0], this.getClass().getClassLoader()));
         classLoaderSet = true;
     }
 
@@ -209,8 +206,7 @@ public abstract class AbstractJmockJsfTestCase extends MockObjectTestCase
      */
     protected void setUpExternalContext() throws Exception
     {
-        externalContext = new MockExternalContext(servletContext, request,
-                response);
+        externalContext = new MockExternalContext(servletContext, request, response);
     }
 
     /**
@@ -244,8 +240,7 @@ public abstract class AbstractJmockJsfTestCase extends MockObjectTestCase
                 servletContext, request, response, lifecycle);
         if (facesContext.getExternalContext() != null)
         {
-            externalContext = (MockExternalContext) facesContext
-                    .getExternalContext();
+            externalContext = (MockExternalContext) facesContext.getExternalContext();
         }
     }
 

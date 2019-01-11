@@ -30,8 +30,7 @@ import java.util.Locale;
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  */
 @JSFConverter
-public class DoubleConverter
-        implements Converter
+public class DoubleConverter implements Converter
 {
     // API FIELDS
     public static final String CONVERTER_ID = "javax.faces.Double";
@@ -44,6 +43,7 @@ public class DoubleConverter
     }
 
     // METHODS
+    @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
     {
         if (facesContext == null)
@@ -63,7 +63,7 @@ public class DoubleConverter
                 try
                 {
                     value = fixLocale(facesContext, value);
-                    return this.stringToDouble(value);
+                    return Double.valueOf(value);
                 }
                 catch (NumberFormatException e)
                 {
@@ -71,7 +71,6 @@ public class DoubleConverter
                                    DOUBLE_ID,
                                    new Object[]{value,"4214",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
                 }
-
             }
         }
         return null;
@@ -130,37 +129,7 @@ public class DoubleConverter
         return value;
     }
 
-    private Double stringToDouble(String value)
-    {
-        // this is a special hack for a jvm vulnerability with
-        // converting some special double values.
-        // e.g. "2.225073858507201200000e-308"
-        // see MYFACES-3024 for further information
-        // TODO we can remove this hack, once this got fixed in the jvm!
-        if (value.length() >= 23)
-        {
-            StringBuilder normalized = new StringBuilder();
-            for (int i=0; i< value.length(); i++)
-            {
-                char c = value.charAt(i);
-                if ( c != '.')
-                {
-                    normalized.append(c);
-                }
-            }
-
-            String normalizedString = normalized.toString();
-            if (normalizedString.contains("22250738585072012") && normalizedString.contains("e-"))
-            {
-                // oops, baaad value!
-               throw new NumberFormatException("Not Allowed! This value could possibly kill the VM!");
-            }
-        }
-
-
-        return Double.valueOf(value);
-    }
-
+    @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
     {
         if (facesContext == null)
@@ -190,4 +159,5 @@ public class DoubleConverter
                     new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
         }
     }
+
 }

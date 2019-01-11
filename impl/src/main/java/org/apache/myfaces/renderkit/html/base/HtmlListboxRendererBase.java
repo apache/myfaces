@@ -96,13 +96,11 @@ public class HtmlListboxRendererBase
             UISelectMany selectMany, boolean disabled, int size,
             Converter converter) throws IOException
     {
-        internalRenderSelect(facesContext, selectMany, disabled, size, true,
-                converter);
+        internalRenderSelect(facesContext, selectMany, disabled, size, true, converter);
     }
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent uiComponent)
     {
-        //TODO: overwrite in extended HtmlListboxRenderer and check for enabledOnUserRole
         if (uiComponent instanceof HtmlSelectManyListbox)
         {
             return ((HtmlSelectManyListbox)uiComponent).isDisabled();
@@ -111,10 +109,8 @@ public class HtmlListboxRendererBase
         {
             return ((HtmlSelectOneListbox)uiComponent).isDisabled();
         }
-        else
-        {
-            return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
-        }
+
+        return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
     }
 
     @Override

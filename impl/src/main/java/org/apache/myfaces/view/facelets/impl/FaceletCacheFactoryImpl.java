@@ -20,10 +20,10 @@ package org.apache.myfaces.view.facelets.impl;
 
 import javax.faces.application.ProjectStage;
 import javax.faces.application.ViewHandler;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletCache;
 import javax.faces.view.facelets.FaceletCacheFactory;
+import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
@@ -42,28 +42,23 @@ public class FaceletCacheFactoryImpl extends FaceletCacheFactory
     public FaceletCache getFaceletCache()
     {
         FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext eContext = context.getExternalContext();
-        // refresh period
+
         long refreshPeriod;
         if(context.isProjectStage(ProjectStage.Production))
         {
-            refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext,
+            refreshPeriod = WebConfigParamUtils.getLongInitParameter(context.getExternalContext(),
                     ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,
                     FaceletViewDeclarationLanguage.DEFAULT_REFRESH_PERIOD_PRODUCTION);
         }
         else
         {
-            refreshPeriod = WebConfigParamUtils.getLongInitParameter(eContext,
+            refreshPeriod = WebConfigParamUtils.getLongInitParameter(context.getExternalContext(),
                     ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,
                     FaceletViewDeclarationLanguage.DEFAULT_REFRESH_PERIOD);
         }
         
-        String elMode = WebConfigParamUtils.getStringInitParameter(
-                    context.getExternalContext(),
-                    FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
-                        ELExpressionCacheMode.noCache.name());
-        
-        if (ELExpressionCacheMode.alwaysRecompile.toString().equals(elMode))
+        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(context.getExternalContext());        
+        if (ELExpressionCacheMode.alwaysRecompile == myfacesConfig.getELExpressionCacheMode())
         {
             return new CacheELFaceletCacheImpl(refreshPeriod);
         }

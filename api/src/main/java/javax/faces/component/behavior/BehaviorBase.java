@@ -25,6 +25,7 @@ import java.util.List;
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.StateHolder;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AbortProcessingException;
 import javax.faces.event.BehaviorEvent;
 import javax.faces.event.BehaviorListener;
 
@@ -47,7 +48,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
      * {@inheritDoc}
      */
     @Override
-    public void broadcast(BehaviorEvent event)
+    public void broadcast(BehaviorEvent event) throws AbortProcessingException
     {
         if (event == null)
         {
@@ -119,8 +120,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         else
         {
             //Full
-            _behaviorListeners = (_DeltaList<BehaviorListener>)
-                restoreAttachedState(context, state);
+            _behaviorListeners = (_DeltaList<BehaviorListener>) restoreAttachedState(context, state);
         }
     }
 
@@ -138,8 +138,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
             Object attachedState = holder.saveState(facesContext);
             if (attachedState != null)
             {
-                return new _AttachedDeltaWrapper(_behaviorListeners.getClass(),
-                        attachedState);
+                return new _AttachedDeltaWrapper(_behaviorListeners.getClass(), attachedState);
             }
             //_behaviorListeners instances once is created never changes, we can return null
             return null;

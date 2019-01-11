@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +54,6 @@ import javax.faces.component.html.HtmlMessages;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
@@ -73,6 +71,7 @@ import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.component.visit.MyFacesVisitHints;
 
 public final class HtmlRendererUtils
 {
@@ -274,8 +273,9 @@ public final class HtmlRendererUtils
                                         submittedValue,
                                         component.getClientId(facesContext),
                                         component.getValueExpression("value") != null);
-                        form.visitTree(
-                                VisitContext.createVisitContext(facesContext, null, FIND_SELECT_LIST_HINTS), callback);
+                        form.visitTree(VisitContext.createVisitContext(facesContext,
+                                null, MyFacesVisitHints.SET_SKIP_UNRENDERED),
+                                callback);
                     }
                 }
                 return;
@@ -294,9 +294,6 @@ public final class HtmlRendererUtils
             ((EditableValueHolder) component).setSubmittedValue(RendererUtils.EMPTY_STRING);
         }
     }
-    
-    private static final Set<VisitHint> FIND_SELECT_LIST_HINTS = 
-        Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED));
     
     private static class SelectOneGroupSetSubmittedValueCallback implements VisitCallback
     {

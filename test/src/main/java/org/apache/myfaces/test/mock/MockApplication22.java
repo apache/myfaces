@@ -29,7 +29,7 @@ import javax.faces.flow.FlowHandler;
  * @since 1.0.0
  *
  */
-public class MockApplication22 extends MockApplication20
+public abstract class MockApplication22 extends MockApplication20
 {
     // ------------------------------------------------------------ Constructors
 

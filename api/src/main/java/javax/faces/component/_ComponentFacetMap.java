@@ -140,16 +140,15 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
     @Override
     public V put(String key, V value)
     {
-        //checkKey(key);
         if (key == null)
         {
             throw new NullPointerException("key");
         }
-        //checkValue(value);
         if (value == null)
         {
             throw new NullPointerException("value");
         }
+
         setNewParent(key, value);
         V previousValue = _map.put(key, value);
         if (previousValue != null)

@@ -30,10 +30,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Field;
 
-// TODO @EJBs
 public class AllAnnotationInjectionProvider extends ResourceAnnotationInjectionProvider
 {
-
     public AllAnnotationInjectionProvider(Context context)
     {
         super(context);
@@ -54,7 +52,7 @@ public class AllAnnotationInjectionProvider extends ResourceAnnotationInjectionP
             EJB annotation =  method.getAnnotation(EJB.class);
             lookupMethodResource(context, instance, method, annotation.name());
         }
-        // TODO where i find WebServiceRef?
+        // not implemented since 1.x, lets ignore it
         /*if (method.isAnnotationPresent(WebServiceRef.class)) {
             WebServiceRef annotation =
                 (WebServiceRef) method.getAnnotation(WebServiceRef.class);

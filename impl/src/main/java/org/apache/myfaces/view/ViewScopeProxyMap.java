@@ -40,7 +40,7 @@ import org.apache.myfaces.spi.ViewScopeProviderFactory;
  *
  * @author Leonardo Uribe
  */
-public class ViewScopeProxyMap implements Map<String, Object>, StateHolder
+public class ViewScopeProxyMap extends HashMap<String, Object> implements StateHolder
 {
     private String _viewScopeId;
     

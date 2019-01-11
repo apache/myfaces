@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 
 import org.apache.myfaces.test.mock.MockExternalContext20;
+import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.test.mock.MockFacesContext20;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.apache.myfaces.test.mock.MockHttpServletResponse;
@@ -57,7 +58,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         super.setUpFacesContext();
 
         // Unfortunately, setUpExternalContext() does not work, b/c MockFacesContext20 overwrites it!
-        externalContext = new MockExternalContext21(servletContext, request, response);
+        externalContext = new MockExternalContext(servletContext, request, response);
         facesContext.setExternalContext(externalContext);
     }
 

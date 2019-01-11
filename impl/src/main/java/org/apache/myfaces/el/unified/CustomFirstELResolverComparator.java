@@ -41,6 +41,7 @@ public class CustomFirstELResolverComparator implements Comparator<ELResolver>
     
     private List<ELResolver> _facesConfigResolvers;
     
+    @Override
     public int compare(ELResolver r1, ELResolver r2)
     {
         List<ELResolver> facesConfigResolvers = _getFacesConfigElResolvers();

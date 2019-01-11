@@ -166,6 +166,7 @@
         <module>faceletToXhtmlMappingDisabled</module>
         <module>exactMapping</module>
         <module>autoLookupExpressionFactoryWithoutJSP</module>
+        <module>protectedViews</module>
     </modules>
 
     <profiles>

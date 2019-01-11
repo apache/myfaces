@@ -225,8 +225,7 @@ class _DeltaList<T> extends ArrayList<T> implements List<T>, PartialStateHolder,
                             {
                                 nullDelta = false;
                             }
-                            lst[i] = new _AttachedDeltaWrapper(value.getClass(),
-                                attachedState);
+                            lst[i] = new _AttachedDeltaWrapper(value.getClass(), attachedState);
                         }
                     }
                     else

@@ -378,11 +378,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
 
     private void append(StringBuilder paramBuffer, List<String> parameterList, String paramName, Object paramValue)
     {
-        //TODO we may need a proper type handling in this part
-        //lets leave it for now as it is
-        //quotes etc.. should be transferred directly
-        //and the rest is up to the toString properly implemented
-        //ANS: Both name and value should be quoted
+        //Both name and value should be quoted
         paramBuffer.setLength(0);
         paramBuffer.append('\'');
         paramBuffer.append(paramName);

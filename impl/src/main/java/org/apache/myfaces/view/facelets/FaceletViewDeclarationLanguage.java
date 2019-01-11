@@ -27,7 +27,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -57,7 +56,6 @@ import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitHint;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -94,11 +92,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.application.StateManagerImpl;
 
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.application.DefaultViewHandlerSupport;
-import org.apache.myfaces.application.ViewHandlerSupport;
+import org.apache.myfaces.application.ViewIdSupport;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.ViewMetadataBase;
@@ -201,9 +199,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
     private final static int STATE_KEY_LEN = STATE_KEY.length();
     
-    private static final Set<VisitHint> VISIT_HINTS_DYN_REFRESH = Collections.unmodifiableSet( 
-            EnumSet.of(VisitHint.SKIP_ITERATION));
-    
     private static final String SERIALIZED_VIEW_REQUEST_ATTR = 
         StateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
     
@@ -219,7 +214,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     private final FaceletsCompilerSupport faceletsCompilerSupport;
     private final MyfacesConfig config;
     private final ViewPoolProcessor viewPoolProcessor;
-    private final ViewHandlerSupport viewHandlerSupport;
+    private final ViewIdSupport viewIdSupport;
     
     private StateManagementStrategy stateManagementStrategy;
     private Set<String> fullStateSavingViewIds;
@@ -239,7 +234,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         this.config = MyfacesConfig.getCurrentInstance(context);
         this.strategy = strategy;
         this.viewPoolProcessor = ViewPoolProcessor.getInstance(context);
-        this.viewHandlerSupport = new DefaultViewHandlerSupport(context);
+        this.viewIdSupport = ViewIdSupport.getInstance(context);
         this.faceletsCompilerSupport = new FaceletsCompilerSupport();
 
         Compiler compiler = createCompiler(context);
@@ -448,7 +443,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 if (FaceletViewDeclarationLanguageBase.isDynamicComponentRefreshTransientBuildActive(context))
                 {
                     VisitContext visitContext = (VisitContext) getVisitContextFactory().
-                        getVisitContext(context, null, VISIT_HINTS_DYN_REFRESH);
+                        getVisitContext(context, null, MyFacesVisitHints.SET_SKIP_ITERATION);
                     view.visitTree(visitContext, PublishDynamicComponentRefreshTransientBuildCallback.INSTANCE);
                 }
                 if (!usePartialStateSavingOnThisView || refreshTransientBuildOnPSS)
@@ -461,7 +456,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     // facelets refreshing algorithm do the opposite.
                     //FaceletViewDeclarationLanguage._publishPreRemoveFromViewEvent(context, view);
                     //FaceletViewDeclarationLanguage._publishPostAddToViewEvent(context, view);
-                    FaceletViewDeclarationLanguage._publishPostBuildComponentTreeOnRestoreViewEvent(context, view);
                 }
 
                 context.getAttributes().remove(REFRESHING_TRANSIENT_BUILD);
@@ -532,11 +526,10 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
             // We need to suscribe the listeners of changes in the component tree
             // only the first time here. Later we suscribe this listeners on
-            // DefaultFaceletsStateManagement.restoreView after calling 
-            // _publishPostBuildComponentTreeOnRestoreViewEvent(), to ensure 
+            // DefaultFaceletsStateManagement.restoreView, to ensure 
             // relocated components are not retrieved later on getClientIdsRemoved().
-            if (!(refreshTransientBuild && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId())) &&
-                !view.isTransient())
+            if (!(refreshTransientBuild && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId()))
+                    && !view.isTransient())
             {
                 ((DefaultFaceletsStateManagementStrategy) getStateManagementStrategy(context, view.getViewId())).
                         suscribeListeners(view);
@@ -617,44 +610,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 }
             }
 
-        }
-    }
-
-    public static void _publishPostBuildComponentTreeOnRestoreViewEvent(FacesContext context, UIComponent component)
-    {
-        context.getApplication().publishEvent(context, PostBuildComponentTreeOnRestoreViewEvent.class,
-                                              component.getClass(), component);
-
-        if (component.getChildCount() > 0)
-        {
-            // PostAddToViewEvent could cause component relocation
-            // (h:outputScript, h:outputStylesheet, composite:insertChildren, composite:insertFacet)
-            // so we need to check if the component was relocated or not
-            List<UIComponent> children = component.getChildren();
-            UIComponent child = null;
-            UIComponent currentChild = null;
-            int i = 0;
-            while (i < children.size())
-            {
-                child = children.get(i);
-                // Iterate over the same index if the component was removed
-                // This prevents skip components when processing
-                do
-                {
-                    _publishPostBuildComponentTreeOnRestoreViewEvent(context, child);
-                    currentChild = child;
-                    child = children.get(i);
-                }
-                while ((i < children.size()) && child != currentChild);
-                i++;
-            }
-        }
-        if (component.getFacetCount() > 0)
-        {
-            for (UIComponent child : component.getFacets().values())
-            {
-                _publishPostBuildComponentTreeOnRestoreViewEvent(context, child);
-            }
         }
     }
 
@@ -2079,7 +2034,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     @Override
     protected String calculateViewId(FacesContext context, String viewId)
     {
-        return viewHandlerSupport.deriveLogicalViewId(context, viewId);
+        return viewIdSupport.deriveLogicalViewId(context, viewId);
     }
 
     /**

@@ -16,34 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.application;
+package org.apache.myfaces.component.visit;
 
-import javax.faces.context.FacesContext;
-import org.apache.myfaces.lifecycle.DefaultRestoreViewSupport;
-import org.apache.myfaces.lifecycle.RestoreViewSupport;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
+import javax.faces.component.visit.VisitHint;
 
-/**
- *
- * @author lu4242
- */
-public class DefaultNavigationHandlerSupport extends NavigationHandlerSupport
+
+public class MyFacesVisitHints
 {
+    public static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
     
-    private RestoreViewSupport restoreViewSupport;
-  
-    public DefaultNavigationHandlerSupport()
-    {
-        restoreViewSupport = new DefaultRestoreViewSupport();
-    }
-  
-    private RestoreViewSupport getRestoreViewSupport()
-    {
-        return restoreViewSupport;
-    }
+    public static final Set<VisitHint> SET_SKIP_ITERATION = Collections.unmodifiableSet( 
+            EnumSet.of(VisitHint.SKIP_ITERATION));
     
-    public String calculateViewId(FacesContext facesContext)
-    {
-        //Delegate to 
-        return getRestoreViewSupport().calculateViewId(facesContext);
-    }
+    public static final Set<VisitHint> SET_SKIP_UNRENDERED = Collections.unmodifiableSet( 
+            EnumSet.of(VisitHint.SKIP_UNRENDERED));
 }

@@ -52,9 +52,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  *  
  * The sum of it all is that you can take any element in the document and decorate 
  * it with some external logic as provided by the template.
- * 
- * TODO: REFACTOR - This class could easily use a common parent with CompositionHandler
- * 
+ *
  * @author Jacob Hookom
  * @version $Id$
  */

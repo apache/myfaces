@@ -293,15 +293,12 @@ public class HtmlTextRendererBase
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent component)
     {
-        //TODO: overwrite in extended HtmlTextRenderer and check for enabledOnUserRole
         if (component instanceof HtmlInputText)
         {
             return ((HtmlInputText)component).isDisabled();
         }
 
-        return RendererUtils.getBooleanAttribute(component, 
-                HTML.DISABLED_ATTR, false);
-        
+        return RendererUtils.getBooleanAttribute(component, HTML.DISABLED_ATTR, false);
     }
 
     /**

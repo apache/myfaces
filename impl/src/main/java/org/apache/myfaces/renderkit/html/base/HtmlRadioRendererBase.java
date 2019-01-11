@@ -517,7 +517,6 @@ public class HtmlRadioRendererBase extends HtmlRenderer
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent uiComponent)
     {
-        //TODO: overwrite in extended HtmlRadioRenderer and check for enabledOnUserRole
         if (uiComponent instanceof HtmlSelectOneRadio)
         {
             return ((HtmlSelectOneRadio)uiComponent).isDisabled();

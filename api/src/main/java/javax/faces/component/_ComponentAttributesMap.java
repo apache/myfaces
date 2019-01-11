@@ -106,22 +106,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     {
         _component = component;
     }
-    
-    /**
-     * Create a map backed by the specified component. Attributes already
-     * associated with the component are provided in the specified Map
-     * class. A reference to the provided map is kept; this object's contents
-     * are updated during put calls on this instance.
-     * <p/>
-     * This method is expected to be called during the "restore view" phase.
-     */
-    //JSF 2.0 removed because _attributes has been replaced with StateHelper attributesMap
-    //_ComponentAttributesMap(UIComponent component, Map<String, Object> attributes)
-    //{
-    //    _component = component;
-        //_attributes = new HashMap<String, Object>(attributes);
-    //}
-    
+
     /**
      * Return the number of <i>attributes</i> in this map. Properties of the
      * underlying UIComponent are not counted.
@@ -622,9 +607,6 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      * UIComponent by maintaining a cache of ProperyDescriptor objects for
      * that class.
      * <p/>
-     * TODO: Consider making the cache shared between component instances;
-     * currently 100 UIInputText components means performing introspection
-     * on the UIInputText component 100 times.
      */
     private _PropertyDescriptorHolder getPropertyDescriptor(String key)
     {

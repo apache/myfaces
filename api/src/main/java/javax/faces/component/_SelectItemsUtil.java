@@ -50,16 +50,14 @@ class _SelectItemsUtil
                 SelectItem[] selectItems = itemgroup.getSelectItems();
                 if (selectItems != null
                         && selectItems.length > 0
-                        && matchValue(context, uiComponent, value, Arrays
-                                .asList(selectItems).iterator(), converter))
+                        && matchValue(context, uiComponent, value, Arrays.asList(selectItems).iterator(), converter))
                 {
                     return true;
                 }
             }
             else
             {
-                Object itemValue = _convertOrCoerceValue(context,
-                        uiComponent, value, item, converter);
+                Object itemValue = _convertOrCoerceValue(context, uiComponent, value, item, converter);
                 if (value == itemValue || value.equals(itemValue))
                 {
                     return true;
@@ -90,8 +88,7 @@ class _SelectItemsUtil
                 SelectItem[] selectItems = itemgroup.getSelectItems();
                 if (selectItems != null
                         && selectItems.length > 0
-                        && isNoSelectionOption(context, uiComponent, value,
-                                Arrays.asList(selectItems).iterator(),
+                        && isNoSelectionOption(context, uiComponent, value, Arrays.asList(selectItems).iterator(),
                                 converter))
                 {
                     return true;
@@ -99,8 +96,7 @@ class _SelectItemsUtil
             }
             else if (item.isNoSelectionOption())
             {
-                Object itemValue = _convertOrCoerceValue(context, uiComponent,
-                        value, item, converter);
+                Object itemValue = _convertOrCoerceValue(context, uiComponent, value, item, converter);
                 if (value == itemValue || value.equals(itemValue))
                 {
                     return true;
@@ -115,14 +111,12 @@ class _SelectItemsUtil
      * otherwise uses EL type coertion and return result.
      */
     private static Object _convertOrCoerceValue(FacesContext facesContext,
-            UIComponent uiComponent, Object value, SelectItem selectItem,
-            Converter converter)
+            UIComponent uiComponent, Object value, SelectItem selectItem, Converter converter)
     {
         Object itemValue = selectItem.getValue();
         if (converter != null && itemValue instanceof String)
         {
-            itemValue = converter.getAsObject(facesContext, uiComponent,
-                    (String) itemValue);
+            itemValue = converter.getAsObject(facesContext, uiComponent, (String) itemValue);
         }
         else
         {
@@ -157,11 +151,11 @@ class _SelectItemsUtil
             }
             catch (IllegalArgumentException e)
             {
-                //itemValue = selectItem.getValue();
+
             }
             catch (Exception e)
             {
-                //itemValue = selectItem.getValue();
+
             }
         }
         return itemValue;

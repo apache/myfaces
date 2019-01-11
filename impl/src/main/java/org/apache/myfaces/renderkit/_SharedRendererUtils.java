@@ -232,25 +232,21 @@ class _SharedRendererUtils
                 else if (Collection.class.isAssignableFrom(modelType))
                 {
                     // component.getValue() will implement Collection at this point
-                    Collection<?> componentValue = (Collection<?>) component
-                            .getValue();
+                    Collection<?> componentValue = (Collection<?>) component.getValue();
                     // can we clone the Collection
                     if (componentValue instanceof Cloneable)
                     {
                         // clone method of Object is protected --> use reflection
                         try
                         {
-                            Method cloneMethod = componentValue.getClass()
-                                    .getMethod("clone");
-                            Collection<?> clone = (Collection<?>) cloneMethod
-                                    .invoke(componentValue);
+                            Method cloneMethod = componentValue.getClass().getMethod("clone");
+                            Collection<?> clone = (Collection<?>) cloneMethod.invoke(componentValue);
                             clone.clear();
                             targetForConvertedValues = clone;
                         }
                         catch (Exception e)
                         {
-                            log(facesContext, "Could not clone "
-                                    + componentValue.getClass().getName(), e);
+                            log(facesContext, "Could not clone " + componentValue.getClass().getName(), e);
                         }
                     }
 
@@ -325,8 +321,7 @@ class _SharedRendererUtils
             Object value;
             if (converter != null)
             {
-                value = converter.getAsObject(facesContext, component,
-                        submittedValue[i]);
+                value = converter.getAsObject(facesContext, component, submittedValue[i]);
             }
             else
             {
@@ -371,8 +366,7 @@ class _SharedRendererUtils
         if (attribute instanceof ValueExpression)
         {
             // get the value of the ValueExpression
-            attribute = ((ValueExpression) attribute)
-                    .getValue(facesContext.getELContext());
+            attribute = ((ValueExpression) attribute).getValue(facesContext.getELContext());
         }
         // ... String that is a fully qualified Java class name
         if (attribute instanceof String)
@@ -383,10 +377,7 @@ class _SharedRendererUtils
             }
             catch (ClassNotFoundException cnfe)
             {
-                throw new FacesException(
-                        "Unable to find class "
-                                + attribute
-                                + " on the classpath.", cnfe);
+                throw new FacesException("Unable to find class " + attribute + " on the classpath.", cnfe);
             }
 
         }

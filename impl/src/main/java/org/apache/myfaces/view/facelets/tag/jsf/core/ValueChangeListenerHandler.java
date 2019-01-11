@@ -196,15 +196,12 @@ public final class ValueChangeListenerHandler extends TagHandler
     public String getFor()
     {
         TagAttribute forAttribute = getAttribute("for");
-        
         if (forAttribute == null)
         {
             return null;
         }
-        else
-        {
-            return forAttribute.getValue();
-        }
+
+        return forAttribute.getValue();
     }
 
 }

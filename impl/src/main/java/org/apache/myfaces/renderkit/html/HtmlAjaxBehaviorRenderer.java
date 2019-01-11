@@ -344,11 +344,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
 
     private void append(StringBuilder paramBuffer, List<String> parameterList, ClientBehaviorContext.Parameter param)
     {
-        //TODO we may need a proper type handling in this part
-        //lets leave it for now as it is
-        //quotes etc.. should be transferred directly
-        //and the rest is up to the toString properly implemented
-        //ANS: Both name and value should be quoted
+        // Both name and value should be quoted
         paramBuffer.setLength(0);
         paramBuffer.append('\'');
         paramBuffer.append(param.getName());
@@ -399,10 +395,10 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         {
             dataHolder = Collections.emptyList();
         }
+
         int executeSize = dataHolder.size();
         if (executeSize > 0)
         {
-
             retVal.append(target);
             retVal.append(':');
             retVal.append('\'');

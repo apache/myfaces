@@ -27,6 +27,7 @@ import java.util.Currency;
 import java.util.Locale;
 
 import javax.el.ValueExpression;
+import javax.faces.FacesException;
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -87,6 +88,7 @@ public class NumberConverter
     }
 
     // METHODS
+    @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
     {
         if (facesContext == null)
@@ -187,6 +189,7 @@ public class NumberConverter
         return null;
     }
 
+    @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
     {
         if (facesContext == null)
@@ -287,12 +290,10 @@ public class NumberConverter
             }
             catch (Exception e)
             {
-                throw new ConverterException("Unable to get Currency instance for currencyCode " +
-                                             _currencyCode);
+                throw new ConverterException("Unable to get Currency instance for currencyCode " + _currencyCode);
             }
         }
         else if (format instanceof DecimalFormat)
-
         {
             DecimalFormat dFormat = (DecimalFormat)format;
             DecimalFormatSymbols symbols = dFormat.getDecimalFormatSymbols();
@@ -302,6 +303,7 @@ public class NumberConverter
     }
 
     // STATE SAVE/RESTORE
+    @Override
     public void restoreState(FacesContext facesContext, Object state)
     {
         if (state != null)
@@ -329,6 +331,7 @@ public class NumberConverter
         }
     }
 
+    @Override
     public Object saveState(FacesContext facesContext)
     {
         if (!initialStateMarked())
@@ -531,11 +534,13 @@ public class NumberConverter
         clearInitialState();
     }
 
+    @Override
     public boolean isTransient()
     {
         return _transient;
     }
 
+    @Override
     public void setTransient(boolean aTransient)
     {
         _transient = aTransient;
@@ -554,7 +559,12 @@ public class NumberConverter
 
     public void setType(String type)
     {
-        //TODO: validate type
+        if (type != null && type.length() > 0
+                && (!"number".equals(type) && !"currency".equals(type) && !"percent".equals(type)))
+        {
+            throw new FacesException("Uknown type: " + type);
+        }
+        
         _type = type;
         clearInitialState();
     }
@@ -566,16 +576,19 @@ public class NumberConverter
     
     private boolean _initialStateMarked = false;
 
+    @Override
     public void clearInitialState()
     {
         _initialStateMarked = false;
     }
 
+    @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
+    @Override
     public void markInitialState()
     {
         _initialStateMarked = true;

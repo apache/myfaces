@@ -897,7 +897,6 @@ public abstract class UIComponentBase extends UIComponent
             return _clientId;
         }
 
-        //boolean idWasNull = false;
         String id = getId();
         if (id == null)
         {
@@ -932,8 +931,6 @@ public abstract class UIComponentBase extends UIComponent
                 id = parentUniqueIdVendor.createUniqueId(context, null);
             }
             setId(id);
-            // We remember that the id was null and log a warning down below
-            // idWasNull = true;
         }
 
         UIComponent namingContainer = _ComponentUtils.findParentNamingContainer(this, false);
@@ -1669,6 +1666,7 @@ public abstract class UIComponentBase extends UIComponent
         return null;
     }
 
+    @Override
     public void setTransient(boolean transientFlag)
     {
         _transient = transientFlag;
@@ -1844,6 +1842,7 @@ public abstract class UIComponentBase extends UIComponent
      * restoreState of some other instance of UIComponentBase to reset that object's state to the same values as this
      * object currently has.
      */
+    @Override
     public Object saveState(FacesContext context)
     {
         if (context == null)
@@ -1956,10 +1955,7 @@ public abstract class UIComponentBase extends UIComponent
             {
                 values[9] = saveTransientState(context);
             }
-            //values[8] = _isRendererTypeSet;
-            //values[9] = _addedByHandler;
-            //values[10] = _facetCreatedUIPanel;
-
+ 
             return values;
         }
     }
@@ -1973,6 +1969,7 @@ public abstract class UIComponentBase extends UIComponent
      *            is an object previously returned by the saveState method of this class.
      */
     @SuppressWarnings("unchecked")
+    @Override
     public void restoreState(FacesContext context, Object state)
     {
         if (context == null)
@@ -2029,15 +2026,11 @@ public abstract class UIComponentBase extends UIComponent
             _markCreated = (String) values[6];
             _rendererType = (String) values[7];
             _capabilities = (Integer) values[8];
-            //_isRendererTypeSet = (Boolean) values[8];
-            //_addedByHandler = (Boolean) values[9];
-            //_facetCreatedUIPanel = (Boolean) values[10];
         }
         else if (values.length == 6)
         {
             restoreTransientState(context, values[4]);
             _rendererType = (String) values[5];
-            //_isRendererTypeSet = true;
             _capabilities |= FLAG_IS_RENDERER_TYPE_SET;
         }
         else if (values.length == 5)
@@ -2072,8 +2065,7 @@ public abstract class UIComponentBase extends UIComponent
             Object attachedState = holder.saveState(facesContext);
             if (attachedState != null)
             {
-                return new _AttachedDeltaWrapper(_facesListeners.getClass(),
-                        attachedState);
+                return new _AttachedDeltaWrapper(_facesListeners.getClass(), attachedState);
             }
             //_facesListeners instances once is created never changes, we can return null
             return null;
@@ -2296,49 +2288,12 @@ public abstract class UIComponentBase extends UIComponent
         }
     }
     
-    /*
-    private Object saveBindings(FacesContext context)
-    {
-        if (bindings != null)
-        {
-            HashMap<String, Object> stateMap = new HashMap<String, Object>(bindings.size(), 1);
-            for (Iterator<Entry<String, ValueExpression>> it = bindings.entrySet().iterator(); it.hasNext();)
-            {
-                Entry<String, ValueExpression> entry = it.next();
-                stateMap.put(entry.getKey(), saveAttachedState(context, entry.getValue()));
-            }
-            return stateMap;
-        }
-
-        return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    private void restoreValueExpressionMap(FacesContext context, Object stateObj)
-    {
-        if (stateObj != null)
-        {
-            Map<String, Object> stateMap = (Map<String, Object>) stateObj;
-            int initCapacity = (stateMap.size() * 4 + 3) / 3;
-            bindings = new HashMap<String, ValueExpression>(initCapacity);
-            for (Map.Entry<String, Object> entry : stateMap.entrySet())
-            {
-                bindings.put(entry.getKey(), (ValueExpression) restoreAttachedState(context, entry.getValue()));
-            }
-        }
-        else
-        {
-            bindings = null;
-        }
-    }*/
-
     /**
      * @param string
      *            the component id, that should be a vaild one.
      */
     private void isIdValid(String string)
     {
-
         // is there any component identifier ?
         if (string == null)
         {
@@ -2463,7 +2418,6 @@ public abstract class UIComponentBase extends UIComponent
         {
             _capabilities &= ~(FLAG_ADDED_BY_HANDLER);
         }
-        //_addedByHandler = addedByHandler;
     }
     
     boolean isOamVfFacetCreatedUIPanel()
@@ -2473,7 +2427,6 @@ public abstract class UIComponentBase extends UIComponent
     
     void setOamVfFacetCreatedUIPanel(boolean facetCreatedUIPanel)
     {
-        //_facetCreatedUIPanel = facetCreatedUIPanel;
         if (facetCreatedUIPanel)
         {
             _capabilities |= FLAG_FACET_CREATED_UIPANEL;
@@ -2484,7 +2437,7 @@ public abstract class UIComponentBase extends UIComponent
         }
     }
 
-/**
+    /**
      * <p>
      * This gets a single FacesContext-local shared stringbuilder instance, each time you call
      * _getSharedStringBuilder it sets the length of the stringBuilder instance to 0.
@@ -2522,7 +2475,6 @@ public abstract class UIComponentBase extends UIComponent
         return _getSharedStringBuilder(FacesContext.getCurrentInstance());
     }
 
-    // TODO checkstyle complains; does this have to lead with __ ?
     static StringBuilder _getSharedStringBuilder(FacesContext facesContext)
     {
         Map<Object, Object> attributes = facesContext.getAttributes();

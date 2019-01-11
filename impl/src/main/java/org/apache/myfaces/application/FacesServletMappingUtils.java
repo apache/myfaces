@@ -21,6 +21,7 @@ package org.apache.myfaces.application;
 
 import java.util.Collection;
 import java.util.Map;
+import javax.faces.context.ExternalContext;
 
 import javax.faces.context.FacesContext;
 import javax.faces.webapp.FacesServlet;
@@ -35,6 +36,28 @@ public class FacesServletMappingUtils
 {
     private static final String FACES_SERVLET_REGISTRATION = "org.apache.myfaces.FACES_SERVLET_REGISTRATION";
     private static final String FACES_SERVLET_MAPPINGS = "org.apache.myfaces.FACES_SERVLET_MAPPINGS";
+    
+    private static final String CURRENT_REQUEST_FACES_SERVLET = "org.apache.myfaces.CURRENT_FACES_SERVLET_MAPPING";
+    
+    public static FacesServletMapping getCurrentRequestFacesServletMapping(FacesContext context)
+    {
+        Map<Object, Object> attributes = context.getAttributes();
+
+        // Has the mapping already been determined during this request?
+        FacesServletMapping mapping = (FacesServletMapping) attributes.get(CURRENT_REQUEST_FACES_SERVLET);
+        if (mapping == null)
+        {
+            ExternalContext externalContext = context.getExternalContext();
+            mapping = FacesServletMappingUtils.calculateFacesServletMapping(
+                    context,
+                    externalContext.getRequestServletPath(),
+                    externalContext.getRequestPathInfo(),
+                    true);
+
+            attributes.put(CURRENT_REQUEST_FACES_SERVLET, mapping);
+        }
+        return mapping;
+    }
     
     public static ServletRegistration getFacesServletRegistration(FacesContext facesContext,
             ServletContext servletContext)

@@ -41,6 +41,7 @@ public class IntegerConverter
     }
 
     // METHODS
+    @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
     {
         if (facesContext == null)
@@ -72,6 +73,7 @@ public class IntegerConverter
         return null;
     }
 
+    @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
     {
         if (facesContext == null)

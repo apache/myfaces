@@ -92,13 +92,11 @@ public class HtmlMenuRendererBase
             UISelectMany selectMany, boolean disabled, Converter converter)
             throws IOException
     {
-        internalRenderSelect(facesContext, selectMany, disabled, 1, true,
-                converter);
+        internalRenderSelect(facesContext, selectMany, disabled, 1, true, converter);
     }
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent uiComponent)
     {
-        //TODO: overwrite in extended HtmlMenuRenderer and check for enabledOnUserRole
         if (uiComponent instanceof HtmlSelectManyMenu)
         {
             return ((HtmlSelectManyMenu)uiComponent).isDisabled();
@@ -107,10 +105,8 @@ public class HtmlMenuRendererBase
         {
             return ((HtmlSelectOneMenu)uiComponent).isDisabled();
         }
-        else
-        {
-            return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
-        }
+
+        return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
     }
 
     public void decode(FacesContext facesContext, UIComponent uiComponent)

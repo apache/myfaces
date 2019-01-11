@@ -37,6 +37,7 @@ public class CustomLastELResolverComparator implements Comparator<ELResolver>
     private CustomFirstELResolverComparator _inverseResolver
             = new CustomFirstELResolverComparator();
     
+    @Override
     public int compare(ELResolver r1, ELResolver r2)
     {
         return _inverseResolver.compare(r2, r1);

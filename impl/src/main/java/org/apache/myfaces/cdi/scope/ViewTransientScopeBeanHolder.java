@@ -70,8 +70,7 @@ public class ViewTransientScopeBeanHolder
         Map<Object, Object> map = null;
         if (create)
         {
-            ContextualStorage contextualStorage = getContextualStorage(
-                beanManager, facesContext);
+            ContextualStorage contextualStorage = getContextualStorage(beanManager, facesContext);
             ContextualInstanceInfo info = contextualStorage.getStorage().get(VIEW_TRANSIENT_SCOPE_MAP_INFO);
             if (info == null)
             {
@@ -87,8 +86,7 @@ public class ViewTransientScopeBeanHolder
         }
         else
         {
-            ContextualStorage contextualStorage = getContextualStorageNoCreate(
-                beanManager, facesContext);
+            ContextualStorage contextualStorage = getContextualStorageNoCreate(beanManager, facesContext);
             if (contextualStorage != null)
             {
                 ContextualInstanceInfo info = contextualStorage.getStorage().get(VIEW_TRANSIENT_SCOPE_MAP_INFO);

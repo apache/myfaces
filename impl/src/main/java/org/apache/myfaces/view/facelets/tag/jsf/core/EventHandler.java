@@ -189,8 +189,8 @@ public final class EventHandler extends TagHandler
         }
         else
         {
-            value = (String) type.getValueExpression (context, String.class).
-                getValue (context.getFacesContext().getELContext());
+            value = (String) type.getValueExpression(context, String.class)
+                    .getValue(context.getFacesContext().getELContext());
         }
         
         Collection<Class<? extends ComponentSystemEvent>> events;
@@ -413,7 +413,6 @@ public final class EventHandler extends TagHandler
                 MethodExpression methodExpZeroArg,
                 UIComponent targetComponent)
         {
-            //_listener = listener;
             this.eventClass = eventClass;
             this.methodExpOneArg = methodExpOneArg;
             this.methodExpZeroArg = methodExpZeroArg;

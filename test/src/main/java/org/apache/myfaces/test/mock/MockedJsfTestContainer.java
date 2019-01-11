@@ -244,8 +244,7 @@ public class MockedJsfTestContainer implements HttpSessionListener
         }
         else
         {
-            externalContext = new MockExternalContext(servletContext, request,
-                response);
+            externalContext = new MockExternalContext(servletContext, request, response);
             facesContext.setExternalContext(externalContext);
         }
         facesContext.setApplication(application);
@@ -301,7 +300,7 @@ public class MockedJsfTestContainer implements HttpSessionListener
                 renderKit);
     }
 
-    public MockApplication getApplication()
+    public MockApplication10 getApplication()
     {
         return application;
     }

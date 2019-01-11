@@ -20,6 +20,8 @@
 package org.apache.myfaces.test.mock;
 
 import java.lang.reflect.Constructor;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -47,122 +49,15 @@ public class MockFacesContextFactory extends FacesContextFactory
      */
     public MockFacesContextFactory()
     {
-
-        Class clazz = null;
-
-        // Try to load the 2.2 version of our mock FacesContext class
         try
         {
-            clazz = this.getClass().getClassLoader().loadClass(
-                    "org.apache.myfaces.test.mock.MockFacesContext22");
+            Class clazz = MockFacesContext.class;
             constructor = clazz.getConstructor(facesContextSignature);
-            jsf22 = true;
         }
-        catch (NoClassDefFoundError e)
+        catch (NoSuchMethodException | SecurityException ex)
         {
-            // We are not running on JSF 2.0, so go to our fallback
-            clazz = null;
-            constructor = null;
+            Logger.getLogger(MockFacesContextFactory.class.getName()).log(Level.SEVERE, null, ex);
         }
-        catch (ClassNotFoundException e)
-        {
-            // Same as above
-            clazz = null;
-            constructor = null;
-        }
-        catch (RuntimeException e)
-        {
-            throw e;
-        }
-        catch (Exception e)
-        {
-            throw new FacesException(e);
-        }
-        
-        // Try to load the 2.0 version of our mock FacesContext class
-        try
-        {
-            if (clazz == null)
-            {
-                clazz = this.getClass().getClassLoader().loadClass(
-                        "org.apache.myfaces.test.mock.MockFacesContext20");
-                constructor = clazz.getConstructor(facesContextSignature);
-                jsf20 = true;
-            }
-        }
-        catch (NoClassDefFoundError e)
-        {
-            // We are not running on JSF 2.0, so go to our fallback
-            clazz = null;
-            constructor = null;
-        }
-        catch (ClassNotFoundException e)
-        {
-            // Same as above
-            clazz = null;
-            constructor = null;
-        }
-        catch (RuntimeException e)
-        {
-            throw e;
-        }
-        catch (Exception e)
-        {
-            throw new FacesException(e);
-        }
-
-        // Try to load the 1.2 version of our mock FacesContext class
-        try
-        {
-            if (clazz == null)
-            {
-                clazz = this.getClass().getClassLoader().loadClass(
-                        "org.apache.myfaces.test.mock.MockFacesContext12");
-                constructor = clazz.getConstructor(facesContextSignature);
-                jsf12 = true;
-            }
-        }
-        catch (NoClassDefFoundError e)
-        {
-            // We are not running on JSF 1.2, so go to our fallback
-            clazz = null;
-            constructor = null;
-        }
-        catch (ClassNotFoundException e)
-        {
-            // Same as above
-            clazz = null;
-            constructor = null;
-        }
-        catch (RuntimeException e)
-        {
-            throw e;
-        }
-        catch (Exception e)
-        {
-            throw new FacesException(e);
-        }
-
-        // Fall back to the 1.1 version if we could not load the 1.2 version
-        try
-        {
-            if (clazz == null)
-            {
-                clazz = this.getClass().getClassLoader().loadClass(
-                        "org.apache.myfaces.test.mock.MockFacesContext");
-                constructor = clazz.getConstructor(facesContextSignature);
-                jsf12 = false;
-            }
-        }
-        catch (RuntimeException e)
-        {
-            throw e;
-        }
-        catch (Exception e)
-        {
-            throw new FacesException(e);
-        }
-
     }
 
     // ----------------------------------------------------- Mock Object Methods
@@ -188,21 +83,6 @@ public class MockFacesContextFactory extends FacesContextFactory
     private static Class[] facesContextSignature = new Class[] {
             ExternalContext.class, Lifecycle.class };
 
-    /**
-     * <p>Flag indicating that we are running in a JSF 1.2 environment.</p>
-     */
-    private boolean jsf12 = false;
-
-    /**
-     * <p>Flag indicating that we are running in a JSF 2.0 environment.</p>
-     */
-    private boolean jsf20 = false;
-    
-    /**
-     * <p>Flag indicating that we are running in a JSF 2.2 environment.</p>
-     */
-    private boolean jsf22 = false;
-
     // --------------------------------------------- FacesContextFactory Methods
 
     /** {@inheritDoc} */
@@ -212,57 +92,6 @@ public class MockFacesContextFactory extends FacesContextFactory
 
         // Select the appropriate MockExternalContext implementation class
         Class clazz = MockExternalContext.class;
-
-        if (jsf22)
-        {
-            try
-            {
-                clazz = this.getClass().getClassLoader().loadClass(
-                        "org.apache.myfaces.test.mock.MockExternalContext22");
-            }
-            catch (RuntimeException e)
-            {
-                throw e;
-            }
-            catch (Exception e)
-            {
-                throw new FacesException(e);
-            }
-        }
-        
-        if (jsf20)
-        {
-            try
-            {
-                clazz = this.getClass().getClassLoader().loadClass(
-                        "org.apache.myfaces.test.mock.MockExternalContext20");
-            }
-            catch (RuntimeException e)
-            {
-                throw e;
-            }
-            catch (Exception e)
-            {
-                throw new FacesException(e);
-            }
-        }
-
-        if (jsf12)
-        {
-            try
-            {
-                clazz = this.getClass().getClassLoader().loadClass(
-                        "org.apache.myfaces.test.mock.MockExternalContext12");
-            }
-            catch (RuntimeException e)
-            {
-                throw e;
-            }
-            catch (Exception e)
-            {
-                throw new FacesException(e);
-            }
-        }
 
         // Select the constructor we wish to call
         Constructor mecConstructor = null;

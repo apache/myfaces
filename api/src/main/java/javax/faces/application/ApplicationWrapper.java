@@ -259,7 +259,7 @@ public abstract class ApplicationWrapper extends Application implements FacesWra
     }
 
     @Override
-    public ResourceBundle getResourceBundle(FacesContext ctx, String name) throws FacesException, NullPointerException
+    public ResourceBundle getResourceBundle(FacesContext ctx, String name)
     {
         return getWrapped().getResourceBundle(ctx, name);
     }

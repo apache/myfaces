@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +45,6 @@ import javax.faces.component.UIViewAction;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -73,6 +71,7 @@ import org.apache.myfaces.util.HashMapUtils;
 import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.util.FilenameUtils;
 import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
 
@@ -81,16 +80,10 @@ import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-public class NavigationHandlerImpl
-    extends ConfigurableNavigationHandler
+public class NavigationHandlerImpl extends ConfigurableNavigationHandler
 {
     private static final Logger log = Logger.getLogger(NavigationHandlerImpl.class.getName());
 
-    private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
-    
-    private static final Set<VisitHint> VISIT_HINTS = Collections.unmodifiableSet(
-            EnumSet.of(VisitHint.SKIP_ITERATION));    
-    
     private static final String OUTCOME_NAVIGATION_SB = "oam.navigation.OUTCOME_NAVIGATION_SB";
     
     private static final Pattern AMP_PATTERN = Pattern.compile("&(amp;)?"); // "&" or "&amp;"
@@ -104,7 +97,7 @@ public class NavigationHandlerImpl
     private Map<String, _FlowNavigationStructure> _flowNavigationStructureMap = 
         new ConcurrentHashMap<String, _FlowNavigationStructure>();
     
-    private NavigationHandlerSupport navigationHandlerSupport;
+    private ViewIdSupport viewIdSupport;
 
     public NavigationHandlerImpl()
     {
@@ -124,13 +117,12 @@ public class NavigationHandlerImpl
     public void handleNavigation(FacesContext facesContext, String fromAction, 
         String outcome, String toFlowDocumentId)
     {
-        //NavigationCase navigationCase = getNavigationCase(facesContext, fromAction, outcome);
         NavigationContext navigationContext = new NavigationContext();
         NavigationCase navigationCase = null;
         try
         {
             navigationCase = getNavigationCommand(facesContext, navigationContext, fromAction, outcome,
-                toFlowDocumentId);
+                    toFlowDocumentId);
         }
         finally
         {
@@ -264,10 +256,10 @@ public class NavigationHandlerImpl
                 // are included on navigation.
                 PartialViewContext partialViewContext = facesContext.getPartialViewContext();
                 String viewId = facesContext.getViewRoot() != null ? facesContext.getViewRoot().getViewId() : null;
-                if ( partialViewContext.isPartialRequest() && 
-                     !partialViewContext.isRenderAll() && 
-                     toViewId != null &&
-                     !toViewId.equals(viewId))
+                if (partialViewContext.isPartialRequest()
+                        && !partialViewContext.isRenderAll()
+                        && toViewId != null
+                        && !toViewId.equals(viewId))
                 {
                     partialViewContext.setRenderAll(true);
                 }
@@ -317,14 +309,15 @@ public class NavigationHandlerImpl
                 {
                     try
                     {
-                        facesContext.getAttributes().put(SKIP_ITERATION_HINT, Boolean.TRUE);
+                        facesContext.getAttributes().put(MyFacesVisitHints.SKIP_ITERATION_HINT, Boolean.TRUE);
 
-                        VisitContext visitContext = VisitContext.createVisitContext(facesContext, null, VISIT_HINTS);
+                        VisitContext visitContext = VisitContext.createVisitContext(facesContext,
+                                null, MyFacesVisitHints.SET_SKIP_ITERATION);
                         facesContext.getViewRoot().visitTree(visitContext, PreDisposeViewCallback.INSTANCE);
                     }
                     finally
                     {
-                        facesContext.getAttributes().remove(SKIP_ITERATION_HINT);
+                        facesContext.getAttributes().remove(MyFacesVisitHints.SKIP_ITERATION_HINT);
                     }
                 }
                 
@@ -405,26 +398,27 @@ public class NavigationHandlerImpl
         }
     }
 
-    /**
-    * @return the navigationHandlerSupport
-    */
-    protected NavigationHandlerSupport getNavigationHandlerSupport()
+    protected ViewIdSupport getViewIdSupport()
     {
-        if (navigationHandlerSupport == null)
+        if (viewIdSupport == null)
         {
-            navigationHandlerSupport = new DefaultNavigationHandlerSupport();
+            viewIdSupport = ViewIdSupport.getInstance(FacesContext.getCurrentInstance());
         }
-        return navigationHandlerSupport;
+        return viewIdSupport;
     }
 
-    public void setNavigationHandlerSupport(NavigationHandlerSupport navigationHandlerSupport)
+    public void setViewIdSupport(ViewIdSupport viewIdSupport)
     {
-        this.navigationHandlerSupport = navigationHandlerSupport;
+        this.viewIdSupport = viewIdSupport;
     }
 
     private static class PreDisposeViewCallback implements VisitCallback
     {
         public static final PreDisposeViewCallback INSTANCE = new PreDisposeViewCallback();
+        
+        private PreDisposeViewCallback()
+        {
+        }
         
         @Override
         public VisitResult visit(VisitContext context, UIComponent target)
@@ -439,6 +433,7 @@ public class NavigationHandlerImpl
     /**
      * Returns the navigation case that applies for the given action and outcome
      */
+    @Override
     public NavigationCase getNavigationCase(FacesContext facesContext, String fromAction, String outcome)
     {
         NavigationContext navigationContext = new NavigationContext();
@@ -1008,7 +1003,7 @@ public class NavigationHandlerImpl
      * 
      * TODO: cache results?
      */
-    private NavigationCase getOutcomeNavigationCase (FacesContext facesContext, String fromAction, String outcome)
+    private NavigationCase getOutcomeNavigationCase(FacesContext facesContext, String fromAction, String outcome)
     {
         String implicitViewId = null;
         boolean includeViewParams = false;
@@ -1017,44 +1012,40 @@ public class NavigationHandlerImpl
         String queryString = null;
         NavigationCase result = null;
         String viewId = facesContext.getViewRoot() != null ? facesContext.getViewRoot().getViewId() : null;
-        //String viewIdToTest = outcome;
         StringBuilder viewIdToTest = SharedStringBuilder.get(facesContext, OUTCOME_NAVIGATION_SB);
         viewIdToTest.append(outcome);
         
         // If viewIdToTest contains a query string, remove it and set queryString with that value.
-        index = viewIdToTest.indexOf ("?");
+        index = viewIdToTest.indexOf("?");
         if (index != -1)
         {
-            queryString = viewIdToTest.substring (index + 1);
-            //viewIdToTest = viewIdToTest.substring (0, index);
+            queryString = viewIdToTest.substring(index + 1);
             viewIdToTest.setLength(index);
             
             // If queryString contains "faces-redirect=true", set isRedirect to true.
-            if (queryString.indexOf ("faces-redirect=true") != -1)
+            if (queryString.contains("faces-redirect=true"))
             {
                 isRedirect = true;
             }
             
             // If queryString contains "includeViewParams=true" or 
             // "faces-include-view-params=true", set includeViewParams to true.
-            if (queryString.indexOf("includeViewParams=true") != -1 
-                    || queryString.indexOf("faces-include-view-params=true") != -1)
+            if (queryString.contains("includeViewParams=true")
+                    || queryString.contains("faces-include-view-params=true"))
             {
                 includeViewParams = true;
             }
         }
         
         // If viewIdToTest does not have a "file extension", use the one from the current viewId.
-        index = viewIdToTest.indexOf (".");
+        index = viewIdToTest.indexOf(".");
         if (index == -1)
         {
             if (viewId != null)
             {
                 index = viewId.lastIndexOf('.');
-
                 if (index != -1)
                 {
-                    //viewIdToTest += viewId.substring (index);
                     viewIdToTest.append(viewId.substring (index));
                 }
             }
@@ -1068,13 +1059,13 @@ public class NavigationHandlerImpl
                 // In this case, it should try to derive the viewId of the view that was
                 // not able to restore, to get the extension and apply it to
                 // the implicit navigation.
-                String tempViewId = getNavigationHandlerSupport().calculateViewId(facesContext);
+                String tempViewId = getViewIdSupport().calculateViewId(facesContext);
                 if (tempViewId != null)
                 {
                     index = tempViewId.lastIndexOf('.');
                     if(index != -1)
                     {
-                        viewIdToTest.append(tempViewId.substring (index));
+                        viewIdToTest.append(tempViewId.substring(index));
                     }
                 }
             }
@@ -1090,25 +1081,22 @@ public class NavigationHandlerImpl
         boolean startWithSlash = false;
         if (viewIdToTest.length() > 0)
         {
-            startWithSlash = (viewIdToTest.charAt(0) == '/');
+            startWithSlash = viewIdToTest.charAt(0) == '/';
         } 
         if (!startWithSlash) 
         {
             index = -1;
-            if( viewId != null )
+            if (viewId != null)
             {
                index = viewId.lastIndexOf('/');
             }
             
             if (index == -1)
             {
-                //viewIdToTest = "/" + viewIdToTest;
                 viewIdToTest.insert(0, '/');
             }
-            
             else
             {
-                //viewIdToTest = viewId.substring (0, index + 1) + viewIdToTest;
                 viewIdToTest.insert(0, viewId, 0, index + 1);
             }
         }
@@ -1116,8 +1104,7 @@ public class NavigationHandlerImpl
         // Apply normalization 
         String viewIdToTestString = null;
         boolean applyNormalization = false;
-        
-        for (int i = 0; i < viewIdToTest.length()-1; i++)
+        for (int i = 0; i < viewIdToTest.length() - 1; i++)
         {
             if (viewIdToTest.charAt(i) == '.' &&
                 viewIdToTest.charAt(i+1) == '/')
@@ -1136,30 +1123,16 @@ public class NavigationHandlerImpl
         }
         
         // Call ViewHandler.deriveViewId() and set the result as implicitViewId.
-        try
-        {
-            implicitViewId = facesContext.getApplication().getViewHandler().deriveViewId (
-                    facesContext, viewIdToTestString);
-        }
-        
-        catch (UnsupportedOperationException e)
-        {
-            // This is the case when a pre-JSF 2.0 ViewHandler is used.
-            // In this case, the default algorithm must be used.
-            // FIXME: I think we're always calling the "default" ViewHandler.deriveViewId() algorithm and we don't
-            // distinguish between pre-JSF 2.0 and JSF 2.0 ViewHandlers.  This probably needs to be addressed.
-        }
-        
+        implicitViewId = facesContext.getApplication().getViewHandler().deriveViewId(facesContext, viewIdToTestString);
         if (implicitViewId != null)
         {
             // Append all params from the queryString
             // (excluding faces-redirect, includeViewParams and faces-include-view-params)
             Map<String, List<String>> params = null;
-            if (queryString != null && LangUtils.isNotBlank(queryString))
+            if (LangUtils.isNotBlank(queryString))
             {
                 String[] splitQueryParams = AMP_PATTERN.split(queryString); // "&" or "&amp;"
-                params = new HashMap<String, List<String>>(splitQueryParams.length, 
-                        (splitQueryParams.length* 4 + 3) / 3);
+                params = new HashMap<>(splitQueryParams.length, (splitQueryParams.length* 4 + 3) / 3);
                 for (String queryParam : splitQueryParams)
                 {
                     String[] splitParam = StringUtils.splitShortString(queryParam, '=');
@@ -1185,17 +1158,16 @@ public class NavigationHandlerImpl
                     else
                     {
                         // invalid parameter
-                        throw new FacesException("Invalid parameter \"" + 
-                                queryParam + "\" in outcome " + outcome);
+                        throw new FacesException("Invalid parameter \"" + queryParam + "\" in outcome " + outcome);
                     }
                 }
             }
             
             // Finally, create the NavigationCase.
-            result = new NavigationCase (viewId, fromAction, outcome, null, 
-                    implicitViewId, params, isRedirect, includeViewParams);
+            result = new NavigationCase (viewId, fromAction, outcome, null, implicitViewId, params, isRedirect,
+                    includeViewParams);
         }
-        
+
         return result;
     }
     
@@ -1205,18 +1177,6 @@ public class NavigationHandlerImpl
     public String getViewId(FacesContext context, String fromAction, String outcome)
     {
         return this.getNavigationCase(context, fromAction, outcome).getToViewId(context);
-    }
-
-    /**
-     * TODO
-     * Invoked by the navigation handler before the new view component is created.
-     * @param viewId The view ID to be created
-     * @return The view ID that should be used instead. If null, the view ID passed
-     * in will be used without modification.
-     */
-    public String beforeNavigation(String viewId)
-    {
-        return null;
     }
 
     private NavigationCase calcMatchingNavigationCase(FacesContext context,

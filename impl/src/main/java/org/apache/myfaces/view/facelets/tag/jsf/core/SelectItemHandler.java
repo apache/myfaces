@@ -26,7 +26,6 @@ import org.apache.myfaces.renderkit.html.util.JSFAttr;
 
 public class SelectItemHandler extends ComponentHandler
 {
-
     public SelectItemHandler(ComponentConfig config)
     {
         super(config);
@@ -35,11 +34,7 @@ public class SelectItemHandler extends ComponentHandler
     @Override
     protected MetaRuleset createMetaRuleset(Class type)
     {
-        return super.createMetaRuleset(type).alias("escapeItem",
-                JSFAttr.ITEM_ESCAPED_ATTR);
-        //return super.createMetaRuleset(type);
+        return super.createMetaRuleset(type).alias("escapeItem", JSFAttr.ITEM_ESCAPED_ATTR);
     }
-    
-    
 
 }

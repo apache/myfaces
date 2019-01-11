@@ -64,7 +64,7 @@ public class ViewHandlerImpl extends ViewHandler
     private static final Logger log = Logger.getLogger(ViewHandlerImpl.class.getName());
     
     public static final String FORM_STATE_MARKER = "<!--@@JSF_FORM_STATE_MARKER@@-->";
-    private ViewHandlerSupport _viewHandlerSupport;
+    private ViewIdSupport _viewIdSupport;
     private ViewDeclarationLanguageFactory _vdlFactory;
     
     private Set<String> _protectedViewsSet;
@@ -96,20 +96,20 @@ public class ViewHandlerImpl extends ViewHandler
     }
 
     @Override
-    public String deriveViewId(FacesContext context, String input)
+    public String deriveViewId(FacesContext context, String rawViewId)
     {
-        if(input != null)
+        if(rawViewId != null)
         {
             try
             {
-                return getViewHandlerSupport(context).deriveViewId(context, input);
+                return getViewIdSupport(context).deriveViewId(context, rawViewId);
             }
             catch (InvalidViewIdException e)
             {
                 sendSourceNotFound(context, e.getMessage());
             }
         }
-        return input;   // If the argument input is null, return null.
+        return rawViewId;   // If the argument input is null, return null.
     }
     
     @Override
@@ -119,7 +119,7 @@ public class ViewHandlerImpl extends ViewHandler
         {
             try
             {
-                return getViewHandlerSupport(context).deriveLogicalViewId(context, rawViewId);
+                return getViewIdSupport(context).deriveLogicalViewId(context, rawViewId);
             }
             catch (InvalidViewIdException e)
             {
@@ -245,7 +245,7 @@ public class ViewHandlerImpl extends ViewHandler
     public UIViewRoot createView(FacesContext context, String viewId)
     {
         Assert.notNull(context, "facesContext");
-        String calculatedViewId = getViewHandlerSupport(context).deriveLogicalViewId(context, viewId);
+        String calculatedViewId = getViewIdSupport(context).deriveLogicalViewId(context, viewId);
        
         // we cannot use this.getVDL() directly (see getViewHandler())
         //return getViewHandler(context)
@@ -267,7 +267,7 @@ public class ViewHandlerImpl extends ViewHandler
     {
         Assert.notNull(context, "facesContext");
         Assert.notNull(viewId, "viewId");
-        return getViewHandlerSupport(context).calculateActionURL(context, viewId);
+        return getViewIdSupport(context).calculateActionURL(context, viewId);
     }
 
     @Override
@@ -318,7 +318,7 @@ public class ViewHandlerImpl extends ViewHandler
     {
         Assert.notNull(context, "context");
     
-        String calculatedViewId = getViewHandlerSupport(context).deriveLogicalViewId(context, viewId);
+        String calculatedViewId = getViewIdSupport(context).deriveLogicalViewId(context, viewId);
         
         // we cannot use this.getVDL() directly (see getViewHandler())
         //return getViewHandler(context)
@@ -448,7 +448,7 @@ public class ViewHandlerImpl extends ViewHandler
         }
         else
         {
-            String calculatedViewId = getViewHandlerSupport(context).deriveLogicalViewId(context, viewId);  
+            String calculatedViewId = getViewIdSupport(context).deriveLogicalViewId(context, viewId);  
             // we cannot use this.getVDL() directly (see getViewHandler())
             //ViewDeclarationLanguage vdl = getViewHandler(context).
             //        getViewDeclarationLanguage(context, calculatedViewId);
@@ -531,18 +531,18 @@ public class ViewHandlerImpl extends ViewHandler
         }
     }
     
-    public void setViewHandlerSupport(ViewHandlerSupport viewHandlerSupport)
+    public void setViewIdSupport(ViewIdSupport viewIdSupport)
     {
-        _viewHandlerSupport = viewHandlerSupport;
+        _viewIdSupport = viewIdSupport;
     }    
 
-    protected ViewHandlerSupport getViewHandlerSupport(FacesContext context)
+    protected ViewIdSupport getViewIdSupport(FacesContext context)
     {
-        if (_viewHandlerSupport == null)
+        if (_viewIdSupport == null)
         {
-            _viewHandlerSupport = new DefaultViewHandlerSupport(context);
+            _viewIdSupport = ViewIdSupport.getInstance(context);
         }
-        return _viewHandlerSupport;
+        return _viewIdSupport;
     }
 
     @Override

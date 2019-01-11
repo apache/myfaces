@@ -19,7 +19,8 @@
 
 package org.apache.myfaces.test.mock;
 
-import javax.faces.FacesException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 
@@ -61,77 +62,14 @@ public class MockApplicationFactory extends ApplicationFactory
 
         if (this.application == null)
         {
-            Class clazz = null;
-
+            Class clazz = MockApplication.class;
             try
             {
-                clazz = this.getClass().getClassLoader().loadClass(
-                        "org.apache.myfaces.test.mock.MockApplication22");
-                if (clazz == null)
-                {
-                    clazz = this.getClass().getClassLoader().loadClass(
-                            "org.apache.myfaces.test.mock.MockApplication20");
-                }
-                this.application = (MockApplication) clazz.newInstance();
+                this.application = (Application) clazz.newInstance();
             }
-            catch (NoClassDefFoundError e)
+            catch (InstantiationException | IllegalAccessException ex)
             {
-                clazz = null; // We are not running in a JSF 1.2 environment
-            }
-            catch (ClassNotFoundException e)
-            {
-                clazz = null; // Same as above
-            }
-            catch (RuntimeException e)
-            {
-                throw e;
-            }
-            catch (Exception e)
-            {
-                throw new FacesException(e);
-            }
-
-            if (clazz == null)
-            {
-                try
-                {
-                    clazz = this.getClass().getClassLoader().loadClass(
-                            "org.apache.myfaces.test.mock.MockApplication12");
-                    this.application = (MockApplication) clazz.newInstance();
-                }
-                catch (NoClassDefFoundError e)
-                {
-                    clazz = null; // We are not running in a JSF 1.2 environment
-                }
-                catch (ClassNotFoundException e)
-                {
-                    clazz = null; // Same as above
-                }
-                catch (RuntimeException e)
-                {
-                    throw e;
-                }
-                catch (Exception e)
-                {
-                    throw new FacesException(e);
-                }
-            }
-            if (clazz == null)
-            {
-                try
-                {
-                    clazz = this.getClass().getClassLoader().loadClass(
-                            "org.apache.myfaces.test.mock.MockApplication");
-                    this.application = (MockApplication) clazz.newInstance();
-                }
-                catch (RuntimeException e)
-                {
-                    throw e;
-                }
-                catch (Exception e)
-                {
-                    throw new FacesException(e);
-                }
+                Logger.getLogger(MockApplicationFactory.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return this.application;
@@ -141,9 +79,7 @@ public class MockApplicationFactory extends ApplicationFactory
     /** {@inheritDoc} */
     public void setApplication(Application application)
     {
-
         this.application = application;
-
     }
 
 }

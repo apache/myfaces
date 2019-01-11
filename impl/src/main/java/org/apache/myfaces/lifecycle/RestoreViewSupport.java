@@ -18,63 +18,92 @@
  */
 package org.apache.myfaces.lifecycle;
 
+import java.util.logging.Logger;
+
+import javax.faces.FactoryFinder;
+import javax.faces.application.ViewHandler;
 import javax.faces.component.UIComponent;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitContextFactory;
+import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
+import javax.faces.event.PostRestoreStateEvent;
+import javax.faces.render.RenderKitFactory;
+import javax.faces.render.ResponseStateManager;
+import org.apache.myfaces.component.visit.MyFacesVisitHints;
 
 /**
- * Support class for restore view phase
- * 
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public interface RestoreViewSupport
+public class RestoreViewSupport
 {
-    /**
-     * <p>
-     * Calculates the view id from the given faces context by the following algorithm
-     * </p>
-     * <ul>
-     * <li>lookup the viewid from the request attribute "javax.servlet.include.path_info"
-     * <li>if null lookup the value for viewid by {@link javax.faces.context.ExternalContext#getRequestPathInfo()}
-     * <li>if null lookup the value for viewid from the request attribute "javax.servlet.include.servlet_path"
-     * <li>if null lookup the value for viewid by {@link javax.faces.context.ExternalContext#getRequestServletPath()}
-     * <li>if null throw a {@link javax.faces.FacesException}
-     * </ul>
-     */
-    String calculateViewId(FacesContext facesContext);
+    private final Logger log = Logger.getLogger(RestoreViewSupport.class.getName());
 
-    /**
-     * Processes the component tree. For each component (including the given one) in the tree determine if a value
-     * expression for the attribute "binding" is defined. If the expression is not null set the component instance to
-     * the value of this expression
-     * 
-     * @param facesContext
-     * @param component
-     *            the root component
-     */
-    void processComponentBinding(FacesContext facesContext, UIComponent component);
+    private RenderKitFactory renderKitFactory = null;
+    private VisitContextFactory visitContextFactory = null;
 
-    /**
-     * <p>
-     * Determine if the current request is a post back by the following algorithm.
-     * </p>
-     * <p>
-     * Find the render-kit-id for the current request by calling calculateRenderKitId() on the Application’s
-     * ViewHandler. Get that RenderKit’s ResponseStateManager and call its isPostback() method, passing the given
-     * FacesContext.
-     * </p>
-     * 
-     * @param facesContext
-     * @return
-     */
-    boolean isPostback(FacesContext facesContext);
-    
-    /**
-     * Check if a view exists
-     * 
-     * @param facesContext
-     * @param viewId
-     * @return 
-     */
-    boolean checkViewExists(FacesContext facesContext, String viewId);
+    public RestoreViewSupport(FacesContext facesContext)
+    {
+        visitContextFactory = (VisitContextFactory) FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
+        renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+    }
+
+    public void processComponentBinding(FacesContext facesContext, UIComponent component)
+    {
+        // JSF 2.0: Old hack related to t:aliasBean was fixed defining a event that traverse
+        // whole tree and let components to override UIComponent.processEvent() method to include it.
+        
+        // Remove this hack SKIP_ITERATION_HINT and use VisitHints.SKIP_ITERATION in JSF 2.1 only
+        // is not possible, because jsf 2.0 API-based libraries can use the String
+        // hint, JSF21-based libraries can use both.
+        try
+        {
+            facesContext.getAttributes().put(MyFacesVisitHints.SKIP_ITERATION_HINT, Boolean.TRUE);
+
+            VisitContext visitContext = (VisitContext) visitContextFactory.getVisitContext(facesContext,
+                    null, MyFacesVisitHints.SET_SKIP_ITERATION);
+            component.visitTree(visitContext, new RestoreStateCallback());
+        }
+        finally
+        {
+            // We must remove hint in finally, because an exception can break this phase,
+            // but lifecycle can continue, if custom exception handler swallows the exception
+            facesContext.getAttributes().remove(MyFacesVisitHints.SKIP_ITERATION_HINT);
+        }
+    }
+
+    public boolean isPostback(FacesContext facesContext)
+    {
+        ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
+        String renderkitId = viewHandler.calculateRenderKitId(facesContext);
+        ResponseStateManager rsm = renderKitFactory.getRenderKit(facesContext, renderkitId).getResponseStateManager();
+        return rsm.isPostback(facesContext);
+    }
+
+    private static class RestoreStateCallback implements VisitCallback
+    {
+        private PostRestoreStateEvent event;
+
+        @Override
+        public VisitResult visit(VisitContext context, UIComponent target)
+        {
+            if (event == null)
+            {
+                event = new PostRestoreStateEvent(target);
+            }
+            else
+            {
+                event.setComponent(target);
+            }
+
+            // call the processEvent method of the current component.
+            // The argument event must be an instance of AfterRestoreStateEvent whose component
+            // property is the current component in the traversal.
+            target.processEvent(event);
+            
+            return VisitResult.ACCEPT;
+        }
+    }
 }

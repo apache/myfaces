@@ -284,7 +284,7 @@ public class PartialVisitContext extends VisitContext
         // is more expensive than just getting the local id.
         String id = component.getId();
 
-        if ((id != null) && !_ids.contains(id))
+        if (id != null && !_ids.contains(id))
         {
             return null;
         }
@@ -347,8 +347,7 @@ public class PartialVisitContext extends VisitContext
 
                 if (c == null)
                 {
-                    // TODO: smarter initial size?
-                    c = new ArrayList<String>();
+                    c = new ArrayList<String>(5);
                     _subtreeClientIds.put(namingContainerClientId, c);
                 }
 

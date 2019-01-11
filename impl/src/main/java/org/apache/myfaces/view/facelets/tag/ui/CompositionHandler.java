@@ -42,7 +42,7 @@ import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
 
 /**
- * TODO: REFACTOR - This class could easily use a common parent with DecoratorHandler
+ *
  * 
  * @author Jacob Hookom
  * @version $Id$
@@ -74,7 +74,7 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
         _template = getAttribute("template");
         if (_template != null)
         {
-            _handlers = new HashMap<String, DefineHandler>();
+            _handlers = new HashMap<>();
             for (DefineHandler handler : TagHandlerUtils.findNextByType(nextHandler, DefineHandler.class))
             {
                 _handlers.put(handler.getName(), handler);

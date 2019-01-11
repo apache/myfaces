@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.pss.acid;
 
-import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
+import org.apache.myfaces.config.MyfacesConfig;
 
 public class AcidARCacheELMyFacesRequestTestCase extends AcidMyFacesRequestTestCase
 {
@@ -27,7 +27,7 @@ public class AcidARCacheELMyFacesRequestTestCase extends AcidMyFacesRequestTestC
     protected void setUpWebConfigParams() throws Exception
     {
         super.setUpWebConfigParams();
-        servletContext.addInitParameter(FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
+        servletContext.addInitParameter(MyfacesConfig.CACHE_EL_EXPRESSIONS, 
                 "alwaysRecompile");
     }
     

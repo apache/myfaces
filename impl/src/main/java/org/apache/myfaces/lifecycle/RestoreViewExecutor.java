@@ -49,12 +49,12 @@ import javax.faces.view.ViewDeclarationLanguage;
 import javax.faces.view.ViewMetadata;
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.myfaces.application.ViewIdSupport;
 import org.apache.myfaces.event.PostClientWindowAndViewInitializedEvent;
 
 import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ExternalContextUtils;
-import org.apache.myfaces.util.ViewProtectionUtils;
 
 /**
  * Implements the Restore View Phase (JSF Spec 2.2.1)
@@ -68,6 +68,7 @@ class RestoreViewExecutor extends PhaseExecutor
     private static final Logger log = Logger.getLogger(RestoreViewExecutor.class.getName());
     
     private RestoreViewSupport _restoreViewSupport;
+    private ViewIdSupport _viewIdSupport;
     
     private Boolean _viewNotFoundCheck;
     
@@ -94,10 +95,11 @@ class RestoreViewExecutor extends PhaseExecutor
         // get some required Objects
         Application application = facesContext.getApplication();
         ViewHandler viewHandler = application.getViewHandler();
-        UIViewRoot viewRoot = facesContext.getViewRoot();
         RestoreViewSupport restoreViewSupport = getRestoreViewSupport(facesContext);
+        ViewIdSupport viewHandlerSupport = getViewIdSupport(facesContext);
 
         // Examine the FacesContext instance for the current request. If it already contains a UIViewRoot
+        UIViewRoot viewRoot = facesContext.getViewRoot();
         if (viewRoot != null)
         {
             if (log.isLoggable(Level.FINEST))
@@ -117,7 +119,7 @@ class RestoreViewExecutor extends PhaseExecutor
             return false;
         }
         
-        String viewId = restoreViewSupport.calculateViewId(facesContext);
+        String viewId = viewHandlerSupport.calculateViewId(facesContext);
 
         // Determine if the current request is an attempt by the 
         // servlet container to display an error page.
@@ -153,7 +155,7 @@ class RestoreViewExecutor extends PhaseExecutor
                     sendSourceNotFound(facesContext, viewId);
                     return true;
                 }
-                else if (!restoreViewSupport.checkViewExists(facesContext, derivedViewId))
+                else if (!viewHandlerSupport.isViewExistent(facesContext, derivedViewId))
                 {
                     sendSourceNotFound(facesContext, viewId);
                     return true;
@@ -236,7 +238,7 @@ class RestoreViewExecutor extends PhaseExecutor
                     sendSourceNotFound(facesContext, viewId);
                     return true;
                 }
-                else if (!restoreViewSupport.checkViewExists(facesContext, logicalViewId))
+                else if (!viewHandlerSupport.isViewExistent(facesContext, logicalViewId))
                 {
                     sendSourceNotFound(facesContext, viewId);
                     return true;
@@ -338,7 +340,7 @@ class RestoreViewExecutor extends PhaseExecutor
         String viewId, UIViewRoot root) throws ProtectedViewException
     {
         boolean valid = true;
-        if (ViewProtectionUtils.isViewProtected(facesContext, viewId))
+        if (getViewIdSupport(facesContext).isViewProtected(facesContext, viewId))
         {
             // "... Obtain the value of the value of the request parameter whose 
             // name is given by the value of ResponseStateManager.NON_POSTBACK_VIEW_TOKEN_PARAM. 
@@ -555,19 +557,23 @@ class RestoreViewExecutor extends PhaseExecutor
         }
         return factory.getLifecycle(id);  
     }
-    
-    protected RestoreViewSupport getRestoreViewSupport()
-    {
-        return getRestoreViewSupport(FacesContext.getCurrentInstance());
-    }
-    
+
     protected RestoreViewSupport getRestoreViewSupport(FacesContext context)
     {
         if (_restoreViewSupport == null)
         {
-            _restoreViewSupport = new DefaultRestoreViewSupport(context);
+            _restoreViewSupport = new RestoreViewSupport(context);
         }
         return _restoreViewSupport;
+    }
+    
+    protected ViewIdSupport getViewIdSupport(FacesContext context)
+    {
+        if (_viewIdSupport == null)
+        {
+            _viewIdSupport = ViewIdSupport.getInstance(context);
+        }
+        return _viewIdSupport;
     }
 
     protected RenderKitFactory getRenderKitFactory()
@@ -579,13 +585,15 @@ class RestoreViewExecutor extends PhaseExecutor
         return _renderKitFactory;
     }
     
-    /**
-     * @param restoreViewSupport
-     *            the restoreViewSupport to set
-     */
+
     public void setRestoreViewSupport(RestoreViewSupport restoreViewSupport)
     {
         _restoreViewSupport = restoreViewSupport;
+    }
+    
+    public void setViewHandlerSupport(ViewIdSupport viewHandlerSupport)
+    {
+        _viewIdSupport = viewHandlerSupport;
     }
 
     @Override

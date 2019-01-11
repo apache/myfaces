@@ -71,7 +71,7 @@ import org.apache.myfaces.test.mock.resource.MockResourceHandler;
  * @since 1.0.0
  *
  */
-public class MockApplication20 extends MockApplication12
+public abstract class MockApplication20 extends MockApplication12
 {
 
     // ------------------------------------------------------------ Constructors

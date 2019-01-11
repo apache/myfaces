@@ -43,6 +43,7 @@ public class BigDecimalConverter
     }
 
     // METHODS
+    @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
     {
         if (facesContext == null)
@@ -56,27 +57,26 @@ public class BigDecimalConverter
 
         if (value != null)
         {
+            value = value.trim();
+            if (value.length() > 0)
             {
-                value = value.trim();
-                if (value.length() > 0)
+                try
                 {
-                    try
-                    {
-                        return new BigDecimal(value.trim());
-                    }
-                    catch (NumberFormatException e)
-                    {
-                        throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                       DECIMAL_ID,
-                                       new Object[]{value,new BigDecimal(4815.16).toString(),
-                                                    _MessageUtils.getLabel(facesContext, uiComponent)}), e);
-                    }
+                    return new BigDecimal(value.trim());
+                }
+                catch (NumberFormatException e)
+                {
+                    throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
+                                   DECIMAL_ID,
+                                   new Object[]{value,new BigDecimal(4815.16).toString(),
+                                                _MessageUtils.getLabel(facesContext, uiComponent)}), e);
                 }
             }
         }
         return null;
     }
 
+    @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
     {
         if (facesContext == null)

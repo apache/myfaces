@@ -31,7 +31,6 @@ import javax.faces.context.FacesContext;
  */
 public class FacesELContext extends ELContext
 {
-
     private ELResolver _elResolver;
     private FunctionMapper _functionMapper;
     private VariableMapper _variableMapper;
@@ -40,11 +39,6 @@ public class FacesELContext extends ELContext
     {
         this._elResolver = elResolver;
         putContext(FacesContext.class, facesContext);
-
-        // TODO: decide if we need to implement our own FunctionMapperImpl and
-        // VariableMapperImpl instead of relying on Tomcat's version.
-        // this.functionMapper = new FunctionMapperImpl();
-        // this.variableMapper = new VariableMapperImpl();
     }
 
     @Override

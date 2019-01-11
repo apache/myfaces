@@ -43,6 +43,7 @@ import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlForm;
 import javax.faces.component.html.HtmlInputText;
+import org.apache.myfaces.renderkit.RendererUtils;
 
 import org.apache.myfaces.renderkit.html.util.HttpPartWrapper;
 import org.apache.myfaces.renderkit.html.util.HTML;
@@ -244,15 +245,12 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
 
     protected boolean isDisabled(FacesContext facesContext, UIComponent component)
     {
-        //TODO: overwrite in extended HtmlTextRenderer and check for enabledOnUserRole
         if (component instanceof HtmlInputText)
         {
             return ((HtmlInputText)component).isDisabled();
         }
 
-        return org.apache.myfaces.renderkit.RendererUtils.getBooleanAttribute(component, 
-                HTML.DISABLED_ATTR, false);
-        
+        return RendererUtils.getBooleanAttribute(component, HTML.DISABLED_ATTR, false);
     }
 
     /**

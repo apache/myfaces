@@ -20,9 +20,9 @@
 package org.apache.myfaces.view.facelets.tag.ui;
 
 import javax.faces.component.UIViewRoot;
+import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 import org.junit.Test;
 
 public class ELExprTemplateTestCase extends FaceletTestCase {
@@ -35,7 +35,7 @@ public class ELExprTemplateTestCase extends FaceletTestCase {
         super.setUpServletObjects();
         
         servletContext.addInitParameter(
-                FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS,
+                MyfacesConfig.CACHE_EL_EXPRESSIONS,
                 "always");
     }
 

@@ -36,13 +36,14 @@ import junit.framework.TestCase;
 
 import org.apache.myfaces.test.MyFacesAsserts;
 import org.apache.myfaces.test.TestRunner;
+import org.apache.myfaces.test.mock.MockFacesContext;
 import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 
 public class ViewHandlerTest extends TestCase
 {
-    private MockFacesContext12 _facesContext;
+    private MockFacesContext _facesContext;
     private IMocksControl _mocksControl;
     private ExternalContext _externalContext;
     private TestViewHandler _testimpl;
@@ -52,7 +53,7 @@ public class ViewHandlerTest extends TestCase
     {
         _mocksControl = EasyMock.createControl();
         _externalContext = _mocksControl.createMock(ExternalContext.class);
-        _facesContext = new MockFacesContext12(_externalContext);
+        _facesContext = new MockFacesContext(_externalContext);
         _testimpl = new TestViewHandler();
     }
 

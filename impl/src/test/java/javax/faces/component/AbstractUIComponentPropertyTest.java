@@ -25,6 +25,7 @@ import javax.el.ELContext;
 import javax.el.ValueExpression;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.myfaces.test.mock.MockFacesContext;
 import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
@@ -40,7 +41,7 @@ public abstract class AbstractUIComponentPropertyTest<T>
     private final T[] _testValues;
 
     private IMocksControl _mocksControl;
-    private MockFacesContext12 _facesContext;
+    private MockFacesContext _facesContext;
     private ValueExpression _valueExpression;
     private ELContext _elContext;
     private UIComponent _component;
@@ -56,7 +57,7 @@ public abstract class AbstractUIComponentPropertyTest<T>
     public void setUp() throws Exception
     {
         _mocksControl = EasyMock.createControl();
-        _facesContext = new MockFacesContext12();
+        _facesContext = new MockFacesContext();
         _elContext = _mocksControl.createMock(ELContext.class);
         _facesContext.setELContext(_elContext);
         _valueExpression = _mocksControl.createMock(ValueExpression.class);

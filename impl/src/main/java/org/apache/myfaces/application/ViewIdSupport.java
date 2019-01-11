@@ -20,174 +20,172 @@ package org.apache.myfaces.application;
 
 import java.net.MalformedURLException;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.FacesException;
 
-import javax.faces.application.ViewHandler;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.render.ResponseStateManager;
 import javax.faces.view.ViewDeclarationLanguage;
+import org.apache.myfaces.config.MyfacesConfig;
 
-import org.apache.myfaces.lifecycle.CheckedViewIdsCache;
+import org.apache.myfaces.util.ConcurrentLRUCache;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ExternalContextUtils;
 import org.apache.myfaces.util.LangUtils;
-import org.apache.myfaces.util.StringUtils;
-import org.apache.myfaces.util.ViewProtectionUtils;
+import org.apache.myfaces.util.UrlPatternMatcher;
 
 /**
  * A ViewHandlerSupport implementation for use with standard Java Servlet engines,
  * ie an engine that supports javax.servlet, and uses a standard web.xml file.
  */
-public class DefaultViewHandlerSupport implements ViewHandlerSupport
+public class ViewIdSupport
 {
-    /**
-     * Identifies the FacesServlet mapping in the current request map.
-     */
-    private static final String CACHED_SERVLET_MAPPING =
-        DefaultViewHandlerSupport.class.getName() + ".CACHED_SERVLET_MAPPING";
+    private static final String INSTANCE_KEY = ViewIdSupport.class.getName();
+    
+    private static final String JAVAX_SERVLET_INCLUDE_SERVLET_PATH = "javax.servlet.include.servlet_path";
 
-    private static final Logger log = Logger.getLogger(DefaultViewHandlerSupport.class.getName());
+    private static final String JAVAX_SERVLET_INCLUDE_PATH_INFO = "javax.servlet.include.path_info";
+    
+    /**
+     * Constant defined on javax.portlet.faces.Bridge class that helps to 
+     * define if the current request is a portlet request or not.
+     */
+    private static final String PORTLET_LIFECYCLE_PHASE = "javax.portlet.faces.phase";    
+    
+    private static final Logger log = Logger.getLogger(ViewIdSupport.class.getName());
     
     private static final String VIEW_HANDLER_SUPPORT_SB = "oam.viewhandler.SUPPORT_SB";
     
-    private final String[] _faceletsViewMappings;
-    private final String[] _contextSuffixes;
-    private final String _faceletsContextSufix;
-    private final boolean _initialized;
-    private CheckedViewIdsCache checkedViewIdsCache = null;
+    private MyfacesConfig config;
     
-    public DefaultViewHandlerSupport()
+    private volatile ConcurrentLRUCache<String, Boolean> viewIdExistsCache;
+    private volatile ConcurrentLRUCache<String, String> viewIdDeriveCache;
+    private volatile ConcurrentLRUCache<String, Boolean> viewIdProtectedCache;
+
+    public static ViewIdSupport getInstance(FacesContext facesContext)
     {
-        _faceletsViewMappings = null;
-        _contextSuffixes = null;
-        _faceletsContextSufix = null;
-        _initialized = false;
+        ViewIdSupport instance = (ViewIdSupport)
+                facesContext.getExternalContext().getApplicationMap().get(INSTANCE_KEY);
+        if (instance == null)
+        {
+            instance = new ViewIdSupport(facesContext);
+            facesContext.getExternalContext().getApplicationMap().put(INSTANCE_KEY, instance);
+        }
+
+        return instance;
     }
     
-    public DefaultViewHandlerSupport(FacesContext facesContext)
+    protected ViewIdSupport(FacesContext facesContext)
     {
-        _faceletsViewMappings = getFaceletsViewMappings(facesContext);
-        _contextSuffixes = getContextSuffix(facesContext);
-        _faceletsContextSufix = getFaceletsContextSuffix(facesContext);
-        _initialized = true;
+        config = MyfacesConfig.getCurrentInstance(facesContext);
+
+        int viewIdCacheSize = config.getViewIdCacheSize();
+        if (config.isViewIdExistsCacheEnabled())
+        {
+            viewIdExistsCache = new ConcurrentLRUCache<>((viewIdCacheSize * 4 + 3) / 3, viewIdCacheSize);
+        }
+        if (config.isViewIdDeriveCacheEnabled())
+        {
+            viewIdDeriveCache = new ConcurrentLRUCache<>((viewIdCacheSize * 4 + 3) / 3, viewIdCacheSize);
+        }
+        if (config.isViewIdProtectedCacheEnabled())
+        {
+            viewIdProtectedCache = new ConcurrentLRUCache<>((viewIdCacheSize * 4 + 3) / 3, viewIdCacheSize);
+        }
     }
 
-    @Override
-    public String deriveLogicalViewId(FacesContext context, String viewId)
+    public String deriveLogicalViewId(FacesContext context, String rawViewId)
     {
-        //If no viewId found, don't try to derive it, just continue.
-        if (viewId == null)
-        {
-            return null;
-        }
-
-        FacesServletMapping mapping = getFacesServletMapping(context);
-        if (mapping == null || mapping.isExtensionMapping())
-        {
-            viewId = handleSuffixMapping(context, viewId);
-        }
-        else if (mapping.isExactMapping())
-        {
-            if (viewId.equals(mapping.getExact()))
-            {
-                viewId = handleSuffixMapping(context, viewId + ".jsf");
-            }
-        }
-        else if (mapping.isPrefixMapping())
-        {
-            viewId = handlePrefixMapping(viewId, mapping.getPrefix());
-            
-            // A viewId that is equals to the prefix mapping on servlet mode is
-            // considered invalid, because jsp vdl will use RequestDispatcher and cause
-            // a loop that ends in a exception. Note in portlet mode the view
-            // could be encoded as a query param, so the viewId could be valid.
-            if (viewId != null && viewId.equals(mapping.getPrefix()) &&
-                !ExternalContextUtils.isPortlet(context.getExternalContext()))
-            {
-                throw new InvalidViewIdException();
-            }
-
-            // In JSF 2.3 some changes were done in the VDL to avoid the jsp vdl
-            // RequestDispatcher redirection (only accept viewIds with jsp extension).
-            // If we have this case
-            if (viewId != null && viewId.equals(mapping.getPrefix()))
-            {
-                viewId = handleSuffixMapping(context, viewId+".jsf");
-            }
-        }
-        else if (mapping.getUrlPattern().startsWith(viewId))
-        {
-            throw new InvalidViewIdException(viewId);
-        }
-
-        return viewId; // return null if no physical resource exists
+        return deriveViewId(context, rawViewId, false);
     }
     
-    @Override
     public String deriveViewId(FacesContext context, String viewId)
     {
+        return deriveViewId(context, viewId, true);
+    }
+    
+    protected String deriveViewId(FacesContext context, String rawViewId, boolean checkViewExists)
+    {
         //If no viewId found, don't try to derive it, just continue.
-        if (viewId == null)
+        if (rawViewId == null)
         {
             return null;
         }
-        FacesServletMapping mapping = getFacesServletMapping(context);
-        if (mapping == null || mapping.isExtensionMapping())
-        {
-            viewId = handleSuffixMapping(context, viewId);
-        }
-        else if (mapping.isExactMapping())
-        {
-            if (viewId.equals(mapping.getExact()))
-            {
-                viewId = handleSuffixMapping(context, viewId + ".jsf");
-            }
-        }
-        else if (mapping.isPrefixMapping())
-        {
-            viewId = handlePrefixMapping(viewId, mapping.getPrefix());
 
-            if (viewId != null)
+        String viewId = null;
+        if (viewIdDeriveCache != null)
+        {
+            viewId = viewIdDeriveCache.get(rawViewId);
+        }
+
+        if (viewId == null)
+        {
+            FacesServletMapping mapping = FacesServletMappingUtils.getCurrentRequestFacesServletMapping(context);
+            if (mapping == null || mapping.isExtensionMapping())
             {
+                viewId = handleSuffixMapping(context, rawViewId);
+            }
+            else if (mapping.isExactMapping())
+            {
+                if (rawViewId.equals(mapping.getExact()))
+                {
+                    viewId = handleSuffixMapping(context, rawViewId + ".jsf");
+                }
+            }
+            else if (mapping.isPrefixMapping())
+            {
+                viewId = handlePrefixMapping(rawViewId, mapping.getPrefix());
+
                 // A viewId that is equals to the prefix mapping on servlet mode is
                 // considered invalid, because jsp vdl will use RequestDispatcher and cause
                 // a loop that ends in a exception. Note in portlet mode the view
                 // could be encoded as a query param, so the viewId could be valid.
-                //if (viewId.equals(mapping.getPrefix()) &&
-                //    !ExternalContextUtils.isPortlet(context.getExternalContext()))
-                //{
-                //    throw new InvalidViewIdException();
-                //}
-            
+                if (viewId != null
+                        && viewId.equals(mapping.getPrefix())
+                        && !ExternalContextUtils.isPortlet(context.getExternalContext()))
+                {
+                    throw new InvalidViewIdException();
+                }
+
                 // In JSF 2.3 some changes were done in the VDL to avoid the jsp vdl
                 // RequestDispatcher redirection (only accept viewIds with jsp extension).
                 // If we have this case
                 if (viewId != null && viewId.equals(mapping.getPrefix()))
                 {
-                    viewId = handleSuffixMapping(context, viewId+".jsf");
+                    viewId = handleSuffixMapping(context, viewId + ".jsf");
                 }
-
-                return (checkViewExists(context,viewId) ? viewId : null);
             }
-        }
-        else if (mapping.getUrlPattern().startsWith(viewId))
-        {
-            throw new InvalidViewIdException(viewId);
-        }
-        else
-        {
-            if(viewId != null)
+            else if (mapping.getUrlPattern().startsWith(rawViewId))
             {
-                return (checkViewExists(context,viewId) ? viewId : null);
+                throw new InvalidViewIdException(rawViewId);
+            }
+            
+            if (viewId != null && viewIdDeriveCache != null)
+            {
+                viewIdDeriveCache.put(rawViewId, viewId);
             }
         }
-
-        return viewId;    // return null if no physical resource exists
+        
+        if (viewId != null && checkViewExists)
+        {
+            return isViewExistent(context, viewId) ? viewId : null;
+        }
+        
+        return viewId; // return null if no physical resource exists
     }
-
-    @Override
+    
+    
+    
+    /**
+     * Return a string containing a webapp-relative URL that the user can invoke
+     * to render the specified view.
+     * <p>
+     * URLs and ViewIds are not quite the same; for example a url of "/foo.jsf"
+     * or "/faces/foo.jsp" may be needed to access the view "/foo.jsp". 
+     */
     public String calculateActionURL(FacesContext context, String viewId)
     {
         if (viewId == null || !viewId.startsWith("/"))
@@ -195,7 +193,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             throw new IllegalArgumentException("ViewId must start with a '/': " + viewId);
         }
 
-        FacesServletMapping mapping = getFacesServletMapping(context);
+        FacesServletMapping mapping = FacesServletMappingUtils.getCurrentRequestFacesServletMapping(context);
         ExternalContext externalContext = context.getExternalContext();
         String contextPath = externalContext.getRequestContextPath();
         StringBuilder builder = SharedStringBuilder.get(context, VIEW_HANDLER_SUPPORT_SB);
@@ -206,13 +204,12 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             builder.append(contextPath);
         }
         
-        
         // In JSF 2.3 we could have cases where the viewId can be bound to an url-pattern that is not
         // prefix or suffix, but exact mapping. In this part we need to take the viewId and check if
         // the viewId is bound or not with a mapping.
         if (mapping != null && mapping.isExactMapping())
         {
-            String exactMappingViewId = calculatePrefixedExactMapping(context, viewId);
+            String exactMappingViewId = calculateExactMapping(context, viewId);
             if (exactMappingViewId != null && !exactMappingViewId.isEmpty())
             {
                 // if the current exactMapping already matches the requested viewId -> same view, skip....
@@ -246,9 +243,8 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             else if (mapping.isExtensionMapping())
             {
                 //See JSF 2.0 section 7.5.2 
-                String[] contextSuffixes = _initialized ? _contextSuffixes : getContextSuffix(context); 
                 boolean founded = false;
-                for (String contextSuffix : contextSuffixes)
+                for (String contextSuffix : config.getViewSuffix())
                 {
                     if (viewId.endsWith(contextSuffix))
                     {
@@ -278,12 +274,12 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
                     else if(viewId.lastIndexOf('.') != -1 )
                     {
                         builder.append(viewId.substring(0, viewId.lastIndexOf('.')));
-                        builder.append(contextSuffixes[0]);
+                        builder.append(config.getViewSuffix()[0]);
                     }
                     else
                     {
                         builder.append(viewId);
-                        builder.append(contextSuffixes[0]);
+                        builder.append(config.getViewSuffix()[0]);
                     }
                 }
             }
@@ -300,7 +296,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         
         
         //JSF 2.2 check view protection.
-        if (ViewProtectionUtils.isViewProtected(context, viewId))
+        if (isViewProtected(context, viewId))
         {
             int index = builder.indexOf("?");
             if (index >= 0)
@@ -325,11 +321,10 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         return calculatedActionURL;
     }
     
-    private String calculatePrefixedExactMapping(FacesContext context, String viewId)
+    private String calculateExactMapping(FacesContext context, String viewId)
     {
-        String[] contextSuffixes = _initialized ? _contextSuffixes : getContextSuffix(context); 
         String prefixedExactMapping = null;
-        for (String contextSuffix : contextSuffixes)
+        for (String contextSuffix : config.getViewSuffix())
         {
             if (viewId.endsWith(contextSuffix))
             {
@@ -338,65 +333,6 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             }
         }
         return prefixedExactMapping == null ? viewId : prefixedExactMapping;
-    }
-            
-
-    /**
-     * Read the web.xml file that is in the classpath and parse its internals to
-     * figure out how the FacesServlet is mapped for the current webapp.
-     */
-    protected FacesServletMapping getFacesServletMapping(FacesContext context)
-    {
-        Map<Object, Object> attributes = context.getAttributes();
-
-        // Has the mapping already been determined during this request?
-        FacesServletMapping mapping = (FacesServletMapping) attributes.get(CACHED_SERVLET_MAPPING);
-        if (mapping == null)
-        {
-            ExternalContext externalContext = context.getExternalContext();
-            mapping = FacesServletMappingUtils.calculateFacesServletMapping(
-                    context,
-                    externalContext.getRequestServletPath(),
-                    externalContext.getRequestPathInfo(),
-                    true);
-
-            attributes.put(CACHED_SERVLET_MAPPING, mapping);
-        }
-        return mapping;
-    }
-
-    protected String[] getContextSuffix(FacesContext context)
-    {
-        String defaultSuffix = context.getExternalContext().getInitParameter(ViewHandler.DEFAULT_SUFFIX_PARAM_NAME);
-        if (defaultSuffix == null)
-        {
-            defaultSuffix = ViewHandler.DEFAULT_SUFFIX;
-        }
-        return StringUtils.splitShortString(defaultSuffix, ' ');
-    }
-    
-    protected String getFaceletsContextSuffix(FacesContext context)
-    {
-        String defaultSuffix = context.getExternalContext().getInitParameter(ViewHandler.FACELETS_SUFFIX_PARAM_NAME);
-        if (defaultSuffix == null)
-        {
-            defaultSuffix = ViewHandler.DEFAULT_FACELETS_SUFFIX;
-        }
-        return defaultSuffix;
-    }
-    
-    
-    
-    protected String[] getFaceletsViewMappings(FacesContext context)
-    {
-        String faceletsViewMappings= context.getExternalContext().getInitParameter(
-                ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME);
-        if(faceletsViewMappings == null)    //consider alias facelets.VIEW_MAPPINGS
-        {
-            faceletsViewMappings= context.getExternalContext().getInitParameter("facelets.VIEW_MAPPINGS");
-        }
-        
-        return faceletsViewMappings == null ? null : StringUtils.splitShortString(faceletsViewMappings, ';');
     }
 
     /**
@@ -456,17 +392,14 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
      * </p>
      */
     protected String handleSuffixMapping(FacesContext context, String requestViewId)
-    {
-        String[] faceletsViewMappings = _initialized ? _faceletsViewMappings : getFaceletsViewMappings(context);
-        String[] jspDefaultSuffixes = _initialized ? _contextSuffixes : getContextSuffix(context);
-        
+    {        
         int slashPos = requestViewId.lastIndexOf('/');
         int extensionPos = requestViewId.lastIndexOf('.');
         
         StringBuilder builder = SharedStringBuilder.get(context, VIEW_HANDLER_SUPPORT_SB);
         
         //Try to locate any resource that match with the expected id
-        for (String defaultSuffix : jspDefaultSuffixes)
+        for (String defaultSuffix : config.getViewSuffix())
         {
             builder.setLength(0);
             builder.append(requestViewId);
@@ -482,9 +415,9 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
 
             String candidateViewId = builder.toString();
             
-            if (faceletsViewMappings != null && faceletsViewMappings.length > 0 )
+            if (config.getFaceletsViewMappings() != null && config.getFaceletsViewMappings().length > 0 )
             {
-                for (String mapping : faceletsViewMappings)
+                for (String mapping : config.getFaceletsViewMappings())
                 {
                     if (mapping.startsWith("/"))
                     {
@@ -500,7 +433,7 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
                         builder.append(candidateViewId); 
                         builder.replace(candidateViewId.lastIndexOf('.'), candidateViewId.length(), mapping);
                         String tempViewId = builder.toString();
-                        if (checkViewExists(context, tempViewId))
+                        if (isViewExistent(context, tempViewId))
                         {
                             return tempViewId;
                         }
@@ -509,18 +442,17 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             }
 
             // forced facelets mappings did not match or there were no entries in faceletsViewMappings array
-            if (checkViewExists(context,candidateViewId))
+            if (isViewExistent(context,candidateViewId))
             {
                 return candidateViewId;
             }
-        
         }
         
         //jsp suffixes didn't match, try facelets suffix
-        String faceletsDefaultSuffix = _initialized ? _faceletsContextSufix : this.getFaceletsContextSuffix(context);
+        String faceletsDefaultSuffix = config.getFaceletsViewSuffix();
         if (faceletsDefaultSuffix != null)
         {
-            for (String defaultSuffix : jspDefaultSuffixes)
+            for (String defaultSuffix : config.getViewSuffix())
             {
                 if (faceletsDefaultSuffix.equals(defaultSuffix))
                 {
@@ -544,14 +476,14 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
             }
             
             String candidateViewId = builder.toString();
-            if (checkViewExists(context,candidateViewId))
+            if (isViewExistent(context,candidateViewId))
             {
                 return candidateViewId;
             }
         }
 
         // Otherwise, if a physical resource exists with the name requestViewId let that value be viewId.
-        if (checkViewExists(context,requestViewId))
+        if (isViewExistent(context,requestViewId))
         {
             return requestViewId;
         }
@@ -560,19 +492,21 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         return null;
     }
     
-    protected boolean checkViewExists(FacesContext facesContext, String viewId)
+    /**
+     * Check if a view exists
+     * 
+     * @param facesContext
+     * @param viewId
+     * @return 
+     */
+    public boolean isViewExistent(FacesContext facesContext, String viewId)
     {
-        if (checkedViewIdsCache == null)
-        {
-            checkedViewIdsCache = CheckedViewIdsCache.getInstance(facesContext);
-        }
-        
-        try
+       try
         {
             Boolean resourceExists = null;
-            if (checkedViewIdsCache.isEnabled())
+            if (viewIdExistsCache != null)
             {
-                resourceExists = checkedViewIdsCache.get(viewId);
+                resourceExists = viewIdExistsCache.get(viewId);
             }
 
             if (resourceExists == null)
@@ -589,9 +523,9 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
                     resourceExists = facesContext.getExternalContext().getResource(viewId) != null;
                 }
 
-                if (checkedViewIdsCache.isEnabled())
+                if (viewIdExistsCache != null)
                 {
-                    checkedViewIdsCache.put(viewId, resourceExists);
+                    viewIdExistsCache.put(viewId, resourceExists);
                 }
             }
 
@@ -604,4 +538,111 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         return false;
     }
 
+    /**
+     * <p>
+     * Calculates the view id from the given faces context by the following algorithm
+     * </p>
+     * <ul>
+     * <li>lookup the viewid from the request attribute "javax.servlet.include.path_info"
+     * <li>if null lookup the value for viewid by {@link javax.faces.context.ExternalContext#getRequestPathInfo()}
+     * <li>if null lookup the value for viewid from the request attribute "javax.servlet.include.servlet_path"
+     * <li>if null lookup the value for viewid by {@link javax.faces.context.ExternalContext#getRequestServletPath()}
+     * <li>if null throw a {@link javax.faces.FacesException}
+     * </ul>
+     */
+    public String calculateViewId(FacesContext facesContext)
+    {
+        ExternalContext externalContext = facesContext.getExternalContext();
+        Map<String, Object> requestMap = externalContext.getRequestMap();
+
+        boolean traceEnabled = log.isLoggable(Level.FINEST);
+        
+        String viewId = null;
+        if (requestMap.containsKey(PORTLET_LIFECYCLE_PHASE))
+        {
+            viewId = (String) externalContext.getRequestPathInfo();
+        }
+        else
+        {
+            viewId = (String) requestMap.get(JAVAX_SERVLET_INCLUDE_PATH_INFO);
+            if (viewId != null)
+            {
+                if (traceEnabled)
+                {
+                    log.finest("Calculated viewId '" + viewId + "' from request param '"
+                            + JAVAX_SERVLET_INCLUDE_PATH_INFO + '\'');
+                }
+            }
+            else
+            {
+                viewId = externalContext.getRequestPathInfo();
+                if (viewId != null && traceEnabled)
+                {
+                    log.finest("Calculated viewId '" + viewId + "' from request path info");
+                }
+            }
+    
+            if (viewId == null)
+            {
+                viewId = (String) requestMap.get(JAVAX_SERVLET_INCLUDE_SERVLET_PATH);
+                if (viewId != null && traceEnabled)
+                {
+                    log.finest("Calculated viewId '" + viewId + "' from request param '"
+                            + JAVAX_SERVLET_INCLUDE_SERVLET_PATH + '\'');
+                }
+            }
+        }
+        
+        if (viewId == null)
+        {
+            viewId = externalContext.getRequestServletPath();
+            if (viewId != null && traceEnabled)
+            {
+                log.finest("Calculated viewId '" + viewId + "' from request servlet path");
+            }
+        }
+
+        if (viewId == null)
+        {
+            throw new FacesException("Could not determine view id.");
+        }
+
+        return viewId;
+    }
+    
+    
+    
+    public boolean isViewProtected(FacesContext context, String viewId)
+    {
+        Boolean protectedView = null;
+        if (viewIdProtectedCache != null)
+        {
+            protectedView = viewIdProtectedCache.get(viewId);
+        }
+        
+        if (protectedView == null)
+        {
+            protectedView = false;
+            
+            Set<String> protectedViews = context.getApplication().getViewHandler().getProtectedViewsUnmodifiable();
+            if (!protectedViews.isEmpty())
+            {
+                for (String urlPattern : protectedViews)
+                {
+                    if (UrlPatternMatcher.match(viewId, urlPattern))
+                    {
+                        protectedView = true;
+                        break;
+                    }
+                }
+            }
+            
+            if (viewIdProtectedCache != null)
+            {
+                viewIdProtectedCache.put(viewId, protectedView);
+            }
+        }
+         
+        return protectedView;
+    }
 }

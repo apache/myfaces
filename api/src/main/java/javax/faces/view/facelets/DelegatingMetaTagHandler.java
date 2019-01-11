@@ -19,7 +19,8 @@
 package javax.faces.view.facelets;
 
 import java.io.IOException;
-
+import javax.el.ELException;
+import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.component.UIComponent;
 
@@ -37,22 +38,23 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler
         super(config);
         
         delegateFactory = (TagHandlerDelegateFactory)
-            FactoryFinder.getFactory (FactoryFinder.TAG_HANDLER_DELEGATE_FACTORY);
-        binding = getAttribute ("binding");
-        disabled = getAttribute ("disabled");
+            FactoryFinder.getFactory(FactoryFinder.TAG_HANDLER_DELEGATE_FACTORY);
+        binding = getAttribute("binding");
+        disabled = getAttribute("disabled");
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
         getTagHandlerDelegate().apply(ctx, parent);
     }
 
-    public void applyNextHandler(FaceletContext ctx, UIComponent c) throws IOException
+    public void applyNextHandler(FaceletContext ctx, UIComponent c) throws IOException, FacesException, ELException
     {
-        nextHandler.apply (ctx, c);
+        nextHandler.apply(ctx, c);
     }
 
     public TagAttribute getBinding()
@@ -67,7 +69,7 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler
 
     public TagAttribute getTagAttribute(String localName)
     {
-        return super.getAttribute (localName);
+        return super.getAttribute(localName);
     }
 
     public String getTagId()
@@ -85,9 +87,10 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler
         return disabled.getBoolean (ctx);
     }
 
+    @Override
     public void setAttributes(FaceletContext ctx, Object instance)
     {
-        super.setAttributes (ctx, instance);
+        super.setAttributes(ctx, instance);
     }
 
     /**

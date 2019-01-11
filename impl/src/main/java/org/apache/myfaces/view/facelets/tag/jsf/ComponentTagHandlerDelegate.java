@@ -19,12 +19,9 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,7 +38,6 @@ import javax.faces.component.ValueHolder;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
@@ -59,6 +55,7 @@ import javax.faces.view.facelets.ValidatorHandler;
 
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
+import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.ComponentState;
 import org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy;
@@ -84,9 +81,6 @@ import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
 public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 {
     private final static Logger log = Logger.getLogger(ComponentTagHandlerDelegate.class.getName());
-    
-    private static final Set<VisitHint> VISIT_HINTS_DYN_REFRESH = Collections.unmodifiableSet( 
-            EnumSet.of(VisitHint.SKIP_ITERATION));
 
     private final ComponentHandler _delegate;
 
@@ -257,7 +251,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                     FaceletDynamicComponentRefreshTransientBuildEvent.DYNAMIC_COMPONENT_BINDING_NEEDS_REFRESH))
             {
                 VisitContext visitContext = (VisitContext) mctx.getVisitContextFactory().
-                    getVisitContext(facesContext, null, VISIT_HINTS_DYN_REFRESH);
+                    getVisitContext(facesContext, null, MyFacesVisitHints.SET_SKIP_ITERATION);
                 c.visitTree(visitContext, PublishFaceletDynamicComponentRefreshTransientBuildCallback.INSTANCE);
             }
             

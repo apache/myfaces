@@ -18,16 +18,8 @@
  */
 package org.apache.myfaces.util;
 
-import java.util.Set;
-import javax.faces.context.FacesContext;
-
-/**
- *
- * @since 2.2
- */
-public class ViewProtectionUtils
+public class UrlPatternMatcher
 {
-    
     /**
      * NOTE: Taken from org.apache.catalina.deploy.SecurityConstraint
      * 
@@ -39,7 +31,7 @@ public class ViewProtectionUtils
      *  (must start with '/')
      * @param pattern URL pattern to be compared against
      */
-    public static boolean matchPattern(String path, String pattern)
+    public static boolean match(String path, String pattern)
     {
         // Normalize the argument strings
         if ((path == null) || (path.length() == 0))
@@ -107,25 +99,5 @@ public class ViewProtectionUtils
         return (false);
     }
     
-    public static boolean isViewProtected(FacesContext context, String viewId)
-    {
-        Set<String> protectedViews = context.getApplication().getViewHandler().getProtectedViewsUnmodifiable();
-        if (!protectedViews.isEmpty())
-        {
-            boolean matchFound = false;
-            for (String urlPattern : protectedViews)
-            {
-                if (ViewProtectionUtils.matchPattern(viewId, urlPattern))
-                {
-                    matchFound = true;
-                    break;
-                }
-            }
-            return matchFound;
-        }
-        else
-        {
-            return false;
-        }
-    }
+
 }

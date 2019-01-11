@@ -26,7 +26,7 @@ import javax.faces.context.FacesContext;
 
 /**
  * Mock for a JSF 2.0 ViewHandler.
- * This ViewHandler is used by MockApplication20.
+ * This ViewHandler is used by MockApplication.
  * 
  * @author Jakob Korherr (latest modification by $Author$)
  * @version $Revision$ $Date$

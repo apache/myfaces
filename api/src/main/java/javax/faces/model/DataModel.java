@@ -50,12 +50,10 @@ import java.util.NoSuchElementException;
 public abstract class DataModel<E> implements Iterable<E>
 {
     private final static DataModelListener[] EMPTY_DATA_MODEL_LISTENER = new DataModelListener[]{};
-    // FIELDS
+
     private List<DataModelListener> _listeners;
-    
     private DataModelListener[] _cachedListenersArray = null;
 
-    // METHODS
     public void addDataModelListener(DataModelListener listener)
     {
         if (listener == null)
@@ -138,6 +136,7 @@ public abstract class DataModel<E> implements Iterable<E>
      * 
      * @since 2.0
      */
+    @Override
     public Iterator<E> iterator()
     {
         return new DataModelIterator();
@@ -183,29 +182,28 @@ public abstract class DataModel<E> implements Iterable<E>
             setRowIndex(nextRowIndex);
         }
         
+        @Override
         public boolean hasNext()
         {
             //row count could be unknown, like in ResultSetDataModel
             return isRowAvailable();
         }
 
+        @Override
         public E next()
         {
-            // TODO: Go to the EG with this, we need a getRowData(int) for thread safety.
-            //       Or the spec needs to specify that the iterator alters the selected row explicitely
             if (hasNext())
             {
-                // TODO: Double-check if this cast is safe. It should be...
-                E data = (E) getRowData();
-                nextRowIndex++;
-                setRowIndex(nextRowIndex);
-                return data; 
-                
+                throw new NoSuchElementException("Couldn't find any element in DataModel at index " + nextRowIndex);
             }
-            
-            throw new NoSuchElementException("Couldn't find any element in DataModel at index " + nextRowIndex);
+
+            E data = (E) getRowData();
+            nextRowIndex++;
+            setRowIndex(nextRowIndex);
+            return data; 
         }
 
+        @Override
         public void remove()
         {
             throw new UnsupportedOperationException();

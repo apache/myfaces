@@ -25,12 +25,10 @@ import javax.ejb.EJB;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 
-
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Field;
 
-// TODO @EJBs
 public class AllAnnotationLifecycleProvider extends ResourceAnnotationLifecycleProvider
 {
 
@@ -54,7 +52,7 @@ public class AllAnnotationLifecycleProvider extends ResourceAnnotationLifecycleP
             EJB annotation =  method.getAnnotation(EJB.class);
             lookupMethodResource(context, instance, method, annotation.name());
         }
-        // TODO where i find WebServiceRef?
+        // not implemented since 1.x, let's ignore it for now
         /*if (method.isAnnotationPresent(WebServiceRef.class)) {
             WebServiceRef annotation =
                 (WebServiceRef) method.getAnnotation(WebServiceRef.class);
