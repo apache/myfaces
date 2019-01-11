@@ -167,6 +167,7 @@
         <module>exactMapping</module>
         <module>autoLookupExpressionFactoryWithoutJSP</module>
         <module>protectedViews</module>
+        <module>ajax</module>
     </modules>
 
     <profiles>
