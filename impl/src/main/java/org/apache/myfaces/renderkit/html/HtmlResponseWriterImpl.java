@@ -56,54 +56,6 @@ public class HtmlResponseWriterImpl extends ResponseWriter
     private static final String APPLICATION_XML_CONTENT_TYPE = "application/xml";
     private static final String TEXT_XML_CONTENT_TYPE = "text/xml";
 
-    /**
-     * The writer used as output, or in other words, the one passed on the constructor
-     */
-    private Writer _outputWriter;
-    
-    /**
-     * The writer we are using to store data.
-     */
-    private Writer _currentWriter;
-    
-    /**
-     * The writer used to buffer script and style content
-     */
-    private StreamCharBuffer _buffer;
-    
-    private String _contentType;
-    
-    private String _writerContentTypeMode;
-    
-    /**
-     * This var prevents check if the contentType is for xhtml multiple times.
-     */
-    private boolean _isXhtmlContentType;
-    
-    /**
-     * Indicate the current response writer should not close automatically html elements
-     * and let the writer close them.
-     */
-    private boolean _useStraightXml;
-    
-    private String _characterEncoding;
-    private boolean _wrapScriptContentWithXmlCommentTag;
-    private boolean _isUTF8;
-    
-    private String _startElementName;
-    private boolean _isInsideScript = false;
-    private boolean _isStyle = false;
-    private Boolean _isTextArea;
-    private UIComponent _startElementUIComponent;
-    private boolean _startTagOpen;
-    private Map<String, Object> _passThroughAttributesMap;
-    private FacesContext _facesContext;
-
-    private boolean _cdataOpen;
-    
-    private List<String> _startedChangedElements;
-    private List<Integer> _startedElementsCount;
-
     private static final String CDATA_START = "<![CDATA[ \n";
     private static final String CDATA_START_NO_LINE_RETURN = "<![CDATA[";
     private static final String COMMENT_START = "<!--\n";
@@ -193,6 +145,55 @@ public class HtmlResponseWriterImpl extends ResponseWriter
       EMPTY_ELEMENT_ARR['p'] = P_NAMES;
       EMPTY_ELEMENT_ARR['P'] = P_NAMES;
     }    
+    
+
+    /**
+     * The writer used as output, or in other words, the one passed on the constructor
+     */
+    private Writer _outputWriter;
+    
+    /**
+     * The writer we are using to store data.
+     */
+    private Writer _currentWriter;
+    
+    /**
+     * The writer used to buffer script and style content
+     */
+    private StreamCharBuffer _buffer;
+    
+    private String _contentType;
+    
+    private String _writerContentTypeMode;
+    
+    /**
+     * This var prevents check if the contentType is for xhtml multiple times.
+     */
+    private boolean _isXhtmlContentType;
+    
+    /**
+     * Indicate the current response writer should not close automatically html elements
+     * and let the writer close them.
+     */
+    private boolean _useStraightXml;
+    
+    private String _characterEncoding;
+    private boolean _wrapScriptContentWithXmlCommentTag;
+    private boolean _isUTF8;
+    
+    private String _startElementName;
+    private boolean _isInsideScript = false;
+    private boolean _isStyle = false;
+    private Boolean _isTextArea;
+    private UIComponent _startElementUIComponent;
+    private boolean _startTagOpen;
+    private Map<String, Object> _passThroughAttributesMap;
+    private FacesContext _facesContext;
+
+    private boolean _cdataOpen;
+    
+    private List<String> _startedChangedElements;
+    private List<Integer> _startedElementsCount;
     
     public HtmlResponseWriterImpl(Writer writer, String contentType, String characterEncoding)
     {
@@ -326,19 +327,18 @@ public class HtmlResponseWriterImpl extends ResponseWriter
         _startElementName = name;
         _startElementUIComponent = uiComponent;
         _startTagOpen = true;
-        _passThroughAttributesMap = (_startElementUIComponent != null) ?
-            _startElementUIComponent.getPassThroughAttributes(false) : null;
+        _passThroughAttributesMap = _startElementUIComponent != null
+                ? _startElementUIComponent.getPassThroughAttributes(false)
+                : null;
 
         if (_passThroughAttributesMap != null)
         {
-            Object value = _passThroughAttributesMap.get(
-                Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
+            Object value = _passThroughAttributesMap.get(Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY);
             if (value != null)
             {
                 if (value instanceof ValueExpression)
                 {
-                    value = ((ValueExpression)value).getValue(
-                        getFacesContext().getELContext());
+                    value = ((ValueExpression)value).getValue(getFacesContext().getELContext());
                 }
                 String elementName = value.toString().trim();
                 
@@ -453,34 +453,13 @@ public class HtmlResponseWriterImpl extends ResponseWriter
             else
             {
                 _currentWriter.write('>');
-                /*
-                if(isScript(_startElementName))
-                {
-                    if(HtmlRendererUtils.isXHTMLContentType(_contentType))
-                    {
-                        if(HtmlRendererUtils.isAllowedCdataSection(FacesContext.getCurrentInstance()))
-                        {
-                            _currentWriter.write(CDATA_START);
-                        }
-                    }
-                    else
-                    {
-                        _currentWriter.write(COMMENT_START);
-                    }
-                }*/
                 if (isScript(_startElementName) && (_isXhtmlContentType || _wrapScriptContentWithXmlCommentTag))
                 {
-                    //_bufferedWriter.reset();
-                    //_currentWriter = _bufferedWriter;
-                    getInternalBuffer(true);
-                    _currentWriter = getInternalBuffer().getWriter();
+                    _currentWriter = getInternalBuffer(true).getWriter();
                 }                
                 if (isStyle(_startElementName) && _isXhtmlContentType)
                 {
-                    //_bufferedWriter.reset();
-                    //_currentWriter = _bufferedWriter;
-                    getInternalBuffer(true);
-                    _currentWriter = getInternalBuffer().getWriter();
+                    _currentWriter = getInternalBuffer(true).getWriter();
                 }
             }
             _startTagOpen = false;
@@ -577,13 +556,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
         {
             if (!_useStraightXml && isEmptyElement(elementName))
             {
-           /*
-           Should this be here?  It warns even when you have an x:htmlTag value="br", it should just close.
 
-                if (log.isWarnEnabled())
-                    log.warn("HTML nesting warning on closing " + name + 
-                        ": This element must not contain nested elements or text in HTML");
-                    */
             }
             else
             {
@@ -771,25 +744,6 @@ public class HtmlResponseWriterImpl extends ResponseWriter
 
     private void writeEndTag(String name) throws IOException
     {
-        /*
-        if(isScript(name)) 
-        {
-            if(HtmlRendererUtils.isXHTMLContentType(_contentType))
-            {
-                if(HtmlRendererUtils.isAllowedCdataSection(FacesContext.getCurrentInstance()))
-                {
-                    _currentWriter.write(CDATA_COMMENT_END);
-                }
-            }
-            else
-            {
-                _currentWriter.write(COMMENT_COMMENT_END);
-            }
-            
-            // reset _isInsideScript
-            _isInsideScript = Boolean.FALSE;
-        }*/
-        
         if (isScript(name))
         {
             // reset _isInsideScript
@@ -973,8 +927,6 @@ public class HtmlResponseWriterImpl extends ResponseWriter
 
     private boolean isScriptOrStyle()
     {
-        //initializeStartedTagInfo();
-
         return _isStyle || _isInsideScript;
     }
     
@@ -1007,30 +959,16 @@ public class HtmlResponseWriterImpl extends ResponseWriter
     {
         initializeStartedTagInfo();
 
-        return _isTextArea != null && _isTextArea.booleanValue();
+        return _isTextArea != null && _isTextArea;
     }
 
     private void initializeStartedTagInfo()
     {
-        if(_startElementName != null)
+        if (_startElementName != null)
         {
-            /*
-            if(_isStyle == null)
+            if (_isTextArea == null)
             {
-                if(_startElementName.equalsIgnoreCase(org.apache.myfaces.shared.renderkit.html.HTML.STYLE_ELEM))
-                {
-                    _isStyle = Boolean.TRUE;
-                    _isTextArea = Boolean.FALSE;
-                }
-                else
-                {
-                    _isStyle = Boolean.FALSE;
-                }
-            }*/
-
-            if(_isTextArea == null)
-            {
-                if(_startElementName.equalsIgnoreCase(HTML.TEXTAREA_ELEM))
+                if (_startElementName.equalsIgnoreCase(HTML.TEXTAREA_ELEM))
                 {
                     _isTextArea = Boolean.TRUE;
                 }
@@ -1045,11 +983,8 @@ public class HtmlResponseWriterImpl extends ResponseWriter
     @Override
     public ResponseWriter cloneWithWriter(Writer writer)
     {
-        HtmlResponseWriterImpl newWriter
-                = new HtmlResponseWriterImpl(writer, getContentType(), getCharacterEncoding(), 
-                        _wrapScriptContentWithXmlCommentTag, _writerContentTypeMode);
-        //newWriter._writeDummyForm = _writeDummyForm;
-        //newWriter._dummyFormParams = _dummyFormParams;
+        HtmlResponseWriterImpl newWriter = new HtmlResponseWriterImpl(writer, getContentType(),
+                getCharacterEncoding(), _wrapScriptContentWithXmlCommentTag, _writerContentTypeMode);
         return newWriter;
     }
 
