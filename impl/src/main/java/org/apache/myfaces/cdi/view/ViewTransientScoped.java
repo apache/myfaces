@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.cdi.scope;
+package org.apache.myfaces.cdi.view;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

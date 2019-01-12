@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.cdi.scope;
+package org.apache.myfaces.cdi;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -24,18 +24,18 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
-public class ViewTransientScopedExtension implements Extension
+public class FacesScopeExtension implements Extension
 {
-    private ViewTransientScopedContextImpl viewTransientScopedContext;
+    private FacesScopeContextImpl facesScopeContext;
 
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
     {
-        event.addScope(ViewTransientScoped.class, true, false);
+        event.addScope(FacesScoped.class, true, false);
     }
     
     void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
     {
-        viewTransientScopedContext = new ViewTransientScopedContextImpl(beanManager);
-        afterBeanDiscovery.addContext(viewTransientScopedContext);
+        facesScopeContext = new FacesScopeContextImpl(beanManager);
+        afterBeanDiscovery.addContext(facesScopeContext);
     }
 }

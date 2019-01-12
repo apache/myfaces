@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.myfaces.cdi.scope;
+package org.apache.myfaces.cdi;
 
 import javax.faces.context.FacesContext;
 

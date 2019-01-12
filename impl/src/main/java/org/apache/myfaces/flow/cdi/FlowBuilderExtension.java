@@ -41,7 +41,7 @@ import javax.faces.flow.builder.FlowDefinition;
  *
  * @author Leonardo Uribe
  */
-public class FlowBuilderCDIExtension implements Extension
+public class FlowBuilderExtension implements Extension
 {
     private List<Producer<Flow>> flowProducers = new ArrayList<Producer<Flow>>();
 

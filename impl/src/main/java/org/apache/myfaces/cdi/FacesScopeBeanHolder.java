@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.cdi.scope;
+package org.apache.myfaces.cdi;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,16 +25,18 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 
+
 /**
- * Stateless class to deal with ViewTransientScope. This scope depends on the current FacesContext.
+ * Stateless class to deal with Faces Scope. This scope depends on the current FacesContext.
  */
-public class ViewTransientScopeBeanHolder
+public class FacesScopeBeanHolder
 {
-    public static final String VIEW_TRANSIENT_SCOPE_MAP = "oam.VIEW_TRANSIENT_SCOPE_MAP";
     
-    public static final String VIEW_TRANSIENT_SCOPE_MAP_INFO = "oam.VIEW_TRANSIENT_SCOPE_MAP_INFO";
+    public static final String FACES_SCOPE_MAP = "oam.FACES_SCOPE_MAP";
     
-    public ViewTransientScopeBeanHolder()
+    public static final String FACES_SCOPE_MAP_INFO = "oam.FACES_SCOPE_MAP_INFO";
+    
+    public FacesScopeBeanHolder()
     {
     }
     
@@ -42,15 +44,19 @@ public class ViewTransientScopeBeanHolder
     {
     }
     
+    /**
+     * This method will return the ContextualStorage or create a new one
+     * if no one is yet assigned to the current flowClientWindowId.
+     * @param beanManager we need the CDI {@link BeanManager} for serialisation.
+     * @param facesContext the current FacesContext instance
+     */
     public static ContextualStorage getContextualStorage(BeanManager beanManager, FacesContext facesContext)
     {
-        ContextualStorage contextualStorage = (ContextualStorage) 
-                facesContext.getViewRoot().getTransientStateHelper().getTransient(VIEW_TRANSIENT_SCOPE_MAP);
+        ContextualStorage contextualStorage = (ContextualStorage) facesContext.getAttributes().get(FACES_SCOPE_MAP);
         if (contextualStorage == null)
         {
             contextualStorage = new ContextualStorage(beanManager, false, false);
-            facesContext.getViewRoot().getTransientStateHelper()
-                    .putTransient(VIEW_TRANSIENT_SCOPE_MAP, contextualStorage);
+            facesContext.getAttributes().put(FACES_SCOPE_MAP, contextualStorage);
         }
 
         return contextualStorage;
@@ -58,22 +64,20 @@ public class ViewTransientScopeBeanHolder
     
     public ContextualStorage getContextualStorageNoCreate(BeanManager beanManager, FacesContext facesContext)
     {
-        return (ContextualStorage) facesContext.getViewRoot()
-                .getTransientStateHelper().getTransient(VIEW_TRANSIENT_SCOPE_MAP);
+        return (ContextualStorage) facesContext.getAttributes().get(FACES_SCOPE_MAP);
     }
 
-    public Map<Object, Object> getFacesScopeMap(
-        BeanManager beanManager, FacesContext facesContext, boolean create)
+    public Map<Object, Object> getFacesScopeMap(BeanManager beanManager, FacesContext facesContext, boolean create)
     {
         Map<Object, Object> map = null;
         if (create)
         {
             ContextualStorage contextualStorage = getContextualStorage(beanManager, facesContext);
-            ContextualInstanceInfo info = contextualStorage.getStorage().get(VIEW_TRANSIENT_SCOPE_MAP_INFO);
+            ContextualInstanceInfo info = contextualStorage.getStorage().get(FACES_SCOPE_MAP_INFO);
             if (info == null)
             {
                 info = new ContextualInstanceInfo<Object>();
-                contextualStorage.getStorage().put(VIEW_TRANSIENT_SCOPE_MAP_INFO, info);
+                contextualStorage.getStorage().put(FACES_SCOPE_MAP_INFO, info);
             }
             map = (Map<Object, Object>) info.getContextualInstance();
             if (map == null)
@@ -87,7 +91,7 @@ public class ViewTransientScopeBeanHolder
             ContextualStorage contextualStorage = getContextualStorageNoCreate(beanManager, facesContext);
             if (contextualStorage != null)
             {
-                ContextualInstanceInfo info = contextualStorage.getStorage().get(VIEW_TRANSIENT_SCOPE_MAP_INFO);
+                ContextualInstanceInfo info = contextualStorage.getStorage().get(FACES_SCOPE_MAP_INFO);
                 if (info != null)
                 {
                     map = (Map<Object, Object>) info.getContextualInstance();
@@ -101,22 +105,32 @@ public class ViewTransientScopeBeanHolder
      *
      * This method will replace the storageMap and with
      * a new empty one.
-     * 
-     * @param facesContext
+     * This method can be used to properly destroy the WindowBeanHolder beans
+     * without having to sync heavily. Any
+     * {@link javax.enterprise.inject.spi.Bean#destroy(Object, javax.enterprise.context.spi.CreationalContext)}
+     * should be performed on the returned old storage map.
      * @return the old storageMap.
      */
     public ContextualStorage forceNewStorage(FacesContext facesContext)
     {
-        return (ContextualStorage) facesContext.getViewRoot()
-                .getTransientStateHelper().putTransient(VIEW_TRANSIENT_SCOPE_MAP, null);
+        return (ContextualStorage) facesContext.getAttributes().remove(FACES_SCOPE_MAP);
     }
 
+    /**
+     * This method properly destroys all current &#064;FacesScoped beans
+     * of the active session and also prepares the storage for new beans.
+     * It will automatically get called when the session context closes
+     * but can also get invoked manually, e.g. if a user likes to get rid
+     * of all it's &#064;FacesScoped beans.
+     */
     public void destroyBeans(FacesContext facesContext)
     {
-        ContextualStorage oldWindowContextStorages = forceNewStorage(facesContext);
-        if (oldWindowContextStorages != null)
+        // we replace the old windowBeanHolder beans with a new storage Map
+        // an afterwards destroy the old Beans without having to care about any syncs.
+        ContextualStorage oldStorages = forceNewStorage(facesContext);
+        if (oldStorages != null)
         {
-            ViewTransientScopedContextImpl.destroyAllActive(oldWindowContextStorages);
+            FacesScopeContextImpl.destroyAllActive(oldStorages);
         }
     }
 

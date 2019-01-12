@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.cdi.scope;
+package org.apache.myfaces.cdi.view;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
@@ -35,24 +35,24 @@ import org.apache.myfaces.cdi.util.ContextualStorage;
  * Minimal implementation of FacesScope.
  */
 @Typed()
-public class FacesScopedContextImpl implements Context
+public class ViewTransientScopeContextImpl implements Context
 {
 
     private BeanManager beanManager;
     
-    public FacesScopedContextImpl(BeanManager beanManager)
+    public ViewTransientScopeContextImpl(BeanManager beanManager)
     {
         this.beanManager = beanManager;
     }
     
-    protected FacesScopeBeanHolder getFacesScopeBeanHolder()
+    protected ViewTransientScopeBeanHolder getViewTransientScopeBeanHolder()
     {
-        return getFacesScopeBeanHolder(FacesContext.getCurrentInstance());
+        return getViewTransientScopeBeanHolder(FacesContext.getCurrentInstance());
     }
     
-    protected FacesScopeBeanHolder getFacesScopeBeanHolder(FacesContext facesContext)
+    protected ViewTransientScopeBeanHolder getViewTransientScopeBeanHolder(FacesContext facesContext)
     {
-        return new FacesScopeBeanHolder();
+        return new ViewTransientScopeBeanHolder();
     }
     
     /**
@@ -70,18 +70,19 @@ public class FacesScopedContextImpl implements Context
 
         if (createIfNotExist)
         {
-            return getFacesScopeBeanHolder(facesContext).getContextualStorage(beanManager, facesContext);
+            return getViewTransientScopeBeanHolder(facesContext).getContextualStorage(beanManager, facesContext);
         }
         else
         {
-            return getFacesScopeBeanHolder(facesContext).getContextualStorageNoCreate(beanManager, facesContext);
+            return getViewTransientScopeBeanHolder(facesContext).getContextualStorageNoCreate(
+                    beanManager, facesContext);
         }
     }
 
     @Override
     public Class<? extends Annotation> getScope()
     {
-        return FacesScoped.class;
+        return ViewTransientScoped.class;
     }
 
     @Override
@@ -93,6 +94,10 @@ public class FacesScopedContextImpl implements Context
     public boolean isActive(FacesContext facesContext)
     {
         if (facesContext == null)
+        {
+            return false;
+        }
+        else if (facesContext.getViewRoot() == null)
         {
             return false;
         }
@@ -193,7 +198,7 @@ public class FacesScopedContextImpl implements Context
         Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
         for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : contextMap.entrySet())
         {
-            if (!FacesScopeBeanHolder.FACES_SCOPE_MAP_INFO.equals(entry.getKey()))
+            if (!ViewTransientScopeBeanHolder.VIEW_TRANSIENT_SCOPE_MAP_INFO.equals(entry.getKey()))
             {
                 Contextual bean = storage.getBean(entry.getKey());
 

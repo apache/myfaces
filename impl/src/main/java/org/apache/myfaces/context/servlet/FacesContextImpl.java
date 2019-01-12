@@ -40,7 +40,7 @@ import javax.faces.render.RenderKitFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import org.apache.myfaces.cdi.scope.FacesScopeProvider;
+import org.apache.myfaces.cdi.FacesScopeProvider;
 
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.context.ReleasableFacesContextFactory;

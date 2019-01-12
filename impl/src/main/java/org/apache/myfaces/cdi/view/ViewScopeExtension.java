@@ -16,26 +16,37 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.cdi.scope;
+package org.apache.myfaces.cdi.view;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
+import javax.faces.view.ViewScoped;
 
-public class FacesScopedExtension implements Extension
+/**
+ * Handle ViewScope related features.
+ * 
+ * @author Leonardo Uribe
+ */
+public class ViewScopeExtension implements Extension
 {
-    private FacesScopedContextImpl facesScopeContext;
+    private ViewScopeContextImpl viewScopeContext;
 
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
     {
-        event.addScope(FacesScoped.class, true, false);
+        event.addScope(ViewScoped.class, true, true);
+        // Register ViewScopeBeanHolder as a bean with CDI annotations, so the system
+        // can take it into account, and use it later when necessary.
+        AnnotatedType bean = beanManager.createAnnotatedType(ViewScopeBeanHolder.class);
+        event.addAnnotatedType(bean, bean.getJavaClass().getName());
     }
     
     void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
     {
-        facesScopeContext = new FacesScopedContextImpl(beanManager);
-        afterBeanDiscovery.addContext(facesScopeContext);
+        viewScopeContext = new ViewScopeContextImpl(beanManager);
+        afterBeanDiscovery.addContext(viewScopeContext);
     }
 }

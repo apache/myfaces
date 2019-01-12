@@ -34,13 +34,13 @@ import org.apache.myfaces.flow.FlowReference;
  *
  * @author Leonardo Uribe
  */
-public class FlowScopeCDIExtension implements Extension
+public class FlowScopeExtension implements Extension
 {
     private FlowScopedContextImpl flowScopedContext;
     
     private Map<Class, FlowReference> flowBeanReferences;
     
-    public FlowScopeCDIExtension()
+    public FlowScopeExtension()
     {
         flowBeanReferences = new ConcurrentHashMap<Class, FlowReference>();
     }

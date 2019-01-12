@@ -51,7 +51,7 @@ public class FlowBuilderFactoryBean
     private List<Flow> flowDefinitions = null;
 
     @Inject
-    private FlowBuilderCDIExtension flowBuilderExtension;
+    private FlowBuilderExtension flowBuilderExtension;
 
     public FlowBuilderFactoryBean()
     {

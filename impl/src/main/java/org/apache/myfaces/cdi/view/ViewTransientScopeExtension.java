@@ -20,33 +20,22 @@ package org.apache.myfaces.cdi.view;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
-import javax.faces.view.ViewScoped;
 
-/**
- * Handle ViewScope related features.
- * 
- * @author Leonardo Uribe
- */
-public class ViewScopeContextExtension implements Extension
+public class ViewTransientScopeExtension implements Extension
 {
-    private ViewScopeContextImpl viewScopeContext;
+    private ViewTransientScopeContextImpl viewTransientScopedContext;
 
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
     {
-        event.addScope(ViewScoped.class, true, true);
-        // Register ViewScopeBeanHolder as a bean with CDI annotations, so the system
-        // can take it into account, and use it later when necessary.
-        AnnotatedType bean = beanManager.createAnnotatedType(ViewScopeBeanHolder.class);
-        event.addAnnotatedType(bean, bean.getJavaClass().getName());
+        event.addScope(ViewTransientScoped.class, true, false);
     }
     
     void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
     {
-        viewScopeContext = new ViewScopeContextImpl(beanManager);
-        afterBeanDiscovery.addContext(viewScopeContext);
+        viewTransientScopedContext = new ViewTransientScopeContextImpl(beanManager);
+        afterBeanDiscovery.addContext(viewTransientScopedContext);
     }
 }
