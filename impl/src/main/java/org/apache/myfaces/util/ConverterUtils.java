@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.convert;
+package org.apache.myfaces.util;
 
 
 /**

@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import org.apache.myfaces.convert.ConverterUtils;
+import org.apache.myfaces.util.ConverterUtils;
 
 import javax.faces.validator.LengthValidator;
 import javax.faces.validator.Validator;
