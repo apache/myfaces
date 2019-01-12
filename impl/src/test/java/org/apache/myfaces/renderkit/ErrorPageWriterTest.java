@@ -30,7 +30,7 @@ import junit.framework.TestSuite;
 
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.application.viewstate.StateUtils;
-import org.apache.myfaces.util.serial.DefaultSerialFactory;
+import org.apache.myfaces.util.DefaultSerialFactory;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;

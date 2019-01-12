@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.util.serial;
+package org.apache.myfaces.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,19 +24,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
-import org.apache.myfaces.util.MyFacesObjectInputStream;
-
-public class DefaultSerialFactory implements SerialFactory
+public interface SerialFactory
 {
-
-    public ObjectOutputStream getObjectOutputStream(OutputStream outputStream) throws IOException
-    {
-        return new ObjectOutputStream(outputStream);
-    }
-
-    public ObjectInputStream getObjectInputStream(InputStream inputStream) throws IOException
-    {
-        return new MyFacesObjectInputStream(inputStream);
-    }
-    
+    ObjectOutputStream getObjectOutputStream(OutputStream outputStream) throws IOException;
+    ObjectInputStream getObjectInputStream(InputStream inputStream) throws IOException;
 }

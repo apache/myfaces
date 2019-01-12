@@ -49,6 +49,7 @@ public class HttpServletResponseSwitch extends HttpServletResponseWrapper implem
      * Enables or disables the Response's Writer and OutputStream.
      * @param enabled
      */
+    @Override
     public void setEnabled(boolean enabled)
     {
         _enabled = enabled;
@@ -58,6 +59,7 @@ public class HttpServletResponseSwitch extends HttpServletResponseWrapper implem
      * Are the Response's Writer and OutputStream currently enabled?
      * @return
      */
+    @Override
     public boolean isEnabled()
     {
         return _enabled;

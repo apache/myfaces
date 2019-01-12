@@ -21,7 +21,7 @@ package org.apache.myfaces.shared.util;
  */
 
 import org.apache.myfaces.application.viewstate.StateUtils;
-import org.apache.myfaces.util.serial.DefaultSerialFactory;
+import org.apache.myfaces.util.DefaultSerialFactory;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 import java.io.Serializable;

@@ -48,7 +48,7 @@ import javax.servlet.ServletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.serial.SerialFactory;
+import org.apache.myfaces.util.SerialFactory;
 
 /**
  * <p>This Class exposes a handful of methods related to encryption,

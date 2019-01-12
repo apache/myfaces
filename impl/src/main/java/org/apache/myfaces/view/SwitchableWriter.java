@@ -27,7 +27,6 @@ import java.io.Writer;
  */
 class SwitchableWriter extends Writer
 {
-
     Writer _delegate = null;
     ResponseSwitch _responseSwitch = null;
 
@@ -37,6 +36,7 @@ class SwitchableWriter extends Writer
         _responseSwitch = responseSwitch;
     }
 
+    @Override
     public void write(String s, int start, int end) throws IOException
     {
         if (_responseSwitch.isEnabled())
@@ -45,6 +45,7 @@ class SwitchableWriter extends Writer
         }
     }
 
+    @Override
     public void write(String s) throws IOException
     {
         if (_responseSwitch.isEnabled())
@@ -53,6 +54,7 @@ class SwitchableWriter extends Writer
         }
     }
 
+    @Override
     public void write(char[] c, int start, int end) throws IOException
     {
         if (_responseSwitch.isEnabled())
@@ -61,15 +63,16 @@ class SwitchableWriter extends Writer
         }
     }
 
+    @Override
     public void write(char[] c) throws IOException
     {
         if (_responseSwitch.isEnabled())
         {
             _delegate.write(c);
-
         }
     }
 
+    @Override
     public void write(int i) throws IOException
     {
         if (_responseSwitch.isEnabled())
@@ -78,6 +81,7 @@ class SwitchableWriter extends Writer
         }
     }
 
+    @Override
     public void flush() throws IOException
     {
         if (_responseSwitch.isEnabled())
@@ -86,6 +90,7 @@ class SwitchableWriter extends Writer
         }
     }
 
+    @Override
     public void close() throws IOException
     {
         if (_responseSwitch.isEnabled())
@@ -94,6 +99,7 @@ class SwitchableWriter extends Writer
         }
     }
 
+    @Override
     public Writer append(char c) throws IOException
     {
         if (_responseSwitch.isEnabled())
