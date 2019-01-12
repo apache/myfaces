@@ -25,8 +25,8 @@ import java.lang.reflect.Field;
 /**
  * Provides optimized access to java.lang.String internals
  *
- * - Optimized way of creating java.lang.String by reusing a char[] buffer
- * - Optimized way of writing String to java.io.Writer
+ * - Optimized way of creating java.lang.String by reusing a char[] buffer -
+ * Optimized way of writing String to java.io.Writer
  *
  * java.lang.String creation reusing a char[] buffer requires Java 1.5+
  *
@@ -36,21 +36,16 @@ import java.lang.reflect.Field;
  * Read JSR-133, "9.1.1 Post-Construction Modification of Final Fields"
  * http://www.cs.umd.edu/~pugh/java/memoryModel/jsr133.pdf
  *
- * @author Lari Hotari, Sagire Software Oy
- * see org.codehaus.groovy.grails.web.util.StreamCharBuffer
- *      file licensed under ASL v2.0 
- *      Copyright 2009 the original author or authors.
+ * @author Lari Hotari, Sagire Software Oy see
+ * org.codehaus.groovy.grails.web.util.StreamCharBuffer file licensed under ASL
+ * v2.0 Copyright 2009 the original author or authors.
  */
 public class StringCharArrayAccessor
 {
 
-    //static volatile boolean enabled = !Boolean
-    //        .getBoolean("oam.stringchararrayaccessor.disabled");
-    // In Google Application Engine this hack is not valid. We should
-    // set this one as default disabled.
-    static volatile boolean enabled = Boolean
-            .getBoolean("oam.stringchararrayaccessor.enabled");
-
+    static volatile boolean enabled = !Boolean.getBoolean("oam.stringchararrayaccessor.disabled");
+    static volatile boolean jdk7String = false;
+    
     static Field valueField;
     static Field countField;
     static Field offsetField;
@@ -63,61 +58,69 @@ public class StringCharArrayAccessor
             {
                 valueField = String.class.getDeclaredField("value");
                 valueField.setAccessible(true);
-
+            }
+            catch (Exception e)
+            {
+                enabled = false;
+                handleError(e);
+            }
+        }
+        if (enabled)
+        {
+            try
+            {
                 countField = String.class.getDeclaredField("count");
                 countField.setAccessible(true);
 
                 offsetField = String.class.getDeclaredField("offset");
                 offsetField.setAccessible(true);
             }
+            catch (NoSuchFieldException e)
+            {
+                jdk7String = true;
+            }
             catch (Exception e)
             {
                 enabled = false;
-                System.err
-                        .println("Unable to use direct char[] access of java.lang.String");
-                e.printStackTrace();
+                handleError(e);
             }
         }
     }
 
+    private StringCharArrayAccessor()
+    {
+    }
+
     /**
-     * Writes a portion of a string to a target java.io.Writer with direct access to the char[] of the java.lang.String
+     * Writes a portion of a string to a target java.io.Writer with direct
+     * access to the char[] of the java.lang.String
      *
-     * @param  writer
-     *            target java.io.Writer for output
+     * @param writer target java.io.Writer for output
      *
-     * @param  str
-     *         A String
+     * @param str A String
      *
-     * @throws  IOException
-     *          If an I/O error occurs
+     * @throws IOException If an I/O error occurs
      */
-    static public void writeStringAsCharArray(Writer writer, String str)
-            throws IOException
+    static public void writeStringAsCharArray(Writer writer, String str) throws IOException
     {
         writeStringAsCharArray(writer, str, 0, str.length());
     }
 
     /**
-     * Writes a portion of a string to a target java.io.Writer with direct access to the char[] of the java.lang.String
+     * Writes a portion of a string to a target java.io.Writer with direct
+     * access to the char[] of the java.lang.String
      *
-     * @param  writer
-     *            target java.io.Writer for output
+     * @param writer target java.io.Writer for output
      *
-     * @param  str
-     *         A String
+     * @param str A String
      *
-     * @param  off
-     *         Offset from which to start writing characters
+     * @param off Offset from which to start writing characters
      *
-     * @param  len
-     *         Number of characters to write
+     * @param len Number of characters to write
      *
-     * @throws  IOException
-     *          If an I/O error occurs
+     * @throws IOException If an I/O error occurs
      */
-    static public void writeStringAsCharArray(Writer writer, String str,
-            int off, int len) throws IOException
+    static public void writeStringAsCharArray(Writer writer, String str, int off, int len) throws IOException
     {
         if (!enabled)
         {
@@ -126,11 +129,14 @@ public class StringCharArrayAccessor
         }
 
         char[] value;
-        int internalOffset;
+        int internalOffset = 0;
         try
         {
             value = (char[]) valueField.get(str);
-            internalOffset = offsetField.getInt(str);
+            if (!jdk7String)
+            {
+                internalOffset = offsetField.getInt(str);
+            }
         }
         catch (Exception e)
         {
@@ -141,8 +147,7 @@ public class StringCharArrayAccessor
         writer.write(value, internalOffset + off, len);
     }
 
-    private static void writeStringFallback(Writer writer, String str, int off,
-            int len) throws IOException
+    private static void writeStringFallback(Writer writer, String str, int off, int len) throws IOException
     {
         writer.write(str, off, len);
     }
@@ -159,7 +164,10 @@ public class StringCharArrayAccessor
         try
         {
             value = (char[]) valueField.get(str);
-            internalOffset = offsetField.getInt(str);
+            if (!jdk7String)
+            {
+                internalOffset = offsetField.getInt(str);
+            }
         }
         catch (Exception e)
         {
@@ -179,10 +187,11 @@ public class StringCharArrayAccessor
     }
 
     /**
-     * creates a new java.lang.String by setting the char array directly to the String instance with reflection.
+     * creates a new java.lang.String by setting the char array directly to the
+     * String instance with reflection.
      *
-     * @param charBuf
-     *        char array to be used as java.lang.String content, don't modify it after passing it.
+     * @param charBuf char array to be used as java.lang.String content, don't
+     * modify it after passing it.
      * @return new java.lang.String
      */
     public static String createString(char[] charBuf)
@@ -192,24 +201,26 @@ public class StringCharArrayAccessor
             return createStringFallback(charBuf);
         }
 
-        String str = "";
+        String str = new String();
         try
         {
-            // try to prevent possible final field setting execution reordering in JIT 
+            // try to prevent possible final field setting execution reordering in JIT
             // (JSR-133/JMM, "9.1.1 Post-Construction Modification of Final Fields")
             // it was a bit unclear for me if this could ever happen in a single thread
             synchronized (str)
             {
                 valueField.set(str, charBuf);
-                countField.set(str, charBuf.length);
+                if (!jdk7String)
+                {
+                    countField.set(str, charBuf.length);
+                }
             }
             synchronized (str)
             {
                 // safety check, just to be sure that setting the final fields went ok
                 if (str.length() != charBuf.length)
                 {
-                    throw new IllegalStateException(
-                            "Fast java.lang.String construction failed.");
+                    throw new IllegalStateException("Fast java.lang.String construction failed.");
                 }
             }
         }
@@ -229,12 +240,9 @@ public class StringCharArrayAccessor
     private static synchronized void handleError(Exception e)
     {
         enabled = false;
-        System.err
-                .println("Unable to use direct char[] access of java.lang.String. Disabling this method.");
         valueField = null;
         countField = null;
         offsetField = null;
-        e.printStackTrace();
     }
 
     static public boolean isEnabled()

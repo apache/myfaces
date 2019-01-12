@@ -271,8 +271,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
 
     public StreamCharBuffer()
     {
-        this(DEFAULT_CHUNK_SIZE, DEFAULT_CHUNK_SIZE_GROW_PROCENT,
-                DEFAULT_MAX_CHUNK_SIZE);
+        this(DEFAULT_CHUNK_SIZE, DEFAULT_CHUNK_SIZE_GROW_PROCENT, DEFAULT_MAX_CHUNK_SIZE);
     }
 
     public StreamCharBuffer(int chunkSize)
@@ -307,8 +306,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         return preferSubChunkWhenWritingToOtherBuffer;
     }
 
-    public void setPreferSubChunkWhenWritingToOtherBuffer(
-            boolean preferSubChunkWhenWritingToOtherBuffer)
+    public void setPreferSubChunkWhenWritingToOtherBuffer(boolean preferSubChunkWhenWritingToOtherBuffer)
     {
         this.preferSubChunkWhenWritingToOtherBuffer = preferSubChunkWhenWritingToOtherBuffer;
     }
@@ -376,8 +374,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         }
         else
         {
-            connectedWritersWriter = new SingleOutputWriter(
-                    connectedWriters.get(0));
+            connectedWritersWriter = new SingleOutputWriter(connectedWriters.get(0));
         }
     }
 
@@ -446,8 +443,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
      *
      * @param writeDirectlyToConnectedMinSize
      */
-    public void setWriteDirectlyToConnectedMinSize(
-            int writeDirectlyToConnectedMinSize)
+    public void setWriteDirectlyToConnectedMinSize(int writeDirectlyToConnectedMinSize)
     {
         this.writeDirectlyToConnectedMinSize = writeDirectlyToConnectedMinSize;
     }
@@ -517,8 +513,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
      * @param emptyAfter empties the buffer if true
      * @throws IOException
      */
-    public void writeTo(Writer target, boolean flushTarget, boolean emptyAfter)
-            throws IOException
+    public void writeTo(Writer target, boolean flushTarget, boolean emptyAfter) throws IOException
     {
 
         if (target instanceof StreamCharBufferWriter)
@@ -824,8 +819,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         return spaceLeft;
     }
 
-    private int appendCharBufferChunk(boolean flushInConnected)
-            throws IOException
+    private int appendCharBufferChunk(boolean flushInConnected) throws IOException
     {
         int spaceLeft = 0;
         if (flushInConnected && isConnectedMode())
@@ -933,13 +927,11 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         }
         else if (growProcent > 0)
         {
-            chunkSize = Math.max(Math.min((totalChunkSize * growProcent) / 100,
-                    maxChunkSize), firstChunkSize);
+            chunkSize = Math.max(Math.min((totalChunkSize * growProcent) / 100, maxChunkSize), firstChunkSize);
         }
     }
 
-    protected static final void arrayCopy(char[] src, int srcPos, char[] dest,
-            int destPos, int length)
+    protected static final void arrayCopy(char[] src, int srcPos, char[] dest, int destPos, int length)
     {
         if (length == 1)
         {
@@ -963,8 +955,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         boolean increaseCounter = true;
 
         @Override
-        public final void write(final char[] b, final int off, final int len)
-                throws IOException
+        public final void write(final char[] b, final int off, final int len) throws IOException
         {
             if (b == null)
             {
@@ -1039,8 +1030,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
 
         private final int getNewChunkMinSize()
         {
-            if (chunkMinSize <= 0 || allocBuffer.charsUsed() == 0
-                    || allocBuffer.charsUsed() >= chunkMinSize)
+            if (chunkMinSize <= 0 || allocBuffer.charsUsed() == 0 || allocBuffer.charsUsed() >= chunkMinSize)
             {
                 return 0;
             }
@@ -1054,8 +1044,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         }
 
         @Override
-        public final void write(final String str, final int off, final int len)
-                throws IOException
+        public final void write(final String str, final int off, final int len) throws IOException
         {
             if (len == 0)
             {
@@ -1097,8 +1086,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
                 subBuffer.writeToImpl(connectedWritersWriter, false, false);
             }
             else if (subBuffer.preferSubChunkWhenWritingToOtherBuffer
-                    || subBuffer.isSizeLarger(Math.max(subBufferChunkMinSize,
-                            getNewChunkMinSize())))
+                    || subBuffer.isSizeLarger(Math.max(subBufferChunkMinSize, getNewChunkMinSize())))
             {
                 if (subBuffer.preferSubChunkWhenWritingToOtherBuffer)
                 {
@@ -2128,8 +2116,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         }
 
         @Override
-        public Writer append(final CharSequence csq, final int start,
-                final int end) throws IOException
+        public Writer append(final CharSequence csq, final int start, final int end) throws IOException
         {
             writer.getWriter().append(csq, start, end);
             return this;
@@ -2138,8 +2125,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         @Override
         public void write(String str, int off, int len) throws IOException
         {
-            StringCharArrayAccessor.writeStringAsCharArray(writer.getWriter(),
-                    str, off, len);
+            StringCharArrayAccessor.writeStringAsCharArray(writer.getWriter(),str, off, len);
         }
     }
 
@@ -2172,8 +2158,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         }
 
         @Override
-        public void write(final char[] cbuf, final int off, final int len)
-                throws IOException
+        public void write(final char[] cbuf, final int off, final int len) throws IOException
         {
             for (ConnectedWriter writer : writers)
             {
@@ -2182,8 +2167,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         }
 
         @Override
-        public Writer append(final CharSequence csq, final int start,
-                final int end) throws IOException
+        public Writer append(final CharSequence csq, final int start, final int end) throws IOException
         {
             for (ConnectedWriter writer : writers)
             {
@@ -2197,24 +2181,26 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         {
             for (ConnectedWriter writer : writers)
             {
-                StringCharArrayAccessor.writeStringAsCharArray(
-                        writer.getWriter(), str, off, len);
+                StringCharArrayAccessor.writeStringAsCharArray(writer.getWriter(), str, off, len);
             }
         }
     }
 
     /* Compatibility methods so that StreamCharBuffer will behave more like java.lang.String in groovy code */
 
+    @Override
     public char charAt(int index)
     {
         return toString().charAt(index);
     }
 
+    @Override
     public int length()
     {
         return size();
     }
 
+    @Override
     public CharSequence subSequence(int start, int end)
     {
         return toString().subSequence(start, end);
@@ -2233,14 +2219,12 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         {
             parentBuffers = new HashSet<SoftReference<StreamCharBufferKey>>();
         }
-        parentBuffers.add(new SoftReference<StreamCharBufferKey>(
-                parent.bufferKey));
+        parentBuffers.add(new SoftReference<StreamCharBufferKey>(parent.bufferKey));
     }
 
     boolean bufferChanged(StreamCharBuffer buffer)
     {
-        StreamCharBufferSubChunk subChunk = dynamicChunkMap
-                .get(buffer.bufferKey);
+        StreamCharBufferSubChunk subChunk = dynamicChunkMap.get(buffer.bufferKey);
         if (subChunk == null)
         {
             // buffer isn't a subchunk in this buffer any more
@@ -2259,13 +2243,12 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
 
     void notifyBufferChange()
     {
-        if (parentBuffers == null)
+        if (parentBuffers == null || parentBuffers.isEmpty())
         {
             return;
         }
 
-        for (Iterator<SoftReference<StreamCharBufferKey>> i = parentBuffers
-                .iterator(); i.hasNext();)
+        for (Iterator<SoftReference<StreamCharBufferKey>> i = parentBuffers.iterator(); i.hasNext();)
         {
             SoftReference<StreamCharBufferKey> ref = i.next();
             final StreamCharBuffer.StreamCharBufferKey parentKey = ref.get();
@@ -2282,8 +2265,8 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         }
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         String str = in.readUTF();
         reset();
@@ -2293,6 +2276,7 @@ public class StreamCharBuffer implements /*Writable,*/CharSequence,
         }
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         String str = toString();
