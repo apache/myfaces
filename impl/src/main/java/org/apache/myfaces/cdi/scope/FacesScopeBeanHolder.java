@@ -117,21 +117,20 @@ public class FacesScopeBeanHolder
     }
 
     /**
-     * This method properly destroys all current &#064;WindowScoped beans
+     * This method properly destroys all current &#064;FacesScoped beans
      * of the active session and also prepares the storage for new beans.
      * It will automatically get called when the session context closes
      * but can also get invoked manually, e.g. if a user likes to get rid
-     * of all it's &#064;WindowScoped beans.
+     * of all it's &#064;FacesScoped beans.
      */
-    //@PreDestroy
     public void destroyBeans(FacesContext facesContext)
     {
         // we replace the old windowBeanHolder beans with a new storage Map
         // an afterwards destroy the old Beans without having to care about any syncs.
-        ContextualStorage oldWindowContextStorages = forceNewStorage(facesContext);
-        if (oldWindowContextStorages != null)
+        ContextualStorage oldStorages = forceNewStorage(facesContext);
+        if (oldStorages != null)
         {
-            FacesScopedContextImpl.destroyAllActive(oldWindowContextStorages);
+            FacesScopedContextImpl.destroyAllActive(oldStorages);
         }
     }
 

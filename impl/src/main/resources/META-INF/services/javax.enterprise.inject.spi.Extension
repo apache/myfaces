@@ -1,4 +1,5 @@
-org.apache.myfaces.cdi.scope.ScopeExtension
+org.apache.myfaces.cdi.scope.FacesScopedExtension
+org.apache.myfaces.cdi.scope.ViewTransientScopedExtension
 org.apache.myfaces.cdi.JsfApplicationArtifactHolderExtension
 org.apache.myfaces.cdi.view.ViewScopeContextExtension
 org.apache.myfaces.flow.cdi.FlowBuilderCDIExtension

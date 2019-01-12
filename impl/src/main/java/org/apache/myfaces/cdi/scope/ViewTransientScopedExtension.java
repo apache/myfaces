@@ -24,22 +24,17 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
-public class ScopeExtension implements Extension
+public class ViewTransientScopedExtension implements Extension
 {
-    private FacesScopedContextImpl facesScopeContext;
     private ViewTransientScopedContextImpl viewTransientScopedContext;
 
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
     {
-        event.addScope(FacesScoped.class, true, false);
         event.addScope(ViewTransientScoped.class, true, false);
     }
     
     void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
     {
-        facesScopeContext = new FacesScopedContextImpl(beanManager);
-        afterBeanDiscovery.addContext(facesScopeContext);
-        
         viewTransientScopedContext = new ViewTransientScopedContextImpl(beanManager);
         afterBeanDiscovery.addContext(viewTransientScopedContext);
     }

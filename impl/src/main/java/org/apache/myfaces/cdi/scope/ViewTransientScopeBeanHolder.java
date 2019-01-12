@@ -25,13 +25,11 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 
-
 /**
  * Stateless class to deal with ViewTransientScope. This scope depends on the current FacesContext.
  */
 public class ViewTransientScopeBeanHolder
 {
-    
     public static final String VIEW_TRANSIENT_SCOPE_MAP = "oam.VIEW_TRANSIENT_SCOPE_MAP";
     
     public static final String VIEW_TRANSIENT_SCOPE_MAP_INFO = "oam.VIEW_TRANSIENT_SCOPE_MAP_INFO";
