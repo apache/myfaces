@@ -24,18 +24,6 @@
 _MF_CLS(_PFX_XHR+"_FormDataRequest", myfaces._impl.xhrCore._AjaxRequest, {
     _AJAXUTIL: myfaces._impl.xhrCore._AjaxUtils,
 
-
-    /**
-     * @constant
-     * @description request marker that the request is an iframe based request
-     */
-    JX_PART_IFRAME: "javax.faces.partial.iframe",
-    /**
-     * @constant
-     * @description request marker that the request is an apache myfaces iframe request based request
-     */
-    MF_PART_IFRAME: "org.apache.myfaces.partial.iframe",
-
     constructor_: function(arguments) {
         this._callSuper("constructor_", arguments);
 
@@ -71,10 +59,6 @@ _MF_CLS(_PFX_XHR+"_FormDataRequest", myfaces._impl.xhrCore._AjaxRequest, {
                 _AJAXUTIL.appendIssuingItem(this._source, ret);
 
         }
-
-        ret.append(this.JX_PART_IFRAME, "true");
-        ret.append(this.MF_PART_IFRAME, "true");
-
 
         return ret;
     },

@@ -67,13 +67,6 @@ public class PartialViewContextImpl extends PartialViewContext
     private static final String PARTIAL_AJAX = "partial/ajax";
     private static final String PARTIAL_AJAX_REQ = "javax.faces.partial.ajax";
     private static final String PARTIAL_PROCESS = "partial/process";
-
-    /**
-     * Internal extension for
-     * https://issues.apache.org/jira/browse/MYFACES-2841
-     * will be changed for 2.1 to the official marker
-     */
-    private static final String PARTIAL_IFRAME = "org.apache.myfaces.partial.iframe";
     
     private static final  Set<VisitHint> PARTIAL_EXECUTE_HINTS = Collections.unmodifiableSet( 
             EnumSet.of(VisitHint.EXECUTE_LIFECYCLE, VisitHint.SKIP_UNRENDERED));
@@ -84,13 +77,6 @@ public class PartialViewContextImpl extends PartialViewContext
     // many times and the result does not change during the life time
     // of this object.
     private Boolean _ajaxRequest = null;
-
-    /**
-     * Internal extension for
-     * https://issues.apache.org/jira/browse/MYFACES-2841
-     * will be changed for 2.1 to the official marker
-     */
-    private Boolean _iframeRequest = null;
 
     private Collection<String> _executeClientIds = null;
     private Collection<String> _renderClientIds = null;
@@ -184,30 +170,12 @@ public class PartialViewContextImpl extends PartialViewContext
         return _renderAll;
     }
 
-    /**
-     * Extension for
-     * https://issues.apache.org/jira/browse/MYFACES-2841
-     * internal extension which detects that the submit is an iframe request
-     * will be changed for the official version which will come in 2.1
-     *
-     * @return true if the current request is an iframe based ajax request
-     */
-    public boolean isIFrameRequest()
-    {
-        if (_iframeRequest == null)
-        {
-            _iframeRequest = _facesContext.getExternalContext().getRequestParameterMap().containsKey(PARTIAL_IFRAME);
-        }
-        return _iframeRequest;
-    }
-
     @Override
     public void setPartialRequest(boolean isPartialRequest)
     {
         assertNotReleased();
 
         _partialRequest = isPartialRequest;
-
     }
 
     @Override
