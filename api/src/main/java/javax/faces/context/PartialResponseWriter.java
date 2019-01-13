@@ -46,9 +46,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     {
         startChanges();
         
-        startElement ("delete", null);
-        writeAttribute ("id", targetId, null);
-        endElement ("delete");
+        startElement("delete", null);
+        writeAttribute("id", targetId, null);
+        endElement("delete");
     }
 
     /**
@@ -63,12 +63,12 @@ public class PartialResponseWriter extends ResponseWriterWrapper
             //error close the last op if any
             endInsert();
             
-            endElement ("changes");
+            endElement("changes");
             
             hasChanges = false;
         }
         
-        endElement ("partial-response");
+        endElement("partial-response");
     }
 
     public void endError() throws IOException
@@ -76,8 +76,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         // Close open <error-message> element.
         
         endCDATA();
-        endElement ("error-message");
-        endElement ("error");
+        endElement("error-message");
+        endElement("error");
     }
 
     public void endEval() throws IOException
@@ -85,12 +85,12 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         // Close open <eval> element.
         
         endCDATA();
-        endElement ("eval");
+        endElement("eval");
     }
 
     public void endExtension() throws IOException
     {
-        endElement ("extension");
+        endElement("extension");
     }
 
     public void endInsert() throws IOException
@@ -105,8 +105,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         // Close open <insert> element.
         
         endCDATA();
-        endElement (insertType);
-        endElement ("insert");
+        endElement(insertType);
+        endElement("insert");
         
         insertType = null;
     }
@@ -114,14 +114,14 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     public void endUpdate() throws IOException
     {
         endCDATA();
-        endElement ("update");
+        endElement("update");
     }
 
     public void redirect(String url) throws IOException
     {
-        startElement ("redirect", null);
-        writeAttribute ("url", url, null);
-        endElement ("redirect");
+        startElement("redirect", null);
+        writeAttribute("url", url, null);
+        endElement("redirect");
     }
 
     /**
@@ -132,9 +132,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     {
         // JSF 2.2 section 2.2.6.1 Render Response Partial Processing
         // use writePreamble(...)
-        //_wrapped.write ("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+        //_wrapped.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
         
-        startElement ("partial-response", null);
+        startElement("partial-response", null);
         
         // If by some reason the response has been reset, and the same
         // PartialResponseWriter is used, it is necessary to ensure any 
@@ -146,13 +146,13 @@ public class PartialResponseWriter extends ResponseWriterWrapper
 
     public void startError(String errorName) throws IOException
     {
-        startElement ("error", null);
+        startElement("error", null);
         
-        startElement ("error-name", null);
-        write (errorName);
-        endElement ("error-name");
+        startElement("error-name", null);
+        write(errorName);
+        endElement("error-name");
         
-        startElement ("error-message", null);
+        startElement("error-message", null);
         startCDATA();
         
         // Leave open; caller will write message.
@@ -162,7 +162,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     {
         startChanges();
         
-        startElement ("eval", null);
+        startElement("eval", null);
         startCDATA();
         
         // Leave open; caller will write statements.
@@ -174,7 +174,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         
         startChanges();
         
-        startElement ("extension", null);
+        startElement("extension", null);
         
         // Write out extension attributes.
         // TODO: schema mentions "id" attribute; not used?
@@ -205,8 +205,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     {
         startChanges();
         
-        startElement ("update", null);
-        writeAttribute ("id", targetId, null);
+        startElement("update", null);
+        writeAttribute("id", targetId, null);
         startCDATA();
         
         // Leave open; caller will write content.
@@ -218,8 +218,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         
         startChanges();
         
-        startElement ("attributes", null);
-        writeAttribute ("id", targetId, null);
+        startElement("attributes", null);
+        writeAttribute("id", targetId, null);
         
         attrNames = attributes.keySet().iterator();
         
@@ -227,20 +227,20 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         {
             String attrName = attrNames.next();
             
-            startElement ("attribute", null);
-            writeAttribute ("name", attrName, null);
-            writeAttribute ("value", attributes.get (attrName), null);
-            endElement ("attribute");
+            startElement("attribute", null);
+            writeAttribute("name", attrName, null);
+            writeAttribute("value", attributes.get (attrName), null);
+            endElement("attribute");
         }
         
-        endElement ("attributes");
+        endElement("attributes");
     }
     
     private void startChanges () throws IOException
     {
         if (!hasChanges)
         {
-            startElement ("changes", null);
+            startElement("changes", null);
             
             hasChanges = true;
         }
@@ -259,9 +259,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         
         startChanges();
         
-        startElement ("insert", null);
-        startElement (insertType, null);
-        writeAttribute ("id", targetId, null);
+        startElement("insert", null);
+        startElement(insertType, null);
+        writeAttribute("id", targetId, null);
         startCDATA();
         
         // Leave open; caller will write content.

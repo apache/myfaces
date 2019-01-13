@@ -61,8 +61,7 @@ public class OutcomeTargetUtils
         NavigationHandler nh = facesContext.getApplication().getNavigationHandler();
         if (!(nh instanceof ConfigurableNavigationHandler))
         {
-            throw new FacesException(
-                    "Navigation handler must be an instance of "
+            throw new FacesException("NavigationHandler must be an instance of "
                             + "ConfigurableNavigationHandler for using h:link or h:button");
         }
         ConfigurableNavigationHandler navigationHandler = (ConfigurableNavigationHandler) nh;
