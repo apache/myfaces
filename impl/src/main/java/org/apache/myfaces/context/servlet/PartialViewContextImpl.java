@@ -494,9 +494,7 @@ public class PartialViewContextImpl extends PartialViewContext
                     else
                     {
                         // In JSF 2.3 it was added javax.faces.Resource as an update target to add scripts or
-                        // stylesheets inside <head> tag. In that sense 
-                        // org.apache.myfaces.STRICT_JSF_2_REFRESH_TARGET_AJAX web config param, which was a 
-                        // workaround for dynamic refresh can be deprecated.
+                        // stylesheets inside <head> tag
                         
                         List<UIComponent> updatedComponents = new ArrayList<UIComponent>();
                         RequestViewContext rvc = RequestViewContext.getCurrentInstance(_facesContext);

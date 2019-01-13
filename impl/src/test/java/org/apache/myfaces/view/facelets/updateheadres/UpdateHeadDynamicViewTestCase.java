@@ -44,7 +44,6 @@ public class UpdateHeadDynamicViewTestCase extends AbstractMyFacesCDIRequestTest
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
         servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
         servletContext.addInitParameter(MyfacesConfig.REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
-        servletContext.addInitParameter("org.apache.myfaces.STRICT_JSF_2_REFRESH_TARGET_AJAX", "true");
     }
     
     @Test
