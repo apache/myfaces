@@ -54,9 +54,9 @@ public class OutcomeTargetUtils
             UIOutcomeTarget component) throws IOException
     {
         String outcome = component.getOutcome();
-        outcome = (outcome == null) ? facesContext.getViewRoot().getViewId()
-                : outcome;
+        outcome = (outcome == null) ? facesContext.getViewRoot().getViewId() : outcome;
         outcome = ((outcome == null) ? RendererUtils.EMPTY_STRING : outcome.trim());
+
         // Get the correct URL for the outcome.
         NavigationHandler nh = facesContext.getApplication().getNavigationHandler();
         if (!(nh instanceof ConfigurableNavigationHandler))
@@ -69,20 +69,17 @@ public class OutcomeTargetUtils
         
         // handle faces flow 
         // 1. check to-flow-document-id
-        String toFlowDocumentId = (String) component.getAttributes().get(
-            JSFAttr.TO_FLOW_DOCUMENT_ID_ATTR);
+        String toFlowDocumentId = (String) component.getAttributes().get(JSFAttr.TO_FLOW_DOCUMENT_ID_ATTR);
         
         // fromAction is null because there is no action method that was called to get the outcome
         NavigationCase navigationCase = null;
         if (toFlowDocumentId == null)
         {
-            navigationCase = navigationHandler.getNavigationCase(
-                facesContext, null, outcome);
+            navigationCase = navigationHandler.getNavigationCase(facesContext, null, outcome);
         }
         else
         {
-            navigationCase = navigationHandler.getNavigationCase(
-                facesContext, null, outcome, toFlowDocumentId);            
+            navigationCase = navigationHandler.getNavigationCase(facesContext, null, outcome, toFlowDocumentId);
         }
         
         // when navigation case is null, force the link or button to be disabled and log a warning
@@ -91,15 +88,15 @@ public class OutcomeTargetUtils
             // log a warning
             log.warning("Could not determine NavigationCase for UIOutcomeTarget component "
                     + ComponentUtils.getPathToComponent(component) + " with outcome " + outcome);
-
             return null;
         }
+
         Map<String, List<String>> parameters = null;
         // handle URL parameters
         if (component.getChildCount() > 0)
         {
-            List<UIParameter> validParams = getValidUIParameterChildren(
-                    facesContext, component.getChildren(), true, false);
+            List<UIParameter> validParams = getValidUIParameterChildren(facesContext, component.getChildren(),
+                    true, false);
             if (validParams.size() > 0)
             {
                 parameters = new HashMap<String, List<String>>();
@@ -146,17 +143,14 @@ public class OutcomeTargetUtils
         
         // handle NavigationCase parameters
         Map<String, List<String>> navigationCaseParams = 
-            NavigationUtils.getEvaluatedNavigationParameters(facesContext,
-                navigationCase.getParameters());
+            NavigationUtils.getEvaluatedNavigationParameters(facesContext, navigationCase.getParameters());
         if (navigationCaseParams != null)
         {
             if (parameters == null)
             {
                 parameters = new HashMap<String, List<String>>();
             }
-            //parameters.putAll(navigationCaseParams);
-            for (Map.Entry<String, List<String>> entry : navigationCaseParams
-                    .entrySet())
+            for (Map.Entry<String, List<String>> entry : navigationCaseParams.entrySet())
             {
                 if (!parameters.containsKey(entry.getKey()))
                 {
@@ -219,8 +213,7 @@ public class OutcomeTargetUtils
             FacesContext facesContext, List<UIComponent> children,
             boolean skipNullValue, boolean skipUnrendered)
     {
-        return getValidUIParameterChildren(facesContext, children,
-                skipNullValue, skipUnrendered, true);
+        return getValidUIParameterChildren(facesContext, children, skipNullValue, skipUnrendered, true);
     }
     
     
@@ -259,6 +252,7 @@ public class OutcomeTargetUtils
                     // ignore this UIParameter and continue
                     continue;
                 }
+
                 // check the name
                 String name = param.getName();
                 if (skipNullName && (name == null || RendererUtils.EMPTY_STRING.equals(name)))
@@ -269,6 +263,7 @@ public class OutcomeTargetUtils
                     // and skip it
                     continue;
                 }
+
                 // check the value
                 if (skipNullValue && param.getValue() == null)
                 {
@@ -281,6 +276,7 @@ public class OutcomeTargetUtils
                     // skip a null-value
                     continue;
                 }
+
                 // add the param
                 if (params == null)
                 {
