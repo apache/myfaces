@@ -27,7 +27,6 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.faces.lifecycle.LifecycleFactory;
 
-
 /**
  * The class will initialize the resolver for JSP
  * 
@@ -47,6 +46,7 @@ public final class ResolverForJSPInitializer implements PhaseListener
         _resolverForJSP = resolverForJSP;
     }
 
+    @Override
     public void beforePhase(final PhaseEvent event)
     {
         if (!initialized)
@@ -72,10 +72,12 @@ public final class ResolverForJSPInitializer implements PhaseListener
         }
     }
 
+    @Override
     public void afterPhase(final PhaseEvent event)
     {
     }
 
+    @Override
     public PhaseId getPhaseId()
     {
         return PhaseId.ANY_PHASE;

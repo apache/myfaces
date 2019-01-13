@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.el;
 
+import org.apache.myfaces.el.resolver.FlashELResolver;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

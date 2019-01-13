@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.el;
 
+import org.apache.myfaces.el.resolver.FlashELResolver;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,11 +47,13 @@ public class ResolverBuilderForJSP extends ResolverBuilderBase implements ELReso
         super(config);
     }
     
+    @Override
     public void build(CompositeELResolver compositeElResolver)
     {
         build(FacesContext.getCurrentInstance(), compositeElResolver);
     }
 
+    @Override
     public void build(FacesContext facesContext, CompositeELResolver compositeElResolver)
     {
         // add the ELResolvers to a List first to be able to sort them

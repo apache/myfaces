@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.el;
 
+import org.apache.myfaces.el.resolver.CompositeELResolver;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 

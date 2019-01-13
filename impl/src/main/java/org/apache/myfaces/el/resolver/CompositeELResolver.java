@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.el;
+package org.apache.myfaces.el.resolver;
 
 import java.beans.FeatureDescriptor;
 import java.util.ArrayList;

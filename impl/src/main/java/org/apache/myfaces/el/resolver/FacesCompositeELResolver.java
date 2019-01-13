@@ -43,7 +43,7 @@ import java.util.Arrays;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public final class FacesCompositeELResolver extends org.apache.myfaces.el.CompositeELResolver
+public final class FacesCompositeELResolver extends org.apache.myfaces.el.resolver.CompositeELResolver
 {
     private final Scope _scope;
 
