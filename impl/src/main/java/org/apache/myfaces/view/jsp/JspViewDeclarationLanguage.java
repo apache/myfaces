@@ -38,7 +38,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.jstl.core.Config;
 
-import org.apache.myfaces.application.jsp.ServletViewResponseWrapper;
+import org.apache.myfaces.view.ServletViewResponseWrapper;
 import org.apache.myfaces.application.viewstate.StateCacheUtils;
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;

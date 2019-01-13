@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.application.jsp;
+package org.apache.myfaces.view;
 
 import org.apache.myfaces.view.ViewResponseWrapper;
 

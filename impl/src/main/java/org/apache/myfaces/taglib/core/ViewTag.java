@@ -35,7 +35,7 @@ import javax.faces.webapp.UIComponentELTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.Config;
 
-import org.apache.myfaces.application.jsp.ServletViewResponseWrapper;
+import org.apache.myfaces.view.ServletViewResponseWrapper;
 import org.apache.myfaces.util.LocaleUtils;
 
 /**

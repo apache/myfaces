@@ -24,7 +24,7 @@ import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.webapp.UIComponentELTag;
 
-import org.apache.myfaces.application.jsp.ServletViewResponseWrapper;
+import org.apache.myfaces.view.ServletViewResponseWrapper;
 
 /**
  * @author Thomas Spiegl (latest modification by $Author$)
