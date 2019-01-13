@@ -27,6 +27,7 @@ import javax.el.ELResolver;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.CDIUtils;
+import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.resolver.FacesCompositeELResolver.Scope;
@@ -40,17 +41,11 @@ import org.apache.myfaces.el.resolver.implicitobject.ImplicitObjectResolver;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ResolverBuilderForJSP extends ResolverBuilderBase implements ELResolverBuilder
+public class ELResolverBuilderForJSP extends ELResolverBuilder
 {
-    public ResolverBuilderForJSP(RuntimeConfig config)
+    public ELResolverBuilderForJSP(RuntimeConfig runtimeConfig, MyfacesConfig myfacesConfig)
     {
-        super(config);
-    }
-    
-    @Override
-    public void build(CompositeELResolver compositeElResolver)
-    {
-        build(FacesContext.getCurrentInstance(), compositeElResolver);
+        super(runtimeConfig, myfacesConfig);
     }
 
     @Override

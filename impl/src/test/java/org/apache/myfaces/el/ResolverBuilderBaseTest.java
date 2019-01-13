@@ -18,81 +18,64 @@
  */
 package org.apache.myfaces.el;
 
-import org.apache.myfaces.el.ResolverBuilderBase;
-import static org.easymock.EasyMock.expect;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.el.ELResolver;
+import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.el.resolver.CompositeELResolver;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
-import org.easymock.classextension.EasyMock;
-import org.easymock.classextension.IMocksControl;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@SuppressWarnings("deprecation")
 public class ResolverBuilderBaseTest extends AbstractJsfTestCase
 {
-    private IMocksControl _mocksControl;
-    private RuntimeConfig _runtimeConfig;
-    private ResolverBuilderBase _testImpl;
-    private List<ELResolver> _resolvers;
-    
-    public ResolverBuilderBaseTest()
-    {
-    }
+    private RuntimeConfig runtimeConfig;
+    private MyfacesConfig myfacesConfig;
+    private ELResolverBuilder resolverBuilder;
+    private List<ELResolver> resolvers;
 
+    @Override
     @Before
     public void setUp() throws Exception
     {
         super.setUp();
-        _mocksControl = EasyMock.createNiceControl();
-        _runtimeConfig = _mocksControl.createMock(RuntimeConfig.class);
-        _testImpl = new ResolverBuilderBase(_runtimeConfig);
-        _resolvers = new ArrayList<ELResolver>();
-    }
-    
-    @After
-    public void tearDown() throws Exception
-    {
-        super.tearDown();
-        _mocksControl = null;
-        _runtimeConfig = null;
-        _testImpl = null;
-        _resolvers = null;
+        runtimeConfig = Mockito.mock(RuntimeConfig.class);
+        myfacesConfig = Mockito.mock(MyfacesConfig.class);
+        resolverBuilder = new ELResolverBuilder(runtimeConfig, myfacesConfig);
+        resolvers = new ArrayList<ELResolver>();
     }
 
-    /*
     @Test
     public void testGetFacesConfigElResolvers() throws Exception
     {
-        ELResolver resolver = _mocksControl.createMock(ELResolver.class);
-        expect(_runtimeConfig.getFacesConfigElResolvers()).andReturn(resolver).anyTimes();
-        _compositeELResolver = _mocksControl.createMock(CompositeELResolver.class);
-        _compositeELResolver.add(eq(resolver));
-        _mocksControl.replay();
-        _testImpl.addFromRuntimeConfig(_compositeELResolver);
-        _mocksControl.verify();
-    }*/
+        ELResolver resolver = Mockito.mock(ELResolver.class);
+        Mockito.when(runtimeConfig.getFacesConfigElResolvers()).thenReturn(Arrays.asList(resolver));
 
+        resolverBuilder.addFromRuntimeConfig(resolvers);
+
+        Assert.assertEquals(Arrays.asList(resolver), resolvers);
+    }
+    
     @Test
     public void testGetApplicationElResolvers() throws Exception
     {
-        ELResolver resolver = _mocksControl.createMock(ELResolver.class);
-        expect(_runtimeConfig.getApplicationElResolvers()).andReturn(Arrays.asList(resolver)).anyTimes();
-        _mocksControl.replay();
-        _testImpl.addFromRuntimeConfig(_resolvers);
-        _mocksControl.verify();
-        Assert.assertEquals(Arrays.asList(resolver), _resolvers);
+        ELResolver resolver = Mockito.mock(ELResolver.class);
+        Mockito.when(runtimeConfig.getApplicationElResolvers()).thenReturn(Arrays.asList(resolver));
+ 
+        resolverBuilder.addFromRuntimeConfig(resolvers);
+
+        Assert.assertEquals(Arrays.asList(resolver), resolvers);
     }
 }
+

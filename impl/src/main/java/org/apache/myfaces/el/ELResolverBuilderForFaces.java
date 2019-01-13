@@ -54,7 +54,7 @@ import org.apache.myfaces.util.ClassUtils;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELResolverBuilder
+public class ELResolverBuilderForFaces extends ELResolverBuilder
 {
     private static final Class STATIC_FIELD_EL_RESOLVER_CLASS;
     private static final Method GET_STREAM_EL_RESOLVER_METHOD;
@@ -77,17 +77,11 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
         GET_STREAM_EL_RESOLVER_METHOD = getStreamELResolverMethod;
     }
     
-    public ResolverBuilderForFaces(RuntimeConfig config)
+    public ELResolverBuilderForFaces(RuntimeConfig runtimeConfig, MyfacesConfig myfacesConfig)
     {
-        super(config);
+        super(runtimeConfig, myfacesConfig);
     }
 
-    @Override
-    public void build(CompositeELResolver compositeElResolver)
-    {
-        build(FacesContext.getCurrentInstance(), compositeElResolver);
-    }
-    
     @Override
     public void build(FacesContext facesContext, CompositeELResolver compositeElResolver)
     {
@@ -128,7 +122,7 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
             try
             {
                 ELResolver streamElResolver = (ELResolver) GET_STREAM_EL_RESOLVER_METHOD.invoke(
-                        getRuntimeConfig().getExpressionFactory());
+                        runtimeConfig.getExpressionFactory());
                 if (streamElResolver != null)
                 {
                     // By default return null, but in a EL 3 implementation it should be there,

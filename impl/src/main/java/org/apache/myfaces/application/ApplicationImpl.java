@@ -115,7 +115,7 @@ import org.apache.myfaces.config.element.ResourceBundle;
 import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.context.RequestViewMetadata;
 import org.apache.myfaces.el.ELResolverBuilder;
-import org.apache.myfaces.el.ResolverBuilderForFaces;
+import org.apache.myfaces.el.ELResolverBuilderForFaces;
 import org.apache.myfaces.el.resolver.FacesCompositeELResolver;
 import org.apache.myfaces.el.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.flow.FlowHandlerImpl;
@@ -167,8 +167,6 @@ public class ApplicationImpl extends Application
     private StateManager _stateManager;
     private FlowHandler _flowHandler;
 
-    private final boolean _lazyLoadConfigObjects;
-
     private ArrayList<ELContextListener> _elContextListeners;
 
     // components, converters, and validators can be added at runtime--must
@@ -191,6 +189,7 @@ public class ApplicationImpl extends Application
     private final Map<String, Object> _behaviorClassMap = new ConcurrentHashMap<>();
 
     private final RuntimeConfig _runtimeConfig;
+    private final MyfacesConfig _myfacesConfig;
 
     private ELResolver elResolver;
 
@@ -261,6 +260,7 @@ public class ApplicationImpl extends Application
         _flowHandler = new FlowHandlerImpl();
         _searchExpressionHandler = new SearchExpressionHandlerImpl();
         _runtimeConfig = runtimeConfig;
+        _myfacesConfig = MyfacesConfig.getCurrentInstance(getFacesContext());
 
         if (log.isLoggable(Level.FINEST))
         {
@@ -273,8 +273,6 @@ public class ApplicationImpl extends Application
         {
             _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = true;
         }
-        
-        _lazyLoadConfigObjects = MyfacesConfig.getCurrentInstance(getFacesContext()).isLazyLoadConfigObjects();
     }
 
     // ~ Methods
@@ -366,7 +364,7 @@ public class ApplicationImpl extends Application
     {
         if (resolverBuilderForFaces == null)
         {
-            resolverBuilderForFaces = new ResolverBuilderForFaces(_runtimeConfig);
+            resolverBuilderForFaces = new ELResolverBuilderForFaces(_runtimeConfig, _myfacesConfig);
         }
         return resolverBuilderForFaces;
     }
@@ -931,7 +929,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            if (_lazyLoadConfigObjects)
+            if (_myfacesConfig.isLazyLoadConfigObjects())
             {
                 _behaviorClassMap.put(behaviorId, behaviorClass);
             }
@@ -960,7 +958,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            if (_lazyLoadConfigObjects)
+            if (_myfacesConfig.isLazyLoadConfigObjects())
             {
                 _componentClassMap.put(componentType, componentClassName);
             }
@@ -988,7 +986,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            if (_lazyLoadConfigObjects)
+            if (_myfacesConfig.isLazyLoadConfigObjects())
             {
                 _converterIdToClassMap.put(converterId, converterClass);
             }
@@ -1015,7 +1013,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            if (_lazyLoadConfigObjects)
+            if (_myfacesConfig.isLazyLoadConfigObjects())
             {
                 _converterTargetClassToConverterClassMap.put(targetClass, converterClass);
             }
@@ -1044,7 +1042,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            if (_lazyLoadConfigObjects)
+            if (_myfacesConfig.isLazyLoadConfigObjects())
             {
                 _validatorClassMap.put(validatorId, validatorClass);
             }

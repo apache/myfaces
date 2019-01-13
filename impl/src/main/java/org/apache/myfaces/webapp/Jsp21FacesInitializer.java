@@ -30,11 +30,12 @@ import javax.faces.lifecycle.LifecycleFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
+import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.ResolverForJSPInitializer;
 import org.apache.myfaces.el.ELResolverBuilder;
-import org.apache.myfaces.el.ResolverBuilderForJSP;
+import org.apache.myfaces.el.ELResolverBuilderForJSP;
 import org.apache.myfaces.el.resolver.FacesCompositeELResolver;
 import org.apache.myfaces.el.resolver.FacesCompositeELResolver.Scope;
 
@@ -70,7 +71,7 @@ public class Jsp21FacesInitializer extends AbstractFacesInitializer
             buildConfiguration(servletContext, externalContext, expressionFactory);
         
         // configure the el resolver for jsp
-        configureResolverForJSP(appCtx, runtimeConfig);
+        configureResolverForJSP(appCtx, runtimeConfig, externalContext);
     }
     
     protected JspFactory getJspFactory()
@@ -119,12 +120,14 @@ public class Jsp21FacesInitializer extends AbstractFacesInitializer
      * @param appCtx
      * @param runtimeConfig
      */
-    private void configureResolverForJSP(JspApplicationContext appCtx, RuntimeConfig runtimeConfig)
+    private void configureResolverForJSP(JspApplicationContext appCtx, RuntimeConfig runtimeConfig,
+            ExternalContext externalContext)
     {
         FacesCompositeELResolver facesCompositeELResolver = new FacesCompositeELResolver(Scope.JSP);
         appCtx.addELResolver(facesCompositeELResolver);
         PhaseListener resolverForJSPInitializer = new ResolverForJSPInitializer(
-                createResolverBuilderForJSP(runtimeConfig), facesCompositeELResolver);
+                createResolverBuilderForJSP(runtimeConfig, MyfacesConfig.getCurrentInstance(externalContext)),
+                facesCompositeELResolver);
 
         LifecycleFactory factory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
         for (Iterator<String> iter = factory.getLifecycleIds(); iter.hasNext();)
@@ -133,8 +136,8 @@ public class Jsp21FacesInitializer extends AbstractFacesInitializer
         }
     }
     
-    protected ELResolverBuilder createResolverBuilderForJSP(RuntimeConfig runtimeConfig)
+    protected ELResolverBuilder createResolverBuilderForJSP(RuntimeConfig runtimeConfig, MyfacesConfig myfacesConfig)
     {
-        return new ResolverBuilderForJSP(runtimeConfig);
+        return new ELResolverBuilderForJSP(runtimeConfig, myfacesConfig);
     }
 }
