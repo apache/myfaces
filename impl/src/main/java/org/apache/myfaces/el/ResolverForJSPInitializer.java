@@ -27,7 +27,6 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.faces.lifecycle.LifecycleFactory;
 
-import org.apache.myfaces.el.unified.ELResolverBuilder;
 
 /**
  * The class will initialize the resolver for JSP

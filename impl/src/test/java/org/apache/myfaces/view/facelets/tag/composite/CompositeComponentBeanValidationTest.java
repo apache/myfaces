@@ -25,7 +25,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.el.CompositeComponentExpressionHolder;
 
-import org.apache.myfaces.el.unified.resolver.CompositeComponentELResolver;
+import org.apache.myfaces.el.resolver.CompositeComponentELResolver;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.junit.Assert;
 import org.junit.Test;

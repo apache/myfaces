@@ -38,7 +38,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 
-import org.apache.myfaces.el.unified.FacesELContext;
+import org.apache.myfaces.el.FacesELContext;
 import org.apache.myfaces.context.ReleasableExternalContext;
 import org.apache.myfaces.util.Assert;
 

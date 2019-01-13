@@ -33,10 +33,10 @@ import javax.servlet.jsp.JspFactory;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.ResolverForJSPInitializer;
-import org.apache.myfaces.el.unified.ELResolverBuilder;
-import org.apache.myfaces.el.unified.ResolverBuilderForJSP;
-import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
-import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;
+import org.apache.myfaces.el.ELResolverBuilder;
+import org.apache.myfaces.el.ResolverBuilderForJSP;
+import org.apache.myfaces.el.resolver.FacesCompositeELResolver;
+import org.apache.myfaces.el.resolver.FacesCompositeELResolver.Scope;
 
 /**
  * Initializes MyFaces in a JSP 2.1 environment.
