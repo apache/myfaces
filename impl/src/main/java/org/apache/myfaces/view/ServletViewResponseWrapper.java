@@ -18,8 +18,6 @@
  */
 package org.apache.myfaces.view;
 
-import org.apache.myfaces.view.ViewResponseWrapper;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
