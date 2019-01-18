@@ -37,4 +37,8 @@ public class TestBean {
     public void setSayHello(String sayHello) {
         this.sayHello = sayHello;
     }
+
+    public void doAction() {
+        sayHello = "Action Performed";
+    }
 }

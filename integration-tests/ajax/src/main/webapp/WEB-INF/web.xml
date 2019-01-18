@@ -35,12 +35,22 @@
         <param-value>false</param-value>
     </context-param>
 
+
     <listener>
         <listener-class>org.apache.webbeans.servlet.WebBeansConfigurationListener</listener-class>
     </listener>
     <listener>
         <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
     </listener>
+
+    <servlet>
+        <servlet-name>MockupServlet</servlet-name>
+        <servlet-class>org.apache.myfaces.core.integrationtests.ajax.test1Protocol.ResponseMockup22</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MockupServlet</servlet-name>
+        <url-pattern>*.mockup</url-pattern>
+    </servlet-mapping>
 
     <session-config>
         <tracking-mode>COOKIE</tracking-mode>

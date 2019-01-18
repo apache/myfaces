@@ -26,18 +26,23 @@
 
     <h:head>
         <title>test</title>
-        <h:outputScript library="javax.faces" name="jsf.fs" />
+        <h:outputScript library="javax.faces" name="jsf.js" />
 
     </h:head>
 
     <h:body>
-        <h:form>
+        <h:form id="mainForm">
             #{testBean.sayHello}
 
+            <h:commandLink id="press" action="#{testBean.doAction}" styleClass="press">Press Me
+                <f:ajax execute="@this" render="@form"></f:ajax>
+            </h:commandLink>
             <script type="text/javascript">
             //<!--
                 if(window.jsf && window.jsf.ajax) {
-                    document.body.innerHTML = document.body.innerHTML + "_ajax_found";
+                    let node = document.createElement("span");
+                    node.innerHTML = "_ajax_found";
+                    document.body.append(node);
                 }
             //-->
             </script>

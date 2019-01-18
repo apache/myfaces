@@ -21,6 +21,8 @@ package org.apache.myfaces.core.integrationtests.ajax;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
+import org.jboss.arquillian.graphene.javascript.JavaScript;
+import org.jboss.arquillian.graphene.request.RequestGuard;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -30,18 +32,30 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ByIdOrName;
 
 import java.io.File;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+
+import static org.jboss.arquillian.graphene.Graphene.waitAjax;
+
 
 @RunWith(Arquillian.class)
 @RunAsClient
-public class IntegrationTest
-{
+public class IntegrationTest {
+
+    public static final String IB_1 = "insert before succeeded should display before test1";
+    public static final String IB_2 = "insert2 before succeeded should display before test1";
+    public static final String IA_2 = "insert2 after succeeded should display after test1";
+    public static final String IA_1 = "insert after succeeded should display after test1";
+    public static final String IEL = "update succeeded 1";
+
     @Deployment(testable = false)
-    public static WebArchive createDeployment()
-    {
+    public static WebArchive createDeployment() {
         WebArchive webArchive = (WebArchive) EmbeddedMaven.forProject(new File("pom.xml"))
                 .useMaven3Version("3.3.9")
                 .setGoals("package")
@@ -59,24 +73,117 @@ public class IntegrationTest
     @ArquillianResource
     protected URL contextPath;
 
+    @ArquillianResource
+    JavascriptExecutor executor;
+
+
+    @JavaScript
+    RequestGuard guard;
+
+
     @Before
-    public void before()
-    {
+    public void before() {
     }
 
     @After
-    public void after()
-    {
+    public void after() {
         webDriver.manage().deleteAllCookies();
     }
 
+
     @Test
-    public void testAjaxPresent()
-    {
-        webDriver.get(contextPath + "index.xhtml");
+    public void testAjaxPresent() {
+        webDriver.get(contextPath + "index.jsf");
 
 
+        webDriver.findElement(new ByIdOrName("mainForm:press")).click();
+        waitAjax().withTimeout(10, TimeUnit.SECONDS).until(new Function<WebDriver, Object>() {
+
+            public Object apply(WebDriver webDriver) {
+                return webDriver.getPageSource().contains("Action Performed");
+            }
+        });
         Assert.assertTrue(webDriver.getPageSource().contains("ViewState"));
         Assert.assertTrue(webDriver.getPageSource().contains("_ajax_found"));
+        Assert.assertTrue(webDriver.getPageSource().contains("Action Performed"));
+    }
+
+
+    /**
+     * Second test, test various aspects of the xhr protocol
+     * and the response handling
+     */
+    @Test
+    public void testProtocol() {
+        webDriver.get(contextPath + "test1-protocol.jsf");
+
+        //simple eval
+        trigger("cmd_eval", webDriver -> webDriver.getPageSource().contains("eval test succeeded"));
+
+        //simple update insert with embedded js
+        trigger("cmd_update_insert", webDriver ->  {
+            String pageSource = webDriver.getPageSource();
+            return pageSource.contains("embedded script at update succeed") &&
+                    pageSource.contains("embedded script at insert succeed");
+        });
+
+        //update, insert with the correct order
+        trigger("cmd_update_insert2", webDriver ->  {
+            String pageSource = webDriver.getPageSource();
+            return updateInsertElementsPresent(pageSource) &&
+                    correctInsertUpdatePos(pageSource);
+        });
+
+        //delete command
+        trigger("cmd_delete", webDriver ->  !webDriver.getPageSource().contains("deleteable"));
+
+
+        //attributes change
+        trigger("cmd_attributeschange", webDriver ->  webDriver.getPageSource().contains("1px solid black"));
+
+        //illegal response just triggers a normal error which goes into the log
+        trigger("cmd_illegalresponse", webDriver -> webDriver.findElement(new ByIdOrName("logError")).isDisplayed() &&
+                webDriver.findElement(new ByIdOrName("logError")).getText().contains("malformedXML"));
+
+        //server error, should trigger our error chain, no log error
+        trigger("cmd_error", webDriver -> webDriver.findElement(new ByIdOrName("processedErrror")).isDisplayed() &&
+                webDriver.findElement(new ByIdOrName("processedErrror")).getText().contains("serverError"));
+
+        //component error, client side, only log error
+        trigger("cmd_error_component", webDriver -> webDriver.findElement(new ByIdOrName("logError")).isDisplayed() &&
+                webDriver.findElement(new ByIdOrName("logError")).getText().contains("ArgNotSet"));
+
+    }
+
+
+    /**
+     * recurring trigger, wait until ajax processing is done function
+     *
+     * @param id the trigger element id
+     * @param condition a condition resolver which should return true if the condition is met
+     */
+    void trigger(String id, Function<WebDriver, Object> condition) {
+        webDriver.findElement(new ByIdOrName(id)).click();
+        waitAjax()
+                .withTimeout(10, TimeUnit.SECONDS)
+                .until(condition);
+    }
+
+
+    //some page state condition helpers
+    private boolean updateInsertElementsPresent(String pageSource) {
+        return pageSource.contains(IB_1) &&
+                pageSource.contains(IB_2) &&
+                pageSource.contains(IA_2) &&
+                pageSource.contains(IA_1) &&
+                pageSource.contains(IEL);
+    }
+
+
+    private boolean correctInsertUpdatePos(String pageSource) {
+        return pageSource.indexOf(IB_1) < pageSource.indexOf(IB_2) &&
+                pageSource.indexOf(IB_2) < pageSource.indexOf(IEL) &&
+                pageSource.indexOf(IEL) < pageSource.indexOf(IA_2) &&
+                pageSource.indexOf(IA_2) < pageSource.indexOf(IA_1);
     }
 }
