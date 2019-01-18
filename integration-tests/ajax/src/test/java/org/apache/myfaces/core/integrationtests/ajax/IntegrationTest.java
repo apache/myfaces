@@ -121,25 +121,25 @@ public class IntegrationTest {
         trigger("cmd_eval", webDriver -> webDriver.getPageSource().contains("eval test succeeded"));
 
         //simple update insert with embedded js
-        trigger("cmd_update_insert", webDriver ->  {
+        trigger("cmd_update_insert", webDriver -> {
             String pageSource = webDriver.getPageSource();
             return pageSource.contains("embedded script at update succeed") &&
                     pageSource.contains("embedded script at insert succeed");
         });
 
         //update, insert with the correct order
-        trigger("cmd_update_insert2", webDriver ->  {
+        trigger("cmd_update_insert2", webDriver -> {
             String pageSource = webDriver.getPageSource();
             return updateInsertElementsPresent(pageSource) &&
                     correctInsertUpdatePos(pageSource);
         });
 
         //delete command
-        trigger("cmd_delete", webDriver ->  !webDriver.getPageSource().contains("deleteable"));
+        trigger("cmd_delete", webDriver -> !webDriver.getPageSource().contains("deleteable"));
 
 
         //attributes change
-        trigger("cmd_attributeschange", webDriver ->  webDriver.getPageSource().contains("1px solid black"));
+        trigger("cmd_attributeschange", webDriver -> webDriver.getPageSource().contains("1px solid black"));
 
         //illegal response just triggers a normal error which goes into the log
         trigger("cmd_illegalresponse", webDriver -> webDriver.findElement(new ByIdOrName("logError")).isDisplayed() &&
@@ -157,9 +157,22 @@ public class IntegrationTest {
 
 
     /**
+     * third test, body replacement
+     */
+    @Test
+    public void testViewBody() {
+        webDriver.get(contextPath + "test2-viewbody.jsf");
+        trigger("cmd_body1", webDriver ->
+                !webDriver.getPageSource().contains("toReplace") &&
+                        !webDriver.getPageSource().contains("hello from embedded script & in the body")
+        );
+    }
+
+
+    /**
      * recurring trigger, wait until ajax processing is done function
      *
-     * @param id the trigger element id
+     * @param id        the trigger element id
      * @param condition a condition resolver which should return true if the condition is met
      */
     void trigger(String id, Function<WebDriver, Object> condition) {
