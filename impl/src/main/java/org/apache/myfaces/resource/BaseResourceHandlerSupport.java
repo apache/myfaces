@@ -70,7 +70,12 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
         if (mapping != null)
         {
             String resourceBasePath = null;
-            if (mapping.isExtensionMapping())
+            if (mapping.isExactMapping())
+            {
+                // this method is actually only used to determine if the current request is a resource request
+                // as the resource can never be a exact mapping, lets ignore it
+            }
+            else if (mapping.isExtensionMapping())
             {
                 // Mapping using a suffix. In this case we have to strip 
                 // the suffix. If we have a url like:

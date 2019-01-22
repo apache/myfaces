@@ -28,6 +28,8 @@ import java.util.Map;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.application.FacesServletMapping;
+import org.apache.myfaces.application.FacesServletMappingUtils;
 
 /**
  * Default implementation for resources
@@ -110,20 +112,26 @@ public class ResourceImpl extends Resource implements ContractResource
     {
         if (_requestPath == null)
         {
-            String path;
-            if (_resourceHandlerSupport.isExtensionMapping())
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesServletMapping mapping = FacesServletMappingUtils.getCurrentRequestFacesServletMapping(context);
+            if (mapping.isExactMapping())
+            {
+                // resources can't be exact, lets fallback to a generic one
+                mapping = FacesServletMappingUtils.getGenericPrefixOrSuffixMapping(context);
+            }
+            
+            String path = "";
+            if (mapping.isExtensionMapping())
             {
                 path = _resourceHandlerSupport.getResourceIdentifier() + '/' + 
-                    getResourceName() + _resourceHandlerSupport.getMapping();
+                    getResourceName() + mapping.getExtension();
             }
-            else
+            else if (mapping.isPrefixMapping())
             {
-                String mapping = _resourceHandlerSupport.getMapping(); 
                 path = _resourceHandlerSupport.getResourceIdentifier() + '/' + getResourceName();
-                path = (mapping == null) ? path : mapping + path;
+                path = (mapping.getPrefix() == null) ? path : mapping.getPrefix() + path;
             }
 
-            FacesContext facesContext = FacesContext.getCurrentInstance();
             String metadata = null;
             boolean useAmp = false;
             if (getLibraryName() != null)
@@ -132,12 +140,12 @@ public class ResourceImpl extends Resource implements ContractResource
                 path = path + metadata;
                 useAmp = true;
 
-                if (!facesContext.isProjectStage(ProjectStage.Production)
+                if (!context.isProjectStage(ProjectStage.Production)
                         && JSF_JS_RESOURCE_NAME.equals(getResourceName()) 
                         && JAVAX_FACES_LIBRARY_NAME.equals(getLibraryName()))
                 {
                     // append &stage=?? for all ProjectStages except Production
-                    path = path + "&stage=" + facesContext.getApplication().getProjectStage().toString();
+                    path = path + "&stage=" + context.getApplication().getProjectStage().toString();
                 }
             }
             if (_resourceMeta.getLocalePrefix() != null)
@@ -150,7 +158,7 @@ public class ResourceImpl extends Resource implements ContractResource
                 path = path + (useAmp ? '&' : '?') + "con=" + _resourceMeta.getContractName();
                 useAmp = true;
             }
-            _requestPath = facesContext.getApplication().getViewHandler().getResourceURL(facesContext, path);
+            _requestPath = context.getApplication().getViewHandler().getResourceURL(context, path);
         }
         return _requestPath;
     }
