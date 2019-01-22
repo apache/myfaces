@@ -117,40 +117,6 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
     }
 
     @Override
-    public boolean isExtensionMapping()
-    {
-        FacesServletMapping mapping = FacesServletMappingUtils.getCurrentRequestFacesServletMapping(
-                FacesContext.getCurrentInstance());
-        if (mapping != null)
-        {
-            if (mapping.isExtensionMapping())
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    @Override
-    public String getMapping()
-    {
-        FacesServletMapping mapping = FacesServletMappingUtils.getCurrentRequestFacesServletMapping(
-                FacesContext.getCurrentInstance());
-        if (mapping != null)
-        {
-            if (mapping.isExtensionMapping())
-            {
-                return mapping.getExtension();
-            }
-            else
-            {
-                return mapping.getPrefix();
-            }
-        }
-        return "";
-    }
-    
-    @Override
     public long getStartupTime()
     {
         return _startupTime;

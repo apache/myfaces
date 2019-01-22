@@ -126,7 +126,7 @@ public class ResourceImpl extends Resource implements ContractResource
                 path = _resourceHandlerSupport.getResourceIdentifier() + '/' + 
                     getResourceName() + mapping.getExtension();
             }
-            else if (mapping.isPrefixMapping())
+            else
             {
                 path = _resourceHandlerSupport.getResourceIdentifier() + '/' + getResourceName();
                 path = (mapping.getPrefix() == null) ? path : mapping.getPrefix() + path;

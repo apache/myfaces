@@ -71,21 +71,7 @@ public abstract class ResourceHandlerSupport
      * @return 
      */
     public abstract ResourceLoader[] getViewResourceLoaders();
-    
-    /**
-     * Check if the mapping used is done using extensions (.xhtml, .jsf)
-     * or if it is not (/faces/*)
-     * @return
-     */
-    public abstract boolean isExtensionMapping();
-    
-    /**
-     * Get the mapping used as prefix(/faces) or sufix(.jsf)
-     * 
-     * @return
-     */
-    public abstract String getMapping();
-    
+
     /**
      * Return the time when the app started. This is useful to set the
      * "Last-Modified" header in some specific cases.
