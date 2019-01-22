@@ -130,9 +130,15 @@ public class ViewIdSupport
             }
             else if (mapping.isExactMapping())
             {
+                // if the current request is a exact mapping and the viewId equals the exact viewId
                 if (rawViewId.equals(mapping.getExact()))
                 {
                     viewId = handleSuffixMapping(context, rawViewId + ".jsf");
+                }
+                // otherwise lets try to resolve a possible mapping for the requested viewId
+                else
+                {
+                    viewId = rawViewId;
                 }
             }
             else if (mapping.isPrefixMapping())

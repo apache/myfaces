@@ -48,7 +48,7 @@ public class FacesServletMappingUtils
         if (mapping == null)
         {
             ExternalContext externalContext = context.getExternalContext();
-            mapping = FacesServletMappingUtils.calculateFacesServletMapping(
+            mapping = calculateFacesServletMapping(
                     context,
                     externalContext.getRequestServletPath(),
                     externalContext.getRequestPathInfo(),
