@@ -85,6 +85,14 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         {
             viewId = handleSuffixMapping(context, viewId);
         }
+        else if (mapping.isExactMapping())
+        {
+            // if the current request is a exact mapping and the viewId equals the exact viewId
+            if (viewId.equals(mapping.getExact()))
+            {
+                viewId = handleSuffixMapping(context, viewId + ".jsf");
+            }
+        }
         else if(mapping.isPrefixMapping())
         {
             viewId = handlePrefixMapping(viewId,mapping.getPrefix());
@@ -131,6 +139,14 @@ public class DefaultViewHandlerSupport implements ViewHandlerSupport
         if (mapping == null || mapping.isExtensionMapping())
         {
             viewId = handleSuffixMapping(context, viewId);
+        }
+        else if (mapping.isExactMapping())
+        {
+            // if the current request is a exact mapping and the viewId equals the exact viewId
+            if (viewId.equals(mapping.getExact()))
+            {
+                viewId = handleSuffixMapping(context, viewId + ".jsf");
+            }
         }
         else if(mapping.isPrefixMapping())
         {
