@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.core.integrationtests.ajax;
+package org.apache.myfaces.core.integrationtests.ajax.basic;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.annotation.FacesConfig;

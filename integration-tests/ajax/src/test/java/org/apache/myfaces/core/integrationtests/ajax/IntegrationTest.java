@@ -28,7 +28,6 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.embedded.EmbeddedMaven;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +41,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import static org.jboss.arquillian.graphene.Graphene.waitAjax;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 @RunWith(Arquillian.class)
@@ -103,9 +104,9 @@ public class IntegrationTest {
                 return webDriver.getPageSource().contains("Action Performed");
             }
         });
-        Assert.assertTrue(webDriver.getPageSource().contains("ViewState"));
-        Assert.assertTrue(webDriver.getPageSource().contains("_ajax_found"));
-        Assert.assertTrue(webDriver.getPageSource().contains("Action Performed"));
+        assertTrue(webDriver.getPageSource().contains("ViewState"));
+        assertTrue(webDriver.getPageSource().contains("_ajax_found"));
+        assertTrue(webDriver.getPageSource().contains("Action Performed"));
     }
 
 
@@ -166,6 +167,21 @@ public class IntegrationTest {
                 !webDriver.getPageSource().contains("toReplace") &&
                         !webDriver.getPageSource().contains("hello from embedded script & in the body")
         );
+    }
+
+
+    /**
+     * third test, testing the chain function
+     */
+    @Test
+    public void testChain() {
+        webDriver.get(contextPath + "test3-chain.jsf");
+        webDriver.findElement(new ByIdOrName("chaincall")).click();
+        String testSource = webDriver.findElement(new ByIdOrName("testResults")).getText();
+        assertTrue(testSource.contains("test1 succeeded"));
+        assertTrue(testSource.contains("test2 succeeded"));
+        assertTrue(testSource.contains("test3 succeeded"));
+        assertFalse(testSource.contains("test4 failed"));
     }
 
 
