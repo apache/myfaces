@@ -31,8 +31,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ByIdOrName;
 
 import java.io.File;
@@ -182,6 +184,19 @@ public class IntegrationTest {
         assertTrue(testSource.contains("test2 succeeded"));
         assertTrue(testSource.contains("test3 succeeded"));
         assertFalse(testSource.contains("test4 failed"));
+    }
+
+
+    @Test
+    public void testBasicTable() {
+        webDriver.get(contextPath + "test4-tablebasic.jsf");
+
+        trigger("replace_head", webDriver -> {
+            final WebElement testTable = webDriver.findElement(new By.ById("testTable"));
+            System.out.println(testTable.getText());
+            return testTable.getText().contains("column1 in line1 replaced") &&
+                    testTable.getText().contains("script evaled0");
+        });
     }
 
 

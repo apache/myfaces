@@ -100,7 +100,7 @@ public class ResponseMockup extends HttpServlet
             } else if (op.trim().toLowerCase().equals("updateinsert2"))
             {
                 Changes changes = new Changes(root);
-                changes.addChild(new Update(changes, "changesArea", "<div id='changesArea'>update succeeded " + (cnt++) + "</div><script type='text/javascript'>document.getElementById('evalarea2').innerHTML='embedded script at update succeed';</script>"));
+                changes.addChild(new Update(changes, "changesArea", "<div id='changesArea'>update succeeded 1</div><script type='text/javascript'>document.getElementById('evalarea2').innerHTML='embedded script at update succeed';</script>"));
                 changes.addChild(new Insert2(changes, "inserted1", "<div id='insertbefore'>insert2 before succeeded " +
                         "should display before test1</div><script type='text/javascript'>document.getElementById('evalarea3').innerHTML='embedded script at insert succeed';</script>", "changesArea", null));
                 changes.addChild(new Insert2(changes, "inserted2", "<div  id='insertafter'>insert2 after succeeded " +
