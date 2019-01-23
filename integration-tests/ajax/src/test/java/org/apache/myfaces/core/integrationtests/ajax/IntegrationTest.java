@@ -193,10 +193,39 @@ public class IntegrationTest {
 
         trigger("replace_head", webDriver -> {
             final WebElement testTable = webDriver.findElement(new By.ById("testTable"));
-            System.out.println(testTable.getText());
+
             return testTable.getText().contains("column1 in line1 replaced") &&
                     testTable.getText().contains("script evaled0");
         });
+
+        trigger("replace_body", webDriver -> {
+            final WebElement tableSegment = webDriver.findElement(new By.ById("body_row1_col1"));
+            System.out.println(tableSegment.getText());
+            return tableSegment.getText().contains("column1 in line1 replaced") &&
+                    tableSegment.getText().contains("script evaled");
+        });
+
+        trigger("insert_row_head", webDriver -> {
+            final WebElement headRow0 = webDriver.findElement(new By.ById("head_row1_0"));
+            final WebElement headRow1 = webDriver.findElement(new By.ById("head_row1"));
+
+            return  headRow1.getLocation().y > headRow0.getLocation().y &&
+                    headRow0.getText().contains("column1 in line1 inserted before") &&
+                    headRow0.getText().contains("colum2 in line2 inserted before");
+        });
+
+
+        //TODO the content is correct but the numbers are dynamic, so we need to find
+        //a better way to identify the elements
+       /* trigger("insert_row_body", webDriver -> {
+            final WebElement headRow0 = webDriver.findElement(new By.ByClassName("body_row1_0"));
+            final WebElement headRow1 = webDriver.findElement(new By.ById("head_row1"));
+
+            return  headRow1.getLocation().y > headRow0.getLocation().y &&
+                    headRow0.getText().contains("column1 in line1 inserted before") &&
+                    headRow0.getText().contains("colum2 in line2 inserted before");
+        });*/
+
     }
 
 
