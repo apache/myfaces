@@ -18,39 +18,34 @@
  */
 package org.apache.myfaces.core.integrationtests.ajax.test1Protocol;
 
-import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.Attribute;
-import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.Attributes;
-import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.Changes;
-import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.Delete;
-import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.ErrorResponse;
-import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.Eval;
-import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.Insert;
-import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.Insert2;
-import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.PartialResponse;
-import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.Update;
+import org.apache.myfaces.core.integrationtests.ajax.test1Protocol.jsfxmlnodes.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+
+class ViewData {
+
+    public int cnt = 0;
+    public int elemCnt = 0;
+    public int red = 0;
+}
+
 
 /**
  * @author werpu
  */
-public class ResponseMockup extends HttpServlet
-{
+public class ResponseMockup extends HttpServlet {
 
-    int cnt = 0;
-    int elemCnt = 0;
-    int red = 0;
-    String defaultResponse = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+    public static final String VIEW_DATA = "_viewData_";
+    private static String DEFAULT_RESPONSE = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
             "<partial-response><changes><update id=\"out1\"><![CDATA[<span id=\"out1\">2</span>]]></update><update id" +
             "=\"javax.faces.ViewState\"><![CDATA[j_id1:j_id3]]></update></changes></partial-response>";
+    private static String EMPTY_RESPONSE = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+            "<partial-response><changes></changes></partial-response>";
+
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -61,8 +56,18 @@ public class ResponseMockup extends HttpServlet
      * @throws java.io.IOException            if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException
-    {
+            throws ServletException, IOException {
+
+        //we simulate viewscoped here
+        String origin = (String) request.getParameter("origin");
+        origin = (origin != null) ? origin : "";
+
+        ViewData viewData = (ViewData) request.getSession().getAttribute(VIEW_DATA + origin);
+        if (viewData == null) {
+            viewData = resetViewData(request, origin);
+        }
+
+
         response.setContentType("text/xml;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
@@ -77,28 +82,27 @@ public class ResponseMockup extends HttpServlet
          * attributeChange
          *
          */
-        try
-        {
+        try {
 
-            if (op == null || op.isEmpty())
-            {
-                out.println(defaultResponse);
-            } else if (op.trim().toLowerCase().equals("eval1"))
-            {
+            if (op == null || op.isEmpty()) {
+                out.println(DEFAULT_RESPONSE);
+            } else if (op.trim().equalsIgnoreCase("reset_counters")) {
+                resetViewData(request, origin);
+                out.println(EMPTY_RESPONSE);
+                System.out.println("reset");
+            } else if (op.trim().toLowerCase().equals("eval1")) {
                 Changes changes = new Changes(root);
                 changes.addChild(new Eval(changes, "document.getElementById('evalarea1').innerHTML = 'eval test succeeded';"));
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("updateinsert1"))
-            {
+            } else if (op.trim().toLowerCase().equals("updateinsert1")) {
                 Changes changes = new Changes(root);
-                changes.addChild(new Update(changes, "changesArea", "<div id='changesArea'>update succeeded " + (cnt++) + "</div><script type='text/javascript'>document.getElementById('evalarea2').innerHTML='embedded script at update succeed';</script>"));
+                changes.addChild(new Update(changes, "changesArea", "<div id='changesArea'>update succeeded " + (viewData.cnt++) + "</div><script type='text/javascript'>document.getElementById('evalarea2').innerHTML='embedded script at update succeed';</script>"));
                 changes.addChild(new Insert(changes, "inserted1", "<div id='insertbefore'>insert before succeeded should display before test1</div><script type='text/javascript'>document.getElementById('evalarea3').innerHTML='embedded script at insert succeed';</script>", "changesArea", null));
                 changes.addChild(new Insert(changes, "inserted2", "<div  id='insertafter'>insert after succeeded should display after test1</div>", null, "changesArea"));
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("updateinsert2"))
-            {
+            } else if (op.trim().toLowerCase().equals("updateinsert2")) {
                 Changes changes = new Changes(root);
                 changes.addChild(new Update(changes, "changesArea", "<div id='changesArea'>update succeeded 1</div><script type='text/javascript'>document.getElementById('evalarea2').innerHTML='embedded script at update succeed';</script>"));
                 changes.addChild(new Insert2(changes, "inserted1", "<div id='insertbefore'>insert2 before succeeded " +
@@ -108,40 +112,34 @@ public class ResponseMockup extends HttpServlet
                 root.addElement(changes);
                 out.println(root.toString());
 
-            } else if (op.trim().toLowerCase().equals("delete1"))
-            {
+            } else if (op.trim().toLowerCase().equals("delete1")) {
                 Changes changes = new Changes(root);
                 changes.addChild(new Delete(changes, "deleteable"));
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("viewstate"))
-            {
+            } else if (op.trim().toLowerCase().equals("viewstate")) {
                 Changes changes = new Changes(root);
                 changes.addChild(new Update(changes, "javax.faces.ViewState", "hello world"));
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("attributes"))
-            {
+            } else if (op.trim().toLowerCase().equals("attributes")) {
                 Changes changes = new Changes(root);
                 Attributes attr = new Attributes(changes, "attributeChange");
-                attr.addAttribute(new Attribute("style", "color:rgb(" + ((red += 10) % 255) + ",100,100);"));
+                attr.addAttribute(new Attribute("style", "color:rgb(" + ((viewData.red += 10) % 255) + ",100,100);"));
                 attr.addAttribute(new Attribute("style", "border:1px solid black"));
                 attr.addAttribute(new Attribute("onclick", "document.getElementById('evalarea4').innerHTML = 'attributes onclick succeeded';"));
 
                 changes.addChild(attr);
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("errors"))
-            {
+            } else if (op.trim().toLowerCase().equals("errors")) {
                 root.addElement(new ErrorResponse(root, "Error1", "Error1 Text"));
                 root.addElement(new ErrorResponse(root, "Error2", "Error2 Text"));
 
                 out.println(root.toString());
-            } else if (op.trim().equals("illegalResponse"))
-            {
+            } else if (op.trim().equals("illegalResponse")) {
                 out.println(">>>> xxxx >YYYY-!->>>");
-            } else if (op.trim().toLowerCase().equals("body"))
-            {
+            } else if (op.trim().toLowerCase().equals("body")) {
                 //we omit our xml builder for now
                 StringBuilder replacement = new StringBuilder();
 
@@ -173,16 +171,14 @@ public class ResponseMockup extends HttpServlet
                 root.addElement(changes);
                 changes.addChild(new Update(changes, "javax.faces.ViewBody", replacement.toString()));
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("body2"))
-            {
+            } else if (op.trim().toLowerCase().equals("body2")) {
                 //we omit our xml builder for now
                 StringBuilder replacement = new StringBuilder();
 
                 replacement.append("<body class=\"tundra\"> " +
                         "    <div id=\"myfaces.logging\"><div id = \"centerDiv\">\n" +
                         "        <h1>Selenium Test for body change done</h1>\n");
-                for (int cnt = 0; cnt < 300; cnt++)
-                {
+                for (int cnt = 0; cnt < 300; viewData.cnt++) {
                     replacement.append("        <div id = \"testResults" + cnt + "\" ></div>\n");
                 }
                 replacement.append("            <h3>Body replacement test successful</h3>\n" +
@@ -195,19 +191,16 @@ public class ResponseMockup extends HttpServlet
                 changes.addChild(new Update(changes, "javax.faces.ViewBody", replacement.toString()));
                 out.println(root.toString());
 
-            } else if (op.trim().toLowerCase().equals("body3"))
-            {
+            } else if (op.trim().toLowerCase().equals("body3")) {
 
                 File fIn = new File("/Users/werpu/development/workspace/TestRI20/TestRI20/src/main/webapp/34beta.html.html");
                 FileReader fRead = new FileReader(fIn);
                 BufferedReader reader = new BufferedReader(fRead);
                 String line = null;
                 StringBuilder replacement = new StringBuilder();
-                do
-                {
+                do {
                     line = reader.readLine();
-                    if (line != null)
-                    {
+                    if (line != null) {
                         replacement.append(line);
                         replacement.append("\n");
                     }
@@ -217,26 +210,23 @@ public class ResponseMockup extends HttpServlet
                 changes.addChild(new Update(changes, "javax.faces.ViewRoot", replacement.toString()));
                 out.println(root.toString());
 
-            } else if (op.trim().toLowerCase().equals("serversideresponsewriter"))
-            {
+            } else if (op.trim().toLowerCase().equals("serversideresponsewriter")) {
                 DeferredScriptMockup scriptMockup = new DeferredScriptMockup();
                 Changes changes = new Changes(root);
                 changes.addChild(new Eval(changes, "alert('the output is on the server console');"));
                 root.addElement(changes);
                 out.println(root.toString());
                 // table tests
-            } else if (op.trim().toLowerCase().equals("illegalResponse"))
-            {
+            } else if (op.trim().toLowerCase().equals("illegalResponse")) {
                 out.println("blablabl this is an illegal reponse, you should see an error");
-            } else if (op.trim().toLowerCase().equals("table_replace_head"))
-            {
+            } else if (op.trim().toLowerCase().equals("table_replace_head")) {
                 Changes changes = new Changes(root);
                 changes.addChild(new Update(changes, "head1", "<thead id=\"head1\">" +
                         "<tr id=\"head_row1\">" +
                         "<td id=\"head_col1\"><div id=\"col1_head\">column1 in line1 replaced</div></td>" +
                         "<td id=\"head_col2\">colum2 in line1 replaced<script " +
                         "type=\"text/javascript\">document.getElementById(\"head_col1\").innerHTML = document" +
-                        ".getElementById(\"head_col1\").innerHTML+\"<div class='eval_result'>script evaled" + (cnt++)
+                        ".getElementById(\"head_col1\").innerHTML+\"<div class='eval_result'>script evaled" + (viewData.cnt++)
                         + "</div>\";" +
                         "</script></td>" +
                         "</tr>" +
@@ -245,8 +235,7 @@ public class ResponseMockup extends HttpServlet
                 root.addElement(changes);
                 out.println(root.toString());
 
-            } else if (op.trim().toLowerCase().equals("table_replace_body"))
-            {
+            } else if (op.trim().toLowerCase().equals("table_replace_body")) {
                 Changes changes = new Changes(root);
                 changes.addChild(new Update(changes, "tbody1", "<tbody id=\"tbody1\">" +
                         "<tr id=\"body_row1\">" +
@@ -254,108 +243,102 @@ public class ResponseMockup extends HttpServlet
                         "<td id=\"body_row1_col2\">colum2 in line1 replaced<script " +
                         "type=\"text/javascript\">document.getElementById(\"body_row1_col1\").innerHTML = document" +
                         ".getElementById(\"body_row1_col1\").innerHTML+\"<div class='eval_result'>script " +
-                        "evaled" + (cnt++) + "</div>\";" +
+                        "evaled" + (viewData.cnt++) + "</div>\";" +
                         "</script></td>" +
                         "</tr>" +
                         "</tbody>"));
 
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("table_insert_row_head"))
-            {
+            } else if (op.trim().toLowerCase().equals("table_insert_row_head")) {
                 Changes changes = new Changes(root);
-                changes.addChild(new Insert2(changes, "head_row1", " <tr class='insert_before' id=\"head_row1_" + (elemCnt++) + "\">\n" +
-                        "                <td id=\"head_col1_" + elemCnt + "\">column1 in line1 inserted " +
+                changes.addChild(new Insert2(changes, "head_row1", " <tr class='insert_before' id=\"head_row1_" + (viewData.elemCnt++) + "\">\n" +
+                        "                <td id=\"head_col1_" + viewData.elemCnt + "\">column1 in line1 inserted " +
                         "before</td>\n" +
-                        "                <td id=\"head_col2_" + elemCnt + "\">colum2 in line2 inserted before</td>\n" +
+                        "                <td id=\"head_col2_" + viewData.elemCnt + "\">colum2 in line2 inserted before</td>\n" +
                         "            </tr>", "head_row1", null));
                 changes.addChild(new Insert2(changes, "head_row2", " <tr class='insert_after' id=\"head_row" +
-                        (elemCnt++) + "\">\n" +
-                        "                <td id=\"head_col1_" + elemCnt + "\">column1 in line1 inserted after" +
+                        (viewData.elemCnt++) + "\">\n" +
+                        "                <td id=\"head_col1_" + viewData.elemCnt + "\">column1 in line1 inserted after" +
                         "                </td>" +
-                        "                <td id=\"head_col2_" + elemCnt + "\">" +
+                        "                <td id=\"head_col2_" + viewData.elemCnt + "\">" +
                         "                  colum2 in line2 inserted after" +
                         "                  <script type=\"text/javascript\">" +
-                        "                       document.getElementById(\"head_col1_" + elemCnt + "\").innerHTML = " +
-                        "                       document.getElementById(\"head_col1_" + elemCnt + "\")" +
+                        "                       document.getElementById(\"head_col1_" + viewData.elemCnt + "\").innerHTML = " +
+                        "                       document.getElementById(\"head_col1_" + viewData.elemCnt + "\")" +
                         ".innerHTML+\"<div class='eval_result'>script " +
-                        "                       evaled" + (cnt++) + "</div>\"; " +
+                        "                       evaled" + (viewData.cnt++) + "</div>\"; " +
                         "                  </script>" +
                         "               </td>\n" +
                         "            </tr>", null, "head_row1"));
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("table_insert_row_body"))
-            {
+            } else if (op.trim().toLowerCase().equals("table_insert_row_body")) {
                 Changes changes = new Changes(root);
                 changes.addChild(new Insert2(changes, "body_row1", " <tr class='insert_before' id=\"body_row1_" +
-                        (elemCnt++) +
+                        (viewData.elemCnt++) +
                         "\">\n" +
-                        "                <td id=\"body_row1_" + elemCnt + "_col1\">column1 in " +
+                        "                <td id=\"body_row1_" + viewData.elemCnt + "_col1\">column1 in " +
                         "line1 inserted before</td>\n" +
-                        "                <td id=\"body_row1_" + elemCnt + "_col2\">colum2 in line2 inserted " +
+                        "                <td id=\"body_row1_" + viewData.elemCnt + "_col2\">colum2 in line2 inserted " +
                         "before</td>\n" +
                         "            </tr>", "body_row1", null));
                 changes.addChild(new Insert2(changes, "body_row2", " <tr class='insert_after' id=\"body_row1_" +
-                        (elemCnt++) + "\">\n" +
-                        "                <td id=\"body_row1_" + elemCnt + "_col1\">column1 in line1 inserted after" +
+                        (viewData.elemCnt++) + "\">\n" +
+                        "                <td id=\"body_row1_" + viewData.elemCnt + "_col1\">column1 in line1 inserted after" +
                         "                </td>" +
-                        "                <td id=\"body_row1_" + elemCnt + "_col2\">" +
+                        "                <td id=\"body_row1_" + viewData.elemCnt + "_col2\">" +
                         "                  colum2 in line2 inserted after" +
                         "                  <script type=\"text/javascript\">" +
                         "                       document.getElementById(\"body_row1_col1\").innerHTML = " +
-                        "                       document.getElementById(\"body_row1_" + elemCnt + "_col1\")" +
+                        "                       document.getElementById(\"body_row1_" + viewData.elemCnt + "_col1\")" +
                         ".innerHTML+\"<div class='eval_result'>script " +
-                        "                       evaled" + (cnt++) + "</div>\"; " +
+                        "                       evaled" + (viewData.cnt++) + "</div>\"; " +
                         "                  </script>" +
                         "               </td>\n" +
                         "            </tr>", null, "body_row1"));
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("table_insert_column_head"))
-            {
+            } else if (op.trim().toLowerCase().equals("table_insert_column_head")) {
                 Changes changes = new Changes(root);
-                changes.addChild(new Insert2(changes, "head_col1", "<td id='head_col1_1_" + (elemCnt++) + "'>inserted " +
-                        "before" + elemCnt + "</td>" + "<td id='head_col1_1_" + (elemCnt++) + "'>inserted " +
-                        "before " + elemCnt + "</td>",
+                changes.addChild(new Insert2(changes, "head_col1", "<td id='head_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
+                        "before" + viewData.elemCnt + "</td>" + "<td id='head_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
+                        "before " + viewData.elemCnt + "</td>",
                         "head_col1",
                         null));
-                changes.addChild(new Insert2(changes, "head_col1", "<td id='head_col1_1_" + (elemCnt++) + "'>inserted " +
-                        "after" + elemCnt + "</td>" + "<td id='head_col1_1_" + (elemCnt++) + "'>inserted " +
-                        "after" + elemCnt + "</td>",
+                changes.addChild(new Insert2(changes, "head_col1", "<td id='head_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
+                        "after" + viewData.elemCnt + "</td>" + "<td id='head_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
+                        "after" + viewData.elemCnt + "</td>",
                         null,
                         "head_col2"));
 
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("table_insert_column_body"))
-            {
+            } else if (op.trim().toLowerCase().equals("table_insert_column_body")) {
                 Changes changes = new Changes(root);
-                changes.addChild(new Insert2(changes, "body_row1_col1", "<td id='body_row1_col1_1_" + (elemCnt++) +
+                changes.addChild(new Insert2(changes, "body_row1_col1", "<td id='body_row1_col1_1_" + (viewData.elemCnt++) +
                         "'>inserted " +
-                        "before" + elemCnt + "</td>" + "<td id='body_row1_col1_1_" + (elemCnt++) + "'>inserted " +
-                        "before " + elemCnt + "</td>",
+                        "before" + viewData.elemCnt + "</td>" + "<td id='body_row1_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
+                        "before " + viewData.elemCnt + "</td>",
                         "body_row1_col1",
                         null));
-                changes.addChild(new Insert2(changes, "body_row1_col1", "<td id='body_row1_col1_1_" + (elemCnt++) +
+                changes.addChild(new Insert2(changes, "body_row1_col1", "<td id='body_row1_col1_1_" + (viewData.elemCnt++) +
                         "'>inserted " +
-                        "after" + elemCnt + "</td>" + "<td id='body_row1_col1_1_" + (elemCnt++) + "'>inserted " +
-                        "after" + elemCnt + "</td>",
+                        "after" + viewData.elemCnt + "</td>" + "<td id='body_row1_col1_1_" + (viewData.elemCnt++) + "'>inserted " +
+                        "after" + viewData.elemCnt + "</td>",
                         null,
                         "body_row1_col2"));
 
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("table_insert_footer"))
-            {
+            } else if (op.trim().toLowerCase().equals("table_insert_footer")) {
                 Changes changes = new Changes(root);
                 changes.addChild(new Insert2(changes, "body_row1_col1", "<tfooter>footer inserted</tfooter>",
                         null,
                         "tbody1"));
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("table_insert_body"))
-            {
+            } else if (op.trim().toLowerCase().equals("table_insert_body")) {
                 Changes changes = new Changes(root);
                 changes.addChild(new Insert2(changes, "body_row1_col1",
                         "<tbody><tr><td colspan='2'>second body added</td></tr></tbody>",
@@ -363,41 +346,21 @@ public class ResponseMockup extends HttpServlet
                         "tbody1"));
                 root.addElement(changes);
                 out.println(root.toString());
-            } else if (op.trim().toLowerCase().equals("executenone"))
-            {
+            } else if (op.trim().toLowerCase().equals("executenone")) {
                 boolean execute = request.getParameter("javax.faces.partial.execute") != null;
                 boolean render = request.getParameter("javax.faces.partial.render") != null;
 
                 Changes changes = new Changes(root);
-                changes.addChild(new Update(changes, "result",(!execute && !render) ?  "<div " +
-                        "id='result'>success</div>" :  "<div " +
-                                                "id='result'>fail</div>"));
+                changes.addChild(new Update(changes, "result", (!execute && !render) ? "<div " +
+                        "id='result'>success</div>" : "<div " +
+                        "id='result'>fail</div>"));
                 root.addElement(changes);
                 out.println(root.toString());
             }
 
-        }
-        finally
-        {
+        } finally {
             out.close();
         }
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     * @throws javax.servlet.ServletException if a servlet-specific error occurs
-     * @throws java.io.IOException            if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException
-    {
-        processRequest(request, response);
     }
 
     /**
@@ -410,8 +373,7 @@ public class ResponseMockup extends HttpServlet
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException
-    {
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -421,8 +383,16 @@ public class ResponseMockup extends HttpServlet
      * @return a String containing servlet description
      */
     @Override
-    public String getServletInfo()
-    {
+    public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+
+    private ViewData resetViewData(HttpServletRequest request, String origin) {
+        ViewData viewData;
+        viewData = new ViewData();
+        request.getSession().setAttribute(VIEW_DATA + origin, viewData);
+        return viewData;
+    }
+
 }

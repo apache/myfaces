@@ -84,20 +84,31 @@ public class IntegrationTest {
     RequestGuard guard;
 
 
-    @Before
-    public void before() {
-    }
+
 
     @After
     public void after() {
         webDriver.manage().deleteAllCookies();
     }
 
+    @Before
+    public void before() {}
+
+    public void resetServerValues() {
+        waitAjax().withTimeout(10, TimeUnit.SECONDS).until(new Function<WebDriver, Object>() {
+
+            public Object apply(WebDriver webDriver) {
+                return webDriver.findElement(By.id("_reset_all")).isDisplayed();
+            }
+        });
+        webDriver.findElement(new By.ById("_reset_all")).click();
+    }
 
     @Test
     public void testAjaxPresent() {
-        webDriver.get(contextPath + "index.jsf");
 
+        webDriver.get(contextPath + "index.jsf");
+        resetServerValues();
 
         webDriver.findElement(new ByIdOrName("mainForm:press")).click();
         waitAjax().withTimeout(10, TimeUnit.SECONDS).until(new Function<WebDriver, Object>() {
@@ -119,7 +130,7 @@ public class IntegrationTest {
     @Test
     public void testProtocol() {
         webDriver.get(contextPath + "test1-protocol.jsf");
-
+        resetServerValues();
         //simple eval
         trigger("cmd_eval", webDriver -> webDriver.getPageSource().contains("eval test succeeded"));
 
@@ -165,6 +176,7 @@ public class IntegrationTest {
     @Test
     public void testViewBody() {
         webDriver.get(contextPath + "test2-viewbody.jsf");
+        resetServerValues();
         trigger("cmd_body1", webDriver ->
                 !webDriver.getPageSource().contains("toReplace") &&
                         !webDriver.getPageSource().contains("hello from embedded script & in the body")
@@ -178,6 +190,7 @@ public class IntegrationTest {
     @Test
     public void testChain() {
         webDriver.get(contextPath + "test3-chain.jsf");
+        resetServerValues();
         webDriver.findElement(new ByIdOrName("chaincall")).click();
         String testSource = webDriver.findElement(new ByIdOrName("testResults")).getText();
         assertTrue(testSource.contains("test1 succeeded"));
@@ -190,6 +203,7 @@ public class IntegrationTest {
     @Test
     public void testBasicTable() {
         webDriver.get(contextPath + "test4-tablebasic.jsf");
+        resetServerValues();
 
         trigger("replace_head", webDriver -> {
             final WebElement testTable = webDriver.findElement(new By.ById("testTable"));

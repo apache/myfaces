@@ -40,6 +40,7 @@ function emitPPR(source, event, action, formName,  target, onError, onEvent) {
     try {
         jsf.ajax.request(/*String|Dom Node*/ source, /*|EVENT|*/ (window.event) ? window.event : event, /*{|OPTIONS|}*/ {
             op: action,
+            origin: window.location.href,
             onerror: onError || function (data) {
                 /*
                 * generic error check, all the error data coming in is dumped into a special entry
@@ -52,6 +53,16 @@ function emitPPR(source, event, action, formName,  target, onError, onEvent) {
         console.error(e);
     }
 
+}
+
+
+function resetServerValues(evt) {
+
+
+    var formName = document.querySelectorAll("form").length ? document.querySelector("form")[0].name : null;
+    var button = document.body.querySelectorAll("#_reset_all")[0];
+
+    emitPPR(button, evt, "reset_counters", formName)
 }
 
 
@@ -94,3 +105,21 @@ if(console.error) {
         oldErrorFunc.apply(console, arguments);
     }
 }
+
+/**
+ * we add a stanardized reset button to our firsat form to reset the counters
+ */
+window.addEventListener("DOMContentLoaded", function() {
+    if(document.body.querySelectorAll("#_reset_all").length == 0) {
+        var button = document.createElement("button");
+        button.id = "_reset_all";
+        button.onclick = function(evt) {
+            resetServerValues(evt);
+            return false;
+        };
+        let form = document.body.querySelectorAll("form").length ?
+            document.body.querySelectorAll("form")[0] : document.body;
+        form.appendChild(button);
+
+    }
+});
