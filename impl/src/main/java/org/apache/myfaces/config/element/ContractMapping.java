@@ -26,21 +26,7 @@ import java.util.List;
  * @author Leonardo Uribe
  */
 public abstract class ContractMapping implements Serializable
-{
-    /**
-     * @deprecated 
-     * @return 
-     */
-    @Deprecated
-    public abstract String getUrlPattern();
-    
-    /**
-     * @deprecated 
-     * @return 
-     */
-    @Deprecated
-    public abstract String getContracts();
-    
+{    
     public abstract List<String> getUrlPatternList();
     
     public abstract List<String> getContractList();

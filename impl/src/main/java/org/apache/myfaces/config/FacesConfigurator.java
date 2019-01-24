@@ -828,23 +828,13 @@ public class FacesConfigurator
         
         for (ContractMapping mapping : dispenser.getResourceLibraryContractMappings())
         {
-            if (mapping.getUrlPattern() != null)
+            List<String> urlMappingsList = mapping.getUrlPatternList();
+            for (String urlPattern: urlMappingsList)
             {
-                // Deprecated way
-                String urlPattern = mapping.getUrlPattern();
-                String[] contracts = StringUtils.trim(StringUtils.splitShortString(mapping.getContracts(), ' '));
-                runtimeConfig.addContractMapping(urlPattern, contracts);
-            }
-            else
-            {
-                List<String> urlMappingsList = mapping.getUrlPatternList();
-                for (String urlPattern: urlMappingsList)
+                for (String contract : mapping.getContractList())
                 {
-                    for (String contract : mapping.getContractList())
-                    {
-                        String[] contracts = StringUtils.trim(StringUtils.splitShortString(contract, ' '));
-                        runtimeConfig.addContractMapping(urlPattern, contracts);
-                    }
+                    String[] contracts = StringUtils.trim(StringUtils.splitShortString(contract, ' '));
+                    runtimeConfig.addContractMapping(urlPattern, contracts);
                 }
             }
         }

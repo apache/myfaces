@@ -88,16 +88,4 @@ public class ContractMappingImpl extends ContractMapping
         }
         urlPatternList.add(urlPattern);
     }
-
-    @Override
-    public String getUrlPattern()
-    {
-        return null;
-    }
-
-    @Override
-    public String getContracts()
-    {
-        return null;
-    }
 }
