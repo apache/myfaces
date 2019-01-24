@@ -55,9 +55,7 @@ function emitPPR(source, event, action, formId, target, onError, onEvent) {
     } catch (e) {
         console.error(e);
     } finally {
-        //setTimeout(function() {
-            document.getElementById(formId || "form1").action = oldAction;
-        // d}, 100);
+        document.getElementById(formId || "form1").action = oldAction;
     }
 
 }

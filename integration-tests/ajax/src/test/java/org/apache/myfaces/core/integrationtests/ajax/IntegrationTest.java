@@ -223,16 +223,19 @@ public class IntegrationTest {
         });
 
 
-        //TODO the content is correct but the numbers are dynamic, so we need to find
-        //a better way to identify the elements
-       /* trigger("insert_row_body", webDriver -> {
-            final WebElement headRow0 = webDriver.findElement(new By.ByClassName("body_row1_0"));
-            final WebElement headRow1 = webDriver.findElement(new By.ById("head_row1"));
+        trigger("insert_row_body", webDriver -> {
+            final WebElement bodyRowCol1 = webDriver.findElement(new By.ById("body_row1_col1"));
+            final WebElement bodyRowCol2 = webDriver.findElement(new By.ById("body_row1_col2"));
+            final WebElement bodyRowCol0 = webDriver.findElement(new By.ById("body_row1_3_col1"));
+            final WebElement bodyRowCol4 = webDriver.findElement(new By.ById("body_row1_4_col1"));
 
-            return  headRow1.getLocation().y > headRow0.getLocation().y &&
-                    headRow0.getText().contains("column1 in line1 inserted before") &&
-                    headRow0.getText().contains("colum2 in line2 inserted before");
-        });*/
+            return bodyRowCol0.getLocation().y < bodyRowCol1.getLocation().y &&
+                    bodyRowCol1.getLocation().y < bodyRowCol4.getLocation().y &&
+
+                    bodyRowCol1.getText().contains("column1 in line1 inserted after") &&
+                    bodyRowCol1.getText().contains("evaled") &&
+                    bodyRowCol2.getText().contains("colum2 in line1 replaced");
+        });
 
     }
 
