@@ -16,6 +16,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+
 /**
  * varius helper scripts to ease our testing
  */
@@ -33,7 +34,7 @@
  * @param onError onError handler
  * @param onEvent onEvent handler
  */
-function emitPPR(source, event, action, formName,  target, onError, onEvent) {
+function emitPPR(source, event, action, formName, target, onError, onEvent) {
 
     document.getElementById(formName || "form1").action = target || "test.mockup";
 
@@ -55,14 +56,16 @@ function emitPPR(source, event, action, formName,  target, onError, onEvent) {
 
 }
 
-
+/**
+ * resets the current views servlet state
+ * of the mockup servlet
+ *
+ * @param evt the triggering event
+ */
 function resetServerValues(evt) {
 
-
     var formName = document.querySelectorAll("form").length ? document.querySelector("form")[0].name : null;
-    var button = document.body.querySelectorAll("#_reset_all")[0];
-
-    emitPPR(button, evt, "reset_counters", formName)
+    emitPPR(evt.target, evt, "reset_counters", formName)
 }
 
 
@@ -98,9 +101,9 @@ var logError = function () {
  * @type {Array}
  */
 
-if(console.error) {
+if (console.error) {
     var oldErrorFunc = console.error;
-    console.error = function() {
+    console.error = function () {
         logError(JSON.stringify(arguments[0]));
         oldErrorFunc.apply(console, arguments);
     }
@@ -109,14 +112,15 @@ if(console.error) {
 /**
  * we add a stanardized reset button to our firsat form to reset the counters
  */
-window.addEventListener("DOMContentLoaded", function() {
-    if(document.body.querySelectorAll("#_reset_all").length == 0) {
+window.addEventListener("DOMContentLoaded", function () {
+    if (document.body.querySelectorAll("#_reset_all").length == 0) {
         var button = document.createElement("button");
         button.id = "_reset_all";
-        button.onclick = function(evt) {
+        button.onclick = function (evt) {
             resetServerValues(evt);
             return false;
         };
+        button.innerText = "Reset State";
         let form = document.body.querySelectorAll("form").length ?
             document.body.querySelectorAll("form")[0] : document.body;
         form.appendChild(button);
