@@ -52,6 +52,10 @@
         <url-pattern>*.mockup</url-pattern>
     </servlet-mapping>
 
+    <welcome-file-list>
+        <welcome-file>index.jsf</welcome-file>
+        <welcome-file>index.xhtml</welcome-file>
+    </welcome-file-list>
     <session-config>
         <tracking-mode>COOKIE</tracking-mode>
     </session-config>

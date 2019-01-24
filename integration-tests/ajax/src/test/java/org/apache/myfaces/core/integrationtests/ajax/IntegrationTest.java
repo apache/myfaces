@@ -84,15 +84,14 @@ public class IntegrationTest {
     RequestGuard guard;
 
 
-
-
     @After
     public void after() {
         webDriver.manage().deleteAllCookies();
     }
 
     @Before
-    public void before() {}
+    public void before() {
+    }
 
     public void resetServerValues() {
         waitAjax().withTimeout(10, TimeUnit.SECONDS).until(new Function<WebDriver, Object>() {
@@ -111,12 +110,7 @@ public class IntegrationTest {
         resetServerValues();
 
         webDriver.findElement(new ByIdOrName("mainForm:press")).click();
-        waitAjax().withTimeout(10, TimeUnit.SECONDS).until(new Function<WebDriver, Object>() {
-
-            public Object apply(WebDriver webDriver) {
-                return webDriver.getPageSource().contains("Action Performed");
-            }
-        });
+        waitAjax().withTimeout(10, TimeUnit.SECONDS).until((Function<WebDriver, Object>) webDriver -> webDriver.getPageSource().contains("Action Performed"));
         assertTrue(webDriver.getPageSource().contains("ViewState"));
         assertTrue(webDriver.getPageSource().contains("_ajax_found"));
         assertTrue(webDriver.getPageSource().contains("Action Performed"));
@@ -223,7 +217,7 @@ public class IntegrationTest {
             final WebElement headRow0 = webDriver.findElement(new By.ById("head_row1_0"));
             final WebElement headRow1 = webDriver.findElement(new By.ById("head_row1"));
 
-            return  headRow1.getLocation().y > headRow0.getLocation().y &&
+            return headRow1.getLocation().y > headRow0.getLocation().y &&
                     headRow0.getText().contains("column1 in line1 inserted before") &&
                     headRow0.getText().contains("colum2 in line2 inserted before");
         });

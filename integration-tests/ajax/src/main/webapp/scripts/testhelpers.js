@@ -29,14 +29,16 @@
  * @param source the source item triggering the event
  * @param event an outer html event object
  * @param action the action to perform on the jsf side (additional parameter which can be interpreted on the server)
- * @param formName formName for the issuing form
+ * @param formId formName for the issuing form
  * @param target the action target (ootional)
  * @param onError onError handler
  * @param onEvent onEvent handler
  */
-function emitPPR(source, event, action, formName, target, onError, onEvent) {
+function emitPPR(source, event, action, formId, target, onError, onEvent) {
 
-    document.getElementById(formName || "form1").action = target || "test.mockup";
+    var oldAction = document.getElementById(formId || "form1").action;
+    document.getElementById(formId || "form1").action = target || "test.mockup";
+
 
     try {
         jsf.ajax.request(/*String|Dom Node*/ source, /*|EVENT|*/ (window.event) ? window.event : event, /*{|OPTIONS|}*/ {
@@ -52,6 +54,10 @@ function emitPPR(source, event, action, formName, target, onError, onEvent) {
         });
     } catch (e) {
         console.error(e);
+    } finally {
+        //setTimeout(function() {
+            document.getElementById(formId || "form1").action = oldAction;
+        // d}, 100);
     }
 
 }
@@ -64,8 +70,8 @@ function emitPPR(source, event, action, formName, target, onError, onEvent) {
  */
 function resetServerValues(evt) {
 
-    var formName = document.querySelectorAll("form").length ? document.querySelector("form")[0].name : null;
-    emitPPR(evt.target, evt, "reset_counters", formName)
+    var formId = document.querySelectorAll("form").length ? document.querySelectorAll("form")[0].id : null;
+    emitPPR(evt.target, evt, "reset_counters", formId)
 }
 
 
