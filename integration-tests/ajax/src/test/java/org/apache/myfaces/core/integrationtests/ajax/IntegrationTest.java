@@ -282,6 +282,13 @@ public class IntegrationTest {
 
     }
 
+    @Test
+    public void testViewRootBodyReplacement() {
+        webDriver.get(contextPath + "test5-viewbody-full-response.jsf");
+        resetServerValues();
+        trigger("cmd_body1", webDriver1 -> webDriver1.getPageSource().contains("Test for body change done") &&
+                webDriver1.findElement(new By.ById("scriptreceiver")).getText().contains("hello from embedded script & in the body"));
+    }
 
     /**
      * recurring trigger, wait until ajax processing is done function
