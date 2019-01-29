@@ -1319,9 +1319,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             if (!component.isTransient())
             {
                 component.restoreTransientState(facesContext,
-                        (state == null)
-                        ? null
-                        : state.get(component.getClientId(facesContext)));
+                        state == null ? null : state.get(component.getClientId(facesContext)));
                 
                 Iterator<UIComponent> childsIterator;
                 if (restoreChildFacets)

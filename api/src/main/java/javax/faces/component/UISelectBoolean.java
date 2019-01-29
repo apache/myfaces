@@ -102,6 +102,7 @@ public class UISelectBoolean extends UIInput
     }
 
     @JSFProperty(deferredValueType="java.lang.Boolean")
+    @Override
     public Object getValue()
     {
         return super.getValue();

@@ -34,19 +34,20 @@ class _NavigationUtils
      * @param parameters parameter map retrieved from NavigationCase.getParameters()
      * @return
      */
-    public static Map<String, List<String> > getEvaluatedNavigationParameters(
+    public static Map<String, List<String>> getEvaluatedNavigationParameters(
             FacesContext facesContext, 
-            Map<String, List<String> > parameters)
+            Map<String, List<String>> parameters)
     {
         Map<String,List<String>> evaluatedParameters = null;
         if (parameters != null && parameters.size() > 0)
         {
-            evaluatedParameters = new HashMap<String, List<String>>();
+            evaluatedParameters = new HashMap<>();
             for (Map.Entry<String, List<String>> pair : parameters.entrySet())
             {
                 boolean containsEL = false;
-                for (String value : pair.getValue())
+                for (int i = 0; i < pair.getValue().size(); i++)
                 {
+                    String value = pair.getValue().get(i);
                     if (_isExpression(value))
                     {
                         containsEL = true;
@@ -83,9 +84,10 @@ class _NavigationUtils
         // note that we have to create a new List here, because if we
         // change any value on the given List, it will be changed in the
         // NavigationCase too and the EL expression won't be evaluated again
-        List<String> target = new ArrayList<String>(values.size());
-        for (String value : values)
+        List<String> target = new ArrayList<>(values.size());
+        for (int i = 0; i < values.size(); i++)
         {
+            String value = values.get(i);
             if (_isExpression(value))
             {
                 // evaluate the ValueExpression
@@ -98,7 +100,7 @@ class _NavigationUtils
     
     private static boolean _isExpression(String text)
     {
-        return text.indexOf("#{") != -1;
+        return text.contains("#{");
     }
 
 }

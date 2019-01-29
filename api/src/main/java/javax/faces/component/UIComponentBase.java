@@ -424,7 +424,7 @@ public abstract class UIComponentBase extends UIComponent
         }
         if (_behaviorsMap != null)
         {
-            for (Map.Entry<String, List<ClientBehavior> > entry : _behaviorsMap.entrySet())
+            for (Map.Entry<String, List<ClientBehavior>> entry : _behaviorsMap.entrySet())
             {
                 ((PartialStateHolder) entry.getValue()).clearInitialState();
             }
@@ -437,7 +437,7 @@ public abstract class UIComponentBase extends UIComponent
                 ((PartialStateHolder) entry.getValue()).clearInitialState();
             }
         }
-        //_isRendererTypeSet = false;
+
         _capabilities &= ~(FLAG_IS_RENDERER_TYPE_SET);
     }
 
@@ -1189,7 +1189,7 @@ public abstract class UIComponentBase extends UIComponent
         }
         if (_behaviorsMap != null)
         {
-            for (Map.Entry<String, List<ClientBehavior> > entry : _behaviorsMap.entrySet())
+            for (Map.Entry<String, List<ClientBehavior>> entry : _behaviorsMap.entrySet())
             {
                 ((PartialStateHolder) entry.getValue()).markInitialState();
             }
@@ -1795,8 +1795,9 @@ public abstract class UIComponentBase extends UIComponent
                 throw new RuntimeException(e);
             }
 
-            for (Object item : lst)
+            for (int i = 0; i < lst.size(); i++)
             {
+                Object item = lst.get(i);
                 restoredList.add(restoreAttachedState(context, item));
             }
             return restoredList;
@@ -2515,7 +2516,6 @@ public abstract class UIComponentBase extends UIComponent
         {
             //This flag just indicates the rendererType 
             //should be included on the delta
-            //this._isRendererTypeSet = true;
             _capabilities |= FLAG_IS_RENDERER_TYPE_SET;
         }
         setCachedRenderer(null);
