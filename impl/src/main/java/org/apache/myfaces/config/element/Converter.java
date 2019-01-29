@@ -19,7 +19,7 @@
 package org.apache.myfaces.config.element;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -35,7 +35,7 @@ public abstract class Converter implements Serializable
 
     public abstract String getConverterClass();
 
-    public abstract Collection<? extends Property> getProperties();
+    public abstract List<? extends Property> getProperties();
     
-    public abstract Collection<? extends Attribute> getAttributes();
+    public abstract List<? extends Attribute> getAttributes();
 }

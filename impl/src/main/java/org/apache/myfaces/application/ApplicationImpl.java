@@ -1669,10 +1669,12 @@ public class ApplicationImpl extends Application
             ((DateTimeConverter) converter).setTimeZone(TimeZone.getDefault());
         }
 
-        if (converterConfig != null && converterConfig.getProperties().size() > 0)
+        if (converterConfig != null && !converterConfig.getProperties().isEmpty())
         {
-            for (Property property : converterConfig.getProperties())
+            for (int i = 0; i < converterConfig.getProperties().size(); i++)
             {
+                Property property = converterConfig.getProperties().get(i);
+                
                 try
                 {
                     BeanUtils.setProperty(converter, property.getPropertyName(), property.getDefaultValue());

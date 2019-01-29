@@ -20,7 +20,6 @@ package org.apache.myfaces.config.impl.digester.elements;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -83,7 +82,7 @@ public class ConverterImpl extends org.apache.myfaces.config.element.Converter i
         _properties.add(value);
     }
 
-    public Collection<? extends org.apache.myfaces.config.element.Property> getProperties()
+    public List<? extends org.apache.myfaces.config.element.Property> getProperties()
     {
         if(_properties == null)
         {
@@ -103,7 +102,7 @@ public class ConverterImpl extends org.apache.myfaces.config.element.Converter i
         _attributes.add(value);
     }
 
-    public Collection<? extends org.apache.myfaces.config.element.Attribute> getAttributes()
+    public List<? extends org.apache.myfaces.config.element.Attribute> getAttributes()
     {
         if(_attributes == null)
         {
