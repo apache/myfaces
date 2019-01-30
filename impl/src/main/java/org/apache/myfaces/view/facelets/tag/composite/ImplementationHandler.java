@@ -71,8 +71,7 @@ public class ImplementationHandler extends TagHandler
                     = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
             // Register the facet UIComponent.COMPOSITE_FACET_NAME
             CompositeComponentBeanInfo beanInfo = 
-                (CompositeComponentBeanInfo) compositeBaseParent.getAttributes()
-                .get(UIComponent.BEANINFO_KEY);
+                (CompositeComponentBeanInfo) compositeBaseParent.getAttributes().get(UIComponent.BEANINFO_KEY);
             
             if (beanInfo == null)
             {
@@ -90,7 +89,7 @@ public class ImplementationHandler extends TagHandler
         
             if (facetPropertyDescriptorMap == null)
             {
-                facetPropertyDescriptorMap = new HashMap<String, PropertyDescriptor>();
+                facetPropertyDescriptorMap = new HashMap<>(5);
                 beanDescriptor.setValue(UIComponent.FACETS_KEY, facetPropertyDescriptorMap);
             }
             

@@ -53,8 +53,7 @@ public class ExtensionHandler extends TagHandler
         // As soon JSR-276 is available, some behavior for this tag
         // should be added.
         CompositeComponentBeanInfo beanInfo = 
-            (CompositeComponentBeanInfo) parent.getAttributes()
-            .get(UIComponent.BEANINFO_KEY);
+            (CompositeComponentBeanInfo) parent.getAttributes().get(UIComponent.BEANINFO_KEY);
         
         if (beanInfo == null)
         {

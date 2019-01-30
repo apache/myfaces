@@ -120,7 +120,7 @@ public class InsertFacetHandler extends TagHandler
             if (facetList == null)
             {
                 //2. If not found create it and set
-                facetList = new ArrayList<String>();
+                facetList = new ArrayList<String>(5);
                 beanDescriptor.setValue(INSERT_FACET_USED, facetList);
             }
             
@@ -131,7 +131,7 @@ public class InsertFacetHandler extends TagHandler
         
             if (insertFacetPropertyDescriptorMap == null)
             {
-                insertFacetPropertyDescriptorMap = new HashMap<String, PropertyDescriptor>();
+                insertFacetPropertyDescriptorMap = new HashMap<>(5);
                 beanDescriptor.setValue(INSERT_FACET_KEYS, insertFacetPropertyDescriptorMap);
             }
             
@@ -150,7 +150,7 @@ public class InsertFacetHandler extends TagHandler
     }
     
     private PropertyDescriptor _createFacetPropertyDescriptor(String facetName, FaceletContext ctx)
-    throws TagException, IOException
+            throws TagException, IOException
     {
         try
         {

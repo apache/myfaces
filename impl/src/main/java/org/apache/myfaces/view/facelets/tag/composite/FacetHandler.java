@@ -206,8 +206,7 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException
     {
         CompositeComponentBeanInfo beanInfo = 
-            (CompositeComponentBeanInfo) parent.getAttributes()
-            .get(UIComponent.BEANINFO_KEY);
+            (CompositeComponentBeanInfo) parent.getAttributes().get(UIComponent.BEANINFO_KEY);
         
         if (beanInfo == null)
         {
@@ -225,7 +224,7 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
         
         if (facetPropertyDescriptorMap == null)
         {
-            facetPropertyDescriptorMap = new HashMap<String, PropertyDescriptor>();
+            facetPropertyDescriptorMap = new HashMap<>(5);
             beanDescriptor.setValue(UIComponent.FACETS_KEY, facetPropertyDescriptorMap);
         }
         

@@ -146,7 +146,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                 if (ve != null)
                 {
                     Object value = ve.getValue (facesContext.getELContext());
-                    Boolean required = null;
+                    Boolean required;
                     if (value instanceof Boolean)
                     {
                         required = (Boolean) value;
@@ -591,8 +591,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                         while (children.size() > 0)
                         {
                             UIComponent child = children.remove(0);
-                            child.getAttributes().put(InsertChildrenHandler.INSERT_CHILDREN_USED,
-                                    Boolean.TRUE);
+                            child.getAttributes().put(InsertChildrenHandler.INSERT_CHILDREN_USED, Boolean.TRUE);
                             if (facetName != null)
                             {
                                 ComponentSupport.addFacet(ctx, parent, child, facetName);
@@ -640,8 +639,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                     {
                         children = new ArrayList<UIComponent>();
                         UIComponent child = parent.getFacet(facetName);
-                        if (Boolean.TRUE.equals(child.getAttributes().get(
-                                    InsertChildrenHandler.INSERT_CHILDREN_USED)))
+                        if (Boolean.TRUE.equals(child.getAttributes().get(InsertChildrenHandler.INSERT_CHILDREN_USED)))
                         {
                             parent.getFacets().remove(facetName);
                             children.add(child);
