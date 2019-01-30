@@ -37,142 +37,142 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * for the parent component
  * </p>
  */
-@JSFComponent
-(clazz = "javax.faces.component.UISelectItems",template=true,
- name = "f:selectItems",
- tagClass = "org.apache.myfaces.taglib.core.SelectItemsTag",
- bodyContent = "empty")
+@JSFComponent(clazz = "javax.faces.component.UISelectItems",
+              template=true,
+              name = "f:selectItems",
+              tagClass = "org.apache.myfaces.taglib.core.SelectItemsTag",
+              bodyContent = "empty")
 abstract class _UISelectItems extends UIComponentBase
 {
 
-  static public final String COMPONENT_FAMILY =
-    "javax.faces.SelectItems";
-  static public final String COMPONENT_TYPE =
-    "javax.faces.SelectItems";
+    static public final String COMPONENT_FAMILY =
+        "javax.faces.SelectItems";
+    static public final String COMPONENT_TYPE =
+        "javax.faces.SelectItems";
 
-  /**
-   * Disable this property; although this class extends a base-class that
-   * defines a read/write rendered property, this particular subclass
-   * does not support setting it. Yes, this is broken OO design: direct
-   * all complaints to the JSF spec group.
-   */
-  @JSFExclude
-  @JSFProperty(tagExcluded=true)
-  @Override
-  public void setRendered(boolean state)
-  {
-      super.setRendered(state);
-      //call parent method due TCK problems
-      //throw new UnsupportedOperationException();
-  }
-  
-  @Override
-  protected FacesContext getFacesContext()
-  {
-      //In theory the parent most of the times has 
-      //the cached FacesContext instance, because this
-      //element is purely logical, and the parent is the one
-      //where encodeXXX was invoked. But only limit the
-      //search to the closest parent.
-      UIComponent parent = getParent();
-      if (parent != null && parent.isCachedFacesContext())
-      {
-          return parent.getFacesContext();
-      }
-      else
-      {
-          return super.getFacesContext();
-      }
-  }
+    /**
+     * Disable this property; although this class extends a base-class that
+     * defines a read/write rendered property, this particular subclass
+     * does not support setting it. Yes, this is broken OO design: direct
+     * all complaints to the JSF spec group.
+     */
+    @JSFExclude
+    @JSFProperty(tagExcluded=true)
+    @Override
+    public void setRendered(boolean state)
+    {
+        super.setRendered(state);
+        //call parent method due TCK problems
+        //throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    protected FacesContext getFacesContext()
+    {
+        //In theory the parent most of the times has 
+        //the cached FacesContext instance, because this
+        //element is purely logical, and the parent is the one
+        //where encodeXXX was invoked. But only limit the
+        //search to the closest parent.
+        UIComponent parent = getParent();
+        if (parent != null && parent.isCachedFacesContext())
+        {
+            return parent.getFacesContext();
+        }
+        else
+        {
+            return super.getFacesContext();
+        }
+    }
 
-  /**
-   * The initial value of this component.
-   *
-   * @return  the new value value
-   */
-  @JSFProperty
-  public abstract Object getValue();
-  
-  /**
-   * Name of a request-scope attribute under which the current item
-   * of the collection, array, etc. of the value attribute will be 
-   * exposed so that it can be referred to in EL for other attributes 
-   * of this component.
-   * 
-   * @since 2.0
-   * @return
-   */
-  @JSFExclude
-  @JSFProperty(literalOnly = true)
-  public String getVar()
-  {
-      return null;
-  }
-  
-  /**
-   * The value for the current item.
-   * 
-   * @since 2.0
-   * @return
-   */
-  @JSFExclude
-  @JSFProperty
-  public Object getItemValue()
-  {
-      return null;
-  }
-  
-  /**
-   * The label of the current item.
-   * 
-   * @since 2.0
-   * @return
-   */
-  @JSFExclude
-  @JSFProperty
-  public String getItemLabel()
-  {
-      return null;
-  }
-  
-  /**
-   * The description of the current item.
-   * 
-   * @since 2.0
-   * @return
-   */
-  @JSFExclude
-  @JSFProperty
-  public String getItemDescription()
-  {
-      return null;
-  }
-  
-  /**
-   * Determines if the current item is selectable or not.
-   * 
-   * @since 2.0
-   * @return
-   */
-  @JSFExclude
-  @JSFProperty(defaultValue = "false", deferredValueType="java.lang.Boolean")
-  public boolean isItemDisabled()
-  {
-      return false;
-  }
-  
-  /**
-   * Determines if the rendered markup for the current item receives
-   * normal JSF HTML escaping or not.
-   * 
-   * @since 2.0
-   * @return
-   */
-  @JSFExclude
-  @JSFProperty(defaultValue = "true", deferredValueType="java.lang.Boolean")
-  public boolean isItemLabelEscaped()
-  {
-      return true;
-  }
+    /**
+     * The initial value of this component.
+     *
+     * @return  the new value value
+     */
+    @JSFProperty
+    public abstract Object getValue();
+    
+    /**
+     * Name of a request-scope attribute under which the current item
+     * of the collection, array, etc. of the value attribute will be 
+     * exposed so that it can be referred to in EL for other attributes 
+     * of this component.
+     * 
+     * @since 2.0
+     * @return
+     */
+    @JSFExclude
+    @JSFProperty(literalOnly = true)
+    public String getVar()
+    {
+        return null;
+    }
+    
+    /**
+     * The value for the current item.
+     * 
+     * @since 2.0
+     * @return
+     */
+    @JSFExclude
+    @JSFProperty
+    public Object getItemValue()
+    {
+        return null;
+    }
+    
+    /**
+     * The label of the current item.
+     * 
+     * @since 2.0
+     * @return
+     */
+    @JSFExclude
+    @JSFProperty
+    public String getItemLabel()
+    {
+        return null;
+    }
+    
+    /**
+     * The description of the current item.
+     * 
+     * @since 2.0
+     * @return
+     */
+    @JSFExclude
+    @JSFProperty
+    public String getItemDescription()
+    {
+        return null;
+    }
+    
+    /**
+     * Determines if the current item is selectable or not.
+     * 
+     * @since 2.0
+     * @return
+     */
+    @JSFExclude
+    @JSFProperty(defaultValue = "false", deferredValueType="java.lang.Boolean")
+    public boolean isItemDisabled()
+    {
+        return false;
+    }
+    
+    /**
+     * Determines if the rendered markup for the current item receives
+     * normal JSF HTML escaping or not.
+     * 
+     * @since 2.0
+     * @return
+     */
+    @JSFExclude
+    @JSFProperty(defaultValue = "true", deferredValueType="java.lang.Boolean")
+    public boolean isItemLabelEscaped()
+    {
+        return true;
+    }
 
 }

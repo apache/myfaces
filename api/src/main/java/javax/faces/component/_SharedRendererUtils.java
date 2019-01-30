@@ -85,8 +85,7 @@ class _SharedRendererUtils
         }
         catch (FacesException e)
         {
-            log(facesContext, "No Converter for type " + valueType.getName()
-                    + " found", e);
+            log(facesContext, "No Converter for type " + valueType.getName() + " found", e);
             return null;
         }
     }
@@ -156,8 +155,7 @@ class _SharedRendererUtils
                 {
                     // the compononent does not have an attached converter
                     // --> try to get a registered-by-class converter
-                    converter = facesContext.getApplication().createConverter(
-                            componentType);
+                    converter = facesContext.getApplication().createConverter(componentType);
 
                     if (converter == null && !Object.class.equals(componentType))
                     {
@@ -168,13 +166,11 @@ class _SharedRendererUtils
                         // and not a String array (checked some lines above)
                         // and we do not have a Converter
                         throw new ConverterException(
-                                "Could not obtain a Converter for "
-                                        + componentType.getName());
+                                "Could not obtain a Converter for " + componentType.getName());
                     }
                 }
                 // instantiate the array
-                targetForConvertedValues = Array.newInstance(componentType,
-                        submittedValue.length);
+                targetForConvertedValues = Array.newInstance(componentType, submittedValue.length);
             }
             else if (Collection.class.isAssignableFrom(modelType) || Object.class.equals(modelType))
             {
@@ -185,8 +181,7 @@ class _SharedRendererUtils
                     converter = getSelectItemsValueConverter(iterator, facesContext);
                 }
 
-                Object collectionTypeAttr = component.getAttributes().get(
-                        COLLECTION_TYPE_KEY);
+                Object collectionTypeAttr = component.getAttributes().get(COLLECTION_TYPE_KEY);
                 if (collectionTypeAttr != null)
                 {
                     Class<?> collectionType = getClassFromAttribute(facesContext, collectionTypeAttr);
@@ -224,25 +219,21 @@ class _SharedRendererUtils
                 else if (Collection.class.isAssignableFrom(modelType))
                 {
                     // component.getValue() will implement Collection at this point
-                    Collection<?> componentValue = (Collection<?>) component
-                            .getValue();
+                    Collection<?> componentValue = (Collection<?>) component.getValue();
                     // can we clone the Collection
                     if (componentValue instanceof Cloneable)
                     {
                         // clone method of Object is protected --> use reflection
                         try
                         {
-                            Method cloneMethod = componentValue.getClass()
-                                    .getMethod("clone");
-                            Collection<?> clone = (Collection<?>) cloneMethod
-                                    .invoke(componentValue);
+                            Method cloneMethod = componentValue.getClass().getMethod("clone");
+                            Collection<?> clone = (Collection<?>) cloneMethod.invoke(componentValue);
                             clone.clear();
                             targetForConvertedValues = clone;
                         }
                         catch (Exception e)
                         {
-                            log(facesContext, "Could not clone "
-                                    + componentValue.getClass().getName(), e);
+                            log(facesContext, "Could not clone " + componentValue.getClass().getName(), e);
                         }
                     }
 
@@ -271,13 +262,11 @@ class _SharedRendererUtils
                             }
                             else if (Set.class.isAssignableFrom(modelType))
                             {
-                                targetForConvertedValues = new HashSet(
-                                        submittedValue.length);
+                                targetForConvertedValues = new HashSet(submittedValue.length);
                             }
                             else
                             {
-                                targetForConvertedValues = new ArrayList(
-                                        submittedValue.length);
+                                targetForConvertedValues = new ArrayList(submittedValue.length);
                             }
                         }
                     }
@@ -363,8 +352,7 @@ class _SharedRendererUtils
         if (attribute instanceof ValueExpression)
         {
             // get the value of the ValueExpression
-            attribute = ((ValueExpression) attribute)
-                    .getValue(facesContext.getELContext());
+            attribute = ((ValueExpression) attribute).getValue(facesContext.getELContext());
         }
         // ... String that is a fully qualified Java class name
         if (attribute instanceof String)
@@ -376,11 +364,9 @@ class _SharedRendererUtils
             catch (ClassNotFoundException cnfe)
             {
                 throw new FacesException(
-                        "Unable to find class "
-                                + attribute
-                                + " on the classpath.", cnfe);
+                        "Unable to find class " + attribute + " on the classpath.",
+                        cnfe);
             }
-
         }
         // ... a Class object
         else if (attribute instanceof Class)

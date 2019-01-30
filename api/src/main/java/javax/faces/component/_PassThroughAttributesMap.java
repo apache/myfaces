@@ -34,7 +34,6 @@ class _PassThroughAttributesMap implements Map<String, Object>, Serializable
     {
         _component = component;
     }
-
     
     /**
      * Return the map containing the attributes.
