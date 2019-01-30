@@ -102,8 +102,7 @@ public abstract class AttachedObjectTargetHandler<T extends AttachedObjectTarget
                 = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
 
         CompositeComponentBeanInfo beanInfo = 
-            (CompositeComponentBeanInfo) compositeBaseParent.getAttributes()
-            .get(UIComponent.BEANINFO_KEY);
+            (CompositeComponentBeanInfo) compositeBaseParent.getAttributes().get(UIComponent.BEANINFO_KEY);
         
         if (beanInfo == null)
         {
@@ -118,13 +117,12 @@ public abstract class AttachedObjectTargetHandler<T extends AttachedObjectTarget
         
         //1. Obtain the list mentioned as "targetList" on ViewDeclarationLanguage.retargetAttachedObjects
         List<AttachedObjectTarget> targetList = (List<AttachedObjectTarget>)
-            beanDescriptor.getValue(
-                    AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY);
+            beanDescriptor.getValue(AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY);
         
         if (targetList == null)
         {
             //2. If not found create it and set
-            targetList = new ArrayList<AttachedObjectTarget>();
+            targetList = new ArrayList<>(5);
             beanDescriptor.setValue(
                     AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY,
                     targetList);

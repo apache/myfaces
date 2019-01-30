@@ -120,7 +120,7 @@ public class ClientBehaviorAttachedObjectTargetImpl implements ClientBehaviorAtt
         }
     }
     
-    public String [] getTargets(FacesContext context)
+    public String[] getTargets(FacesContext context)
     {
         if (_targets != null)
         {

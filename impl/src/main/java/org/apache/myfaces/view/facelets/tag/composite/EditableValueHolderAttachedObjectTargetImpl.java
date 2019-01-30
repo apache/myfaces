@@ -29,9 +29,6 @@ public class EditableValueHolderAttachedObjectTargetImpl extends
         AttachedObjectTargetImpl implements EditableValueHolderAttachedObjectTarget
 {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -9102891289180454L;
 
 }

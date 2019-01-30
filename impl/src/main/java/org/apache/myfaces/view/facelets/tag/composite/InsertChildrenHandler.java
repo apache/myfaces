@@ -59,8 +59,7 @@ public class InsertChildrenHandler extends TagHandler implements ComponentContai
         if (actx.isBuildingCompositeComponentMetadata())
         {
             CompositeComponentBeanInfo beanInfo = 
-                (CompositeComponentBeanInfo) parentCompositeComponent.getAttributes()
-                .get(UIComponent.BEANINFO_KEY);
+                (CompositeComponentBeanInfo) parentCompositeComponent.getAttributes().get(UIComponent.BEANINFO_KEY);
             
             if (beanInfo == null)
             {

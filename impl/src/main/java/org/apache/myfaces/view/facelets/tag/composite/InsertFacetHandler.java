@@ -102,8 +102,7 @@ public class InsertFacetHandler extends TagHandler
                     = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();
             
             CompositeComponentBeanInfo beanInfo = 
-                (CompositeComponentBeanInfo) compositeBaseParent.getAttributes()
-                .get(UIComponent.BEANINFO_KEY);
+                (CompositeComponentBeanInfo) compositeBaseParent.getAttributes().get(UIComponent.BEANINFO_KEY);
             
             if (beanInfo == null)
             {
@@ -122,9 +121,7 @@ public class InsertFacetHandler extends TagHandler
             {
                 //2. If not found create it and set
                 facetList = new ArrayList<String>();
-                beanDescriptor.setValue(
-                        INSERT_FACET_USED,
-                        facetList);
+                beanDescriptor.setValue(INSERT_FACET_USED, facetList);
             }
             
             facetList.add(facetName);

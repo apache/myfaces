@@ -633,8 +633,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     }
 
     @Override
-    public void pushAjaxHandlerToStack(
-            AjaxHandler parent)
+    public void pushAjaxHandlerToStack(AjaxHandler parent)
     {
         if (_ajaxHandlerStack == null)
         {

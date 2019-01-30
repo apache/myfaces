@@ -26,6 +26,7 @@ import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.view.AttachedObjectTarget;
+import org.apache.myfaces.util.ArrayUtils;
 import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
@@ -36,9 +37,6 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  */
 public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializable
 {    
-    /**
-     * 
-     */
     private static final long serialVersionUID = -7214478234269252354L;
     
     protected ValueExpression _name;
@@ -63,7 +61,7 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
     public List<UIComponent> getTargets(UIComponent topLevelComponent)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        String [] targetsArray = getTargets(facesContext);
+        String[] targetsArray = getTargets(facesContext);
         
         if (targetsArray.length > 0)
         {
@@ -72,8 +70,6 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
             UIComponent facetBase = topLevelComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME);
             for (String target : targetsArray)
             {
-                //UIComponent innerComponent = topLevelComponent.findComponent(
-                //        topLevelComponent.getId() + UINamingContainer.getSeparatorChar(facesContext) + target);
                 int separator = target.indexOf(separatorChar);
                 UIComponent innerComponent = null;
                 if (separator == -1)
@@ -119,13 +115,13 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
         }
     }
     
-    public String [] getTargets(FacesContext context)
+    public String[] getTargets(FacesContext context)
     {
         if (_targets != null)
         {
             return StringUtils.splitShortString((String) _targets.getValue(context.getELContext()), ' ');
         }
-        return org.apache.myfaces.util.ArrayUtils.EMPTY_STRING_ARRAY;
+        return ArrayUtils.EMPTY_STRING_ARRAY;
     }
     
     public void setName(ValueExpression ve)

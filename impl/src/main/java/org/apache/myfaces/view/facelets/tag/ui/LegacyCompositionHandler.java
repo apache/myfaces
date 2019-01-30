@@ -81,7 +81,7 @@ public final class LegacyCompositionHandler extends TagHandler implements Templa
                 }
             }
 
-            ArrayList<LegacyParamHandler> params = TagHandlerUtils.findNextByType(nextHandler, 
+            ArrayList<LegacyParamHandler> params = TagHandlerUtils.findNextByType(nextHandler,
                     LegacyParamHandler.class);
             if (params.isEmpty())
             {

@@ -19,7 +19,7 @@
 package org.apache.myfaces.view.facelets.tag.ui;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -74,8 +74,9 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
         _template = getAttribute("template");
         if (_template != null)
         {
-            _handlers = new HashMap<>();
-            for (DefineHandler handler : TagHandlerUtils.findNextByType(nextHandler, DefineHandler.class))
+            ArrayList<DefineHandler> handlers = TagHandlerUtils.findNextByType(nextHandler, DefineHandler.class);
+            _handlers = new HashMap<>(handlers.size());
+            for (DefineHandler handler : handlers)
             {
                 _handlers.put(handler.getName(), handler);
                 if (log.isLoggable(Level.FINE))
@@ -84,7 +85,7 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
                 }
             }
 
-            Collection<ParamHandler> params = TagHandlerUtils.findNextByType(nextHandler, ParamHandler.class);
+            ArrayList<ParamHandler> params = TagHandlerUtils.findNextByType(nextHandler, ParamHandler.class);
             if (params.isEmpty())
             {
                 _params = null;

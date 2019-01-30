@@ -206,8 +206,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
                     = fcc.getCompositeComponentFromStack();
             
             CompositeComponentBeanInfo beanInfo = 
-                (CompositeComponentBeanInfo) compositeBaseParent.getAttributes()
-                .get(UIComponent.BEANINFO_KEY);
+                (CompositeComponentBeanInfo) compositeBaseParent.getAttributes().get(UIComponent.BEANINFO_KEY);
             
             if (beanInfo == null)
             {

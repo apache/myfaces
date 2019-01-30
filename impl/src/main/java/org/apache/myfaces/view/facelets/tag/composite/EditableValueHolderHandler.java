@@ -38,8 +38,7 @@ public class EditableValueHolderHandler extends AttachedObjectTargetHandler<Edit
     }
 
     @Override
-    protected EditableValueHolderAttachedObjectTarget createAttachedObjectTarget(
-            FaceletContext ctx)
+    protected EditableValueHolderAttachedObjectTarget createAttachedObjectTarget(FaceletContext ctx)
     {
         EditableValueHolderAttachedObjectTargetImpl target = new EditableValueHolderAttachedObjectTargetImpl();
         

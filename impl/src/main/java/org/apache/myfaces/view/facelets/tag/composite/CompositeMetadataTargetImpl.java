@@ -59,6 +59,7 @@ final class CompositeMetadataTargetImpl extends MetadataTarget
         }
     }
 
+    @Override
     public PropertyDescriptor getProperty(String name)
     {
         PropertyDescriptor pd = _delegate.getProperty(name); 

@@ -76,8 +76,7 @@ public class HtmlOutputScriptHandler extends HtmlComponentHandler implements Rel
 
 
     @Override
-    public void onComponentCreated(FaceletContext ctx, UIComponent c,
-            UIComponent parent)
+    public void onComponentCreated(FaceletContext ctx, UIComponent c, UIComponent parent)
     {
         UIComponent parentCompositeComponent
                 = FaceletCompositionContext.getCurrentInstance(ctx).getCompositeComponentFromStack();

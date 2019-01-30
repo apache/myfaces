@@ -1036,7 +1036,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                             if (ve != null)
                             {
                                 Object requiredValue = ve.getValue(elContext);
-                                Boolean required = null;
+                                Boolean required;
                                 if (requiredValue instanceof Boolean)
                                 {
                                     required = (Boolean) requiredValue;

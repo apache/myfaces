@@ -64,15 +64,15 @@ final class LegacyUserTagHandler extends TagHandler implements TemplateClient, C
         this._vars = this.tag.getAttributes().getAll();
         this._location = location;
         
-        Collection<DefineHandler> defines = TagHandlerUtils.findNextByType(nextHandler, DefineHandler.class);
-        if (defines.isEmpty())
+        Collection<DefineHandler> handlers = TagHandlerUtils.findNextByType(nextHandler, DefineHandler.class);
+        if (handlers.isEmpty())
         {
             _handlers = null;
         }
         else
         {
-            _handlers = new HashMap<String, DefineHandler>();
-            for (DefineHandler handler : defines)
+            _handlers = new HashMap<>(handlers.size());
+            for (DefineHandler handler : handlers)
             {
                 _handlers.put(handler.getName(), handler);
             }

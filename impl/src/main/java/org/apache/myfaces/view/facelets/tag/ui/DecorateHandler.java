@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.tag.ui;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,9 +84,10 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
     {
         super(config);
         _template = getRequiredAttribute("template");
-        _handlers = new HashMap<String, DefineHandler>();
-
-        for (DefineHandler handler : TagHandlerUtils.findNextByType(nextHandler, DefineHandler.class))
+        
+        ArrayList<DefineHandler> handlers = TagHandlerUtils.findNextByType(nextHandler, DefineHandler.class);
+        _handlers = new HashMap<>(handlers.size());
+        for (DefineHandler handler : handlers)
         {
             _handlers.put(handler.getName(), handler);
             if (log.isLoggable(Level.FINE))
@@ -153,7 +155,7 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
                     if (!PhaseId.RESTORE_VIEW.equals(ctx.getFacesContext().getCurrentPhaseId()))
                     {
                         path = this._template.getValue(ctx);
-                        if (path == null || path.length() == 0)
+                        if (path == null || path.isEmpty())
                         {
                             return;
                         }
