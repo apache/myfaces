@@ -20,9 +20,6 @@ package org.apache.myfaces.view.facelets.tag.jstl.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.application.StateManager;
@@ -60,25 +57,17 @@ public final class ChooseHandler extends TagHandler implements ComponentContaine
     {
         super(config);
 
-        List<ChooseWhenHandler> whenList = new ArrayList<ChooseWhenHandler>(
-                TagHandlerUtils.findNextByType(nextHandler, ChooseWhenHandler.class));
+        ArrayList<ChooseWhenHandler> whenList =
+                TagHandlerUtils.findNextByType(nextHandler, ChooseWhenHandler.class);
         if (whenList.isEmpty())
         {
             throw new TagException(this.tag, "Choose Tag must have one or more When Tags");
         }
-
         this.when = (ChooseWhenHandler[]) whenList.toArray(new ChooseWhenHandler[whenList.size()]);
 
-        Iterator<ChooseOtherwiseHandler> itrOtherwise = 
-            TagHandlerUtils.findNextByType(nextHandler, ChooseOtherwiseHandler.class).iterator();
-        if (itrOtherwise.hasNext())
-        {
-            this.otherwise = itrOtherwise.next();
-        }
-        else
-        {
-            this.otherwise = null;
-        }
+        ArrayList<ChooseOtherwiseHandler> otherwiseList = 
+            TagHandlerUtils.findNextByType(nextHandler, ChooseOtherwiseHandler.class);
+        this.otherwise = otherwiseList.isEmpty() ? null : otherwiseList.get(0); 
     }
 
     @Override

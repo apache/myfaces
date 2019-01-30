@@ -20,7 +20,7 @@
 package org.apache.myfaces.view.facelets.tag.ui;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -81,20 +81,15 @@ public final class LegacyCompositionHandler extends TagHandler implements Templa
                 }
             }
 
-            Collection<LegacyParamHandler> params = TagHandlerUtils.findNextByType(nextHandler, 
+            ArrayList<LegacyParamHandler> params = TagHandlerUtils.findNextByType(nextHandler, 
                     LegacyParamHandler.class);
-            if (!params.isEmpty())
+            if (params.isEmpty())
             {
-                int i = 0;
-                _params = new LegacyParamHandler[params.size()];
-                for (LegacyParamHandler handler : params)
-                {
-                    _params[i++] = handler;
-                }
+                _params = null;
             }
             else
             {
-                _params = null;
+                _params = (LegacyParamHandler[]) params.toArray(new LegacyParamHandler[params.size()]);
             }
         }
         else

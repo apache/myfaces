@@ -19,8 +19,6 @@
 package org.apache.myfaces.view.facelets.tag;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import javax.faces.view.facelets.FaceletHandler;
 
@@ -74,9 +72,9 @@ public final class TagHandlerUtils
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <T> Collection<T> findNextByType(FaceletHandler nextHandler, Class<T> type)
+    public static <T> ArrayList<T> findNextByType(FaceletHandler nextHandler, Class<T> type)
     {
-        List<T> found = new ArrayList<T>();
+        ArrayList<T> found = new ArrayList<T>();
         if (type.isAssignableFrom(nextHandler.getClass()))
         {
             found.add((T)nextHandler);
@@ -101,9 +99,9 @@ public final class TagHandlerUtils
 
     }
 
-    public static  Collection<FaceletHandler> findNextByType(FaceletHandler nextHandler, Class<?> ... type1)
+    public static ArrayList<FaceletHandler> findNextByType(FaceletHandler nextHandler, Class<?> ... type1)
     {
-        List<FaceletHandler> found = new ArrayList<FaceletHandler>();
+        ArrayList<FaceletHandler> found = new ArrayList<FaceletHandler>();
         boolean isAssignable = false;
         for (int i = 0; i < type1.length && !isAssignable; i++)
         {
@@ -133,9 +131,9 @@ public final class TagHandlerUtils
         return found;
     }
 
-    public static  Collection<FaceletHandler> findNextByType(FaceletHandler nextHandler, Class<?> type1, Class<?> type2)
+    public static ArrayList<FaceletHandler> findNextByType(FaceletHandler nextHandler, Class<?> type1, Class<?> type2)
     {
-        List<FaceletHandler> found = new ArrayList<FaceletHandler>();
+        ArrayList<FaceletHandler> found = new ArrayList<FaceletHandler>();
         if (type1.isAssignableFrom(nextHandler.getClass()) || type2.isAssignableFrom(nextHandler.getClass()))
         {
             found.add((FaceletHandler)nextHandler);

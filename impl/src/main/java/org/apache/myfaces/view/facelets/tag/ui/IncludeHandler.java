@@ -84,18 +84,13 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
         this.src = this.getRequiredAttribute("src");
         
         Collection<ParamHandler> params = TagHandlerUtils.findNextByType(nextHandler, ParamHandler.class);
-        if (!params.isEmpty())
+        if (params.isEmpty())
         {
-            int i = 0;
-            _params = new ParamHandler[params.size()];
-            for (ParamHandler handler : params)
-            {
-                _params[i++] = handler;
-            }
+            _params = null;
         }
         else
         {
-            _params = null;
+            _params = (ParamHandler[]) params.toArray(new ParamHandler[params.size()]);
         }
     }
 

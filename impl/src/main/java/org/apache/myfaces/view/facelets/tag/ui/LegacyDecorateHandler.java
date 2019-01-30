@@ -90,18 +90,13 @@ public final class LegacyDecorateHandler extends TagHandler implements TemplateC
 
         Collection<LegacyParamHandler> params = TagHandlerUtils.findNextByType(nextHandler, 
                 LegacyParamHandler.class);
-        if (!params.isEmpty())
+        if (params.isEmpty())
         {
-            int i = 0;
-            _params = new LegacyParamHandler[params.size()];
-            for (LegacyParamHandler handler : params)
-            {
-                _params[i++] = handler;
-            }
+            _params = null;
         }
         else
         {
-            _params = null;
+            _params = (LegacyParamHandler[]) params.toArray(new LegacyParamHandler[params.size()]);
         }
     }
 

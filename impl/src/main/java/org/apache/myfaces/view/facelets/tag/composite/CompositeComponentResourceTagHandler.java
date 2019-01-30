@@ -23,7 +23,6 @@ import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -92,9 +91,9 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
     
     protected volatile Map<String, FaceletHandler> _facetHandlersMap;
     
-    protected final Collection<FaceletHandler> _componentHandlers;
+    protected final ArrayList<FaceletHandler> _componentHandlers;
     
-    protected final Collection<FaceletHandler> _facetHandlers;
+    protected final ArrayList<FaceletHandler> _facetHandlers;
     
     private boolean _dynamicCompositeComponent;
     
@@ -739,9 +738,9 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             TemplateContext itc = actx.popTemplateContext();
             try
             {
-                for (FaceletHandler handler : _componentHandlers)
+                for (int i = 0; i < _componentHandlers.size(); i++)
                 {
-                    handler.apply(ctx, parent);
+                    _componentHandlers.get(i).apply(ctx, parent);
                 }
             }
             finally
