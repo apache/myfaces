@@ -70,6 +70,10 @@ function check() {
   fi
   echo "  GPG signature okay"
 
+  # todo: change, if maven creates the sha512
+  shasum -a 512 "${FILE}" > "${FILE}.sha512"
+  echo "  SHA-512 created"
+
 }
 
 # this uploads the files into the svn dist repo
