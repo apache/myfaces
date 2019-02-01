@@ -168,6 +168,8 @@ mvn release:perform -DperformRelease=true
                 <li>Create 2.3.1 and 2.3.1-SNAPSHOT versions</li> 
                 <li>Find resolved issues and close them</li> 
                 <li>Unresolved issues moved to 2.3.1-SNAPSHOT</li> 
+                <li>Don't forget to change to "released" the version you are trying to release in the JIRA dashboard</li>
+                <li>Delete any previous 2.3.x-SNAPSHOT and keep the latest one</li>
             </ul>
 
             <p>Go to the following link perform these steps under the MyFaces Core Project: <a class="externalLink" href="https://issues.apache.org/jira/secure/Dashboard.jspa">JIRA Dashboard</a></p>
