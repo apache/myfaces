@@ -176,7 +176,7 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
                 if (ctx.getFacesContext().isProjectStage(ProjectStage.Development) 
                         && ERROR_PAGE_INCLUDE_PATH.equals(path))
                 {
-                    url =ClassUtils.getResource(ERROR_FACELET);
+                    url = ClassUtils.getResource(ERROR_FACELET);
                 }
                 if (markInitialState)
                 {
