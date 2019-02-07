@@ -96,6 +96,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
      * </p>
      */
     @JSFProperty(partialStateHolder=true)
+    @Override
     public Converter getConverter()
     {
         if (_converter != null)
@@ -110,6 +111,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
         return null;
     }
 
+    @Override
     public void setConverter(Converter converter)
     {
         this._converter = converter;
@@ -127,6 +129,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
         return value == null ? false : value;
     }
     
+    @Override
     public void markInitialState()
     {
         super.markInitialState();
@@ -137,6 +140,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
         }
     }
     
+    @Override
     public void clearInitialState()
     {
         if (initialStateMarked())

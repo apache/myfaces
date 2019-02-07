@@ -98,11 +98,13 @@ public class UICommand extends UIComponentBase implements ActionSource2
      * </p>
      */
     @JSFProperty
+    @Override
     public boolean isImmediate()
     {
         return (Boolean) getStateHelper().eval(PropertyKeys.immediate, Boolean.FALSE);
     }
 
+    @Override
     public void setImmediate(boolean immediate)
     {
         getStateHelper().put(PropertyKeys.immediate, immediate );
@@ -136,21 +138,25 @@ public class UICommand extends UIComponentBase implements ActionSource2
      * </p>
      */
     @JSFProperty(stateHolder=true, returnSignature = "java.lang.Object", jspName = "action", clientEvent="action")
+    @Override
     public MethodExpression getActionExpression()
     {
         return (MethodExpression) getStateHelper().eval(PropertyKeys.actionExpression);
     }
 
+    @Override
     public void setActionExpression(MethodExpression actionExpression)
     {
         getStateHelper().put(PropertyKeys.actionExpression, actionExpression);
     }
 
+    @Override
     public void addActionListener(ActionListener listener)
     {
         addFacesListener(listener);
     }
 
+    @Override
     public void removeActionListener(ActionListener listener)
     {
         removeFacesListener(listener);
@@ -163,6 +169,7 @@ public class UICommand extends UIComponentBase implements ActionSource2
      */
     @JSFListener(event="javax.faces.event.ActionEvent",
             phases="Invoke Application, Apply Request Values")
+    @Override
     public ActionListener[] getActionListeners()
     {
         return (ActionListener[]) getFacesListeners(ActionListener.class);

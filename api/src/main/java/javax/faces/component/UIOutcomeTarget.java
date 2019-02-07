@@ -40,6 +40,7 @@ public class UIOutcomeTarget extends UIOutput
         setRendererType("javax.faces.Link");
     }
     
+    @Override
     public String getFamily()
     {
         return COMPONENT_FAMILY;

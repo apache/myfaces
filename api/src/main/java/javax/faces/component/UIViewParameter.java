@@ -262,7 +262,7 @@ public class UIViewParameter extends UIInput
     }
 
     /**
-     * The idea of this method is to be called from AbstractFacesInitializer.
+     * The idea of this method is to be called from AbstractFacesInitializer (impl code).
      */
     @SuppressWarnings("unused")
     private static void releaseRenderer() 

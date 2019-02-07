@@ -162,6 +162,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      */
     @JSFExclude
     @JSFProperty(clientEvent="valueChange")
+    @Override
     public Object getValue()
     {
         if (isLocalValueSet())
@@ -288,7 +289,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
             if (!isImmediate())
             {
                 //Pre validation event dispatch for component
-                context.getApplication().publishEvent(context,  PreValidateEvent.class, getClass(), this);
+                context.getApplication().publishEvent(context, PreValidateEvent.class, getClass(), this);
                 try
                 {
                     validate(context);
@@ -782,6 +783,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
     /**
      * @since 1.2
      */
+    @Override
     public void resetValue()
     {
         super.resetValue();
@@ -799,11 +801,13 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * </p>
      */
     @JSFProperty
+    @Override
     public boolean isImmediate()
     {
         return (Boolean) getStateHelper().eval(PropertyKeys.immediate, Boolean.FALSE);
     }
 
+    @Override
     public void setImmediate(boolean immediate)
     {
         getStateHelper().put(PropertyKeys.immediate, immediate );
@@ -820,11 +824,13 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * </p>
      */
     @JSFProperty(defaultValue = "false")
+    @Override
     public boolean isRequired()
     {
         return (Boolean) getStateHelper().eval(PropertyKeys.required, Boolean.FALSE);
     }
 
+    @Override
     public void setRequired(boolean required)
     {
         getStateHelper().put(PropertyKeys.required, required ); 
@@ -1002,6 +1008,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         return false;
     }
 
+    @Override
     public void setLocalValueSet(boolean localValueSet)
     {
         // default value for localValueSet is false, so if the intention is to save the default
@@ -1057,6 +1064,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * is changed.
      */
     @JSFListener(event="javax.faces.event.ValueChangeEvent")
+    @Override
     public ValueChangeListener[] getValueChangeListeners()
     {
         return (ValueChangeListener[]) getFacesListeners(ValueChangeListener.class);
@@ -1089,6 +1097,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
                 true
             };
     
+    @Override
     public void markInitialState()
     {
         StateHelper helper = getStateHelper(false);
@@ -1327,14 +1336,14 @@ public class UIInput extends UIOutput implements EditableValueHolder
         }
         else if (value instanceof String)
         {
-            if ( ((String)value).trim().length() <= 0 )
+            if (((String) value).trim().length() <= 0)
             {
                 return true;
             }
         }
         else if (value instanceof Collection)
         {
-            if ( ((Collection)value).isEmpty())
+            if (((Collection) value).isEmpty())
             {
                 return true;
             }
@@ -1348,7 +1357,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         }
         else if (value instanceof Map)
         {
-            if ( ((Map)value).isEmpty())
+            if (((Map) value).isEmpty())
             {
                 return true;
             }

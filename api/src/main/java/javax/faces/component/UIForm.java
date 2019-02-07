@@ -191,7 +191,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                 }
 
                 //Pre validation event dispatch for component
-                context.getApplication().publishEvent(context,  PreValidateEvent.class, getClass(), this);
+                context.getApplication().publishEvent(context, PreValidateEvent.class, getClass(), this);
                 
                 int facetCount = getFacetCount();
                 if (facetCount > 0)
