@@ -66,7 +66,7 @@ public abstract class PartialViewContext
     /**
     * @since 2.3
     */
-    public abstract java.util.List<java.lang.String> getEvalScripts();
+    public abstract java.util.List<String> getEvalScripts();
     
     /**
      * @since 2.2

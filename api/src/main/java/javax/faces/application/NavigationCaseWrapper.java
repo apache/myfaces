@@ -45,91 +45,109 @@ public abstract class NavigationCaseWrapper extends NavigationCase
         this.delegate = delegate;
     }
 
+    @Override
     public boolean equals(Object o)
     {
         return getWrapped().equals(o);
     }
 
+    @Override
     public int hashCode()
     {
         return getWrapped().hashCode();
     }
 
+    @Override
     public URL getActionURL(FacesContext context) throws MalformedURLException
     {
         return getWrapped().getActionURL(context);
     }
 
+    @Override
     public Boolean getCondition(FacesContext context)
     {
         return getWrapped().getCondition(context);
     }
 
+    @Override
     public String getFromAction()
     {
         return getWrapped().getFromAction();
     }
 
+    @Override
     public String getFromOutcome()
     {
         return getWrapped().getFromOutcome();
     }
 
+    @Override
     public String getFromViewId()
     {
         return getWrapped().getFromViewId();
     }
 
+    @Override
     public URL getBookmarkableURL(FacesContext context) throws MalformedURLException
     {
         return getWrapped().getBookmarkableURL(context);
     }
 
+    @Override
     public URL getResourceURL(FacesContext context) throws MalformedURLException
     {
         return getWrapped().getResourceURL(context);
     }
 
+    @Override
     public URL getRedirectURL(FacesContext context) throws MalformedURLException
     {
         return getWrapped().getRedirectURL(context);
     }
 
+    @Override
     public Map<String, List<String>> getParameters()
     {
         return getWrapped().getParameters();
     }
 
+    @Override
     public String getToViewId(FacesContext context)
     {
         return getWrapped().getToViewId(context);
     }
 
+    @Override
     public boolean hasCondition()
     {
         return getWrapped().hasCondition();
     }
 
+    @Override
     public boolean isIncludeViewParams()
     {
         return getWrapped().isIncludeViewParams();
     }
 
+    @Override
     public boolean isRedirect()
     {
         return getWrapped().isRedirect();
     }
 
+    @Override
     public String getToFlowDocumentId()
     {
         return getWrapped().getToFlowDocumentId();
     }
 
+    @Override
     public String toString()
     {
         return getWrapped().toString();
     }
     
+    @Override
     public NavigationCase getWrapped()
     {
         return delegate;

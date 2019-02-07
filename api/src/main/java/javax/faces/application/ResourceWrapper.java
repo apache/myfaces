@@ -74,6 +74,7 @@ public abstract class ResourceWrapper extends Resource
         return getWrapped().userAgentNeedsUpdate(context);
     }
     
+    @Override
     public Resource getWrapped()
     {
         return delegate;

@@ -41,6 +41,7 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
         this.delegate = delegate;
     }
 
+    @Override
     public StateManager getWrapped()
     {
         return delegate;

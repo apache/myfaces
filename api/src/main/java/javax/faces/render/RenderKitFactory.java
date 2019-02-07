@@ -42,11 +42,9 @@ public abstract class RenderKitFactory implements
         this.delegate = delegate;
     }
     
-    public abstract void addRenderKit(String renderKitId,
-                                      RenderKit renderKit);
+    public abstract void addRenderKit(String renderKitId, RenderKit renderKit);
 
-    public abstract RenderKit getRenderKit(FacesContext context,
-                                           String renderKitId);
+    public abstract RenderKit getRenderKit(FacesContext context, String renderKitId);
 
     public abstract Iterator<String> getRenderKitIds();
     
@@ -60,6 +58,7 @@ public abstract class RenderKitFactory implements
      * 
      * @since 2.0
      */
+    @Override
     public RenderKitFactory getWrapped()
     {
         return delegate;

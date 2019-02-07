@@ -53,7 +53,8 @@ public class BehaviorHandler extends FaceletsAttachedObjectHandler implements Be
         return event;
     }
 
-    public String getEventName ()
+    @Override
+    public String getEventName()
     {
         if (event == null)
         {

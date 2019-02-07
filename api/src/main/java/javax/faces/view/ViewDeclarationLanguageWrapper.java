@@ -48,78 +48,93 @@ public abstract class ViewDeclarationLanguageWrapper extends ViewDeclarationLang
         this.delegate = delegate;
     }
 
+    @Override
     public void buildView(FacesContext context, UIViewRoot view) throws IOException
     {
         getWrapped().buildView(context, view);
     }
 
+    @Override
     public UIViewRoot createView(FacesContext context, String viewId)
     {
         return getWrapped().createView(context, viewId);
     }
 
+    @Override
     public BeanInfo getComponentMetadata(FacesContext context, Resource componentResource)
     {
         return getWrapped().getComponentMetadata(context, componentResource);
     }
 
+    @Override
     public Resource getScriptComponentResource(FacesContext context, Resource componentResource)
     {
         return getWrapped().getScriptComponentResource(context, componentResource);
     }
 
+    @Override
     public StateManagementStrategy getStateManagementStrategy(FacesContext context, String viewId)
     {
         return getWrapped().getStateManagementStrategy(context, viewId);
     }
 
+    @Override
     public ViewMetadata getViewMetadata(FacesContext context, String viewId)
     {
         return getWrapped().getViewMetadata(context, viewId);
     }
 
+    @Override
     public void renderView(FacesContext context, UIViewRoot view) throws IOException
     {
         getWrapped().renderView(context, view);
     }
 
+    @Override
     public UIViewRoot restoreView(FacesContext context, String viewId)
     {
         return getWrapped().restoreView(context, viewId);
     }
 
+    @Override
     public void retargetAttachedObjects(FacesContext context, UIComponent topLevelComponent, 
         List<AttachedObjectHandler> handlers)
     {
         getWrapped().retargetAttachedObjects(context, topLevelComponent, handlers);
     }
 
+    @Override
     public void retargetMethodExpressions(FacesContext context, UIComponent topLevelComponent)
     {
         getWrapped().retargetMethodExpressions(context, topLevelComponent);
     }
 
+    @Override
     public String getId()
     {
         return getWrapped().getId();
     }
 
+    @Override
     public boolean viewExists(FacesContext facesContext, String viewId)
     {
         return getWrapped().viewExists(facesContext, viewId);
     }
 
+    @Override
     public UIComponent createComponent(FacesContext context, String taglibURI, String tagName,
         Map<String, Object> attributes)
     {
         return getWrapped().createComponent(context, taglibURI, tagName, attributes);
     }
 
+    @Override
     public List<String> calculateResourceLibraryContracts(FacesContext context, String viewId)
     {
         return getWrapped().calculateResourceLibraryContracts(context, viewId);
     }
     
+    @Override
     public ViewDeclarationLanguage getWrapped()
     {
         return delegate;

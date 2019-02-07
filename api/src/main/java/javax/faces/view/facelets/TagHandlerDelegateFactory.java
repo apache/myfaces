@@ -49,6 +49,7 @@ public abstract class TagHandlerDelegateFactory implements FacesWrapper<TagHandl
      * @since 2.2
      * @return 
      */
+    @Override
     public TagHandlerDelegateFactory getWrapped()
     {
         return delegate;

@@ -39,6 +39,7 @@ public abstract class FaceletCacheFactory implements FacesWrapper<FaceletCacheFa
 
     public abstract FaceletCache getFaceletCache();
 
+    @Override
     public FaceletCacheFactory getWrapped()
     {
         return delegate;

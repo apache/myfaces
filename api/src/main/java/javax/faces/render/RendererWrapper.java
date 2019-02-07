@@ -42,42 +42,50 @@ public abstract class RendererWrapper extends Renderer implements FacesWrapper<R
         this.delegate = delegate;
     }
 
+    @Override
     public void decode(FacesContext context, UIComponent component)
     {
         getWrapped().decode(context, component);
     }
 
+    @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException
     {
         getWrapped().encodeBegin(context, component);
     }
 
+    @Override
     public void encodeChildren(FacesContext context, UIComponent component) throws IOException
     {
         getWrapped().encodeChildren(context, component);
     }
 
+    @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException
     {
         getWrapped().encodeEnd(context, component);
     }
 
+    @Override
     public String convertClientId(FacesContext context, String clientId)
     {
         return getWrapped().convertClientId(context, clientId);
     }
 
+    @Override
     public boolean getRendersChildren()
     {
         return getWrapped().getRendersChildren();
     }
 
-    public Object getConvertedValue(FacesContext context, UIComponent component, 
-        Object submittedValue) throws ConverterException
+    @Override
+    public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue)
+            throws ConverterException
     {
         return getWrapped().getConvertedValue(context, component, submittedValue);
     }
     
+    @Override
     public Renderer getWrapped()
     {
         return delegate;

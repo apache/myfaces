@@ -56,6 +56,7 @@ public abstract class NavigationHandlerWrapper extends NavigationHandler
         getWrapped().handleNavigation(context, fromAction, outcome, toFlowDocumentId);
     }
     
+    @Override
     public NavigationHandler getWrapped()
     {
         return delegate;

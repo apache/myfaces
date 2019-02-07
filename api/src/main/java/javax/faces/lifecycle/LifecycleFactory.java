@@ -59,6 +59,7 @@ public abstract class LifecycleFactory implements
      * 
      * @since 2.0
      */
+    @Override
     public LifecycleFactory getWrapped()
     {
         return delegate;

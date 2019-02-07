@@ -44,15 +44,15 @@ public abstract class RenderKit
     {
         if (type == null)
         {
-            throw new NullPointerException ("type is null");
+            throw new NullPointerException("type is null");
         }
         
         if (renderer == null)
         {
-            throw new NullPointerException ("renderer is null");
+            throw new NullPointerException("renderer is null");
         }
         
-        this.clientBehaviorRenderers.put (type, renderer);
+        this.clientBehaviorRenderers.put(type, renderer);
     }
 
     public abstract void addRenderer(String family, String rendererType, Renderer renderer);
@@ -66,10 +66,10 @@ public abstract class RenderKit
     {
         if (type == null)
         {
-            throw new NullPointerException ("type is null");
+            throw new NullPointerException("type is null");
         }
         
-        return this.clientBehaviorRenderers.get (type);
+        return this.clientBehaviorRenderers.get(type);
     }
     
     public Iterator<String> getClientBehaviorRendererTypes()

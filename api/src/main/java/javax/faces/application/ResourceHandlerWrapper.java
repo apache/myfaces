@@ -102,6 +102,7 @@ public abstract class ResourceHandlerWrapper extends ResourceHandler
         return getWrapped().isResourceURL(url);
     }
     
+    @Override
     public ResourceHandler getWrapped()
     {
         return delegate;
