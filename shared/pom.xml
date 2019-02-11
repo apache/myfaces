@@ -29,7 +29,7 @@
   <groupId>org.apache.myfaces.core.internal</groupId>
   <artifactId>myfaces-impl-shared</artifactId>
   <packaging>jar</packaging>
-  <name>Apache MyFaces Core For JSF 2.3 - Shared</name>
+  <name>Apache MyFaces JSF-2.3 Core Shared</name>
   <description>The MyFaces Impl Shared module contains utility classes shared by other
   projects like Tomahawk, Orchestra and Portlet-Bridge through shared project.</description>
 
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>org.apache.myfaces.core.internal</groupId>
             <artifactId>myfaces-impl-shared-public</artifactId>
-            <optional>true</optional> 
+            <optional>true</optional>
         </dependency>
 
         <!-- Servlet 4.0 -->
