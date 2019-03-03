@@ -20,6 +20,8 @@ package javax.faces.component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import javax.faces.context.FacesContext;
 
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
@@ -55,6 +57,48 @@ public class InvokeOnComponentTest extends AbstractComponentTest
         super.tearDown();
     }
 
+    public void testInvokeOnFormPrependId() throws Exception
+    {
+        UIForm form = new UIForm();
+        form.setId("form");
+        form.setPrependId(true);
+        facesContext.getViewRoot().getChildren().add(form);
+        
+        UIInput child1 = new UIInput();
+        child1.setId("child1");
+        form.getChildren().add(child1);
+
+        
+        AtomicBoolean val = new AtomicBoolean(false);
+        
+        this.facesContext.getViewRoot().invokeOnComponent(facesContext, "form:child1", (context, target) -> {
+            val.set(true);
+        });
+        
+        assertTrue(val.get());
+    }
+    
+    public void testInvokeOnFormPrependIdFalse() throws Exception
+    {
+        UIForm form = new UIForm();
+        form.setId("form");
+        form.setPrependId(false);
+        facesContext.getViewRoot().getChildren().add(form);
+        
+        UIInput child1 = new UIInput();
+        child1.setId("child1");
+        form.getChildren().add(child1);
+
+        
+        AtomicBoolean val = new AtomicBoolean(false);
+        
+        this.facesContext.getViewRoot().invokeOnComponent(facesContext, "child1", (context, target) -> {
+            val.set(true);
+        });
+        
+        assertTrue(val.get());
+    }
+    
     public void atestInvokeOnComp() throws Exception
     {
         UIForm form = new UIForm();
