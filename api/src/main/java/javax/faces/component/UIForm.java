@@ -282,7 +282,21 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
          uniqueIdCounter,
          submitted,
     }
-    
+
+    @Override
+    public boolean invokeOnComponent(FacesContext context, String clientId, ContextCallback callback) throws FacesException {
+        if (isPrependId()) {
+            String baseClientId = getClientId(context);
+
+            // skip if the component is not a children of the UIForm
+            if (!clientId.startsWith(baseClientId)) {
+                return false;
+            }
+        }
+
+        return super.invokeOnComponent(context, clientId, callback);
+    }
+
     @Override
     public boolean visitTree(VisitContext context, VisitCallback callback)
     {
