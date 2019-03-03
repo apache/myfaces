@@ -65,6 +65,38 @@ public class InvokeOnComponentTest extends AbstractComponentTest
         form.setPrependId(true);
         facesContext.getViewRoot().getChildren().add(form);
         
+        AtomicBoolean val = new AtomicBoolean(false);
+        
+        this.facesContext.getViewRoot().invokeOnComponent(facesContext, "form", (context, target) -> {
+            val.set(true);
+        });
+        
+        assertTrue(val.get());
+    }
+    
+    public void testInvokeOnFormPrependIdFalse() throws Exception
+    {
+        UIForm form = new UIForm();
+        form.setId("form");
+        form.setPrependId(false);
+        facesContext.getViewRoot().getChildren().add(form);
+
+        AtomicBoolean val = new AtomicBoolean(false);
+        
+        this.facesContext.getViewRoot().invokeOnComponent(facesContext, "form", (context, target) -> {
+            val.set(true);
+        });
+        
+        assertTrue(val.get());
+    }
+    
+    public void testInvokeOnFormPrependIdChild() throws Exception
+    {
+        UIForm form = new UIForm();
+        form.setId("form");
+        form.setPrependId(true);
+        facesContext.getViewRoot().getChildren().add(form);
+        
         UIInput child1 = new UIInput();
         child1.setId("child1");
         form.getChildren().add(child1);
@@ -79,7 +111,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
         assertTrue(val.get());
     }
     
-    public void testInvokeOnFormPrependIdFalse() throws Exception
+    public void testInvokeOnFormPrependIdFalseChild() throws Exception
     {
         UIForm form = new UIForm();
         form.setId("form");
