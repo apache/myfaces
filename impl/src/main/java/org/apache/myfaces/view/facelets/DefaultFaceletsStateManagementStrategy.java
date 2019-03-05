@@ -436,7 +436,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     public void handleDynamicAddedRemovedComponents(FacesContext context, UIViewRoot view, Map<String, Object> states)
     {
         List<String> clientIdsRemoved = getClientIdsRemoved(view);
-
         if (clientIdsRemoved != null)
         {
             Set<String> idsRemovedSet = new HashSet<>(HashMapUtils.calcCapacity(clientIdsRemoved.size()));
