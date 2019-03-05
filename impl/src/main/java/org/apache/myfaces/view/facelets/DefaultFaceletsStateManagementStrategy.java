@@ -439,19 +439,26 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
 
         if (clientIdsRemoved != null)
         {
-            Set<String> idsRemovedSet = new HashSet<String>(HashMapUtils.calcCapacity(clientIdsRemoved.size()));
+            Set<String> idsRemovedSet = new HashSet<>(HashMapUtils.calcCapacity(clientIdsRemoved.size()));
             context.getAttributes().put(FaceletViewDeclarationLanguage.REMOVING_COMPONENTS_BUILD, Boolean.TRUE);
             try
             {
+                RemoveComponentCallback removeCallback = null;
+                
                 // perf: clientIds are ArrayList: see method registerOnAddRemoveList(String)
                 for (int i = 0, size = clientIdsRemoved.size(); i < size; i++)
                 {
                     String clientId = clientIdsRemoved.get(i);
                     if (!idsRemovedSet.contains(clientId))
                     {
-                        RemoveComponentCallback callback = new RemoveComponentCallback();
-                        view.invokeOnComponent(context, clientId, callback);
-                        if (callback.isComponentFound())
+                        if (removeCallback == null)
+                        {
+                            removeCallback = new RemoveComponentCallback();
+                        }
+                        removeCallback.setComponentFound(false);
+
+                        view.invokeOnComponent(context, clientId, removeCallback);
+                        if (removeCallback.isComponentFound())
                         {
                             //Add only if component found
                             idsRemovedSet.add(clientId);
@@ -466,10 +473,15 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 context.getAttributes().remove(FaceletViewDeclarationLanguage.REMOVING_COMPONENTS_BUILD);
             }
         }
+        
+        
         List<String> clientIdsAdded = getClientIdsAdded(view);
         if (clientIdsAdded != null)
         {
-            Set<String> idsAddedSet = new HashSet<String>(HashMapUtils.calcCapacity(clientIdsAdded.size()));
+            Set<String> idsAddedSet = new HashSet<>(HashMapUtils.calcCapacity(clientIdsAdded.size()));
+            
+            AddComponentCallback addCallback = null;
+            
             // perf: clientIds are ArrayList: see method setClientsIdsAdded(String)
             for (int i = 0, size = clientIdsAdded.size(); i < size; i++)
             {
@@ -491,15 +503,21 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                             }
                             else
                             {
+                                if (addCallback == null)
+                                {
+                                    addCallback = new AddComponentCallback();
+                                }
+                                addCallback.setAddedState(addedState);
+
                                 final String parentClientId = (String) addedState[0];
-                                view.invokeOnComponent(context, parentClientId, 
-                                    new AddComponentCallback(addedState));
+                                view.invokeOnComponent(context, parentClientId, addCallback);
                             }
                         }
                     }
                     idsAddedSet.add(clientId);
                 }
             }
+
             // Reset this list, because it will be calculated later when the view is being saved
             // in the right order, preventing duplicates (see COMPONENT_ADDED_AFTER_BUILD_VIEW for details).
             clientIdsAdded.clear();
@@ -507,8 +525,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             // This call only has sense when components has been added programatically, because if facelets has control
             // over all components in the component tree, build the initial state and apply the state will have the
             // same effect.
-            RequestViewContext.getCurrentInstance(context).
-                    refreshRequestViewContext(context, view);
+            RequestViewContext.getCurrentInstance(context).refreshRequestViewContext(context, view);
         }
     }
 
@@ -521,19 +538,17 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             this.componentFound = false;
         }
         
-        public void invokeContextCallback(FacesContext context,
-                UIComponent target)
+        @Override
+        public void invokeContextCallback(FacesContext context, UIComponent target)
         {
-            if (target.getParent() != null && 
-                !target.getParent().getChildren().remove(target))
+            if (target.getParent() != null && !target.getParent().getChildren().remove(target))
             {
                 String key = null;
                 if (target.getParent().getFacetCount() > 0)
                 {
-                    for (Map.Entry<String, UIComponent> entry :
-                            target.getParent().getFacets().entrySet())
+                    for (Map.Entry<String, UIComponent> entry : target.getParent().getFacets().entrySet())
                     {
-                        if (entry.getValue()==target)
+                        if (entry.getValue() == target)
                         {
                             key = entry.getKey();
                             break;
@@ -557,37 +572,37 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         
         public boolean isComponentFound()
         {
-            return this.componentFound;
+            return componentFound;
+        }
+
+        public void setComponentFound(boolean componentFound)
+        {
+            this.componentFound = componentFound;
         }
     }
 
     public static class AddComponentCallback implements ContextCallback
     {
-        private final Object[] addedState;
+        private Object[] addedState;
         
-        public AddComponentCallback(Object[] addedState)
+        public AddComponentCallback()
         {
-            this.addedState = addedState;
         }
         
-        public void invokeContextCallback(FacesContext context,
-                UIComponent target)
+        @Override
+        public void invokeContextCallback(FacesContext context, UIComponent target)
         {
             if (addedState[1] != null)
             {
                 String facetName = (String) addedState[1];
-                UIComponent child
-                        = internalRestoreTreeStructure((TreeStructComponent)
-                                                       addedState[3]);
+                UIComponent child = internalRestoreTreeStructure((TreeStructComponent) addedState[3]);
                 child.processRestoreState(context, addedState[4]);
                 target.getFacets().put(facetName,child);
             }
             else
             {
                 Integer childIndex = (Integer) addedState[2];
-                UIComponent child
-                        = internalRestoreTreeStructure((TreeStructComponent)
-                                                       addedState[3]);
+                UIComponent child = internalRestoreTreeStructure((TreeStructComponent)addedState[3]);
                 child.processRestoreState(context, addedState[4]);
                 
                 boolean done = false;
@@ -646,10 +661,20 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 }
             }
         }
+
+        public Object[] getAddedState()
+        {
+            return addedState;
+        }
+
+        public void setAddedState(Object[] addedState)
+        {
+            this.addedState = addedState;
+        }
     }
 
     @Override
-    public Object saveView (FacesContext context)
+    public Object saveView(FacesContext context)
     {
         UIViewRoot view = context.getViewRoot();
         Object states;
@@ -718,9 +743,10 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     _viewPoolProcessor.isViewPoolEnabledForThisView(context, view))
                 {
                     SaveStateAndResetViewCallback cb = saveStateOnMapVisitTreeAndReset(
-                            context,(Map<String,Object>) states, view,
-                            Boolean.TRUE.equals(
-                        context.getAttributes().get(ViewPoolProcessor.FORCE_HARD_RESET)));
+                            context,
+                            (Map<String,Object>) states,
+                            view,
+                            Boolean.TRUE.equals(context.getAttributes().get(ViewPoolProcessor.FORCE_HARD_RESET)));
                     viewResetable = cb.isViewResetable();
                     count = cb.getCount();
                 }
@@ -729,7 +755,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     saveStateOnMapVisitTree(context,(Map<String,Object>) states, view);
                 }
                 
-                if ( ((Map<String,Object>)states).isEmpty())
+                if (((Map<String,Object>)states).isEmpty())
                 {
                     states = null;
                 }
@@ -754,13 +780,11 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             {
                 if (viewResetable)
                 {
-                    _viewPoolProcessor.pushResetableView(
-                        context, view, (FaceletState) faceletViewState);
+                    _viewPoolProcessor.pushResetableView(context, view, (FaceletState) faceletViewState);
                 }
                 else
                 {
-                    _viewPoolProcessor.pushPartialView(
-                        context, view, (FaceletState) faceletViewState, count);
+                    _viewPoolProcessor.pushPartialView(context, view, (FaceletState) faceletViewState, count);
                 }
             }
             
@@ -771,8 +795,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         return serializedView;
     }
     
-    private void restoreViewRootOnlyFromMap(
-            final FacesContext context, final Object viewState,
+    private void restoreViewRootOnlyFromMap(final FacesContext context, final Object viewState,
             final UIComponent view)
     {
         // Only viewState found, process it but skip tree
@@ -790,8 +813,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 catch(Exception e)
                 {
                     throw new IllegalStateException(
-                            "Error restoring component: "+
-                            view.getClientId(context), e);
+                            "Error restoring component: " + view.getClientId(context), e);
                 }
             }
         }
@@ -827,22 +849,21 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 }
                 catch(Exception e)
                 {
-                    throw new IllegalStateException("Error restoring component: "+component.getClientId(context), e);
+                    throw new IllegalStateException(
+                            "Error restoring component: " + component.getClientId(context), e);
                 }
             }
     
             //Scan children
             if (component.getChildCount() > 0)
-            {
-                //String currentClientId = component.getClientId();
-                
+            {                
                 List<UIComponent> children  = component.getChildren();
                 for (int i = 0; i < children.size(); i++)
                 {
                     UIComponent child = children.get(i);
                     if (child != null && !child.isTransient())
                     {
-                        restoreStateFromMap( context, states, child);
+                        restoreStateFromMap(context, states, child);
                     }
                 }
             }
@@ -857,8 +878,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     UIComponent child = entry.getValue();
                     if (child != null && !child.isTransient())
                     {
-                        //String facetName = entry.getKey();
-                        restoreStateFromMap( context, states, child);
+                        restoreStateFromMap(context, states, child);
                     }
                 }
             }
@@ -1019,8 +1039,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                         if (state != null)
                         {
                             // Save by client ID into our map.
-                            
-                            states.put (target.getClientId (facesContext), state);
+                            states.put(target.getClientId (facesContext), state);
                         }
                         
                         return VisitResult.ACCEPT;
@@ -1043,8 +1062,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             if (state != null)
             {
                 // Save by client ID into our map.
-
-                states.put (uiViewRoot.getClientId (facesContext), state);
+                states.put(uiViewRoot.getClientId(facesContext), state);
             }
         }
     }
@@ -1089,8 +1107,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             try
             {
                 uiViewRoot.visitTree(getVisitContextFactory().getVisitContext(
-                        facesContext, null, MyFacesVisitHints.SET_SKIP_ITERATION),
-                        callback);
+                        facesContext, null, MyFacesVisitHints.SET_SKIP_ITERATION), callback);
             }
             finally
             {
@@ -1103,16 +1120,24 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
 
                 if (clientIdsToRemove != null)
                 {
+                    RemoveComponentCallback removeCallback = null;
+                    
                     // perf: clientIds are ArrayList: see method registerOnAddRemoveList(String)
                     for (int i = 0, size = clientIdsToRemove.size(); i < size; i++)
                     {
+                        if (removeCallback == null)
+                        {
+                            removeCallback = new RemoveComponentCallback();
+                        }
+                        removeCallback.setComponentFound(false);
+                        
                         String clientId = clientIdsToRemove.get(i);
-                        uiViewRoot.invokeOnComponent(facesContext, clientId, new RemoveComponentCallback());
+                        uiViewRoot.invokeOnComponent(facesContext, clientId, removeCallback);
                     }
                 }
             }
 
-            Object state = uiViewRoot.saveState (facesContext);
+            Object state = uiViewRoot.saveState(facesContext);
             if (state != null)
             {
                 // Save by client ID into our map.
@@ -1121,7 +1146,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 //Hard reset (or reset and check state again)
                 Integer oldResetMode = (Integer) uiViewRoot.getAttributes().put(
                         ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY, ViewPoolProcessor.RESET_MODE_HARD);
-                state = uiViewRoot.saveState (facesContext);
+                state = uiViewRoot.saveState(facesContext);
                 uiViewRoot.getAttributes().put(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY, oldResetMode);
                 if (state != null)
                 {
@@ -1158,6 +1183,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             this.removeAddedComponents = false;
         }
         
+        @Override
         public VisitResult visit(VisitContext context, UIComponent target)
         {
             FacesContext facesContext = context.getFacesContext();
@@ -1247,7 +1273,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                             }
                         }
                     }
-                    states.put(target.getClientId(facesContext),new AttachedFullStateWrapper(new Object[]{
+                    states.put(target.getClientId(facesContext), new AttachedFullStateWrapper(new Object[]{
                             target.getParent().getClientId(facesContext),
                             facetName,
                             null,
@@ -1275,7 +1301,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     if (state != null)
                     {
                         // Save by client ID into our map.
-                        states.put (target.getClientId (facesContext), state);
+                        states.put(target.getClientId (facesContext), state);
 
                         if (isViewResetable())
                         {
@@ -1284,8 +1310,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                                     ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY, 
                                     ViewPoolProcessor.RESET_MODE_HARD);
                             state = target.saveState (facesContext);
-                            view.getAttributes().put(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY, 
-                                    oldResetMode);
+                            view.getAttributes().put(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY, oldResetMode);
                             if (state != null)
                             {
                                 setViewResetable(false);
@@ -1303,17 +1328,11 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             }
         }
         
-        /**
-         * @return the viewResetable
-         */
         public boolean isViewResetable()
         {
             return viewResetable;
         }
 
-        /**
-         * @param viewResetable the viewResetable to set
-         */
         public void setViewResetable(boolean viewResetable)
         {
             this.viewResetable = viewResetable;
@@ -1324,17 +1343,11 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             return count;
         }
 
-        /**
-         * @return the removeAddedComponents
-         */
         public boolean isRemoveAddedComponents()
         {
             return removeAddedComponents;
         }
 
-        /**
-         * @param removeAddedComponents the removeAddedComponents to set
-         */
         public void setRemoveAddedComponents(boolean removeAddedComponents)
         {
             this.removeAddedComponents = removeAddedComponents;
@@ -1427,6 +1440,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             return _isRefreshOnTransientBuildPreserveState;
         }
 
+        @Override
         public void processEvent(SystemEvent event)
         {
             UIComponent component = (UIComponent) event.getSource();
