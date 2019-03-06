@@ -43,9 +43,6 @@ public abstract class ExternalContextWrapper extends ExternalContext implements 
 
     private ExternalContext delegate;
     
-    /**
-     *
-     */
     @Deprecated
     public ExternalContextWrapper()
     {
@@ -356,6 +353,7 @@ public abstract class ExternalContextWrapper extends ExternalContext implements 
         return getWrapped().getUserPrincipal();
     }
 
+    @Override
     public ExternalContext getWrapped()
     {
         return delegate;

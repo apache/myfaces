@@ -39,6 +39,7 @@ public abstract class FlashFactory implements FacesWrapper<FlashFactory>
     
     public abstract Flash getFlash(boolean create);
     
+    @Override
     public FlashFactory getWrapped()
     {
         return delegate;

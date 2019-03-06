@@ -33,10 +33,6 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     private boolean hasChanges;
     private String insertType;
 
-   
-    /**
-     * 
-     */
     public PartialResponseWriter(ResponseWriter writer)
     {
         super(writer);

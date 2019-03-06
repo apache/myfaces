@@ -31,9 +31,6 @@ public abstract class PartialViewContextWrapper extends PartialViewContext imple
 {
     private PartialViewContext delegate;
     
-    /**
-     * 
-     */
     @Deprecated
     public PartialViewContextWrapper()
     {
@@ -103,13 +100,6 @@ public abstract class PartialViewContextWrapper extends PartialViewContext imple
     {
         getWrapped().release();
     }
-
-    // -= Leonardo Uribe=- This method breaks signature test!
-    //@Override
-    //public void setPartialRequest(boolean isPartialRequest)
-    //{
-    //    getWrapped().setPartialRequest(isPartialRequest);
-    //}
 
     @Override
     public void setRenderAll(boolean renderAll)
