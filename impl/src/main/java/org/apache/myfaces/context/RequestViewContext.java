@@ -207,6 +207,8 @@ public class RequestViewContext
      */
     public void refreshRequestViewContext(FacesContext facesContext, UIViewRoot root)
     {
+        RefreshViewContextCallback callback = null;
+        
         for (Map.Entry<String, UIComponent> entry : root.getFacets().entrySet())
         {
             UIComponent facet = entry.getValue();
@@ -216,9 +218,14 @@ public class RequestViewContext
                 {
                     facesContext.getAttributes().put(MyFacesVisitHints.SKIP_ITERATION_HINT, Boolean.TRUE);
 
+                    if (callback == null)
+                    {
+                        callback = new RefreshViewContextCallback();
+                    }
+
                     VisitContext visitContext = VisitContext.createVisitContext(facesContext,
                             null, MyFacesVisitHints.SET_SKIP_ITERATION);
-                    facet.visitTree(visitContext, new RefreshViewContext());
+                    facet.visitTree(visitContext, callback);
                 }
                 finally
                 {
@@ -230,7 +237,7 @@ public class RequestViewContext
         }
     }
     
-    private class RefreshViewContext implements VisitCallback
+    private class RefreshViewContextCallback implements VisitCallback
     {
         @Override
         public VisitResult visit(VisitContext context, UIComponent target)
@@ -249,9 +256,6 @@ public class RequestViewContext
         return requestViewMetadata;
     }
 
-    /**
-     * @param requestViewMetadata the requestViewMetadata to set
-     */
     public void setRequestViewMetadata(RequestViewMetadata requestViewMetadata)
     {
         this.requestViewMetadata = requestViewMetadata;
