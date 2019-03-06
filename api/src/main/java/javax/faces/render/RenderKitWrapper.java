@@ -105,6 +105,7 @@ public abstract class RenderKitWrapper extends RenderKit implements FacesWrapper
     }
 
     /** {@inheritDoc} */
+    @Override
     public RenderKit getWrapped()
     {
         return delegate;
