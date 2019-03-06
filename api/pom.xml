@@ -230,6 +230,7 @@
                 <executions>
                     <execution>
                         <goals>
+                            <goal>jar</goal>
                             <goal>test-jar</goal>
                         </goals>
                     </execution>
@@ -238,31 +239,12 @@
                     <archive>
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                     </archive>
-                    <!-- we need to clean up some junk left by the myfaces javascript assembly -->
-
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
                     <excludes>
                         <exclude>**/META-INF/resources/myfaces/myfaces/**</exclude>
-                        <exclude>**/META-INF/resources/javax.faces/myfaces/**</exclude>
                         <exclude>**/META-INF/resources/javax.faces/myfaces/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>
-
-
 
             <!--
                 berlios jsunit under apache2 license to cover javascript core routines which
