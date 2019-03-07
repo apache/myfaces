@@ -447,6 +447,7 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         }
     }
     
+    @Override
     public FacesConfigImpl getFacesConfig(InputStream in, String systemId) throws IOException, SAXException
     {
         InputSource is = new InputSource(in);
@@ -460,11 +461,9 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         return config;
     }
     
+    @Override
     public FacesConfigImpl getFacesConfig(Reader r) throws IOException, SAXException
     {
-        //InputSource is = new InputSource(in);
-        //is.setSystemId(systemId);
-
         // Fix for http://issues.apache.org/jira/browse/MYFACES-236
         FacesConfigImpl config = (FacesConfigImpl) digester.parse(r);
 
@@ -473,4 +472,10 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         return config;
     }
 
+    @Override
+    public void release()
+    {
+        digester.clear();
+        digester = null;
+    }
 }

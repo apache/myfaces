@@ -37,4 +37,6 @@ public interface FacesConfigUnmarshaller<T>
     public T getFacesConfig(InputStream in, String systemId) throws IOException, SAXException;
     
     public FacesConfig getFacesConfig(Reader r) throws IOException, SAXException;
+    
+    public void release();
 }

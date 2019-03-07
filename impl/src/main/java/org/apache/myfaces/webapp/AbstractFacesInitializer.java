@@ -76,6 +76,7 @@ import org.apache.myfaces.spi.ServiceProviderFinder;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.context.ReleasableExternalContext;
+import org.apache.myfaces.spi.FacesConfigurationProviderFactory;
 import org.apache.myfaces.util.LangUtils;
 
 /**
@@ -288,6 +289,9 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                 extension.clear();
             }
         }
+
+        FacesConfigurationProviderFactory.getFacesConfigurationProviderFactory(externalContext).
+                getFacesConfigurationProvider(externalContext).release();
     }
     
     /**

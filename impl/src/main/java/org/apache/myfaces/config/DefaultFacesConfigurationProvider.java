@@ -317,7 +317,6 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                         log.info("Reading config : " + url.toExternalForm());
                     }
                     appConfigResources.add(getUnmarshaller(ectx).getFacesConfig(stream, url.toExternalForm()));
-                    //getDispenser().feed(getUnmarshaller().getFacesConfig(stream, entry.getKey()));
                 }
                 finally
                 {
@@ -363,7 +362,6 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     log.info("Reading config " + systemId);
                 }
                 appConfigResources.add(getUnmarshaller(ectx).getFacesConfig(stream, systemId));
-                //getDispenser().feed(getUnmarshaller().getFacesConfig(stream, systemId));
                 stream.close();
             }
         }
@@ -397,7 +395,6 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     log.info("Reading config /WEB-INF/faces-config.xml");
                 }
                 webAppConfig = getUnmarshaller(ectx).getFacesConfig(stream, DEFAULT_FACES_CONFIG);
-                //getDispenser().feed(getUnmarshaller().getFacesConfig(stream, DEFAULT_FACES_CONFIG));
                 stream.close();
             }
             return webAppConfig;
@@ -536,8 +533,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                             trans.transform(source, result);
 
                             StringReader xmlReader = new StringReader(xmlAsWriter.toString());
-                            FacesConfig facesConfig = getUnmarshaller(ectx).getFacesConfig(
-                                xmlReader);
+                            FacesConfig facesConfig = getUnmarshaller(ectx).getFacesConfig(xmlReader);
                             facesConfigList.add(facesConfig);
                         }
                         catch (IOException ex)
@@ -708,8 +704,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 log.info("Reading config " + systemId);
             }
             
-            FacesConfigImpl facesConfig = (FacesConfigImpl) 
-                getUnmarshaller(ectx).getFacesConfig(pbstream, systemId);
+            FacesConfigImpl facesConfig = (FacesConfigImpl) getUnmarshaller(ectx).getFacesConfig(pbstream, systemId);
             
             // Set default start node when it is not present.
             for (FacesFlowDefinition definition : facesConfig.getFacesFlowDefinitions())
@@ -726,7 +721,6 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 }
             }
             return facesConfig;
-            //getDispenser().feed(getUnmarshaller().getFacesConfig(stream, systemId));
         }
         catch (IOException e)
         {
@@ -827,5 +821,15 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             log.log(Level.SEVERE, "Compiler Initialization Error", e);
         }
         return facesConfigFilesList;
+    }
+    
+    @Override
+    public void release()
+    {
+        if (_unmarshaller != null)
+        {
+            _unmarshaller.release();
+            _unmarshaller = null;
+        }
     }
 }

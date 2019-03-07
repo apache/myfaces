@@ -113,4 +113,6 @@ public abstract class FacesConfigurationProvider
      * to spec rules.
      */    
     public abstract List<FacesConfig> getFaceletTaglibFacesConfig(ExternalContext ectx);
+    
+    public abstract void release();
 }
