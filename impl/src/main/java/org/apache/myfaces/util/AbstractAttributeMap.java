@@ -22,9 +22,9 @@ import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -44,15 +44,10 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
     @Override
     public void clear()
     {
-        final List<String> names = new ArrayList<String>();
-        for (final Enumeration<String> e = getAttributeNames(); e.hasMoreElements();)
+        final ArrayList<String> names = Collections.list(getAttributeNames());
+        for (int i = 0; i < names.size(); i++)
         {
-            names.add(e.nextElement());
-        }
-
-        for (String name : names)
-        {
-            removeAttribute(name);
+            removeAttribute(names.get(i));
         }
     }
 
@@ -218,6 +213,7 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
         protected final Enumeration<String> _e = getAttributeNames();
         protected String _currentKey;
 
+        @Override
         public void remove()
         {
             // remove() may cause ConcurrentModificationException.
@@ -230,11 +226,13 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
             AbstractAttributeMap.this.remove(_currentKey);
         }
 
+        @Override
         public boolean hasNext()
         {
             return _e.hasMoreElements();
         }
 
+        @Override
         public E next()
         {
             _currentKey = _e.nextElement();

@@ -20,7 +20,6 @@ package org.apache.myfaces.view.facelets.tag.jstl.core;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -41,6 +40,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.util.ArrayIterator;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.PageContext;
@@ -61,38 +61,6 @@ import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
 @JSFFaceletTag(name="c:forEach")
 public final class ForEachHandler extends TagHandler implements ComponentContainerHandler
 {
-
-    private static class ArrayIterator implements Iterator<Object>
-    {
-        protected final Object array;
-        protected int i;
-        protected final int len;
-
-        public ArrayIterator(Object src)
-        {
-            this.i = 0;
-            this.array = src;
-            this.len = Array.getLength(src);
-        }
-
-        @Override
-        public boolean hasNext()
-        {
-            return this.i < this.len;
-        }
-
-        @Override
-        public Object next()
-        {
-            return Array.get(this.array, this.i++);
-        }
-
-        @Override
-        public void remove()
-        {
-            throw new UnsupportedOperationException();
-        }
-    }
 
     /**
      * If items specified:

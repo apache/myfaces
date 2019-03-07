@@ -20,11 +20,11 @@ package org.apache.myfaces.util;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -44,11 +44,10 @@ public abstract class AbstractThreadSafeAttributeMap<V> extends AbstractMap<Stri
     @Override
     public void clear()
     {
-        final List<String> names = Collections.list(getAttributeNames());
-
-        for (String name : names)
+        final ArrayList<String> names = Collections.list(getAttributeNames());
+        for (int i = 0; i < names.size(); i++)
         {
-            removeAttribute(name);
+            removeAttribute(names.get(i));
         }
     }
 
@@ -208,6 +207,7 @@ public abstract class AbstractThreadSafeAttributeMap<V> extends AbstractMap<Stri
         protected final Iterator<String> _i = Collections.list(getAttributeNames()).iterator();
         protected String _currentKey;
 
+        @Override
         public void remove()
         {
             if (_currentKey == null)
@@ -217,11 +217,13 @@ public abstract class AbstractThreadSafeAttributeMap<V> extends AbstractMap<Stri
             AbstractThreadSafeAttributeMap.this.remove(_currentKey);
         }
 
+        @Override
         public boolean hasNext()
         {
             return _i.hasNext();
         }
 
+        @Override
         public E next()
         {
             _currentKey = _i.next();
@@ -370,16 +372,19 @@ public abstract class AbstractThreadSafeAttributeMap<V> extends AbstractMap<Stri
             _currentKey = currentKey;
         }
 
+        @Override
         public String getKey()
         {
             return _currentKey;
         }
 
+        @Override
         public V getValue()
         {
             return AbstractThreadSafeAttributeMap.this.get(_currentKey);
         }
 
+        @Override
         public V setValue(final V value)
         {
             return AbstractThreadSafeAttributeMap.this.put(_currentKey, value);
