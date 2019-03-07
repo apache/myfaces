@@ -620,6 +620,11 @@ public class ViewIdSupport
     
     public boolean isViewProtected(FacesContext context, String viewId)
     {
+        if (viewId == null)
+        {
+            return false;
+        }
+        
         Boolean protectedView = null;
         if (viewIdProtectedCache != null)
         {
