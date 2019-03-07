@@ -286,7 +286,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                     BeanProvider.getContextualReference(beanManager, CdiAnnotationProviderExtension.class, false);
             if (extension != null)
             {
-                extension.clear();
+                extension.release();
             }
         }
 

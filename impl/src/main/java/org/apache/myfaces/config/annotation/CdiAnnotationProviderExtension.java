@@ -81,7 +81,7 @@ public class CdiAnnotationProviderExtension implements Extension
         return map;
     }
     
-    public void clear()
+    public void release()
     {
         map.clear();
         map = null;
