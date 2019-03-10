@@ -35,6 +35,7 @@ import javax.faces.view.AttachedObjectHandler;
 import javax.faces.view.EditableValueHolderAttachedObjectHandler;
 
 import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.util.Lazy;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletFactory;
@@ -79,25 +80,25 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     
     private Map<UIComponent, List<AttachedObjectHandler>> _attachedObjectHandlers;
     
-    private Map<UIComponent, Map<String, Object> > _methodExpressionsTargeted;
+    private Map<UIComponent, Map<String, Object>> _methodExpressionsTargeted;
     
-    private Map<UIComponent, Map<String, Boolean> > _compositeComponentAttributesMarked;
+    private Map<UIComponent, Map<String, Boolean>> _compositeComponentAttributesMarked;
 
     private static final String VIEWROOT_FACELET_ID = "oam.VIEW_ROOT";
     
-    private SectionUniqueIdCounter _sectionUniqueIdCounter;
+    private Lazy<SectionUniqueIdCounter> _sectionUniqueIdCounter;
     
-    private SectionUniqueIdCounter _sectionUniqueComponentIdCounter;
+    private Lazy<SectionUniqueIdCounter> _sectionUniqueComponentIdCounter;
     
     private List<String> _uniqueIdsList;
     private Iterator<String> _uniqueIdsIterator;
     private int _level;
     
     private int _isInMetadataSection;
-    private SectionUniqueIdCounter _sectionUniqueMetadataIdCounter;
-    private SectionUniqueIdCounter _sectionUniqueNormalIdCounter;
-    private SectionUniqueIdCounter _sectionUniqueComponentMetadataIdCounter;
-    private SectionUniqueIdCounter _sectionUniqueComponentNormalIdCounter;
+    private Lazy<SectionUniqueIdCounter> _sectionUniqueMetadataIdCounter;
+    private Lazy<SectionUniqueIdCounter> _sectionUniqueNormalIdCounter;
+    private Lazy<SectionUniqueIdCounter> _sectionUniqueComponentMetadataIdCounter;
+    private Lazy<SectionUniqueIdCounter> _sectionUniqueComponentNormalIdCounter;
     
     private List<SectionUniqueIdCounter> _sectionUniqueIdCounterStack;
     private List<SectionUniqueIdCounter> _sectionUniqueComponentIdCounterStack;
@@ -125,7 +126,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         _componentsMarkedForDeletion = new ArrayList<Map<String,UIComponent>>();
         _relocatableResourceForDeletion = new HashMap<String, UIComponent>();
         _deletionLevel = -1;
-        _sectionUniqueIdCounter = new SectionUniqueIdCounter();
+        _sectionUniqueIdCounter = new Lazy(() -> new SectionUniqueIdCounter());
         //Cached at facelet view
         myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext);
 
@@ -135,16 +136,16 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
                     getApplicationMap().get(FaceletViewDeclarationLanguage.CACHED_COMPONENT_IDS);
             if (componentIdsCache != null)
             {
-                _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter("_", componentIdsCache);
+                _sectionUniqueComponentIdCounter = new Lazy(() -> new SectionUniqueIdCounter("_", componentIdsCache));
             }
             else
             {
-                _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter("_");
+                _sectionUniqueComponentIdCounter = new Lazy(() -> new SectionUniqueIdCounter("_"));
             }
         }
         else
         {
-            _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter("_");
+            _sectionUniqueComponentIdCounter = new Lazy(() -> new SectionUniqueIdCounter("_"));
         }
         _sectionUniqueNormalIdCounter = _sectionUniqueIdCounter;
         _sectionUniqueComponentNormalIdCounter = _sectionUniqueComponentIdCounter;
@@ -168,8 +169,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     public FaceletCompositionContextImpl(FaceletFactory factory, FacesContext facesContext, String base)
     {
         this(factory, facesContext);
-        _sectionUniqueIdCounter = new SectionUniqueIdCounter(base+ '_');
-        _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter('_' + base + '_');
+        _sectionUniqueIdCounter = new Lazy(() -> new SectionUniqueIdCounter(base+ '_'));
+        _sectionUniqueComponentIdCounter = new Lazy(() -> new SectionUniqueIdCounter('_' + base + '_'));
         _sectionUniqueNormalIdCounter = _sectionUniqueIdCounter;
         _sectionUniqueComponentNormalIdCounter = _sectionUniqueComponentIdCounter;
         _dynamicComponentTopLevel = true;
@@ -841,62 +842,62 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     public String startComponentUniqueIdSection()
     {
         _level++;
-        _sectionUniqueComponentIdCounter.startUniqueIdSection();
-        return _sectionUniqueIdCounter.startUniqueIdSection();
+        _sectionUniqueComponentIdCounter.get().startUniqueIdSection();
+        return _sectionUniqueIdCounter.get().startUniqueIdSection();
     }
     
     @Override
     public String startComponentUniqueIdSection(String base)
     {
         _level++;
-        _sectionUniqueComponentIdCounter.startUniqueIdSection(base);
-        return _sectionUniqueIdCounter.startUniqueIdSection(base);
+        _sectionUniqueComponentIdCounter.get().startUniqueIdSection(base);
+        return _sectionUniqueIdCounter.get().startUniqueIdSection(base);
     }
 
     @Override
     public void incrementUniqueId()
     {
-        _sectionUniqueIdCounter.incrementUniqueId();
+        _sectionUniqueIdCounter.get().incrementUniqueId();
     }
     
     @Override
     public String generateUniqueId()
     {
-        return _sectionUniqueIdCounter.generateUniqueId();
+        return _sectionUniqueIdCounter.get().generateUniqueId();
     }
     
     @Override
     public void generateUniqueId(StringBuilder builderToAdd)
     {
-        _sectionUniqueIdCounter.generateUniqueId(builderToAdd);
+        _sectionUniqueIdCounter.get().generateUniqueId(builderToAdd);
     }
 
     @Override
     public String generateUniqueComponentId()
     {
-        return _sectionUniqueComponentIdCounter.generateUniqueId();
+        return _sectionUniqueComponentIdCounter.get().generateUniqueId();
     }
     
     @Override
     public void incrementUniqueComponentId()
     {
-        _sectionUniqueComponentIdCounter.incrementUniqueId();
+        _sectionUniqueComponentIdCounter.get().incrementUniqueId();
     }
     
     @Override
     public void endComponentUniqueIdSection()
     {
         _level--;
-        _sectionUniqueIdCounter.endUniqueIdSection();
-        _sectionUniqueComponentIdCounter.endUniqueIdSection();
+        _sectionUniqueIdCounter.get().endUniqueIdSection();
+        _sectionUniqueComponentIdCounter.get().endUniqueIdSection();
     }
     
     @Override
     public void endComponentUniqueIdSection(String base)
     {
         _level--;
-        _sectionUniqueIdCounter.endUniqueIdSection(base);
-        _sectionUniqueComponentIdCounter.endUniqueIdSection(base);
+        _sectionUniqueIdCounter.get().endUniqueIdSection(base);
+        _sectionUniqueComponentIdCounter.get().endUniqueIdSection(base);
     }
     
     @Override
@@ -906,11 +907,11 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         {
             if (_sectionUniqueMetadataIdCounter == null)
             {
-                _sectionUniqueMetadataIdCounter = new SectionUniqueIdCounter("__md_");
+                _sectionUniqueMetadataIdCounter = new Lazy(() -> new SectionUniqueIdCounter("__md_"));
             }
             if (_sectionUniqueComponentMetadataIdCounter == null)
             {
-                _sectionUniqueComponentMetadataIdCounter = new SectionUniqueIdCounter("__md_");
+                _sectionUniqueComponentMetadataIdCounter = new Lazy(() -> new SectionUniqueIdCounter("__md_"));
             }
             //Replace the counter with metadata counter
             _sectionUniqueIdCounter = _sectionUniqueMetadataIdCounter;
@@ -987,10 +988,10 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         }
         _isRefreshingTransientBuild = true;
         
-        _sectionUniqueIdCounterStack.add(_sectionUniqueIdCounter);
-        _sectionUniqueComponentIdCounterStack.add(_sectionUniqueComponentIdCounter);
-        _sectionUniqueIdCounter = new SectionUniqueIdCounter(base+ '_');
-        _sectionUniqueComponentIdCounter = new SectionUniqueIdCounter('_' + base + '_');
+        _sectionUniqueIdCounterStack.add(_sectionUniqueIdCounter.get());
+        _sectionUniqueComponentIdCounterStack.add(_sectionUniqueComponentIdCounter.get());
+        _sectionUniqueIdCounter = new Lazy(() -> new SectionUniqueIdCounter(base + '_'));
+        _sectionUniqueComponentIdCounter = new Lazy(() -> new SectionUniqueIdCounter('_' + base + '_'));
         _sectionUniqueNormalIdCounter = _sectionUniqueIdCounter;
         _sectionUniqueComponentNormalIdCounter = _sectionUniqueComponentIdCounter;
         _dynamicComponentTopLevel = true;
@@ -1018,10 +1019,10 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
             decreaseComponentLevelMarkedForDeletion();
         }
         
-        _sectionUniqueIdCounter = _sectionUniqueIdCounterStack.remove(
-            _sectionUniqueIdCounterStack.size()-1);
-        _sectionUniqueComponentIdCounter = _sectionUniqueComponentIdCounterStack.remove(
-            _sectionUniqueComponentIdCounterStack.size()-1);
+        _sectionUniqueIdCounter.reset(
+                _sectionUniqueIdCounterStack.remove(_sectionUniqueIdCounterStack.size() - 1));
+        _sectionUniqueComponentIdCounter.reset(
+                _sectionUniqueComponentIdCounterStack.remove(_sectionUniqueComponentIdCounterStack.size() - 1));
         
         //Restore refresh section
         if (_sectionUniqueComponentIdCounterStack.isEmpty())
