@@ -300,15 +300,17 @@ public final class TagAttributeImpl extends TagAttribute
                 if ((this.capabilities & EL_CC) != 0)
                 {
                     Location currentLocation = getLocation();
-                    Location ccLocation = (Location) actx.getFaceletCompositionContext().
-                            getCompositeComponentFromStack().getAttributes().get(
-                                    CompositeComponentELUtils.LOCATION_KEY);
-                    if (ccLocation != null && !ccLocation.getPath().equals(currentLocation.getPath()))
+                    UIComponent cc = actx.getFaceletCompositionContext().getCompositeComponentFromStack();
+                    if (cc != null)
                     {
-                        // #{cc} from a template called from inside a composite component, disable caching on 
-                        // this expression. The reason is we need to change the Location object used as
-                        // reference as the one in the stack, and that depends on the template hierarchy.
-                        currentLocation = ccLocation;
+                        Location ccLocation = (Location) cc.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY);
+                        if (ccLocation != null && !ccLocation.getPath().equals(currentLocation.getPath()))
+                        {
+                            // #{cc} from a template called from inside a composite component, disable caching on 
+                            // this expression. The reason is we need to change the Location object used as
+                            // reference as the one in the stack, and that depends on the template hierarchy.
+                            currentLocation = ccLocation;
+                        }
                     }
                     methodExpression = new LocationMethodExpression(currentLocation, methodExpression, 
                             actx.getFaceletCompositionContext().getCompositeComponentLevel());
@@ -565,16 +567,18 @@ public final class TagAttributeImpl extends TagAttribute
                 // the location of the composite component from the stack directly, but only when the path
                 // is different.
                 Location currentLocation = getLocation();
-                Location ccLocation = (Location) actx.getFaceletCompositionContext().
-                        getCompositeComponentFromStack().getAttributes().get(
-                                CompositeComponentELUtils.LOCATION_KEY);
-                if (ccLocation != null && !ccLocation.getPath().equals(currentLocation.getPath()))
+                UIComponent cc = actx.getFaceletCompositionContext().getCompositeComponentFromStack();
+                if (cc != null)
                 {
-                    // #{cc} from a template called from inside a composite component, disable caching on 
-                    // this expression. The reason is we need to change the Location object used as
-                    // reference as the one in the stack, and that depends on the template hierarchy.
-                    //cacheable = false;
-                    currentLocation = ccLocation;
+                    Location ccLocation = (Location) cc.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY);
+                    if (ccLocation != null && !ccLocation.getPath().equals(currentLocation.getPath()))
+                    {
+                        // #{cc} from a template called from inside a composite component, disable caching on 
+                        // this expression. The reason is we need to change the Location object used as
+                        // reference as the one in the stack, and that depends on the template hierarchy.
+                        //cacheable = false;
+                        currentLocation = ccLocation;
+                    }
                 }
                 if (ExternalSpecifications.isUnifiedELAvailable())
                 {
