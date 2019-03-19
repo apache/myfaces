@@ -29,7 +29,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
+import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.view.facelets.FaceletMultipleRequestsTestCase;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,21 +38,27 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-public class SkipNamespaceUnitTest extends FaceletMultipleRequestsTestCase {
+public class SkipNamespaceUnitTest extends FaceletMultipleRequestsTestCase 
+{
+
     private Boolean isWellFormed = Boolean.FALSE;
 
-    public SkipNamespaceUnitTest() {
+    public SkipNamespaceUnitTest() 
+    {
         super();
     }
 
-    public void setUp() throws Exception {
+    public void setUp() throws Exception 
+    {
         super.setUp();
         setupRequest();
     }
 
     @Test
-    public void test() {
-        try {
+    public void test() 
+    {
+        try 
+        {
             StringWriter writer = new StringWriter();
             HtmlResponseWriterImpl htmlResponseWriter = new HtmlResponseWriterImpl(writer, "application/xml", "UTF-8");
             facesContext.setResponseWriter(htmlResponseWriter);
@@ -62,22 +68,28 @@ public class SkipNamespaceUnitTest extends FaceletMultipleRequestsTestCase {
             vdl.buildView(facesContext, view, testData);
             facesContext.renderResponse();
             List<UIComponent> children = view.getChildren();
-            for (UIComponent child : children) {
-                if (child.isRendered()) {
+            for (UIComponent child : children) 
+            {
+                if (child.isRendered()) 
+                {
                     child.encodeAll(facesContext);
                 }
             }
             parse(writer);
             Assert.assertTrue(isWellFormed);
-        } catch (IOException e) {
+        } catch (IOException e) 
+        {
             e.printStackTrace();
-        } catch (Exception e) {
+        } catch (Exception e) 
+        {
             e.printStackTrace();
         }
     }
 
-    private void parse(StringWriter sw) {
-        try {
+    private void parse(StringWriter sw) 
+    {
+        try 
+        {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(false);
             factory.setNamespaceAware(true);
@@ -85,28 +97,40 @@ public class SkipNamespaceUnitTest extends FaceletMultipleRequestsTestCase {
             builder.setErrorHandler(new SimpleErrorHandler());
             builder.parse(new InputSource(new StringReader(sw.toString())));
             isWellFormed = Boolean.TRUE;
-        } catch (ParserConfigurationException e) {
+        }
+        catch (ParserConfigurationException e) 
+        {
             e.printStackTrace();
-        } catch (SAXException e) {
+        } 
+        catch (SAXException e) 
+        {
             e.printStackTrace();
-        } catch (IOException e) {
+        } 
+        catch (IOException e) 
+        {
             e.printStackTrace();
-        } catch (Exception e) {
+        } 
+        catch (Exception e) 
+        {
             e.printStackTrace();
         }
         return;
     }
 
-    public class SimpleErrorHandler implements ErrorHandler {
-        public void warning(SAXParseException e) throws SAXException {
+    public class SimpleErrorHandler implements ErrorHandler 
+    {
+        public void warning(SAXParseException e) throws SAXException 
+        {
             System.out.println(e.getMessage());
         }
 
-        public void error(SAXParseException e) throws SAXException {
+        public void error(SAXParseException e) throws SAXException 
+        {
             System.out.println(e.getMessage());
         }
 
-        public void fatalError(SAXParseException e) throws SAXException {
+        public void fatalError(SAXParseException e) throws SAXException 
+        {
             System.out.println(e.getMessage());
         }
     }
