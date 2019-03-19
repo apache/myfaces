@@ -27,6 +27,8 @@ import java.util.regex.Pattern;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.security.PrivilegedActionException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import javax.el.ELException;
@@ -74,6 +76,12 @@ public final class SAXCompiler extends Compiler
 
     private final static Pattern XML_DECLARATION = Pattern
             .compile("^<\\?xml.+?version=['\"](.+?)['\"](.+?encoding=['\"]((.+?))['\"])?.*?\\?>");
+
+    /**
+     * see https://issues.apache.org/jira/browse/MYFACES-4281
+     */
+    private final static List<String> SKIPPED_NAMESPACES = Arrays.asList("http://www.w3.org/1998/Math/MathML",
+            "http://www.w3.org/2000/svg","http://www.w3.org/1999/xlink");
 
     private static class CompilationHandler extends DefaultHandler implements LexicalHandler
     {
@@ -275,7 +283,10 @@ public final class SAXCompiler extends Compiler
         @Override
         public void startPrefixMapping(String prefix, String uri) throws SAXException
         {
-            this.unit.pushNamespace(prefix, uri);
+            if (!SAXCompiler.SKIPPED_NAMESPACES.contains(uri))
+            {
+                this.unit.pushNamespace(prefix, uri);
+            }
         }
 
         @Override
