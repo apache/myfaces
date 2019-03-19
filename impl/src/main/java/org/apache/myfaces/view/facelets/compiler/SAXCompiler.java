@@ -283,7 +283,7 @@ public final class SAXCompiler extends Compiler
         @Override
         public void startPrefixMapping(String prefix, String uri) throws SAXException
         {
-            if (!SAXCompiler.SKIPPED_NAMESPACES.contains(uri))
+            if (!SKIPPED_NAMESPACES.contains(uri))
             {
                 this.unit.pushNamespace(prefix, uri);
             }
