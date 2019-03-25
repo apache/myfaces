@@ -332,7 +332,6 @@ public abstract class HtmlLinkRendererBase
         }
         else
         {
-            //String[] anchorAttrsToRender;
             if (component instanceof ClientBehaviorHolder)
             {
                 behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
@@ -413,13 +412,8 @@ public abstract class HtmlLinkRendererBase
                 }
             }
 
-
-            //HtmlRendererUtils.renderHTMLAttributes(writer, component,
-            //                                       anchorAttrsToRender);
-            HtmlRendererUtils.renderHTMLAttribute(writer, HTML.STYLE_ATTR, HTML.STYLE_ATTR,
-                                                  style);
-            HtmlRendererUtils.renderHTMLAttribute(writer, HTML.STYLE_CLASS_ATTR, HTML.STYLE_CLASS_ATTR,
-                                                  styleClass);
+            HtmlRendererUtils.renderHTMLAttribute(writer, HTML.STYLE_ATTR, HTML.STYLE_ATTR, style);
+            HtmlRendererUtils.renderHTMLAttribute(writer, HTML.STYLE_CLASS_ATTR, HTML.STYLE_CLASS_ATTR, styleClass);
         }
 
         // render value as required by JSF 1.1 renderkitdocs
