@@ -100,16 +100,20 @@ public final class TagAttributeImpl extends TagAttribute
             throw new TagAttributeException(this, e);
         }
         
-        compositeComponentExpression = !literal ? 
-                CompositeComponentELUtils.isCompositeComponentExpression(this.value) : 
-                    false;
-        compositeComponentAttrMethodExpression = compositeComponentExpression ? 
-                CompositeComponentELUtils.isCompositeComponentAttrsMethodExpression(this.value) : 
-                    false;
-        resourceExpression = !literal ? ResourceELUtils.isResourceExpression(this.value) : false;
+        compositeComponentExpression = !literal
+                ? CompositeComponentELUtils.isCompositeComponentExpression(this.value)
+                : false;
+        compositeComponentAttrMethodExpression = compositeComponentExpression
+                ? CompositeComponentELUtils.isCompositeComponentAttrsMethodExpression(this.value)
+                : false;
+        resourceExpression = !literal
+                ? ResourceELUtils.isResourceExpression(this.value)
+                : false;
 
-        this.capabilities = (literal ? EL_LITERAL : 0) | (compositeComponentExpression ? EL_CC : 0) | 
-            (compositeComponentAttrMethodExpression ? EL_CC_ATTR_ME : 0) | ( resourceExpression ? EL_RESOURCE : 0); 
+        this.capabilities = (literal ? EL_LITERAL : 0)
+                | (compositeComponentExpression ? EL_CC : 0)
+                | (compositeComponentAttrMethodExpression ? EL_CC_ATTR_ME : 0)
+                | (resourceExpression ? EL_RESOURCE : 0); 
     }
 
     /**

@@ -72,8 +72,7 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
 
         char[] encoded = null;
         
-        int to = off + len;
-        for (int i = off; i < to; i++)
+        for (int i = off; i < (off + len); i++)
         {
             if (isInvalidChar(str.charAt(i)))
             {
@@ -100,7 +99,7 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
             return null;
         }        
 
-        for (int i = off; i < off + len; i++)
+        for (int i = off; i < (off + len); i++)
         {
             if (isInvalidChar(cbuf[i]))
             {
