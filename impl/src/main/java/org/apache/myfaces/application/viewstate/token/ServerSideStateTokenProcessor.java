@@ -27,7 +27,7 @@ import org.apache.myfaces.application.viewstate.StateUtils;
  *
  * @author Thomas Andraschko
  */
-public class ServiceSideStateTokenProcessor extends StateTokenProcessor
+public class ServerSideStateTokenProcessor extends StateTokenProcessor
 {
     @Override
     public Object decode(FacesContext facesContext, String token)
