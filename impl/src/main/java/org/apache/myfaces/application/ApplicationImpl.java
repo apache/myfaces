@@ -346,7 +346,7 @@ public class ApplicationImpl extends Application
     private ELResolver createFacesResolver()
     {
         FacesContext facesContext = getFacesContext();
-        boolean supportJSPAndFacesEL = MyfacesConfig.getCurrentInstance(facesContext).isSupportJSPAndFacesEL();
+        boolean supportJSPAndFacesEL = MyfacesConfig.getCurrentInstance(facesContext).isSupportJSP();
         CompositeELResolver resolver;
         if (supportJSPAndFacesEL)
         {

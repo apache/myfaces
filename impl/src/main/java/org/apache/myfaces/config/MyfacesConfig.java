@@ -238,18 +238,16 @@ public class MyfacesConfig
     public static final int COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT = 100;
 
     /**
-    * If set false, myfaces won't support JSP and javax.faces.el. JSP are deprecated in JSF 2.X, javax.faces.el in 
-    * in JSF 1.2. Default value is true. 
+    * If set false, myfaces won't support JSP. JSP are deprecated in JSF 2.X. Default value is true. 
     * 
-    * If this property is set is false, JSF 1.1 VariableResolver and PropertyResolver config (replaced in JSF 1.2 by
-    * ELResolver) and all related logic for JSP is skipped, making EL evaluation faster.  
+    * If this property is set is false, all related logic for JSP is skipped.
     */
     @JSFWebConfigParam(since="2.0.13,2.1.7", expectedValues="true,false", defaultValue="true",
-         desc="If set false, myfaces won't support JSP and javax.faces.el. JSP are deprecated in " +
-         "JSF 2.X, javax.faces.el in in JSF 1.2. Default value is true.",
+         desc="If set false, myfaces won't support JSP. JSP are deprecated in " +
+         "JSF 2.X. Default value is true.",
          group="EL", tags="performance ")
-    public final static String SUPPORT_JSP_AND_FACES_EL = "org.apache.myfaces.SUPPORT_JSP_AND_FACES_EL";
-    public final static boolean SUPPORT_JSP_AND_FACES_EL_DEFAULT = true;
+    public final static String SUPPORT_JSP = "org.apache.myfaces.SUPPORT_JSP";
+    public final static boolean SUPPORT_JSP_DEFAULT = true;
     
     /**
      * When the application runs inside Google Application Engine container (GAE),
@@ -790,7 +788,7 @@ public class MyfacesConfig
     private String defaultResponseWriterContentTypeMode = DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT;
     private boolean viewUniqueIdsCacheEnabled = VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT;
     private int componentUniqueIdsCacheSize = COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT;
-    private boolean supportJSPAndFacesEL = SUPPORT_JSP_AND_FACES_EL_DEFAULT;
+    private boolean supportJSP = SUPPORT_JSP_DEFAULT;
     private String gaeJsfJarFiles = GAE_JSF_JAR_FILES_DEFAULT;
     private String gaeJsfAnnotationsJarFiles = GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT;
     private boolean strictJsf2ViewNotFound = STRICT_JSF_2_VIEW_NOT_FOUND_DEFAULT;
@@ -992,8 +990,8 @@ public class MyfacesConfig
         cfg.componentUniqueIdsCacheSize = getInt(extCtx, COMPONENT_UNIQUE_IDS_CACHE_SIZE, 
                 COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT);
         
-        cfg.supportJSPAndFacesEL = getBoolean(extCtx, SUPPORT_JSP_AND_FACES_EL,
-                SUPPORT_JSP_AND_FACES_EL_DEFAULT);
+        cfg.supportJSP = getBoolean(extCtx, SUPPORT_JSP,
+                SUPPORT_JSP_DEFAULT);
                 
         cfg.gaeJsfJarFiles = getString(extCtx, GAE_JSF_JAR_FILES,
                 GAE_JSF_JAR_FILES_DEFAULT);
@@ -1408,9 +1406,9 @@ public class MyfacesConfig
         return componentUniqueIdsCacheSize;
     }
 
-    public boolean isSupportJSPAndFacesEL()
+    public boolean isSupportJSP()
     {
-        return supportJSPAndFacesEL;
+        return supportJSP;
     }
 
     public String getGaeJsfJarFiles()
