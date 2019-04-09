@@ -21,6 +21,7 @@ package org.apache.myfaces.spi.impl;
 import org.apache.myfaces.spi.FacesFlowProvider;
 import org.apache.myfaces.spi.FacesFlowProviderFactory;
 import javax.faces.context.ExternalContext;
+import org.apache.myfaces.flow.cdi.DefaultCDIFacesFlowProvider;
 import org.apache.myfaces.flow.impl.DefaultFacesFlowProvider;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
@@ -31,22 +32,22 @@ import org.apache.myfaces.util.ExternalSpecifications;
 public class DefaultFacesFlowProviderFactory extends FacesFlowProviderFactory
 {
 
-    public static final String FACES_CONFIGURATION_MERGER = FacesFlowProvider.class.getName();
-    public static final String FACES_CONFIGURATION_MERGER_INSTANCE_KEY = FACES_CONFIGURATION_MERGER + ".INSTANCE";
+    public static final String FACES_FLOW_PROVIDER = FacesFlowProvider.class.getName();
+    public static final String FACES_FLOW_PROVIDER_INSTANCE_KEY = FACES_FLOW_PROVIDER + ".INSTANCE";
 
     @Override
     public FacesFlowProvider getFacesFlowProvider(ExternalContext externalContext)
     {
         // check for cached instance
         FacesFlowProvider returnValue = (FacesFlowProvider)
-                externalContext.getApplicationMap().get(FACES_CONFIGURATION_MERGER_INSTANCE_KEY);
+                externalContext.getApplicationMap().get(FACES_FLOW_PROVIDER_INSTANCE_KEY);
 
         if (returnValue == null)
         {
             if (ExternalSpecifications.isCDIAvailable(externalContext))
             {
                 returnValue = (FacesFlowProvider) ClassUtils.newInstance(
-                    "org.apache.myfaces.flow.cdi.DefaultCDIFacesFlowProvider");
+                        DefaultCDIFacesFlowProvider.class.getName());
             }
             else
             {
