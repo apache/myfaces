@@ -27,26 +27,21 @@ import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
-/**
- *
- */
 @ApplicationScoped
 public class WebsocketApplicationBean
 {
-    
+   
     /**
      * This map has as key the channel and as values a list of websocket channels
      */
-    private Map<String, List<WebsocketChannel> > channelTokenListMap = 
-        new HashMap<String, List<WebsocketChannel> >(2);
+    private Map<String, List<WebsocketChannel> > channelTokenListMap = new HashMap<>(2);
 
     public void registerWebsocketSession(String token, WebsocketChannelMetadata metadata)
     {
         if ("application".equals(metadata.getScope()))
         {
-            channelTokenListMap.putIfAbsent(metadata.getChannel(), new ArrayList<WebsocketChannel>(1));
-            channelTokenListMap.get(metadata.getChannel()).add(new WebsocketChannel(
-                    token, metadata));
+            channelTokenListMap.putIfAbsent(metadata.getChannel(), new ArrayList<>(1));
+            channelTokenListMap.get(metadata.getChannel()).add(new WebsocketChannel(token, metadata));
         }
     }
     
@@ -68,7 +63,7 @@ public class WebsocketApplicationBean
         List<WebsocketChannel> list = channelTokenListMap.get(channel);
         if (list != null && !list.isEmpty())
         {
-            List<String> value = new ArrayList<String>(list.size());
+            List<String> value = new ArrayList<>(list.size());
             for (WebsocketChannel md : list)
             {
                 value.add(md.getChannelToken());
@@ -83,7 +78,7 @@ public class WebsocketApplicationBean
         List<WebsocketChannel> list = channelTokenListMap.get(channel);
         if (list != null && !list.isEmpty())
         {
-            List<String> value = new ArrayList<String>(list.size());
+            List<String> value = new ArrayList<>(list.size());
             for (WebsocketChannel md : list)
             {
                 if (user.equals(md.getUser()))

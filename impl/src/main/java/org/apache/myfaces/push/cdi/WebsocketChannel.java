@@ -22,9 +22,6 @@ package org.apache.myfaces.push.cdi;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- *
- */
 public class WebsocketChannel implements Serializable
 {
     private String channelToken;
@@ -56,9 +53,6 @@ public class WebsocketChannel implements Serializable
         return metadata.getUser();
     }
 
-    /**
-     * @return the channel
-     */
     public String getChannel()
     {
         return metadata.getChannel();

@@ -42,9 +42,8 @@ public class WebsocketViewBean implements Serializable
      * This map hold all tokens that are related to the current scope. 
      * This map use as key channel and as value channelTokens
      */
-    private Map<String, List<WebsocketChannel> > channelTokenListMap = 
-            new HashMap<String, List<WebsocketChannel> >(2);
-    
+    private Map<String, List<WebsocketChannel>> channelTokenListMap = new HashMap<>(2);
+
     /**
      * This map hold all tokens related to the current view. The reason to do this is the connections must follow
      * the same rules the view has, so if a view is disposed, all related websocket sessions must be disposed too
@@ -55,7 +54,7 @@ public class WebsocketViewBean implements Serializable
      * per view. In that way, the token can be used to identify on the client if a websocket initialization request
      * can share a websocket connection or not, simplifying code design.
      */
-    private Map<String, WebsocketChannelMetadata> tokenList = new HashMap<String, WebsocketChannelMetadata>(2);
+    private Map<String, WebsocketChannelMetadata> tokenList = new HashMap<>(2);
     
     public void registerToken(String token, WebsocketChannelMetadata metadata)
     {
@@ -66,26 +65,12 @@ public class WebsocketViewBean implements Serializable
     {
         if ("view".equals(metadata.getScope()))
         {
-            channelTokenListMap.putIfAbsent(metadata.getChannel(), new ArrayList<WebsocketChannel>(1));
+            channelTokenListMap.putIfAbsent(metadata.getChannel(), new ArrayList<>(1));
             channelTokenListMap.get(metadata.getChannel()).add(new WebsocketChannel(
                     token, metadata));
         }
     }
-    
-    public boolean isSessionTokenValid(String token)
-    {
-        boolean valid = false;
-        for (List<WebsocketChannel> chlist : channelTokenListMap.values())
-        {
-            if (chlist.contains(token))
-            {
-                valid = true;
-                break;
-            }
-        }
-        return valid;
-    }
-    
+
     /**
      * Indicate if the channel mentioned is valid for view scope.
      * 
@@ -104,7 +89,7 @@ public class WebsocketViewBean implements Serializable
         List<WebsocketChannel> list = channelTokenListMap.get(channel);
         if (list != null && !list.isEmpty())
         {
-            List<String> value = new ArrayList<String>(list.size());
+            List<String> value = new ArrayList<>(list.size());
             for (WebsocketChannel md : list)
             {
                 value.add(md.getChannelToken());
@@ -138,7 +123,7 @@ public class WebsocketViewBean implements Serializable
         List<WebsocketChannel> list = channelTokenListMap.get(channel);
         if (list != null && !list.isEmpty())
         {
-            List<String> value = new ArrayList<String>(list.size());
+            List<String> value = new ArrayList<>(list.size());
             for (WebsocketChannel md : list)
             {
                 if (user.equals(md.getUser()))

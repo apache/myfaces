@@ -34,12 +34,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.push.PushContext;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
-/**
- *
- */
 public class PushContextImpl implements PushContext
 {
-    
     private final String channel;
 
     public PushContextImpl(String channel)
@@ -47,9 +43,6 @@ public class PushContextImpl implements PushContext
         this.channel = channel;
     }
 
-    /**
-     * @return the channel
-     */
     public String getChannel()
     {
         return channel;
@@ -212,8 +205,7 @@ public class PushContextImpl implements PushContext
         return result;
     }
     
-    private Set<Future<Void>> send(
-            List<String> channelTokens, Object message)
+    private Set<Future<Void>> send(List<String> channelTokens, Object message)
     {
         if (channelTokens != null && !channelTokens.isEmpty())
         {

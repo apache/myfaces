@@ -55,7 +55,7 @@ public class WebsocketChannelTokenBuilderBean
         {
             csrfSessionTokenFactory = new RandomCsrfSessionTokenFactory(facesContext);
         }        
-        initialized=true;
+        initialized = true;
     }
     
     public String createChannelToken(FacesContext facesContext, String channel)

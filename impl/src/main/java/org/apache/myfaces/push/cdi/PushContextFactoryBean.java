@@ -26,14 +26,10 @@ import javax.faces.push.Push;
 import javax.faces.push.PushContext;
 import javax.inject.Named;
 
-/**
- *
- */
 @Named(PushContextFactoryBean.PUSH_CONTEXT_FACTORY_BEAN_NAME)
 @ApplicationScoped
 public class PushContextFactoryBean
 {
-
     protected static final String PUSH_CONTEXT_FACTORY_BEAN_NAME
             = "oam_PUSH_CONTEXT_FACTORY_BEAN_NAME";
     

@@ -38,9 +38,6 @@ import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.util.ConcurrentLRUCache;
 import org.apache.myfaces.util.WebConfigParamUtils;
 
-/**
- *
- */
 public final class WebsocketApplicationSessionHolder
 {
     
@@ -53,11 +50,7 @@ public final class WebsocketApplicationSessionHolder
     
     private volatile static WeakHashMap<ClassLoader, Queue<String>> clWebsocketRestoredQueue =
             new WeakHashMap<ClassLoader, Queue<String>>();
-    
-    /**
-     * 
-     * @return 
-     */
+
     public static ConcurrentLRUCache<String, Reference<Session>> getWebsocketSessionLRUCache()
     {
         ClassLoader cl = ClassUtils.getContextClassLoader();
@@ -78,10 +71,6 @@ public final class WebsocketApplicationSessionHolder
         return metadata;
     }
 
-    /**
-     * 
-     * @param context
-     */
     public static void initWebsocketSessionLRUCache(ExternalContext context)
     {
         ClassLoader cl = ClassUtils.getContextClassLoader();
@@ -133,8 +122,6 @@ public final class WebsocketApplicationSessionHolder
         }
         return metadata;
     }
-    
-            
 
     /**
      * Removes the cached MetadataTarget instances in order to prevent a memory leak.

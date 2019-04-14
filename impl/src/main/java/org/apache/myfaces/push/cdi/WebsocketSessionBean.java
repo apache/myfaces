@@ -44,16 +44,14 @@ public class WebsocketSessionBean implements Serializable
      * This map hold all tokens that are related to the current scope. 
      * This map use as key channel and as value channelTokens
      */
-    private Map<String, List<WebsocketChannel> > channelTokenListMap = 
-            new ConcurrentHashMap<String, List<WebsocketChannel> >(2);    
+    private Map<String, List<WebsocketChannel> > channelTokenListMap = new ConcurrentHashMap<>(2);    
     
     /**
      * This map holds all tokens related to the current session and its associated metadata, that will
      * be used in the websocket handshake to validate if the incoming request is valid and to store
      * the user object into the Session object.
      */
-    private Map<String, WebsocketChannelMetadata> tokenMap = 
-        new ConcurrentHashMap<String, WebsocketChannelMetadata>();
+    private Map<String, WebsocketChannelMetadata> tokenMap = new ConcurrentHashMap<>();
     
     public WebsocketSessionBean()
     {
@@ -68,9 +66,8 @@ public class WebsocketSessionBean implements Serializable
     {
         if ("session".equals(metadata.getScope()))
         {
-            channelTokenListMap.putIfAbsent(metadata.getChannel(), new ArrayList<WebsocketChannel>(1));
-            channelTokenListMap.get(metadata.getChannel()).add(new WebsocketChannel(
-                    token, metadata));
+            channelTokenListMap.putIfAbsent(metadata.getChannel(), new ArrayList<>(1));
+            channelTokenListMap.get(metadata.getChannel()).add(new WebsocketChannel(token, metadata));
         }
     }
     
@@ -110,7 +107,7 @@ public class WebsocketSessionBean implements Serializable
         List<WebsocketChannel> list = channelTokenListMap.get(channel);
         if (list != null && !list.isEmpty())
         {
-            List<String> value = new ArrayList<String>(list.size());
+            List<String> value = new ArrayList<>(list.size());
             for (WebsocketChannel md : list)
             {
                 value.add(md.getChannelToken());
@@ -125,7 +122,7 @@ public class WebsocketSessionBean implements Serializable
         List<WebsocketChannel> list = channelTokenListMap.get(channel);
         if (list != null && !list.isEmpty())
         {
-            List<String> value = new ArrayList<String>(list.size());
+            List<String> value = new ArrayList<>(list.size());
             for (WebsocketChannel md : list)
             {
                 if (user.equals(md.getUser()))
