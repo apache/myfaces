@@ -26,9 +26,6 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 
-/**
- *
- */
 @JSFRenderer(
     renderKitId = "HTML_BASIC",
     family = "javax.faces.Output",

@@ -33,7 +33,6 @@ public class WebsocketFacesInit
     public static void initWebsocketSessionLRUCache(ExternalContext context)
     {
         WebsocketApplicationSessionHolder.initWebsocketSessionLRUCache(context);
-        
     }
     
     public static void clearWebsocketSessionLRUCache(ExternalContext context)

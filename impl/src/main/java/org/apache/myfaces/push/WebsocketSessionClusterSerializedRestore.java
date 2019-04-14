@@ -62,25 +62,16 @@ public class WebsocketSessionClusterSerializedRestore implements Externalizable
         WebsocketApplicationSessionHolder.getRestoredQueue().add(this.channelToken);
     }
 
-    /**
-     * @return the channelToken
-     */
     public String getChannelToken()
     {
         return channelToken;
     }
 
-    /**
-     * @param channelToken the channelToken to set
-     */
     public void setChannelToken(String channelToken)
     {
         this.channelToken = channelToken;
     }
 
-    /**
-     * @return the deserialized
-     */
     public boolean isDeserialized()
     {
         return deserialized;
