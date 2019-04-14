@@ -44,15 +44,17 @@ class PhaseListenerManager
     // Tracks success in the beforePhase. Listeners that throw an exception
     // in beforePhase or were never called because a previous listener threw
     // an exception should not have its afterPhase called
-    private Map<PhaseId, boolean[]> listenerSuccessMap = new HashMap<PhaseId, boolean[]>();
+    private Map<PhaseId, boolean[]> listenerSuccessMap;
 
     PhaseListenerManager(Lifecycle lifecycle, FacesContext facesContext, PhaseListener[] phaseListeners)
     {
         this.lifecycle = lifecycle;
         this.facesContext = facesContext;
         this.phaseListeners = phaseListeners;
+        this.listenerSuccessMap = new HashMap<>(PhaseId.VALUES.size());
+       
     }
-
+ 
     private boolean isListenerForThisPhase(PhaseListener phaseListener, PhaseId phaseId)
     {
         int listenerPhaseId = phaseListener.getPhaseId().getOrdinal();
@@ -126,7 +128,7 @@ class PhaseListenerManager
 
     }
     
-    private void publishException (Throwable e, PhaseId phaseId, String key)
+    private void publishException(Throwable e, PhaseId phaseId, String key)
     {
         ExceptionQueuedEventContext context = new ExceptionQueuedEventContext(facesContext, e, null, phaseId);
         
