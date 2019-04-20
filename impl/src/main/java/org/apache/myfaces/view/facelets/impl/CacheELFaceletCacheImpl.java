@@ -253,10 +253,6 @@ class CacheELFaceletCacheImpl extends AbstractFaceletCache<DefaultFacelet>
             f = getCompositeComponentMetadataMemberFactory().newInstance(url);
             if (_refreshPeriod != NO_CACHE_DELAY)
             {
-                //Map<String, DefaultFacelet> newLoc
-                //        = new HashMap<String, DefaultFacelet>(_compositeComponentMetadataFacelets);
-                //newLoc.put(key, f);
-                //_compositeComponentMetadataFacelets = newLoc;
                 _compositeComponentMetadataFacelets.put(key, f);
             }
         }
