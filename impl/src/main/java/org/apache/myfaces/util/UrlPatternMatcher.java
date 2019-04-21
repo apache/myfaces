@@ -34,11 +34,11 @@ public class UrlPatternMatcher
     public static boolean match(String path, String pattern)
     {
         // Normalize the argument strings
-        if ((path == null) || (path.length() == 0))
+        if (LangUtils.isEmpty(path))
         {
             path = "/";
         }
-        if ((pattern == null) || (pattern.length() == 0))
+        if (LangUtils.isEmpty(pattern))
         {
             pattern = "/";
         }
@@ -46,7 +46,7 @@ public class UrlPatternMatcher
         // Check for exact match
         if (path.equals(pattern))
         {
-            return (true);
+            return true;
         }
 
         // Check for path prefix matching
@@ -55,7 +55,7 @@ public class UrlPatternMatcher
             pattern = pattern.substring(0, pattern.length() - 2);
             if (pattern.length() == 0)
             {
-                return (true);  // "/*" is the same as "/"
+                return true;  // "/*" is the same as "/"
             }
             if (path.endsWith("/"))
             {
@@ -65,7 +65,7 @@ public class UrlPatternMatcher
             {
                 if (pattern.equals(path))
                 {
-                    return (true);
+                    return true;
                 }
                 int slash = path.lastIndexOf('/');
                 if (slash <= 0)
@@ -74,7 +74,7 @@ public class UrlPatternMatcher
                 }
                 path = path.substring(0, slash);
             }
-            return (false);
+            return false;
         }
 
         // Check for suffix matching
@@ -82,12 +82,11 @@ public class UrlPatternMatcher
         {
             int slash = path.lastIndexOf('/');
             int period = path.lastIndexOf('.');
-            if ((slash >= 0) && (period > slash) &&
-                path.endsWith(pattern.substring(1)))
+            if (slash >= 0 && period > slash && path.endsWith(pattern.substring(1)))
             {
-                return (true);
+                return true;
             }
-            return (false);
+            return false;
         }
 
         // Check for universal mapping

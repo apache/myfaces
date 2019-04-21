@@ -468,7 +468,6 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         if (navigationCase == null)
         {
             // Wildcard match?
-            //List<String> sortedWildcardKeys = getSortedWildcardKeys();
             List<_WildcardPattern> wildcardPatterns = getSortedWildcardPatterns();
             
             for (int i = 0; i < wildcardPatterns.size(); i++)
@@ -1164,7 +1163,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             }
             
             // Finally, create the NavigationCase.
-            result = new NavigationCase (viewId, fromAction, outcome, null, implicitViewId, params, isRedirect,
+            result = new NavigationCase(viewId, fromAction, outcome, null, implicitViewId, params, isRedirect,
                     includeViewParams);
         }
 
@@ -1220,8 +1219,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             {
                 if (cazeOutcome != null)
                 {
-                    if ((actionRef != null) && (outcome != null) && cazeActionRef.equals (actionRef) &&
-                            cazeOutcome.equals (outcome))
+                    if (actionRef != null && outcome != null
+                            && cazeActionRef.equals(actionRef) && cazeOutcome.equals(outcome))
                     {
                         // First case: match if <from-action> matches action and <from-outcome> matches outcome.
                         // Caveat: evaluate <if> if available.
@@ -1398,8 +1397,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         Map<String, Set<NavigationCase>> rules = flow.getNavigationCases();
         int rulesSize = rules.size();
 
-        Map<String, Set<NavigationCase>> cases = new HashMap<String, Set<NavigationCase>>(
-                HashMapUtils.calcCapacity(rulesSize));
+        Map<String, Set<NavigationCase>> cases = new HashMap<>(HashMapUtils.calcCapacity(rulesSize));
 
         List<_WildcardPattern> wildcardPatterns = new ArrayList<_WildcardPattern>();
 
@@ -1433,7 +1431,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             }
         }
 
-        Collections.sort(wildcardPatterns, new KeyComparator());
+        Collections.sort(wildcardPatterns, KeyComparator.INSTANCE);
 
         _flowNavigationStructureMap.put(
             flow.getId(), 
@@ -1481,7 +1479,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 }
             }
 
-            Collections.sort(wildcardPatterns, new KeyComparator());
+            Collections.sort(wildcardPatterns, KeyComparator.INSTANCE);
 
             synchronized (cases)
             {
@@ -1499,6 +1497,12 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
 
     private static final class KeyComparator implements Comparator<_WildcardPattern>
     {
+        private static final KeyComparator INSTANCE = new KeyComparator();
+        
+        private KeyComparator()
+        {
+        }
+
         @Override
         public int compare(_WildcardPattern s1, _WildcardPattern s2)
         {
@@ -1513,7 +1517,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         
         for(org.apache.myfaces.config.element.NavigationCase configCase : configCases)
         {   
-            if(configCase.getRedirect() != null)
+            if (configCase.getRedirect() != null)
             {
                 String includeViewParamsAttribute = configCase.getRedirect().getIncludeViewParams();
                 boolean includeViewParams = false; // default value is false

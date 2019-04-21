@@ -79,27 +79,24 @@ public class ResourceHandlerImpl extends ResourceHandler
 {
     private static final String IS_RESOURCE_REQUEST = "org.apache.myfaces.IS_RESOURCE_REQUEST";
 
-    private ResourceHandlerSupport _resourceHandlerSupport;
-
-    private ResourceHandlerCache _resourceHandlerCache;
-
     private static final Logger log = Logger.getLogger(ResourceHandlerImpl.class.getName());
 
     public static final Pattern LIBRARY_VERSION_CHECKER = Pattern.compile("\\p{Digit}+(_\\p{Digit}*)*");
     public static final Pattern RESOURCE_VERSION_CHECKER = Pattern.compile("\\p{Digit}+(_\\p{Digit}*)*\\..*");    
     
-    private Boolean _allowSlashLibraryName;
-    private int _resourceBufferSize = -1;
-    
-    private String[] _excludedResourceExtensions;
-    
-    private static final String[] FACELETS_VIEW_MAPPINGS_PARAM = {ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME,
-            "facelets.VIEW_MAPPINGS"};
-    private Set<String> _viewSuffixes = null;
-    
     public final static String RENDERED_RESOURCES_SET = "org.apache.myfaces.RENDERED_RESOURCES_SET";
 
     private static final String SHARED_STRING_BUILDER = ResourceHandlerImpl.class.getName() + ".SHARED_STRING_BUILDER";
+    
+    private static final String[] FACELETS_VIEW_MAPPINGS_PARAM = {ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME,
+            "facelets.VIEW_MAPPINGS"};
+    
+    private ResourceHandlerSupport _resourceHandlerSupport;
+    private ResourceHandlerCache _resourceHandlerCache;
+    private Boolean _allowSlashLibraryName;
+    private int _resourceBufferSize = -1;
+    private String[] _excludedResourceExtensions;
+    private Set<String> _viewSuffixes = null;
 
     @Override
     public Resource createResource(String resourceName)
@@ -290,15 +287,12 @@ public class ResourceHandlerImpl extends ResourceHandler
                     String pathToResource = localePrefix + '/'
                             + libraryName + '/' + libraryVersion + '/'
                             + resourceName;
-                    resourceVersion = resourceLoader
-                            .getResourceVersion(pathToResource, contractName);
+                    resourceVersion = resourceLoader.getResourceVersion(pathToResource, contractName);
                 }
                 else
                 {
-                    String pathToResource = localePrefix + '/'
-                            + libraryName + '/' + resourceName;
-                    resourceVersion = resourceLoader
-                            .getResourceVersion(pathToResource, contractName);
+                    String pathToResource = localePrefix + '/' + libraryName + '/' + resourceName;
+                    resourceVersion = resourceLoader.getResourceVersion(pathToResource, contractName);
                 }
 
                 if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
@@ -309,8 +303,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             }
             else
             {
-                resourceVersion = resourceLoader
-                        .getResourceVersion(localePrefix + '/'+ resourceName, contractName);
+                resourceVersion = resourceLoader.getResourceVersion(localePrefix + '/'+ resourceName, contractName);
                 if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
                 {               
                     resourceId = resourceLoader.createResourceMeta(localePrefix, null, null,
@@ -333,17 +326,13 @@ public class ResourceHandlerImpl extends ResourceHandler
 
                 if (null != libraryVersion)
                 {
-                    String pathToResource = (libraryName + '/' + libraryVersion
-                            + '/' + resourceName);
-                    resourceVersion = resourceLoader
-                            .getResourceVersion(pathToResource, contractName);
+                    String pathToResource = libraryName + '/' + libraryVersion + '/' + resourceName;
+                    resourceVersion = resourceLoader.getResourceVersion(pathToResource, contractName);
                 }
                 else
                 {
-                    String pathToResource = (libraryName + '/'
-                            + resourceName);
-                    resourceVersion = resourceLoader
-                            .getResourceVersion(pathToResource, contractName);
+                    String pathToResource = libraryName + '/' + resourceName;
+                    resourceVersion = resourceLoader.getResourceVersion(pathToResource, contractName);
                 }
 
                 if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
@@ -354,8 +343,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             }
             else
             {
-                resourceVersion = resourceLoader
-                        .getResourceVersion(resourceName, contractName);
+                resourceVersion = resourceLoader.getResourceVersion(resourceName, contractName);
                 
                 if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
                 {               
@@ -399,15 +387,12 @@ public class ResourceHandlerImpl extends ResourceHandler
                     String pathToResource = localePrefix + '/'
                             + libraryName + '/' + libraryVersion + '/'
                             + resourceName;
-                    resourceVersion = resourceLoader
-                            .getResourceVersion(pathToResource);
+                    resourceVersion = resourceLoader.getResourceVersion(pathToResource);
                 }
                 else
                 {
-                    String pathToResource = localePrefix + '/'
-                            + libraryName + '/' + resourceName;
-                    resourceVersion = resourceLoader
-                            .getResourceVersion(pathToResource);
+                    String pathToResource = localePrefix + '/' + libraryName + '/' + resourceName;
+                    resourceVersion = resourceLoader.getResourceVersion(pathToResource);
                 }
 
                 if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
@@ -418,8 +403,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             }
             else
             {
-                resourceVersion = resourceLoader
-                        .getResourceVersion(localePrefix + '/'+ resourceName);
+                resourceVersion = resourceLoader.getResourceVersion(localePrefix + '/'+ resourceName);
                 if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
                 {               
                     resourceId = resourceLoader.createResourceMeta(localePrefix, null, null,
@@ -442,17 +426,13 @@ public class ResourceHandlerImpl extends ResourceHandler
 
                 if (null != libraryVersion)
                 {
-                    String pathToResource = (libraryName + '/' + libraryVersion
-                            + '/' + resourceName);
-                    resourceVersion = resourceLoader
-                            .getResourceVersion(pathToResource);
+                    String pathToResource = libraryName + '/' + libraryVersion + '/' + resourceName;
+                    resourceVersion = resourceLoader.getResourceVersion(pathToResource);
                 }
                 else
                 {
-                    String pathToResource = (libraryName + '/'
-                            + resourceName);
-                    resourceVersion = resourceLoader
-                            .getResourceVersion(pathToResource);
+                    String pathToResource = libraryName + '/' + resourceName;
+                    resourceVersion = resourceLoader.getResourceVersion(pathToResource);
                 }
 
                 if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
@@ -463,8 +443,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             }
             else
             {
-                resourceVersion = resourceLoader
-                        .getResourceVersion(resourceName);
+                resourceVersion = resourceLoader.getResourceVersion(resourceName);
                 
                 if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
                 {               
@@ -554,8 +533,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             return;
         }
 
-        String libraryName = facesContext.getExternalContext()
-                .getRequestParameterMap().get("ln");
+        String libraryName = facesContext.getExternalContext().getRequestParameterMap().get("ln");
 
         if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(
                 libraryName, isAllowSlashesLibraryName()))
@@ -894,18 +872,11 @@ public class ResourceHandlerImpl extends ResourceHandler
         return false;
     }
 
-    /**
-     * @param resourceHandlerSupport
-     *            the resourceHandlerSupport to set
-     */
     public void setResourceHandlerSupport(ResourceHandlerSupport resourceHandlerSupport)
     {
         _resourceHandlerSupport = resourceHandlerSupport;
     }
 
-    /**
-     * @return the resourceHandlerSupport
-     */
     protected ResourceHandlerSupport getResourceHandlerSupport()
     {
         if (_resourceHandlerSupport == null)
@@ -1445,12 +1416,11 @@ public class ResourceHandlerImpl extends ResourceHandler
         resourceMeta = resourceLoader.createResourceMeta(
             localePrefix, libraryName, libraryVersion, resourceName, resourceVersion, contractName);
 
-        if (resourceMeta != null &&
-            !resourceLoader.resourceExists(resourceMeta))
+        if (resourceMeta != null && !resourceLoader.resourceExists(resourceMeta))
         {
             resourceMeta = null;
         }
-        //}
+
         return resourceMeta;
     }
     
@@ -1523,8 +1493,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         //2. Try to localize resource in a non localized path
         if (resourceMeta == null)
         {
-            resourceVersion = resourceLoader
-                    .getResourceVersion(resourceName, contractName);
+            resourceVersion = resourceLoader.getResourceVersion(resourceName, contractName);
             if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
             {
                 resourceMeta = resourceLoader.createResourceMeta(null, null, null,
@@ -1616,8 +1585,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         if (resourceValue == null)
         {
             // Try to get resource without contract name
-            resourceValue = getResourceLoaderCache().getViewResource(
-                resourceName, contentType, localePrefix);
+            resourceValue = getResourceLoaderCache().getViewResource(resourceName, contentType, localePrefix);
         }
 
         if(resourceValue != null)
@@ -1637,8 +1605,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                         facesContext, loader, resourceName, localePrefix, contractPreferred);
                     if (resourceMeta != null)
                     {
-                        resource = new ResourceImpl(resourceMeta, loader, 
-                            getResourceHandlerSupport(), contentType);
+                        resource = new ResourceImpl(resourceMeta, loader, getResourceHandlerSupport(), contentType);
 
                         // cache it
                         getResourceLoaderCache().putViewResource(
@@ -1703,7 +1670,7 @@ public class ResourceHandlerImpl extends ResourceHandler
     }
 
     @Override
-    public Stream<java.lang.String> getViewResources(FacesContext facesContext, 
+    public Stream<String> getViewResources(FacesContext facesContext, 
             String path, int maxDepth, ResourceVisitOption... options)   
     {
         final String localePrefix = getLocalePrefixForLocateResource(facesContext);

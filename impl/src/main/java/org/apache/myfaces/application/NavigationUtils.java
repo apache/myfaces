@@ -98,7 +98,7 @@ public class NavigationUtils
     
     private static boolean _isExpression(String text)
     {
-        return text.indexOf("#{") != -1;
+        return text.contains("#{");
     }
 
 }

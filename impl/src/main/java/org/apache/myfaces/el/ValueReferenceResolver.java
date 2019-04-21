@@ -41,7 +41,7 @@ public class ValueReferenceResolver
         {
             valueExpression = ((CompositeComponentExpressionHolder) valueReference.getBase())
                                   .getExpression((String) valueReference.getProperty());
-            if(valueExpression == null)
+            if (valueExpression == null)
             {
                 break;
             }
