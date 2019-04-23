@@ -742,7 +742,7 @@ public class HtmlTableRendererBase extends HtmlRenderer
             }
             else
             {
-                rowClass = rowClass+ ' ' +styles.getRowStyle(rowStyleIndex);
+                rowClass = rowClass + ' ' + styles.getRowStyle(rowStyleIndex);
             }
         }
         if (rowClass != null)

@@ -146,7 +146,7 @@ public class ResourceUtils
             }
             else if (resource instanceof FacesWrapper)
             {
-                resource = (Resource)((FacesWrapper)resource).getWrapped();
+                resource = (Resource) ((FacesWrapper)resource).getWrapped();
             }
             else
             {

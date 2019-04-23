@@ -370,8 +370,7 @@ public class HtmlTextRendererBase
             boolean span = false;
 
             if (component.getId() != null
-                    && !component.getId().startsWith(
-                            UIViewRoot.UNIQUE_ID_PREFIX))
+                    && !component.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
             {
                 span = true;
 

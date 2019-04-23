@@ -64,7 +64,7 @@ public abstract class UnicodeEncoder
         return sb != null ? sb.toString() : string;
     }
     
-    public static void encode (Writer writer, String string) throws IOException
+    public static void encode(Writer writer, String string) throws IOException
     {
         if (string == null)
         {
@@ -100,7 +100,7 @@ public abstract class UnicodeEncoder
         }
     }
 
-    public static void encode (Writer writer, char[] cbuf, int off, int len) throws IOException
+    public static void encode(Writer writer, char[] cbuf, int off, int len) throws IOException
     {
         if (cbuf == null)
         {
@@ -136,7 +136,7 @@ public abstract class UnicodeEncoder
         }
     }
     
-    public static void encode (Writer writer, String cbuf, int off, int len) throws IOException
+    public static void encode(Writer writer, String cbuf, int off, int len) throws IOException
     {
         if (cbuf == null)
         {

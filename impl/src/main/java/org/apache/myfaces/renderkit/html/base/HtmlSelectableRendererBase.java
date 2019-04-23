@@ -47,18 +47,17 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
         ResponseWriter writer = facesContext.getResponseWriter();
         writer.startElement(HTML.SELECT_ELEM, uiComponent);
         if (uiComponent instanceof ClientBehaviorHolder
-                && !((ClientBehaviorHolder) uiComponent).getClientBehaviors()
-                        .isEmpty())
+                && !((ClientBehaviorHolder) uiComponent).getClientBehaviors().isEmpty())
         {
-            writer.writeAttribute(HTML.ID_ATTR,
-                    uiComponent.getClientId(facesContext), null);
+            writer.writeAttribute(HTML.ID_ATTR, uiComponent.getClientId(facesContext), null);
         }
         else
         {
-            HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent,
-                    facesContext);
+            HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
         }
+        
         writer.writeAttribute(HTML.NAME_ATTR, uiComponent.getClientId(facesContext), null);
+        
         List<SelectItemInfo> selectItemList;
         if (selectMany)
         {
@@ -74,8 +73,7 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
         if (size == Integer.MIN_VALUE)
         {
             //No size given (Listbox) --> size is number of select items
-            writer.writeAttribute(HTML.SIZE_ATTR,
-                    Integer.toString(selectItemList.size()), null);
+            writer.writeAttribute(HTML.SIZE_ATTR, Integer.toString(selectItemList.size()), null);
         }
         else
         {
@@ -85,8 +83,7 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
         Map<String, List<ClientBehavior>> behaviors = null;
         if (uiComponent instanceof ClientBehaviorHolder)
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent)
-                    .getClientBehaviors();
+            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
             long commonPropertiesMarked = 0L;
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
@@ -94,10 +91,8 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
             }
             if (behaviors.isEmpty() && isCommonPropertiesOptimizationEnabled(facesContext))
             {
-                CommonPropertyUtils.renderChangeEventProperty(writer, 
-                        commonPropertiesMarked, uiComponent);
-                CommonPropertyUtils.renderEventProperties(writer, 
-                        commonPropertiesMarked, uiComponent);
+                CommonPropertyUtils.renderChangeEventProperty(writer, commonPropertiesMarked, uiComponent);
+                CommonPropertyUtils.renderEventProperties(writer, commonPropertiesMarked, uiComponent);
                 // Note that on JSF 2.3, selectable components don't need onselect attribute
                 // Please see https://issues.apache.org/jira/browse/MYFACES-4190
                 CommonPropertyUtils.renderFieldEventPropertiesWithoutOnchangeAndOnselect(writer, 
@@ -105,8 +100,7 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
             }
             else
             {
-                HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer,
-                        uiComponent, behaviors);
+                HtmlRendererUtils.renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
                 if (isCommonEventsOptimizationEnabled(facesContext))
                 {
                     Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(uiComponent);
@@ -117,12 +111,12 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
                 }
                 else
                 {
-                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent,
-                            behaviors);
+                    HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
                     HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(facesContext,
                             writer, uiComponent, behaviors);
                 }
             }
+            
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 CommonPropertyUtils.renderSelectPassthroughPropertiesWithoutDisabledAndEvents(writer, 

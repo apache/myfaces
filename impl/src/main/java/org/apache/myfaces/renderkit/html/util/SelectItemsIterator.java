@@ -299,13 +299,11 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                     // If there was a previous value stored with the key from var in the request map, restore it
                     if (oldRequestMapVarValue != null)
                     {
-                        _facesContext.getExternalContext()
-                                .getRequestMap().put(var, oldRequestMapVarValue);
+                        _facesContext.getExternalContext().getRequestMap().put(var, oldRequestMapVarValue);
                     }
                     else
                     {
-                        _facesContext.getExternalContext()
-                                .getRequestMap().remove(var);
+                        _facesContext.getExternalContext().getRequestMap().remove(var);
                     }
                 } 
             }
