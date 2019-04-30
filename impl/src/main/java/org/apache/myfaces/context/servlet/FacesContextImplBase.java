@@ -41,6 +41,7 @@ import javax.faces.render.RenderKitFactory;
 import org.apache.myfaces.el.FacesELContext;
 import org.apache.myfaces.context.ReleasableExternalContext;
 import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage; 
 
 /**
  * Provides a base implementation of the FacesContext for the use
@@ -51,8 +52,6 @@ import org.apache.myfaces.util.Assert;
  */
 public abstract class FacesContextImplBase extends FacesContext
 {
-    public final static String SKIP_CLEAR_VIEW_MAP_HINT = "oam.fc.skipClearViewMapHint";
-
     private Application _application;
     private ExternalContext _externalContext;
     private ReleasableExternalContext _defaultExternalContext;
@@ -289,7 +288,7 @@ public abstract class FacesContextImplBase extends FacesContext
         // the clear method must be called on the Map returned from UIViewRoot.getViewMap().
         if (_viewRoot != null && !_viewRoot.equals(viewRoot))
         {
-            if (!Boolean.TRUE.equals(getAttributes().get(SKIP_CLEAR_VIEW_MAP_HINT)))
+            if (!Boolean.TRUE.equals(getAttributes().get(FaceletViewDeclarationLanguage.BUILDING_VIEW_METADATA)))
             {
                 //call getViewMap(false) to prevent unnecessary map creation
                 Map<String, Object> viewMap = _viewRoot.getViewMap(false);
