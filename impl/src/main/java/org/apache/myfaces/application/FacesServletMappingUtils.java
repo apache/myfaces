@@ -185,38 +185,65 @@ public class FacesServletMappingUtils
     {
         try
         {
-            ServletRegistration facesServletRegistration = getFacesServletRegistration(
-                    facesContext, servletContext);
-            if (facesServletRegistration != null)
+            Map<String, ? extends ServletRegistration> servletRegistrations = servletContext.getServletRegistrations();
+            if (servletRegistrations  != null)
             {
                 FacesServletMapping facesExtensionMapping = null;
                 FacesServletMapping facesPrefixMapping = null;
                 FacesServletMapping facesExactMapping = null;
 
-                try
+                ServletRegistration facesServletRegistration = getFacesServletRegistration(
+                        facesContext, servletContext);
+                
+                for (ServletRegistration servletRegistration : servletRegistrations.values())
                 {
-                    String[] mappings = getFacesServletMappings(facesContext, servletContext);
-                    for (String mapping : mappings)
+                    try
                     {
-                        if (isExtensionMapping(mapping))
+                        if (facesServletRegistration.getClassName().equals(servletRegistration.getClassName()))
                         {
-                            facesExtensionMapping = FacesServletMapping.createExtensionMapping(
-                                    extractExtension(mapping));
+                            // get the cached one
+                            String[] mappings = getFacesServletMappings(facesContext, servletContext);
+                            for (String mapping : mappings)
+                            {
+                                if (isExtensionMapping(mapping))
+                                {
+                                    facesExtensionMapping = FacesServletMapping.createExtensionMapping(
+                                            extractExtension(mapping));
+                                }
+                                else if (isPrefixMapping(mapping))
+                                {
+                                    facesPrefixMapping = FacesServletMapping.createPrefixMapping(
+                                            extractPrefix(mapping));
+                                }
+                                else if (allowExactMatch && mapping.startsWith("/") && mapping.equals(servletPath))
+                                {
+                                    facesExactMapping = FacesServletMapping.createExactMapping(servletPath);
+                                }
+                            }
                         }
-                        else if (isPrefixMapping(mapping))
+                        else
                         {
-                            facesPrefixMapping = FacesServletMapping.createPrefixMapping(
-                                    extractPrefix(mapping));
-                        }
-                        else if (allowExactMatch && mapping.startsWith("/") && mapping.equals(servletPath))
-                        {
-                            facesExactMapping = FacesServletMapping.createExactMapping(servletPath);
-                        }
+                            Collection<String> mappings = servletRegistration.getMappings();
+                            //This is not a FacesServlet mapping. 
+                            //It could be a non-faces request, we need to look for exact mapping to servletPath
+                            //this happens with richfaces resources
+                            for (String mapping : mappings)
+                            {                                
+                                if (mapping.startsWith("/") && mapping.endsWith("/*"))
+                                {
+                                    mapping = mapping.substring(0, mapping.length()-2);
+                                }                                
+                                if (mapping.equals(servletPath))
+                                {
+                                    return FacesServletMapping.createPrefixMapping(mapping);
+                                }
+                            }
+                       }
                     }
-                }
-                catch (Exception ex)
-                {
-                    //No op
+                    catch (Exception ex)
+                    {
+                        //No op
+                    }
                 }
 
                 // Choose exact mapping if preferred.
