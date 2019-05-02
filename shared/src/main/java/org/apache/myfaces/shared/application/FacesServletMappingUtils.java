@@ -176,9 +176,10 @@ public class FacesServletMappingUtils
                 {
                     try
                     {
-                        Collection<String> mappings = servletRegistration.getMappings();
-                        if (servletRegistration.getClassName().equals(servletRegistration.getClassName()))
+                        if (facesServletRegistration.getClassName().equals(servletRegistration.getClassName()))
                         {
+                            // get the cached one
+                            String[] mappings = getFacesServletMappings(facesContext, servletContext);
                             for (String mapping : mappings)
                             {
                                 if (isExtensionMapping(mapping))
@@ -199,8 +200,10 @@ public class FacesServletMappingUtils
                         }
                         else
                         {
-                            //This is not a FacesServlet mapping.  It could be a non-faces request
-                            //Need to look for exact mapping to servletPath
+                            Collection<String> mappings = servletRegistration.getMappings();
+                            //This is not a FacesServlet mapping. 
+                            //It could be a non-faces request, we need to look for exact mapping to servletPath
+                            //this happens with richfaces resources
                             for (String mapping : mappings)
                             {                                
                                 if (mapping.startsWith("/") && mapping.endsWith("/*"))
