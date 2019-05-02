@@ -113,6 +113,12 @@ public class FacesServletMappingUtils
     
     public static boolean isFacesServlet(FacesContext facesContext, String servletClassName)
     {
+        // shortcut to avoid class lookup
+        if (FacesServlet.class.getName().equals(servletClassName))
+        {
+            return true;
+        }
+
         Class servletClass = ClassUtils.simpleClassForName(servletClassName, false);
         if (servletClass != null)
         {
