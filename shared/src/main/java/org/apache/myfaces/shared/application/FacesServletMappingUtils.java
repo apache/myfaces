@@ -18,7 +18,10 @@
  */
 package org.apache.myfaces.shared.application;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.faces.context.ExternalContext;
@@ -26,78 +29,159 @@ import javax.faces.context.FacesContext;
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
+import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.shared.webapp.webxml.DelegatedFacesServlet;
-import org.apache.myfaces.shared.webapp.webxml.WebXml;
 
 public class FacesServletMappingUtils
 {
     private static final String FACES_SERVLET_REGISTRATION = "org.apache.myfaces.FACES_SERVLET_REGISTRATION";
-    private static final String FACES_SERVLET_MAPPINGS = "org.apache.myfaces.FACES_SERVLET_MAPPINGS";
+    private static final String SERVLET_REGISTRATIONS = "org.apache.myfaces.SERVLET_REGISTRATIONS";
     
-    public static ServletRegistration getFacesServletRegistration(FacesContext facesContext,
-            ServletContext servletContext)
+    private static final String CURRENT_REQUEST_FACES_SERVLET = "org.apache.myfaces.CURRENT_FACES_SERVLET_MAPPING";
+    
+    /**
+     * Wrapper for better performance
+     */
+    public static class ServletRegistrationInfo
     {
-        Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
-        
-        ServletRegistration servletRegistration = (ServletRegistration) applicationMap.get(FACES_SERVLET_REGISTRATION);
-        if (servletRegistration == null)
-        {
-            Map<String, ? extends ServletRegistration> registrations = servletContext.getServletRegistrations();
-            if (registrations != null)
-            {
-                for (Map.Entry<String, ? extends ServletRegistration> entry : registrations.entrySet())
-                {
-                    if (isFacesServlet(facesContext, entry.getValue().getClassName()))
-                    {
-                        servletRegistration = entry.getValue();
-                        break;
-                    }
-                }
-            }
-            
-            applicationMap.put(FACES_SERVLET_REGISTRATION, servletRegistration);
-        }
+        private String className;
+        private String[] mappings;
+        private boolean facesServlet;
+        private ServletRegistration registration;
 
-        return servletRegistration;
-    }
-    
-    public static String[] getFacesServletMappings(FacesContext facesContext, ServletContext servletContext)
-    {
-        Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
-        
-        String[] mappings = (String[]) applicationMap.get(FACES_SERVLET_MAPPINGS);
-        if (mappings == null)
+        public ServletRegistrationInfo(ServletRegistration registration, boolean facesServlet)
         {
-            ServletRegistration servletRegistration = getFacesServletRegistration(facesContext, servletContext);
-            if (servletRegistration != null)
-            {
-                Collection<String> mappingsCollection = servletRegistration.getMappings();
-                mappings = mappingsCollection.toArray(new String[mappingsCollection.size()]);
-            }
-            
+            this.className = registration.getClassName();
+            this.facesServlet = facesServlet;
+            this.registration = registration;
+
+            Collection<String> mappingsCollection = registration.getMappings();
+            mappings = mappingsCollection.toArray(new String[mappingsCollection.size()]);
             if (mappings == null)
             {
                 mappings = new String[]{ };
             }
+        }
 
-            applicationMap.put(FACES_SERVLET_MAPPINGS, mappings);
+        public String getClassName()
+        {
+            return className;
+        }
+
+        public String[] getMappings()
+        {
+            return mappings;
+        }
+
+        public boolean isFacesServlet()
+        {
+            return facesServlet;
         }
         
-        return mappings;
+        public ServletRegistration getRegistration()
+        {
+            return registration;
+        }
     }
     
+    public static FacesServletMapping getCurrentRequestFacesServletMapping(FacesContext context)
+    {
+        Map<Object, Object> attributes = context.getAttributes();
+
+        // Has the mapping already been determined during this request?
+        FacesServletMapping mapping = (FacesServletMapping) attributes.get(CURRENT_REQUEST_FACES_SERVLET);
+        if (mapping == null)
+        {
+            ExternalContext externalContext = context.getExternalContext();
+            mapping = calculateFacesServletMapping(
+                    context,
+                    externalContext.getRequestServletPath(),
+                    externalContext.getRequestPathInfo(),
+                    true);
+
+            attributes.put(CURRENT_REQUEST_FACES_SERVLET, mapping);
+        }
+        return mapping;
+    }
+
+    public static List<ServletRegistrationInfo> getServletRegistrations(FacesContext facesContext,
+            ServletContext servletContext, boolean cache)
+    {
+        Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
+        
+        List<ServletRegistrationInfo> infos =
+                (List<ServletRegistrationInfo>) applicationMap.get(SERVLET_REGISTRATIONS);
+        if (infos == null)
+        {
+            infos = new ArrayList<>();
+            
+            Map<String, ? extends ServletRegistration> registrations = servletContext.getServletRegistrations();
+            if (registrations != null)
+            {
+                for (ServletRegistration servletRegistration : registrations.values())
+                {
+                    ServletRegistrationInfo info = new ServletRegistrationInfo(servletRegistration,
+                            isFacesServlet(facesContext, servletRegistration.getClassName()));
+
+                    infos.add(info);
+                }
+            }
+            
+            infos = Collections.unmodifiableList(infos);
+            if (cache)
+            {
+                applicationMap.put(SERVLET_REGISTRATIONS, infos);
+            }
+        }
+
+        return infos;
+    }
+    
+    public static ServletRegistrationInfo getFacesServletRegistration(FacesContext facesContext,
+            ServletContext servletContext, boolean cache)
+    {
+        Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
+        
+        ServletRegistrationInfo facesServletRegistration = (ServletRegistrationInfo)
+                applicationMap.get(FACES_SERVLET_REGISTRATION);
+        if (facesServletRegistration == null)
+        {
+            for (ServletRegistrationInfo info : getServletRegistrations(facesContext, servletContext, cache))
+            {
+                if (info.isFacesServlet())
+                {
+                    facesServletRegistration = info;
+                    break;
+                }
+            }
+
+            if (facesServletRegistration != null && cache)
+            {
+                applicationMap.put(FACES_SERVLET_REGISTRATION, facesServletRegistration);
+            }
+        }
+
+        return facesServletRegistration;
+    }
+
     public static boolean isFacesServlet(FacesContext facesContext, String servletClassName)
     {
+        // shortcut to avoid class lookup
+        if (FacesServlet.class.getName().equals(servletClassName))
+        {
+            return true;
+        }
+
         Class servletClass = ClassUtils.simpleClassForName(servletClassName, false);
         if (servletClass != null)
         {
-            ExternalContext externalContext = facesContext.getExternalContext();
+            MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
             
             return FacesServlet.class.isAssignableFrom(servletClass)
                     || DelegatedFacesServlet.class.isAssignableFrom(servletClass)
-                    || servletClass.getName().equals(WebXml.getWebXml(externalContext).getDelegateFacesServlet());
+                    || servletClass.getName().equals(config.getDelegateFacesServlet());
         }
         return false;
     }
@@ -162,25 +246,21 @@ public class FacesServletMappingUtils
     {
         try
         {
-            Map<String, ? extends ServletRegistration> servletRegistrations = servletContext.getServletRegistrations();
+            List<ServletRegistrationInfo> servletRegistrations =
+                    getServletRegistrations(facesContext, servletContext, true);
             if (servletRegistrations  != null)
             {
                 FacesServletMapping facesExtensionMapping = null;
                 FacesServletMapping facesPrefixMapping = null;
                 FacesServletMapping facesExactMapping = null;
 
-                ServletRegistration facesServletRegistration = getFacesServletRegistration(
-                        facesContext, servletContext);
-                
-                for (ServletRegistration servletRegistration : servletRegistrations.values())
+                for (ServletRegistrationInfo servletRegistration : servletRegistrations)
                 {
                     try
                     {
-                        if (facesServletRegistration.getClassName().equals(servletRegistration.getClassName()))
+                        if (servletRegistration.isFacesServlet())
                         {
-                            // get the cached one
-                            String[] mappings = getFacesServletMappings(facesContext, servletContext);
-                            for (String mapping : mappings)
+                            for (String mapping : servletRegistration.getMappings())
                             {
                                 if (isExtensionMapping(mapping))
                                 {
@@ -200,11 +280,10 @@ public class FacesServletMappingUtils
                         }
                         else
                         {
-                            Collection<String> mappings = servletRegistration.getMappings();
                             //This is not a FacesServlet mapping. 
                             //It could be a non-faces request, we need to look for exact mapping to servletPath
                             //this happens with richfaces resources
-                            for (String mapping : mappings)
+                            for (String mapping : servletRegistration.getMappings())
                             {                                
                                 if (mapping.startsWith("/") && mapping.endsWith("/*"))
                                 {
@@ -301,12 +380,16 @@ public class FacesServletMappingUtils
             Object context = facesContext.getExternalContext().getContext();
             if (context instanceof ServletContext)
             {
-                String[] mappings = getFacesServletMappings(facesContext, (ServletContext) context);
-                for (String mapping : mappings)
+                ServletRegistrationInfo facesServletRegistration =
+                        getFacesServletRegistration(facesContext, (ServletContext) context, true);
+                if (facesServletRegistration != null)
                 {
-                    if (!mapping.contains("*") && prefixedExactMappingViewId.equals(mapping))
+                    for (String mapping : facesServletRegistration.getMappings())
                     {
-                        return FacesServletMapping.createExactMapping(prefixedExactMappingViewId);
+                        if (!mapping.contains("*") && prefixedExactMappingViewId.equals(mapping))
+                        {
+                            return FacesServletMapping.createExactMapping(prefixedExactMappingViewId);
+                        }
                     }
                 }
             }
@@ -323,18 +406,22 @@ public class FacesServletMappingUtils
             Object context = facesContext.getExternalContext().getContext();
             if (context instanceof ServletContext)
             {
-                String[] mappings = getFacesServletMappings(facesContext, (ServletContext) context);
-                for (String mapping : mappings)
+                ServletRegistrationInfo facesServletRegistration =
+                        getFacesServletRegistration(facesContext, (ServletContext) context, true);
+                if (facesServletRegistration != null)
                 {
-                    if (isExtensionMapping(mapping))
+                    for (String mapping : facesServletRegistration.getMappings())
                     {
-                        String extension = extractExtension(mapping);
-                        return FacesServletMapping.createExtensionMapping(extension);
-                    }
-                    else if (isPrefixMapping(mapping))
-                    {
-                        String prefix = extractPrefix(mapping);
-                        return FacesServletMapping.createPrefixMapping(prefix);
+                        if (isExtensionMapping(mapping))
+                        {
+                            String extension = extractExtension(mapping);
+                            return FacesServletMapping.createExtensionMapping(extension);
+                        }
+                        else if (isPrefixMapping(mapping))
+                        {
+                            String prefix = extractPrefix(mapping);
+                            return FacesServletMapping.createPrefixMapping(prefix);
+                        }
                     }
                 }
             }
