@@ -58,7 +58,6 @@ import java.util.logging.Logger;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.application.ViewVisitOption;
 import javax.faces.push.PushContext;
-import javax.servlet.ServletRegistration;
 import javax.websocket.DeploymentException;
 import javax.websocket.server.ServerContainer;
 import javax.websocket.server.ServerEndpointConfig;
@@ -148,9 +147,11 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             if (!WebConfigParamUtils.getBooleanInitParameter(externalContext,
                     MyfacesConfig.INITIALIZE_ALWAYS_STANDALONE, false))
             {
-
-                String[] mappings = FacesServletMappingUtils.getFacesServletMappings(facesContext, servletContext);
-                if (mappings == null || mappings.length == 0)
+                FacesServletMappingUtils.ServletRegistrationInfo facesServletRegistration =
+                        FacesServletMappingUtils.getFacesServletRegistration(facesContext, servletContext, false);
+                if (facesServletRegistration == null
+                        || facesServletRegistration.getMappings() == null
+                        || facesServletRegistration.getMappings().length == 0)
                 {
                     // check to see if the FacesServlet was found by MyFacesContainerInitializer
                     Boolean mappingAdded = (Boolean) servletContext.getAttribute(
@@ -328,8 +329,11 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         if (!WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
                                                          MyfacesConfig.INITIALIZE_ALWAYS_STANDALONE, false))
         {
-            String[] mappings = FacesServletMappingUtils.getFacesServletMappings(facesContext, servletContext);
-            if (mappings == null || mappings.length == 0)
+            FacesServletMappingUtils.ServletRegistrationInfo facesServletRegistration =
+                    FacesServletMappingUtils.getFacesServletRegistration(facesContext, servletContext, false);
+            if (facesServletRegistration == null
+                    || facesServletRegistration.getMappings() == null
+                    || facesServletRegistration.getMappings().length == 0)
             {
                 // check to see if the FacesServlet was found by MyFacesContainerInitializer
                 Boolean mappingAdded = (Boolean) servletContext.getAttribute(
@@ -762,13 +766,13 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
      */
     protected void initAutomaticExtensionlessMapping(FacesContext facesContext, ServletContext servletContext)
     {
-        final ServletRegistration facesServletRegistration = FacesServletMappingUtils.getFacesServletRegistration(
-                facesContext, servletContext); 
+        FacesServletMappingUtils.ServletRegistrationInfo facesServletRegistration =
+                FacesServletMappingUtils.getFacesServletRegistration(facesContext, servletContext, false);
         if (facesServletRegistration != null)
         {
             facesContext.getApplication().getViewHandler().getViews(facesContext, "/", 
                     ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME).forEach(s -> {
-                        facesServletRegistration.addMapping(s);
+                        facesServletRegistration.getRegistration().addMapping(s);
                     });
         }
     }
