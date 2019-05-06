@@ -246,7 +246,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
 
         // TODO : Check here for getSubmittedValue. Look at RendererUtils.getValue
         // this is useless object creation
-//        Object itemValue = selectItem.getValue();
+        // Object itemValue = selectItem.getValue();
 
         UISelectOne selectOne = (UISelectOne)uiComponent;
 
@@ -433,7 +433,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
             if (value != null)
             {
                 writer.writeAttribute(HTML.VALUE_ATTR, 
-                        clientId + facesContext.getNamingContainerSeparatorChar() +value, null);
+                        clientId + facesContext.getNamingContainerSeparatorChar() + value, null);
             }
             else
             {

@@ -44,6 +44,7 @@ public class HtmlMenuRendererBase
         extends HtmlSelectableRendererBase
 {
 
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent component)
             throws IOException
     {
@@ -109,6 +110,7 @@ public class HtmlMenuRendererBase
         return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
     }
 
+    @Override
     public void decode(FacesContext facesContext, UIComponent uiComponent)
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, null);
@@ -132,6 +134,7 @@ public class HtmlMenuRendererBase
         }
     }
 
+    @Override
     public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue)
          throws ConverterException
     {
