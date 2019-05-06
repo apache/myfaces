@@ -324,6 +324,24 @@ public class HtmlTextRendererBase
         return false;
     }
 
+    protected boolean isValidLength(FacesContext facesContext, UIInput input)
+    {
+        if (input instanceof HtmlInputText)
+        {
+            int maxlength = ((HtmlInputText)input).getMaxlength();
+            if (maxlength >= 0)
+            {
+                String clientId = input.getClientId(facesContext);
+                String value = facesContext.getExternalContext().getRequestParameterMap().get(clientId);
+                if (value != null && value.length() > maxlength)
+                {
+                    return false;
+                }
+            }
+            
+        }
+        return true;
+    }
 
     public void decode(FacesContext facesContext, UIComponent component)
     {
@@ -331,6 +349,10 @@ public class HtmlTextRendererBase
 
         if (component instanceof UIInput)
         {
+            if (!isValidLength(facesContext, (UIInput)component))
+            {
+                return;
+            }
             HtmlRendererUtils.decodeUIInput(facesContext, component);
             if (component instanceof ClientBehaviorHolder &&
                     !HtmlRendererUtils.isDisabled(component))
