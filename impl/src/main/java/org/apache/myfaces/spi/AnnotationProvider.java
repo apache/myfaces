@@ -98,6 +98,7 @@ public abstract class AnnotationProvider implements FacesWrapper<AnnotationProvi
      */
     public abstract Set<URL> getBaseUrls(ExternalContext ctx) throws IOException;
     
+    @Override
     public AnnotationProvider getWrapped()
     {
         return null;
