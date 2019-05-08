@@ -55,6 +55,11 @@ public class ViewScopeContextImpl implements Context
         this.beanManager = beanManager;
     }
 
+    protected BeanManager getBeanManager()
+    {
+        return beanManager;
+    }
+    
     protected ViewScopeBeanHolder getViewScopeBeanHolder()
     {
         return getViewScopeBeanHolder(FacesContext.getCurrentInstance());
@@ -68,7 +73,7 @@ public class ViewScopeContextImpl implements Context
         if (viewScopeBeanHolder == null)
         {
             viewScopeBeanHolder = BeanProvider.getContextualReference(
-                beanManager, ViewScopeBeanHolder.class, false);
+                getBeanManager(), ViewScopeBeanHolder.class, false);
             facesContext.getExternalContext().getApplicationMap().put(
                 "oam.view.ViewScopeBeanHolder", viewScopeBeanHolder);
         }
@@ -103,7 +108,7 @@ public class ViewScopeContextImpl implements Context
         }
         if (viewScopeId != null)
         {
-            return getViewScopeBeanHolder().getContextualStorage(beanManager, viewScopeId);
+            return getViewScopeBeanHolder().getContextualStorage(getBeanManager(), viewScopeId);
         }
         return null;
     }
