@@ -18,11 +18,15 @@
  */
 package org.apache.myfaces.spi.impl;
 
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.myfaces.spi.FacesFlowProvider;
 import org.apache.myfaces.spi.FacesFlowProviderFactory;
 import javax.faces.context.ExternalContext;
 import org.apache.myfaces.flow.cdi.DefaultCDIFacesFlowProvider;
 import org.apache.myfaces.flow.impl.DefaultFacesFlowProvider;
+import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
 
@@ -31,7 +35,7 @@ import org.apache.myfaces.util.ExternalSpecifications;
  */
 public class DefaultFacesFlowProviderFactory extends FacesFlowProviderFactory
 {
-
+    
     public static final String FACES_FLOW_PROVIDER = FacesFlowProvider.class.getName();
     public static final String FACES_FLOW_PROVIDER_INSTANCE_KEY = FACES_FLOW_PROVIDER + ".INSTANCE";
 
@@ -44,19 +48,44 @@ public class DefaultFacesFlowProviderFactory extends FacesFlowProviderFactory
 
         if (returnValue == null)
         {
-            if (ExternalSpecifications.isCDIAvailable(externalContext))
+            try
             {
-                returnValue = (FacesFlowProvider) ClassUtils.newInstance(
-                        DefaultCDIFacesFlowProvider.class.getName());
+                returnValue = resolveFacesFlowProviderFromService(externalContext);
             }
-            else
+            catch (Exception e)
             {
-                returnValue = (FacesFlowProvider) new DefaultFacesFlowProvider();
+                getLogger().log(Level.SEVERE, "", e);
             }
-        }
 
+            if (returnValue == null)
+            {
+                if (ExternalSpecifications.isCDIAvailable(externalContext))
+                {
+                    returnValue = (FacesFlowProvider) ClassUtils.newInstance(
+                            DefaultCDIFacesFlowProvider.class.getName());
+                }
+                else
+                {
+                    returnValue = (FacesFlowProvider) new DefaultFacesFlowProvider();
+                }
+            }
+
+            externalContext.getApplicationMap().put(FACES_FLOW_PROVIDER_INSTANCE_KEY, returnValue);
+        }
 
         return returnValue;
     }
 
+    
+    private FacesFlowProvider resolveFacesFlowProviderFromService(ExternalContext externalContext) throws Exception
+    {
+        List<String> classList = ServiceProviderFinderFactory.getServiceProviderFinder(externalContext).
+                    getServiceProviderList(FACES_FLOW_PROVIDER);
+        return ClassUtils.buildApplicationObject(FacesFlowProvider.class, classList, null);
+    }
+    
+    private Logger getLogger()
+    {
+        return Logger.getLogger(DefaultFacesFlowProviderFactory.class.getName());
+    }
 }
