@@ -617,7 +617,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                 if (log.isLoggable(Level.WARNING))
                 {
                     log.log(Level.WARNING,"Error trying to load and send resource " + resourceName
-                            + " with library " + libraryName + ":"
+                            + " with library " + libraryName + ": "
                             + e.getMessage(), e);
                 }
                 httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
