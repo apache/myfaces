@@ -55,9 +55,16 @@ public class ViewScopeContextImpl implements Context
         this.beanManager = beanManager;
     }
 
+    // SPI
     protected BeanManager getBeanManager()
     {
         return beanManager;
+    }
+    
+    // SPI
+    protected boolean isCheckPassivationCapable()
+    {
+        return true;
     }
     
     protected ViewScopeBeanHolder getViewScopeBeanHolder()
@@ -164,7 +171,7 @@ public class ViewScopeContextImpl implements Context
     {
         checkActive();
 
-        if (!(bean instanceof PassivationCapable))
+        if (isCheckPassivationCapable() && !(bean instanceof PassivationCapable))
         {
             throw new IllegalStateException(bean.toString() +
                     " doesn't implement " + PassivationCapable.class.getName());

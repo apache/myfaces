@@ -111,7 +111,13 @@ public class ViewScopeContextualStorage implements Serializable
      */
     public <T> Object getBeanKey(Contextual<T> bean)
     {
-        return ((PassivationCapable) bean).getId();
+        // actually a ViewScoped bean MUST implemented PassivationCapable
+        // but it's deactivatable via ViewScopedContextImpl#isCheckPassivationCapable
+        if (bean instanceof PassivationCapable)
+        {
+            return ((PassivationCapable) bean).getId();
+        }
+        return bean.getClass().getName();
     }
 
     /**
