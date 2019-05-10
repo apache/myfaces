@@ -346,7 +346,7 @@ public class ApplicationImpl extends Application
     private ELResolver createFacesResolver()
     {
         FacesContext facesContext = getFacesContext();
-        boolean supportJSP = MyfacesConfig.getCurrentInstance(facesContext).isSupportJSP();
+        boolean supportJSP = _myfacesConfig.isSupportJSP();
         CompositeELResolver resolver;
         if (supportJSP)
         {
