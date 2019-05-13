@@ -25,6 +25,15 @@ public class FacesConfigNameSlotImpl extends org.apache.myfaces.config.element.F
 {
     private String name;
 
+    public FacesConfigNameSlotImpl()
+    {
+    }
+    
+    public FacesConfigNameSlotImpl(String name)
+    {
+        this.name = name;
+    }
+    
     public String getName()
     {
         return name;

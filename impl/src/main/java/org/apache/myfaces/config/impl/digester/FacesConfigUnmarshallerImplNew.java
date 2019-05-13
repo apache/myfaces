@@ -34,7 +34,10 @@ import org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlotImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlotImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesFlowDefinitionImpl;
+import org.apache.myfaces.config.impl.digester.elements.LocaleConfigImpl;
 import org.apache.myfaces.config.impl.digester.elements.OrderingImpl;
+import org.apache.myfaces.config.impl.digester.elements.ResourceBundleImpl;
+import org.apache.myfaces.config.impl.digester.elements.SystemEventListenerImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -207,7 +210,36 @@ public class FacesConfigUnmarshallerImplNew implements FacesConfigUnmarshaller<F
                 obj.addDefaultValidatorId(cn.getTextContent());
             });
         });
+        
+        onChild("locale-config", node, (n) -> {
+            LocaleConfigImpl lc = new LocaleConfigImpl();
+            obj.addLocaleConfig(lc);
+            onChild("default-locale", n, (cn) -> { lc.setDefaultLocale(cn.getTextContent()); });
+            onChild("supported-locale", n, (cn) -> { lc.addSupportedLocale(cn.getTextContent()); });
+        });
 
+        onChild("resource-bundle", node, (n) -> {
+            ResourceBundleImpl rb = new ResourceBundleImpl();
+            obj.addResourceBundle(rb);
+            onChild("base-name", n, (cn) -> { rb.setBaseName(cn.getTextContent()); });
+            onChild("var", n, (cn) -> { rb.setVar(cn.getTextContent()); });
+            onChild("display-name", n, (cn) -> { rb.setDisplayName(cn.getTextContent()); });
+        });
+        
+        onChild("system-event-listener", node, (n) -> {
+            SystemEventListenerImpl sel = new SystemEventListenerImpl();
+            obj.addSystemEventListener(sel);
+            onChild("system-event-listener-class", n, (cn) -> {
+                sel.setSystemEventListenerClass(cn.getTextContent());
+            });
+            onChild("system-event-class", n, (cn) -> {
+                sel.setSystemEventClass(cn.getTextContent());
+            });
+            onChild("source-class", n, (cn) -> {
+                sel.setSourceClass(cn.getTextContent());
+            });
+        });
+        
         return obj;
     }
     
