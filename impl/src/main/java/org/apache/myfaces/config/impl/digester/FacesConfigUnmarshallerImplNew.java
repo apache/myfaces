@@ -31,6 +31,7 @@ import org.apache.myfaces.config.element.FacesFlowDefinition;
 import org.apache.myfaces.config.impl.digester.elements.AbsoluteOrderingImpl;
 import org.apache.myfaces.config.impl.digester.elements.ApplicationImpl;
 import org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlotImpl;
+import org.apache.myfaces.config.impl.digester.elements.ContractMappingImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlotImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesFlowDefinitionImpl;
@@ -112,6 +113,13 @@ public class FacesConfigUnmarshallerImplNew implements FacesConfigUnmarshaller<F
                     (n) -> { facesConfig.setAbsoluteOrdering(processAbsoluteOrdering(n)); });
             onChild("application", document.getDocumentElement(), 
                     (n) -> { facesConfig.addApplication(processApplication(n)); });
+            onChild("component", document.getDocumentElement(), (n) -> {
+                facesConfig.addComponent(
+                        firstChildTextContent("component-type", n),
+                        firstChildTextContent("component-class", n));
+            });
+
+            
         }
         catch (Exception e)
         {
@@ -203,7 +211,9 @@ public class FacesConfigUnmarshallerImplNew implements FacesConfigUnmarshaller<F
         onChild("el-resolver", node, (n) -> { obj.addElResolver(n.getTextContent()); });
         onChild("resource-handler", node, (n) -> { obj.addResourceHandler(n.getTextContent()); });
         onChild("default-render-kit-id", node, (n) -> { obj.addDefaultRenderkitId(n.getTextContent()); });
-        
+        onChild("search-expression-handler", node, (n) -> { obj.addSearchExpressionHandler(n.getTextContent()); });
+        onChild("search-keyword-resolver", node, (n) -> { obj.addSearchKeywordResolver(n.getTextContent()); });
+
         onChild("default-validators", node, (n) -> {
             obj.setDefaultValidatorsPresent();
             onChild("validator-id", n, (cn) -> {
@@ -239,7 +249,20 @@ public class FacesConfigUnmarshallerImplNew implements FacesConfigUnmarshaller<F
                 sel.setSourceClass(cn.getTextContent());
             });
         });
-        
+
+        onChild("resource-library-contracts", node, (n) -> {
+            onChild("contract-mapping", n, (cn) -> {
+                ContractMappingImpl cm = new ContractMappingImpl();
+                obj.addResourceLibraryContractMapping(cm);
+                onChild("url-pattern", cn, (ccn) -> {
+                    cm.addUrlPattern(ccn.getTextContent());
+                });
+                onChild("contracts", cn, (ccn) -> {
+                    cm.addContract(ccn.getTextContent());
+                });
+            });
+        });
+
         return obj;
     }
     
@@ -248,6 +271,8 @@ public class FacesConfigUnmarshallerImplNew implements FacesConfigUnmarshaller<F
     
     
     
+
+
     
     
     
@@ -284,5 +309,27 @@ public class FacesConfigUnmarshallerImplNew implements FacesConfigUnmarshaller<F
                 }
             }
         }
+    }
+    
+    protected String firstChildTextContent(String name, Node node)
+    {
+        if (node.getChildNodes() != null)
+        {
+            for (int i = 0; i < node.getChildNodes().getLength(); i++)
+            {
+                Node childNode = node.getChildNodes().item(i);
+                if (childNode == null)
+                {
+                    continue;
+                }
+
+                if (name.equals(childNode.getLocalName()))
+                {
+                    return childNode.getTextContent();
+                }
+            }
+        }
+
+        return null;
     }
 }
