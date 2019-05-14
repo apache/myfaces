@@ -400,7 +400,7 @@ public class DigesterlessFacesConfigUnmarshallerImpl implements FacesConfigUnmar
         BehaviorImpl obj = new BehaviorImpl();
 
         onChild("behavior-id", node, (n) -> { obj.setBehaviorId(n.getTextContent()); });
-        onChild("behavior-class", node, (n) -> { obj.setBehaviorId(n.getTextContent()); });
+        onChild("behavior-class", node, (n) -> { obj.setBehaviorClass(n.getTextContent()); });
                 
         onChild("attribute", node, (n) -> {
             AttributeImpl a = new AttributeImpl();
