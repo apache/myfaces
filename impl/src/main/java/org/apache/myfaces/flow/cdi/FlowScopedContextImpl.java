@@ -106,7 +106,7 @@ public class FlowScopedContextImpl implements Context
      * @return the underlying storage
      */
     protected ContextualStorage getContextualStorage(boolean createIfNotExist, String clientWindowFlowId)
-    {;
+    {
         if (clientWindowFlowId == null)
         {
             throw new ContextNotActiveException(this.getClass().getName() + ": no current active flow");
