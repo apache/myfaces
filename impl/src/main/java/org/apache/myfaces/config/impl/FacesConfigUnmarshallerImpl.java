@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.config.impl;
 
-
 import java.io.ByteArrayInputStream;
 import javax.faces.context.ExternalContext;
 import java.io.IOException;
