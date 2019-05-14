@@ -104,7 +104,7 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
                 lifecycleProvider = (InjectionProvider)
                         externalContext.getApplicationMap().get(INJECTION_PROVIDER_INSTANCE_KEY);
             }
-            log.info("Using InjectionProvider "+ lifecycleProvider.getClass().getName());
+            log.fine("Using InjectionProvider " + lifecycleProvider.getClass().getName());
         }
         return lifecycleProvider;
     }

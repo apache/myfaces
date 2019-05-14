@@ -174,10 +174,16 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                     }
                 }
             }
-
+            
             initCDIIntegration(servletContext, externalContext);
             
             initContainerIntegration(servletContext, externalContext);
+
+            // log environment integrations
+            ExternalSpecifications.isBeanValidationAvailable();
+            ExternalSpecifications.isCDIAvailable(externalContext);
+            ExternalSpecifications.isEL3Available();
+            ExternalSpecifications.isServlet4Available();
             
             ViewScopeProviderFactory viewScopeProviderFactory =
                     ViewScopeProviderFactory.getViewScopeHandlerFactory(externalContext);
@@ -213,9 +219,9 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
 
             if ( (facesContext.isProjectStage(ProjectStage.Development) || 
                   facesContext.isProjectStage(ProjectStage.Production)) &&
-                 log.isLoggable(Level.INFO))
+                 log.isLoggable(Level.FINE))
             {
-                log.info("ServletContext initialized.");
+                log.fine("ServletContext initialized.");
             }
 
             WebConfigParamsLogger.logWebContextParams(facesContext);

@@ -90,7 +90,7 @@ public final class ExternalSpecifications
                 beanValidationAvailable = false;
             }
 
-            log.info("MyFaces Bean Validation support " + (beanValidationAvailable ? "enabled" : "disabled"));
+            log.info("MyFaces Core Bean Validation support " + (beanValidationAvailable ? "enabled" : "disabled"));
         }
         return beanValidationAvailable;
     }
@@ -109,7 +109,7 @@ public final class ExternalSpecifications
                 cdiAvailable = false;
             }
 
-            log.info("MyFaces CDI support " + (cdiAvailable ? "enabled" : "disabled"));
+            log.info("MyFaces Core CDI support " + (cdiAvailable ? "enabled" : "disabled"));
         }
 
         return cdiAvailable && 
@@ -128,7 +128,7 @@ public final class ExternalSpecifications
             {
                 el3Available = false;
             }
-            log.info("MyFaces EL 3.0 support " + (el3Available ? "enabled" : "disabled"));
+            log.info("MyFaces Core EL 3.0 support " + (el3Available ? "enabled" : "disabled"));
         }
         return el3Available;
     }
@@ -146,7 +146,7 @@ public final class ExternalSpecifications
             {
                 sevlet4Available = false;
             }
-            log.info("MyFaces Servlet 4.0 support " + (sevlet4Available ? "enabled" : "disabled"));
+            log.info("MyFaces Core Servlet 4.0 support " + (sevlet4Available ? "enabled" : "disabled"));
         }
         return sevlet4Available;
     }

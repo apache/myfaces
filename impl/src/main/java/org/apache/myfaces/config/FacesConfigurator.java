@@ -1352,7 +1352,7 @@ public class FacesConfigurator
 
         }
 
-        log.info("Serialization provider : " + serialFactory.getClass());
+        log.fine("Serialization provider : " + serialFactory.getClass());
         _externalContext.getApplicationMap().put(StateUtils.SERIAL_FACTORY, serialFactory);
     }
 

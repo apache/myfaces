@@ -161,9 +161,9 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             {
                 throw new FacesException("Standard faces config " + STANDARD_FACES_CONFIG_RESOURCE + " not found");
             }
-            if (log.isLoggable(Level.INFO))
+            if (log.isLoggable(Level.FINE))
             {
-                log.info("Reading standard config " + STANDARD_FACES_CONFIG_RESOURCE);
+                log.fine("Reading standard config " + STANDARD_FACES_CONFIG_RESOURCE);
             }
             
             FacesConfig facesConfig = getUnmarshaller(ectx).getFacesConfig(stream, STANDARD_FACES_CONFIG_RESOURCE);
@@ -311,9 +311,9 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 try
                 {
                     stream = openStreamWithoutCache(url);
-                    if (log.isLoggable(Level.INFO))
+                    if (log.isLoggable(Level.FINE))
                     {
-                        log.info("Reading config : " + url.toExternalForm());
+                        log.fine("Reading config: " + url.toExternalForm());
                     }
                     appConfigResources.add(getUnmarshaller(ectx).getFacesConfig(stream, url.toExternalForm()));
                 }

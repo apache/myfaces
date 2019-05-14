@@ -167,12 +167,12 @@ class LogMetaInfUtils
         List<JarInfo> versions = libs.get(artifactId);
         if (versions == null)
         {
-            log.info("Artifact '" + artifactId + "' was not found.");
+            log.fine("Artifact '" + artifactId + "' was not found.");
         }
         else
         {
             JarInfo info = versions.get(0);
-            log.info("Artifact '" + artifactId + "' was found in version '"
+            log.fine("Artifact '" + artifactId + "' was found in version '"
                      + info.getVersion() + "' from path '" + info.getUrl() + '\'');
         }
     }
