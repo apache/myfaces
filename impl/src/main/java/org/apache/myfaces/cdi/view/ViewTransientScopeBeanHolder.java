@@ -42,7 +42,7 @@ public class ViewTransientScopeBeanHolder
     {
     }
     
-    public static ContextualStorage getContextualStorage(BeanManager beanManager, FacesContext facesContext)
+    public ContextualStorage getContextualStorage(BeanManager beanManager, FacesContext facesContext)
     {
         ContextualStorage contextualStorage = (ContextualStorage) 
                 facesContext.getViewRoot().getTransientStateHelper().getTransient(VIEW_TRANSIENT_SCOPE_MAP);
@@ -113,10 +113,10 @@ public class ViewTransientScopeBeanHolder
 
     public void destroyBeans(FacesContext facesContext)
     {
-        ContextualStorage oldWindowContextStorages = forceNewStorage(facesContext);
-        if (oldWindowContextStorages != null)
+        ContextualStorage oldontextStorages = forceNewStorage(facesContext);
+        if (oldontextStorages != null)
         {
-            ViewTransientScopeContextImpl.destroyAllActive(oldWindowContextStorages);
+            ViewTransientScopeContextImpl.destroyAllActive(oldontextStorages);
         }
     }
 

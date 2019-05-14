@@ -106,12 +106,10 @@ public class FlowScopedContextImpl implements Context
      * @return the underlying storage
      */
     protected ContextualStorage getContextualStorage(boolean createIfNotExist, String clientWindowFlowId)
-    {
-        //FacesContext facesContext = FacesContext.getCurrentInstance();
-        //String clientWindowFlowId = getCurrentClientWindowFlowId(facesContext);
+    {;
         if (clientWindowFlowId == null)
         {
-            throw new ContextNotActiveException("FlowScopedContextImpl: no current active flow");
+            throw new ContextNotActiveException(this.getClass().getName() + ": no current active flow");
         }
 
         if (createIfNotExist)
@@ -163,7 +161,6 @@ public class FlowScopedContextImpl implements Context
 
         checkActive(facesContext);
 
-        
         FlowReference reference = flowBeanReferences.get(((Bean)bean).getBeanClass());
         if (reference != null)
         {
@@ -203,7 +200,6 @@ public class FlowScopedContextImpl implements Context
             ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
             if (contextualInstanceInfo == null)
             {
-                //return null;
                 continue;
             }
 
@@ -337,14 +333,12 @@ public class FlowScopedContextImpl implements Context
             ContextualStorage storage = getContextualStorage(false, flowMapKey);
             if (storage == null)
             {
-                //return false;
                 continue;
             }
             ContextualInstanceInfo<?> contextualInstanceInfo = storage.getStorage().get(storage.getBeanKey(bean));
 
             if (contextualInstanceInfo == null)
             {
-                //return false;
                 continue;
             }
 

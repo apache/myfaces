@@ -230,8 +230,7 @@ public class FlowScopeBeanHolder implements Serializable
                     servletContext = null;
                 }
             }
-            if (facesContext == null &&
-                servletContext != null)
+            if (facesContext == null && servletContext != null)
             {
                 try
                 {
@@ -300,10 +299,8 @@ public class FlowScopeBeanHolder implements Serializable
         {
             return Collections.emptyList();
         }
-        else
-        {
-            return activeFlowKeys;
-        }
+
+        return activeFlowKeys;
     }
     
     public void createCurrentFlowScope(FacesContext facesContext)

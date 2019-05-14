@@ -26,7 +26,6 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.PassivationCapable;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
@@ -37,7 +36,6 @@ import org.apache.myfaces.cdi.util.ContextualStorage;
 @Typed()
 public class FacesScopeContextImpl implements Context
 {
-
     private BeanManager beanManager;
     
     public FacesScopeContextImpl(BeanManager beanManager)
@@ -65,7 +63,7 @@ public class FacesScopeContextImpl implements Context
     {
         if (facesContext == null)
         {
-            throw new ContextNotActiveException("FacesScopedContextImpl: no current active facesContext");
+            throw new ContextNotActiveException(this.getClass().getName() + ": no current active facesContext");
         }
 
         if (createIfNotExist)
@@ -133,12 +131,6 @@ public class FacesScopeContextImpl implements Context
         FacesContext facesContext = FacesContext.getCurrentInstance();
         
         checkActive(facesContext);
-
-        if (!(bean instanceof PassivationCapable))
-        {
-            throw new IllegalStateException(bean.toString() +
-                    " doesn't implement " + PassivationCapable.class.getName());
-        }
 
         ContextualStorage storage = getContextualStorage(true, facesContext);
 

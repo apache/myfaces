@@ -50,7 +50,7 @@ public class FacesScopeBeanHolder
      * @param beanManager we need the CDI {@link BeanManager} for serialisation.
      * @param facesContext the current FacesContext instance
      */
-    public static ContextualStorage getContextualStorage(BeanManager beanManager, FacesContext facesContext)
+    public ContextualStorage getContextualStorage(BeanManager beanManager, FacesContext facesContext)
     {
         ContextualStorage contextualStorage = (ContextualStorage) facesContext.getAttributes().get(FACES_SCOPE_MAP);
         if (contextualStorage == null)

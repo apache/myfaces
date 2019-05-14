@@ -26,13 +26,12 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.PassivationCapable;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 
 /**
- * Minimal implementation of FacesScope.
+ * Minimal implementation of ViewTransientScope.
  */
 @Typed()
 public class ViewTransientScopeContextImpl implements Context
@@ -65,7 +64,7 @@ public class ViewTransientScopeContextImpl implements Context
     {
         if (facesContext == null)
         {
-            throw new ContextNotActiveException("FacesScopedContextImpl: no current active facesContext");
+            throw new ContextNotActiveException(this.getClass().getName() + ": no current active facesContext");
         }
 
         if (createIfNotExist)
@@ -138,12 +137,6 @@ public class ViewTransientScopeContextImpl implements Context
         FacesContext facesContext = FacesContext.getCurrentInstance();
         
         checkActive(facesContext);
-
-        if (!(bean instanceof PassivationCapable))
-        {
-            throw new IllegalStateException(bean.toString() +
-                    " doesn't implement " + PassivationCapable.class.getName());
-        }
 
         ContextualStorage storage = getContextualStorage(true, facesContext);
 
