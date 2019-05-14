@@ -237,12 +237,7 @@ public abstract class FacesConfigData implements Serializable
      * @return Collection over all defined default validator ids
      */
     public abstract Collection<String> getDefaultValidatorIds ();
-    
-    /**
-     * @return the partial traversal class name
-     */
-    public abstract String getPartialTraversal ();
-    
+
     /**
      * @return Faces application version.
      */

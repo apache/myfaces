@@ -34,7 +34,6 @@ public class ApplicationImpl extends org.apache.myfaces.config.element.Applicati
     private final List<String> defaultValidatorIds = new ArrayList<String>();
     private final List<String> messageBundle = new ArrayList<String>();
     private final List<String> navigationHandler = new ArrayList<String>();
-    private final List<String> partialTraversal = new ArrayList<String>();
     private final List<String> resourceHandler = new ArrayList<String>();
     private final List<String> viewHandler = new ArrayList<String>();
     private final List<String> stateManager = new ArrayList<String>();
@@ -78,12 +77,7 @@ public class ApplicationImpl extends org.apache.myfaces.config.element.Applicati
     {
         navigationHandler.add(handler);
     }
-    
-    public void addPartialTraversal (String traversal)
-    {
-        partialTraversal.add (traversal);
-    }
-    
+
     public void addStateManager(String manager)
     {
         stateManager.add(manager);
@@ -153,12 +147,7 @@ public class ApplicationImpl extends org.apache.myfaces.config.element.Applicati
     {
         return navigationHandler;
     }
-    
-    public List<String> getPartialTraversal ()
-    {
-        return partialTraversal;
-    }
-    
+
     public List<String> getResourceHandler()
     {
         return resourceHandler;

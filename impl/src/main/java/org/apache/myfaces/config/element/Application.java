@@ -39,8 +39,6 @@ public abstract class Application implements Serializable
 
     public abstract List<String> getNavigationHandler();
     
-    public abstract List<String> getPartialTraversal ();
-    
     public abstract List<String> getResourceHandler();
     
     public abstract List<SystemEventListener> getSystemEventListeners ();

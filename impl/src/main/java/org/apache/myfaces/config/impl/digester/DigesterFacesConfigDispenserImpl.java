@@ -81,7 +81,6 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     
     private String defaultRenderKitId;
     private String messageBundle;
-    private String partialTraversal;
     private String facesVersion;
     
     private LocaleConfig localeConfig;
@@ -222,11 +221,6 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
             if (!application.getLocaleConfig().isEmpty())
             {
                 localeConfig = application.getLocaleConfig().get(application.getLocaleConfig().size() - 1);
-            }
-            
-            if (!application.getPartialTraversal().isEmpty())
-            {
-                partialTraversal = application.getPartialTraversal().get (application.getPartialTraversal().size() - 1);
             }
             
             actionListeners.addAll(application.getActionListener());
@@ -560,14 +554,6 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
             umnavigationHandlers = Collections.unmodifiableList(navigationHandlers);
         }
         return umnavigationHandlers;
-    }
-
-    /**
-     * @return the partial traversal class name
-     */
-    public String getPartialTraversal ()
-    {
-        return partialTraversal;
     }
     
     /**

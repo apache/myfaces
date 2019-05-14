@@ -276,7 +276,6 @@ public class DigesterlessFacesConfigUnmarshallerImpl implements FacesConfigUnmar
         onChild("action-listener", node, (n) -> { obj.addActionListener(n.getTextContent()); });
         onChild("message-bundle", node, (n) -> { obj.addMessageBundle(n.getTextContent()); });
         onChild("navigation-handler", node, (n) -> { obj.addNavigationHandler(n.getTextContent()); });
-        onChild("partial-traversal", node, (n) -> { obj.addPartialTraversal(n.getTextContent()); });
         onChild("view-handler", node, (n) -> { obj.addViewHandler(n.getTextContent()); });
         onChild("state-manager", node, (n) -> { obj.addStateManager(n.getTextContent()); });
         onChild("property-resolver", node, (n) -> { obj.addPropertyResolver(n.getTextContent()); });
