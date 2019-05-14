@@ -30,7 +30,6 @@ import org.xml.sax.SAXException;
 import javax.faces.context.ExternalContext;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import org.apache.myfaces.config.element.FacesFlowDefinition;
 
 /**
@@ -466,23 +465,5 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
         postProcessFacesConfig(systemId, config);
 
         return config;
-    }
-    
-    @Override
-    public FacesConfigImpl getFacesConfig(Reader r) throws IOException, SAXException
-    {
-        // Fix for http://issues.apache.org/jira/browse/MYFACES-236
-        FacesConfigImpl config = (FacesConfigImpl) digester.parse(r);
-
-        postProcessFacesConfig(null, config);
-
-        return config;
-    }
-
-    @Override
-    public void release()
-    {
-        digester.clear();
-        digester = null;
     }
 }

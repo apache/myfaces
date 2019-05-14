@@ -820,14 +820,4 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
         }
         return facesConfigFilesList;
     }
-    
-    @Override
-    public void release()
-    {
-        if (_unmarshaller != null)
-        {
-            _unmarshaller.release();
-            _unmarshaller = null;
-        }
-    }
 }

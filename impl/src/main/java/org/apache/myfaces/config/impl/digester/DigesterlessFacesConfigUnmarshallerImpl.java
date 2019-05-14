@@ -23,7 +23,6 @@ import java.io.ByteArrayInputStream;
 import javax.faces.context.ExternalContext;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.util.function.Consumer;
 import javax.faces.FacesException;
 import javax.xml.parsers.DocumentBuilder;
@@ -206,18 +205,6 @@ public class DigesterlessFacesConfigUnmarshallerImpl implements FacesConfigUnmar
                 ((FacesFlowDefinitionImpl)facesFlowDefinition).setDefiningDocumentId("");
             }
         }
-    }
-    
-    @Override
-    public FacesConfigImpl getFacesConfig(Reader r) throws IOException, SAXException
-    {
-        return null;
-    }
-
-    @Override
-    public void release()
-    {
-
     }
 
     protected OrderingImpl processOrdering(Node node)
