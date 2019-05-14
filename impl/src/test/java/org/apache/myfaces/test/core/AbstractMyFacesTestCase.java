@@ -66,7 +66,7 @@ import org.apache.myfaces.config.DefaultFacesConfigurationProvider;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider;
 import org.apache.myfaces.config.element.FacesConfig;
-import org.apache.myfaces.config.impl.digester.elements.FactoryImpl;
+import org.apache.myfaces.config.impl.elements.FactoryImpl;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.lifecycle.ViewNotFoundException;
 import org.apache.myfaces.test.core.annotation.DeclareFacesConfig;

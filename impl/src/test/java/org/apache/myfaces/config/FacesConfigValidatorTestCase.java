@@ -22,9 +22,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.myfaces.config.element.NavigationRule;
-import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
-import org.apache.myfaces.config.impl.digester.DigesterlessFacesConfigUnmarshallerImpl;
-import org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl;
+import org.apache.myfaces.config.impl.FacesConfigDispenserImpl;
+import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
+import org.apache.myfaces.config.impl.elements.FacesConfigImpl;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
@@ -43,8 +43,8 @@ public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
 
         super.setUp();
         
-        dispenser = new DigesterFacesConfigDispenserImpl();
-        unmarshaller = new DigesterlessFacesConfigUnmarshallerImpl(externalContext);
+        dispenser = new FacesConfigDispenserImpl();
+        unmarshaller = new FacesConfigUnmarshallerImpl(externalContext);
         try
         {
             ByteArrayInputStream bais = new ByteArrayInputStream(testFacesConfig.getBytes());

@@ -24,7 +24,7 @@ import org.apache.myfaces.config.element.FacesConfigData;
 import org.apache.myfaces.config.element.FacesConfigNameSlot;
 import org.apache.myfaces.config.element.OrderSlot;
 import org.apache.myfaces.config.element.Ordering;
-import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
+import org.apache.myfaces.config.impl.FacesConfigDispenserImpl;
 import org.apache.myfaces.config.util.CyclicDependencyException;
 import org.apache.myfaces.config.util.DirectedAcyclicGraphVerifier;
 import org.apache.myfaces.config.util.Vertex;
@@ -64,7 +64,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
         FacesConfigurationProvider facesConfigProvider = FacesConfigurationProviderFactory
                 .getFacesConfigurationProviderFactory(externalContext).getFacesConfigurationProvider(externalContext);
 
-        FacesConfigDispenser dispenser = new DigesterFacesConfigDispenserImpl();
+        FacesConfigDispenser dispenser = new FacesConfigDispenserImpl();
 
         // standard-faces-config.xml
         dispenser.feed(facesConfigProvider.getStandardFacesConfig(externalContext));

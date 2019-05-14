@@ -49,8 +49,8 @@ import org.apache.myfaces.config.element.ClientBehaviorRenderer;
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.element.Renderer;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
-import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
-import org.apache.myfaces.config.impl.digester.DigesterlessFacesConfigUnmarshallerImpl;
+import org.apache.myfaces.config.impl.FacesConfigDispenserImpl;
+import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
 import org.apache.myfaces.context.PartialViewContextFactoryImpl;
 import org.apache.myfaces.application.ViewIdSupport;
 import org.apache.myfaces.util.ClassUtils;
@@ -273,9 +273,9 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
         {
             InputStream stream = ClassUtils
             .getResourceAsStream("META-INF/standard-faces-config.xml");
-            FacesConfigUnmarshaller<? extends FacesConfig> unmarshaller = new DigesterlessFacesConfigUnmarshallerImpl(
+            FacesConfigUnmarshaller<? extends FacesConfig> unmarshaller = new FacesConfigUnmarshallerImpl(
                     externalContext);
-            dispenser = new DigesterFacesConfigDispenserImpl();
+            dispenser = new FacesConfigDispenserImpl();
             dispenser.feed(unmarshaller.getFacesConfig(stream,
                     "META-INF/standard-faces-config.xml"));
         }

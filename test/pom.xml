@@ -61,12 +61,13 @@
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jsp_2.2_spec</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>
+            <version>1.8</version>
         </dependency>
-        
+
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>

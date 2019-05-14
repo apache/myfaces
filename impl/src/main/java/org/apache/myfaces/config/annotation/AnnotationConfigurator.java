@@ -39,11 +39,11 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.validator.FacesValidator;
 import javax.faces.view.facelets.FaceletsResourceResolver;
 
-import org.apache.myfaces.config.impl.digester.elements.ApplicationImpl;
-import org.apache.myfaces.config.impl.digester.elements.BehaviorImpl;
-import org.apache.myfaces.config.impl.digester.elements.ComponentTagDeclarationImpl;
-import org.apache.myfaces.config.impl.digester.elements.ConverterImpl;
-import org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl;
+import org.apache.myfaces.config.impl.elements.ApplicationImpl;
+import org.apache.myfaces.config.impl.elements.BehaviorImpl;
+import org.apache.myfaces.config.impl.elements.ComponentTagDeclarationImpl;
+import org.apache.myfaces.config.impl.elements.ConverterImpl;
+import org.apache.myfaces.config.impl.elements.FacesConfigImpl;
 import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProviderFactory;
 import org.apache.myfaces.util.LangUtils;
@@ -230,18 +230,18 @@ public class AnnotationConfigurator
                                 + ", " + clazz.getName() + ')');
                     }
 
-                    org.apache.myfaces.config.impl.digester.elements.RenderKitImpl renderKit =
-                            (org.apache.myfaces.config.impl.digester.elements.RenderKitImpl)
+                    org.apache.myfaces.config.impl.elements.RenderKitImpl renderKit =
+                            (org.apache.myfaces.config.impl.elements.RenderKitImpl)
                                     facesConfig.getRenderKit(renderKitId);
                     if (renderKit == null)
                     {
-                        renderKit = new org.apache.myfaces.config.impl.digester.elements.RenderKitImpl();
+                        renderKit = new org.apache.myfaces.config.impl.elements.RenderKitImpl();
                         renderKit.setId(renderKitId);
                         facesConfig.addRenderKit(renderKit);
                     }
 
-                    org.apache.myfaces.config.impl.digester.elements.RendererImpl renderer =
-                            new org.apache.myfaces.config.impl.digester.elements.RendererImpl();
+                    org.apache.myfaces.config.impl.elements.RendererImpl renderer =
+                            new org.apache.myfaces.config.impl.elements.RendererImpl();
                     renderer.setComponentFamily(rend.componentFamily());
                     renderer.setRendererClass(clazz.getName());
                     renderer.setRendererType(rend.rendererType());
@@ -300,8 +300,8 @@ public class AnnotationConfigurator
                 // Have to register @NamedEvent annotations with the NamedEventManager class since
                 // we need to get access to this info later and can't from the dispenser (it's not a
                 // singleton).
-                org.apache.myfaces.config.impl.digester.elements.NamedEventImpl namedEventConfig =
-                        new org.apache.myfaces.config.impl.digester.elements.NamedEventImpl();
+                org.apache.myfaces.config.impl.elements.NamedEventImpl namedEventConfig =
+                        new org.apache.myfaces.config.impl.elements.NamedEventImpl();
                 namedEventConfig.setEventClass(clazz.getName());
                 namedEventConfig.setShortName(namedEvent.shortName());
                 facesConfig.addNamedEvent(namedEventConfig);
@@ -364,18 +364,18 @@ public class AnnotationConfigurator
                                + clazz.getName() + ')');
                 }
 
-                org.apache.myfaces.config.impl.digester.elements.RenderKitImpl renderKit =
-                        (org.apache.myfaces.config.impl.digester.elements.RenderKitImpl)
+                org.apache.myfaces.config.impl.elements.RenderKitImpl renderKit =
+                        (org.apache.myfaces.config.impl.elements.RenderKitImpl)
                                 facesConfig.getRenderKit(renderKitId);
                 if (renderKit == null)
                 {
-                    renderKit = new org.apache.myfaces.config.impl.digester.elements.RenderKitImpl();
+                    renderKit = new org.apache.myfaces.config.impl.elements.RenderKitImpl();
                     renderKit.setId(renderKitId);
                     facesConfig.addRenderKit(renderKit);
                 }
 
-                org.apache.myfaces.config.impl.digester.elements.ClientBehaviorRendererImpl cbr =
-                        new org.apache.myfaces.config.impl.digester.elements.ClientBehaviorRendererImpl();
+                org.apache.myfaces.config.impl.elements.ClientBehaviorRendererImpl cbr =
+                        new org.apache.myfaces.config.impl.elements.ClientBehaviorRendererImpl();
                 cbr.setRendererType(facesBehaviorRenderer.rendererType());
                 cbr.setRendererClass(clazz.getName());
                 renderKit.addClientBehaviorRenderer(cbr);

@@ -36,7 +36,7 @@ import javax.faces.application.NavigationCase;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationRule;
-import org.apache.myfaces.config.impl.digester.DigesterlessFacesConfigUnmarshallerImpl;
+import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.Assert;
 import org.junit.Test;
@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
 public class NavigationHandlerImplTest extends AbstractJsfTestCase
 {
 
-    private DigesterlessFacesConfigUnmarshallerImpl _digesterFacesConfigUnmarshaller;
+    private FacesConfigUnmarshallerImpl _facesConfigUnmarshaller;
 
     public NavigationHandlerImplTest()
     {
@@ -56,7 +56,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
     public void setUp() throws Exception
     {
         super.setUp();
-        _digesterFacesConfigUnmarshaller = new DigesterlessFacesConfigUnmarshallerImpl(
+        _facesConfigUnmarshaller = new FacesConfigUnmarshallerImpl(
                 externalContext);
     }
     
@@ -72,7 +72,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
     @Override
     public void tearDown() throws Exception
     {
-        _digesterFacesConfigUnmarshaller = null;
+        _facesConfigUnmarshaller = null;
         super.tearDown();
     }
 
@@ -82,7 +82,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         RuntimeConfig runtimeConfig = RuntimeConfig
                 .getCurrentInstance(externalContext);
 
-        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl config = _digesterFacesConfigUnmarshaller
+        org.apache.myfaces.config.impl.elements.FacesConfigImpl config = _facesConfigUnmarshaller
                 .getFacesConfig(getClass().getResourceAsStream(file), file);
 
         for (NavigationRule rule : config.getNavigationRules())

@@ -21,7 +21,7 @@ package org.apache.myfaces.config;
 import java.io.FileNotFoundException;
 import org.apache.myfaces.config.annotation.AnnotationConfigurator;
 import org.apache.myfaces.config.element.FacesConfig;
-import org.apache.myfaces.config.impl.digester.DigesterlessFacesConfigUnmarshallerImpl;
+import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
@@ -63,10 +63,10 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.myfaces.config.element.FacesFlowDefinition;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
-import org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl;
-import org.apache.myfaces.config.impl.digester.elements.FacesFlowDefinitionImpl;
-import org.apache.myfaces.config.impl.digester.elements.FacesFlowReturnImpl;
-import org.apache.myfaces.config.impl.digester.elements.NavigationCaseImpl;
+import org.apache.myfaces.config.impl.elements.FacesConfigImpl;
+import org.apache.myfaces.config.impl.elements.FacesFlowDefinitionImpl;
+import org.apache.myfaces.config.impl.elements.FacesFlowReturnImpl;
+import org.apache.myfaces.config.impl.elements.NavigationCaseImpl;
 import org.apache.myfaces.util.FastWriter;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.FaceletConfigResourceProvider;
@@ -124,7 +124,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     {
         if (_unmarshaller == null)
         {
-            _unmarshaller = new DigesterlessFacesConfigUnmarshallerImpl(ectx);
+            _unmarshaller = new FacesConfigUnmarshallerImpl(ectx);
         }
         return _unmarshaller;
     }
@@ -194,10 +194,10 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     {
         try
         {
-            org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl facesConfig
-                    = new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
-            org.apache.myfaces.config.impl.digester.elements.FactoryImpl factory
-                    = new org.apache.myfaces.config.impl.digester.elements.FactoryImpl();
+            org.apache.myfaces.config.impl.elements.FacesConfigImpl facesConfig
+                    = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
+            org.apache.myfaces.config.impl.elements.FactoryImpl factory
+                    = new org.apache.myfaces.config.impl.elements.FactoryImpl();
             
             facesConfig.addFactory(factory);
             
@@ -500,9 +500,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 }
                 
                 // Parse document. This strategy construct the faces-config.xml in a
-                // memory buffer and then loads it using commons digester.
-                // TODO: Find a better way without write the DOM and read it again and without
-                // rewrite commons-digester parser!.
+                // memory buffer and then loads it.
                 Transformer trans = null;
                 try
                 {
@@ -766,8 +764,8 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     FaceletTagLibrary tl = TagLibraryConfigUnmarshallerImpl.create(externalContext, src);
                     if (tl != null)
                     {
-                        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl config = 
-                            new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+                        org.apache.myfaces.config.impl.elements.FacesConfigImpl config = 
+                            new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
                         config.addFaceletTagLibrary(tl);
                         facesConfigFilesList.add(config);
                     }
@@ -796,8 +794,8 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     FaceletTagLibrary tl = TagLibraryConfigUnmarshallerImpl.create(externalContext, url);
                     if (tl != null)
                     {
-                        org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl config = 
-                            new org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl();
+                        org.apache.myfaces.config.impl.elements.FacesConfigImpl config = 
+                            new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
                         config.addFaceletTagLibrary(tl);
                         facesConfigFilesList.add(config);
                     }

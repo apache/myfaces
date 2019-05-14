@@ -422,12 +422,6 @@
                 <version>1.9.3</version>
                 <scope>compile</scope>
             </dependency>
-            <dependency>
-                <groupId>commons-digester</groupId>
-                <artifactId>commons-digester</artifactId>
-                <version>1.8</version>
-                <scope>compile</scope>
-            </dependency>
 
 
             <!-- tomcat 7 support (LifecycleProvider) -->

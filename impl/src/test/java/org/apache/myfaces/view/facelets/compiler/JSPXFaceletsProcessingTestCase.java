@@ -35,7 +35,7 @@ import javax.faces.component.html.HtmlSelectOneMenu;
 import org.junit.Assert;
 
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.impl.digester.elements.FaceletsProcessingImpl;
+import org.apache.myfaces.config.impl.elements.FaceletsProcessingImpl;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.renderkit.html.HtmlGridRenderer;
 import org.apache.myfaces.renderkit.html.HtmlMenuRenderer;
