@@ -241,13 +241,28 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
     {
         AbsoluteOrderingImpl obj = new AbsoluteOrderingImpl();
         
-        onChild("name", node, (n) -> {
-            obj.addOrderSlot(new FacesConfigNameSlotImpl(n.getTextContent()));
-        });
+        if (node.getChildNodes() != null)
+        {
+            for (int i = 0; i < node.getChildNodes().getLength(); i++)
+            {
+                Node childNode = node.getChildNodes().item(i);
+                if (childNode == null)
+                {
+                    continue;
+                }
 
-        onChild("others", node, (n) -> {
-            obj.addOrderSlot(new ConfigOthersSlotImpl());
-        });
+                if ("name".equals(childNode.getLocalName()))
+                {
+                    FacesConfigNameSlotImpl slot = new FacesConfigNameSlotImpl();
+                    slot.setName(childNode.getTextContent());
+                    obj.addOrderSlot(slot);
+                }
+                else if ("others".equals(childNode.getLocalName()))
+                {
+                    obj.addOrderSlot(new ConfigOthersSlotImpl());
+                }
+            }
+        }
 
         return obj;
     }
