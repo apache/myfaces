@@ -241,28 +241,18 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
     {
         AbsoluteOrderingImpl obj = new AbsoluteOrderingImpl();
         
-        if (node.getChildNodes() != null)
-        {
-            for (int i = 0; i < node.getChildNodes().getLength(); i++)
+        forEachChild(node, (n) -> {
+            if ("name".equals(n.getLocalName()))
             {
-                Node childNode = node.getChildNodes().item(i);
-                if (childNode == null)
-                {
-                    continue;
-                }
-
-                if ("name".equals(childNode.getLocalName()))
-                {
-                    FacesConfigNameSlotImpl slot = new FacesConfigNameSlotImpl();
-                    slot.setName(childNode.getTextContent());
-                    obj.addOrderSlot(slot);
-                }
-                else if ("others".equals(childNode.getLocalName()))
-                {
-                    obj.addOrderSlot(new ConfigOthersSlotImpl());
-                }
+                FacesConfigNameSlotImpl slot = new FacesConfigNameSlotImpl();
+                slot.setName(n.getTextContent());
+                obj.addOrderSlot(slot);
             }
-        }
+            else if ("others".equals(n.getLocalName()))
+            {
+                obj.addOrderSlot(new ConfigOthersSlotImpl());
+            }
+        });
 
         return obj;
     }
@@ -640,6 +630,23 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
             if (element.hasAttribute(name))
             {
                 val.accept(element.getAttribute(name));
+            }
+        }
+    }
+    
+    protected void forEachChild(Node node, Consumer<Node> val)
+    {
+        if (node.getChildNodes() != null)
+        {
+            for (int i = 0; i < node.getChildNodes().getLength(); i++)
+            {
+                Node childNode = node.getChildNodes().item(i);
+                if (childNode == null)
+                {
+                    continue;
+                }
+
+                val.accept(childNode);
             }
         }
     }
