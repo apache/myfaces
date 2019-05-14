@@ -17,7 +17,6 @@ package org.apache.myfaces.config;
 
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.element.OrderSlot;
-import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
 import org.apache.myfaces.config.impl.digester.elements.AbsoluteOrderingImpl;
 import org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlotImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlotImpl;
@@ -30,12 +29,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.myfaces.config.impl.digester.DigesterlessFacesConfigUnmarshallerImpl;
 
 public class OrderingFacesConfigTest extends AbstractJsfTestCase
 {
     private static final Logger log = Logger.getLogger(OrderingFacesConfigTest.class.getName());
     
-    private DigesterFacesConfigUnmarshallerImpl _impl;
+    private DigesterlessFacesConfigUnmarshallerImpl _impl;
     
     public OrderingFacesConfigTest(String name)
     {
@@ -45,7 +45,7 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     protected void setUp() throws Exception
     {
         super.setUp();
-        _impl = new DigesterFacesConfigUnmarshallerImpl(null);
+        _impl = new DigesterlessFacesConfigUnmarshallerImpl(null);
     }
     
     public void printFacesConfigList(String label, List<FacesConfig> appConfigResources)

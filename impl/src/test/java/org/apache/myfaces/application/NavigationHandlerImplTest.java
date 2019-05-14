@@ -36,7 +36,7 @@ import javax.faces.application.NavigationCase;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationRule;
-import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
+import org.apache.myfaces.config.impl.digester.DigesterlessFacesConfigUnmarshallerImpl;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.Assert;
 import org.junit.Test;
@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
 public class NavigationHandlerImplTest extends AbstractJsfTestCase
 {
 
-    private DigesterFacesConfigUnmarshallerImpl _digesterFacesConfigUnmarshaller;
+    private DigesterlessFacesConfigUnmarshallerImpl _digesterFacesConfigUnmarshaller;
 
     public NavigationHandlerImplTest()
     {
@@ -56,7 +56,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
     public void setUp() throws Exception
     {
         super.setUp();
-        _digesterFacesConfigUnmarshaller = new DigesterFacesConfigUnmarshallerImpl(
+        _digesterFacesConfigUnmarshaller = new DigesterlessFacesConfigUnmarshallerImpl(
                 externalContext);
     }
     

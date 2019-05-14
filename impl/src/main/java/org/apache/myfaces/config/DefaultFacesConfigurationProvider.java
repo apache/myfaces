@@ -21,7 +21,7 @@ package org.apache.myfaces.config;
 import java.io.FileNotFoundException;
 import org.apache.myfaces.config.annotation.AnnotationConfigurator;
 import org.apache.myfaces.config.element.FacesConfig;
-import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
+import org.apache.myfaces.config.impl.digester.DigesterlessFacesConfigUnmarshallerImpl;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
@@ -124,7 +124,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     {
         if (_unmarshaller == null)
         {
-            _unmarshaller = new DigesterFacesConfigUnmarshallerImpl(ectx);
+            _unmarshaller = new DigesterlessFacesConfigUnmarshallerImpl(ectx);
         }
         return _unmarshaller;
     }

@@ -96,7 +96,6 @@ import org.apache.myfaces.config.element.Renderer;
 import org.apache.myfaces.config.element.ResourceBundle;
 import org.apache.myfaces.config.element.SystemEventListener;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
-import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
 import org.apache.myfaces.context.ExceptionHandlerFactoryImpl;
 import org.apache.myfaces.context.ExternalContextFactoryImpl;
 import org.apache.myfaces.context.FacesContextFactoryImpl;
@@ -127,6 +126,7 @@ import org.apache.myfaces.component.search.SearchExpressionContextFactoryImpl;
 import org.apache.myfaces.config.element.FaceletsTemplateMapping;
 import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
+import org.apache.myfaces.config.impl.digester.DigesterlessFacesConfigUnmarshallerImpl;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.renderkit.LazyRenderKit;
 import org.apache.myfaces.util.DefaultSerialFactory;
@@ -237,7 +237,7 @@ public class FacesConfigurator
     {
         if (_unmarshaller == null)
         {
-            _unmarshaller = new DigesterFacesConfigUnmarshallerImpl(_externalContext);
+            _unmarshaller = new DigesterlessFacesConfigUnmarshallerImpl(_externalContext);
         }
 
         return _unmarshaller;

@@ -19,7 +19,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
+import org.apache.myfaces.config.impl.digester.DigesterlessFacesConfigUnmarshallerImpl;
 import org.apache.myfaces.config.element.Application;
 import org.apache.myfaces.config.element.ContractMapping;
 import org.apache.myfaces.config.element.FacesConfig;
@@ -33,11 +33,11 @@ import org.apache.myfaces.config.element.OrderSlot;
  */
 public class DigesterFacesConfigUnmarshallerImplTest extends TestCase
 {
-    private DigesterFacesConfigUnmarshallerImpl _impl;
+    private DigesterlessFacesConfigUnmarshallerImpl _impl;
 
     protected void setUp() throws Exception
     {
-        _impl = new DigesterFacesConfigUnmarshallerImpl(null);
+        _impl = new DigesterlessFacesConfigUnmarshallerImpl(null);
     }
 
     public void testEmptyConfig() throws Exception
@@ -118,8 +118,8 @@ public class DigesterFacesConfigUnmarshallerImplTest extends TestCase
         
         assertEquals("b", ((FacesConfigNameSlot) orderList.get(0)).getName());
         assertEquals("c", ((FacesConfigNameSlot) orderList.get(1)).getName());
-        assertEquals(org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlotImpl.class, orderList.get(2).getClass());
-        assertEquals("d", ((FacesConfigNameSlot) orderList.get(3)).getName());
+        assertEquals("d", ((FacesConfigNameSlot) orderList.get(2)).getName());
+        assertEquals(org.apache.myfaces.config.impl.digester.elements.ConfigOthersSlotImpl.class, orderList.get(3).getClass());
         
         assertTrue(cfg.getApplications().isEmpty());
         assertTrue(cfg.getComponents().isEmpty());
