@@ -164,7 +164,14 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
         }
         finally
         {
-            in.close();
+            try
+            {
+                in.close();
+            }
+            catch (IOException e)
+            {
+                // ignore silently
+            }
         }
           
         postProcessFacesConfig(systemId, facesConfig);
