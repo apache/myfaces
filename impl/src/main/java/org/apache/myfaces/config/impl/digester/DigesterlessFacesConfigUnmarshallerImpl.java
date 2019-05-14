@@ -72,11 +72,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-public class FacesConfigUnmarshallerImplNew implements FacesConfigUnmarshaller<FacesConfigImpl>
+public class DigesterlessFacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<FacesConfigImpl>
 {
     private ExternalContext externalContext;
     
-    public FacesConfigUnmarshallerImplNew(ExternalContext externalContext)
+    public DigesterlessFacesConfigUnmarshallerImpl(ExternalContext externalContext)
     {
         this.externalContext = externalContext;
     }
