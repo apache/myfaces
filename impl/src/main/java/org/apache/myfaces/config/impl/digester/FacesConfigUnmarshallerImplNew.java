@@ -19,6 +19,7 @@
 package org.apache.myfaces.config.impl.digester;
 
 
+import java.io.ByteArrayInputStream;
 import javax.faces.context.ExternalContext;
 import java.io.IOException;
 import java.io.InputStream;
@@ -115,6 +116,12 @@ public class FacesConfigUnmarshallerImplNew implements FacesConfigUnmarshaller<F
     }
     
     @Override
+    public FacesConfigImpl getFacesConfig(String s) throws IOException, SAXException
+    {
+        return getFacesConfig(new ByteArrayInputStream(s.getBytes()), null);
+    }
+
+    @Override
     public FacesConfigImpl getFacesConfig(InputStream in, String systemId) throws IOException, SAXException
     {
         FacesConfigImpl facesConfig = new FacesConfigImpl();
@@ -127,7 +134,15 @@ public class FacesConfigUnmarshallerImplNew implements FacesConfigUnmarshaller<F
             
             DocumentBuilder builder = factory.newDocumentBuilder();
             builder.setEntityResolver(new FacesConfigEntityResolver(externalContext));
-            Document document = builder.parse(in, systemId);
+            Document document;
+            if (systemId == null)
+            {
+                document = builder.parse(in);
+            }
+            else
+            {
+                document = builder.parse(in, systemId);
+            }
             document.getDocumentElement().normalize();
             
             onAttribute("metadata-complete", document.getDocumentElement(),

@@ -36,7 +36,6 @@ import javax.faces.webapp.FacesServlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
-import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -146,7 +145,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
 
     @Override
     public FacesConfig getStandardFacesConfig(ExternalContext ectx)
-    {
+    {        
         try
         {
             if (MyfacesConfig.getCurrentInstance(ectx).isValidateXML())
@@ -532,8 +531,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
 
                             trans.transform(source, result);
 
-                            StringReader xmlReader = new StringReader(xmlAsWriter.toString());
-                            FacesConfig facesConfig = getUnmarshaller(ectx).getFacesConfig(xmlReader);
+                            FacesConfig facesConfig = getUnmarshaller(ectx).getFacesConfig(xmlAsWriter.toString());
                             facesConfigList.add(facesConfig);
                         }
                         catch (IOException ex)

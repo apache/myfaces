@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.config.impl.digester;
 
+import java.io.ByteArrayInputStream;
 import org.apache.commons.digester.Digester;
 import org.apache.myfaces.config.FacesConfigUnmarshaller;
 import org.apache.myfaces.config.impl.FacesConfigEntityResolver;
@@ -446,7 +447,13 @@ public class DigesterFacesConfigUnmarshallerImpl implements FacesConfigUnmarshal
             }
         }
     }
-    
+
+    @Override
+    public FacesConfigImpl getFacesConfig(String s) throws IOException, SAXException
+    {
+        return getFacesConfig(new ByteArrayInputStream(s.getBytes()), null);
+    }
+
     @Override
     public FacesConfigImpl getFacesConfig(InputStream in, String systemId) throws IOException, SAXException
     {
