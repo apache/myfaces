@@ -54,8 +54,7 @@ public class ResourceAnnotationLifecycleProvider extends NoInjectionAnnotationLi
     {
         ClassLoader cl = ClassUtils.getContextClassLoader();
         
-        Map<Class,Field[]> metadata = (Map<Class,Field[]>)
-                declaredFieldBeans.get(cl);
+        Map<Class,Field[]> metadata = (Map<Class,Field[]>) declaredFieldBeans.get(cl);
 
         if (metadata == null)
         {
@@ -70,13 +69,12 @@ public class ResourceAnnotationLifecycleProvider extends NoInjectionAnnotationLi
         return metadata;
     }
     
-    private static Map<Class,Field[]> createDeclaredFieldBeansMap(
-            ClassLoader cl, Map<Class,Field[]> metadata)
+    private static Map<Class,Field[]> createDeclaredFieldBeansMap(ClassLoader cl, Map<Class,Field[]> metadata)
     {
         metadata = (Map<Class,Field[]>) declaredFieldBeans.get(cl);
         if (metadata == null)
         {
-            metadata = new HashMap<Class,Field[]>();
+            metadata = new HashMap<>();
             declaredFieldBeans.put(cl, metadata);
         }
         return metadata;
@@ -89,7 +87,6 @@ public class ResourceAnnotationLifecycleProvider extends NoInjectionAnnotationLi
     protected void processAnnotations(Object instance)
             throws IllegalAccessException, InvocationTargetException, NamingException
     {
-
         if (context == null)
         {
             // No resource injection
@@ -170,8 +167,7 @@ public class ResourceAnnotationLifecycleProvider extends NoInjectionAnnotationLi
     /**
      * Inject resources in specified field.
      */
-    protected static void lookupFieldResource(javax.naming.Context context,
-            Object instance, Field field, String name)
+    protected static void lookupFieldResource(javax.naming.Context context, Object instance, Field field, String name)
             throws NamingException, IllegalAccessException
     {
 
@@ -198,9 +194,8 @@ public class ResourceAnnotationLifecycleProvider extends NoInjectionAnnotationLi
     /**
      * Inject resources in specified method.
      */
-    protected static void lookupMethodResource(javax.naming.Context context,
-            Object instance, Method method, String name)
-            throws NamingException, IllegalAccessException, InvocationTargetException
+    protected static void lookupMethodResource(javax.naming.Context context, Object instance, Method method,
+            String name) throws NamingException, IllegalAccessException, InvocationTargetException
     {
 
         if (!method.getName().startsWith("set")

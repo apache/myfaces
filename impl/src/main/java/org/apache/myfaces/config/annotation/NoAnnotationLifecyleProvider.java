@@ -24,20 +24,21 @@ import java.lang.reflect.InvocationTargetException;
 
 public class NoAnnotationLifecyleProvider implements LifecycleProvider2
 {
-
-
+    @Override
     public void destroyInstance(Object o) throws IllegalAccessException, InvocationTargetException
     {
 
     }
 
+    @Override
     public Object newInstance(String className)
             throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException
     {
         return ClassUtils.classForName(className).newInstance();
     }
-    public void postConstruct(Object o) throws IllegalAccessException,
-            InvocationTargetException
+
+    @Override
+    public void postConstruct(Object o) throws IllegalAccessException, InvocationTargetException
     {
         // No op
     }

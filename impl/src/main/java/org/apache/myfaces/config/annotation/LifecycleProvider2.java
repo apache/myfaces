@@ -36,6 +36,7 @@ public interface LifecycleProvider2 extends LifecycleProvider
      * @param className name of the class of the desired object
      * @return a fully constructed, dependency-injected, and initialized object.
      */
+    @Override
     Object newInstance(String className)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException,
             NamingException, InvocationTargetException;

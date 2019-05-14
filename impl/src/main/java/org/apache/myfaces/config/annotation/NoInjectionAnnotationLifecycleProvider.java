@@ -54,8 +54,7 @@ public class NoInjectionAnnotationLifecycleProvider implements LifecycleProvider
     {
         ClassLoader cl = ClassUtils.getContextClassLoader();
         
-        Map<Class,Method[]> metadata = (Map<Class,Method[]>)
-                declaredMethodBeans.get(cl);
+        Map<Class,Method[]> metadata = (Map<Class,Method[]>) declaredMethodBeans.get(cl);
 
         if (metadata == null)
         {
@@ -76,12 +75,13 @@ public class NoInjectionAnnotationLifecycleProvider implements LifecycleProvider
         metadata = (Map<Class,Method[]>) declaredMethodBeans.get(cl);
         if (metadata == null)
         {
-            metadata = new HashMap<Class,Method[]>();
+            metadata = new HashMap<>();
             declaredMethodBeans.put(cl, metadata);
         }
         return metadata;
     }
 
+    @Override
     public Object newInstance(String className)
            throws InstantiationException, IllegalAccessException, NamingException,
             InvocationTargetException, ClassNotFoundException
@@ -112,6 +112,7 @@ public class NoInjectionAnnotationLifecycleProvider implements LifecycleProvider
     /**
      * Call postConstruct method on the specified instance.
      */
+    @Override
     public void postConstruct(Object instance)
             throws IllegalAccessException, InvocationTargetException
     {
@@ -155,6 +156,7 @@ public class NoInjectionAnnotationLifecycleProvider implements LifecycleProvider
 
     }
 
+    @Override
     public void destroyInstance(Object instance)
             throws IllegalAccessException, InvocationTargetException
     {

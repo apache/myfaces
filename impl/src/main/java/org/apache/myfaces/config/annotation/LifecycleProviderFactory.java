@@ -28,8 +28,6 @@ import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.spi.impl.SpiUtils;
 
-
-
 public abstract class LifecycleProviderFactory
 {
     protected static final String FACTORY_DEFAULT = DefaultLifecycleProviderFactory.class.getName();

@@ -35,21 +35,19 @@ import org.apache.tomcat.InstanceManager;
 /**
  * An annotation lifecycle provider for Tomcat 7.
  */
-public class Tomcat7AnnotationLifecycleProvider implements
-        DiscoverableLifecycleProvider, LifecycleProvider2
+public class Tomcat7AnnotationLifecycleProvider implements DiscoverableLifecycleProvider, LifecycleProvider2
 {
-
-    private static Logger log = Logger.getLogger(Tomcat7AnnotationLifecycleProvider.class.getName());
+    private static final Logger log = Logger.getLogger(Tomcat7AnnotationLifecycleProvider.class.getName());
     
     private WeakHashMap<ClassLoader, InstanceManager> instanceManagers = null;
 
     public Tomcat7AnnotationLifecycleProvider(ExternalContext externalContext)
     {
-        instanceManagers = new WeakHashMap<ClassLoader, InstanceManager>();
+        instanceManagers = new WeakHashMap<>();
     }
 
-    public Object newInstance(String className)
-            throws ClassNotFoundException, IllegalAccessException,
+    @Override
+    public Object newInstance(String className) throws ClassNotFoundException, IllegalAccessException,
             InstantiationException, NamingException, InvocationTargetException
     {
         Class<?> clazz = ClassUtils.classForName(className);
@@ -62,23 +60,20 @@ public class Tomcat7AnnotationLifecycleProvider implements
         return object;
     }
 
-    public void destroyInstance(Object instance)
-            throws IllegalAccessException, InvocationTargetException
+    @Override
+    public void destroyInstance(Object instance) throws IllegalAccessException, InvocationTargetException
     {
-        InstanceManager manager = instanceManagers
-                .get(ClassUtils.getContextClassLoader());
-
+        InstanceManager manager = instanceManagers.get(ClassUtils.getContextClassLoader());
         if (manager != null)
         {
             manager.destroyInstance(instance);
         }
     }
 
-    public void postConstruct(Object instance)
-            throws IllegalAccessException, InvocationTargetException
+    @Override
+    public void postConstruct(Object instance) throws IllegalAccessException, InvocationTargetException
     {
-        InstanceManager manager = instanceManagers
-                .get(ClassUtils.getContextClassLoader());
+        InstanceManager manager = instanceManagers.get(ClassUtils.getContextClassLoader());
         if (manager == null)
         {
             //Initialize manager
@@ -100,12 +95,12 @@ public class Tomcat7AnnotationLifecycleProvider implements
         }
     }
 
+    @Override
     public boolean isAvailable()
     {
         try
         {
-            Class.forName("org.apache.tomcat.InstanceManager",
-                    true, ClassUtils.getContextClassLoader());
+            Class.forName("org.apache.tomcat.InstanceManager", true, ClassUtils.getContextClassLoader());
             return true;
         }
         catch (Exception e)
@@ -133,12 +128,10 @@ public class Tomcat7AnnotationLifecycleProvider implements
         // get application map to access ServletContext attributes
         Map<String, Object> applicationMap = extCtx.getApplicationMap();
 
-        InstanceManager instanceManager = (InstanceManager)
-                applicationMap.get(InstanceManager.class.getName());
+        InstanceManager instanceManager = (InstanceManager) applicationMap.get(InstanceManager.class.getName());
         if (instanceManager != null)
         {
-            instanceManagers.put(ClassUtils.getContextClassLoader(),
-                    instanceManager);
+            instanceManagers.put(ClassUtils.getContextClassLoader(), instanceManager);
         }
 
         return instanceManager;
