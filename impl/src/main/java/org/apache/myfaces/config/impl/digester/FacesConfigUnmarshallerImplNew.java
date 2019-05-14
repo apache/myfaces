@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.function.Consumer;
+import javax.faces.FacesException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.myfaces.config.FacesConfigUnmarshaller;
@@ -42,7 +43,13 @@ import org.apache.myfaces.config.impl.digester.elements.FaceletsTemplateMappingI
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigExtensionImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlotImpl;
+import org.apache.myfaces.config.impl.digester.elements.FacesFlowCallImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesFlowDefinitionImpl;
+import org.apache.myfaces.config.impl.digester.elements.FacesFlowMethodCallImpl;
+import org.apache.myfaces.config.impl.digester.elements.FacesFlowMethodParameterImpl;
+import org.apache.myfaces.config.impl.digester.elements.FacesFlowParameterImpl;
+import org.apache.myfaces.config.impl.digester.elements.FacesFlowReferenceImpl;
+import org.apache.myfaces.config.impl.digester.elements.FacesFlowReturnImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesFlowSwitchImpl;
 import org.apache.myfaces.config.impl.digester.elements.FacesFlowViewImpl;
 import org.apache.myfaces.config.impl.digester.elements.FactoryImpl;
@@ -120,7 +127,7 @@ public class FacesConfigUnmarshallerImplNew implements FacesConfigUnmarshaller<F
             
             DocumentBuilder builder = factory.newDocumentBuilder();
             builder.setEntityResolver(new FacesConfigEntityResolver(externalContext));
-            Document document = builder.parse(in);
+            Document document = builder.parse(in, systemId);
             document.getDocumentElement().normalize();
             
             onAttribute("metadata-complete", document.getDocumentElement(),
@@ -174,7 +181,7 @@ public class FacesConfigUnmarshallerImplNew implements FacesConfigUnmarshaller<F
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            throw new FacesException(e);
         }
         finally
         {
@@ -486,30 +493,7 @@ public class FacesConfigUnmarshallerImplNew implements FacesConfigUnmarshaller<F
         onChild("from-view-id", node, (n) -> { obj.setFromViewId(n.getTextContent()); });
                 
         onChild("navigation-case", node, (n) -> {
-            NavigationCaseImpl nc = new NavigationCaseImpl();
-            obj.addNavigationCase(nc);
-            onChild("from-action", n, (cn) -> { nc.setFromAction(cn.getTextContent()); });
-            onChild("from-outcome", n, (cn) -> { nc.setFromOutcome(cn.getTextContent()); });
-            onChild("if", n, (cn) -> { nc.setIf(cn.getTextContent()); });
-            onChild("to-view-id", n, (cn) -> { nc.setToViewId(cn.getTextContent()); });
-            
-            onChild("parameter", n, (cn) -> {
-                RedirectImpl r = new RedirectImpl();
-                nc.setRedirect(r);
-                onChild("include-view-params", cn, (ccn) -> { r.setIncludeViewParams("true"); });
-                onChild("view-param", cn, (ccn) -> {
-                    ViewParamImpl vp = new ViewParamImpl();
-                    r.addViewParam(vp);
-                    onChild("name", ccn, (cccn) -> { vp.setName(cccn.getTextContent()); });
-                    onChild("value", ccn, (cccn) -> { vp.setValue(cccn.getTextContent()); });
-                });
-                onChild("redirect-param", cn, (ccn) -> {
-                    ViewParamImpl vp = new ViewParamImpl();
-                    r.addViewParam(vp);
-                    onChild("name", ccn, (cccn) -> { vp.setName(cccn.getTextContent()); });
-                    onChild("value", ccn, (cccn) -> { vp.setValue(cccn.getTextContent()); });
-                });
-            });
+            obj.addNavigationCase(processNavigationCase(n));
         });
         
         return obj;
@@ -535,18 +519,104 @@ public class FacesConfigUnmarshallerImplNew implements FacesConfigUnmarshaller<F
             FacesFlowSwitchImpl ffs = new FacesFlowSwitchImpl();
             obj.addSwitch(ffs);
             onAttribute("id", n, (v) -> { ffs.setId(v); });
+            onChild("case", n, (cn) -> { ffs.addNavigationCase(processNavigationCase(cn)); });
             onChild("default-outcome", n, (cn) -> {
                 NavigationCaseImpl nc = new NavigationCaseImpl();
                 ffs.setDefaultOutcome(nc);
+                nc.setFromAction(cn.getTextContent());
             });
         });
         
-
+        onChild("flow-return", node, (n) -> {
+            FacesFlowReturnImpl ffr = new FacesFlowReturnImpl();
+            obj.addReturn(ffr);
+            onAttribute("id", n, (v) -> { ffr.setId(v); });
+            onChild("from-outcome", n, (cn) -> {
+                NavigationCaseImpl nc = new NavigationCaseImpl();
+                ffr.setNavigationCase(nc);
+                nc.setFromOutcome(cn.getTextContent());
+            });
+        });
  
+        onChild("navigation-rule", node, (n) -> {
+            NavigationRuleImpl nr = new NavigationRuleImpl();
+            obj.addNavigationRule(nr);
+            onChild("from-view-id", n, (cn) -> { nr.setFromViewId(cn.getTextContent()); });
+            onChild("navigation-case", n, (cn) -> { nr.addNavigationCase(processNavigationCase(cn)); });
+        });
+                
+        onChild("flow-call", node, (n) -> {
+            FacesFlowCallImpl ffc = new FacesFlowCallImpl();
+            obj.addFlowCall(ffc);
+            onAttribute("id", n, (v) -> { ffc.setId(v); });
+            onChild("flow-reference", n, (cn) -> {
+                FacesFlowReferenceImpl ffr = new FacesFlowReferenceImpl();
+                ffc.setFlowReference(ffr);
+                onChild("flow-document-id", cn, (ccn) -> { ffr.setFlowDocumentId(ccn.getTextContent()); });
+                onChild("flow-id", cn, (ccn) -> { ffr.setFlowId(ccn.getTextContent()); });
+            });
+            onChild("outbound-parameter", n, (cn) -> {
+                FacesFlowParameterImpl ffp = new FacesFlowParameterImpl();
+                ffc.addOutboundParameter(ffp);
+                onChild("name", cn, (ccn) -> { ffp.setName(ccn.getTextContent()); });
+                onChild("value", cn, (ccn) -> { ffp.setValue(ccn.getTextContent()); });
+            });
+        });
         
+        onChild("method-call", node, (n) -> {
+            FacesFlowMethodCallImpl ffmc = new FacesFlowMethodCallImpl();
+            obj.addMethodCall(ffmc);
+            onAttribute("id", n, (v) -> { ffmc.setId(v); });
+            onChild("method", n, (cn) -> { ffmc.setMethod(cn.getTextContent()); });
+            onChild("default-outcome", n, (cn) -> { ffmc.setDefaultOutcome(cn.getTextContent()); });
+            onChild("parameter", n, (cn) -> {
+                FacesFlowMethodParameterImpl ffmp = new FacesFlowMethodParameterImpl();
+                ffmc.addParameter(ffmp);
+                onChild("class", cn, (ccn) -> { ffmp.setClassName(ccn.getTextContent()); });
+                onChild("value", cn, (ccn) -> { ffmp.setValue(ccn.getTextContent()); });
+            });
+        });
+       
+        onChild("inbound-parameter", node, (n) -> {
+            FacesFlowParameterImpl ffp = new FacesFlowParameterImpl();
+            obj.addInboundParameter(ffp);
+            onChild("name", n, (cn) -> { ffp.setName(cn.getTextContent()); });
+            onChild("value", n, (cn) -> { ffp.setValue(cn.getTextContent()); });
+        });
+       
+        return obj;
+    }
+
+    private NavigationCaseImpl processNavigationCase(Node node)
+    {
+        NavigationCaseImpl obj = new NavigationCaseImpl();
+
+        onChild("from-action", node, (n) -> { obj.setFromAction(n.getTextContent()); });
+        onChild("from-outcome", node, (n) -> { obj.setFromOutcome(n.getTextContent()); });
+        onChild("if", node, (n) -> { obj.setIf(n.getTextContent()); });
+        onChild("to-view-id", node, (n) -> { obj.setToViewId(n.getTextContent()); });
+       
+        onChild("redirect", node, (n) -> {
+            RedirectImpl r = new RedirectImpl();
+            obj.setRedirect(r);
+            onChild("include-view-params", n, (cn) -> { r.setIncludeViewParams("true"); });
+            onChild("view-param", n, (cn) -> {
+                ViewParamImpl vp = new ViewParamImpl();
+                r.addViewParam(vp);
+                onChild("name", cn, (ccn) -> { vp.setName(ccn.getTextContent()); });
+                onChild("value", cn, (ccn) -> { vp.setValue(ccn.getTextContent()); });
+            });
+            onChild("redirect-param", n, (cn) -> {
+                ViewParamImpl vp = new ViewParamImpl();
+                r.addViewParam(vp);
+                onChild("name", cn, (ccn) -> { vp.setName(ccn.getTextContent()); });
+                onChild("value", cn, (ccn) -> { vp.setValue(ccn.getTextContent()); });
+            });
+        });
         
         return obj;
     }
+    
     
     
     
