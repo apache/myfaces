@@ -81,40 +81,6 @@ public class DigesterlessFacesConfigUnmarshallerImpl implements FacesConfigUnmar
         this.externalContext = externalContext;
     }
 
-    private void postProcessFacesConfig(String systemId, FacesConfigImpl config)
-    {
-        for (org.apache.myfaces.config.element.Application application : config.getApplications())
-        {
-            for (org.apache.myfaces.config.element.LocaleConfig localeConfig : application.getLocaleConfig())
-            {
-                if (!localeConfig.getSupportedLocales().contains(localeConfig.getDefaultLocale()))
-                {
-                    localeConfig.getSupportedLocales().add(localeConfig.getDefaultLocale());
-                }
-            }
-        }
-        
-        for (FacesFlowDefinition facesFlowDefinition : config.getFacesFlowDefinitions())
-        {
-            // JSF 2.2 section 11.4.3.1 says this: "... Flows are defined using the 
-            // <flow-definition> element. This element must have an id attribute which uniquely 
-            // identifies the flow within the scope of the Application Configuration Resource 
-            // file in which the element appears. To enable multiple flows with the same id to 
-            // exist in an application, the <faces-config><name> element is taken to 
-            // be the definingDocumentId of the flow. If no <name> element is specified, 
-            // the empty string is taken as the value for definingDocumentId. ..."
-            if (config.getName() != null)
-            {
-                ((FacesFlowDefinitionImpl)facesFlowDefinition).setDefiningDocumentId(
-                    config.getName());
-            }
-            else
-            {
-                ((FacesFlowDefinitionImpl)facesFlowDefinition).setDefiningDocumentId("");
-            }
-        }
-    }
-    
     @Override
     public FacesConfigImpl getFacesConfig(String s) throws IOException, SAXException
     {
@@ -202,17 +168,44 @@ public class DigesterlessFacesConfigUnmarshallerImpl implements FacesConfigUnmar
         {
             in.close();
         }
-            
-
-            
-
-            
-            
-                    
+          
         postProcessFacesConfig(systemId, facesConfig);
- 
 
         return facesConfig;
+    }
+
+    private void postProcessFacesConfig(String systemId, FacesConfigImpl config)
+    {
+        for (org.apache.myfaces.config.element.Application application : config.getApplications())
+        {
+            for (org.apache.myfaces.config.element.LocaleConfig localeConfig : application.getLocaleConfig())
+            {
+                if (!localeConfig.getSupportedLocales().contains(localeConfig.getDefaultLocale()))
+                {
+                    localeConfig.getSupportedLocales().add(localeConfig.getDefaultLocale());
+                }
+            }
+        }
+        
+        for (FacesFlowDefinition facesFlowDefinition : config.getFacesFlowDefinitions())
+        {
+            // JSF 2.2 section 11.4.3.1 says this: "... Flows are defined using the 
+            // <flow-definition> element. This element must have an id attribute which uniquely 
+            // identifies the flow within the scope of the Application Configuration Resource 
+            // file in which the element appears. To enable multiple flows with the same id to 
+            // exist in an application, the <faces-config><name> element is taken to 
+            // be the definingDocumentId of the flow. If no <name> element is specified, 
+            // the empty string is taken as the value for definingDocumentId. ..."
+            if (config.getName() != null)
+            {
+                ((FacesFlowDefinitionImpl)facesFlowDefinition).setDefiningDocumentId(
+                    config.getName());
+            }
+            else
+            {
+                ((FacesFlowDefinitionImpl)facesFlowDefinition).setDefiningDocumentId("");
+            }
+        }
     }
     
     @Override
@@ -226,9 +219,7 @@ public class DigesterlessFacesConfigUnmarshallerImpl implements FacesConfigUnmar
     {
 
     }
-    
-    
-    
+
     protected OrderingImpl processOrdering(Node node)
     {
         OrderingImpl obj = new OrderingImpl();
