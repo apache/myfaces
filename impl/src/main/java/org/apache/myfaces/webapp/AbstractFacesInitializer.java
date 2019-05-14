@@ -246,8 +246,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             {
                 ProjectStage projectStage = facesContext.getApplication().getProjectStage();
                 StringBuilder message = new StringBuilder("\n\n");
-                message.append("*******************************************************************\n");
-                message.append("*** WARNING: Apache MyFaces-2 is running in ");
+                message.append("********************************************************************\n");
+                message.append("*** WARNING: Apache MyFaces Core is running in ");
                 message.append(projectStage.name().toUpperCase());        
                 message.append(" mode.");
                 int length = projectStage.name().length();
@@ -255,20 +255,21 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                 {
                     message.append(' ');
                 }
-                message.append("   ***\n");
-                message.append("***                                         ");
+                message.append(" ***\n");
+                message.append("***                                            ");
                 for (int i = 0; i < length; i++)
                 {
                     message.append('^');
                 }
-                for (int i = 0; i < 20 - length; i++)
+                for (int i = 0; i < 18 - length; i++)
                 {
                     message.append(' ');
                 }
                 message.append("***\n");
-                message.append("*** Do NOT deploy to your live server(s) without changing this. ***\n");
-                message.append("*** See Application#getProjectStage() for more information.     ***\n");
-                message.append("*******************************************************************\n");
+                message.append("*** Do NOT deploy to your live server(s) without changing this.  ***\n");
+                message.append("*** See Application#getProjectStage() for more information.      ***\n");
+                message.append("********************************************************************\n");
+                message.append("\n");
                 log.log(Level.WARNING, message.toString());
             }
 
