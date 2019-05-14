@@ -526,7 +526,7 @@ public class DigesterlessFacesConfigUnmarshallerImpl implements FacesConfigUnmar
             FacesFlowViewImpl ffv = new FacesFlowViewImpl();
             obj.addView(ffv);
             onAttribute("id", n, (v) -> { ffv.setId(v); });
-            onChild("vdl-document", n, (cn) -> { ffv.setVdlDocument(n.getTextContent()); });
+            onChild("vdl-document", n, (cn) -> { ffv.setVdlDocument(cn.getTextContent()); });
         });
         
         onChild("switch", node, (n) -> {
