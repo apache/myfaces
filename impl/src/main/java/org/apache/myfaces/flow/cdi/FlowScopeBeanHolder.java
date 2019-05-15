@@ -172,7 +172,7 @@ public class FlowScopeBeanHolder implements Serializable
      *
      * This method will replace the storageMap and with
      * a new empty one.
-     * This method can be used to properly destroy the WindowBeanHolder beans
+     * This method can be used to properly destroy the BeanHolder beans
      * without having to sync heavily. Any
      * {@link javax.enterprise.inject.spi.Bean#destroy(Object, javax.enterprise.context.spi.CreationalContext)}
      * should be performed on the returned old storage map.
@@ -195,11 +195,11 @@ public class FlowScopeBeanHolder implements Serializable
     //@PreDestroy
     public void destroyBeans()
     {
-        // we replace the old windowBeanHolder beans with a new storage Map
+        // we replace the old BeanHolder beans with a new storage Map
         // an afterwards destroy the old Beans without having to care about any syncs.
-        Map<String, ContextualStorage> oldWindowContextStorages = forceNewStorage();
+        Map<String, ContextualStorage> oldContextStorages = forceNewStorage();
 
-        for (ContextualStorage contextualStorage : oldWindowContextStorages.values())
+        for (ContextualStorage contextualStorage : oldContextStorages.values())
         {
             FlowScopedContextImpl.destroyAllActive(contextualStorage);
         }
@@ -211,8 +211,8 @@ public class FlowScopeBeanHolder implements Serializable
     @PreDestroy
     public void destroyBeansOnPreDestroy()
     {
-        Map<String, ContextualStorage> oldWindowContextStorages = forceNewStorage();
-        if (!oldWindowContextStorages.isEmpty())
+        Map<String, ContextualStorage> oldContextStorages = forceNewStorage();
+        if (!oldContextStorages.isEmpty())
         {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             ServletContext servletContext = null;
@@ -238,7 +238,7 @@ public class FlowScopeBeanHolder implements Serializable
                     ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
                     facesContext = new StartupFacesContextImpl(externalContext, 
                             (ReleasableExternalContext) externalContext, exceptionHandler, false);
-                    for (ContextualStorage contextualStorage : oldWindowContextStorages.values())
+                    for (ContextualStorage contextualStorage : oldContextStorages.values())
                     {
                         FlowScopedContextImpl.destroyAllActive(contextualStorage);
                     }
@@ -250,7 +250,7 @@ public class FlowScopeBeanHolder implements Serializable
             }
             else
             {
-                for (ContextualStorage contextualStorage : oldWindowContextStorages.values())
+                for (ContextualStorage contextualStorage : oldContextStorages.values())
                 {
                     FlowScopedContextImpl.destroyAllActive(contextualStorage);
                 }

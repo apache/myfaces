@@ -110,7 +110,7 @@ public class ViewScopeBeanHolder implements Serializable
      *
      * This method will replace the storageMap and with
      * a new empty one.
-     * This method can be used to properly destroy the WindowBeanHolder beans
+     * This method can be used to properly destroy the BeanHolder beans
      * without having to sync heavily. Any
      * {@link javax.enterprise.inject.spi.Bean#destroy(Object, javax.enterprise.context.spi.CreationalContext)}
      * should be performed on the returned old storage map.
@@ -133,12 +133,12 @@ public class ViewScopeBeanHolder implements Serializable
     //@PreDestroy
     public void destroyBeans()
     {
-        // we replace the old windowBeanHolder beans with a new storage Map
+        // we replace the old BeanHolder beans with a new storage Map
         // an afterwards destroy the old Beans without having to care about any syncs.
         // This behavior also helps as a check to avoid destroy the same beans twice.
-        Map<String, ViewScopeContextualStorage> oldWindowContextStorages = forceNewStorage();
+        Map<String, ViewScopeContextualStorage> oldContextStorages = forceNewStorage();
 
-        for (ViewScopeContextualStorage contextualStorage : oldWindowContextStorages.values())
+        for (ViewScopeContextualStorage contextualStorage : oldContextStorages.values())
         {
             ViewScopeContextImpl.destroyAllActive(contextualStorage);
         }
@@ -194,8 +194,8 @@ public class ViewScopeBeanHolder implements Serializable
         // and call PreDestroy, when the second one is called, it founds an empty map
         // and the process stops. A hack to get ServletContext from CDI is required to
         // provide a valid FacesContext instance.
-        Map<String, ViewScopeContextualStorage> oldWindowContextStorages = forceNewStorage();
-        if (!oldWindowContextStorages.isEmpty())
+        Map<String, ViewScopeContextualStorage> oldContextStorages = forceNewStorage();
+        if (!oldContextStorages.isEmpty())
         {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             if (facesContext == null &&
@@ -208,7 +208,7 @@ public class ViewScopeBeanHolder implements Serializable
                     ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
                     facesContext = new StartupFacesContextImpl(externalContext, 
                             (ReleasableExternalContext) externalContext, exceptionHandler, false);
-                    for (ViewScopeContextualStorage contextualStorage : oldWindowContextStorages.values())
+                    for (ViewScopeContextualStorage contextualStorage : oldContextStorages.values())
                     {
                         ViewScopeContextImpl.destroyAllActive(contextualStorage, facesContext);
                     }
@@ -220,7 +220,7 @@ public class ViewScopeBeanHolder implements Serializable
             }
             else
             {
-                for (ViewScopeContextualStorage contextualStorage : oldWindowContextStorages.values())
+                for (ViewScopeContextualStorage contextualStorage : oldContextStorages.values())
                 {
                     ViewScopeContextImpl.destroyAllActive(contextualStorage);
                 }

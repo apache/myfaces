@@ -105,7 +105,7 @@ public class FacesScopeBeanHolder
      *
      * This method will replace the storageMap and with
      * a new empty one.
-     * This method can be used to properly destroy the WindowBeanHolder beans
+     * This method can be used to properly destroy the BeanHolder beans
      * without having to sync heavily. Any
      * {@link javax.enterprise.inject.spi.Bean#destroy(Object, javax.enterprise.context.spi.CreationalContext)}
      * should be performed on the returned old storage map.
@@ -125,7 +125,7 @@ public class FacesScopeBeanHolder
      */
     public void destroyBeans(FacesContext facesContext)
     {
-        // we replace the old windowBeanHolder beans with a new storage Map
+        // we replace the old BeanHolder beans with a new storage Map
         // an afterwards destroy the old Beans without having to care about any syncs.
         ContextualStorage oldStorages = forceNewStorage(facesContext);
         if (oldStorages != null)
