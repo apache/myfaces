@@ -33,6 +33,7 @@ import javax.faces.view.ViewScoped;
 
 import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.view.ViewScopeProxyMap;
 
 /**
@@ -49,7 +50,6 @@ public class ViewScopeContextImpl implements Context
      */
     private BeanManager beanManager;
 
-
     public ViewScopeContextImpl(BeanManager beanManager)
     {
         this.beanManager = beanManager;
@@ -60,13 +60,7 @@ public class ViewScopeContextImpl implements Context
     {
         return beanManager;
     }
-    
-    // SPI
-    protected boolean isCheckPassivationCapable()
-    {
-        return true;
-    }
-    
+
     protected ViewScopeBeanHolder getViewScopeBeanHolder()
     {
         return getViewScopeBeanHolder(FacesContext.getCurrentInstance());
@@ -171,7 +165,7 @@ public class ViewScopeContextImpl implements Context
     {
         checkActive();
 
-        if (isCheckPassivationCapable() && !(bean instanceof PassivationCapable))
+        if (!(bean instanceof PassivationCapable) && MyfacesConfig.getCurrentInstance().isCdiPassivationSupported())
         {
             throw new IllegalStateException(bean.toString() +
                     " doesn't implement " + PassivationCapable.class.getName());

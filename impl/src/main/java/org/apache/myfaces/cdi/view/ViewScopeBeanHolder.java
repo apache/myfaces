@@ -32,6 +32,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.context.ExceptionHandlerImpl;
@@ -67,10 +68,9 @@ public class ViewScopeBeanHolder implements Serializable
     @PostConstruct
     public void init()
     {
-        storageMap = new ConcurrentHashMap<String, ViewScopeContextualStorage>();
+        storageMap = new ConcurrentHashMap<>();
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        facesContext.getExternalContext().getSessionMap().put(VIEW_SCOPE_PREFIX_KEY,
-            1);
+        facesContext.getExternalContext().getSessionMap().put(VIEW_SCOPE_PREFIX_KEY, 1);
     }
     
     /**
@@ -81,8 +81,7 @@ public class ViewScopeBeanHolder implements Serializable
      * @param viewScopeId
      * @return 
      */
-    public ViewScopeContextualStorage getContextualStorage(
-        BeanManager beanManager, String viewScopeId)
+    public ViewScopeContextualStorage getContextualStorage(BeanManager beanManager, String viewScopeId)
     {
         ViewScopeContextualStorage contextualStorage = storageMap.get(viewScopeId);
         if (contextualStorage == null)
@@ -91,8 +90,10 @@ public class ViewScopeBeanHolder implements Serializable
             {            
                 contextualStorage = storageMap.get(viewScopeId);
                 if (contextualStorage == null)
-                {            
-                    contextualStorage = new ViewScopeContextualStorage(beanManager);
+                {
+                    MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance();
+                    contextualStorage = new ViewScopeContextualStorage(beanManager,
+                            myfacesConfig.isCdiPassivationSupported());
                     storageMap.put(viewScopeId, contextualStorage);
                 }
             }

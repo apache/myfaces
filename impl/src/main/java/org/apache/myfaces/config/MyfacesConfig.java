@@ -769,6 +769,15 @@ public class MyfacesConfig
             = "org.apache.myfaces.WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE";
     public static final boolean WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE_DEFAULT = true;
     
+    /**
+     * Deactivates the passivation capables of MyFaces CDI scopes.
+     * This is e.g. required on Quarkus.
+     */
+    @JSFWebConfigParam(since="3.0.0" , defaultValue="true", expectedValues="true, false")
+    public static final String CDI_PASSIVATION_SUPPORTED
+            = "org.apache.myfaces.CDI_PASSIVATION_SUPPORTED";
+    public static final boolean CDI_PASSIVATION_SUPPORTED_DEFAULT = true;
+    
     // we need it, applicationImpl not ready probably
     private ProjectStage projectStage = ProjectStage.Production;
     private boolean strictJsf2AllowSlashLibraryName;
@@ -846,6 +855,7 @@ public class MyfacesConfig
     private String faceletsViewSuffix = ViewHandler.DEFAULT_FACELETS_SUFFIX;
     private ELExpressionCacheMode elExpressionCacheMode;
     private boolean wrapTagExceptionsAsContextAware = WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE_DEFAULT;
+    private boolean cdiPassivationSupported = CDI_PASSIVATION_SUPPORTED_DEFAULT;
     
     
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -1240,6 +1250,9 @@ public class MyfacesConfig
  
         cfg.wrapTagExceptionsAsContextAware = getBoolean(extCtx, WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE,
                 WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE_DEFAULT);
+        
+        cfg.cdiPassivationSupported = getBoolean(extCtx, CDI_PASSIVATION_SUPPORTED,
+                CDI_PASSIVATION_SUPPORTED_DEFAULT);
         
         return cfg;
     }
@@ -1691,5 +1704,10 @@ public class MyfacesConfig
         return wrapTagExceptionsAsContextAware;
     }
 
+    public boolean isCdiPassivationSupported()
+    {
+        return cdiPassivationSupported;
+    }
+    
 }
 

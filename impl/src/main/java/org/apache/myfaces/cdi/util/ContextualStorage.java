@@ -62,11 +62,11 @@ public class ContextualStorage implements Serializable
         this.passivationCapable = passivationCapable;
         if (concurrent)
         {
-            contextualInstances = new ConcurrentHashMap<Object, ContextualInstanceInfo<?>>();
+            contextualInstances = new ConcurrentHashMap<>();
         }
         else
         {
-            contextualInstances = new HashMap<Object, ContextualInstanceInfo<?>>();
+            contextualInstances = new HashMap<>();
         }
     }
 
@@ -165,9 +165,7 @@ public class ContextualStorage implements Serializable
         {
             return beanManager.getPassivationCapableBean((String) beanKey);
         }
-        else
-        {
-            return (Contextual<?>) beanKey;
-        }
+
+        return (Contextual<?>) beanKey;
     }
 }

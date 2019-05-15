@@ -47,18 +47,17 @@ public class ViewScopeContextualStorage implements Serializable
     private final Map<String, Object> nameBeanKeyMap;
     
     private transient BeanManager beanManager;
+    private final boolean passivationCapable;
     
     private transient volatile boolean deactivated;
 
-    /**
-     * @param beanManager is needed for serialisation
-     */
-    public ViewScopeContextualStorage(BeanManager beanManager)
+    public ViewScopeContextualStorage(BeanManager beanManager, boolean passivationCapable)
     {
         this.beanManager = beanManager;
-        contextualInstances = new HashMap<Object, ContextualInstanceInfo<?>>();
-        nameBeanKeyMap = new HashMap<String, Object>();
-        deactivated = false;
+        this.contextualInstances = new HashMap<>();
+        this.nameBeanKeyMap = new HashMap<>();
+        this.deactivated = false;
+        this.passivationCapable = passivationCapable;
     }
 
     /**
@@ -111,13 +110,11 @@ public class ViewScopeContextualStorage implements Serializable
      */
     public <T> Object getBeanKey(Contextual<T> bean)
     {
-        // actually a ViewScoped bean MUST implemented PassivationCapable
-        // but it's deactivatable via ViewScopedContextImpl#isCheckPassivationCapable
-        if (bean instanceof PassivationCapable)
+        if (passivationCapable)
         {
             return ((PassivationCapable) bean).getId();
         }
-        return bean.getClass().getName();
+        return bean;
     }
 
     /**
@@ -126,11 +123,16 @@ public class ViewScopeContextualStorage implements Serializable
      */
     public Contextual<?> getBean(FacesContext context, Object beanKey)
     {
-        if (beanManager == null)
+        if (passivationCapable)
         {
-            beanManager = CDIUtils.getBeanManager(context.getExternalContext());
+            if (beanManager == null)
+            {
+                beanManager = CDIUtils.getBeanManager(context.getExternalContext());
+            }
+            return beanManager.getPassivationCapableBean((String) beanKey);
         }
-        return beanManager.getPassivationCapableBean((String) beanKey);
+        
+        return (Contextual<?>) beanKey;
     }
     
     public boolean isActive()
