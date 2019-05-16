@@ -33,7 +33,7 @@
         This project is the home of the MyFaces implementation of the JavaServer Faces 2.3 specification, and
         consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
-    <version>2.3.4</version>
+    <version>2.3.5-SNAPSHOT</version>
     <url>http://myfaces.apache.org/core23</url>
 
     <issueManagement>
@@ -45,7 +45,7 @@
         <connection>scm:git:https://gitbox.apache.org/repos/asf/myfaces.git</connection>
         <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/myfaces.git</developerConnection>
         <url>https://gitbox.apache.org/repos/asf?p=myfaces.git</url>
-      <tag>myfaces-core-module-2.3.4</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <modules>
