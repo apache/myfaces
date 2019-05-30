@@ -40,6 +40,7 @@ import javax.faces.context.Flash;
 import javax.inject.Named;
 import org.apache.myfaces.cdi.view.ViewTransientScoped;
 
+@ApplicationScoped
 public class JsfArtifactProducer
 {
    @Produces

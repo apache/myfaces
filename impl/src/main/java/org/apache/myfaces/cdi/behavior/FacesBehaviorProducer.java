@@ -21,6 +21,7 @@ package org.apache.myfaces.cdi.behavior;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Typed;
@@ -30,6 +31,7 @@ import javax.faces.component.behavior.Behavior;
 import org.apache.myfaces.cdi.util.AbstractDynamicProducer;
 import org.apache.myfaces.util.ClassUtils;
 
+@ApplicationScoped
 @Typed
 public class FacesBehaviorProducer extends AbstractDynamicProducer<Behavior>
 {

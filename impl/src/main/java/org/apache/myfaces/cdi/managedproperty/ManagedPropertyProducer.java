@@ -20,6 +20,7 @@
 package org.apache.myfaces.cdi.managedproperty;
 
 import java.lang.reflect.ParameterizedType;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanManager;
@@ -29,9 +30,7 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.AbstractDynamicProducer;
 import org.apache.myfaces.util.ClassUtils;
 
-/**
- *
- */
+@ApplicationScoped
 public class ManagedPropertyProducer extends AbstractDynamicProducer<Object>
 {
     class ManagedPropertyAnnotationLiteral extends AnnotationLiteral<ManagedProperty> implements ManagedProperty

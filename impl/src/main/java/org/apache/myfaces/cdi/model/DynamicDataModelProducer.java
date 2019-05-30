@@ -20,6 +20,7 @@
 package org.apache.myfaces.cdi.model;
 
 import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Typed;
@@ -28,9 +29,7 @@ import javax.faces.model.DataModel;
 import org.apache.myfaces.cdi.util.AbstractDynamicProducer;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
-/**
- *
- */
+@ApplicationScoped
 @Typed
 public class DynamicDataModelProducer extends AbstractDynamicProducer<Map<Class<?>, Class<? extends DataModel>>>
 {

@@ -20,6 +20,7 @@ package org.apache.myfaces.cdi;
 
 import java.lang.reflect.Type;
 import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.faces.annotation.FlowMap;
@@ -28,6 +29,7 @@ import javax.faces.flow.FlowScoped;
 import org.apache.myfaces.cdi.util.AbstractDynamicProducer;
 import org.apache.myfaces.cdi.util.ParameterizedTypeImpl;
 
+@ApplicationScoped
 public class JsfArtifactFlowMapProducer extends AbstractDynamicProducer
 {
     class FlowMapAnnotationLiteral extends AnnotationLiteral<FlowMap> implements FlowMap
