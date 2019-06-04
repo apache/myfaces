@@ -517,4 +517,10 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     {
         return stateTokenProcessor;
     }
+
+    // SPI used by OmniFaces
+    protected SessionViewStorageFactory getSessionViewStorageFactory()
+    {
+        return sessionViewStorageFactory;
+    }
 }
