@@ -32,7 +32,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.context.ExceptionHandlerImpl;
@@ -91,9 +90,7 @@ public class ViewScopeBeanHolder implements Serializable
                 contextualStorage = storageMap.get(viewScopeId);
                 if (contextualStorage == null)
                 {
-                    MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance();
-                    contextualStorage = new ViewScopeContextualStorage(beanManager,
-                            myfacesConfig.isCdiPassivationSupported());
+                    contextualStorage = new ViewScopeContextualStorage(beanManager);
                     storageMap.put(viewScopeId, contextualStorage);
                 }
             }

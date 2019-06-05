@@ -33,7 +33,6 @@ import javax.faces.view.ViewScoped;
 
 import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.view.ViewScopeProxyMap;
 
 /**
@@ -49,10 +48,22 @@ public class ViewScopeContextImpl implements Context
      * needed for serialisation and passivationId
      */
     private BeanManager beanManager;
+    
+    private boolean passivatingScope;
 
     public ViewScopeContextImpl(BeanManager beanManager)
     {
         this.beanManager = beanManager;
+
+        try
+        {
+            passivatingScope = beanManager.isPassivatingScope(getScope());
+        }
+        catch (UnsupportedOperationException e)
+        {
+            // Quarkus throws a UnsupportedOperationException instead return false currently
+            passivatingScope = false;
+        }
     }
 
     // SPI
@@ -165,7 +176,7 @@ public class ViewScopeContextImpl implements Context
     {
         checkActive();
 
-        if (!(bean instanceof PassivationCapable) && MyfacesConfig.getCurrentInstance().isCdiPassivationSupported())
+        if (passivatingScope && !(bean instanceof PassivationCapable))
         {
             throw new IllegalStateException(bean.toString() +
                     " doesn't implement " + PassivationCapable.class.getName());
