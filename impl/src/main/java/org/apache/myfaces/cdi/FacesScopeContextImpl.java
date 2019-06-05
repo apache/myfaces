@@ -43,12 +43,6 @@ public class FacesScopeContextImpl implements Context
         this.beanManager = beanManager;
     }
 
-    // SPI
-    protected BeanManager getBeanManager()
-    {
-        return beanManager;
-    }
-
     protected FacesScopeBeanHolder getFacesScopeBeanHolder()
     {
         return getFacesScopeBeanHolder(FacesContext.getCurrentInstance());
@@ -74,11 +68,11 @@ public class FacesScopeContextImpl implements Context
 
         if (createIfNotExist)
         {
-            return getFacesScopeBeanHolder(facesContext).getContextualStorage(getBeanManager(), facesContext);
+            return getFacesScopeBeanHolder(facesContext).getContextualStorage(beanManager, facesContext);
         }
         else
         {
-            return getFacesScopeBeanHolder(facesContext).getContextualStorageNoCreate(getBeanManager(), facesContext);
+            return getFacesScopeBeanHolder(facesContext).getContextualStorageNoCreate(beanManager, facesContext);
         }
     }
 

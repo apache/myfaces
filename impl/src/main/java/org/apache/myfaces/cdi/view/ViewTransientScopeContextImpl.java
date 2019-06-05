@@ -43,13 +43,7 @@ public class ViewTransientScopeContextImpl implements Context
     {
         this.beanManager = beanManager;
     }
-    
-    // SPI
-    protected BeanManager getBeanManager()
-    {
-        return beanManager;
-    }
-    
+
     protected ViewTransientScopeBeanHolder getViewTransientScopeBeanHolder()
     {
         return getViewTransientScopeBeanHolder(FacesContext.getCurrentInstance());
@@ -75,12 +69,12 @@ public class ViewTransientScopeContextImpl implements Context
 
         if (createIfNotExist)
         {
-            return getViewTransientScopeBeanHolder(facesContext).getContextualStorage(getBeanManager(), facesContext);
+            return getViewTransientScopeBeanHolder(facesContext).getContextualStorage(beanManager, facesContext);
         }
         else
         {
             return getViewTransientScopeBeanHolder(facesContext).getContextualStorageNoCreate(
-                    getBeanManager(), facesContext);
+                    beanManager, facesContext);
         }
     }
 
