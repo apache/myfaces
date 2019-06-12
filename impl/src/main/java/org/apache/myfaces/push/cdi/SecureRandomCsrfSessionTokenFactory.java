@@ -19,9 +19,9 @@
 package org.apache.myfaces.push.cdi;
 
 import javax.faces.context.FacesContext;
-import javax.xml.bind.DatatypeConverter;
 
 import org.apache.myfaces.application.StateCache;
+import org.apache.myfaces.util.Hex;
 import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
@@ -78,6 +78,6 @@ class SecureRandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
     public String createCryptographicallyStrongTokenFromSession(FacesContext context)
     {
         byte[] key = generateKey(context);
-        return DatatypeConverter.printHexBinary(key);
+        return new String(Hex.encodeHex(key));
     }
 }

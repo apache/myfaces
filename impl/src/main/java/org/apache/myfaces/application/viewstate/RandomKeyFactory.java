@@ -22,10 +22,10 @@ import java.util.Map;
 import java.util.Random;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.xml.bind.DatatypeConverter;
 import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.renderkit.RendererUtils;
+import org.apache.myfaces.util.Hex;
 
 class RandomKeyFactory extends KeyFactory<byte[]>
 {
@@ -79,7 +79,7 @@ class RandomKeyFactory extends KeyFactory<byte[]>
     @Override
     public String encode(byte[] key)
     {
-        return DatatypeConverter.printHexBinary(key);
+        return new String(Hex.encodeHex(key));
     }
 
     @Override
@@ -87,7 +87,7 @@ class RandomKeyFactory extends KeyFactory<byte[]>
     {
         try
         {
-            return DatatypeConverter.parseHexBinary(value);
+            return Hex.decodeHex(value);
         }
         catch (IllegalArgumentException ex)
         {
