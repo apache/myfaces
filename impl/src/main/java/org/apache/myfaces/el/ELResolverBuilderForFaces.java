@@ -94,10 +94,7 @@ public class ELResolverBuilderForFaces extends ELResolverBuilder
         if (isReplaceImplicitObjectResolverWithCDIResolver(facesContext))
         {
             list.add(ImplicitObjectResolver.makeResolverForFacesCDI());
-
-            BeanManager beanManager = CDIUtils.getBeanManager(
-                    FacesContext.getCurrentInstance().getExternalContext());
-            list.add(beanManager.getELResolver());
+            list.add(getCDIELResolver());
         }
         else
         {
@@ -167,4 +164,10 @@ public class ELResolverBuilderForFaces extends ELResolverBuilder
         compositeElResolver.add(new ScopedAttributeResolver());
     }
     
+    protected ELResolver getCDIELResolver()
+    {
+        BeanManager beanManager = CDIUtils.getBeanManager(
+                FacesContext.getCurrentInstance().getExternalContext());
+        return beanManager.getELResolver();
+    }
 }
