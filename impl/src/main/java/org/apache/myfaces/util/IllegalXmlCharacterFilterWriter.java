@@ -119,11 +119,11 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
         {
             return false;
         }
-        if (c > '\u0020' && c < '\uD7FF') 
+        if (c >= '\u0020' && c <= '\uD7FF') 
         {
             return false;
         }
-        if (c > '\uE000' && c < '\uFFFD') 
+        if (c >= '\uE000' && c <= '\uFFFD') 
         {
             return false;
         }
