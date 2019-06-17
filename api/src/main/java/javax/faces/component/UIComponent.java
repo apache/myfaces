@@ -874,18 +874,11 @@ public abstract class UIComponent
         // Make sure the map exists
         if (_systemEventListenerClassMap == null)
         {
-            _systemEventListenerClassMap = new HashMap<Class<? extends SystemEvent>, List<SystemEventListener>>();
+            _systemEventListenerClassMap = new HashMap<>();
         }
 
-        List<SystemEventListener> listeners = _systemEventListenerClassMap.get(eventClass);
-        // Make sure the list for class exists
-        if (listeners == null)
-        {
-            // how many listeners per event type can single component have? 
-            // We use 3 here as expected number, but it is a question 
-            listeners = new _DeltaList<SystemEventListener>(3);
-            _systemEventListenerClassMap.put(eventClass, listeners);
-        }
+        List<SystemEventListener> listeners = _systemEventListenerClassMap.computeIfAbsent(eventClass,
+                k -> new _DeltaList<>(3));
 
         // Deal with contains? Spec is silent
         listeners.add(listener);
@@ -1236,14 +1229,8 @@ public abstract class UIComponent
 
             if (currentComponent != null)
             {
-                List<UIComponent> componentStack
-                        = (List<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
-                if (componentStack == null)
-                {
-                    componentStack = new ArrayList<UIComponent>();
-                    contextAttributes.put(UIComponent._COMPONENT_STACK, componentStack);
-                }
-
+                List<UIComponent> componentStack = (List<UIComponent>) contextAttributes.computeIfAbsent(
+                                UIComponent._COMPONENT_STACK, k -> new ArrayList<>());
                 componentStack.add(currentComponent);
             }
 
@@ -1259,13 +1246,8 @@ public abstract class UIComponent
         }
         else
         {
-            List<UIComponent> componentStack
-                    = (List<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
-            if (componentStack == null)
-            {
-                componentStack = new ArrayList<UIComponent>();
-                contextAttributes.put(UIComponent._COMPONENT_STACK, componentStack);
-            }
+            List<UIComponent> componentStack= (List<UIComponent>) contextAttributes.computeIfAbsent(
+                    UIComponent._COMPONENT_STACK, k -> new ArrayList<>());
             componentStack.add(component);
             if (component._isCompositeComponent())
             {

@@ -343,13 +343,8 @@ public class PartialVisitContext extends VisitContext
                 // NamingContainer client id.  If not, create the
                 // Collection for this NamingContainer client id and
                 // stash it away in our map
-                Collection<String> c = _subtreeClientIds.get(namingContainerClientId);
-
-                if (c == null)
-                {
-                    c = new ArrayList<String>(5);
-                    _subtreeClientIds.put(namingContainerClientId, c);
-                }
+                Collection<String> c = _subtreeClientIds.computeIfAbsent(namingContainerClientId,
+                        k -> new ArrayList<>(5));
 
                 // Stash away the client id
                 c.add(clientId);
