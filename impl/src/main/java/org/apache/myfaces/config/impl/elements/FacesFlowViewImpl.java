@@ -37,9 +37,6 @@ public class FacesFlowViewImpl extends org.apache.myfaces.config.element.FacesFl
         return _vdlDocument;
     }
 
-    /**
-     * @param vdlDocument the vdlDocument to set
-     */
     public void setVdlDocument(String vdlDocument)
     {
         this._vdlDocument = vdlDocument;

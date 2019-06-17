@@ -153,26 +153,17 @@ public class FacesFlowDefinitionImpl extends org.apache.myfaces.config.element.F
     {
         _inboundParameterList.add(value);
     }
-    
-    /**
-     * @param startNode the startNode to set
-     */
+
     public void setStartNode(String startNode)
     {
         this._startNode = startNode;
     }
 
-    /**
-     * @param initializer the initializer to set
-     */
     public void setInitializer(String initializer)
     {
         this._initializer = initializer;
     }
 
-    /**
-     * @param finalizer the finalizer to set
-     */
     public void setFinalizer(String finalizer)
     {
         this._finalizer = finalizer;
@@ -189,17 +180,12 @@ public class FacesFlowDefinitionImpl extends org.apache.myfaces.config.element.F
         this._id = id;
     }
 
-    /**
-     * @return the _definingDocumentId
-     */
+    @Override
     public String getDefiningDocumentId()
     {
         return _definingDocumentId;
     }
 
-    /**
-     * @param definingDocumentId the _definingDocumentId to set
-     */
     public void setDefiningDocumentId(String definingDocumentId)
     {
         this._definingDocumentId = definingDocumentId;

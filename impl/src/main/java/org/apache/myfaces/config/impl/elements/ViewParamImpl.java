@@ -26,7 +26,7 @@ public class ViewParamImpl extends org.apache.myfaces.config.element.ViewParam i
     private String name;
     private String value;
     
-
+    @Override
     public String getName()
     {
         return name;
@@ -42,9 +42,9 @@ public class ViewParamImpl extends org.apache.myfaces.config.element.ViewParam i
         this.value = value;
     }
 
+    @Override
     public String getValue()
     {
         return value;
     }
-
 }

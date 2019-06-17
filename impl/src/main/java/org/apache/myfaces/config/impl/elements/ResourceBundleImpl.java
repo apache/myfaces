@@ -30,40 +30,29 @@ public class ResourceBundleImpl extends org.apache.myfaces.config.element.Resour
     private String var;
     private String displayName;
 
-    /**
-     * @return the baseName
-     */
+    @Override
     public String getBaseName()
     {
         return baseName;
     }
 
-    /**
-     * @param baseName
-     *            the baseName to set
-     */
     public void setBaseName(String baseName)
     {
         this.baseName = baseName;
     }
 
-    /**
-     * @return the var
-     */
+        @Override
     public String getVar()
     {
         return var;
     }
 
-    /**
-     * @param var
-     *            the var to set
-     */
     public void setVar(String var)
     {
         this.var = var;
     }
 
+    @Override
     public String getDisplayName()
     {
         return displayName;

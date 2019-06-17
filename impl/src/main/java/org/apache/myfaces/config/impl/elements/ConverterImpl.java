@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
@@ -36,7 +35,7 @@ public class ConverterImpl extends org.apache.myfaces.config.element.Converter i
     private List<org.apache.myfaces.config.element.Property> _properties = null;
     private List<org.apache.myfaces.config.element.Attribute> _attributes = null;
 
-
+    @Override
     public String getConverterId()
     {
         return converterId;
@@ -48,7 +47,7 @@ public class ConverterImpl extends org.apache.myfaces.config.element.Converter i
         this.converterId = converterId;
     }
 
-
+    @Override
     public String getForClass()
     {
         return forClass;
@@ -60,7 +59,7 @@ public class ConverterImpl extends org.apache.myfaces.config.element.Converter i
         this.forClass = forClass;
     }
 
-
+    @Override
     public String getConverterClass()
     {
         return converterClass;
@@ -82,6 +81,7 @@ public class ConverterImpl extends org.apache.myfaces.config.element.Converter i
         _properties.add(value);
     }
 
+        @Override
     public List<? extends org.apache.myfaces.config.element.Property> getProperties()
     {
         if(_properties == null)
@@ -102,6 +102,7 @@ public class ConverterImpl extends org.apache.myfaces.config.element.Converter i
         _attributes.add(value);
     }
 
+        @Override
     public List<? extends org.apache.myfaces.config.element.Attribute> getAttributes()
     {
         if(_attributes == null)

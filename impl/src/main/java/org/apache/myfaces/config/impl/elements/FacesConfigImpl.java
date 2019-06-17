@@ -246,6 +246,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         faceletTagLibraryList.add(library);
     }
 
+    @Override
     public List<Application> getApplications()
     {
         if (applications == null)
@@ -260,6 +261,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         return unmodifiableApplications;
     }
 
+    @Override
     public List<Factory> getFactories()
     {
         if (factories == null)

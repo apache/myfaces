@@ -20,47 +20,41 @@ package org.apache.myfaces.config.impl.elements;
 
 import java.io.Serializable;
 
-
-
-
-
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
 public class NavigationCaseImpl extends org.apache.myfaces.config.element.NavigationCase implements Serializable
 {
-
     private String fromAction;
     private String fromOutcome;
     private String ifValue;
     private String toViewId;
     private org.apache.myfaces.config.element.Redirect redirect;
 
-
+    @Override
     public String getFromAction()
     {
         return fromAction;
     }
-
 
     public void setFromAction(String fromAction)
     {
         this.fromAction = fromAction;
     }
 
-
+    @Override
     public String getFromOutcome()
     {
         return fromOutcome;
     }
-
 
     public void setFromOutcome(String fromOutcome)
     {
         this.fromOutcome = fromOutcome;
     }
     
-    public String getIf ()
+    @Override
+    public String getIf()
     {
         return ifValue;
     }
@@ -70,24 +64,23 @@ public class NavigationCaseImpl extends org.apache.myfaces.config.element.Naviga
         this.ifValue = ifValue;
     }
     
+    @Override
     public String getToViewId()
     {
         return toViewId;
     }
-
 
     public void setToViewId(String toViewId)
     {
         this.toViewId = toViewId;
     }
 
-
     public void setRedirect(org.apache.myfaces.config.element.Redirect redirect)
     {
         this.redirect = redirect;
     }
 
-
+    @Override
     public org.apache.myfaces.config.element.Redirect getRedirect()
     {
         return redirect;

@@ -31,9 +31,6 @@ import org.apache.myfaces.config.element.ViewPoolMapping;
  */
 public class FacesConfigExtensionImpl extends org.apache.myfaces.config.element.FacesConfigExtension
 {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 7624583794474223864L;
     
     private List<org.apache.myfaces.config.element.FaceletsProcessing> _faceletsProcessingList = 

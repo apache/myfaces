@@ -19,8 +19,6 @@
 package org.apache.myfaces.config.annotation;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -395,33 +393,5 @@ public class AnnotationConfigurator
                 facesConfig.addResourceResolver(clazz.getName());
             }
         }
-    }
-
-    /**
-     * <p>Return an array of all <code>Field</code>s reflecting declared
-     * fields in this class, or in any superclass other than
-     * <code>java.lang.Object</code>.</p>
-     *
-     * @param clazz Class to be analyzed
-     */
-    private Field[] fields(Class<?> clazz)
-    {
-
-        Map<String, Field> fields = new HashMap<String, Field>();
-        do
-        {
-            for (Field field : clazz.getDeclaredFields())
-            {
-                if (!fields.containsKey(field.getName()))
-                {
-                    fields.put(field.getName(), field);
-                }
-            }
-            clazz = clazz.getSuperclass();
-        }
-        while (clazz != Object.class);
-
-        return fields.values().toArray(new Field[fields.size()]);
-
     }
 }

@@ -26,15 +26,16 @@ public class OrderingImpl extends org.apache.myfaces.config.element.Ordering imp
 {
     
     private List<org.apache.myfaces.config.element.OrderSlot> beforeList
-            = new ArrayList<org.apache.myfaces.config.element.OrderSlot>();
+            = new ArrayList<>();
     private List<org.apache.myfaces.config.element.OrderSlot> afterList
-            = new ArrayList<org.apache.myfaces.config.element.OrderSlot>();
+            = new ArrayList<>();
 
     public void addBeforeSlot(org.apache.myfaces.config.element.OrderSlot slot)
     {
         beforeList.add(slot);
     }
     
+    @Override
     public List<org.apache.myfaces.config.element.OrderSlot> getBeforeList()
     {
         return beforeList;
@@ -45,6 +46,7 @@ public class OrderingImpl extends org.apache.myfaces.config.element.Ordering imp
         afterList.add(slot);
     }
     
+    @Override
     public List<org.apache.myfaces.config.element.OrderSlot> getAfterList()
     {
         return afterList;

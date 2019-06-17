@@ -33,45 +33,46 @@ public class BehaviorImpl extends org.apache.myfaces.config.element.Behavior imp
     
     private List<AttributeImpl> attributes = new ArrayList<AttributeImpl>();
     private List<PropertyImpl> properties = new ArrayList<PropertyImpl>();
-    // TODO: what about extensions and descriptionGroup elems?  Not addressed in other
-    // config objects either.
 
+
+    @Override
     public String getBehaviorClass()
     {
         return this.behaviorClass;
     }
 
+    @Override
     public String getBehaviorId()
     {
         return this.behaviorId;
     }
     
-    public void setBehaviorClass (String behaviorClass)
+    public void setBehaviorClass(String behaviorClass)
     {
         this.behaviorClass = behaviorClass;
     }
     
-    public void setBehaviorId (String behaviorId)
+    public void setBehaviorId(String behaviorId)
     {
         this.behaviorId = behaviorId;
     }
     
-    public Collection<AttributeImpl> getAttributes ()
+    public Collection<AttributeImpl> getAttributes()
     {
         return attributes;
     }
 
-    public void addAttribute (AttributeImpl attribute)
+    public void addAttribute(AttributeImpl attribute)
     {
         attributes.add (attribute);
     }
 
-    public Collection<PropertyImpl> getProperties ()
+    public Collection<PropertyImpl> getProperties()
     {
         return properties;
     }
     
-    public void addProperty (PropertyImpl property)
+    public void addProperty(PropertyImpl property)
     {
         properties.add (property);
     }

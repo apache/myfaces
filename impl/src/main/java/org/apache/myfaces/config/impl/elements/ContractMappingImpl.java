@@ -37,9 +37,7 @@ public class ContractMappingImpl extends ContractMapping
     private transient List <String> unmodifiableUrlPatternList;
     private transient List <String> unmodifiableContractsList;
 
-    /**
-     * @return the urlPattern
-     */
+    @Override
     public List<String> getUrlPatternList()
     {
         if (urlPatternList == null)
@@ -54,9 +52,7 @@ public class ContractMappingImpl extends ContractMapping
         return unmodifiableUrlPatternList;
     }
 
-    /**
-     * @return the contracts
-     */
+    @Override
     public List<String> getContractList()
     {
         if (contractsList == null)

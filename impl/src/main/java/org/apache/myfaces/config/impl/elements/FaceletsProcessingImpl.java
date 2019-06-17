@@ -25,9 +25,6 @@ package org.apache.myfaces.config.impl.elements;
  */
 public class FaceletsProcessingImpl extends org.apache.myfaces.config.element.FaceletsProcessing 
 {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 7692451499973040255L;
 
     private String fileExtension;
@@ -36,11 +33,13 @@ public class FaceletsProcessingImpl extends org.apache.myfaces.config.element.Fa
     
     private String oamCompressSpaces;
 
+    @Override
     public String getFileExtension()
     {
         return fileExtension;
     }
 
+    @Override
     public String getProcessAs()
     {
         return processAs;
@@ -56,18 +55,12 @@ public class FaceletsProcessingImpl extends org.apache.myfaces.config.element.Fa
         this.processAs = processAs;
     }
 
-    /**
-     * @return the oamCompressSpaces
-     */
     @Override
     public String getOamCompressSpaces()
     {
         return oamCompressSpaces;
     }
 
-    /**
-     * @param oamCompressSpaces the oamCompressSpaces to set
-     */
     public void setOamCompressSpaces(String oamCompressSpaces)
     {
         this.oamCompressSpaces = oamCompressSpaces;

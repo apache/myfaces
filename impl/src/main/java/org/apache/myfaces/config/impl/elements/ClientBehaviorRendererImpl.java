@@ -23,7 +23,6 @@ import java.io.Serializable;
 /**
  * Config holder for &lt;client-behavior-renderer&gt; element.
  */
-
 public class ClientBehaviorRendererImpl
         extends org.apache.myfaces.config.element.ClientBehaviorRenderer
         implements Serializable
@@ -31,12 +30,14 @@ public class ClientBehaviorRendererImpl
     private String rendererType;
     private String rendererClass;
     
-    public String getRendererClass ()
+    @Override
+    public String getRendererClass()
     {
         return rendererClass;
     }
     
-    public String getRendererType ()
+    @Override
+    public String getRendererType()
     {
         return rendererType;
     }

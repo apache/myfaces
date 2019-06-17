@@ -34,7 +34,7 @@ public class FacesFlowSwitchImpl extends org.apache.myfaces.config.element.Faces
     
     public FacesFlowSwitchImpl()
     {
-        this._navigationCaseList = new ArrayList<NavigationCase>();
+        this._navigationCaseList = new ArrayList<>();
     }
 
     @Override
@@ -54,9 +54,6 @@ public class FacesFlowSwitchImpl extends org.apache.myfaces.config.element.Faces
         return _defaultOutcome;
     }
 
-    /**
-     * @param defaultOutcome the defaultOutcome to set
-     */
     public void setDefaultOutcome(NavigationCase defaultOutcome)
     {
         this._defaultOutcome = defaultOutcome;

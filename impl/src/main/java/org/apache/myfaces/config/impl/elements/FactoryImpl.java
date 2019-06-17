@@ -27,21 +27,21 @@ import java.util.List;
  */
 public class FactoryImpl extends org.apache.myfaces.config.element.Factory implements Serializable
 {
-    private List<String> applicationFactories = new ArrayList<String>();
-    private List<String> exceptionHandlerFactories = new ArrayList<String>();
-    private List<String> externalContextFactories = new ArrayList<String>();
-    private List<String> facesContextFactories = new ArrayList<String>();
-    private List<String> lifecycleFactories = new ArrayList<String>();
-    private List<String> ViewDeclarationLanguageFactories = new ArrayList<String>();
-    private List<String> partialViewContextFactories = new ArrayList<String>();
-    private List<String> renderKitFactories = new ArrayList<String>();
-    private List<String> tagHandlerDelegateFactories = new ArrayList<String>();
-    private List<String> visitContextFactories = new ArrayList<String>();
-    private List<String> faceletCacheFactories = new ArrayList<String>();
-    private List<String> flowHandlerFactories = new ArrayList<String>();
-    private List<String> flashFactories = new ArrayList<String>();
-    private List<String> clientWindowFactories = new ArrayList<String>();
-    private List<String> searchExpressionContextFactories = new ArrayList<String>();
+    private List<String> applicationFactories = new ArrayList<>();
+    private List<String> exceptionHandlerFactories = new ArrayList<>();
+    private List<String> externalContextFactories = new ArrayList<>();
+    private List<String> facesContextFactories = new ArrayList<>();
+    private List<String> lifecycleFactories = new ArrayList<>();
+    private List<String> ViewDeclarationLanguageFactories = new ArrayList<>();
+    private List<String> partialViewContextFactories = new ArrayList<>();
+    private List<String> renderKitFactories = new ArrayList<>();
+    private List<String> tagHandlerDelegateFactories = new ArrayList<>();
+    private List<String> visitContextFactories = new ArrayList<>();
+    private List<String> faceletCacheFactories = new ArrayList<>();
+    private List<String> flowHandlerFactories = new ArrayList<>();
+    private List<String> flashFactories = new ArrayList<>();
+    private List<String> clientWindowFactories = new ArrayList<>();
+    private List<String> searchExpressionContextFactories = new ArrayList<>();
 
     public void addApplicationFactory(String factory)
     {
@@ -113,51 +113,61 @@ public class FactoryImpl extends org.apache.myfaces.config.element.Factory imple
         clientWindowFactories.add(factory);
     }
     
+    @Override
     public List<String> getApplicationFactory()
     {
         return applicationFactories;
     }
 
+    @Override
     public List<String> getExceptionHandlerFactory()
     {
         return exceptionHandlerFactories;
     }
 
+    @Override
     public List<String> getExternalContextFactory()
     {
         return externalContextFactories;
     }
 
+    @Override
     public List<String> getFacesContextFactory()
     {
         return facesContextFactories;
     }
 
+    @Override
     public List<String> getLifecycleFactory()
     {
         return lifecycleFactories;
     }
 
+    @Override
     public List<String> getViewDeclarationLanguageFactory()
     {
         return ViewDeclarationLanguageFactories;
     }
 
+    @Override
     public List<String> getPartialViewContextFactory()
     {
         return partialViewContextFactories;
     }
 
+    @Override
     public List<String> getRenderkitFactory()
     {
         return renderKitFactories;
     }
 
+    @Override
     public List<String> getTagHandlerDelegateFactory()
     {
         return tagHandlerDelegateFactories;
     }
 
+    @Override
     public List<String> getVisitContextFactory()
     {
         return visitContextFactories;

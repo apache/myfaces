@@ -1207,17 +1207,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
     @SuppressWarnings("unchecked")
     private Map<String, List<Object[]>> _getDebugInfoMap()
     {
-        Map<String, Object> requestMap = getFacesContext()
-                .getExternalContext().getRequestMap();
-        Map<String, List<Object[]>> debugInfo = (Map<String, List<Object[]>>) 
-                requestMap.get(DEBUG_INFO_KEY + getClientId());
-        if (debugInfo == null)
-        {
-            // no debug info available yet, create one and put it on the attributes map
-            debugInfo = new HashMap<String, List<Object[]>>();
-            requestMap.put(DEBUG_INFO_KEY + getClientId(), debugInfo);
-        }
-        return debugInfo;
+        Map<String, Object> requestMap = getFacesContext().getExternalContext().getRequestMap();
+        return (Map<String, List<Object[]>>) 
+                requestMap.computeIfAbsent(DEBUG_INFO_KEY + getClientId(), k -> new HashMap<>());
     }
     
     /**
@@ -1228,16 +1220,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
     private List<Object[]> _getFieldDebugInfos(final String field)
     {
         Map<String, List<Object[]>> debugInfo = _getDebugInfoMap();
-        List<Object[]> fieldDebugInfo = debugInfo.get(field);
-        if (fieldDebugInfo == null)
-        {
-            // no field debug-infos yet, create them and store it in the Map
-            fieldDebugInfo = new ArrayList<Object[]>();
-            debugInfo.put(field, fieldDebugInfo);
-        }
-        return fieldDebugInfo;
+        return debugInfo.computeIfAbsent(field, k -> new ArrayList<Object[]>());
     }
-    
+
     /**
      * Creates the field debug-info for the given field, which changed
      * from oldValue to newValue.

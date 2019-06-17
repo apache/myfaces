@@ -34,6 +34,7 @@ public class FacesConfigNameSlotImpl extends org.apache.myfaces.config.element.F
         this.name = name;
     }
     
+    @Override
     public String getName()
     {
         return name;

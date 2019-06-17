@@ -123,76 +123,91 @@ public class ApplicationImpl extends org.apache.myfaces.config.element.Applicati
         resourceBundle.add(bundle);
     }
 
+    @Override
     public List<String> getActionListener()
     {
         return actionListener;
     }
 
+    @Override
     public List<String> getDefaultRenderkitId()
     {
         return defaultRenderkitId;
     }
     
+    @Override
     public List<String> getDefaultValidatorIds()
     {
         return defaultValidatorIds;
     }
     
+    @Override
     public List<String> getMessageBundle()
     {
         return messageBundle;
     }
 
+    @Override
     public List<String> getNavigationHandler()
     {
         return navigationHandler;
     }
 
+    @Override
     public List<String> getResourceHandler()
     {
         return resourceHandler;
     }
     
-    public List<org.apache.myfaces.config.element.SystemEventListener> getSystemEventListeners ()
+    @Override
+    public List<org.apache.myfaces.config.element.SystemEventListener> getSystemEventListeners()
     {
         return systemEventListeners;
     }
     
+    @Override
     public List<String> getViewHandler()
     {
         return viewHandler;
     }
 
+    @Override
     public List<String> getStateManager()
     {
         return stateManager;
     }
 
+    @Override
     public List<String> getPropertyResolver()
     {
         return propertyResolver;
     }
 
+    @Override
     public List<String> getVariableResolver()
     {
         return variableResolver;
     }
 
+    @Override
     public List<org.apache.myfaces.config.element.LocaleConfig> getLocaleConfig()
     {
         return localeConfig;
     }
 
+    @Override
     public List<String> getElResolver()
     {
         return elResolver;
     }
 
+    @Override
     public List<org.apache.myfaces.config.element.ResourceBundle> getResourceBundle()
     {
         return resourceBundle;
     }
 
+    @Override
     public boolean isDefaultValidatorsPresent()
     {
         return defaultValidatorsPresent;

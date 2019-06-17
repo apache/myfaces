@@ -27,14 +27,14 @@ import java.util.List;
  */
 public class RenderKitImpl extends org.apache.myfaces.config.element.RenderKit implements Serializable
 {
-
     private String id;
-    private List<String> renderKitClasses = new ArrayList<String>();
+    private List<String> renderKitClasses = new ArrayList<>();
     private List<org.apache.myfaces.config.element.Renderer> renderer
-            = new ArrayList<org.apache.myfaces.config.element.Renderer>();
+            = new ArrayList<>();
     private List<org.apache.myfaces.config.element.ClientBehaviorRenderer> clientBehaviorRenderers
-            = new ArrayList<org.apache.myfaces.config.element.ClientBehaviorRenderer>();
+            = new ArrayList<>();
     
+    @Override
     public String getId()
     {
         return id;
@@ -45,6 +45,7 @@ public class RenderKitImpl extends org.apache.myfaces.config.element.RenderKit i
         this.id = id;
     }
 
+    @Override
     public List<String> getRenderKitClasses()
     {
         return renderKitClasses;
@@ -54,12 +55,14 @@ public class RenderKitImpl extends org.apache.myfaces.config.element.RenderKit i
     {
         renderKitClasses.add(renderKitClass);
     }
-    
+
+    @Override
     public List<org.apache.myfaces.config.element.ClientBehaviorRenderer> getClientBehaviorRenderers ()
     {
         return clientBehaviorRenderers;
     }
     
+    @Override
     public List<org.apache.myfaces.config.element.Renderer> getRenderer()
     {
         return renderer;
@@ -75,6 +78,7 @@ public class RenderKitImpl extends org.apache.myfaces.config.element.RenderKit i
         renderer.add(value);
     }
 
+    @Override
     public void merge(org.apache.myfaces.config.element.RenderKit renderKit)
     {
         renderKitClasses.addAll(renderKit.getRenderKitClasses());

@@ -25,13 +25,14 @@ import java.util.List;
 public class AbsoluteOrderingImpl extends org.apache.myfaces.config.element.AbsoluteOrdering implements Serializable
 {
     private List<org.apache.myfaces.config.element.OrderSlot> orderList = 
-        new ArrayList<org.apache.myfaces.config.element.OrderSlot>();
+        new ArrayList<>();
     
     public void addOrderSlot(org.apache.myfaces.config.element.OrderSlot slot)
     {
         orderList.add(slot);
     }
     
+    @Override
     public List<org.apache.myfaces.config.element.OrderSlot> getOrderList()
     {
         return orderList;

@@ -25,10 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class RedirectImpl extends org.apache.myfaces.config.element.Redirect implements Serializable
 {
-    private Map<String,List<String>> viewParams = new HashMap<String,List<String>>();
+    private Map<String,List<String>> viewParams = new HashMap<>();
     private String includeViewParams;     
     
     public void addViewParam(ViewParamImpl viewParam)
@@ -43,11 +42,13 @@ public class RedirectImpl extends org.apache.myfaces.config.element.Redirect imp
         viewParams.put(viewParam.getName(), params);
     }
     
+    @Override
     public Map<String,List<String>> getViewParams()
     {
         return viewParams;
     }
 
+    @Override
     public String getIncludeViewParams()
     {
         return includeViewParams;

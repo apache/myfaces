@@ -39,17 +39,11 @@ public class FacesFlowParameterImpl extends org.apache.myfaces.config.element.Fa
         return _value;
     }
 
-    /**
-     * @param name the name to set
-     */
     public void setName(String name)
     {
         this._name = name;
     }
 
-    /**
-     * @param value the value to set
-     */
     public void setValue(String value)
     {
         this._value = value;

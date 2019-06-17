@@ -43,16 +43,19 @@ public class SystemEventListenerImpl extends org.apache.myfaces.config.element.S
         sourceClass = source;
     }
     
+    @Override
     public String getSystemEventListenerClass()
     {
         return systemEventListenerClass;
     }
 
+    @Override
     public String getSystemEventClass()
     {
         return systemEventClass;
     }
 
+    @Override
     public String getSourceClass()
     {
         return sourceClass;

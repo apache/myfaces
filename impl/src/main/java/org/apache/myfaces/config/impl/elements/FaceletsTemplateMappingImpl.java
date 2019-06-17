@@ -26,24 +26,18 @@ import org.apache.myfaces.config.element.FaceletsTemplateMapping;
  */
 public class FaceletsTemplateMappingImpl extends FaceletsTemplateMapping implements Serializable
 {
-    
     private String urlPattern;
     
     public FaceletsTemplateMappingImpl()
     {
     }
 
-    /**
-     * @return the urlPattern
-     */
+    @Override
     public String getUrlPattern()
     {
         return urlPattern;
     }
 
-    /**
-     * @param urlPattern the urlPattern to set
-     */
     public void setUrlPattern(String urlPattern)
     {
         this.urlPattern = urlPattern;

@@ -29,36 +29,25 @@ public class FacesFlowMethodParameterImpl extends FacesFlowMethodParameter
     private String className;
     private String value;
 
-    /**
-     * @return the className
-     */
+    @Override
     public String getClassName()
     {
         return className;
     }
 
-    /**
-     * @param className the className to set
-     */
     public void setClassName(String className)
     {
         this.className = className;
     }
 
-    /**
-     * @return the value
-     */
+    @Override
     public String getValue()
     {
         return value;
     }
 
-    /**
-     * @param value the value to set
-     */
     public void setValue(String value)
     {
         this.value = value;
     }
-    
 }

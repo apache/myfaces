@@ -30,6 +30,7 @@ public class NamedEventImpl extends org.apache.myfaces.config.element.NamedEvent
         super();
     }
 
+    @Override
     public String getShortName()
     {
         return shortName;
@@ -40,6 +41,7 @@ public class NamedEventImpl extends org.apache.myfaces.config.element.NamedEvent
         this.shortName = shortName;
     }
 
+    @Override
     public String getEventClass()
     {
         return eventClass;

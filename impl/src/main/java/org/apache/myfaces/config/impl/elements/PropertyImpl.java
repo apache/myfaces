@@ -59,6 +59,7 @@ public class PropertyImpl extends org.apache.myfaces.config.element.Property imp
         _description.add(value);
     }
 
+    @Override
     public Collection<? extends String> getDescriptions()
     {
         if(_description == null)
@@ -79,6 +80,7 @@ public class PropertyImpl extends org.apache.myfaces.config.element.Property imp
         _displayName.add(value);
     }
 
+    @Override
     public Collection<? extends String> getDisplayNames()
     {
         if(_displayName==null)
@@ -99,6 +101,7 @@ public class PropertyImpl extends org.apache.myfaces.config.element.Property imp
         _icon.add(value);
     }
 
+    @Override
     public Collection<? extends String> getIcons()
     {
         if(_icon == null)
@@ -114,6 +117,7 @@ public class PropertyImpl extends org.apache.myfaces.config.element.Property imp
         _propertyName = propertyName;
     }
 
+    @Override
     public String getPropertyName()
     {
         return _propertyName;
@@ -124,6 +128,7 @@ public class PropertyImpl extends org.apache.myfaces.config.element.Property imp
         _propertyClass = propertyClass;
     }
 
+    @Override
     public String getPropertyClass()
     {
         return _propertyClass;
@@ -134,6 +139,7 @@ public class PropertyImpl extends org.apache.myfaces.config.element.Property imp
         _defaultValue = defaultValue;
     }
 
+    @Override
     public String getDefaultValue()
     {
         return _defaultValue;
@@ -144,6 +150,7 @@ public class PropertyImpl extends org.apache.myfaces.config.element.Property imp
         _suggestedValue = suggestedValue;
     }
 
+    @Override
     public String getSuggestedValue()
     {
         return _suggestedValue;
@@ -159,6 +166,7 @@ public class PropertyImpl extends org.apache.myfaces.config.element.Property imp
         _propertyExtension.add(propertyExtension);
     }
 
+    @Override
     public Collection<? extends String> getPropertyExtensions()
     {
         if(_propertyExtension == null)

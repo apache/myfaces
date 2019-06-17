@@ -1104,12 +1104,7 @@ public final class ErrorPageWriter
     private static void _incrementVisitedFacetCount(FacesContext facesContext, UIComponent component)
     {
         Map<UIComponent, Integer> visitedFacetCount = (Map<UIComponent, Integer>)
-            facesContext.getAttributes().get(VISITED_FACET_COUNT_KEY);
-        if (visitedFacetCount == null)
-        {
-            visitedFacetCount = new HashMap<UIComponent, Integer>();
-            facesContext.getAttributes().put(VISITED_FACET_COUNT_KEY, visitedFacetCount);
-        }
+            facesContext.getAttributes().computeIfAbsent(VISITED_FACET_COUNT_KEY, k -> new HashMap<>());
         visitedFacetCount.put(component, _getVisitedFacetCount(facesContext, component) + 1);
     }
 

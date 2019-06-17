@@ -20,9 +20,6 @@ package org.apache.myfaces.config.impl.elements;
 
 import org.apache.myfaces.config.element.ViewPoolParameter;
 
-/**
- *
- */
 public class ViewPoolParameterImpl extends ViewPoolParameter
 {
     private String _name;
@@ -40,17 +37,11 @@ public class ViewPoolParameterImpl extends ViewPoolParameter
         return _value;
     }
 
-    /**
-     * @param name the name to set
-     */
     public void setName(String name)
     {
         this._name = name;
     }
 
-    /**
-     * @param value the value to set
-     */
     public void setValue(String value)
     {
         this._value = value;

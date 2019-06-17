@@ -50,6 +50,7 @@ public class AttributeImpl extends org.apache.myfaces.config.element.Attribute i
         _description.add(value);
     }
 
+    @Override
     public Collection<? extends String> getDescriptions()
     {
         if(_description == null)
@@ -70,6 +71,7 @@ public class AttributeImpl extends org.apache.myfaces.config.element.Attribute i
         _displayName.add(value);
     }
 
+    @Override
     public Collection<? extends String> getDisplayNames()
     {
         if(_displayName == null)
@@ -90,6 +92,7 @@ public class AttributeImpl extends org.apache.myfaces.config.element.Attribute i
         _icon.add(value);
     }
 
+    @Override
     public Collection<? extends String> getIcons()
     {
         if(_icon == null)
@@ -105,6 +108,7 @@ public class AttributeImpl extends org.apache.myfaces.config.element.Attribute i
         _attributeName = attributeName;
     }
 
+    @Override
     public String getAttributeName()
     {
         return _attributeName;
@@ -115,6 +119,7 @@ public class AttributeImpl extends org.apache.myfaces.config.element.Attribute i
         _attributeClass = attributeClass;
     }
 
+    @Override
     public String getAttributeClass()
     {
         return _attributeClass;
@@ -125,6 +130,7 @@ public class AttributeImpl extends org.apache.myfaces.config.element.Attribute i
         _defaultValue = defaultValue;
     }
 
+    @Override
     public String getDefaultValue()
     {
         return _defaultValue;
@@ -135,6 +141,7 @@ public class AttributeImpl extends org.apache.myfaces.config.element.Attribute i
         _suggestedValue = suggestedValue;
     }
 
+    @Override
     public String getSuggestedValue()
     {
         return _suggestedValue;
@@ -150,6 +157,7 @@ public class AttributeImpl extends org.apache.myfaces.config.element.Attribute i
         _attributeExtension.add(attributeExtension);
     }
 
+    @Override
     public Collection<? extends String> getAttributeExtensions()
     {
         if(_attributeExtension == null)

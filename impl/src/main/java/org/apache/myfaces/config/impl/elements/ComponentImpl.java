@@ -30,25 +30,23 @@ public class ComponentImpl extends org.apache.myfaces.config.element.Component i
     private String componentType;
     private String componentClass;
 
-
     public void setComponentType(String componentType)
     {
         this.componentType = componentType;
     }
-
 
     public void setComponentClass(String componentClass)
     {
         this.componentClass = componentClass;
     }
 
-
+    @Override
     public String getComponentType()
     {
         return componentType;
     }
 
-
+    @Override
     public String getComponentClass()
     {
         return componentClass;

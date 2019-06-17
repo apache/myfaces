@@ -38,49 +38,34 @@ public class ComponentTagDeclarationImpl extends ComponentTagDeclaration impleme
         this.tagName = tagName;
     }
 
-    /**
-     * @return the namespace
-     */
+    @Override
     public String getNamespace()
     {
         return namespace;
     }
 
-    /**
-     * @param namespace the namespace to set
-     */
     public void setNamespace(String namespace)
     {
         this.namespace = namespace;
     }
 
-    /**
-     * @return the tagName
-     */
+    @Override
     public String getTagName()
     {
         return tagName;
     }
 
-    /**
-     * @param tagName the tagName to set
-     */
     public void setTagName(String tagName)
     {
         this.tagName = tagName;
     }
 
-    /**
-     * @return the componentType
-     */
+    @Override
     public String getComponentType()
     {
         return componentType;
     }
 
-    /**
-     * @param componentType the componentType to set
-     */
     public void setComponentType(String componentType)
     {
         this.componentType = componentType;

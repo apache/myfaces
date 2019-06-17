@@ -22,35 +22,31 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
 public class LocaleConfigImpl extends org.apache.myfaces.config.element.LocaleConfig implements Serializable
 {
-
     private String defaultLocale;
     private List<String> supportedLocales = new ArrayList<String>();
-
 
     public void setDefaultLocale(String defaultLocale)
     {
         this.defaultLocale = defaultLocale;
     }
 
-
     public void addSupportedLocale(String locale)
     {
         supportedLocales.add(locale);
     }
 
-
+    @Override
     public String getDefaultLocale()
     {
         return defaultLocale;
     }
 
-
+    @Override
     public List<String> getSupportedLocales()
     {
         return supportedLocales;

@@ -31,9 +31,10 @@ public class NavigationRuleImpl extends org.apache.myfaces.config.element.Naviga
 
     private String fromViewId;
     private List<org.apache.myfaces.config.element.NavigationCase> navigationCases
-            = new ArrayList<org.apache.myfaces.config.element.NavigationCase>();
+            = new ArrayList<>();
 
 
+    @Override
     public String getFromViewId()
     {
         return fromViewId;
@@ -52,6 +53,7 @@ public class NavigationRuleImpl extends org.apache.myfaces.config.element.Naviga
     }
 
 
+    @Override
     public List<org.apache.myfaces.config.element.NavigationCase> getNavigationCases()
     {
         return navigationCases;

@@ -51,17 +51,11 @@ public class FacesFlowMethodCallImpl extends org.apache.myfaces.config.element.F
         return _defaultOutcome;
     }
 
-    /**
-     * @param method the method to set
-     */
     public void setMethod(String method)
     {
         this._method = method;
     }
 
-    /**
-     * @param defaultOutcome the defaultOutcome to set
-     */
     public void setDefaultOutcome(String defaultOutcome)
     {
         this._defaultOutcome = defaultOutcome;

@@ -35,9 +35,6 @@ public class FacesFlowReturnImpl extends org.apache.myfaces.config.element.Faces
         return _navigationCase;
     }
 
-    /**
-     * @param navigationCase the _navigationCase to set
-     */
     public void setNavigationCase(NavigationCase navigationCase)
     {
         this._navigationCase = navigationCase;

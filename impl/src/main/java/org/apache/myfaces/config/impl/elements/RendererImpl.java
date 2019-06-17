@@ -20,52 +20,46 @@ package org.apache.myfaces.config.impl.elements;
 
 import java.io.Serializable;
 
-
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
 public class RendererImpl extends org.apache.myfaces.config.element.Renderer implements Serializable
 {
-
     private String componentFamily;
     private String rendererType;
     private String rendererClass;
 
-
+    @Override
     public String getComponentFamily()
     {
         return componentFamily;
     }
-
 
     public void setComponentFamily(String componentFamily)
     {
         this.componentFamily = componentFamily;
     }
 
-
+    @Override
     public String getRendererType()
     {
         return rendererType;
     }
-
 
     public void setRendererType(String rendererType)
     {
         this.rendererType = rendererType;
     }
 
-
+    @Override
     public String getRendererClass()
     {
         return rendererClass;
     }
 
-
     public void setRendererClass(String rendererClass)
     {
         this.rendererClass = rendererClass;
     }
-
 
 }

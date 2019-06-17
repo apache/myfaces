@@ -26,9 +26,7 @@ import org.apache.myfaces.config.element.FacesFlowReference;
  */
 public class FacesFlowReferenceImpl extends FacesFlowReference
 {
-    
     private String _flowId;
-    
     private String _flowDocumentId;
 
     public FacesFlowReferenceImpl()
