@@ -19,11 +19,11 @@
 
 package javax.faces.convert;
 
+import java.math.BigInteger;
 import java.util.Locale;
-
+import javax.el.ValueExpression;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
-
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -183,4 +183,24 @@ public class NumberConverterTest extends AbstractJsfTestCase
         assertEquals(new Long(7000), number);
     }
 
+    @Test
+    public void testGetAsObjectWithBigInteger()
+    {
+        facesContext.getViewRoot().setLocale(Locale.US);
+        mock.setLocale(Locale.GERMANY);
+        mock.setIntegerOnly(true);
+        mock.setGroupingUsed(false);
+        UIInput input = new UIInput();
+        facesContext.getELContext().getELResolver().setValue(facesContext.getELContext(), null,
+            "bigInteger", BigInteger.ONE);
+        ValueExpression valueExpression =
+        application
+            .getExpressionFactory()
+            .createValueExpression(facesContext.getELContext(), "#{bigInteger}", BigInteger.class);
+        input.setValueExpression("value", valueExpression);
+        Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, "1");
+        assertNotNull(number);
+        assertTrue(number instanceof BigInteger);
+        assertEquals(BigInteger.ONE, number);
+    }
 }
