@@ -19,6 +19,7 @@
 package javax.faces.convert;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -118,10 +119,12 @@ public class NumberConverter
                 // in those cases it is expected to return Double). See MYFACES-1890 and TRINIDAD-1124
                 // for details
                 ValueExpression valueBinding = uiComponent.getValueExpression("value");
+                Class<?> destType = null;
                 if (valueBinding != null)
                 {
-                    Class<?> destType = valueBinding.getType(facesContext.getELContext());
-                    if (destType != null && BigDecimal.class.isAssignableFrom(destType))
+                    destType = valueBinding.getType(facesContext.getELContext());
+                    if (destType != null
+                        && (BigDecimal.class.isAssignableFrom(destType) || BigInteger.class.isAssignableFrom(destType)))
                     {
                         df.setParseBigDecimal(true);
                     }
@@ -141,7 +144,7 @@ public class NumberConverter
                 
                 try
                 {
-                    return format.parse(value);
+                    return parse(value, format, destType);
                 }
                 catch (ParseException e)
                 {
@@ -152,7 +155,7 @@ public class NumberConverter
                   }
                   try
                   {
-                    return format.parse(value);
+                      return parse(value, format, destType);
                   }
                   catch (ParseException pe)
                   {
@@ -178,6 +181,19 @@ public class NumberConverter
             }
         }
         return null;
+    }
+
+    private Object parse(String value, NumberFormat format, Class<?> destType)
+        throws ParseException
+    {
+        if (destType == BigInteger.class)
+        {
+            return ((BigDecimal) format.parse(value)).toBigInteger();
+        }
+        else
+        {
+            return format.parse(value);
+        }
     }
 
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
