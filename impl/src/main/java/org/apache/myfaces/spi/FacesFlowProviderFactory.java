@@ -24,6 +24,7 @@ import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 /**
  * SPI to provide a FacesFlowProviderFactory implementation and thus
@@ -59,16 +60,8 @@ public abstract class FacesFlowProviderFactory
             {
                 final ExternalContext ectx = ctx;
                 factory = (FacesFlowProviderFactory) AccessController.doPrivileged(
-                        new java.security.PrivilegedExceptionAction<Object>()
-                        {
-                            @Override
-                            public Object run() throws PrivilegedActionException
-                            {
-                                return SpiUtils.build(ectx,
-                                        FacesFlowProviderFactory.class,
-                                        FACTORY_DEFAULT);
-                            }
-                        });
+                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx,
+                                FacesFlowProviderFactory.class,FACTORY_DEFAULT));
             }
             else
             {

@@ -73,19 +73,8 @@ public class DefaultStateCacheProviderFactory extends StateCacheProviderFactory
         {
             if (System.getSecurityManager() != null)
             {
-                returnValue = AccessController.doPrivileged(new PrivilegedExceptionAction<StateCacheProvider>()
-                        {
-                            @Override
-                            public StateCacheProvider run() throws ClassNotFoundException,
-                                    NoClassDefFoundError,
-                                    InstantiationException,
-                                    IllegalAccessException,
-                                    InvocationTargetException,
-                                    PrivilegedActionException
-                            {
-                                return resolveStateCacheProviderFromService(extContext);
-                            }
-                        });
+                returnValue = (StateCacheProvider) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> resolveStateCacheProviderFromService(extContext));
             }
             else
             {

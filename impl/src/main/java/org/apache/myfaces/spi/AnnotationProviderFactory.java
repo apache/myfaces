@@ -54,16 +54,9 @@ public abstract class AnnotationProviderFactory
             if (System.getSecurityManager() != null)
             {
                 final ExternalContext ectx = ctx;
-                lpf = (AnnotationProviderFactory) AccessController.doPrivileged(new PrivilegedExceptionAction<Object>()
-                        {
-                            @Override
-                            public Object run() throws PrivilegedActionException
-                            {
-                                return SpiUtils.build(ectx, 
-                                        AnnotationProviderFactory.class,
-                                        FACTORY_DEFAULT);
-                            }
-                        });
+                lpf = (AnnotationProviderFactory) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx, 
+                                AnnotationProviderFactory.class, FACTORY_DEFAULT));
             }
             else
             {

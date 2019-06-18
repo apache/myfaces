@@ -115,13 +115,7 @@ public final class Classpath
         if (System.getSecurityManager() != null)
         {
             final File finalDir = dir;
-            dirExists = (Boolean) AccessController.doPrivileged(new PrivilegedAction()
-            {
-                public Object run() 
-                {
-                    return finalDir.exists();
-                }
-            });
+            dirExists = (Boolean) AccessController.doPrivileged((PrivilegedAction) () -> finalDir.exists());
         }  
         else
         {

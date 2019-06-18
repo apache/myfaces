@@ -48,11 +48,13 @@ public abstract class AnnotationProviderWrapper extends AnnotationProvider imple
         this.delegate = delegate;
     }
 
+    @Override
     public Map<Class<? extends Annotation>,Set<Class<?>>> getAnnotatedClasses(ExternalContext ctx)
     {
         return getWrapped().getAnnotatedClasses(ctx);
     }
 
+    @Override
     public Set<URL> getBaseUrls(ExternalContext ctx) throws IOException
     {
         return getWrapped().getBaseUrls(ctx);

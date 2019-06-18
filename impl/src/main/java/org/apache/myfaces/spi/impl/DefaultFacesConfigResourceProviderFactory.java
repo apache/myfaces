@@ -59,19 +59,8 @@ public class DefaultFacesConfigResourceProviderFactory extends FacesConfigResour
         {
             if (System.getSecurityManager() != null)
             {
-                returnValue = AccessController.doPrivileged(new PrivilegedExceptionAction<FacesConfigResourceProvider>()
-                        {
-                            @Override
-                            public FacesConfigResourceProvider run() throws ClassNotFoundException,
-                                    NoClassDefFoundError,
-                                    InstantiationException,
-                                    IllegalAccessException,
-                                    InvocationTargetException,
-                                    PrivilegedActionException
-                            {
-                                return resolveFacesConfigResourceProviderFromService(extContext);
-                            }
-                        });
+                returnValue = (FacesConfigResourceProvider) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> resolveFacesConfigResourceProviderFromService(extContext));
             }
             else
             {

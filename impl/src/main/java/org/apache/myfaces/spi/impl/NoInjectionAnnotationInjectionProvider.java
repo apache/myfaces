@@ -56,8 +56,7 @@ public class NoInjectionAnnotationInjectionProvider extends InjectionProvider
     {
         ClassLoader cl = ClassUtils.getContextClassLoader();
         
-        Map<Class,Method[]> metadata = (Map<Class,Method[]>)
-                declaredMethodBeans.get(cl);
+        Map<Class,Method[]> metadata = (Map<Class,Method[]>) declaredMethodBeans.get(cl);
 
         if (metadata == null)
         {

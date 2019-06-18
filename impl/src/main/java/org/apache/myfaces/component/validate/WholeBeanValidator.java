@@ -342,13 +342,8 @@ public class WholeBeanValidator implements Validator
                     {
                         try 
                         {
-                            cl = AccessController.doPrivileged(new PrivilegedExceptionAction<ClassLoader>()
-                                    {
-                                        public ClassLoader run() throws PrivilegedActionException
-                                        {
-                                            return Thread.currentThread().getContextClassLoader();
-                                        }
-                                    });
+                            cl = (ClassLoader) AccessController.doPrivileged(
+                                    (PrivilegedExceptionAction) () -> Thread.currentThread().getContextClassLoader());
                         }
                         catch (PrivilegedActionException pae)
                         {

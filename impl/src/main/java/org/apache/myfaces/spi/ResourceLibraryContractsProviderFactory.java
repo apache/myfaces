@@ -56,16 +56,8 @@ public abstract class ResourceLibraryContractsProviderFactory
             {
                 final ExternalContext ectx = ctx;
                 lpf = (ResourceLibraryContractsProviderFactory)
-                        AccessController.doPrivileged(new PrivilegedExceptionAction<Object>()
-                        {
-                            @Override
-                            public Object run() throws PrivilegedActionException
-                            {
-                                return SpiUtils.build(ectx, 
-                                        ResourceLibraryContractsProviderFactory.class,
-                                        FACTORY_DEFAULT);
-                            }
-                        });
+                        AccessController.doPrivileged((PrivilegedExceptionAction) () -> SpiUtils.build(ectx, 
+                                ResourceLibraryContractsProviderFactory.class, FACTORY_DEFAULT));
             }
             else
             {

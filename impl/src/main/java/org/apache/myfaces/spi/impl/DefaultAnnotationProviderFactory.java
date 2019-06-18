@@ -74,19 +74,8 @@ public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
         {
             if (System.getSecurityManager() != null)
             {
-                returnValue = AccessController.doPrivileged(new PrivilegedExceptionAction<AnnotationProvider>()
-                        {
-                            @Override
-                            public AnnotationProvider run() throws ClassNotFoundException,
-                                    NoClassDefFoundError,
-                                    InstantiationException,
-                                    IllegalAccessException,
-                                    InvocationTargetException,
-                                    PrivilegedActionException
-                            {
-                                return resolveAnnotationProviderFromService(extContext);
-                            }
-                        });
+                returnValue = (AnnotationProvider) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> resolveAnnotationProviderFromService(extContext));
             }
             else
             {

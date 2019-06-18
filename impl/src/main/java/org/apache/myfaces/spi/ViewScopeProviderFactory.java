@@ -52,17 +52,9 @@ public abstract class ViewScopeProviderFactory implements FacesWrapper<ViewScope
             if (System.getSecurityManager() != null)
             {
                 final ExternalContext ectx = ctx;
-                lpf = (ViewScopeProviderFactory)
-                        AccessController.doPrivileged(new PrivilegedExceptionAction<Object>()
-                        {
-                            @Override
-                            public Object run() throws PrivilegedActionException
-                            {
-                                return SpiUtils.build(ectx,
-                                        ViewScopeProviderFactory.class,
-                                        FACTORY_DEFAULT);
-                            }
-                        });
+                lpf = (ViewScopeProviderFactory) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx,
+                                ViewScopeProviderFactory.class, FACTORY_DEFAULT));
             }
             else
             {

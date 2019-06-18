@@ -870,13 +870,9 @@ public final class SAXCompiler extends Compiler
                 try
                 {
                     final InputStream finalInputStream = is;
-                    AccessController.doPrivileged(new PrivilegedExceptionAction() 
-                    {
-                        public Object run() throws SAXException, IOException 
-                        {
-                            parser.parse(finalInputStream, handler);
-                            return null; 
-                        }
+                    AccessController.doPrivileged((PrivilegedExceptionAction) () -> {
+                        parser.parse(finalInputStream, handler);
+                        return null;
                     });
                 }
                 catch (PrivilegedActionException pae)

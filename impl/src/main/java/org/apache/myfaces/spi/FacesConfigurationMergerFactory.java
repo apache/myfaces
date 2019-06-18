@@ -59,16 +59,8 @@ public abstract class FacesConfigurationMergerFactory
             {
                 final ExternalContext ectx = ctx;
                 factory = (FacesConfigurationMergerFactory) AccessController.doPrivileged(
-                        new java.security.PrivilegedExceptionAction<Object>()
-                        {
-                            @Override
-                            public Object run() throws PrivilegedActionException
-                            {
-                                return SpiUtils.build(ectx,
-                                        FacesConfigurationMergerFactory.class,
-                                        FACTORY_DEFAULT);
-                            }
-                        });
+                        (java.security.PrivilegedExceptionAction) () -> SpiUtils.build(ectx,
+                                FacesConfigurationMergerFactory.class, FACTORY_DEFAULT));
             }
             else
             {

@@ -109,8 +109,7 @@ public class DefaultServiceProviderFinder extends ServiceProviderFinder
                             BufferedReader rd;
                             try
                             {
-                                rd = new BufferedReader(new InputStreamReader(is,
-                                        "UTF-8"));
+                                rd = new BufferedReader(new InputStreamReader(is, "UTF-8"));
                             }
                             catch (java.io.UnsupportedEncodingException e)
                             {
@@ -125,8 +124,7 @@ public class DefaultServiceProviderFinder extends ServiceProviderFinder
                                     int idx = serviceImplName.indexOf('#');
                                     if (idx >= 0)
                                     {
-                                        serviceImplName = serviceImplName
-                                                .substring(0, idx);
+                                        serviceImplName = serviceImplName.substring(0, idx);
                                     }
                                     serviceImplName = serviceImplName.trim();
     

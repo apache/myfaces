@@ -59,21 +59,9 @@ public class DefaultResourceLibraryContractsProviderFactory extends ResourceLibr
         {
             if (System.getSecurityManager() != null)
             {
-                returnValue
-                        = AccessController.doPrivileged(
-                            new PrivilegedExceptionAction<ResourceLibraryContractsProvider>()
-                        {
-                            @Override
-                            public ResourceLibraryContractsProvider run() throws ClassNotFoundException,
-                                    NoClassDefFoundError,
-                                    InstantiationException,
-                                    IllegalAccessException,
-                                    InvocationTargetException,
-                                    PrivilegedActionException
-                            {
-                                return resolveResourceLibraryContractsProviderFromService(extContext);
-                            }
-                        });
+                returnValue = (ResourceLibraryContractsProvider) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () ->
+                                resolveResourceLibraryContractsProviderFromService(extContext));
             }
             else
             {

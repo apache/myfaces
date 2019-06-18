@@ -55,17 +55,9 @@ public abstract class FaceletConfigResourceProviderFactory
             if (System.getSecurityManager() != null)
             {
                 final ExternalContext ectx = ctx;
-                lpf = (FaceletConfigResourceProviderFactory)
-                        AccessController.doPrivileged(new PrivilegedExceptionAction<Object>()
-                        {
-                            @Override
-                            public Object run() throws PrivilegedActionException
-                            {
-                                return SpiUtils.build(ectx, 
-                                        FaceletConfigResourceProviderFactory.class,
-                                        FACTORY_DEFAULT);
-                            }
-                        });
+                lpf = (FaceletConfigResourceProviderFactory) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx, 
+                                FaceletConfigResourceProviderFactory.class, FACTORY_DEFAULT));
             }
             else
             {

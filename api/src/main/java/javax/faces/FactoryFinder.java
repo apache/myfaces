@@ -37,6 +37,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -137,13 +138,8 @@ public final class FactoryFinder
             ClassLoader classLoader;
             if (System.getSecurityManager() != null)
             {
-                classLoader = (ClassLoader) AccessController.doPrivileged(new java.security.PrivilegedExceptionAction()
-                {
-                    public Object run()
-                    {
-                        return FactoryFinder.class.getClassLoader();
-                    }
-                });
+                classLoader = (ClassLoader) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> FactoryFinder.class.getClassLoader());
             }
             else
             {
@@ -315,26 +311,15 @@ public final class FactoryFinder
                 throw new IllegalArgumentException("no factory " + factoryName + " configured for this application.");
             }
 
-            factoryMap = factories.get(classLoader);
-
-            if (factoryMap == null)
-            {
-                factoryMap = new HashMap<String, Object>();
-                factories.put(classLoader, factoryMap);
-            }
+            factoryMap = factories.computeIfAbsent(classLoader, k -> new HashMap<>());
         }
 
         List beanEntryStorage;
 
         synchronized (factoryClassNames)
         {
-            beanEntryStorage = (List)factoryMap.get(INJECTED_BEAN_STORAGE_KEY);
-
-            if (beanEntryStorage == null)
-            {
-                beanEntryStorage = new CopyOnWriteArrayList();
-                factoryMap.put(INJECTED_BEAN_STORAGE_KEY, beanEntryStorage);
-            }
+            beanEntryStorage = (List)factoryMap.computeIfAbsent(INJECTED_BEAN_STORAGE_KEY,
+                    k -> new CopyOnWriteArrayList());
         }
 
         List<String> classNames;
@@ -560,15 +545,7 @@ public final class FactoryFinder
 
             return current;
         }
-        catch (ClassNotFoundException e)
-        {
-            throw new FacesException(e);
-        }
-        catch (InstantiationException e)
-        {
-            throw new FacesException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
         {
             throw new FacesException(e);
         }
@@ -651,25 +628,13 @@ public final class FactoryFinder
                 return;
             }
 
-            factoryClassNames = registeredFactoryNames.get(classLoader);
-
-            if (factoryClassNames == null)
-            {
-                factoryClassNames = new HashMap<String, List<String>>();
-                registeredFactoryNames.put(classLoader, factoryClassNames);
-            }
+            factoryClassNames = registeredFactoryNames.computeIfAbsent(classLoader,
+                    k -> new HashMap<>());
         }
 
         synchronized (factoryClassNames)
         {
-            List<String> classNameList = factoryClassNames.get(factoryName);
-
-            if (classNameList == null)
-            {
-                classNameList = new ArrayList<String>();
-                factoryClassNames.put(factoryName, classNameList);
-            }
-
+            List<String> classNameList = factoryClassNames.computeIfAbsent(factoryName, k -> new ArrayList<String>());
             classNameList.add(implName);
         }
     }
@@ -790,13 +755,8 @@ public final class FactoryFinder
             ClassLoader classLoader = null;
             if (System.getSecurityManager() != null)
             {
-                classLoader = (ClassLoader) AccessController.doPrivileged(new java.security.PrivilegedExceptionAction()
-                {
-                    public Object run()
-                    {
-                        return Thread.currentThread().getContextClassLoader();
-                    }
-                });
+                classLoader = (ClassLoader) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> Thread.currentThread().getContextClassLoader());
             }
             else
             {

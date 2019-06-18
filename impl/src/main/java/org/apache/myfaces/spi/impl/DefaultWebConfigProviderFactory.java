@@ -64,19 +64,8 @@ public class DefaultWebConfigProviderFactory extends WebConfigProviderFactory
         {
             if (System.getSecurityManager() != null)
             {
-                returnValue = AccessController.doPrivileged(new PrivilegedExceptionAction<WebConfigProvider>()
-                        {
-                            @Override
-                            public WebConfigProvider run() throws ClassNotFoundException,
-                                    NoClassDefFoundError,
-                                    InstantiationException,
-                                    IllegalAccessException,
-                                    InvocationTargetException,
-                                    PrivilegedActionException
-                            {
-                                return resolveWebXmlProviderFromService(extContext);
-                            }
-                        });
+                returnValue = (WebConfigProvider) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> resolveWebXmlProviderFromService(extContext));
             }
             else
             {

@@ -20,6 +20,7 @@ package org.apache.myfaces.config.annotation;
 
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Map;
 
 import javax.faces.FacesException;
@@ -55,16 +56,9 @@ public abstract class LifecycleProviderFactory
             if (System.getSecurityManager() != null)
             {
                 final ExternalContext ectx = ctx; 
-                lpf = (LifecycleProviderFactory)
-                        AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Object>()
-                        {
-                            public Object run() throws PrivilegedActionException
-                            {
-                                return SpiUtils.build(ectx,
-                                        LifecycleProviderFactory.class,
-                                        FACTORY_DEFAULT);
-                            }
-                        });
+                lpf = (LifecycleProviderFactory) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx,
+                                LifecycleProviderFactory.class, FACTORY_DEFAULT));
             }
             else
             {

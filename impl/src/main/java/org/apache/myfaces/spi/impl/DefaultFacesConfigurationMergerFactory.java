@@ -29,6 +29,7 @@ import javax.faces.context.ExternalContext;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,19 +57,8 @@ public class DefaultFacesConfigurationMergerFactory extends FacesConfigurationMe
             {
                 if (System.getSecurityManager() != null)
                 {
-                    returnValue = AccessController.doPrivileged(
-                            new java.security.PrivilegedExceptionAction<FacesConfigurationMerger>()
-                            {
-                                public FacesConfigurationMerger run() throws ClassNotFoundException,
-                                        NoClassDefFoundError,
-                                        InstantiationException,
-                                        IllegalAccessException,
-                                        InvocationTargetException,
-                                        PrivilegedActionException
-                                {
-                                    return resolveFacesConfigurationMergerFromService(extContext);
-                                }
-                            });
+                    returnValue = (FacesConfigurationMerger) AccessController.doPrivileged(
+                            (PrivilegedExceptionAction) () -> resolveFacesConfigurationMergerFromService(extContext));
                 }
                 else
                 {

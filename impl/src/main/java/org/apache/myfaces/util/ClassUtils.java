@@ -519,15 +519,8 @@ public final class ClassUtils
       {
           try 
           {
-              ClassLoader cl = AccessController.doPrivileged(new PrivilegedExceptionAction<ClassLoader>()
-                      {
-                          @Override
-                          public ClassLoader run() throws PrivilegedActionException
-                          {
-                              return Thread.currentThread().getContextClassLoader();
-                          }
-                      });
-              return cl;
+              return (ClassLoader) AccessController.doPrivileged(
+                      (PrivilegedExceptionAction) () -> Thread.currentThread().getContextClassLoader());
           }
           catch (PrivilegedActionException pae)
           {

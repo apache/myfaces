@@ -59,20 +59,8 @@ public class DefaultFaceletConfigResourceProviderFactory extends FaceletConfigRe
         {
             if (System.getSecurityManager() != null)
             {
-                returnValue
-                        = AccessController.doPrivileged(new PrivilegedExceptionAction<FaceletConfigResourceProvider>()
-                        {
-                            @Override
-                            public FaceletConfigResourceProvider run() throws ClassNotFoundException,
-                                    NoClassDefFoundError,
-                                    InstantiationException,
-                                    IllegalAccessException,
-                                    InvocationTargetException,
-                                    PrivilegedActionException
-                            {
-                                return resolveFaceletConfigResourceProviderFromService(extContext);
-                            }
-                        });
+                returnValue = (FaceletConfigResourceProvider) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> resolveFaceletConfigResourceProviderFromService(extContext));
             }
             else
             {

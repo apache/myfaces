@@ -20,6 +20,7 @@ package org.apache.myfaces.spi;
 
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
@@ -59,16 +60,8 @@ public abstract class FacesConfigurationProviderFactory
             {
                 final ExternalContext ectx = ctx;
                 factory = (FacesConfigurationProviderFactory) AccessController.doPrivileged(
-                        new java.security.PrivilegedExceptionAction<Object>()
-                        {
-                            @Override
-                            public Object run() throws PrivilegedActionException
-                            {
-                                return SpiUtils.build(ectx,
-                                        FacesConfigurationProviderFactory.class,
-                                        FACTORY_DEFAULT);
-                            }
-                        });
+                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx, 
+                                FacesConfigurationProviderFactory.class, FACTORY_DEFAULT));
             }
             else
             {

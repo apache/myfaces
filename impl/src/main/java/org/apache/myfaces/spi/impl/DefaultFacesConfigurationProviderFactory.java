@@ -66,19 +66,8 @@ public class DefaultFacesConfigurationProviderFactory extends FacesConfiguration
             {
                 if (System.getSecurityManager() != null)
                 {
-                    returnValue
-                            = AccessController.doPrivileged(new PrivilegedExceptionAction<FacesConfigurationProvider>()
-                            {
-                                public FacesConfigurationProvider run() throws ClassNotFoundException,
-                                        NoClassDefFoundError,
-                                        InstantiationException,
-                                        IllegalAccessException,
-                                        InvocationTargetException,
-                                        PrivilegedActionException
-                                {
-                                    return resolveFacesConfigurationProviderFromService(extContext);
-                                }
-                            });
+                    returnValue = (FacesConfigurationProvider) AccessController.doPrivileged(
+                            (PrivilegedExceptionAction) () -> resolveFacesConfigurationProviderFromService(extContext));
                 }
                 else
                 {
