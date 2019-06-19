@@ -768,6 +768,15 @@ public class MyfacesConfig
     public static final String WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE
             = "org.apache.myfaces.WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE";
     public static final boolean WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE_DEFAULT = true;
+    
+    /**
+     * Defines if the last-modified should be cached of the resources when the ProjectStage is Production.
+     * If the cache is disabled, each last-modified request will read the last-modified from the file.
+     */
+    @JSFWebConfigParam(since="3.0.0" , defaultValue="false", expectedValues="true, false")
+    public static final String RESOURCE_CACHE_LAST_MODIFIED
+            = "org.apache.myfaces.RESOURCE_CACHE_LAST_MODIFIED";
+    public static final boolean RESOURCE_CACHE_LAST_MODIFIED_DEFAULT = false;
 
     // we need it, applicationImpl not ready probably
     private ProjectStage projectStage = ProjectStage.Production;
@@ -846,6 +855,7 @@ public class MyfacesConfig
     private String faceletsViewSuffix = ViewHandler.DEFAULT_FACELETS_SUFFIX;
     private ELExpressionCacheMode elExpressionCacheMode;
     private boolean wrapTagExceptionsAsContextAware = WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE_DEFAULT;
+    private boolean resourceCacheLastModified = RESOURCE_CACHE_LAST_MODIFIED_DEFAULT;
     
     
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -1241,6 +1251,9 @@ public class MyfacesConfig
         cfg.wrapTagExceptionsAsContextAware = getBoolean(extCtx, WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE,
                 WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE_DEFAULT);
         
+        cfg.resourceCacheLastModified = getBoolean(extCtx, RESOURCE_CACHE_LAST_MODIFIED,
+                RESOURCE_CACHE_LAST_MODIFIED_DEFAULT);
+
         return cfg;
     }
 
@@ -1690,6 +1703,10 @@ public class MyfacesConfig
     {
         return wrapTagExceptionsAsContextAware;
     }
-    
+
+    public boolean isResourceCacheLastModified()
+    {
+        return resourceCacheLastModified;
+    }
 }
 

@@ -30,6 +30,7 @@ public class ResourceMetaImpl extends ResourceMeta
     private final String _resourceVersion;
     private final String _contractName;
     
+    private Long lastModified;
     private String resourceIdentifier = null;
 
     public ResourceMetaImpl(String prefix, String libraryName, String libraryVersion,
@@ -145,6 +146,18 @@ public class ResourceMetaImpl extends ResourceMeta
     public boolean couldResourceContainValueExpressions()
     {
         return false;
+    }
+
+    @Override
+    public Long getLastModified()
+    {
+        return lastModified;
+    }
+
+    @Override
+    public void setLastModified(Long lastModified)
+    {
+        this.lastModified = lastModified;
     }
 
 }
