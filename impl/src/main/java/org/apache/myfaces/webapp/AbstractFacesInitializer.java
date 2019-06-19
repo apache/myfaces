@@ -213,9 +213,9 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             //Start ViewPoolProcessor if necessary
             ViewPoolProcessor.initialize(facesContext);
             
-            Boolean automaticExtensionlessMapping = WebConfigParamUtils.getBooleanInitParameter(
-                    externalContext, MyfacesConfig.INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING, 
-                    MyfacesConfig.INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT);
+            Boolean automaticExtensionlessMapping = WebConfigParamUtils.getBooleanInitParameter(externalContext,
+                    MyfacesConfig.AUTOMATIC_EXTENSIONLESS_MAPPING, 
+                    MyfacesConfig.AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT);
             if (Boolean.TRUE.equals(automaticExtensionlessMapping))
             {
                 initAutomaticExtensionlessMapping(facesContext, servletContext);

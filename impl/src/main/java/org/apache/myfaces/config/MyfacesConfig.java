@@ -792,10 +792,20 @@ public class MyfacesConfig
      * This parameter enables automatic extensionless mapping for all JSF views.
      */
     @JSFWebConfigParam(since="2.3", expectedValues = "true, false", defaultValue = "false")
-    public static final String INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING = 
+    public static final String AUTOMATIC_EXTENSIONLESS_MAPPING = 
             "org.apache.myfaces.AUTOMATIC_EXTENSIONLESS_MAPPING";
-    public static final boolean INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT = false;
+    public static final boolean AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT = false;
     
+    /**
+     * Indicate the class implementing FacesInitializer interface that will
+     * be used to setup MyFaces Core contexts.
+     * <p>This is used when some custom task must be done specifically when
+     * a myfaces web context is initialized or destroyed, or when MyFaces should
+     * be initialized in some custom environment. 
+     * </p>
+     */
+    @JSFWebConfigParam(since = "2.0.1", desc = "Class name of a custom FacesInitializer implementation.")
+    public static final String FACES_INITIALIZER = "org.apache.myfaces.FACES_INITIALIZER";
     
     // we need it, applicationImpl not ready probably
     private ProjectStage projectStage = ProjectStage.Production;
