@@ -21,7 +21,7 @@ package org.apache.myfaces.spi.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
-import java.util.Iterator;
+import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,7 +33,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderFactory;
@@ -47,19 +47,9 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
 {
     private static Logger log = Logger.getLogger(DefaultInjectionProviderFactory.class.getName());
 
-    /**
-     * Define the class implementing InjectionProvider interface to handle PostConstruct 
-     * and PreDestroy annotations.
-     * 
-     * <p>This also can be configured using a SPI entry (/META-INF/services/...).
-     * </p>
-     */
+
     public static final String INJECTION_PROVIDER_INSTANCE_KEY
             = InjectionProvider.class.getName() + ".INJECTION_PROVIDER_INSTANCE";
-
-    @JSFWebConfigParam(name="org.apache.myfaces.spi.InjectionProvider", since="2.2")
-    public static final String INJECTION_PROVIDER = InjectionProvider.class.getName();
-
 
     public DefaultInjectionProviderFactory()
     {
@@ -120,7 +110,7 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
     {
         try
         {
-            String lifecycleProvider = externalContext.getInitParameter(INJECTION_PROVIDER);
+            String lifecycleProvider = externalContext.getInitParameter(MyfacesConfig.INJECTION_PROVIDER);
             if (lifecycleProvider != null)
             {
 
@@ -150,53 +140,37 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
         {
             if (System.getSecurityManager() != null)
             {
-                returnValue = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>()
+                returnValue = AccessController.doPrivileged((PrivilegedExceptionAction<Boolean>) () ->
+                {
+                    List<String> classList = ServiceProviderFinderFactory.getServiceProviderFinder(extContext).
+                            getServiceProviderList(MyfacesConfig.INJECTION_PROVIDER);
+                    for (String className : classList)
+                    {
+                        Object obj = createClass(className,extContext);
+                        if (InjectionProvider.class.isAssignableFrom(obj.getClass()))
                         {
-                            @Override
-                            public Boolean run() throws ClassNotFoundException,
-                                    NoClassDefFoundError,
-                                    InstantiationException,
-                                    IllegalAccessException,
-                                    InvocationTargetException,
-                                    PrivilegedActionException
+                            InjectionProvider discoverableInjectionProvider = (InjectionProvider) obj;
+                            if (discoverableInjectionProvider.isAvailable())
                             {
-                                List<String> classList
-                                        = ServiceProviderFinderFactory.getServiceProviderFinder(extContext).
-                                                                       getServiceProviderList(INJECTION_PROVIDER);
-                                Iterator<String> iter = classList.iterator();
-                                while (iter.hasNext())
-                                {
-                                    String className = iter.next();
-                                    Object obj = createClass(className,extContext);
-                                    if (InjectionProvider.class.isAssignableFrom(obj.getClass()))
-                                    {
-                                        InjectionProvider discoverableInjectionProvider =
-                                                (InjectionProvider) obj;
-                                        if (discoverableInjectionProvider.isAvailable())
-                                        {
-                                            extContext.getApplicationMap().put(INJECTION_PROVIDER_INSTANCE_KEY,
-                                                                               discoverableInjectionProvider);
-                                            return true;
-                                        }
-                                    }
-                                }
-                                return false;
+                                extContext.getApplicationMap().put(INJECTION_PROVIDER_INSTANCE_KEY,
+                                        discoverableInjectionProvider);
+                                return true;
                             }
-                        });
+                        }
+                    }
+                    return false;
+                });
             }
             else
             {
                 List<String> classList = ServiceProviderFinderFactory.getServiceProviderFinder(extContext).
-                        getServiceProviderList(INJECTION_PROVIDER);
-                Iterator<String> iter = classList.iterator();
-                while (iter.hasNext())
+                        getServiceProviderList(MyfacesConfig.INJECTION_PROVIDER);
+                for (String className : classList)
                 {
-                    String className = iter.next();
                     Object obj = createClass(className,extContext);
                     if (InjectionProvider.class.isAssignableFrom(obj.getClass()))
                     {
-                        InjectionProvider discoverableInjectionProvider
-                                = (InjectionProvider) obj;
+                        InjectionProvider discoverableInjectionProvider = (InjectionProvider) obj;
                         if (discoverableInjectionProvider.isAvailable())
                         {
                             extContext.getApplicationMap().put(INJECTION_PROVIDER_INSTANCE_KEY,

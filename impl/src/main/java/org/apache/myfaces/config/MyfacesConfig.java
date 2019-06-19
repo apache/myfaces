@@ -27,6 +27,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
@@ -806,6 +807,16 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since = "2.0.1", desc = "Class name of a custom FacesInitializer implementation.")
     public static final String FACES_INITIALIZER = "org.apache.myfaces.FACES_INITIALIZER";
+    
+
+    /**
+     * Define the class implementing InjectionProvider interface to handle dependendy injection,
+     * PostConstruct and PreDestroy callbacks.
+     * 
+     * <p>This also can be configured using a SPI entry (/META-INF/services/...).</p>
+     */
+    @JSFWebConfigParam(name="org.apache.myfaces.spi.InjectionProvider", since="2.2")
+    public static final String INJECTION_PROVIDER = InjectionProvider.class.getName();
     
     // we need it, applicationImpl not ready probably
     private ProjectStage projectStage = ProjectStage.Production;

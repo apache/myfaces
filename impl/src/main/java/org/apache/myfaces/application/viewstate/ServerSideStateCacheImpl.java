@@ -407,14 +407,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                     Object object = null;
                     if (System.getSecurityManager() != null) 
                     {
-                        object = AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() 
-                        {
-                            @Override
-                            public Object run() throws PrivilegedActionException, IOException, ClassNotFoundException
-                            {
-                                return in.readObject();
-                            }
-                        });
+                        object = AccessController.doPrivileged((PrivilegedExceptionAction) () -> in.readObject());
                     }
                     else
                     {
