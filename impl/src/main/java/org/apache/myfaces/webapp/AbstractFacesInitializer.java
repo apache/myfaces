@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.webapp;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -84,24 +83,6 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
 {
     private static final Logger log = Logger.getLogger(AbstractFacesInitializer.class.getName());
 
-    /**
-     * Indicate if log all web config params should be done before initialize the webapp. 
-     * <p>
-     * If is set in "auto" mode, web config params are only logged on "Development" and "Production" project stages.
-     * </p> 
-     */
-    @JSFWebConfigParam(expectedValues="true, auto, false", defaultValue="auto")
-    public static final String INIT_PARAM_LOG_WEB_CONTEXT_PARAMS = "org.apache.myfaces.LOG_WEB_CONTEXT_PARAMS";
-    public static final String INIT_PARAM_LOG_WEB_CONTEXT_PARAMS_DEFAULT ="auto";
-    
-    /**
-     * This parameter enables automatic extensionless mapping for all JSF views.
-     */
-    @JSFWebConfigParam(since="2.3", expectedValues = "true, false", defaultValue = "false")
-    public static final String INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING = 
-            "org.apache.myfaces.AUTOMATIC_EXTENSIONLESS_MAPPING";
-    public static final boolean INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT = false;
-    
     public static final String CDI_BEAN_MANAGER_INSTANCE = "oam.cdi.BEAN_MANAGER_INSTANCE";
     
     private static final String CDI_SERVLET_CONTEXT_BEAN_MANAGER_ATTRIBUTE = 
@@ -233,8 +214,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             ViewPoolProcessor.initialize(facesContext);
             
             Boolean automaticExtensionlessMapping = WebConfigParamUtils.getBooleanInitParameter(
-                    externalContext, INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING, 
-                    INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT);
+                    externalContext, MyfacesConfig.INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING, 
+                    MyfacesConfig.INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT);
             if (Boolean.TRUE.equals(automaticExtensionlessMapping))
             {
                 initAutomaticExtensionlessMapping(facesContext, servletContext);

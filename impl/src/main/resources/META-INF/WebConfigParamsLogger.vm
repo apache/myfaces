@@ -36,19 +36,14 @@ public class WebConfigParamsLogger
 
     public static void logWebContextParams(FacesContext facesContext)
     {
-        String logCommand = WebConfigParamUtils.getStringInitParameter(
-                facesContext.getExternalContext(),
-                AbstractFacesInitializer.INIT_PARAM_LOG_WEB_CONTEXT_PARAMS, AbstractFacesInitializer.INIT_PARAM_LOG_WEB_CONTEXT_PARAMS_DEFAULT);
+        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
 
-        if ( logCommand.equals("false") ||
-             (logCommand.equals("auto") && !facesContext.isProjectStage(ProjectStage.Development) && !facesContext.isProjectStage(ProjectStage.Production) )
-           )
+        if (!myfacesConfig.isLogWebContextParams())
         {
             //No log if is disabled or is in auto mode and project stage is UnitTest or SystemTest
             return;
         }
 
-        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
 
         if(myfacesConfig.isRiImplAvailable() && myfacesConfig.isMyfacesImplAvailable())
         {
@@ -120,7 +115,7 @@ public class WebConfigParamsLogger
         {
             log.info("Scanning for context init parameters not defined. It is not necessary to define them all into your web.xml, " +
                      "they are just provided here for informative purposes. To disable this messages set " +
-                     AbstractFacesInitializer.INIT_PARAM_LOG_WEB_CONTEXT_PARAMS + " config param to 'false'");
+                     MyfacesConfig.LOG_WEB_CONTEXT_PARAMS + " config param to 'false'");
             String paramValue = null;
 #set ($webConfigList = ${model.getWebConfigs()})
 #foreach( $webConfig in $webConfigList )
