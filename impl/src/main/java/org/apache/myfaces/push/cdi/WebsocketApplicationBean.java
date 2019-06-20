@@ -34,7 +34,7 @@ public class WebsocketApplicationBean
     /**
      * This map has as key the channel and as values a list of websocket channels
      */
-    private Map<String, List<WebsocketChannel> > channelTokenListMap = new HashMap<>(2);
+    private Map<String, List<WebsocketChannel>> channelTokenListMap = new HashMap<>(2);
 
     public void registerWebsocketSession(String token, WebsocketChannelMetadata metadata)
     {

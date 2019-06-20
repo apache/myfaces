@@ -248,11 +248,11 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         {
             String event = entry.getKey();
             List<ClientBehavior> clientBehaviors = entry.getValue();
-            scripts.append(scripts.length() > 1 ? "," : "").append(event).append(":[");
+            scripts.append(scripts.length() > 1 ? ',' : "").append(event).append(":[");
 
             for (int i = 0; i < clientBehaviors.size(); i++)
             {
-                scripts.append(i > 0 ? "," : "").append("function(event){");
+                scripts.append(i > 0 ? ',' : "").append("function(event){");
                 scripts.append(clientBehaviors.get(i).getScript(
                         ClientBehaviorContext.createClientBehaviorContext(
                                 facesContext, component, event, clientId, null)));

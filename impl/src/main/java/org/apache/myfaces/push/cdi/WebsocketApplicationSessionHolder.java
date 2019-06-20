@@ -32,18 +32,16 @@ import java.util.concurrent.Future;
 import java.util.logging.Logger;
 import javax.faces.context.ExternalContext;
 import javax.websocket.Session;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.push.WebsocketSessionClusterSerializedRestore;
 import org.apache.myfaces.push.Json;
 import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.util.ConcurrentLRUCache;
-import org.apache.myfaces.util.WebConfigParamUtils;
 
 public final class WebsocketApplicationSessionHolder
 {
     
-    public static final String INIT_PARAM_WEBSOCKET_MAX_CONNECTIONS = "org.apache.myfaces.WEBSOCKET_MAX_CONNECTIONS";
-    
-    public static final Integer INIT_PARAM_WEBSOCKET_MAX_CONNECTIONS_DEFAULT = 5000;
+
     
     private volatile static WeakHashMap<ClassLoader, ConcurrentLRUCache<String, Reference<Session>>> 
             clWebsocketMap = new WeakHashMap<ClassLoader, ConcurrentLRUCache<String, Reference<Session>>>();
@@ -64,7 +62,7 @@ public final class WebsocketApplicationSessionHolder
             // per classloader to hold metadata.
             synchronized (WebsocketApplicationSessionHolder.clWebsocketMap)
             {
-                metadata = createWebsocketSessionLRUCache(cl, metadata, INIT_PARAM_WEBSOCKET_MAX_CONNECTIONS_DEFAULT);
+                metadata = createWebsocketSessionLRUCache(cl, MyfacesConfig.WEBSOCKET_MAX_CONNECTIONS_DEFAULT);
             }
         }
 
@@ -78,11 +76,10 @@ public final class WebsocketApplicationSessionHolder
         ConcurrentLRUCache<String, Reference<Session>> lruCache = (ConcurrentLRUCache<String, Reference<Session>>)
                 WebsocketApplicationSessionHolder.clWebsocketMap.get(cl);
 
-        int size = WebConfigParamUtils.getIntegerInitParameter(context, 
-                INIT_PARAM_WEBSOCKET_MAX_CONNECTIONS, INIT_PARAM_WEBSOCKET_MAX_CONNECTIONS_DEFAULT);
+        int size = MyfacesConfig.getCurrentInstance(context).getWebsocketMaxConnections();
 
         ConcurrentLRUCache<String, Reference<Session>> newMetadata = 
-                new ConcurrentLRUCache<String, Reference<Session>>( (size*4+3)/3, size);
+                new ConcurrentLRUCache<>((size * 4 + 3) / 3, size);
         
         synchronized (WebsocketApplicationSessionHolder.clWebsocketMap)
         {
@@ -97,7 +94,7 @@ public final class WebsocketApplicationSessionHolder
                 // we need to fill the new one with the old instances, but only the instances that are active
                 // at the moment.
                 for (Map.Entry<String, Reference<Session>> entry : 
-                        lruCache.getLatestAccessedItems(INIT_PARAM_WEBSOCKET_MAX_CONNECTIONS_DEFAULT).entrySet())
+                        lruCache.getLatestAccessedItems(MyfacesConfig.WEBSOCKET_MAX_CONNECTIONS_DEFAULT).entrySet())
                 {
                     if (entry.getValue() != null && entry.getValue().get() != null && entry.getValue().get().isOpen())
                     {
@@ -111,16 +108,11 @@ public final class WebsocketApplicationSessionHolder
     }
 
     private static ConcurrentLRUCache<String, Reference<Session>> createWebsocketSessionLRUCache(
-            ClassLoader cl, ConcurrentLRUCache<String, Reference<Session>> metadata, int size)
+            ClassLoader cl, int size)
     {
-        metadata = (ConcurrentLRUCache<String, Reference<Session>>) 
-                WebsocketApplicationSessionHolder.clWebsocketMap.get(cl);
-        if (metadata == null)
-        {
-            metadata = new ConcurrentLRUCache<String, Reference<Session>>( (size*4+3)/3, size);
-            WebsocketApplicationSessionHolder.clWebsocketMap.put(cl, metadata);
-        }
-        return metadata;
+        return (ConcurrentLRUCache<String, Reference<Session>>)
+                WebsocketApplicationSessionHolder.clWebsocketMap.computeIfAbsent(cl,
+                        k -> new ConcurrentLRUCache<>((size * 4 + 3) / 3, size));
     }
 
     /**
@@ -167,7 +159,7 @@ public final class WebsocketApplicationSessionHolder
         // Before send, we need to check 
         synchronizeSessionInstances();
             
-        Set< Future<Void> > results = new HashSet< Future<Void> >(1);
+        Set< Future<Void> > results = new HashSet<>(1);
         Reference<Session> sessionRef = (channelToken != null) ? getWebsocketSessionLRUCache().get(channelToken) : null;
 
         if (sessionRef != null && sessionRef.get() != null)

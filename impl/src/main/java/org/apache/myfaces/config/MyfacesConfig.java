@@ -818,6 +818,10 @@ public class MyfacesConfig
     @JSFWebConfigParam(name="org.apache.myfaces.spi.InjectionProvider", since="2.2")
     public static final String INJECTION_PROVIDER = InjectionProvider.class.getName();
     
+    @JSFWebConfigParam(name="org.apache.myfaces.WEBSOCKET_MAX_CONNECTIONS", since="2.3")
+    public static final String WEBSOCKET_MAX_CONNECTIONS = "org.apache.myfaces.WEBSOCKET_MAX_CONNECTIONS";
+    public static final Integer WEBSOCKET_MAX_CONNECTIONS_DEFAULT = 5000;
+    
     // we need it, applicationImpl not ready probably
     private ProjectStage projectStage = ProjectStage.Production;
     private boolean strictJsf2AllowSlashLibraryName;
@@ -897,6 +901,7 @@ public class MyfacesConfig
     private boolean wrapTagExceptionsAsContextAware = WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE_DEFAULT;
     private boolean resourceCacheLastModified = RESOURCE_CACHE_LAST_MODIFIED_DEFAULT;
     private boolean logWebContextParams = false;
+    private int websocketMaxConnections = WEBSOCKET_MAX_CONNECTIONS_DEFAULT;
     
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -1305,6 +1310,9 @@ public class MyfacesConfig
         {
             cfg.logWebContextParams = true;
         }
+        
+        cfg.websocketMaxConnections = getInt(extCtx, WEBSOCKET_MAX_CONNECTIONS,
+                WEBSOCKET_MAX_CONNECTIONS_DEFAULT);
 
         return cfg;
     }
@@ -1765,5 +1773,11 @@ public class MyfacesConfig
     {
         return logWebContextParams;
     }
+
+    public int getWebsocketMaxConnections()
+    {
+        return websocketMaxConnections;
+    }
+
 }
 
