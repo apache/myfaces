@@ -46,7 +46,7 @@ public class PushContextCDIExtension implements Extension
     void beforeBeanDiscovery(
         @Observes final BeforeBeanDiscovery event, BeanManager beanManager)
     {
-        // Register FlowBuilderFactoryBean as a bean with CDI annotations, so the system
+        // Register PushContextFactoryBean as a bean with CDI annotations, so the system
         // can take it into account, and use it later when necessary.
         AnnotatedType<PushContextFactoryBean> pushContextFactoryBean =
                         beanManager.createAnnotatedType(PushContextFactoryBean.class);
