@@ -64,12 +64,12 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
             FacesContext facesContext = FacesContext.getCurrentInstance();
             UIWebsocket component = (UIWebsocket) event.getComponent();
             WebsocketInit initComponent = (WebsocketInit) facesContext.getViewRoot().findComponent(
-                    (String) component.getAttributes().get("initComponentId"));
+                    (String) component.getAttributes().get(_WebsocketInit.ATTRIBUTE_COMPONENT_ID));
             if (initComponent == null)
             {
                 initComponent = (WebsocketInit) facesContext.getApplication().createComponent(facesContext,
-                        "org.apache.myfaces.WebsocketInit", "org.apache.myfaces.WebsocketInit");
-                initComponent.setId((String) component.getAttributes().get("initComponentId"));
+                        WebsocketInit.COMPONENT_TYPE, WebsocketInit.COMPONENT_TYPE);
+                initComponent.setId((String) component.getAttributes().get(_WebsocketInit.ATTRIBUTE_COMPONENT_ID));
                 facesContext.getViewRoot().addComponentResource(facesContext,
                         initComponent, "body");
             }
@@ -109,7 +109,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         UIWebsocket component = (UIWebsocket) c;
 
         WebsocketInit init = (WebsocketInit) facesContext.getViewRoot().findComponent(
-                (String) component.getAttributes().get("initComponentId"));
+                (String) component.getAttributes().get(_WebsocketInit.ATTRIBUTE_COMPONENT_ID));
 
         ResponseWriter writer = facesContext.getResponseWriter();
 

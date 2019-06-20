@@ -58,14 +58,6 @@ public abstract class AbstractWebsocketComponent extends UIOutput implements Cli
     @JSFProperty(defaultValue = "true")
     public abstract boolean isConnected();
 
-    /**
-     * Return the id used by the component used to render the markup at the end of body section.
-     * 
-     * @return 
-     */
-    @JSFProperty(tagExcluded = true)
-    public abstract String getInitComponentId();
-
     @Override
     public Collection<String> getEventNames()
     {
