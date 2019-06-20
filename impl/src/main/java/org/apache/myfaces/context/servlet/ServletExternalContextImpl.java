@@ -458,7 +458,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
 
         FacesContext facesContext = getCurrentFacesContext();
         Integer port = MyfacesConfig.getCurrentInstance(facesContext).getWebsocketEndpointPort();
-        port = (port == 0) ? null : port;
+        port = (port == null || port == 0) ? null : port;
         if (port != null && !port.equals(facesContext.getExternalContext().getRequestServerPort()))
         {
             String scheme = facesContext.getExternalContext().getRequestScheme();
