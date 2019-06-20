@@ -23,7 +23,8 @@ import javax.faces.context.ResponseWriter;
 import java.io.*;
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 
-/**A buffer for content which should not directly be rendered to the page.
+/**
+ * A buffer for content which should not directly be rendered to the page.
  *
  * @author Sylvain Vieujot (latest modification by $Author: grantsmith $)
  * @version $Revision: 169649 $ $Date: 2005-05-11 17:47:12 +0200 (Wed, 11 May 2005) $
@@ -95,6 +96,7 @@ public class HtmlBufferResponseWriterWrapper extends HtmlResponseWriterImpl
      *
      * @return The content of the buffered and wrapped writer.
      */
+    @Override
     public String toString()
     {
         wrapperWriter.flush();

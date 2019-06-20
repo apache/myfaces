@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.faces.FacesWrapper;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIWebsocket;
 import javax.faces.component.behavior.ClientBehavior;
@@ -216,13 +217,18 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         
         if (!facesContext.getPartialViewContext().isAjaxRequest())
         {
-            HtmlBufferResponseWriterWrapper buffwriter = (HtmlBufferResponseWriterWrapper) 
-                    facesContext.getResponseWriter();
+            ResponseWriter responseWriter = facesContext.getResponseWriter();
+            while (!(responseWriter instanceof HtmlBufferResponseWriterWrapper)
+                    && responseWriter instanceof FacesWrapper)
+            {
+                responseWriter = (ResponseWriter) ((FacesWrapper) responseWriter).getWrapped();
+            }
+
             init.getUIWebsocketMarkupList().add(writer.toString());
-            facesContext.setResponseWriter(buffwriter.getInitialWriter());
+            facesContext.setResponseWriter(((HtmlBufferResponseWriterWrapper) responseWriter).getInitialWriter());
         }
     }
-    
+
     private String getBehaviorScripts(FacesContext facesContext, UIWebsocket component)
     {
         Map<String, List<ClientBehavior>> clientBehaviorsByEvent = component.getClientBehaviors();
