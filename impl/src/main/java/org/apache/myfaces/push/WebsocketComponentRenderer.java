@@ -223,9 +223,12 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
             {
                 responseWriter = (ResponseWriter) ((FacesWrapper) responseWriter).getWrapped();
             }
+            
+            HtmlBufferResponseWriterWrapper htmlBufferResponseWritter =
+                    (HtmlBufferResponseWriterWrapper) responseWriter;
+            init.getUIWebsocketMarkupList().add(htmlBufferResponseWritter.toString());
 
-            init.getUIWebsocketMarkupList().add(writer.toString());
-            facesContext.setResponseWriter(((HtmlBufferResponseWriterWrapper) responseWriter).getInitialWriter());
+            facesContext.setResponseWriter(htmlBufferResponseWritter.getInitialWriter());
         }
     }
 
