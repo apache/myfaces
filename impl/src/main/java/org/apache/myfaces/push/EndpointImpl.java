@@ -27,6 +27,7 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.faces.event.WebsocketEvent;
 import javax.faces.event.WebsocketEvent.Closed;
 import javax.faces.event.WebsocketEvent.Opened;
+import javax.faces.push.PushContext;
 import javax.websocket.CloseReason;
 import javax.websocket.CloseReason.CloseCodes;
 import javax.websocket.Endpoint;
@@ -39,7 +40,7 @@ import javax.websocket.Session;
 public class EndpointImpl extends Endpoint
 {
 
-    public static final String JAVAX_FACES_PUSH_PATH = "/javax.faces.push/{channel}";
+    public static final String JAVAX_FACES_PUSH_PATH = PushContext.URI_PREFIX + "/{channel}";
 
     public static final String PUSH_CHANNEL_PARAMETER = "channel";
     

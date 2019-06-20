@@ -43,6 +43,7 @@ import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.push.PushContext;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 import javax.faces.view.ViewDeclarationLanguage;
@@ -568,7 +569,7 @@ public class ViewHandlerImpl extends ViewHandler
     public String getWebsocketURL(FacesContext context, String channelAndToken)
     {
         String url = context.getExternalContext().getRequestContextPath() + 
-                "/javax.faces.push/"+channelAndToken;
+                PushContext.URI_PREFIX + "/" + channelAndToken;
         return url;
     }
     
