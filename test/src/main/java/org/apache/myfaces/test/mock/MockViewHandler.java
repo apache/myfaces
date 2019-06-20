@@ -24,6 +24,7 @@ import java.util.Locale;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.faces.push.PushContext;
 import javax.faces.render.RenderKitFactory;
 
 /**
@@ -162,7 +163,7 @@ public class MockViewHandler extends ViewHandler
     public String getWebsocketURL(FacesContext context, String channelAndToken)
     {
         String url = context.getExternalContext().getRequestContextPath() + 
-                "/javax.faces.push/"+channelAndToken;
+                PushContext.URI_PREFIX + "/"+channelAndToken;
         return url;
     }
 
