@@ -19,32 +19,18 @@
 
 package org.apache.myfaces.push.cdi;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessProducer;
-import javax.enterprise.inject.spi.Producer;
-import javax.faces.push.Push;
-import javax.faces.push.PushContext;
 
 /**
  *
  */
 public class PushContextCDIExtension implements Extension
 {
-    private List<Producer<PushContext>> pushContextProducers = new ArrayList<Producer<PushContext>>();
-
-    public List<Producer<PushContext>> getPushContextProducers()
-    {
-        return pushContextProducers;
-    }
-
-    void beforeBeanDiscovery(
-        @Observes final BeforeBeanDiscovery event, BeanManager beanManager)
+    void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager)
     {
         // Register PushContextFactoryBean as a bean with CDI annotations, so the system
         // can take it into account, and use it later when necessary.
@@ -64,16 +50,4 @@ public class PushContextCDIExtension implements Extension
         AnnotatedType apphandlerbean = beanManager.createAnnotatedType(WebsocketApplicationBean.class);
         event.addAnnotatedType(apphandlerbean, apphandlerbean.getJavaClass().getName());
     }
-
-    /**
-     * Stores any producer method that is annotated with @Push
-     */
-    <T> void findFlowDefinition(@Observes ProcessProducer<T, PushContext> processProducer)
-    {
-        if (processProducer.getAnnotatedMember().isAnnotationPresent(Push.class))
-        {
-            pushContextProducers.add(processProducer.getProducer());
-        }
-    }
-
 }
