@@ -19,7 +19,6 @@
 package org.apache.myfaces.config;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -868,34 +867,6 @@ public class FacesConfigurator
         {
             log.log(Level.INFO, "Exception on PreDestroy", ex);
         }
-    }
-
-    /**
-     * A mapper for the handful of system listener defaults
-     * since every default mapper has the source type embedded
-     * in the constructor we can rely on introspection for the
-     * default mapping
-     *
-     * @param systemEventClass the system listener class which has to be checked
-     * @return
-     */
-    String getDefaultSourcClassForSystemEvent(Class systemEventClass)
-    {
-        Constructor[] constructors = systemEventClass.getConstructors();
-        for (Constructor constr : constructors)
-        {
-            Class[] parms = constr.getParameterTypes();
-            if (parms == null || parms.length != 1)
-            {
-                //for standard types we have only one parameter representing the type
-                continue;
-            }
-            return parms[0].getName();
-        }
-        log.warning("The SystemEvent source type for " + systemEventClass.getName()
-                + " could not be detected, either register it manually or use a constructor argument "
-                + "for auto detection, defaulting now to java.lang.Object");
-        return "java.lang.Object";
     }
 
 
