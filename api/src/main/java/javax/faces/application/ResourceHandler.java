@@ -68,7 +68,6 @@ public abstract class ResourceHandler
     public static final String JSF_SCRIPT_LIBRARY_NAME = "javax.faces";
 
     private final static String RENDERED_RESOURCES_SET = "org.apache.myfaces.RENDERED_RESOURCES_SET";
-    private final static String MYFACES_LIBRARY_NAME = "org.apache.myfaces";
 
     public abstract Resource createResource(String resourceName);
     

@@ -124,11 +124,8 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
                             ((ViewActionEvent) event).setFacesContext(wrappedFacesContext);
                         }
 
-                        if (defaultActionListener != null)
-                        {
-                            defaultActionListener.processAction((ActionEvent) event);
-                        }
-                        
+                        defaultActionListener.processAction((ActionEvent) event);
+
                         // Decrement count
                         Integer count = (Integer) context.getAttributes().get(EVENT_COUNT_KEY);
                         count = (count == null) ? 0 : count - 1;
