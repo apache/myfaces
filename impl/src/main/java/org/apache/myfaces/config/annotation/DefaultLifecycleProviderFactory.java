@@ -21,7 +21,7 @@ package org.apache.myfaces.config.annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
-import java.util.Iterator;
+import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -119,7 +119,6 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory
             String lifecycleProvider = externalContext.getInitParameter(LIFECYCLE_PROVIDER);
             if (lifecycleProvider != null)
             {
-
                 Object obj = createClass(lifecycleProvider, externalContext);
 
                 if (obj instanceof LifecycleProvider)
@@ -145,48 +144,34 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory
         {
             if (System.getSecurityManager() != null)
             {
-                returnValue = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>()
+                returnValue = AccessController.doPrivileged((PrivilegedExceptionAction<Boolean>) () -> {
+                    List<String> classList
+                            = ServiceProviderFinderFactory.getServiceProviderFinder(extContext).
+                                    getServiceProviderList(LIFECYCLE_PROVIDER);
+                    for (String className : classList)
+                    {
+                        Object obj = createClass(className,extContext);
+                        if (DiscoverableLifecycleProvider.class.isAssignableFrom(obj.getClass()))
                         {
-                            @Override
-                            public Boolean run() throws ClassNotFoundException,
-                                    NoClassDefFoundError,
-                                    InstantiationException,
-                                    IllegalAccessException,
-                                    InvocationTargetException,
-                                    PrivilegedActionException
+                            DiscoverableLifecycleProvider discoverableLifecycleProvider =
+                                    (DiscoverableLifecycleProvider) obj;
+                            if (discoverableLifecycleProvider.isAvailable())
                             {
-                                List<String> classList
-                                        = ServiceProviderFinderFactory.getServiceProviderFinder(extContext).
-                                                                       getServiceProviderList(LIFECYCLE_PROVIDER);
-                                Iterator<String> iter = classList.iterator();
-                                while (iter.hasNext())
-                                {
-                                    String className = iter.next();
-                                    Object obj = createClass(className,extContext);
-                                    if (DiscoverableLifecycleProvider.class.isAssignableFrom(obj.getClass()))
-                                    {
-                                        DiscoverableLifecycleProvider discoverableLifecycleProvider =
-                                                (DiscoverableLifecycleProvider) obj;
-                                        if (discoverableLifecycleProvider.isAvailable())
-                                        {
-                                            extContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE_KEY,
-                                                                               discoverableLifecycleProvider);
-                                            return true;
-                                        }
-                                    }
-                                }
-                                return false;
+                                extContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE_KEY,
+                                        discoverableLifecycleProvider);
+                                return true;
                             }
-                        });
+                        }
+                    }
+                    return false;
+                });
             }
             else
             {
                 List<String> classList = ServiceProviderFinderFactory.getServiceProviderFinder(extContext).
                         getServiceProviderList(LIFECYCLE_PROVIDER);
-                Iterator<String> iter = classList.iterator();
-                while (iter.hasNext())
+                for (String className : classList)
                 {
-                    String className = iter.next();
                     Object obj = createClass(className,extContext);
                     if (DiscoverableLifecycleProvider.class.isAssignableFrom(obj.getClass()))
                     {
@@ -196,7 +181,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory
                         {
                             extContext.getApplicationMap().put(LIFECYCLE_PROVIDER_INSTANCE_KEY,
                                                                discoverableLifecycleProvider);
-                            return (Boolean) true;
+                            return true;
                         }
                     }
                 }
@@ -237,7 +222,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory
     {
         try
         {
-                ClassUtils.classForName("javax.annotation.PreDestroy");
+            ClassUtils.classForName("javax.annotation.PreDestroy");
         }
         catch (ClassNotFoundException e)
         {

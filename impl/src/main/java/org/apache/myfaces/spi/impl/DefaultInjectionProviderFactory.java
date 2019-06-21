@@ -131,8 +131,7 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
     }
 
 
-    private boolean resolveInjectionProviderFromService(
-            ExternalContext externalContext)
+    private boolean resolveInjectionProviderFromService(ExternalContext externalContext)
     {
         boolean returnValue = false;
         final ExternalContext extContext = externalContext;
@@ -175,7 +174,7 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
                         {
                             extContext.getApplicationMap().put(INJECTION_PROVIDER_INSTANCE_KEY,
                                                                discoverableInjectionProvider);
-                            return (Boolean) true;
+                            return true;
                         }
                     }
                 }

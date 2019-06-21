@@ -86,9 +86,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         _compiler = compiler;
 
-        _compositeComponentMetadataFacelets = new HashMap<String, DefaultFacelet>();
-
-        _relativeLocations = new HashMap<String, URL>();
+        _compositeComponentMetadataFacelets = new HashMap<>();
+        _relativeLocations = new HashMap<>();
 
         _resolver = resolver;
         if (_resolver instanceof DefaultResourceResolver)
@@ -103,36 +102,15 @@ public final class DefaultFaceletFactory extends FaceletFactory
                 = (FaceletCacheFactory) FactoryFinder.getFactory(FactoryFinder.FACELET_CACHE_FACTORY);
         _faceletCache = (FaceletCache<Facelet>) cacheFactory.getFaceletCache();
         
-        FaceletCache.MemberFactory<Facelet> faceletFactory = new FaceletCache.MemberFactory<Facelet>()
-        {
-            @Override
-            public Facelet newInstance(URL url) throws IOException
-            {
-                return _createFacelet(url);
-            }
-        };
-        FaceletCache.MemberFactory<Facelet> viewMetadataFaceletFactory = new FaceletCache.MemberFactory<Facelet>()
-        {
-            @Override
-            public Facelet newInstance(URL url) throws IOException
-            {
-                return _createViewMetadataFacelet(url);
-            }
-        };
+        FaceletCache.MemberFactory<Facelet> faceletFactory = (URL url) -> _createFacelet(url);
+        FaceletCache.MemberFactory<Facelet> viewMetadataFaceletFactory = (URL url) -> _createViewMetadataFacelet(url);
         
         if (_faceletCache instanceof AbstractFaceletCache)
         {
             _abstractFaceletCache = (AbstractFaceletCache<Facelet>) _faceletCache;
             
             FaceletCache.MemberFactory<Facelet> compositeComponentMetadataFaceletFactory = 
-                new FaceletCache.MemberFactory<Facelet>()
-            {
-                @Override
-                public Facelet newInstance(URL url) throws IOException
-                {
-                    return _createCompositeComponentMetadataFacelet(url);
-                }
-            };
+                (URL url) -> _createCompositeComponentMetadataFacelet(url);
 
             try
             {
@@ -142,8 +120,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
             catch (Exception e)
             {
                 throw new FacesException(
-                    "Cannot call setMemberFactories method, Initialization of FaceletCache failed.",
-                                         e);
+                    "Cannot call setMemberFactories method, Initialization of FaceletCache failed.", e);
             }   
         }
         else
@@ -160,8 +137,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
             catch (Exception e)
             {
                 throw new FacesException(
-                    "Cannot call setMemberFactories method, Initialization of FaceletCache failed.",
-                                         e);
+                    "Cannot call setMemberFactories method, Initialization of FaceletCache failed.", e);
             }            
         }
 
@@ -217,7 +193,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
                 }
                 else
                 {
-                    Map<String, URL> newLoc = new HashMap<String, URL>(_relativeLocations);
+                    Map<String, URL> newLoc = new HashMap<>(_relativeLocations);
                     newLoc.put(uri, url);
                     _relativeLocations = newLoc;
                 }
@@ -480,7 +456,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
                 }
                 else
                 {
-                    Map<String, URL> newLoc = new HashMap<String, URL>(_relativeLocations);
+                    Map<String, URL> newLoc = new HashMap<>(_relativeLocations);
                     newLoc.put(uri, url);
                     _relativeLocations = newLoc;
                 }
@@ -534,7 +510,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
                 }
                 else
                 {
-                    Map<String, URL> newLoc = new HashMap<String, URL>(_relativeLocations);
+                    Map<String, URL> newLoc = new HashMap<>(_relativeLocations);
                     newLoc.put(uri, url);
                     _relativeLocations = newLoc;
                 }
@@ -572,7 +548,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
                 if (_refreshPeriod != NO_CACHE_DELAY)
                 {
                     Map<String, DefaultFacelet> newLoc
-                            = new HashMap<String, DefaultFacelet>(_compositeComponentMetadataFacelets);
+                            = new HashMap<>(_compositeComponentMetadataFacelets);
                     newLoc.put(key, f);
                     _compositeComponentMetadataFacelets = newLoc;
                 }
