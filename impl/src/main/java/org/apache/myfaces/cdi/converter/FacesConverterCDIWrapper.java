@@ -44,7 +44,6 @@ public class FacesConverterCDIWrapper implements PartialStateHolder, Converter, 
 
     public FacesConverterCDIWrapper(Class<? extends Converter> converterClass, Class<?> forClass, String converterId)
     {
-        //this.converterClass = converterClass;
         this.forClass = forClass;
         this.converterId = converterId;
     }
@@ -88,7 +87,6 @@ public class FacesConverterCDIWrapper implements PartialStateHolder, Converter, 
         if (!initialStateMarked())
         {
             Object values[] = new Object[2];
-            //values[0] = converterClass;
             values[0] = forClass;
             values[1] = converterId;
             return values;
@@ -101,8 +99,7 @@ public class FacesConverterCDIWrapper implements PartialStateHolder, Converter, 
     {
         if (state != null)
         {
-            Object values[] = (Object[])state;
-            //converterClass = (Class)values[0];            
+            Object values[] = (Object[])state;         
             forClass = (Class)values[0];
             converterId = (String)values[1];
         }
