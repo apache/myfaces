@@ -170,7 +170,7 @@ public class WholeBeanValidator implements Validator
         }
         catch (Exception ex)
         {
-            Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
+            log.log(Level.FINEST, null, ex);
         }
         
         if (base instanceof Serializable)
@@ -187,7 +187,7 @@ public class WholeBeanValidator implements Validator
             }
             catch (Exception ex) 
             {
-                Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
+                log.log(Level.FINEST, null, ex);
             }
         }
         else
@@ -203,7 +203,7 @@ public class WholeBeanValidator implements Validator
             }
             catch (Exception ex)
             {
-                Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
+                log.log(Level.FINEST, null, ex);
             }
         }
         
@@ -419,12 +419,14 @@ public class WholeBeanValidator implements Validator
             this.facesContext = facesContext;
         }
 
+        @Override
         public String interpolate(final String s, final MessageInterpolator.Context context)
         {
             Locale locale = facesContext.getViewRoot().getLocale();
             return interpolator.interpolate(s, context, locale);
         }
 
+        @Override
         public String interpolate(final String s, final MessageInterpolator.Context context, final Locale locale)
         {
             return interpolator.interpolate(s, context, locale);

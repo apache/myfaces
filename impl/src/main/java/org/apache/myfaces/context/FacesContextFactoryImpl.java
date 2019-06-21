@@ -82,14 +82,11 @@ public class FacesContextFactoryImpl extends FacesContextFactory implements Rele
             Class clazz = ClassUtils.classForName("javax.faces.context._MyFacesExternalContextHelper");
             Field externalContextFirstInstance = clazz.getDeclaredField("firstInstance");
             externalContextFirstInstance.setAccessible(true);
-            
-            if (externalContextFirstInstance != null)
+
+            if (firstExternalContextInstance == null)
             {
-                if (firstExternalContextInstance == null)
-                {
-                    firstExternalContextInstance = 
-                        (ThreadLocal<ExternalContext>) externalContextFirstInstance.get(null);
-                }
+                firstExternalContextInstance = 
+                    (ThreadLocal<ExternalContext>) externalContextFirstInstance.get(null);
             }
         }
         catch (SecurityException e)

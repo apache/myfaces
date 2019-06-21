@@ -150,11 +150,13 @@ public final class CookieMap extends AbstractAttributeMap<Object>
             _length = cookies.length;
         }
 
+        @Override
         public boolean hasMoreElements()
         {
             return _index < _length;
         }
 
+        @Override
         public String nextElement()
         {
             if (!hasMoreElements())

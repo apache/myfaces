@@ -37,7 +37,7 @@ import org.apache.myfaces.util.AbstractAttributeMap;
 public final class RequestHeaderValuesMap extends AbstractAttributeMap<String[]>
 {
     private final HttpServletRequest _httpServletRequest;
-    private final Map<String, String[]> _valueCache = new HashMap<String, String[]>();
+    private final Map<String, String[]> _valueCache = new HashMap<>();
 
     RequestHeaderValuesMap(final HttpServletRequest httpServletRequest)
     {
@@ -48,14 +48,7 @@ public final class RequestHeaderValuesMap extends AbstractAttributeMap<String[]>
     @SuppressWarnings("unchecked")
     protected String[] getAttribute(final String key)
     {
-        String[] ret = _valueCache.get(key);
-        if (ret == null)
-        {
-            ret = toArray(_httpServletRequest.getHeaders(key));
-            _valueCache.put(key, ret);
-        }
-
-        return ret;
+        return _valueCache.computeIfAbsent(key, k -> toArray(_httpServletRequest.getHeaders(key)));
     }
 
     @Override
@@ -79,7 +72,7 @@ public final class RequestHeaderValuesMap extends AbstractAttributeMap<String[]>
 
     private String[] toArray(Enumeration<String> e)
     {
-        List<String> ret = new ArrayList<String>();
+        List<String> ret = new ArrayList<>();
 
         while (e.hasMoreElements())
         {

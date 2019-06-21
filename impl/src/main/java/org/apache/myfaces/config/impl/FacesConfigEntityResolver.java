@@ -60,6 +60,7 @@ public class FacesConfigEntityResolver implements EntityResolver
     {
     }
 
+    @Override
     public InputSource resolveEntity(String publicId,
                                      String systemId)
         throws IOException

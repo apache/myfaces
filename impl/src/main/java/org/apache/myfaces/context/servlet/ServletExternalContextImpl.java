@@ -134,6 +134,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         _flashFactory = flashFactory;
     }
 
+    @Override
     public void release()
     {
         super.release(); // releases fields on ServletExternalContextImplBase

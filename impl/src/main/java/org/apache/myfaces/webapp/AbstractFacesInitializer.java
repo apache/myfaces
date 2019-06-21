@@ -711,34 +711,31 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         
         if (Boolean.TRUE.equals(b))
         {
-            // According to https://tyrus.java.net/documentation/1.13/index/deployment.html section 3.2
-            // we can create a websocket programmatically, getting ServerContainer instance from this location
+            // get the instance
+            // see https://docs.oracle.com/javaee/7/api/javax/websocket/server/ServerContainer.html)
             final ServerContainer serverContainer = (ServerContainer) 
-                    servletContext.getAttribute("javax.websocket.server.ServerContainer");
-
-            if (serverContainer != null)
+                    servletContext.getAttribute(ServerContainer.class.getName());
+            if (serverContainer == null)
             {
-                try 
-                {
-                    serverContainer.addEndpoint(ServerEndpointConfig.Builder
-                            .create(EndpointImpl.class, EndpointImpl.JAVAX_FACES_PUSH_PATH)
-                            .configurator(new WebsocketConfigurator(externalContext)).build());
-                    
-                    //Init LRU cache
-                    WebsocketFacesInit.initWebsocketSessionLRUCache(externalContext);
-                    
-                    externalContext.getApplicationMap().put("org.apache.myfaces.push", "true");
-                }
-                catch (DeploymentException e)
-                {
-                    log.log(Level.INFO, "Exception on Initialize Websocket Endpoint: ", e);
-                }
+                log.log(Level.INFO, "f:websocket support enabled but cannot found websocket ServerContainer instance "
+                        + "on current context.");
+                return;
             }
-            else
+
+            try 
             {
-                log.log(Level.INFO, "f:websocket support enabled but cannot found websocket ServerContainer instance "+
-                        "on current context. If websocket library is available, please include a FakeEndpoint instance "
-                        + "into your code to force enable it (Tyrus users).");
+                serverContainer.addEndpoint(ServerEndpointConfig.Builder
+                        .create(EndpointImpl.class, EndpointImpl.JAVAX_FACES_PUSH_PATH)
+                        .configurator(new WebsocketConfigurator(externalContext)).build());
+
+                //Init LRU cache
+                WebsocketFacesInit.initWebsocketSessionLRUCache(externalContext);
+
+                externalContext.getApplicationMap().put("org.apache.myfaces.push", "true");
+            }
+            catch (DeploymentException e)
+            {
+                log.log(Level.INFO, "Exception on initialize Websocket Endpoint: ", e);
             }
         }
     }
@@ -747,6 +744,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
      * 
      * @since 2.3
      * @param facesContext 
+     * @param servletContext
      */
     protected void initAutomaticExtensionlessMapping(FacesContext facesContext, ServletContext servletContext)
     {

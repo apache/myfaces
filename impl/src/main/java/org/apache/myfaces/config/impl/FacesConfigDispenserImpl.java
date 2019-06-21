@@ -63,21 +63,21 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     private static final Logger log = Logger.getLogger(FacesConfigDispenserImpl.class.getName());
     
     // Factories
-    private List<String> applicationFactories = new ArrayList<String>();
-    private List<String> exceptionHandlerFactories = new ArrayList<String>();
-    private List<String> externalContextFactories = new ArrayList<String>();
-    private List<String> facesContextFactories = new ArrayList<String>();
-    private List<String> lifecycleFactories = new ArrayList<String>();
-    private List<String> viewDeclarationLanguageFactories = new ArrayList<String>();
-    private List<String> partialViewContextFactories = new ArrayList<String>();
-    private List<String> renderKitFactories = new ArrayList<String>();
-    private List<String> tagHandlerDelegateFactories = new ArrayList<String>();
-    private List<String> visitContextFactories = new ArrayList<String>();
-    private List<String> faceletCacheFactories = new ArrayList<String>();
-    private List<String> flashFactories = new ArrayList<String>();
-    private List<String> clientWindowFactories = new ArrayList<String>();
-    private List<String> flowHandlerFactories = new ArrayList<String>();
-    private List<String> searchExpressionContextFactories = new ArrayList<String>();
+    private List<String> applicationFactories = new ArrayList<>();
+    private List<String> exceptionHandlerFactories = new ArrayList<>();
+    private List<String> externalContextFactories = new ArrayList<>();
+    private List<String> facesContextFactories = new ArrayList<>();
+    private List<String> lifecycleFactories = new ArrayList<>();
+    private List<String> viewDeclarationLanguageFactories = new ArrayList<>();
+    private List<String> partialViewContextFactories = new ArrayList<>();
+    private List<String> renderKitFactories = new ArrayList<>();
+    private List<String> tagHandlerDelegateFactories = new ArrayList<>();
+    private List<String> visitContextFactories = new ArrayList<>();
+    private List<String> faceletCacheFactories = new ArrayList<>();
+    private List<String> flashFactories = new ArrayList<>();
+    private List<String> clientWindowFactories = new ArrayList<>();
+    private List<String> flowHandlerFactories = new ArrayList<>();
+    private List<String> searchExpressionContextFactories = new ArrayList<>();
     
     private String defaultRenderKitId;
     private String messageBundle;
@@ -85,53 +85,53 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     
     private LocaleConfig localeConfig;
 
-    private Map<String, String> components = new HashMap<String, String>();
-    private Map<String, String> converterByClass = new HashMap<String, String>();
-    private Map<String, String> converterById = new HashMap<String, String>();
-    private Map<String, String> validators = new HashMap<String, String>();
-    private List<Behavior> behaviors = new ArrayList<Behavior>();
+    private Map<String, String> components = new HashMap<>();
+    private Map<String, String> converterByClass = new HashMap<>();
+    private Map<String, String> converterById = new HashMap<>();
+    private Map<String, String> validators = new HashMap<>();
+    private List<Behavior> behaviors = new ArrayList<>();
     
-    private Map<String, Converter> converterConfigurationByClassName = new HashMap<String, Converter>();
+    private Map<String, Converter> converterConfigurationByClassName = new HashMap<>();
     
-    private Map<String, RenderKit> renderKits = new LinkedHashMap<String, RenderKit>();
+    private Map<String, RenderKit> renderKits = new LinkedHashMap<>();
     
-    private List<String> actionListeners = new ArrayList<String>();
-    private List<String> elResolvers = new ArrayList<String>();
-    private List<String> lifecyclePhaseListeners = new ArrayList<String>();
-    private List<String> navigationHandlers = new ArrayList<String>();
-    private List<String> propertyResolver = new ArrayList<String>();
-    private List<String> resourceHandlers = new ArrayList<String>();
-    private List<String> stateManagers = new ArrayList<String>();
-    private List<String> variableResolver = new ArrayList<String>();
-    private List<String> viewHandlers = new ArrayList<String>();
-    private List<String> defaultValidatorIds = new ArrayList<String>();
-    private List<String> defaultAnnotatedValidatorIds = new ArrayList<String>();
-    private List<String> searchExpressionHandlers = new ArrayList<String>();
-    private List<String> searchKeywordResolvers = new ArrayList<String>();
+    private List<String> actionListeners = new ArrayList<>();
+    private List<String> elResolvers = new ArrayList<>();
+    private List<String> lifecyclePhaseListeners = new ArrayList<>();
+    private List<String> navigationHandlers = new ArrayList<>();
+    private List<String> propertyResolver = new ArrayList<>();
+    private List<String> resourceHandlers = new ArrayList<>();
+    private List<String> stateManagers = new ArrayList<>();
+    private List<String> variableResolver = new ArrayList<>();
+    private List<String> viewHandlers = new ArrayList<>();
+    private List<String> defaultValidatorIds = new ArrayList<>();
+    private List<String> defaultAnnotatedValidatorIds = new ArrayList<>();
+    private List<String> searchExpressionHandlers = new ArrayList<>();
+    private List<String> searchKeywordResolvers = new ArrayList<>();
     
-    private List<NavigationRule> navigationRules = new ArrayList<NavigationRule>();
-    private List<ResourceBundle> resourceBundles = new ArrayList<ResourceBundle>();
+    private List<NavigationRule> navigationRules = new ArrayList<>();
+    private List<ResourceBundle> resourceBundles = new ArrayList<>();
 
-    private List<SystemEventListener> systemEventListeners = new ArrayList<SystemEventListener>();
+    private List<SystemEventListener> systemEventListeners = new ArrayList<>();
     
-    private List<NamedEvent> namedEvents = new ArrayList<NamedEvent>();
+    private List<NamedEvent> namedEvents = new ArrayList<>();
     
     private Map<String, FaceletsProcessing> faceletsProcessingByFileExtension
-            = new HashMap<String, FaceletsProcessing>();
+            = new HashMap<>();
     
-    private List<FacesFlowDefinition> facesFlowDefinitions = new ArrayList<FacesFlowDefinition>();
+    private List<FacesFlowDefinition> facesFlowDefinitions = new ArrayList<>();
     
-    private List<String> protectedViewUrlPatterns = new ArrayList<String>();
-    private List<ContractMapping> resourceLibraryContractMappings = new ArrayList<ContractMapping>();
+    private List<String> protectedViewUrlPatterns = new ArrayList<>();
+    private List<ContractMapping> resourceLibraryContractMappings = new ArrayList<>();
     
-    private List<ComponentTagDeclaration> componentTagDeclarations = new ArrayList<ComponentTagDeclaration>();
-    private List<FaceletTagLibrary> faceletTagLibraries = new ArrayList<FaceletTagLibrary>();
+    private List<ComponentTagDeclaration> componentTagDeclarations = new ArrayList<>();
+    private List<FaceletTagLibrary> faceletTagLibraries = new ArrayList<>();
     
-    private List <String> resourceResolvers = new ArrayList<String>();
+    private List <String> resourceResolvers = new ArrayList<>();
     
-    private List<ViewPoolMapping> viewPoolMappings = new ArrayList<ViewPoolMapping>();
-    private List<FaceletsTemplateMapping> faceletsTemplateMappings = new ArrayList<FaceletsTemplateMapping>();
-        
+    private List<ViewPoolMapping> viewPoolMappings = new ArrayList<>();
+    private List<FaceletsTemplateMapping> faceletsTemplateMappings = new ArrayList<>();
+
     // Unmodifiable list/maps to avoid modifications
     private transient List<String> umapplicationFactories;
     private transient List<String> umexceptionHandlerFactories;
@@ -343,19 +343,21 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * Add another ApplicationFactory class name
      * 
-     * @param factoryClassName
-     *            a class name
+     * @param factoryClassName a class name
      */
+    @Override
     public void feedApplicationFactory(String factoryClassName)
     {
         applicationFactories.add(factoryClassName);
     }
 
+    @Override
     public void feedExceptionHandlerFactory(String factoryClassName)
     {
         exceptionHandlerFactories.add(factoryClassName);
     }
 
+    @Override
     public void feedExternalContextFactory(String factoryClassName)
     {
         externalContextFactories.add(factoryClassName);
@@ -364,9 +366,9 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * Add another FacesContextFactory class name
      * 
-     * @param factoryClassName
-     *            a class name
+     * @param factoryClassName a class name
      */
+    @Override
     public void feedFacesContextFactory(String factoryClassName)
     {
         facesContextFactories.add(factoryClassName);
@@ -375,19 +377,21 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * Add another LifecycleFactory class name
      * 
-     * @param factoryClassName
-     *            a class name
+     * @param factoryClassName a class name
      */
+    @Override
     public void feedLifecycleFactory(String factoryClassName)
     {
         lifecycleFactories.add(factoryClassName);
     }
 
+    @Override
     public void feedViewDeclarationLanguageFactory(String factoryClassName)
     {
         viewDeclarationLanguageFactories.add(factoryClassName);
     }
 
+    @Override
     public void feedPartialViewContextFactory(String factoryClassName)
     {
         partialViewContextFactories.add(factoryClassName);
@@ -396,19 +400,21 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * Add another RenderKitFactory class name
      * 
-     * @param factoryClassName
-     *            a class name
+     * @param factoryClassName a class name
      */
+    @Override
     public void feedRenderKitFactory(String factoryClassName)
     {
         renderKitFactories.add(factoryClassName);
     }
 
+    @Override
     public void feedTagHandlerDelegateFactory(String factoryClassName)
     {
         tagHandlerDelegateFactories.add(factoryClassName);
     }
 
+    @Override
     public void feedVisitContextFactory(String factoryClassName)
     {
         visitContextFactories.add(factoryClassName);
@@ -417,6 +423,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return Collection over ApplicationFactory class names
      */
+    @Override
     public Collection<String> getApplicationFactoryIterator()
     {
         if (umapplicationFactories == null)
@@ -426,6 +433,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
         return umapplicationFactories;
     }
 
+    @Override
     public Collection<String> getExceptionHandlerFactoryIterator()
     {
         if (umexceptionHandlerFactories == null)
@@ -435,6 +443,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
         return umexceptionHandlerFactories;
     }
 
+    @Override
     public Collection<String> getExternalContextFactoryIterator()
     {
         if (umexternalContextFactories == null)
@@ -447,6 +456,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return Collection over FacesContextFactory class names
      */
+    @Override
     public Collection<String> getFacesContextFactoryIterator()
     {
         if (umfacesContextFactories == null)
@@ -459,6 +469,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return Collection over LifecycleFactory class names
      */
+    @Override
     public Collection<String> getLifecycleFactoryIterator()
     {
         if (umlifecycleFactories == null)
@@ -468,6 +479,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
         return umlifecycleFactories;
     }
 
+    @Override
     public Collection<String> getViewDeclarationLanguageFactoryIterator()
     {
         if (umviewDeclarationLanguageFactories == null)
@@ -477,6 +489,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
         return umviewDeclarationLanguageFactories;
     }
 
+    @Override
     public Collection<String> getPartialViewContextFactoryIterator()
     {
         if (umpartialViewContextFactories == null)
@@ -489,6 +502,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return Collection over RenderKit factory class names
      */
+    @Override
     public Collection<String> getRenderKitFactoryIterator()
     {
         if (umrenderKitFactories == null)
@@ -498,6 +512,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
         return umrenderKitFactories;
     }
 
+    @Override
     public Collection<String> getTagHandlerDelegateFactoryIterator()
     {
         if (umtagHandlerDelegateFactories == null)
@@ -507,6 +522,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
         return umtagHandlerDelegateFactories;
     }
 
+    @Override
     public Collection<String> getVisitContextFactoryIterator()
     {
         if (umvisitContextFactories == null)
@@ -519,6 +535,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return Collection over ActionListener class names
      */
+    @Override
     public Collection<String> getActionListenerIterator()
     {
         if (umactionListeners == null)
@@ -531,6 +548,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return the default render kit id
      */
+    @Override
     public String getDefaultRenderKitId()
     {
         return defaultRenderKitId;
@@ -539,6 +557,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return Collection over message bundle names
      */
+    @Override
     public String getMessageBundle()
     {
         return messageBundle;
@@ -547,6 +566,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     /**
      * @return Collection over NavigationHandler class names
      */
+    @Override
     public Collection<String> getNavigationHandlerIterator()
     {
         if (umnavigationHandlers == null)
@@ -743,7 +763,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
     @Override
     public Collection<String> getDefaultValidatorIds ()
     {
-        List<String> allDefaultValidatorIds = new ArrayList<String>();
+        List<String> allDefaultValidatorIds = new ArrayList<>();
         allDefaultValidatorIds.addAll(defaultAnnotatedValidatorIds);
         allDefaultValidatorIds.addAll(defaultValidatorIds);
         return Collections.unmodifiableCollection(allDefaultValidatorIds);
