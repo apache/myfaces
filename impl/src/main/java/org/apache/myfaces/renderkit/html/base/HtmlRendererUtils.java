@@ -1190,16 +1190,13 @@ public final class HtmlRendererUtils
         }
         if ((item.getLabel() != null) && (item.getLabel().length() > 0))
         {
-            // writer.write(HTML.NBSP_ENTITY);
             writer.write(" ");
             if (item.isEscape())
             {
-                //writer.write(item.getLabel());
                 writer.writeText(item.getLabel(), null);
             }
             else
             {
-                //writer.write(HTMLEncoder.encode (item.getLabel()));
                 writer.write(item.getLabel());
             }
         }
