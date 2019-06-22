@@ -18,12 +18,14 @@
  */
 package org.apache.myfaces.flow.cdi;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Producer;
 import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
 import org.apache.myfaces.cdi.util.BeanProvider;
@@ -37,12 +39,12 @@ import org.apache.myfaces.spi.FacesFlowProvider;
  */
 public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
 {
+    private final static String CURRENT_FLOW_SCOPE_MAP = "oam.flow.SCOPE_MAP";
+    private final static char SEPARATOR_CHAR = '.';
+    
     private BeanManager _beanManager;
     private boolean _initialized;
-    
-    private final static String CURRENT_FLOW_SCOPE_MAP = "oam.flow.SCOPE_MAP";
-    
-    static final char SEPARATOR_CHAR = '.';
+    private List<Flow> flows;
     
     private boolean isFlowScopeBeanHolderCreated(FacesContext facesContext)
     {
@@ -87,8 +89,19 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
             return null;
         }
 
-        FlowBuilderFactoryBean bean = CDIUtils.lookup(beanManager, FlowBuilderFactoryBean.class);
-        List<Flow> flows = bean.getFlowDefinitions();
+        if (flows == null)
+        {
+            flows = new ArrayList<>();
+
+            FlowBuilderExtension extension =
+                    BeanProvider.getContextualReference(beanManager, FlowBuilderExtension.class, true);
+            for (Producer<Flow> producer : extension.getFlowProducers())
+            {
+                Flow flow = producer.produce(beanManager.<Flow>createCreationalContext(null));
+                flows.add(flow);
+            }
+        }
+
         return flows.iterator();
     }
     
@@ -170,4 +183,5 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
                 + flow.getDefiningDocumentId() + SEPARATOR_CHAR
                 + flow.getId();
     }
+
 }

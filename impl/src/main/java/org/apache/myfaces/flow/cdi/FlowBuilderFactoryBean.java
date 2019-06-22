@@ -18,22 +18,12 @@
  */
 package org.apache.myfaces.flow.cdi;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Producer;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.Flow;
 import javax.faces.flow.builder.FlowBuilder;
 import javax.faces.flow.builder.FlowBuilderParameter;
-import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.flow.builder.FlowBuilderImpl;
 
 /**
@@ -48,11 +38,6 @@ public class FlowBuilderFactoryBean
     public static final String FLOW_BUILDER_FACTORY_BEAN_NAME =
         "oam_FLOW_BUILDER_FACTORY_BEAN_NAME";
 
-    private List<Flow> flowDefinitions = null;
-
-    @Inject
-    private FlowBuilderExtension flowBuilderExtension;
-
     public FlowBuilderFactoryBean()
     {
     }
@@ -62,29 +47,5 @@ public class FlowBuilderFactoryBean
     public FlowBuilder createFlowBuilderInstance()
     {
         return new FlowBuilderImpl();
-    }
-
-    /**
-     * @return the flowDefinitions
-     */
-    public synchronized List<Flow> getFlowDefinitions()
-    {
-        if (flowDefinitions == null)
-        {
-            flowDefinitions = new ArrayList<Flow>();
-            BeanManager beanManager = CDIUtils.getBeanManager(FacesContext.getCurrentInstance().getExternalContext());
-            Iterator<Producer<Flow>> it = flowBuilderExtension.getFlowProducers().iterator();
-
-            if (it != null)
-            {
-                while (it.hasNext())
-                {
-                    Flow flow = it.next().produce(beanManager.<Flow>createCreationalContext(null));
-                    flowDefinitions.add(flow);
-                }
-            }
-        }
-
-        return flowDefinitions;
     }
 }
