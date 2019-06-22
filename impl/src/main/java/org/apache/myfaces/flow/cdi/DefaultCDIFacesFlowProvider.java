@@ -46,8 +46,13 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
     
     private boolean isFlowScopeBeanHolderCreated(FacesContext facesContext)
     {
-        return facesContext.getExternalContext().
-            getSessionMap().containsKey(FlowScopeBeanHolder.FLOW_SCOPE_PREFIX_KEY);
+        if (facesContext.getExternalContext().getSession(false) == null)
+        {
+            return false;
+        }
+        
+        return facesContext.getExternalContext().getSessionMap()
+                .containsKey(FlowScopeBeanHolder.FLOW_SCOPE_PREFIX_KEY);
     }
     
     @Override
@@ -60,19 +65,13 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
         // in CDI the beans are destroyed at the end of the request,
         // not when invalidateSession() is called.
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext != null)
+        if (facesContext != null && isFlowScopeBeanHolderCreated(facesContext))
         {
-            if (facesContext.getExternalContext().getSession(false) != null)
+            FlowScopeBeanHolder flowScopeBeanHolder = BeanProvider.getContextualReference(
+                _beanManager, FlowScopeBeanHolder.class, false);
+            if (flowScopeBeanHolder != null)
             {
-                if (isFlowScopeBeanHolderCreated(facesContext))
-                {
-                    FlowScopeBeanHolder flowScopeBeanHolder = BeanProvider.getContextualReference(
-                        _beanManager, FlowScopeBeanHolder.class, false);
-                    if (flowScopeBeanHolder != null)
-                    {
-                        flowScopeBeanHolder.destroyBeans();
-                    }
-                }
+                flowScopeBeanHolder.destroyBeans();
             }
         }
     }
@@ -81,21 +80,16 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
     public Iterator<Flow> getAnnotatedFlows(FacesContext facesContext)
     {
         BeanManager beanManager = getBeanManager(facesContext);
-        if (beanManager != null)
-        {
-            FlowBuilderFactoryBean bean = CDIUtils.lookup(
-                beanManager, FlowBuilderFactoryBean.class);
-
-            List<Flow> flows = bean.getFlowDefinitions();
-            
-            return flows.iterator();
-        }
-        else
+        if (beanManager == null)
         {
             Logger.getLogger(DefaultCDIFacesFlowProvider.class.getName()).log(Level.INFO,
                 "CDI BeanManager not found");
+            return null;
         }
-        return null;
+
+        FlowBuilderFactoryBean bean = CDIUtils.lookup(beanManager, FlowBuilderFactoryBean.class);
+        List<Flow> flows = bean.getFlowDefinitions();
+        return flows.iterator();
     }
     
     @Override
@@ -107,8 +101,8 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
             FlowScopeBeanHolder beanHolder = CDIUtils.lookup(beanManager, FlowScopeBeanHolder.class);
             beanHolder.createCurrentFlowScope(context);
         }
-        String mapKey = CURRENT_FLOW_SCOPE_MAP+SEPARATOR_CHAR+
-                flow.getDefiningDocumentId()+SEPARATOR_CHAR+flow.getId();
+
+        String mapKey = getFlowKey(flow);
         context.getAttributes().remove(mapKey);
     }
     
@@ -121,8 +115,8 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
             FlowScopeBeanHolder beanHolder = CDIUtils.lookup(beanManager, FlowScopeBeanHolder.class);
             beanHolder.destroyCurrentFlowScope(context);
         }
-        String mapKey = CURRENT_FLOW_SCOPE_MAP+SEPARATOR_CHAR+
-                flow.getDefiningDocumentId()+SEPARATOR_CHAR+flow.getId();
+
+        String mapKey = getFlowKey(flow);
         context.getAttributes().remove(mapKey);
     }
     
@@ -132,18 +126,11 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
         Flow flow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
         if (flow != null)
         {
-            String mapKey = CURRENT_FLOW_SCOPE_MAP+SEPARATOR_CHAR+
-                flow.getDefiningDocumentId()+SEPARATOR_CHAR+flow.getId();
-            Map<Object, Object> map = (Map<Object, Object>) facesContext.getAttributes().get(
-                mapKey);
-            if (map == null)
-            {
-                map = new FlowScopeMap(getBeanManager(facesContext), FlowUtils.getFlowMapKey(facesContext, flow));
-                
-                facesContext.getAttributes().put(mapKey, map);
-            }
-            return map;
+            String mapKey = getFlowKey(flow);
+            return (Map<Object, Object>) facesContext.getAttributes().computeIfAbsent(mapKey,
+                    k -> new FlowScopeMap(getBeanManager(facesContext), FlowUtils.getFlowMapKey(facesContext, flow)));
         }
+
         return null;
     }
 
@@ -177,4 +164,10 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
         return _beanManager;
     }
 
+    protected String getFlowKey(Flow flow)
+    {
+        return CURRENT_FLOW_SCOPE_MAP + SEPARATOR_CHAR
+                + flow.getDefiningDocumentId() + SEPARATOR_CHAR
+                + flow.getId();
+    }
 }

@@ -34,12 +34,9 @@ import org.apache.myfaces.spi.ViewScopeProvider;
  */
 public class CDIViewScopeProviderImpl extends ViewScopeProvider
 {
-    
     private BeanManager beanManager;
-    
     private ViewScopeBeanHolder viewScopeBeanHolder;
-    
-    
+
     public CDIViewScopeProviderImpl()
     {
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
@@ -96,18 +93,20 @@ public class CDIViewScopeProviderImpl extends ViewScopeProvider
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext != null)
         {
-            if (facesContext.getExternalContext().getSession(false) != null)
+            if (isViewScopeBeanHolderCreated(facesContext))
             {
-                if (isViewScopeBeanHolderCreated(facesContext))
-                {
-                    getViewScopeBeanHolder().destroyBeans();                
-                }
+                getViewScopeBeanHolder().destroyBeans();                
             }
         }
     }
     
     private boolean isViewScopeBeanHolderCreated(FacesContext facesContext)
     {
+        if (facesContext.getExternalContext().getSession(false) == null)
+        {
+            return false;
+        }
+        
         return facesContext.getExternalContext().
             getSessionMap().containsKey(ViewScopeBeanHolder.VIEW_SCOPE_PREFIX_KEY);
     }
@@ -115,12 +114,9 @@ public class CDIViewScopeProviderImpl extends ViewScopeProvider
     @Override
     public void destroyViewScopeMap(FacesContext facesContext, String viewScopeId)
     {
-        if (facesContext.getExternalContext().getSession(false) != null)
+        if (isViewScopeBeanHolderCreated(facesContext))
         {
-            if (isViewScopeBeanHolderCreated(facesContext))
-            {
-                getViewScopeBeanHolder().destroyBeans(viewScopeId);
-            }
+            getViewScopeBeanHolder().destroyBeans(viewScopeId);
         }
     }
 }
