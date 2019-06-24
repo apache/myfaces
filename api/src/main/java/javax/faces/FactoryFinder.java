@@ -634,7 +634,7 @@ public final class FactoryFinder
 
         synchronized (factoryClassNames)
         {
-            List<String> classNameList = factoryClassNames.computeIfAbsent(factoryName, k -> new ArrayList<String>());
+            List<String> classNameList = factoryClassNames.computeIfAbsent(factoryName, k -> new ArrayList<>());
             classNameList.add(implName);
         }
     }

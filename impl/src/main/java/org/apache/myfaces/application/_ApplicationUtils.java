@@ -33,7 +33,7 @@ import javax.faces.event.SystemEventListener;
  */
 class _ApplicationUtils
 {
-    
+    // TODO we could cache the constructor, it's called very often.
     static SystemEvent _createEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass,
             Object source, SystemEvent event)
     {
