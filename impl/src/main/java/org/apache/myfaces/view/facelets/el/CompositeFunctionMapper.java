@@ -36,7 +36,6 @@ public final class CompositeFunctionMapper extends FunctionMapper
 {
 
     private final FunctionMapper fn0;
-
     private final FunctionMapper fn1;
 
     public CompositeFunctionMapper(FunctionMapper fn0, FunctionMapper fn1)

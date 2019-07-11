@@ -167,7 +167,7 @@ public abstract class Compiler
         return el;
     }
 
-    private final Object featureInstance(String name)
+    private Object featureInstance(String name)
     {
         String type = (String) this.features.get(name);
         if (type != null)

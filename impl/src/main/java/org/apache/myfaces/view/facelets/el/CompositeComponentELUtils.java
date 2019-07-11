@@ -240,7 +240,7 @@ public final class CompositeComponentELUtils
         {
             return 0;
         }
-        return ccLevel.intValue();
+        return ccLevel;
     }
     
     public static UIComponent getCompositeComponentBasedOnLocation(final FacesContext facesContext, 
@@ -430,7 +430,7 @@ public final class CompositeComponentELUtils
         List<UIComponent> list = (List<UIComponent>) facesContext.getAttributes().get(CURRENT_COMPOSITE_COMPONENT_KEY);
         if (list == null)
         {
-            list = new ArrayList<UIComponent>();
+            list = new ArrayList<>();
             facesContext.getAttributes().put(CURRENT_COMPOSITE_COMPONENT_KEY, list);
         }
         list.add(cc);

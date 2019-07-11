@@ -67,7 +67,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
     {
         if (_functions == null)
         {
-            _functions = new HashMap<String, Function>();
+            _functions = new HashMap<>();
         }
         
         Function f = new Function(prefix, localName, m);

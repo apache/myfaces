@@ -203,15 +203,15 @@ public final class RefreshDynamicComponentListener implements
         }
         else if (values[0] instanceof Object[])
         {
-            Object[] def = (Object[])values[0];
-            String ns = ( ((Integer)def[0]).intValue() == 0) ? 
+            Object[] def = (Object[]) values[0];
+            String ns = (((Integer) def[0]) == 0) ? 
                 CompositeResourceLibrary.NAMESPACE_PREFIX :
                 CompositeResourceLibrary.ALIAS_NAMESPACE_PREFIX;
-            taglibURI = ns + (String)(((Object[])values[0])[1]);
+            taglibURI = ns + (String) ((Object[]) values[0])[1];
         }
-        tagName = (String)values[1];
-        attributes = (Map<String,Object>) values[2];
-        baseKey = (String)values[3];
+        tagName = (String) values[1];
+        attributes = (Map<String, Object>) values[2];
+        baseKey = (String) values[3];
     }
 
     @Override

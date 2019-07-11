@@ -187,8 +187,7 @@ public class FaceletsCompilerSupport
                         context.getExternalContext()).getFaceletProcessingConfigurations());
     }
     
-    private static class LoadComponentTagDeclarationFacesContextWrapper 
-        extends FacesContextWrapper
+    private static class LoadComponentTagDeclarationFacesContextWrapper extends FacesContextWrapper
     {
         private FacesContext delegate;
         private UIViewRoot root;

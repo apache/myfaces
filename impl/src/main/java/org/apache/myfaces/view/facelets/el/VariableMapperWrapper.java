@@ -98,7 +98,7 @@ public final class VariableMapperWrapper extends VariableMapperBase implements F
     {
         if (_vars == null)
         {
-            _vars = new HashMap<String, ValueExpression>();
+            _vars = new HashMap<>();
         }
         
         return _vars.put(variable, expression);

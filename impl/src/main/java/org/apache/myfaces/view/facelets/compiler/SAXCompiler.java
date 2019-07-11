@@ -127,8 +127,8 @@ public final class SAXCompiler extends Compiler
             TagAttribute[] ta = new TagAttribute[len];
             for (int i = 0; i < len; i++)
             {
-                ta[i] = new TagAttributeImpl(this.createLocation(), attrs.getURI(i), attrs.getLocalName(i), attrs
-                        .getQName(i), attrs.getValue(i));
+                ta[i] = new TagAttributeImpl(this.createLocation(), attrs.getURI(i), attrs.getLocalName(i),
+                        attrs.getQName(i), attrs.getValue(i));
             }
             return new TagAttributesImpl(ta);
         }

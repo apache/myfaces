@@ -31,9 +31,7 @@ import org.apache.myfaces.view.facelets.el.ELText;
 final class AttributeInstruction implements Instruction
 {
     private final String _alias;
-
     private final String _attr;
-
     private final ELText _txt;
 
     public AttributeInstruction(String alias, String attr, ELText txt)

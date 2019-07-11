@@ -63,10 +63,8 @@ class FaceletCacheImpl extends FaceletCache<DefaultFacelet>
     FaceletCacheImpl(long refreshPeriod)
     {
         _refreshPeriod = refreshPeriod < 0 ? INFINITE_DELAY : refreshPeriod * 1000;
-        
-        _facelets = new HashMap<String, DefaultFacelet>();
-        
-        _viewMetadataFacelets = new HashMap<String, DefaultFacelet>();
+        _facelets = new HashMap<>();
+        _viewMetadataFacelets = new HashMap<>();
     }
 
     @Override
@@ -75,16 +73,15 @@ class FaceletCacheImpl extends FaceletCache<DefaultFacelet>
         Assert.notNull(url, "url");
         
         String key = url.toString();
-        
+
         DefaultFacelet f = _facelets.get(key);
-        
         if (f == null || this.needsToBeRefreshed(f))
         {
             //f = this._createFacelet(url);
             f = getMemberFactory().newInstance(url);
             if (_refreshPeriod != NO_CACHE_DELAY)
             {
-                Map<String, DefaultFacelet> newLoc = new HashMap<String, DefaultFacelet>(_facelets);
+                Map<String, DefaultFacelet> newLoc = new HashMap<>(_facelets);
                 newLoc.put(key, f);
                 _facelets = newLoc;
             }
@@ -114,7 +111,7 @@ class FaceletCacheImpl extends FaceletCache<DefaultFacelet>
             f = getMetadataMemberFactory().newInstance(url);
             if (_refreshPeriod != NO_CACHE_DELAY)
             {
-                Map<String, DefaultFacelet> newLoc = new HashMap<String, DefaultFacelet>(_viewMetadataFacelets);
+                Map<String, DefaultFacelet> newLoc = new HashMap<>(_viewMetadataFacelets);
                 newLoc.put(key, f);
                 _viewMetadataFacelets = newLoc;
             }

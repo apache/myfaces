@@ -29,15 +29,10 @@ import org.apache.myfaces.view.facelets.el.ELText;
 final class DoctypeUnit extends CompilationUnit
 {
     private final String alias;
-
     private final String id;
-    
     private final String name;
-    
     private final String publicId;
-    
     private final String systemId;
-    
     private final boolean html5Doctype;
 
     public DoctypeUnit(String alias, String id, String name, String publicId, String systemId, boolean html5Doctype)

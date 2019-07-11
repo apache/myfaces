@@ -33,13 +33,9 @@ class TagUnit extends CompilationUnit implements TagConfig
 {
 
     private final TagLibrary library;
-
     private final String id;
-
     private final Tag tag;
-
     private final String namespace;
-
     private final String name;
 
     public TagUnit(TagLibrary library, String namespace, String name, Tag tag, String id)

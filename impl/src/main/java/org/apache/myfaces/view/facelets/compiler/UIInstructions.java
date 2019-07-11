@@ -29,7 +29,6 @@ final class UIInstructions extends UILeaf
 {
 
     private final ELText txt;
-
     private final Instruction[] instructions;
 
     public UIInstructions(ELText txt, Instruction[] instructions)

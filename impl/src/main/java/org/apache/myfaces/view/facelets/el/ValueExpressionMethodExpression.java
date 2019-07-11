@@ -153,15 +153,19 @@ public class ValueExpressionMethodExpression extends MethodExpression
         }
     }
 
+    @Override
     public ValueExpression getWrapped()
     {
         return valueExpression;
     }
+    
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         this.valueExpression = (ValueExpression) in.readObject();
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeObject(this.valueExpression);

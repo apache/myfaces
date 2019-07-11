@@ -41,8 +41,8 @@ public class SectionUniqueIdCounter
     {
         _activeSection = 0;
         _radix = Character.MAX_RADIX;
-        _counterStack = new ArrayList<Section>();
-        _counterStack.add(new Section(null,1,_radix));
+        _counterStack = new ArrayList<>();
+        _counterStack.add(new Section(null, 1, _radix));
         _prefix = null;
         _builder = new StringBuilder(30);
         _bufferConversion = new char[15];
@@ -53,8 +53,8 @@ public class SectionUniqueIdCounter
     {
         _activeSection = 0;
         _radix = Character.MAX_RADIX;
-        _counterStack = new ArrayList<Section>();
-        _counterStack.add(new Section(null,1,_radix));
+        _counterStack = new ArrayList<>();
+        _counterStack.add(new Section(null, 1, _radix));
         _prefix = prefix;
         _builder = new StringBuilder(30);
         _bufferConversion = new char[15];
@@ -65,8 +65,8 @@ public class SectionUniqueIdCounter
     {
         _activeSection = 0;
         _radix = Character.MAX_RADIX;
-        _counterStack = new ArrayList<Section>();
-        _counterStack.add(new Section(null,1,_radix));
+        _counterStack = new ArrayList<>();
+        _counterStack.add(new Section(null, 1 ,_radix));
         _prefix = prefix;
         _builder = new StringBuilder(30);
         _bufferConversion = new char[15];
@@ -77,8 +77,8 @@ public class SectionUniqueIdCounter
     {
         _activeSection = 0;
         _radix = radix;
-        _counterStack = new ArrayList<Section>();
-        _counterStack.add(new Section(null,1,_radix));
+        _counterStack = new ArrayList<>();
+        _counterStack.add(new Section(null, 1, _radix));
         _prefix = prefix;
         _builder = new StringBuilder(30);
         _bufferConversion = new char[15];
@@ -148,7 +148,7 @@ public class SectionUniqueIdCounter
             _builder.append('_');
             _builder.append(base);
         }
-        _counterStack.add(new Section(_builder.toString(),1,_radix));
+        _counterStack.add(new Section(_builder.toString(), 1, _radix));
         _activeSection++;
         return _builder.toString();
     }
@@ -214,21 +214,20 @@ public class SectionUniqueIdCounter
     
     private static class Section
     {
-        
         private String prefix;
         private long counter;
-        private final StringBuilder _builder;
-        private char[] _bufferConversion;
-        private final int _radix;
+        private final StringBuilder builder;
+        private char[] bufferConversion;
+        private final int radix;
         
         public Section(String prefix, long counter, int radix)
         {
             super();
             this.prefix = prefix;
             this.counter = counter;
-            _builder = new StringBuilder(30);
-            _bufferConversion = new char[15];
-            _radix = radix;
+            this.builder = new StringBuilder(30);
+            this.bufferConversion = new char[15];
+            this.radix = radix;
         }
 
         public long getCounter()
@@ -257,28 +256,28 @@ public class SectionUniqueIdCounter
             }
             // By performance reasons, Long.toString is a very expensive
             // operation in this location, because it triggers a new String()
-            appendToBuilder(i, _radix, builder, _bufferConversion);
+            appendToBuilder(i, radix, builder, bufferConversion);
         }
         
         public String generateUniqueId(String base)
         {
             long i = this.counter;
             this.counter++;
-            _builder.delete(0, _builder.length());
+            builder.delete(0, builder.length());
             if (base != null)
             {
-                _builder.append(base);
+                builder.append(base);
             }
             if (this.prefix != null)
             {
-                _builder.append(this.prefix);
-                _builder.append('_');
+                builder.append(this.prefix);
+                builder.append('_');
             }
             // By performance reasons, Long.toString is a very expensive
             // operation in this location, because it triggers a new String()
             //_builder.append(Long.toString(i, _radix));
-            appendToBuilder(i, _radix, _builder, _bufferConversion);
-            return _builder.toString();
+            appendToBuilder(i, radix, builder, bufferConversion);
+            return builder.toString();
         }
 
         public String getPrefix()

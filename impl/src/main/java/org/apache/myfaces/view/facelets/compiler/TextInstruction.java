@@ -30,7 +30,6 @@ import org.apache.myfaces.view.facelets.el.ELText;
 final class TextInstruction implements Instruction
 {
     private final ELText txt;
-
     private final String alias;
 
     public TextInstruction(String alias, ELText txt)

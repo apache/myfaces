@@ -41,15 +41,10 @@ final class UIInstructionHandler extends AbstractUIHandler
 {
 
     private final String alias;
-
     private final String id;
-
     private final ELText txt;
-
     private final Instruction[] instructions;
-
     private final int length;
-
     private final boolean literal;
 
     public UIInstructionHandler(String alias, String id, Instruction[] instructions, ELText txt)

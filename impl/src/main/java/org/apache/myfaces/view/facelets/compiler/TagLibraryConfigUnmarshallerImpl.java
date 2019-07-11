@@ -135,33 +135,19 @@ public class TagLibraryConfigUnmarshallerImpl
     private static class LibraryHandler extends DefaultHandler
     {
         private final URL source;
-        
         private FaceletTagLibraryImpl library;
-
         private final StringBuffer buffer;
-
         private Locator locator;
-
         private String tagName;
-
         private String converterId;
-
         private String validatorId;
-        
         private String behaviorId;
-
         private String componentType;
-
         private String rendererType;
-
         private String functionName;
-
         private String handlerClass;
-
         private String functionClass;
-
         private String functionSignature;
-        
         private String resourceId;
        
         public LibraryHandler(URL source)
@@ -261,13 +247,10 @@ public class TagLibraryConfigUnmarshallerImpl
                         throw new IllegalStateException("No <namespace> element");
                     }
 
-                    //TagLibraryImpl impl = (TagLibraryImpl) this.library;
-
                     if ("tag".equals(qName))
                     {
                         if (this.handlerClass != null)
                         {
-                            //impl.putTagHandler(this.tagName, this.handlerClass);
                             getLibraryImpl().addTag(
                                 new FaceletTagImpl(this.tagName, 
                                     new FaceletHandlerTagImpl(this.handlerClass)) );
@@ -276,15 +259,12 @@ public class TagLibraryConfigUnmarshallerImpl
                     }
                     else if ("handler-class".equals(qName))
                     {
-                        //String cName = this.captureBuffer();
-                        //this.handlerClass = createClass(TagHandler.class, cName);
                         this.handlerClass = this.captureBufferEmptyNull();
                     }
                     else if ("component".equals(qName))
                     {
                         if (this.handlerClass != null)
                         {
-                            //impl.putComponent(this.tagName, this.componentType, this.rendererType, this.handlerClass);
                             getLibraryImpl().addTag(new FaceletTagImpl(this.tagName,
                                 new FaceletComponentTagImpl(this.componentType, this.rendererType, 
                                     this.handlerClass, null)));
@@ -292,7 +272,6 @@ public class TagLibraryConfigUnmarshallerImpl
                         }
                         else if (this.resourceId != null)
                         {
-                            //impl.putComponentFromResourceId(this.tagName, this.resourceId);
                             getLibraryImpl().addTag(new FaceletTagImpl(this.tagName,
                                 new FaceletComponentTagImpl(null, null, null, this.resourceId)));
                             this.resourceId = null;
@@ -303,7 +282,6 @@ public class TagLibraryConfigUnmarshallerImpl
                             getLibraryImpl().addTag(new FaceletTagImpl(this.tagName,
                                 new FaceletComponentTagImpl(this.componentType, this.rendererType, null, null)));
                             this.handlerClass = null;
-                            //impl.putComponent(this.tagName, this.componentType, this.rendererType);
                         }
                     }
                     else if ("converter-id".equals(qName))
@@ -314,14 +292,12 @@ public class TagLibraryConfigUnmarshallerImpl
                     {
                         if (this.handlerClass != null)
                         {
-                            //impl.putConverter(this.tagName, this.converterId, handlerClass);
                             getLibraryImpl().addTag(new FaceletTagImpl(this.tagName,
                                 new FaceletConverterTagImpl(this.converterId, this.handlerClass)));
                             this.handlerClass = null;
                         }
                         else
                         {
-                            //impl.putConverter(this.tagName, this.converterId);
                             getLibraryImpl().addTag(new FaceletTagImpl(this.tagName,
                                 new FaceletConverterTagImpl(this.converterId)));
                         }
@@ -335,14 +311,12 @@ public class TagLibraryConfigUnmarshallerImpl
                     {
                         if (this.handlerClass != null)
                         {
-                            //impl.putValidator(this.tagName, this.validatorId, handlerClass);
                             getLibraryImpl().addTag(new FaceletTagImpl(this.tagName,
                                 new FaceletValidatorTagImpl(this.validatorId, this.handlerClass)));
                             this.handlerClass = null;
                         }
                         else
                         {
-                            //impl.putValidator(this.tagName, this.validatorId);
                             getLibraryImpl().addTag(new FaceletTagImpl(this.tagName,
                                 new FaceletValidatorTagImpl(this.validatorId)));
                         }
@@ -356,14 +330,12 @@ public class TagLibraryConfigUnmarshallerImpl
                     {
                         if (this.handlerClass != null)
                         {
-                            //impl.putBehavior(this.tagName, this.behaviorId, handlerClass);
                             getLibraryImpl().addTag(new FaceletTagImpl(this.tagName,
                                 new FaceletBehaviorTagImpl(this.behaviorId, this.handlerClass)));
                             this.handlerClass = null;
                         }
                         else
                         {
-                            //impl.putBehavior(this.tagName, this.behaviorId);
                             getLibraryImpl().addTag(new FaceletTagImpl(this.tagName,
                                 new FaceletBehaviorTagImpl(this.behaviorId)));
                         }
@@ -373,7 +345,6 @@ public class TagLibraryConfigUnmarshallerImpl
                     {
                         String path = this.captureBuffer();
                         URL url = new URL(this.source, path);
-                        //impl.putUserTag(this.tagName, url);
                         getLibraryImpl().addTag(new FaceletTagImpl(this.tagName,
                             new FaceletSourceTagImpl(url.toString())));
                     }
@@ -382,8 +353,6 @@ public class TagLibraryConfigUnmarshallerImpl
                         this.functionSignature = this.captureBuffer();
                         getLibraryImpl().addFunction(
                             new FaceletFunctionImpl(this.functionName, this.functionClass, functionSignature));
-                        //Method m = createMethod(this.functionClass, this.functionSignature);
-                        //impl.putFunction(this.functionName, m);
                     }
                 }
             }

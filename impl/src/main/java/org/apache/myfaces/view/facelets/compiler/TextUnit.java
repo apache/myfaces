@@ -43,25 +43,15 @@ final class TextUnit extends CompilationUnit
 {
 
     private final StringBuffer buffer;
-
     private final StringBuffer textBuffer;
-
     private final List<Instruction> instructionBuffer;
-
     private final Stack<Tag> tags;
-
     private final List<Object> children;
-
     private boolean startTagOpen;
-
     private final String alias;
-
     private final String id;
-    
     private final List<Object> messages;
-
     private final boolean escapeInlineText;
-
     private final boolean compressSpaces;
 
     public TextUnit(String alias, String id)
