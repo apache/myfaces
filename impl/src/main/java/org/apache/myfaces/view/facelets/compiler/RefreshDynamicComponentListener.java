@@ -66,13 +66,7 @@ public final class RefreshDynamicComponentListener implements
     public void processEvent(ComponentSystemEvent event)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        //if (!PhaseId.RESTORE_VIEW.equals(facesContext.getCurrentPhaseId()))
-        //{
-            // This listener is only active when PostAddToViewEvent occur
-            // on restore view phase. 
-            //return;
-        //}
-        
+
         FaceletViewDeclarationLanguage vdl = (FaceletViewDeclarationLanguage) 
             facesContext.getApplication().getViewHandler().getViewDeclarationLanguage(
                 facesContext, facesContext.getViewRoot().getViewId());
@@ -161,9 +155,10 @@ public final class RefreshDynamicComponentListener implements
     @Override
     public Object saveState(FacesContext context)
     {
-        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(
-            context.getExternalContext());
+        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(context);
+
         Object[] values = new Object[4];
+
         Integer tagId = runtimeConfig.getIdByNamespace().get(taglibURI);
         if (tagId != null)
         {
@@ -184,6 +179,7 @@ public final class RefreshDynamicComponentListener implements
         values[1] = tagName;
         values[2] = attributes;
         values[3] = baseKey;
+
         return values;
     }
 
@@ -197,8 +193,7 @@ public final class RefreshDynamicComponentListener implements
         }
         else if (values[0] instanceof Integer)
         {
-            RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(
-                context.getExternalContext());
+            RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(context);
             taglibURI = runtimeConfig.getNamespaceById().get((Integer)values[0]);
         }
         else if (values[0] instanceof Object[])
