@@ -2318,7 +2318,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     public boolean isRowStatePreserved()
     {
         Boolean b = (Boolean) getStateHelper().get(PropertyKeys.rowStatePreserved);
-        return b == null ? false : b.booleanValue(); 
+        return b == null ? false : b; 
     }
     
     public void setRowStatePreserved(boolean preserveComponentState)

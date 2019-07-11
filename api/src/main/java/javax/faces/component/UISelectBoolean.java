@@ -53,7 +53,7 @@ public class UISelectBoolean extends UIInput
 
     public void setSelected(boolean selected)
     {
-        setValue(Boolean.valueOf(selected));
+        setValue(selected);
     }
 
     public boolean isSelected()
@@ -64,7 +64,7 @@ public class UISelectBoolean extends UIInput
             value = (Boolean) getValue();
         }
 
-        return value != null ? value.booleanValue() : false;
+        return value != null ? value : false;
     }
 
     @Override

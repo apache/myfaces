@@ -324,26 +324,26 @@ public class NumberConverter
     {
         if (state != null)
         {
-            Object values[] = (Object[])state;
-            _currencyCode = (String)values[0];
-            _currencySymbol = (String)values[1];
-            _locale = (Locale)values[2];
-            Integer value = (Integer)values[3];
-            _maxFractionDigits = value != null ? value.intValue() : 0;
-            value = (Integer)values[4];
-            _maxIntegerDigits = value != null ? value.intValue() : 0;
-            value = (Integer)values[5];
-            _minFractionDigits = value != null ? value.intValue() : 0;
-            value = (Integer)values[6];
-            _minIntegerDigits = value != null ? value.intValue() : 0;
-            _pattern = (String)values[7];
-            _type = (String)values[8];
-            _groupingUsed = ((Boolean)values[9]).booleanValue();
-            _integerOnly = ((Boolean)values[10]).booleanValue();
-            _maxFractionDigitsSet = ((Boolean)values[11]).booleanValue();
-            _maxIntegerDigitsSet = ((Boolean)values[12]).booleanValue();
-            _minFractionDigitsSet = ((Boolean)values[13]).booleanValue();
-            _minIntegerDigitsSet = ((Boolean)values[14]).booleanValue();
+            Object values[] = (Object[]) state;
+            _currencyCode = (String) values[0];
+            _currencySymbol = (String) values[1];
+            _locale = (Locale) values[2];
+            Integer value = (Integer) values[3];
+            _maxFractionDigits = value != null ? value : 0;
+            value = (Integer) values[4];
+            _maxIntegerDigits = value != null ? value : 0;
+            value = (Integer) values[5];
+            _minFractionDigits = value != null ? value : 0;
+            value = (Integer) values[6];
+            _minIntegerDigits = value != null ? value : 0;
+            _pattern = (String) values[7];
+            _type = (String) values[8];
+            _groupingUsed = (Boolean) values[9];
+            _integerOnly = (Boolean) values[10];
+            _maxFractionDigitsSet = (Boolean) values[11];
+            _maxIntegerDigitsSet = (Boolean) values[12];
+            _minFractionDigitsSet = (Boolean) values[13];
+            _minIntegerDigitsSet = (Boolean) values[14];
         }
     }
 

@@ -66,14 +66,13 @@ public class LengthValidator
 
     public LengthValidator(int maximum)
     {
-        _maximum = Integer.valueOf(maximum);
+        _maximum = maximum;
     }
 
-    public LengthValidator(int maximum,
-                           int minimum)
+    public LengthValidator(int maximum, int minimum)
     {
-        _maximum = Integer.valueOf(maximum);
-        _minimum = Integer.valueOf(minimum);
+        _maximum = maximum;
+        _minimum = minimum;
     }
 
     // VALIDATE
@@ -100,7 +99,7 @@ public class LengthValidator
 
         if (_minimum != null)
         {
-            if (length < _minimum.intValue())
+            if (length < _minimum)
             {
                 Object[] args = {_minimum,_MessageUtils.getLabel(facesContext, uiComponent)};
                 throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, MINIMUM_MESSAGE_ID, args));
@@ -109,7 +108,7 @@ public class LengthValidator
 
         if (_maximum != null)
         {
-            if (length > _maximum.intValue())
+            if (length > _maximum)
             {
                 Object[] args = {_maximum,_MessageUtils.getLabel(facesContext, uiComponent)};
                 throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, MAXIMUM_MESSAGE_ID, args));
@@ -126,12 +125,12 @@ public class LengthValidator
     @JSFProperty(deferredValueType="java.lang.Integer")
     public int getMaximum()
     {
-        return _maximum != null ? _maximum.intValue() : 0;
+        return _maximum != null ? _maximum : 0;
     }
 
     public void setMaximum(int maximum)
     {
-        _maximum = Integer.valueOf(maximum);
+        _maximum = maximum;
         clearInitialState();
     }
 
@@ -142,12 +141,12 @@ public class LengthValidator
     @JSFProperty(deferredValueType="java.lang.Integer")
     public int getMinimum()
     {
-        return _minimum != null ? _minimum.intValue() : 0;
+        return _minimum != null ? _minimum : 0;
     }
 
     public void setMinimum(int minimum)
     {
-        _minimum = Integer.valueOf(minimum);
+        _minimum = minimum;
         clearInitialState();
     }
 

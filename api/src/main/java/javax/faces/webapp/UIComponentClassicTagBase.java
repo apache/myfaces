@@ -191,7 +191,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         
         if (logicalPageId != null)
         {
-            if (logicalPageId.intValue() == 1)
+            if (logicalPageId == 1)
             {
                 //Base case, just pass it unchanged
                 _jspId = jspId;

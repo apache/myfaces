@@ -290,7 +290,7 @@ public abstract class StateManager
         }
         if (_savingStateInClient != null)
         {
-            return _savingStateInClient.booleanValue();
+            return _savingStateInClient;
         }
 
         String stateSavingMethod = context.getExternalContext().getInitParameter(STATE_SAVING_METHOD_PARAM_NAME);
@@ -313,7 +313,7 @@ public abstract class StateManager
             context.getExternalContext().log(
                 "Illegal state saving method '" + stateSavingMethod + "', default server state saving will be used");
         }
-        return _savingStateInClient.booleanValue();
+        return _savingStateInClient;
     }
 
     /**
