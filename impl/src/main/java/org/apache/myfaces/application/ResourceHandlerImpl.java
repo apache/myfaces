@@ -799,13 +799,13 @@ public class ResourceHandlerImpl extends ResourceHandler
             libraryFound = getResourceLoaderCache().libraryExists(pathToLib);
             if (libraryFound != null)
             {
-                return libraryFound.booleanValue();
+                return libraryFound;
             }
         }
         libraryFound = getResourceLoaderCache().libraryExists(libraryName);
         if (libraryFound != null)
         {
-            return libraryFound.booleanValue();
+            return libraryFound;
         }
         
         if (localePrefix != null)

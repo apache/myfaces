@@ -418,8 +418,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 if (lastUniqueIdCounter != null)
                 {
                     Integer newUniqueIdCounter = (Integer) view.getAttributes().get(UNIQUE_ID_COUNTER_KEY);
-                    if (newUniqueIdCounter != null && 
-                        lastUniqueIdCounter.intValue() > newUniqueIdCounter.intValue())
+                    if (newUniqueIdCounter != null && lastUniqueIdCounter > newUniqueIdCounter)
                     {
                         // The unique counter was restored by a side effect of 
                         // restoreState() over UIViewRoot with a lower count,

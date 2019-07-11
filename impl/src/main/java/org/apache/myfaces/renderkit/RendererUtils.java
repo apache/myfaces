@@ -341,7 +341,7 @@ public final class RendererUtils
         }
         else if (value instanceof Boolean)
         {
-            return !((Boolean) value).booleanValue();
+            return !((Boolean) value);
         }
         else if (value instanceof Number)
         {
@@ -835,14 +835,14 @@ public final class RendererUtils
             String attrName, boolean defaultValue)
     {
         Boolean b = (Boolean) component.getAttributes().get(attrName);
-        return b != null ? b.booleanValue() : defaultValue;
+        return b != null ? b : defaultValue;
     }
 
     public static int getIntegerAttribute(UIComponent component,
             String attrName, int defaultValue)
     {
         Integer i = (Integer) component.getAttributes().get(attrName);
-        return i != null ? i.intValue() : defaultValue;
+        return i != null ? i : defaultValue;
     }
 
     public static boolean getBooleanValue(String attribute, Object value, boolean defaultValue)

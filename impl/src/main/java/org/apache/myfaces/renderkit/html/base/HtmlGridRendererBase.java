@@ -91,9 +91,8 @@ public class HtmlGridRendererBase extends HtmlRenderer
         }
         else
         {
-            Integer i = (Integer)component.getAttributes().get(
-                    JSFAttr.COLUMNS_ATTR);
-            columns = i != null ? i.intValue() : 0;
+            Integer i = (Integer)component.getAttributes().get(JSFAttr.COLUMNS_ATTR);
+            columns = i != null ? i : 0;
         }
 
         if (columns <= 0)

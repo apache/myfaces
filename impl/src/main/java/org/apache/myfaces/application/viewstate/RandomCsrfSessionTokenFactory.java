@@ -55,7 +55,7 @@ class RandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
         {
             Map<String, Object> map = externalContext.getSessionMap();
             sequence = (Integer) map.get(RendererUtils.SEQUENCE_PARAM);
-            if (sequence == null || sequence.intValue() == Integer.MAX_VALUE)
+            if (sequence == null || sequence == Integer.MAX_VALUE)
             {
                 sequence = Integer.valueOf(1);
             }

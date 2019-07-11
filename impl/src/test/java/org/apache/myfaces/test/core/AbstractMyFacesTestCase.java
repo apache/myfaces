@@ -701,18 +701,18 @@ public abstract class AbstractMyFacesTestCase
                 }
                 else
                 {
-                    if (BEFORE_RENDER_STEP == step.intValue())
+                    if (BEFORE_RENDER_STEP == step)
                     {
                         executeBuildViewCycle(facesContext);
                         executeViewHandlerRender(facesContext);
                         executeAfterRender(facesContext);
                     }
-                    else if (BUILD_VIEW_CYCLE_STEP == step.intValue())
+                    else if (BUILD_VIEW_CYCLE_STEP == step)
                     {
                         executeViewHandlerRender(facesContext);
                         executeAfterRender(facesContext);
                     }
-                    else if (VIEWHANDLER_RENDER_STEP == step.intValue())
+                    else if (VIEWHANDLER_RENDER_STEP == step)
                     {
                         executeAfterRender(facesContext);
                     }

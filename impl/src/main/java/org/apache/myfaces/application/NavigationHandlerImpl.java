@@ -1192,7 +1192,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             String cazeOutcome = caze.getFromOutcome();
             String cazeActionRef = caze.getFromAction();
             Boolean cazeIf = caze.getCondition(context);
-            boolean ifMatches = (cazeIf == null ? false : cazeIf.booleanValue());
+            boolean ifMatches = cazeIf == null ? false : cazeIf;
             // JSF 2.0: support conditional navigation via <if>.
             // Use for later cases.
             

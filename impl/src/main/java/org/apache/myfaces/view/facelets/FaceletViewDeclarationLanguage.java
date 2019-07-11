@@ -1046,7 +1046,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                                     required = Boolean.valueOf(requiredValue.toString());
                                 }
 
-                                if (required != null && required.booleanValue())
+                                if (required != null && required)
                                 {
                                     if (log.isLoggable(Level.SEVERE))
                                     {

@@ -74,7 +74,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         if (uiComponent instanceof UISelectBoolean)
         {
             Boolean value = RendererUtils.getBooleanValue( uiComponent );
-            boolean isChecked = value != null ? value.booleanValue() : false;
+            boolean isChecked = value != null ? value : false;
             renderCheckbox(facesContext, uiComponent, EXTERNAL_TRUE_VALUE, false,isChecked, true, null); 
             //TODO: the selectBoolean is never disabled
         }

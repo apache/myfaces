@@ -78,7 +78,7 @@ public class StartupServletContextListener implements ServletContextListener
         _servletContext = event.getServletContext();
 
         Boolean b = (Boolean) _servletContext.getAttribute(FACES_INIT_DONE);
-        if (b == null || b.booleanValue() == false)
+        if (b == null || b == false)
         {
             long start = System.currentTimeMillis();
 

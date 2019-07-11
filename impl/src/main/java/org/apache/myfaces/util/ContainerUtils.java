@@ -76,7 +76,7 @@ public class ContainerUtils
     {
         if (runningOnGoogleAppEngine != null)
         {
-            return runningOnGoogleAppEngine.booleanValue();
+            return runningOnGoogleAppEngine;
         }
         else
         {
@@ -93,7 +93,7 @@ public class ContainerUtils
 
         if (runningOnGoogleAppEngine != null)
         {
-            return runningOnGoogleAppEngine.booleanValue();
+            return runningOnGoogleAppEngine;
         }
         else
         {

@@ -85,7 +85,7 @@ public class MyFacesServlet implements Servlet, DelegatedFacesServlet
               
         // Check, if ServletContextListener was already called
         Boolean b = (Boolean)servletContext.getAttribute(StartupServletContextListener.FACES_INIT_DONE);
-        if (b == null || b.booleanValue() == false)
+        if (b == null || b == false)
         {
             if(log.isLoggable(Level.WARNING))
             {

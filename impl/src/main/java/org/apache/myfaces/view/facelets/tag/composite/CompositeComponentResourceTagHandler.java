@@ -156,7 +156,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                         required = Boolean.valueOf(value.toString());
                     } 
                     
-                    if (required != null && required.booleanValue())
+                    if (required != null && required)
                     {
                         Object attrValue = this.tag.getAttributes().get (propertyDescriptor.getName());
                         
@@ -200,11 +200,11 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                     // Add the flag and return.
                     c.getAttributes().put(CREATE_CC_ON_POST_ADD_TO_VIEW, 0);
                 }
-                else if (step.intValue() == 0)
+                else if (step == 0)
                 {
                     // Should not happen, stop processing
                 }
-                else if (step.intValue() == 1)
+                else if (step == 1)
                 {
                     // The component was created, and the listener attached to PostAddToViewEvent
                     // is executing right now. Do the necessary steps to process the 
@@ -551,7 +551,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             // In a programatical addition, the code that process the composite component only takes effect
             // when the composite component is added to the view.
             Integer step = (Integer) innerCompositeComponent.getAttributes().get(CREATE_CC_ON_POST_ADD_TO_VIEW);
-            if (step != null && step.intValue() == 1)
+            if (step != null && step == 1)
             {
                 if (name != null)
                 {
@@ -605,7 +605,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                     return true;
                 }
             }
-            else if (step != null && step.intValue() > 1)
+            else if (step != null && step > 1)
             {
                 // refresh case, in facet case it is not necessary to remove/add the facet, because there
                 // is no relative order (it is always on the same spot).

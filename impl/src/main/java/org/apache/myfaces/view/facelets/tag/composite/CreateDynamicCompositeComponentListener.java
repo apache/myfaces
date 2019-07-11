@@ -96,7 +96,7 @@ public class CreateDynamicCompositeComponentListener
         // have any side effect (counts as a refresh).
         Integer step = (Integer) component.getAttributes().get(
             CompositeComponentResourceTagHandler.CREATE_CC_ON_POST_ADD_TO_VIEW); 
-        if (step != null && step.intValue() == 0)
+        if (step != null && step == 0)
         {
             component.getAttributes().put(CompositeComponentResourceTagHandler.CREATE_CC_ON_POST_ADD_TO_VIEW, 1);
         }
@@ -234,10 +234,10 @@ public class CreateDynamicCompositeComponentListener
         else if (values[0] instanceof Object[])
         {
             Object[] def = (Object[])values[0];
-            String ns = ( ((Integer)def[0]).intValue() == 0) ? 
+            String ns = (((Integer) def[0]) == 0) ? 
                 CompositeResourceLibrary.NAMESPACE_PREFIX :
                 CompositeResourceLibrary.ALIAS_NAMESPACE_PREFIX;
-            taglibURI = ns + (String)(((Object[])values[0])[1]);
+            taglibURI = ns + (String) ((Object[]) values[0])[1];
         }
         tagName = (String)values[1];
         attributes = (Map<String,Object>) values[2];
