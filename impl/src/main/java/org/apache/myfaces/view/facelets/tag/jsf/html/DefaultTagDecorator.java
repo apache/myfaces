@@ -322,7 +322,7 @@ public class DefaultTagDecorator implements TagDecorator
                 //convertedTagAttributes[j] = tagAttribute;
                 
                 convertedNamespace = PASS_THROUGH_NAMESPACE;
-                qname = "p:"+tagAttribute.getLocalName();
+                qname = "p:" + tagAttribute.getLocalName();
                 
                 convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
                     convertedNamespace, tagAttribute.getLocalName(), qname, tagAttribute.getValue());

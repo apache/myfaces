@@ -18,19 +18,19 @@
  */
 package org.apache.myfaces.view.facelets.util;
 
+import java.util.List;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.FaceletsTemplateMapping;
 import org.apache.myfaces.util.UrlPatternMatcher;
 
-/**
- *
- */
 public class FaceletsTemplateMappingUtils
 {
     public static final boolean matchTemplate(RuntimeConfig runtimeConfig, String path)
     {
-        for (FaceletsTemplateMapping mapping : runtimeConfig.getFaceletsTemplateMappings())
+        List<FaceletsTemplateMapping> mappings = runtimeConfig.getFaceletsTemplateMappings();
+        for (int i = 0; i < mappings.size(); i++)
         {
+            FaceletsTemplateMapping mapping = mappings.get(i);
             if (UrlPatternMatcher.match(path, mapping.getUrlPattern()))
             {
                 return true;
