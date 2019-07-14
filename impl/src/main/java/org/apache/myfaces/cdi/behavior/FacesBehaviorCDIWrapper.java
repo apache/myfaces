@@ -54,7 +54,7 @@ public class FacesBehaviorCDIWrapper implements PartialStateHolder, Behavior, Fa
     {
         if (delegate == null)
         {
-            delegate = (Behavior) CDIUtils.getInstance(CDIUtils.getBeanManager(
+            delegate = (Behavior) CDIUtils.get(CDIUtils.getBeanManager(
                 FacesContext.getCurrentInstance().getExternalContext()), 
                     Behavior.class, true, new FacesBehaviorAnnotationLiteral(behaviorId, true));
         }

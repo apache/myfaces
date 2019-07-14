@@ -31,7 +31,7 @@ import javax.enterprise.inject.spi.PassivationCapable;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 
-import org.apache.myfaces.cdi.util.BeanProvider;
+import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.view.ViewScopeProxyMap;
 
@@ -78,8 +78,7 @@ public class ViewScopeContextImpl implements Context
                 "oam.view.ViewScopeBeanHolder");
         if (viewScopeBeanHolder == null)
         {
-            viewScopeBeanHolder = BeanProvider.getContextualReference(
-                beanManager, ViewScopeBeanHolder.class, false);
+            viewScopeBeanHolder = CDIUtils.get(beanManager, ViewScopeBeanHolder.class);
             facesContext.getExternalContext().getApplicationMap().put(
                 "oam.view.ViewScopeBeanHolder", viewScopeBeanHolder);
         }

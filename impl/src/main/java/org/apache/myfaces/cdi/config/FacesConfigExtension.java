@@ -62,7 +62,7 @@ public class FacesConfigExtension implements Extension
     
     public void afterDeploymentValidation(@Observes AfterDeploymentValidation adv, BeanManager beanManager)
     {
-        FacesConfigBeanHolder holder = CDIUtils.lookup(beanManager, FacesConfigBeanHolder.class);
+        FacesConfigBeanHolder holder = CDIUtils.get(beanManager, FacesConfigBeanHolder.class);
         
         holder.setFacesConfigVersion(facesConfigVersion);
     }

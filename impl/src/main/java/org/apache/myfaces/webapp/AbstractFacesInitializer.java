@@ -60,7 +60,6 @@ import javax.faces.push.PushContext;
 import javax.websocket.DeploymentException;
 import javax.websocket.server.ServerContainer;
 import javax.websocket.server.ServerEndpointConfig;
-import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
@@ -270,8 +269,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         if (ExternalSpecifications.isCDIAvailable(externalContext))
         {
             BeanManager beanManager = CDIUtils.getBeanManager(externalContext);
-            CdiAnnotationProviderExtension extension =
-                    BeanProvider.getContextualReference(beanManager, CdiAnnotationProviderExtension.class, true);
+            CdiAnnotationProviderExtension extension = CDIUtils.get(beanManager, CdiAnnotationProviderExtension.class);
             if (extension != null)
             {
                 extension.release();

@@ -34,7 +34,7 @@ public class DataModelBuilderProxy extends DataModelBuilder
     public DataModel createDataModel(FacesContext facesContext, Class<?> forClass, Object value)
     {
         BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
-        FacesDataModelClassBeanHolder holder = CDIUtils.lookup(beanManager, FacesDataModelClassBeanHolder.class);
+        FacesDataModelClassBeanHolder holder = CDIUtils.get(beanManager, FacesDataModelClassBeanHolder.class);
         return holder.createDataModel(facesContext, forClass, value);
     }
     

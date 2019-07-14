@@ -118,15 +118,15 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         // TODO: use a single bean and entry point for this algorithm.
         BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
 
-        WebsocketChannelTokenBuilderBean channelTokenBean = CDIUtils.lookup(
+        WebsocketChannelTokenBuilderBean channelTokenBean = CDIUtils.get(
                 beanManager,
                 WebsocketChannelTokenBuilderBean.class);
 
         // This bean is required because you always need to register the token, so it can be properly destroyed
-        WebsocketViewBean viewTokenBean = CDIUtils.lookup(
+        WebsocketViewBean viewTokenBean = CDIUtils.get(
                 beanManager,
                 WebsocketViewBean.class);
-        WebsocketSessionBean sessionTokenBean = CDIUtils.lookup(
+        WebsocketSessionBean sessionTokenBean = CDIUtils.get(
                 beanManager, WebsocketSessionBean.class);
 
         // Create channel token 
@@ -155,7 +155,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         }
 
         // Ask these two scopes 
-        WebsocketApplicationBean appTokenBean = CDIUtils.getInstance(
+        WebsocketApplicationBean appTokenBean = CDIUtils.get(
                 beanManager, WebsocketApplicationBean.class, false);
 
         // Register token and metadata in the proper bean
@@ -165,7 +165,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         }
         else if (scope.equals("session"))
         {
-            sessionTokenBean = (sessionTokenBean != null) ? sessionTokenBean : CDIUtils.lookup(
+            sessionTokenBean = (sessionTokenBean != null) ? sessionTokenBean : CDIUtils.get(
                     CDIUtils.getBeanManager(facesContext.getExternalContext()),
                     WebsocketSessionBean.class);
 
@@ -174,7 +174,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         else
         {
             //Default application
-            appTokenBean = (appTokenBean != null) ? appTokenBean : CDIUtils.lookup(
+            appTokenBean = (appTokenBean != null) ? appTokenBean : CDIUtils.get(
                     CDIUtils.getBeanManager(facesContext.getExternalContext()),
                     WebsocketApplicationBean.class);
 

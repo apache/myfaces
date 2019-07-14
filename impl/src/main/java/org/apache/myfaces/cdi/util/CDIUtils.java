@@ -44,18 +44,10 @@ public class CDIUtils
             AbstractFacesInitializer.CDI_BEAN_MANAGER_INSTANCE);
     }
 
-
-
-    public static <T> T lookup(BeanManager bm, Class<T> clazz)
+    public static <T> T get(BeanManager bm, Class<T> clazz)
     {
         Set<Bean<?>> beans = bm.getBeans(clazz);
         return resolveInstance(bm, beans, clazz);
-    }
-
-    public static Object lookup(BeanManager bm, String name)
-    {
-        Set<Bean<?>> beans = bm.getBeans(name);
-        return resolveInstance(bm, beans, Object.class);
     }
 
     private static <T> T resolveInstance(BeanManager bm, Set<Bean<?>> beans, Type type)
@@ -68,7 +60,7 @@ public class CDIUtils
     }
     
     @SuppressWarnings("unchecked")
-    public static <T> Bean<T> resolve(BeanManager beanManager, Class<T> beanClass, Annotation... qualifiers)
+    public static <T> Bean<T> get(BeanManager beanManager, Class<T> beanClass, Annotation... qualifiers)
     {
         Set<Bean<?>> beans = beanManager.getBeans(beanClass, qualifiers);
 
@@ -83,13 +75,13 @@ public class CDIUtils
         return (Bean<T>) beanManager.resolve(beans);
     }
 
-    public static <T> T getInstance(BeanManager beanManager, Class<T> beanClass, 
+    public static <T> T get(BeanManager beanManager, Class<T> beanClass, 
             boolean create, Annotation... qualifiers)
     {
         try
         {
-            Bean<T> bean = resolve(beanManager, beanClass, qualifiers);
-            return (bean != null) ? getInstance(beanManager, bean, create) : null;
+            Bean<T> bean = get(beanManager, beanClass, qualifiers);
+            return (bean != null) ? get(beanManager, bean, create) : null;
         }
         catch (ContextNotActiveException e)
         {
@@ -97,7 +89,7 @@ public class CDIUtils
         }
     }
 
-    public static <T> T getInstance(BeanManager beanManager, Bean<T> bean, boolean create)
+    public static <T> T get(BeanManager beanManager, Bean<T> bean, boolean create)
     {
         Context context = beanManager.getContext(bean.getScope());
 

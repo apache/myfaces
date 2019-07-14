@@ -50,7 +50,6 @@ import javax.faces.render.FacesRenderer;
 import javax.faces.validator.FacesValidator;
 import javax.faces.view.facelets.FaceletsResourceResolver;
 
-import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ClassUtils;
@@ -146,8 +145,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         if (MyfacesConfig.getCurrentInstance(ctx).isUseCdiForAnnotationScanning())
         {
             BeanManager beanManager = CDIUtils.getBeanManager(ctx);
-            CdiAnnotationProviderExtension extension =
-                    BeanProvider.getContextualReference(beanManager, CdiAnnotationProviderExtension.class, false);
+            CdiAnnotationProviderExtension extension = CDIUtils.get(beanManager, CdiAnnotationProviderExtension.class);
             return extension.getMap();
         }
 

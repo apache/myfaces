@@ -50,7 +50,7 @@ public class DynamicDataModelProducer extends AbstractDynamicProducer<Map<Class<
     protected Map<Class<?>,Class<? extends DataModel>> createDataModel(
             CreationalContext<Map<Class<?>,Class<? extends DataModel>>> cc)
     {
-        FacesDataModelClassBeanHolder holder = CDIUtils.lookup(getBeanManager(), FacesDataModelClassBeanHolder.class);
+        FacesDataModelClassBeanHolder holder = CDIUtils.get(getBeanManager(), FacesDataModelClassBeanHolder.class);
         return holder.getClassInstanceToDataModelWrapperClassMap();
     }
 }

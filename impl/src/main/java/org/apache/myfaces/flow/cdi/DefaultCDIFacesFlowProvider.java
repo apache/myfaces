@@ -28,7 +28,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Producer;
 import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
-import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.flow.FlowUtils;
 import org.apache.myfaces.spi.FacesFlowProvider;
@@ -69,7 +68,7 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext != null && isFlowScopeBeanHolderCreated(facesContext))
         {
-            FlowScopeBeanHolder flowScopeBeanHolder = BeanProvider.getContextualReference(
+            FlowScopeBeanHolder flowScopeBeanHolder = CDIUtils.get(
                 _beanManager, FlowScopeBeanHolder.class, false);
             if (flowScopeBeanHolder != null)
             {
@@ -93,8 +92,7 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
         {
             flows = new ArrayList<>();
 
-            FlowBuilderExtension extension =
-                    BeanProvider.getContextualReference(beanManager, FlowBuilderExtension.class, true);
+            FlowBuilderExtension extension = CDIUtils.get(beanManager, FlowBuilderExtension.class);
             for (Producer<Flow> producer : extension.getFlowProducers())
             {
                 Flow flow = producer.produce(beanManager.<Flow>createCreationalContext(null));
@@ -111,7 +109,7 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
         BeanManager beanManager = getBeanManager(context);
         if (beanManager != null)
         {
-            FlowScopeBeanHolder beanHolder = CDIUtils.lookup(beanManager, FlowScopeBeanHolder.class);
+            FlowScopeBeanHolder beanHolder = CDIUtils.get(beanManager, FlowScopeBeanHolder.class);
             beanHolder.createCurrentFlowScope(context);
         }
 
@@ -125,7 +123,7 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
         BeanManager beanManager = getBeanManager(context);
         if (beanManager != null)
         {
-            FlowScopeBeanHolder beanHolder = CDIUtils.lookup(beanManager, FlowScopeBeanHolder.class);
+            FlowScopeBeanHolder beanHolder = CDIUtils.get(beanManager, FlowScopeBeanHolder.class);
             beanHolder.destroyCurrentFlowScope(context);
         }
 
@@ -158,7 +156,7 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
                 BeanManager beanManager = getBeanManager(facesContext);
                 if (beanManager != null)
                 {
-                    FlowScopeBeanHolder beanHolder = CDIUtils.lookup(beanManager, FlowScopeBeanHolder.class);
+                    FlowScopeBeanHolder beanHolder = CDIUtils.get(beanManager, FlowScopeBeanHolder.class);
 
                     //Refresh client window for flow scope
                     beanHolder.refreshClientWindow(facesContext);

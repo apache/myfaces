@@ -23,7 +23,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
-import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
 import org.apache.myfaces.spi.ViewScopeProvider;
@@ -44,8 +43,8 @@ public class CDIViewScopeProviderImpl extends ViewScopeProvider
         Object context = externalContext.getContext();
         if (context instanceof ServletContext)
         {
-            JsfApplicationArtifactHolder appBean = CDIUtils.lookup(beanManager, 
-                JsfApplicationArtifactHolder.class);
+            JsfApplicationArtifactHolder appBean =
+                    CDIUtils.get(beanManager, JsfApplicationArtifactHolder.class);
             appBean.setServletContext((ServletContext) context);
         }
     }
@@ -54,8 +53,7 @@ public class CDIViewScopeProviderImpl extends ViewScopeProvider
     {
         if (viewScopeBeanHolder == null)
         {
-            viewScopeBeanHolder = BeanProvider.getContextualReference(
-                beanManager, ViewScopeBeanHolder.class, false);
+            viewScopeBeanHolder = CDIUtils.get(beanManager, ViewScopeBeanHolder.class);
         }
         return viewScopeBeanHolder;
     }

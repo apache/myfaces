@@ -67,13 +67,13 @@ public class FacesConverterCDIWrapper implements PartialStateHolder, Converter, 
         {
             if (converterId != null)
             {
-                delegate = (Converter) CDIUtils.getInstance(CDIUtils.getBeanManager(
+                delegate = (Converter) CDIUtils.get(CDIUtils.getBeanManager(
                     FacesContext.getCurrentInstance().getExternalContext()), 
                         Converter.class, true, new FacesConverterAnnotationLiteral(Object.class, converterId, true));
             }
             else if (forClass != null)
             {
-                delegate = (Converter) CDIUtils.getInstance(CDIUtils.getBeanManager(
+                delegate = (Converter) CDIUtils.get(CDIUtils.getBeanManager(
                     FacesContext.getCurrentInstance().getExternalContext()), 
                         Converter.class, true, new FacesConverterAnnotationLiteral(forClass, "", true));
             }

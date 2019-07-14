@@ -43,7 +43,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
     {
         BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
 
-        ViewScopeBeanHolder bean = CDIUtils.lookup(beanManager, ViewScopeBeanHolder.class);
+        ViewScopeBeanHolder bean = CDIUtils.get(beanManager, ViewScopeBeanHolder.class);
 
         // 1. get a new view scope id
         _viewScopeId = bean.generateUniqueViewScopeId();
@@ -55,7 +55,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
     {
         BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
 
-        ViewScopeBeanHolder bean = CDIUtils.lookup(beanManager, ViewScopeBeanHolder.class);
+        ViewScopeBeanHolder bean = CDIUtils.get(beanManager, ViewScopeBeanHolder.class);
 
         // 1. get a new view scope id
         _viewScopeId = viewScopeId;
@@ -74,7 +74,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
             FacesContext facesContext = FacesContext.getCurrentInstance();
             BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
 
-            ViewScopeBeanHolder bean = CDIUtils.lookup(beanManager, ViewScopeBeanHolder.class);
+            ViewScopeBeanHolder bean = CDIUtils.get(beanManager, ViewScopeBeanHolder.class);
             
             storage = bean.getContextualStorage(beanManager, _viewScopeId);
         }
@@ -183,7 +183,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
 
             if (beanManager != null)
             {
-                ViewScopeBeanHolder bean = CDIUtils.lookup(beanManager, ViewScopeBeanHolder.class);
+                ViewScopeBeanHolder bean = CDIUtils.get(beanManager, ViewScopeBeanHolder.class);
                 if (bean != null)
                 {
                     ViewScopeContextualStorage st = bean.getContextualStorage(beanManager, _viewScopeId);

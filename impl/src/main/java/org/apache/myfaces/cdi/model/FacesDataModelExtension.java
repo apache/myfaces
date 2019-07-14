@@ -74,7 +74,7 @@ public class FacesDataModelExtension implements Extension
     
     public void afterDeploymentValidation(@Observes AfterDeploymentValidation adv, BeanManager beanManager)
     {
-        FacesDataModelClassBeanHolder holder = CDIUtils.lookup(beanManager, FacesDataModelClassBeanHolder.class);
+        FacesDataModelClassBeanHolder holder = CDIUtils.get(beanManager, FacesDataModelClassBeanHolder.class);
         for (DataModelInfo typeInfo : types)
         {
             holder.addFacesDataModel(typeInfo.getForClass(), 

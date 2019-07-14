@@ -150,7 +150,7 @@ public class ELResolverBuilder
         BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
         if (beanManager != null)
         {
-            FacesConfigBeanHolder holder = CDIUtils.lookup(beanManager, FacesConfigBeanHolder.class);
+            FacesConfigBeanHolder holder = CDIUtils.get(beanManager, FacesConfigBeanHolder.class);
             if (holder != null)
             {
                 FacesConfig.Version version = holder.getFacesConfigVersion();

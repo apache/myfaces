@@ -33,7 +33,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
 import javax.faces.flow.FlowHandler;
 import javax.faces.flow.FlowScoped;
-import org.apache.myfaces.cdi.util.BeanProvider;
+import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 import org.apache.myfaces.flow.FlowReference;
@@ -79,8 +79,7 @@ public class FlowScopedContextImpl implements Context
                 "oam.flow.FlowScopeBeanHolder");
         if (flowScopeBeanHolder == null)
         {
-            flowScopeBeanHolder = BeanProvider.getContextualReference(
-                beanManager, FlowScopeBeanHolder.class, false);
+            flowScopeBeanHolder = CDIUtils.get(beanManager, FlowScopeBeanHolder.class);
             facesContext.getExternalContext().getApplicationMap().put(
                 "oam.flow.FlowScopeBeanHolder", flowScopeBeanHolder);
         }

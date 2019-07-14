@@ -139,7 +139,7 @@ public class WebsocketViewBean implements Serializable
     @PreDestroy
     public void destroy()
     {
-        WebsocketSessionBean sessionHandler = CDIUtils.lookup(CDI.current().getBeanManager(), 
+        WebsocketSessionBean sessionHandler = CDIUtils.get(CDI.current().getBeanManager(), 
                 WebsocketSessionBean.class);
         if (sessionHandler != null)
         {
