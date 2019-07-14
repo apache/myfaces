@@ -37,15 +37,11 @@ import javax.faces.model.FacesDataModel;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.util.ClassUtils;
 
-/**
- *
- */
 public class FacesDataModelExtension implements Extension
 {
-    private Set<DataModelInfo> types = new HashSet<DataModelInfo>();
+    private Set<DataModelInfo> types = new HashSet<>();
 
-    void beforeBeanDiscovery(
-        @Observes final BeforeBeanDiscovery event, BeanManager beanManager)
+    void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager)
     {
         AnnotatedType beanHolder = beanManager.createAnnotatedType(FacesDataModelClassBeanHolder.class);
         event.addAnnotatedType(beanHolder, beanHolder.getJavaClass().getName());
@@ -53,18 +49,17 @@ public class FacesDataModelExtension implements Extension
 
     public <T> void collect(@Observes ProcessManagedBean<T> event)
     {
-        if (event.getAnnotatedBeanClass().isAnnotationPresent(FacesDataModel.class))
+        Annotated annotated = event.getAnnotatedBeanClass();
+        if (annotated.isAnnotationPresent(FacesDataModel.class))
         {
-            Annotated annotated = event.getAnnotatedBeanClass();
-            
             Type type = annotated.getBaseType();
 
-            FacesDataModel conv = (FacesDataModel) annotated.getAnnotation(FacesDataModel.class);
-            
-            boolean hasValue = conv.forClass() != null;
+            FacesDataModel model = (FacesDataModel) annotated.getAnnotation(FacesDataModel.class);
+
+            boolean hasValue = model.forClass() != null;
             if (hasValue)
             {
-                types.add(new DataModelInfo(type, conv.forClass()));
+                types.add(new DataModelInfo(type, model.forClass()));
             }
         }
     }

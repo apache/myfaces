@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.myfaces.cdi.validator;
 
 import java.lang.reflect.Type;
@@ -31,29 +30,24 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessManagedBean;
 import javax.faces.validator.FacesValidator;
 
-/**
- *
- */
 public class FacesValidatorExtension implements Extension
 {
-    private Set<FacesValidatorInfo> types = new HashSet<FacesValidatorInfo>();
+    private Set<FacesValidatorInfo> types = new HashSet<>();
 
     public <T> void collect(@Observes ProcessManagedBean<T> event)
     {
-        if (event.getAnnotatedBeanClass().isAnnotationPresent(FacesValidator.class))
+        Annotated annotated = event.getAnnotatedBeanClass();
+        if (annotated.isAnnotationPresent(FacesValidator.class))
         {
-            Annotated annotated = event.getAnnotatedBeanClass();
-            
             Type type = annotated.getBaseType();
 
-            FacesValidator conv = (FacesValidator) annotated.getAnnotation(FacesValidator.class);
-            
-            if (conv.managed())
+            FacesValidator validator = (FacesValidator) annotated.getAnnotation(FacesValidator.class);
+            if (validator.managed())
             {
-                boolean hasValue = conv.value().length() > 0;
+                boolean hasValue = validator.value().length() > 0;
                 if (hasValue)
                 {
-                    types.add(new FacesValidatorInfo(type, conv.value()));
+                    types.add(new FacesValidatorInfo(type, validator.value()));
                 }
             }
         }

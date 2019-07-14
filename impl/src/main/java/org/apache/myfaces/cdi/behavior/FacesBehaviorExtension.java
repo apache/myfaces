@@ -33,24 +33,22 @@ import javax.faces.component.behavior.FacesBehavior;
 
 public class FacesBehaviorExtension implements Extension
 {
-    private Set<FacesBehaviorInfo> types = new HashSet<FacesBehaviorInfo>();
+    private Set<FacesBehaviorInfo> types = new HashSet<>();
 
     public <T> void collect(@Observes ProcessManagedBean<T> event)
     {
-        if (event.getAnnotatedBeanClass().isAnnotationPresent(FacesBehavior.class))
+        Annotated annotated = event.getAnnotatedBeanClass();
+        if (annotated.isAnnotationPresent(FacesBehavior.class))
         {
-            Annotated annotated = event.getAnnotatedBeanClass();
-            
             Type type = annotated.getBaseType();
 
-            FacesBehavior conv = (FacesBehavior) annotated.getAnnotation(FacesBehavior.class);
-            
-            if (conv.managed())
+            FacesBehavior behavior = (FacesBehavior) annotated.getAnnotation(FacesBehavior.class);
+            if (behavior.managed())
             {
-                boolean hasValue = conv.value().length() > 0;
+                boolean hasValue = behavior.value().length() > 0;
                 if (hasValue)
                 {
-                    types.add(new FacesBehaviorInfo(type, conv.value()));
+                    types.add(new FacesBehaviorInfo(type, behavior.value()));
                 }
             }
         }

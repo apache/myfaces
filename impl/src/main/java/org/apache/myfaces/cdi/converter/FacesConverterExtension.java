@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.myfaces.cdi.converter;
 
 import java.lang.reflect.Type;
@@ -31,37 +30,30 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessManagedBean;
 import javax.faces.convert.FacesConverter;
 
-/**
- *
- */
 public class FacesConverterExtension implements Extension
 {
-    private Set<FacesConverterInfo> types = new HashSet<FacesConverterInfo>();
+    private Set<FacesConverterInfo> types = new HashSet<>();
 
     public <T> void collect(@Observes ProcessManagedBean<T> event)
     {
-        if (event.getAnnotatedBeanClass().isAnnotationPresent(FacesConverter.class))
+        Annotated annotated = event.getAnnotatedBeanClass();
+        if (annotated.isAnnotationPresent(FacesConverter.class))
         {
-            Annotated annotated = event.getAnnotatedBeanClass();
-            
             Type type = annotated.getBaseType();
 
-            FacesConverter conv = (FacesConverter) annotated.getAnnotation(FacesConverter.class);
-            
-            if (conv.managed())
+            FacesConverter converter = (FacesConverter) annotated.getAnnotation(FacesConverter.class);
+            if (converter.managed())
             {
-                boolean hasForClass = !Object.class.equals(conv.forClass());
-                boolean hasValue = conv.value().length() > 0;
-                if (hasForClass || hasValue)
+                boolean hasForClass = !Object.class.equals(converter.forClass());
+                if (hasForClass)
                 {
-                    if (hasForClass)
-                    {
-                        types.add(new FacesConverterInfo(type, conv.forClass(), ""));
-                    }
-                    if (hasValue)
-                    {
-                        types.add(new FacesConverterInfo(type, Object.class, conv.value()));
-                    }
+                    types.add(new FacesConverterInfo(type, converter.forClass(), ""));
+                }
+                
+                boolean hasValue = converter.value().length() > 0;
+                if (hasValue)
+                {
+                    types.add(new FacesConverterInfo(type, Object.class, converter.value()));
                 }
             }
         }

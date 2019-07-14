@@ -31,12 +31,9 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessManagedBean;
 import javax.faces.annotation.ManagedProperty;
 
-/**
- *
- */
 public class ManagedPropertyExtension implements Extension
 {
-    private Set<ManagedPropertyInfo> types = new HashSet<ManagedPropertyInfo>();
+    private Set<ManagedPropertyInfo> types = new HashSet<>();
 
     public <T> void collect(@Observes ProcessManagedBean<T> event)
     {
