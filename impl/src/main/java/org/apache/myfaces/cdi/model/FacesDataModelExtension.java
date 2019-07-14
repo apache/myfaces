@@ -19,7 +19,6 @@
 
 package org.apache.myfaces.cdi.model;
 
-import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -52,14 +51,12 @@ public class FacesDataModelExtension implements Extension
         Annotated annotated = event.getAnnotatedBeanClass();
         if (annotated.isAnnotationPresent(FacesDataModel.class))
         {
-            Type type = annotated.getBaseType();
-
             FacesDataModel model = (FacesDataModel) annotated.getAnnotation(FacesDataModel.class);
 
             boolean hasValue = model.forClass() != null;
             if (hasValue)
             {
-                types.add(new DataModelInfo(type, model.forClass()));
+                types.add(new DataModelInfo(annotated.getBaseType(), model.forClass()));
             }
         }
     }

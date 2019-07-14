@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.cdi.converter;
 
-import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 import javax.enterprise.event.Observes;
@@ -39,21 +38,19 @@ public class FacesConverterExtension implements Extension
         Annotated annotated = event.getAnnotatedBeanClass();
         if (annotated.isAnnotationPresent(FacesConverter.class))
         {
-            Type type = annotated.getBaseType();
-
             FacesConverter converter = (FacesConverter) annotated.getAnnotation(FacesConverter.class);
             if (converter.managed())
             {
                 boolean hasForClass = !Object.class.equals(converter.forClass());
                 if (hasForClass)
                 {
-                    types.add(new FacesConverterInfo(type, converter.forClass(), ""));
+                    types.add(new FacesConverterInfo(annotated.getBaseType(), converter.forClass(), ""));
                 }
                 
                 boolean hasValue = converter.value().length() > 0;
                 if (hasValue)
                 {
-                    types.add(new FacesConverterInfo(type, Object.class, converter.value()));
+                    types.add(new FacesConverterInfo(annotated.getBaseType(), Object.class, converter.value()));
                 }
             }
         }

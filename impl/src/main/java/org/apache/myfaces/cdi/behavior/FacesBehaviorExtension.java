@@ -19,7 +19,6 @@
 
 package org.apache.myfaces.cdi.behavior;
 
-import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 import javax.enterprise.event.Observes;
@@ -40,15 +39,13 @@ public class FacesBehaviorExtension implements Extension
         Annotated annotated = event.getAnnotatedBeanClass();
         if (annotated.isAnnotationPresent(FacesBehavior.class))
         {
-            Type type = annotated.getBaseType();
-
             FacesBehavior behavior = (FacesBehavior) annotated.getAnnotation(FacesBehavior.class);
             if (behavior.managed())
             {
                 boolean hasValue = behavior.value().length() > 0;
                 if (hasValue)
                 {
-                    types.add(new FacesBehaviorInfo(type, behavior.value()));
+                    types.add(new FacesBehaviorInfo(annotated.getBaseType(), behavior.value()));
                 }
             }
         }

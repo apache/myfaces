@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.cdi.validator;
 
-import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 import javax.enterprise.event.Observes;
@@ -39,15 +38,13 @@ public class FacesValidatorExtension implements Extension
         Annotated annotated = event.getAnnotatedBeanClass();
         if (annotated.isAnnotationPresent(FacesValidator.class))
         {
-            Type type = annotated.getBaseType();
-
             FacesValidator validator = (FacesValidator) annotated.getAnnotation(FacesValidator.class);
             if (validator.managed())
             {
                 boolean hasValue = validator.value().length() > 0;
                 if (hasValue)
                 {
-                    types.add(new FacesValidatorInfo(type, validator.value()));
+                    types.add(new FacesValidatorInfo(annotated.getBaseType(), validator.value()));
                 }
             }
         }
