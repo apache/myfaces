@@ -51,7 +51,7 @@ public class ContainerUtils
         try 
         {
             // simply check if the class JspApplicationContext is available
-            Class.forName("javax.servlet.jsp.JspApplicationContext");
+            ClassUtils.classForName("javax.servlet.jsp.JspApplicationContext");
             return true;
         } 
         catch (ClassNotFoundException ex) 

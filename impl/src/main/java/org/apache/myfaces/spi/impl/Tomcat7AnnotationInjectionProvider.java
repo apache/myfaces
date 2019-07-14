@@ -98,8 +98,7 @@ public class Tomcat7AnnotationInjectionProvider extends InjectionProvider
     {
         try
         {
-            Class c = Class.forName("org.apache.tomcat.InstanceManager",
-                    true, ClassUtils.getContextClassLoader());
+            Class c = ClassUtils.classForName("org.apache.tomcat.InstanceManager");
             if (c != null)
             {
                 // Tomcat 7 Available, check CDI integration. If there is no CDI available,

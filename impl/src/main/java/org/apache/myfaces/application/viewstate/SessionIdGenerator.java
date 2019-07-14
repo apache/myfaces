@@ -25,6 +25,8 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.LangUtils;
 
 /**
  * NOTE: Class taken from tomcat 7 org.apache.catalina.util.SessionIdGenerator
@@ -43,8 +45,8 @@ class SessionIdGenerator
      * designed this way since random number generators use a sync to make them
      * thread-safe and the sync makes using a a single object slow(er).
      */
-    private Queue<SecureRandom> randoms =
-            new ConcurrentLinkedQueue<SecureRandom>();
+    private Queue<SecureRandom> randoms = new ConcurrentLinkedQueue<>();
+    
     /**
      * The Java class name of the secure random number generator class to be
      * used when generating session identifiers. The random number generator
@@ -52,6 +54,7 @@ class SessionIdGenerator
      * specified, an instance of {@link SecureRandom} will be generated.
      */
     private String secureRandomClass = null;
+    
     /**
      * The name of the algorithm to use to create instances of
      * {@link SecureRandom} which are used to generate session IDs. If no
@@ -62,6 +65,7 @@ class SessionIdGenerator
      * SecureRandom} instances will be created using platform defaults.
      */
     private String secureRandomAlgorithm = "SHA1PRNG";
+    
     /**
      * The name of the provider to use to create instances of
      * {@link SecureRandom} which are used to generate session IDs. If no
@@ -71,10 +75,12 @@ class SessionIdGenerator
      * SecureRandom} instances will be created using platform defaults.
      */
     private String secureRandomProvider = null;
+    
     /**
      * Node identifier when in a cluster. Defaults to the empty string.
      */
     private String jvmRoute = "";
+    
     /**
      * Number of bytes in a session ID. Defaults to 16.
      */
@@ -207,7 +213,7 @@ class SessionIdGenerator
             try
             {
                 // Construct and seed a new random number generator
-                Class<?> clazz = Class.forName(secureRandomClass);
+                Class<?> clazz = ClassUtils.forName(secureRandomClass);
                 result = (SecureRandom) clazz.newInstance();
             }
             catch (Exception e)
@@ -222,16 +228,13 @@ class SessionIdGenerator
             // No secureRandomClass or creation failed. Use SecureRandom.
             try
             {
-                if (secureRandomProvider != null
-                        && secureRandomProvider.length() > 0)
+                if (LangUtils.isNotBlank(secureRandomProvider))
                 {
-                    result = SecureRandom.getInstance(secureRandomAlgorithm,
-                            secureRandomProvider);
+                    result = SecureRandom.getInstance(secureRandomAlgorithm, secureRandomProvider);
                 }
                 else
                 {
-                    if (secureRandomAlgorithm != null
-                            && secureRandomAlgorithm.length() > 0)
+                    if (LangUtils.isNotBlank(secureRandomAlgorithm))
                     {
                         result = SecureRandom.getInstance(secureRandomAlgorithm);
                     }

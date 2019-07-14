@@ -355,7 +355,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         // clear UIViewParameter default renderer map
         try
         {
-            Class<?> c = Class.forName("javax.faces.component.UIViewParameter");
+            Class<?> c = ClassUtils.classForName("javax.faces.component.UIViewParameter");
             Method m = c.getDeclaredMethod("releaseRenderer");
             m.setAccessible(true);
             m.invoke(null);

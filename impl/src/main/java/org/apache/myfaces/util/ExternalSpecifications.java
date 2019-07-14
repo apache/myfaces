@@ -61,7 +61,7 @@ public final class ExternalSpecifications
             {
                 try
                 {
-                    beanValidationAvailable = (Class.forName("javax.validation.Validation") != null);
+                    beanValidationAvailable = (ClassUtils.classForName("javax.validation.Validation") != null);
                 }
                 catch(ClassNotFoundException e)
                 {
@@ -101,7 +101,7 @@ public final class ExternalSpecifications
         {
             try
             {
-                cdiAvailable = Class.forName("javax.enterprise.inject.spi.BeanManager") != null;
+                cdiAvailable = ClassUtils.classForName("javax.enterprise.inject.spi.BeanManager") != null;
             }
             catch (Throwable t)
             {
@@ -122,7 +122,7 @@ public final class ExternalSpecifications
         {
             try
             {
-                el3Available = Class.forName("javax.el.StaticFieldELResolver") != null ;
+                el3Available = ClassUtils.classForName("javax.el.StaticFieldELResolver") != null ;
             }
             catch (Throwable t)
             {
@@ -139,7 +139,7 @@ public final class ExternalSpecifications
         {
             try
             {
-                sevlet4Available = Class.forName("javax.servlet.http.PushBuilder") != null
+                sevlet4Available = ClassUtils.classForName("javax.servlet.http.PushBuilder") != null
                         && HttpServletRequest.class.getMethod("newPushBuilder", (Class[]) null) != null;
             }
             catch (Throwable t)

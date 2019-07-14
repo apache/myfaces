@@ -38,6 +38,7 @@ import org.apache.myfaces.el.ELResolverBuilder;
 import org.apache.myfaces.el.ELResolverBuilderForJSP;
 import org.apache.myfaces.el.resolver.FacesCompositeELResolver;
 import org.apache.myfaces.el.resolver.FacesCompositeELResolver.Scope;
+import org.apache.myfaces.util.ClassUtils;
 
 /**
  * Initializes MyFaces in a JSP 2.1 environment.
@@ -82,7 +83,7 @@ public class Jsp21FacesInitializer extends AbstractFacesInitializer
             // JspFactory.getDefaultFactory() will return null unless JspRuntimeContext was initialized
             try
             {
-                Class.forName("org.apache.jasper.compiler.JspRuntimeContext");
+                ClassUtils.classForName("org.apache.jasper.compiler.JspRuntimeContext");
             }
             catch (ClassNotFoundException e)
             {

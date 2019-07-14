@@ -25,6 +25,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.myfaces.util.ClassUtils;
 
 /**
  * NOTE: Class taken from tomcat 7 org.apache.catalina.util.SessionIdGenerator
@@ -207,7 +208,7 @@ class SessionIdGenerator
             try
             {
                 // Construct and seed a new random number generator
-                Class<?> clazz = Class.forName(secureRandomClass);
+                Class<?> clazz = ClassUtils.classForName(secureRandomClass);
                 result = (SecureRandom) clazz.newInstance();
             }
             catch (Exception e)

@@ -100,7 +100,7 @@ public class Tomcat7AnnotationLifecycleProvider implements DiscoverableLifecycle
     {
         try
         {
-            Class.forName("org.apache.tomcat.InstanceManager", true, ClassUtils.getContextClassLoader());
+            ClassUtils.classForName("org.apache.tomcat.InstanceManager");
             return true;
         }
         catch (Exception e)

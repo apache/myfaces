@@ -46,6 +46,7 @@ import javax.faces.model.SelectItemGroup;
 import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.renderkit.html.util.SelectItemsIterator;
 import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.ClassUtils;
 
 /**
  * The util methods in this class are shared between the javax.faces.component package and
@@ -373,7 +374,7 @@ class _SharedRendererUtils
         {
             try
             {
-                type = Class.forName((String) attribute);
+                type = ClassUtils.classForName((String) attribute);
             }
             catch (ClassNotFoundException cnfe)
             {
