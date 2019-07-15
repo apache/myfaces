@@ -44,7 +44,7 @@ import org.apache.myfaces.config.impl.elements.ConverterImpl;
 import org.apache.myfaces.config.impl.elements.FacesConfigImpl;
 import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProviderFactory;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.StringUtils;
 
 /**
  * Configure all annotations that needs to be defined at startup.
@@ -109,7 +109,7 @@ public class AnnotationConfigurator
                                 + clazz.getName() + ')');
                     }
                     String value = comp.value();
-                    if (LangUtils.isEmpty(value))
+                    if (StringUtils.isEmpty(value))
                     {
                         String simpleName = clazz.getSimpleName();
                         value = Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
@@ -119,7 +119,7 @@ public class AnnotationConfigurator
                     if (comp.createTag())
                     {
                         String tagName = comp.tagName();
-                        if (LangUtils.isEmpty(tagName))
+                        if (StringUtils.isEmpty(tagName))
                         {
                             tagName = clazz.getSimpleName();
                             tagName = Character.toLowerCase(tagName.charAt(0)) + tagName.substring(1);

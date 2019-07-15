@@ -34,7 +34,7 @@ import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.ConcurrentLRUCache;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ExternalContextUtils;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.util.UrlPatternMatcher;
 
 /**
@@ -358,7 +358,7 @@ public class ViewIdSupport
         // For example, if the incoming value was /faces/faces/faces/view.xhtml 
         // the result would be simply view.xhtml.
         
-        if (LangUtils.isBlank(prefix))
+        if (StringUtils.isBlank(prefix))
         {
             // if prefix is an empty string (Spring environment), we let it be "//"
             // in order to prevent an infinite loop in uri.startsWith(-emptyString-).

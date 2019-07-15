@@ -123,7 +123,7 @@ import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.util.ClassUtils;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.ELText;
 
@@ -1858,7 +1858,7 @@ public class ApplicationImpl extends Application
             // Get the annotation instance from the class and obtain the values of the name, library, and 
             // target attributes.
             String name = annotation.name();
-            if (LangUtils.isNotEmpty(name))
+            if (StringUtils.isNotEmpty(name))
             {
                 name = ELText.parse(getExpressionFactory(),context.getELContext(), name)
                         .toString(context.getELContext());
@@ -1883,7 +1883,7 @@ public class ApplicationImpl extends Application
             
             // If library is the empty string, let library be null.
             String library = annotation.library();
-            if (LangUtils.isNotEmpty(library))
+            if (StringUtils.isNotEmpty(library))
             {
                 library = ELText.parse(getExpressionFactory(), context.getELContext(), library)
                         .toString(context.getELContext());
@@ -1897,7 +1897,7 @@ public class ApplicationImpl extends Application
             
             // If target is the empty string, let target be null.
             String target = annotation.target();
-            if (LangUtils.isNotEmpty(target))
+            if (StringUtils.isNotEmpty(target))
             {
                 target = ELText.parse(getExpressionFactory(),context.getELContext(), target)
                         .toString(context.getELContext());
@@ -2298,7 +2298,7 @@ public class ApplicationImpl extends Application
             // Get the annotation instance from the class and obtain the values of the name, library, and
             // target attributes.
             String name = annotation.name();
-            if (LangUtils.isNotEmpty(name))
+            if (StringUtils.isNotEmpty(name))
             {
                 name = ELText.parse(getExpressionFactory(), context.getELContext(), name)
                         .toString(context.getELContext());
@@ -2324,7 +2324,7 @@ public class ApplicationImpl extends Application
 
             // If library is the empty string, let library be null.
             String library = annotation.library();
-            if (LangUtils.isNotEmpty(library))
+            if (StringUtils.isNotEmpty(library))
             {
                 library = ELText.parse(getExpressionFactory(), context.getELContext(), library)
                         .toString(context.getELContext());
@@ -2350,7 +2350,7 @@ public class ApplicationImpl extends Application
 
             // If target is the empty string, let target be null.
             String target = annotation.target();
-            if (LangUtils.isNotEmpty(target))
+            if (StringUtils.isNotEmpty(target))
             {
                 target = ELText.parse(getExpressionFactory(), context.getELContext(), target)
                         .toString(context.getELContext());

@@ -381,16 +381,19 @@ public abstract class AbstractAttributeMap<V> extends AbstractMap<String, V>
             _currentKey = currentKey;
         }
 
+        @Override
         public String getKey()
         {
             return _currentKey;
         }
 
+        @Override
         public V getValue()
         {
             return AbstractAttributeMap.this.get(_currentKey);
         }
 
+        @Override
         public V setValue(final V value)
         {
             return AbstractAttributeMap.this.put(_currentKey, value);

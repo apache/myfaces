@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.myfaces.util.ClassUtils;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.StringUtils;
 
 /**
  * NOTE: Class taken from tomcat 7 org.apache.catalina.util.SessionIdGenerator
@@ -228,13 +228,13 @@ class SessionIdGenerator
             // No secureRandomClass or creation failed. Use SecureRandom.
             try
             {
-                if (LangUtils.isNotBlank(secureRandomProvider))
+                if (StringUtils.isNotBlank(secureRandomProvider))
                 {
                     result = SecureRandom.getInstance(secureRandomAlgorithm, secureRandomProvider);
                 }
                 else
                 {
-                    if (LangUtils.isNotBlank(secureRandomAlgorithm))
+                    if (StringUtils.isNotBlank(secureRandomAlgorithm))
                     {
                         result = SecureRandom.getInstance(secureRandomAlgorithm);
                     }

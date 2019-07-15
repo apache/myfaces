@@ -43,7 +43,7 @@ import org.apache.myfaces.event.PostClientWindowAndViewInitializedEvent;
 import org.apache.myfaces.spi.FacesFlowProvider;
 import org.apache.myfaces.spi.FacesFlowProviderFactory;
 import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.StringUtils;
 
 /**
  *
@@ -89,7 +89,7 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
         }
         
         //if definingDocumentId is an empty string, 
-        if (LangUtils.isEmpty(definingDocumentId))
+        if (StringUtils.isEmpty(definingDocumentId))
         {
             return _flowMapById.get(id);
         }

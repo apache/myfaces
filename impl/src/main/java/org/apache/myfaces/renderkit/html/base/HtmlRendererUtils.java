@@ -68,9 +68,8 @@ import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTMLEncoder;
 import org.apache.myfaces.renderkit.html.util.OutcomeTargetUtils;
 import org.apache.myfaces.util.ComponentUtils;
-import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 
 public final class HtmlRendererUtils
@@ -1508,7 +1507,7 @@ public final class HtmlRendererUtils
             String userEventCode, String serverEventCode)
     {
         List<String> finalParams = new ArrayList<>(3);
-        if (LangUtils.isNotBlank(userEventCode))
+        if (StringUtils.isNotBlank(userEventCode))
         {
             // escape every ' in the user event code since it will
             // be a string attribute of jsf.util.chain
@@ -1521,11 +1520,11 @@ public final class HtmlRendererUtils
                 eventName, clientBehaviors, behaviorCode, params);
         
         String behaviorCodeStr = behaviorCode.toString();
-        if (LangUtils.isNotBlank(behaviorCodeStr))
+        if (StringUtils.isNotBlank(behaviorCodeStr))
         {
             finalParams.add(behaviorCodeStr);
         }
-        if (LangUtils.isNotBlank(serverEventCode))
+        if (StringUtils.isNotBlank(serverEventCode))
         {
             finalParams.add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
         }
@@ -1594,7 +1593,7 @@ public final class HtmlRendererUtils
             String userEventCode, String serverEventCode)
     {
         List<String> finalParams = new ArrayList<String>(3);
-        if (LangUtils.isNotBlank(userEventCode))
+        if (StringUtils.isNotBlank(userEventCode))
         {
             finalParams.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
         }
@@ -1613,18 +1612,18 @@ public final class HtmlRendererUtils
         boolean submitting = submitting1 || submitting2;
         
         String behaviorCodeStr = behaviorCode.toString();
-        if (LangUtils.isNotBlank(behaviorCodeStr))
+        if (StringUtils.isNotBlank(behaviorCodeStr))
         {
             finalParams.add(behaviorCodeStr);
         }
 
         String behaviorCode2Str = behaviorCode2.toString();
-        if (LangUtils.isNotBlank(behaviorCode2Str))
+        if (StringUtils.isNotBlank(behaviorCode2Str))
         {
             finalParams.add(behaviorCode2Str);
         }
 
-        if (LangUtils.isNotBlank(serverEventCode))
+        if (StringUtils.isNotBlank(serverEventCode))
         {
             finalParams.add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
         }

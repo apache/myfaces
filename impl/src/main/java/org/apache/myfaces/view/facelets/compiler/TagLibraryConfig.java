@@ -19,7 +19,6 @@
 package org.apache.myfaces.view.facelets.compiler;
 
 import org.apache.myfaces.util.ArrayUtils;
-import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
@@ -52,7 +51,7 @@ import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.element.facelets.FaceletValidatorTag;
 import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.util.ClassUtils;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.StringUtils;
 
 /**
  * Handles creating a {@link org.apache.myfaces.view.facelets.tag.TagLibrary TagLibrary}
@@ -407,7 +406,7 @@ public final class TagLibraryConfig
     
     public static TagLibrary create(FacesContext facesContext, FaceletTagLibrary faceletTagLibrary)
     {
-        if (LangUtils.isNotEmpty(faceletTagLibrary.getLibraryClass()))
+        if (StringUtils.isNotEmpty(faceletTagLibrary.getLibraryClass()))
         {
             TagLibrary t = null;
             Class<?> type;

@@ -34,11 +34,11 @@ public class UrlPatternMatcher
     public static boolean match(String path, String pattern)
     {
         // Normalize the argument strings
-        if (LangUtils.isEmpty(path))
+        if (StringUtils.isEmpty(path))
         {
             path = "/";
         }
-        if (LangUtils.isEmpty(pattern))
+        if (StringUtils.isEmpty(pattern))
         {
             pattern = "/";
         }

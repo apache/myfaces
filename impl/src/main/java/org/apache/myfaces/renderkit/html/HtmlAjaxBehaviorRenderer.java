@@ -40,7 +40,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.render.ClientBehaviorRenderer;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.util.SharedStringBuilder;
 
 /**
@@ -147,7 +147,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         String render = mapToString(context, paramBuffer, AJAX_KEY_RENDER, behavior.getRender());
 
         String onError = behavior.getOnerror();
-        if (LangUtils.isNotBlank(onError))
+        if (StringUtils.isNotBlank(onError))
         {
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_ONERROR);
@@ -161,7 +161,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         }
         
         String onEvent = behavior.getOnevent();
-        if (LangUtils.isNotBlank(onEvent))
+        if (StringUtils.isNotBlank(onEvent))
         {
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_ONEVENT);
@@ -175,7 +175,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         }
 
         String delay = behavior.getDelay();
-        if (LangUtils.isNotBlank(delay))
+        if (StringUtils.isNotBlank(delay))
         {
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_DELAY);
@@ -368,7 +368,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
         for (int i = 0, size = options.size(); i < size; i++)
         {
             String option = options.get(i);
-            if (LangUtils.isNotBlank(option))
+            if (StringUtils.isNotBlank(option))
             {
                 if (!first)
                 {
@@ -456,7 +456,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
             int size, StringBuilder retVal, int cnt,
             String strVal, SearchExpressionContext searchExpressionContext)
     {
-        if (LangUtils.isNotBlank(strVal))
+        if (StringUtils.isNotBlank(strVal))
         {
             SearchExpressionHandler handler = context.getFacesContext().getApplication().getSearchExpressionHandler();
             String clientId = handler.resolveClientId(searchExpressionContext, strVal.trim());

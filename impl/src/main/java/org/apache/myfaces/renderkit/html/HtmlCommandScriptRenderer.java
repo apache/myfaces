@@ -47,9 +47,8 @@ import org.apache.myfaces.renderkit.html.util.JavascriptContext;
 import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.ComponentUtils;
-import org.apache.myfaces.util.LangUtils;
-import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.SharedStringBuilder;
 
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Command", type = "javax.faces.Script")
 public class HtmlCommandScriptRenderer extends HtmlRenderer
@@ -212,7 +211,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                 searchExpressionContext);
 
         String onError = commandScript.getOnerror();
-        if (LangUtils.isNotBlank(onError))
+        if (StringUtils.isNotBlank(onError))
         {
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_ONERROR);
@@ -226,7 +225,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         }
 
         String onEvent = commandScript.getOnevent();
-        if (LangUtils.isNotBlank(onEvent))
+        if (StringUtils.isNotBlank(onEvent))
         {
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_ONEVENT);
@@ -402,7 +401,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         for (int i = 0, size = options.size(); i < size; i++)
         {
             String option = options.get(i);
-            if (LangUtils.isNotBlank(option))
+            if (StringUtils.isNotBlank(option))
             {
                 if (!first)
                 {
@@ -422,7 +421,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
     private String resolveExpressionsAsParameter(StringBuilder retVal, String target, String expressions,
             SearchExpressionContext searchExpressionContext)
     {
-        if (LangUtils.isNotBlank(expressions))
+        if (StringUtils.isNotBlank(expressions))
         {
             retVal.setLength(0);
             retVal.append(target);

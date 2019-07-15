@@ -42,7 +42,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.StringUtils;
 
 /**
  * Default impl of the FacesConfigurationMerger-SPI.
@@ -419,7 +419,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
                     if (slot instanceof FacesConfigNameSlot)
                     {
                         String name = ((FacesConfigNameSlot) slot).getName();
-                        if (LangUtils.isNotEmpty(name))
+                        if (StringUtils.isNotEmpty(name))
                         {
                             boolean founded = false;
                             for (int j = i+1; j < sortedList.size(); j++)
@@ -578,7 +578,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
                     if (slot instanceof FacesConfigNameSlot)
                     {
                         String name = ((FacesConfigNameSlot) slot).getName();
-                        if (LangUtils.isNotEmpty(name))
+                        if (StringUtils.isNotEmpty(name))
                         {
                             boolean founded = false;
                             for (int j = i-1; j >= 0; j--)
@@ -602,7 +602,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
                     if (slot instanceof FacesConfigNameSlot)
                     {
                         String name = ((FacesConfigNameSlot) slot).getName();
-                        if (LangUtils.isNotEmpty(name))
+                        if (StringUtils.isNotEmpty(name))
                         {
                             boolean founded = false;
                             for (int j = i+1; j < sortedList.size(); j++)
@@ -774,7 +774,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
         for (FacesConfig resource : appConfigResources)
         {
             String name = resource.getName();
-            if (LangUtils.isNotEmpty(name))
+            if (StringUtils.isNotEmpty(name))
             {
                 availableReferences.add(name);
             }

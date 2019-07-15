@@ -60,7 +60,7 @@ import org.apache.myfaces.context.flash.FlashImpl;
 import org.apache.myfaces.util.Assert;
 import org.apache.myfaces.util.EnumerationIterator;
 import org.apache.myfaces.util.ExternalSpecifications;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.StringUtils;
 
 /**
  * Implements the external context for servlet request. JSF 1.2, 6.1.3
@@ -915,7 +915,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
             for (Map.Entry<String, List<String>> pair : parameters.entrySet())
             {
                 String key = pair.getKey();
-                if (LangUtils.isNotBlank(key))
+                if (StringUtils.isNotBlank(key))
                 {
                     if (paramMap == null)
                     {

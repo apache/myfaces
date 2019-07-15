@@ -73,7 +73,7 @@ import org.apache.myfaces.spi.ServiceProviderFinder;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.context.ReleasableExternalContext;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.StringUtils;
 
 /**
  * Performs common initialization tasks.
@@ -419,7 +419,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     {
         String expressionFactoryClassName
                 = MyfacesConfig.getCurrentInstance(externalContext).getExpressionFactory();
-        if (LangUtils.isNotBlank(expressionFactoryClassName))
+        if (StringUtils.isNotBlank(expressionFactoryClassName))
         {
             if (log.isLoggable(Level.FINE))
             {

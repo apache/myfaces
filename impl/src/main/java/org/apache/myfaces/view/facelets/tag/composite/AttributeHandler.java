@@ -37,7 +37,7 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.util.ClassUtils;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 
 /**
@@ -331,7 +331,7 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
                     Class clazz = String.class;
                     
                     String type = _type.getValue(ctx);
-                    if (LangUtils.isNotBlank(type))
+                    if (StringUtils.isNotBlank(type))
                     {
                         try
                         {

@@ -70,7 +70,6 @@ import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.util.HashMapUtils;
 import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.util.FilenameUtils;
-import org.apache.myfaces.util.LangUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
@@ -881,7 +880,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         targetFlow = flowHandler.getFlow(facesContext, 
             calledFlowDocumentId, 
             flowCallNode.getCalledFlowId(facesContext));
-        if (targetFlow == null && LangUtils.isNotBlank(calledFlowDocumentId))
+        if (targetFlow == null && StringUtils.isNotBlank(calledFlowDocumentId))
         {
             targetFlow = flowHandler.getFlow(facesContext, "", flowCallNode.getCalledFlowId(facesContext));
         }
@@ -1128,7 +1127,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             // Append all params from the queryString
             // (excluding faces-redirect, includeViewParams and faces-include-view-params)
             Map<String, List<String>> params = null;
-            if (LangUtils.isNotBlank(queryString))
+            if (StringUtils.isNotBlank(queryString))
             {
                 String[] splitQueryParams = AMP_PATTERN.split(queryString); // "&" or "&amp;"
                 params = new HashMap<>(splitQueryParams.length, (splitQueryParams.length* 4 + 3) / 3);
