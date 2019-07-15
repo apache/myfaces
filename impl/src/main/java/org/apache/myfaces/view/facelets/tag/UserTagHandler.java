@@ -77,7 +77,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
         }
         else
         {
-            _handlers = new HashMap<String, DefineHandler>();
+            _handlers = new HashMap<>(defines.size());
             for (DefineHandler handler : defines)
             {
                 _handlers.put(handler.getName(), handler);
