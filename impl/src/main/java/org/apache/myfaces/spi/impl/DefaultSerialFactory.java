@@ -16,16 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.util;
+package org.apache.myfaces.spi.impl;
 
+import org.apache.myfaces.spi.SerialFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import org.apache.myfaces.util.MyFacesObjectInputStream;
 
-public interface SerialFactory
+public class DefaultSerialFactory implements SerialFactory
 {
-    ObjectOutputStream getObjectOutputStream(OutputStream outputStream) throws IOException;
-    ObjectInputStream getObjectInputStream(InputStream inputStream) throws IOException;
+    @Override
+    public ObjectOutputStream getObjectOutputStream(OutputStream outputStream) throws IOException
+    {
+        return new ObjectOutputStream(outputStream);
+    }
+
+    @Override
+    public ObjectInputStream getObjectInputStream(InputStream inputStream) throws IOException
+    {
+        return new MyFacesObjectInputStream(inputStream);
+    }
+    
 }

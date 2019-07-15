@@ -47,7 +47,7 @@ import javax.servlet.ServletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.util.lang.Assert;
-import org.apache.myfaces.util.SerialFactory;
+import org.apache.myfaces.spi.SerialFactory;
 
 /**
  * <p>This Class exposes a handful of methods related to encryption,
@@ -144,7 +144,7 @@ public final class StateUtils
     /**
      * Defines the factory class name using for serialize/deserialize the view state returned 
      * by state manager into a byte array. The expected class must implement
-     * org.apache.myfaces.util.serial.SerialFactory interface.
+     * {@link org.apache.myfaces.spi.SerialFactory} interface.
      */
     @JSFWebConfigParam(name="org.apache.myfaces.SERIAL_FACTORY", since="1.1",group="state",tags="performance")
     public static final String SERIAL_FACTORY = INIT_PREFIX + "SERIAL_FACTORY";

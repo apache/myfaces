@@ -32,14 +32,14 @@ import java.lang.reflect.Proxy;
  * the input stream.  The solution appears to be to subclass ObjectInputStream
  * (eg. CustomInputStream), and specify a different class-loading mechanism.
  */
-public class MyFacesObjectInputStream
-    extends ObjectInputStream
+public class MyFacesObjectInputStream extends ObjectInputStream
 {
     public MyFacesObjectInputStream(InputStream in) throws IOException
     {
         super(in);
     }
 
+    @Override
     protected Class resolveClass(ObjectStreamClass desc)
         throws ClassNotFoundException, IOException
     {
@@ -53,6 +53,7 @@ public class MyFacesObjectInputStream
         }
     }
 
+    @Override
     protected Class resolveProxyClass(String[] interfaces) 
             throws IOException, ClassNotFoundException
     {
