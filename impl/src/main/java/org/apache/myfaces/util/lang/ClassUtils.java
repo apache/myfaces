@@ -426,17 +426,7 @@ public final class ClassUtils
         {
             return clazz.newInstance();
         }
-        catch(NoClassDefFoundError e)
-        {
-            log.log(Level.SEVERE, "Class : "+clazz.getName()+" not found.",e);
-            throw new FacesException(e);
-        }
-        catch (InstantiationException e)
-        {
-            log.log(Level.SEVERE, e.getMessage(), e);
-            throw new FacesException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (NoClassDefFoundError | InstantiationException | IllegalAccessException e)
         {
             log.log(Level.SEVERE, e.getMessage(), e);
             throw new FacesException(e);
@@ -515,22 +505,20 @@ public final class ClassUtils
      */
     public static ClassLoader getContextClassLoader()
     {
-      if (System.getSecurityManager() != null) 
-      {
-          try 
-          {
-              return (ClassLoader) AccessController.doPrivileged(
-                      (PrivilegedExceptionAction) () -> Thread.currentThread().getContextClassLoader());
-          }
-          catch (PrivilegedActionException pae)
-          {
-              throw new FacesException(pae);
-          }
-      }
-      else
-      {
-          return Thread.currentThread().getContextClassLoader();
-      }
+        if (System.getSecurityManager() != null) 
+        {
+            try 
+            {
+                return (ClassLoader) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> Thread.currentThread().getContextClassLoader());
+            }
+            catch (PrivilegedActionException pae)
+            {
+                throw new FacesException(pae);
+            }
+        }
+
+        return Thread.currentThread().getContextClassLoader();
     }
     
     /**
@@ -622,17 +610,7 @@ public final class ClassUtils
                         // create new decorator wrapping current
                         newCurrent = delegationConstructor.newInstance(new Object[] { current });
                     }
-                    catch (InstantiationException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (IllegalAccessException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (InvocationTargetException e)
+                    catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
                     {
                         log.log(Level.SEVERE, e.getMessage(), e);
                         throw new FacesException(e);
