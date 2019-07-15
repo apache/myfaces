@@ -347,9 +347,10 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                     os.write(UNCOMPRESSED_FLAG);
                 }
 
-                ObjectOutputStream out = new ObjectOutputStream(os);
-                out.writeObject(serializedView);
-                out.close();
+                try (ObjectOutputStream out = new ObjectOutputStream(os))
+                {
+                    out.writeObject(serializedView);
+                }
                 
                 baos.close();
 
@@ -394,11 +395,13 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
             try
             {
                 ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) state);
+
                 InputStream is = bais;
-                if(is.read() == COMPRESSED_FLAG)
+                if (is.read() == COMPRESSED_FLAG)
                 {
                     is = new GZIPInputStream(is);
                 }
+
                 ObjectInputStream ois = null;
                 try
                 {

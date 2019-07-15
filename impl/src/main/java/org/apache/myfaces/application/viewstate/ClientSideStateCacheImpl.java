@@ -58,8 +58,7 @@ class ClientSideStateCacheImpl extends StateCache<Object, Object>
     }
 
     @Override
-    public Object saveSerializedView(FacesContext facesContext,
-            Object serializedView)
+    public Object saveSerializedView(FacesContext facesContext, Object serializedView)
     {
         // The state in this case the state is saved on the token sent to
         // the client (isWriteStateAfterRenderViewRequired() is set to true).
@@ -80,7 +79,7 @@ class ClientSideStateCacheImpl extends StateCache<Object, Object>
                 return null;
             }
 
-            long passedTime = (System.currentTimeMillis() - timeStamp.longValue()) / 60000;
+            long passedTime = (System.currentTimeMillis() - timeStamp) / 60000;
             if (passedTime > clientViewStateTimeout)
             {
                 //expire

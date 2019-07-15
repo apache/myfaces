@@ -169,7 +169,7 @@ class SerializedViewCollection implements Serializable
                         {
                             Integer vscount = _viewScopeIdCounts.get(oldViewScopeId);
                             vscount = vscount - 1;
-                            if (vscount != null && vscount < 1)
+                            if (vscount < 1)
                             {
                                 _viewScopeIdCounts.remove(oldViewScopeId);
                                 viewScopeProvider.destroyViewScopeMap(context, oldViewScopeId);
@@ -212,7 +212,7 @@ class SerializedViewCollection implements Serializable
                 {
                     Integer vscount = _viewScopeIdCounts.get(oldViewScopeId);
                     vscount = vscount - 1;
-                    if (vscount != null && vscount < 1)
+                    if (vscount < 1)
                     {
                         _viewScopeIdCounts.remove(oldViewScopeId);
                         viewScopeProvider.destroyViewScopeMap(context, oldViewScopeId);
