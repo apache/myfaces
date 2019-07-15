@@ -24,7 +24,7 @@ import java.util.Map;
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
-import org.apache.myfaces.util.LRULinkedHashMap;
+import org.apache.myfaces.util.lang.LRULinkedHashMap;
 
 /**
  *

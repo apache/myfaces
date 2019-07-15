@@ -24,7 +24,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlOutputText;
 
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.util.FastWriter;
+import org.apache.myfaces.util.lang.FastWriter;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.Test;
 

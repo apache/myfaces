@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag;
 
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRule;
 import javax.faces.view.facelets.MetaRuleset;
@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.view.facelets.PassthroughRule;
 import org.apache.myfaces.view.facelets.tag.jsf.PassThroughLibrary;
 

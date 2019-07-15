@@ -26,8 +26,8 @@ import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.view.AttachedObjectTarget;
-import org.apache.myfaces.util.ArrayUtils;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.ArrayUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 /**

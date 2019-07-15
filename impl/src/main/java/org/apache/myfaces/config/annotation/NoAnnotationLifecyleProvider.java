@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.config.annotation;
 
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 import java.lang.reflect.InvocationTargetException;
 

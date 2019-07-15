@@ -42,8 +42,8 @@ import javax.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.event.PostClientWindowAndViewInitializedEvent;
 import org.apache.myfaces.spi.FacesFlowProvider;
 import org.apache.myfaces.spi.FacesFlowProviderFactory;
-import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  *

@@ -48,7 +48,7 @@ import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.HttpPartWrapper;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.util.ComponentUtils;
 
 public class HtmlInputFileRendererBase extends HtmlRenderer

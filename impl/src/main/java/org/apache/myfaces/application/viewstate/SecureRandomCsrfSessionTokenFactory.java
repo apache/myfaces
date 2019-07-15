@@ -21,7 +21,7 @@ package org.apache.myfaces.application.viewstate;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.application.StateCache;
-import org.apache.myfaces.util.Hex;
+import org.apache.myfaces.util.lang.Hex;
 import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**

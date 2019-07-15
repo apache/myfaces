@@ -57,10 +57,10 @@ import javax.servlet.http.HttpSession;
 import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.context.flash.FlashImpl;
-import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.EnumerationIterator;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.util.lang.EnumerationIterator;
 import org.apache.myfaces.util.ExternalSpecifications;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  * Implements the external context for servlet request. JSF 1.2, 6.1.3

@@ -25,7 +25,7 @@ import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

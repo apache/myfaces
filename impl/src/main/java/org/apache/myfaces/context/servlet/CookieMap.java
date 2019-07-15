@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.myfaces.util.AbstractAttributeMap;
+import org.apache.myfaces.util.lang.AbstractAttributeMap;
 
 /**
  * HttpServletRequest Cookies as Map.

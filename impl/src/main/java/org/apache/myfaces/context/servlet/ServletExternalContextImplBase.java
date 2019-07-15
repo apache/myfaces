@@ -29,7 +29,7 @@ import javax.faces.lifecycle.ClientWindow;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.context.ReleasableExternalContext;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 
 /**
  * Provides a base implementation of the ExternalContext for Servlet

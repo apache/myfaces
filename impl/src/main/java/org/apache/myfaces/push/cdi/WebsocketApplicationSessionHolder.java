@@ -35,8 +35,8 @@ import javax.websocket.Session;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.push.WebsocketSessionClusterSerializedRestore;
 import org.apache.myfaces.push.Json;
-import org.apache.myfaces.util.ClassUtils;
-import org.apache.myfaces.util.ConcurrentLRUCache;
+import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.util.lang.ConcurrentLRUCache;
 
 public final class WebsocketApplicationSessionHolder
 {

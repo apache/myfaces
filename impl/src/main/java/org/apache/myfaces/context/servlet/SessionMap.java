@@ -25,7 +25,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.myfaces.util.AbstractThreadSafeAttributeMap;
+import org.apache.myfaces.util.lang.AbstractThreadSafeAttributeMap;
 
 
 /**

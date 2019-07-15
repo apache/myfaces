@@ -38,9 +38,9 @@ import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.util.ArrayUtils;
+import org.apache.myfaces.util.lang.ArrayUtils;
 import org.apache.myfaces.util.ComponentUtils;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 
 public class HtmlGridRendererBase extends HtmlRenderer
@@ -277,7 +277,7 @@ public class HtmlGridRendererBase extends HtmlRenderer
         int columnClassesCount = columnClassesArray.length;
 
         String[] rowClassesArray = (rowClasses == null)
-            ? org.apache.myfaces.util.ArrayUtils.EMPTY_STRING_ARRAY
+            ? org.apache.myfaces.util.lang.ArrayUtils.EMPTY_STRING_ARRAY
             : StringUtils.trim(StringUtils.splitShortString(rowClasses, ','));
         int rowClassesCount = rowClassesArray.length;
 

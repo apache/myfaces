@@ -41,7 +41,7 @@ import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Company;
 import org.apache.myfaces.view.facelets.bean.Example;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
-import org.apache.myfaces.util.FastWriter;
+import org.apache.myfaces.util.lang.FastWriter;
 import org.junit.Assert;
 import org.junit.Test;
 

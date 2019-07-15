@@ -42,7 +42,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  * Default impl of the FacesConfigurationMerger-SPI.

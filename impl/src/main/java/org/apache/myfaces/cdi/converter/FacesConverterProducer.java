@@ -29,7 +29,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.FacesException;
 import javax.faces.convert.Converter;
 import org.apache.myfaces.cdi.util.AbstractDynamicProducer;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 @ApplicationScoped
 @Typed

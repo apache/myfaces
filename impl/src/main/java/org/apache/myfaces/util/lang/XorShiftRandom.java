@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.util;
+package org.apache.myfaces.util.lang;
 
 /**
  * A simple XORShift Random generator.
@@ -26,7 +26,7 @@ public class XorShiftRandom
 {
     private long value;
 
-    public XorShiftRandom( long initialSeed )
+    public XorShiftRandom(long initialSeed)
     {
         value = initialSeed;
     }

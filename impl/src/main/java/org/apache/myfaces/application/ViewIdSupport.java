@@ -31,10 +31,10 @@ import javax.faces.render.ResponseStateManager;
 import javax.faces.view.ViewDeclarationLanguage;
 import org.apache.myfaces.config.MyfacesConfig;
 
-import org.apache.myfaces.util.ConcurrentLRUCache;
+import org.apache.myfaces.util.lang.ConcurrentLRUCache;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ExternalContextUtils;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.UrlPatternMatcher;
 
 /**

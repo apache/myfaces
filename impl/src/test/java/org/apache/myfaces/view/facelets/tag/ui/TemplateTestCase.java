@@ -22,7 +22,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.apache.myfaces.util.FastWriter;
+import org.apache.myfaces.util.lang.FastWriter;
 import org.junit.Assert;
 import org.junit.Test;
 

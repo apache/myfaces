@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.util;
+package org.apache.myfaces.util.lang;
 
 import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
@@ -496,7 +496,7 @@ public final class ClassUtils
      *        (if none associated with current thread.)
      * @return ClassLoader
      */
-    protected static ClassLoader getCurrentLoader(Object defaultObject)
+    public static ClassLoader getCurrentLoader(Object defaultObject)
     {
         ClassLoader loader = getContextClassLoader();
         if(loader == null)
@@ -685,22 +685,8 @@ public final class ClassUtils
                                 new Class[] {interfaceClass, extendedInterfaceClass});
                 current = wrapperConstructor.newInstance(new Object[] {newCurrent, defaultObject});
             }
-            catch (NoSuchMethodException e)
-            {
-                log.log(Level.SEVERE, e.getMessage(), e);
-                throw new FacesException(e);
-            }
-            catch (InstantiationException e)
-            {
-                log.log(Level.SEVERE, e.getMessage(), e);
-                throw new FacesException(e);
-            }
-            catch (IllegalAccessException e)
-            {
-                log.log(Level.SEVERE, e.getMessage(), e);
-                throw new FacesException(e);
-            }
-            catch (InvocationTargetException e)
+            catch (NoSuchMethodException | InstantiationException | IllegalAccessException
+                    | InvocationTargetException e)
             {
                 log.log(Level.SEVERE, e.getMessage(), e);
                 throw new FacesException(e);

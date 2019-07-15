@@ -26,7 +26,7 @@ import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.apache.myfaces.test.mock.MockResponseWriter;

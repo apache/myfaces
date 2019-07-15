@@ -66,14 +66,14 @@ import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.push.EndpointImpl;
 import org.apache.myfaces.push.WebsocketConfigurator;
 import org.apache.myfaces.push.WebsocketFacesInit;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.FacesFlowProvider;
 import org.apache.myfaces.spi.FacesFlowProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinder;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.context.ReleasableExternalContext;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  * Performs common initialization tasks.

@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.util;
 
+import org.apache.myfaces.util.lang.StringUtils;
+
 public class UrlPatternMatcher
 {
     /**

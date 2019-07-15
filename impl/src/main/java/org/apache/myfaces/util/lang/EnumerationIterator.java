@@ -16,21 +16,39 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.util;
+package org.apache.myfaces.util.lang;
+
+import java.util.Enumeration;
+import java.util.Iterator;
 
 /**
- * Extends the existing with a new loading mechanism
+ * @author Manfred Geiler (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
-public class ClassLoaderExtension
+public final class EnumerationIterator<T> implements Iterator<T>
 {
-    /**
-     * standard forName for the loader
-     *
-     * @param name
-     * @return
-     */
-    public Class forName(String name)
+    private final Enumeration<? extends T> _enumeration;
+
+    public EnumerationIterator(final Enumeration<? extends T> enumeration)
     {
-        return null;
+        _enumeration = enumeration;
+    }
+
+    @Override
+    public boolean hasNext()
+    {
+        return _enumeration.hasMoreElements();
+    }
+
+    @Override
+    public T next()
+    {
+        return _enumeration.nextElement();
+    }
+
+    @Override
+    public void remove()
+    {
+        throw new UnsupportedOperationException(this.getClass().getName() + " UnsupportedOperationException");
     }
 }

@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.net.URL;
 import javax.faces.view.facelets.FaceletCache;
 import javax.faces.view.facelets.FaceletContext;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 
 /**
  * Extended FaceletCache contract that supports additional Myfaces specific concepts

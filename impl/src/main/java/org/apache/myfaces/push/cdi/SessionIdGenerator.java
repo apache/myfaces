@@ -25,7 +25,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
  * NOTE: Class taken from tomcat 7 org.apache.catalina.util.SessionIdGenerator

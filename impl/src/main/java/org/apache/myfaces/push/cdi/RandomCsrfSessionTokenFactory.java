@@ -25,7 +25,7 @@ import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.util.Hex;
+import org.apache.myfaces.util.lang.Hex;
 import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**

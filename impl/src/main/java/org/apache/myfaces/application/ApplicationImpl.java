@@ -121,9 +121,9 @@ import org.apache.myfaces.el.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.flow.FlowHandlerImpl;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.ClassUtils;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.ELText;
 

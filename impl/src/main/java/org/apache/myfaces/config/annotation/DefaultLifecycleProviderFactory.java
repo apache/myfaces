@@ -33,7 +33,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 
 /*

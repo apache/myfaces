@@ -44,7 +44,7 @@ import org.apache.myfaces.config.impl.elements.ConverterImpl;
 import org.apache.myfaces.config.impl.elements.FacesConfigImpl;
 import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProviderFactory;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  * Configure all annotations that needs to be defined at startup.

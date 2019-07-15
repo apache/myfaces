@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.util;
+package org.apache.myfaces.util.lang;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -100,6 +100,7 @@ public class DynamicPushbackInputStream extends PushbackInputStream
         System.arraycopy(old, 0, buf, len, old.length);
     }
 
+    @Override
     public void unread(byte[] b, int off, int len) throws IOException
     {
         if (len > pos && pos + len > buf.length)
@@ -110,6 +111,7 @@ public class DynamicPushbackInputStream extends PushbackInputStream
         super.unread(b, off, len);
     }
 
+    @Override
     public void unread(int b) throws IOException
     {
         if (pos == 0)
@@ -120,6 +122,7 @@ public class DynamicPushbackInputStream extends PushbackInputStream
         super.unread(b);
     }
 
+    @Override
     public int read() throws IOException
     {
         int m = super.read();
@@ -130,6 +133,7 @@ public class DynamicPushbackInputStream extends PushbackInputStream
         return m;
     }
 
+    @Override
     public int read(byte[] b, int off, int len) throws IOException
     {
         this.available(); // workaround for a problem in PushbackInputStream, without this, the amount of bytes read
@@ -142,6 +146,7 @@ public class DynamicPushbackInputStream extends PushbackInputStream
         return r;
     }
 
+    @Override
     public long skip(long n) throws IOException
     {
         long r = super.skip(n);

@@ -57,7 +57,7 @@ import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 
 public class PartialViewContextImpl extends PartialViewContext

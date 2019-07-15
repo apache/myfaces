@@ -45,7 +45,7 @@ import javax.faces.event.FacesListener;
 import javax.faces.render.Renderer;
 
 import javax.faces.view.Location;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ComponentUtils;

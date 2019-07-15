@@ -36,8 +36,8 @@ import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.TagDecorator;
 
 import org.apache.myfaces.config.element.FaceletsProcessing;
-import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.BaseMultipleTagDecorator;
 import org.apache.myfaces.view.facelets.tag.BaseTagDecorator;
 import org.apache.myfaces.view.facelets.tag.CompositeTagDecorator;

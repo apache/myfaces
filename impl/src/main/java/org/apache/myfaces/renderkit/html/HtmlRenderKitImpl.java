@@ -44,8 +44,8 @@ import org.apache.myfaces.renderkit.LazyRenderKit;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.ContentTypeUtils;
 import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
-import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

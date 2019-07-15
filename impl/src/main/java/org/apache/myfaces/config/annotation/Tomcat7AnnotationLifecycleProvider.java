@@ -29,7 +29,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.naming.NamingException;
 
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.tomcat.InstanceManager;
 
 /**

@@ -56,7 +56,7 @@ import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.spi.FacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
  * This class is called by any Java EE 6 complaint container at startup.

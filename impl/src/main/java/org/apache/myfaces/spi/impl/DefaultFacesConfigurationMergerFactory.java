@@ -19,7 +19,7 @@
 package org.apache.myfaces.spi.impl;
 
 import org.apache.myfaces.config.DefaultFacesConfigurationMerger;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigurationMerger;
 import org.apache.myfaces.spi.FacesConfigurationMergerFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;

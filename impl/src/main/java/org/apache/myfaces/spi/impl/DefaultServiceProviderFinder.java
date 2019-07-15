@@ -34,7 +34,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import javax.faces.context.ExternalContext;
 
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.ServiceProviderFinder;
 
 /**

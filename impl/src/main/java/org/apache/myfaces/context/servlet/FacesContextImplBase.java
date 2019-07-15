@@ -40,7 +40,7 @@ import javax.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.el.FacesELContext;
 import org.apache.myfaces.context.ReleasableExternalContext;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage; 
 
 /**

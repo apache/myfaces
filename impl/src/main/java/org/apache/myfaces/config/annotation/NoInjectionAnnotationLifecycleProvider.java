@@ -29,7 +29,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.naming.NamingException;
 
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
  * See SRV.14.5 Servlet Specification Version 2.5 JSR 154

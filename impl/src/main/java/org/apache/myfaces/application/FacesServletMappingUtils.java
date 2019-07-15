@@ -31,7 +31,7 @@ import javax.faces.webapp.FacesServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.ExternalContextUtils;
 import org.apache.myfaces.webapp.DelegatedFacesServlet;
 

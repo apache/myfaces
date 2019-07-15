@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.util;
 
+import org.apache.myfaces.util.lang.ThreadsafeXorShiftRandom;
+import org.apache.myfaces.util.lang.XorShiftRandom;
 import org.junit.Test;
 
 import java.util.HashSet;

@@ -31,7 +31,7 @@ import javax.faces.view.facelets.FaceletException;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.ELText;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
-import org.apache.myfaces.util.FastWriter;
+import org.apache.myfaces.util.lang.FastWriter;
 
 /**
  * @author Adam Winer

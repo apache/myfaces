@@ -27,7 +27,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 // TODO @Resources
 public class ResourceAnnotationInjectionProvider extends NoInjectionAnnotationInjectionProvider

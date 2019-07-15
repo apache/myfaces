@@ -21,7 +21,7 @@ package org.apache.myfaces.test.core;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderException;
 import org.apache.myfaces.spi.InjectionProviderFactory;

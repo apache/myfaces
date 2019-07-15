@@ -35,8 +35,8 @@ import javax.faces.lifecycle.Lifecycle;
 import javax.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
-import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
  * DOCUMENT ME!

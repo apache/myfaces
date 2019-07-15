@@ -35,7 +35,7 @@ import javax.faces.component.search.SearchKeywordContext;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ComponentUtils;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  *

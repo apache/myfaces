@@ -53,7 +53,7 @@ import org.apache.myfaces.config.impl.FacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
 import org.apache.myfaces.context.PartialViewContextFactoryImpl;
 import org.apache.myfaces.application.ViewIdSupport;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigurationProviderFactory;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;

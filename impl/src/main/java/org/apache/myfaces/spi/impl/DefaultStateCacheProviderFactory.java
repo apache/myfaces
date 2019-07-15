@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 import org.apache.myfaces.application.viewstate.StateCacheFactoryImpl;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.apache.myfaces.spi.StateCacheProvider;
 import org.apache.myfaces.spi.StateCacheProviderFactory;

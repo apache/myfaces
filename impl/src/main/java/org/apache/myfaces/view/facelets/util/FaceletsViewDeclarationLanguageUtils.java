@@ -26,8 +26,8 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.util.ClassUtils;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  * Utility methods used in FaceletsViewDeclarationLanguage

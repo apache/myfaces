@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.util;
+package org.apache.myfaces.util.lang;
 
 import java.util.ArrayList;
 
@@ -580,7 +580,7 @@ public final class StringUtils
         int len = (str == null) ? 0 : str.length();
         if (str == null || len == 0)
         {
-            return org.apache.myfaces.util.ArrayUtils.EMPTY_STRING_ARRAY;
+            return org.apache.myfaces.util.lang.ArrayUtils.EMPTY_STRING_ARRAY;
         }
 
         int lastTokenIndex = 0;

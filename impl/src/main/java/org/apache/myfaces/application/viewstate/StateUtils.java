@@ -46,7 +46,7 @@ import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.util.SerialFactory;
 
 /**

@@ -34,7 +34,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;

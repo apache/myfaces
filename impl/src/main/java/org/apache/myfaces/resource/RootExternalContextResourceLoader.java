@@ -28,7 +28,7 @@ import javax.faces.application.ResourceVisitOption;
 
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.util.WebConfigParamUtils;
-import org.apache.myfaces.util.SkipMatchIterator;
+import org.apache.myfaces.util.lang.SkipMatchIterator;
 
 /**
  * A resource loader implementation which loads resources from the webapp root.

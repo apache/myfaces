@@ -16,31 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.util;
+package org.apache.myfaces.util.lang;
 
-public class Assert
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class LRULinkedHashMap<K,V> extends LinkedHashMap<K,V>
 {
-    public static void notNull(Object value)
+    private static final float DEFAULT_LOAD_FACTOR = 0.75f;
+    private final int capacity;
+
+    public LRULinkedHashMap(int capacity)
     {
-        if (value == null)
-        {
-            throw new NullPointerException("The instance is null.");
-        }
+        // 1 extra element as add happens before remove (101), and load factor big
+        // enough to avoid triggering resize.  True = keep in access order.
+        super(capacity + 1, DEFAULT_LOAD_FACTOR, true);
+        this.capacity = capacity;
     }
-    
-    public static void notNull(Object value, String name)
+
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<K,V> eldest)
     {
-        if (value == null)
-        {
-            throw new NullPointerException(name + " is null.");
-        }
-    }
-    
-    public static void notEmpty(String param, String name)
-    {
-        if (param == null || param.isEmpty())
-        {
-            throw new NullPointerException(name + " is empty.");
-        }
+        return size() > capacity;
     }
 }

@@ -47,7 +47,7 @@ import org.apache.myfaces.renderkit.html.util.JavascriptContext;
 import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.ComponentUtils;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.SharedStringBuilder;
 
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Command", type = "javax.faces.Script")

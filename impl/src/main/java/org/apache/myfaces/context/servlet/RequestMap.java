@@ -23,7 +23,7 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
-import org.apache.myfaces.util.AbstractAttributeMap;
+import org.apache.myfaces.util.lang.AbstractAttributeMap;
 
 /**
  * ServletRequest attributes Map.

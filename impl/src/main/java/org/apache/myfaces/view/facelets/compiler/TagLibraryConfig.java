@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.compiler;
 
-import org.apache.myfaces.util.ArrayUtils;
+import org.apache.myfaces.util.lang.ArrayUtils;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
@@ -49,9 +49,9 @@ import org.apache.myfaces.config.element.facelets.FaceletSourceTag;
 import org.apache.myfaces.config.element.facelets.FaceletTag;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.element.facelets.FaceletValidatorTag;
-import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.ClassUtils;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  * Handles creating a {@link org.apache.myfaces.view.facelets.tag.TagLibrary TagLibrary}

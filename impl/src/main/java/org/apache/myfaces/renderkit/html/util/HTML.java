@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html.util;
 
-import org.apache.myfaces.util.ArrayUtils;
+import org.apache.myfaces.util.lang.ArrayUtils;
 
 
 /**
@@ -71,7 +71,7 @@ public interface HTML
         ONCLICK_ATTR
     };
     String[] EVENT_HANDLER_ATTRIBUTES =
-            (String[]) org.apache.myfaces.util.ArrayUtils.concat(
+            (String[]) org.apache.myfaces.util.lang.ArrayUtils.concat(
                 EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONCLICK,
                 new String[] {ONCLICK_ATTR});
 
@@ -123,7 +123,7 @@ public interface HTML
         ROLE_ATTR,
     };
     String[] UNIVERSAL_ATTRIBUTES =
-            (String[]) org.apache.myfaces.util.ArrayUtils.concat(
+            (String[]) org.apache.myfaces.util.lang.ArrayUtils.concat(
                 UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE,
                 new String[] {STYLE_ATTR, STYLE_CLASS_ATTR});
 
@@ -147,11 +147,11 @@ public interface HTML
 
     // Common Attributes
     String[] COMMON_PASSTROUGH_ATTRIBUTES =
-        (String[]) org.apache.myfaces.util.ArrayUtils.concat(
+        (String[]) org.apache.myfaces.util.lang.ArrayUtils.concat(
             EVENT_HANDLER_ATTRIBUTES,
             UNIVERSAL_ATTRIBUTES);
     String[] COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_STYLE =
-        (String[]) org.apache.myfaces.util.ArrayUtils.concat(
+        (String[]) org.apache.myfaces.util.lang.ArrayUtils.concat(
             EVENT_HANDLER_ATTRIBUTES,
             UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE);
     String[] COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONCLICK =
@@ -173,7 +173,7 @@ public interface HTML
             COMMON_FIELD_ATTRIBUTES_WITHOUT_DISABLED,
             COMMON_FIELD_EVENT_ATTRIBUTES);
     String[] COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONFOCUS =
-        (String[]) org.apache.myfaces.util.ArrayUtils.concat(
+        (String[]) org.apache.myfaces.util.lang.ArrayUtils.concat(
             COMMON_PASSTROUGH_ATTRIBUTES,
             COMMON_FIELD_ATTRIBUTES_WITHOUT_DISABLED,
             COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONFOCUS);
@@ -183,12 +183,12 @@ public interface HTML
             COMMON_FIELD_ATTRIBUTES_WITHOUT_DISABLED,
             COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONFOCUS);
     String[] COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONCLICK =
-        (String[]) org.apache.myfaces.util.ArrayUtils.concat(
+        (String[]) org.apache.myfaces.util.lang.ArrayUtils.concat(
             COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONCLICK,
             COMMON_FIELD_ATTRIBUTES_WITHOUT_DISABLED,
             COMMON_FIELD_EVENT_ATTRIBUTES);
     String[] COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONMOUSEOVER_AND_ONMOUSEOUT =
-        (String[]) org.apache.myfaces.util.ArrayUtils.concat(
+        (String[]) org.apache.myfaces.util.lang.ArrayUtils.concat(
             EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONMOUSEOVER_AND_ONMOUSEOUT,
             UNIVERSAL_ATTRIBUTES);
     String[] COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS =
@@ -229,12 +229,12 @@ public interface HTML
             COMMON_PASSTROUGH_ATTRIBUTES,
             COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONSELECT_AND_ONCHANGE);
     String[] ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_STYLE =
-        (String[]) org.apache.myfaces.util.ArrayUtils.concat(
+        (String[]) org.apache.myfaces.util.lang.ArrayUtils.concat(
             ANCHOR_ATTRIBUTES,
             COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_STYLE,
             COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONSELECT_AND_ONCHANGE);
     String[] ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_ONCLICK_WITHOUT_STYLE =
-        (String[]) org.apache.myfaces.util.ArrayUtils.concat(
+        (String[]) org.apache.myfaces.util.lang.ArrayUtils.concat(
             ANCHOR_ATTRIBUTES,
             COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONCLICK_WITHOUT_STYLE,
             COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONSELECT_AND_ONCHANGE);
@@ -243,7 +243,7 @@ public interface HTML
             ANCHOR_ATTRIBUTES,
             UNIVERSAL_ATTRIBUTES);
     String[] ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_STYLE_AND_EVENTS =
-        (String[]) org.apache.myfaces.util.ArrayUtils.concat(
+        (String[]) org.apache.myfaces.util.lang.ArrayUtils.concat(
             ANCHOR_ATTRIBUTES,
             UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE);
     
@@ -343,7 +343,7 @@ public interface HTML
                 COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE);
 
     String[] INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONFOCUS_AND_ONCLICK =
-        (String[]) org.apache.myfaces.util.ArrayUtils.concat(
+        (String[]) org.apache.myfaces.util.lang.ArrayUtils.concat(
                 INPUT_ATTRIBUTES,
                 COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONFOCUS_AND_ONCLICK);
 
@@ -375,15 +375,15 @@ public interface HTML
         ALT_ATTR,
     };
     String[] BUTTON_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED =
-        (String[]) org.apache.myfaces.util.ArrayUtils.concat(
+        (String[]) org.apache.myfaces.util.lang.ArrayUtils.concat(
             BUTTON_ATTRIBUTES,
             COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED);
     String[] BUTTON_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONCLICK =
-        (String[]) org.apache.myfaces.util.ArrayUtils.concat(
+        (String[]) org.apache.myfaces.util.lang.ArrayUtils.concat(
             BUTTON_ATTRIBUTES,
             COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONCLICK);
     String[] BUTTON_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS =
-        (String[]) org.apache.myfaces.util.ArrayUtils.concat(
+        (String[]) org.apache.myfaces.util.lang.ArrayUtils.concat(
             BUTTON_ATTRIBUTES,
             COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS);
 
@@ -405,11 +405,11 @@ public interface HTML
         ACCESSKEY_ATTR
     };
     String[] LABEL_PASSTHROUGH_ATTRIBUTES =
-        (String[]) org.apache.myfaces.util.ArrayUtils.concat(
+        (String[]) org.apache.myfaces.util.lang.ArrayUtils.concat(
             LABEL_ATTRIBUTES,
             COMMON_PASSTROUGH_ATTRIBUTES);
     String[] LABEL_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS =
-        (String[]) org.apache.myfaces.util.ArrayUtils.concat(
+        (String[]) org.apache.myfaces.util.lang.ArrayUtils.concat(
             LABEL_ATTRIBUTES_WITHOUT_EVENTS,
             UNIVERSAL_ATTRIBUTES);
 
@@ -490,7 +490,7 @@ public interface HTML
             */
 
     String[] MESSAGE_PASSTHROUGH_ATTRIBUTES_WITHOUT_TITLE_STYLE_AND_STYLE_CLASS =
-        (String[]) org.apache.myfaces.util.ArrayUtils.concat(
+        (String[]) org.apache.myfaces.util.lang.ArrayUtils.concat(
             new String[] {DIR_ATTR, LANG_ATTR},
             EVENT_HANDLER_ATTRIBUTES);
 

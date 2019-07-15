@@ -40,10 +40,10 @@ import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.UnicodeEncoder;
 import org.apache.myfaces.util.CommentUtils;
 import org.apache.myfaces.util.ComponentUtils;
-import org.apache.myfaces.util.StreamCharBuffer;
+import org.apache.myfaces.util.lang.StreamCharBuffer;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.HTMLEncoder;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 
 public class HtmlResponseWriterImpl extends ResponseWriter
 {

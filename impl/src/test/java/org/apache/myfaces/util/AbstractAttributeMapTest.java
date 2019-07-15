@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.util;
 
+import org.apache.myfaces.util.lang.AbstractAttributeMap;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;

@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets;
 
 import javax.faces.component.UIViewRoot;
 
-import org.apache.myfaces.util.FastWriter;
+import org.apache.myfaces.util.lang.FastWriter;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.Test;
 

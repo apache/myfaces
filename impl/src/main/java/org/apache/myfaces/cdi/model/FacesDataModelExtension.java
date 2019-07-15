@@ -34,7 +34,7 @@ import javax.enterprise.inject.spi.ProcessManagedBean;
 import javax.faces.model.DataModel;
 import javax.faces.model.FacesDataModel;
 import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 public class FacesDataModelExtension implements Extension
 {

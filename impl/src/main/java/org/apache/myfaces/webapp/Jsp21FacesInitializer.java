@@ -38,7 +38,7 @@ import org.apache.myfaces.el.ELResolverBuilder;
 import org.apache.myfaces.el.ELResolverBuilderForJSP;
 import org.apache.myfaces.el.resolver.FacesCompositeELResolver;
 import org.apache.myfaces.el.resolver.FacesCompositeELResolver.Scope;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
  * Initializes MyFaces in a JSP 2.1 environment.

@@ -27,8 +27,8 @@ import javax.faces.application.ProjectStage;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.StringUtils;
 import org.apache.myfaces.util.WebConfigParamUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 
 public class WebConfigParamsLogger
 {

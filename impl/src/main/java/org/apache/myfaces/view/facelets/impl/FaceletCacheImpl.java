@@ -29,7 +29,7 @@ import javax.faces.view.facelets.FaceletCache;
 import javax.faces.view.facelets.FaceletException;
 
 import org.apache.myfaces.resource.ResourceLoaderUtils;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 
 /**
  * TODO: Note MyFaces core has another type of Facelet for read composite component

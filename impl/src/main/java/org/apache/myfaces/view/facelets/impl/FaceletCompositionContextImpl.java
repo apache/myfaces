@@ -35,7 +35,7 @@ import javax.faces.view.AttachedObjectHandler;
 import javax.faces.view.EditableValueHolderAttachedObjectHandler;
 
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.Lazy;
+import org.apache.myfaces.util.lang.Lazy;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletFactory;

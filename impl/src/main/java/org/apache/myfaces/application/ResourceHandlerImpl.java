@@ -26,9 +26,9 @@ import org.apache.myfaces.resource.ResourceImpl;
 import org.apache.myfaces.resource.ResourceLoader;
 import org.apache.myfaces.resource.ResourceMeta;
 import org.apache.myfaces.resource.ResourceValidationUtils;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.ExternalContextUtils;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.WebConfigParamUtils;
 
 import javax.faces.application.Resource;
@@ -65,8 +65,8 @@ import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.resource.ContractResource;
 import org.apache.myfaces.resource.ContractResourceLoader;
 import org.apache.myfaces.resource.ResourceCachedInfo;
-import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.SkipMatchIterator;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.util.lang.SkipMatchIterator;
 
 /**
  * DOCUMENT ME!

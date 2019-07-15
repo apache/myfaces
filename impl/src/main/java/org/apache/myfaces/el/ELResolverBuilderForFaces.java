@@ -46,7 +46,7 @@ import org.apache.myfaces.el.resolver.ResourceResolver;
 import org.apache.myfaces.el.resolver.ScopedAttributeResolver;
 import org.apache.myfaces.el.resolver.implicitobject.ImplicitObjectResolver;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
  * Create the el resolver for faces. see 1.2 spec section 5.6.2

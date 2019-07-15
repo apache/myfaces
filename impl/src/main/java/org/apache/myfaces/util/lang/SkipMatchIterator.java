@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.myfaces.util;
+package org.apache.myfaces.util.lang;
 
 import java.util.Iterator;
 

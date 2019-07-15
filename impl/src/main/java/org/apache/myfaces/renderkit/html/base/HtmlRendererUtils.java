@@ -69,7 +69,7 @@ import org.apache.myfaces.renderkit.html.util.HTMLEncoder;
 import org.apache.myfaces.renderkit.html.util.OutcomeTargetUtils;
 import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 
 public final class HtmlRendererUtils

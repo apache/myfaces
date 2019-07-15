@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.util;
 
+import org.apache.myfaces.util.lang.ClassUtils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

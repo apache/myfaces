@@ -19,7 +19,7 @@
 package org.apache.myfaces.webapp;
 
 import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;

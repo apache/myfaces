@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.apache.myfaces.spi.WebConfigProvider;
 import org.apache.myfaces.spi.WebConfigProviderFactory;

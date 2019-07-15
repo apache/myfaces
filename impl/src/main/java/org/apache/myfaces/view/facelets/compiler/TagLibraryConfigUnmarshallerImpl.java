@@ -38,7 +38,7 @@ import org.apache.myfaces.config.impl.elements.facelets.FaceletTagImpl;
 import org.apache.myfaces.config.impl.elements.facelets.FaceletTagLibraryImpl;
 import org.apache.myfaces.config.impl.elements.facelets.FaceletValidatorTagImpl;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;

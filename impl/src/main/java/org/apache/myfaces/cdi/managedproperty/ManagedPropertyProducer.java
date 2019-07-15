@@ -28,7 +28,7 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.faces.annotation.ManagedProperty;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.AbstractDynamicProducer;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 @ApplicationScoped
 public class ManagedPropertyProducer extends AbstractDynamicProducer<Object>

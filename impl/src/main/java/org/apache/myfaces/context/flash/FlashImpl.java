@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.context.flash;
 
-import org.apache.myfaces.util.SubKeyMap;
+import org.apache.myfaces.util.lang.SubKeyMap;
 import org.apache.myfaces.util.ExternalContextUtils;
 
 import javax.faces.application.FacesMessage;

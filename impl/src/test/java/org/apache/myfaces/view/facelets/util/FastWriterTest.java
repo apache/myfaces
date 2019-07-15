@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.util;
 
-import org.apache.myfaces.util.FastWriter;
+import org.apache.myfaces.util.lang.FastWriter;
 import org.junit.Assert;
 import org.junit.Test;
 

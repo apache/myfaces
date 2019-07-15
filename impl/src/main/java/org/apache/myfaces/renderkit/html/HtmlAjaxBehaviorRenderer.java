@@ -40,7 +40,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.render.ClientBehaviorRenderer;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.SharedStringBuilder;
 
 /**

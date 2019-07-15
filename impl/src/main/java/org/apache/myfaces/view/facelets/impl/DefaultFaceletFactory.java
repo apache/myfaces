@@ -43,7 +43,7 @@ import javax.faces.view.facelets.ResourceResolver;
 import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.resource.ResourceLoaderUtils;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.view.facelets.AbstractFaceletCache;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.compiler.Compiler;

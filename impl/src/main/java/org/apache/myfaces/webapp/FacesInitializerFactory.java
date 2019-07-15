@@ -22,7 +22,7 @@ import javax.faces.FacesException;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.ContainerUtils;
 
 /**

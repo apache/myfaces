@@ -30,8 +30,8 @@ import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import javax.faces.context.ExternalContext;
-import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  * Utility methods to use in Google Application Engine (GAE)

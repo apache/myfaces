@@ -32,6 +32,7 @@ import javax.faces.application.ApplicationFactory;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
  * Utility class to support multilingual FacesMessages using ResourceBundles.
@@ -278,7 +279,7 @@ public final class MessageUtils
             try
             {
                 bundle = ResourceBundle.getBundle(bundleName, locale, 
-                        org.apache.myfaces.util.ClassUtils.getCurrentLoader(bundleName));
+                        ClassUtils.getCurrentLoader(bundleName));
                 summary = bundle.getString(messageId);
             }
             catch (MissingResourceException e)
@@ -292,7 +293,7 @@ public final class MessageUtils
             try
             {
                 bundle = ResourceBundle.getBundle(DEFAULT_BUNDLE, locale, 
-                        org.apache.myfaces.util.ClassUtils.getCurrentLoader(DEFAULT_BUNDLE));
+                        ClassUtils.getCurrentLoader(DEFAULT_BUNDLE));
                 if(bundle == null)
                 {
                     throw new NullPointerException();
@@ -356,7 +357,7 @@ public final class MessageUtils
             try
             {
                 bundle = ResourceBundle.getBundle(bundleName, locale, 
-                        org.apache.myfaces.util.ClassUtils.getCurrentLoader(bundleName));
+                        ClassUtils.getCurrentLoader(bundleName));
                 summary = bundle.getString(messageId);
             }
             catch (MissingResourceException e)
@@ -370,7 +371,7 @@ public final class MessageUtils
             try
             {
                 bundle = ResourceBundle.getBundle(bundleBaseName, locale, 
-                        org.apache.myfaces.util.ClassUtils.getCurrentLoader(bundleBaseName));
+                        ClassUtils.getCurrentLoader(bundleBaseName));
                 if(bundle == null)
                 {
                     throw new NullPointerException();
@@ -388,7 +389,7 @@ public final class MessageUtils
             try
             {
                 bundle = ResourceBundle.getBundle(DEFAULT_BUNDLE, locale, 
-                        org.apache.myfaces.util.ClassUtils.getCurrentLoader(DEFAULT_BUNDLE));
+                        ClassUtils.getCurrentLoader(DEFAULT_BUNDLE));
                 if(bundle == null)
                 {
                     throw new NullPointerException();

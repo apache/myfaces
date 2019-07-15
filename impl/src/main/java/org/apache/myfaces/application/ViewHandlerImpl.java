@@ -52,7 +52,7 @@ import javax.faces.view.ViewMetadata;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.application.viewstate.StateCacheUtils;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.view.facelets.StateWriter;
 
 /**

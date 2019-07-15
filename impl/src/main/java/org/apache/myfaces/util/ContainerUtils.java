@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.util;
 
+import org.apache.myfaces.util.lang.ClassUtils;
 import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 
