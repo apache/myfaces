@@ -748,7 +748,7 @@ public class FacesConfigurator
         {
             try
             {
-                application.addConverter(ClassUtils.simpleClassForName(entry.getKey()),
+                application.addConverter(ClassUtils.classForName(entry.getKey()),
                         entry.getValue());
             }
             catch (Exception ex)
