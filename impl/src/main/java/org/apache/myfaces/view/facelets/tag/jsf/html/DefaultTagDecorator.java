@@ -522,7 +522,7 @@ public class DefaultTagDecorator implements TagDecorator
                              // if namespace is the same match
                              return this;
                          }
-                         else if (attributeNS == "" && attr.getNamespace() == null)
+                         else if ("".equals(attributeNS) && attr.getNamespace() == null)
                          {
                              // if namespace is empty match
                              return this;
