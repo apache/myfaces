@@ -18,19 +18,32 @@
  */
 
 
-package org.apache.myfaces.shared.util;
+package org.apache.myfaces.application.viewstate;
 
 import org.apache.myfaces.application.viewstate.StateUtils;
 
-public class CachedStateUtilsTripleDES_ECBTest extends AbstractStateUtilsTest
+/**
+ * <p>This TestCase uses the Advanced Encryption Standard with
+ * Cipher Block Chaining mode and PKCS5 padding.</p>
+ * <p/>
+ * <p/>
+ * If you are getting a SecurityException complaining about keysize,
+ * you most likely need to get the unlimited strength jurisdiction
+ * policy files from a place like http://java.sun.com/j2se/1.4.2/download.html .
+ * </p>
+ *
+ * @see pom.xml <excludes>
+ */
+
+public class CachedStateUtilsAES_CBCTest extends AbstractStateUtilsTest
 {
 
-    public CachedStateUtilsTripleDES_ECBTest(String name)
+    public CachedStateUtilsAES_CBCTest(String name)
     {
         super(name);
     }
-
-    // No longer necessary using junit 4 to run tests
+    
+    //No longer necessary using junit 4 to run tests
     //public static Test suite() {
     //    return null; // keep this method or maven won't run it
     //}
@@ -39,11 +52,12 @@ public class CachedStateUtilsTripleDES_ECBTest extends AbstractStateUtilsTest
     {
         super.setUp();
 
-        servletContext.addInitParameter(StateUtils.INIT_SECRET, BASE64_KEY_SIZE_24);
-        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM, "DESede");
-        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM_PARAM, "ECB/PKCS5Padding");
+        servletContext.addInitParameter(StateUtils.INIT_SECRET, BASE64_KEY_SIZE_16);
+        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM, "AES");
+        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM_PARAM, "CBC/PKCS5Padding");
+        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM_IV, BASE64_KEY_SIZE_16);
         servletContext.addInitParameter(StateUtils.INIT_MAC_SECRET, BASE64_KEY_SIZE_8);
         StateUtils.initSecret(servletContext);
-
     }
+
 }

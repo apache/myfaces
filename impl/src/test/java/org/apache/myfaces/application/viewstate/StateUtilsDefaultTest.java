@@ -13,27 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.myfaces.shared.util;
+package org.apache.myfaces.application.viewstate;
 
 import org.apache.myfaces.application.viewstate.StateUtils;
 
 /**
- * <p>This TestCase uses the Advanced Encryption Standard with
- * Cipher Block Chaining mode and PKCS5 padding.</p>
- * <p/>
- * <p/>
- * If you are getting a SecurityException complaining about keysize,
- * you most likely need to get the unlimited strength jurisdiction
- * policy files from a place like http://java.sun.com/j2se/1.4.2/download.html .
- * </p>
- *
- * @see pom.xml <excludes>
+ * This TestCase uses the the default algorithm/mode/padding of
+ * StateUtils.
  */
 
-public class StateUtilsAES_CBCTest extends AbstractStateUtilsTest
+public class StateUtilsDefaultTest extends AbstractStateUtilsTest
 {
 
-    public StateUtilsAES_CBCTest(String name) {
+    public StateUtilsDefaultTest(String name) {
         super(name);
     }
 
@@ -46,10 +38,9 @@ public class StateUtilsAES_CBCTest extends AbstractStateUtilsTest
     {
         super.setUp();
 
-        servletContext.addInitParameter(StateUtils.INIT_SECRET, BASE64_KEY_SIZE_16);
-        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM, "AES");
-        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM_PARAM, "CBC/PKCS5Padding");
-        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM_IV, BASE64_KEY_SIZE_16);
+        servletContext.addInitParameter(StateUtils.INIT_SECRET, BASE64_KEY_SIZE_8);
+        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM, StateUtils.DEFAULT_ALGORITHM);
+        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM_PARAM, StateUtils.DEFAULT_ALGORITHM_PARAMS);
         servletContext.addInitParameter(StateUtils.INIT_SECRET_KEY_CACHE, "false");
         servletContext.addInitParameter(StateUtils.INIT_MAC_SECRET, AbstractStateUtilsTest.BASE64_KEY_SIZE_8);
         StateUtils.initSecret(servletContext);// should do nothing

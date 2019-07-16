@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.myfaces.shared.util;
+package org.apache.myfaces.application.viewstate;
 
 import org.apache.myfaces.application.viewstate.StateUtils;
 
 /**
- * This TestCase uses the 3DES algorithm in Electronic CodeBook mode
+ * This TestCase uses Blowfish in Electronic CodeBook mode
  * with PKCS5 padding.
  * <p/>
  * <p/>
@@ -28,10 +28,10 @@ import org.apache.myfaces.application.viewstate.StateUtils;
  * </p>
  */
 
-public class StateUtilsTripleDES_ECBTest extends AbstractStateUtilsTest
+public class StateUtilsBlowfish_ECBTest extends AbstractStateUtilsTest
 {
 
-    public StateUtilsTripleDES_ECBTest(String name) {
+    public StateUtilsBlowfish_ECBTest(String name) {
         super(name);
     }
 
@@ -44,12 +44,12 @@ public class StateUtilsTripleDES_ECBTest extends AbstractStateUtilsTest
     {
         super.setUp();
 
-        servletContext.addInitParameter(StateUtils.INIT_SECRET, BASE64_KEY_SIZE_24);
-        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM, "DESede");
+        servletContext.addInitParameter(StateUtils.INIT_SECRET, BASE64_KEY_SIZE_16);
+        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM, "Blowfish");
         servletContext.addInitParameter(StateUtils.INIT_ALGORITHM_PARAM, "ECB/PKCS5Padding");
         servletContext.addInitParameter(StateUtils.INIT_SECRET_KEY_CACHE, "false");
         servletContext.addInitParameter(StateUtils.INIT_MAC_SECRET, AbstractStateUtilsTest.BASE64_KEY_SIZE_8);
-        StateUtils.initSecret(servletContext); // should do nothing
+        StateUtils.initSecret(servletContext);// should do nothing
 
     }
 

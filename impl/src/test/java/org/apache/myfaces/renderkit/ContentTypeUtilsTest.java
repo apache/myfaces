@@ -16,7 +16,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.apache.myfaces.shared.renderkit;
+package org.apache.myfaces.renderkit;
 
 import org.apache.myfaces.renderkit.ContentTypeUtils;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;

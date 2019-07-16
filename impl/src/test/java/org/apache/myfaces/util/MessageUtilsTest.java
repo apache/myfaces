@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.myfaces.shared.util;
+package org.apache.myfaces.util;
 
 import java.util.Locale;
 import java.util.ResourceBundle;

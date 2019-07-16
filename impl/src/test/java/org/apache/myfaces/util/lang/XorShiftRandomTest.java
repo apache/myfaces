@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.util;
+package org.apache.myfaces.util.lang;
 
 import org.apache.myfaces.util.lang.ThreadsafeXorShiftRandom;
 import org.apache.myfaces.util.lang.XorShiftRandom;

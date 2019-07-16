@@ -16,9 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.util;
+package org.apache.myfaces.util.lang;
 
-import org.apache.myfaces.util.lang.LRULinkedHashMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;

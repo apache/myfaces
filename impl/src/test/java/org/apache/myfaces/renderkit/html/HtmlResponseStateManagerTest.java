@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.renderkit.html;
+package org.apache.myfaces.renderkit.html;
 
 import java.util.HashMap;
 import java.util.Map;

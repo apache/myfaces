@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.myfaces.shared.renderkit.html.util;
+package org.apache.myfaces.renderkit.html.util;
 
 import org.apache.myfaces.renderkit.html.util.UnicodeEncoder;
 import java.io.StringWriter;

@@ -18,33 +18,32 @@
  */
 
 
-package org.apache.myfaces.shared.util;
+package org.apache.myfaces.application.viewstate;
 
 import org.apache.myfaces.application.viewstate.StateUtils;
 
-public class CachedStateUtilsBlowfish_ECBTest extends AbstractStateUtilsTest
+public class CachedStateUtilsTripleDES_ECBTest extends AbstractStateUtilsTest
 {
 
-    public CachedStateUtilsBlowfish_ECBTest(String name)
+    public CachedStateUtilsTripleDES_ECBTest(String name)
     {
         super(name);
     }
-    
+
     // No longer necessary using junit 4 to run tests
     //public static Test suite() {
     //    return null; // keep this method or maven won't run it
     //}
-    
+
     public void setUp() throws Exception
     {
         super.setUp();
 
-        servletContext.addInitParameter(StateUtils.INIT_SECRET, BASE64_KEY_SIZE_16);
-        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM, "Blowfish");
+        servletContext.addInitParameter(StateUtils.INIT_SECRET, BASE64_KEY_SIZE_24);
+        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM, "DESede");
         servletContext.addInitParameter(StateUtils.INIT_ALGORITHM_PARAM, "ECB/PKCS5Padding");
         servletContext.addInitParameter(StateUtils.INIT_MAC_SECRET, BASE64_KEY_SIZE_8);
         StateUtils.initSecret(servletContext);
 
     }
-
 }

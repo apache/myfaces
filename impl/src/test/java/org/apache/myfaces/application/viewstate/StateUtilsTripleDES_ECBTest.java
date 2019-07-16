@@ -13,19 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.myfaces.shared.util;
+package org.apache.myfaces.application.viewstate;
 
 import org.apache.myfaces.application.viewstate.StateUtils;
 
 /**
- * This TestCase uses the the default algorithm/mode/padding of
- * StateUtils.
+ * This TestCase uses the 3DES algorithm in Electronic CodeBook mode
+ * with PKCS5 padding.
+ * <p/>
+ * <p/>
+ * If you are getting a SecurityException complaining about keysize,
+ * you most likely need to get the unlimited strength jurisdiction
+ * policy files from a place like http://java.sun.com/j2se/1.4.2/download.html .
+ * </p>
  */
 
-public class StateUtilsDefaultTest extends AbstractStateUtilsTest
+public class StateUtilsTripleDES_ECBTest extends AbstractStateUtilsTest
 {
 
-    public StateUtilsDefaultTest(String name) {
+    public StateUtilsTripleDES_ECBTest(String name) {
         super(name);
     }
 
@@ -38,12 +44,13 @@ public class StateUtilsDefaultTest extends AbstractStateUtilsTest
     {
         super.setUp();
 
-        servletContext.addInitParameter(StateUtils.INIT_SECRET, BASE64_KEY_SIZE_8);
-        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM, StateUtils.DEFAULT_ALGORITHM);
-        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM_PARAM, StateUtils.DEFAULT_ALGORITHM_PARAMS);
+        servletContext.addInitParameter(StateUtils.INIT_SECRET, BASE64_KEY_SIZE_24);
+        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM, "DESede");
+        servletContext.addInitParameter(StateUtils.INIT_ALGORITHM_PARAM, "ECB/PKCS5Padding");
         servletContext.addInitParameter(StateUtils.INIT_SECRET_KEY_CACHE, "false");
         servletContext.addInitParameter(StateUtils.INIT_MAC_SECRET, AbstractStateUtilsTest.BASE64_KEY_SIZE_8);
-        StateUtils.initSecret(servletContext);// should do nothing
+        StateUtils.initSecret(servletContext); // should do nothing
 
     }
+
 }

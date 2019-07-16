@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.shared.resource;
+package org.apache.myfaces.resource;
 
 import org.apache.myfaces.resource.ResourceLoaderUtils;
 import org.junit.Assert;

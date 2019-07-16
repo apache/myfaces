@@ -16,7 +16,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.apache.myfaces.shared.util;
+package org.apache.myfaces.util;
 
 import org.apache.myfaces.util.CommentUtils;
 import java.io.IOException;

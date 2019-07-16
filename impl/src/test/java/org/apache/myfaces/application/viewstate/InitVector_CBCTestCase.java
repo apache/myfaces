@@ -15,9 +15,8 @@
  */
 
 
-package org.apache.myfaces.shared.util;
+package org.apache.myfaces.application.viewstate;
 
-import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 import javax.faces.FacesException;
