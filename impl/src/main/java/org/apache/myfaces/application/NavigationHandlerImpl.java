@@ -71,6 +71,7 @@ import org.apache.myfaces.util.lang.HashMapUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.lang.FilenameUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
+import org.apache.myfaces.util.NavigationUtils;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
 
@@ -227,8 +228,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 
                 String redirectPath = viewHandler.getRedirectURL(
                         facesContext, toViewId, 
-                        NavigationUtils.getEvaluatedNavigationParameters(facesContext,
-                        navigationCaseParameters) ,
+                        NavigationUtils.getEvaluatedNavigationParameters(facesContext, navigationCaseParameters),
                         navigationCase.isIncludeViewParams());
                 
                 // The spec doesn't say anything about how to handle redirect but it is

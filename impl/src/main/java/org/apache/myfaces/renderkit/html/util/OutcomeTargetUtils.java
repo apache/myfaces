@@ -38,9 +38,9 @@ import javax.faces.component.UIParameter;
 import javax.faces.context.FacesContext;
 import javax.faces.flow.FlowHandler;
 import javax.faces.lifecycle.ClientWindow;
-import org.apache.myfaces.application.NavigationUtils;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.util.ComponentUtils;
+import org.apache.myfaces.util.NavigationUtils;
 
 /**
  * Utility methods for OutcomeTarget components.

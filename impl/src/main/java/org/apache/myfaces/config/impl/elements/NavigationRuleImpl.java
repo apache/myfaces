@@ -28,11 +28,8 @@ import java.util.List;
  */
 public class NavigationRuleImpl extends org.apache.myfaces.config.element.NavigationRule implements Serializable
 {
-
     private String fromViewId;
-    private List<org.apache.myfaces.config.element.NavigationCase> navigationCases
-            = new ArrayList<>();
-
+    private List<org.apache.myfaces.config.element.NavigationCase> navigationCases = new ArrayList<>();
 
     @Override
     public String getFromViewId()
@@ -40,23 +37,19 @@ public class NavigationRuleImpl extends org.apache.myfaces.config.element.Naviga
         return fromViewId;
     }
 
-
     public void setFromViewId(String fromViewId)
     {
         this.fromViewId = fromViewId;
     }
-
 
     public void addNavigationCase(org.apache.myfaces.config.element.NavigationCase value)
     {
         navigationCases.add(value);
     }
 
-
     @Override
     public List<org.apache.myfaces.config.element.NavigationCase> getNavigationCases()
     {
         return navigationCases;
     }
-
 }
