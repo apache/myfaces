@@ -29,13 +29,10 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
-import java.util.TimeZone;
 import org.apache.myfaces.util.lang.StringUtils;
 
 public class ResourceLoaderUtils
 {
-    private static final TimeZone GMT = TimeZone.getTimeZone("GMT");
-    
     private static final DateTimeFormatter HTTP_RESPONSE_DATE_HEADER =
             DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US).withZone(ZoneId.of("GMT"));
 
