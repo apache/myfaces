@@ -71,7 +71,6 @@ public final class RequestMap extends AbstractAttributeMap<Object>
         throw new UnsupportedOperationException();
     }
 
-
     @Override
     public void clear()
     {

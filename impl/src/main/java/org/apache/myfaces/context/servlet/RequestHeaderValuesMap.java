@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +48,12 @@ public final class RequestHeaderValuesMap extends AbstractAttributeMap<String[]>
     @SuppressWarnings("unchecked")
     protected String[] getAttribute(final String key)
     {
-        return _valueCache.computeIfAbsent(key, k -> toArray(_httpServletRequest.getHeaders(key)));
+        return _valueCache.computeIfAbsent(key, k ->
+        {
+            Enumeration<String> asEnumeration = _httpServletRequest.getHeaders(k);
+            List<String> asList = Collections.list(asEnumeration);
+            return asList.toArray(new String[asList.size()]);
+        });
     }
 
     @Override
@@ -68,17 +73,5 @@ public final class RequestHeaderValuesMap extends AbstractAttributeMap<String[]>
     protected Enumeration<String> getAttributeNames()
     {
         return _httpServletRequest.getHeaderNames();
-    }
-
-    private String[] toArray(Enumeration<String> e)
-    {
-        List<String> ret = new ArrayList<>();
-
-        while (e.hasMoreElements())
-        {
-            ret.add(e.nextElement());
-        }
-
-        return ret.toArray(new String[ret.size()]);
     }
 }

@@ -1008,6 +1008,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     /**
      * @since 2.0
      */
+    @Override
     public Flash getFlash()
     {
         if (_flash == null)
@@ -1031,8 +1032,8 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                 _flash = _flashFactory.getFlash(true);
             }
         }
+
         return _flash;
-        //return FlashImpl.getCurrentInstance(this);
     }
 
     @Override
