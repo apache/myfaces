@@ -2204,7 +2204,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
         // see if we need to override the encoding
         Map<Object, Object> m = context.getAttributes();
-        Map<String, Object> sm = context.getExternalContext().getSessionMap();
+        
+        Object session = context.getExternalContext().getSession(false);
 
         // 1. check the request attribute
         if (m.containsKey(PARAM_ENCODING))
@@ -2215,7 +2216,10 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 log.finest("Facelet specified alternate encoding '" + encoding + '\'');
             }
 
-            sm.put(CHARACTER_ENCODING_KEY, encoding);
+            if (session != null)
+            {
+                context.getExternalContext().getSessionMap().put(CHARACTER_ENCODING_KEY, encoding);
+            }
         }
 
         // 2. get it from request
@@ -2227,10 +2231,13 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         // 3. get it from the session
         if (encoding == null)
         {
-            encoding = (String) sm.get(CHARACTER_ENCODING_KEY);
-            if (encoding != null && log.isLoggable(Level.FINEST))
+            if (session != null)
             {
-                log.finest("Session specified alternate encoding '" + encoding + '\'');
+                encoding = (String) context.getExternalContext().getSessionMap().get(CHARACTER_ENCODING_KEY);
+                if (encoding != null && log.isLoggable(Level.FINEST))
+                {
+                    log.finest("Session specified alternate encoding '" + encoding + '\'');
+                }
             }
         }
 
