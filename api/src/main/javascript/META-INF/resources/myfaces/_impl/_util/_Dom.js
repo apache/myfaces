@@ -63,6 +63,10 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
 
                     newSS.setAttribute("rel", item.getAttribute("rel") || "stylesheet");
                     newSS.setAttribute("type", item.getAttribute("type") || "text/css");
+                    if(item.getAttribute("nonce")) {
+                        newSS.setAttribute("nonce", item.getAttribute("nonce"));
+                    }
+
                     document.getElementsByTagName("head")[0].appendChild(newSS);
                     //ie merrily again goes its own way
                     if (window.attachEvent && !_RT.isOpera && UDEF != typeof newSS.styleSheet && UDEF != newSS.styleSheet.cssText) newSS.styleSheet.cssText = style;
@@ -132,6 +136,8 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                         _Lang.equalsIgnoreCase(type,"text/ecmascript") ||
                         _Lang.equalsIgnoreCase(type,"ecmascript"))) {
 
+                    var nonce = item.getAttribute("nonce") || null;
+
                     var src = item.getAttribute('src');
                     if ('undefined' != typeof src
                             && null != src
@@ -142,14 +148,17 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                         //if jsf.js is already registered we do not replace it anymore
                         if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=javax.faces") == -1) || (src.indexOf("/jsf.js") == -1
                                 && src.indexOf("/jsf-uncompressed.js") == -1)) {
+
                             if (finalScripts.length) {
                                 //script source means we have to eval the existing
                                 //scripts before running the include
-                                _RT.globalEval(finalScripts.join("\n"));
+                                for(var cnt = 0; cnt < finalScripts.length; cnt++) {
+                                    _RT.globalEval(finalScripts[cnt].text, finalScripts[cnt]["cspMeta"] || null);
+                                }
 
                                 finalScripts = [];
                             }
-                            _RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8", false);
+                            _RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8", false, nonce ? {nonce: nonce} : null );
                         }
 
                     } else {
@@ -173,7 +182,12 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                         }
                         // we have to run the script under a global context
                         //we store the script for less calls to eval
-                        finalScripts.push(test);
+                        finalScripts.push(nonce ? {
+                            cspMeta: {nonce: nonce},
+                            text: test
+                        }: {
+                            text: test
+                        });
 
                     }
                 }
@@ -185,7 +199,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                 execScrpt(scriptElements[cnt]);
             }
             if (finalScripts.length) {
-                _RT.globalEval(finalScripts.join("\n"));
+                for(var cnt = 0; cnt < finalScripts.length; cnt++) {
+                    _RT.globalEval(finalScripts[cnt].text, finalScripts[cnt]["cspMeta"] || null);
+                }
             }
         } catch (e) {
             //we are now in accordance with the rest of the system of showing errors only in development mode
