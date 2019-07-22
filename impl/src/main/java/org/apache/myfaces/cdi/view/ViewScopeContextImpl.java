@@ -86,7 +86,7 @@ public class ViewScopeContextImpl implements Context
     }
 
     public String getCurrentViewScopeId(boolean create)
-    {
+    {        
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ViewScopeProxyMap map = (ViewScopeProxyMap) facesContext.getViewRoot().getViewMap(create);
         if (map != null)
@@ -148,6 +148,9 @@ public class ViewScopeContextImpl implements Context
     {
         checkActive();
 
+        // force session creation if ViewScoped is used
+        FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        
         ViewScopeContextualStorage storage = getContextualStorage(false);
         if (storage == null)
         {
@@ -175,6 +178,9 @@ public class ViewScopeContextImpl implements Context
                     " doesn't implement " + PassivationCapable.class.getName());
         }
 
+        // force session creation if ViewScoped is used
+        FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        
         ViewScopeContextualStorage storage = getContextualStorage(true);
 
         Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
