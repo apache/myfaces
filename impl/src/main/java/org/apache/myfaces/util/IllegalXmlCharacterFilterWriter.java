@@ -31,7 +31,6 @@ import java.io.Writer;
  */
 public class IllegalXmlCharacterFilterWriter extends FilterWriter
 {
-    private static final char[] EMPTY_CHAR_ARRAY = new char[0];
     private static final char BLANK_CHAR = ' ';
     
     public IllegalXmlCharacterFilterWriter(Writer out)
@@ -42,7 +41,7 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
     @Override
     public void write(int c) throws IOException 
     {
-        if (isInvalidChar((char) c))
+        if (isInvalidChar(c))
         {
             super.write((int) BLANK_CHAR);
         }
@@ -71,26 +70,53 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
             return null;
         }
         
-        boolean containsInvalidChar = false;
-        char[] encodedCharArray = EMPTY_CHAR_ARRAY;
-        
         int to = off + len;
+        boolean surrogateResolved = false;
+        char c;
+        int codePoint;
+        char cNext;
+        
+        char[] encoded = null;
         for (int i = off; i < to; i++)
         {
-            if (isInvalidChar(str.charAt(i)))
+            if (surrogateResolved == true)
             {
-                if (!containsInvalidChar)
+                surrogateResolved = false;
+                continue;
+            }
+            
+            c = str.charAt(i);
+            codePoint = c;
+
+            if (Character.isHighSurrogate(c) && i + 1 < to)
+            {
+                cNext = str.charAt(i + 1);
+                if (Character.isLowSurrogate(cNext))
                 {
-                    containsInvalidChar = true;
-                    encodedCharArray = str.toCharArray();
+                    codePoint = Character.toCodePoint(c, cNext);
+                    surrogateResolved = true;
                 }
-                encodedCharArray[i] = BLANK_CHAR;
+            }
+
+            // try to resolve surrogate, this is required e.g. for emojis
+            if ((!surrogateResolved && Character.isSurrogate(c)) || isInvalidChar(codePoint))
+            {
+                if (encoded == null)
+                {
+                    encoded = str.toCharArray();
+                }
+                encoded[i] = BLANK_CHAR;
+                
+                if (surrogateResolved)
+                {
+                    encoded[i + 1] = BLANK_CHAR;
+                }
             }
         }
 
-        if (containsInvalidChar)
+        if (encoded != null)
         {
-            return String.valueOf(encodedCharArray);
+            return String.valueOf(encoded);
         }
 
         return str;
@@ -102,36 +128,73 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
         {
             return null;
         }
-        
+
         int to = off + len;
+        
+        boolean surrogateResolved = false;
+        char c;
+        int codePoint;
+        char cNext;
+
         for (int i = off; i < to; i++)
         {
-            if (isInvalidChar(cbuf[i]))
+            if (surrogateResolved == true)
+            {
+                surrogateResolved = false;
+                continue;
+            }
+            
+            c = cbuf[i];
+            codePoint = c;
+
+            // try to resolve surrogate, this is required e.g. for emojis
+            if (Character.isHighSurrogate(c) && i + 1 < to)
+            {
+                cNext = cbuf[i + 1];
+                if (Character.isLowSurrogate(cNext))
+                {
+                    codePoint = Character.toCodePoint(c, cNext);
+                    surrogateResolved = true;
+                }
+            }
+            
+            if ((!surrogateResolved && Character.isSurrogate(c)) || isInvalidChar(codePoint))
             {
                 cbuf[i] = BLANK_CHAR;
+                
+                if (surrogateResolved)
+                {
+                    cbuf[i + 1] = BLANK_CHAR;
+                }
             }
         }
         return cbuf;
     }
 
-    private static boolean isInvalidChar(char c)
+    private static boolean isInvalidChar(int codePoint)
     {
-        if (Character.isSurrogate(c)) 
+        if (codePoint == 1113088)
         {
             return true;
         }
-        if (c == '\u0009' || c == '\n' || c == '\r') 
+
+        if (codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD) 
         {
             return false;
         }
-        if (c > '\u0020' && c < '\uD7FF') 
+        if (codePoint >= 0x20 && codePoint <= 0xD7FF) 
         {
             return false;
         }
-        if (c > '\uE000' && c < '\uFFFD') 
+        if (codePoint >= 0xE000 && codePoint <= 0xFFFD) 
         {
             return false;
         }
+        if (codePoint >= 0x10000 && codePoint <= 0x10FFFF) 
+        {
+            return false;
+        }
+
         return true;
     }
 }
