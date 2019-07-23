@@ -32,6 +32,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -339,6 +340,36 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
             fail(e.toString());
         }
     }
+    
+    public void testWriteSkipEmoji() {
+        _writer = createTestProbe();
+        try {
+            String input = "foo😀";
+            _writer.writeText(input, null);
+            
+            String escaped = _contentCollector.toString();
+            
+            assertEquals("All illegal XML unicode characters should have been replaced by spaces", input, escaped.trim());
+
+        } catch (IOException e) {
+            fail(e.toString());
+        }
+    }
+    
+    public void testWriteSkipPictographs() {
+        _writer = createTestProbe();
+        try {
+            String input = "foo🏺";
+            _writer.writeText(input, null);
+            
+            String escaped = _contentCollector.toString();
+            
+            assertEquals("All illegal XML unicode characters should have been replaced by spaces", input, escaped.trim());
+
+        } catch (IOException e) {
+            fail(e.toString());
+        }
+    }
 
     /**
      * creates a new test probe (aka response writer)
@@ -349,4 +380,26 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         return new PartialResponseWriterImpl(new HtmlResponseWriterImpl(_contentCollector, null, "UTF-8"));
     }
 
+    /*
+    @Test
+    public void testPerf() throws IOException {
+        
+        _contentCollector = new StringWriter();
+        _writer = createTestProbe();
+        for (int i = 0; i < 1000000; i++)
+        {
+            _writer.write("test");
+        }
+        
+        long start = System.currentTimeMillis();
+        _contentCollector = new StringWriter();
+        _writer = createTestProbe();
+        for (int i = 0; i < 1000000; i++)
+        {
+            _writer.write("test");
+        }
+        long end = System.currentTimeMillis();
+        throw new RuntimeException((end - start) + "ms");
+    }
+    */
 }
