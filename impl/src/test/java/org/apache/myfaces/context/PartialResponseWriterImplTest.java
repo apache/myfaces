@@ -299,7 +299,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
     public void testWriteIllegalXmlUnicodeCharacters() {
         _writer = createTestProbe();
         try {
-            String illegalChars = " \u0001\u0002\u0003\u0004\u0005\u0006\u000B\f\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F \uD7FF\uDBFF\uDC00\uE000��";
+            String illegalChars = "\u0001\u0002\u0003\u0004\u0005\u0006\u000B\f\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F\uDBFF\uDC00";
             String legalChars = "foo";
             _writer.write(illegalChars + legalChars);
             assertEquals("All illegal XML unicode characters should have been replaced by spaces", legalChars, _contentCollector.toString().trim());
@@ -312,7 +312,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
     public void testWriteTextIllegalXmlUnicodeCharacters() {
         _writer = createTestProbe();
         try {
-            String illegalChars = " \u0001\u0002\u0003\u0004\u0005\u0006\u000B\f\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F \uD7FF\uDBFF\uDC00\uE000��";
+            String illegalChars = "\u0001\u0002\u0003\u0004\u0005\u0006\u000B\f\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F\uDBFF\uDC00";
             String legalChars = "foo";
             _writer.writeText(illegalChars + legalChars, null);
             assertEquals("All illegal XML unicode characters should have been replaced by spaces", legalChars, _contentCollector.toString().trim());
@@ -325,13 +325,43 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
     public void testWriteAttributeIllegalXmlUnicodeCharacters() {
         _writer = createTestProbe();
         try {
-            String illegalChars = " \u0001\u0002\u0003\u0004\u0005\u0006\u000B\f\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F \uD7FF\uDBFF\uDC00\uE000��";
+            String illegalChars = "\u0001\u0002\u0003\u0004\u0005\u0006\u000B\f\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F\uDBFF\uDC00";
             String legalChars = "foo";
             _writer.startElement(legalChars, null);
             _writer.writeAttribute(legalChars, illegalChars + legalChars, null);
             _writer.endElement(legalChars);
             assertTrue("All illegal XML unicode characters should have been replaced by spaces", 
                     _contentCollector.toString().matches("<:X: :X:=\"[ ]+:X:\"></:X:>".replace(":X:", legalChars)));
+
+        } catch (IOException e) {
+            fail(e.toString());
+        }
+    }
+
+    public void testWriteSkipEmoji() {
+        _writer = createTestProbe();
+        try {
+            String input = "foo😀";
+            _writer.writeText(input, null);
+            
+            String escaped = _contentCollector.toString();
+            
+            assertEquals("All illegal XML unicode characters should have been replaced by spaces", input, escaped.trim());
+
+        } catch (IOException e) {
+            fail(e.toString());
+        }
+    }
+    
+    public void testWriteSkipPictographs() {
+        _writer = createTestProbe();
+        try {
+            String input = "foo🏺";
+            _writer.writeText(input, null);
+            
+            String escaped = _contentCollector.toString();
+            
+            assertEquals("All illegal XML unicode characters should have been replaced by spaces", input, escaped.trim());
 
         } catch (IOException e) {
             fail(e.toString());
