@@ -18,7 +18,6 @@
  */
 package javax.faces.component;
 
-import javax.el.ValueExpression;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.Validator;
@@ -281,8 +280,8 @@ class _ComponentUtils
                 String validatorMessage = input.getValidatorMessage();
                 if (validatorMessage != null)
                 {
-                    context.addMessage(input.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        validatorMessage, validatorMessage));
+                    context.addMessage(input.getClientId(context),
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, validatorMessage, validatorMessage));
                 }
                 else
                 {
@@ -302,21 +301,6 @@ class _ComponentUtils
                 }
             }
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    static <T> T getExpressionValue(UIComponent component, String attribute, T overrideValue, T defaultValue)
-    {
-        if (overrideValue != null)
-        {
-            return overrideValue;
-        }
-        ValueExpression ve = component.getValueExpression(attribute);
-        if (ve != null)
-        {
-            return (T)ve.getValue(component.getFacesContext().getELContext());
-        }
-        return defaultValue;
     }
 
     static String getPathToComponent(UIComponent component)

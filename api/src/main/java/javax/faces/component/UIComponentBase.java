@@ -2370,11 +2370,6 @@ public abstract class UIComponentBase extends UIComponent
     {
        _cachedIsRendered = rendered;
     }
-    
-    <T> T getExpressionValue(String attribute, T explizitValue, T defaultValueIfExpressionNull)
-    {
-        return _ComponentUtils.getExpressionValue(this, attribute, explizitValue, defaultValueIfExpressionNull);
-    }
 
     void setOamVfMarkCreated(String markCreated)
     {
@@ -2481,7 +2476,6 @@ public abstract class UIComponentBase extends UIComponent
         }
         else
         {
-
             // clear out the stringBuilder by setting the length to 0
             sb.setLength(0);
         }
