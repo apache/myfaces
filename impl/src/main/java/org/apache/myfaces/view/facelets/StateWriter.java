@@ -83,8 +83,6 @@ public final class StateWriter extends Writer
     
     private static void setCurrentInstance(StateWriter stateWriter, FacesContext facesContext)
     {
-        //FacesContext facesContext = FacesContext.getCurrentInstance();
-
         if (stateWriter == null)
         {
             facesContext.getAttributes().remove(CURRENT_WRITER_KEY);

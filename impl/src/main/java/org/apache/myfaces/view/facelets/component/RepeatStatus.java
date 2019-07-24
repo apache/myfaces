@@ -34,17 +34,11 @@ public final class RepeatStatus implements Serializable
     private static final long serialVersionUID = 1L;
     
     private final int count;
-    
     private final int index;
-
     private final boolean first;
-
     private final boolean last;
-
     private final Integer begin;
-
     private final Integer end;
-
     private final Integer step;
     
     public RepeatStatus(boolean first, boolean last, int count, int index, 
