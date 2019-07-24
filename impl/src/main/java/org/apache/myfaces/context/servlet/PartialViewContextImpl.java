@@ -530,7 +530,7 @@ public class PartialViewContextImpl extends PartialViewContext
             if (cw != null)
             {
                 writer.startUpdate(HtmlResponseStateManager.generateUpdateClientWindowId(_facesContext));
-                writer.write(cw.getId());
+                writer.writeText(cw.getId(), null);
                 writer.endUpdate();
             }
         }
