@@ -60,6 +60,7 @@ import org.apache.myfaces.context.flash.FlashImpl;
 import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.util.lang.EnumerationIterator;
 import org.apache.myfaces.util.ExternalSpecifications;
+import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.lang.StringUtils;
 
 /**
@@ -79,6 +80,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     private static final String URL_NAME_VALUE_PAIR_SEPERATOR="=";
     private static final String PUSHED_RESOURCE_URLS = "oam.PUSHED_RESOURCE_URLS";
     private static final String PUSH_SUPPORTED = "oam.PUSH_SUPPORTED";
+    private static final String SB_ENCODE_URL = ServletExternalContextImpl.class.getName() + "#encodeURL";
 
     private ServletRequest _servletRequest;
     private ServletResponse _servletResponse;
@@ -957,7 +959,8 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         }
 
         // start building the new URL
-        StringBuilder newUrl = new StringBuilder(baseUrl);
+        StringBuilder newUrl = SharedStringBuilder.get(facesContext, SB_ENCODE_URL, baseUrl.length() + 10);
+        newUrl.append(baseUrl);
 
         //now add the updated param list onto the url
         if (hasParams)

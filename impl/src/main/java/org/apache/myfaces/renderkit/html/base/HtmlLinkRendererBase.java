@@ -52,13 +52,17 @@ import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.util.ComponentUtils;
+import org.apache.myfaces.util.SharedStringBuilder;
 
-public abstract class HtmlLinkRendererBase
-    extends HtmlRenderer
+public abstract class HtmlLinkRendererBase extends HtmlRenderer
 {
-
     public static final String END_LINK_OUTCOME_AS_SPAN = 
         "oam.shared.HtmlLinkRendererBase.END_LINK_OUTCOME_AS_SPAN";
+
+    private static final String SB_BUILD_ONCLICK = HtmlLinkRendererBase.class.getName()
+            + "#buildOnClick";
+    private static final String SB_ADD_CHILD_PARAMETERS = HtmlLinkRendererBase.class.getName() +
+            "#addChildParameters";
 
     @Override
     public boolean getRendersChildren()
@@ -436,7 +440,7 @@ public abstract class HtmlLinkRendererBase
                                                UIComponent form)
         throws IOException
     {
-        StringBuilder onClick = new StringBuilder();
+        StringBuilder onClick = SharedStringBuilder.get(facesContext, SB_BUILD_ONCLICK);
 
         String commandOnclick;
         if (component instanceof HtmlCommandLink)
@@ -577,7 +581,7 @@ public abstract class HtmlLinkRendererBase
     protected String buildServerOnclick(FacesContext facesContext, UIComponent component, 
             String clientId, UIComponent form) throws IOException
     {
-        StringBuilder onClick = new StringBuilder();
+        StringBuilder onClick = SharedStringBuilder.get(facesContext, SB_BUILD_ONCLICK);
 
         StringBuilder params = addChildParameters(facesContext, component, form);
 
@@ -617,7 +621,7 @@ public abstract class HtmlLinkRendererBase
     private StringBuilder addChildParameters(FacesContext context, UIComponent component, UIComponent nestingForm)
     {
         //add child parameters
-        StringBuilder params = new StringBuilder();
+        StringBuilder params = SharedStringBuilder.get(context, SB_ADD_CHILD_PARAMETERS);
         params.append('[');
         
         List<UIComponent> childrenList = null;
