@@ -97,8 +97,8 @@ public class StateManagerImpl extends StateManager
         {
             return null;
         }
-        TreeStructureManager tsm = new TreeStructureManager();
-        Object retVal = tsm.buildTreeStructureToSave(viewRoot);
+
+        Object retVal = TreeStructureManager.buildTreeStructureToSave(viewRoot);
         if (log.isLoggable(Level.FINEST))
         {
             log.finest("Exiting getTreeStructureToSave");
@@ -143,9 +143,7 @@ public class StateManagerImpl extends StateManager
             if (state != null)
             {
                 Object[] stateArray = (Object[])state;
-                TreeStructureManager tsm = new TreeStructureManager();
-                
-                uiViewRoot = tsm.restoreTreeStructure(((Object[])stateArray[0])[0]);
+                uiViewRoot = TreeStructureManager.restoreTreeStructure(((Object[]) stateArray[0])[0]);
 
                 if (uiViewRoot != null)
                 {

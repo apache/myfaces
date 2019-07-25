@@ -35,17 +35,16 @@ import java.util.Map;
  */
 public class TreeStructureManager
 {
-    public TreeStructureManager()
+    private TreeStructureManager()
     {
-        //_facesContext = facesContext;
     }
 
-    public Object buildTreeStructureToSave(UIViewRoot viewRoot)
+    public static Object buildTreeStructureToSave(UIViewRoot viewRoot)
     {
         return internalBuildTreeStructureToSave(viewRoot);
     }
 
-    private TreeStructComponent internalBuildTreeStructureToSave(UIComponent component)
+    private static TreeStructComponent internalBuildTreeStructureToSave(UIComponent component)
     {
         TreeStructComponent structComp = new TreeStructComponent(component.getClass().getName(),
                                                                  component.getId());
@@ -53,7 +52,7 @@ public class TreeStructureManager
         //children
         if (component.getChildCount() > 0)
         {
-            List<TreeStructComponent> structChildList = new ArrayList<TreeStructComponent>();
+            List<TreeStructComponent> structChildList = new ArrayList<>();
             for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
             {
                 UIComponent child = component.getChildren().get(i);
@@ -64,12 +63,12 @@ public class TreeStructureManager
                 }
             }
             
-            TreeStructComponent[] childArray = structChildList.toArray(new TreeStructComponent[structChildList.size()]);
+            TreeStructComponent[] childArray = structChildList.toArray(
+                    new TreeStructComponent[structChildList.size()]);
             structComp.setChildren(childArray);
         }
 
         //facets
-        
         if (component.getFacetCount() > 0)
         {
             Map<String, UIComponent> facetMap = component.getFacets();
@@ -93,20 +92,18 @@ public class TreeStructureManager
     }
 
 
-    public UIViewRoot restoreTreeStructure(Object treeStructRoot)
+    public static UIViewRoot restoreTreeStructure(Object treeStructRoot)
     {
         if (treeStructRoot instanceof TreeStructComponent)
         {
-            return (UIViewRoot)internalRestoreTreeStructure((TreeStructComponent)treeStructRoot, true);
+            return (UIViewRoot) internalRestoreTreeStructure((TreeStructComponent) treeStructRoot, true);
         }
-        
         
         throw new IllegalArgumentException("TreeStructure of type " + treeStructRoot.getClass().getName() + 
                                            " is not supported.");
-        
     }
 
-    private UIComponent internalRestoreTreeStructure(TreeStructComponent treeStructComp, boolean checkViewRoot)
+    private static UIComponent internalRestoreTreeStructure(TreeStructComponent treeStructComp, boolean checkViewRoot)
     {
         String compClass = treeStructComp.getComponentClass();
         String compId = treeStructComp.getComponentId();
@@ -117,6 +114,7 @@ public class TreeStructureManager
         {
             FacesContext.getCurrentInstance().setViewRoot((UIViewRoot) component);
         }
+
         //children
         TreeStructComponent[] childArray = treeStructComp.getChildren();
         if (childArray != null)
@@ -136,9 +134,9 @@ public class TreeStructureManager
             Map<String, UIComponent> facetMap = component.getFacets();
             for (int i = 0, len = facetArray.length; i < len; i++)
             {
-                Object[] tuple = (Object[])facetArray[i];
-                String facetName = (String)tuple[0];
-                TreeStructComponent structChild = (TreeStructComponent)tuple[1];
+                Object[] tuple = (Object[]) facetArray[i];
+                String facetName = (String) tuple[0];
+                TreeStructComponent structChild = (TreeStructComponent) tuple[1];
                 UIComponent child = internalRestoreTreeStructure(structChild, false);
                 facetMap.put(facetName, child);
             }
@@ -148,10 +146,10 @@ public class TreeStructureManager
     }
 
 
-    public static class TreeStructComponent
-            implements Serializable
+    public static class TreeStructComponent implements Serializable
     {
         private static final long serialVersionUID = 5069109074684737231L;
+
         private String _componentClass;
         private String _componentId;
         private TreeStructComponent[] _children = null;    // Array of children

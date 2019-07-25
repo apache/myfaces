@@ -86,7 +86,7 @@ public class ViewHandlerImpl extends ViewHandler
 
     public ViewHandlerImpl()
     {
-        _protectedViewsSet = Collections.newSetFromMap(new ConcurrentHashMap<String,Boolean>());
+        _protectedViewsSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
         _unmodifiableProtectedViewsSet = Collections.unmodifiableSet(_protectedViewsSet);
         _vdlFactory = (ViewDeclarationLanguageFactory)
                 FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
@@ -456,6 +456,7 @@ public class ViewHandlerImpl extends ViewHandler
             // -= Leonardo Uribe =- Temporally reverted by TCK issues.
             ViewDeclarationLanguage vdl = getViewDeclarationLanguage(context,calculatedViewId);
             ViewMetadata viewMetadata = vdl.getViewMetadata(context, viewId);
+            
             // getViewMetadata() returns null on JSP
             if (viewMetadata != null)
             {
@@ -475,7 +476,7 @@ public class ViewHandlerImpl extends ViewHandler
         // won't be updated on any following request
         // (Note that parametersFromArg is the Map from the NavigationCase)
         // Also note that we don't have to copy the Lists, because they won't be changed
-        Map<String, List<String>> parameters = new HashMap<String, List<String>>(parametersFromArg);
+        Map<String, List<String>> parameters = new HashMap<>(parametersFromArg);
 
         for (UIViewParameter viewParameter : toViewParams)
         {
