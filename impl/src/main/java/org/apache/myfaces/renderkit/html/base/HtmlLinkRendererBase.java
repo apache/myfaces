@@ -129,7 +129,7 @@ public abstract class HtmlLinkRendererBase
         {
             renderCommandLinkStart(facesContext, component,
                                    component.getClientId(facesContext),
-                                   ((UICommand)component).getValue(),
+                                   ((UICommand) component).getValue(),
                                    getStyle(facesContext, component),
                                    getStyleClass(facesContext, component));
         }
