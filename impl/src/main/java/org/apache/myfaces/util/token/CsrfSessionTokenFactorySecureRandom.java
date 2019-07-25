@@ -32,7 +32,7 @@ import org.apache.myfaces.util.WebConfigParamUtils;
  * @since 2.2
  * @author Leonardo Uribe
  */
-public class SecureRandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
+public class CsrfSessionTokenFactorySecureRandom extends CsrfSessionTokenFactory
 {
     /**
      * Sets the random class to initialize the secure random id generator. 
@@ -60,7 +60,7 @@ public class SecureRandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
     private final SessionIdGenerator sessionIdGenerator;
     private final int length;
 
-    public SecureRandomCsrfSessionTokenFactory(FacesContext facesContext)
+    public CsrfSessionTokenFactorySecureRandom(FacesContext facesContext)
     {
         length = WebConfigParamUtils.getIntegerInitParameter(
             facesContext.getExternalContext(), 

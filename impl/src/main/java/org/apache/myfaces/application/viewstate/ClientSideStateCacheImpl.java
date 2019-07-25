@@ -19,8 +19,8 @@
 package org.apache.myfaces.application.viewstate;
 
 import org.apache.myfaces.util.token.CsrfSessionTokenFactory;
-import org.apache.myfaces.util.token.RandomCsrfSessionTokenFactory;
-import org.apache.myfaces.util.token.SecureRandomCsrfSessionTokenFactory;
+import org.apache.myfaces.util.token.CsrfSessionTokenFactoryRandom;
+import org.apache.myfaces.util.token.CsrfSessionTokenFactorySecureRandom;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.application.StateCache;
@@ -49,11 +49,11 @@ class ClientSideStateCacheImpl extends StateCache<Object, Object>
         String csrfRandomMode = config.getRandomKeyInCsrfSessionToken();
         if (MyfacesConfig.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM.equals(csrfRandomMode))
         {
-            csrfSessionTokenFactory = new SecureRandomCsrfSessionTokenFactory(facesContext);
+            csrfSessionTokenFactory = new CsrfSessionTokenFactorySecureRandom(facesContext);
         }
         else
         {
-            csrfSessionTokenFactory = new RandomCsrfSessionTokenFactory(facesContext);
+            csrfSessionTokenFactory = new CsrfSessionTokenFactoryRandom(facesContext);
         }
         
         stateTokenProcessor = new ClientSideStateTokenProcessor();

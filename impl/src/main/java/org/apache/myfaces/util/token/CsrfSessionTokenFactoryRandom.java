@@ -31,12 +31,12 @@ import org.apache.myfaces.util.WebConfigParamUtils;
  * @since 2.2
  * @author Leonardo Uribe
  */
-public class RandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
+public class CsrfSessionTokenFactoryRandom extends CsrfSessionTokenFactory
 {
     private final Random random;
     private final int length;
 
-    public RandomCsrfSessionTokenFactory(FacesContext facesContext)
+    public CsrfSessionTokenFactoryRandom(FacesContext facesContext)
     {
         length = WebConfigParamUtils.getIntegerInitParameter(
             facesContext.getExternalContext(), 

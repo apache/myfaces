@@ -22,8 +22,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.util.token.CsrfSessionTokenFactory;
-import org.apache.myfaces.util.token.RandomCsrfSessionTokenFactory;
-import org.apache.myfaces.util.token.SecureRandomCsrfSessionTokenFactory;
+import org.apache.myfaces.util.token.CsrfSessionTokenFactoryRandom;
+import org.apache.myfaces.util.token.CsrfSessionTokenFactorySecureRandom;
 import org.apache.myfaces.config.MyfacesConfig;
 
 @ApplicationScoped
@@ -52,11 +52,11 @@ public class WebsocketChannelTokenBuilderBean
         String csrfRandomMode = MyfacesConfig.getCurrentInstance(facesContext).getRandomKeyInViewStateSessionToken();
         if (MyfacesConfig.RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_SECURE_RANDOM.equals(csrfRandomMode))
         {
-            csrfSessionTokenFactory = new SecureRandomCsrfSessionTokenFactory(facesContext);
+            csrfSessionTokenFactory = new CsrfSessionTokenFactorySecureRandom(facesContext);
         }
         else
         {
-            csrfSessionTokenFactory = new RandomCsrfSessionTokenFactory(facesContext);
+            csrfSessionTokenFactory = new CsrfSessionTokenFactoryRandom(facesContext);
         }        
         initialized = true;
     }
