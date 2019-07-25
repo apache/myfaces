@@ -21,6 +21,7 @@ package org.apache.myfaces.push.cdi;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.application.StateCache;
+import org.apache.myfaces.util.SessionIdGenerator;
 import org.apache.myfaces.util.lang.Hex;
 import org.apache.myfaces.util.WebConfigParamUtils;
 

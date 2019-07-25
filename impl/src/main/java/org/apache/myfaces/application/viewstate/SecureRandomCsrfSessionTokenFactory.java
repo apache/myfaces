@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.application.viewstate;
 
+import org.apache.myfaces.util.SessionIdGenerator;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.application.StateCache;

@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.application.viewstate;
 
+import org.apache.myfaces.util.SessionIdGenerator;
 import java.util.Map;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
