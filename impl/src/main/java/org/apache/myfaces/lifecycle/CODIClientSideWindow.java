@@ -366,7 +366,7 @@ public class CODIClientSideWindow extends ClientWindow
     
     protected String createWindowId(FacesContext context)
     {
-        String windowId = clientWindowTokenGenerator._getNextToken();
+        String windowId = clientWindowTokenGenerator.getNextToken();
         setId(windowId);
         return windowId;
     }

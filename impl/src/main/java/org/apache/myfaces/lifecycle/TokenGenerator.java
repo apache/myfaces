@@ -27,16 +27,16 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * @author lu4242
  */
-class TokenGenerator
+public class TokenGenerator
 {
-    private final AtomicLong _count;
+    private final AtomicLong seed;
     
     public TokenGenerator()
     {
-        _count = new AtomicLong(_getSeed());
+        seed = new AtomicLong(generateSeed());
     }
     
-    private static long _getSeed()
+    private long generateSeed()
     {
         SecureRandom rng;
         try
@@ -64,12 +64,17 @@ class TokenGenerator
      * 
      * @return
      */
-    String _getNextToken()
+    public String getNextToken()
     {
         // atomically increment the value
-        long nextToken = _count.incrementAndGet();
+        long nextToken = seed.incrementAndGet();
 
         // convert using base 36 because it is a fast efficient subset of base-64
         return Long.toString(nextToken, 36);
+    }
+
+    public AtomicLong getSeed()
+    {
+        return seed;
     }
 }

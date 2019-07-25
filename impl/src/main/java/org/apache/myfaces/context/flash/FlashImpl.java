@@ -29,9 +29,6 @@ import javax.faces.event.PhaseId;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
-import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,7 +36,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 import javax.faces.event.PostKeepFlashValueEvent;
 import javax.faces.event.PostPutFlashValueEvent;
@@ -47,6 +43,7 @@ import javax.faces.event.PreClearFlashEvent;
 import javax.faces.event.PreRemoveFlashValueEvent;
 import javax.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.lifecycle.TokenGenerator;
 
 /**
  * Implementation of Flash object
@@ -160,43 +157,13 @@ public class FlashImpl extends Flash implements ReleasableFlash
 
         return flash;
     }
-
-    /**
-     * Returns a cryptographically secure random number to use as the _count seed
-     */
-    private static long _getSeed()
-    {
-        SecureRandom rng;
-        try
-        {
-            // try SHA1 first
-            rng = SecureRandom.getInstance("SHA1PRNG");
-        }
-        catch (NoSuchAlgorithmException e)
-        {
-            // SHA1 not present, so try the default (which could potentially not be
-            // cryptographically secure)
-            rng = new SecureRandom();
-        }
-
-        // use 48 bits for strength and fill them in
-        byte[] randomBytes = new byte[6];
-        rng.nextBytes(randomBytes);
-
-        // convert to a long
-        return new BigInteger(randomBytes).longValue();
-    }
     
     // ~ private fields and constructor ---------------------------------------
-    
-    // the current token value
-    private final AtomicLong _count;
+
     private boolean _flashScopeDisabled;
     
     public FlashImpl(ExternalContext externalContext)
     {
-        _count = new AtomicLong(_getSeed());
-
         // Read whether flash scope is disabled.
         _flashScopeDisabled = MyfacesConfig.getCurrentInstance(externalContext).isFlashScopeDisabled();
     }
@@ -853,6 +820,8 @@ public class FlashImpl extends Flash implements ReleasableFlash
         ExternalContext externalContext = facesContext.getExternalContext();
         Map<String, Object> requestMap = externalContext.getRequestMap();
 
+        TokenGenerator tokenGenerator = new TokenGenerator();
+        
         final String previousRenderToken 
                 = _getRenderFlashMapTokenFromPreviousRequest(facesContext);
         if (previousRenderToken != null)
@@ -876,37 +845,21 @@ public class FlashImpl extends Flash implements ReleasableFlash
                     // Next token was not preserved in session, which means flash map
                     // is empty. Create a new token and store it as execute map, which
                     // will be empty.
-                    requestMap.put(FLASH_EXECUTE_MAP_TOKEN, _getNextToken());
+                    requestMap.put(FLASH_EXECUTE_MAP_TOKEN, tokenGenerator.getNextToken());
                 }
             }
             
             // create a new token (and thus a new Map) for this request's 
             // executeMap so that we have an executeMap in any possible case.
-            final String newExecuteToken = _getNextToken();
-            requestMap.put(FLASH_EXECUTE_MAP_TOKEN, newExecuteToken);
+            requestMap.put(FLASH_EXECUTE_MAP_TOKEN, tokenGenerator.getNextToken());
         }
         
         // create a new token (and thus a new Map) for this request's renderMap
-        final String newRenderToken = _getNextToken();
-        requestMap.put(FLASH_RENDER_MAP_TOKEN, newRenderToken);
+        requestMap.put(FLASH_RENDER_MAP_TOKEN, tokenGenerator.getNextToken());
         
         // we now have the final render token for this request, thus we can
         // already save it for the next request, because it won't change
         _saveRenderFlashMapTokenForNextRequest(facesContext);
-    }
-    
-    /**
-     * Get the next token to be assigned to this request
-     * 
-     * @return
-     */
-    private String _getNextToken()
-    {
-        // atomically increment the value
-        long nextToken = _count.incrementAndGet();
-
-        // convert using base 36 because it is a fast efficient subset of base-64
-        return Long.toString(nextToken, 36);
     }
 
     /**

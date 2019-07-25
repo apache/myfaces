@@ -54,7 +54,7 @@ public class UrlClientWindow extends ClientWindow
         else
         {
             //Generate a new windowId
-            setId(tokenGenerator._getNextToken());
+            setId(tokenGenerator.getNextToken());
         }
     }
     
