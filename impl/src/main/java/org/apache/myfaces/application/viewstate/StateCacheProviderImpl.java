@@ -22,16 +22,15 @@ import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.spi.StateCacheProvider;
 
-public class StateCacheFactoryImpl extends StateCacheProvider
+public class StateCacheProviderImpl extends StateCacheProvider
 {
-
-    private StateCache _clientSideStateCache;
-    private StateCache _serverSideStateCache;
+    private StateCache clientSide;
+    private StateCache serverSide;
     
-    public StateCacheFactoryImpl()
+    public StateCacheProviderImpl()
     {
-        _clientSideStateCache = new StateCacheClientSide();
-        _serverSideStateCache = new StateCacheServerSide();
+        clientSide = new StateCacheClientSide();
+        serverSide = new StateCacheServerSide();
     }
 
     @Override
@@ -39,11 +38,11 @@ public class StateCacheFactoryImpl extends StateCacheProvider
     {
         if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
         {
-            return _clientSideStateCache;
+            return clientSide;
         }
         else
         {
-            return _serverSideStateCache;
+            return serverSide;
         }
     }
 }

@@ -27,7 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
-import org.apache.myfaces.application.viewstate.StateCacheFactoryImpl;
+import org.apache.myfaces.application.viewstate.StateCacheProviderImpl;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.apache.myfaces.spi.StateCacheProvider;
@@ -111,7 +111,7 @@ public class DefaultStateCacheProviderFactory extends StateCacheProviderFactory
                     getServiceProviderList(STATE_CACHE_PROVIDER);
             externalContext.getApplicationMap().put(STATE_CACHE_PROVIDER_LIST, classList);
         }
-        return ClassUtils.buildApplicationObject(StateCacheProvider.class, classList, new StateCacheFactoryImpl());
+        return ClassUtils.buildApplicationObject(StateCacheProvider.class, classList, new StateCacheProviderImpl());
     }    
     
 }
