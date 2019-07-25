@@ -20,7 +20,6 @@ package org.apache.myfaces.application.viewstate;
 
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.spi.StateCacheProvider;
 
 public class StateCacheFactoryImpl extends StateCacheProvider
@@ -31,8 +30,8 @@ public class StateCacheFactoryImpl extends StateCacheProvider
     
     public StateCacheFactoryImpl()
     {
-        _clientSideStateCache = new ClientSideStateCacheImpl();
-        _serverSideStateCache = new ServerSideStateCacheImpl();
+        _clientSideStateCache = new StateCacheClientSide();
+        _serverSideStateCache = new StateCacheServerSide();
     }
 
     @Override

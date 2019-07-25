@@ -42,7 +42,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.lifecycle.ClientWindow;
 
-import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.application.viewstate.token.ServerSideStateTokenProcessor;
 import org.apache.myfaces.application.viewstate.token.StateTokenProcessor;
 import org.apache.myfaces.config.MyfacesConfig;
@@ -52,23 +51,23 @@ import org.apache.myfaces.spi.ViewScopeProvider;
 import org.apache.myfaces.spi.ViewScopeProviderFactory;
 import org.apache.myfaces.view.ViewScopeProxyMap;
 
-class ServerSideStateCacheImpl extends StateCache<Object, Object>
+class StateCacheServerSide extends StateCache<Object, Object>
 {
-    private static final Logger log = Logger.getLogger(ServerSideStateCacheImpl.class.getName());
+    private static final Logger log = Logger.getLogger(StateCacheServerSide.class.getName());
     
     public static final String SERIALIZED_VIEW_SESSION_ATTR = 
-        ServerSideStateCacheImpl.class.getName() + ".SERIALIZED_VIEW";
+        StateCacheServerSide.class.getName() + ".SERIALIZED_VIEW";
     
     public static final String RESTORED_SERIALIZED_VIEW_REQUEST_ATTR = 
-        ServerSideStateCacheImpl.class.getName() + ".RESTORED_SERIALIZED_VIEW";
+        StateCacheServerSide.class.getName() + ".RESTORED_SERIALIZED_VIEW";
     
     public static final String RESTORED_SERIALIZED_VIEW_ID_REQUEST_ATTR = 
-        ServerSideStateCacheImpl.class.getName() + ".RESTORED_SERIALIZED_VIEW_ID";
+        StateCacheServerSide.class.getName() + ".RESTORED_SERIALIZED_VIEW_ID";
     public static final String RESTORED_SERIALIZED_VIEW_KEY_REQUEST_ATTR = 
-        ServerSideStateCacheImpl.class.getName() + ".RESTORED_SERIALIZED_VIEW_KEY";
+        StateCacheServerSide.class.getName() + ".RESTORED_SERIALIZED_VIEW_KEY";
 
     public static final String RESTORED_VIEW_KEY_REQUEST_ATTR = 
-        ServerSideStateCacheImpl.class.getName() + ".RESTORED_VIEW_KEY";
+        StateCacheServerSide.class.getName() + ".RESTORED_VIEW_KEY";
 
     public static final int UNCOMPRESSED_FLAG = 0;
     public static final int COMPRESSED_FLAG = 1;
@@ -82,7 +81,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     private final CsrfSessionTokenFactory csrfSessionTokenFactory;
     private final StateTokenProcessor stateTokenProcessor;
     
-    public ServerSideStateCacheImpl()
+    public StateCacheServerSide()
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext);
@@ -95,11 +94,11 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
         String randomMode = config.getRandomKeyInViewStateSessionToken();
         if (MyfacesConfig.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM.equals(randomMode))
         {
-            sessionViewStorageFactory = new RandomSessionViewStorageFactory( new SecureRandomKeyFactory(facesContext));
+            sessionViewStorageFactory = new SessionViewStorageFactoryImpl( new KeyFactorySecureRandom(facesContext));
         }
         else if (MyfacesConfig.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM.equals(randomMode))
         {
-            sessionViewStorageFactory = new RandomSessionViewStorageFactory(new RandomKeyFactory(facesContext));
+            sessionViewStorageFactory = new SessionViewStorageFactoryImpl(new KeyFactoryRandom(facesContext));
         }
         else
         {
@@ -109,7 +108,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
                         + randomMode + "\" is not supported (anymore)."
                         + " Fallback to \"random\"");
             }
-            sessionViewStorageFactory = new RandomSessionViewStorageFactory(new RandomKeyFactory(facesContext));
+            sessionViewStorageFactory = new SessionViewStorageFactoryImpl(new KeyFactoryRandom(facesContext));
         }
         
         String csrfRandomMode = config.getRandomKeyInCsrfSessionToken();

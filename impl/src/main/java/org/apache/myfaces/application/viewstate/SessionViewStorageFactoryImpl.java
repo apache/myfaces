@@ -23,10 +23,10 @@ import javax.faces.context.FacesContext;
 /**
  *
  */
-class RandomSessionViewStorageFactory extends SessionViewStorageFactory<KeyFactory<byte[]>, byte[]>
+class SessionViewStorageFactoryImpl extends SessionViewStorageFactory<KeyFactory<byte[]>, byte[]>
 {
 
-    public RandomSessionViewStorageFactory(KeyFactory<byte[]> keyFactory)
+    public SessionViewStorageFactoryImpl(KeyFactory<byte[]> keyFactory)
     {
         super(keyFactory);
     }
@@ -40,7 +40,7 @@ class RandomSessionViewStorageFactory extends SessionViewStorageFactory<KeyFacto
     @Override
     public SerializedViewKey createSerializedViewKey(FacesContext context, String viewId, byte[] key)
     {
-        return new IntByteArraySerializedViewKey(viewId == null ? 0 : viewId.hashCode(), key);
+        return new SerializedViewKeyIntByteArray(viewId == null ? 0 : viewId.hashCode(), key);
     }
     
 }

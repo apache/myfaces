@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.application.viewstate;
 
+import org.apache.myfaces.util.token.SessionIdGenerator;
 import java.util.Map;
-import java.util.Random;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.config.MyfacesConfig;
@@ -27,15 +27,41 @@ import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.util.lang.Hex;
 
-class RandomKeyFactory extends KeyFactory<byte[]>
+/**
+ * This factory generate a key composed by a counter and a random number. The
+ * counter ensures uniqueness, and the random number prevents guess the next
+ * session token.
+ */
+public class KeyFactorySecureRandom extends KeyFactory<byte[]>
 {
-    private final Random random;
+    private final SessionIdGenerator sessionIdGenerator;
     private final int length;
 
-    public RandomKeyFactory(FacesContext facesContext)
+    public KeyFactorySecureRandom(FacesContext facesContext)
     {
-        length = MyfacesConfig.getCurrentInstance(facesContext).getRandomKeyInViewStateSessionTokenLength();
-        random = new Random(((int) System.nanoTime()) + this.hashCode());
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext);
+        
+        length = config.getRandomKeyInViewStateSessionTokenLength();
+        sessionIdGenerator = new SessionIdGenerator();
+        sessionIdGenerator.setSessionIdLength(length);
+
+        String secureRandomClass = config.getRandomKeyInViewStateSessionTokenSecureRandomClass();
+        if (secureRandomClass != null)
+        {
+            sessionIdGenerator.setSecureRandomClass(secureRandomClass);
+        }
+
+        String secureRandomProvider = config.getRandomKeyInViewStateSessionTokenSecureRandomProvider();
+        if (secureRandomProvider != null)
+        {
+            sessionIdGenerator.setSecureRandomProvider(secureRandomProvider);
+        }
+
+        String secureRandomAlgorithm = config.getRandomKeyInViewStateSessionTokenSecureRandomAlgorithm();
+        if (secureRandomAlgorithm != null)
+        {
+            sessionIdGenerator.setSecureRandomAlgorithm(secureRandomAlgorithm);
+        }
     }
 
     public Integer generateCounterKey(FacesContext facesContext)
@@ -65,8 +91,7 @@ class RandomKeyFactory extends KeyFactory<byte[]>
     {
         byte[] array = new byte[length];
         byte[] key = new byte[length + 4];
-        //sessionIdGenerator.getRandomBytes(array);
-        random.nextBytes(array);
+        sessionIdGenerator.getRandomBytes(array);
         System.arraycopy(array, 0, key, 0, array.length);
         int value = generateCounterKey(facesContext);
         key[array.length] = (byte) (value >>> 24);

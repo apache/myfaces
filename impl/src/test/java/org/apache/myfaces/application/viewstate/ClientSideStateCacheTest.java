@@ -19,7 +19,6 @@
 package org.apache.myfaces.application.viewstate;
 
 import javax.faces.application.StateManager;
-import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMultipleRequestsTestCase;
 import org.junit.Assert;
@@ -41,7 +40,7 @@ public class ClientSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
 
         // Initialization
         setupRequest();
-        StateCache stateCache = new ClientSideStateCacheImpl();
+        StateCache stateCache = new StateCacheClientSide();
         tearDownRequest();
         
         Object savedToken;
@@ -113,7 +112,7 @@ public class ClientSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
 
         // Initialization
         setupRequest();
-        StateCache stateCache = new ClientSideStateCacheImpl();
+        StateCache stateCache = new StateCacheClientSide();
         tearDownRequest();
         
         Object savedToken;
@@ -173,7 +172,7 @@ public class ClientSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
 
         // Initialization
         setupRequest();
-        StateCache stateCache = new ClientSideStateCacheImpl();
+        StateCache stateCache = new StateCacheClientSide();
         tearDownRequest();
         
         Object savedToken;

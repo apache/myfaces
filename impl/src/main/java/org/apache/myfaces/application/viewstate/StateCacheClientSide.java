@@ -23,12 +23,11 @@ import org.apache.myfaces.util.token.CsrfSessionTokenFactoryRandom;
 import org.apache.myfaces.util.token.CsrfSessionTokenFactorySecureRandom;
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.application.viewstate.token.ClientSideStateTokenProcessor;
 import org.apache.myfaces.application.viewstate.token.StateTokenProcessor;
 import org.apache.myfaces.config.MyfacesConfig;
 
-class ClientSideStateCacheImpl extends StateCache<Object, Object>
+class StateCacheClientSide extends StateCache<Object, Object>
 {
     private static final int STATE_PARAM = 0;
     private static final int VIEWID_PARAM = 1;
@@ -41,7 +40,7 @@ class ClientSideStateCacheImpl extends StateCache<Object, Object>
     private final CsrfSessionTokenFactory csrfSessionTokenFactory;
     private final StateTokenProcessor stateTokenProcessor;
     
-    public ClientSideStateCacheImpl()
+    public StateCacheClientSide()
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext);

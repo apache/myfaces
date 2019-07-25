@@ -19,18 +19,18 @@
 package org.apache.myfaces.application.viewstate;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * Implementation of SerializedViewKey, where the hashCode of the viewId is used
- * and the sequenceId is a numeric value.
+ * and the sequenceId is a string value.
  */
-class IntIntSerializedViewKey extends SerializedViewKey implements Serializable
+class SerializedViewKeyIntByteArray extends SerializedViewKey implements Serializable
 {
-    private static final long serialVersionUID = -1170697124386063642L;
     final int _viewId;
-    final int _sequenceId;
+    final byte[] _sequenceId;
 
-    public IntIntSerializedViewKey(int viewId, int sequence)
+    public SerializedViewKeyIntByteArray(int viewId, byte[] sequence)
     {
         _sequenceId = sequence;
         _viewId = viewId;
@@ -47,12 +47,12 @@ class IntIntSerializedViewKey extends SerializedViewKey implements Serializable
         {
             return false;
         }
-        final IntIntSerializedViewKey other = (IntIntSerializedViewKey) obj;
+        final SerializedViewKeyIntByteArray other = (SerializedViewKeyIntByteArray) obj;
         if (this._viewId != other._viewId)
         {
             return false;
         }
-        if (this._sequenceId != other._sequenceId)
+        if (!Arrays.equals(this._sequenceId, other._sequenceId))
         {
             return false;
         }
@@ -62,9 +62,9 @@ class IntIntSerializedViewKey extends SerializedViewKey implements Serializable
     @Override
     public int hashCode()
     {
-        int hash = 7;
-        hash = 83 * hash + this._viewId;
-        hash = 83 * hash + this._sequenceId;
+        int hash = 5;
+        hash = 37 * hash + this._viewId;
+        hash = 37 * hash + Arrays.hashCode(this._sequenceId);
         return hash;
     }
     
