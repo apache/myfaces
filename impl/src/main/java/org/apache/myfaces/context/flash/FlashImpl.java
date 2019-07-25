@@ -43,7 +43,7 @@ import javax.faces.event.PreClearFlashEvent;
 import javax.faces.event.PreRemoveFlashValueEvent;
 import javax.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.lifecycle.TokenGenerator;
+import org.apache.myfaces.util.token.TokenGenerator;
 
 /**
  * Implementation of Flash object

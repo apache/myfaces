@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.lifecycle;
 
+import org.apache.myfaces.util.token.TokenGenerator;
 import javax.faces.context.FacesContext;
 import javax.faces.lifecycle.ClientWindow;
 import javax.faces.lifecycle.ClientWindowFactory;

@@ -20,7 +20,6 @@ package org.apache.myfaces.application;
 
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.application.viewstate.token.StateTokenProcessor;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 /**
  * This class provides an interface to separate the state caching operations (saving/restoring)
@@ -31,40 +30,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
  */
 public abstract class StateCache<K, V>
 {
-    
-
-
-    /**
-     * Set the default length of the random key used for the csrf session token.
-     * By default is 16. 
-     */
-    @JSFWebConfigParam(since="2.2.0", defaultValue="16", group="state")
-    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_LENGTH_PARAM 
-            = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_LENGTH";
-    public static final int RANDOM_KEY_IN_CSRF_SESSION_TOKEN_LENGTH_PARAM_DEFAULT = 16;
-
-    /**
-     * Sets the random class to initialize the secure random id generator. 
-     * By default it uses java.security.SecureRandom
-     */
-    @JSFWebConfigParam(since="2.2.0", group="state")
-    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_CLASS_PARAM
-            = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_CLASS";
-
-    /**
-     * Sets the random provider to initialize the secure random id generator.
-     */
-    @JSFWebConfigParam(since="2.2.0", group="state")
-    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_PROVIDER_PARAM
-            = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_PROVIDER";
-    
-    /**
-     * Sets the random algorithm to initialize the secure random id generator. 
-     * By default is SHA1PRNG
-     */
-    @JSFWebConfigParam(since="2.2.0", defaultValue="SHA1PRNG", group="state")
-    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM 
-            = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM";
 
     /**
      * Put the state on the cache, to can be restored later.

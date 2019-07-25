@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.application.viewstate;
 
+import org.apache.myfaces.util.token.CsrfSessionTokenFactory;
+import org.apache.myfaces.util.token.RandomCsrfSessionTokenFactory;
+import org.apache.myfaces.util.token.SecureRandomCsrfSessionTokenFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -505,7 +508,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     @Override
     public String createCryptographicallyStrongTokenFromSession(FacesContext context)
     {
-        return csrfSessionTokenFactory.createCryptographicallyStrongTokenFromSession(context);
+        return csrfSessionTokenFactory.createToken(context);
     }
     
     @Override

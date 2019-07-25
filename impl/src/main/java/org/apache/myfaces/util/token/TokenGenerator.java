@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.lifecycle;
+package org.apache.myfaces.util.token;
 
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;

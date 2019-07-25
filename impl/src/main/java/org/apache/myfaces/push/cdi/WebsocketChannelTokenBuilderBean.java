@@ -21,6 +21,9 @@ package org.apache.myfaces.push.cdi;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.util.token.CsrfSessionTokenFactory;
+import org.apache.myfaces.util.token.RandomCsrfSessionTokenFactory;
+import org.apache.myfaces.util.token.SecureRandomCsrfSessionTokenFactory;
 import org.apache.myfaces.config.MyfacesConfig;
 
 @ApplicationScoped
@@ -64,6 +67,6 @@ public class WebsocketChannelTokenBuilderBean
         {
             internalInit(facesContext);
         }
-        return csrfSessionTokenFactory.createCryptographicallyStrongTokenFromSession(facesContext);
+        return csrfSessionTokenFactory.createToken(facesContext);
     }
 }

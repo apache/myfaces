@@ -16,22 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.push.cdi;
+package org.apache.myfaces.util.token;
 
 import java.util.Map;
 import java.util.Random;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.util.lang.Hex;
 import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
  * @since 2.2
+ * @author Leonardo Uribe
  */
-class RandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
+public class RandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
 {
     private final Random random;
     private final int length;
@@ -40,12 +40,12 @@ class RandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
     {
         length = WebConfigParamUtils.getIntegerInitParameter(
             facesContext.getExternalContext(), 
-            StateCache.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_LENGTH_PARAM, 
-            StateCache.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_LENGTH_PARAM_DEFAULT);
+            RANDOM_KEY_IN_CSRF_SESSION_TOKEN_LENGTH_PARAM, 
+            RANDOM_KEY_IN_CSRF_SESSION_TOKEN_LENGTH_PARAM_DEFAULT);
         random = new Random(((int) System.nanoTime()) + this.hashCode());
     }
 
-    public Integer generateCounterKey(FacesContext facesContext)
+    protected Integer generateCounterKey(FacesContext facesContext)
     {
         ExternalContext externalContext = facesContext.getExternalContext();
         Object sessionObj = externalContext.getSession(true);
@@ -54,7 +54,7 @@ class RandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
         {
             Map<String, Object> map = externalContext.getSessionMap();
             sequence = (Integer) map.get(RendererUtils.SEQUENCE_PARAM);
-            if (sequence == null || sequence.intValue() == Integer.MAX_VALUE)
+            if (sequence == null || sequence == Integer.MAX_VALUE)
             {
                 sequence = Integer.valueOf(1);
             }
@@ -67,7 +67,7 @@ class RandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
         return sequence;
     }
 
-    public byte[] generateKey(FacesContext facesContext)
+    protected byte[] generateKey(FacesContext facesContext)
     {
         byte[] array = new byte[length];
         random.nextBytes(array);
@@ -75,7 +75,7 @@ class RandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
     }
 
     @Override
-    public String createCryptographicallyStrongTokenFromSession(FacesContext context)
+    public String createToken(FacesContext context)
     {
         byte[] key = generateKey(context);
         return new String(Hex.encodeHex(key));

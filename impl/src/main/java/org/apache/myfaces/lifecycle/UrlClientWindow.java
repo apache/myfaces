@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.lifecycle;
 
+import org.apache.myfaces.util.token.TokenGenerator;
 import java.util.HashMap;
 import java.util.Map;
 import javax.faces.context.FacesContext;

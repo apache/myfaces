@@ -16,12 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.push.cdi;
+package org.apache.myfaces.util.token;
 
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.application.StateCache;
-import org.apache.myfaces.util.SessionIdGenerator;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.util.lang.Hex;
 import org.apache.myfaces.util.WebConfigParamUtils;
 
@@ -31,9 +30,33 @@ import org.apache.myfaces.util.WebConfigParamUtils;
  * session token.
  * 
  * @since 2.2
+ * @author Leonardo Uribe
  */
-class SecureRandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
+public class SecureRandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
 {
+    /**
+     * Sets the random class to initialize the secure random id generator. 
+     * By default it uses java.security.SecureRandom
+     */
+    @JSFWebConfigParam(since="2.2.0", group="state")
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_CLASS_PARAM
+            = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_CLASS";
+
+    /**
+     * Sets the random provider to initialize the secure random id generator.
+     */
+    @JSFWebConfigParam(since="2.2.0", group="state")
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_PROVIDER_PARAM
+            = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_PROVIDER";
+    
+    /**
+     * Sets the random algorithm to initialize the secure random id generator. 
+     * By default is SHA1PRNG
+     */
+    @JSFWebConfigParam(since="2.2.0", defaultValue="SHA1PRNG", group="state")
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM 
+            = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM";
+    
     private final SessionIdGenerator sessionIdGenerator;
     private final int length;
 
@@ -41,34 +64,37 @@ class SecureRandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
     {
         length = WebConfigParamUtils.getIntegerInitParameter(
             facesContext.getExternalContext(), 
-            StateCache.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_LENGTH_PARAM, 
-            StateCache.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_LENGTH_PARAM_DEFAULT);
+            RANDOM_KEY_IN_CSRF_SESSION_TOKEN_LENGTH_PARAM, 
+            RANDOM_KEY_IN_CSRF_SESSION_TOKEN_LENGTH_PARAM_DEFAULT);
         sessionIdGenerator = new SessionIdGenerator();
         sessionIdGenerator.setSessionIdLength(length);
+        
         String secureRandomClass = WebConfigParamUtils.getStringInitParameter(
             facesContext.getExternalContext(), 
-            StateCache.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_CLASS_PARAM);
+            RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_CLASS_PARAM);
         if (secureRandomClass != null)
         {
             sessionIdGenerator.setSecureRandomClass(secureRandomClass);
         }
+        
         String secureRandomProvider = WebConfigParamUtils.getStringInitParameter(
             facesContext.getExternalContext(), 
-            StateCache.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_PROVIDER_PARAM);
+            RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_PROVIDER_PARAM);
         if (secureRandomProvider != null)
         {
             sessionIdGenerator.setSecureRandomProvider(secureRandomProvider);
         }
+        
         String secureRandomAlgorithm = WebConfigParamUtils.getStringInitParameter(
             facesContext.getExternalContext(), 
-            StateCache.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM);
+            RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM);
         if (secureRandomAlgorithm != null)
         {
             sessionIdGenerator.setSecureRandomAlgorithm(secureRandomAlgorithm);
         }
     }
 
-    public byte[] generateKey(FacesContext facesContext)
+    protected byte[] generateKey(FacesContext facesContext)
     {
         byte[] array = new byte[length];
         sessionIdGenerator.getRandomBytes(array);
@@ -76,7 +102,7 @@ class SecureRandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
     }
 
     @Override
-    public String createCryptographicallyStrongTokenFromSession(FacesContext context)
+    public String createToken(FacesContext context)
     {
         byte[] key = generateKey(context);
         return new String(Hex.encodeHex(key));

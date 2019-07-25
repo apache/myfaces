@@ -16,16 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.application.viewstate;
+package org.apache.myfaces.util.token;
 
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 /**
  *
  * @since 2.2
  * @author Leonardo Uribe
  */
-abstract class CsrfSessionTokenFactory
+public abstract class CsrfSessionTokenFactory
 {
-    public abstract String createCryptographicallyStrongTokenFromSession(FacesContext context);
+    /**
+     * Set the default length of the random key used for the csrf session token.
+     * By default is 16. 
+     */
+    @JSFWebConfigParam(since="2.2.0", defaultValue="16", group="state")
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_LENGTH_PARAM 
+            = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_LENGTH";
+    public static final int RANDOM_KEY_IN_CSRF_SESSION_TOKEN_LENGTH_PARAM_DEFAULT = 16;
+    
+    public abstract String createToken(FacesContext context);
 }

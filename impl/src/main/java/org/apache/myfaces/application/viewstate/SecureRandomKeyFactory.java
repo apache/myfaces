@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.application.viewstate;
 
-import org.apache.myfaces.util.SessionIdGenerator;
+import org.apache.myfaces.util.token.SessionIdGenerator;
 import java.util.Map;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -32,7 +32,7 @@ import org.apache.myfaces.util.lang.Hex;
  * counter ensures uniqueness, and the random number prevents guess the next
  * session token.
  */
-class SecureRandomKeyFactory extends KeyFactory<byte[]>
+public class SecureRandomKeyFactory extends KeyFactory<byte[]>
 {
     private final SessionIdGenerator sessionIdGenerator;
     private final int length;

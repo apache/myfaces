@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.lifecycle;
 
+import org.apache.myfaces.util.token.TokenGenerator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
