@@ -521,15 +521,7 @@ public final class FactoryFinder
                             current = delegationConstructor.newInstance(new Object[] { current });
                             injectAndPostConstruct(injectionProvider, current, injectedBeanStorage);
                         }
-                        catch (InstantiationException e)
-                        {
-                            throw new FacesException(e);
-                        }
-                        catch (IllegalAccessException e)
-                        {
-                            throw new FacesException(e);
-                        }
-                        catch (InvocationTargetException e)
+                        catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
                         {
                             throw new FacesException(e);
                         }
