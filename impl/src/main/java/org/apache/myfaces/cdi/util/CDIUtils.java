@@ -46,20 +46,17 @@ public class CDIUtils
 
     public static <T> T get(BeanManager bm, Class<T> clazz)
     {
-        return get(bm, clazz, false);
+        Set<Bean<?>> beans = bm.getBeans(clazz);
+        return resolveInstance(bm, beans, clazz);
     }
 
-    public static <T> T get(BeanManager bm, Class<T> clazz, boolean optional)
+    public static <T> T getOptional(BeanManager bm, Class<T> clazz)
     {
         Set<Bean<?>> beans = bm.getBeans(clazz);
         if (beans == null || beans.isEmpty())
         {
-            if (optional)
-            {
-                return null;
-            }
+            return null;
         }
-
         return resolveInstance(bm, beans, clazz);
     }
     

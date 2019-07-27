@@ -145,8 +145,8 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         if (MyfacesConfig.getCurrentInstance(ctx).isUseCdiForAnnotationScanning())
         {
             BeanManager beanManager = CDIUtils.getBeanManager(ctx);
-            CdiAnnotationProviderExtension extension = CDIUtils.get(beanManager,
-                    CdiAnnotationProviderExtension.class, true);
+            CdiAnnotationProviderExtension extension = CDIUtils.getOptional(beanManager,
+                    CdiAnnotationProviderExtension.class);
             if (extension != null)
             {
                 return extension.getMap();

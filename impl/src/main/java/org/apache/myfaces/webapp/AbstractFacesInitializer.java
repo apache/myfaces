@@ -269,8 +269,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         if (ExternalSpecifications.isCDIAvailable(externalContext))
         {
             BeanManager beanManager = CDIUtils.getBeanManager(externalContext);
-            CdiAnnotationProviderExtension extension = CDIUtils.get(beanManager,
-                    CdiAnnotationProviderExtension.class, true);
+            CdiAnnotationProviderExtension extension = CDIUtils.getOptional(beanManager,
+                    CdiAnnotationProviderExtension.class);
             if (extension != null)
             {
                 extension.release();
