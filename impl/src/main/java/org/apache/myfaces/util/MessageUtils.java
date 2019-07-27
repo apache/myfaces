@@ -686,7 +686,7 @@ public final class MessageUtils
         else
         {
             ApplicationFactory afactory = (ApplicationFactory)FactoryFinder.getFactory(
-                    "javax.faces.application.ApplicationFactory");
+                    FactoryFinder.APPLICATION_FACTORY);
             return afactory.getApplication();
         }
     }
