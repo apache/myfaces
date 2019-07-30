@@ -24,6 +24,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
+import javax.faces.FacesException;
 import javax.faces.annotation.ManagedProperty;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.AbstractDynamicProducer;
@@ -80,6 +81,12 @@ public class ManagedPropertyProducer extends AbstractDynamicProducer<Object>
     protected Object createManagedProperty(CreationalContext<Object> cc, ManagedPropertyInfo typeInfo)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null)
+        {
+            throw new FacesException("@ManagedProperty(\"" + typeInfo.getExpression()
+                    + "\") can only be resolved in a JSF request!");
+        }
+        
         return facesContext.getApplication().evaluateExpressionGet(
                 facesContext, typeInfo.getExpression(), getBeanClass());
     }
