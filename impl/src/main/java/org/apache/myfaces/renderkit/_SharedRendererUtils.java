@@ -35,7 +35,6 @@ import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
-import javax.faces.component.UIOutput;
 import javax.faces.component.UISelectMany;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -57,49 +56,6 @@ class _SharedRendererUtils
 {
     static final String COLLECTION_TYPE_KEY = "collectionType";
     static final String VALUE_TYPE_KEY = "valueType";
-
-    static Converter findUIOutputConverter(FacesContext facesContext,
-            UIOutput component)
-    {
-        // Attention!
-        // This code is duplicated in jsfapi component package.
-        // If you change something here please do the same in the other class!
-
-        Converter converter = component.getConverter();
-        if (converter != null)
-        {
-            return converter;
-        }
-
-        //Try to find out by value expression
-        ValueExpression expression = component.getValueExpression("value");
-        if (expression == null)
-        {
-            return null;
-        }
-
-        Class<?> valueType = expression.getType(facesContext.getELContext());
-        if (valueType == null)
-        {
-            return null;
-        }
-
-        if (Object.class.equals(valueType))
-        {
-            return null; //There is no converter for Object class
-        }
-
-        try
-        {
-            return facesContext.getApplication().createConverter(valueType);
-        }
-        catch (FacesException e)
-        {
-            log(facesContext, "No Converter for type " + valueType.getName()
-                    + " found", e);
-            return null;
-        }
-    }
 
     static Object getConvertedUISelectManyValue(FacesContext facesContext, UISelectMany component,
             String[] submittedValue) throws ConverterException

@@ -562,8 +562,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         }
         if (beanManager != null)
         {
-            externalContext.getApplicationMap().put(CDI_BEAN_MANAGER_INSTANCE,
-                beanManager);
+            externalContext.getApplicationMap().put(CDI_BEAN_MANAGER_INSTANCE, beanManager);
         }
     }
 

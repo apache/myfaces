@@ -20,7 +20,7 @@
 package org.apache.myfaces.push;
 
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.Collections;
 import javax.faces.component.UIOutput;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
@@ -61,86 +61,7 @@ public abstract class AbstractWebsocketComponent extends UIOutput implements Cli
     @Override
     public Collection<String> getEventNames()
     {
-        return new Collection<String>(){
-
-            @Override
-            public int size()
-            {
-                return 0;
-            }
-
-            @Override
-            public boolean isEmpty()
-            {
-                return false;
-            }
-
-            @Override
-            public boolean contains(Object o)
-            {
-                return true;
-            }
-
-            @Override
-            public Iterator<String> iterator()
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public Object[] toArray()
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public <T> T[] toArray(T[] a)
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public boolean add(String e)
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public boolean remove(Object o)
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public boolean containsAll(Collection<?> c)
-            {
-                return true;
-            }
-
-            @Override
-            public boolean addAll(Collection<? extends String> c)
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public boolean removeAll(Collection<?> c)
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public boolean retainAll(Collection<?> c)
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public void clear()
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        };
+        return Collections.emptyList();
     }
     
 }
