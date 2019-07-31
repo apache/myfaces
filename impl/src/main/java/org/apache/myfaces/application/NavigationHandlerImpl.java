@@ -84,6 +84,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
 {
     private static final Logger log = Logger.getLogger(NavigationHandlerImpl.class.getName());
 
+    public static final String CALL_PRE_DISPOSE_VIEW = "oam.CALL_PRE_DISPOSE_VIEW";
+    
     private static final String OUTCOME_NAVIGATION_SB = "oam.navigation.OUTCOME_NAVIGATION_SB";
     
     private static final Pattern AMP_PATTERN = Pattern.compile("&(amp;)?"); // "&" or "&amp;"
@@ -304,7 +306,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 }
 
                 if (facesContext.getViewRoot() != null &&
-                    facesContext.getViewRoot().getAttributes().containsKey("oam.CALL_PRE_DISPOSE_VIEW"))
+                    facesContext.getViewRoot().getAttributes().containsKey(CALL_PRE_DISPOSE_VIEW))
                 {
                     try
                     {

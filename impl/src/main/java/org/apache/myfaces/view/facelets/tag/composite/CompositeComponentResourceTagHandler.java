@@ -53,6 +53,7 @@ import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.Metadata;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TextHandler;
+import org.apache.myfaces.application.NavigationHandlerImpl;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
@@ -128,7 +129,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                 }
                 
                 ComponentSupport.getViewRoot(ctx, component)
-                        .getAttributes().put("oam.CALL_PRE_DISPOSE_VIEW", Boolean.TRUE);
+                        .getAttributes().put(NavigationHandlerImpl.CALL_PRE_DISPOSE_VIEW, Boolean.TRUE);
                 component.subscribeToEvent(PreDisposeViewEvent.class, new ClearBindingValueExpressionListener());
             }
         }

@@ -129,10 +129,10 @@ public class CreateDynamicCompositeComponentListener
                 }
                 // The trick here is restore MARK_CREATED, just to allow ComponentTagHandlerDelegate to
                 // find the component. Then we reset it to exclude it from facelets refresh algorithm.
-                String markId = (String) component.getAttributes().get("oam.vf.GEN_MARK_ID");
+                String markId = (String) component.getAttributes().get(FaceletViewDeclarationLanguage.GEN_MARK_ID);
                 if (markId == null)
                 {
-                    ((AbstractFacelet)componentFacelet).applyDynamicComponentHandler(
+                    ((AbstractFacelet) componentFacelet).applyDynamicComponentHandler(
                         facesContext, component, baseKey);
                 }
                 else
@@ -140,7 +140,7 @@ public class CreateDynamicCompositeComponentListener
                     try
                     {
                         component.getAttributes().put(ComponentSupport.MARK_CREATED, markId);
-                        ((AbstractFacelet)componentFacelet).applyDynamicComponentHandler(
+                        ((AbstractFacelet) componentFacelet).applyDynamicComponentHandler(
                             facesContext, component.getParent(), baseKey);
                     }
                     finally
@@ -191,8 +191,7 @@ public class CreateDynamicCompositeComponentListener
     @Override
     public Object saveState(FacesContext context)
     {
-        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(
-            context.getExternalContext());
+        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(context.getExternalContext());
         Object[] values = new Object[4];
         Integer tagId = runtimeConfig.getIdByNamespace().get(taglibURI);
         if (tagId != null)

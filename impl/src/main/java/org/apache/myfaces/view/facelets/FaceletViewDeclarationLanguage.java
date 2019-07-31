@@ -156,8 +156,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     private static final Class<?>[] VALIDATOR_SIGNATURE
             = new Class[]{FacesContext.class, UIComponent.class, Object.class};
 
-    public static final String CHARACTER_ENCODING_KEY = "javax.faces.request.charset";
-
     public final static long DEFAULT_REFRESH_PERIOD = 0;
     public final static long DEFAULT_REFRESH_PERIOD_PRODUCTION = -1;
 
@@ -180,6 +178,10 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     public final static String USING_PSS_ON_THIS_VIEW = "org.apache.myfaces.USING_PSS_ON_THIS_VIEW";
 
     public final static String REMOVING_COMPONENTS_BUILD = "org.apache.myfaces.REMOVING_COMPONENTS_BUILD";
+    
+    public final static String DYN_WRAPPER = "oam.vf.DYN_WRAPPER";
+    
+    public final static String GEN_MARK_ID = "oam.vf.GEN_MARK_ID";
     //END CONSTANTS SET ON BUILD VIEW
 
     /**
@@ -2218,7 +2220,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
             if (session != null)
             {
-                context.getExternalContext().getSessionMap().put(CHARACTER_ENCODING_KEY, encoding);
+                context.getExternalContext().getSessionMap().put(ViewHandler.CHARACTER_ENCODING_KEY,
+                        encoding);
             }
         }
 
@@ -2233,7 +2236,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         {
             if (session != null)
             {
-                encoding = (String) context.getExternalContext().getSessionMap().get(CHARACTER_ENCODING_KEY);
+                encoding = (String) context.getExternalContext().getSessionMap().get(
+                        ViewHandler.CHARACTER_ENCODING_KEY);
                 if (encoding != null && log.isLoggable(Level.FINEST))
                 {
                     log.finest("Session specified alternate encoding '" + encoding + '\'');
@@ -2568,7 +2572,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 // Multiple child. The tempParent will be returned. No need to
                 // save MARK_CREATED.
                 createdComponent = tempParent;
-                tempParent.getAttributes().put("oam.vf.DYN_WRAPPER", baseKey);
+                tempParent.getAttributes().put(DYN_WRAPPER, baseKey);
                 tempParent.subscribeToEvent(PostRestoreStateEvent.class, new 
                     RefreshDynamicComponentListener(taglibURI, tagName, attributes, baseKey));
                 if (requiresFaceletDynamicRefresh)
@@ -2590,7 +2594,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     // Requires refresh. To do that, we need to save the MARK_CREATED
                     // value and set it only when the full component is refreshed after 
                     // restore it.
-                    createdComponent.getAttributes().put("oam.vf.GEN_MARK_ID",
+                    createdComponent.getAttributes().put(GEN_MARK_ID,
                         createdComponent.getAttributes().get(ComponentSupport.MARK_CREATED));
                     createdComponent.getAttributes().put(ComponentSupport.MARK_CREATED, null);
                     createdComponent.subscribeToEvent(PostAddToViewEvent.class, new 
@@ -2607,7 +2611,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     // Requires refresh. To do that, we need to save the MARK_CREATED
                     // value and set it only when the full component is refreshed after 
                     // restore it.
-                    createdComponent.getAttributes().put("oam.vf.GEN_MARK_ID",
+                    createdComponent.getAttributes().put(GEN_MARK_ID,
                         createdComponent.getAttributes().get(ComponentSupport.MARK_CREATED));
                     createdComponent.getAttributes().put(ComponentSupport.MARK_CREATED, null);
                     requiresRefresh = true;
@@ -2622,7 +2626,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     // that content into a component. Requires refresh. No need to
                     // save MARK_CREATED. No requires dynamic refresh.
                     createdComponent = tempParent;
-                    tempParent.getAttributes().put("oam.vf.DYN_WRAPPER", baseKey);
+                    tempParent.getAttributes().put(DYN_WRAPPER, baseKey);
                     requiresRefresh = true;
                 }
                 else

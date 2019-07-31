@@ -107,14 +107,14 @@ public class ViewPoolProcessor
     /**
      * Indicates no reset should be done on this state saving
      */
-    public static final int RESET_MODE_OFF = 0;
+    public static final Integer RESET_MODE_OFF = 0;
     
     /**
      * Indicates a soft reset should be done when saveState(...) is performed,
      * which means all transient state should be cleared but the delta state 
      * should not be destroyed in the process.
      */
-    public static final int RESET_MODE_SOFT = 1;
+    public static final Integer RESET_MODE_SOFT = 1;
     
     /**
      * Indicates a hard reset should be done when saveState(...) is performed,
@@ -124,7 +124,7 @@ public class ViewPoolProcessor
      * from the tree and mark the tree as partial (requires refresh before
      * reuse).
      */
-    public static final int RESET_MODE_HARD = 2;
+    public static final Integer RESET_MODE_HARD = 2;
     
     /**
      * Param used to indicate a "deferred navigation" needs to be done. To allow the view pool to

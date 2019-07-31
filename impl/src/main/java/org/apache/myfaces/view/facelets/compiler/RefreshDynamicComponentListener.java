@@ -41,8 +41,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  *
  * @author lu4242
  */
-public final class RefreshDynamicComponentListener implements 
-    ComponentSystemEventListener, StateHolder
+public final class RefreshDynamicComponentListener implements ComponentSystemEventListener, StateHolder
 {
     private String taglibURI;
     private String tagName;
@@ -113,10 +112,10 @@ public final class RefreshDynamicComponentListener implements
                 // find the component. Then we reset it to exclude it from facelets refresh algorithm.
                 // Note oam.vf.GEN_MARK_ID helps to identify when there is a wrapper component or not,
                 // and in that way identify which component is the parent.
-                String markId = (String) component.getAttributes().get("oam.vf.GEN_MARK_ID");
+                String markId = (String) component.getAttributes().get(FaceletViewDeclarationLanguage.GEN_MARK_ID);
                 if (markId == null)
                 {
-                    ((AbstractFacelet)componentFacelet).applyDynamicComponentHandler(
+                    ((AbstractFacelet) componentFacelet).applyDynamicComponentHandler(
                         facesContext, component, baseKey);
                 }
                 else
@@ -124,7 +123,7 @@ public final class RefreshDynamicComponentListener implements
                     try
                     {
                         component.getAttributes().put(ComponentSupport.MARK_CREATED, markId);
-                        ((AbstractFacelet)componentFacelet).applyDynamicComponentHandler(
+                        ((AbstractFacelet) componentFacelet).applyDynamicComponentHandler(
                             facesContext, component.getParent(), baseKey);
                     }
                     finally

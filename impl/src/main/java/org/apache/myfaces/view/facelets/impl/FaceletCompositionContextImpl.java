@@ -51,6 +51,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
 {
 
     private static final String JAVAX_FACES_LOCATION_PREFIX = "javax_faces_location_";
+    private static final String VISIT_CONTEXT_FACTORY = "oam.vf.VisitContextFactory";
     
     private FacesContext _facesContext;
     
@@ -1074,12 +1075,12 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
             // Store it in application map improve performance because it avoids FactoryFinde.getFactory(...) call
             // which has synchronized blocks.
             _visitContextFactory = (VisitContextFactory) _facesContext.getExternalContext().
-                    getApplicationMap().get("oam.vf.VisitContextFactory");
+                    getApplicationMap().get(VISIT_CONTEXT_FACTORY);
             if (_visitContextFactory == null)
             {
                 VisitContextFactory factory = (VisitContextFactory)
                         FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
-                _facesContext.getExternalContext().getApplicationMap().put("oam.vf.VisitContextFactory", factory);
+                _facesContext.getExternalContext().getApplicationMap().put(VISIT_CONTEXT_FACTORY, factory);
                 _visitContextFactory = factory;
             }
         }

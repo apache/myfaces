@@ -52,6 +52,7 @@ import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandlerDelegate;
 import javax.faces.view.facelets.ValidatorHandler;
+import org.apache.myfaces.application.NavigationHandlerImpl;
 
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
@@ -537,7 +538,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 
                 if (!ve.isReadOnly(faces.getELContext()))
                 {
-                    ComponentSupport.getViewRoot(ctx, c).getAttributes().put("oam.CALL_PRE_DISPOSE_VIEW", Boolean.TRUE);
+                    ComponentSupport.getViewRoot(ctx, c).getAttributes().put(
+                            NavigationHandlerImpl.CALL_PRE_DISPOSE_VIEW, Boolean.TRUE);
                     c.subscribeToEvent(PreDisposeViewEvent.class, new ClearBindingValueExpressionListener());
                 }
                 
