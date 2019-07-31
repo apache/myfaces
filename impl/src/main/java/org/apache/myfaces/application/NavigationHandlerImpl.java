@@ -336,15 +336,12 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 UIViewRoot viewRoot = null;
                 
                 String derivedViewId = viewHandler.deriveViewId(facesContext, newViewId);
-
                 if (derivedViewId != null)
                 {
                     ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, derivedViewId);
-                    
                     if (vdl != null)
                     {
                         ViewMetadata metadata = vdl.getViewMetadata(facesContext, newViewId);
-                        
                         if (metadata != null)
                         {
                             viewRoot = metadata.createMetadataView(facesContext);
@@ -380,10 +377,9 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
     {
         //Apply Flow transition if any
         // Is any flow transition on the way?
-        if (navigationContext != null &&
-            navigationContext.getSourceFlows() != null ||
-            (navigationContext.getTargetFlows() != null &&
-             !navigationContext.getTargetFlows().isEmpty()))
+        if (navigationContext != null
+                && navigationContext.getSourceFlows() != null
+                || (navigationContext.getTargetFlows() != null && !navigationContext.getTargetFlows().isEmpty()))
         {
             FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
             for (int i = 0; i < navigationContext.getTargetFlows().size(); i++)
