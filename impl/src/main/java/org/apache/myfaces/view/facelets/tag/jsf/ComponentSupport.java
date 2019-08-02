@@ -496,11 +496,13 @@ public final class ComponentSupport
         // doing the same trick as with metadata: use a double __ and add a prefix (f).
         // Note this id will never be printed into the response, because this is just a container.
         FaceletCompositionContext mctx = FaceletCompositionContext.getCurrentInstance(ctx);
+
         UniqueIdVendor uniqueIdVendor = mctx.getUniqueIdVendorFromStack();
         if (uniqueIdVendor == null)
         {
             uniqueIdVendor = ComponentSupport.getViewRoot(ctx, parent);
         }
+
         if (uniqueIdVendor != null)
         {
             // UIViewRoot implements UniqueIdVendor, so there is no need to cast to UIViewRoot
@@ -517,8 +519,10 @@ public final class ComponentSupport
                       .append("__f_")
                       .append(cleanFacetName).toString()));
         }
+
         panel.getAttributes().put(FACET_CREATED_UIPANEL_MARKER, Boolean.TRUE);
         panel.getAttributes().put(ComponentSupport.COMPONENT_ADDED_BY_HANDLER_MARKER, Boolean.TRUE);
+
         return panel;
     }
     
@@ -600,8 +604,7 @@ public final class ComponentSupport
         int separator = expr.indexOf(separatorChar);
         if (separator == -1)
         {
-            return ComponentSupport.findComponentChildOrFacetFrom(
-                    parent, expr, null);
+            return ComponentSupport.findComponentChildOrFacetFrom(parent, expr, null);
         }
         else
         {
@@ -728,12 +731,8 @@ public final class ComponentSupport
         if (fcc.isUsingPSSOnThisView() && !fcc.isRefreshTransientBuildOnPSSPreserveState())
         {
             UIViewRoot root = getViewRoot(ctx, parent);
-            FaceletState map = (FaceletState) root.getAttributes().get(FACELET_STATE_INSTANCE);
-            if (map == null)
-            {
-                map = new FaceletState();
-                root.getAttributes().put(FACELET_STATE_INSTANCE, map);
-            }
+            FaceletState map = (FaceletState) root.getAttributes().computeIfAbsent(FACELET_STATE_INSTANCE,
+                    k -> new FaceletState());
             map.putState(uniqueId, value);
         }
     }

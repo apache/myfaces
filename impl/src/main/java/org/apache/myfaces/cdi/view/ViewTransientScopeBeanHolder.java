@@ -72,13 +72,13 @@ public class ViewTransientScopeBeanHolder
             ContextualInstanceInfo info = contextualStorage.getStorage().get(VIEW_TRANSIENT_SCOPE_MAP_INFO);
             if (info == null)
             {
-                info = new ContextualInstanceInfo<Object>();
+                info = new ContextualInstanceInfo<>();
                 contextualStorage.getStorage().put(VIEW_TRANSIENT_SCOPE_MAP_INFO, info);
             }
             map = (Map<Object, Object>) info.getContextualInstance();
             if (map == null)
             {
-                map = new HashMap<Object,Object>();
+                map = new HashMap<>();
                 info.setContextualInstance(map);
             }
         }

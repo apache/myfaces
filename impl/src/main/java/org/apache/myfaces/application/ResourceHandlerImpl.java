@@ -1827,7 +1827,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         if (map == null)
         {
             map = new HashMap<>();
-            facesContext.getViewRoot().getTransientStateHelper().putTransient(RENDERED_RESOURCES_SET,map);
+            facesContext.getViewRoot().getTransientStateHelper().putTransient(RENDERED_RESOURCES_SET, map);
         }
         return map;
     }

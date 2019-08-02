@@ -82,7 +82,7 @@ public class FacesScopeBeanHolder
             map = (Map<Object, Object>) info.getContextualInstance();
             if (map == null)
             {
-                map = new HashMap<Object,Object>();
+                map = new HashMap<>();
                 info.setContextualInstance(map);
             }
         }
