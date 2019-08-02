@@ -78,12 +78,11 @@ final class RetargetMethodExpressionRule extends MetaRule
         {
             PropertyDescriptor propertyDescriptor = meta.getProperty(name);
             //Type takes precedence over method-signature
-            if (propertyDescriptor != null && 
-                    propertyDescriptor.getValue("type") == null)
+            if (propertyDescriptor != null
+                    && propertyDescriptor.getValue("type") == null)
             {
                 ValueExpression methodSignatureExpression = 
                     (ValueExpression) propertyDescriptor.getValue("method-signature");
-                
                 if (methodSignatureExpression != null)
                 {
                     return new RetargetValueExpressionMapper(attribute, name);
@@ -99,7 +98,6 @@ final class RetargetMethodExpressionRule extends MetaRule
                 //if there is a targets declaration, is a retarget without doubt
                 ValueExpression targets = 
                     (ValueExpression)propertyDescriptor.getValue("targets");
-                
                 if (targets != null)
                 {
                     return new RetargetValueExpressionMapper(attribute, name);

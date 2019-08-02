@@ -132,7 +132,6 @@ public class ClientBehaviorHandler extends TagHandler implements InterfaceDescri
 
         CompositeComponentBeanInfo beanInfo = 
             (CompositeComponentBeanInfo) compositeBaseParent.getAttributes().get(UIComponent.BEANINFO_KEY);
-        
         if (beanInfo == null)
         {
             if (log.isLoggable(Level.SEVERE))
@@ -147,7 +146,6 @@ public class ClientBehaviorHandler extends TagHandler implements InterfaceDescri
         //1. Obtain the list mentioned as "targetList" on ViewDeclarationLanguage.retargetAttachedObjects
         List<AttachedObjectTarget> targetList = (List<AttachedObjectTarget>)
             beanDescriptor.getValue(AttachedObjectTarget.ATTACHED_OBJECT_TARGETS_KEY);
-        
         if (targetList == null)
         {
             //2. If not found create it and set

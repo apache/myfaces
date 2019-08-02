@@ -125,7 +125,7 @@ public final class CompositeResouceWrapper extends Resource implements FacesWrap
         // Delegate resource in this case could not be available in serialization, or
         // serialization could happen in other context. So it is better to return
         // a simple String representing the object without go into delegation.
-        return ( (getLibraryName() != null) ? getLibraryName() : "") + ':' +
-               ( (getResourceName() != null) ? getResourceName() : "") ;
+        return ((getLibraryName() != null) ? getLibraryName() : "") + ':' +
+               ((getResourceName() != null) ? getResourceName() : "") ;
     }
 }

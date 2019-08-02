@@ -19,7 +19,6 @@
 package org.apache.myfaces.view.facelets.tag;
 
 import org.apache.myfaces.util.lang.ClassUtils;
-import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRule;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.Metadata;
@@ -344,16 +343,5 @@ public final class MetaRulesetImpl extends MetaRuleset
         }
 
         return meta;
-    }
-
-    private static class NullMetadata extends Metadata
-    {
-        public static final NullMetadata INSTANCE = new NullMetadata();
-        
-        @Override
-        public void applyMetadata(FaceletContext ctx, Object instance)
-        {
-            // do nothing
-        }
     }
 }

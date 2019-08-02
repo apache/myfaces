@@ -30,13 +30,10 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 import org.apache.myfaces.push._WebsocketInit;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
-/**
- *
- */
 @JSFFaceletTag(
         name = "f:websocket",
         bodyContent = "empty")
-public class WebsocketHandler extends ComponentHandler/* implements RelocatableResourceHandler*/
+public class WebsocketHandler extends ComponentHandler
 {
 
     @JSFFaceletAttribute(name = "channel", className = "javax.el.ValueExpression",
