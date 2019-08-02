@@ -60,11 +60,8 @@ public final class BeanPropertyTagRule extends MetaRule
     
     final static class LiteralPropertyMetadata extends Metadata
     {
-
         private final Method method;
-
         private final TagAttribute attribute;
-
         private Object[] value;
 
         public LiteralPropertyMetadata(Method method, TagAttribute attribute)
@@ -99,11 +96,8 @@ public final class BeanPropertyTagRule extends MetaRule
 
     final static class DynamicPropertyMetadata extends Metadata
     {
-
         private final Method method;
-
         private final TagAttribute attribute;
-
         private final Class<?> type;
 
         public DynamicPropertyMetadata(Method method, TagAttribute attribute)
