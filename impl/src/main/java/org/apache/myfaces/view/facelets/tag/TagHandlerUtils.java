@@ -133,7 +133,7 @@ public final class TagHandlerUtils
 
     public static ArrayList<FaceletHandler> findNextByType(FaceletHandler nextHandler, Class<?> type1, Class<?> type2)
     {
-        ArrayList<FaceletHandler> found = new ArrayList<FaceletHandler>();
+        ArrayList<FaceletHandler> found = new ArrayList<>();
         if (type1.isAssignableFrom(nextHandler.getClass()) || type2.isAssignableFrom(nextHandler.getClass()))
         {
             found.add((FaceletHandler)nextHandler);

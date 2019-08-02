@@ -84,15 +84,10 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
     private final static Logger log = Logger.getLogger(ComponentTagHandlerDelegate.class.getName());
 
     private final ComponentHandler _delegate;
-
     private final String _componentType;
-
     private final TagAttribute _id;
-
     private final String _rendererType;
-    
     private final ComponentBuilderHandler _componentBuilderHandlerDelegate;
-    
     private final RelocatableResourceHandler _relocatableResourceHandler;
 
     @SuppressWarnings("unchecked")
@@ -780,8 +775,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                                               String validatorId)
     {
         // check if the validatorId is on the exclusion list on the component
-        List<String> exclusionList 
-                = (List<String>) ((UIComponent) component).getAttributes()
+        List<String> exclusionList = (List<String>) ((UIComponent) component).getAttributes()
                         .get(ValidatorTagHandlerDelegate.VALIDATOR_ID_EXCLUSION_LIST_KEY);
         if (exclusionList != null)
         {
@@ -804,7 +798,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 boolean validatorIdAvailable = entry.getKey() != null && !entry.getKey().isEmpty();
                 if (validatorIdAvailable && entry.getKey().equals(validatorId))
                 {
-                    if (((ValidatorHandler)((FacesWrapper<ValidatorHandler>)entry.getValue()).getWrapped())
+                    if (((ValidatorHandler) ((FacesWrapper<ValidatorHandler>) entry.getValue()).getWrapped())
                             .isDisabled(ctx))
                     {
                         return false;
