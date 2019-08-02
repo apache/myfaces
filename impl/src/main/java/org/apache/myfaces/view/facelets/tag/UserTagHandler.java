@@ -116,6 +116,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
             }
             actx.pushTemplateContext(new TemplateContextImpl());
             actx.pushClient(this);
+
             FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
             String uniqueId = fcc.startComponentUniqueIdSection();
             try
@@ -127,7 +128,6 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
                         FaceletState faceletState = ComponentSupport.getFaceletState(ctx, parent, true);
                         for (int i = 0; i < this._vars.length; i++)
                         {
-                            //((AbstractFaceletContext) ctx).getTemplateContext().setParameter(names[i], values[i]);
                             faceletState.putBinding(uniqueId, names[i], values[i]);
                             ValueExpression ve = new FaceletStateValueExpression(uniqueId, names[i]);
                             actx.getTemplateContext().setParameter(names[i], ve);
@@ -141,6 +141,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
                         }
                     }
                 }
+
                 // Disable caching always, even in 'always' mode
                 // The only mode that can support EL caching in this condition is alwaysRedirect.
                 if (!ELExpressionCacheMode.alwaysRecompile.equals(actx.getELExpressionCacheMode()))

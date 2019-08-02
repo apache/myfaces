@@ -40,7 +40,6 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
     private static final long serialVersionUID = -7214478234269252354L;
     
     protected ValueExpression _name;
-    
     protected ValueExpression _targets;
 
     public AttachedObjectTargetImpl()
@@ -65,7 +64,7 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
         
         if (targetsArray.length > 0)
         {
-            List<UIComponent> targetsList = new ArrayList<UIComponent>(targetsArray.length);
+            List<UIComponent> targetsList = new ArrayList<>(targetsArray.length);
             final char separatorChar = facesContext.getNamingContainerSeparatorChar();
             UIComponent facetBase = topLevelComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME);
             for (String target : targetsArray)
@@ -106,7 +105,7 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
                         name, null);
                 if (innerComponent != null)
                 {
-                    List<UIComponent> targetsList = new ArrayList<UIComponent>(1);
+                    List<UIComponent> targetsList = new ArrayList<>(1);
                     targetsList.add(innerComponent);
                     return targetsList;
                 }

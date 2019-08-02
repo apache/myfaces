@@ -236,6 +236,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 }
             }
         }
+
         boolean componentFound = false;
         if (c != null)
         {
@@ -284,8 +285,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
 
             if (facesContext.isProjectStage(ProjectStage.Development))
             {
-                c.getAttributes().put(UIComponent.VIEW_LOCATION_KEY,
-                        _delegate.getTag().getLocation());
+                c.getAttributes().put(UIComponent.VIEW_LOCATION_KEY, _delegate.getTag().getLocation());
             }
 
             // assign our unique id
@@ -330,8 +330,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             if (_relocatableResourceHandler != null && 
                 _relocatableResourceHandler instanceof ComponentRelocatableResourceHandler)
             {
-                UIComponent parentCompositeComponent
-                        = mctx.getCompositeComponentFromStack();
+                UIComponent parentCompositeComponent = mctx.getCompositeComponentFromStack();
                 if (parentCompositeComponent != null)
                 {
                     c.getAttributes().put(CompositeComponentELUtils.LOCATION_KEY,
@@ -391,6 +390,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 }
                 ComponentSupport.setCachedFacesContext(c, facesContext);
             }
+            
             if (facetName == null)
             {
                 parent.getChildren().remove(c);
@@ -399,13 +399,13 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             {
                 ComponentSupport.removeFacet(ctx, parent, c, facetName);
             }
+            
             if (mctx.isRefreshingSection())
             {
                 ComponentSupport.setCachedFacesContext(c, null);
                 facesContext.setProcessingEvents(oldProcessingEvents);
             }
         }
-
 
         if (!componentFound)
         {
@@ -438,6 +438,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 facesContext.setProcessingEvents(false);
                 ComponentSupport.setCachedFacesContext(c, facesContext);
             }
+            
             if (facetName == null)
             {
                 parent.getChildren().add(c);
@@ -446,6 +447,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
             {
                 ComponentSupport.addFacet(ctx, parent, c, facetName);
             }
+            
             if (componentFound && mctx.isRefreshingSection())
             {
                 ComponentSupport.setCachedFacesContext(c, null);
@@ -667,6 +669,7 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
                 addEnclosingValidator(context, component, entry.getKey(), entry.getValue());
             }
         }
+        
         // add all defaultValidators
         Map<String, String> defaultValidators = context.getApplication().getDefaultValidatorInfo();
         if (defaultValidators != null && !defaultValidators.isEmpty())

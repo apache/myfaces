@@ -143,7 +143,6 @@ public class InsertFacetHandler extends TagHandler
             String facetName = _name.getValue(ctx);
             
             AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-            
             actx.includeCompositeComponentDefinition(parent, facetName);
         }
         
