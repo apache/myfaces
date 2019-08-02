@@ -114,24 +114,19 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder
     
     public class RedirectBuilderImpl extends RedirectBuilder
     {
-
         @Override
         public RedirectBuilder parameter(String name, String value)
         {
-            //_navigationCaseImpl.
             Map<String, List<String>> map = _navigationCaseImpl.getParameters();
             if (map == null)
             {
                 map = new HashMap<String, List<String>>();
                 _navigationCaseImpl.setParameters(map);
             }
-            List<String> values = map.get(name);
-            if (values == null)
-            {
-                values = new ArrayList<String>();
-                map.put(name, values);
-            }
+            
+            List<String> values = map.computeIfAbsent(name, k -> new ArrayList<>());
             values.add(value);
+
             return this;
         }
 
@@ -141,6 +136,5 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder
             _navigationCaseImpl.setIncludeViewParams(true);
             return this;
         }
-        
     }
 }
