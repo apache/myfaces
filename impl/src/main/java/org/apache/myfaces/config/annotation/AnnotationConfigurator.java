@@ -350,8 +350,6 @@ public class AnnotationConfigurator
             if (facesBehaviorRenderer != null)
             {
                 String renderKitId = facesBehaviorRenderer.renderKitId();
-                //RenderKit renderKit;
-
                 if (log.isLoggable(Level.FINEST))
                 {
                     log.finest("addClientBehaviorRenderer(" + renderKitId + ", "
