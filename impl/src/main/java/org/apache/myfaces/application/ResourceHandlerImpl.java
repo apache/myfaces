@@ -609,8 +609,11 @@ public class ResourceHandlerImpl extends ResourceHandler
         {
             if (isConnectionAbort(e))
             {
-                log.log(Level.INFO,"Connection was aborted while loading resource " + resourceName
-                        + " with library " + libraryName);
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.log(Level.FINE, "Connection was aborted while loading resource " + resourceName
+                            + " with library " + libraryName);
+                }
             }
             else
             {
