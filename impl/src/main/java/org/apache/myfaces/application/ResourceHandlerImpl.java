@@ -545,7 +545,6 @@ public class ResourceHandlerImpl extends ResourceHandler
         Resource resource = null;
         if (libraryName != null)
         {
-            //log.info("libraryName=" + libraryName);
             resource = facesContext.getApplication().getResourceHandler().createResource(resourceName, libraryName);
         }
         else
@@ -1252,8 +1251,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         resourceMeta = resourceLoader.createResourceMeta(
             localePrefix, libraryName, libraryVersion, resourceName, resourceVersion);
 
-        if (resourceMeta != null &&
-            !resourceLoader.resourceExists(resourceMeta))
+        if (resourceMeta != null && !resourceLoader.resourceExists(resourceMeta))
         {
             resourceMeta = null;
         }
@@ -1388,8 +1386,8 @@ public class ResourceHandlerImpl extends ResourceHandler
             return null;
         }
 
-        if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(
-                libraryName, isAllowSlashesLibraryName()))
+        if (libraryName != null
+                && !ResourceValidationUtils.isValidLibraryName(libraryName, isAllowSlashesLibraryName()))
         {
             return null;
         }
@@ -1453,12 +1451,10 @@ public class ResourceHandlerImpl extends ResourceHandler
         //2. Try to localize resource in a non localized path
         if (resourceMeta == null)
         {
-            resourceVersion = resourceLoader
-                    .getResourceVersion(resourceName);
+            resourceVersion = resourceLoader.getResourceVersion(resourceName);
             if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
             {
-                resourceMeta = resourceLoader.createResourceMeta(null, null, null,
-                         resourceName, resourceVersion);
+                resourceMeta = resourceLoader.createResourceMeta(null, null, null, resourceName, resourceVersion);
             }
 
             if (resourceMeta != null && !resourceLoader.resourceExists(resourceMeta))
@@ -1631,8 +1627,8 @@ public class ResourceHandlerImpl extends ResourceHandler
                             facesContext, loader, resourceName, localePrefix, contract);
                         if (resourceMeta != null)
                         {
-                            resource = new ResourceImpl(resourceMeta, loader, 
-                                getResourceHandlerSupport(), contentType);
+                            resource = new ResourceImpl(resourceMeta, loader,
+                                    getResourceHandlerSupport(), contentType);
 
                             // cache it
                             getResourceLoaderCache().putViewResource(
