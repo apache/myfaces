@@ -774,10 +774,10 @@ public class MyfacesConfig
      * Defines if the last-modified should be cached of the resources when the ProjectStage is Production.
      * If the cache is disabled, each last-modified request will read the last-modified from the file.
      */
-    @JSFWebConfigParam(since="3.0.0" , defaultValue="false", expectedValues="true, false")
+    @JSFWebConfigParam(since="3.0.0" , defaultValue="true", expectedValues="true, false")
     public static final String RESOURCE_CACHE_LAST_MODIFIED
             = "org.apache.myfaces.RESOURCE_CACHE_LAST_MODIFIED";
-    private static final boolean RESOURCE_CACHE_LAST_MODIFIED_DEFAULT = false;
+    private static final boolean RESOURCE_CACHE_LAST_MODIFIED_DEFAULT = true;
 
     /**
      * Indicate if log all web config params should be done before initialize the webapp. 
@@ -1146,6 +1146,10 @@ public class MyfacesConfig
         
         cfg.resourceHandlerCacheEnabled = getBoolean(extCtx, RESOURCE_HANDLER_CACHE_ENABLED,
                 RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT);
+        if (cfg.projectStage != ProjectStage.Production)
+        {
+            cfg.resourceHandlerCacheEnabled = false;
+        }
         
         cfg.resourceHandlerCacheSize = getInt(extCtx, RESOURCE_HANDLER_CACHE_SIZE,
                 RESOURCE_HANDLER_CACHE_SIZE_DEFAULT);
@@ -1298,6 +1302,10 @@ public class MyfacesConfig
         
         cfg.resourceCacheLastModified = getBoolean(extCtx, RESOURCE_CACHE_LAST_MODIFIED,
                 RESOURCE_CACHE_LAST_MODIFIED_DEFAULT);
+        if (cfg.projectStage == ProjectStage.Development)
+        {
+            cfg.resourceCacheLastModified = false;
+        }
         
         String logWebContextParams = getString(extCtx, LOG_WEB_CONTEXT_PARAMS,
                 LOG_WEB_CONTEXT_PARAMS_DEFAULT);    

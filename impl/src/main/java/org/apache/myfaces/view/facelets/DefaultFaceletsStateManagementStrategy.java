@@ -718,7 +718,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 ensureClearInitialState(view);
                 Object rlcStates = !context.getResourceLibraryContracts().isEmpty() ? 
                     UIComponentBase.saveAttachedState(context, 
-                                new ArrayList<String>(context.getResourceLibraryContracts())) : null;
+                                new ArrayList<>(context.getResourceLibraryContracts())) : null;
                 states = new Object[]{
                             internalBuildTreeStructureToSave(view),
                             view.processSaveState(context), rlcStates};
@@ -916,7 +916,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         if (clientIdsAdded == null)
         {
             //Create a set that preserve insertion order
-            clientIdsAdded = new ArrayList<String>();
+            clientIdsAdded = new ArrayList<>();
         }
         clientIdsAdded.add(clientId);
 
@@ -926,7 +926,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         if (clientIdsRemoved == null)
         {
             //Create a set that preserve insertion order
-            clientIdsRemoved = new ArrayList<String>();
+            clientIdsRemoved = new ArrayList<>();
         }
 
         clientIdsRemoved.add(clientId);

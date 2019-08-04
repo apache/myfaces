@@ -178,13 +178,13 @@ public class ResourceImpl extends Resource implements ContractResource
             // Here we have two cases: If the file could contain EL Expressions
             // the last modified time is the greatest value between application startup and
             // the value from file.
-            if (this.couldResourceContainValueExpressions() &&
-                    lastModified < _resourceHandlerSupport.getStartupTime())
+            if (this.couldResourceContainValueExpressions()
+                    && lastModified < _resourceHandlerSupport.getStartupTime())
             {
                 lastModified = _resourceHandlerSupport.getStartupTime();
             }            
-            else if (_resourceMeta instanceof AliasResourceMetaImpl &&
-                lastModified < _resourceHandlerSupport.getStartupTime())
+            else if (_resourceMeta instanceof AliasResourceMetaImpl
+                    && lastModified < _resourceHandlerSupport.getStartupTime())
             {
                 // If the resource meta is aliased, the last modified time is the greatest 
                 // value between application startup and the value from file.
@@ -260,8 +260,8 @@ public class ResourceImpl extends Resource implements ContractResource
         long lastModified = getLastModified(context);
         if (lastModified >= 0)
         {
-            if (this.couldResourceContainValueExpressions() &&
-                    lastModified < _resourceHandlerSupport.getStartupTime())
+            if (this.couldResourceContainValueExpressions()
+                    && lastModified < _resourceHandlerSupport.getStartupTime())
             {
                 lastModified = _resourceHandlerSupport.getStartupTime();
             }
@@ -306,8 +306,7 @@ public class ResourceImpl extends Resource implements ContractResource
     
     protected long getLastModified(FacesContext facesContext)
     {
-        if (facesContext.isProjectStage(ProjectStage.Production)
-                && MyfacesConfig.getCurrentInstance(facesContext).isResourceCacheLastModified())
+        if (MyfacesConfig.getCurrentInstance(facesContext).isResourceCacheLastModified())
         {
             Long lastModified = _resourceMeta.getLastModified();
             if (lastModified == null)

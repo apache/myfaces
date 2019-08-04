@@ -2089,7 +2089,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
         // resource resolver
         ResourceResolver resolver = new DefaultResourceResolver();
-        ArrayList<String> classNames = new ArrayList<String>();
+        ArrayList<String> classNames = new ArrayList<>();
 
         String faceletsResourceResolverClassName = config.getResourceResolver();
         if (faceletsResourceResolverClassName != null)
