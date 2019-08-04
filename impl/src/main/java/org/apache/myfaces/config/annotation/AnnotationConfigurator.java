@@ -105,9 +105,9 @@ public class AnnotationConfigurator
                 {
                     if (log.isLoggable(Level.FINEST))
                     {
-                        log.finest("addComponent(" + comp.value() + ','
-                                + clazz.getName() + ')');
+                        log.finest("addComponent(" + comp.value() + ',' + clazz.getName() + ')');
                     }
+
                     String value = comp.value();
                     if (StringUtils.isEmpty(value))
                     {
@@ -144,6 +144,7 @@ public class AnnotationConfigurator
                     {
                         log.finest("addConverter(" + conv.value() + ',' + clazz.getName() + ')');
                     }
+
                     //If there is a previous entry on Application Configuration Resources,
                     //the entry there takes precedence
                     boolean hasForClass = !Object.class.equals(conv.forClass());
@@ -181,9 +182,9 @@ public class AnnotationConfigurator
                 {
                     if (log.isLoggable(Level.FINEST))
                     {
-                        log.finest("addValidator(" + val.value() + ',' + clazz.getName()
-                                + ')');
+                        log.finest("addValidator(" + val.value() + ',' + clazz.getName() + ')');
                     }
+
                     String value = val.value();
                     if (value == null || value.isEmpty())
                     {
@@ -316,11 +317,9 @@ public class AnnotationConfigurator
             if (facesBehavior != null)
             {
                 // Can only apply @FacesBehavior to Behavior implementors.
-
                 if (!javax.faces.component.behavior.Behavior.class.isAssignableFrom(clazz))
                 {
                     // Just log this.  We'll catch it later in the runtime.
-
                     if (log.isLoggable(Level.WARNING))
                     {
                         log.warning(clazz.getName()
@@ -387,7 +386,6 @@ public class AnnotationConfigurator
         {
             FaceletsResourceResolver faceletsResourceResolver = 
                 (FaceletsResourceResolver) clazz.getAnnotation(FaceletsResourceResolver.class);
-            
             if (faceletsResourceResolver != null)
             {
                 facesConfig.addResourceResolver(clazz.getName());

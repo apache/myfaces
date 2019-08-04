@@ -72,7 +72,6 @@ import javax.faces.webapp.FacesServlet;
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.BackwardsCompatibleNavigationHandlerWrapper;
 import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
-import org.apache.myfaces.config.annotation.AnnotationConfigurator;
 import org.apache.myfaces.config.element.Behavior;
 import org.apache.myfaces.config.element.ClientBehaviorRenderer;
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
@@ -193,7 +192,6 @@ public class FacesConfigurator
     private FacesContext _facesContext;
     private FacesConfigUnmarshaller<? extends FacesConfig> _unmarshaller;
     private FacesConfigData _dispenser;
-    private AnnotationConfigurator _annotationConfigurator;
 
     private RuntimeConfig _runtimeConfig;
     
@@ -262,20 +260,6 @@ public class FacesConfigurator
         }
 
         return _dispenser;
-    }
-
-    public void setAnnotationConfigurator(AnnotationConfigurator configurator)
-    {
-        _annotationConfigurator = configurator;
-    }
-
-    protected AnnotationConfigurator getAnnotationConfigurator()
-    {
-        if (_annotationConfigurator == null)
-        {
-            _annotationConfigurator = new AnnotationConfigurator();
-        }
-        return _annotationConfigurator;
     }
 
     private long getResourceLastModified(String resource)
@@ -416,11 +400,7 @@ public class FacesConfigurator
 
                     return;
                 }
-                catch (IllegalAccessException e)
-                {
-                    log.severe("Error during configuration clean-up" + e.getMessage());
-                }
-                catch (InvocationTargetException e)
+                catch (IllegalAccessException | InvocationTargetException e)
                 {
                     log.severe("Error during configuration clean-up" + e.getMessage());
                 }
@@ -452,17 +432,14 @@ public class FacesConfigurator
         //
         ApplicationFactory applicationFactory
                 = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-        //appFactoryPurgeMethod = applicationFactory.getClass().getMethod("purgeApplication", NO_PARAMETER_TYPES);
         appFactoryPurgeMethod = getPurgeMethod(applicationFactory, "purgeApplication", NO_PARAMETER_TYPES);
 
         RenderKitFactory renderKitFactory
                 = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
-        //renderKitPurgeMethod = renderKitFactory.getClass().getMethod("purgeRenderKit", NO_PARAMETER_TYPES);
         renderKitPurgeMethod = getPurgeMethod(renderKitFactory, "purgeRenderKit", NO_PARAMETER_TYPES);
 
         LifecycleFactory lifecycleFactory
                 = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        //lifecyclePurgeMethod = lifecycleFactory.getClass().getMethod("purgeLifecycle", NO_PARAMETER_TYPES);
         lifecyclePurgeMethod = getPurgeMethod(lifecycleFactory, "purgeLifecycle", NO_PARAMETER_TYPES);
 
         FacesContext facesContext = getFacesContext();
@@ -526,12 +503,6 @@ public class FacesConfigurator
         configureFactories();
         configureApplication();
         configureRenderKits();
-
-        //Now we can configure annotations
-        //getAnnotationConfigurator().configure(
-        //        ((ApplicationFactory) FactoryFinder.getFactory(
-        //                FactoryFinder.APPLICATION_FACTORY)).getApplication(),
-        //        getDispenser(), metadataComplete);
 
         configureRuntimeConfig();
         configureLifecycle();
