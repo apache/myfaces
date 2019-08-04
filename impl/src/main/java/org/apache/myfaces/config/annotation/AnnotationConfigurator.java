@@ -285,11 +285,9 @@ public class AnnotationConfigurator
             if (namedEvent != null)
             {
                 // Can only apply @NamedEvent to ComponentSystemEvent subclasses.
-
                 if (!ComponentSystemEvent.class.isAssignableFrom(clazz))
                 {
                     // Just log this.  We'll catch it later in the runtime.
-
                     if (log.isLoggable(Level.WARNING))
                     {
                         log.warning(clazz.getName() + " is annotated with @javax.faces.event.NamedEvent, but does "
