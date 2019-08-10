@@ -350,7 +350,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
             log.fine("Creating Facelet for: " + url);
         }
 
-        String alias = '/' + _removeFirst(url.getFile(), getBaseUrl().getFile());
+        URL baseUrl = getBaseUrl();
+        String alias = '/' + _removeFirst(url.getFile(), baseUrl == null ? "" : baseUrl.getFile());
         try
         {
             FaceletHandler h = _compiler.compile(url, alias);
@@ -383,7 +384,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         // The alias is used later for informative purposes, so we append 
         // some prefix to identify later where the errors comes from.
-        String faceletId = '/' + _removeFirst(url.getFile(), getBaseUrl().getFile());
+        URL baseUrl = getBaseUrl();
+        String faceletId = '/' + _removeFirst(url.getFile(), baseUrl == null ? "" : baseUrl.getFile());
         String alias = "/viewMetadata" + faceletId;
         try
         {
@@ -396,7 +398,6 @@ public final class DefaultFaceletFactory extends FaceletFactory
         {
             throw new FileNotFoundException("Facelet " + alias + " not found at: " + url.toExternalForm());
         }
-
     }
     
     /**
