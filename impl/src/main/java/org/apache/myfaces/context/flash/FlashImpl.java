@@ -43,6 +43,7 @@ import javax.faces.event.PreClearFlashEvent;
 import javax.faces.event.PreRemoveFlashValueEvent;
 import javax.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.token.TokenGenerator;
 
 /**
@@ -1159,8 +1160,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
     private String _getCookiePath(ExternalContext externalContext)
     {
         String contextPath = externalContext.getRequestContextPath();
-
-        if (contextPath == null || contextPath.isEmpty())
+        if (StringUtils.isEmpty(contextPath))
         {
             contextPath = "/";
         }
