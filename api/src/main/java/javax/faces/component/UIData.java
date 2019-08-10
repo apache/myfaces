@@ -384,11 +384,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 String subId = clientId.substring(baseClientId.length() + 1);
                 //If the char next to baseClientId is the separator one and
                 //the subId matches the regular expression
-                if (clientId.charAt(baseClientId.length()) == separator && 
-                        subId.matches("[0-9]+"+separator+".*"))
+                if (clientId.charAt(baseClientId.length()) == separator
+                        && subId.matches("[0-9]+" + separator + ".*")) // TODO [perf] precompile pattern
                 {
                     String clientRow = subId.substring(0, subId.indexOf(separator));
-        
+
                     //Now we save the current position
                     int oldRow = this.getRowIndex();
                     
@@ -405,8 +405,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                             return false;
                         }
             
-                        for (Iterator<UIComponent> it1 = getChildren().iterator(); 
-                                !returnValue && it1.hasNext();)
+                        for (Iterator<UIComponent> it1 = getChildren().iterator(); !returnValue && it1.hasNext();)
                         {
                             //recursive call to find the component
                             returnValue = it1.next().invokeOnComponent(context, clientId, callback);
@@ -445,13 +444,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                         // process the child's facets
                         if (child.getFacetCount() > 0)
                         {
-                            for (Iterator<UIComponent> itChildFacets = 
-                                child.getFacets().values().iterator(); 
+                            for (Iterator<UIComponent> itChildFacets = child.getFacets().values().iterator(); 
                                 !returnValue && itChildFacets.hasNext();)
                             {
                                 //recursive call to find the component
-                                returnValue = itChildFacets.next().invokeOnComponent(
-                                    context, clientId, callback);
+                                returnValue = itChildFacets.next().invokeOnComponent(context, clientId, callback);
                             }
                         }
                     }
@@ -782,6 +779,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                         {
                             ((EditableValueHolderState) object[0]).restoreState((EditableValueHolder) component);
                         }
+
                         // If there is descendant state to restore, call it recursively, otherwise
                         // it is safe to skip iteration.
                         if (object[1] != null)
@@ -825,6 +823,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                         {
                             ((EditableValueHolderState) object[0]).restoreState((EditableValueHolder) component);
                         }
+
                         // If there is descendant state to restore, call it recursively, otherwise
                         // it is safe to skip iteration.
                         if (object[1] != null)
@@ -924,12 +923,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                     // elements. The first element is the state of the children
                     // of this component; the second is the state of the current
                     // child itself.
-
                     if (child instanceof EditableValueHolder)
                     {
                         if (childStates == null)
                         {
-                            childStates = new ArrayList<Object[]>(
+                            childStates = new ArrayList<>(
                                     parent.getFacetCount()
                                     + parent.getChildCount()
                                     - totalChildCount
@@ -940,11 +938,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                             }
                         }
                     
-                        childStates.add(child.getChildCount() > 0 ? 
-                                new Object[]{new EditableValueHolderState((EditableValueHolder) child),
-                                    saveDescendantComponentStates(child, saveChildFacets, true)} :
-                                new Object[]{new EditableValueHolderState((EditableValueHolder) child),
-                                    null});
+                        childStates.add(child.getChildCount() > 0
+                                ? new Object[]{ new EditableValueHolderState((EditableValueHolder) child),
+                                    saveDescendantComponentStates(child, saveChildFacets, true) }
+                                : new Object[]{ new EditableValueHolderState((EditableValueHolder) child), null });
                     }
                     else if (child.getChildCount() > 0 || (saveChildFacets && child.getFacetCount() > 0))
                     {
@@ -965,7 +962,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                         {
                             if (childStates == null)
                             {
-                                childStates = new ArrayList<Object[]>(
+                                childStates = new ArrayList<>(
                                         parent.getFacetCount()
                                         + parent.getChildCount()
                                         - totalChildCount
@@ -1010,7 +1007,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                     {
                         if (childStates == null)
                         {
-                            childStates = new ArrayList<Object[]>(
+                            childStates = new ArrayList<>(
                                     parent.getFacetCount()
                                     + parent.getChildCount()
                                     - totalChildCount
@@ -1021,16 +1018,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                             }
                         }
                     
-                        childStates.add(child.getChildCount() > 0 ? 
-                                new Object[]{new EditableValueHolderState((EditableValueHolder) child),
-                                    saveDescendantComponentStates(child, saveChildFacets, true)} :
-                                new Object[]{new EditableValueHolderState((EditableValueHolder) child),
-                                    null});
+                        childStates.add(child.getChildCount() > 0
+                                ? new Object[]{ new EditableValueHolderState((EditableValueHolder) child),
+                                    saveDescendantComponentStates(child, saveChildFacets, true) }
+                                : new Object[]{ new EditableValueHolderState((EditableValueHolder) child), null });
                     }
                     else if (child.getChildCount() > 0 || (saveChildFacets && child.getFacetCount() > 0))
                     {
                         Object descendantSavedState = saveDescendantComponentStates(child, saveChildFacets, true);
-                        
                         if (descendantSavedState == null)
                         {
                             if (childStates == null)
@@ -1046,7 +1041,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                         {
                             if (childStates == null)
                             {
-                                childStates = new ArrayList<Object[]>(
+                                childStates = new ArrayList<>(
                                         parent.getFacetCount()
                                         + parent.getChildCount()
                                         - totalChildCount
@@ -1101,20 +1096,19 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             if (descendantStateIterator == null && initialState != null)
             {
-                descendantStateIterator = ((Collection<? extends Object[]>) initialState)
-                        .iterator();
+                descendantStateIterator = ((Collection<? extends Object[]>) initialState).iterator();
             }
+            
             UIComponent component = childIterator.next();
-
             // reset the client id (see spec 3.1.6)
             component.setId(component.getId());
+
             if (!component.isTransient())
             {
                 Object childState = null;
                 Object descendantState = null;
                 String childId = null;
-                if (descendantStateIterator != null
-                        && descendantStateIterator.hasNext())
+                if (descendantStateIterator != null && descendantStateIterator.hasNext())
                 {
                     do
                     {
@@ -1136,17 +1130,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 component.restoreState(facesContext, childState);
                 component.markInitialState();
                 
-                Iterator<UIComponent> childsIterator;
-                if (restoreChildFacets)
-                {
-                    childsIterator = component.getFacetsAndChildren();
-                }
-                else
-                {
-                    childsIterator = component.getChildren().iterator();
-                }
-                restoreFullDescendantComponentStates(facesContext, childsIterator,
-                        descendantState, true);
+                Iterator<UIComponent> childsIterator = restoreChildFacets
+                        ? component.getFacetsAndChildren()
+                        : component.getChildren().iterator();
+                restoreFullDescendantComponentStates(facesContext, childsIterator, descendantState, true);
             }
         }
     }
@@ -1157,30 +1144,13 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         Collection<Object[]> childStates = null;
         while (childIterator.hasNext())
         {
-            if (childStates == null)
-            {
-                childStates = new ArrayList<Object[]>();
-            }
-
             UIComponent child = childIterator.next();
             if (!child.isTransient())
             {
-                // Add an entry to the collection, being an array of two
-                // elements. The first element is the state of the children
-                // of this component; the second is the state of the current
-                // child itself.
-
-                Iterator<UIComponent> childsIterator;
-                if (saveChildFacets)
-                {
-                    childsIterator = child.getFacetsAndChildren();
-                }
-                else
-                {
-                    childsIterator = child.getChildren().iterator();
-                }
-                Object descendantState = saveDescendantInitialComponentStates(
-                        facesContext, childsIterator, true);
+                Iterator<UIComponent> childsIterator = saveChildFacets
+                        ? child.getFacetsAndChildren()
+                        : child.getChildren().iterator();
+                Object descendantState = saveDescendantInitialComponentStates(facesContext, childsIterator, true);
                 Object state = null;
                 if (child.initialStateMarked())
                 {
@@ -1192,7 +1162,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 {
                     state = child.saveState(facesContext);
                 }
-                
+
+                // Add an entry to the collection, being an array of two elements.
+                // The first element is the state of the children of this component;
+                // the second is the state of the current child itself.
+                if (childStates == null)
+                {
+                    childStates = new ArrayList<>();
+                }
                 childStates.add(new Object[] { state, descendantState, child.getId()});
             }
         }
@@ -1211,24 +1188,16 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 // elements. The first element is the state of the children
                 // of this component; the second is the state of the current
                 // child itself.
-
-                Iterator<UIComponent> childsIterator;
-                if (saveChildFacets)
-                {
-                    childsIterator = child.getFacetsAndChildren();
-                }
-                else
-                {
-                    childsIterator = child.getChildren().iterator();
-                }
-                stateMap = saveFullDescendantComponentStates(facesContext, stateMap,
-                        childsIterator, true);
+                Iterator<UIComponent> childsIterator = saveChildFacets 
+                        ? child.getFacetsAndChildren()
+                        : child.getChildren().iterator();
+                stateMap = saveFullDescendantComponentStates(facesContext, stateMap, childsIterator, true);
                 Object state = child.saveState(facesContext);
                 if (state != null)
                 {
                     if (stateMap == null)
                     {
-                        stateMap = new HashMap<String,Object>();
+                        stateMap = new HashMap<>();
                     }
                     stateMap.put(child.getClientId(facesContext), state);
                 }
@@ -1248,10 +1217,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             {
                 descendantFullStateIterator = ((Collection<? extends Object[]>) initialState).iterator();
             }
-            UIComponent component = childIterator.next();
 
+            UIComponent component = childIterator.next();
             // reset the client id (see spec 3.1.6)
             component.setId(component.getId());
+            
             if (!component.isTransient())
             {
                 Object childInitialState = null;
@@ -1259,8 +1229,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 Object childState = null;
                 String childId = null;
                 childState = (state == null) ? null : state.get(component.getClientId(facesContext));
-                if (descendantFullStateIterator != null
-                        && descendantFullStateIterator.hasNext())
+
+                if (descendantFullStateIterator != null && descendantFullStateIterator.hasNext())
                 {
                     do
                     {
@@ -1268,7 +1238,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                         childInitialState = object[0];
                         descendantInitialState = object[1];
                         childId = (String) object[2];
-                    }while(descendantFullStateIterator.hasNext() && !component.getId().equals(childId));
+                    } while(descendantFullStateIterator.hasNext() && !component.getId().equals(childId));
                     
                     if (!component.getId().equals(childId))
                     {
@@ -1290,17 +1260,11 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                     component.markInitialState();
                 }
                 
-                Iterator<UIComponent> childsIterator;
-                if (restoreChildFacets)
-                {
-                    childsIterator = component.getFacetsAndChildren();
-                }
-                else
-                {
-                    childsIterator = component.getChildren().iterator();
-                }
-                restoreFullDescendantComponentDeltaStates(facesContext, childsIterator,
-                        state, descendantInitialState , true);
+                Iterator<UIComponent> childsIterator = restoreChildFacets
+                        ? component.getFacetsAndChildren()
+                        : component.getChildren().iterator();
+                restoreFullDescendantComponentDeltaStates(facesContext, childsIterator, state,
+                        descendantInitialState , true);
             }
         }
     }
@@ -1321,15 +1285,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 component.restoreTransientState(facesContext,
                         state == null ? null : state.get(component.getClientId(facesContext)));
                 
-                Iterator<UIComponent> childsIterator;
-                if (restoreChildFacets)
-                {
-                    childsIterator = component.getFacetsAndChildren();
-                }
-                else
-                {
-                    childsIterator = component.getChildren().iterator();
-                }
+                Iterator<UIComponent> childsIterator = restoreChildFacets
+                        ? component.getFacetsAndChildren()
+                        : component.getChildren().iterator();
                 restoreTransientDescendantComponentStates(facesContext, childsIterator, state, true);
             }
         }
@@ -1339,29 +1297,23 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     private Map<String, Object> saveTransientDescendantComponentStates(FacesContext facesContext,
                                                                        Map<String, Object> childStates,
                                                                        Iterator<UIComponent> childIterator,
-            boolean saveChildFacets)
+                                                                       boolean saveChildFacets)
     {
         while (childIterator.hasNext())
         {
             UIComponent child = childIterator.next();
             if (!child.isTransient())
             {
-                Iterator<UIComponent> childsIterator;
-                if (saveChildFacets)
-                {
-                    childsIterator = child.getFacetsAndChildren();
-                }
-                else
-                {
-                    childsIterator = child.getChildren().iterator();
-                }
+                Iterator<UIComponent> childsIterator = saveChildFacets
+                        ? child.getFacetsAndChildren()
+                        : child.getChildren().iterator();
                 childStates = saveTransientDescendantComponentStates(facesContext, childStates, childsIterator, true);
                 Object state = child.saveTransientState(facesContext);
                 if (state != null)
                 {
                     if (childStates == null)
                     {
-                        childStates = new HashMap<String, Object>();
+                        childStates = new HashMap<>();
                     }
                     childStates.put(child.getClientId(facesContext), state);
                 }
@@ -1380,6 +1332,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         
         Object values[] = (Object[]) state;
         super.restoreState(context, values[0]);
+
         Object restoredRowStates = UIComponentBase.restoreAttachedState(context, values[1]);
         if (restoredRowStates == null)
         {
@@ -1392,6 +1345,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             _rowDeltaStates = (Map<String, Map<String, Object> >) restoredRowStates;
         }
+
         if (values.length > 2)
         {
             Object rs = UIComponentBase.restoreAttachedState(context, values[2]);
@@ -1432,18 +1386,19 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             if (context.getViewRoot().getResetSaveStateMode() == RESET_MODE_SOFT)
             {
                 _dataModelMap.clear();
-                _isValidChilds=true;
+                _isValidChilds = true;
                 _rowTransientStates.clear();
             }
             if (context.getViewRoot().getResetSaveStateMode() == RESET_MODE_HARD)
             {
                 _dataModelMap.clear();
-                _isValidChilds=true;
+                _isValidChilds = true;
                 _rowTransientStates.clear();
                 _rowStates.clear();
                 _rowDeltaStates.clear();
             }
         }
+
         if (initialStateMarked())
         {
             Object parentSaved = super.saveState(context);
@@ -1481,8 +1436,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         }
         else
         {
-            if (context.getCurrentPhaseId() != null && 
-                !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
+            if (context.getCurrentPhaseId() != null && !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
             {
                 Object values[] = new Object[4];
                 values[0] = super.saveState(context);
@@ -1580,7 +1534,9 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             {
                 pushComponentToEL(getFacesContext(), compositeParent);
             }
+
             pushComponentToEL(getFacesContext(), source);
+
             try
             {
                 source.broadcast(originalEvent);
@@ -1607,13 +1563,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * 
      * @since 2.0
      */
+    @Override
     public String createUniqueId(FacesContext context, String seed)
     {
         StringBuilder bld = _getSharedStringBuilder(context);
 
         // Generate an identifier for a component. The identifier will be prefixed with UNIQUE_ID_PREFIX,
         // and will be unique within this UIViewRoot.
-        if(seed==null)
+        if(seed == null)
         {
             Long uniqueIdCounter = (Long) getStateHelper().get(PropertyKeys.uniqueIdCounter);
             uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
@@ -1704,11 +1661,13 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             {
                 return;
             }
+
             setRowIndex(-1);
             processFacets(context, PROCESS_DECODES);
             processColumnFacets(context, PROCESS_DECODES);
             processColumnChildren(context, PROCESS_DECODES);
             setRowIndex(-1);
+
             try
             {
                 decode(context);
@@ -1787,6 +1746,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             {
                 return;
             }
+
             setRowIndex(-1);
             processFacets(context, PROCESS_UPDATES);
             processColumnFacets(context, PROCESS_UPDATES);
@@ -1832,7 +1792,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             UIComponent child = getChildren().get(i);
             if (child instanceof UIColumn)
             {
-                if (! _ComponentUtils.isRendered(context, child))
+                if (!_ComponentUtils.isRendered(context, child))
                 {
                     // Column is not visible
                     continue;
@@ -1886,11 +1846,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 UIComponent child = getChildren().get(i);
                 if (child instanceof UIColumn)
                 {
-                    if (! _ComponentUtils.isRendered(context, child))
+                    if (!_ComponentUtils.isRendered(context, child))
                     {
                         // Column is not visible
                         continue;
                     }
+
                     for (int j = 0, columnChildCount = child.getChildCount(); j < columnChildCount; j++)
                     {
                         UIComponent columnChild = child.getChildren().get(j);
@@ -2007,6 +1968,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                     //No op
                 }
             }
+
             if (dataModel == null)
             {
                 if (value instanceof List)
@@ -2069,12 +2031,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @JSFProperty
     public Object getValue()
     {
-        return  getStateHelper().eval(PropertyKeys.value);
+        return getStateHelper().eval(PropertyKeys.value);
     }
 
     public void setValue(Object value)
     {
-        getStateHelper().put(PropertyKeys.value, value );
+        getStateHelper().put(PropertyKeys.value, value);
         _dataModelMap.clear();
         _rowStates.clear();
         _isValidChilds = true;
@@ -2167,117 +2129,114 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             {
                 setCachedFacesContext(context.getFacesContext());
             }
+
             // save the current row index
             int oldRowIndex = getRowIndex();
             // set row index to -1 to process the facets and to get the rowless clientId
             setRowIndex(-1);
             try
             {
-                VisitResult visitResult = context.invokeVisitCallback(this,
-                        callback);
+                VisitResult visitResult = context.invokeVisitCallback(this, callback);
                 switch (visitResult)
                 {
-                //we are done nothing has to be processed anymore
-                case COMPLETE:
-                    return true;
-
-                case REJECT:
-                    return false;
-
-                    //accept
-                default:
-                    // determine if we need to visit our children
-                    Collection<String> subtreeIdsToVisit = context.getSubtreeIdsToVisit(this);
-                    boolean doVisitChildren = subtreeIdsToVisit != null && !subtreeIdsToVisit.isEmpty();
-                    if (doVisitChildren)
-                    {
-                        // visit the facets of the component
-                        if (getFacetCount() > 0)
+                    case COMPLETE:
+                        //we are done nothing has to be processed anymore
+                        return true;
+                    case REJECT:
+                        return false;
+                    default:
+                        // accept; determine if we need to visit our children
+                        Collection<String> subtreeIdsToVisit = context.getSubtreeIdsToVisit(this);
+                        boolean doVisitChildren = subtreeIdsToVisit != null && !subtreeIdsToVisit.isEmpty();
+                        if (doVisitChildren)
                         {
-                            for (UIComponent facet : getFacets().values())
+                            // visit the facets of the component
+                            if (getFacetCount() > 0)
                             {
-                                if (facet.visitTree(context, callback))
+                                for (UIComponent facet : getFacets().values())
                                 {
-                                    return true;
-                                }
-                            }
-                        }
-
-                        boolean skipIterationHint = context.getHints().contains(VisitHint.SKIP_ITERATION);
-                        if (skipIterationHint)
-                        {
-                            // If SKIP_ITERATION is enabled, do not take into account rows.
-                            for (int i = 0, childCount = getChildCount(); i < childCount; i++ )
-                            {
-                                UIComponent child = getChildren().get(i);
-                                if (child.visitTree(context, callback))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // visit every column directly without visiting its children
-                            // (the children of every UIColumn will be visited later for
-                            // every row) and also visit the column's facets
-                            for (int i = 0, childCount = getChildCount(); i < childCount; i++)
-                            {
-                                UIComponent child = getChildren().get(i);
-                                if (child instanceof UIColumn)
-                                {
-                                    VisitResult columnResult = context.invokeVisitCallback(child, callback);
-                                    if (columnResult == VisitResult.COMPLETE)
+                                    if (facet.visitTree(context, callback))
                                     {
                                         return true;
                                     }
-                                    if (child.getFacetCount() > 0)
+                                }
+                            }
+
+                            boolean skipIterationHint = context.getHints().contains(VisitHint.SKIP_ITERATION);
+                            if (skipIterationHint)
+                            {
+                                // If SKIP_ITERATION is enabled, do not take into account rows.
+                                for (int i = 0, childCount = getChildCount(); i < childCount; i++ )
+                                {
+                                    UIComponent child = getChildren().get(i);
+                                    if (child.visitTree(context, callback))
                                     {
-                                        for (UIComponent facet : child.getFacets().values())
-                                        {
-                                            if (facet.visitTree(context, callback))
-                                            {
-                                                return true;
-                                            }
-                                        }
+                                        return true;
                                     }
                                 }
                             }
-                            // iterate over the rows
-                            int rowsToProcess = getRows();
-                            // if getRows() returns 0, all rows have to be processed
-                            if (rowsToProcess == 0)
+                            else
                             {
-                                rowsToProcess = getRowCount();
-                            }
-                            int rowIndex = getFirst();
-                            for (int rowsProcessed = 0; rowsProcessed < rowsToProcess; rowsProcessed++, rowIndex++)
-                            {
-                                setRowIndex(rowIndex);
-                                if (!isRowAvailable())
-                                {
-                                    return false;
-                                }
-                                // visit the children of every child of the UIData that is an instance of UIColumn
+                                // visit every column directly without visiting its children
+                                // (the children of every UIColumn will be visited later for
+                                // every row) and also visit the column's facets
                                 for (int i = 0, childCount = getChildCount(); i < childCount; i++)
                                 {
                                     UIComponent child = getChildren().get(i);
                                     if (child instanceof UIColumn)
                                     {
-                                        for (int j = 0, grandChildCount = child.getChildCount();
-                                             j < grandChildCount; j++)
+                                        VisitResult columnResult = context.invokeVisitCallback(child, callback);
+                                        if (columnResult == VisitResult.COMPLETE)
                                         {
-                                            UIComponent grandchild = child.getChildren().get(j);
-                                            if (grandchild.visitTree(context, callback))
+                                            return true;
+                                        }
+                                        if (child.getFacetCount() > 0)
+                                        {
+                                            for (UIComponent facet : child.getFacets().values())
                                             {
-                                                return true;
+                                                if (facet.visitTree(context, callback))
+                                                {
+                                                    return true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                // iterate over the rows
+                                int rowsToProcess = getRows();
+                                // if getRows() returns 0, all rows have to be processed
+                                if (rowsToProcess == 0)
+                                {
+                                    rowsToProcess = getRowCount();
+                                }
+                                int rowIndex = getFirst();
+                                for (int rowsProcessed = 0; rowsProcessed < rowsToProcess; rowsProcessed++, rowIndex++)
+                                {
+                                    setRowIndex(rowIndex);
+                                    if (!isRowAvailable())
+                                    {
+                                        return false;
+                                    }
+                                    // visit the children of every child of the UIData that is an instance of UIColumn
+                                    for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                                    {
+                                        UIComponent child = getChildren().get(i);
+                                        if (child instanceof UIColumn)
+                                        {
+                                            for (int j = 0, grandChildCount = child.getChildCount();
+                                                 j < grandChildCount; j++)
+                                            {
+                                                UIComponent grandchild = child.getChildren().get(j);
+                                                if (grandchild.visitTree(context, callback))
+                                                {
+                                                    return true;
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
                 }
             }
             finally
@@ -2328,12 +2287,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
 
     enum PropertyKeys
     {
-         value
-        , first
-        , rows
-        , var
-        , uniqueIdCounter
-        , rowStatePreserved
+        value,
+        first,
+        rows,
+        var,
+        uniqueIdCounter,
+        rowStatePreserved
     }
 
     @Override
