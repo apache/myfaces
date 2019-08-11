@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletFunction;
+import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  * Implementations of JSTL Functions
@@ -73,11 +74,7 @@ public final class JstlFunction
     @JSFFaceletFunction(name="fn:escapeXml")
     public static String escapeXml(String value)
     {
-        if (value == null)
-        {
-            return "";
-        }
-        if (value.length() == 0)
+        if (StringUtils.isEmpty(value))
         {
             return "";
         }
@@ -220,22 +217,16 @@ public final class JstlFunction
     @JSFFaceletFunction(name="fn:replace")
     public static String replace(String value, String a, String b)
     {
-        if (value == null)
+        if (StringUtils.isEmpty(value))
         {
             return "";
         }
-        if (value.length() == 0)
-        {
-            return "";
-        }
-        if (a == null)
+
+        if (StringUtils.isEmpty(a))
         {
             return value;
         }
-        if (a.length() == 0)
-        {
-            return value;
-        }
+
         if (b == null)
         {
             b = "";
@@ -247,23 +238,16 @@ public final class JstlFunction
     @JSFFaceletFunction(name="fn:split")
     public static String[] split(String value, String d)
     {
-        if (value == null)
+        if (StringUtils.isEmpty(value))
         {
             return new String[]{""};
         }
-        if (value.length() == 0)
-        {
-            return new String[]{""};
-        }
-        if (d == null)
+
+        if (StringUtils.isEmpty(d))
         {
             return new String[]{value};
         }
-        if (d.length() == 0)
-        {
-            return new String[]{value};
-        }        
-        
+
         StringTokenizer st = new StringTokenizer(value, d);
         int numTokens = st.countTokens();
         if (numTokens == 0)
@@ -294,14 +278,11 @@ public final class JstlFunction
     @JSFFaceletFunction(name="fn:substring")
     public static String substring(String v, int s, int e)
     {
-        if (v == null)
+        if (StringUtils.isEmpty(v))
         {
             return "";
         }
-        if (v.length() == 0)
-        {
-            return "";
-        }
+
         if (s >= v.length())
         {
             return "";
@@ -325,11 +306,7 @@ public final class JstlFunction
     @JSFFaceletFunction(name="fn:substringAfter")
     public static String substringAfter(String v, String p)
     {
-        if (v == null)
-        {
-            return "";
-        }
-        if (v.length() == 0)
+        if (StringUtils.isEmpty(v))
         {
             return "";
         }
@@ -346,11 +323,7 @@ public final class JstlFunction
     @JSFFaceletFunction(name="fn:substringBefore")
     public static String substringBefore(String v, String s)
     {
-        if (v == null)
-        {
-            return "";
-        }
-        if (v.length() == 0)
+        if (StringUtils.isEmpty(v))
         {
             return "";
         }
@@ -367,11 +340,7 @@ public final class JstlFunction
     @JSFFaceletFunction(name="fn:toLowerCase")
     public static String toLowerCase(String v)
     {
-        if (v == null)
-        {
-            return "";
-        }
-        if (v.length() == 0)
+        if (StringUtils.isEmpty(v))
         {
             return "";
         }
@@ -382,11 +351,7 @@ public final class JstlFunction
     @JSFFaceletFunction(name="fn:toUpperCase")
     public static String toUpperCase(String v)
     {
-        if (v == null)
-        {
-            return "";
-        }
-        if (v.length() == 0)
+        if (StringUtils.isEmpty(v))
         {
             return "";
         }
@@ -397,14 +362,11 @@ public final class JstlFunction
     @JSFFaceletFunction(name="fn:trim")
     public static String trim(String v)
     {
-        if (v == null)
+        if (StringUtils.isEmpty(v))
         {
             return "";
         }
-        if (v.length() == 0)
-        {
-            return "";
-        }
+
         return v.trim();
     }
 
