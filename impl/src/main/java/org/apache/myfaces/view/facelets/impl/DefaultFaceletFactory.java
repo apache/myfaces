@@ -24,6 +24,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -61,7 +62,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
     
     protected final Logger log = Logger.getLogger(DefaultFaceletFactory.class.getName());
 
-    private URL _baseUrl;
+    private Optional<URL> _baseUrl;
     private Compiler _compiler;
     private Map<String, DefaultFacelet> _compositeComponentMetadataFacelets;
     private long _refreshPeriod;
@@ -164,9 +165,9 @@ public final class DefaultFaceletFactory extends FaceletFactory
     {
         if (_baseUrl == null)
         {
-            _baseUrl = _resolver.resolveUrl("/");
+            _baseUrl = Optional.ofNullable(_resolver.resolveUrl("/"));
         }
-        return _baseUrl;
+        return _baseUrl.isPresent() ? _baseUrl.get() : null;
     }
 
     /*
