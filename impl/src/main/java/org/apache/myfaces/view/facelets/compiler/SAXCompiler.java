@@ -1112,8 +1112,8 @@ public final class SAXCompiler extends Compiler
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-        factory.setFeature("http://xml.org/sax/features/validation", this.isValidating());
         factory.setValidating(this.isValidating());
+        factory.setFeature("http://xml.org/sax/features/validation", this.isValidating());
         SAXParser parser = factory.newSAXParser();
         XMLReader reader = parser.getXMLReader();
         reader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);

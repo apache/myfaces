@@ -584,8 +584,7 @@ public final class TagLibraryConfig
                     }
                     catch (NoSuchMethodException e)
                     {
-                        throw new Exception("No Function Found on type: " + type.getName() + " with signature: "
-                                + s);
+                        throw new Exception("No Function Found on type: " + type.getName() + " with signature: " + s);
                     }
 
                 }
