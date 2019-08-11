@@ -68,7 +68,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
     private long _refreshPeriod;
     private Map<String, URL> _relativeLocations;
 
-    private javax.faces.view.facelets.ResourceResolver _resolver;
+    private ResourceResolver _resolver;
     private DefaultResourceResolver _defaultResolver;
     
     private FaceletCache<Facelet> _faceletCache;
@@ -144,8 +144,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         if (log.isLoggable(Level.FINE))
         {
-            log.fine("Using ResourceResolver: " + _resolver);
-            log.fine("Using Refresh Period: " + _refreshPeriod);
+            log.fine("Using ResourceResolver " + _resolver.getClass().getName() + " with refresh period " + _refreshPeriod);
         }
 
         this.viewUniqueIdsCacheEnabled = MyfacesConfig.getCurrentInstance().isViewUniqueIdsCacheEnabled();
