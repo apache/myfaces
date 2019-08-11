@@ -144,7 +144,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         if (log.isLoggable(Level.FINE))
         {
-            log.fine("Using ResourceResolver " + _resolver.getClass().getName() + " with refresh period " + _refreshPeriod);
+            log.fine("Using ResourceResolver " + _resolver.getClass().getName()
+                    + " with refresh period " + _refreshPeriod);
         }
 
         this.viewUniqueIdsCacheEnabled = MyfacesConfig.getCurrentInstance().isViewUniqueIdsCacheEnabled();
