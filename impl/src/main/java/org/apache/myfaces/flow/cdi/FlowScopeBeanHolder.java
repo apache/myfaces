@@ -105,21 +105,7 @@ public class FlowScopeBeanHolder implements Serializable
      */
     public ContextualStorage getContextualStorage(BeanManager beanManager, String flowClientWindowId)
     {
-        ContextualStorage contextualStorage = storageMap.get(flowClientWindowId);
-        if (contextualStorage == null)
-        {
-            synchronized (this)
-            {
-                contextualStorage = storageMap.get(flowClientWindowId);
-                if (contextualStorage == null)
-                {
-                    contextualStorage = new ContextualStorage(beanManager, true, true);
-                    storageMap.put(flowClientWindowId, contextualStorage);
-                }
-            }
-        }
-
-        return contextualStorage;
+        return storageMap.computeIfAbsent(flowClientWindowId, k -> new ContextualStorage(beanManager, true, true));
     }
     
     public ContextualStorage getContextualStorageNoCreate(BeanManager beanManager, String flowClientWindowId)

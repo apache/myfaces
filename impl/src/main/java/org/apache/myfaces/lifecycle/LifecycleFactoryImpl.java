@@ -39,7 +39,7 @@ public class LifecycleFactoryImpl extends LifecycleFactory
      * do not block, and it is more often retrieval (at begin of all requests) than addition (when 
      * startup listener is called and configuration occur). 
      */
-    private final Map<String, Lifecycle> _lifecycles = new ConcurrentHashMap<String, Lifecycle>();
+    private final Map<String, Lifecycle> _lifecycles = new ConcurrentHashMap<>();
 
     public LifecycleFactoryImpl()
     {
@@ -58,28 +58,22 @@ public class LifecycleFactoryImpl extends LifecycleFactory
     @Override
     public void addLifecycle(String id, Lifecycle lifecycle)
     {
-        //synchronized (_lifecycles)
-        //{
-            if (_lifecycles.get(id) != null)
-            {
-                throw new IllegalArgumentException("Lifecycle with id '" + id + "' already exists.");
-            }
-            _lifecycles.put(id, lifecycle);
-        //}
+        if (_lifecycles.get(id) != null)
+        {
+            throw new IllegalArgumentException("Lifecycle with id '" + id + "' already exists.");
+        }
+        _lifecycles.put(id, lifecycle);
     }
 
     @Override
     public Lifecycle getLifecycle(String id) throws FacesException
     {
-        //synchronized (_lifecycles)
-        //{
-            Lifecycle lifecycle = _lifecycles.get(id);
-            if (lifecycle == null)
-            {
-                throw new IllegalArgumentException("Unknown lifecycle '" + id + "'.");
-            }
-            return lifecycle;
-        //}
+        Lifecycle lifecycle = _lifecycles.get(id);
+        if (lifecycle == null)
+        {
+            throw new IllegalArgumentException("Unknown lifecycle '" + id + "'.");
+        }
+        return lifecycle;
     }
 
     @Override

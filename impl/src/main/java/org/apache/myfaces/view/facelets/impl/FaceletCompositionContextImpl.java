@@ -1074,15 +1074,10 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         {
             // Store it in application map improve performance because it avoids FactoryFinde.getFactory(...) call
             // which has synchronized blocks.
-            _visitContextFactory = (VisitContextFactory) _facesContext.getExternalContext().
-                    getApplicationMap().get(VISIT_CONTEXT_FACTORY);
-            if (_visitContextFactory == null)
-            {
-                VisitContextFactory factory = (VisitContextFactory)
-                        FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
-                _facesContext.getExternalContext().getApplicationMap().put(VISIT_CONTEXT_FACTORY, factory);
-                _visitContextFactory = factory;
-            }
+            _visitContextFactory = (VisitContextFactory) _facesContext.getExternalContext().getApplicationMap()
+                    .computeIfAbsent(
+                            VISIT_CONTEXT_FACTORY,
+                            k -> FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY));
         }
         return _visitContextFactory;
     }
