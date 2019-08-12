@@ -119,7 +119,6 @@ public class CreateDynamicCompositeComponentListener
                 facetName = ComponentSupport.findFacetNameByComponentInstance(parent, component);
             }
             
-            
             try
             {
                 if (facetName != null)

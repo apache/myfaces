@@ -93,12 +93,7 @@ public class ViewPoolImpl extends ViewPool
     
     protected void pushStaticStructureView(FacesContext context, MetadataViewKey key, ViewEntry entry)
     {
-        ViewPoolEntryHolder q = staticStructureViewPool.get(key);
-        if (q == null)
-        {
-            q = new ViewPoolEntryHolder(maxCount);
-            staticStructureViewPool.put(key, q);
-        }
+        ViewPoolEntryHolder q = staticStructureViewPool.computeIfAbsent(key, k -> new ViewPoolEntryHolder(maxCount));
         q.add(entry);
     }
     
@@ -109,6 +104,7 @@ public class ViewPoolImpl extends ViewPool
         {
             return null;
         }
+
         ViewEntry entry = q.poll();
         if (entry == null)
         {
@@ -203,19 +199,10 @@ public class ViewPoolImpl extends ViewPool
     protected void pushDynamicStructureView(FacesContext context, UIViewRoot root, DynamicViewKey key, ViewEntry entry)
     {
         MetadataViewKey ordinaryKey = deriveViewKey(context, root);
-        Map<DynamicViewKey, ViewPoolEntryHolder> map = dynamicStructureViewPool.get(ordinaryKey);
-        if (map == null)
-        {
-            map = new ConcurrentHashMap<>();
-            dynamicStructureViewPool.put(ordinaryKey, map);
-        }
+        Map<DynamicViewKey, ViewPoolEntryHolder> map = dynamicStructureViewPool.computeIfAbsent(ordinaryKey,
+                k -> new ConcurrentHashMap<>());
 
-        ViewPoolEntryHolder q = map.get(key);
-        if (q == null)
-        {
-            q = new ViewPoolEntryHolder(maxCount);
-            map.put(key, q);
-        }
+        ViewPoolEntryHolder q = map.computeIfAbsent(key, k -> new ViewPoolEntryHolder(maxCount));
         if (!q.add(entry))
         {
             pushPartialStructureView(context, ordinaryKey, entry);
@@ -422,13 +409,9 @@ public class ViewPoolImpl extends ViewPool
         MetadataViewKey ordinaryKey = deriveViewKey(context, root);
         if (!dynamicStructureViewMetadataMap.containsKey(ordinaryKey))
         {
-            
-            Map<DynamicViewKey, ViewStructureMetadata> map = dynamicStructureViewMetadataMap.get(ordinaryKey);
-            if (map == null)
-            {
-                map = new ConcurrentHashMap<>();
-                dynamicStructureViewMetadataMap.put(ordinaryKey, map);
-            }
+            Map<DynamicViewKey, ViewStructureMetadata> map = dynamicStructureViewMetadataMap.computeIfAbsent(
+                    ordinaryKey, k -> new ConcurrentHashMap<>());
+
             RequestViewContext rvc = RequestViewContext.getCurrentInstance(context);
             
             Object state = saveViewRootState(context, root);

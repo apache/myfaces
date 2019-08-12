@@ -59,22 +59,12 @@ public final class TagAttributesImpl extends TagAttributes
         {
             namespacesSet.add(attribute.getNamespace());
 
-            
-            List<TagAttribute> tagAttributes = namespaceAttributesAsList.get(attribute.getNamespace());
-            if (tagAttributes == null)
-            {
-                tagAttributes = new ArrayList<>(attributes.length);
-                namespaceAttributesAsList.put(attribute.getNamespace(), tagAttributes);
-            }
+            List<TagAttribute> tagAttributes = namespaceAttributesAsList.computeIfAbsent(attribute.getNamespace(),
+                    k -> new ArrayList<>(attributes.length));
             tagAttributes.add(attribute);
             
-            
-            Map<String, TagAttribute> localeNameAttributes = namespaceLocalNameAttributes.get(attribute.getNamespace());
-            if (localeNameAttributes == null)
-            {
-                localeNameAttributes = new HashMap<>(attributes.length);
-                namespaceLocalNameAttributes.put(attribute.getNamespace(), localeNameAttributes);
-            }
+            Map<String, TagAttribute> localeNameAttributes = namespaceLocalNameAttributes.computeIfAbsent(
+                    attribute.getNamespace(), k -> new HashMap<>(attributes.length));
             localeNameAttributes.put(attribute.getLocalName(), attribute);
         }
 
