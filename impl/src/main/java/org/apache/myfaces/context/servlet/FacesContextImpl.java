@@ -178,15 +178,10 @@ public class FacesContextImpl extends FacesContextImplBase
             _orderedMessages = new ArrayList<>();
         }
         
-        List<FacesMessage> lst = _messages.get(clientId); 
-        if (lst == null)
-        {
-            lst = new ArrayList<>();
-            _messages.put(clientId, lst);
-        }
-        
+        List<FacesMessage> lst = _messages.computeIfAbsent(clientId, k -> new ArrayList<>());         
         lst.add(message);
-        _orderedMessages.add (message);
+
+        _orderedMessages.add(message);
         
         FacesMessage.Severity serSeverity = message.getSeverity();
         if (serSeverity != null)

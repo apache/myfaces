@@ -82,20 +82,7 @@ public class ViewScopeBeanHolder implements Serializable
      */
     public ViewScopeContextualStorage getContextualStorage(BeanManager beanManager, String viewScopeId)
     {
-        ViewScopeContextualStorage contextualStorage = storageMap.get(viewScopeId);
-        if (contextualStorage == null)
-        {
-            synchronized (this)
-            {            
-                contextualStorage = storageMap.get(viewScopeId);
-                if (contextualStorage == null)
-                {
-                    contextualStorage = new ViewScopeContextualStorage(beanManager);
-                    storageMap.put(viewScopeId, contextualStorage);
-                }
-            }
-        }
-        return contextualStorage;
+        return storageMap.computeIfAbsent(viewScopeId, k -> new ViewScopeContextualStorage(beanManager));
     }
 
     public Map<String, ViewScopeContextualStorage> getStorageMap()

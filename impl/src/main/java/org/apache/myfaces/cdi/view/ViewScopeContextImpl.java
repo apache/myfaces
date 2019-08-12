@@ -73,16 +73,9 @@ public class ViewScopeContextImpl implements Context
     
     protected ViewScopeBeanHolder getViewScopeBeanHolder(FacesContext facesContext)
     {
-        ViewScopeBeanHolder viewScopeBeanHolder = (ViewScopeBeanHolder) 
-            facesContext.getExternalContext().getApplicationMap().get(
-                "oam.view.ViewScopeBeanHolder");
-        if (viewScopeBeanHolder == null)
-        {
-            viewScopeBeanHolder = CDIUtils.get(beanManager, ViewScopeBeanHolder.class);
-            facesContext.getExternalContext().getApplicationMap().put(
-                "oam.view.ViewScopeBeanHolder", viewScopeBeanHolder);
-        }
-        return viewScopeBeanHolder;
+        return (ViewScopeBeanHolder)facesContext.getExternalContext().getApplicationMap().computeIfAbsent(
+                "oam.view.ViewScopeBeanHolder",
+                k -> CDIUtils.get(beanManager, ViewScopeBeanHolder.class));
     }
 
     public String getCurrentViewScopeId(boolean create)

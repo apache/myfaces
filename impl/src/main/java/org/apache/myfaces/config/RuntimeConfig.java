@@ -126,14 +126,8 @@ public class RuntimeConfig
     
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
-        RuntimeConfig runtimeConfig = (RuntimeConfig) externalContext.getApplicationMap().get(
-                APPLICATION_MAP_PARAM_NAME);
-        if (runtimeConfig == null)
-        {
-            runtimeConfig = new RuntimeConfig();
-            externalContext.getApplicationMap().put(APPLICATION_MAP_PARAM_NAME, runtimeConfig);
-        }
-        return runtimeConfig;
+        return (RuntimeConfig) externalContext.getApplicationMap().computeIfAbsent(
+                APPLICATION_MAP_PARAM_NAME, k -> new RuntimeConfig());
     }
 
     public void purge()
@@ -418,23 +412,13 @@ public class RuntimeConfig
 
     public void addContractMapping(String urlPattern, String[] contracts)
     {
-        List<String> contractsList = _contractMappings.get(urlPattern);
-        if (contractsList == null)
-        {
-            contractsList = new ArrayList<String>();
-            _contractMappings.put(urlPattern, contractsList);
-        }
+        List<String> contractsList = _contractMappings.computeIfAbsent(urlPattern, k -> new ArrayList<>());
         Collections.addAll(contractsList, contracts);
     }
     
     public void addContractMapping(String urlPattern, String contract)
     {
-        List<String> contractsList = _contractMappings.get(urlPattern);
-        if (contractsList == null)
-        {
-            contractsList = new ArrayList<String>();
-            _contractMappings.put(urlPattern, contractsList);
-        }
+        List<String> contractsList = _contractMappings.computeIfAbsent(urlPattern, k -> new ArrayList<>());
         contractsList.add(contract);
     }    
     

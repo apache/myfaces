@@ -889,13 +889,8 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                     paramMap = new HashMap<String, List<String>>();
                 }
                 
-                List<String> values = paramMap.get(currentName);
-                if (values == null)
-                {
-                    values = new ArrayList<>(1);
-                    paramMap.put(currentName, values);
-                }
- 
+                List<String> values = paramMap.computeIfAbsent(currentName, k -> new ArrayList<>(1));
+
                 try
                 {
                     values.add(currentPair.length > 1
@@ -921,7 +916,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                 {
                     if (paramMap == null)
                     {
-                        paramMap = new HashMap<String, List<String>>();
+                        paramMap = new HashMap<>();
                     }
                     paramMap.put(key, pair.getValue());
                 }
@@ -943,7 +938,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                         value.add(entry.getValue());
                         if (paramMap == null)
                         {
-                            paramMap = new HashMap<String, List<String>>();
+                            paramMap = new HashMap<>();
                         }
                         paramMap.put(entry.getKey(), value);
                     }

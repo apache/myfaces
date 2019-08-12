@@ -64,13 +64,7 @@ public class CdiAnnotationProviderExtension implements Extension
         {
             if (type.isAnnotationPresent(annotation))
             {
-                Set<Class<?>> set = map.get(annotation);
-                if (set == null)
-                {
-                    set = new HashSet<>();
-                    map.put(annotation, set);
-                }
-
+                Set<Class<?>> set = map.computeIfAbsent(annotation, k -> new HashSet<>());
                 set.add(type.getJavaClass());
             }
         }

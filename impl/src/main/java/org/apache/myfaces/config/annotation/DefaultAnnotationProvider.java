@@ -692,18 +692,8 @@ public class DefaultAnnotationProvider extends AnnotationProvider
             Class<? extends Annotation> annotationClass = anno.annotationType();
             if (JSF_ANNOTATION_CLASSES.contains(annotationClass))
             {
-                Set<Class<?>> set = map.get(annotationClass);
-                if (set == null)
-                {
-                    set = new HashSet<Class<?>>();
-                    set.add(clazz);
-                    map.put(annotationClass, set);
-                }
-                else
-                {
-                    set.add(clazz);
-                }
-
+                Set<Class<?>> set = map.computeIfAbsent(annotationClass, k -> new HashSet<>());
+                set.add(clazz);
             }
         }
     }

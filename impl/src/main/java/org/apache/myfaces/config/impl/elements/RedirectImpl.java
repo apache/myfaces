@@ -32,14 +32,8 @@ public class RedirectImpl extends org.apache.myfaces.config.element.Redirect imp
     
     public void addViewParam(ViewParamImpl viewParam)
     {
-        List<String> params = viewParams.get(viewParam.getName());
-        if(params == null)
-        {
-            params = new ArrayList<String>();
-        }
-
+        List<String> params = viewParams.computeIfAbsent(viewParam.getName(), k -> new ArrayList<String>());
         params.add(viewParam.getValue());
-        viewParams.put(viewParam.getName(), params);
     }
     
     @Override

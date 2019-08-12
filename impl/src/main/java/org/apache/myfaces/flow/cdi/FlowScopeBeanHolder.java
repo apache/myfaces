@@ -137,18 +137,14 @@ public class FlowScopeBeanHolder implements Serializable
         Map<Object, Object> map = null;
         if (create)
         {
-            ContextualStorage contextualStorage = getContextualStorage(
-                beanManager, flowClientWindowId);
-            ContextualInstanceInfo info = contextualStorage.getStorage().get(CURRENT_FLOW_SCOPE_MAP);
-            if (info == null)
-            {
-                info = new ContextualInstanceInfo<Object>();
-                contextualStorage.getStorage().put(CURRENT_FLOW_SCOPE_MAP, info);
-            }
+            ContextualStorage contextualStorage = getContextualStorage(beanManager, flowClientWindowId);
+            ContextualInstanceInfo info = contextualStorage.getStorage().computeIfAbsent(CURRENT_FLOW_SCOPE_MAP,
+                    k -> new ContextualInstanceInfo<>());
+
             map = (Map<Object, Object>) info.getContextualInstance();
             if (map == null)
             {
-                map = new HashMap<Object,Object>();
+                map = new HashMap<>();
                 info.setContextualInstance(map);
             }
         }

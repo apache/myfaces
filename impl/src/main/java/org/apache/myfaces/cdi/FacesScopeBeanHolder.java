@@ -52,14 +52,8 @@ public class FacesScopeBeanHolder
      */
     public ContextualStorage getContextualStorage(BeanManager beanManager, FacesContext facesContext)
     {
-        ContextualStorage contextualStorage = (ContextualStorage) facesContext.getAttributes().get(FACES_SCOPE_MAP);
-        if (contextualStorage == null)
-        {
-            contextualStorage = new ContextualStorage(beanManager, false, false);
-            facesContext.getAttributes().put(FACES_SCOPE_MAP, contextualStorage);
-        }
-
-        return contextualStorage;
+        return (ContextualStorage) facesContext.getAttributes().computeIfAbsent(FACES_SCOPE_MAP,
+                k -> new ContextualStorage(beanManager, false, false));
     }
     
     public ContextualStorage getContextualStorageNoCreate(BeanManager beanManager, FacesContext facesContext)
@@ -73,12 +67,9 @@ public class FacesScopeBeanHolder
         if (create)
         {
             ContextualStorage contextualStorage = getContextualStorage(beanManager, facesContext);
-            ContextualInstanceInfo info = contextualStorage.getStorage().get(FACES_SCOPE_MAP_INFO);
-            if (info == null)
-            {
-                info = new ContextualInstanceInfo<Object>();
-                contextualStorage.getStorage().put(FACES_SCOPE_MAP_INFO, info);
-            }
+            ContextualInstanceInfo info = contextualStorage.getStorage().computeIfAbsent(FACES_SCOPE_MAP_INFO,
+                    k -> new ContextualInstanceInfo<>());
+
             map = (Map<Object, Object>) info.getContextualInstance();
             if (map == null)
             {

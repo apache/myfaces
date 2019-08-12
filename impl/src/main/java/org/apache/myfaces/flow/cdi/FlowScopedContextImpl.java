@@ -74,16 +74,8 @@ public class FlowScopedContextImpl implements Context
     
     protected FlowScopeBeanHolder getFlowScopeBeanHolder(FacesContext facesContext)
     {
-        FlowScopeBeanHolder flowScopeBeanHolder = (FlowScopeBeanHolder) 
-            facesContext.getExternalContext().getApplicationMap().get(
-                "oam.flow.FlowScopeBeanHolder");
-        if (flowScopeBeanHolder == null)
-        {
-            flowScopeBeanHolder = CDIUtils.get(beanManager, FlowScopeBeanHolder.class);
-            facesContext.getExternalContext().getApplicationMap().put(
-                "oam.flow.FlowScopeBeanHolder", flowScopeBeanHolder);
-        }
-        return flowScopeBeanHolder;
+        return (FlowScopeBeanHolder) facesContext.getExternalContext().getApplicationMap().computeIfAbsent(
+                "oam.flow.FlowScopeBeanHolder", k -> CDIUtils.get(beanManager, FlowScopeBeanHolder.class));
     }
     
     public String getCurrentClientWindowFlowId(FacesContext facesContext)
@@ -139,9 +131,8 @@ public class FlowScopedContextImpl implements Context
         {
             return false;
         }
-        Flow flow = facesContext.getApplication().
-            getFlowHandler().getCurrentFlow(facesContext);
         
+        Flow flow = facesContext.getApplication().getFlowHandler().getCurrentFlow(facesContext);
         return flow != null;
     }
 
@@ -160,7 +151,7 @@ public class FlowScopedContextImpl implements Context
 
         checkActive(facesContext);
 
-        FlowReference reference = flowBeanReferences.get(((Bean)bean).getBeanClass());
+        FlowReference reference = flowBeanReferences.get(((Bean) bean).getBeanClass());
         if (reference != null)
         {
             String flowMapKey = FlowUtils.getFlowMapKey(facesContext, reference);
