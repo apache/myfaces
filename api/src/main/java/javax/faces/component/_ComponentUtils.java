@@ -61,31 +61,17 @@ class _ComponentUtils
 
     static UIComponent findParentNamingContainer(UIComponent component, boolean returnRootIfNotFound)
     {
-        UIComponent parent = component.getParent();
-        if (returnRootIfNotFound && parent == null)
+        NamingContainer result = closest(NamingContainer.class, component);
+        if (result != null)
         {
-            return component;
+            return (UIComponent) result;
         }
-        while (parent != null)
+        
+        if (returnRootIfNotFound)
         {
-            if (parent instanceof NamingContainer)
-            {
-                return parent;
-            }
-            if (returnRootIfNotFound)
-            {
-                UIComponent nextParent = parent.getParent();
-                if (nextParent == null)
-                {
-                    return parent; // Root
-                }
-                parent = nextParent;
-            }
-            else
-            {
-                parent = parent.getParent();
-            }
+            return getRootComponent(component);
         }
+        
         return null;
     }
     
@@ -134,7 +120,7 @@ class _ComponentUtils
      */
     static UIComponent findComponent(UIComponent findBase, String id, final char separatorChar)
     {
-        if (!(findBase instanceof NamingContainer) && idsAreEqual(id, findBase))
+        if (!(findBase instanceof NamingContainer) && id.equals(findBase.getId()))
         {
             return findBase;
         }
@@ -152,7 +138,7 @@ class _ComponentUtils
                         return find;
                     }
                 }
-                else if (idsAreEqual(id, facet))
+                else if (id.equals(facet.getId()))
                 {
                     return facet;
                 }
@@ -170,13 +156,13 @@ class _ComponentUtils
                     return find;
                 }
             }
-            else if (idsAreEqual(id, child))
+            else if (id.equals(child.getId()))
             {
                 return child;
             }
         }
 
-        if (findBase instanceof NamingContainer && idsAreEqual(id, findBase))
+        if (findBase instanceof NamingContainer && id.equals(findBase.getId()))
         {
             return findBase;
         }
@@ -246,20 +232,6 @@ class _ComponentUtils
             }
         }
         return null;
-    }
-
-    /*
-     * Return true if the specified component matches the provided id. This needs some quirks to handle components whose
-     * id value gets dynamically "tweaked", eg a UIData component whose id gets the current row index appended to it.
-     */
-    private static boolean idsAreEqual(String id, UIComponent cmp)
-    {
-        if (id.equals(cmp.getId()))
-        {
-            return true;
-        }
-
-        return false;
     }
 
     static void callValidators(FacesContext context, UIInput input, Object convertedValue)

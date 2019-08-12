@@ -67,8 +67,6 @@ public final class ClassUtils
     public static final Class DOUBLE_OBJECT_ARRAY_CLASS = Double[].class;
     public static final Class STRING_OBJECT_ARRAY_CLASS = String[].class;
 
-    public static ClassLoaderExtension [] classLoadingExtensions = new ClassLoaderExtension[0];
-
     protected static final String[] EMPTY_STRING = new String[0];
 
     protected static final String[] PRIMITIVE_NAMES = new String[] { "boolean", "byte", "char", "double", "float",
@@ -130,32 +128,6 @@ public final class ClassUtils
 
     //~ Methods ------------------------------------------------------------------------------------
 
-    public synchronized static void addClassLoadingExtension(ClassLoaderExtension extension, boolean top)
-    {
-      /**
-       * now at the first look this looks somewhat strange
-       * but to get the best performance access we assign new native
-       * arrays to our static variable
-       * 
-       * we have to synchronized nevertheless because if two threads try to register
-       * loaders at the same time none of them should get lost
-       */
-        ClassLoaderExtension [] retVal = new ClassLoaderExtension[classLoadingExtensions.length+1];
-        ArrayList extensions = new ArrayList(classLoadingExtensions.length+1);
-
-        if(!top)
-        {
-            extensions.addAll(Arrays.asList(classLoadingExtensions));
-        }
-        extensions.add(extension);
-        if(top)
-        {
-            extensions.addAll(Arrays.asList(classLoadingExtensions));
-        }    
-
-        classLoadingExtensions = (ClassLoaderExtension []) extensions.toArray(retVal);
-    }
-
     /**
      * Tries a Class.loadClass with the context class loader of the current thread first and
      * automatically falls back to the ClassUtils class loader (i.e. the loader of the
@@ -166,23 +138,8 @@ public final class ClassUtils
      * @throws NullPointerException if type is null
      * @throws ClassNotFoundException
      */
-    public static Class classForName(String type)
-        throws ClassNotFoundException
+    public static Class classForName(String type) throws ClassNotFoundException
     {
-        //we now assign the array to safekeep the reference on
-        // the local variable stack, that way
-        //we can avoid synchronisation calls
-        ClassLoaderExtension [] loaderPlugins = classLoadingExtensions;
-        for (int cnt = 0; cnt < loaderPlugins.length; cnt ++)
-        {
-            ClassLoaderExtension extension = loaderPlugins[cnt];
-            Class retVal = extension.forName(type);
-            if(retVal != null)
-            {
-                return retVal;
-            }
-        }
-
         Assert.notNull(type, "type");
         
         try
@@ -252,8 +209,7 @@ public final class ClassUtils
      * @throws NullPointerException if type is null
      * @throws ClassNotFoundException
      */
-    public static Class javaTypeToClass(String type)
-        throws ClassNotFoundException
+    public static Class javaTypeToClass(String type) throws ClassNotFoundException
     {
         Assert.notNull(type, "type");
 

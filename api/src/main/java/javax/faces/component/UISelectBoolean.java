@@ -74,6 +74,7 @@ public class UISelectBoolean extends UIInput
         {
             throw new NullPointerException("name");
         }
+        
         if (name.equals("selected"))
         {
             return super.getValueExpression("value");
@@ -91,6 +92,7 @@ public class UISelectBoolean extends UIInput
         {
             throw new NullPointerException("name");
         }
+        
         if (name.equals("selected"))
         {
             super.setValueExpression("value", binding);

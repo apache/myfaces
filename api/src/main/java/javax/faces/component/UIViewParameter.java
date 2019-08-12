@@ -113,7 +113,6 @@ public class UIViewParameter extends UIInput
         }
         
         // Otherwise, just return the local value.
-        
         return ((String) this.getLocalValue());
     }
 
@@ -235,7 +234,7 @@ public class UIViewParameter extends UIInput
         
         if ((getValueExpression ("value") == null) && isValid() && isLocalValueSet()) 
         {
-            context.getExternalContext().getRequestMap().put (getName(), getLocalValue());
+            context.getExternalContext().getRequestMap().put(getName(), getLocalValue());
         }
     }
 
@@ -271,8 +270,7 @@ public class UIViewParameter extends UIInput
         {
             log.finest("releaseRenderer rendererMap -> " + delegateRendererMap.toString());
         }
-        
-        
+
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         
         if (log.isLoggable(Level.FINEST))
@@ -280,7 +278,6 @@ public class UIViewParameter extends UIInput
             log.finest("releaseRenderer classLoader -> " + classLoader.toString() );
             log.finest("releaseRenderer renderer -> " + delegateRendererMap.get(classLoader));
         }
-        
         
         delegateRendererMap.remove(classLoader);
         

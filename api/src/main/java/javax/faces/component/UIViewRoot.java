@@ -941,8 +941,6 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         {
             // The try block must have a finally block that ensures that no FacesEvents remain in the event queue
             broadcastEvents(context, PhaseId.RESTORE_VIEW);
-
-            //visitTree(VisitContext.createVisitContext(context), new RestoreStateCallback());
         }
     }
 
@@ -1644,11 +1642,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         {
             return null;
         }
-        return _systemEventListeners.get (systemEvent);
+        return _systemEventListeners.get(systemEvent);
     }
     
-    public void subscribeToViewEvent(Class<? extends SystemEvent> systemEvent,
-            SystemEventListener listener)
+    public void subscribeToViewEvent(Class<? extends SystemEvent> systemEvent, SystemEventListener listener)
     {
         List<SystemEventListener> listeners;
         
@@ -1657,23 +1654,21 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         
         if (_systemEventListeners == null)
         {
-            _systemEventListeners = new HashMap<Class<? extends SystemEvent>, List<SystemEventListener>>();
+            _systemEventListeners = new HashMap<>();
         }
         
-        listeners = _systemEventListeners.get (systemEvent);
-        
+        listeners = _systemEventListeners.get(systemEvent);
         if (listeners == null)
         {
             listeners = new ArrayList<SystemEventListener>();
             
-            _systemEventListeners.put (systemEvent, listeners);
+            _systemEventListeners.put(systemEvent, listeners);
         }
         
         listeners.add (listener);
     }
     
-    public void unsubscribeFromViewEvent(Class<? extends SystemEvent> systemEvent,
-            SystemEventListener listener)
+    public void unsubscribeFromViewEvent(Class<? extends SystemEvent> systemEvent, SystemEventListener listener)
     {
         List<SystemEventListener> listeners;
         
@@ -1685,11 +1680,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             return;
         }
         
-        listeners = _systemEventListeners.get (systemEvent);
-        
+        listeners = _systemEventListeners.get(systemEvent);
         if (listeners != null)
         {
-            listeners.remove (listener);
+            listeners.remove(listener);
         }
     }
 
@@ -1771,8 +1765,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         // Gather the events and purge the event list to prevent concurrent modification during broadcasting
         int size = _events.size();
-        List<FacesEvent> anyPhase = new ArrayList<FacesEvent>(size);
-        List<FacesEvent> onPhase = new ArrayList<FacesEvent>(size);
+        List<FacesEvent> anyPhase = new ArrayList<>(size);
+        List<FacesEvent> onPhase = new ArrayList<>(size);
         
         for (int i = 0; i < size; i++)
         {
@@ -1807,10 +1801,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 
     private Map<PhaseId, boolean[]> _getListenerSuccessMap()
     {
-        // lazy init: 
         if (listenerSuccessMap == null)
         {
-            listenerSuccessMap = new HashMap<PhaseId, boolean[]>();
+            listenerSuccessMap = new HashMap<>();
         }
         return listenerSuccessMap;
     }

@@ -93,6 +93,7 @@ public class UISelectMany extends UIInput
         {
             throw new NullPointerException("name");
         }
+        
         if (name.equals("selectedValues"))
         {
             return super.getValueExpression("value");
@@ -110,6 +111,7 @@ public class UISelectMany extends UIInput
         {
             throw new NullPointerException("name");
         }
+        
         if (name.equals("selectedValues"))
         {
             super.setValueExpression("value", binding);
@@ -303,7 +305,7 @@ public class UISelectMany extends UIInput
 
         // run the validators if there are item values to validate, or 
         // if we are required to validate empty fields
-        if (hasValues  || shouldValidateEmptyFields(context))
+        if (hasValues || shouldValidateEmptyFields(context))
         {
             _ComponentUtils.callValidators(context, this, convertedValue);
         }
@@ -312,7 +314,7 @@ public class UISelectMany extends UIInput
         {
             // all selected values must match to the values of the available options
 
-            Collection<SelectItem> items = new ArrayList<SelectItem>();
+            Collection<SelectItem> items = new ArrayList<>();
             for (Iterator<SelectItem> iter = new _SelectItemsIterator(this, context); iter.hasNext();)
             {
                 items.add(iter.next());
@@ -327,8 +329,8 @@ public class UISelectMany extends UIInput
                 if (!_SelectItemsUtil.matchValue(context, this, itemValue, items.iterator(), converter)
                         || (
                             this.isRequired()
-                            && _SelectItemsUtil.isNoSelectionOption(context, this, itemValue,
-                                                                    items.iterator(), converter)
+                            && _SelectItemsUtil.isNoSelectionOption(context, this, itemValue, items.iterator(),
+                                    converter)
                         ))
                 {    
                     _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID,

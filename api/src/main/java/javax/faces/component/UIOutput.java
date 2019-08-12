@@ -119,8 +119,6 @@ public class UIOutput extends UIComponentBase implements ValueHolder
         {
             getStateHelper().put(PropertyKeys.converterSet,Boolean.TRUE);
         }
-        // The argument converter must be inspected for the presence of the ResourceDependency annotation.
-        //_handleAnnotations(FacesContext.getCurrentInstance(), converter);
     }
     
     private boolean _isSetConverter()
@@ -168,9 +166,9 @@ public class UIOutput extends UIComponentBase implements ValueHolder
             Object parentSaved = super.saveState(facesContext);
             Object converterSaved = null;
             boolean nullDelta = true;
-            if (!_isSetConverter() &&
-                _converter != null && 
-                _converter instanceof PartialStateHolder)
+            if (!_isSetConverter()
+                    && _converter != null
+                    && _converter instanceof PartialStateHolder)
             {
                 //Delta
                 StateHolder holder = (StateHolder) _converter;

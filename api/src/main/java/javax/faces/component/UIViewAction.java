@@ -107,7 +107,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
             ActionListener defaultActionListener = context.getApplication().getActionListener();
             if (defaultActionListener != null)
             {
-                String  viewIdBeforeAction = context.getViewRoot().getViewId();
+                String viewIdBeforeAction = context.getViewRoot().getViewId();
                 Boolean oldBroadcastProcessing = (Boolean) context.getAttributes().
                     get(BROADCAST_PROCESSING_KEY);
                 try
@@ -182,8 +182,9 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
         
         ActionEvent evt = new ViewActionEvent(this);
         String phase = getPhase();
-        PhaseId phaseId = (phase != null) ? PhaseId.phaseIdValueOf(phase) :
-            isImmediate() ? PhaseId.APPLY_REQUEST_VALUES : PhaseId.INVOKE_APPLICATION;
+        PhaseId phaseId = phase != null
+                ? PhaseId.phaseIdValueOf(phase)
+                : isImmediate() ? PhaseId.APPLY_REQUEST_VALUES : PhaseId.INVOKE_APPLICATION;
         evt.setPhaseId(phaseId);
         this.queueEvent(evt);
         
