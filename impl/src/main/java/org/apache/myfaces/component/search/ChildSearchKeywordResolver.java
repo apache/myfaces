@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.component.search;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.FacesException;
