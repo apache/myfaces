@@ -140,10 +140,7 @@ public class HtmlButtonRendererBase extends HtmlRenderer
         {
             childrenList = getChildren(uiComponent);
         }
-        else
-        {
-           childrenList = Collections.emptyList();
-        }
+
         List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
                 facesContext, childrenList, false, false);
 

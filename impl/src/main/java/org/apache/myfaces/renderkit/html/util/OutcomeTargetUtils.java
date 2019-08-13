@@ -98,7 +98,7 @@ public class OutcomeTargetUtils
                     true, false);
             if (validParams.size() > 0)
             {
-                parameters = new HashMap<String, List<String>>();
+                parameters = new HashMap<>();
             }
             for (int i = 0, size = validParams.size(); i < size; i++)
             {
@@ -111,7 +111,7 @@ public class OutcomeTargetUtils
                 }
                 else
                 {
-                    List<String> list = new ArrayList<String>(1);
+                    List<String> list = new ArrayList<>(1);
                     list.add(value.toString());
                     parameters.put(name, list);
                 }
@@ -124,7 +124,7 @@ public class OutcomeTargetUtils
         {
             if (parameters == null)
             {
-                parameters = new HashMap<String, List<String>>();
+                parameters = new HashMap<>();
             }
             if (!parameters.containsKey(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME))
             {
@@ -238,56 +238,61 @@ public class OutcomeTargetUtils
             boolean skipNullValue, boolean skipUnrendered, boolean skipNullName)
     {
         List<UIParameter> params = null;
-        for (int i = 0, size = children.size(); i < size; i++)
+        if (children != null)
         {
-            UIComponent child = children.get(i);
-            if (child instanceof UIParameter)
+            for (int i = 0, size = children.size(); i < size; i++)
             {
-                UIParameter param = (UIParameter) child;
-                // check for the disable attribute (since 2.0)
-                // and the render attribute (only if skipUnrendered is true)
-                if (param.isDisable() || (skipUnrendered && !param.isRendered()))
+                UIComponent child = children.get(i);
+                if (child instanceof UIParameter)
                 {
-                    // ignore this UIParameter and continue
-                    continue;
-                }
-
-                // check the name
-                String name = param.getName();
-                if (skipNullName && (name == null || RendererUtils.EMPTY_STRING.equals(name)))
-                {
-                    // warn for a null-name
-                    log.log(Level.WARNING, "The UIParameter " + ComponentUtils.getPathToComponent(param)
-                                    + " has a name of null or empty string and thus will not be added to the URL.");
-                    // and skip it
-                    continue;
-                }
-
-                // check the value
-                if (skipNullValue && param.getValue() == null)
-                {
-                    if (facesContext.isProjectStage(ProjectStage.Development))
+                    UIParameter param = (UIParameter) child;
+                    // check for the disable attribute (since 2.0)
+                    // and the render attribute (only if skipUnrendered is true)
+                    if (param.isDisable() || (skipUnrendered && !param.isRendered()))
                     {
-                        // inform the user about the null value when in Development stage
-                        log.log(Level.INFO, "The UIParameter " + ComponentUtils.getPathToComponent(param)
-                                        + " has a value of null and thus will not be added to the URL.");
+                        // ignore this UIParameter and continue
+                        continue;
                     }
-                    // skip a null-value
-                    continue;
-                }
 
-                // add the param
-                if (params == null)
-                {
-                    params = new ArrayList<UIParameter>();
+                    // check the name
+                    String name = param.getName();
+                    if (skipNullName && (name == null || RendererUtils.EMPTY_STRING.equals(name)))
+                    {
+                        // warn for a null-name
+                        log.log(Level.WARNING, "The UIParameter " + ComponentUtils.getPathToComponent(param)
+                                        + " has a name of null or empty string and thus will not be added to the URL.");
+                        // and skip it
+                        continue;
+                    }
+
+                    // check the value
+                    if (skipNullValue && param.getValue() == null)
+                    {
+                        if (facesContext.isProjectStage(ProjectStage.Development))
+                        {
+                            // inform the user about the null value when in Development stage
+                            log.log(Level.INFO, "The UIParameter " + ComponentUtils.getPathToComponent(param)
+                                            + " has a value of null and thus will not be added to the URL.");
+                        }
+                        // skip a null-value
+                        continue;
+                    }
+
+                    // add the param
+                    if (params == null)
+                    {
+                        params = new ArrayList<>();
+                    }
+                    params.add(param);
                 }
-                params.add(param);
             }
         }
+
         if (params == null)
         {
             params = Collections.emptyList();
         }
+
         return params;
     }
 

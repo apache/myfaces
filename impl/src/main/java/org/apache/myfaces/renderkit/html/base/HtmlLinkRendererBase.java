@@ -636,10 +636,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
         {
             childrenList = getChildren(component);
         }
-        else
-        {
-           childrenList = Collections.emptyList();
-        }
+
         List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
                 context, childrenList, false, false);
         for (int j = 0, size = validParams.size(); j < size; j++) 
@@ -715,10 +712,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
         {
             childrenList = getChildren(linkComponent);
         }
-        else
-        {
-           childrenList = Collections.emptyList();
-        }
+
         List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
                 facesContext, childrenList, false, false);
         

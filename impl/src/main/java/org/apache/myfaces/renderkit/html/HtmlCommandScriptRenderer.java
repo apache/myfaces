@@ -343,8 +343,14 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
             }
         }
         
+        List<UIComponent> childrenList = null;
+        if (getChildCount(commandScript) > 0)
+        {
+            childrenList = getChildren(commandScript);
+        }
+
         List<UIParameter> uiParams = HtmlRendererUtils.getValidUIParameterChildren(
-                facesContext, commandScript.getChildren(), false, false);
+                facesContext, childrenList, false, false);
         if (uiParams != null && uiParams.size() > 0)
         {
             for (int i = 0, size = uiParams.size(); i < size; i++)

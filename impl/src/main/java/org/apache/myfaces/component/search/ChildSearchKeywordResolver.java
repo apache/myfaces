@@ -55,11 +55,10 @@ public class ChildSearchKeywordResolver extends SearchKeywordResolver
                           childNumber + "\". Expression: \"" + keyword + '"');
             }
 
-            List<UIComponent> list = current.getChildren();
             int count = 0;
             for (int i = 0; i < current.getChildCount(); i++)
             {
-                if (! (list.get(i) instanceof UntargetableComponent))
+                if (!(current.getChildren().get(i) instanceof UntargetableComponent))
                 {
                     count++;
                 }
