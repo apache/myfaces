@@ -32,48 +32,44 @@ import java.util.Locale;
 @JSFConverter
 public class DoubleConverter implements Converter
 {
-    // API FIELDS
     public static final String CONVERTER_ID = "javax.faces.Double";
     public static final String STRING_ID = "javax.faces.converter.STRING";
     public static final String DOUBLE_ID = "javax.faces.converter.DoubleConverter.DOUBLE";
 
-    // CONSTRUCTORS
     public DoubleConverter()
     {
     }
 
-    // METHODS
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
     {
-        if (facesContext == null)
+        if (facesContext == null || uiComponent == null)
         {
-            throw new NullPointerException("facesContext");
-        }
-        if (uiComponent == null)
-        {
-            throw new NullPointerException("uiComponent");
+            throw new NullPointerException(); // should never happen
         }
 
-        if (value != null)
+        if (value == null)
         {
-            value = value.trim();
-            if (value.length() > 0)
-            {
-                try
-                {
-                    value = fixLocale(facesContext, value);
-                    return Double.valueOf(value);
-                }
-                catch (NumberFormatException e)
-                {
-                    throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                   DOUBLE_ID,
-                                   new Object[]{value,"4214",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
-                }
-            }
+            return null;
         }
-        return null;
+        
+        value = value.trim();
+        if (value.length() < 1)
+        {
+            return null;
+        }
+        
+        try
+        {
+            value = fixLocale(facesContext, value);
+            return Double.valueOf(value);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
+                           DOUBLE_ID,
+                           new Object[]{value,"4214",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
+        }
     }
 
     /**
@@ -132,23 +128,21 @@ public class DoubleConverter implements Converter
     @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
     {
-        if (facesContext == null)
+        if (facesContext == null || uiComponent == null)
         {
-            throw new NullPointerException("facesContext");
-        }
-        if (uiComponent == null)
-        {
-            throw new NullPointerException("uiComponent");
+            throw new NullPointerException(); // should never happen
         }
 
         if (value == null)
         {
             return "";
         }
+
         if (value instanceof String)
         {
-            return (String)value;
+            return (String) value;
         }
+
         try
         {
             return Double.toString(((Number)value).doubleValue());
