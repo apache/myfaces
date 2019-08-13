@@ -104,7 +104,7 @@ public class IterableDataModel<E> extends DataModel<E>
             {
                 if (_list == null)
                 {
-                    _list = new ArrayList<E>();
+                    _list = new ArrayList<>();
                 }
                 if (_iterator == null && _iterable != null)
                 {

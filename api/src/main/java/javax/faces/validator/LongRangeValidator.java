@@ -99,8 +99,7 @@ public class LongRangeValidator
         double dvalue = parseLongValue(facesContext, uiComponent,value);
         if (_minimum != null && _maximum != null)
         {
-            if (dvalue < _minimum.longValue() ||
-                dvalue > _maximum.longValue())
+            if (dvalue < _minimum || dvalue > _maximum)
             {
                 Object[] args = {_minimum, _maximum,_MessageUtils.getLabel(facesContext, uiComponent)};
                 throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext,
@@ -109,7 +108,7 @@ public class LongRangeValidator
         }
         else if (_minimum != null)
         {
-            if (dvalue < _minimum.longValue())
+            if (dvalue < _minimum)
             {
                 Object[] args = {_minimum,_MessageUtils.getLabel(facesContext, uiComponent)};
                 throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, MINIMUM_MESSAGE_ID, args));
@@ -117,7 +116,7 @@ public class LongRangeValidator
         }
         else if (_maximum != null)
         {
-            if (dvalue > _maximum.longValue())
+            if (dvalue > _maximum)
             {
                 Object[] args = {_maximum,_MessageUtils.getLabel(facesContext, uiComponent)};
                 throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, MAXIMUM_MESSAGE_ID, args));
@@ -155,7 +154,7 @@ public class LongRangeValidator
     @JSFProperty(deferredValueType="java.lang.Long")
     public long getMaximum()
     {
-        return _maximum != null ? _maximum.longValue() : Long.MAX_VALUE;
+        return _maximum != null ? _maximum : Long.MAX_VALUE;
     }
 
     public void setMaximum(long maximum)

@@ -98,8 +98,7 @@ public class DoubleRangeValidator
         double dvalue = parseDoubleValue(facesContext, uiComponent,value);
         if (_minimum != null && _maximum != null)
         {
-            if (dvalue < _minimum.doubleValue() ||
-                dvalue > _maximum.doubleValue())
+            if (dvalue < _minimum || dvalue > _maximum)
             {
                 Object[] args = {_minimum, _maximum,_MessageUtils.getLabel(facesContext, uiComponent)};
                 throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, NOT_IN_RANGE_MESSAGE_ID,
@@ -108,7 +107,7 @@ public class DoubleRangeValidator
         }
         else if (_minimum != null)
         {
-            if (dvalue < _minimum.doubleValue())
+            if (dvalue < _minimum)
             {
                 Object[] args = {_minimum,_MessageUtils.getLabel(facesContext, uiComponent)};
                 throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, MINIMUM_MESSAGE_ID, args));
@@ -116,7 +115,7 @@ public class DoubleRangeValidator
         }
         else if (_maximum != null)
         {
-            if (dvalue > _maximum.doubleValue())
+            if (dvalue > _maximum)
             {
                 Object[] args = {_maximum,_MessageUtils.getLabel(facesContext, uiComponent)};
                 throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, MAXIMUM_MESSAGE_ID, args));
@@ -153,12 +152,12 @@ public class DoubleRangeValidator
     @JSFProperty(deferredValueType="java.lang.Double")
     public double getMaximum()
     {
-        return _maximum != null ? _maximum.doubleValue() : Double.MAX_VALUE;
+        return _maximum != null ? _maximum : Double.MAX_VALUE;
     }
 
     public void setMaximum(double maximum)
     {
-        _maximum = new Double(maximum);
+        _maximum = Double.valueOf(maximum);
         clearInitialState();
     }
 
@@ -169,12 +168,12 @@ public class DoubleRangeValidator
     @JSFProperty(deferredValueType="java.lang.Double")
     public double getMinimum()
     {
-        return _minimum != null ? _minimum.doubleValue() : Double.MIN_VALUE;
+        return _minimum != null ? _minimum : Double.MIN_VALUE;
     }
 
     public void setMinimum(double minimum)
     {
-        _minimum = new Double(minimum);
+        _minimum = Double.valueOf(minimum);
         clearInitialState();
     }
 

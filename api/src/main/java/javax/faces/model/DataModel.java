@@ -62,7 +62,7 @@ public abstract class DataModel<E> implements Iterable<E>
         }
         if (_listeners == null)
         {
-            _listeners = new ArrayList<DataModelListener>();
+            _listeners = new ArrayList<>();
         }
         _listeners.add(listener);
         _cachedListenersArray = null;
