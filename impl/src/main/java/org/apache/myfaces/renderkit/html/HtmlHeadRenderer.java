@@ -48,6 +48,13 @@ public class HtmlHeadRenderer extends Renderer
     private final static String[] HEAD_PASSTHROUGH_ATTRIBUTES = { HTML.DIR_ATTR,
             HTML.LANG_ATTR, PROFILE_ATTR};
 
+    private MyfacesConfig myfacesConfig;
+    
+    public HtmlHeadRenderer()
+    {
+        myfacesConfig = MyfacesConfig.getCurrentInstance();
+    }
+    
     @Override
     public void encodeBegin(FacesContext facesContext, UIComponent component) throws IOException
     {
@@ -77,8 +84,7 @@ public class HtmlHeadRenderer extends Renderer
         
         writer.endElement(HTML.HEAD_ELEM);
 
-        if (MyfacesConfig.getCurrentInstance(facesContext).isEarlyFlushEnabled()
-                && facesContext.isProjectStage(ProjectStage.Production))
+        if (myfacesConfig.isEarlyFlushEnabled() && facesContext.isProjectStage(ProjectStage.Production))
         {
             writer.flush();
         }

@@ -101,7 +101,7 @@ public class ELResolverBuilderForFaces extends ELResolverBuilder
             list.add(ImplicitObjectResolver.makeResolverForFaces());
         }
             
-        list.add(new CompositeComponentELResolver());
+        list.add(new CompositeComponentELResolver(config));
 
         addFromRuntimeConfig(list);
 

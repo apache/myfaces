@@ -52,6 +52,13 @@ public final class CompositeComponentELResolver extends ELResolver
     
     private static final String COMPOSITE_COMPONENT_ATTRIBUTES_MAPS = 
         "org.apache.myfaces.COMPOSITE_COMPONENT_ATTRIBUTES_MAPS";
+    
+    private MyfacesConfig myfacesConfig;
+    
+    public CompositeComponentELResolver(MyfacesConfig myfacesConfig)
+    {
+        this.myfacesConfig = myfacesConfig;
+    }
 
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base)
@@ -84,7 +91,8 @@ public final class CompositeComponentELResolver extends ELResolver
             {
                 return null;
             }
-            if (!MyfacesConfig.getCurrentInstance(facesContext).isStrictJsf2CCELResolver())
+
+            if (!myfacesConfig.isStrictJsf2CCELResolver())
             {
                 // handle JSF 2.2 spec revisions:
                 // code resembles that found in Mojarra because it originates from

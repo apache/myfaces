@@ -70,7 +70,7 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
         _renderers = new ConcurrentHashMap<>(64, 0.75f, 1);
         _responseStateManager = new HtmlResponseStateManager();
         _clientBehaviorRenderers = new HashMap<>();
-        myfacesConfig = MyfacesConfig.getCurrentInstance(FacesContext.getCurrentInstance());
+        myfacesConfig = MyfacesConfig.getCurrentInstance();
     }
 
     // ~ Methods ------------------------------------------------------------------------------------

@@ -24,6 +24,7 @@ import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.el.CompositeComponentExpressionHolder;
+import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.el.resolver.CompositeComponentELResolver;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
@@ -59,7 +60,7 @@ public class CompositeComponentBeanValidationTest extends FaceletTestCase
         UIComponent compositeComponent = form.getChildren().get(0);
 
         // "resolve" #{cc.attrs}
-        CompositeComponentELResolver resolver = new CompositeComponentELResolver();
+        CompositeComponentELResolver resolver = new CompositeComponentELResolver(MyfacesConfig.getCurrentInstance());
         Object attrs = resolver.getValue(facesContext.getELContext(), compositeComponent, "attrs");
         
         // the resolved value has to be a CompositeComponentExpressionHolder

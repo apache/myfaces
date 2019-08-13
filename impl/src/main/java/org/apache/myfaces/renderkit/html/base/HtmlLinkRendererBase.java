@@ -64,6 +64,13 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
     private static final String SB_ADD_CHILD_PARAMETERS = HtmlLinkRendererBase.class.getName() +
             "#addChildParameters";
 
+    private MyfacesConfig myfacesConfig;
+    
+    public HtmlLinkRendererBase()
+    {
+        myfacesConfig = MyfacesConfig.getCurrentInstance();
+    }
+    
     @Override
     public boolean getRendersChildren()
     {
@@ -703,8 +710,6 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                                           String charEncoding)
             throws IOException
     {
-        boolean strictXhtmlLinks
-                = MyfacesConfig.getCurrentInstance(facesContext).isStrictXhtmlLinks();
         List<UIComponent> childrenList = null;
         if (getChildCount(linkComponent) > 0)
         {
@@ -722,7 +727,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             UIParameter param = validParams.get(i);
             String name = param.getName();
             Object value = param.getValue();
-            addParameterToHref(name, value, hrefBuf, firstParameter, charEncoding, strictXhtmlLinks);
+            addParameterToHref(name, value, hrefBuf, firstParameter, charEncoding, myfacesConfig.isStrictXhtmlLinks());
             firstParameter = false;
         }
     }

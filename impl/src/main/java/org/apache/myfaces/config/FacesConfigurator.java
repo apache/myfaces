@@ -194,6 +194,7 @@ public class FacesConfigurator
     private FacesConfigData _dispenser;
 
     private RuntimeConfig _runtimeConfig;
+    private MyfacesConfig _myfacesConfig;
     
     private Application _application;
     
@@ -216,6 +217,9 @@ public class FacesConfigurator
         {
             _externalContext.getApplicationMap().put(INJECTED_BEAN_STORAGE_KEY, new CopyOnWriteArrayList());
         }
+        
+        _myfacesConfig = MyfacesConfig.getCurrentInstance(_externalContext);
+        _runtimeConfig = RuntimeConfig.getCurrentInstance(_externalContext);
     }
 
     /**
@@ -664,13 +668,9 @@ public class FacesConfigurator
         application.setSearchExpressionHandler(ClassUtils.buildApplicationObject(SearchExpressionHandler.class,
                 dispenser.getSearchExpressionHandlerIterator(),
                 application.getSearchExpressionHandler()));
-        
-        RuntimeConfig runtimeConfig = getRuntimeConfig();
-        
+                
         for (SystemEventListener systemEventListener : dispenser.getSystemEventListeners())
         {
-
-
             try
             {
                 //note here used to be an instantiation to deal with the explicit source type in the registration,
@@ -684,7 +684,7 @@ public class FacesConfigurator
                 javax.faces.event.SystemEventListener listener = (javax.faces.event.SystemEventListener) 
                         ClassUtils.newInstance(systemEventListener.getSystemEventListenerClass());
                 _callInjectAndPostConstruct(listener);
-                runtimeConfig.addInjectedObject(listener);
+                _runtimeConfig.addInjectedObject(listener);
                 if (systemEventListener.getSourceClass() != null && systemEventListener.getSourceClass().length() > 0)
                 {
                     application.subscribeToEvent(
@@ -804,7 +804,7 @@ public class FacesConfigurator
                 for (String contract : mapping.getContractList())
                 {
                     String[] contracts = StringUtils.trim(StringUtils.splitShortString(contract, ' '));
-                    runtimeConfig.addContractMapping(urlPattern, contracts);
+                    _runtimeConfig.addContractMapping(urlPattern, contracts);
                 }
             }
         }
@@ -838,21 +838,6 @@ public class FacesConfigurator
         {
             log.log(Level.INFO, "Exception on PreDestroy", ex);
         }
-    }
-
-
-    protected RuntimeConfig getRuntimeConfig()
-    {
-        if (_runtimeConfig == null)
-        {
-            _runtimeConfig = RuntimeConfig.getCurrentInstance(_externalContext);
-        }
-        return _runtimeConfig;
-    }
-
-    public void setRuntimeConfig(RuntimeConfig runtimeConfig)
-    {
-        _runtimeConfig = runtimeConfig;
     }
 
     private void configureRuntimeConfig()
@@ -932,8 +917,7 @@ public class FacesConfigurator
             }
         }
 
-        String elResolverComparatorClass =
-                MyfacesConfig.getCurrentInstance(_externalContext).getElResolverComparator();
+        String elResolverComparatorClass = _myfacesConfig.getElResolverComparator();
         if (elResolverComparatorClass != null && !elResolverComparatorClass.isEmpty())
         {
             try
@@ -958,8 +942,7 @@ public class FacesConfigurator
             runtimeConfig.setELResolverComparator(null);
         }
 
-        String elResolverPredicateClass =
-                MyfacesConfig.getCurrentInstance(_externalContext).getElResolverPredicate();
+        String elResolverPredicateClass = _myfacesConfig.getElResolverPredicate();
         if (elResolverPredicateClass != null && !elResolverPredicateClass.isEmpty())
         {
             try
@@ -1250,8 +1233,8 @@ public class FacesConfigurator
 
             // if ProjectStage is Development, install the DebugPhaseListener
             FacesContext facesContext = getFacesContext();
-            if (facesContext.isProjectStage(ProjectStage.Development) &&
-                    MyfacesConfig.getCurrentInstance(facesContext).isDebugPhaseListenerEnabled())
+            if (facesContext.isProjectStage(ProjectStage.Development)
+                    && _myfacesConfig.isDebugPhaseListenerEnabled())
             {
                 lifecycle.addPhaseListener(new DebugPhaseListener());
             }

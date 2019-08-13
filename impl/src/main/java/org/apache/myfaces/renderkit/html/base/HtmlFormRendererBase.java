@@ -49,6 +49,13 @@ public class HtmlFormRendererBase extends HtmlRenderer
 
     private static final String SHARED_STRING_BUILDER = HtmlFormRendererBase.class.getName() + ".SHARED_STRING_BUILDER";
     
+    private MyfacesConfig myfacesConfig;
+    
+    public HtmlFormRendererBase()
+    {
+        myfacesConfig = MyfacesConfig.getCurrentInstance();
+    }
+    
     @Override
     public void encodeBegin(FacesContext facesContext, UIComponent component) throws IOException
     {
@@ -145,9 +152,8 @@ public class HtmlFormRendererBase extends HtmlRenderer
         // included for backward compatibility to the 1.1.1 patch (JIRA MYFACES-1276)
         // However, might be needed in the future
         beforeFormElementsStart(facesContext, component);
-        
-        MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext);
-        if (config.isRenderFormViewStateAtBegin())
+
+        if (myfacesConfig.isRenderFormViewStateAtBegin())
         {
             renderViewStateAndHiddenFields(facesContext, component);
         }
@@ -177,8 +183,7 @@ public class HtmlFormRendererBase extends HtmlRenderer
 
         beforeFormElementsEnd(facesContext, component);
 
-        MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext);
-        if (!config.isRenderFormViewStateAtBegin())
+        if (!myfacesConfig.isRenderFormViewStateAtBegin())
         {
             renderViewStateAndHiddenFields(facesContext, component);
         }
