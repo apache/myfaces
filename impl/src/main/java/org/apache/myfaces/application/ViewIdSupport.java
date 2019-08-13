@@ -67,15 +67,9 @@ public class ViewIdSupport
 
     public static ViewIdSupport getInstance(FacesContext facesContext)
     {
-        ViewIdSupport instance = (ViewIdSupport)
-                facesContext.getExternalContext().getApplicationMap().get(INSTANCE_KEY);
-        if (instance == null)
-        {
-            instance = new ViewIdSupport(facesContext);
-            facesContext.getExternalContext().getApplicationMap().put(INSTANCE_KEY, instance);
-        }
-
-        return instance;
+        return (ViewIdSupport)
+                facesContext.getExternalContext().getApplicationMap().computeIfAbsent(INSTANCE_KEY,
+                        k -> new ViewIdSupport(facesContext));
     }
     
     protected ViewIdSupport(FacesContext facesContext)

@@ -2512,7 +2512,7 @@ public class ApplicationImpl extends Application
                  * 
                  * Registrations found:
                  */
-                _lstSystemEventListener = new CopyOnWriteArrayList<SystemEventListener>();
+                _lstSystemEventListener = new CopyOnWriteArrayList<>();
             }
 
             return _lstSystemEventListener;
@@ -2522,22 +2522,15 @@ public class ApplicationImpl extends Application
         {
             if (_sourceClassMap == null)
             {
-                _sourceClassMap = new ConcurrentHashMap<Class<?>, List<SystemEventListener>>();
+                _sourceClassMap = new ConcurrentHashMap<>();
             }
 
-            List<SystemEventListener> list = _sourceClassMap.get(sourceClass);
-            if (list == null)
-            {
-                /*
-                 * TODO: Check if modification occurs often or not, might have to use a synchronized list instead.
-                 * 
-                 * Registrations found:
-                 */
-                list = new CopyOnWriteArrayList<SystemEventListener>();
-                _sourceClassMap.put(sourceClass, list);
-            }
-
-            return list;
+            /*
+             * TODO: Check if modification occurs often or not, might have to use a synchronized list instead.
+             * 
+             * Registrations found:
+             */
+            return _sourceClassMap.computeIfAbsent(sourceClass, k -> new CopyOnWriteArrayList<>());
         }
     }
     
