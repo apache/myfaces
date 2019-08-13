@@ -82,7 +82,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         RuntimeConfig runtimeConfig = RuntimeConfig
                 .getCurrentInstance(externalContext);
 
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl config = _facesConfigUnmarshaller
+        org.apache.myfaces.config.impl.element.FacesConfigImpl config = _facesConfigUnmarshaller
                 .getFacesConfig(getClass().getResourceAsStream(file), file);
 
         for (NavigationRule rule : config.getNavigationRules())

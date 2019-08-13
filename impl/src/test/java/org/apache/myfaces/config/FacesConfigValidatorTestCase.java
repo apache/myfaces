@@ -24,7 +24,7 @@ import java.util.List;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.impl.FacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
-import org.apache.myfaces.config.impl.elements.FacesConfigImpl;
+import org.apache.myfaces.config.impl.element.FacesConfigImpl;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 public class FacesConfigValidatorTestCase extends AbstractJsfTestCase

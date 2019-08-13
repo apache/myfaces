@@ -51,7 +51,7 @@ import org.apache.myfaces.config.element.ResourceBundle;
 import org.apache.myfaces.config.element.SystemEventListener;
 import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
-import org.apache.myfaces.config.impl.elements.RenderKitImpl;
+import org.apache.myfaces.config.impl.element.RenderKitImpl;
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>

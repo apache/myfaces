@@ -17,10 +17,10 @@ package org.apache.myfaces.config;
 
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.element.OrderSlot;
-import org.apache.myfaces.config.impl.elements.AbsoluteOrderingImpl;
-import org.apache.myfaces.config.impl.elements.ConfigOthersSlotImpl;
-import org.apache.myfaces.config.impl.elements.FacesConfigNameSlotImpl;
-import org.apache.myfaces.config.impl.elements.OrderingImpl;
+import org.apache.myfaces.config.impl.element.AbsoluteOrderingImpl;
+import org.apache.myfaces.config.impl.element.ConfigOthersSlotImpl;
+import org.apache.myfaces.config.impl.element.FacesConfigNameSlotImpl;
+import org.apache.myfaces.config.impl.element.OrderingImpl;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
 import javax.faces.FacesException;
@@ -125,11 +125,11 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     {
         FacesConfig cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
         "empty-config.xml"), "empty-config.xml");        
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgA = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgC = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgD = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgE = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgA = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgC = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgD = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgE = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
         
         cfgA.setName("A");
         cfgB.setName("B");
@@ -199,11 +199,11 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
      */
     public void testMaxConditionsOrdering() throws Exception
     {
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfg = _impl.getFacesConfig(getClass().getResourceAsStream(
         "empty-config.xml"), "empty-config.xml");        
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgA = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgC = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgA = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgC = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
 
         cfgA.setName("A");
         cfgB.setName("B");
@@ -248,12 +248,12 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     
     public void testEx1()
     {      
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgA = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgC = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgD = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgE = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgF = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgA = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgC = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgD = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgE = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgF = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
 
         cfgA.setName("A");
         cfgB.setName("B");
@@ -299,12 +299,12 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     
     public void testEx2()
     {
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfg = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgC = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgD = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgE = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgF = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfg = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgC = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgD = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgE = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgF = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
 
         cfgB.setName("B");
         cfgC.setName("C");
@@ -345,10 +345,10 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     
     public void testEx3()
     {
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgA = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgC = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgD = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgA = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgB = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgC = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgD = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
 
         cfgA.setName("A");
         cfgB.setName("B");
@@ -856,9 +856,9 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
     
     public void testAbsoluteOrdering1() throws Exception
     {
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgAbs = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgMK = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-        org.apache.myfaces.config.impl.elements.FacesConfigImpl cfgOWB = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgAbs = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgMK = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+        org.apache.myfaces.config.impl.element.FacesConfigImpl cfgOWB = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
 
         cfgMK.setName("cz_markoc_faces");
         
