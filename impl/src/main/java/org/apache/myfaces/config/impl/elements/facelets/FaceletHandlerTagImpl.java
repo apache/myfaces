@@ -21,9 +21,6 @@ package org.apache.myfaces.config.impl.elements.facelets;
 import java.io.Serializable;
 import org.apache.myfaces.config.element.facelets.FaceletHandlerTag;
 
-/**
- *
- */
 public class FaceletHandlerTagImpl extends FaceletHandlerTag implements Serializable
 {
     private String handlerClass;
@@ -37,6 +34,7 @@ public class FaceletHandlerTagImpl extends FaceletHandlerTag implements Serializ
         this.handlerClass = handlerClass;
     }
 
+    @Override
     public String getHandlerClass()
     {
         return handlerClass;

@@ -21,9 +21,6 @@ package org.apache.myfaces.config.impl.elements.facelets;
 import java.io.Serializable;
 import org.apache.myfaces.config.element.facelets.FaceletValidatorTag;
 
-/**
- *
- */
 public class FaceletValidatorTagImpl extends FaceletValidatorTag implements Serializable
 {
     private String validatorId;
@@ -44,6 +41,7 @@ public class FaceletValidatorTagImpl extends FaceletValidatorTag implements Seri
         this.handlerClass = handlerClass;
     }
 
+    @Override
     public String getValidatorId()
     {
         return validatorId;
@@ -54,6 +52,7 @@ public class FaceletValidatorTagImpl extends FaceletValidatorTag implements Seri
         this.validatorId = validatorId;
     }
 
+    @Override
     public String getHandlerClass()
     {
         return handlerClass;

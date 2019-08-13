@@ -21,9 +21,6 @@ package org.apache.myfaces.config.impl.elements.facelets;
 import java.io.Serializable;
 import org.apache.myfaces.config.element.facelets.FaceletComponentTag;
 
-/**
- *
- */
 public class FaceletComponentTagImpl extends FaceletComponentTag implements Serializable
 {
     private String componentType;
@@ -43,6 +40,7 @@ public class FaceletComponentTagImpl extends FaceletComponentTag implements Seri
         this.resourceId = resourceId;
     }
 
+    @Override
     public String getComponentType()
     {
         return componentType;
@@ -53,6 +51,7 @@ public class FaceletComponentTagImpl extends FaceletComponentTag implements Seri
         this.componentType = componentType;
     }
 
+    @Override
     public String getResourceId()
     {
         return resourceId;
@@ -63,6 +62,7 @@ public class FaceletComponentTagImpl extends FaceletComponentTag implements Seri
         this.resourceId = resourceId;
     }
 
+    @Override
     public String getHandlerClass()
     {
         return handlerClass;
@@ -73,6 +73,7 @@ public class FaceletComponentTagImpl extends FaceletComponentTag implements Seri
         this.handlerClass = handlerClass;
     }
 
+    @Override
     public String getRendererType()
     {
         return rendererType;

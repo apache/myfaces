@@ -22,9 +22,6 @@ import java.io.Serializable;
 import org.apache.myfaces.config.element.facelets.FaceletTag;
 import org.apache.myfaces.config.element.facelets.FaceletTagDefinition;
 
-/**
- *
- */
 public class FaceletTagImpl extends FaceletTag implements Serializable
 {
     private String name;
@@ -46,6 +43,7 @@ public class FaceletTagImpl extends FaceletTag implements Serializable
         this.name = name;
     }
 
+    @Override
     public String getName()
     {
         return name;
@@ -56,6 +54,7 @@ public class FaceletTagImpl extends FaceletTag implements Serializable
         this.name = name;
     }
 
+    @Override
     public FaceletTagDefinition getTagDefinition()
     {
         return tagDefinition;

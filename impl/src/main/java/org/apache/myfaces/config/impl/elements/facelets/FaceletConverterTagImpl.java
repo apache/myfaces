@@ -21,9 +21,6 @@ package org.apache.myfaces.config.impl.elements.facelets;
 import java.io.Serializable;
 import org.apache.myfaces.config.element.facelets.FaceletConverterTag;
 
-/**
- *
- */
 public class FaceletConverterTagImpl extends FaceletConverterTag implements Serializable
 {
     private String converterId;
@@ -44,6 +41,7 @@ public class FaceletConverterTagImpl extends FaceletConverterTag implements Seri
         this.handlerClass = handlerClass;
     }
 
+    @Override
     public String getConverterId()
     {
         return converterId;
@@ -54,6 +52,7 @@ public class FaceletConverterTagImpl extends FaceletConverterTag implements Seri
         this.converterId = converterId;
     }
 
+    @Override
     public String getHandlerClass()
     {
         return handlerClass;

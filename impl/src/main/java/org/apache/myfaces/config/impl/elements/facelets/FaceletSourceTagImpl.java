@@ -37,6 +37,7 @@ public class FaceletSourceTagImpl extends FaceletSourceTag implements Serializab
         this.source = source;
     }
 
+    @Override
     public String getSource()
     {
         return source;

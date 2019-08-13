@@ -21,9 +21,6 @@ package org.apache.myfaces.config.impl.elements.facelets;
 import java.io.Serializable;
 import org.apache.myfaces.config.element.facelets.FaceletFunction;
 
-/**
- *
- */
 public class FaceletFunctionImpl extends FaceletFunction implements Serializable
 {
     private String functionName;
@@ -41,6 +38,7 @@ public class FaceletFunctionImpl extends FaceletFunction implements Serializable
         this.functionSignature = functionSignature;
     }
 
+    @Override
     public String getFunctionName()
     {
         return functionName;
@@ -51,6 +49,7 @@ public class FaceletFunctionImpl extends FaceletFunction implements Serializable
         this.functionName = functionName;
     }
 
+    @Override
     public String getFunctionClass()
     {
         return functionClass;
@@ -61,6 +60,7 @@ public class FaceletFunctionImpl extends FaceletFunction implements Serializable
         this.functionClass = functionClass;
     }
 
+    @Override
     public String getFunctionSignature()
     {
         return functionSignature;

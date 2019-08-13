@@ -20,27 +20,22 @@ package org.apache.myfaces.config.impl.elements.facelets;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apache.myfaces.config.element.facelets.FaceletFunction;
 import org.apache.myfaces.config.element.facelets.FaceletTag;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 
-/**
- *
- */
 public class FaceletTagLibraryImpl extends FaceletTagLibrary implements Serializable
 {
     private String namespace;
     private String shortName;
     private String compositeLibraryName;
     private String libraryClass;
-    private List<FaceletTag> tags = new ArrayList<FaceletTag>();
-    private List<FaceletFunction> functions = new ArrayList<FaceletFunction>();
+    private List<FaceletTag> tags;
+    private List<FaceletFunction> functions;
 
-    public FaceletTagLibraryImpl()
-    {
-    }
-
+    @Override
     public String getNamespace()
     {
         return namespace;
@@ -51,6 +46,7 @@ public class FaceletTagLibraryImpl extends FaceletTagLibrary implements Serializ
         this.namespace = namespace;
     }
 
+    @Override
     public String getShortName()
     {
         return shortName;
@@ -61,6 +57,7 @@ public class FaceletTagLibraryImpl extends FaceletTagLibrary implements Serializ
         this.shortName = shortName;
     }
 
+    @Override
     public String getCompositeLibraryName()
     {
         return compositeLibraryName;
@@ -71,6 +68,7 @@ public class FaceletTagLibraryImpl extends FaceletTagLibrary implements Serializ
         this.compositeLibraryName = compositeLibraryName;
     }
 
+    @Override
     public String getLibraryClass()
     {
         return libraryClass;
@@ -81,25 +79,42 @@ public class FaceletTagLibraryImpl extends FaceletTagLibrary implements Serializ
         this.libraryClass = libraryClass;
     }
 
+    @Override
     public List<FaceletTag> getTags()
     {
+        if (tags == null)
+        {
+            return Collections.emptyList();
+        }
         return tags;
     }
 
     public void addTag(FaceletTag tag)
     {
-        this.tags.add(tag);
+        if (tags == null)
+        {
+            tags = new ArrayList<>();
+        }
+        tags.add(tag);
     }
 
     @Override
     public List<FaceletFunction> getFunctions()
     {
-        return this.functions;
+        if (functions == null)
+        {
+            return Collections.emptyList();
+        }
+        return functions;
     }
     
     public void addFunction(FaceletFunction function)
     {
-        this.functions.add(function);
+        if (functions == null)
+        {
+            functions = new ArrayList<>();
+        }
+        functions.add(function);
     }
     
 }

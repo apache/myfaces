@@ -21,9 +21,6 @@ package org.apache.myfaces.config.impl.elements.facelets;
 import java.io.Serializable;
 import org.apache.myfaces.config.element.facelets.FaceletBehaviorTag;
 
-/**
- *
- */
 public class FaceletBehaviorTagImpl extends FaceletBehaviorTag implements Serializable
 {
     private String behaviorId;
@@ -44,6 +41,7 @@ public class FaceletBehaviorTagImpl extends FaceletBehaviorTag implements Serial
         this.handlerClass = handlerClass;
     }
 
+    @Override
     public String getBehaviorId()
     {
         return behaviorId;
@@ -54,6 +52,7 @@ public class FaceletBehaviorTagImpl extends FaceletBehaviorTag implements Serial
         this.behaviorId = behaviorId;
     }
 
+    @Override
     public String getHandlerClass()
     {
         return handlerClass;
