@@ -46,8 +46,7 @@ public class ContractMappingImpl extends ContractMapping
         }
         if (unmodifiableUrlPatternList == null)
         {
-            unmodifiableUrlPatternList = 
-                Collections.unmodifiableList(urlPatternList);
+            unmodifiableUrlPatternList = Collections.unmodifiableList(urlPatternList);
         }
         return unmodifiableUrlPatternList;
     }
@@ -61,8 +60,7 @@ public class ContractMappingImpl extends ContractMapping
         }
         if (unmodifiableContractsList == null)
         {
-            unmodifiableContractsList = 
-                Collections.unmodifiableList(contractsList);
+            unmodifiableContractsList =  Collections.unmodifiableList(contractsList);
         }
         return unmodifiableContractsList;
     }
@@ -71,7 +69,7 @@ public class ContractMappingImpl extends ContractMapping
     {
         if (contractsList == null)
         {
-            contractsList = new ArrayList<String>();
+            contractsList = new ArrayList<>();
         }
         contractsList.add(contract);
     }
@@ -80,7 +78,7 @@ public class ContractMappingImpl extends ContractMapping
     {
         if (urlPatternList == null)
         {
-            urlPatternList = new ArrayList<String>();
+            urlPatternList = new ArrayList<>();
         }
         urlPatternList.add(urlPattern);
     }

@@ -20,8 +20,8 @@ package org.apache.myfaces.config.impl.elements;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
 
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
@@ -29,7 +29,7 @@ import java.util.List;
 public class NavigationRuleImpl extends org.apache.myfaces.config.element.NavigationRule implements Serializable
 {
     private String fromViewId;
-    private List<org.apache.myfaces.config.element.NavigationCase> navigationCases = new ArrayList<>();
+    private List<org.apache.myfaces.config.element.NavigationCase> navigationCases;
 
     @Override
     public String getFromViewId()
@@ -44,12 +44,20 @@ public class NavigationRuleImpl extends org.apache.myfaces.config.element.Naviga
 
     public void addNavigationCase(org.apache.myfaces.config.element.NavigationCase value)
     {
+        if (navigationCases == null)
+        {
+            navigationCases = new ArrayList<>();
+        }
         navigationCases.add(value);
     }
 
     @Override
     public List<org.apache.myfaces.config.element.NavigationCase> getNavigationCases()
     {
+        if (navigationCases == null)
+        {
+            return Collections.emptyList();
+        }
         return navigationCases;
     }
 }

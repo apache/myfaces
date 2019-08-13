@@ -19,6 +19,7 @@
 package org.apache.myfaces.config.impl.elements;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apache.myfaces.config.element.FacesFlowCall;
 import org.apache.myfaces.config.element.FacesFlowMethodCall;
@@ -34,160 +35,205 @@ import org.apache.myfaces.config.element.NavigationRule;
  */
 public class FacesFlowDefinitionImpl extends org.apache.myfaces.config.element.FacesFlowDefinition
 {
-    private String _definingDocumentId;
-    private String _id;
-    private String _startNode;
-    private String _initializer;
-    private String _finalizer;
+    private String definingDocumentId;
+    private String id;
+    private String startNode;
+    private String initializer;
+    private String finalizer;
     
-    private List<FacesFlowView> _viewList;
-    private List<FacesFlowSwitch> _switchList;
-    private List<FacesFlowReturn> _returnList;
-    private List<NavigationRule> _navigationRuleList;
-    private List<FacesFlowCall> _flowCallList;
-    private List<FacesFlowMethodCall> _methodCallList;
-    private List<FacesFlowParameter> _inboundParameterList;
+    private List<FacesFlowView> viewList;
+    private List<FacesFlowSwitch> switchList;
+    private List<FacesFlowReturn> returnList;
+    private List<NavigationRule> navigationRuleList;
+    private List<FacesFlowCall> flowCallList;
+    private List<FacesFlowMethodCall> methodCallList;
+    private List<FacesFlowParameter> inboundParameterList;
 
-    public FacesFlowDefinitionImpl()
-    {
-        _viewList = new ArrayList<FacesFlowView>();
-        _switchList = new ArrayList<FacesFlowSwitch>();
-        _returnList = new ArrayList<FacesFlowReturn>();
-        _navigationRuleList = new ArrayList<NavigationRule>();
-        _flowCallList = new ArrayList<FacesFlowCall>();
-        _methodCallList = new ArrayList<FacesFlowMethodCall>();
-        _inboundParameterList = new ArrayList<FacesFlowParameter>();
-    }
-    
     @Override
     public String getStartNode()
     {
-        return _startNode;
+        return startNode;
     }
 
     @Override
     public List<FacesFlowView> getViewList()
     {
-        return _viewList;
+        if (viewList == null)
+        {
+            return Collections.emptyList();
+        }
+        return viewList;
     }
     
     public void addView(FacesFlowView view)
     {
-        _viewList.add(view);
+        if (viewList == null)
+        {
+            viewList = new ArrayList<>();
+        }
+        viewList.add(view);
     }
 
     @Override
     public List<FacesFlowSwitch> getSwitchList()
     {
-        return _switchList;
+        if (switchList == null)
+        {
+            return Collections.emptyList();
+        }
+        return switchList;
     }
     
     public void addSwitch(FacesFlowSwitch switchItem)
     {
-        _switchList.add(switchItem);
+        if (switchList == null)
+        {
+            switchList = new ArrayList<>();
+        }
+        switchList.add(switchItem);
     }
 
     @Override
     public List<FacesFlowReturn> getReturnList()
     {
-        return _returnList;
+        if (returnList == null)
+        {
+            return Collections.emptyList();
+        }
+        return returnList;
     }
 
     public void addReturn(FacesFlowReturn value)
     {
-        _returnList.add(value);
+        if (returnList == null)
+        {
+            returnList = new ArrayList<>();
+        }
+        returnList.add(value);
     }
     
     @Override
     public List<NavigationRule> getNavigationRuleList()
     {
-        return _navigationRuleList;
+        if (navigationRuleList == null)
+        {
+            return Collections.emptyList();
+        }
+        return navigationRuleList;
     }
 
     public void addNavigationRule(NavigationRule value)
     {
-        _navigationRuleList.add(value);
+        if (navigationRuleList == null)
+        {
+            navigationRuleList = new ArrayList<>();
+        }
+        navigationRuleList.add(value);
     }
     
     @Override
     public List<FacesFlowCall> getFlowCallList()
     {
-        return _flowCallList;
+        if (flowCallList == null)
+        {
+            return Collections.emptyList();
+        }
+        return flowCallList;
     }
 
     public void addFlowCall(FacesFlowCall value)
     {
-        _flowCallList.add(value);
+        if (flowCallList == null)
+        {
+            flowCallList = new ArrayList<>();
+        }
+        flowCallList.add(value);
     }
 
     @Override
     public List<FacesFlowMethodCall> getMethodCallList()
     {
-        return _methodCallList;
+        if (methodCallList == null)
+        {
+            return Collections.emptyList();
+        }
+        return methodCallList;
     }
 
     public void addMethodCall(FacesFlowMethodCall value)
     {
-        _methodCallList.add(value);
+        if (methodCallList == null)
+        {
+            methodCallList = new ArrayList<>();
+        }
+        methodCallList.add(value);
     }
     
     @Override
     public String getInitializer()
     {
-        return _initializer;
+        return initializer;
     }
 
     @Override
     public String getFinalizer()
     {
-        return _finalizer;
+        return finalizer;
     }
 
     @Override
     public List<FacesFlowParameter> getInboundParameterList()
     {
-        return _inboundParameterList;
+        if (inboundParameterList == null)
+        {
+            return Collections.emptyList();
+        }
+        return inboundParameterList;
     }
 
     public void addInboundParameter(FacesFlowParameter value)
     {
-        _inboundParameterList.add(value);
+        if (inboundParameterList == null)
+        {
+            inboundParameterList = new ArrayList<>();
+        }
+        inboundParameterList.add(value);
     }
 
     public void setStartNode(String startNode)
     {
-        this._startNode = startNode;
+        this.startNode = startNode;
     }
 
     public void setInitializer(String initializer)
     {
-        this._initializer = initializer;
+        this.initializer = initializer;
     }
 
     public void setFinalizer(String finalizer)
     {
-        this._finalizer = finalizer;
+        this.finalizer = finalizer;
     }
     
     @Override
     public String getId()
     {
-        return _id;
+        return id;
     }
 
     public void setId(String id)
     {
-        this._id = id;
+        this.id = id;
     }
 
     @Override
     public String getDefiningDocumentId()
     {
-        return _definingDocumentId;
+        return definingDocumentId;
     }
 
     public void setDefiningDocumentId(String definingDocumentId)
     {
-        this._definingDocumentId = definingDocumentId;
+        this.definingDocumentId = definingDocumentId;
     }
 }

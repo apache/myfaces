@@ -24,28 +24,28 @@ package org.apache.myfaces.config.impl.elements;
  */
 public class FacesFlowParameterImpl extends org.apache.myfaces.config.element.FacesFlowParameter
 {
-    private String _name;
-    private String _value;
+    private String name;
+    private String value;
 
     @Override
     public String getName()
     {
-        return _name;
+        return name;
     }
 
     @Override
     public String getValue()
     {
-        return _value;
+        return value;
     }
 
     public void setName(String name)
     {
-        this._name = name;
+        this.name = name;
     }
 
     public void setValue(String value)
     {
-        this._value = value;
+        this.value = value;
     }
 }

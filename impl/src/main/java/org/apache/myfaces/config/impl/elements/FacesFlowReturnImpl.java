@@ -26,29 +26,29 @@ import org.apache.myfaces.config.element.NavigationCase;
  */
 public class FacesFlowReturnImpl extends org.apache.myfaces.config.element.FacesFlowReturn
 {
-    private String _id;
-    private NavigationCase _navigationCase;
+    private String id;
+    private NavigationCase navigationCase;
 
     @Override
     public NavigationCase getNavigationCase()
     {
-        return _navigationCase;
+        return navigationCase;
     }
 
     public void setNavigationCase(NavigationCase navigationCase)
     {
-        this._navigationCase = navigationCase;
+        this.navigationCase = navigationCase;
     }
     
     @Override
     public String getId()
     {
-        return _id;
+        return id;
     }
 
     public void setId(String id)
     {
-        this._id = id;
+        this.id = id;
     }
 
 }

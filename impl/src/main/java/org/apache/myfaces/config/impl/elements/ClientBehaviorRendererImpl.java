@@ -41,14 +41,15 @@ public class ClientBehaviorRendererImpl
     {
         return rendererType;
     }
-    
-    public void setRendererClass (String clazz)
+
+    public void setRendererType(String rendererType)
     {
-        rendererClass = clazz;
+        this.rendererType = rendererType;
+    }
+
+    public void setRendererClass(String rendererClass)
+    {
+        this.rendererClass = rendererClass;
     }
     
-    public void setRendererType (String type)
-    {
-        rendererType = type;
-    }
 }

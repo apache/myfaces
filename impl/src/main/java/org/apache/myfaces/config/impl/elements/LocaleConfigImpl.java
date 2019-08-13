@@ -20,6 +20,7 @@ package org.apache.myfaces.config.impl.elements;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ import java.util.List;
 public class LocaleConfigImpl extends org.apache.myfaces.config.element.LocaleConfig implements Serializable
 {
     private String defaultLocale;
-    private List<String> supportedLocales = new ArrayList<String>();
+    private List<String> supportedLocales;
 
     public void setDefaultLocale(String defaultLocale)
     {
@@ -37,6 +38,10 @@ public class LocaleConfigImpl extends org.apache.myfaces.config.element.LocaleCo
 
     public void addSupportedLocale(String locale)
     {
+        if (supportedLocales == null)
+        {
+            supportedLocales = new ArrayList<>();
+        }
         supportedLocales.add(locale);
     }
 
@@ -49,6 +54,10 @@ public class LocaleConfigImpl extends org.apache.myfaces.config.element.LocaleCo
     @Override
     public List<String> getSupportedLocales()
     {
+        if (supportedLocales == null)
+        {
+            return Collections.emptyList();
+        }
         return supportedLocales;
     }
 }

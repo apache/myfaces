@@ -33,8 +33,7 @@ public class FacesConfigExtensionImpl extends org.apache.myfaces.config.element.
 {
     private static final long serialVersionUID = 7624583794474223864L;
     
-    private List<org.apache.myfaces.config.element.FaceletsProcessing> _faceletsProcessingList = 
-        new ArrayList<org.apache.myfaces.config.element.FaceletsProcessing>();
+    private List<org.apache.myfaces.config.element.FaceletsProcessing> _faceletsProcessingList;
     
     private List<ViewPoolMapping> viewPoolMappings;
     private transient List<ViewPoolMapping> unmodifiableViewPoolMappings;
@@ -45,11 +44,19 @@ public class FacesConfigExtensionImpl extends org.apache.myfaces.config.element.
     @Override
     public List<org.apache.myfaces.config.element.FaceletsProcessing> getFaceletsProcessingList()
     {
+        if (_faceletsProcessingList == null)
+        {
+            return Collections.emptyList();
+        }
         return _faceletsProcessingList;
     }
     
     public void addFaceletsProcessing(org.apache.myfaces.config.element.FaceletsProcessing elem)
     {
+        if (_faceletsProcessingList == null)
+        {
+            _faceletsProcessingList = new ArrayList<>();
+        }
         _faceletsProcessingList.add(elem);
     }
     
@@ -72,7 +79,7 @@ public class FacesConfigExtensionImpl extends org.apache.myfaces.config.element.
     {
         if (viewPoolMappings == null)
         {
-            viewPoolMappings = new ArrayList<ViewPoolMapping>();
+            viewPoolMappings = new ArrayList<>();
         }
         viewPoolMappings.add(mapping);
     }
@@ -96,7 +103,7 @@ public class FacesConfigExtensionImpl extends org.apache.myfaces.config.element.
     {
         if (faceletsTemplateMappings == null)
         {
-            faceletsTemplateMappings = new ArrayList<FaceletsTemplateMapping>();
+            faceletsTemplateMappings = new ArrayList<>();
         }
         faceletsTemplateMappings.add(mapping);
     }

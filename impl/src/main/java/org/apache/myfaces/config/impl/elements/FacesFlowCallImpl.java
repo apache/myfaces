@@ -30,46 +30,46 @@ import org.apache.myfaces.config.element.FacesFlowReference;
  */
 public class FacesFlowCallImpl extends FacesFlowCall
 {
-    private FacesFlowReference _flowReference;
-    private List<FacesFlowParameter> _outboundParameterList;
-    private String _id;
+    private FacesFlowReference flowReference;
+    private List<FacesFlowParameter> outboundParameterList;
+    private String id;
 
     public FacesFlowCallImpl()
     {
-        _outboundParameterList = new ArrayList<FacesFlowParameter>();
+        outboundParameterList = new ArrayList<>();
     }
 
     @Override
     public List<FacesFlowParameter> getOutboundParameterList()
     {
-        return _outboundParameterList;
+        return outboundParameterList;
     }
     
     public void addOutboundParameter(FacesFlowParameter parameter)
     {
-        _outboundParameterList.add(parameter);
+        outboundParameterList.add(parameter);
     }
 
     @Override
     public String getId()
     {
-        return _id;
+        return id;
     }
 
     public void setId(String id)
     {
-        this._id = id;
+        this.id = id;
     }
 
     @Override
     public FacesFlowReference getFlowReference()
     {
-        return _flowReference;
+        return flowReference;
     }
 
     public void setFlowReference(FacesFlowReference flowReference)
     {
-        this._flowReference = flowReference;
+        this.flowReference = flowReference;
     }
 
 }

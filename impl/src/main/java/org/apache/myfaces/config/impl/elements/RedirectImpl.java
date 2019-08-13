@@ -21,24 +21,33 @@ package org.apache.myfaces.config.impl.elements;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class RedirectImpl extends org.apache.myfaces.config.element.Redirect implements Serializable
 {
-    private Map<String,List<String>> viewParams = new HashMap<>();
+    private Map<String,List<String>> viewParams;
     private String includeViewParams;     
     
     public void addViewParam(ViewParamImpl viewParam)
     {
-        List<String> params = viewParams.computeIfAbsent(viewParam.getName(), k -> new ArrayList<String>());
+        if (viewParams == null)
+        {
+            viewParams = new HashMap<>();
+        }
+        List<String> params = viewParams.computeIfAbsent(viewParam.getName(), k -> new ArrayList<>());
         params.add(viewParam.getValue());
     }
     
     @Override
-    public Map<String,List<String>> getViewParams()
+    public Map<String, List<String>> getViewParams()
     {
+        if (viewParams == null)
+        {
+            return Collections.emptyMap();
+        }
         return viewParams;
     }
 

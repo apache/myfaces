@@ -19,6 +19,7 @@
 package org.apache.myfaces.config.impl.elements;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apache.myfaces.config.element.NavigationCase;
 
@@ -29,34 +30,37 @@ import org.apache.myfaces.config.element.NavigationCase;
 public class FacesFlowSwitchImpl extends org.apache.myfaces.config.element.FacesFlowSwitch
 {
     private String _id;
-    private NavigationCase _defaultOutcome;
-    private List<NavigationCase> _navigationCaseList;
-    
-    public FacesFlowSwitchImpl()
-    {
-        this._navigationCaseList = new ArrayList<>();
-    }
+    private NavigationCase defaultOutcome;
+    private List<NavigationCase> navigationCaseList;
 
     @Override
     public List<NavigationCase> getNavigationCaseList()
     {
-        return _navigationCaseList;
+        if (navigationCaseList == null)
+        {
+            return Collections.emptyList();
+        }
+        return navigationCaseList;
     }
     
     public void addNavigationCase(NavigationCase navcase)
     {
-        _navigationCaseList.add(navcase);
+        if (navigationCaseList == null)
+        {
+            navigationCaseList = new ArrayList<>();
+        }
+        navigationCaseList.add(navcase);
     }
 
     @Override
     public NavigationCase getDefaultOutcome()
     {
-        return _defaultOutcome;
+        return defaultOutcome;
     }
 
     public void setDefaultOutcome(NavigationCase defaultOutcome)
     {
-        this._defaultOutcome = defaultOutcome;
+        this.defaultOutcome = defaultOutcome;
     }
     
     @Override

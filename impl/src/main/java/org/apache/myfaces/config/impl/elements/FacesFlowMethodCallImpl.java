@@ -19,6 +19,7 @@
 package org.apache.myfaces.config.impl.elements;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apache.myfaces.config.element.FacesFlowMethodParameter;
 
@@ -28,58 +29,60 @@ import org.apache.myfaces.config.element.FacesFlowMethodParameter;
  */
 public class FacesFlowMethodCallImpl extends org.apache.myfaces.config.element.FacesFlowMethodCall
 {
-    private String _id;
-    private String _method;
-    private String _defaultOutcome;
-    
-    private List<FacesFlowMethodParameter> _parameterList;
-    
-    public FacesFlowMethodCallImpl()
-    {
-        _parameterList = new ArrayList<FacesFlowMethodParameter>();
-    }
+    private String id;
+    private String method;
+    private String defaultOutcome;
+    private List<FacesFlowMethodParameter> parameterList;
 
     @Override
     public String getMethod()
     {
-        return _method;
+        return method;
     }
 
     @Override
     public String getDefaultOutcome()
     {
-        return _defaultOutcome;
+        return defaultOutcome;
     }
 
     public void setMethod(String method)
     {
-        this._method = method;
+        this.method = method;
     }
 
     public void setDefaultOutcome(String defaultOutcome)
     {
-        this._defaultOutcome = defaultOutcome;
+        this.defaultOutcome = defaultOutcome;
     }
     
     @Override
     public String getId()
     {
-        return _id;
+        return id;
     }
 
     public void setId(String id)
     {
-        this._id = id;
+        this.id = id;
     }
 
     @Override
     public List<FacesFlowMethodParameter> getParameterList()
     {
-        return _parameterList;
+        if (parameterList == null)
+        {
+            return Collections.emptyList();
+        }
+        return parameterList;
     }
     
     public void addParameter(FacesFlowMethodParameter parameter)
     {
-        _parameterList.add(parameter);
+        if (parameterList == null)
+        {
+            parameterList = new ArrayList<>();
+        }
+        parameterList.add(parameter);
     }
 }

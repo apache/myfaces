@@ -46,7 +46,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
 {
     private static final long serialVersionUID = 1L;
 
-    private static final Logger log = Logger.getLogger(FacesConfigImpl.class.getName());
+    private static final Logger LOG = Logger.getLogger(FacesConfigImpl.class.getName());
 
     private List<Application> applications;
     private List<Factory> factories;
@@ -95,7 +95,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     {
         if (applications == null)
         {
-            applications = new ArrayList<Application>();
+            applications = new ArrayList<>();
         }
         applications.add(application); 
     }
@@ -104,7 +104,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     {
         if (factories == null)
         {
-            factories = new ArrayList<Factory>();
+            factories = new ArrayList<>();
         }
         factories.add(factory);
     }
@@ -113,17 +113,16 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     {
         if (components == null)
         {
-            components = new HashMap<String, String>();
+            components = new HashMap<>();
         }
         components.put(componentType, componentClass);
     }
     
-    public void addComponentTagDeclaration(String componentType, 
-            ComponentTagDeclaration tagDeclaration)
+    public void addComponentTagDeclaration(String componentType, ComponentTagDeclaration tagDeclaration)
     {
         if (componentTagDeclarations == null)
         {
-            componentTagDeclarations = new HashMap<String, ComponentTagDeclaration>();
+            componentTagDeclarations = new HashMap<>();
         }
         componentTagDeclarations.put(componentType, tagDeclaration);
     }
@@ -132,7 +131,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     {
         if (converters == null)
         {
-            converters = new ArrayList<Converter>();
+            converters = new ArrayList<>();
         }
         converters.add(converter);
     }
@@ -141,7 +140,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     {
         if (navigationRules == null)
         {
-            navigationRules = new ArrayList<NavigationRule>();
+            navigationRules = new ArrayList<>();
         }
         navigationRules.add(rule);
     }
@@ -150,7 +149,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     {
         if (renderKits == null)
         {
-            renderKits = new ArrayList<RenderKit>();
+            renderKits = new ArrayList<>();
         }
         renderKits.add(renderKit);
     }
@@ -159,7 +158,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     {
         if (lifecyclePhaseListener == null)
         {
-            lifecyclePhaseListener = new ArrayList<String>();
+            lifecyclePhaseListener = new ArrayList<>();
         }
         lifecyclePhaseListener.add(value);
     }
@@ -168,14 +167,14 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     {
         if (validators == null)
         {
-            validators = new HashMap<String, String>();
+            validators = new HashMap<>();
         }
 
         String oldValidator = validators.get(id);
         // don't log if someone overwrites the built-in converters
         if (oldValidator != null && !oldValidator.startsWith("javax.faces.validator."))
         {
-            log.warning("There is already a validator defined for id: " + id + "."
+            LOG.warning("There is already a validator defined for id: " + id + "."
                     + " old: " + oldValidator
                     + " new: " + validatorClass);
         }
@@ -187,7 +186,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     {
         if (behaviors == null)
         {
-            behaviors = new ArrayList<Behavior>();
+            behaviors = new ArrayList<>();
         }
         behaviors.add (behavior);
     }
@@ -196,7 +195,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     {
         if (namedEvents == null)
         {
-            namedEvents = new ArrayList<NamedEvent>();
+            namedEvents = new ArrayList<>();
         }
         namedEvents.add(namedEvent);
     }
@@ -205,7 +204,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     {
         if (facesConfigExtensions == null)
         {
-            facesConfigExtensions = new ArrayList<FacesConfigExtension>();
+            facesConfigExtensions = new ArrayList<>();
         }
         facesConfigExtensions.add(elem);
     }
@@ -214,7 +213,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     {
         if (facesFlowDefinitions == null)
         {
-            facesFlowDefinitions = new ArrayList<FacesFlowDefinition>();
+            facesFlowDefinitions = new ArrayList<>();
         }
         facesFlowDefinitions.add(elem);
     }
@@ -223,7 +222,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     {
         if (protectedViewsUrlPatternList == null)
         {
-            protectedViewsUrlPatternList = new ArrayList<String>();
+            protectedViewsUrlPatternList = new ArrayList<>();
         }
         protectedViewsUrlPatternList.add(urlPattern);
     }
@@ -232,7 +231,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     {
         if (resourceResolvers == null)
         {
-            resourceResolvers = new ArrayList<String>();
+            resourceResolvers = new ArrayList<>();
         }
         resourceResolvers.add(resourceResolverClass);
     }
@@ -241,7 +240,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     {
         if (faceletTagLibraryList == null)
         {
-            faceletTagLibraryList = new ArrayList<FaceletTagLibrary>();
+            faceletTagLibraryList = new ArrayList<>();
         }
         faceletTagLibraryList.add(library);
     }
@@ -255,8 +254,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         }
         if (unmodifiableApplications == null)
         {
-            unmodifiableApplications = 
-                Collections.unmodifiableList(applications);
+            unmodifiableApplications = Collections.unmodifiableList(applications);
         }
         return unmodifiableApplications;
     }
@@ -270,12 +268,12 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         }
         if (unmodifiableFactories == null)
         {
-            unmodifiableFactories = 
-                Collections.unmodifiableList(factories);
+            unmodifiableFactories =  Collections.unmodifiableList(factories);
         }
         return unmodifiableFactories;
     }
 
+    @Override
     public Map<String, String> getComponents()
     {
         if (components == null)
@@ -284,12 +282,12 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         }
         if (unmodifiableComponents == null)
         {
-            unmodifiableComponents = 
-                Collections.unmodifiableMap(components);
+            unmodifiableComponents = Collections.unmodifiableMap(components);
         }
         return unmodifiableComponents;
     }
     
+    @Override
     public Map<String, ComponentTagDeclaration> getComponentTagDeclarations()
     {
         if (componentTagDeclarations == null)
@@ -298,12 +296,12 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         }
         if (unmodifiableComponentTagDeclarations == null)
         {
-            unmodifiableComponentTagDeclarations = 
-                Collections.unmodifiableMap(componentTagDeclarations);
+            unmodifiableComponentTagDeclarations = Collections.unmodifiableMap(componentTagDeclarations);
         }
         return unmodifiableComponentTagDeclarations;
     }
 
+    @Override
     public List<Converter> getConverters()
     {
         if (converters == null)
@@ -312,12 +310,12 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         }
         if (unmodifiableConverters == null)
         {
-            unmodifiableConverters = 
-                Collections.unmodifiableList(converters);
+            unmodifiableConverters = Collections.unmodifiableList(converters);
         }
         return unmodifiableConverters;
     }
 
+    @Override
     public List<NavigationRule> getNavigationRules()
     {
         if (navigationRules == null)
@@ -326,12 +324,12 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         }
         if (unmodifiableNavigationRules == null)
         {
-            unmodifiableNavigationRules = 
-                Collections.unmodifiableList(navigationRules);
+            unmodifiableNavigationRules = Collections.unmodifiableList(navigationRules);
         }
         return unmodifiableNavigationRules;
     }
 
+    @Override
     public List<RenderKit> getRenderKits()
     {
         if (renderKits == null)
@@ -340,12 +338,12 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         }
         if (unmodifiableRenderKits == null)
         {
-            unmodifiableRenderKits = 
-                Collections.unmodifiableList(renderKits);
+            unmodifiableRenderKits = Collections.unmodifiableList(renderKits);
         }
         return unmodifiableRenderKits;
     }
 
+    @Override
     public List<String> getLifecyclePhaseListener()
     {
         if (lifecyclePhaseListener == null)
@@ -354,12 +352,12 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         }
         if (unmodifiableLifecyclePhaseListener == null)
         {
-            unmodifiableLifecyclePhaseListener = 
-                Collections.unmodifiableList(lifecyclePhaseListener);
+            unmodifiableLifecyclePhaseListener = Collections.unmodifiableList(lifecyclePhaseListener);
         }
         return unmodifiableLifecyclePhaseListener;
     }
 
+    @Override
     public Map<String, String> getValidators()
     {
         if (validators == null)
@@ -368,12 +366,12 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         }
         if (unmodifiableValidators == null)
         {
-            unmodifiableValidators = 
-                Collections.unmodifiableMap(validators);
+            unmodifiableValidators = Collections.unmodifiableMap(validators);
         }
         return unmodifiableValidators;
     }
     
+    @Override
     public List<Behavior> getBehaviors ()
     {
         if (behaviors == null)
@@ -382,13 +380,13 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         }
         if (unmodifiableBehaviors == null)
         {
-            unmodifiableBehaviors = 
-                Collections.unmodifiableList(behaviors);
+            unmodifiableBehaviors = Collections.unmodifiableList(behaviors);
         }
         return unmodifiableBehaviors;
     }
     
-    public List<NamedEvent> getNamedEvents ()
+    @Override
+    public List<NamedEvent> getNamedEvents()
     {
         if (namedEvents == null)
         {
@@ -396,12 +394,12 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         }
         if (unmodifiableNamedEvents == null)
         {
-            unmodifiableNamedEvents = 
-                Collections.unmodifiableList(namedEvents);
+            unmodifiableNamedEvents = Collections.unmodifiableList(namedEvents);
         }
         return unmodifiableNamedEvents;
     }
     
+    @Override
     public RenderKit getRenderKit(String renderKitId)
     {
         for (RenderKit rk : getRenderKits())
@@ -418,6 +416,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         return null;
     }
     
+    @Override
     public String getName()
     {
         return name;
@@ -428,6 +427,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         this.name = name;
     }
     
+    @Override
     public org.apache.myfaces.config.element.AbsoluteOrdering getAbsoluteOrdering()
     {
         return absoluteOrdering;
@@ -438,6 +438,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         this.absoluteOrdering = absoluteOrdering;
     }
 
+    @Override
     public org.apache.myfaces.config.element.Ordering getOrdering()
     {
         return ordering;
@@ -448,6 +449,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         this.ordering = ordering;
     }
 
+    @Override
     public String getMetadataComplete()
     {
         return metadataComplete;
@@ -458,12 +460,13 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         this.metadataComplete = metadataComplete;
     }
     
-    public String getVersion ()
+    @Override
+    public String getVersion()
     {
         return version;
     }
     
-    public void setVersion (String version)
+    public void setVersion(String version)
     {
         this.version = version;
     }
@@ -477,8 +480,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         }
         if (unmodifiableFacesConfigExtensions == null)
         {
-            unmodifiableFacesConfigExtensions = 
-                Collections.unmodifiableList(facesConfigExtensions);
+            unmodifiableFacesConfigExtensions = Collections.unmodifiableList(facesConfigExtensions);
         }
         return unmodifiableFacesConfigExtensions;
     }
@@ -492,12 +494,12 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         }
         if (unmodifiableFacesFlowDefinitions == null)
         {
-            unmodifiableFacesFlowDefinitions = 
-                Collections.unmodifiableList(facesFlowDefinitions);
+            unmodifiableFacesFlowDefinitions = Collections.unmodifiableList(facesFlowDefinitions);
         }
         return unmodifiableFacesFlowDefinitions;
     }
     
+    @Override
     public List<String> getProtectedViewsUrlPatternList()
     {
         if (protectedViewsUrlPatternList == null)
@@ -506,12 +508,12 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         }
         if (unmodifiableProtectedViewsUrlPatternList == null)
         {
-            unmodifiableProtectedViewsUrlPatternList = 
-                Collections.unmodifiableList(protectedViewsUrlPatternList);
+            unmodifiableProtectedViewsUrlPatternList = Collections.unmodifiableList(protectedViewsUrlPatternList);
         }
         return unmodifiableProtectedViewsUrlPatternList;
     }
     
+    @Override
     public List<String> getResourceResolversList()
     {
         if (resourceResolvers == null)
@@ -520,8 +522,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         }
         if (unmodifiableResourceResolvers == null)
         {
-            unmodifiableResourceResolvers = 
-                Collections.unmodifiableList(resourceResolvers);
+            unmodifiableResourceResolvers = Collections.unmodifiableList(resourceResolvers);
         }
         return unmodifiableResourceResolvers;
     }
@@ -535,8 +536,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         }
         if (unmodifiableFaceletTagLibraryList == null)
         {
-            unmodifiableFaceletTagLibraryList = 
-                Collections.unmodifiableList(faceletTagLibraryList);
+            unmodifiableFaceletTagLibraryList = Collections.unmodifiableList(faceletTagLibraryList);
         }
         return unmodifiableFaceletTagLibraryList;
     }

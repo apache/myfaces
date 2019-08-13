@@ -20,6 +20,7 @@ package org.apache.myfaces.config.impl.elements;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.ViewPoolParameter;
@@ -27,12 +28,7 @@ import org.apache.myfaces.config.element.ViewPoolParameter;
 public class ViewPoolMappingImpl extends ViewPoolMapping implements Serializable
 {
     private String urlPattern;
-    private List<ViewPoolParameter> _parameterList;
-
-    public ViewPoolMappingImpl()
-    {
-        _parameterList = new ArrayList<ViewPoolParameter>();
-    }
+    private List<ViewPoolParameter> parameterList;
 
     @Override
     public String getUrlPattern()
@@ -48,11 +44,19 @@ public class ViewPoolMappingImpl extends ViewPoolMapping implements Serializable
     @Override
     public List<ViewPoolParameter> getParameterList()
     {
-        return _parameterList;
+        if (parameterList == null)
+        {
+            return Collections.emptyList();
+        }
+        return parameterList;
     }
     
     public void addParameter(ViewPoolParameter parameter)
     {
-        _parameterList.add(parameter);
+        if (parameterList == null)
+        {
+            parameterList = new ArrayList<>();
+        }
+        parameterList.add(parameter);
     }
 }

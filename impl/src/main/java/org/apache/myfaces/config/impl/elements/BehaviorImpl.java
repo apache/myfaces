@@ -21,30 +21,29 @@ package org.apache.myfaces.config.impl.elements;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+
 /**
  * Implementation of model for &lt;behavior&gt; element.
  */
-
 public class BehaviorImpl extends org.apache.myfaces.config.element.Behavior implements Serializable
 {
     private String behaviorClass;
     private String behaviorId;
-    
-    private List<AttributeImpl> attributes = new ArrayList<AttributeImpl>();
-    private List<PropertyImpl> properties = new ArrayList<PropertyImpl>();
-
+    private List<AttributeImpl> attributes;
+    private List<PropertyImpl> properties;
 
     @Override
     public String getBehaviorClass()
     {
-        return this.behaviorClass;
+        return behaviorClass;
     }
 
     @Override
     public String getBehaviorId()
     {
-        return this.behaviorId;
+        return behaviorId;
     }
     
     public void setBehaviorClass(String behaviorClass)
@@ -59,21 +58,37 @@ public class BehaviorImpl extends org.apache.myfaces.config.element.Behavior imp
     
     public Collection<AttributeImpl> getAttributes()
     {
+        if (attributes == null)
+        {
+            return Collections.emptyList();
+        }
         return attributes;
     }
 
     public void addAttribute(AttributeImpl attribute)
     {
-        attributes.add (attribute);
+        if (attributes == null)
+        {
+            attributes = new ArrayList<>();
+        }
+        attributes.add(attribute);
     }
 
     public Collection<PropertyImpl> getProperties()
     {
+        if (properties == null)
+        {
+            return Collections.emptyList();
+        }
         return properties;
     }
     
     public void addProperty(PropertyImpl property)
     {
-        properties.add (property);
+        if (properties == null)
+        {
+            properties = new ArrayList<>();
+        }
+        properties.add(property);
     }
 }

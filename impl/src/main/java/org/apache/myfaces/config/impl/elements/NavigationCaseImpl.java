@@ -59,7 +59,7 @@ public class NavigationCaseImpl extends org.apache.myfaces.config.element.Naviga
         return ifValue;
     }
     
-    public void setIf (String ifValue)
+    public void setIf(String ifValue)
     {
         this.ifValue = ifValue;
     }

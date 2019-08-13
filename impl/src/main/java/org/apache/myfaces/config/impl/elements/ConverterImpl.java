@@ -28,19 +28,17 @@ import java.util.List;
  */
 public class ConverterImpl extends org.apache.myfaces.config.element.Converter implements Serializable
 {
-
     private String converterId;
     private String forClass;
     private String converterClass;
-    private List<org.apache.myfaces.config.element.Property> _properties = null;
-    private List<org.apache.myfaces.config.element.Attribute> _attributes = null;
+    private List<org.apache.myfaces.config.element.Property> properties = null;
+    private List<org.apache.myfaces.config.element.Attribute> attributes = null;
 
     @Override
     public String getConverterId()
     {
         return converterId;
     }
-
 
     public void setConverterId(String converterId)
     {
@@ -53,7 +51,6 @@ public class ConverterImpl extends org.apache.myfaces.config.element.Converter i
         return forClass;
     }
 
-
     public void setForClass(String forClass)
     {
         this.forClass = forClass;
@@ -65,7 +62,6 @@ public class ConverterImpl extends org.apache.myfaces.config.element.Converter i
         return converterClass;
     }
 
-
     public void setConverterClass(String converterClass)
     {
         this.converterClass = converterClass;
@@ -73,43 +69,39 @@ public class ConverterImpl extends org.apache.myfaces.config.element.Converter i
 
     public void addProperty(org.apache.myfaces.config.element.Property value)
     {
-        if(_properties == null)
+        if (properties == null)
         {
-            _properties = new ArrayList<org.apache.myfaces.config.element.Property>();
+            properties = new ArrayList<>();
         }
-
-        _properties.add(value);
+        properties.add(value);
     }
 
-        @Override
+    @Override
     public List<? extends org.apache.myfaces.config.element.Property> getProperties()
     {
-        if(_properties == null)
+        if (properties == null)
         {
             return Collections.emptyList();
         }
-
-        return _properties;
+        return properties;
     }
     
     public void addAttribute(org.apache.myfaces.config.element.Attribute value)
     {
-        if(_attributes == null)
+        if (attributes == null)
         {
-            _attributes = new ArrayList<org.apache.myfaces.config.element.Attribute>();
+            attributes = new ArrayList<>();
         }
-
-        _attributes.add(value);
+        attributes.add(value);
     }
 
-        @Override
+    @Override
     public List<? extends org.apache.myfaces.config.element.Attribute> getAttributes()
     {
-        if(_attributes == null)
+        if (attributes == null)
         {
             return Collections.emptyList();
         }
-
-        return _attributes;
+        return attributes;
     }
 }

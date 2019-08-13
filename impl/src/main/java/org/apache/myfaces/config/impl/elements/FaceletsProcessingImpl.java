@@ -28,9 +28,7 @@ public class FaceletsProcessingImpl extends org.apache.myfaces.config.element.Fa
     private static final long serialVersionUID = 7692451499973040255L;
 
     private String fileExtension;
-    
     private String processAs;
-    
     private String oamCompressSpaces;
 
     @Override

@@ -20,13 +20,11 @@ package org.apache.myfaces.config.impl.elements;
 
 import java.io.Serializable;
 
-
 /**
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
 public class ComponentImpl extends org.apache.myfaces.config.element.Component implements Serializable
 {
-
     private String componentType;
     private String componentClass;
 

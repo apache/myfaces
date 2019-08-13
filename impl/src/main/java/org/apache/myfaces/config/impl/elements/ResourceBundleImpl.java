@@ -41,7 +41,7 @@ public class ResourceBundleImpl extends org.apache.myfaces.config.element.Resour
         this.baseName = baseName;
     }
 
-        @Override
+    @Override
     public String getVar()
     {
         return var;

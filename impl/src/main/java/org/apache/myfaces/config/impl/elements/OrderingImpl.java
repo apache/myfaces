@@ -20,35 +20,49 @@ package org.apache.myfaces.config.impl.elements;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class OrderingImpl extends org.apache.myfaces.config.element.Ordering implements Serializable
 {
-    
-    private List<org.apache.myfaces.config.element.OrderSlot> beforeList
-            = new ArrayList<>();
-    private List<org.apache.myfaces.config.element.OrderSlot> afterList
-            = new ArrayList<>();
+    private List<org.apache.myfaces.config.element.OrderSlot> beforeList;
+    private List<org.apache.myfaces.config.element.OrderSlot> afterList;
 
     public void addBeforeSlot(org.apache.myfaces.config.element.OrderSlot slot)
     {
+        if (beforeList == null)
+        {
+            beforeList = new ArrayList<>();
+        }
         beforeList.add(slot);
     }
     
     @Override
     public List<org.apache.myfaces.config.element.OrderSlot> getBeforeList()
     {
+        if (beforeList == null)
+        {
+            return Collections.emptyList();
+        }
         return beforeList;
     }
     
     public void addAfterSlot(org.apache.myfaces.config.element.OrderSlot slot)
     {
+        if (afterList == null)
+        {
+            afterList = new ArrayList<>();
+        }
         afterList.add(slot);
     }
     
     @Override
     public List<org.apache.myfaces.config.element.OrderSlot> getAfterList()
     {
+        if (afterList == null)
+        {
+            return Collections.emptyList();
+        }
         return afterList;
     }    
 }

@@ -26,34 +26,29 @@ import org.apache.myfaces.config.element.FacesFlowReference;
  */
 public class FacesFlowReferenceImpl extends FacesFlowReference
 {
-    private String _flowId;
-    private String _flowDocumentId;
-
-    public FacesFlowReferenceImpl()
-    {
-        
-    }
+    private String flowId;
+    private String flowDocumentId;
 
     @Override
     public String getFlowId()
     {
-        return _flowId;
+        return flowId;
     }
 
     public void setFlowId(String flowId)
     {
-        this._flowId = flowId;
+        this.flowId = flowId;
     }
 
     @Override
     public String getFlowDocumentId()
     {
-        return _flowDocumentId;
+        return flowDocumentId;
     }
 
     public void setFlowDocumentId(String flowDocumentId)
     {
-        this._flowDocumentId = flowDocumentId;
+        this.flowDocumentId = flowDocumentId;
     }
     
 }

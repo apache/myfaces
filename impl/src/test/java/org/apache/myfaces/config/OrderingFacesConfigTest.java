@@ -140,32 +140,32 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         cfgC.setOrdering(new OrderingImpl());
         FacesConfigNameSlotImpl temp = new FacesConfigNameSlotImpl();
         temp.setName("D");
-        cfgC.getOrdering().getBeforeList().add(temp);
+        ((OrderingImpl) cfgC.getOrdering()).addBeforeSlot(temp);
         temp = new FacesConfigNameSlotImpl();
-        temp.setName("E");
-        cfgC.getOrdering().getBeforeList().add(temp);        
+        temp.setName("E");       
+        ((OrderingImpl) cfgC.getOrdering()).addBeforeSlot(temp);
         temp = new FacesConfigNameSlotImpl();
         temp.setName("A");
-        cfgC.getOrdering().getAfterList().add(temp);
+        ((OrderingImpl) cfgC.getOrdering()).addAfterSlot(temp);
         temp = new FacesConfigNameSlotImpl();
         temp.setName("B");
-        cfgC.getOrdering().getAfterList().add(temp);
+        ((OrderingImpl) cfgC.getOrdering()).addAfterSlot(temp);
         
         cfgA.setOrdering(new OrderingImpl());
         temp = new FacesConfigNameSlotImpl();
         temp.setName("B");
-        cfgA.getOrdering().getBeforeList().add(temp);
+        ((OrderingImpl) cfgA.getOrdering()).addBeforeSlot(temp);
         temp = new FacesConfigNameSlotImpl();
         temp.setName("E");
-        cfgA.getOrdering().getBeforeList().add(temp);
+        ((OrderingImpl) cfgA.getOrdering()).addBeforeSlot(temp);
         
         cfgE.setOrdering(new OrderingImpl());
         temp = new FacesConfigNameSlotImpl();
         temp.setName("D");
-        cfgE.getOrdering().getAfterList().add(temp);
+        ((OrderingImpl) cfgE.getOrdering()).addAfterSlot(temp);
         
         cfgD.setOrdering(new OrderingImpl());
-        cfgD.getOrdering().getBeforeList().add(new ConfigOthersSlotImpl());
+        ((OrderingImpl) cfgD.getOrdering()).addBeforeSlot(new ConfigOthersSlotImpl());
         
         List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
         appConfigResources.add(cfgA);
@@ -212,27 +212,26 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         cfgA.setOrdering(new OrderingImpl());
         FacesConfigNameSlotImpl temp = new FacesConfigNameSlotImpl();
         temp.setName("B");
-        cfgA.getOrdering().getBeforeList().add(temp);
+        ((OrderingImpl) cfgA.getOrdering()).addBeforeSlot(temp);
         temp = new FacesConfigNameSlotImpl();
         temp.setName("C");
-        cfgA.getOrdering().getBeforeList().add(temp);
+        ((OrderingImpl) cfgA.getOrdering()).addBeforeSlot(temp);
         
         cfgB.setOrdering(new OrderingImpl());
         temp = new FacesConfigNameSlotImpl();
         temp.setName("A");
-        cfgB.getOrdering().getAfterList().add(temp);
+        ((OrderingImpl) cfgB.getOrdering()).addAfterSlot(temp);
         temp = new FacesConfigNameSlotImpl();
         temp.setName("C");
-        cfgB.getOrdering().getBeforeList().add(temp);
+        ((OrderingImpl) cfgB.getOrdering()).addBeforeSlot(temp);
         
         cfgC.setOrdering(new OrderingImpl());
         temp = new FacesConfigNameSlotImpl();
         temp.setName("A");
-        cfgC.getOrdering().getAfterList().add(temp);
+        ((OrderingImpl) cfgC.getOrdering()).addAfterSlot(temp);
         temp = new FacesConfigNameSlotImpl();
         temp.setName("B");
-        cfgC.getOrdering().getAfterList().add(temp);
-        //cfgC.getOrdering().getBeforeList().add(new ConfigOthersSlot());
+        ((OrderingImpl) cfgC.getOrdering()).addAfterSlot(temp);
         
         List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
         appConfigResources.add(cfgC);
@@ -264,22 +263,22 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         cfgF.setName("F");
         
         cfgA.setOrdering(new OrderingImpl());
-        cfgA.getOrdering().getAfterList().add(new ConfigOthersSlotImpl());
+        ((OrderingImpl) cfgA.getOrdering()).addAfterSlot(new ConfigOthersSlotImpl());
         FacesConfigNameSlotImpl temp = new FacesConfigNameSlotImpl();
         temp.setName("C");
-        cfgA.getOrdering().getAfterList().add(temp);
+        ((OrderingImpl) cfgA.getOrdering()).addAfterSlot(temp);
         
         cfgB.setOrdering(new OrderingImpl());
-        cfgB.getOrdering().getBeforeList().add(new ConfigOthersSlotImpl());
+        ((OrderingImpl) cfgB.getOrdering()).addBeforeSlot(new ConfigOthersSlotImpl());
 
         cfgC.setOrdering(new OrderingImpl());
-        cfgC.getOrdering().getAfterList().add(new ConfigOthersSlotImpl());
+        ((OrderingImpl) cfgC.getOrdering()).addAfterSlot(new ConfigOthersSlotImpl());
 
         cfgF.setOrdering(new OrderingImpl());
-        cfgF.getOrdering().getBeforeList().add(new ConfigOthersSlotImpl());
+        ((OrderingImpl) cfgF.getOrdering()).addBeforeSlot(new ConfigOthersSlotImpl());
         temp = new FacesConfigNameSlotImpl();
         temp.setName("B");
-        cfgF.getOrdering().getBeforeList().add(temp);
+        ((OrderingImpl) cfgF.getOrdering()).addBeforeSlot(temp);
         
         
         List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
@@ -314,19 +313,19 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         cfgF.setName("F");
         
         cfg.setOrdering(new OrderingImpl());
-        cfg.getOrdering().getAfterList().add(new ConfigOthersSlotImpl());
+        ((OrderingImpl) cfg.getOrdering()).addAfterSlot(new ConfigOthersSlotImpl());
         FacesConfigNameSlotImpl temp = new FacesConfigNameSlotImpl();
         temp.setName("C");
-        cfg.getOrdering().getBeforeList().add(temp);
+        ((OrderingImpl) cfg.getOrdering()).addBeforeSlot(temp);
 
         cfgB.setOrdering(new OrderingImpl());
-        cfgB.getOrdering().getBeforeList().add(new ConfigOthersSlotImpl());
+        ((OrderingImpl) cfgB.getOrdering()).addBeforeSlot(new ConfigOthersSlotImpl());
         
         cfgD.setOrdering(new OrderingImpl());
-        cfgD.getOrdering().getAfterList().add(new ConfigOthersSlotImpl());
+        ((OrderingImpl) cfgD.getOrdering()).addAfterSlot(new ConfigOthersSlotImpl());
 
         cfgE.setOrdering(new OrderingImpl());
-        cfgE.getOrdering().getBeforeList().add(new ConfigOthersSlotImpl());
+        ((OrderingImpl) cfgE.getOrdering()).addBeforeSlot(new ConfigOthersSlotImpl());
 
         List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
         appConfigResources.add(cfg);
@@ -359,10 +358,11 @@ public class OrderingFacesConfigTest extends AbstractJsfTestCase
         cfgA.setOrdering(new OrderingImpl());
         FacesConfigNameSlotImpl temp = new FacesConfigNameSlotImpl();
         temp.setName("B");
-        cfgA.getOrdering().getAfterList().add(temp);
+        ((OrderingImpl) cfgA.getOrdering()).addAfterSlot(temp);
+        
 
         cfgC.setOrdering(new OrderingImpl());
-        cfgC.getOrdering().getBeforeList().add(new ConfigOthersSlotImpl());
+        ((OrderingImpl) cfgC.getOrdering()).addAfterSlot(new ConfigOthersSlotImpl());
         
         List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
         appConfigResources.add(cfgA);

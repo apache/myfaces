@@ -30,141 +30,132 @@ import java.util.List;
  */
 public class AttributeImpl extends org.apache.myfaces.config.element.Attribute implements Serializable
 {
-    private List<String> _description;
-    private List<String> _displayName;
-    private List<String> _icon;
-    private String _attributeName;
-    private String _attributeClass;
-    private String _defaultValue;
-    private String _suggestedValue;
-    private List<String> _attributeExtension;
-
+    private List<String> description;
+    private List<String> displayName;
+    private List<String> icon;
+    private String attributeName;
+    private String attributeClass;
+    private String defaultValue;
+    private String suggestedValue;
+    private List<String> attributeExtensions;
 
     public void addDescription(String value)
     {
-        if(_description == null)
+        if (description == null)
         {
-            _description = new ArrayList<String>();
+            description = new ArrayList<>();
         }
-        
-        _description.add(value);
+        description.add(value);
     }
 
     @Override
     public Collection<? extends String> getDescriptions()
     {
-        if(_description == null)
+        if (description == null)
         {
             return Collections.emptyList();
         }
-        
-        return _description;
+        return description;
     }
 
     public void addDisplayName(String value)
     {
-        if(_displayName == null)
+        if (displayName == null)
         {
-            _displayName = new ArrayList<String>();
+            displayName = new ArrayList<>();
         }
-
-        _displayName.add(value);
+        displayName.add(value);
     }
 
     @Override
     public Collection<? extends String> getDisplayNames()
     {
-        if(_displayName == null)
+        if (displayName == null)
         {
             return Collections.emptyList();
         }
-        
-        return _displayName;
+        return displayName;
     }
 
     public void addIcon(String value)
     {
-        if(_icon == null)
+        if (icon == null)
         {
-            _icon = new ArrayList<String>();
+            icon = new ArrayList<>();
         }
-        
-        _icon.add(value);
+        icon.add(value);
     }
 
     @Override
     public Collection<? extends String> getIcons()
     {
-        if(_icon == null)
+        if (icon == null)
         {
             return Collections.emptyList();
         }
-
-        return _icon;
+        return icon;
     }
 
     public void setAttributeName(String attributeName)
     {
-        _attributeName = attributeName;
+        this.attributeName = attributeName;
     }
 
     @Override
     public String getAttributeName()
     {
-        return _attributeName;
+        return attributeName;
     }
 
     public void setAttributeClass(String attributeClass)
     {
-        _attributeClass = attributeClass;
+        this.attributeClass = attributeClass;
     }
 
     @Override
     public String getAttributeClass()
     {
-        return _attributeClass;
+        return attributeClass;
     }
 
     public void setDefaultValue(String defaultValue)
     {
-        _defaultValue = defaultValue;
+        this.defaultValue = defaultValue;
     }
 
     @Override
     public String getDefaultValue()
     {
-        return _defaultValue;
+        return defaultValue;
     }
 
     public void setSuggestedValue(String suggestedValue)
     {
-        _suggestedValue = suggestedValue;
+        this.suggestedValue = suggestedValue;
     }
 
     @Override
     public String getSuggestedValue()
     {
-        return _suggestedValue;
+        return suggestedValue;
     }
 
     public void addAttributeExtension(String attributeExtension)
     {
-        if(_attributeExtension == null)
+        if (attributeExtension == null)
         {
-            _attributeExtension = new ArrayList<String>();
+            attributeExtensions = new ArrayList<>();
         }
-
-        _attributeExtension.add(attributeExtension);
+        attributeExtensions.add(attributeExtension);
     }
 
     @Override
     public Collection<? extends String> getAttributeExtensions()
     {
-        if(_attributeExtension == null)
+        if (attributeExtensions == null)
         {
             return Collections.emptyList();
         }
-
-        return _attributeExtension;
+        return attributeExtensions;
     }
 }

@@ -20,6 +20,7 @@ package org.apache.myfaces.config.impl.elements;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,11 +29,9 @@ import java.util.List;
 public class RenderKitImpl extends org.apache.myfaces.config.element.RenderKit implements Serializable
 {
     private String id;
-    private List<String> renderKitClasses = new ArrayList<>();
-    private List<org.apache.myfaces.config.element.Renderer> renderer
-            = new ArrayList<>();
-    private List<org.apache.myfaces.config.element.ClientBehaviorRenderer> clientBehaviorRenderers
-            = new ArrayList<>();
+    private List<String> renderKitClasses;
+    private List<org.apache.myfaces.config.element.Renderer> renderer;
+    private List<org.apache.myfaces.config.element.ClientBehaviorRenderer> clientBehaviorRenderers;
     
     @Override
     public String getId()
@@ -48,42 +47,90 @@ public class RenderKitImpl extends org.apache.myfaces.config.element.RenderKit i
     @Override
     public List<String> getRenderKitClasses()
     {
+        if (renderKitClasses == null)
+        {
+            return Collections.emptyList();
+        }
         return renderKitClasses;
     }
 
     public void addRenderKitClass(String renderKitClass)
     {
+        if (renderKitClasses == null)
+        {
+            renderKitClasses = new ArrayList<>();
+        }
         renderKitClasses.add(renderKitClass);
     }
 
     @Override
     public List<org.apache.myfaces.config.element.ClientBehaviorRenderer> getClientBehaviorRenderers ()
     {
+        if (clientBehaviorRenderers == null)
+        {
+            return Collections.emptyList();
+        }
         return clientBehaviorRenderers;
     }
     
     @Override
     public List<org.apache.myfaces.config.element.Renderer> getRenderer()
     {
+        if (renderer == null)
+        {
+            return Collections.emptyList();
+        }
         return renderer;
     }
 
-    public void addClientBehaviorRenderer (org.apache.myfaces.config.element.ClientBehaviorRenderer renderer)
+    public void addClientBehaviorRenderer(org.apache.myfaces.config.element.ClientBehaviorRenderer renderer)
     {
-        clientBehaviorRenderers.add (renderer);   
+        if (clientBehaviorRenderers == null)
+        {
+            clientBehaviorRenderers = new ArrayList<>();
+        }
+        clientBehaviorRenderers.add(renderer);   
     }
     
     public void addRenderer(org.apache.myfaces.config.element.Renderer value)
     {
+        if (renderer == null)
+        {
+            renderer = new ArrayList<>();
+        }
         renderer.add(value);
     }
 
     @Override
     public void merge(org.apache.myfaces.config.element.RenderKit renderKit)
     {
-        renderKitClasses.addAll(renderKit.getRenderKitClasses());
-        clientBehaviorRenderers.addAll (renderKit.getClientBehaviorRenderers());
-        renderer.addAll(renderKit.getRenderer());
+        if (!renderKit.getRenderKitClasses().isEmpty())
+        {
+            if (renderKitClasses == null)
+            {
+                renderKitClasses = new ArrayList<>();
+            }
+            renderKitClasses.addAll(renderKit.getRenderKitClasses());
+        }
+        
+        if (!renderKit.getClientBehaviorRenderers().isEmpty())
+        {
+            if (clientBehaviorRenderers == null)
+            {
+                clientBehaviorRenderers = new ArrayList<>();
+            }
+            clientBehaviorRenderers.addAll(renderKit.getClientBehaviorRenderers());
+        }
+
+        if (!renderKit.getRenderer().isEmpty())
+        {
+            if (renderer == null)
+            {
+                renderer = new ArrayList<>();
+            }
+            renderer.addAll(renderKit.getRenderer());
+        }
+        
     }
 
 }

@@ -20,21 +20,30 @@ package org.apache.myfaces.config.impl.elements;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AbsoluteOrderingImpl extends org.apache.myfaces.config.element.AbsoluteOrdering implements Serializable
 {
-    private List<org.apache.myfaces.config.element.OrderSlot> orderList = 
-        new ArrayList<>();
+    private List<org.apache.myfaces.config.element.OrderSlot> orderList;
     
     public void addOrderSlot(org.apache.myfaces.config.element.OrderSlot slot)
     {
+        if (orderList == null)
+        {
+            orderList = new ArrayList<>();
+        }
         orderList.add(slot);
     }
-    
+
     @Override
     public List<org.apache.myfaces.config.element.OrderSlot> getOrderList()
     {
+        if (orderList == null)
+        {
+            return Collections.emptyList();
+        }
+        
         return orderList;
     }
 }

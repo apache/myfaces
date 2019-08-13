@@ -24,33 +24,29 @@ package org.apache.myfaces.config.impl.elements;
  */
 public class FacesFlowViewImpl extends org.apache.myfaces.config.element.FacesFlowView
 {
-    private String _id;
-    private String _vdlDocument;
+    private String id;
+    private String vdlDocument;
 
-    public FacesFlowViewImpl()
-    {
-    }
-    
     @Override
     public String getVdlDocument()
     {
-        return _vdlDocument;
+        return vdlDocument;
     }
 
     public void setVdlDocument(String vdlDocument)
     {
-        this._vdlDocument = vdlDocument;
+        this.vdlDocument = vdlDocument;
     }
     
     @Override
     public String getId()
     {
-        return _id;
+        return id;
     }
 
     public void setId(String id)
     {
-        this._id = id;
+        this.id = id;
     }
 
 }

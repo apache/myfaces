@@ -21,16 +21,9 @@ package org.apache.myfaces.config.impl.elements;
 import java.io.Serializable;
 import org.apache.myfaces.config.element.FaceletsTemplateMapping;
 
-/**
- *
- */
 public class FaceletsTemplateMappingImpl extends FaceletsTemplateMapping implements Serializable
 {
     private String urlPattern;
-    
-    public FaceletsTemplateMappingImpl()
-    {
-    }
 
     @Override
     public String getUrlPattern()
