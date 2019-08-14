@@ -47,14 +47,14 @@ public class ViewPoolFactoryImpl extends ViewPoolFactory
         // If no view pool mappings set, apply to all views.
         if (runtimeConfig.getViewPoolMappings().isEmpty())
         {
-            defaultViewPool = new ViewPoolImpl(context, new HashMap<String, String>());
+            defaultViewPool = new ViewPoolImpl(context, new HashMap<>());
         }
-        urlPatterns = new ArrayList<String>();
-        viewPoolList = new ArrayList<ViewPool>();
+        urlPatterns = new ArrayList<>();
+        viewPoolList = new ArrayList<>();
         for (ViewPoolMapping vpm : runtimeConfig.getViewPoolMappings())
         {
             urlPatterns.add(vpm.getUrlPattern());
-            Map<String,String> parameters = new HashMap<String, String>();
+            Map<String,String> parameters = new HashMap<>();
             for (ViewPoolParameter param : vpm.getParameterList())
             {
                 parameters.put(param.getName(), param.getValue());

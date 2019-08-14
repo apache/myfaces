@@ -47,7 +47,6 @@ public final class VariableMapperWrapper extends VariableMapperBase implements F
         super();
         _target = orig;
         _targetBase = (orig instanceof VariableMapperBase) ? (VariableMapperBase) orig : null;
-        //_checkTargetBase = true;
         _trackResolveVariables = false;
         _variableResolved = false;
     }

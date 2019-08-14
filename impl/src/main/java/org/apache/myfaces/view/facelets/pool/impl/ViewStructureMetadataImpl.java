@@ -28,7 +28,6 @@ import org.apache.myfaces.view.facelets.pool.ViewStructureMetadata;
 public class ViewStructureMetadataImpl extends ViewStructureMetadata
 {
     private Object viewState;
-    
     private RequestViewMetadata rvc;
     
     public ViewStructureMetadataImpl(Object viewState, RequestViewMetadata rvc)

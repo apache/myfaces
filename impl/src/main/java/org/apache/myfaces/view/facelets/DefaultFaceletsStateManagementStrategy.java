@@ -154,19 +154,18 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     @Override
     public UIViewRoot restoreView (FacesContext context, String viewId, String renderKitId)
     {
-        ResponseStateManager manager;
-        Object state[];
         Map<String, Object> states;
         UIViewRoot view = null;
- 
+        
+        ResponseStateManager manager =
+                getRenderKitFactory().getRenderKit(context, renderKitId).getResponseStateManager();
+
         // The value returned here is expected to be false (set by RestoreViewExecutor), but
         //we don't know if some ViewHandler wrapper could change it, so it is better to save the value.
         final boolean oldContextEventState = context.isProcessingEvents();
+        
         // Get previous state from ResponseStateManager.
-        manager = getRenderKitFactory().getRenderKit(context, renderKitId).getResponseStateManager();
-        
-        state = (Object[]) manager.getState(context, viewId);
-        
+        Object[] state = (Object[]) manager.getState(context, viewId);
         if (state == null)
         {
             //No state could be restored, return null causing ViewExpiredException
@@ -220,9 +219,9 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     view = context.getApplication().getViewHandler().createView(context, viewId);
                 }
                 
-                context.setViewRoot (view); 
+                context.setViewRoot(view); 
                 boolean skipBuildView = false;
-                if (state != null && state[1] != null)
+                if (state[1] != null)
                 {
                     // Since JSF 2.2, UIViewRoot.restoreViewScopeState() must be called, but
                     // to get the state of the root, it is necessary to force calculate the
@@ -257,25 +256,18 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     }
                     if (faceletViewState != null)
                     {
-                        //if (skipBuildView)
-                        //{
-                            FaceletState newFaceletState = (FaceletState) view.getAttributes().get(
-                                    ComponentSupport.FACELET_STATE_INSTANCE);
-                            if (newFaceletState != null)
-                            {
-                                newFaceletState.restoreState(context, 
-                                        ((FaceletState)faceletViewState).saveState(context));
-                                faceletViewState = newFaceletState;
-                            }
-                            else
-                            {
-                                view.getAttributes().put(ComponentSupport.FACELET_STATE_INSTANCE,  faceletViewState);
-                            }
-                        //}
-                        //else
-                        //{
-                        //    view.getAttributes().put(ComponentSupport.FACELET_STATE_INSTANCE,  faceletViewState);
-                        //}
+                        FaceletState newFaceletState = (FaceletState) view.getAttributes().get(
+                                ComponentSupport.FACELET_STATE_INSTANCE);
+                        if (newFaceletState != null)
+                        {
+                            newFaceletState.restoreState(context, 
+                                    ((FaceletState)faceletViewState).saveState(context));
+                            faceletViewState = newFaceletState;
+                        }
+                        else
+                        {
+                            view.getAttributes().put(ComponentSupport.FACELET_STATE_INSTANCE,  faceletViewState);
+                        }
                     }
                     if (state.length == 3)
                     {
@@ -305,7 +297,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     try 
                     {
                         context.setProcessingEvents (true);
-                        vdl.buildView (context, view);
+                        vdl.buildView(context, view);
                         // In the latest code related to PostAddToView, it is
                         // triggered no matter if it is applied on postback. It seems that MYFACES-2389, 
                         // TRINIDAD-1670 and TRINIDAD-1671 are related.
@@ -334,7 +326,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 throw new IllegalStateException("Cannot apply state over stateless view");
             }
             
-            if (state != null && state[1] != null)
+            if (state[1] != null)
             {
                 states = (Map<String, Object>) state[1];
                 //Save the last unique id counter key in UIViewRoot
@@ -346,25 +338,23 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 
                 // Visit the children and restore their state.
                 boolean emptyState = false;
-                boolean containsFaceletState = states.containsKey(
-                        ComponentSupport.FACELET_STATE_INSTANCE);
+                boolean containsFaceletState = states.containsKey(ComponentSupport.FACELET_STATE_INSTANCE);
                 if (states.isEmpty())
                 {
                     emptyState = true; 
                 }
-                else if (states.size() == 1 && 
-                        containsFaceletState)
+                else if (states.size() == 1 && containsFaceletState)
                 {
                     emptyState = true; 
                 }
+
                 //Restore state of current components
                 if (!emptyState)
                 {
                     // Check if there is only one component state
-                    // and that state is UIViewRoot instance (for example
-                    // when using ViewScope)
-                    if ((states.size() == 1 && !containsFaceletState) || 
-                        (states.size() == 2 && containsFaceletState))
+                    // and that state is UIViewRoot instance (for example when using ViewScope)
+                    if ((states.size() == 1 && !containsFaceletState)
+                            || (states.size() == 2 && containsFaceletState))
                     {
                         Object viewState = states.get(view.getClientId(context));
                         if (viewState != null)
@@ -385,8 +375,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 if (faceletViewState != null)
                 {
                     // Make sure binding map
-                    if (oldFaceletState != null && oldFaceletState.getBindings() != null && 
-                            !oldFaceletState.getBindings().isEmpty())
+                    if (oldFaceletState != null && oldFaceletState.getBindings() != null
+                            && !oldFaceletState.getBindings().isEmpty())
                     {
                         // Be sure the new facelet state has the binding map filled from the old one.
                         // When vdl.buildView() is called by restoreView, FaceletState.bindings map is filled, but
@@ -395,7 +385,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                         // has precedence, but we need to fill bindings map using the entries from the instance that
                         // comes from the view pool.
                         FaceletState newFaceletState = (FaceletState) faceletViewState;
-                        for (Map.Entry<String, Map<String, ValueExpression> > entry : 
+                        for (Map.Entry<String, Map<String, ValueExpression>> entry : 
                                 oldFaceletState.getBindings().entrySet())
                         {
                             for (Map.Entry<String, ValueExpression> entry2 : entry.getValue().entrySet())
@@ -725,7 +715,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             }
             else
             {
-                states = new HashMap<String, Object>();
+                states = new HashMap<>();
 
                 faceletViewState = view.getAttributes().get(ComponentSupport.FACELET_STATE_INSTANCE);
                 if (faceletViewState != null)
@@ -737,8 +727,8 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     view.getTransientStateHelper().putTransient(
                             ComponentSupport.FACELET_STATE_INSTANCE, faceletViewState);
                 }
-                if (_viewPoolProcessor != null && 
-                    _viewPoolProcessor.isViewPoolEnabledForThisView(context, view))
+                if (_viewPoolProcessor != null
+                        && _viewPoolProcessor.isViewPoolEnabledForThisView(context, view))
                 {
                     SaveStateAndResetViewCallback cb = saveStateOnMapVisitTreeAndReset(
                             context,
@@ -787,7 +777,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             }
             
             context.getAttributes().put(StateManagerImpl.SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
-
         }
         
         return serializedView;
@@ -870,7 +859,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             if (component.getFacetCount() > 0)
             {
                 Map<String, UIComponent> facetMap = component.getFacets();
-                
                 for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
                 {
                     UIComponent child = entry.getValue();
@@ -943,7 +931,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         if (clientIdsAdded == null)
         {
             //Create a set that preserve insertion order
-            clientIdsAdded = new ArrayList<String>();
+            clientIdsAdded = new ArrayList<>();
         }
         clientIdsAdded.add(clientId);
 
@@ -1033,11 +1021,10 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     else if (target.getParent() != null)
                     {
                         state = target.saveState (facesContext);
-                        
                         if (state != null)
                         {
                             // Save by client ID into our map.
-                            states.put(target.getClientId (facesContext), state);
+                            states.put(target.getClientId(facesContext), state);
                         }
                         
                         return VisitResult.ACCEPT;
@@ -1139,7 +1126,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             if (state != null)
             {
                 // Save by client ID into our map.
-                states.put (uiViewRoot.getClientId (facesContext), state);
+                states.put(uiViewRoot.getClientId (facesContext), state);
 
                 //Hard reset (or reset and check state again)
                 Integer oldResetMode = (Integer) uiViewRoot.getAttributes().put(
@@ -1502,7 +1489,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 if (clientIdsRemoved == null)
                 {
                     //Create a set that preserve insertion order
-                    clientIdsRemoved = new ArrayList<String>();
+                    clientIdsRemoved = new ArrayList<>();
                 }
                 clientIdsRemoved.add(component.getClientId(_facesContext));
                 setClientsIdsRemoved(uiViewRoot, clientIdsRemoved);
@@ -1518,7 +1505,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         //children
         if (component.getChildCount() > 0)
         {
-            List<TreeStructComponent> structChildList = new ArrayList<TreeStructComponent>();
+            List<TreeStructComponent> structChildList = new ArrayList<>();
             for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
             {
                 UIComponent child = component.getChildren().get(i);     
@@ -1534,11 +1521,10 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         }
 
         //facets
-        
         if (component.getFacetCount() > 0)
         {
             Map<String, UIComponent> facetMap = component.getFacets();
-            List<Object[]> structFacetList = new ArrayList<Object[]>();
+            List<Object[]> structFacetList = new ArrayList<>();
             for (Map.Entry<String, UIComponent> entry : facetMap.entrySet())
             {
                 UIComponent child = entry.getValue();
