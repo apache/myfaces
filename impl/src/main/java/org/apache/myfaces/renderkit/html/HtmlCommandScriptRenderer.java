@@ -22,11 +22,9 @@ package org.apache.myfaces.renderkit.html;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
-import java.util.Set;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIForm;
 import javax.faces.component.UIParameter;
@@ -35,11 +33,11 @@ import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlCommandScript;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.ActionEvent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
 import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
@@ -53,9 +51,6 @@ import org.apache.myfaces.util.SharedStringBuilder;
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Command", type = "javax.faces.Script")
 public class HtmlCommandScriptRenderer extends HtmlRenderer
 {
-    private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
-            EnumSet.of(SearchExpressionHint.RESOLVE_CLIENT_SIDE, SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
-    
     private static final String AJAX_KEY_ONERROR = "onerror";
     private static final String AJAX_KEY_ONEVENT = "onevent";
     private static final String AJAX_KEY_EXECUTE = "execute";
@@ -203,7 +198,8 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         StringBuilder paramBuffer = SharedStringBuilder.get(context.getFacesContext(), AJAX_PARAM_SB, 20);
     
         SearchExpressionContext searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
-                            context.getFacesContext(), context.getComponent(), EXPRESSION_HINTS, null);
+                context.getFacesContext(), context.getComponent(),
+                MyFacesSearchExpressionHints.SET_RESOLVE_CLIENT_SIDE_RESOLVE_SINGLE_COMPONENT, null);
         
         String executes = resolveExpressionsAsParameter(paramBuffer, AJAX_KEY_EXECUTE, commandScript.getExecute(),
                 searchExpressionContext);

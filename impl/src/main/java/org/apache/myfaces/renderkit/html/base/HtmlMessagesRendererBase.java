@@ -20,12 +20,10 @@ package org.apache.myfaces.renderkit.html.base;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,9 +35,9 @@ import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlMessages;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
 
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
@@ -75,11 +73,10 @@ public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
         {
             SearchExpressionHandler searchExpressionHandler = 
                     facesContext.getApplication().getSearchExpressionHandler();
-            Set<SearchExpressionHint> expressionHints = EnumSet.of(SearchExpressionHint.IGNORE_NO_RESULT);
 
             clientId = searchExpressionHandler.resolveClientId(
                     SearchExpressionContext.createSearchExpressionContext(
-                            facesContext, messages, expressionHints, null), forAttr);
+                            facesContext, messages, MyFacesSearchExpressionHints.SET_IGNORE_NO_RESULT, null), forAttr);
             if (clientId == null)
             {
                 log.severe("Could not render Message. Unable to find component '" 

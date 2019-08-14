@@ -21,10 +21,8 @@ package org.apache.myfaces.renderkit.html;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.RandomAccess;
-import java.util.Set;
 
 import javax.faces.FacesException;
 import javax.faces.component.ActionSource;
@@ -35,11 +33,11 @@ import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.render.ClientBehaviorRenderer;
+import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.SharedStringBuilder;
 
@@ -420,7 +418,8 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
                     if (searchExpressionContext == null)
                     {
                         searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
-                                context.getFacesContext(), context.getComponent(), EXPRESSION_HINTS, null);
+                                context.getFacesContext(), context.getComponent(),
+                                MyFacesSearchExpressionHints.SET_RESOLVE_CLIENT_SIDE_RESOLVE_SINGLE_COMPONENT, null);
                     }
                     
                     String strVal = list.get(cnt);
@@ -434,7 +433,8 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
                     if (searchExpressionContext == null)
                     {
                         searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
-                                context.getFacesContext(), context.getComponent(), EXPRESSION_HINTS, null);
+                                context.getFacesContext(), context.getComponent(),
+                                MyFacesSearchExpressionHints.SET_RESOLVE_CLIENT_SIDE_RESOLVE_SINGLE_COMPONENT, null);
                     }
                     
                     cnt++;
@@ -449,9 +449,6 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
 
     }
 
-    private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
-            EnumSet.of(SearchExpressionHint.RESOLVE_CLIENT_SIDE, SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
-    
     public void build(ClientBehaviorContext context,
             int size, StringBuilder retVal, int cnt,
             String strVal, SearchExpressionContext searchExpressionContext)
