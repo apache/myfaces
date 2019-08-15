@@ -29,8 +29,6 @@ import javax.faces.context.ResponseStream;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.PhaseId;
 
-import org.apache.myfaces.context.ReleasableExternalContext;
-
 /**
  * A FacesContext implementation which will be set as the current instance
  * during container startup and shutdown and which provides a basic set of
@@ -48,7 +46,7 @@ public class StartupFacesContextImpl extends FacesContextImplBase
     
     public StartupFacesContextImpl(
             ExternalContext externalContext, 
-            ReleasableExternalContext defaultExternalContext,
+            ExternalContext defaultExternalContext,
             ExceptionHandler exceptionHandler,
             boolean startup)
     {

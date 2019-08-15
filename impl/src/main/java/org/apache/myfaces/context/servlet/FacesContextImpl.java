@@ -44,7 +44,6 @@ import org.apache.myfaces.cdi.FacesScopeProvider;
 
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.context.ReleasableFacesContextFactory;
-import org.apache.myfaces.context.ReleasableExternalContext;
 import org.apache.myfaces.util.lang.Assert;
 
 /**
@@ -101,7 +100,7 @@ public class FacesContextImpl extends FacesContextImplBase
      * @param facesContextFactory
      */
     public FacesContextImpl(final ExternalContext externalContext,
-            final ReleasableExternalContext defaultExternalContext , 
+            final ExternalContext defaultExternalContext , 
             final ReleasableFacesContextFactory facesContextFactory)
     {
         // setCurrentInstance is called in constructor of super class
@@ -111,7 +110,7 @@ public class FacesContextImpl extends FacesContextImplBase
     }
     
     public FacesContextImpl(final ExternalContext externalContext,
-            final ReleasableExternalContext defaultExternalContext , 
+            final ExternalContext defaultExternalContext , 
             final ReleasableFacesContextFactory facesContextFactory,
             final ApplicationFactory applicationFactory,
             final RenderKitFactory renderKitFactory,

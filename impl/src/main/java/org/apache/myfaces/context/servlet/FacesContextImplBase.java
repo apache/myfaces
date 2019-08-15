@@ -39,7 +39,6 @@ import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.el.FacesELContext;
-import org.apache.myfaces.context.ReleasableExternalContext;
 import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage; 
 
@@ -54,7 +53,7 @@ public abstract class FacesContextImplBase extends FacesContext
 {
     private Application _application;
     private ExternalContext _externalContext;
-    private ReleasableExternalContext _defaultExternalContext;
+    private ExternalContext _defaultExternalContext;
     private UIViewRoot _viewRoot;
     private RenderKitFactory _renderKitFactory;
     private ELContext _elContext;
@@ -79,7 +78,7 @@ public abstract class FacesContextImplBase extends FacesContext
      * Calls FacesContext.setCurrentInstance(this);
      */
     public FacesContextImplBase(final ExternalContext externalContext,
-            final ReleasableExternalContext defaultExternalContext)
+            final ExternalContext defaultExternalContext)
     {
         _externalContext = externalContext;
         _defaultExternalContext = defaultExternalContext;
@@ -90,7 +89,7 @@ public abstract class FacesContextImplBase extends FacesContext
     }
     
     public FacesContextImplBase(final ExternalContext externalContext,
-            final ReleasableExternalContext defaultExternalContext,
+            final ExternalContext defaultExternalContext,
             final ApplicationFactory applicationFactory,
             final RenderKitFactory renderKitFactory)
     {

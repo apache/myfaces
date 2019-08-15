@@ -105,5 +105,11 @@ public class MockExternalContext extends MockExternalContext20
     }
 
     // ------------------------------------------------- ExternalContext Methods
+
+    @Override
+    public void release()
+    {
+        
+    }
     
 }

@@ -72,7 +72,6 @@ import org.apache.myfaces.spi.FacesFlowProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinder;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
-import org.apache.myfaces.context.ReleasableExternalContext;
 import org.apache.myfaces.util.lang.StringUtils;
 
 /**
@@ -502,7 +501,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, startup);
         ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
         FacesContext facesContext = new StartupFacesContextImpl(externalContext, 
-                (ReleasableExternalContext) externalContext, exceptionHandler, startup);
+                externalContext, exceptionHandler, startup);
         
         // If getViewRoot() is called during application startup or shutdown, 
         // it should return a new UIViewRoot with its locale set to Locale.getDefault().

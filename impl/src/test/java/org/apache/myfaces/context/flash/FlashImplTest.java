@@ -1108,6 +1108,11 @@ public class FlashImplTest extends AbstractJsfTestCase
         {
             this.secure = secure;
         }
+
+        @Override
+        public void release() {
+            
+        }
     }
 
 }

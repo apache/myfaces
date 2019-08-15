@@ -47,7 +47,6 @@ import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.flow.FlowUtils;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.context.ExceptionHandlerImpl;
-import org.apache.myfaces.context.ReleasableExternalContext;
 
 
 /**
@@ -218,8 +217,8 @@ public class FlowScopeBeanHolder implements Serializable
                 {
                     ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
                     ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
-                    facesContext = new StartupFacesContextImpl(externalContext, 
-                            (ReleasableExternalContext) externalContext, exceptionHandler, false);
+                    facesContext = new StartupFacesContextImpl(externalContext, externalContext, exceptionHandler,
+                            false);
                     for (ContextualStorage contextualStorage : oldContextStorages.values())
                     {
                         FlowScopedContextImpl.destroyAllActive(contextualStorage);
