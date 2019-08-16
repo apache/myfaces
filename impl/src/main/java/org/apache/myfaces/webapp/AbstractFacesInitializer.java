@@ -86,7 +86,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     private static final String CDI_SERVLET_CONTEXT_BEAN_MANAGER_ATTRIBUTE = 
         "javax.enterprise.inject.spi.BeanManager";
 
-    private static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
+    public static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
 
     /**
      * Performs all necessary initialization tasks like configuring this JSF

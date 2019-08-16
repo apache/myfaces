@@ -144,6 +144,7 @@ import org.apache.myfaces.view.facelets.el.ELText;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
+import org.apache.myfaces.webapp.AbstractFacesInitializer;
 
 /**
  * Configures everything for a given context. The FacesConfigurator is independent of the concrete implementations that
@@ -180,8 +181,6 @@ public class FacesConfigurator
             SearchExpressionContextFactoryImpl.class.getName();
     private static final String DEFAULT_FACES_CONFIG = "/WEB-INF/faces-config.xml";
 
-    private static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
-
     /**
      * Set this attribute if the current configuration requires enable window mode
      */
@@ -213,9 +212,10 @@ public class FacesConfigurator
         // In dev mode a new Faces Configurator is created for every request so only
         // create a new bean storage list if we don't already have one which will be
         // the case first time through during init.
-        if (_externalContext.getApplicationMap().get(INJECTED_BEAN_STORAGE_KEY) == null) 
+        if (_externalContext.getApplicationMap().get(AbstractFacesInitializer.INJECTED_BEAN_STORAGE_KEY) == null)
         {
-            _externalContext.getApplicationMap().put(INJECTED_BEAN_STORAGE_KEY, new CopyOnWriteArrayList());
+            _externalContext.getApplicationMap().put(AbstractFacesInitializer.INJECTED_BEAN_STORAGE_KEY,
+                    new CopyOnWriteArrayList());
         }
         
         _myfacesConfig = MyfacesConfig.getCurrentInstance(_externalContext);
@@ -824,8 +824,8 @@ public class FacesConfigurator
                     _callInjectAndPostConstruct(innerInstance);
                 }
             }
-            List<BeanEntry> injectedBeanStorage =
-                    (List<BeanEntry>)_externalContext.getApplicationMap().get(INJECTED_BEAN_STORAGE_KEY);
+            List<BeanEntry> injectedBeanStorage = (List<BeanEntry>) _externalContext.getApplicationMap().get(
+                            AbstractFacesInitializer.INJECTED_BEAN_STORAGE_KEY);
 
             Object creationMetaData = getInjectionProvider().inject(instance);
 
