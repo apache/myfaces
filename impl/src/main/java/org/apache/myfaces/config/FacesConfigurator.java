@@ -819,7 +819,7 @@ public class FacesConfigurator
             //invoke the injection over the inner one first
             if (instance instanceof FacesWrapper)
             {
-                Object innerInstance = ((FacesWrapper)instance).getWrapped();
+                Object innerInstance = ((FacesWrapper) instance).getWrapped();
                 if (innerInstance != null)
                 {
                     _callInjectAndPostConstruct(innerInstance);
@@ -836,7 +836,7 @@ public class FacesConfigurator
         }
         catch (InjectionProviderException ex)
         {
-            log.log(Level.INFO, "Exception on PreDestroy", ex);
+            log.log(Level.INFO, "Exception on Injection or PostConstruct", ex);
         }
     }
 
@@ -871,24 +871,10 @@ public class FacesConfigurator
             runtimeConfig.addResourceBundle(bundle);
         }
 
-        List<BeanEntry> injectedBeansAndMetaData =
-                (List<BeanEntry>)_externalContext.getApplicationMap().get(INJECTED_BEAN_STORAGE_KEY);
-
         for (String className : dispenser.getElResolvers())
         {
             ELResolver elResolver = (ELResolver) ClassUtils.newInstance(className, ELResolver.class);
-            try
-            {
-                Object creationMetaData = getInjectionProvider().inject(elResolver);
-
-                injectedBeansAndMetaData.add(new BeanEntry(elResolver, creationMetaData));
-
-                getInjectionProvider().postConstruct(elResolver, creationMetaData);
-            }
-            catch (InjectionProviderException e)
-            {
-                log.log(Level.SEVERE, "Error while injecting ELResolver", e);
-            }
+            _callInjectAndPostConstruct(elResolver);
             runtimeConfig.addFacesConfigElResolver(elResolver);
         }
         
@@ -1198,9 +1184,6 @@ public class FacesConfigurator
         LifecycleFactory lifecycleFactory
                 = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
 
-        List<BeanEntry> injectedBeanStorage =
-                (List<BeanEntry>)_externalContext.getApplicationMap().get(INJECTED_BEAN_STORAGE_KEY);
-
         for (Iterator<String> it = lifecycleFactory.getLifecycleIds(); it.hasNext();)
         {
             Lifecycle lifecycle = lifecycleFactory.getLifecycle(it.next());
@@ -1212,21 +1195,12 @@ public class FacesConfigurator
                 {
                     PhaseListener listener = (PhaseListener)
                             ClassUtils.newInstance(listenerClassName, PhaseListener.class);
-
-                    Object creationMetaData = getInjectionProvider().inject(listener);
-
-                    injectedBeanStorage.add(new BeanEntry(listener, creationMetaData));
-
-                    getInjectionProvider().postConstruct(listener, creationMetaData);
+                    _callInjectAndPostConstruct(listener);
                     lifecycle.addPhaseListener(listener);
                 }
                 catch (ClassCastException e)
                 {
                     log.severe("Class " + listenerClassName + " does not implement PhaseListener");
-                }
-                catch (InjectionProviderException e)
-                {
-                    log.log(Level.SEVERE, "Error while injecting PhaseListener", e);
                 }
             }
 
