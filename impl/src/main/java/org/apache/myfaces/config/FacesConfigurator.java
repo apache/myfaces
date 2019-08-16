@@ -1201,7 +1201,6 @@ public class FacesConfigurator
         List<BeanEntry> injectedBeanStorage =
                 (List<BeanEntry>)_externalContext.getApplicationMap().get(INJECTED_BEAN_STORAGE_KEY);
 
-        //Lifecycle lifecycle = lifecycleFactory.getLifecycle(getLifecycleId());
         for (Iterator<String> it = lifecycleFactory.getLifecycleIds(); it.hasNext();)
         {
             Lifecycle lifecycle = lifecycleFactory.getLifecycle(it.next());
