@@ -58,45 +58,45 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
     @Override
     public InjectionProvider getInjectionProvider(ExternalContext externalContext)
     {
-        InjectionProvider lifecycleProvider = null;
+        InjectionProvider injectionProvider = null;
         if (externalContext == null)
         {
             // Really in jsf 2.0, this will not happen, because a Startup/Shutdown
             // FacesContext and ExternalContext are provided on initialization and shutdown,
             // and in other scenarios the real FacesContext/ExternalContext is provided.
             log.info("No ExternalContext using fallback InjectionProvider.");
-            lifecycleProvider = resolveFallbackInjectionProvider();
+            injectionProvider = resolveFallbackInjectionProvider();
         }
         else
         {
-            lifecycleProvider = (InjectionProvider)
+            injectionProvider = (InjectionProvider)
                     externalContext.getApplicationMap().get(INJECTION_PROVIDER_INSTANCE_KEY);
         }
-        if (lifecycleProvider == null)
+        if (injectionProvider == null)
         {
             if (!resolveInjectionProviderFromExternalContext(externalContext))
             {
                 if (!resolveInjectionProviderFromService(externalContext))
                 {
-                    lifecycleProvider = resolveFallbackInjectionProvider();
-                    externalContext.getApplicationMap().put(INJECTION_PROVIDER_INSTANCE_KEY, lifecycleProvider);
+                    injectionProvider = resolveFallbackInjectionProvider();
+                    externalContext.getApplicationMap().put(INJECTION_PROVIDER_INSTANCE_KEY, injectionProvider);
                 }
                 else
                 {
                     //Retrieve it because it was resolved
-                    lifecycleProvider = (InjectionProvider)
+                    injectionProvider = (InjectionProvider)
                             externalContext.getApplicationMap().get(INJECTION_PROVIDER_INSTANCE_KEY);
                 }
             }
             else
             {
                 //Retrieve it because it was resolved
-                lifecycleProvider = (InjectionProvider)
+                injectionProvider = (InjectionProvider)
                         externalContext.getApplicationMap().get(INJECTION_PROVIDER_INSTANCE_KEY);
             }
-            log.fine("Using InjectionProvider " + lifecycleProvider.getClass().getName());
+            log.fine("Using InjectionProvider " + injectionProvider.getClass().getName());
         }
-        return lifecycleProvider;
+        return injectionProvider;
     }
 
     @Override
@@ -110,11 +110,11 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
     {
         try
         {
-            String lifecycleProvider = externalContext.getInitParameter(MyfacesConfig.INJECTION_PROVIDER);
-            if (lifecycleProvider != null)
+            String injectionProvider = externalContext.getInitParameter(MyfacesConfig.INJECTION_PROVIDER);
+            if (injectionProvider != null)
             {
 
-                Object obj = createClass(lifecycleProvider, externalContext);
+                Object obj = createClass(injectionProvider, externalContext);
 
                 if (obj instanceof InjectionProvider)
                 {

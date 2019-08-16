@@ -62,7 +62,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.config.ConfigFilesXmlValidationUtils;
 import org.apache.myfaces.config.DefaultFacesConfigurationProvider;
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider;
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.impl.element.FactoryImpl;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
@@ -240,9 +239,7 @@ public class AbstractJsfTestContainer
         servletContext.addInitParameter("javax.faces.PROJECT_STAGE", "UnitTest");
         servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
         servletContext.addInitParameter(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,"-1");
-        servletContext.addInitParameter("org.apache.myfaces.config.annotation.LifecycleProvider",
-            NoInjectionAnnotationLifecycleProvider.class.getName());
-        
+
         TestConfig testConfig = getTestJavaClass().getAnnotation(TestConfig.class);
         if (testConfig != null && testConfig.oamAnnotationScanPackages() != null &&
             testConfig.oamAnnotationScanPackages().length() > 0)

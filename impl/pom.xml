@@ -94,8 +94,6 @@
                         <exclude>src/main/resources/META-INF/licenses/omnifaces-LICENSE.txt</exclude>
 
                         <!-- services files are trivial config files with no comments -->
-                        <exclude>src/test/resources/META-INF/services/org.apache.myfaces.config.annotation.LifecycleProvider</exclude>
-                        <exclude>src/main/resources/META-INF/services/org.apache.myfaces.config.annotation.LifecycleProvider</exclude>
                         <exclude>src/main/resources/META-INF/services/org.apache.myfaces.spi.InjectionProvider</exclude>
                         <exclude>src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension</exclude>
                         <exclude>src/main/resources/META-INF/services/javax.servlet.ServletContainerInitializer</exclude>
@@ -1063,7 +1061,7 @@
             <artifactId>commons-beanutils</artifactId>
         </dependency>
 
-        <!-- tomcat 7 support (LifecycleProvider) -->
+        <!-- tomcat 7 support (InjectionProvider) -->
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-catalina</artifactId>

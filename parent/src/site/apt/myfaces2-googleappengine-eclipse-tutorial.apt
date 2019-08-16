@@ -106,20 +106,6 @@ Tutorial : Configuring MyFaces 2 to run on Google App Engine with Eclipse
 +------------------------------------------------------------------------+
      <web-app ...
              ...
-             <!--
-               We need to set annotation lifecycle provider manually as 
-               org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider.
-               Other providers use some classes that are restricted on Google App Engine.    
-            --> 
-            <context-param>
-                <param-name>
-                  org.apache.myfaces.config.annotation.LifecycleProvider
-                </param-name>
-                <param-value>
-                  org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider
-                </param-value>
-            </context-param>
-
             <!--
                 Need to set a secret to avoid javax.crypto.BadPaddingException.
                 "param-value" must be Base64 encoded.
