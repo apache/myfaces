@@ -104,8 +104,6 @@ public class RuntimeConfig
     
     private List<String> _resourceResolvers = new ArrayList<String>();
     
-    private List<Object> _injectedObjects = new ArrayList<Object>();
-    
     private List<FaceletTagLibrary> _faceletTagLibraries = new ArrayList<FaceletTagLibrary>();
     
     private Map<Integer, String> _namespaceById = new HashMap<Integer, String>();
@@ -138,7 +136,6 @@ public class RuntimeConfig
         _externalContextResourceLibraryContracts.clear();
         _classLoaderResourceLibraryContracts.clear();
         _resourceLibraryContracts.clear();
-        _injectedObjects.clear();
         _faceletTagLibraries.clear();
         _faceletTemplates.clear();
         
@@ -430,19 +427,6 @@ public class RuntimeConfig
     public void addResourceResolver(String resourceResolver)
     {
         _resourceResolvers.add(resourceResolver);
-    }
-
-    /**
-     * @return the _injectedObjects
-     */
-    public List<Object> getInjectedObjects()
-    {
-        return _injectedObjects;
-    }
-
-    public void addInjectedObject(Object object)
-    {
-        _injectedObjects.add(object);
     }
 
     public Map<Integer, String> getNamespaceById()

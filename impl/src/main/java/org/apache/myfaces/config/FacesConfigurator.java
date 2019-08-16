@@ -684,7 +684,6 @@ public class FacesConfigurator
                 javax.faces.event.SystemEventListener listener = (javax.faces.event.SystemEventListener) 
                         ClassUtils.newInstance(systemEventListener.getSystemEventListenerClass());
                 _callInjectAndPostConstruct(listener);
-                _runtimeConfig.addInjectedObject(listener);
                 if (systemEventListener.getSourceClass() != null && systemEventListener.getSourceClass().length() > 0)
                 {
                     application.subscribeToEvent(
@@ -811,7 +810,7 @@ public class FacesConfigurator
         
         this.setApplication(application);
     }
-    
+
     private void _callInjectAndPostConstruct(Object instance)
     {
         try
