@@ -25,6 +25,7 @@ import javax.faces.context.ExternalContext;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import org.apache.myfaces.spi.impl.DefaultFacesFlowProviderFactory;
 
 /**
  * SPI to provide a FacesFlowProviderFactory implementation and thus
@@ -35,10 +36,6 @@ import java.security.PrivilegedExceptionAction;
  */
 public abstract class FacesFlowProviderFactory
 {
-
-    protected static final String FACTORY_DEFAULT = 
-        "org.apache.myfaces.spi.impl.DefaultFacesFlowProviderFactory";
-
     private static final String FACTORY_KEY = FacesFlowProviderFactory.class.getName();
 
     public static FacesFlowProviderFactory getFacesFlowProviderFactory(ExternalContext ctx)
@@ -61,12 +58,12 @@ public abstract class FacesFlowProviderFactory
                 final ExternalContext ectx = ctx;
                 factory = (FacesFlowProviderFactory) AccessController.doPrivileged(
                         (PrivilegedExceptionAction) () -> SpiUtils.build(ectx,
-                                FacesFlowProviderFactory.class,FACTORY_DEFAULT));
+                                FacesFlowProviderFactory.class, DefaultFacesFlowProviderFactory.class));
             }
             else
             {
                 factory = (FacesFlowProviderFactory) SpiUtils
-                        .build(ctx, FacesFlowProviderFactory.class, FACTORY_DEFAULT);
+                        .build(ctx, FacesFlowProviderFactory.class, DefaultFacesFlowProviderFactory.class);
             }
         }
         catch (PrivilegedActionException pae)
@@ -83,8 +80,7 @@ public abstract class FacesFlowProviderFactory
         return factory;
     }
 
-    public static void setFacesFlowProviderFactory(ExternalContext ctx,
-                                                          FacesFlowProviderFactory factory)
+    public static void setFacesFlowProviderFactory(ExternalContext ctx, FacesFlowProviderFactory factory)
     {
         ctx.getApplicationMap().put(FACTORY_KEY, factory);
     }

@@ -36,8 +36,6 @@ import org.apache.myfaces.spi.impl.SpiUtils;
  */
 public abstract class FaceletConfigResourceProviderFactory
 {
-    protected static final String FACTORY_DEFAULT = DefaultFaceletConfigResourceProviderFactory.class.getName();
-
     private static final String FACTORY_KEY = FaceletConfigResourceProviderFactory.class.getName();
 
     public static FaceletConfigResourceProviderFactory getFacesConfigResourceProviderFactory(ExternalContext ctx)
@@ -57,12 +55,14 @@ public abstract class FaceletConfigResourceProviderFactory
                 final ExternalContext ectx = ctx;
                 lpf = (FaceletConfigResourceProviderFactory) AccessController.doPrivileged(
                         (PrivilegedExceptionAction) () -> SpiUtils.build(ectx, 
-                                FaceletConfigResourceProviderFactory.class, FACTORY_DEFAULT));
+                                FaceletConfigResourceProviderFactory.class,
+                                DefaultFaceletConfigResourceProviderFactory.class));
             }
             else
             {
                 lpf = (FaceletConfigResourceProviderFactory)
-                        SpiUtils.build(ctx, FaceletConfigResourceProviderFactory.class, FACTORY_DEFAULT);
+                        SpiUtils.build(ctx, FaceletConfigResourceProviderFactory.class,
+                                DefaultFaceletConfigResourceProviderFactory.class);
             }
         }
         catch (PrivilegedActionException pae)

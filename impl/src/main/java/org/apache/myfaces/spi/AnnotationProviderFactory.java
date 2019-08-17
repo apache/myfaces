@@ -36,8 +36,6 @@ import org.apache.myfaces.spi.impl.SpiUtils;
  */
 public abstract class AnnotationProviderFactory
 {
-    protected static final String FACTORY_DEFAULT = DefaultAnnotationProviderFactory.class.getName();
-
     private static final String FACTORY_KEY = AnnotationProviderFactory.class.getName();
 
     public static AnnotationProviderFactory getAnnotationProviderFactory(ExternalContext ctx)
@@ -56,11 +54,12 @@ public abstract class AnnotationProviderFactory
                 final ExternalContext ectx = ctx;
                 lpf = (AnnotationProviderFactory) AccessController.doPrivileged(
                         (PrivilegedExceptionAction) () -> SpiUtils.build(ectx, 
-                                AnnotationProviderFactory.class, FACTORY_DEFAULT));
+                                AnnotationProviderFactory.class, DefaultAnnotationProviderFactory.class));
             }
             else
             {
-                lpf = (AnnotationProviderFactory) SpiUtils.build(ctx, AnnotationProviderFactory.class, FACTORY_DEFAULT);
+                lpf = (AnnotationProviderFactory) SpiUtils.build(ctx, AnnotationProviderFactory.class,
+                        DefaultAnnotationProviderFactory.class);
             }
         }
         catch (PrivilegedActionException pae)

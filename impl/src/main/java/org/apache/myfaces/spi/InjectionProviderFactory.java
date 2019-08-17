@@ -26,14 +26,12 @@ import java.util.Map;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.spi.impl.DefaultInjectionProviderFactory;
 
 import org.apache.myfaces.spi.impl.SpiUtils;
 
 public abstract class InjectionProviderFactory
 {
-    protected static final String FACTORY_DEFAULT = 
-        "org.apache.myfaces.spi.impl.DefaultInjectionProviderFactory";
-
     private static final String FACTORY_KEY = InjectionProviderFactory.class.getName();
 
     public static InjectionProviderFactory getInjectionProviderFactory()
@@ -60,12 +58,13 @@ public abstract class InjectionProviderFactory
                 final ExternalContext ectx = ctx; 
                 lpf = (InjectionProviderFactory) AccessController.doPrivileged(
                         (PrivilegedExceptionAction) () -> SpiUtils.build(ectx, 
-                                InjectionProviderFactory.class, FACTORY_DEFAULT));
+                                InjectionProviderFactory.class, DefaultInjectionProviderFactory.class));
             }
             else
             {
                 lpf = (InjectionProviderFactory) SpiUtils.build(ctx, 
-                    InjectionProviderFactory.class, FACTORY_DEFAULT);
+                    InjectionProviderFactory.class,
+                    DefaultInjectionProviderFactory.class);
             }
         }
         catch (PrivilegedActionException pae)

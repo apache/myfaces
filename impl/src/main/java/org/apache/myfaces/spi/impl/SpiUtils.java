@@ -35,8 +35,7 @@ import org.apache.myfaces.spi.ServiceProviderFinderFactory;
  */
 public final class SpiUtils
 {
-    
-    public static Object build(ExternalContext ectx, Class spiClass, String defaultImpl)
+    public static Object build(ExternalContext ectx, Class spiClass, Class defaultImpl)
     {
         List<String> classList = ServiceProviderFinderFactory.getServiceProviderFinder(ectx).
                 getServiceProviderList(spiClass.getName());
@@ -45,7 +44,7 @@ public final class SpiUtils
         {
             if (classList.size() > 1)
             {
-                getLogger().log(Level.WARNING, "More than one SPI interface for "+spiClass.getName()+
+                getLogger().log(Level.WARNING, "More than one SPI interface for " + spiClass.getName() +
                         " found :" + classList.toString() + ". Setting up the first one found.");
             }
             return ClassUtils.newInstance(classList.get(0));

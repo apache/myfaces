@@ -38,9 +38,6 @@ import org.apache.myfaces.spi.impl.SpiUtils;
  */
 public abstract class WebConfigProviderFactory
 {
-
-    protected static final String FACTORY_DEFAULT = DefaultWebConfigProviderFactory.class.getName();
-
     private static final String FACTORY_KEY = WebConfigProviderFactory.class.getName();
 
     public static WebConfigProviderFactory getWebConfigProviderFactory(ExternalContext ctx)
@@ -61,12 +58,14 @@ public abstract class WebConfigProviderFactory
                 final ExternalContext ectx = ctx;
                 factory = (WebConfigProviderFactory) AccessController.doPrivileged(
                         (PrivilegedExceptionAction) () -> SpiUtils.build(ectx,
-                                WebConfigProviderFactory.class, FACTORY_DEFAULT));
+                                WebConfigProviderFactory.class,
+                                DefaultWebConfigProviderFactory.class));
             }
             else
             {
                 factory = (WebConfigProviderFactory)
-                        SpiUtils.build(ctx, WebConfigProviderFactory.class, FACTORY_DEFAULT);
+                        SpiUtils.build(ctx, WebConfigProviderFactory.class,
+                                DefaultWebConfigProviderFactory.class);
             }
         }
         catch (PrivilegedActionException pae)
