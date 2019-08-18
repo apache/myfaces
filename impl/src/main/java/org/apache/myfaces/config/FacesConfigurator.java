@@ -1092,7 +1092,6 @@ public class FacesConfigurator
                 renderKitClass.add(DEFAULT_RENDER_KIT_CLASS);
             }
 
-            //RenderKit renderKit = (RenderKit) ClassUtils.newInstance(renderKitClass);
             RenderKit renderKit = (RenderKit) ClassUtils.buildApplicationObject(RenderKit.class, renderKitClass, null);
             // If the default html RenderKit instance is wrapped, the top level object will not implement
             // LazyRenderKit and all renderers will be added using the standard form.
