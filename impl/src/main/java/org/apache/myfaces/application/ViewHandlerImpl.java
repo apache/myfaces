@@ -196,6 +196,8 @@ public class ViewHandlerImpl extends ViewHandler
     /**
      * Get the locales specified as acceptable by the original request, compare them to the
      * locales supported by this Application and return the best match.
+     *
+     * @param facesContext
      */
     @Override
     public Locale calculateLocale(FacesContext facesContext)
@@ -510,7 +512,7 @@ public class ViewHandlerImpl extends ViewHandler
                     // since we have checked !parameters.containsKey(viewParameter.getName())
                     // here already, the parameters Map will never contain a List under the
                     // key viewParameter.getName(), thus we do not have to check it here (again).
-                    List<String> parameterValueList = new ArrayList<String>(1);
+                    List<String> parameterValueList = new ArrayList<>(1);
                     parameterValueList.add(parameterValue);
                     parameters.put(viewParameter.getName(), parameterValueList);
                 }

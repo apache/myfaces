@@ -92,6 +92,7 @@ public class StateManagerImpl extends StateManager
         {
             log.finest("Entering getTreeStructureToSave");
         }
+
         UIViewRoot viewRoot = facesContext.getViewRoot();
         if (viewRoot.isTransient())
         {
@@ -147,7 +148,7 @@ public class StateManagerImpl extends StateManager
 
                 if (uiViewRoot != null)
                 {
-                    facesContext.setViewRoot (uiViewRoot);
+                    facesContext.setViewRoot(uiViewRoot);
                     uiViewRoot.processRestoreState(facesContext, stateArray[1]);
                     
                     RequestViewContext.getCurrentInstance(facesContext).refreshRequestViewContext(
@@ -157,7 +158,7 @@ public class StateManagerImpl extends StateManager
                     // so "contracts" attribute will not be set properly. We need to save it and
                     // restore it from here. With PSS, the view will always be built so it is not
                     // necessary to save it on the state.
-                    Object rlc = ((Object[])stateArray[0])[1];
+                    Object rlc = ((Object[]) stateArray[0])[1];
                     if (rlc != null)
                     {
                         facesContext.setResourceLibraryContracts((List) UIComponentBase.
@@ -182,7 +183,6 @@ public class StateManagerImpl extends StateManager
     public Object saveView(FacesContext facesContext)
     {
         UIViewRoot uiViewRoot = facesContext.getViewRoot();
-        
         if (uiViewRoot.isTransient())
         {
             return null;
@@ -201,7 +201,6 @@ public class StateManagerImpl extends StateManager
             if (vdl != null)
             {
                 StateManagementStrategy sms = vdl.getStateManagementStrategy(facesContext, viewId);
-                
                 if (sms != null)
                 {
                     if (log.isLoggable(Level.FINEST))
@@ -237,7 +236,7 @@ public class StateManagerImpl extends StateManager
                 log.finest("Entering saveSerializedView");
             }
     
-            checkForDuplicateIds(facesContext, facesContext.getViewRoot(), new HashSet<String>());
+            checkForDuplicateIds(facesContext, facesContext.getViewRoot(), new HashSet<>());
     
             if (log.isLoggable(Level.FINEST))
             {
@@ -258,12 +257,11 @@ public class StateManagerImpl extends StateManager
                 Object compStates = getComponentStateToSave(facesContext);
                 Object rlcStates = !facesContext.getResourceLibraryContracts().isEmpty() ? 
                     UIComponentBase.saveAttachedState(facesContext, 
-                                new ArrayList<String>(facesContext.getResourceLibraryContracts())) : null;
+                                new ArrayList<>(facesContext.getResourceLibraryContracts())) : null;
                 serializedView = new Object[] {
-                        new Object[]{treeStruct, rlcStates} ,
+                        new Object[]{ treeStruct, rlcStates },
                         compStates};
-                facesContext.getAttributes().put(SERIALIZED_VIEW_REQUEST_ATTR,
-                                                    serializedView);
+                facesContext.getAttributes().put(SERIALIZED_VIEW_REQUEST_ATTR, serializedView);
     
                 if (log.isLoggable(Level.FINEST))
                 {
@@ -307,34 +305,31 @@ public class StateManagerImpl extends StateManager
         
         if (component instanceof NamingContainer)
         {
-            ids = new HashSet<String>();
+            ids = new HashSet<>();
         }
-        
-        int facetCount = component.getFacetCount();
-        if (facetCount > 0)
+
+        if (component.getFacetCount() > 0)
         {
             for (UIComponent facet : component.getFacets().values())
             {
-                checkForDuplicateIds (context, facet, ids);
+                checkForDuplicateIds(context, facet, ids);
             }
         }
         for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
         {
             UIComponent child = component.getChildren().get(i);
-            checkForDuplicateIds (context, child, ids);
+            checkForDuplicateIds(context, child, ids);
         }
     }
 
     @Override
-    public void writeState(FacesContext facesContext,
-                           Object state) throws IOException
+    public void writeState(FacesContext facesContext, Object state) throws IOException
     {
         if (log.isLoggable(Level.FINEST))
         {
             log.finest("Entering writeState");
         }
 
-        //UIViewRoot uiViewRoot = facesContext.getViewRoot();
         //save state in response (client)
         RenderKit renderKit = facesContext.getRenderKit();
         ResponseStateManager responseStateManager = renderKit.getResponseStateManager();
@@ -345,10 +340,7 @@ public class StateManagerImpl extends StateManager
         {
             log.finest("Exiting writeState");
         }
-
     }
-
-    //helpers
 
     protected RenderKitFactory getRenderKitFactory()
     {

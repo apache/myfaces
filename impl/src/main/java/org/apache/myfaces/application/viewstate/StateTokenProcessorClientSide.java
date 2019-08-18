@@ -16,16 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.application.viewstate.token;
+package org.apache.myfaces.application.viewstate;
 
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.application.viewstate.StateUtils;
 
 /**
  *
  * @author Thomas Andraschko
  */
-public class ClientSideStateTokenProcessor extends StateTokenProcessor
+public class StateTokenProcessorClientSide extends StateTokenProcessor
 {
     @Override
     public Object decode(FacesContext facesContext, String token)

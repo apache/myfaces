@@ -19,7 +19,6 @@
 package org.apache.myfaces.application.viewstate;
 
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.application.viewstate.token.StateTokenProcessor;
 
 /**
  * This class provides an interface to separate the state caching operations (saving/restoring)

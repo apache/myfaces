@@ -16,18 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.application.viewstate.token;
+package org.apache.myfaces.application.viewstate;
 
 import java.io.UnsupportedEncodingException;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.application.viewstate.StateUtils;
 
 /**
  *
  * @author Thomas Andraschko
  */
-public class ServerSideStateTokenProcessor extends StateTokenProcessor
+public class StateTokenProcessorServerSide extends StateTokenProcessor
 {
     @Override
     public Object decode(FacesContext facesContext, String token)

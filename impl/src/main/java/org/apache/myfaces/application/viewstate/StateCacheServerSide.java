@@ -42,8 +42,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.lifecycle.ClientWindow;
 
-import org.apache.myfaces.application.viewstate.token.ServerSideStateTokenProcessor;
-import org.apache.myfaces.application.viewstate.token.StateTokenProcessor;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.util.MyFacesObjectInputStream;
@@ -121,7 +119,7 @@ class StateCacheServerSide extends StateCache<Object, Object>
             csrfSessionTokenFactory = new CsrfSessionTokenFactoryRandom(facesContext);
         }
         
-        stateTokenProcessor = new ServerSideStateTokenProcessor();
+        stateTokenProcessor = new StateTokenProcessorServerSide();
     }
     
     //------------------------------------- METHODS COPIED FROM JspStateManagerImpl--------------------------------

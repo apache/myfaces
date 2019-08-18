@@ -23,8 +23,6 @@ import org.apache.myfaces.util.token.CsrfSessionTokenFactoryRandom;
 import org.apache.myfaces.util.token.CsrfSessionTokenFactorySecureRandom;
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.application.viewstate.token.ClientSideStateTokenProcessor;
-import org.apache.myfaces.application.viewstate.token.StateTokenProcessor;
 import org.apache.myfaces.config.MyfacesConfig;
 
 class StateCacheClientSide extends StateCache<Object, Object>
@@ -55,7 +53,7 @@ class StateCacheClientSide extends StateCache<Object, Object>
             csrfSessionTokenFactory = new CsrfSessionTokenFactoryRandom(facesContext);
         }
         
-        stateTokenProcessor = new ClientSideStateTokenProcessor();
+        stateTokenProcessor = new StateTokenProcessorClientSide();
         clientViewStateTimeout = config.getClientViewStateTimeout();
     }
 

@@ -50,7 +50,7 @@ import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.view.ViewMetadata;
 import org.apache.myfaces.application.ResourceHandlerImpl;
-import org.apache.myfaces.application.viewstate.token.StateTokenProcessor;
+import org.apache.myfaces.application.viewstate.StateTokenProcessor;
 
 import org.apache.myfaces.context.PartialResponseWriterImpl;
 import org.apache.myfaces.context.RequestViewContext;
