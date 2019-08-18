@@ -53,14 +53,8 @@ public class DefaultStateCacheProviderFactory extends StateCacheProviderFactory
     @Override
     public StateCacheProvider getStateCacheProvider(ExternalContext externalContext)
     {
-        StateCacheProvider stateCacheProvider
-                = (StateCacheProvider) externalContext.getApplicationMap().get(STATE_CACHE_PROVIDER_INSTANCE);
-        if (stateCacheProvider == null)
-        {
-            stateCacheProvider = createStateCacheProvider(externalContext);
-            externalContext.getApplicationMap().put(STATE_CACHE_PROVIDER_INSTANCE, stateCacheProvider);
-        }
-        return stateCacheProvider;
+        return (StateCacheProvider) externalContext.getApplicationMap().computeIfAbsent(STATE_CACHE_PROVIDER_INSTANCE,
+                k -> createStateCacheProvider(externalContext));
     }
     
     @Override

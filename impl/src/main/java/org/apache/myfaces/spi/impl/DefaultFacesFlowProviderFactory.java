@@ -61,8 +61,7 @@ public class DefaultFacesFlowProviderFactory extends FacesFlowProviderFactory
             {
                 if (ExternalSpecifications.isCDIAvailable(externalContext))
                 {
-                    returnValue = (FacesFlowProvider) ClassUtils.newInstance(
-                            DefaultCDIFacesFlowProvider.class.getName());
+                    returnValue = new DefaultCDIFacesFlowProvider();
                 }
                 else
                 {

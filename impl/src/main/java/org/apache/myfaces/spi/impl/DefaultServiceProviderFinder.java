@@ -55,8 +55,7 @@ public class DefaultServiceProviderFinder extends ServiceProviderFinder
         Enumeration<URL> profiles = null;
         try
         {
-            profiles = ClassUtils.getContextClassLoader().getResources(
-                    META_INF_SERVICES + spiClass);
+            profiles = ClassUtils.getContextClassLoader().getResources(META_INF_SERVICES + spiClass);
         }
         catch (IOException e)
         {
@@ -88,66 +87,52 @@ public class DefaultServiceProviderFinder extends ServiceProviderFinder
         }
         
         Set<URL> urls = getURLs(spiClass);
-
         if (!urls.isEmpty())
         {
-            List<String> results = new LinkedList<String>();
+            List<String> results = new LinkedList<>();
             for (URL url : urls)
             {
-                InputStream is = null;
-    
                 try
                 {
-                    try
+                    try (InputStream is = openStreamWithoutCache(url))
                     {
-                        is = openStreamWithoutCache(url);
-                        if (is != null)
+                        // This code is needed by EBCDIC and other
+                        // strange systems.  It's a fix for bugs
+                        // reported in xerces
+                        BufferedReader rd;
+                        try
                         {
-                            // This code is needed by EBCDIC and other
-                            // strange systems.  It's a fix for bugs
-                            // reported in xerces
-                            BufferedReader rd;
-                            try
+                            rd = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                        }
+                        catch (java.io.UnsupportedEncodingException e)
+                        {
+                            rd = new BufferedReader(new InputStreamReader(is));
+                        }
+
+                        try
+                        {
+                            String serviceImplName;
+                            while ((serviceImplName = rd.readLine()) != null)
                             {
-                                rd = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-                            }
-                            catch (java.io.UnsupportedEncodingException e)
-                            {
-                                rd = new BufferedReader(new InputStreamReader(is));
-                            }
-    
-                            try
-                            {
-                                String serviceImplName;
-                                while ((serviceImplName = rd.readLine()) != null)
+                                int idx = serviceImplName.indexOf('#');
+                                if (idx >= 0)
                                 {
-                                    int idx = serviceImplName.indexOf('#');
-                                    if (idx >= 0)
-                                    {
-                                        serviceImplName = serviceImplName.substring(0, idx);
-                                    }
-                                    serviceImplName = serviceImplName.trim();
-    
-                                    if (serviceImplName.length() != 0)
-                                    {
-                                        results.add(serviceImplName);
-                                    }
+                                    serviceImplName = serviceImplName.substring(0, idx);
                                 }
-                            }
-                            finally
-                            {
-                                if (rd != null)
+                                serviceImplName = serviceImplName.trim();
+
+                                if (serviceImplName.length() != 0)
                                 {
-                                    rd.close();
+                                    results.add(serviceImplName);
                                 }
                             }
                         }
-                    }
-                    finally
-                    {
-                        if (is != null)
+                        finally
                         {
-                            is.close();
+                            if (rd != null)
+                            {
+                                rd.close();
+                            }
                         }
                     }
                 }
