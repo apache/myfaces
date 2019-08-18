@@ -43,15 +43,7 @@ public abstract class AbstractContext implements Context
 
     protected AbstractContext(BeanManager beanManager)
     {
-        try
-        {
-            passivatingScope = beanManager.isPassivatingScope(getScope());
-        }
-        catch (UnsupportedOperationException e)
-        {
-            // Quarkus throws a UnsupportedOperationException instead return false currently
-            passivatingScope = false;
-        }
+        passivatingScope = beanManager.isPassivatingScope(getScope());
     }
 
     /**
