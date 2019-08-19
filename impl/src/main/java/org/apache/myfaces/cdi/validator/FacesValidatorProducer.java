@@ -35,21 +35,21 @@ import org.apache.myfaces.util.lang.ClassUtils;
 @Typed
 public class FacesValidatorProducer extends AbstractDynamicProducer<Validator>
 {
-    public FacesValidatorProducer(BeanManager beanManager, FacesValidatorInfo typeInfo)
+    public FacesValidatorProducer(BeanManager beanManager, FacesValidatorInfo info)
     {
         super(beanManager);
         
-        String validatorId = typeInfo.getValidatorId() == null ? "" : typeInfo.getValidatorId();
-        String id = "" + typeInfo.getType() + '_' + validatorId;
+        String validatorId = info.getValidatorId() == null ? "" : info.getValidatorId();
+        String id = "" + info.getType() + '_' + validatorId;
 
         FacesValidatorAnnotationLiteral literal = new FacesValidatorAnnotationLiteral(
-                        typeInfo.getValidatorId() == null ? "" : typeInfo.getValidatorId(), false, true);
+                        info.getValidatorId() == null ? "" : info.getValidatorId(), false, true);
 
         super.id(id)
                 .scope(Dependent.class)
                 .qualifiers(literal)
-                .types(typeInfo.getType(), Object.class)
-                .beanClass(ClassUtils.simpleClassForName(typeInfo.getType().getTypeName()))
+                .types(info.getType(), Object.class)
+                .beanClass(ClassUtils.simpleClassForName(info.getType().getTypeName()))
                 .create(e -> createValidator(e));
     }
 

@@ -35,24 +35,24 @@ import org.apache.myfaces.util.lang.ClassUtils;
 @Typed
 public class FacesConverterProducer extends AbstractDynamicProducer<Converter>
 {
-    public FacesConverterProducer(BeanManager beanManager, FacesConverterInfo typeInfo)
+    public FacesConverterProducer(BeanManager beanManager, FacesConverterInfo info)
     {
         super(beanManager);
         
-        String forClass = typeInfo.getForClass() == null ? "" : 
-                ((typeInfo.getForClass() == Object.class) ? "" : typeInfo.getForClass().getName());
-        String converterId = typeInfo.getConverterId() == null ? "" : typeInfo.getConverterId();
-        String id = "" + typeInfo.getType() + '_' + forClass + '_' + converterId;
+        String forClass = info.getForClass() == null ? "" : 
+                ((info.getForClass() == Object.class) ? "" : info.getForClass().getName());
+        String converterId = info.getConverterId() == null ? "" : info.getConverterId();
+        String id = "" + info.getType() + '_' + forClass + '_' + converterId;
 
         FacesConverterAnnotationLiteral literal = new FacesConverterAnnotationLiteral(
-                        typeInfo.getForClass() == null ? Object.class : typeInfo.getForClass(), 
-                        typeInfo.getConverterId() == null ? "" : typeInfo.getConverterId(), true);
+                        info.getForClass() == null ? Object.class : info.getForClass(), 
+                        info.getConverterId() == null ? "" : info.getConverterId(), true);
 
         super.id(id)
                 .scope(Dependent.class)
                 .qualifiers(literal)
-                .types(typeInfo.getType(), Object.class)
-                .beanClass(ClassUtils.simpleClassForName(typeInfo.getType().getTypeName()))
+                .types(info.getType(), Object.class)
+                .beanClass(ClassUtils.simpleClassForName(info.getType().getTypeName()))
                 .create(e -> createConverter(e));
     }
 
