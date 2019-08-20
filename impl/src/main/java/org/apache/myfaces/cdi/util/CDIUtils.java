@@ -91,7 +91,7 @@ public class CDIUtils
         try
         {
             Bean<T> bean = get(beanManager, beanClass, qualifiers);
-            return (bean != null) ? get(beanManager, bean, create) : null;
+            return (bean != null) ? get(beanManager, bean, beanClass, create) : null;
         }
         catch (ContextNotActiveException e)
         {
@@ -99,16 +99,16 @@ public class CDIUtils
         }
     }
 
-    public static <T> T get(BeanManager beanManager, Bean<T> bean, boolean create)
+    public static <T> T get(BeanManager beanManager, Bean<T> bean, Type type, boolean create)
     {
-        Context context = beanManager.getContext(bean.getScope());
-
         if (create)
         {
-            return context.get(bean, beanManager.createCreationalContext(bean));
+            CreationalContext<?> creationalContext = beanManager.createCreationalContext(bean);
+            return (T) beanManager.getReference(bean, type, creationalContext);
         }
         else
         {
+            Context context = beanManager.getContext(bean.getScope());
             return context.get(bean);
         }
     }
