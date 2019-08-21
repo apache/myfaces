@@ -39,7 +39,7 @@ public class FacesDataModelExtension implements Extension
 
     void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager)
     {
-        AnnotatedType beanHolder = beanManager.createAnnotatedType(FacesDataModelHolder.class);
+        AnnotatedType beanHolder = beanManager.createAnnotatedType(FacesDataModelManager.class);
         event.addAnnotatedType(beanHolder, beanHolder.getJavaClass().getName());
     }
 
@@ -60,15 +60,15 @@ public class FacesDataModelExtension implements Extension
     
     public void afterDeploymentValidation(@Observes AfterDeploymentValidation adv, BeanManager beanManager)
     {
-        FacesDataModelHolder holder = CDIUtils.get(beanManager, FacesDataModelHolder.class);
+        FacesDataModelManager facesDataModelManager = CDIUtils.get(beanManager, FacesDataModelManager.class);
 
         for (DataModelInfo typeInfo : types)
         {
-            holder.addFacesDataModel(typeInfo.getForClass(), 
+            facesDataModelManager.addFacesDataModel(typeInfo.getForClass(), 
                     ClassUtils.simpleClassForName(typeInfo.getType().getTypeName()));
         }
 
-        holder.init();
+        facesDataModelManager.init();
 
         types.clear();
     }

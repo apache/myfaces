@@ -124,9 +124,10 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     public static final String COMPONENT_FAMILY = "javax.faces.Data";
     public static final String COMPONENT_TYPE = "javax.faces.Data"; // for unit tests
 
-    private static final String DATAMODEL_BUILDER_CLASS_NAME = "org.apache.myfaces.cdi.model.DataModelBuilderProxy";
-    private static final Class<?> DATAMODEL_BUILDER_CLASS;
-    private static final Method DATAMODEL_BUILDER_CREATE_DATAMODEL_METHOD;
+    private static final String FACES_DATA_MODEL_MANAGER_CLASS_NAME
+            = "org.apache.myfaces.cdi.model.FacesDataModelManager";
+    private static final Class<?> FACES_DATA_MODEL_MANAGER_CLASS;
+    private static final Method FACES_DATA_MODEL_MANAGER_CREATE_DATAMODEL_METHOD;
     
     static
     {
@@ -134,7 +135,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         Method createDataModelMethod = null;
         try
         {
-            dataModelBuilderClass = _ClassUtils.classForName(DATAMODEL_BUILDER_CLASS_NAME);
+            dataModelBuilderClass = _ClassUtils.classForName(FACES_DATA_MODEL_MANAGER_CLASS_NAME);
             if (dataModelBuilderClass != null)
             {
                 createDataModelMethod = dataModelBuilderClass.getMethod("createDataModel",
@@ -145,8 +146,8 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         {
             //No Op
         }
-        DATAMODEL_BUILDER_CLASS = dataModelBuilderClass;
-        DATAMODEL_BUILDER_CREATE_DATAMODEL_METHOD = createDataModelMethod;
+        FACES_DATA_MODEL_MANAGER_CLASS = dataModelBuilderClass;
+        FACES_DATA_MODEL_MANAGER_CREATE_DATAMODEL_METHOD = createDataModelMethod;
     }
     
     private static final String FOOTER_FACET_NAME = "footer";
@@ -1954,16 +1955,14 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         else
         {
             DataModel dataModel = null;
-            if (DATAMODEL_BUILDER_CLASS != null && value != null)
+            if (FACES_DATA_MODEL_MANAGER_CLASS != null && value != null)
             {
                 try
                 {
-                    Object dataModelBuilderProxy = DATAMODEL_BUILDER_CLASS.newInstance();
-                    dataModel = (DataModel) DATAMODEL_BUILDER_CREATE_DATAMODEL_METHOD.invoke(dataModelBuilderProxy, 
+                    dataModel = (DataModel) FACES_DATA_MODEL_MANAGER_CREATE_DATAMODEL_METHOD.invoke(null,
                             getFacesContext(), value.getClass(), value);
                 }
-                catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException ex)
+                catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
                 {
                     //No op
                 }

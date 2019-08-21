@@ -57,7 +57,7 @@ import javax.faces.render.Renderer;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
-import org.apache.myfaces.cdi.model.DataModelBuilderProxy;
+import org.apache.myfaces.cdi.model.FacesDataModelManager;
 import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ExternalSpecifications;
@@ -236,8 +236,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             DataModel dataModel = null;
             if (ExternalSpecifications.isCDIAvailable(getFacesContext().getExternalContext()))
             {
-                dataModel = (new DataModelBuilderProxy()).createDataModel(
-                        getFacesContext(), value.getClass(), value);
+                dataModel = FacesDataModelManager.createDataModel(getFacesContext(), value.getClass(), value);
             }
             if (dataModel == null)
             {

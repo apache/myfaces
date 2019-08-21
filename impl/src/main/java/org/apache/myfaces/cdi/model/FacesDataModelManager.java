@@ -25,12 +25,14 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.model.DataModel;
+import org.apache.myfaces.cdi.util.CDIUtils;
 
 @ApplicationScoped
-public class FacesDataModelHolder extends DataModelBuilder
+public class FacesDataModelManager
 {
     private volatile Map<Class<?>, Class<? extends DataModel>> facesDataModels;
 
@@ -64,20 +66,19 @@ public class FacesDataModelHolder extends DataModelBuilder
         facesDataModels = Collections.unmodifiableMap(facesDataModels);
     }
 
-    @Override
-    public DataModel createDataModel(FacesContext facesContext, Class<?> forClass, Object value)
+    public DataModel tryToCreateDataModel(FacesContext facesContext, Class<?> forClass, Object value)
     {
         Class<? extends DataModel> dataModelClass = facesDataModels.get(forClass);
         if (dataModelClass != null)
         {
-            return createDataModel(forClass, value, dataModelClass);
+            return instantiate(forClass, value, dataModelClass);
         }
         else
         {
             // Iterate over map and try to find a valid match if any.
             Class<?> entryForClass = null;
             Class<? extends DataModel> valueForClass = null;
-            for (Map.Entry<Class<?>,Class<? extends DataModel>> entry : facesDataModels.entrySet())
+            for (Map.Entry<Class<?>, Class<? extends DataModel>> entry : facesDataModels.entrySet())
             {
                 if (entry.getKey().isAssignableFrom(forClass))
                 {
@@ -98,16 +99,15 @@ public class FacesDataModelHolder extends DataModelBuilder
                     }
                 }
             }
-            if(entryForClass != null)
+            if (entryForClass != null)
             {
-                return createDataModel(forClass, value, valueForClass);
+                return instantiate(forClass, value, valueForClass);
             }
         }
         return null;
     }
     
-    private DataModel createDataModel(Class<?> forClass, Object value,
-            Class<? extends DataModel> dataModelClass)
+    private DataModel instantiate(Class<?> forClass, Object value, Class<? extends DataModel> dataModelClass)
     {
         try
         {
@@ -156,5 +156,12 @@ public class FacesDataModelHolder extends DataModelBuilder
             throw new FacesException(
                     "Cannot access constructor of DataModel with " + forClass.getName() + " as parameter", ex);
         } 
+    }
+
+    public static DataModel createDataModel(FacesContext facesContext, Class<?> forClass, Object value)
+    {
+        BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
+        FacesDataModelManager facesDataModelManager = CDIUtils.get(beanManager, FacesDataModelManager.class);
+        return facesDataModelManager.tryToCreateDataModel(facesContext, forClass, value);
     }
 }
