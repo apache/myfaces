@@ -29,38 +29,45 @@ import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.model.DataModel;
 
-/**
- *
- */
 @ApplicationScoped
-public class FacesDataModelClassBeanHolder extends DataModelBuilder
+public class FacesDataModelHolder extends DataModelBuilder
 {
-    private volatile Map<Class<?>,Class<? extends DataModel>> 
-            classInstanceToDataModelWrapperClassMap = new ConcurrentHashMap<Class<?>, Class<? extends DataModel>>();
-    private Map<Class<?>,Class<? extends DataModel>> umclassInstanceToDataModelWrapperClassMap = null;
-    
-    /**
-     * @return the classInstanceToDataModelWrapperClassMap
-     */
-    public Map<Class<?>,Class<? extends DataModel>> getClassInstanceToDataModelWrapperClassMap()
+    private volatile Map<Class<?>, Class<? extends DataModel>> facesDataModels;
+
+    public Map<Class<?>, Class<? extends DataModel>> getFacesDataModels()
     {
-        if (umclassInstanceToDataModelWrapperClassMap == null)
+        if (facesDataModels == null)
         {
-            umclassInstanceToDataModelWrapperClassMap = 
-                    Collections.unmodifiableMap(classInstanceToDataModelWrapperClassMap);
+            return Collections.emptyMap();
         }
-        return umclassInstanceToDataModelWrapperClassMap;
+        
+        return facesDataModels;
     }
     
     public void addFacesDataModel(Class<?> forClass, Class<? extends DataModel> dataModelClass)
     {
-        classInstanceToDataModelWrapperClassMap.put(forClass, dataModelClass);
+        if (facesDataModels == null)
+        {
+            facesDataModels = new ConcurrentHashMap<>();
+        }
+        
+        facesDataModels.put(forClass, dataModelClass);
+    }
+
+    public void init()
+    {
+        if (facesDataModels == null)
+        {
+            facesDataModels = new ConcurrentHashMap<>();
+        }
+
+        facesDataModels = Collections.unmodifiableMap(facesDataModels);
     }
 
     @Override
     public DataModel createDataModel(FacesContext facesContext, Class<?> forClass, Object value)
     {
-        Class<? extends DataModel> dataModelClass = getClassInstanceToDataModelWrapperClassMap().get(forClass);
+        Class<? extends DataModel> dataModelClass = facesDataModels.get(forClass);
         if (dataModelClass != null)
         {
             return createDataModel(forClass, value, dataModelClass);
@@ -70,8 +77,7 @@ public class FacesDataModelClassBeanHolder extends DataModelBuilder
             // Iterate over map and try to find a valid match if any.
             Class<?> entryForClass = null;
             Class<? extends DataModel> valueForClass = null;
-            for (Map.Entry<Class<?>,Class<? extends DataModel>> entry : 
-                    getClassInstanceToDataModelWrapperClassMap().entrySet())
+            for (Map.Entry<Class<?>,Class<? extends DataModel>> entry : facesDataModels.entrySet())
             {
                 if (entry.getKey().isAssignableFrom(forClass))
                 {

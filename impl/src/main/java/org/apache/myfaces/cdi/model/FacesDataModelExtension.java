@@ -20,10 +20,8 @@
 package org.apache.myfaces.cdi.model;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -31,7 +29,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessManagedBean;
-import javax.faces.model.DataModel;
 import javax.faces.model.FacesDataModel;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.util.lang.ClassUtils;
@@ -42,7 +39,7 @@ public class FacesDataModelExtension implements Extension
 
     void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager)
     {
-        AnnotatedType beanHolder = beanManager.createAnnotatedType(FacesDataModelClassBeanHolder.class);
+        AnnotatedType beanHolder = beanManager.createAnnotatedType(FacesDataModelHolder.class);
         event.addAnnotatedType(beanHolder, beanHolder.getJavaClass().getName());
     }
 
@@ -61,25 +58,18 @@ public class FacesDataModelExtension implements Extension
         }
     }
     
-    public void afterBean(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
-    {
-        for (DataModelInfo typeInfo : types)
-        {
-            afterBeanDiscovery.addBean(new DynamicDataModelProducer(beanManager, typeInfo));
-        }
-    }
-    
     public void afterDeploymentValidation(@Observes AfterDeploymentValidation adv, BeanManager beanManager)
     {
-        FacesDataModelClassBeanHolder holder = CDIUtils.get(beanManager, FacesDataModelClassBeanHolder.class);
+        FacesDataModelHolder holder = CDIUtils.get(beanManager, FacesDataModelHolder.class);
+
         for (DataModelInfo typeInfo : types)
         {
             holder.addFacesDataModel(typeInfo.getForClass(), 
                     ClassUtils.simpleClassForName(typeInfo.getType().getTypeName()));
         }
-        // Initialize unmodifiable wrapper
-        Map<Class<?>,Class<? extends DataModel>> map = holder.getClassInstanceToDataModelWrapperClassMap();
-        
+
+        holder.init();
+
         types.clear();
     }
 }
