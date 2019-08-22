@@ -1178,7 +1178,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
             if ((target == null) || target.isTransient())
             {
                 // No need to bother with these components or their children.
-
                 return VisitResult.REJECT;
             }
             

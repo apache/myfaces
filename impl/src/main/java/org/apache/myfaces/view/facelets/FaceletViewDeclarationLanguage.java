@@ -1844,8 +1844,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                             }
 
                             origWriter.write(content, start, content.length() - start);
-                            // No trace of any saved state, so we just need to flush
-                            // the buffer
+                            // No trace of any saved state, so we just need to flush the buffer
                         }
                         else
                         {
@@ -1865,15 +1864,12 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                         if (viewPoolProcessor != null && 
                             viewPoolProcessor.isViewPoolEnabledForThisView(context, view))
                         {
-                            ViewDeclarationLanguage vdl = context.getApplication().
-                                    getViewHandler().getViewDeclarationLanguage(
-                                        context, view.getViewId());
+                            ViewDeclarationLanguage vdl = context.getApplication().getViewHandler()
+                                    .getViewDeclarationLanguage(context, view.getViewId());
 
-                            if (ViewDeclarationLanguage.FACELETS_VIEW_DECLARATION_LANGUAGE_ID.equals(
-                                    vdl.getId()))
+                            if (ViewDeclarationLanguage.FACELETS_VIEW_DECLARATION_LANGUAGE_ID.equals(vdl.getId()))
                             {
-                                StateManagementStrategy sms = vdl.getStateManagementStrategy(
-                                        context, view.getId());
+                                StateManagementStrategy sms = vdl.getStateManagementStrategy(context, view.getId());
                                 if (sms != null)
                                 {
                                     context.getAttributes().put(ViewPoolProcessor.FORCE_HARD_RESET, Boolean.TRUE);
@@ -1938,8 +1934,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             if (root != null)
             {
                 //Ensure calculateResourceLibraryContracts() can be decorated
-                ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().
-                    getViewDeclarationLanguage(context, viewId);
+                ViewDeclarationLanguage vdl = context.getApplication().getViewHandler()
+                        .getViewDeclarationLanguage(context, viewId);
                 List<String> contracts = vdl.calculateResourceLibraryContracts(
                     context, root.getViewId() != null ? root.getViewId() : viewId);
                 context.setResourceLibraryContracts(contracts);
