@@ -23,5 +23,5 @@ import java.io.Writer;
 
 public interface ViewResponseWrapper
 {
-    void flushToWriter(Writer writer,String encoding) throws IOException;
+    void flushToWriter(Writer writer, String encoding) throws IOException;
 }

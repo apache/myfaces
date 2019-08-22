@@ -29,6 +29,7 @@ import org.apache.myfaces.util.lang.Assert;
  * that are necessary to implement.
  *
  * @author Leonardo Uribe
+ * @param <V>
  * @since 2.1.12
  */
 public abstract class AbstractFaceletCache<V> extends FaceletCache<V>
@@ -99,6 +100,7 @@ public abstract class AbstractFaceletCache<V> extends FaceletCache<V>
      * @since 2.3
      * @param faceletFactory
      * @param viewMetadataFaceletFactory 
+     * @param compositeComponentMetadataFaceletFactory
      */
     public void setCacheFactories(FaceletCache.MemberFactory<V> faceletFactory, 
             FaceletCache.MemberFactory<V> viewMetadataFaceletFactory,
