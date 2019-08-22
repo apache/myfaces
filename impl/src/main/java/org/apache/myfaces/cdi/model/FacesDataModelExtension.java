@@ -35,7 +35,7 @@ import org.apache.myfaces.util.lang.ClassUtils;
 
 public class FacesDataModelExtension implements Extension
 {
-    private Set<DataModelInfo> types = new HashSet<>();
+    private Set<FacesDataModelInfo> types = new HashSet<>();
 
     void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager)
     {
@@ -53,7 +53,7 @@ public class FacesDataModelExtension implements Extension
             boolean hasValue = model.forClass() != null;
             if (hasValue)
             {
-                types.add(new DataModelInfo(annotated.getBaseType(), model.forClass()));
+                types.add(new FacesDataModelInfo(annotated.getBaseType(), model.forClass()));
             }
         }
     }
@@ -62,7 +62,7 @@ public class FacesDataModelExtension implements Extension
     {
         FacesDataModelManager facesDataModelManager = CDIUtils.get(beanManager, FacesDataModelManager.class);
 
-        for (DataModelInfo typeInfo : types)
+        for (FacesDataModelInfo typeInfo : types)
         {
             facesDataModelManager.addFacesDataModel(typeInfo.getForClass(), 
                     ClassUtils.simpleClassForName(typeInfo.getType().getTypeName()));

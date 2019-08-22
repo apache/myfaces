@@ -54,16 +54,7 @@ public class ViewScopeContextImpl implements Context
     public ViewScopeContextImpl(BeanManager beanManager)
     {
         this.beanManager = beanManager;
-
-        try
-        {
-            passivatingScope = beanManager.isPassivatingScope(getScope());
-        }
-        catch (UnsupportedOperationException e)
-        {
-            // Quarkus throws a UnsupportedOperationException instead return false currently
-            passivatingScope = false;
-        }
+        this.passivatingScope = beanManager.isPassivatingScope(getScope());
     }
 
     protected ViewScopeBeanHolder getViewScopeBeanHolder()

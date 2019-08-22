@@ -85,16 +85,7 @@ public class FacesScopeContextImpl implements Context
     @Override
     public boolean isActive()
     {
-        return isActive(FacesContext.getCurrentInstance());
-    }
-
-    public boolean isActive(FacesContext facesContext)
-    {
-        if (facesContext == null)
-        {
-            return false;
-        }
-        return true;
+        return FacesContext.getCurrentInstance() != null;
     }
 
     @Override
@@ -203,7 +194,7 @@ public class FacesScopeContextImpl implements Context
      */
     protected void checkActive(FacesContext facesContext)
     {
-        if (!isActive(facesContext))
+        if (facesContext == null)
         {
             throw new ContextNotActiveException("CDI context with scope annotation @"
                 + getScope().getName() + " is not active with respect to the current thread");

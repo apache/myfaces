@@ -23,16 +23,12 @@ import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Objects;
 
-/**
- *
- */
-public class DataModelInfo implements Serializable
+public class FacesDataModelInfo implements Serializable
 {
     private Type type;
-    
     private Class<?> forClass;
 
-    public DataModelInfo(Type type, Class<?> forClass)
+    public FacesDataModelInfo(Type type, Class<?> forClass)
     {
         this.type = type;
         this.forClass = forClass;
@@ -78,7 +74,7 @@ public class DataModelInfo implements Serializable
         {
             return false;
         }
-        final DataModelInfo other = (DataModelInfo) obj;
+        final FacesDataModelInfo other = (FacesDataModelInfo) obj;
         if (!Objects.equals(this.type, other.type))
         {
             return false;
