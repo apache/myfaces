@@ -42,7 +42,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
 
     public ComponentTagDeclarationLibrary()
     {
-        _factories = new HashMap<String, Map<String, TagHandlerFactory>>();
+        _factories = new HashMap<>();
     }
 
     /*
@@ -211,9 +211,6 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
         protected final String componentType;
         protected final String renderType;
 
-        /**
-         * @param handlerType
-         */
         public ComponentHandlerFactory(String componentType, String renderType)
         {
             this.componentType = componentType;
@@ -230,7 +227,6 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
 
     private static class UserComponentHandlerFactory implements TagHandlerFactory
     {
-
         private final static Class<?>[] CONS_SIG = new Class[] { ComponentConfig.class };
 
         protected final String componentType;
@@ -238,9 +234,6 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
         protected final Class<? extends TagHandler> type;
         protected final Constructor<? extends TagHandler> constructor;
 
-        /**
-         * @param handlerType
-         */
         public UserComponentHandlerFactory(String componentType, String renderType, Class<? extends TagHandler> type)
         {
             this.componentType = componentType;

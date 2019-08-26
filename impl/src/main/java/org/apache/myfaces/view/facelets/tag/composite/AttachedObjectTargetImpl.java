@@ -60,8 +60,8 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
     public List<UIComponent> getTargets(UIComponent topLevelComponent)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        String[] targetsArray = getTargets(facesContext);
         
+        String[] targetsArray = getTargets(facesContext);
         if (targetsArray.length > 0)
         {
             List<UIComponent> targetsList = new ArrayList<>(targetsArray.length);
@@ -73,13 +73,12 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
                 UIComponent innerComponent = null;
                 if (separator == -1)
                 {
-                    innerComponent = ComponentSupport.findComponentChildOrFacetFrom(
-                            facetBase, target, null);
+                    innerComponent = ComponentSupport.findComponentChildOrFacetFrom(facetBase, target, null);
                 }
                 else
                 {
-                    innerComponent = ComponentSupport.findComponentChildOrFacetFrom(
-                            facetBase, target.substring(0,separator), target);
+                    innerComponent = ComponentSupport.findComponentChildOrFacetFrom(facetBase,
+                            target.substring(0, separator), target);
                 }
                 
                 if (innerComponent != null)
@@ -98,8 +97,6 @@ public class AttachedObjectTargetImpl implements AttachedObjectTarget, Serializa
             String name = getName();
             if (name != null)
             {
-                //UIComponent innerComponent = topLevelComponent.findComponent(
-                //        topLevelComponent.getId() + UINamingContainer.getSeparatorChar(facesContext) + getName());
                 UIComponent innerComponent = ComponentSupport.findComponentChildOrFacetFrom(
                         topLevelComponent.getFacet(UIComponent.COMPOSITE_FACET_NAME),
                         name, null);

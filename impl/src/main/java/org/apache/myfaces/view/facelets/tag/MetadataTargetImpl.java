@@ -34,24 +34,36 @@ import javax.faces.view.facelets.MetadataTarget;
  */
 public final class MetadataTargetImpl extends MetadataTarget
 {
-    private final Map<String, PropertyDescriptor> _pd;
-    private final Class<?> _type;
+    private final Map<String, PropertyDescriptor> propertyDescriptors;
+    private final Class<?> type;
 
     public MetadataTargetImpl(Class<?> type) throws IntrospectionException
     {
-        _type = type;
+        this.type = type;
         
-        _pd = new HashMap<String, PropertyDescriptor>();
-        for (PropertyDescriptor descriptor : Introspector.getBeanInfo(type).getPropertyDescriptors())
+        PropertyDescriptor[] descriptors = Introspector.getBeanInfo(type).getPropertyDescriptors();
+        if (descriptors == null || descriptors.length == 0)
         {
-            _pd.put(descriptor.getName(), descriptor);
+            this.propertyDescriptors = null;
+        }
+        else
+        {
+            this.propertyDescriptors = new HashMap<>(descriptors.length);
+            for (PropertyDescriptor descriptor : descriptors)
+            {
+                this.propertyDescriptors.put(descriptor.getName(), descriptor);
+            }
         }
     }
 
     @Override
     public PropertyDescriptor getProperty(String name)
     {
-        return _pd.get(name);
+        if (propertyDescriptors == null)
+        {
+            return null;
+        }
+        return propertyDescriptors.get(name);
     }
 
     @Override
@@ -81,7 +93,7 @@ public final class MetadataTargetImpl extends MetadataTarget
     @Override
     public Class<?> getTargetClass()
     {
-        return _type;
+        return type;
     }
 
     @Override
@@ -99,6 +111,6 @@ public final class MetadataTargetImpl extends MetadataTarget
     @Override
     public boolean isTargetInstanceOf(Class type)
     {
-        return type.isAssignableFrom(_type);
+        return type.isAssignableFrom(type);
     }
 }
