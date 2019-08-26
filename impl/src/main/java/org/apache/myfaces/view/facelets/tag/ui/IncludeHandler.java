@@ -120,8 +120,6 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
         }
         if (!src.isLiteral())
         {
-            //String uniqueId = fcc.startComponentUniqueIdSection();
-            //path = getSrcValue(actx, fcc, parent, uniqueId);
             String restoredPath = (String) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
             if (restoredPath != null)
             {
@@ -165,9 +163,6 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
             ctx.setVariableMapper(new VariableMapperWrapper(orig));
             try
             {
-                //Only ui:param could be inside ui:include.
-                //this.nextHandler.apply(ctx, null);
-                
                 URL url = null;
                 boolean oldMarkInitialState = false;
                 Boolean isBuildingInitialState = null;
@@ -257,8 +252,8 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
                 fcc.endComponentUniqueIdSection();
             }
         }
-        if (!src.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() &&
-            !fcc.isRefreshingTransientBuild())
+        if (!src.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS()
+                && !fcc.isRefreshingTransientBuild())
         {
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);

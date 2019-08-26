@@ -86,8 +86,8 @@ public final class LegacyDecorateHandler extends TagHandler implements TemplateC
         }
         else
         {
-            _handlers = new HashMap<>();
-            for (DefineHandler handler : TagHandlerUtils.findNextByType(nextHandler, DefineHandler.class))
+            _handlers = new HashMap<>(handlers.size());
+            for (DefineHandler handler : handlers)
             {
                 _handlers.put(handler.getName(), handler);
                 if (log.isLoggable(Level.FINE))
@@ -223,8 +223,8 @@ public final class LegacyDecorateHandler extends TagHandler implements TemplateC
                 fcc.endComponentUniqueIdSection();
             }
         }
-        if (!_template.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() &&
-            !fcc.isRefreshingTransientBuild())
+        if (!_template.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS()
+                && !fcc.isRefreshingTransientBuild())
         {
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);

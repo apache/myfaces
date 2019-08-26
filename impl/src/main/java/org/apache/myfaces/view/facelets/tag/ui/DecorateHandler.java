@@ -148,8 +148,6 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
             boolean markInitialState = false;
             if (!_template.isLiteral())
             {
-                //String uniqueId = fcc.startComponentUniqueIdSection();
-                //path = getTemplateValue(actx, fcc, parent, uniqueId);
                 String restoredPath = (String) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
                 if (restoredPath != null)
                 {
@@ -220,7 +218,6 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
             }
             finally
             {
-                //ctx.setVariableMapper(orig);
                 actx.popClient(this);
             }
         }
@@ -231,8 +228,8 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
                 fcc.endComponentUniqueIdSection();
             }
         }
-        if (!_template.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() &&
-            !fcc.isRefreshingTransientBuild())
+        if (!_template.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS()
+                && !fcc.isRefreshingTransientBuild())
         {
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);

@@ -161,7 +161,7 @@ public final class LegacyIncludeHandler extends TagHandler implements ComponentC
                 if (ctx.getFacesContext().isProjectStage(ProjectStage.Development) 
                         && ERROR_PAGE_INCLUDE_PATH.equals(path))
                 {
-                    url =ClassUtils.getResource(ERROR_FACELET);
+                    url = ClassUtils.getResource(ERROR_FACELET);
                 }
                 if (markInitialState)
                 {
