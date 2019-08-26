@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.myfaces.cdi.converter;
+package org.apache.myfaces.cdi.wrapper;
 
 import javax.faces.FacesWrapper;
 import javax.faces.component.PartialStateHolder;
@@ -69,13 +69,13 @@ public class FacesConverterCDIWrapper implements PartialStateHolder, Converter, 
             {
                 delegate = (Converter) CDIUtils.get(CDIUtils.getBeanManager(
                     FacesContext.getCurrentInstance().getExternalContext()), 
-                        Converter.class, true, new FacesConverterAnnotationLiteral(Object.class, converterId, true));
+                        Converter.class, true, new FacesConverterAnnotationLiteral(Object.class, converterId));
             }
             else if (forClass != null)
             {
                 delegate = (Converter) CDIUtils.get(CDIUtils.getBeanManager(
                     FacesContext.getCurrentInstance().getExternalContext()), 
-                        Converter.class, true, new FacesConverterAnnotationLiteral(forClass, "", true));
+                        Converter.class, true, new FacesConverterAnnotationLiteral(forClass, ""));
             }
         }
         return delegate;

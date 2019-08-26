@@ -91,10 +91,10 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.myfaces.cdi.behavior.FacesBehaviorCDIWrapper;
-import org.apache.myfaces.cdi.behavior.FacesClientBehaviorCDIWrapper;
-import org.apache.myfaces.cdi.converter.FacesConverterCDIWrapper;
-import org.apache.myfaces.cdi.validator.FacesValidatorCDIWrapper;
+import org.apache.myfaces.cdi.wrapper.FacesBehaviorCDIWrapper;
+import org.apache.myfaces.cdi.wrapper.FacesClientBehaviorCDIWrapper;
+import org.apache.myfaces.cdi.wrapper.FacesConverterCDIWrapper;
+import org.apache.myfaces.cdi.wrapper.FacesValidatorCDIWrapper;
 import org.apache.myfaces.component.search.AllSearchKeywordResolver;
 import org.apache.myfaces.component.search.ChildSearchKeywordResolver;
 import org.apache.myfaces.component.search.CompositeComponentParentSearchKeywordResolver;

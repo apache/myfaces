@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.cdi.behavior;
+package org.apache.myfaces.cdi.wrapper;
 
 import java.util.Objects;
 import javax.enterprise.util.AnnotationLiteral;
@@ -26,13 +26,11 @@ public class FacesBehaviorAnnotationLiteral extends AnnotationLiteral<FacesBehav
 {
     private static final long serialVersionUID = 1L;
 
-    private String value;
-    private boolean managed;
+    private final String value;
 
-    public FacesBehaviorAnnotationLiteral(String value, boolean managed)
+    public FacesBehaviorAnnotationLiteral(String value)
     {
         this.value = value;
-        this.managed = managed;
     }
 
     @Override
@@ -44,7 +42,7 @@ public class FacesBehaviorAnnotationLiteral extends AnnotationLiteral<FacesBehav
     @Override
     public boolean managed()
     {
-        return managed;
+        return true;
     }
 
     @Override
@@ -52,7 +50,6 @@ public class FacesBehaviorAnnotationLiteral extends AnnotationLiteral<FacesBehav
     {
         int hash = 5;
         hash = 79 * hash + Objects.hashCode(this.value);
-        hash = 79 * hash + (this.managed ? 1 : 0);
         return hash;
     }
 
@@ -69,10 +66,6 @@ public class FacesBehaviorAnnotationLiteral extends AnnotationLiteral<FacesBehav
         }
         final FacesBehaviorAnnotationLiteral other = (FacesBehaviorAnnotationLiteral) obj;
         if (!Objects.equals(this.value, other.value))
-        {
-            return false;
-        }
-        if (this.managed != other.managed)
         {
             return false;
         }

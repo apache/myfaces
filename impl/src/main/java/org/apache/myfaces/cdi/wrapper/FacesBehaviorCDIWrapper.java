@@ -17,32 +17,28 @@
  * under the License.
  */
 
-package org.apache.myfaces.cdi.behavior;
+package org.apache.myfaces.cdi.wrapper;
 
-import java.util.Set;
 import javax.faces.FacesWrapper;
 import javax.faces.component.PartialStateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.behavior.ClientBehaviorHint;
+import javax.faces.component.behavior.Behavior;
 import javax.faces.context.FacesContext;
 import javax.faces.event.BehaviorEvent;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
-public class FacesClientBehaviorCDIWrapper implements PartialStateHolder, ClientBehavior, FacesWrapper<ClientBehavior>
+public class FacesBehaviorCDIWrapper implements PartialStateHolder, Behavior, FacesWrapper<Behavior>
 {
-    private transient ClientBehavior delegate;
+    private transient Behavior delegate;
     
     private String behaviorId;
     private boolean _transient;
     private boolean _initialStateMarked = false;
 
-    public FacesClientBehaviorCDIWrapper()
+    public FacesBehaviorCDIWrapper()
     {
     }
 
-    public FacesClientBehaviorCDIWrapper(Class<? extends ClientBehavior> behaviorClass, String behaviorId)
+    public FacesBehaviorCDIWrapper(Class<? extends Behavior> behaviorClass, String behaviorId)
     {
         this.behaviorId = behaviorId;
     }
@@ -52,33 +48,15 @@ public class FacesClientBehaviorCDIWrapper implements PartialStateHolder, Client
     {
         getWrapped().broadcast(event);
     }
-    
-    @Override
-    public void decode(FacesContext context, UIComponent component)
-    {
-        getWrapped().decode(context, component);
-    }
 
     @Override
-    public Set<ClientBehaviorHint> getHints()
-    {
-        return getWrapped().getHints();
-    }
-
-    @Override
-    public String getScript(ClientBehaviorContext behaviorContext)
-    {
-        return getWrapped().getScript(behaviorContext);
-    }
-
-    @Override
-    public ClientBehavior getWrapped()
+    public Behavior getWrapped()
     {
         if (delegate == null)
         {
-            delegate = (ClientBehavior) CDIUtils.get(CDIUtils.getBeanManager(
+            delegate = (Behavior) CDIUtils.get(CDIUtils.getBeanManager(
                 FacesContext.getCurrentInstance().getExternalContext()), 
-                    ClientBehavior.class, true, new FacesBehaviorAnnotationLiteral(behaviorId, true));
+                    Behavior.class, true, new FacesBehaviorAnnotationLiteral(behaviorId));
         }
         return delegate;
     }

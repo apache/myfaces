@@ -16,50 +16,49 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.myfaces.cdi.wrapper;
 
-package org.apache.myfaces.cdi.behavior;
-
-import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.util.Objects;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.faces.convert.FacesConverter;
 
-public class FacesBehaviorInfo implements Serializable
+public class FacesConverterAnnotationLiteral extends AnnotationLiteral<FacesConverter> implements FacesConverter
 {
-    private Type type;
-    private String behaviorId;
+    private static final long serialVersionUID = 1L;
 
-    public FacesBehaviorInfo(Type type, String behaviorId)
+    private String value;
+    private Class forClass;
+
+    public FacesConverterAnnotationLiteral(Class forClass, String value)
     {
-        this.type = type;
-        this.behaviorId = behaviorId;
+        this.forClass = forClass;
+        this.value = value;
     }
 
-    public String getBehaviorId()
+    @Override
+    public String value()
     {
-        return behaviorId;
+        return value;
     }
 
-    public void setBehaviorId(String behaviorId)
+    @Override
+    public Class forClass()
     {
-        this.behaviorId = behaviorId;
+        return forClass;
     }
 
-    public Type getType()
+    @Override
+    public boolean managed()
     {
-        return type;
-    }
-
-    public void setType(Type type)
-    {
-        this.type = type;
+        return true;
     }
 
     @Override
     public int hashCode()
     {
         int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.type);
-        hash = 53 * hash + Objects.hashCode(this.behaviorId);
+        hash = 59 * hash + Objects.hashCode(this.value);
+        hash = 59 * hash + Objects.hashCode(this.forClass);
         return hash;
     }
 
@@ -74,15 +73,16 @@ public class FacesBehaviorInfo implements Serializable
         {
             return false;
         }
-        final FacesBehaviorInfo other = (FacesBehaviorInfo) obj;
-        if (!Objects.equals(this.type, other.type))
+        final FacesConverterAnnotationLiteral other = (FacesConverterAnnotationLiteral) obj;
+        if (!Objects.equals(this.value, other.value))
         {
             return false;
         }
-        if (!Objects.equals(this.behaviorId, other.behaviorId))
+        if (!Objects.equals(this.forClass, other.forClass))
         {
             return false;
         }
         return true;
     }
+
 }

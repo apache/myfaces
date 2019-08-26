@@ -17,46 +17,47 @@
  * under the License.
  */
 
-package org.apache.myfaces.cdi.behavior;
+package org.apache.myfaces.cdi.wrapper;
 
 import javax.faces.FacesWrapper;
 import javax.faces.component.PartialStateHolder;
-import javax.faces.component.behavior.Behavior;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.event.BehaviorEvent;
+import javax.faces.validator.Validator;
+import javax.faces.validator.ValidatorException;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
-public class FacesBehaviorCDIWrapper implements PartialStateHolder, Behavior, FacesWrapper<Behavior>
+public class FacesValidatorCDIWrapper implements PartialStateHolder, Validator, FacesWrapper<Validator>
 {
-    private transient Behavior delegate;
+    private transient Validator delegate;
     
-    private String behaviorId;
+    private String validatorId;
     private boolean _transient;
     private boolean _initialStateMarked = false;
 
-    public FacesBehaviorCDIWrapper()
+    public FacesValidatorCDIWrapper()
     {
     }
 
-    public FacesBehaviorCDIWrapper(Class<? extends Behavior> behaviorClass, String behaviorId)
+    public FacesValidatorCDIWrapper(Class<? extends Validator> validatorClass, String validatorId)
     {
-        this.behaviorId = behaviorId;
-    }
-    
-    @Override
-    public void broadcast(BehaviorEvent event)
-    {
-        getWrapped().broadcast(event);
+        this.validatorId = validatorId;
     }
 
     @Override
-    public Behavior getWrapped()
+    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException
+    {
+        getWrapped().validate(context, component, value);
+    }
+
+    @Override
+    public Validator getWrapped()
     {
         if (delegate == null)
         {
-            delegate = (Behavior) CDIUtils.get(CDIUtils.getBeanManager(
+            delegate = (Validator) CDIUtils.get(CDIUtils.getBeanManager(
                 FacesContext.getCurrentInstance().getExternalContext()), 
-                    Behavior.class, true, new FacesBehaviorAnnotationLiteral(behaviorId, true));
+                    Validator.class, true, new FacesValidatorAnnotationLiteral(validatorId));
         }
         return delegate;
     }
@@ -67,7 +68,7 @@ public class FacesBehaviorCDIWrapper implements PartialStateHolder, Behavior, Fa
         if (!initialStateMarked())
         {
             Object values[] = new Object[1];
-            values[0] = behaviorId;
+            values[0] = validatorId;
             return values;
         }
         return null;
@@ -79,7 +80,7 @@ public class FacesBehaviorCDIWrapper implements PartialStateHolder, Behavior, Fa
         if (state != null)
         {
             Object values[] = (Object[])state;
-            behaviorId = (String)values[0];
+            validatorId = (String)values[0];
         }
     }
 

@@ -16,50 +16,46 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.myfaces.cdi.wrapper;
 
-package org.apache.myfaces.cdi.validator;
-
-import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.util.Objects;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.faces.validator.FacesValidator;
 
-public class FacesValidatorInfo implements Serializable
+public class FacesValidatorAnnotationLiteral extends AnnotationLiteral<FacesValidator> implements FacesValidator
 {
-    private Type type;
-    private String validatorId;
+    private static final long serialVersionUID = 1L;
 
-    public FacesValidatorInfo(Type type, String validatorId)
+    private String value;
+
+    public FacesValidatorAnnotationLiteral(String value)
     {
-        this.type = type;
-        this.validatorId = validatorId;
+        this.value = value;
     }
 
-    public String getValidatorId()
+    @Override
+    public String value()
     {
-        return validatorId;
+        return value;
     }
 
-    public void setValidatorId(String validatorId)
+    @Override
+    public boolean managed()
     {
-        this.validatorId = validatorId;
+        return true;
     }
 
-    public Type getType()
+    @Override
+    public boolean isDefault()
     {
-        return type;
-    }
-
-    public void setType(Type type)
-    {
-        this.type = type;
+        return false;
     }
 
     @Override
     public int hashCode()
     {
-        int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.type);
-        hash = 53 * hash + Objects.hashCode(this.validatorId);
+        int hash = 5;
+        hash = 79 * hash + Objects.hashCode(this.value);
         return hash;
     }
 
@@ -74,17 +70,12 @@ public class FacesValidatorInfo implements Serializable
         {
             return false;
         }
-        final FacesValidatorInfo other = (FacesValidatorInfo) obj;
-        if (!Objects.equals(this.type, other.type))
-        {
-            return false;
-        }
-        if (!Objects.equals(this.validatorId, other.validatorId))
+        final FacesValidatorAnnotationLiteral other = (FacesValidatorAnnotationLiteral) obj;
+        if (!Objects.equals(this.value, other.value))
         {
             return false;
         }
         return true;
     }
-
 
 }

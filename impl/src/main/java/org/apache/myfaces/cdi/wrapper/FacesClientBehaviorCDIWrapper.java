@@ -17,47 +17,68 @@
  * under the License.
  */
 
-package org.apache.myfaces.cdi.validator;
+package org.apache.myfaces.cdi.wrapper;
 
+import java.util.Set;
 import javax.faces.FacesWrapper;
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
+import javax.faces.component.behavior.ClientBehavior;
+import javax.faces.component.behavior.ClientBehaviorContext;
+import javax.faces.component.behavior.ClientBehaviorHint;
 import javax.faces.context.FacesContext;
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
+import javax.faces.event.BehaviorEvent;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
-public class FacesValidatorCDIWrapper implements PartialStateHolder, Validator, FacesWrapper<Validator>
+public class FacesClientBehaviorCDIWrapper implements PartialStateHolder, ClientBehavior, FacesWrapper<ClientBehavior>
 {
-    private transient Validator delegate;
+    private transient ClientBehavior delegate;
     
-    private String validatorId;
+    private String behaviorId;
     private boolean _transient;
     private boolean _initialStateMarked = false;
 
-    public FacesValidatorCDIWrapper()
+    public FacesClientBehaviorCDIWrapper()
     {
     }
 
-    public FacesValidatorCDIWrapper(Class<? extends Validator> validatorClass, String validatorId)
+    public FacesClientBehaviorCDIWrapper(Class<? extends ClientBehavior> behaviorClass, String behaviorId)
     {
-        this.validatorId = validatorId;
+        this.behaviorId = behaviorId;
+    }
+    
+    @Override
+    public void broadcast(BehaviorEvent event)
+    {
+        getWrapped().broadcast(event);
+    }
+    
+    @Override
+    public void decode(FacesContext context, UIComponent component)
+    {
+        getWrapped().decode(context, component);
     }
 
     @Override
-    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException
+    public Set<ClientBehaviorHint> getHints()
     {
-        getWrapped().validate(context, component, value);
+        return getWrapped().getHints();
     }
 
     @Override
-    public Validator getWrapped()
+    public String getScript(ClientBehaviorContext behaviorContext)
+    {
+        return getWrapped().getScript(behaviorContext);
+    }
+
+    @Override
+    public ClientBehavior getWrapped()
     {
         if (delegate == null)
         {
-            delegate = (Validator) CDIUtils.get(CDIUtils.getBeanManager(
+            delegate = (ClientBehavior) CDIUtils.get(CDIUtils.getBeanManager(
                 FacesContext.getCurrentInstance().getExternalContext()), 
-                    Validator.class, true, new FacesValidatorAnnotationLiteral(validatorId, false, true));
+                    ClientBehavior.class, true, new FacesBehaviorAnnotationLiteral(behaviorId));
         }
         return delegate;
     }
@@ -68,7 +89,7 @@ public class FacesValidatorCDIWrapper implements PartialStateHolder, Validator, 
         if (!initialStateMarked())
         {
             Object values[] = new Object[1];
-            values[0] = validatorId;
+            values[0] = behaviorId;
             return values;
         }
         return null;
@@ -80,7 +101,7 @@ public class FacesValidatorCDIWrapper implements PartialStateHolder, Validator, 
         if (state != null)
         {
             Object values[] = (Object[])state;
-            validatorId = (String)values[0];
+            behaviorId = (String)values[0];
         }
     }
 
