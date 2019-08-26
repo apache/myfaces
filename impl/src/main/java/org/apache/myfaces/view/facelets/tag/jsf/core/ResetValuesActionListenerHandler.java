@@ -232,7 +232,7 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
             }
             else if (value instanceof String)
             {
-                String[] arrValue = ((String)value).split(" ");
+                String[] arrValue = ((String) value).split(" ");
                 clientIds = Arrays.asList(arrValue);
             }
             else
