@@ -107,7 +107,7 @@ public final class LegacyIncludeHandler extends TagHandler implements ComponentC
         if (!src.isLiteral())
         {
             String uniqueId = actx.generateUniqueFaceletTagId(fcc.startComponentUniqueIdSection(), tagId);
-            //path = getSrcValue(actx, fcc, parent, uniqueId);
+
             String restoredPath = (String) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
             if (restoredPath != null)
             {
@@ -152,8 +152,7 @@ public final class LegacyIncludeHandler extends TagHandler implements ComponentC
             try
             {
                 //Only ui:param could be inside ui:include.
-                //this.nextHandler.apply(ctx, null);
-                
+
                 URL url = null;
                 boolean oldMarkInitialState = false;
                 Boolean isBuildingInitialState = null;
@@ -190,18 +189,13 @@ public final class LegacyIncludeHandler extends TagHandler implements ComponentC
                             names[i] = _params[i].getName(ctx);
                             values[i] = _params[i].getValue(ctx);
                         }
-                        
-                        //actx.pushTemplateContext(new TemplateContextImpl());
-                        
+
                         for (int i = 0; i < _params.length; i++)
                         {
                             _params[i].apply(ctx, parent, names[i], values[i]);
                         }
                     }
-                    else
-                    {
-                        //actx.pushTemplateContext(new TemplateContextImpl());
-                    }
+
                     if (url == null)
                     {
                         ctx.includeFacelet(parent, path);
@@ -228,7 +222,6 @@ public final class LegacyIncludeHandler extends TagHandler implements ComponentC
                         }
                         fcc.setMarkInitialState(oldMarkInitialState);
                     }
-                    //actx.popTemplateContext();
                 }
             }
             finally

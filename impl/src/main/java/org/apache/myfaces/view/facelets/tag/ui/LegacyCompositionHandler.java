@@ -50,7 +50,6 @@ import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;
  */
 public final class LegacyCompositionHandler extends TagHandler implements TemplateClient
 {
-
     private static final Logger log = Logger.getLogger(CompositionHandler.class.getName());
 
     public final static String NAME = "composition";
@@ -62,7 +61,6 @@ public final class LegacyCompositionHandler extends TagHandler implements Templa
     protected final TagAttribute _template;
 
     protected final Map<String, DefineHandler> _handlers;
-
     protected final LegacyParamHandler[] _params;
 
     public LegacyCompositionHandler(TagConfig config)
@@ -71,13 +69,21 @@ public final class LegacyCompositionHandler extends TagHandler implements Templa
         _template = getAttribute("template");
         if (_template != null)
         {
-            _handlers = new HashMap<String, DefineHandler>();
-            for (DefineHandler handler : TagHandlerUtils.findNextByType(nextHandler, DefineHandler.class))
+            ArrayList<DefineHandler> handlers = TagHandlerUtils.findNextByType(nextHandler, DefineHandler.class);
+            if (handlers.isEmpty())
             {
-                _handlers.put(handler.getName(), handler);
-                if (log.isLoggable(Level.FINE))
+                _handlers = null;
+            }
+            else
+            {
+                _handlers = new HashMap<>(handlers.size());
+                for (DefineHandler handler : handlers)
                 {
-                    log.fine(tag + " found Define[" + handler.getName() + ']');
+                    _handlers.put(handler.getName(), handler);
+                    if (log.isLoggable(Level.FINE))
+                    {
+                        log.fine(tag + " found Define[" + handler.getName() + ']');
+                    }
                 }
             }
 
@@ -146,21 +152,14 @@ public final class LegacyCompositionHandler extends TagHandler implements Templa
     {
         if (name != null)
         {
-            if (_handlers == null)
-            {
-                return false;
-            }
-            
-            DefineHandler handler = _handlers.get(name);
+            DefineHandler handler = _handlers == null ? null : _handlers.get(name);
             if (handler != null)
             {
                 handler.applyDefinition(ctx, parent);
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
         else
         {

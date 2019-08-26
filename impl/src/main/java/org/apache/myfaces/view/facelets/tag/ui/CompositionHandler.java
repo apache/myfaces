@@ -75,13 +75,20 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
         if (_template != null)
         {
             ArrayList<DefineHandler> handlers = TagHandlerUtils.findNextByType(nextHandler, DefineHandler.class);
-            _handlers = new HashMap<>(handlers.size());
-            for (DefineHandler handler : handlers)
+            if (handlers.isEmpty())
             {
-                _handlers.put(handler.getName(), handler);
-                if (log.isLoggable(Level.FINE))
+                _handlers = null;
+            }
+            else
+            {
+                _handlers = new HashMap<>(handlers.size());
+                for (DefineHandler handler : handlers)
                 {
-                    log.fine(tag + " found Define[" + handler.getName() + ']');
+                    _handlers.put(handler.getName(), handler);
+                    if (log.isLoggable(Level.FINE))
+                    {
+                        log.fine(tag + " found Define[" + handler.getName() + ']');
+                    }
                 }
             }
 
@@ -147,21 +154,14 @@ public final class CompositionHandler extends TagHandler implements TemplateClie
     {
         if (name != null)
         {
-            if (_handlers == null)
-            {
-                return false;
-            }
-            
-            DefineHandler handler = _handlers.get(name);
+            DefineHandler handler = _handlers == null ? null : _handlers.get(name);
             if (handler != null)
             {
                 handler.applyDefinition(ctx, parent);
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
         else
         {

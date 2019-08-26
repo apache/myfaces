@@ -50,14 +50,10 @@ import org.apache.myfaces.view.facelets.tag.ui.DefineHandler;
  */
 final class LegacyUserTagHandler extends TagHandler implements TemplateClient, ComponentContainerHandler
 {
-
     protected final TagAttribute[] _vars;
     protected final URL _location;
     protected final Map<String, DefineHandler> _handlers;
 
-    /**
-     * @param config
-     */
     public LegacyUserTagHandler(TagConfig config, URL location)
     {
         super(config);
@@ -109,7 +105,7 @@ final class LegacyUserTagHandler extends TagHandler implements TemplateClient, C
                     values[i] = _vars[i].getValueExpression(ctx, Object.class);
                 }
             }
-            //actx.pushTemplateContext(new TemplateContextImpl());
+
             actx.pushClient(this);
             // setup a variable map
             if (this._vars.length > 0)
@@ -131,10 +127,8 @@ final class LegacyUserTagHandler extends TagHandler implements TemplateClient, C
         }
         finally
         {
-
             // make sure we undo our changes
             actx.popClient(this);
-            //actx.popTemplateContext();
             ctx.setVariableMapper(orig);
         }
     }
@@ -145,42 +139,18 @@ final class LegacyUserTagHandler extends TagHandler implements TemplateClient, C
     {
         if (name != null)
         {
-            if (this._handlers == null)
-            {
-                return false;
-            }
-            DefineHandler handler = (DefineHandler) this._handlers.get(name);
+            DefineHandler handler = _handlers == null ? null : _handlers.get(name);
             if (handler != null)
             {
-                AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-                //TemplateContext itc = actx.popTemplateContext();
-                try
-                {
-                    handler.applyDefinition(ctx, parent);
-                }
-                finally
-                {
-                    //actx.pushTemplateContext(itc);
-                }
+                handler.applyDefinition(ctx, parent);
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
         else
         {
-            AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-            //TemplateContext itc = actx.popTemplateContext();
-            try
-            {
-                this.nextHandler.apply(ctx, parent);
-            }
-            finally
-            {
-                //actx.pushTemplateContext(itc);
-            }
+            this.nextHandler.apply(ctx, parent);
             return true;
         }
     }
