@@ -66,16 +66,14 @@ public class DefaultFacesFlowProvider extends FacesFlowProvider
         String fullToken = FLOW_SESSION_MAP_SUBKEY_PREFIX + SEPARATOR_CHAR + flowMapKey;
 
         String mapKey = getFlowKey(flow);
-        Map<Object, Object> map = (Map<Object, Object>) facesContext.getAttributes().get(
-            mapKey);
+        Map<Object, Object> map = (Map<Object, Object>) facesContext.getAttributes().get(mapKey);
         if (map != null)
         {
             map.clear();
         }
         else
         {
-            map = (Map<Object, Object>) facesContext.getExternalContext().
-                getSessionMap().get(fullToken);
+            map = (Map<Object, Object>) facesContext.getExternalContext().getSessionMap().get(fullToken);
             if (map != null)
             {
                 map.clear();
@@ -100,9 +98,6 @@ public class DefaultFacesFlowProvider extends FacesFlowProvider
             if (map == null)
             {
                 String flowMapKey = FlowUtils.getFlowMapKey(facesContext, flow);
-                
-                //String fullToken = FLOW_SESSION_MAP_SUBKEY_PREFIX + SEPARATOR_CHAR + flowMapKey;
-                //map = createOrRestoreMap(facesContext, fullToken);
                 map = new FlowScopeMap(this, flowMapKey);
                 
                 facesContext.getAttributes().put(mapKey, map);
@@ -125,7 +120,7 @@ public class DefaultFacesFlowProvider extends FacesFlowProvider
         Map<Object, Object> map = (Map<Object, Object>) sessionMap.get(prefix);
         if (map == null && create)
         {
-            map = new ConcurrentHashMap<Object, Object>();
+            map = new ConcurrentHashMap<>();
             sessionMap.put(prefix, map);
         }
         return map;
