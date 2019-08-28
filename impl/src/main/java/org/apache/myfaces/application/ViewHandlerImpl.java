@@ -43,6 +43,7 @@ import javax.faces.component.UIViewParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.push.PushContext;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 import javax.faces.view.ViewDeclarationLanguage;
@@ -51,7 +52,7 @@ import javax.faces.view.ViewMetadata;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.application.viewstate.StateCacheUtils;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.view.facelets.StateWriter;
 
 /**
@@ -85,7 +86,7 @@ public class ViewHandlerImpl extends ViewHandler
 
     public ViewHandlerImpl()
     {
-        _protectedViewsSet = Collections.newSetFromMap(new ConcurrentHashMap<String,Boolean>());
+        _protectedViewsSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
         _unmodifiableProtectedViewsSet = Collections.unmodifiableSet(_protectedViewsSet);
         _vdlFactory = (ViewDeclarationLanguageFactory)
                 FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY);
@@ -195,6 +196,8 @@ public class ViewHandlerImpl extends ViewHandler
     /**
      * Get the locales specified as acceptable by the original request, compare them to the
      * locales supported by this Application and return the best match.
+     *
+     * @param facesContext
      */
     @Override
     public Locale calculateLocale(FacesContext facesContext)
@@ -455,6 +458,7 @@ public class ViewHandlerImpl extends ViewHandler
             // -= Leonardo Uribe =- Temporally reverted by TCK issues.
             ViewDeclarationLanguage vdl = getViewDeclarationLanguage(context,calculatedViewId);
             ViewMetadata viewMetadata = vdl.getViewMetadata(context, viewId);
+            
             // getViewMetadata() returns null on JSP
             if (viewMetadata != null)
             {
@@ -474,7 +478,7 @@ public class ViewHandlerImpl extends ViewHandler
         // won't be updated on any following request
         // (Note that parametersFromArg is the Map from the NavigationCase)
         // Also note that we don't have to copy the Lists, because they won't be changed
-        Map<String, List<String>> parameters = new HashMap<String, List<String>>(parametersFromArg);
+        Map<String, List<String>> parameters = new HashMap<>(parametersFromArg);
 
         for (UIViewParameter viewParameter : toViewParams)
         {
@@ -508,7 +512,7 @@ public class ViewHandlerImpl extends ViewHandler
                     // since we have checked !parameters.containsKey(viewParameter.getName())
                     // here already, the parameters Map will never contain a List under the
                     // key viewParameter.getName(), thus we do not have to check it here (again).
-                    List<String> parameterValueList = new ArrayList<String>(1);
+                    List<String> parameterValueList = new ArrayList<>(1);
                     parameterValueList.add(parameterValue);
                     parameters.put(viewParameter.getName(), parameterValueList);
                 }
@@ -568,7 +572,7 @@ public class ViewHandlerImpl extends ViewHandler
     public String getWebsocketURL(FacesContext context, String channelAndToken)
     {
         String url = context.getExternalContext().getRequestContextPath() + 
-                "/javax.faces.push/"+channelAndToken;
+                PushContext.URI_PREFIX + "/" + channelAndToken;
         return url;
     }
     

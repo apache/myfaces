@@ -23,7 +23,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
-import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
 import org.apache.myfaces.spi.ViewScopeProvider;
@@ -34,12 +33,9 @@ import org.apache.myfaces.spi.ViewScopeProvider;
  */
 public class CDIViewScopeProviderImpl extends ViewScopeProvider
 {
-    
     private BeanManager beanManager;
-    
     private ViewScopeBeanHolder viewScopeBeanHolder;
-    
-    
+
     public CDIViewScopeProviderImpl()
     {
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
@@ -47,8 +43,8 @@ public class CDIViewScopeProviderImpl extends ViewScopeProvider
         Object context = externalContext.getContext();
         if (context instanceof ServletContext)
         {
-            JsfApplicationArtifactHolder appBean = CDIUtils.lookup(beanManager, 
-                JsfApplicationArtifactHolder.class);
+            JsfApplicationArtifactHolder appBean =
+                    CDIUtils.get(beanManager, JsfApplicationArtifactHolder.class);
             appBean.setServletContext((ServletContext) context);
         }
     }
@@ -57,8 +53,7 @@ public class CDIViewScopeProviderImpl extends ViewScopeProvider
     {
         if (viewScopeBeanHolder == null)
         {
-            viewScopeBeanHolder = BeanProvider.getContextualReference(
-                beanManager, ViewScopeBeanHolder.class, false);
+            viewScopeBeanHolder = CDIUtils.get(beanManager, ViewScopeBeanHolder.class);
         }
         return viewScopeBeanHolder;
     }
@@ -96,18 +91,20 @@ public class CDIViewScopeProviderImpl extends ViewScopeProvider
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext != null)
         {
-            if (facesContext.getExternalContext().getSession(false) != null)
+            if (isViewScopeBeanHolderCreated(facesContext))
             {
-                if (isViewScopeBeanHolderCreated(facesContext))
-                {
-                    getViewScopeBeanHolder().destroyBeans();                
-                }
+                getViewScopeBeanHolder().destroyBeans();                
             }
         }
     }
     
     private boolean isViewScopeBeanHolderCreated(FacesContext facesContext)
     {
+        if (facesContext.getExternalContext().getSession(false) == null)
+        {
+            return false;
+        }
+        
         return facesContext.getExternalContext().
             getSessionMap().containsKey(ViewScopeBeanHolder.VIEW_SCOPE_PREFIX_KEY);
     }
@@ -115,12 +112,9 @@ public class CDIViewScopeProviderImpl extends ViewScopeProvider
     @Override
     public void destroyViewScopeMap(FacesContext facesContext, String viewScopeId)
     {
-        if (facesContext.getExternalContext().getSession(false) != null)
+        if (isViewScopeBeanHolderCreated(facesContext))
         {
-            if (isViewScopeBeanHolderCreated(facesContext))
-            {
-                getViewScopeBeanHolder().destroyBeans(viewScopeId);
-            }
+            getViewScopeBeanHolder().destroyBeans(viewScopeId);
         }
     }
 }

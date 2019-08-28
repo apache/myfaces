@@ -24,7 +24,7 @@ import javax.faces.component.html.HtmlOutcomeTargetButton;
 import org.apache.myfaces.application.NavigationHandlerImpl;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.util.ArrayUtils;
+import org.apache.myfaces.util.lang.ArrayUtils;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)

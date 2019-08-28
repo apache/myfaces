@@ -33,7 +33,7 @@ public class FacesDataModelAnnotationLiteral extends AnnotationLiteral<FacesData
 
     public FacesDataModelAnnotationLiteral(Class<?> forClass)
     {
-        this.forClass=forClass;
+        this.forClass = forClass;
     }
 
     @Override

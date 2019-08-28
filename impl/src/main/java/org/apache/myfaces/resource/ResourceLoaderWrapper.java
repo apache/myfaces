@@ -90,19 +90,6 @@ public abstract class ResourceLoaderWrapper extends ResourceLoader implements Fa
         return getWrapped().resourceExists(resourceMeta);
     }
 
-    /*
-    @Override
-    public boolean resourceIdExists(String resourceId)
-    {
-        return getWrapped().resourceIdExists(resourceId);
-    }
-
-    @Override
-    public URL getResourceURL(String resourceId)
-    {
-        return getWrapped().getResourceURL(resourceId);
-    }*/
-
     @Override
     protected Comparator<String> getVersionComparator()
     {

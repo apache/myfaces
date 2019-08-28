@@ -65,7 +65,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.lifecycle.ViewNotFoundException;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.view.facelets.component.UIRepeat;
@@ -1104,12 +1104,7 @@ public final class ErrorPageWriter
     private static void _incrementVisitedFacetCount(FacesContext facesContext, UIComponent component)
     {
         Map<UIComponent, Integer> visitedFacetCount = (Map<UIComponent, Integer>)
-            facesContext.getAttributes().get(VISITED_FACET_COUNT_KEY);
-        if (visitedFacetCount == null)
-        {
-            visitedFacetCount = new HashMap<UIComponent, Integer>();
-            facesContext.getAttributes().put(VISITED_FACET_COUNT_KEY, visitedFacetCount);
-        }
+            facesContext.getAttributes().computeIfAbsent(VISITED_FACET_COUNT_KEY, k -> new HashMap<>());
         visitedFacetCount.put(component, _getVisitedFacetCount(facesContext, component) + 1);
     }
 

@@ -98,6 +98,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
 
     protected abstract UIComponent createComponent(FacesContext context, String newId) throws JspException;
 
+    @Override
     public void release()
     {
         internalRelease();
@@ -152,6 +153,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         return _jspId;
     }
 
+    @Override
     public void setJspId(String jspId)
     {
         // -= Leonardo Uribe =- The javadoc says the following about this method:
@@ -191,7 +193,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         
         if (logicalPageId != null)
         {
-            if (logicalPageId.intValue() == 1)
+            if (logicalPageId == 1)
             {
                 //Base case, just pass it unchanged
                 _jspId = jspId;
@@ -342,17 +344,20 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         return _facesJspId;
     }
 
+    @Override
     public void setBodyContent(BodyContent bodyContent)
     {
         this.bodyContent = bodyContent;
     }
 
+    @Override
     public void doInitBody() throws JspException
     {
         // nothing by default
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public int doAfterBody() throws JspException
     {
         UIComponentClassicTagBase parentTag = getParentUIComponentClassicTagBase(pageContext);
@@ -399,6 +404,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * Standard method invoked by the JSP framework to inform this tag of the PageContext associated with the jsp page
      * currently being processed.
      */
+    @Override
     public void setPageContext(PageContext pageContext)
     {
         this.pageContext = pageContext;
@@ -407,6 +413,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     /**
      * Returns the enclosing JSP tag object. Note that this is not necessarily a JSF tag.
      */
+    @Override
     public Tag getParent()
     {
         return _parent;
@@ -415,6 +422,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     /**
      * Standard method invoked by the JSP framework to inform this tag of the enclosing JSP tag object.
      */
+    @Override
     public void setParent(Tag tag)
     {
         this._parent = tag;
@@ -425,6 +433,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         return bodyContent;
     }
 
+    @Override
     public int doStartTag() throws JspException
     {
         this._facesContext = getFacesContext();
@@ -531,6 +540,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         return getDoStartValue();
     }
 
+    @Override
     public int doEndTag() throws JspException
     {
         popTag();
@@ -837,25 +847,20 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         }
         else
         {
-            viewComponentIds = (Map<String, Object>) attributes.get(VIEW_IDS);
-            
             // Check if null, this can happen if someone programatically tries to do an include of a 
             // JSP fragment. This code will prevent NullPointerException from happening in such cases.
-            if (viewComponentIds == null)
-            {
-                viewComponentIds = new HashMap<String, Object>();
-                attributes.put(VIEW_IDS, viewComponentIds);
-            }
+            viewComponentIds = (Map<String, Object>) attributes.computeIfAbsent(VIEW_IDS,
+                    k -> new HashMap<String, Object>());
         }
 
         return viewComponentIds;
     }
 
     @SuppressWarnings("unchecked")
-    private static final Stack<UIComponentClassicTagBase> getStack(PageContext pageContext)
+    private static Stack<UIComponentClassicTagBase> getStack(PageContext pageContext)
     {
         Stack<UIComponentClassicTagBase> stack =
-                (Stack<UIComponentClassicTagBase>)pageContext.getAttribute(COMPONENT_STACK_ATTR,
+                (Stack<UIComponentClassicTagBase>) pageContext.getAttribute(COMPONENT_STACK_ATTR,
                     PageContext.REQUEST_SCOPE);
 
         if (stack == null)
@@ -1044,7 +1049,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
         // and ask it for its component. If there is no parent UIComponentTag instance,
         // this tag represents the root component, so get it from the current Tree and return it.
         UIComponentClassicTagBase parentTag = getParentUIComponentClassicTagBase(pageContext);
-
         if (parentTag == null)
         {
             // This is the root
@@ -1052,7 +1056,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
 
             // check if the view root is already bound to the tag
             Object alreadyBoundViewRootFlag = _componentInstance.getAttributes().get(BOUND_VIEW_ROOT);
-
             if (alreadyBoundViewRootFlag == null)
             {
                 try
@@ -1149,16 +1152,16 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             _componentInstance = createComponent(context, id);
             if (id.equals(_componentInstance.getId()) )
             {
-            _created = true;
-            int index = parentTag.getIndexOfNextChildTag();
-            if (index > parent.getChildCount())
-            {
-                index = parent.getChildCount();
-            }
+                _created = true;
+                int index = parentTag.getIndexOfNextChildTag();
+                if (index > parent.getChildCount())
+                {
+                    index = parent.getChildCount();
+                }
 
-            List<UIComponent> children = parent.getChildren();
-            children.add(index, _componentInstance);
-        }
+                List<UIComponent> children = parent.getChildren();
+                children.add(index, _componentInstance);
+            }
             // On weblogic portal using faces-adapter, the id set and the retrieved 
             // one for <netuix:namingContainer> is different. The reason is 
             // this custom solution for integrate jsf changes the id of the parent
@@ -1213,7 +1216,6 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             {
                 if (parent != null)
                 {
-
                     UIComponent namingContainer;
 
                     if (parent instanceof NamingContainer)
@@ -1280,18 +1282,10 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     @SuppressWarnings("unchecked")
     private Set<String> getPreviousJspIdsSet()
     {
-        Set<String> previousJspIdsSet =
-                (Set<String>)getFacesContext().getAttributes().get(PREVIOUS_JSP_IDS_SET);
-
-        if (previousJspIdsSet == null)
-        {
-            previousJspIdsSet = new HashSet<String>();
-            // Add it to the context! The next time is called
-            // this method it takes the ref from the RequestContext
-            getFacesContext().getAttributes().put(PREVIOUS_JSP_IDS_SET, previousJspIdsSet);
-        }
-
-        return previousJspIdsSet;
+        // Add it to the context! The next time is called
+        // this method it takes the ref from the RequestContext
+        return (Set<String>)getFacesContext().getAttributes().computeIfAbsent(PREVIOUS_JSP_IDS_SET,
+                        k -> new HashSet<>());
     }
 
     private boolean isIdDuplicated(String componentId)
@@ -1303,8 +1297,8 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
             {
                 return true;
             }
-            List<String> childComponents = _parentClassicTag.getCreatedComponents();
 
+            List<String> childComponents = _parentClassicTag.getCreatedComponents();
             if (childComponents != null)
             {
                 result = childComponents.contains(componentId);
@@ -1340,7 +1334,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     {
         if (parentTag._facetsAdded == null)
         {
-            parentTag._facetsAdded = new ArrayList<String>();
+            parentTag._facetsAdded = new ArrayList<>();
         }
         parentTag._facetsAdded.add(facetName);
     }

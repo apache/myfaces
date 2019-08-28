@@ -22,13 +22,14 @@ import java.io.IOException;
 import java.net.URL;
 import javax.faces.view.facelets.FaceletCache;
 import javax.faces.view.facelets.FaceletContext;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 
 /**
  * Extended FaceletCache contract that supports additional Myfaces specific concepts
  * that are necessary to implement.
  *
  * @author Leonardo Uribe
+ * @param <V>
  * @since 2.1.12
  */
 public abstract class AbstractFaceletCache<V> extends FaceletCache<V>
@@ -99,6 +100,7 @@ public abstract class AbstractFaceletCache<V> extends FaceletCache<V>
      * @since 2.3
      * @param faceletFactory
      * @param viewMetadataFaceletFactory 
+     * @param compositeComponentMetadataFaceletFactory
      */
     public void setCacheFactories(FaceletCache.MemberFactory<V> faceletFactory, 
             FaceletCache.MemberFactory<V> viewMetadataFaceletFactory,

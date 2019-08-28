@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.myfaces.util.AbstractAttributeMap;
+import org.apache.myfaces.util.lang.AbstractAttributeMap;
 
 /**
  * HttpServletRequest Cookies as Map.
@@ -150,11 +150,13 @@ public final class CookieMap extends AbstractAttributeMap<Object>
             _length = cookies.length;
         }
 
+        @Override
         public boolean hasMoreElements()
         {
             return _index < _length;
         }
 
+        @Override
         public String nextElement()
         {
             if (!hasMoreElements())

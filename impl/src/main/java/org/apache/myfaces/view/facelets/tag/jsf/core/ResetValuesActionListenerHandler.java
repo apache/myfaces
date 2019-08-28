@@ -232,7 +232,7 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
             }
             else if (value instanceof String)
             {
-                String[] arrValue = ((String)value).split(" ");
+                String[] arrValue = ((String) value).split(" ");
                 clientIds = Arrays.asList(arrValue);
             }
             else
@@ -260,7 +260,8 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
             {
                 contextComponent = event.getComponent();
             }
-            List<String> list = new ArrayList<String>();
+
+            List<String> list = new ArrayList<>();
             for (String id : clientIds)
             {
                 list.add(getComponentId(faces, contextComponent, id));
@@ -276,7 +277,6 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
         private static final long serialVersionUID = -9200000013153262119L;
 
         private Collection<String> clientIds;
-        
         private Location topCompositeComponentReference;
         
         private LiteralResetValuesActionListener()
@@ -297,6 +297,7 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
             {
                 return;
             }
+
             UIViewRoot root = faces.getViewRoot();
             if (root == null)
             {
@@ -322,6 +323,7 @@ public class ResetValuesActionListenerHandler extends TagHandler implements Acti
             {
                 contextComponent = event.getComponent();
             }
+
             List<String> list = new ArrayList<String>();
             for (String id : clientIds)
             {

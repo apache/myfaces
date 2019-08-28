@@ -137,12 +137,8 @@ public class RequestViewMetadata implements Serializable
                 {
                     target = "head";
                 }
-                List<ResourceDependency> list = map.get(target);
-                if (list == null)
-                {
-                    list = new ArrayList<>();
-                    map.put(target, list);
-                }
+
+                List<ResourceDependency> list = map.computeIfAbsent(target, k -> new ArrayList<>());
                 list.add(annotation);
             }
         }
@@ -161,12 +157,7 @@ public class RequestViewMetadata implements Serializable
                     target = "head";
                 }
 
-                List<ResourceDependency> list = map.get(target);
-                if (list == null)
-                {
-                    list = new ArrayList<>();
-                    map.put(target, list);
-                }
+                List<ResourceDependency> list = map.computeIfAbsent(target, k -> new ArrayList<>());
                 list.add(annotation);
             }
         }

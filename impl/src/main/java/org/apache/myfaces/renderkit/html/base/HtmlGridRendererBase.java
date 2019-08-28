@@ -38,9 +38,9 @@ import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.util.ArrayUtils;
+import org.apache.myfaces.util.lang.ArrayUtils;
 import org.apache.myfaces.util.ComponentUtils;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 
 public class HtmlGridRendererBase extends HtmlRenderer
@@ -91,9 +91,8 @@ public class HtmlGridRendererBase extends HtmlRenderer
         }
         else
         {
-            Integer i = (Integer)component.getAttributes().get(
-                    JSFAttr.COLUMNS_ATTR);
-            columns = i != null ? i.intValue() : 0;
+            Integer i = (Integer)component.getAttributes().get(JSFAttr.COLUMNS_ATTR);
+            columns = i != null ? i : 0;
         }
 
         if (columns <= 0)
@@ -214,18 +213,18 @@ public class HtmlGridRendererBase extends HtmlRenderer
         writer.startElement(header ? HTML.TH_ELEM : HTML.TD_ELEM, null); // component);
 
         String styleClass = (component instanceof HtmlPanelGrid)
-            ? (header ?
-                         ((HtmlPanelGrid)component).getHeaderClass() :
-                         ((HtmlPanelGrid)component).getFooterClass())
-            : (header ?
-                         (String)component.getAttributes().get(JSFAttr.HEADER_CLASS_ATTR) :
-                         (String)component.getAttributes().get(
-                                 JSFAttr.FOOTER_CLASS_ATTR));
+            ? (header
+                ? ((HtmlPanelGrid)component).getHeaderClass()
+                : ((HtmlPanelGrid)component).getFooterClass())
+            : (header
+                ? (String)component.getAttributes().get(JSFAttr.HEADER_CLASS_ATTR)
+                : (String)component.getAttributes().get(JSFAttr.FOOTER_CLASS_ATTR));
         if (styleClass != null)
         {
             writer.writeAttribute(HTML.CLASS_ATTR, styleClass,
-                                  header ? JSFAttr.HEADER_CLASS_ATTR : 
-                                      JSFAttr.FOOTER_CLASS_ATTR);
+                                  header 
+                                          ? JSFAttr.HEADER_CLASS_ATTR
+                                          : JSFAttr.FOOTER_CLASS_ATTR);
         }
 
         if (header)
@@ -264,7 +263,7 @@ public class HtmlGridRendererBase extends HtmlRenderer
         if (component instanceof HtmlPanelGrid)
         {
             columnClasses = ((HtmlPanelGrid)component).getColumnClasses();
-            rowClasses =  ((HtmlPanelGrid)component).getRowClasses();
+            rowClasses = ((HtmlPanelGrid)component).getRowClasses();
         }
         else
         {
@@ -278,7 +277,7 @@ public class HtmlGridRendererBase extends HtmlRenderer
         int columnClassesCount = columnClassesArray.length;
 
         String[] rowClassesArray = (rowClasses == null)
-            ? org.apache.myfaces.util.ArrayUtils.EMPTY_STRING_ARRAY
+            ? org.apache.myfaces.util.lang.ArrayUtils.EMPTY_STRING_ARRAY
             : StringUtils.trim(StringUtils.splitShortString(rowClasses, ','));
         int rowClassesCount = rowClassesArray.length;
 
@@ -325,7 +324,7 @@ public class HtmlGridRendererBase extends HtmlRenderer
                         }
                         
                         // is the current row listed in the bodyrows attribute
-                        if(ArrayUtils.contains(bodyrows, rowIndex)) 
+                        if (ArrayUtils.contains(bodyrows, rowIndex)) 
                         {
                             // close any preopened TBODY element first
                             if(bodyrowsCount != 0) 
@@ -372,7 +371,7 @@ public class HtmlGridRendererBase extends HtmlRenderer
                         writer.writeAttribute(HTML.CLASS_ATTR, columnClassesArray[columnIndex], null);
                     }
                     columnIndex = childAttributes(context, writer, child, columnIndex);
-                    //RendererUtils.renderChild(context, child);
+
                     child.encodeAll(context);
                     writer.endElement(HTML.TD_ELEM);
 
@@ -395,6 +394,7 @@ public class HtmlGridRendererBase extends HtmlRenderer
                                 + " has not enough children. Child count should be a " 
                                 + "multiple of the columns attribute.");
                     }
+
                     //Render empty columns, so that table is correct
                     for ( ; columnIndex < columns; columnIndex++)
                     {

@@ -42,8 +42,8 @@ import javax.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.event.PostClientWindowAndViewInitializedEvent;
 import org.apache.myfaces.spi.FacesFlowProvider;
 import org.apache.myfaces.spi.FacesFlowProviderFactory;
-import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  *
@@ -89,7 +89,7 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
         }
         
         //if definingDocumentId is an empty string, 
-        if (LangUtils.isEmpty(definingDocumentId))
+        if (StringUtils.isEmpty(definingDocumentId))
         {
             return _flowMapById.get(id);
         }
@@ -118,12 +118,8 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
             throw new IllegalArgumentException("Flow must have a non null definingDocumentId");
         }
         
-        Map<String, Flow> flowMap = _flowMapByDocumentId.get(definingDocumentId);
-        if (flowMap == null)
-        {
-            flowMap = new ConcurrentHashMap<String, Flow>();
-            _flowMapByDocumentId.put(definingDocumentId, flowMap);
-        }
+        Map<String, Flow> flowMap = _flowMapByDocumentId.computeIfAbsent(definingDocumentId,
+                k -> new ConcurrentHashMap<>());
         flowMap.put(id, toAdd);
         
         Flow duplicateFlow = _flowMapById.get(id);
@@ -816,12 +812,8 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
     {
         Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
         String currentFlowMapKey = CURRENT_FLOW_STACK + clientWindow.getId();
-        List<_FlowContextualInfo> currentFlowStack = (List<_FlowContextualInfo>) sessionMap.get(currentFlowMapKey);
-        if (currentFlowStack == null)
-        {
-            currentFlowStack = new ArrayList<_FlowContextualInfo>(4);
-            sessionMap.put(currentFlowMapKey, currentFlowStack);
-        }
+        List<_FlowContextualInfo> currentFlowStack = (List<_FlowContextualInfo>)
+                sessionMap.computeIfAbsent(currentFlowMapKey, k -> new ArrayList<>(4));
         if (!currentFlowStack.isEmpty())
         {
             currentFlowStack.get(currentFlowStack.size()-1).setLastDisplayedViewId(context.getViewRoot().getViewId());
@@ -1001,12 +993,8 @@ public class FlowHandlerImpl extends FlowHandler implements SystemEventListener
     {
         Map<Object, Object> attributesMap = context.getAttributes();
         String currentFlowMapKey = stackKey + clientWindow.getId();
-        List<_FlowContextualInfo> currentFlowStack = (List<_FlowContextualInfo>) attributesMap.get(currentFlowMapKey);
-        if (currentFlowStack == null)
-        {
-            currentFlowStack = new ArrayList<_FlowContextualInfo>(4);
-            attributesMap.put(currentFlowMapKey, currentFlowStack);
-        }
+        List<_FlowContextualInfo> currentFlowStack = (List<_FlowContextualInfo>)
+                attributesMap.computeIfAbsent(currentFlowMapKey, k -> new ArrayList<_FlowContextualInfo>(4));
         currentFlowStack.add(flowReference);
     }
 

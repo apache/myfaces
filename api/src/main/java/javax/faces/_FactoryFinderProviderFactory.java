@@ -216,14 +216,8 @@ class _FactoryFinderProviderFactory
         {
             try
             {
-                Object cl = AccessController.doPrivileged(new PrivilegedExceptionAction()
-                {
-                    public Object run() throws PrivilegedActionException
-                    {
-                        return Thread.currentThread().getContextClassLoader();
-                    }
-                });
-                return (ClassLoader) cl;
+                return (ClassLoader) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> Thread.currentThread().getContextClassLoader());
             }
             catch (PrivilegedActionException pae)
             {

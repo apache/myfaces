@@ -94,8 +94,8 @@ import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.application.ViewIdSupport;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.ClassUtils;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
@@ -156,8 +156,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     private static final Class<?>[] VALIDATOR_SIGNATURE
             = new Class[]{FacesContext.class, UIComponent.class, Object.class};
 
-    public static final String CHARACTER_ENCODING_KEY = "javax.faces.request.charset";
-
     public final static long DEFAULT_REFRESH_PERIOD = 0;
     public final static long DEFAULT_REFRESH_PERIOD_PRODUCTION = -1;
 
@@ -180,6 +178,10 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     public final static String USING_PSS_ON_THIS_VIEW = "org.apache.myfaces.USING_PSS_ON_THIS_VIEW";
 
     public final static String REMOVING_COMPONENTS_BUILD = "org.apache.myfaces.REMOVING_COMPONENTS_BUILD";
+    
+    public final static String DYN_WRAPPER = "oam.vf.DYN_WRAPPER";
+    
+    public final static String GEN_MARK_ID = "oam.vf.GEN_MARK_ID";
     //END CONSTANTS SET ON BUILD VIEW
 
     /**
@@ -1046,7 +1048,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                                     required = Boolean.valueOf(requiredValue.toString());
                                 }
 
-                                if (required != null && required.booleanValue())
+                                if (required != null && required)
                                 {
                                     if (log.isLoggable(Level.SEVERE))
                                     {
@@ -1842,8 +1844,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                             }
 
                             origWriter.write(content, start, content.length() - start);
-                            // No trace of any saved state, so we just need to flush
-                            // the buffer
+                            // No trace of any saved state, so we just need to flush the buffer
                         }
                         else
                         {
@@ -1863,15 +1864,12 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                         if (viewPoolProcessor != null && 
                             viewPoolProcessor.isViewPoolEnabledForThisView(context, view))
                         {
-                            ViewDeclarationLanguage vdl = context.getApplication().
-                                    getViewHandler().getViewDeclarationLanguage(
-                                        context, view.getViewId());
+                            ViewDeclarationLanguage vdl = context.getApplication().getViewHandler()
+                                    .getViewDeclarationLanguage(context, view.getViewId());
 
-                            if (ViewDeclarationLanguage.FACELETS_VIEW_DECLARATION_LANGUAGE_ID.equals(
-                                    vdl.getId()))
+                            if (ViewDeclarationLanguage.FACELETS_VIEW_DECLARATION_LANGUAGE_ID.equals(vdl.getId()))
                             {
-                                StateManagementStrategy sms = vdl.getStateManagementStrategy(
-                                        context, view.getId());
+                                StateManagementStrategy sms = vdl.getStateManagementStrategy(context, view.getId());
                                 if (sms != null)
                                 {
                                     context.getAttributes().put(ViewPoolProcessor.FORCE_HARD_RESET, Boolean.TRUE);
@@ -1936,8 +1934,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             if (root != null)
             {
                 //Ensure calculateResourceLibraryContracts() can be decorated
-                ViewDeclarationLanguage vdl = context.getApplication().getViewHandler().
-                    getViewDeclarationLanguage(context, viewId);
+                ViewDeclarationLanguage vdl = context.getApplication().getViewHandler()
+                        .getViewDeclarationLanguage(context, viewId);
                 List<String> contracts = vdl.calculateResourceLibraryContracts(
                     context, root.getViewId() != null ? root.getViewId() : viewId);
                 context.setResourceLibraryContracts(contracts);
@@ -2087,7 +2085,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
         // resource resolver
         ResourceResolver resolver = new DefaultResourceResolver();
-        ArrayList<String> classNames = new ArrayList<String>();
+        ArrayList<String> classNames = new ArrayList<>();
 
         String faceletsResourceResolverClassName = config.getResourceResolver();
         if (faceletsResourceResolverClassName != null)
@@ -2204,7 +2202,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
         // see if we need to override the encoding
         Map<Object, Object> m = context.getAttributes();
-        Map<String, Object> sm = context.getExternalContext().getSessionMap();
+        
+        Object session = context.getExternalContext().getSession(false);
 
         // 1. check the request attribute
         if (m.containsKey(PARAM_ENCODING))
@@ -2215,7 +2214,11 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 log.finest("Facelet specified alternate encoding '" + encoding + '\'');
             }
 
-            sm.put(CHARACTER_ENCODING_KEY, encoding);
+            if (session != null)
+            {
+                context.getExternalContext().getSessionMap().put(ViewHandler.CHARACTER_ENCODING_KEY,
+                        encoding);
+            }
         }
 
         // 2. get it from request
@@ -2227,10 +2230,14 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         // 3. get it from the session
         if (encoding == null)
         {
-            encoding = (String) sm.get(CHARACTER_ENCODING_KEY);
-            if (encoding != null && log.isLoggable(Level.FINEST))
+            if (session != null)
             {
-                log.finest("Session specified alternate encoding '" + encoding + '\'');
+                encoding = (String) context.getExternalContext().getSessionMap().get(
+                        ViewHandler.CHARACTER_ENCODING_KEY);
+                if (encoding != null && log.isLoggable(Level.FINEST))
+                {
+                    log.finest("Session specified alternate encoding '" + encoding + '\'');
+                }
             }
         }
 
@@ -2561,7 +2568,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 // Multiple child. The tempParent will be returned. No need to
                 // save MARK_CREATED.
                 createdComponent = tempParent;
-                tempParent.getAttributes().put("oam.vf.DYN_WRAPPER", baseKey);
+                tempParent.getAttributes().put(DYN_WRAPPER, baseKey);
                 tempParent.subscribeToEvent(PostRestoreStateEvent.class, new 
                     RefreshDynamicComponentListener(taglibURI, tagName, attributes, baseKey));
                 if (requiresFaceletDynamicRefresh)
@@ -2583,7 +2590,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     // Requires refresh. To do that, we need to save the MARK_CREATED
                     // value and set it only when the full component is refreshed after 
                     // restore it.
-                    createdComponent.getAttributes().put("oam.vf.GEN_MARK_ID",
+                    createdComponent.getAttributes().put(GEN_MARK_ID,
                         createdComponent.getAttributes().get(ComponentSupport.MARK_CREATED));
                     createdComponent.getAttributes().put(ComponentSupport.MARK_CREATED, null);
                     createdComponent.subscribeToEvent(PostAddToViewEvent.class, new 
@@ -2600,7 +2607,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     // Requires refresh. To do that, we need to save the MARK_CREATED
                     // value and set it only when the full component is refreshed after 
                     // restore it.
-                    createdComponent.getAttributes().put("oam.vf.GEN_MARK_ID",
+                    createdComponent.getAttributes().put(GEN_MARK_ID,
                         createdComponent.getAttributes().get(ComponentSupport.MARK_CREATED));
                     createdComponent.getAttributes().put(ComponentSupport.MARK_CREATED, null);
                     requiresRefresh = true;
@@ -2615,7 +2622,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     // that content into a component. Requires refresh. No need to
                     // save MARK_CREATED. No requires dynamic refresh.
                     createdComponent = tempParent;
-                    tempParent.getAttributes().put("oam.vf.DYN_WRAPPER", baseKey);
+                    tempParent.getAttributes().put(DYN_WRAPPER, baseKey);
                     requiresRefresh = true;
                 }
                 else

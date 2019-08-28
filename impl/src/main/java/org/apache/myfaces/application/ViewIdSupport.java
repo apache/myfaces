@@ -31,10 +31,10 @@ import javax.faces.render.ResponseStateManager;
 import javax.faces.view.ViewDeclarationLanguage;
 import org.apache.myfaces.config.MyfacesConfig;
 
-import org.apache.myfaces.util.ConcurrentLRUCache;
+import org.apache.myfaces.util.lang.ConcurrentLRUCache;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ExternalContextUtils;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.UrlPatternMatcher;
 
 /**
@@ -67,15 +67,9 @@ public class ViewIdSupport
 
     public static ViewIdSupport getInstance(FacesContext facesContext)
     {
-        ViewIdSupport instance = (ViewIdSupport)
-                facesContext.getExternalContext().getApplicationMap().get(INSTANCE_KEY);
-        if (instance == null)
-        {
-            instance = new ViewIdSupport(facesContext);
-            facesContext.getExternalContext().getApplicationMap().put(INSTANCE_KEY, instance);
-        }
-
-        return instance;
+        return (ViewIdSupport)
+                facesContext.getExternalContext().getApplicationMap().computeIfAbsent(INSTANCE_KEY,
+                        k -> new ViewIdSupport(facesContext));
     }
     
     protected ViewIdSupport(FacesContext facesContext)
@@ -358,7 +352,7 @@ public class ViewIdSupport
         // For example, if the incoming value was /faces/faces/faces/view.xhtml 
         // the result would be simply view.xhtml.
         
-        if (LangUtils.isBlank(prefix))
+        if (StringUtils.isBlank(prefix))
         {
             // if prefix is an empty string (Spring environment), we let it be "//"
             // in order to prevent an infinite loop in uri.startsWith(-emptyString-).

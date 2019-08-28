@@ -41,8 +41,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  *
  * @author lu4242
  */
-public final class RefreshDynamicComponentListener implements 
-    ComponentSystemEventListener, StateHolder
+public final class RefreshDynamicComponentListener implements ComponentSystemEventListener, StateHolder
 {
     private String taglibURI;
     private String tagName;
@@ -66,13 +65,7 @@ public final class RefreshDynamicComponentListener implements
     public void processEvent(ComponentSystemEvent event)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        //if (!PhaseId.RESTORE_VIEW.equals(facesContext.getCurrentPhaseId()))
-        //{
-            // This listener is only active when PostAddToViewEvent occur
-            // on restore view phase. 
-            //return;
-        //}
-        
+
         FaceletViewDeclarationLanguage vdl = (FaceletViewDeclarationLanguage) 
             facesContext.getApplication().getViewHandler().getViewDeclarationLanguage(
                 facesContext, facesContext.getViewRoot().getViewId());
@@ -119,10 +112,10 @@ public final class RefreshDynamicComponentListener implements
                 // find the component. Then we reset it to exclude it from facelets refresh algorithm.
                 // Note oam.vf.GEN_MARK_ID helps to identify when there is a wrapper component or not,
                 // and in that way identify which component is the parent.
-                String markId = (String) component.getAttributes().get("oam.vf.GEN_MARK_ID");
+                String markId = (String) component.getAttributes().get(FaceletViewDeclarationLanguage.GEN_MARK_ID);
                 if (markId == null)
                 {
-                    ((AbstractFacelet)componentFacelet).applyDynamicComponentHandler(
+                    ((AbstractFacelet) componentFacelet).applyDynamicComponentHandler(
                         facesContext, component, baseKey);
                 }
                 else
@@ -130,7 +123,7 @@ public final class RefreshDynamicComponentListener implements
                     try
                     {
                         component.getAttributes().put(ComponentSupport.MARK_CREATED, markId);
-                        ((AbstractFacelet)componentFacelet).applyDynamicComponentHandler(
+                        ((AbstractFacelet) componentFacelet).applyDynamicComponentHandler(
                             facesContext, component.getParent(), baseKey);
                     }
                     finally
@@ -161,9 +154,10 @@ public final class RefreshDynamicComponentListener implements
     @Override
     public Object saveState(FacesContext context)
     {
-        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(
-            context.getExternalContext());
+        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(context);
+
         Object[] values = new Object[4];
+
         Integer tagId = runtimeConfig.getIdByNamespace().get(taglibURI);
         if (tagId != null)
         {
@@ -184,6 +178,7 @@ public final class RefreshDynamicComponentListener implements
         values[1] = tagName;
         values[2] = attributes;
         values[3] = baseKey;
+
         return values;
     }
 
@@ -197,21 +192,20 @@ public final class RefreshDynamicComponentListener implements
         }
         else if (values[0] instanceof Integer)
         {
-            RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(
-                context.getExternalContext());
+            RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(context);
             taglibURI = runtimeConfig.getNamespaceById().get((Integer)values[0]);
         }
         else if (values[0] instanceof Object[])
         {
-            Object[] def = (Object[])values[0];
-            String ns = ( ((Integer)def[0]).intValue() == 0) ? 
+            Object[] def = (Object[]) values[0];
+            String ns = (((Integer) def[0]) == 0) ? 
                 CompositeResourceLibrary.NAMESPACE_PREFIX :
                 CompositeResourceLibrary.ALIAS_NAMESPACE_PREFIX;
-            taglibURI = ns + (String)(((Object[])values[0])[1]);
+            taglibURI = ns + (String) ((Object[]) values[0])[1];
         }
-        tagName = (String)values[1];
-        attributes = (Map<String,Object>) values[2];
-        baseKey = (String)values[3];
+        tagName = (String) values[1];
+        attributes = (Map<String, Object>) values[2];
+        baseKey = (String) values[3];
     }
 
     @Override

@@ -19,8 +19,6 @@
 package org.apache.myfaces.config.annotation;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -39,14 +37,14 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.validator.FacesValidator;
 import javax.faces.view.facelets.FaceletsResourceResolver;
 
-import org.apache.myfaces.config.impl.elements.ApplicationImpl;
-import org.apache.myfaces.config.impl.elements.BehaviorImpl;
-import org.apache.myfaces.config.impl.elements.ComponentTagDeclarationImpl;
-import org.apache.myfaces.config.impl.elements.ConverterImpl;
-import org.apache.myfaces.config.impl.elements.FacesConfigImpl;
+import org.apache.myfaces.config.impl.element.ApplicationImpl;
+import org.apache.myfaces.config.impl.element.BehaviorImpl;
+import org.apache.myfaces.config.impl.element.ComponentTagDeclarationImpl;
+import org.apache.myfaces.config.impl.element.ConverterImpl;
+import org.apache.myfaces.config.impl.element.FacesConfigImpl;
 import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProviderFactory;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  * Configure all annotations that needs to be defined at startup.
@@ -107,11 +105,11 @@ public class AnnotationConfigurator
                 {
                     if (log.isLoggable(Level.FINEST))
                     {
-                        log.finest("addComponent(" + comp.value() + ','
-                                + clazz.getName() + ')');
+                        log.finest("addComponent(" + comp.value() + ',' + clazz.getName() + ')');
                     }
+
                     String value = comp.value();
-                    if (LangUtils.isEmpty(value))
+                    if (StringUtils.isEmpty(value))
                     {
                         String simpleName = clazz.getSimpleName();
                         value = Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
@@ -121,7 +119,7 @@ public class AnnotationConfigurator
                     if (comp.createTag())
                     {
                         String tagName = comp.tagName();
-                        if (LangUtils.isEmpty(tagName))
+                        if (StringUtils.isEmpty(tagName))
                         {
                             tagName = clazz.getSimpleName();
                             tagName = Character.toLowerCase(tagName.charAt(0)) + tagName.substring(1);
@@ -146,6 +144,7 @@ public class AnnotationConfigurator
                     {
                         log.finest("addConverter(" + conv.value() + ',' + clazz.getName() + ')');
                     }
+
                     //If there is a previous entry on Application Configuration Resources,
                     //the entry there takes precedence
                     boolean hasForClass = !Object.class.equals(conv.forClass());
@@ -183,9 +182,9 @@ public class AnnotationConfigurator
                 {
                     if (log.isLoggable(Level.FINEST))
                     {
-                        log.finest("addValidator(" + val.value() + ',' + clazz.getName()
-                                + ')');
+                        log.finest("addValidator(" + val.value() + ',' + clazz.getName() + ')');
                     }
+
                     String value = val.value();
                     if (value == null || value.isEmpty())
                     {
@@ -230,18 +229,18 @@ public class AnnotationConfigurator
                                 + ", " + clazz.getName() + ')');
                     }
 
-                    org.apache.myfaces.config.impl.elements.RenderKitImpl renderKit =
-                            (org.apache.myfaces.config.impl.elements.RenderKitImpl)
+                    org.apache.myfaces.config.impl.element.RenderKitImpl renderKit =
+                            (org.apache.myfaces.config.impl.element.RenderKitImpl)
                                     facesConfig.getRenderKit(renderKitId);
                     if (renderKit == null)
                     {
-                        renderKit = new org.apache.myfaces.config.impl.elements.RenderKitImpl();
+                        renderKit = new org.apache.myfaces.config.impl.element.RenderKitImpl();
                         renderKit.setId(renderKitId);
                         facesConfig.addRenderKit(renderKit);
                     }
 
-                    org.apache.myfaces.config.impl.elements.RendererImpl renderer =
-                            new org.apache.myfaces.config.impl.elements.RendererImpl();
+                    org.apache.myfaces.config.impl.element.RendererImpl renderer =
+                            new org.apache.myfaces.config.impl.element.RendererImpl();
                     renderer.setComponentFamily(rend.componentFamily());
                     renderer.setRendererClass(clazz.getName());
                     renderer.setRendererType(rend.rendererType());
@@ -286,11 +285,9 @@ public class AnnotationConfigurator
             if (namedEvent != null)
             {
                 // Can only apply @NamedEvent to ComponentSystemEvent subclasses.
-
                 if (!ComponentSystemEvent.class.isAssignableFrom(clazz))
                 {
                     // Just log this.  We'll catch it later in the runtime.
-
                     if (log.isLoggable(Level.WARNING))
                     {
                         log.warning(clazz.getName() + " is annotated with @javax.faces.event.NamedEvent, but does "
@@ -300,8 +297,8 @@ public class AnnotationConfigurator
                 // Have to register @NamedEvent annotations with the NamedEventManager class since
                 // we need to get access to this info later and can't from the dispenser (it's not a
                 // singleton).
-                org.apache.myfaces.config.impl.elements.NamedEventImpl namedEventConfig =
-                        new org.apache.myfaces.config.impl.elements.NamedEventImpl();
+                org.apache.myfaces.config.impl.element.NamedEventImpl namedEventConfig =
+                        new org.apache.myfaces.config.impl.element.NamedEventImpl();
                 namedEventConfig.setEventClass(clazz.getName());
                 namedEventConfig.setShortName(namedEvent.shortName());
                 facesConfig.addNamedEvent(namedEventConfig);
@@ -318,11 +315,9 @@ public class AnnotationConfigurator
             if (facesBehavior != null)
             {
                 // Can only apply @FacesBehavior to Behavior implementors.
-
                 if (!javax.faces.component.behavior.Behavior.class.isAssignableFrom(clazz))
                 {
                     // Just log this.  We'll catch it later in the runtime.
-
                     if (log.isLoggable(Level.WARNING))
                     {
                         log.warning(clazz.getName()
@@ -355,8 +350,6 @@ public class AnnotationConfigurator
             if (facesBehaviorRenderer != null)
             {
                 String renderKitId = facesBehaviorRenderer.renderKitId();
-                //RenderKit renderKit;
-
                 if (log.isLoggable(Level.FINEST))
                 {
                     log.finest("addClientBehaviorRenderer(" + renderKitId + ", "
@@ -364,18 +357,18 @@ public class AnnotationConfigurator
                                + clazz.getName() + ')');
                 }
 
-                org.apache.myfaces.config.impl.elements.RenderKitImpl renderKit =
-                        (org.apache.myfaces.config.impl.elements.RenderKitImpl)
+                org.apache.myfaces.config.impl.element.RenderKitImpl renderKit =
+                        (org.apache.myfaces.config.impl.element.RenderKitImpl)
                                 facesConfig.getRenderKit(renderKitId);
                 if (renderKit == null)
                 {
-                    renderKit = new org.apache.myfaces.config.impl.elements.RenderKitImpl();
+                    renderKit = new org.apache.myfaces.config.impl.element.RenderKitImpl();
                     renderKit.setId(renderKitId);
                     facesConfig.addRenderKit(renderKit);
                 }
 
-                org.apache.myfaces.config.impl.elements.ClientBehaviorRendererImpl cbr =
-                        new org.apache.myfaces.config.impl.elements.ClientBehaviorRendererImpl();
+                org.apache.myfaces.config.impl.element.ClientBehaviorRendererImpl cbr =
+                        new org.apache.myfaces.config.impl.element.ClientBehaviorRendererImpl();
                 cbr.setRendererType(facesBehaviorRenderer.rendererType());
                 cbr.setRendererClass(clazz.getName());
                 renderKit.addClientBehaviorRenderer(cbr);
@@ -389,39 +382,10 @@ public class AnnotationConfigurator
         {
             FaceletsResourceResolver faceletsResourceResolver = 
                 (FaceletsResourceResolver) clazz.getAnnotation(FaceletsResourceResolver.class);
-            
             if (faceletsResourceResolver != null)
             {
                 facesConfig.addResourceResolver(clazz.getName());
             }
         }
-    }
-
-    /**
-     * <p>Return an array of all <code>Field</code>s reflecting declared
-     * fields in this class, or in any superclass other than
-     * <code>java.lang.Object</code>.</p>
-     *
-     * @param clazz Class to be analyzed
-     */
-    private Field[] fields(Class<?> clazz)
-    {
-
-        Map<String, Field> fields = new HashMap<String, Field>();
-        do
-        {
-            for (Field field : clazz.getDeclaredFields())
-            {
-                if (!fields.containsKey(field.getName()))
-                {
-                    fields.put(field.getName(), field);
-                }
-            }
-            clazz = clazz.getSuperclass();
-        }
-        while (clazz != Object.class);
-
-        return fields.values().toArray(new Field[fields.size()]);
-
     }
 }

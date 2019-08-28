@@ -30,7 +30,6 @@ public class DuplicateIdException extends FacesException
 {
 
     private final UIComponent firstComponent;
-
     private final UIComponent secondComponent;
 
     public DuplicateIdException(String message, UIComponent firstComponent, UIComponent secondComponent)

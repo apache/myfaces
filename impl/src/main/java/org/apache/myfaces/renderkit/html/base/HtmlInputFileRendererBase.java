@@ -48,7 +48,7 @@ import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.HttpPartWrapper;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.util.ComponentUtils;
 
 public class HtmlInputFileRendererBase extends HtmlRenderer
@@ -64,11 +64,11 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         {
            Part part = ((HttpServletRequest) facesContext.getExternalContext().getRequest()).
                    getPart(component.getClientId());
-
            if (part == null)
            {
                return;
            }
+
            ((UIInput) component).setSubmittedValue(new HttpPartWrapper(part));
         }
         catch (IOException | ServletException e)
@@ -146,8 +146,7 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
     }
 
     //Subclasses can set the value of an attribute before, or can render a custom attribute after calling this method
-    protected void renderInputBegin(FacesContext facesContext,
-            UIComponent component) throws IOException
+    protected void renderInputBegin(FacesContext facesContext, UIComponent component) throws IOException
     {
         ResponseWriter writer = facesContext.getResponseWriter();
 
@@ -284,12 +283,8 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
 
                 writer.startElement(HTML.SPAN_ELEM, component);
 
-                HtmlRendererUtils.writeIdIfNecessary(writer, component,
-                        facesContext);
-
-                HtmlRendererUtils.renderHTMLAttributes(writer, component,
-                        HTML.COMMON_PASSTROUGH_ATTRIBUTES);
-
+                HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
+                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
             }
             else
             {

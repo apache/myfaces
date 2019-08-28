@@ -35,10 +35,10 @@ public class ComponentRelocatableResourceHandler implements RelocatableResourceH
     public static final ComponentRelocatableResourceHandler INSTANCE = new ComponentRelocatableResourceHandler();
     
     @Override
-    public UIComponent findChildByTagId(FaceletContext ctx, UIComponent parent,
-            String id)
+    public UIComponent findChildByTagId(FaceletContext ctx, UIComponent parent, String id)
     {
         UIComponent c = null;
+        
         UIViewRoot root = ComponentSupport.getViewRoot(ctx, parent);
         if (root.getFacetCount() > 0)
         {
@@ -49,6 +49,7 @@ public class ComponentRelocatableResourceHandler implements RelocatableResourceH
                 c = ComponentSupport.findChildByTagId(facet, id);
             }
         }
+        
         return c;
     }
     

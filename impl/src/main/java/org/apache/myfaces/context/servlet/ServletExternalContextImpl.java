@@ -57,10 +57,11 @@ import javax.servlet.http.HttpSession;
 import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.context.flash.FlashImpl;
-import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.EnumerationIterator;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.util.lang.EnumerationIterator;
 import org.apache.myfaces.util.ExternalSpecifications;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.SharedStringBuilder;
+import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  * Implements the external context for servlet request. JSF 1.2, 6.1.3
@@ -79,6 +80,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     private static final String URL_NAME_VALUE_PAIR_SEPERATOR="=";
     private static final String PUSHED_RESOURCE_URLS = "oam.PUSHED_RESOURCE_URLS";
     private static final String PUSH_SUPPORTED = "oam.PUSH_SUPPORTED";
+    private static final String SB_ENCODE_URL = ServletExternalContextImpl.class.getName() + "#encodeURL";
 
     private ServletRequest _servletRequest;
     private ServletResponse _servletResponse;
@@ -134,6 +136,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         _flashFactory = flashFactory;
     }
 
+    @Override
     public void release()
     {
         super.release(); // releases fields on ServletExternalContextImplBase
@@ -458,7 +461,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
 
         FacesContext facesContext = getCurrentFacesContext();
         Integer port = MyfacesConfig.getCurrentInstance(facesContext).getWebsocketEndpointPort();
-        port = (port == 0) ? null : port;
+        port = (port == null || port == 0) ? null : port;
         if (port != null && !port.equals(facesContext.getExternalContext().getRequestServerPort()))
         {
             String scheme = facesContext.getExternalContext().getRequestScheme();
@@ -886,13 +889,8 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                     paramMap = new HashMap<String, List<String>>();
                 }
                 
-                List<String> values = paramMap.get(currentName);
-                if (values == null)
-                {
-                    values = new ArrayList<>(1);
-                    paramMap.put(currentName, values);
-                }
- 
+                List<String> values = paramMap.computeIfAbsent(currentName, k -> new ArrayList<>(1));
+
                 try
                 {
                     values.add(currentPair.length > 1
@@ -914,11 +912,11 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
             for (Map.Entry<String, List<String>> pair : parameters.entrySet())
             {
                 String key = pair.getKey();
-                if (LangUtils.isNotBlank(key))
+                if (StringUtils.isNotBlank(key))
                 {
                     if (paramMap == null)
                     {
-                        paramMap = new HashMap<String, List<String>>();
+                        paramMap = new HashMap<>();
                     }
                     paramMap.put(key, pair.getValue());
                 }
@@ -940,7 +938,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                         value.add(entry.getValue());
                         if (paramMap == null)
                         {
-                            paramMap = new HashMap<String, List<String>>();
+                            paramMap = new HashMap<>();
                         }
                         paramMap.put(entry.getKey(), value);
                     }
@@ -956,7 +954,8 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         }
 
         // start building the new URL
-        StringBuilder newUrl = new StringBuilder(baseUrl);
+        StringBuilder newUrl = SharedStringBuilder.get(facesContext, SB_ENCODE_URL, baseUrl.length() + 10);
+        newUrl.append(baseUrl);
 
         //now add the updated param list onto the url
         if (hasParams)
@@ -1007,6 +1006,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     /**
      * @since 2.0
      */
+    @Override
     public Flash getFlash()
     {
         if (_flash == null)
@@ -1030,8 +1030,8 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                 _flash = _flashFactory.getFlash(true);
             }
         }
+
         return _flash;
-        //return FlashImpl.getCurrentInstance(this);
     }
 
     @Override

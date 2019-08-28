@@ -63,17 +63,13 @@ public class HtmlMenuRendererBase
 
         if (component instanceof UISelectMany)
         {
-            renderMenu(facesContext,
-                                         (UISelectMany)component,
-                                         isDisabled(facesContext, component),
-                                         getConverter(facesContext, component));
+            renderMenu(facesContext, (UISelectMany) component,
+                    isDisabled(facesContext, component), getConverter(facesContext, component));
         }
         else if (component instanceof UISelectOne)
         {
-            renderMenu(facesContext,
-                                         (UISelectOne)component,
-                                         isDisabled(facesContext, component),
-                                         getConverter(facesContext, component));
+            renderMenu(facesContext, (UISelectOne) component, 
+                    isDisabled(facesContext, component), getConverter(facesContext, component));
         }
         else
         {
@@ -81,17 +77,14 @@ public class HtmlMenuRendererBase
         }
     }
     
-    protected void renderMenu(FacesContext facesContext,
-            UISelectOne selectOne, boolean disabled, Converter converter)
+    protected void renderMenu(FacesContext facesContext, UISelectOne selectOne, boolean disabled, Converter converter)
             throws IOException
     {
-        internalRenderSelect(facesContext, selectOne, disabled, 1, false,
-                converter);
+        internalRenderSelect(facesContext, selectOne, disabled, 1, false, converter);
     }
 
-    protected void renderMenu(FacesContext facesContext,
-            UISelectMany selectMany, boolean disabled, Converter converter)
-            throws IOException
+    protected void renderMenu(FacesContext facesContext, UISelectMany selectMany, boolean disabled,
+            Converter converter) throws IOException
     {
         internalRenderSelect(facesContext, selectMany, disabled, 1, true, converter);
     }
@@ -100,11 +93,11 @@ public class HtmlMenuRendererBase
     {
         if (uiComponent instanceof HtmlSelectManyMenu)
         {
-            return ((HtmlSelectManyMenu)uiComponent).isDisabled();
+            return ((HtmlSelectManyMenu) uiComponent).isDisabled();
         }
         else if (uiComponent instanceof HtmlSelectOneMenu)
         {
-            return ((HtmlSelectOneMenu)uiComponent).isDisabled();
+            return ((HtmlSelectOneMenu) uiComponent).isDisabled();
         }
 
         return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
@@ -164,13 +157,11 @@ public class HtmlMenuRendererBase
      * @param component
      * @return
      */
-    protected Converter getConverter(FacesContext facesContext,
-            UIComponent component)
+    protected Converter getConverter(FacesContext facesContext, UIComponent component)
     {
         if (component instanceof UISelectMany)
         {
-            return HtmlRendererUtils.findUISelectManyConverterFailsafe(facesContext, 
-                    (UISelectMany) component);
+            return HtmlRendererUtils.findUISelectManyConverterFailsafe(facesContext, (UISelectMany) component);
         }
         else if (component instanceof UISelectOne)
         {

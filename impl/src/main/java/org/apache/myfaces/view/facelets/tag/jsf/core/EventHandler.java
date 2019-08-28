@@ -48,7 +48,7 @@ import javax.faces.view.facelets.TagHandler;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
@@ -83,7 +83,7 @@ public final class EventHandler extends TagHandler
     
     private boolean listenerIsCompositeComponentME;
     
-    public EventHandler (TagConfig tagConfig)
+    public EventHandler(TagConfig tagConfig)
     {
         super (tagConfig);
         
@@ -172,7 +172,7 @@ public final class EventHandler extends TagHandler
      */
     
     @SuppressWarnings("unchecked")
-    private Class<? extends ComponentSystemEvent> getEventClass (FaceletContext context)
+    private Class<? extends ComponentSystemEvent> getEventClass(FaceletContext context)
     {
         Class<?> eventClass = null;
         String value = null;
@@ -216,7 +216,7 @@ public final class EventHandler extends TagHandler
         }
         else if (events.size() > 1)
         {
-            StringBuilder classNames = new StringBuilder ("[");
+            StringBuilder classNames = new StringBuilder("[");
             Iterator<Class<? extends ComponentSystemEvent>> eventIterator = events.iterator();
             
             // TODO: The spec is somewhat vague, but I think we're supposed to throw an exception
@@ -229,19 +229,19 @@ public final class EventHandler extends TagHandler
             
             while (eventIterator.hasNext())
             {
-                classNames.append (eventIterator.next().getName());
+                classNames.append(eventIterator.next().getName());
                 
                 if (eventIterator.hasNext())
                 {
-                    classNames.append (", ");
+                    classNames.append(", ");
                 }
                 else
                 {
-                    classNames.append (']');
+                    classNames.append(']');
                 }
             }
             
-            throw new FacesException ("The event name '" + value + "' is mapped to more than one " +
+            throw new FacesException("The event name '" + value + "' is mapped to more than one " +
                 " event class: " + classNames.toString());
         }
         else
@@ -249,7 +249,7 @@ public final class EventHandler extends TagHandler
             eventClass = events.iterator().next();
         }
         
-        if (!ComponentSystemEvent.class.isAssignableFrom (eventClass))
+        if (!ComponentSystemEvent.class.isAssignableFrom(eventClass))
         {
             throw new TagAttributeException (type, "Event class " + eventClass.getName() +
                 " is not of type javax.faces.event.ComponentSystemEvent");

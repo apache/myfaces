@@ -36,8 +36,6 @@ import org.apache.myfaces.spi.impl.SpiUtils;
  */
 public abstract class FacesConfigResourceProviderFactory
 {
-    protected static final String FACTORY_DEFAULT = DefaultFacesConfigResourceProviderFactory.class.getName();
-
     private static final String FACTORY_KEY = FacesConfigResourceProviderFactory.class.getName();
 
     public static FacesConfigResourceProviderFactory getFacesConfigResourceProviderFactory(ExternalContext ctx)
@@ -55,22 +53,16 @@ public abstract class FacesConfigResourceProviderFactory
             if (System.getSecurityManager() != null)
             {
                 final ExternalContext ectx = ctx;
-                lpf = (FacesConfigResourceProviderFactory)
-                        AccessController.doPrivileged(new PrivilegedExceptionAction<Object>()
-                        {
-                            @Override
-                            public Object run() throws PrivilegedActionException
-                            {
-                                return SpiUtils.build(ectx,
-                                        FacesConfigResourceProviderFactory.class,
-                                        FACTORY_DEFAULT);
-                            }
-                        });
+                lpf = (FacesConfigResourceProviderFactory) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx,
+                                FacesConfigResourceProviderFactory.class,
+                                DefaultFacesConfigResourceProviderFactory.class));
             }
             else
             {
                 lpf = (FacesConfigResourceProviderFactory)
-                        SpiUtils.build(ctx, FacesConfigResourceProviderFactory.class, FACTORY_DEFAULT);
+                        SpiUtils.build(ctx, FacesConfigResourceProviderFactory.class,
+                                DefaultFacesConfigResourceProviderFactory.class);
             }
         }
         catch (PrivilegedActionException pae)

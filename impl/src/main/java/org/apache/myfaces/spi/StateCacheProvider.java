@@ -21,7 +21,7 @@ package org.apache.myfaces.spi;
 
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.application.StateCache;
+import org.apache.myfaces.application.viewstate.StateCache;
 
 /**
  * This class provides an interface to separate the state caching operations (saving/restoring)

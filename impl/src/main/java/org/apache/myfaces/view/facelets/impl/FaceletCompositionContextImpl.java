@@ -35,7 +35,7 @@ import javax.faces.view.AttachedObjectHandler;
 import javax.faces.view.EditableValueHolderAttachedObjectHandler;
 
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.Lazy;
+import org.apache.myfaces.util.lang.Lazy;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletFactory;
@@ -51,6 +51,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
 {
 
     private static final String JAVAX_FACES_LOCATION_PREFIX = "javax_faces_location_";
+    private static final String VISIT_CONTEXT_FACTORY = "oam.vf.VisitContextFactory";
     
     private FacesContext _facesContext;
     
@@ -123,8 +124,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         super();
         _factory = factory;
         _facesContext = facesContext;
-        _componentsMarkedForDeletion = new ArrayList<Map<String,UIComponent>>();
-        _relocatableResourceForDeletion = new HashMap<String, UIComponent>();
+        _componentsMarkedForDeletion = new ArrayList<>();
+        _relocatableResourceForDeletion = new HashMap<>();
         _deletionLevel = -1;
         _sectionUniqueIdCounter = new Lazy(() -> new SectionUniqueIdCounter());
         //Cached at facelet view
@@ -188,7 +189,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     @Override
     public void initUniqueIdRecording()
     {
-        _uniqueIdsList = new LinkedList<String>();
+        _uniqueIdsList = new LinkedList<>();
         _uniqueIdsIterator = null;
     }
     
@@ -263,7 +264,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     {
         if (_compositeComponentStack == null)
         {
-            _compositeComponentStack = new LinkedList<UIComponent>();
+            _compositeComponentStack = new LinkedList<>();
         }
         _compositeComponentStack.addFirst(parent);
         _ccLevel++;
@@ -309,7 +310,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     {
         if (_uniqueIdVendorStack == null)
         {
-            _uniqueIdVendorStack = new LinkedList<UniqueIdVendor>();
+            _uniqueIdVendorStack = new LinkedList<>();
         }
         _uniqueIdVendorStack.addFirst(parent);
     }
@@ -333,13 +334,10 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     {
         if (_enclosingValidatorIdsStack == null)
         {
-            _enclosingValidatorIdsStack = 
-                new LinkedList<Map.Entry<String, EditableValueHolderAttachedObjectHandler>>();
+            _enclosingValidatorIdsStack = new LinkedList<>();
         }
 
-        _enclosingValidatorIdsStack.addFirst(
-                new SimpleEntry<String, EditableValueHolderAttachedObjectHandler>
-                    (validatorId, attachedObjectHandler));
+        _enclosingValidatorIdsStack.addFirst(new SimpleEntry<>(validatorId, attachedObjectHandler));
     }
 
     public Iterator<Map.Entry<String, EditableValueHolderAttachedObjectHandler>> getEnclosingValidatorIdsAndHandlers()
@@ -454,7 +452,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         List<AttachedObjectHandler> list = null;
         if (_attachedObjectHandlers == null)
         {
-            _attachedObjectHandlers = new HashMap<UIComponent, List<AttachedObjectHandler>>();
+            _attachedObjectHandlers = new HashMap<>();
         }
         else
         {
@@ -463,7 +461,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
 
         if (list == null)
         {
-            list = new ArrayList<AttachedObjectHandler>();
+            list = new ArrayList<>();
             _attachedObjectHandlers.put(compositeComponentParent, list);
         }
 
@@ -496,7 +494,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         Map<String, Object> map = null;
         if (_methodExpressionsTargeted == null)
         {
-            _methodExpressionsTargeted = new HashMap<UIComponent, Map<String, Object>>();
+            _methodExpressionsTargeted = new HashMap<>();
         }
         else
         {
@@ -505,7 +503,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
 
         if (map == null)
         {
-            map = new HashMap<String, Object>(8);
+            map = new HashMap<>(8);
             _methodExpressionsTargeted.put(targetedComponent, map);
         }
 
@@ -525,7 +523,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
             return false;
         }
         Boolean v = map.get(attributeName);
-        return v == null ? false : v.booleanValue();
+        return v == null ? false : v;
     }
     
     @Override
@@ -534,7 +532,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         Map<String, Boolean> map = null;
         if (_compositeComponentAttributesMarked == null)
         {
-            _compositeComponentAttributesMarked = new HashMap<UIComponent, Map<String, Boolean>>(); 
+            _compositeComponentAttributesMarked = new HashMap<>(); 
         }
         else
         {
@@ -543,7 +541,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         
         if (map == null)
         {
-            map = new HashMap<String, Boolean>(8);
+            map = new HashMap<>(8);
             _compositeComponentAttributesMarked.put(compositeComponentParent, map);
         }
         map.put(attributeName, Boolean.TRUE);
@@ -591,7 +589,6 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         if (_componentsMarkedForDeletion.size() <= _deletionLevel)
         {
             _componentsMarkedForDeletion.add(new HashMap<String, UIComponent>());
-            
         }
     }
 
@@ -1077,16 +1074,10 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         {
             // Store it in application map improve performance because it avoids FactoryFinde.getFactory(...) call
             // which has synchronized blocks.
-            _visitContextFactory = (VisitContextFactory) _facesContext.getExternalContext().
-                    getApplicationMap().get("oam.vf.VisitContextFactory");
-            if (_visitContextFactory == null)
-            {
-                VisitContextFactory factory = (VisitContextFactory) 
-                        FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY);
-                _facesContext.getExternalContext().
-                        getApplicationMap().put("oam.vf.VisitContextFactory", factory);
-                _visitContextFactory = factory;
-            }
+            _visitContextFactory = (VisitContextFactory) _facesContext.getExternalContext().getApplicationMap()
+                    .computeIfAbsent(
+                            VISIT_CONTEXT_FACTORY,
+                            k -> FactoryFinder.getFactory(FactoryFinder.VISIT_CONTEXT_FACTORY));
         }
         return _visitContextFactory;
     }

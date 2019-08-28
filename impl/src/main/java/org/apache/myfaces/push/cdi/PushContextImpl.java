@@ -64,17 +64,17 @@ public class PushContextImpl implements PushContext
             beanManager = CDI.current().getBeanManager();
         }
         
-        WebsocketApplicationBean appTokenBean = CDIUtils.getInstance(beanManager, 
+        WebsocketApplicationBean appTokenBean = CDIUtils.get(beanManager, 
                 WebsocketApplicationBean.class, false);
         WebsocketViewBean viewTokenBean = null;
         WebsocketSessionBean sessionTokenBean = null;
         
         if (CDIUtils.isSessionScopeActive(beanManager))
         {
-            sessionTokenBean = CDIUtils.getInstance(beanManager, WebsocketSessionBean.class, false);
+            sessionTokenBean = CDIUtils.get(beanManager, WebsocketSessionBean.class, false);
             if (CDIUtils.isViewScopeActive(beanManager))
             {
-                viewTokenBean = CDIUtils.getInstance(beanManager, WebsocketViewBean.class, false);
+                viewTokenBean = CDIUtils.get(beanManager, WebsocketViewBean.class, false);
             }
         }
         
@@ -150,17 +150,17 @@ public class PushContextImpl implements PushContext
             beanManager = CDI.current().getBeanManager();
         }
         
-        WebsocketApplicationBean appTokenBean = CDIUtils.getInstance(beanManager, 
+        WebsocketApplicationBean appTokenBean = CDIUtils.get(beanManager, 
                 WebsocketApplicationBean.class, false);
         WebsocketViewBean viewTokenBean = null;
         WebsocketSessionBean sessionTokenBean = null;
         
         if (CDIUtils.isSessionScopeActive(beanManager))
         {
-            sessionTokenBean = CDIUtils.getInstance(beanManager, WebsocketSessionBean.class, false);
+            sessionTokenBean = CDIUtils.get(beanManager, WebsocketSessionBean.class, false);
             if (CDIUtils.isViewScopeActive(beanManager))
             {
-                viewTokenBean = CDIUtils.getInstance(beanManager, WebsocketViewBean.class, false);
+                viewTokenBean = CDIUtils.get(beanManager, WebsocketViewBean.class, false);
             }
         }
         

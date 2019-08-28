@@ -23,8 +23,7 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
-import org.apache.myfaces.util.AbstractAttributeMap;
-
+import org.apache.myfaces.util.lang.AbstractAttributeMap;
 
 /**
  * ServletRequest attributes Map.
@@ -71,7 +70,6 @@ public final class RequestMap extends AbstractAttributeMap<Object>
     {
         throw new UnsupportedOperationException();
     }
-
 
     @Override
     public void clear()

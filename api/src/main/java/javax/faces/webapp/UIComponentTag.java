@@ -194,7 +194,7 @@ public abstract class UIComponentTag extends UIComponentClassicTagBase
             // else --> not suppressed
             _suppressed = Boolean.FALSE;
         }
-        return _suppressed.booleanValue();
+        return _suppressed;
     }
 
     @Override

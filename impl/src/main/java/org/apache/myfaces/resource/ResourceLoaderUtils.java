@@ -23,57 +23,46 @@ import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Locale;
-import java.util.TimeZone;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 
 public class ResourceLoaderUtils
 {
-    // TODO: In tomcat and jetty it is implemented a Flyweight pattern when converting
-    // date headers. For now it is better keep this stuff simple.
-    private static final String HTTP_RESPONSE_DATE_HEADER =
-        "EEE, dd MMM yyyy HH:mm:ss zzz";
-    
-    private static final String[] HTTP_REQUEST_DATE_HEADER = {
-            "EEE, dd MMM yyyy HH:mm:ss zzz", "EEEEEE, dd-MMM-yy HH:mm:ss zzz",
-            "EEE MMMM d HH:mm:ss yyyy" };
-    
-    private static final TimeZone GMT = TimeZone.getTimeZone("GMT");
+    private static final DateTimeFormatter HTTP_RESPONSE_DATE_HEADER =
+            DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US).withZone(ZoneId.of("GMT"));
 
+    private static final DateTimeFormatter[] HTTP_REQUEST_DATE_HEADER = {
+            DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US).withZone(ZoneId.of("GMT")),
+            DateTimeFormatter.ofPattern("EEE MMMM d HH:mm:ss yyyy", Locale.US).withZone(ZoneId.of("GMT")) };
+ 
     public static String formatDateHeader(long value)
     {
-        SimpleDateFormat format = new SimpleDateFormat(
-                HTTP_RESPONSE_DATE_HEADER,
-                Locale.US);
-        format.setTimeZone(GMT);
-        return format.format(new Date(value));
+        Instant instant = Instant.ofEpochMilli(value);
+        ZonedDateTime zdt = ZonedDateTime.ofInstant(instant, HTTP_RESPONSE_DATE_HEADER.getZone());
+        return HTTP_RESPONSE_DATE_HEADER.format(zdt);
     }
     
     public static Long parseDateHeader(String value)
     {
-        Date date = null;
-        for (int i = 0; (date == null) && (i < HTTP_REQUEST_DATE_HEADER.length); i++)
+        for (DateTimeFormatter formatter : HTTP_REQUEST_DATE_HEADER)
         {
             try
             {
-                SimpleDateFormat format = new SimpleDateFormat(
-                        HTTP_REQUEST_DATE_HEADER[i], Locale.US);
-                format.setTimeZone(GMT);
-                date = format.parse(value);
+                ZonedDateTime zdt = ZonedDateTime.parse(value, formatter);
+                return zdt.toInstant().toEpochMilli();
             }
-            catch (ParseException e)
+            catch (DateTimeParseException e)
             {
                 // all fine
             }
         }
-        if (date == null)
-        {
-            return null;
-        }
-        return Long.valueOf(date.getTime());
+
+        return null;
     }
 
     public static long getResourceLastModified(URL url) throws IOException
@@ -108,19 +97,23 @@ public class ResourceLoaderUtils
             // and then close that connection again.
 
             URL jarFileUrl = ((JarURLConnection) connection).getJarFileURL();
-            URLConnection jarFileConnection = jarFileUrl.openConnection();
+            URLConnection jarFileConnection = null;
 
             try
             {
+                jarFileConnection = jarFileUrl.openConnection();
                 modified = jarFileConnection.getLastModified();
             }
             finally
             {
                 try
                 {
-                    jarFileConnection.getInputStream().close();
+                    if (jarFileConnection != null)
+                    {
+                        jarFileConnection.getInputStream().close();
+                    }
                 }
-                catch (Exception exception)
+                catch (Exception e)
                 {
                     // Ignored
                 }
@@ -156,5 +149,4 @@ public class ResourceLoaderUtils
     {
         return path.startsWith("/") && path.endsWith("/");
     }
-    
 }

@@ -159,19 +159,14 @@ class _MessageUtils
                     //Last resort is the context class loader
                     if (System.getSecurityManager() != null)
                     {
-                        Object cl = AccessController.doPrivileged(new PrivilegedExceptionAction()
-                        {
-                            public Object run() throws PrivilegedActionException
-                            {
-                                return Thread.currentThread().getContextClassLoader();
-                            }
-                        });
-                        return ResourceBundle.getBundle(bundleName,locale,(ClassLoader)cl);
+                        ClassLoader cl = (ClassLoader) AccessController.doPrivileged(
+                                (PrivilegedExceptionAction) () -> Thread.currentThread().getContextClassLoader());
+                        return ResourceBundle.getBundle(bundleName, locale, cl);
 
                     }
                     else
                     {
-                        return ResourceBundle.getBundle(bundleName,locale,
+                        return ResourceBundle.getBundle(bundleName, locale,
                                                         Thread.currentThread().getContextClassLoader());
                     }                   
                 }

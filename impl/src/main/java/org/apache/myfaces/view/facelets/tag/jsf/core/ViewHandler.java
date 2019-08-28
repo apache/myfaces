@@ -35,7 +35,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
@@ -156,20 +156,24 @@ public final class ViewHandler extends TagHandler
                 ctx.getFacesContext().getAttributes().put(FaceletViewDeclarationLanguage.PARAM_ENCODING,
                         encodingValue);
             }
+            
             if (this.beforePhase != null)
             {
                 MethodExpression m = this.beforePhase.getMethodExpression(ctx, null, LISTENER_SIG);
                 root.setBeforePhaseListener(m);
             }
+            
             if (this.afterPhase != null)
             {
                 MethodExpression m = this.afterPhase.getMethodExpression(ctx, null, LISTENER_SIG);
                 root.setAfterPhaseListener(m);
             }
+            
             if (this.transientAttribute != null)
             {
                 root.setTransient(this.transientAttribute.getBoolean(ctx));
             }
+            
             if (this.contracts != null)
             {
                 String contractsValue = this.contracts.getValue(ctx);
@@ -182,6 +186,7 @@ public final class ViewHandler extends TagHandler
                     }
                 }
             }
+            
             if (this.oamEnableViewPool != null)
             {
                 root.getAttributes().put("oamEnableViewPool", this.oamEnableViewPool.getBoolean(ctx));

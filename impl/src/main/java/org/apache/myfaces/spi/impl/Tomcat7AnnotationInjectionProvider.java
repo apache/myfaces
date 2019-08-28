@@ -19,14 +19,13 @@
 package org.apache.myfaces.spi.impl;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.WeakHashMap;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.naming.NamingException;
 
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderException;
 import org.apache.myfaces.util.ExternalSpecifications;
@@ -99,8 +98,7 @@ public class Tomcat7AnnotationInjectionProvider extends InjectionProvider
     {
         try
         {
-            Class c = Class.forName("org.apache.tomcat.InstanceManager",
-                    true, ClassUtils.getContextClassLoader());
+            Class c = ClassUtils.classForName("org.apache.tomcat.InstanceManager");
             if (c != null)
             {
                 // Tomcat 7 Available, check CDI integration. If there is no CDI available,
@@ -111,32 +109,7 @@ public class Tomcat7AnnotationInjectionProvider extends InjectionProvider
                 FacesContext facesContext = FacesContext.getCurrentInstance();
                 if (ExternalSpecifications.isCDIAvailable(facesContext.getExternalContext()))
                 {
-                    
-                    ExternalContext extCtx = facesContext.getExternalContext();
-                    Map<String, Object> applicationMap = extCtx.getApplicationMap();
-                    InstanceManager instanceManager = (InstanceManager)
-                            applicationMap.get(InstanceManager.class.getName());                    
-                    
-                    Class clazz = ClassUtils.classForName(
-                        "org.apache.myfaces.cdi.checkenv.DummyInjectableBean");
-                    Object dummyInjectableBean = clazz.newInstance();
- 
-                    instanceManager.newInstance(dummyInjectableBean);
-                    
-                    Method m = clazz.getDeclaredMethod("isDummyBeanInjected");
-                    Object value = m.invoke(dummyInjectableBean);
-                    if (Boolean.TRUE.equals(value))
-                    {
-                        // Bean is injectable. We can use this approach.
-                        return true;
-                    }
-                    else
-                    {
-                        // Bean is not injectable with this method. We should try to 
-                        // inject using CDI Injection Provider. Theorically CDI 
-                        // has a similar code to integrate with the underlying web server.
-                        return false;
-                    }
+                    return false;
                 }
             }
             return true;

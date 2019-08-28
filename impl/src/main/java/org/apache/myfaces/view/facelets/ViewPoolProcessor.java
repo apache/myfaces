@@ -107,14 +107,14 @@ public class ViewPoolProcessor
     /**
      * Indicates no reset should be done on this state saving
      */
-    public static final int RESET_MODE_OFF = 0;
+    public static final Integer RESET_MODE_OFF = 0;
     
     /**
      * Indicates a soft reset should be done when saveState(...) is performed,
      * which means all transient state should be cleared but the delta state 
      * should not be destroyed in the process.
      */
-    public static final int RESET_MODE_SOFT = 1;
+    public static final Integer RESET_MODE_SOFT = 1;
     
     /**
      * Indicates a hard reset should be done when saveState(...) is performed,
@@ -124,7 +124,7 @@ public class ViewPoolProcessor
      * from the tree and mark the tree as partial (requires refresh before
      * reuse).
      */
-    public static final int RESET_MODE_HARD = 2;
+    public static final Integer RESET_MODE_HARD = 2;
     
     /**
      * Param used to indicate a "deferred navigation" needs to be done. To allow the view pool to
@@ -190,7 +190,7 @@ public class ViewPoolProcessor
                 initialize = false;
             }
             
-            if (MyfacesConfig.getCurrentInstance(context).isStrictJsf2FaceletsCompatibility())
+            if (myfacesConfig.isStrictJsf2FaceletsCompatibility())
             {
                 Logger.getLogger(ViewPoolProcessor.class.getName()).log(
                     Level.INFO, MyfacesConfig.STRICT_JSF_2_FACELETS_COMPATIBILITY +
@@ -217,6 +217,7 @@ public class ViewPoolProcessor
             // state saving algorithm for that.
             return null;
         }
+
         Boolean enableViewPool = (Boolean) root.getAttributes().get(ViewPoolProcessor.ENABLE_VIEW_POOL);
         if (enableViewPool != null && !Boolean.TRUE.equals(enableViewPool))
         {
@@ -237,26 +238,19 @@ public class ViewPoolProcessor
             // state saving algorithm for that.
             return false;
         }
+
         Boolean enableViewPool = (Boolean) root.getAttributes().get(ViewPoolProcessor.ENABLE_VIEW_POOL);
         if (enableViewPool != null)
         {
-            if (Boolean.TRUE.equals(enableViewPool))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return enableViewPool;
         }
-        else
+
+        ViewPool viewPool = getViewPool(context, root);
+        if (viewPool != null)
         {
-            ViewPool viewPool = getViewPool(context, root);
-            if (viewPool != null)
-            {
-                return true;
-            }
+            return true;
         }
+
         return false;
     }
 
@@ -343,7 +337,7 @@ public class ViewPoolProcessor
         {
             if (oldView.getFacetCount() > 0)
             {
-                List<String> facetKeys = new ArrayList<String>(oldView.getFacets().keySet());
+                List<String> facetKeys = new ArrayList<>(oldView.getFacets().keySet());
 
                 for (String facetKey : facetKeys)
                 {
@@ -515,7 +509,7 @@ public class ViewPoolProcessor
                 // add partial structure view to the map.
                 clearTransientAndRemoveNonResetableComponents(context, ptc, view, viewStructureMetadata);
                 int reusableCount = ptc.getCount();
-                float factor = ((float)reusableCount) / ((float)count);
+                float factor = ((float) reusableCount) / ((float) count);
                 if (factor > 0.3f)
                 {
                     viewPool.pushPartialStructureView(context, view);
@@ -847,7 +841,7 @@ public class ViewPoolProcessor
             {
                 UIComponent child = component.getChildren().get(i);
                 boolean containsFaceletId = child.getAttributes().containsKey(ComponentSupport.MARK_CREATED);
-                if (child != null && child.isTransient() && !containsFaceletId)
+                if (child.isTransient() && !containsFaceletId)
                 {
                     //Transient and not bound to facelets tag, remove it!.
                     component.getChildren().remove(i);
@@ -913,7 +907,7 @@ public class ViewPoolProcessor
             {
                 UIComponent fc = itr.next();
                 boolean containsFaceletId = fc.getAttributes().containsKey(ComponentSupport.MARK_CREATED);
-                if (fc != null && fc.isTransient() && !containsFaceletId)
+                if (fc.isTransient() && !containsFaceletId)
                 {
                     //Transient and not bound to facelets tag, remove it!.
                     itr.remove();

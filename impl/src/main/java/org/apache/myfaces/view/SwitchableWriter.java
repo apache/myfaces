@@ -109,8 +109,8 @@ class SwitchableWriter extends Writer
         return this;
     }
 
-    public Writer append(CharSequence csq, int start, int end)
-            throws IOException
+    @Override
+    public Writer append(CharSequence csq, int start, int end) throws IOException
     {
         if (_responseSwitch.isEnabled())
         {
@@ -119,6 +119,7 @@ class SwitchableWriter extends Writer
         return this;
     }
 
+    @Override
     public Writer append(CharSequence csq) throws IOException
     {
         if (_responseSwitch.isEnabled())

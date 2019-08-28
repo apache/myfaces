@@ -19,6 +19,7 @@
 package javax.faces.convert;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -52,10 +53,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
     name="binding", 
     returnType = "javax.faces.convert.NumberConverter",
     longDesc = "A ValueExpression that evaluates to a NumberConverter.")
-public class NumberConverter
-        implements Converter, PartialStateHolder
+public class NumberConverter implements Converter, PartialStateHolder
 {
-    // API FIELDS
     public static final String CONVERTER_ID = "javax.faces.Number";
     public static final String STRING_ID = "javax.faces.converter.STRING";
     public static final String CURRENCY_ID = "javax.faces.converter.NumberConverter.CURRENCY";
@@ -81,133 +80,142 @@ public class NumberConverter
     private boolean _minFractionDigitsSet;
     private boolean _minIntegerDigitsSet;
 
-
-    // CONSTRUCTORS
     public NumberConverter()
     {
     }
 
-    // METHODS
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
     {
-        if (facesContext == null)
+        if (facesContext == null || uiComponent == null)
         {
-            throw new NullPointerException("facesContext");
-        }
-        if (uiComponent == null)
-        {
-            throw new NullPointerException("uiComponent");
+            throw new NullPointerException(); // should never happen
         }
 
-        if (value != null)
+        if (value == null)
         {
-            value = value.trim();
-            if (value.length() > 0)
+            return null;
+        }
+        
+        value = value.trim();
+        if (value.length() < 1)
+        {
+            return null;
+        }
+        
+        NumberFormat format = getNumberFormat(facesContext);
+        format.setParseIntegerOnly(_integerOnly);
+
+        DecimalFormat df = (DecimalFormat)format;
+
+        // The best we can do in this case is check if there is a ValueExpression
+        // with a BigDecimal as returning type , and if that so enable BigDecimal parsing
+        // to prevent loss in precision, and do not break existing examples (since
+        // in those cases it is expected to return Double). See MYFACES-1890 and TRINIDAD-1124
+        // for details
+        ValueExpression valueExpression = uiComponent.getValueExpression("value");
+        Class<?> destType = null;
+        if (valueExpression != null)
+        {
+            destType = valueExpression.getType(facesContext.getELContext());
+            if (destType != null
+                && (BigDecimal.class.isAssignableFrom(destType) || BigInteger.class.isAssignableFrom(destType)))
             {
-                NumberFormat format = getNumberFormat(facesContext);
-                format.setParseIntegerOnly(_integerOnly);
-                
-                DecimalFormat df = (DecimalFormat)format;
-                
-                // The best we can do in this case is check if there is a ValueExpression
-                // with a BigDecimal as returning type , and if that so enable BigDecimal parsing
-                // to prevent loss in precision, and do not break existing examples (since
-                // in those cases it is expected to return Double). See MYFACES-1890 and TRINIDAD-1124
-                // for details
-                ValueExpression valueExpression = uiComponent.getValueExpression("value");
-                if (valueExpression != null)
-                {
-                    Class<?> destType = valueExpression.getType(facesContext.getELContext());
-                    if (destType != null && BigDecimal.class.isAssignableFrom(destType))
-                    {
-                        df.setParseBigDecimal(true);
-                    }
-                }
-                
-                DecimalFormatSymbols dfs = df.getDecimalFormatSymbols();
-                boolean changed = false;
-                if(dfs.getGroupingSeparator() == '\u00a0')
-                {
-                  dfs.setGroupingSeparator(' ');
-                  df.setDecimalFormatSymbols(dfs);
-                  value = value.replace('\u00a0', ' ');
-                  changed = true;
-                }
-                
-                formatCurrency(format);
-                
-                try
-                {
-                    return format.parse(value);
-                }
-                catch (ParseException e)
-                {
-                  if(changed)
-                  {
-                    dfs.setGroupingSeparator('\u00a0');
-                    df.setDecimalFormatSymbols(dfs);
-                  }
-                  try
-                  {
-                    return format.parse(value);
-                  }
-                  catch (ParseException pe)
-                  {
+                df.setParseBigDecimal(true);
+            }
+        }
 
-                    if(getPattern() != null)
-                    {
-                        throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                PATTERN_ID,
-                                new Object[]{value, "$###,###", _MessageUtils.getLabel(facesContext, uiComponent)}));
-                    }
-                    else if(getType().equals("number"))
-                    {
-                        throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                NUMBER_ID,
-                                new Object[]{value, format.format(21),
-                                             _MessageUtils.getLabel(facesContext, uiComponent)}));
-                    }
-                    else if(getType().equals("currency"))
-                    {
-                        throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                CURRENCY_ID,
-                                new Object[]{value, format.format(42.25),
-                                             _MessageUtils.getLabel(facesContext, uiComponent)}));
-                    }
-                    else if(getType().equals("percent"))
-                    {
-                        throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                PERCENT_ID,
-                                new Object[]{value, format.format(.90),
-                                             _MessageUtils.getLabel(facesContext, uiComponent)}));
-                    }
-                  }
+        DecimalFormatSymbols dfs = df.getDecimalFormatSymbols();
+        boolean changed = false;
+        if(dfs.getGroupingSeparator() == '\u00a0')
+        {
+            dfs.setGroupingSeparator(' ');
+            df.setDecimalFormatSymbols(dfs);
+            value = value.replace('\u00a0', ' ');
+            changed = true;
+        }
+
+        formatCurrency(format);
+
+        try
+        {
+            return parse(value, format, destType);
+        }
+        catch (ParseException e)
+        {
+            if(changed)
+            {
+                dfs.setGroupingSeparator('\u00a0');
+                df.setDecimalFormatSymbols(dfs);
+            }
+            try
+            {
+                return parse(value, format, destType);
+            }
+            catch (ParseException pe)
+            {
+                if(getPattern() != null)
+                {
+                    throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
+                            PATTERN_ID,
+                            new Object[]{value, "$###,###", _MessageUtils.getLabel(facesContext, uiComponent)}));
+                }
+                else if(getType().equals("number"))
+                {
+                    throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
+                            NUMBER_ID,
+                            new Object[]{value, format.format(21),
+                                         _MessageUtils.getLabel(facesContext, uiComponent)}));
+                }
+                else if(getType().equals("currency"))
+                {
+                    throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
+                            CURRENCY_ID,
+                            new Object[]{value, format.format(42.25),
+                                         _MessageUtils.getLabel(facesContext, uiComponent)}));
+                }
+                else if(getType().equals("percent"))
+                {
+                    throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
+                            PERCENT_ID,
+                            new Object[]{value, format.format(.90),
+                                         _MessageUtils.getLabel(facesContext, uiComponent)}));
                 }
             }
         }
+        
         return null;
+    }
+
+    private Object parse(String value, NumberFormat format, Class<?> destType)
+        throws ParseException
+    {
+        if (destType == BigInteger.class)
+        {
+            return ((BigDecimal) format.parse(value)).toBigInteger();
+        }
+        else
+        {
+            return format.parse(value);
+        }
     }
 
     @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
     {
-        if (facesContext == null)
+        if (facesContext == null || uiComponent == null)
         {
-            throw new NullPointerException("facesContext");
-        }
-        if (uiComponent == null)
-        {
-            throw new NullPointerException("uiComponent");
+            throw new NullPointerException(); // should never happen
         }
 
         if (value == null)
         {
             return "";
         }
+
         if (value instanceof String)
         {
-            return (String)value;
+            return (String) value;
         }
 
         NumberFormat format = getNumberFormat(facesContext);
@@ -308,26 +316,26 @@ public class NumberConverter
     {
         if (state != null)
         {
-            Object values[] = (Object[])state;
-            _currencyCode = (String)values[0];
-            _currencySymbol = (String)values[1];
-            _locale = (Locale)values[2];
-            Integer value = (Integer)values[3];
-            _maxFractionDigits = value != null ? value.intValue() : 0;
-            value = (Integer)values[4];
-            _maxIntegerDigits = value != null ? value.intValue() : 0;
-            value = (Integer)values[5];
-            _minFractionDigits = value != null ? value.intValue() : 0;
-            value = (Integer)values[6];
-            _minIntegerDigits = value != null ? value.intValue() : 0;
-            _pattern = (String)values[7];
-            _type = (String)values[8];
-            _groupingUsed = ((Boolean)values[9]).booleanValue();
-            _integerOnly = ((Boolean)values[10]).booleanValue();
-            _maxFractionDigitsSet = ((Boolean)values[11]).booleanValue();
-            _maxIntegerDigitsSet = ((Boolean)values[12]).booleanValue();
-            _minFractionDigitsSet = ((Boolean)values[13]).booleanValue();
-            _minIntegerDigitsSet = ((Boolean)values[14]).booleanValue();
+            Object values[] = (Object[]) state;
+            _currencyCode = (String) values[0];
+            _currencySymbol = (String) values[1];
+            _locale = (Locale) values[2];
+            Integer value = (Integer) values[3];
+            _maxFractionDigits = value != null ? value : 0;
+            value = (Integer) values[4];
+            _maxIntegerDigits = value != null ? value : 0;
+            value = (Integer) values[5];
+            _minFractionDigits = value != null ? value : 0;
+            value = (Integer) values[6];
+            _minIntegerDigits = value != null ? value : 0;
+            _pattern = (String) values[7];
+            _type = (String) values[8];
+            _groupingUsed = (Boolean) values[9];
+            _integerOnly = (Boolean) values[10];
+            _maxFractionDigitsSet = (Boolean) values[11];
+            _maxIntegerDigitsSet = (Boolean) values[12];
+            _minFractionDigitsSet = (Boolean) values[13];
+            _minIntegerDigitsSet = (Boolean) values[14];
         }
     }
 

@@ -19,7 +19,7 @@
 package org.apache.myfaces.spi.impl;
 
 import org.apache.myfaces.config.annotation.DefaultAnnotationProvider;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
@@ -74,19 +74,8 @@ public class DefaultAnnotationProviderFactory extends AnnotationProviderFactory
         {
             if (System.getSecurityManager() != null)
             {
-                returnValue = AccessController.doPrivileged(new PrivilegedExceptionAction<AnnotationProvider>()
-                        {
-                            @Override
-                            public AnnotationProvider run() throws ClassNotFoundException,
-                                    NoClassDefFoundError,
-                                    InstantiationException,
-                                    IllegalAccessException,
-                                    InvocationTargetException,
-                                    PrivilegedActionException
-                            {
-                                return resolveAnnotationProviderFromService(extContext);
-                            }
-                        });
+                returnValue = (AnnotationProvider) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> resolveAnnotationProviderFromService(extContext));
             }
             else
             {

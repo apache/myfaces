@@ -73,8 +73,8 @@ if (!myfaces._impl.core._Runtime) {
          * @name myfaces._impl.core._Runtime.globalEval
          * @function
          */
-        _T.globalEval = function(code) {
-            return myfaces._impl.core._EvalHandlers.globalEval(code);
+        _T.globalEval = function(code, cspMeta) {
+            return myfaces._impl.core._EvalHandlers.globalEval(code, cspMeta);
         };
 
         /**
@@ -391,9 +391,10 @@ if (!myfaces._impl.core._Runtime) {
          * @param {Boolean} defer  defer true or false, same as the javascript tag defer param
          * @param {String} charSet the charset under which the script has to be loaded
          * @param {Boolean} async tells whether the script can be asynchronously loaded or not, currently
+         * @param cspMetas csp meta data to be processed by globalEval
          * not used
          */
-        this.loadScriptEval = function(src, type, defer, charSet, async) {
+        this.loadScriptEval = function(src, type, defer, charSet, async, cspMeta) {
             var xhr = _T.getXHRObject();
             xhr.open("GET", src, false);
 
@@ -415,12 +416,12 @@ if (!myfaces._impl.core._Runtime) {
                         //we moved the sourceurl notation to # instead of @ because ie does not cover it correctly
                         //newer browsers understand # including ie since windows 8.1
                         //see http://updates.html5rocks.com/2013/06/sourceMappingURL-and-sourceURL-syntax-changed
-                        _T.globalEval(xhr.responseText.replace("\n", "\r\n") + "\r\n//# sourceURL=" + src);
+                        _T.globalEval(xhr.responseText.replace("\n", "\r\n") + "\r\n//# sourceURL=" + src, cspMeta);
                     } else {
                         //TODO not ideal we maybe ought to move to something else here
                         //but since it is not in use yet, it is ok
                         setTimeout(function() {
-                            _T.globalEval(xhr.responseText.replace("\n", "\r\n") + "\r\n//# sourceURL=" + src);
+                            _T.globalEval(xhr.responseText.replace("\n", "\r\n") + "\r\n//# sourceURL=" + src, cspMeta);
                         }, 1);
                     }
                 } else {
@@ -441,7 +442,7 @@ if (!myfaces._impl.core._Runtime) {
          * @param {Boolean} defer  defer true or false, same as the javascript tag defer param
          * @param {String} charSet the charset under which the script has to be loaded
          */
-        this.loadScriptByBrowser = function(src, type, defer, charSet, async) {
+        this.loadScriptByBrowser = function(src, type, defer, charSet, async, cspMeta) {
             //if a head is already present then it is safer to simply
             //use the body, some browsers prevent head alterations
             //after the first initial rendering
@@ -461,6 +462,9 @@ if (!myfaces._impl.core._Runtime) {
 
                 script.type = type || "text/javascript";
                 script.src = src;
+                if(cspMeta && cspMeta.nonce) {
+                    script.setAttribute("nonce", cspMeta.nonce);
+                }
                 if (charSet) {
                     script.charset = charSet;
                 }

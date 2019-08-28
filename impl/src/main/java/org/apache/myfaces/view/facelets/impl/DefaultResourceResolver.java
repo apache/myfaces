@@ -25,10 +25,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.ResourceResolver;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 
-
 public class DefaultResourceResolver extends ResourceResolver
 {
-
     public DefaultResourceResolver()
     {
         super();
@@ -44,16 +42,13 @@ public class DefaultResourceResolver extends ResourceResolver
     {
         ViewResource resource = facesContext.getApplication().
             getResourceHandler().createViewResource(facesContext, path);
-        //return resource == null ? null : resource.getURL();
         if (resource != null)
         {
             facesContext.getAttributes().put(FaceletFactory.LAST_RESOURCE_RESOLVED, resource);
             return resource.getURL();
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
     @Override

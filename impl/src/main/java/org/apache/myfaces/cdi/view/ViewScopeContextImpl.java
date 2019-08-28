@@ -31,9 +31,8 @@ import javax.enterprise.inject.spi.PassivationCapable;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 
-import org.apache.myfaces.cdi.util.BeanProvider;
+import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.view.ViewScopeProxyMap;
 
 /**
@@ -49,16 +48,13 @@ public class ViewScopeContextImpl implements Context
      * needed for serialisation and passivationId
      */
     private BeanManager beanManager;
+    
+    private boolean passivatingScope;
 
     public ViewScopeContextImpl(BeanManager beanManager)
     {
         this.beanManager = beanManager;
-    }
-
-    // SPI
-    protected BeanManager getBeanManager()
-    {
-        return beanManager;
+        this.passivatingScope = beanManager.isPassivatingScope(getScope());
     }
 
     protected ViewScopeBeanHolder getViewScopeBeanHolder()
@@ -68,21 +64,13 @@ public class ViewScopeContextImpl implements Context
     
     protected ViewScopeBeanHolder getViewScopeBeanHolder(FacesContext facesContext)
     {
-        ViewScopeBeanHolder viewScopeBeanHolder = (ViewScopeBeanHolder) 
-            facesContext.getExternalContext().getApplicationMap().get(
-                "oam.view.ViewScopeBeanHolder");
-        if (viewScopeBeanHolder == null)
-        {
-            viewScopeBeanHolder = BeanProvider.getContextualReference(
-                getBeanManager(), ViewScopeBeanHolder.class, false);
-            facesContext.getExternalContext().getApplicationMap().put(
-                "oam.view.ViewScopeBeanHolder", viewScopeBeanHolder);
-        }
-        return viewScopeBeanHolder;
+        return (ViewScopeBeanHolder)facesContext.getExternalContext().getApplicationMap().computeIfAbsent(
+                "oam.view.ViewScopeBeanHolder",
+                k -> CDIUtils.get(beanManager, ViewScopeBeanHolder.class));
     }
 
     public String getCurrentViewScopeId(boolean create)
-    {
+    {        
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ViewScopeProxyMap map = (ViewScopeProxyMap) facesContext.getViewRoot().getViewMap(create);
         if (map != null)
@@ -109,7 +97,7 @@ public class ViewScopeContextImpl implements Context
         }
         if (viewScopeId != null)
         {
-            return getViewScopeBeanHolder().getContextualStorage(getBeanManager(), viewScopeId);
+            return getViewScopeBeanHolder().getContextualStorage(beanManager, viewScopeId);
         }
         return null;
     }
@@ -144,6 +132,9 @@ public class ViewScopeContextImpl implements Context
     {
         checkActive();
 
+        // force session creation if ViewScoped is used
+        FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        
         ViewScopeContextualStorage storage = getContextualStorage(false);
         if (storage == null)
         {
@@ -165,12 +156,15 @@ public class ViewScopeContextImpl implements Context
     {
         checkActive();
 
-        if (!(bean instanceof PassivationCapable) && MyfacesConfig.getCurrentInstance().isCdiPassivationSupported())
+        if (passivatingScope && !(bean instanceof PassivationCapable))
         {
             throw new IllegalStateException(bean.toString() +
                     " doesn't implement " + PassivationCapable.class.getName());
         }
 
+        // force session creation if ViewScoped is used
+        FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        
         ViewScopeContextualStorage storage = getContextualStorage(true);
 
         Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();

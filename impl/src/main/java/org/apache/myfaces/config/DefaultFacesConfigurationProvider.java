@@ -22,7 +22,7 @@ import java.io.FileNotFoundException;
 import org.apache.myfaces.config.annotation.AnnotationConfigurator;
 import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
 import org.apache.myfaces.spi.FacesConfigurationProvider;
@@ -63,11 +63,11 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.myfaces.config.element.FacesFlowDefinition;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
-import org.apache.myfaces.config.impl.elements.FacesConfigImpl;
-import org.apache.myfaces.config.impl.elements.FacesFlowDefinitionImpl;
-import org.apache.myfaces.config.impl.elements.FacesFlowReturnImpl;
-import org.apache.myfaces.config.impl.elements.NavigationCaseImpl;
-import org.apache.myfaces.util.FastWriter;
+import org.apache.myfaces.config.impl.element.FacesConfigImpl;
+import org.apache.myfaces.config.impl.element.FacesFlowDefinitionImpl;
+import org.apache.myfaces.config.impl.element.FacesFlowReturnImpl;
+import org.apache.myfaces.config.impl.element.NavigationCaseImpl;
+import org.apache.myfaces.util.lang.FastWriter;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.FaceletConfigResourceProvider;
 import org.apache.myfaces.spi.FaceletConfigResourceProviderFactory;
@@ -194,10 +194,10 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     {
         try
         {
-            org.apache.myfaces.config.impl.elements.FacesConfigImpl facesConfig
-                    = new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
-            org.apache.myfaces.config.impl.elements.FactoryImpl factory
-                    = new org.apache.myfaces.config.impl.elements.FactoryImpl();
+            org.apache.myfaces.config.impl.element.FacesConfigImpl facesConfig
+                    = new org.apache.myfaces.config.impl.element.FacesConfigImpl();
+            org.apache.myfaces.config.impl.element.FactoryImpl factory
+                    = new org.apache.myfaces.config.impl.element.FactoryImpl();
             
             facesConfig.addFactory(factory);
             
@@ -764,8 +764,8 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     FaceletTagLibrary tl = TagLibraryConfigUnmarshallerImpl.create(externalContext, src);
                     if (tl != null)
                     {
-                        org.apache.myfaces.config.impl.elements.FacesConfigImpl config = 
-                            new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
+                        org.apache.myfaces.config.impl.element.FacesConfigImpl config = 
+                            new org.apache.myfaces.config.impl.element.FacesConfigImpl();
                         config.addFaceletTagLibrary(tl);
                         facesConfigFilesList.add(config);
                     }
@@ -794,8 +794,8 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     FaceletTagLibrary tl = TagLibraryConfigUnmarshallerImpl.create(externalContext, url);
                     if (tl != null)
                     {
-                        org.apache.myfaces.config.impl.elements.FacesConfigImpl config = 
-                            new org.apache.myfaces.config.impl.elements.FacesConfigImpl();
+                        org.apache.myfaces.config.impl.element.FacesConfigImpl config = 
+                            new org.apache.myfaces.config.impl.element.FacesConfigImpl();
                         config.addFaceletTagLibrary(tl);
                         facesConfigFilesList.add(config);
                     }

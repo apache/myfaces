@@ -51,18 +51,12 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
     private volatile ViewDeclarationLanguageStrategy[] _supportedLanguages;
     
     private volatile List<ViewDeclarationLanguage> _supportedVDLs = null;
-    
-    /**
-     * 
-     */
+
     public ViewDeclarationLanguageFactoryImpl()
     {
         _initialized = false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ViewDeclarationLanguage getViewDeclarationLanguage(String viewId)
     {

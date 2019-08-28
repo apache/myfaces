@@ -1,12 +1,9 @@
 org.apache.myfaces.cdi.FacesScopeExtension
 org.apache.myfaces.cdi.JsfArtifactProducerExtension
 org.apache.myfaces.cdi.JsfApplicationArtifactHolderExtension
-org.apache.myfaces.cdi.behavior.FacesBehaviorExtension
 org.apache.myfaces.cdi.config.FacesConfigExtension
-org.apache.myfaces.cdi.converter.FacesConverterExtension
 org.apache.myfaces.cdi.managedproperty.ManagedPropertyExtension
 org.apache.myfaces.cdi.model.FacesDataModelExtension
-org.apache.myfaces.cdi.validator.FacesValidatorExtension
 org.apache.myfaces.cdi.view.ViewScopeExtension
 org.apache.myfaces.cdi.view.ViewTransientScopeExtension
 org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension

@@ -164,8 +164,7 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
         // occur are literal or null. Otherwise we need to create it.
         // Note that only if ProjectStage is Development, The "displayName",
         // "shortDescription", "expert", "hidden", and "preferred" attributes are exposed
-        final boolean development = FacesContext.getCurrentInstance()
-                .isProjectStage(ProjectStage.Development);
+        final boolean development = FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development);
         
         if (_name.isLiteral() 
                 && (!development || _areDevelopmentAttributesLiteral()))

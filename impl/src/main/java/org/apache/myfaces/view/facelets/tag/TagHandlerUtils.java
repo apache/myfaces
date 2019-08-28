@@ -48,7 +48,7 @@ public final class TagHandlerUtils
     {
         if (type.isAssignableFrom(nextHandler.getClass()))
         {
-            return (T)nextHandler;
+            return (T) nextHandler;
         }
         else if (nextHandler instanceof javax.faces.view.facelets.CompositeFaceletHandler)
         {
@@ -57,7 +57,7 @@ public final class TagHandlerUtils
             {
                 if (type.isAssignableFrom(handler.getClass()))
                 {
-                    return (T)handler;
+                    return (T) handler;
                 }
             }
         }
@@ -74,10 +74,10 @@ public final class TagHandlerUtils
     @SuppressWarnings("unchecked")
     public static <T> ArrayList<T> findNextByType(FaceletHandler nextHandler, Class<T> type)
     {
-        ArrayList<T> found = new ArrayList<T>();
+        ArrayList<T> found = new ArrayList<>();
         if (type.isAssignableFrom(nextHandler.getClass()))
         {
-            found.add((T)nextHandler);
+            found.add((T) nextHandler);
         }
         else if (nextHandler instanceof javax.faces.view.facelets.CompositeFaceletHandler)
         {
@@ -86,7 +86,7 @@ public final class TagHandlerUtils
             {
                 if (type.isAssignableFrom(handler.getClass()))
                 {
-                    found.add((T)handler);
+                    found.add((T) handler);
                 }
             }
         }
@@ -101,7 +101,7 @@ public final class TagHandlerUtils
 
     public static ArrayList<FaceletHandler> findNextByType(FaceletHandler nextHandler, Class<?> ... type1)
     {
-        ArrayList<FaceletHandler> found = new ArrayList<FaceletHandler>();
+        ArrayList<FaceletHandler> found = new ArrayList<>();
         boolean isAssignable = false;
         for (int i = 0; i < type1.length && !isAssignable; i++)
         {
@@ -109,12 +109,12 @@ public final class TagHandlerUtils
         }
         if (isAssignable)
         {
-            found.add((FaceletHandler)nextHandler);
+            found.add((FaceletHandler) nextHandler);
         }
         else if (nextHandler instanceof javax.faces.view.facelets.CompositeFaceletHandler)
         {
             for (FaceletHandler handler :
-                    ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
+                    ((javax.faces.view.facelets.CompositeFaceletHandler) nextHandler).getHandlers())
             {
                 isAssignable = false;
                 for (int i = 0; i < type1.length && !isAssignable; i++)
@@ -133,10 +133,10 @@ public final class TagHandlerUtils
 
     public static ArrayList<FaceletHandler> findNextByType(FaceletHandler nextHandler, Class<?> type1, Class<?> type2)
     {
-        ArrayList<FaceletHandler> found = new ArrayList<FaceletHandler>();
+        ArrayList<FaceletHandler> found = new ArrayList<>();
         if (type1.isAssignableFrom(nextHandler.getClass()) || type2.isAssignableFrom(nextHandler.getClass()))
         {
-            found.add((FaceletHandler)nextHandler);
+            found.add((FaceletHandler) nextHandler);
         }
         else if (nextHandler instanceof javax.faces.view.facelets.CompositeFaceletHandler)
         {
@@ -145,7 +145,7 @@ public final class TagHandlerUtils
             {
                 if (type1.isAssignableFrom(handler.getClass()) || type2.isAssignableFrom(handler.getClass()))
                 {
-                    found.add((FaceletHandler)handler);
+                    found.add((FaceletHandler) handler);
                 }
             }
         }

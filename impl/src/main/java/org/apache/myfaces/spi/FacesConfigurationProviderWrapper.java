@@ -43,47 +43,56 @@ public abstract class FacesConfigurationProviderWrapper
 
     }
 
+    @Override
     public FacesConfig getStandardFacesConfig(ExternalContext ectx)
     {
         return getWrapped().getStandardFacesConfig(ectx);
     }
 
+    @Override
     public FacesConfig getMetaInfServicesFacesConfig(ExternalContext ectx)
     {
         return getWrapped().getMetaInfServicesFacesConfig(ectx);
     }
 
+    @Override
     public FacesConfig getAnnotationsFacesConfig(ExternalContext ectx,
             boolean metadataComplete)
     {
         return getWrapped().getAnnotationsFacesConfig(ectx, metadataComplete);
     }
 
+    @Override
     public List<FacesConfig> getClassloaderFacesConfig(ExternalContext ectx)
     {
         return getWrapped().getClassloaderFacesConfig(ectx);
     }
 
+    @Override
     public List<FacesConfig> getContextSpecifiedFacesConfig(ExternalContext ectx)
     {
         return getWrapped().getContextSpecifiedFacesConfig(ectx);
     }
 
+    @Override
     public FacesConfig getWebAppFacesConfig(ExternalContext ectx)
     {
         return getWrapped().getWebAppFacesConfig(ectx);
     }
     
+    @Override
     public List<FacesConfig> getFacesFlowFacesConfig(ExternalContext ectx)
     {
         return getWrapped().getFacesFlowFacesConfig(ectx);
     }
     
+    @Override
     public List<FacesConfig> getApplicationConfigurationResourceDocumentPopulatorFacesConfig(ExternalContext ectx)
     {
         return getWrapped().getApplicationConfigurationResourceDocumentPopulatorFacesConfig(ectx);
     }
 
+    @Override
     public List<FacesConfig> getFaceletTaglibFacesConfig(ExternalContext ectx)
     {
         return getWrapped().getFaceletTaglibFacesConfig(ectx);

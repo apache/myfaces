@@ -38,8 +38,8 @@ import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.util.ArrayUtils;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.ArrayUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 
 /**

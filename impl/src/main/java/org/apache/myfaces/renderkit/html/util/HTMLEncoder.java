@@ -170,7 +170,7 @@ public abstract class HTMLEncoder
     /**
      * Variant of {@link #encode} where encodeNewline is false and encodeNbsp is true.
      */
-    public static void encode (Writer writer, String string) throws IOException
+    public static void encode(Writer writer, String string) throws IOException
     {
         encode(writer, string, false, true);
     }
@@ -178,7 +178,7 @@ public abstract class HTMLEncoder
     /**
      * Variant of {@link #encode} where encodeNbsp is true.
      */
-    public static void encode (Writer writer, String string, boolean encodeNewline) throws IOException
+    public static void encode(Writer writer, String string, boolean encodeNewline) throws IOException
     {
         encode(writer, string, encodeNewline, true);
     }
@@ -186,13 +186,13 @@ public abstract class HTMLEncoder
     /**
      * Variant of {@link #encode} where encodeNbsp and encodeNonLatin are true 
      */
-    public static void encode (Writer writer, String string, 
+    public static void encode(Writer writer, String string, 
             boolean encodeNewline, boolean encodeSubsequentBlanksToNbsp) throws IOException
     {
         encode(writer, string, encodeNewline, encodeSubsequentBlanksToNbsp, true);
     }
     
-    public static void encode (Writer writer, String string,
+    public static void encode(Writer writer, String string,
                                  boolean encodeNewline,
                                  boolean encodeSubsequentBlanksToNbsp,
                                  boolean encodeNonLatin) throws IOException
@@ -299,7 +299,7 @@ public abstract class HTMLEncoder
     /**
      * Variant of {@link #encode} where encodeNewline is false and encodeNbsp is true.
      */
-    public static void encode (char[] string, int offset, int length, Writer writer) throws IOException
+    public static void encode(char[] string, int offset, int length, Writer writer) throws IOException
     {
         encode(string, offset, length, false, true, writer);
     }
@@ -307,7 +307,7 @@ public abstract class HTMLEncoder
     /**
      * Variant of {@link #encode} where encodeNbsp is true.
      */
-    public static void encode (char[] string, int offset, int length, boolean encodeNewline, Writer writer)
+    public static void encode(char[] string, int offset, int length, boolean encodeNewline, Writer writer)
         throws IOException
     {
         encode(string, offset, length, encodeNewline, true, writer);
@@ -316,7 +316,7 @@ public abstract class HTMLEncoder
     /**
      * Variant of {@link #encode} where encodeNbsp and encodeNonLatin are true 
      */
-    public static void encode (char[] string, int offset, int length, boolean encodeNewline, 
+    public static void encode(char[] string, int offset, int length, boolean encodeNewline, 
             boolean encodeSubsequentBlanksToNbsp, Writer writer) throws IOException
     {
         encode(string, offset, length, encodeNewline, encodeSubsequentBlanksToNbsp, true, writer);
@@ -330,7 +330,7 @@ public abstract class HTMLEncoder
      * @param encodeSubsequentBlanksToNbsp if true subsequent blanks are converted to &amp;nbsp;'s
      * @param encodeNonLatin if true encode non-latin characters as numeric character references
      */
-    public static void encode (char[] string, int offset, int length,
+    public static void encode(char[] string, int offset, int length,
                                  boolean encodeNewline,
                                  boolean encodeSubsequentBlanksToNbsp,
                                  boolean encodeNonLatin, Writer writer) throws IOException

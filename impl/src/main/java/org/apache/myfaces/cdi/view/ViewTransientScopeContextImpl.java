@@ -43,7 +43,7 @@ public class ViewTransientScopeContextImpl implements Context
     {
         this.beanManager = beanManager;
     }
-    
+
     protected ViewTransientScopeBeanHolder getViewTransientScopeBeanHolder()
     {
         return getViewTransientScopeBeanHolder(FacesContext.getCurrentInstance());

@@ -31,7 +31,7 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 
 import org.apache.myfaces.resource.ResourceLoaderUtils;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.view.facelets.AbstractFaceletCache;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 

@@ -91,10 +91,10 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.myfaces.cdi.behavior.FacesBehaviorCDIWrapper;
-import org.apache.myfaces.cdi.behavior.FacesClientBehaviorCDIWrapper;
-import org.apache.myfaces.cdi.converter.FacesConverterCDIWrapper;
-import org.apache.myfaces.cdi.validator.FacesValidatorCDIWrapper;
+import org.apache.myfaces.cdi.wrapper.FacesBehaviorCDIWrapper;
+import org.apache.myfaces.cdi.wrapper.FacesClientBehaviorCDIWrapper;
+import org.apache.myfaces.cdi.wrapper.FacesConverterCDIWrapper;
+import org.apache.myfaces.cdi.wrapper.FacesValidatorCDIWrapper;
 import org.apache.myfaces.component.search.AllSearchKeywordResolver;
 import org.apache.myfaces.component.search.ChildSearchKeywordResolver;
 import org.apache.myfaces.component.search.CompositeComponentParentSearchKeywordResolver;
@@ -121,9 +121,9 @@ import org.apache.myfaces.el.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.flow.FlowHandlerImpl;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.ClassUtils;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.ELText;
 
@@ -399,7 +399,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            return getResourceBundle(bundleName, locale, getClassLoader());
+            return getResourceBundle(bundleName, locale, ClassUtils.getContextClassLoader());
         }
         catch (MissingResourceException e)
         {
@@ -413,11 +413,6 @@ public class ApplicationImpl extends Application
                                          + name + "': " + e.getMessage(), e1);
             }
         }
-    }
-
-    private ClassLoader getClassLoader()
-    {
-        return ClassUtils.getContextClassLoader();
     }
 
     String getBundleName(final FacesContext facesContext, final String name)
@@ -1858,7 +1853,7 @@ public class ApplicationImpl extends Application
             // Get the annotation instance from the class and obtain the values of the name, library, and 
             // target attributes.
             String name = annotation.name();
-            if (LangUtils.isNotEmpty(name))
+            if (StringUtils.isNotEmpty(name))
             {
                 name = ELText.parse(getExpressionFactory(),context.getELContext(), name)
                         .toString(context.getELContext());
@@ -1883,7 +1878,7 @@ public class ApplicationImpl extends Application
             
             // If library is the empty string, let library be null.
             String library = annotation.library();
-            if (LangUtils.isNotEmpty(library))
+            if (StringUtils.isNotEmpty(library))
             {
                 library = ELText.parse(getExpressionFactory(), context.getELContext(), library)
                         .toString(context.getELContext());
@@ -1897,7 +1892,7 @@ public class ApplicationImpl extends Application
             
             // If target is the empty string, let target be null.
             String target = annotation.target();
-            if (LangUtils.isNotEmpty(target))
+            if (StringUtils.isNotEmpty(target))
             {
                 target = ELText.parse(getExpressionFactory(),context.getELContext(), target)
                         .toString(context.getELContext());
@@ -2298,7 +2293,7 @@ public class ApplicationImpl extends Application
             // Get the annotation instance from the class and obtain the values of the name, library, and
             // target attributes.
             String name = annotation.name();
-            if (LangUtils.isNotEmpty(name))
+            if (StringUtils.isNotEmpty(name))
             {
                 name = ELText.parse(getExpressionFactory(), context.getELContext(), name)
                         .toString(context.getELContext());
@@ -2324,7 +2319,7 @@ public class ApplicationImpl extends Application
 
             // If library is the empty string, let library be null.
             String library = annotation.library();
-            if (LangUtils.isNotEmpty(library))
+            if (StringUtils.isNotEmpty(library))
             {
                 library = ELText.parse(getExpressionFactory(), context.getELContext(), library)
                         .toString(context.getELContext());
@@ -2350,7 +2345,7 @@ public class ApplicationImpl extends Application
 
             // If target is the empty string, let target be null.
             String target = annotation.target();
-            if (LangUtils.isNotEmpty(target))
+            if (StringUtils.isNotEmpty(target))
             {
                 target = ELText.parse(getExpressionFactory(), context.getELContext(), target)
                         .toString(context.getELContext());
@@ -2512,7 +2507,7 @@ public class ApplicationImpl extends Application
                  * 
                  * Registrations found:
                  */
-                _lstSystemEventListener = new CopyOnWriteArrayList<SystemEventListener>();
+                _lstSystemEventListener = new CopyOnWriteArrayList<>();
             }
 
             return _lstSystemEventListener;
@@ -2522,22 +2517,15 @@ public class ApplicationImpl extends Application
         {
             if (_sourceClassMap == null)
             {
-                _sourceClassMap = new ConcurrentHashMap<Class<?>, List<SystemEventListener>>();
+                _sourceClassMap = new ConcurrentHashMap<>();
             }
 
-            List<SystemEventListener> list = _sourceClassMap.get(sourceClass);
-            if (list == null)
-            {
-                /*
-                 * TODO: Check if modification occurs often or not, might have to use a synchronized list instead.
-                 * 
-                 * Registrations found:
-                 */
-                list = new CopyOnWriteArrayList<SystemEventListener>();
-                _sourceClassMap.put(sourceClass, list);
-            }
-
-            return list;
+            /*
+             * TODO: Check if modification occurs often or not, might have to use a synchronized list instead.
+             * 
+             * Registrations found:
+             */
+            return _sourceClassMap.computeIfAbsent(sourceClass, k -> new CopyOnWriteArrayList<>());
         }
     }
     

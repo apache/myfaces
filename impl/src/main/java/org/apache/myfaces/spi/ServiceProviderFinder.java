@@ -76,8 +76,6 @@ public abstract class ServiceProviderFinder
         "org.apache.myfaces.spi.ViewScopeProviderFactory",
         "org.apache.myfaces.spi.WebConfigProvider",
         "org.apache.myfaces.spi.WebConfigProviderFactory",
-        "org.apache.myfaces.config.annotation.LifecycleProvider",
-        "org.apache.myfaces.config.annotation.LifecycleProviderFactory",
     };
     
     /**

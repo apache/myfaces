@@ -32,9 +32,6 @@ public abstract class ViewMetadataBase extends ViewMetadata
         _viewId = viewId;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getViewId()
     {

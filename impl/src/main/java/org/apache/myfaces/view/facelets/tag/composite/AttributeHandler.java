@@ -36,8 +36,8 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.util.ClassUtils;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 
 /**
@@ -195,8 +195,7 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
         // occur are literal or null. Otherwise we need to create it.
         // Note that only if ProjectStage is Development, The "displayName",
         // "shortDescription", "expert", "hidden", and "preferred" attributes are exposed
-        final boolean development = FacesContext.getCurrentInstance()
-                .isProjectStage(ProjectStage.Development);
+        final boolean development = FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development);
         
         if (_name.isLiteral() 
                 && (!development || _areDevelopmentAttributesLiteral()))
@@ -208,10 +207,9 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
             // targets, default, required, methodSignature, type and possible
             // unspecified attributes. This prevents the racy single-check.
             _cacheable = true;
-            if ( _targets == null && _default == null && _required == null &&
-                 _methodSignature == null && _type == null && _targetAttributeName == null &&
-                 !CompositeTagAttributeUtils.containsUnspecifiedAttributes(tag, 
-                         STANDARD_ATTRIBUTES_SORTED))
+            if ( _targets == null && _default == null && _required == null
+                    && _methodSignature == null && _type == null && _targetAttributeName == null
+                    && !CompositeTagAttributeUtils.containsUnspecifiedAttributes(tag, STANDARD_ATTRIBUTES_SORTED))
             {
                 _propertyDescriptor = _createPropertyDescriptor(development);
             }
@@ -241,7 +239,6 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
 
         CompositeComponentBeanInfo beanInfo = 
             (CompositeComponentBeanInfo) compositeBaseParent.getAttributes().get(UIComponent.BEANINFO_KEY);
-        
         if (beanInfo == null)
         {
             if (log.isLoggable(Level.SEVERE))
@@ -331,7 +328,7 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
                     Class clazz = String.class;
                     
                     String type = _type.getValue(ctx);
-                    if (LangUtils.isNotBlank(type))
+                    if (StringUtils.isNotBlank(type))
                     {
                         try
                         {

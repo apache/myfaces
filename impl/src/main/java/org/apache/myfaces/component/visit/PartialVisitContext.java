@@ -36,7 +36,7 @@ import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 
 /**
  * <p>
@@ -136,7 +136,7 @@ public class PartialVisitContext extends VisitContext
 
         // Finally, populate the clientIds collection.  This has the
         // side effect of populating all of the other collections.
-        org.apache.myfaces.util.ArrayUtils.addAll(_clientIds, clientIds);
+        org.apache.myfaces.util.lang.ArrayUtils.addAll(_clientIds, clientIds);
         //_clientIds.addAll(clientIdSet);
 
         // Copy and store hints - ensure unmodifiable and non-empty
@@ -343,13 +343,8 @@ public class PartialVisitContext extends VisitContext
                 // NamingContainer client id.  If not, create the
                 // Collection for this NamingContainer client id and
                 // stash it away in our map
-                Collection<String> c = _subtreeClientIds.get(namingContainerClientId);
-
-                if (c == null)
-                {
-                    c = new ArrayList<String>(5);
-                    _subtreeClientIds.put(namingContainerClientId, c);
-                }
+                Collection<String> c = _subtreeClientIds.computeIfAbsent(namingContainerClientId,
+                        k -> new ArrayList<>(5));
 
                 // Stash away the client id
                 c.add(clientId);

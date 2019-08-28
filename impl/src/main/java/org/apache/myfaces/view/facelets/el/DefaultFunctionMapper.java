@@ -27,8 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.el.FunctionMapper;
-import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 
 /**
@@ -67,7 +67,7 @@ public final class DefaultFunctionMapper extends FunctionMapper implements Exter
     {
         if (_functions == null)
         {
-            _functions = new HashMap<String, Function>();
+            _functions = new HashMap<>();
         }
         
         Function f = new Function(prefix, localName, m);

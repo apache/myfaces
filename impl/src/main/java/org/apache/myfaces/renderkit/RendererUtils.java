@@ -23,7 +23,6 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -51,10 +50,10 @@ import javax.faces.convert.ConverterException;
 import javax.faces.model.SelectItem;
 
 import org.apache.myfaces.util.ComponentUtils;
-import org.apache.myfaces.util.HashMapUtils;
+import org.apache.myfaces.util.lang.HashMapUtils;
 import org.apache.myfaces.renderkit.html.util.SelectItemsIterator;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 
 public final class RendererUtils
 {
@@ -90,20 +89,6 @@ public final class RendererUtils
         throw new IllegalArgumentException(
                 "Expected submitted value of type Boolean for Component : "
                         + ComponentUtils.getPathToComponent(component));
-
-    }
-
-    public static Date getDateValue(UIComponent component)
-    {
-        Object value = getObjectValue(component);
-        if (value == null || value instanceof Date)
-        {
-            return (Date) value;
-        }
-
-        throw new IllegalArgumentException(
-                "Expected submitted value of type Date for component : "
-                        + ComponentUtils.getPathToComponent(component));
     }
 
     public static Object getObjectValue(UIComponent component)
@@ -131,6 +116,11 @@ public final class RendererUtils
         Object value = ve.getValue(context.getELContext());
         if (value != null)
         {
+            if (value instanceof String)
+            {
+                return (String) value;
+            }
+            
             return value.toString();
         }
         return null;
@@ -147,13 +137,17 @@ public final class RendererUtils
 
         if (component instanceof EditableValueHolder)
         {
-            Object submittedValue = ((EditableValueHolder) component)
-                    .getSubmittedValue();
+            Object submittedValue = ((EditableValueHolder) component).getSubmittedValue();
             if (submittedValue != null)
             {
+                if (submittedValue instanceof String)
+                {
+                    return (String) submittedValue;
+                }
+                
                 if (log.isLoggable(Level.FINE))
                 {
-                    log.fine("returning 1 '" + submittedValue + '\'');
+                    log.fine("returning '" + submittedValue + '\'');
                 }
                 return submittedValue.toString();
             }
@@ -181,7 +175,6 @@ public final class RendererUtils
         Converter converter = ((ValueHolder) component).getConverter();
         if (converter == null && value != null)
         {
-
             try
             {
                 converter = facesContext.getApplication().createConverter(value.getClass());
@@ -208,6 +201,11 @@ public final class RendererUtils
                     log.fine("returning an empty string");
                 }
                 return "";
+            }
+
+            if (value instanceof String)
+            {
+                return (String) value;
             }
 
             if (log.isLoggable(Level.FINE))
@@ -297,6 +295,11 @@ public final class RendererUtils
                 {
                     return null;
                 }
+                
+                if (value instanceof String)
+                {
+                    return (String) value;
+                }
 
                 if (log.isLoggable(Level.FINE))
                 {
@@ -341,7 +344,7 @@ public final class RendererUtils
         }
         else if (value instanceof Boolean)
         {
-            return !((Boolean) value).booleanValue();
+            return !((Boolean) value);
         }
         else if (value instanceof Number)
         {
@@ -381,19 +384,39 @@ public final class RendererUtils
     public static Converter findUIOutputConverter(FacesContext facesContext,
             UIOutput component) throws FacesException
     {
-        return _SharedRendererUtils.findUIOutputConverter(facesContext,  component);
-    }
+        Converter converter = component.getConverter();
+        if (converter != null)
+        {
+            return converter;
+        }
 
-    /**
-     * Calls findUISelectManyConverter with considerValueType = false.
-     * @param facesContext
-     * @param component
-     * @return
-     */
-    public static Converter findUISelectManyConverter(
-            FacesContext facesContext, UISelectMany component)
-    {
-        return findUISelectManyConverter(facesContext, component, false);
+        //Try to find out by value expression
+        ValueExpression expression = component.getValueExpression("value");
+        if (expression == null)
+        {
+            return null;
+        }
+
+        Class<?> valueType = expression.getType(facesContext.getELContext());
+        if (valueType == null)
+        {
+            return null;
+        }
+
+        if (Object.class.equals(valueType))
+        {
+            return null; //There is no converter for Object class
+        }
+
+        try
+        {
+            return facesContext.getApplication().createConverter(valueType);
+        }
+        catch (FacesException e)
+        {
+            log.log(Level.SEVERE, "No Converter for type " + valueType.getName() + " found", e);
+            return null;
+        }
     }
 
     /**
@@ -835,14 +858,14 @@ public final class RendererUtils
             String attrName, boolean defaultValue)
     {
         Boolean b = (Boolean) component.getAttributes().get(attrName);
-        return b != null ? b.booleanValue() : defaultValue;
+        return b != null ? b : defaultValue;
     }
 
     public static int getIntegerAttribute(UIComponent component,
             String attrName, int defaultValue)
     {
         Integer i = (Integer) component.getAttributes().get(attrName);
-        return i != null ? i.intValue() : defaultValue;
+        return i != null ? i : defaultValue;
     }
 
     public static boolean getBooleanValue(String attribute, Object value, boolean defaultValue)

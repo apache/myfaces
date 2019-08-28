@@ -33,16 +33,19 @@ final class EndElementInstruction implements Instruction
         this.element = element;
     }
 
+    @Override
     public void write(FacesContext context) throws IOException
     {
         context.getResponseWriter().endElement(this.element);
     }
 
+    @Override
     public Instruction apply(ExpressionFactory factory, ELContext ctx)
     {
         return this;
     }
 
+    @Override
     public boolean isLiteral()
     {
         return true;

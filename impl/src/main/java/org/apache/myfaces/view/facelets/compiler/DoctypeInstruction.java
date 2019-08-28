@@ -30,11 +30,8 @@ import javax.faces.context.FacesContext;
 public class DoctypeInstruction implements Instruction
 {
     private final String name;
-    
     private final String publicId;
-    
     private final String systemId;
-    
     private final boolean html5Doctype;
 
     public DoctypeInstruction(String name, String publicId, String systemId, boolean html5Doctype)

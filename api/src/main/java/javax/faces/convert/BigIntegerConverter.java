@@ -29,72 +29,65 @@ import java.math.BigInteger;
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  */
 @JSFConverter
-public class BigIntegerConverter
-        implements Converter
+public class BigIntegerConverter implements Converter
 {
-    // FIELDS
     public static final String CONVERTER_ID = "javax.faces.BigInteger";
     public static final String STRING_ID = "javax.faces.converter.STRING";
     public static final String BIGINTEGER_ID = "javax.faces.converter.BigIntegerConverter.BIGINTEGER";
 
-    // CONSTRUCTORS
     public BigIntegerConverter()
     {
     }
 
-    // METHODS
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
     {
-        if (facesContext == null)
+        if (facesContext == null || uiComponent == null)
         {
-            throw new NullPointerException("facesContext");
-        }
-        if (uiComponent == null)
-        {
-            throw new NullPointerException("uiComponent");
+            throw new NullPointerException(); // should never happen
         }
 
-        if (value != null)
+        if (value == null)
         {
-            value = value.trim();
-            if (value.length() > 0)
-            {
-                try
-                {
-                    return new BigInteger(value.trim());
-                }
-                catch (NumberFormatException e)
-                {
-                    throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                   BIGINTEGER_ID,
-                                   new Object[]{value,"2345",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
-                }
-            }
+            return null;
         }
-        return null;
+        
+        value = value.trim();
+        if (value.length() < 1)
+        {
+            return null;
+        }
+        
+        try
+        {
+            return new BigInteger(value.trim());
+        }
+        catch (NumberFormatException e)
+        {
+            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
+                           BIGINTEGER_ID,
+                           new Object[]{value,"2345",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
+        }
     }
 
     @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
     {
-        if (facesContext == null)
+        if (facesContext == null || uiComponent == null)
         {
-            throw new NullPointerException("facesContext");
-        }
-        if (uiComponent == null)
-        {
-            throw new NullPointerException("uiComponent");
+            throw new NullPointerException(); // should never happen
         }
 
         if (value == null)
         {
             return "";
         }
+
         if (value instanceof String)
         {
-            return (String)value;
+            return (String) value;
         }
+
         try
         {
             return ((BigInteger)value).toString();

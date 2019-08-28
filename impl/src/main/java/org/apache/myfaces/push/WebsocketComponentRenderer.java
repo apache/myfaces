@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.faces.FacesWrapper;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIWebsocket;
 import javax.faces.component.behavior.ClientBehavior;
@@ -63,12 +64,12 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
             FacesContext facesContext = FacesContext.getCurrentInstance();
             UIWebsocket component = (UIWebsocket) event.getComponent();
             WebsocketInit initComponent = (WebsocketInit) facesContext.getViewRoot().findComponent(
-                    (String) component.getAttributes().get("initComponentId"));
+                    (String) component.getAttributes().get(_WebsocketInit.ATTRIBUTE_COMPONENT_ID));
             if (initComponent == null)
             {
                 initComponent = (WebsocketInit) facesContext.getApplication().createComponent(facesContext,
-                        "org.apache.myfaces.WebsocketInit", "org.apache.myfaces.WebsocketInit");
-                initComponent.setId((String) component.getAttributes().get("initComponentId"));
+                        WebsocketInit.COMPONENT_TYPE, WebsocketInit.COMPONENT_TYPE);
+                initComponent.setId((String) component.getAttributes().get(_WebsocketInit.ATTRIBUTE_COMPONENT_ID));
                 facesContext.getViewRoot().addComponentResource(facesContext,
                         initComponent, "body");
             }
@@ -108,7 +109,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         UIWebsocket component = (UIWebsocket) c;
 
         WebsocketInit init = (WebsocketInit) facesContext.getViewRoot().findComponent(
-                (String) component.getAttributes().get("initComponentId"));
+                (String) component.getAttributes().get(_WebsocketInit.ATTRIBUTE_COMPONENT_ID));
 
         ResponseWriter writer = facesContext.getResponseWriter();
 
@@ -117,15 +118,15 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         // TODO: use a single bean and entry point for this algorithm.
         BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
 
-        WebsocketChannelTokenBuilderBean channelTokenBean = CDIUtils.lookup(
+        WebsocketChannelTokenBuilderBean channelTokenBean = CDIUtils.get(
                 beanManager,
                 WebsocketChannelTokenBuilderBean.class);
 
         // This bean is required because you always need to register the token, so it can be properly destroyed
-        WebsocketViewBean viewTokenBean = CDIUtils.lookup(
+        WebsocketViewBean viewTokenBean = CDIUtils.get(
                 beanManager,
                 WebsocketViewBean.class);
-        WebsocketSessionBean sessionTokenBean = CDIUtils.lookup(
+        WebsocketSessionBean sessionTokenBean = CDIUtils.get(
                 beanManager, WebsocketSessionBean.class);
 
         // Create channel token 
@@ -154,7 +155,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         }
 
         // Ask these two scopes 
-        WebsocketApplicationBean appTokenBean = CDIUtils.getInstance(
+        WebsocketApplicationBean appTokenBean = CDIUtils.get(
                 beanManager, WebsocketApplicationBean.class, false);
 
         // Register token and metadata in the proper bean
@@ -164,7 +165,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         }
         else if (scope.equals("session"))
         {
-            sessionTokenBean = (sessionTokenBean != null) ? sessionTokenBean : CDIUtils.lookup(
+            sessionTokenBean = (sessionTokenBean != null) ? sessionTokenBean : CDIUtils.get(
                     CDIUtils.getBeanManager(facesContext.getExternalContext()),
                     WebsocketSessionBean.class);
 
@@ -173,7 +174,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         else
         {
             //Default application
-            appTokenBean = (appTokenBean != null) ? appTokenBean : CDIUtils.lookup(
+            appTokenBean = (appTokenBean != null) ? appTokenBean : CDIUtils.get(
                     CDIUtils.getBeanManager(facesContext.getExternalContext()),
                     WebsocketApplicationBean.class);
 
@@ -216,13 +217,21 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         
         if (!facesContext.getPartialViewContext().isAjaxRequest())
         {
-            HtmlBufferResponseWriterWrapper buffwriter = (HtmlBufferResponseWriterWrapper) 
-                    facesContext.getResponseWriter();
-            init.getUIWebsocketMarkupList().add(writer.toString());
-            facesContext.setResponseWriter(buffwriter.getInitialWriter());
+            ResponseWriter responseWriter = facesContext.getResponseWriter();
+            while (!(responseWriter instanceof HtmlBufferResponseWriterWrapper)
+                    && responseWriter instanceof FacesWrapper)
+            {
+                responseWriter = (ResponseWriter) ((FacesWrapper) responseWriter).getWrapped();
+            }
+            
+            HtmlBufferResponseWriterWrapper htmlBufferResponseWritter =
+                    (HtmlBufferResponseWriterWrapper) responseWriter;
+            init.getUIWebsocketMarkupList().add(htmlBufferResponseWritter.toString());
+
+            facesContext.setResponseWriter(htmlBufferResponseWritter.getInitialWriter());
         }
     }
-    
+
     private String getBehaviorScripts(FacesContext facesContext, UIWebsocket component)
     {
         Map<String, List<ClientBehavior>> clientBehaviorsByEvent = component.getClientBehaviors();
@@ -239,11 +248,11 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         {
             String event = entry.getKey();
             List<ClientBehavior> clientBehaviors = entry.getValue();
-            scripts.append(scripts.length() > 1 ? "," : "").append(event).append(":[");
+            scripts.append(scripts.length() > 1 ? ',' : "").append(event).append(":[");
 
             for (int i = 0; i < clientBehaviors.size(); i++)
             {
-                scripts.append(i > 0 ? "," : "").append("function(event){");
+                scripts.append(i > 0 ? ',' : "").append("function(event){");
                 scripts.append(clientBehaviors.get(i).getScript(
                         ClientBehaviorContext.createClientBehaviorContext(
                                 facesContext, component, event, clientId, null)));

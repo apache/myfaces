@@ -22,7 +22,7 @@ import java.util.Enumeration;
 
 import javax.servlet.ServletRequest;
 
-import org.apache.myfaces.util.AbstractAttributeMap;
+import org.apache.myfaces.util.lang.AbstractAttributeMap;
 
 /**
  * ServletRequest parameters as Map.

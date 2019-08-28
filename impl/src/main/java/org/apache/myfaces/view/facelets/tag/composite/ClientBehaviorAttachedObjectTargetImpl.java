@@ -28,9 +28,8 @@ import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.util.ArrayUtils;
-
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.ArrayUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)

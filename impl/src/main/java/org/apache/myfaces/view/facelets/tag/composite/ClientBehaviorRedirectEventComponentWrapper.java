@@ -97,7 +97,7 @@ public class ClientBehaviorRedirectEventComponentWrapper extends UIComponent
     @Override
     public Map<String, List<ClientBehavior>> getClientBehaviors()
     {
-        Map<String, List<ClientBehavior>> clientBehaviors = new HashMap<String, List<ClientBehavior>>(1);
+        Map<String, List<ClientBehavior>> clientBehaviors = new HashMap<>(1);
         clientBehaviors.put(_sourceEvent, ((ClientBehaviorHolder)_delegate).getClientBehaviors().get(_targetEvent));
         return Collections.unmodifiableMap(clientBehaviors);
     }

@@ -21,7 +21,7 @@ package org.apache.myfaces.flow.cdi;
 
 import java.io.Serializable;
 import java.util.Map;
-import org.apache.myfaces.util.LRULinkedHashMap;
+import org.apache.myfaces.util.lang.LRULinkedHashMap;
 
 class ClientWindowFacesFlowLRUMap extends LRULinkedHashMap<String, String> implements Serializable
 {

@@ -20,7 +20,6 @@ package org.apache.myfaces.spi.impl;
 
 import javax.faces.context.ExternalContext;
 import org.apache.myfaces.cdi.CDIInjectionProviderImpl;
-import org.apache.myfaces.util.ClassUtils;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderException;
 import org.apache.myfaces.util.ExternalSpecifications;
@@ -37,17 +36,7 @@ public class CDIAnnotationDelegateInjectionProvider extends InjectionProvider
     {
         if (ExternalSpecifications.isCDIAvailable(externalContext))
         {
-            try
-            {
-                Class clazz = ClassUtils.simpleClassForName(
-                        CDIInjectionProviderImpl.class.getName());
-                delegate = (InjectionProvider) clazz.getConstructor(
-                    ExternalContext.class).newInstance(externalContext);
-            }
-            catch(Exception e)
-            {
-                //Ignore
-            }
+            delegate = new CDIInjectionProviderImpl(externalContext);
         }
         available = (delegate != null);
     }

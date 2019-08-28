@@ -79,8 +79,6 @@ public abstract class UIComponentBase extends UIComponent
 {
     private static Logger log = Logger.getLogger(UIComponentBase.class.getName());
 
-    private static final Iterator<UIComponent> _EMPTY_UICOMPONENT_ITERATOR = Collections.<UIComponent>emptyIterator();
-
     private static final String _STRING_BUILDER_KEY
             = "javax.faces.component.UIComponentBase.SHARED_STRING_BUILDER";
 
@@ -348,20 +346,15 @@ public abstract class UIComponentBase extends UIComponent
         
         if(eventNames.contains(eventName))
         {
-            if(_behaviorsMap == null)
+            if (_behaviorsMap == null)
             {
-                _behaviorsMap = new HashMap<String,List<ClientBehavior>>();
+                _behaviorsMap = new HashMap<>();
             }
             
-            List<ClientBehavior> behaviorsForEvent = _behaviorsMap.get(eventName);
-            if(behaviorsForEvent == null)
-            {
-                // Normally have client only 1 client behaviour per event name,
-                // so size 2 must be sufficient: 
-                behaviorsForEvent = new _DeltaList<ClientBehavior>(2);
-                _behaviorsMap.put(eventName, behaviorsForEvent);
-            }
-            
+            // Normally have client only 1 client behaviour per event name, so size 2 must be sufficient:
+            List<ClientBehavior> behaviorsForEvent = _behaviorsMap.computeIfAbsent(eventName,
+                    k -> new _DeltaList<>(2));
+
             behaviorsForEvent.add(behavior);
             _unmodifiableBehaviorsMap = null;
         }
@@ -1037,7 +1030,7 @@ public abstract class UIComponentBase extends UIComponent
         {
             if (getChildCount() == 0)
             {
-                return _EMPTY_UICOMPONENT_ITERATOR;
+                return Collections.<UIComponent>emptyIterator();
             }
 
             return getChildren().iterator();
@@ -2084,7 +2077,7 @@ public abstract class UIComponentBase extends UIComponent
         {
             Map<String, Object> stateMap = (Map<String, Object>) stateObj;
             int initCapacity = (stateMap.size() * 4 + 3) / 3;
-            _behaviorsMap = new HashMap<String,  List<ClientBehavior> >(initCapacity);
+            _behaviorsMap = new HashMap<>(initCapacity);
             _unmodifiableBehaviorsMap = null;
             for (Map.Entry<String, Object> entry : stateMap.entrySet())
             {
@@ -2109,7 +2102,7 @@ public abstract class UIComponentBase extends UIComponent
             int initCapacity = (stateMap.size() * 4 + 3) / 3;
             if (_behaviorsMap == null)
             {
-                _behaviorsMap = new HashMap<String,  List<ClientBehavior> >(initCapacity);
+                _behaviorsMap = new HashMap<>(initCapacity);
             }
             for (Map.Entry<String, Object> entry : stateMap.entrySet())
             {
@@ -2135,7 +2128,7 @@ public abstract class UIComponentBase extends UIComponent
         {
             if (initialStateMarked())
             {
-                HashMap<String, Object> stateMap = new HashMap<String, Object>(_behaviorsMap.size(), 1);
+                HashMap<String, Object> stateMap = new HashMap<>(_behaviorsMap.size(), 1);
                 boolean nullDelta = true;
                 for (Map.Entry<String, List<ClientBehavior> > entry : _behaviorsMap.entrySet())
                 {
@@ -2167,8 +2160,7 @@ public abstract class UIComponentBase extends UIComponent
             else
             {
                 //Save it in the traditional way
-                HashMap<String, Object> stateMap = 
-                    new HashMap<String, Object>(_behaviorsMap.size(), 1);
+                HashMap<String, Object> stateMap = new HashMap<>(_behaviorsMap.size(), 1);
                 for (Map.Entry<String, List<ClientBehavior> > entry : _behaviorsMap.entrySet())
                 {
                     stateMap.put(entry.getKey(), saveAttachedState(facesContext, entry.getValue()));
@@ -2189,8 +2181,7 @@ public abstract class UIComponentBase extends UIComponent
         {
             Map<Class<? extends SystemEvent>, Object> stateMap = (Map<Class<? extends SystemEvent>, Object>) stateObj;
             int initCapacity = (stateMap.size() * 4 + 3) / 3;
-            _systemEventListenerClassMap
-                    = new HashMap<Class<? extends SystemEvent>, List<SystemEventListener>>(initCapacity);
+            _systemEventListenerClassMap = new HashMap<>(initCapacity);
             for (Map.Entry<Class<? extends SystemEvent>, Object> entry : stateMap.entrySet())
             {
                 _systemEventListenerClassMap.put(entry.getKey(),
@@ -2212,8 +2203,7 @@ public abstract class UIComponentBase extends UIComponent
             int initCapacity = (stateMap.size() * 4 + 3) / 3;
             if (_systemEventListenerClassMap == null)
             {
-                _systemEventListenerClassMap
-                        = new HashMap<Class<? extends SystemEvent>, List<SystemEventListener>>(initCapacity);
+                _systemEventListenerClassMap = new HashMap<>(initCapacity);
             }
             for (Map.Entry<Class<? extends SystemEvent>, Object> entry : stateMap.entrySet())
             {
@@ -2240,7 +2230,7 @@ public abstract class UIComponentBase extends UIComponent
             if (initialStateMarked())
             {
                 HashMap<Class<? extends SystemEvent>, Object> stateMap
-                        = new HashMap<Class<? extends SystemEvent>, Object>(_systemEventListenerClassMap.size(), 1);
+                        = new HashMap<>(_systemEventListenerClassMap.size(), 1);
                 boolean nullDelta = true;
                 for (Map.Entry<Class<? extends SystemEvent>, List<SystemEventListener> > entry
                         : _systemEventListenerClassMap.entrySet())
@@ -2274,8 +2264,8 @@ public abstract class UIComponentBase extends UIComponent
             {
                 //Save it in the traditional way
                 HashMap<Class<? extends SystemEvent>, Object> stateMap = 
-                    new HashMap<Class<? extends SystemEvent>, Object>(_systemEventListenerClassMap.size(), 1);
-                for (Map.Entry<Class<? extends SystemEvent>, List<SystemEventListener> > entry
+                    new HashMap<>(_systemEventListenerClassMap.size(), 1);
+                for (Map.Entry<Class<? extends SystemEvent>, List<SystemEventListener>> entry
                         : _systemEventListenerClassMap.entrySet())
                 {
                     stateMap.put(entry.getKey(), saveAttachedState(facesContext, entry.getValue()));
@@ -2377,11 +2367,6 @@ public abstract class UIComponentBase extends UIComponent
     void setCachedIsRendered(Boolean rendered)
     {
        _cachedIsRendered = rendered;
-    }
-    
-    <T> T getExpressionValue(String attribute, T explizitValue, T defaultValueIfExpressionNull)
-    {
-        return _ComponentUtils.getExpressionValue(this, attribute, explizitValue, defaultValueIfExpressionNull);
     }
 
     void setOamVfMarkCreated(String markCreated)
@@ -2489,7 +2474,6 @@ public abstract class UIComponentBase extends UIComponent
         }
         else
         {
-
             // clear out the stringBuilder by setting the length to 0
             sb.setLength(0);
         }

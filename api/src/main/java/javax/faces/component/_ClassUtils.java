@@ -135,14 +135,16 @@ final class _ClassUtils
         try
         {
             // Try WebApp ClassLoader first
-            return Class.forName(type, false, // do not initialize for faster startup
-                getContextClassLoader());
+            return Class.forName(type,
+                    false, // do not initialize for faster startup
+                    getContextClassLoader());
         }
         catch (ClassNotFoundException ignore)
         {
             // fallback: Try ClassLoader for ClassUtils (i.e. the myfaces.jar lib)
-            return Class.forName(type, false, // do not initialize for faster startup
-                _ClassUtils.class.getClassLoader());
+            return Class.forName(type,
+                    false, // do not initialize for faster startup
+                    _ClassUtils.class.getClassLoader());
         }
     }
 
@@ -391,14 +393,8 @@ final class _ClassUtils
         {
             try
             {
-                Object cl = AccessController.doPrivileged(new PrivilegedExceptionAction()
-                {
-                            public Object run() throws PrivilegedActionException
-                            {
-                                return Thread.currentThread().getContextClassLoader();
-                            }
-                });
-                return (ClassLoader) cl;
+                return (ClassLoader) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> Thread.currentThread().getContextClassLoader());
             }
             catch (PrivilegedActionException pae)
             {

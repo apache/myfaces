@@ -35,7 +35,7 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.security.AccessController;
@@ -115,13 +115,7 @@ public final class Classpath
         if (System.getSecurityManager() != null)
         {
             final File finalDir = dir;
-            dirExists = (Boolean) AccessController.doPrivileged(new PrivilegedAction()
-            {
-                public Object run() 
-                {
-                    return finalDir.exists();
-                }
-            });
+            dirExists = (Boolean) AccessController.doPrivileged((PrivilegedAction) () -> finalDir.exists());
         }  
         else
         {

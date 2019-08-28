@@ -46,7 +46,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.myfaces.config.element.FaceletsProcessing;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.TagAttributeImpl;
 import org.apache.myfaces.view.facelets.tag.TagAttributesImpl;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeLibrary;
@@ -127,8 +127,8 @@ public final class SAXCompiler extends Compiler
             TagAttribute[] ta = new TagAttribute[len];
             for (int i = 0; i < len; i++)
             {
-                ta[i] = new TagAttributeImpl(this.createLocation(), attrs.getURI(i), attrs.getLocalName(i), attrs
-                        .getQName(i), attrs.getValue(i));
+                ta[i] = new TagAttributeImpl(this.createLocation(), attrs.getURI(i), attrs.getLocalName(i),
+                        attrs.getQName(i), attrs.getValue(i));
             }
             return new TagAttributesImpl(ta);
         }
@@ -870,13 +870,9 @@ public final class SAXCompiler extends Compiler
                 try
                 {
                     final InputStream finalInputStream = is;
-                    AccessController.doPrivileged(new PrivilegedExceptionAction() 
-                    {
-                        public Object run() throws SAXException, IOException 
-                        {
-                            parser.parse(finalInputStream, handler);
-                            return null; 
-                        }
+                    AccessController.doPrivileged((PrivilegedExceptionAction) () -> {
+                        parser.parse(finalInputStream, handler);
+                        return null;
                     });
                 }
                 catch (PrivilegedActionException pae)
@@ -1116,8 +1112,8 @@ public final class SAXCompiler extends Compiler
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-        factory.setFeature("http://xml.org/sax/features/validation", this.isValidating());
         factory.setValidating(this.isValidating());
+        factory.setFeature("http://xml.org/sax/features/validation", this.isValidating());
         SAXParser parser = factory.newSAXParser();
         XMLReader reader = parser.getXMLReader();
         reader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);

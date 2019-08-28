@@ -42,7 +42,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
 
     public ComponentTagDeclarationLibrary()
     {
-        _factories = new HashMap<String, Map<String, TagHandlerFactory>>();
+        _factories = new HashMap<>();
     }
 
     /*
@@ -90,12 +90,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
     {
         if (containsNamespace(ns))
         {
-            Map<String, TagHandlerFactory> map = _factories.get(ns);
-            if (map == null)
-            {
-                map = new HashMap<String, TagHandlerFactory>();
-                _factories.put(ns, map);
-            }
+            Map<String, TagHandlerFactory> map = _factories.computeIfAbsent(ns, k -> new HashMap<>());
             TagHandlerFactory f = map.get(localName);
             if (f != null)
             {
@@ -142,12 +137,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
      */
     public final void addComponent(String namespace, String name, String componentType, String rendererType)
     {
-        Map<String, TagHandlerFactory> map = _factories.get(namespace);
-        if (map == null)
-        {
-            map = new HashMap<String, TagHandlerFactory>();
-            _factories.put(namespace, map);
-        }
+        Map<String, TagHandlerFactory> map = _factories.computeIfAbsent(namespace, k -> new HashMap<>());
         map.put(name, new ComponentHandlerFactory(componentType, rendererType));
     }
 
@@ -168,12 +158,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
     public final void addComponent(String namespace, String name, String componentType, String rendererType, 
                                       Class<? extends TagHandler> handlerType)
     {
-        Map<String, TagHandlerFactory> map = _factories.get(namespace);
-        if (map == null)
-        {
-            map = new HashMap<String, TagHandlerFactory>();
-            _factories.put(namespace, map);
-        }
+        Map<String, TagHandlerFactory> map = _factories.computeIfAbsent(namespace, k -> new HashMap<>());
         map.put(name, new UserComponentHandlerFactory(componentType, rendererType, handlerType));
     }
 
@@ -226,9 +211,6 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
         protected final String componentType;
         protected final String renderType;
 
-        /**
-         * @param handlerType
-         */
         public ComponentHandlerFactory(String componentType, String renderType)
         {
             this.componentType = componentType;
@@ -245,7 +227,6 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
 
     private static class UserComponentHandlerFactory implements TagHandlerFactory
     {
-
         private final static Class<?>[] CONS_SIG = new Class[] { ComponentConfig.class };
 
         protected final String componentType;
@@ -253,9 +234,6 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
         protected final Class<? extends TagHandler> type;
         protected final Constructor<? extends TagHandler> constructor;
 
-        /**
-         * @param handlerType
-         */
         public UserComponentHandlerFactory(String componentType, String renderType, Class<? extends TagHandler> type)
         {
             this.componentType = componentType;

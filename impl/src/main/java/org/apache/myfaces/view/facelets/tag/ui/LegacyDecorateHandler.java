@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.tag.ui;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,14 +78,22 @@ public final class LegacyDecorateHandler extends TagHandler implements TemplateC
     {
         super(config);
         _template = getRequiredAttribute("template");
-        _handlers = new HashMap<String, DefineHandler>();
 
-        for (DefineHandler handler : TagHandlerUtils.findNextByType(nextHandler, DefineHandler.class))
+        ArrayList<DefineHandler> handlers = TagHandlerUtils.findNextByType(nextHandler, DefineHandler.class);
+        if (handlers.isEmpty())
         {
-            _handlers.put(handler.getName(), handler);
-            if (log.isLoggable(Level.FINE))
+            _handlers = null;
+        }
+        else
+        {
+            _handlers = new HashMap<>(handlers.size());
+            for (DefineHandler handler : handlers)
             {
-                log.fine(tag + " found Define[" + handler.getName() + ']');
+                _handlers.put(handler.getName(), handler);
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.fine(tag + " found Define[" + handler.getName() + ']');
+                }
             }
         }
 
@@ -214,8 +223,8 @@ public final class LegacyDecorateHandler extends TagHandler implements TemplateC
                 fcc.endComponentUniqueIdSection();
             }
         }
-        if (!_template.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() &&
-            !fcc.isRefreshingTransientBuild())
+        if (!_template.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS()
+                && !fcc.isRefreshingTransientBuild())
         {
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
@@ -232,16 +241,14 @@ public final class LegacyDecorateHandler extends TagHandler implements TemplateC
     {
         if (name != null)
         {
-            DefineHandler handler = _handlers.get(name);
+            DefineHandler handler = _handlers == null ? null : _handlers.get(name);
             if (handler != null)
             {
                 handler.applyDefinition(ctx, parent);
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
         else
         {

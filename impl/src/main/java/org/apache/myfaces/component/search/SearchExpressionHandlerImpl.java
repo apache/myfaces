@@ -35,7 +35,7 @@ import javax.faces.component.search.SearchKeywordContext;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ComponentUtils;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  *
@@ -86,19 +86,19 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         }
         else
         {
-            CollectClientIdCallback callback = new CollectClientIdCallback();
-            
+            CollectClientIdCallback callback = null;
             if (!expression.isEmpty())
             {
+                callback = new CollectClientIdCallback();
                 handler.invokeOnComponent(
                         searchExpressionContext, searchExpressionContext.getSource(), expression, callback);
             }
 
-            if (!callback.isClientIdFound())
+            if (callback == null || !callback.isClientIdFound())
             {
                 if (isHintSet(searchExpressionContext, SearchExpressionHint.IGNORE_NO_RESULT))
                 {
-                    //Ignore
+                    return null;
                 }
                 else
                 {
@@ -150,10 +150,10 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
 
-        CollectClientIdsCallback callback = new CollectClientIdsCallback();
-
+        CollectClientIdsCallback callback = null;
         if (!expressions.isEmpty())
         {
+            callback = new CollectClientIdsCallback();
             for (String expression : handler.splitExpressions(facesContext, expressions))
             {
                 if (handler.isPassthroughExpression(searchExpressionContext, expression))
@@ -169,11 +169,11 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
             }
         }
 
-        if (!callback.isClientIdFound())
+        if (callback == null || !callback.isClientIdFound())
         {
             if (isHintSet(searchExpressionContext, SearchExpressionHint.IGNORE_NO_RESULT))
             {
-                //Ignore
+                return Collections.emptyList();
             }
             else
             {
@@ -194,7 +194,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         {
             if (clientIds == null)
             {
-                clientIds = new ArrayList<String>();
+                clientIds = new ArrayList<>();
             }
             clientIds.add(target.getClientId(context));
         }
@@ -213,7 +213,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         {
             if (clientIds == null)
             {
-                clientIds = new ArrayList<String>();
+                clientIds = new ArrayList<>();
             }
             clientIds.add(clientId);
         }
@@ -234,18 +234,18 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
-        
-        SingleInvocationCallback checkCallback = new SingleInvocationCallback(callback);
-        
+
         addHint(searchExpressionContext, SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
 
+        SingleInvocationCallback checkCallback = null;
         if (!expression.isEmpty())
         {
+            checkCallback = new SingleInvocationCallback(callback);
             handler.invokeOnComponent(searchExpressionContext, searchExpressionContext.getSource(),
                     expression, checkCallback);
         }
 
-        if (!checkCallback.isInvoked())
+        if (checkCallback == null || !checkCallback.isInvoked())
         {
             if (isHintSet(searchExpressionContext, SearchExpressionHint.IGNORE_NO_RESULT))
             {
@@ -310,10 +310,11 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         FacesContext facesContext = searchExpressionContext.getFacesContext();
         SearchExpressionHandler handler = facesContext.getApplication().getSearchExpressionHandler();
         
-        MultipleInvocationCallback checkCallback = new MultipleInvocationCallback(callback);
+        MultipleInvocationCallback checkCallback = null;
 
         if (!expressions.isEmpty())
         {
+            checkCallback = new MultipleInvocationCallback(callback);
             for (String expression : handler.splitExpressions(facesContext, expressions))
             {
                 handler.invokeOnComponent(searchExpressionContext, searchExpressionContext.getSource(),
@@ -321,7 +322,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
             }
         }
 
-        if (!checkCallback.isInvoked())
+        if (checkCallback == null || !checkCallback.isInvoked())
         {
             if (isHintSet(searchExpressionContext, SearchExpressionHint.IGNORE_NO_RESULT))
             {
@@ -598,7 +599,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     @Override
     public boolean isPassthroughExpression(SearchExpressionContext searchExpressionContext, String topExpression)
     {
-        if (LangUtils.isBlank(topExpression))
+        if (StringUtils.isBlank(topExpression))
         {
             return false;
         }
@@ -656,7 +657,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
     @Override
     public boolean isValidExpression(SearchExpressionContext searchExpressionContext, String topExpression)
     {
-        if (LangUtils.isBlank(topExpression))
+        if (StringUtils.isBlank(topExpression))
         {
             return true;
         }
@@ -796,12 +797,12 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 
     private static String[] split(FacesContext context, String value, char... separators)
     {
-        if (LangUtils.isBlank(value))
+        if (StringUtils.isBlank(value))
         {
             return null;
         }
 
-        List<String> tokens = new ArrayList<String>(5);
+        List<String> tokens = new ArrayList<>(5);
         StringBuilder buffer = SharedStringBuilder.get(context, SB_SPLIT);
 
         int parenthesesCounter = 0;

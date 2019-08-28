@@ -21,18 +21,16 @@ package org.apache.myfaces.resource;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.ProjectStage;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.ConcurrentLRUCache;
+import org.apache.myfaces.util.lang.ConcurrentLRUCache;
 
 public class ResourceHandlerCache
 {
     private static final Logger log = Logger.getLogger(ResourceHandlerCache.class.getName());
 
-    private boolean _resourceCacheEnabled = false;
+    private boolean _resourceCacheEnabled;
 
     private volatile ConcurrentLRUCache<Object, ResourceValue> _resourceCacheMap = null;
     private volatile ConcurrentLRUCache<Object, ResourceValue> _viewResourceCacheMap = null;
@@ -40,29 +38,19 @@ public class ResourceHandlerCache
 
     public ResourceHandlerCache()
     {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext);
+
+        _resourceCacheEnabled = myfacesConfig.isResourceHandlerCacheEnabled();
+        
         if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.FINE, "Initializing ResourceHandlerCache");
+            log.log(Level.FINE, "Initializing ResourceHandlerCache; Enabled = " + _resourceCacheEnabled);
         }
-     
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 
-        // skip cache when ProjectStage != Production
-        if (facesContext.isProjectStage(ProjectStage.Production))
-        {
-            //if in production, make sure that the cache is not explicitly disabled via context param
-            _resourceCacheEnabled = MyfacesConfig.getCurrentInstance(externalContext).isResourceHandlerCacheEnabled();
-
-            if (log.isLoggable(Level.FINE))
-            {
-                log.log(Level.FINE, "MyFaces ResourceHandlerCache enabled = " + _resourceCacheEnabled);
-            }
-        }
-        
         if (_resourceCacheEnabled)
         {
-            int maxSize = MyfacesConfig.getCurrentInstance(externalContext).getResourceHandlerCacheSize();
+            int maxSize = myfacesConfig.getResourceHandlerCacheSize();
 
             _resourceCacheMap = new ConcurrentLRUCache<>((maxSize * 4 + 3) / 3, maxSize);
             _viewResourceCacheMap = new ConcurrentLRUCache<>((maxSize * 4 + 3) / 3, maxSize);

@@ -47,7 +47,6 @@ public final class VariableMapperWrapper extends VariableMapperBase implements F
         super();
         _target = orig;
         _targetBase = (orig instanceof VariableMapperBase) ? (VariableMapperBase) orig : null;
-        //_checkTargetBase = true;
         _trackResolveVariables = false;
         _variableResolved = false;
     }
@@ -98,7 +97,7 @@ public final class VariableMapperWrapper extends VariableMapperBase implements F
     {
         if (_vars == null)
         {
-            _vars = new HashMap<String, ValueExpression>();
+            _vars = new HashMap<>();
         }
         
         return _vars.put(variable, expression);

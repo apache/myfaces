@@ -20,19 +20,18 @@ package org.apache.myfaces.spi;
 
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Map;
 
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.spi.impl.DefaultInjectionProviderFactory;
 
 import org.apache.myfaces.spi.impl.SpiUtils;
 
 public abstract class InjectionProviderFactory
 {
-    protected static final String FACTORY_DEFAULT = 
-        "org.apache.myfaces.spi.impl.DefaultInjectionProviderFactory";
-
     private static final String FACTORY_KEY = InjectionProviderFactory.class.getName();
 
     public static InjectionProviderFactory getInjectionProviderFactory()
@@ -57,22 +56,15 @@ public abstract class InjectionProviderFactory
             if (System.getSecurityManager() != null)
             {
                 final ExternalContext ectx = ctx; 
-                lpf = (InjectionProviderFactory)
-                        AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Object>()
-                        {
-                            @Override
-                            public Object run() throws PrivilegedActionException
-                            {
-                                return SpiUtils.build(ectx,
-                                        InjectionProviderFactory.class,
-                                        FACTORY_DEFAULT);
-                            }
-                        });
+                lpf = (InjectionProviderFactory) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx, 
+                                InjectionProviderFactory.class, DefaultInjectionProviderFactory.class));
             }
             else
             {
                 lpf = (InjectionProviderFactory) SpiUtils.build(ctx, 
-                    InjectionProviderFactory.class, FACTORY_DEFAULT);
+                    InjectionProviderFactory.class,
+                    DefaultInjectionProviderFactory.class);
             }
         }
         catch (PrivilegedActionException pae)

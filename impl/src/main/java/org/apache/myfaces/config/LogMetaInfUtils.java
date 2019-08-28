@@ -19,7 +19,7 @@
 
 package org.apache.myfaces.config;
 
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 import javax.faces.FacesException;
 import java.net.URL;
@@ -143,12 +143,7 @@ class LogMetaInfUtils
         {
             // We have a valid JAR
             String artifactId = matcher.group(REGEX_LIBRARY_ARTIFACT_ID);
-            List<JarInfo> versions = libs.get(artifactId);
-            if (versions == null)
-            {
-                versions = new ArrayList<JarInfo>(1);
-                libs.put(artifactId, versions);
-            }
+            List<JarInfo> versions = libs.computeIfAbsent(artifactId, k -> new ArrayList<>(1));
 
             String path = matcher.group(REGEX_LIBRARY_FILE_PATH);
 

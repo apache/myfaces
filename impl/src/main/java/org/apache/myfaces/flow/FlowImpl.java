@@ -338,24 +338,18 @@ public class FlowImpl extends Flow implements Freezable
     public void addNavigationCases(String fromViewId, Set<NavigationCase> navigationCases)
     {
         checkInitialized();
-        Set<NavigationCase> navigationCaseSet = _navigationCases.get(fromViewId);
-        if (navigationCaseSet == null)
-        {
-            navigationCaseSet = new HashSet<NavigationCase>();
-            _navigationCases.put(fromViewId, navigationCaseSet);
-        }
+
+        Set<NavigationCase> navigationCaseSet = _navigationCases.computeIfAbsent(fromViewId,
+                k -> new HashSet<NavigationCase>());
         navigationCaseSet.addAll(navigationCases);
     }
     
     public void addNavigationCase(NavigationCase navigationCase)
     {
         checkInitialized();
-        Set<NavigationCase> navigationCaseSet = _navigationCases.get(navigationCase.getFromViewId());
-        if (navigationCaseSet == null)
-        {
-            navigationCaseSet = new HashSet<NavigationCase>();
-            _navigationCases.put(navigationCase.getFromViewId(), navigationCaseSet);
-        }
+
+        Set<NavigationCase> navigationCaseSet = _navigationCases.computeIfAbsent(navigationCase.getFromViewId(),
+                k -> new HashSet<NavigationCase>());
         navigationCaseSet.add(navigationCase);
     }
     

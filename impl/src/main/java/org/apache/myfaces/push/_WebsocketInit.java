@@ -38,6 +38,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
         defaultRendererType="org.apache.myfaces.WebsocketInit")
 public abstract class _WebsocketInit extends UIOutput
 {
+    static public final String ATTRIBUTE_COMPONENT_ID = _WebsocketInit.class.getName() + "ComponentId";
+    
     /**
      * List that stores the rendered markup of previous UIWebsocket instances.
      */

@@ -30,7 +30,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.Facelet;
 import javax.faces.view.facelets.FaceletException;
 
-
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$

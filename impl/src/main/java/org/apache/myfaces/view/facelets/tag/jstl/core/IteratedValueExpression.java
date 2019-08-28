@@ -27,11 +27,9 @@ import javax.el.ValueExpression;
  */
 public final class IteratedValueExpression extends ValueExpression
 {
-
     private static final long serialVersionUID = 1L;
 
     private ValueExpression orig;
-
     private Object value;
 
     public IteratedValueExpression(ValueExpression orig, Object value)

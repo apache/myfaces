@@ -27,15 +27,13 @@ import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.push._WebsocketInit;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
-/**
- *
- */
 @JSFFaceletTag(
         name = "f:websocket",
         bodyContent = "empty")
-public class WebsocketHandler extends ComponentHandler/* implements RelocatableResourceHandler*/
+public class WebsocketHandler extends ComponentHandler
 {
 
     @JSFFaceletAttribute(name = "channel", className = "javax.el.ValueExpression",
@@ -52,7 +50,7 @@ public class WebsocketHandler extends ComponentHandler/* implements RelocatableR
     public void onComponentCreated(FaceletContext ctx, UIComponent c, UIComponent parent)
     {
         UIWebsocket component = (UIWebsocket) c;
-        component.getAttributes().put("initComponentId", 
+        component.getAttributes().put(_WebsocketInit.ATTRIBUTE_COMPONENT_ID, 
                 ComponentSupport.getViewRoot(ctx, parent).createUniqueId()+"_wsinit");
     }
     

@@ -36,6 +36,7 @@ class CompositeComponentUnit extends CompilationUnit
     {
     }
 
+    @Override
     public FaceletHandler createFaceletHandler()
     {
         return new CompositeComponentDefinitionTagHandler(this.getNextFaceletHandler());

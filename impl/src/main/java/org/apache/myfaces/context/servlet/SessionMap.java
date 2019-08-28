@@ -25,8 +25,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.myfaces.util.AbstractThreadSafeAttributeMap;
-
+import org.apache.myfaces.util.lang.AbstractThreadSafeAttributeMap;
 
 /**
  * HttpSession attibutes as Map.
@@ -46,8 +45,8 @@ public final class SessionMap extends AbstractThreadSafeAttributeMap<Object>
     @Override
     protected Object getAttribute(final String key)
     {
-        final HttpSession httpSession = _getSession();
-        return (httpSession == null) ? null : httpSession.getAttribute(key);
+        final HttpSession httpSession = _httpRequest.getSession(false);
+        return httpSession == null ? null : httpSession.getAttribute(key);
     }
 
     @Override
@@ -59,7 +58,7 @@ public final class SessionMap extends AbstractThreadSafeAttributeMap<Object>
     @Override
     protected void removeAttribute(final String key)
     {
-        final HttpSession httpSession = _getSession();
+        final HttpSession httpSession = _httpRequest.getSession(false);
         if (httpSession != null)
         {
             httpSession.removeAttribute(key);
@@ -70,8 +69,8 @@ public final class SessionMap extends AbstractThreadSafeAttributeMap<Object>
     @SuppressWarnings("unchecked")
     protected Enumeration<String> getAttributeNames()
     {
-        final HttpSession httpSession = _getSession();
-        return (httpSession == null) ? Collections.emptyEnumeration() : httpSession.getAttributeNames();
+        final HttpSession httpSession = _httpRequest.getSession(false);
+        return httpSession == null ? Collections.emptyEnumeration() : httpSession.getAttributeNames();
     }
 
     @Override
@@ -79,12 +78,4 @@ public final class SessionMap extends AbstractThreadSafeAttributeMap<Object>
     {
         throw new UnsupportedOperationException();
     }
-    
-    // we can use public void clear() from super-class
-    
-    private HttpSession _getSession()
-    {
-        return _httpRequest.getSession(false);
-    }
-
 }

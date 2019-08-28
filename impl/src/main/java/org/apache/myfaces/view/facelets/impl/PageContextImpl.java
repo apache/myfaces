@@ -42,7 +42,7 @@ public class PageContextImpl extends PageContext
     {
         if (_attributes == null)
         {
-            _attributes = new HashMap<String, ValueExpression>();
+            _attributes = new HashMap<>();
         }
         return _attributes;
     }

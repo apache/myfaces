@@ -22,6 +22,7 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.myfaces.util.lang.StringUtils;
 
 
 public final class LocaleUtils
@@ -44,7 +45,7 @@ public final class LocaleUtils
      */
     public static Locale toLocale(String localeString)
     {
-        if ((localeString == null) || (localeString.length() == 0))
+        if (StringUtils.isBlank(localeString))
         {
             Locale locale = Locale.getDefault();
             if(log.isLoggable(Level.WARNING))

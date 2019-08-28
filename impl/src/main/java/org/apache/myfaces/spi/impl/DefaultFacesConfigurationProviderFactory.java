@@ -19,7 +19,7 @@
 package org.apache.myfaces.spi.impl;
 
 import org.apache.myfaces.config.DefaultFacesConfigurationProvider;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigurationProvider;
 import org.apache.myfaces.spi.FacesConfigurationProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
@@ -66,19 +66,8 @@ public class DefaultFacesConfigurationProviderFactory extends FacesConfiguration
             {
                 if (System.getSecurityManager() != null)
                 {
-                    returnValue
-                            = AccessController.doPrivileged(new PrivilegedExceptionAction<FacesConfigurationProvider>()
-                            {
-                                public FacesConfigurationProvider run() throws ClassNotFoundException,
-                                        NoClassDefFoundError,
-                                        InstantiationException,
-                                        IllegalAccessException,
-                                        InvocationTargetException,
-                                        PrivilegedActionException
-                                {
-                                    return resolveFacesConfigurationProviderFromService(extContext);
-                                }
-                            });
+                    returnValue = (FacesConfigurationProvider) AccessController.doPrivileged(
+                            (PrivilegedExceptionAction) () -> resolveFacesConfigurationProviderFromService(extContext));
                 }
                 else
                 {

@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.util;
 
+import org.apache.myfaces.util.lang.ClassUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;

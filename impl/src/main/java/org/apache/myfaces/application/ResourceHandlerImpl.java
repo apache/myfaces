@@ -26,9 +26,9 @@ import org.apache.myfaces.resource.ResourceImpl;
 import org.apache.myfaces.resource.ResourceLoader;
 import org.apache.myfaces.resource.ResourceMeta;
 import org.apache.myfaces.resource.ResourceValidationUtils;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.ExternalContextUtils;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.WebConfigParamUtils;
 
 import javax.faces.application.Resource;
@@ -65,8 +65,8 @@ import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.resource.ContractResource;
 import org.apache.myfaces.resource.ContractResourceLoader;
 import org.apache.myfaces.resource.ResourceCachedInfo;
-import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.SkipMatchIterator;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.util.lang.SkipMatchIterator;
 
 /**
  * DOCUMENT ME!
@@ -545,7 +545,6 @@ public class ResourceHandlerImpl extends ResourceHandler
         Resource resource = null;
         if (libraryName != null)
         {
-            //log.info("libraryName=" + libraryName);
             resource = facesContext.getApplication().getResourceHandler().createResource(resourceName, libraryName);
         }
         else
@@ -609,8 +608,11 @@ public class ResourceHandlerImpl extends ResourceHandler
         {
             if (isConnectionAbort(e))
             {
-                log.log(Level.INFO,"Connection was aborted while loading resource " + resourceName
-                        + " with library " + libraryName);
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.log(Level.FINE, "Connection was aborted while loading resource " + resourceName
+                            + " with library " + libraryName);
+                }
             }
             else
             {
@@ -799,13 +801,13 @@ public class ResourceHandlerImpl extends ResourceHandler
             libraryFound = getResourceLoaderCache().libraryExists(pathToLib);
             if (libraryFound != null)
             {
-                return libraryFound.booleanValue();
+                return libraryFound;
             }
         }
         libraryFound = getResourceLoaderCache().libraryExists(libraryName);
         if (libraryFound != null)
         {
-            return libraryFound.booleanValue();
+            return libraryFound;
         }
         
         if (localePrefix != null)
@@ -1249,8 +1251,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         resourceMeta = resourceLoader.createResourceMeta(
             localePrefix, libraryName, libraryVersion, resourceName, resourceVersion);
 
-        if (resourceMeta != null &&
-            !resourceLoader.resourceExists(resourceMeta))
+        if (resourceMeta != null && !resourceLoader.resourceExists(resourceMeta))
         {
             resourceMeta = null;
         }
@@ -1385,8 +1386,8 @@ public class ResourceHandlerImpl extends ResourceHandler
             return null;
         }
 
-        if (libraryName != null && !ResourceValidationUtils.isValidLibraryName(
-                libraryName, isAllowSlashesLibraryName()))
+        if (libraryName != null
+                && !ResourceValidationUtils.isValidLibraryName(libraryName, isAllowSlashesLibraryName()))
         {
             return null;
         }
@@ -1450,12 +1451,10 @@ public class ResourceHandlerImpl extends ResourceHandler
         //2. Try to localize resource in a non localized path
         if (resourceMeta == null)
         {
-            resourceVersion = resourceLoader
-                    .getResourceVersion(resourceName);
+            resourceVersion = resourceLoader.getResourceVersion(resourceName);
             if (!(resourceVersion != null && ResourceLoader.VERSION_INVALID.equals(resourceVersion)))
             {
-                resourceMeta = resourceLoader.createResourceMeta(null, null, null,
-                         resourceName, resourceVersion);
+                resourceMeta = resourceLoader.createResourceMeta(null, null, null, resourceName, resourceVersion);
             }
 
             if (resourceMeta != null && !resourceLoader.resourceExists(resourceMeta))
@@ -1628,8 +1627,8 @@ public class ResourceHandlerImpl extends ResourceHandler
                             facesContext, loader, resourceName, localePrefix, contract);
                         if (resourceMeta != null)
                         {
-                            resource = new ResourceImpl(resourceMeta, loader, 
-                                getResourceHandlerSupport(), contentType);
+                            resource = new ResourceImpl(resourceMeta, loader,
+                                    getResourceHandlerSupport(), contentType);
 
                             // cache it
                             getResourceLoaderCache().putViewResource(
@@ -1827,7 +1826,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         if (map == null)
         {
             map = new HashMap<>();
-            facesContext.getViewRoot().getTransientStateHelper().putTransient(RENDERED_RESOURCES_SET,map);
+            facesContext.getViewRoot().getTransientStateHelper().putTransient(RENDERED_RESOURCES_SET, map);
         }
         return map;
     }

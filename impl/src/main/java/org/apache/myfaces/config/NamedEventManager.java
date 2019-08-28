@@ -40,10 +40,9 @@ public class NamedEventManager
     
     public NamedEventManager ()
     {
-        events = new HashMap<String, Collection<Class<? extends ComponentSystemEvent>>>();
+        events = new HashMap<>();
         
         // Special spec-defined values.
-        
         addNamedEvent("postAddToView", PostAddToViewEvent.class);
         addNamedEvent("preRenderView", PreRenderViewEvent.class);
         addNamedEvent("preRenderComponent", PreRenderComponentEvent.class);
@@ -62,27 +61,15 @@ public class NamedEventManager
     public void addNamedEvent(String shortName, Class<? extends ComponentSystemEvent> cls)
     {
         String key = shortName;
-        Collection<Class<? extends ComponentSystemEvent>> eventList;
-        
         // Per the spec, if the short name is missing, generate one.
-        
         if (shortName == null)
         {
-            key = getFixedName (cls);
+            key = getFixedName(cls);
         }
         
-        eventList = events.get (key);
-        
-        if (eventList == null)
-        {
-            // First event registered to this short name.
-            
-            eventList = new LinkedList<Class<? extends ComponentSystemEvent>>();
-            
-            events.put (key, eventList);
-        }
-        
-        eventList.add (cls);
+        Collection<Class<? extends ComponentSystemEvent>> eventList = events.computeIfAbsent(key,
+                k -> new LinkedList<>());
+        eventList.add(cls);
     }
     
     /**

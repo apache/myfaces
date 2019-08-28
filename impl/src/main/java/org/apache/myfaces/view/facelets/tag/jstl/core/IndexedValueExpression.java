@@ -27,16 +27,14 @@ import javax.el.ValueExpression;
  */
 public final class IndexedValueExpression extends ValueExpression
 {
-
     private static final long serialVersionUID = 1L;
 
     private final Integer i;
-
     private final ValueExpression orig;
 
     public IndexedValueExpression(ValueExpression orig, int i)
     {
-        this.i = Integer.valueOf(i);
+        this.i = i;
         this.orig = orig;
     }
 

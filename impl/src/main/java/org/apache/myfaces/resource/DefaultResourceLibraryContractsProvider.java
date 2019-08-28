@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.faces.application.ResourceHandler;
 import javax.faces.context.ExternalContext;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.ResourceLibraryContractsProvider;
 import org.apache.myfaces.view.facelets.util.Classpath;
@@ -41,8 +41,7 @@ public class DefaultResourceLibraryContractsProvider extends ResourceLibraryCont
     private static final String CONTRACTS = "contracts";
 
     @Override
-    public Set<String> getExternalContextResourceLibraryContracts(ExternalContext context)
-        throws IOException
+    public Set<String> getExternalContextResourceLibraryContracts(ExternalContext context) throws IOException
     {
         String directory = WebConfigParamUtils.getStringInitParameter(context, 
             ResourceHandler.WEBAPP_CONTRACTS_DIRECTORY_PARAM_NAME, CONTRACTS);
@@ -56,8 +55,9 @@ public class DefaultResourceLibraryContractsProvider extends ResourceLibraryCont
             directory = directory.substring(0, directory.length()-1);
         }
         
-        directory = '/' +directory+ '/';
-        Set<String> contracts = new HashSet<String>();
+        directory = '/' + directory + '/';
+
+        Set<String> contracts = new HashSet<>();
         Set<String> paths = context.getResourcePaths(directory);
         if (paths != null)
         {
@@ -74,12 +74,13 @@ public class DefaultResourceLibraryContractsProvider extends ResourceLibraryCont
     }
 
     @Override
-    public Set<String> getClassloaderResourceLibraryContracts(ExternalContext context)
-        throws IOException
+    public Set<String> getClassloaderResourceLibraryContracts(ExternalContext context) throws IOException
     {
-        Set<String> contracts = new HashSet<String>();
-        URL[] urls = Classpath.search(getClassLoader(), 
-            META_INF_CONTRACTS_PREFIX, META_INF_CONTRACTS_SUFFIX);
+        Set<String> contracts = new HashSet<>();
+
+        URL[] urls = Classpath.search(ClassUtils.getCurrentLoader(this),
+                META_INF_CONTRACTS_PREFIX,
+                META_INF_CONTRACTS_SUFFIX);
         for (int i = 0; i < urls.length; i++)
         {
             String urlString = urls[i].toExternalForm();
@@ -90,16 +91,7 @@ public class DefaultResourceLibraryContractsProvider extends ResourceLibraryCont
                 contracts.add(urlString.substring(slashPos+1, suffixPos));
             }
         }
-        return contracts;
-    }
 
-    private ClassLoader getClassLoader()
-    {
-        ClassLoader loader = ClassUtils.getContextClassLoader();
-        if (loader == null)
-        {
-            loader = this.getClass().getClassLoader();
-        }
-        return loader;
+        return contracts;
     }
 }

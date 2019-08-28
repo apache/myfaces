@@ -57,15 +57,6 @@ Myfaces Core 2.0 on Google App Engine
 +------------------------------------------------------------------------+
       <web-app>
         ...
-                
-        <!-- 
-           We need to set annotation lifecycyle provider manually as org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider.
-           Other providers use some classes that are restricted on Google App Engine. 	
-        -->  
-        <context-param>
-            <param-name>org.apache.myfaces.config.annotation.LifecycleProvider</param-name>
-            <param-value>org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider</param-value>
-        </context-param>
         
         <!--
             Need to set a secret to avoid javax.crypto.BadPaddingException.

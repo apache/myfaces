@@ -66,12 +66,12 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.flow.FlowHandlerImpl;
 import org.apache.myfaces.util.SharedStringBuilder;
-import org.apache.myfaces.util.ClassUtils;
-import org.apache.myfaces.util.HashMapUtils;
-import org.apache.myfaces.util.StringUtils;
-import org.apache.myfaces.util.FilenameUtils;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.util.lang.HashMapUtils;
+import org.apache.myfaces.util.lang.StringUtils;
+import org.apache.myfaces.util.lang.FilenameUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
+import org.apache.myfaces.util.NavigationUtils;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.tag.jsf.PreDisposeViewEvent;
 
@@ -84,6 +84,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
 {
     private static final Logger log = Logger.getLogger(NavigationHandlerImpl.class.getName());
 
+    public static final String CALL_PRE_DISPOSE_VIEW = "oam.CALL_PRE_DISPOSE_VIEW";
+    
     private static final String OUTCOME_NAVIGATION_SB = "oam.navigation.OUTCOME_NAVIGATION_SB";
     
     private static final Pattern AMP_PATTERN = Pattern.compile("&(amp;)?"); // "&" or "&amp;"
@@ -228,8 +230,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 
                 String redirectPath = viewHandler.getRedirectURL(
                         facesContext, toViewId, 
-                        NavigationUtils.getEvaluatedNavigationParameters(facesContext,
-                        navigationCaseParameters) ,
+                        NavigationUtils.getEvaluatedNavigationParameters(facesContext, navigationCaseParameters),
                         navigationCase.isIncludeViewParams());
                 
                 // The spec doesn't say anything about how to handle redirect but it is
@@ -305,7 +306,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 }
 
                 if (facesContext.getViewRoot() != null &&
-                    facesContext.getViewRoot().getAttributes().containsKey("oam.CALL_PRE_DISPOSE_VIEW"))
+                    facesContext.getViewRoot().getAttributes().containsKey(CALL_PRE_DISPOSE_VIEW))
                 {
                     try
                     {
@@ -335,15 +336,12 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 UIViewRoot viewRoot = null;
                 
                 String derivedViewId = viewHandler.deriveViewId(facesContext, newViewId);
-
                 if (derivedViewId != null)
                 {
                     ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, derivedViewId);
-                    
                     if (vdl != null)
                     {
                         ViewMetadata metadata = vdl.getViewMetadata(facesContext, newViewId);
-                        
                         if (metadata != null)
                         {
                             viewRoot = metadata.createMetadataView(facesContext);
@@ -379,10 +377,9 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
     {
         //Apply Flow transition if any
         // Is any flow transition on the way?
-        if (navigationContext != null &&
-            navigationContext.getSourceFlows() != null ||
-            (navigationContext.getTargetFlows() != null &&
-             !navigationContext.getTargetFlows().isEmpty()))
+        if (navigationContext != null
+                && navigationContext.getSourceFlows() != null
+                || (navigationContext.getTargetFlows() != null && !navigationContext.getTargetFlows().isEmpty()))
         {
             FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
             for (int i = 0; i < navigationContext.getTargetFlows().size(); i++)
@@ -881,7 +878,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         targetFlow = flowHandler.getFlow(facesContext, 
             calledFlowDocumentId, 
             flowCallNode.getCalledFlowId(facesContext));
-        if (targetFlow == null && LangUtils.isNotBlank(calledFlowDocumentId))
+        if (targetFlow == null && StringUtils.isNotBlank(calledFlowDocumentId))
         {
             targetFlow = flowHandler.getFlow(facesContext, "", flowCallNode.getCalledFlowId(facesContext));
         }
@@ -1128,7 +1125,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             // Append all params from the queryString
             // (excluding faces-redirect, includeViewParams and faces-include-view-params)
             Map<String, List<String>> params = null;
-            if (LangUtils.isNotBlank(queryString))
+            if (StringUtils.isNotBlank(queryString))
             {
                 String[] splitQueryParams = AMP_PATTERN.split(queryString); // "&" or "&amp;"
                 params = new HashMap<>(splitQueryParams.length, (splitQueryParams.length* 4 + 3) / 3);
@@ -1145,13 +1142,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                             // ignore includeViewParams, faces-include-view-params and faces-redirect
                             continue;
                         }
-                        List<String> paramValues = params.get(splitParam[0]);
-                        if (paramValues == null)
-                        {
-                            // no value for the given parameter yet
-                            paramValues = new ArrayList<String>();
-                            params.put(splitParam[0], paramValues);
-                        }
+                        List<String> paramValues = params.computeIfAbsent(splitParam[0], k -> new ArrayList<>());
                         paramValues.add(splitParam[1]);
                     }
                     else
@@ -1198,7 +1189,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             String cazeOutcome = caze.getFromOutcome();
             String cazeActionRef = caze.getFromAction();
             Boolean cazeIf = caze.getCondition(context);
-            boolean ifMatches = (cazeIf == null ? false : cazeIf.booleanValue());
+            boolean ifMatches = cazeIf == null ? false : cazeIf;
             // JSF 2.0: support conditional navigation via <if>.
             // Use for later cases.
             

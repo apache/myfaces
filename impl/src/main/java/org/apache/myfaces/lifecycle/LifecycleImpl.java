@@ -37,7 +37,7 @@ import javax.faces.lifecycle.ClientWindowFactory;
 import javax.faces.lifecycle.Lifecycle;
 
 import org.apache.myfaces.config.FacesConfigurator;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.util.DebugUtils;
 
 /**
@@ -106,7 +106,7 @@ public class LifecycleImpl extends Lifecycle
     @Override
     public void execute(FacesContext facesContext) throws FacesException
     {
-        if(!facesContext.isProjectStage(ProjectStage.Production))
+        if (!facesContext.isProjectStage(ProjectStage.Production))
         {
             new FacesConfigurator(facesContext.getExternalContext()).update();
         }

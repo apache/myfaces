@@ -27,8 +27,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
-import org.apache.myfaces.application.viewstate.StateCacheFactoryImpl;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.application.viewstate.StateCacheProviderImpl;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.apache.myfaces.spi.StateCacheProvider;
 import org.apache.myfaces.spi.StateCacheProviderFactory;
@@ -53,14 +53,8 @@ public class DefaultStateCacheProviderFactory extends StateCacheProviderFactory
     @Override
     public StateCacheProvider getStateCacheProvider(ExternalContext externalContext)
     {
-        StateCacheProvider stateCacheProvider
-                = (StateCacheProvider) externalContext.getApplicationMap().get(STATE_CACHE_PROVIDER_INSTANCE);
-        if (stateCacheProvider == null)
-        {
-            stateCacheProvider = createStateCacheProvider(externalContext);
-            externalContext.getApplicationMap().put(STATE_CACHE_PROVIDER_INSTANCE, stateCacheProvider);
-        }
-        return stateCacheProvider;
+        return (StateCacheProvider) externalContext.getApplicationMap().computeIfAbsent(STATE_CACHE_PROVIDER_INSTANCE,
+                k -> createStateCacheProvider(externalContext));
     }
     
     @Override
@@ -73,19 +67,8 @@ public class DefaultStateCacheProviderFactory extends StateCacheProviderFactory
         {
             if (System.getSecurityManager() != null)
             {
-                returnValue = AccessController.doPrivileged(new PrivilegedExceptionAction<StateCacheProvider>()
-                        {
-                            @Override
-                            public StateCacheProvider run() throws ClassNotFoundException,
-                                    NoClassDefFoundError,
-                                    InstantiationException,
-                                    IllegalAccessException,
-                                    InvocationTargetException,
-                                    PrivilegedActionException
-                            {
-                                return resolveStateCacheProviderFromService(extContext);
-                            }
-                        });
+                returnValue = (StateCacheProvider) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> resolveStateCacheProviderFromService(extContext));
             }
             else
             {
@@ -122,7 +105,7 @@ public class DefaultStateCacheProviderFactory extends StateCacheProviderFactory
                     getServiceProviderList(STATE_CACHE_PROVIDER);
             externalContext.getApplicationMap().put(STATE_CACHE_PROVIDER_LIST, classList);
         }
-        return ClassUtils.buildApplicationObject(StateCacheProvider.class, classList, new StateCacheFactoryImpl());
+        return ClassUtils.buildApplicationObject(StateCacheProvider.class, classList, new StateCacheProviderImpl());
     }    
     
 }

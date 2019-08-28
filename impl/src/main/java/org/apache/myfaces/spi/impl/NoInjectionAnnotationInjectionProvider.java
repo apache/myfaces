@@ -29,7 +29,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.naming.NamingException;
 
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderException;
 
@@ -56,8 +56,7 @@ public class NoInjectionAnnotationInjectionProvider extends InjectionProvider
     {
         ClassLoader cl = ClassUtils.getContextClassLoader();
         
-        Map<Class,Method[]> metadata = (Map<Class,Method[]>)
-                declaredMethodBeans.get(cl);
+        Map<Class,Method[]> metadata = (Map<Class,Method[]>) declaredMethodBeans.get(cl);
 
         if (metadata == null)
         {

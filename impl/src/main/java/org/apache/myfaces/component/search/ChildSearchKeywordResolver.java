@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.component.search;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.FacesException;
@@ -55,11 +54,10 @@ public class ChildSearchKeywordResolver extends SearchKeywordResolver
                           childNumber + "\". Expression: \"" + keyword + '"');
             }
 
-            List<UIComponent> list = current.getChildren();
             int count = 0;
             for (int i = 0; i < current.getChildCount(); i++)
             {
-                if (! (list.get(i) instanceof UntargetableComponent))
+                if (!(current.getChildren().get(i) instanceof UntargetableComponent))
                 {
                     count++;
                 }

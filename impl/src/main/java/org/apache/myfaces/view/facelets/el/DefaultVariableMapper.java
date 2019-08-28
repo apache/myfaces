@@ -149,7 +149,7 @@ public final class DefaultVariableMapper extends VariableMapperBase
     {
         if (_vars == null)
         {
-            _vars = new HashMap<String, ValueExpression>();
+            _vars = new HashMap<>();
         }
         
         return _vars.put(name, expression);

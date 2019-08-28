@@ -68,7 +68,7 @@ public class WebsocketConfigurator extends ServerEndpointConfig.Configurator
         }
         
         BeanManager beanManager = CDI.current().getBeanManager();
-        WebsocketSessionBean websocketSessionBean = CDIUtils.getInstance(
+        WebsocketSessionBean websocketSessionBean = CDIUtils.get(
                 beanManager, WebsocketSessionBean.class, false);
         
         if (websocketSessionBean != null)

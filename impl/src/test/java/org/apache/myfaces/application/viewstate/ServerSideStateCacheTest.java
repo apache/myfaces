@@ -26,7 +26,6 @@ import java.util.Map;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.StateManager;
 
-import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMultipleRequestsTestCase;
 import org.junit.Assert;
 import org.junit.Test;
@@ -44,7 +43,7 @@ public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
 
         // Initialization
         setupRequest();
-        StateCache stateCache = new ServerSideStateCacheImpl();
+        StateCache stateCache = new StateCacheServerSide();
         tearDownRequest();
         
         Object savedToken;
@@ -117,7 +116,7 @@ public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
 
         // Initialization
         setupRequest();
-        StateCache stateCache = new ClientSideStateCacheImpl();
+        StateCache stateCache = new StateCacheClientSide();
         tearDownRequest();
         
         Object savedToken;
@@ -187,7 +186,7 @@ public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
             // we need to take a viewId which is null -> not existing.
             facesContext.getViewRoot().setViewId(null);
 
-            StateCache stateCache = new ServerSideStateCacheImpl();
+            StateCache stateCache = new StateCacheServerSide();
             Object savedToken = stateCache.saveSerializedView(facesContext, 1);
 
         }
@@ -202,7 +201,7 @@ public class ServerSideStateCacheTest extends AbstractJsfConfigurableMultipleReq
     {
         // Initialization
         setupRequest();
-        StateCache stateCache = new ServerSideStateCacheImpl();
+        StateCache stateCache = new StateCacheServerSide();
         tearDownRequest();
         
         Object savedToken;

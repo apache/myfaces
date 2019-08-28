@@ -37,7 +37,7 @@ import javax.faces.view.facelets.Facelet;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 
-import org.apache.myfaces.util.AbstractAttributeMap;
+import org.apache.myfaces.util.lang.AbstractAttributeMap;
 import org.apache.myfaces.view.facelets.AbstractFacelet;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.PageContext;
@@ -78,7 +78,7 @@ public class TemplateContextImpl extends TemplateContext
     public TemplateContextImpl()
     {
         super();
-        _clients = new ArrayList<TemplateManagerImpl>(4);
+        _clients = new ArrayList<>(4);
         // Parameters registered using ui:param now are bound to template manager instances, because
         // it should follow the same rules as template clients registered here. For example, to resolve
         // params on nested ui:decorate and ui:composition the same rules applies than for ui:define and
@@ -86,7 +86,7 @@ public class TemplateContextImpl extends TemplateContext
         // page context, so when a new context is added (like in a ui:include), all params registered go 
         // to this manager. 
         _clients.add(new TemplateManagerImpl(null, INITIAL_TEMPLATE_CLIENT, true, INITIAL_PAGE_CONTEXT));
-        _lastClient = _clients.get(0); //_clients.getFirst();
+        _lastClient = _clients.get(0);
         _isCacheELExpressions = true;
         _templateClientAttributeMap = new TemplateClientAttributeMap();
         _templateClientKnownParameterMap = new TemplateClientKnownParameterMap();
@@ -110,7 +110,7 @@ public class TemplateContextImpl extends TemplateContext
     public TemplateManager popExtendedClient(final AbstractFaceletContext actx)
     {
         _lastClient = null;
-        return _clients.remove(_clients.size()-1);
+        return _clients.remove(_clients.size() - 1);
     }
     
     @Override
@@ -118,7 +118,7 @@ public class TemplateContextImpl extends TemplateContext
                              final TemplateClient client)
     {
         _clients.add(new TemplateManagerImpl(owner, client, false, actx.getPageContext()));
-        _lastClient = _clients.get(_clients.size()-1);
+        _lastClient = _clients.get(_clients.size() - 1);
     }
 
     @Override
@@ -142,17 +142,11 @@ public class TemplateContextImpl extends TemplateContext
     private final static class TemplateManagerImpl extends TemplateManager implements TemplateClient
     {
         private final AbstractFacelet _owner;
-
         private final TemplateClient _target;
-
         private final boolean _root;
-
         private Set<String> _names;
-        
         private final PageContext _pageContext;
-        
         private Map<String, ValueExpression> _parameters = null;
-        
         private Set<String> _knownParameters;
 
         public TemplateManagerImpl(AbstractFacelet owner, TemplateClient target,
@@ -182,7 +176,7 @@ public class TemplateContextImpl extends TemplateContext
             {
                 if (this._names == null)
                 {
-                    this._names =  new HashSet<String>();
+                    this._names =  new HashSet<>();
                 }
                 this._names.add(testName);
                 boolean found = false;
@@ -210,7 +204,7 @@ public class TemplateContextImpl extends TemplateContext
         {
             if (_parameters == null)
             {
-                _parameters = new HashMap<String, ValueExpression>();
+                _parameters = new HashMap<>();
             }
             return _parameters;
         }
@@ -224,7 +218,7 @@ public class TemplateContextImpl extends TemplateContext
         {
             if (_knownParameters == null)
             {
-                _knownParameters = new HashSet<String>(4);
+                _knownParameters = new HashSet<>(4);
             }
             return _knownParameters;
         }
@@ -410,7 +404,6 @@ public class TemplateContextImpl extends TemplateContext
         @Override
         protected void setAttribute(String key, ValueExpression value)
         {
-            //Use the parent methods.
             throw new UnsupportedOperationException();
         }
 
@@ -423,7 +416,7 @@ public class TemplateContextImpl extends TemplateContext
         @Override
         protected Enumeration<String> getAttributeNames()
         {
-            Set<String> attributeNames = new HashSet<String>();
+            Set<String> attributeNames = new HashSet<>();
             TemplateManagerImpl client;
             for (int i = 0; i < _clients.size(); i++)
             {
@@ -505,7 +498,7 @@ public class TemplateContextImpl extends TemplateContext
         @Override
         protected Enumeration<String> getAttributeNames()
         {
-            Set<String> attributeNames = new HashSet<String>();
+            Set<String> attributeNames = new HashSet<>();
             TemplateManagerImpl client;
             for (int i = 0; i < _clients.size(); i++)
             {

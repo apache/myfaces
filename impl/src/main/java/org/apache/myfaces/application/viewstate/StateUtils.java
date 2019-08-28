@@ -26,7 +26,6 @@ import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.AccessController;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Base64;
 import java.util.Random;
@@ -47,8 +46,8 @@ import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.SerialFactory;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.spi.SerialFactory;
 
 /**
  * <p>This Class exposes a handful of methods related to encryption,
@@ -145,7 +144,7 @@ public final class StateUtils
     /**
      * Defines the factory class name using for serialize/deserialize the view state returned 
      * by state manager into a byte array. The expected class must implement
-     * org.apache.myfaces.util.serial.SerialFactory interface.
+     * {@link org.apache.myfaces.spi.SerialFactory} interface.
      */
     @JSFWebConfigParam(name="org.apache.myfaces.SERIAL_FACTORY", since="1.1",group="state",tags="performance")
     public static final String SERIAL_FACTORY = INIT_PREFIX + "SERIAL_FACTORY";
@@ -537,25 +536,11 @@ public final class StateUtils
                 Object object = null;
                 if (System.getSecurityManager() != null)
                 {
-                    final ObjectInputStream ois = s;
-                    object = AccessController.doPrivileged(new PrivilegedExceptionAction<Object>()
-                    {
-                        //Put IOException and ClassNotFoundException as "checked" exceptions,
-                        //so AccessController wrap them in a PrivilegedActionException
-                        public Object run() throws PrivilegedActionException, 
-                                                   IOException, ClassNotFoundException
-                        {
-                            return ois.readObject();
-                        }
-                    });
-                    // Since s has the same instance as ois,
-                    // we don't need to close it here, rather
-                    // close it on the finally block related to s
-                    // and avoid duplicate close exceptions
-                    // finally
-                    // {
-                    //    ois.close();
-                    // }
+                    final ObjectInputStream finalS = s;
+
+                    //Put IOException and ClassNotFoundException as "checked" exceptions,
+                    //so AccessController wrap them in a PrivilegedActionException
+                    object = AccessController.doPrivileged((PrivilegedExceptionAction) () -> finalS.readObject());
                 }
                 else
                 {

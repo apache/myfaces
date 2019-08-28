@@ -29,11 +29,8 @@ import java.util.Locale;
 public class MetadataViewKeyImpl extends MetadataViewKey implements Serializable
 {
     private final Locale locale;
-    
     private final String viewId;
-    
     private final String[] contracts;
-    
     private final String renderKitId;
 
     public MetadataViewKeyImpl(String viewId, String renderKitId, Locale locale)

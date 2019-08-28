@@ -365,6 +365,31 @@
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
 
+            <!-- generate jandex file for Quarkus but skip classes which depends on JSP dependency -->
+            <plugin>
+                <groupId>org.jboss.jandex</groupId>
+                <artifactId>jandex-maven-plugin</artifactId>
+                <version>1.0.6</version>
+                <executions>
+                  <execution>
+                    <id>make-index</id>
+                    <goals>
+                        <goal>jandex</goal>
+                    </goals>
+                    <configuration>
+                        <fileSets>
+                            <fileSet>
+                                <directory>${project.build.outputDirectory}</directory>
+                                <excludes>
+                                  <exclude>**/*Tag.class</exclude>
+                                </excludes>
+                            </fileSet>
+                        </fileSets>
+                    </configuration>
+                  </execution>
+                </executions>
+            </plugin>
+
         </plugins>
 
     </build>

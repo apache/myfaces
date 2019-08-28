@@ -27,75 +27,68 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFConvert
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  */
 @JSFConverter
-public class FloatConverter
-        implements Converter
+public class FloatConverter implements Converter
 {
-    // FIELDS
     public static final String CONVERTER_ID = "javax.faces.Float";
     public static final String STRING_ID = "javax.faces.converter.STRING";
     public static final String FLOAT_ID = "javax.faces.converter.FloatConverter.FLOAT";
 
-    // CONSTRUCTORS
     public FloatConverter()
     {
     }
 
-    // METHODS
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
     {
-        if (facesContext == null)
+        if (facesContext == null || uiComponent == null)
         {
-            throw new NullPointerException("facesContext");
-        }
-        if (uiComponent == null)
-        {
-            throw new NullPointerException("uiComponent");
+            throw new NullPointerException(); // should never happen
         }
 
-        if (value != null)
+        if (value == null)
         {
-            value = value.trim();
-            if (value.length() > 0)
-            {
-                try
-                {
-                    return Float.valueOf(value);
-                }
-                catch (NumberFormatException e)
-                {
-                    throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
-                                   FLOAT_ID,
-                                   new Object[]{value,"50000",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
-                }
-            }
+            return null;
         }
-        return null;
+        
+        value = value.trim();
+        if (value.length() < 1)
+        {
+            return null;
+        }
+
+        try
+        {
+            return Float.valueOf(value);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
+                           FLOAT_ID,
+                           new Object[]{value,"50000",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
+        }
     }
 
     @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
     {
-        if (facesContext == null)
+        if (facesContext == null || uiComponent == null)
         {
-            throw new NullPointerException("facesContext");
-        }
-        if (uiComponent == null)
-        {
-            throw new NullPointerException("uiComponent");
+            throw new NullPointerException(); // should never happen
         }
 
         if (value == null)
         {
             return "";
         }
+
         if (value instanceof String)
         {
-            return (String)value;
+            return (String) value;
         }
+
         try
         {
-            return Float.toString(((Number)value).floatValue());
+            return Float.toString(((Number) value).floatValue());
         }
         catch (Exception e)
         {

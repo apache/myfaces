@@ -26,7 +26,7 @@ import org.apache.myfaces.config.element.FacesConfig;
 import org.apache.myfaces.config.element.FacesConfigNameSlot;
 import org.apache.myfaces.config.element.LocaleConfig;
 import org.apache.myfaces.config.element.OrderSlot;
-import org.apache.myfaces.config.impl.elements.ConfigOthersSlotImpl;
+import org.apache.myfaces.config.impl.element.ConfigOthersSlotImpl;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -142,7 +142,7 @@ public class FacesConfigUnmarshallerImplTest extends TestCase
         List<OrderSlot> orderList = cfg.getOrdering().getBeforeList();        
         assertEquals("b", ((FacesConfigNameSlot) orderList.get(0)).getName());
         assertEquals("c", ((FacesConfigNameSlot) orderList.get(1)).getName());
-        assertEquals(org.apache.myfaces.config.impl.elements.ConfigOthersSlotImpl.class, orderList.get(2).getClass());
+        assertEquals(org.apache.myfaces.config.impl.element.ConfigOthersSlotImpl.class, orderList.get(2).getClass());
         
         orderList = cfg.getOrdering().getAfterList();        
         assertEquals("d", ((FacesConfigNameSlot) orderList.get(0)).getName());

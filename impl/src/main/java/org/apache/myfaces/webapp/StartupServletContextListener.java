@@ -18,8 +18,7 @@
  */
 package org.apache.myfaces.webapp;
 
-import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
@@ -78,7 +77,7 @@ public class StartupServletContextListener implements ServletContextListener
         _servletContext = event.getServletContext();
 
         Boolean b = (Boolean) _servletContext.getAttribute(FACES_INIT_DONE);
-        if (b == null || b.booleanValue() == false)
+        if (b == null || b == false)
         {
             long start = System.currentTimeMillis();
 
@@ -119,8 +118,6 @@ public class StartupServletContextListener implements ServletContextListener
             dispatchInitializationEvent(event, FACES_INIT_PHASE_PREDESTROY);
 
             _facesInitializer.destroyFaces(_servletContext);
-
-            LifecycleProviderFactory.getLifecycleProviderFactory().release();
 
             // Destroy startup FacesContext, but note we do before publish postdestroy event on
             // plugins and before release factories.

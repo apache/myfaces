@@ -24,6 +24,7 @@ import java.security.PrivilegedExceptionAction;
 import javax.faces.FacesException;
 import javax.faces.FacesWrapper;
 import javax.faces.context.ExternalContext;
+import org.apache.myfaces.spi.impl.DefaultStateCacheProviderFactory;
 import org.apache.myfaces.spi.impl.SpiUtils;
 
 /**
@@ -31,9 +32,6 @@ import org.apache.myfaces.spi.impl.SpiUtils;
  */
 public abstract class StateCacheProviderFactory implements FacesWrapper<StateCacheProviderFactory>
 {
-    protected static final String FACTORY_DEFAULT = 
-        "org.apache.myfaces.spi.impl.DefaultStateCacheProviderFactory";
-    
     private static final String FACTORY_KEY = StateCacheProviderFactory.class.getName();
     
     public static StateCacheProviderFactory getStateCacheProviderFactory(ExternalContext ctx)
@@ -51,22 +49,16 @@ public abstract class StateCacheProviderFactory implements FacesWrapper<StateCac
             if (System.getSecurityManager() != null)
             {
                 final ExternalContext ectx = ctx;
-                lpf = (StateCacheProviderFactory)
-                        AccessController.doPrivileged(new PrivilegedExceptionAction<Object>()
-                        {
-                            @Override
-                            public Object run() throws PrivilegedActionException
-                            {
-                                return SpiUtils.build(ectx,
-                                        StateCacheProviderFactory.class,
-                                        FACTORY_DEFAULT);
-                            }
-                        });
+                lpf = (StateCacheProviderFactory) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx,
+                                StateCacheProviderFactory.class,
+                                DefaultStateCacheProviderFactory.class));
             }
             else
             {
                 lpf = (StateCacheProviderFactory)
-                        SpiUtils.build(ctx, StateCacheProviderFactory.class, FACTORY_DEFAULT);
+                        SpiUtils.build(ctx, StateCacheProviderFactory.class,
+                                DefaultStateCacheProviderFactory.class);
             }
         }
         catch (PrivilegedActionException pae)

@@ -28,7 +28,7 @@ import javax.faces.lifecycle.ClientWindow;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 
-import org.apache.myfaces.application.StateCache;
+import org.apache.myfaces.application.viewstate.StateCache;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.html.util.HTML;

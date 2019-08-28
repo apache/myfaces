@@ -63,21 +63,13 @@ public final class FaceletsProcessingInstructions
                 true, true, true, true, false, true, false, true);
 
     private final boolean consumeXmlDocType;
-    
     private final boolean consumeXmlDeclaration;
-    
     private final boolean consumeProcessingInstructions;
-    
     private final boolean consumeCDataSections;
-    
     private final boolean escapeInlineText;
-    
     private final boolean consumeXMLComments;
-    
     private final boolean swallowCDataContent;
-    
     private final boolean compressSpaces;
-    
     private final boolean html5Doctype;
     
     public static FaceletsProcessingInstructions getProcessingInstructions(String processAs)

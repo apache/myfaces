@@ -22,11 +22,9 @@ package org.apache.myfaces.renderkit.html;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
-import java.util.Set;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIForm;
 import javax.faces.component.UIParameter;
@@ -35,11 +33,11 @@ import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlCommandScript;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.ActionEvent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
 import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
@@ -47,16 +45,12 @@ import org.apache.myfaces.renderkit.html.util.JavascriptContext;
 import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.ComponentUtils;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.SharedStringBuilder;
-import org.apache.myfaces.util.StringUtils;
 
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Command", type = "javax.faces.Script")
 public class HtmlCommandScriptRenderer extends HtmlRenderer
 {
-    private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
-            EnumSet.of(SearchExpressionHint.RESOLVE_CLIENT_SIDE, SearchExpressionHint.RESOLVE_SINGLE_COMPONENT);
-    
     private static final String AJAX_KEY_ONERROR = "onerror";
     private static final String AJAX_KEY_ONEVENT = "onevent";
     private static final String AJAX_KEY_EXECUTE = "execute";
@@ -204,7 +198,8 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         StringBuilder paramBuffer = SharedStringBuilder.get(context.getFacesContext(), AJAX_PARAM_SB, 20);
     
         SearchExpressionContext searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
-                            context.getFacesContext(), context.getComponent(), EXPRESSION_HINTS, null);
+                context.getFacesContext(), context.getComponent(),
+                MyFacesSearchExpressionHints.SET_RESOLVE_CLIENT_SIDE_RESOLVE_SINGLE_COMPONENT, null);
         
         String executes = resolveExpressionsAsParameter(paramBuffer, AJAX_KEY_EXECUTE, commandScript.getExecute(),
                 searchExpressionContext);
@@ -212,7 +207,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                 searchExpressionContext);
 
         String onError = commandScript.getOnerror();
-        if (LangUtils.isNotBlank(onError))
+        if (StringUtils.isNotBlank(onError))
         {
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_ONERROR);
@@ -226,7 +221,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         }
 
         String onEvent = commandScript.getOnevent();
-        if (LangUtils.isNotBlank(onEvent))
+        if (StringUtils.isNotBlank(onEvent))
         {
             paramBuffer.setLength(0);
             paramBuffer.append(AJAX_KEY_ONEVENT);
@@ -344,8 +339,14 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
             }
         }
         
+        List<UIComponent> childrenList = null;
+        if (getChildCount(commandScript) > 0)
+        {
+            childrenList = getChildren(commandScript);
+        }
+
         List<UIParameter> uiParams = HtmlRendererUtils.getValidUIParameterChildren(
-                facesContext, commandScript.getChildren(), false, false);
+                facesContext, childrenList, false, false);
         if (uiParams != null && uiParams.size() > 0)
         {
             for (int i = 0, size = uiParams.size(); i < size; i++)
@@ -402,7 +403,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         for (int i = 0, size = options.size(); i < size; i++)
         {
             String option = options.get(i);
-            if (LangUtils.isNotBlank(option))
+            if (StringUtils.isNotBlank(option))
             {
                 if (!first)
                 {
@@ -422,7 +423,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
     private String resolveExpressionsAsParameter(StringBuilder retVal, String target, String expressions,
             SearchExpressionContext searchExpressionContext)
     {
-        if (LangUtils.isNotBlank(expressions))
+        if (StringUtils.isNotBlank(expressions))
         {
             retVal.setLength(0);
             retVal.append(target);

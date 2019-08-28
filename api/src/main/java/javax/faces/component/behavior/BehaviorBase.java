@@ -174,7 +174,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         }        
         else if (attachedObject instanceof List)
         {
-            List<Object> lst = new ArrayList<Object>(((List<?>) attachedObject).size());
+            List<Object> lst = new ArrayList<>(((List<?>) attachedObject).size());
             for (Object item : (List<?>) attachedObject)
             {
                 if (item != null)
@@ -208,7 +208,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         if (stateObj instanceof _AttachedListStateWrapper)
         {
             List<Object> lst = ((_AttachedListStateWrapper) stateObj).getWrappedStateList();
-            List<Object> restoredList = new ArrayList<Object>(lst.size());
+            List<Object> restoredList = new ArrayList<>(lst.size());
             for (Object item : lst)
             {
                 restoredList.add(restoreAttachedState(context, item));
@@ -265,7 +265,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
         {
             // Lazy instanciation with size 1:
             // the only posibility how to add listener is <f:ajax listener="" /> - there is no <f:ajaxListener/> tag 
-            _behaviorListeners = new _DeltaList<BehaviorListener>(1);
+            _behaviorListeners = new _DeltaList<>(1);
         }
         
         _behaviorListeners.add(listener);

@@ -76,7 +76,7 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
 
         // Generate an identifier for a component. The identifier will be prefixed with UNIQUE_ID_PREFIX,
         // and will be unique within this UIViewRoot.
-        if(seed==null)
+        if(seed == null)
         {
             Integer uniqueIdCounter = (Integer) getStateHelper().get(PropertyKeys.uniqueIdCounter);
             uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
@@ -104,7 +104,8 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
         Map<Object, Object> attributes = context.getAttributes();
         Character separatorChar = (Character) attributes.get(SEPARATOR_CHAR_PARAM_NAME);
         if (separatorChar == null)
-        { // not cached yet for this request
+        { 
+            // not cached yet for this request
             ExternalContext eContext = context.getExternalContext();
             
             // The implementation must determine if there is a <context-param> with the value given by the 
@@ -124,7 +125,8 @@ public class UINamingContainer extends UIComponentBase implements NamingContaine
             // Cache it under standard name
             attributes.put(SEPARATOR_CHAR_PARAM_NAME, separatorChar);
         }
-        return separatorChar.charValue();
+
+        return separatorChar;
     }
     
     @JSFProperty(deferredValueType="java.lang.Boolean")

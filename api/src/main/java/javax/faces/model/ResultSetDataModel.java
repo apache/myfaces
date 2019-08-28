@@ -78,7 +78,7 @@ public class ResultSetDataModel extends DataModel<Map<String,Object>>
      * returned from here, so check the spec before modifying anything here.
      */
     @Override
-    public Map<String,Object> getRowData()
+    public Map<String, Object> getRowData()
     {
         if (_resultSet == null)
         {

@@ -66,7 +66,7 @@ public class RepeatHandler extends ComponentHandler
 
         public TagMetaData(Class<?> type)
         {
-            Set<String> names = new HashSet<String>();
+            Set<String> names = new HashSet<>();
             for (TagAttribute attribute : tag.getAttributes().getAll())
             {
                 if ("class".equals(attribute.getLocalName()))

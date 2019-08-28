@@ -20,6 +20,7 @@ package org.apache.myfaces.spi;
 
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
@@ -36,9 +37,6 @@ import org.apache.myfaces.spi.impl.SpiUtils;
  */
 public abstract class FacesConfigurationProviderFactory
 {
-
-    protected static final String FACTORY_DEFAULT = DefaultFacesConfigurationProviderFactory.class.getName();
-
     private static final String FACTORY_KEY = FacesConfigurationProviderFactory.class.getName();
 
     public static FacesConfigurationProviderFactory getFacesConfigurationProviderFactory(ExternalContext ctx)
@@ -59,21 +57,15 @@ public abstract class FacesConfigurationProviderFactory
             {
                 final ExternalContext ectx = ctx;
                 factory = (FacesConfigurationProviderFactory) AccessController.doPrivileged(
-                        new java.security.PrivilegedExceptionAction<Object>()
-                        {
-                            @Override
-                            public Object run() throws PrivilegedActionException
-                            {
-                                return SpiUtils.build(ectx,
-                                        FacesConfigurationProviderFactory.class,
-                                        FACTORY_DEFAULT);
-                            }
-                        });
+                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx, 
+                                FacesConfigurationProviderFactory.class,
+                                DefaultFacesConfigurationProviderFactory.class));
             }
             else
             {
                 factory = (FacesConfigurationProviderFactory)
-                        SpiUtils.build(ctx, FacesConfigurationProviderFactory.class, FACTORY_DEFAULT);
+                        SpiUtils.build(ctx, FacesConfigurationProviderFactory.class,
+                                DefaultFacesConfigurationProviderFactory.class);
             }
         }
         catch (PrivilegedActionException pae)

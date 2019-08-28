@@ -25,7 +25,7 @@ import java.util.List;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.FacesListener;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 
 public class _DeltaListTest extends AbstractComponentTest
 {

@@ -212,6 +212,6 @@ public class SelectItemsUtils
         {
             return false;
         }
-        return ((Boolean) obj).booleanValue();
+        return ((Boolean) obj);
     }
 }

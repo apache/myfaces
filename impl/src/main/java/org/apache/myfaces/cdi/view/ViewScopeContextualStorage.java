@@ -47,17 +47,15 @@ public class ViewScopeContextualStorage implements Serializable
     private final Map<String, Object> nameBeanKeyMap;
     
     private transient BeanManager beanManager;
-    private final boolean passivationCapable;
-    
+
     private transient volatile boolean deactivated;
 
-    public ViewScopeContextualStorage(BeanManager beanManager, boolean passivationCapable)
+    public ViewScopeContextualStorage(BeanManager beanManager)
     {
         this.beanManager = beanManager;
         this.contextualInstances = new HashMap<>();
         this.nameBeanKeyMap = new HashMap<>();
         this.deactivated = false;
-        this.passivationCapable = passivationCapable;
     }
 
     /**
@@ -90,7 +88,7 @@ public class ViewScopeContextualStorage implements Serializable
         instanceInfo.setContextualInstance(bean.create(creationalContext));
 
         contextualInstances.put(beanKey, instanceInfo);
-        if(bean instanceof Bean)
+        if (bean instanceof Bean)
         {
             String name = ((Bean<T>) bean).getName();
             if (name != null)
@@ -110,7 +108,7 @@ public class ViewScopeContextualStorage implements Serializable
      */
     public <T> Object getBeanKey(Contextual<T> bean)
     {
-        if (passivationCapable)
+        if (bean instanceof PassivationCapable)
         {
             return ((PassivationCapable) bean).getId();
         }
@@ -123,7 +121,7 @@ public class ViewScopeContextualStorage implements Serializable
      */
     public Contextual<?> getBean(FacesContext context, Object beanKey)
     {
-        if (passivationCapable)
+        if (beanKey instanceof String) //if beanKey is a string it is a passivation capable bean id
         {
             if (beanManager == null)
             {

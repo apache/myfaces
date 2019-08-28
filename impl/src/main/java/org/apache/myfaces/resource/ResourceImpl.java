@@ -30,6 +30,7 @@ import javax.faces.application.Resource;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.application.FacesServletMapping;
 import org.apache.myfaces.application.FacesServletMappingUtils;
+import org.apache.myfaces.config.MyfacesConfig;
 
 /**
  * Default implementation for resources
@@ -172,26 +173,18 @@ public class ResourceImpl extends Resource implements ContractResource
         {
             Map<String, String> headers = new HashMap<>(2);
             
-            long lastModified;
-            try
-            {
-                lastModified = ResourceLoaderUtils.getResourceLastModified(this.getURL());
-            }
-            catch (IOException e)
-            {
-                lastModified = -1;
-            }
+            long lastModified = getLastModified(facesContext);
             
             // Here we have two cases: If the file could contain EL Expressions
             // the last modified time is the greatest value between application startup and
             // the value from file.
-            if (this.couldResourceContainValueExpressions() &&
-                    lastModified < _resourceHandlerSupport.getStartupTime())
+            if (this.couldResourceContainValueExpressions()
+                    && lastModified < _resourceHandlerSupport.getStartupTime())
             {
                 lastModified = _resourceHandlerSupport.getStartupTime();
             }            
-            else if (_resourceMeta instanceof AliasResourceMetaImpl &&
-                lastModified < _resourceHandlerSupport.getStartupTime())
+            else if (_resourceMeta instanceof AliasResourceMetaImpl
+                    && lastModified < _resourceHandlerSupport.getStartupTime())
             {
                 // If the resource meta is aliased, the last modified time is the greatest 
                 // value between application startup and the value from file.
@@ -264,20 +257,11 @@ public class ResourceImpl extends Resource implements ContractResource
             return true;
         }
         
-        Long lastModified;
-        try
-        {
-            lastModified = ResourceLoaderUtils.getResourceLastModified(this.getURL());
-        }
-        catch (IOException exception)
-        {
-            lastModified = -1L;
-        }
-        
+        long lastModified = getLastModified(context);
         if (lastModified >= 0)
         {
-            if (this.couldResourceContainValueExpressions() &&
-                    lastModified < _resourceHandlerSupport.getStartupTime())
+            if (this.couldResourceContainValueExpressions()
+                    && lastModified < _resourceHandlerSupport.getStartupTime())
             {
                 lastModified = _resourceHandlerSupport.getStartupTime();
             }
@@ -307,13 +291,48 @@ public class ResourceImpl extends Resource implements ContractResource
         return _resourceMeta;
     }
 
+    @Override
     public boolean isContractResource()
     {
         return _resourceMeta.getContractName() != null;
     }
     
+    @Override
     public String getContractName()
     {
         return _resourceMeta.getContractName();
+    }
+    
+    
+    protected long getLastModified(FacesContext facesContext)
+    {
+        if (MyfacesConfig.getCurrentInstance(facesContext).isResourceCacheLastModified())
+        {
+            Long lastModified = _resourceMeta.getLastModified();
+            if (lastModified == null)
+            {
+                try
+                {
+                    lastModified = ResourceLoaderUtils.getResourceLastModified(this.getURL());
+                }
+                catch (IOException e)
+                {
+                    lastModified = -1L;
+                }
+
+                _resourceMeta.setLastModified(lastModified);
+            }
+
+            return lastModified;
+        }
+
+        try
+        {
+            return ResourceLoaderUtils.getResourceLastModified(this.getURL());
+        }
+        catch (IOException e)
+        {
+            return -1;
+        }
     }
 }

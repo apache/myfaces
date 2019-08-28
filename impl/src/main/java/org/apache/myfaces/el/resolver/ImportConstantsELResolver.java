@@ -39,7 +39,7 @@ import javax.faces.component.UIImportConstants;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewMetadata;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 
 /**
@@ -120,13 +120,8 @@ public final class ImportConstantsELResolver extends ELResolver
             String type = importConstantsMap.get((String)property);
             if (type != null)
             {
-                Map<String, Object> constantsMap = constantsTypeMap.get(type);
-                if (constantsMap == null)
-                {
-                    constantsMap = collectConstants(type);
-                    constantsTypeMap.put(type, constantsMap);
-                }
-                if (constantsMap != null && !constantsMap.isEmpty())
+                Map<String, Object> constantsMap = constantsTypeMap.computeIfAbsent(type, k -> collectConstants(type));
+                if (!constantsMap.isEmpty())
                 {
                     context.setPropertyResolved(true);
                     return constantsMap;

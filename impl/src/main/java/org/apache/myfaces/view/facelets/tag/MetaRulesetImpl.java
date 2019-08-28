@@ -18,8 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag;
 
-import org.apache.myfaces.util.ClassUtils;
-import javax.faces.view.facelets.FaceletContext;
+import org.apache.myfaces.util.lang.ClassUtils;
 import javax.faces.view.facelets.MetaRule;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.Metadata;
@@ -35,7 +34,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.view.facelets.PassthroughRule;
 import org.apache.myfaces.view.facelets.tag.jsf.PassThroughLibrary;
 
@@ -46,8 +45,6 @@ import org.apache.myfaces.view.facelets.tag.jsf.PassThroughLibrary;
  */
 public final class MetaRulesetImpl extends MetaRuleset
 {
-    private final static Metadata NONE = new NullMetadata();
-
     private final static Logger log = Logger.getLogger(MetaRulesetImpl.class.getName());
 
     /**
@@ -83,21 +80,11 @@ public final class MetaRulesetImpl extends MetaRuleset
             // per classloader to hold metadata.
             synchronized (MetaRulesetImpl.metadata)
             {
-                metadata = createMetaData(cl, metadata);
+                metadata = MetaRulesetImpl.metadata.computeIfAbsent(cl,
+                    k -> new HashMap<>());
             }
         }
 
-        return metadata;
-    }
-    
-    private static Map<String, MetadataTarget> createMetaData(ClassLoader cl, Map<String, MetadataTarget> metadata)
-    {
-        metadata = (Map<String, MetadataTarget>) MetaRulesetImpl.metadata.get(cl);
-        if (metadata == null)
-        {
-            metadata = new HashMap<String, MetadataTarget>();
-            MetaRulesetImpl.metadata.put(cl, metadata);
-        }
         return metadata;
     }
 
@@ -301,7 +288,7 @@ public final class MetaRulesetImpl extends MetaRuleset
 
         if (_mappers.isEmpty())
         {
-            return NONE;
+            return NullMetadata.INSTANCE;
         }
         else
         {
@@ -356,17 +343,5 @@ public final class MetaRulesetImpl extends MetaRuleset
         }
 
         return meta;
-    }
-
-    private static class NullMetadata extends Metadata
-    {
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void applyMetadata(FaceletContext ctx, Object instance)
-        {
-            // do nothing
-        }
     }
 }

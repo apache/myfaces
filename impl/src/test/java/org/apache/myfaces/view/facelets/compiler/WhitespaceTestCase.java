@@ -37,7 +37,7 @@ import org.apache.myfaces.renderkit.html.HtmlGridRenderer;
 import org.apache.myfaces.renderkit.html.HtmlMenuRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.apache.myfaces.util.FastWriter;
+import org.apache.myfaces.util.lang.FastWriter;
 import org.junit.Assert;
 import org.junit.Test;
 

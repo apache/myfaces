@@ -50,8 +50,8 @@ public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguag
             Application application = context.getApplication();
 
             // Create a new UIViewRoot object instance using Application.createComponent(UIViewRoot.COMPONENT_TYPE).
-            UIViewRoot newViewRoot = (UIViewRoot) application.createComponent(
-                context, UIViewRoot.COMPONENT_TYPE, null);
+            UIViewRoot newViewRoot = (UIViewRoot) application.createComponent(context,
+                    UIViewRoot.COMPONENT_TYPE, null);
             UIViewRoot oldViewRoot = context.getViewRoot();
             if (oldViewRoot == null)
             {
@@ -93,7 +93,6 @@ public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguag
     public UIViewRoot restoreView(FacesContext context, String viewId)
     {
         checkNull(context, "context");
-        //checkNull(viewId, "viewId");
 
         Application application = context.getApplication();
         

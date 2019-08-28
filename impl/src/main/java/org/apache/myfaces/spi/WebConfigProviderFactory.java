@@ -20,6 +20,7 @@ package org.apache.myfaces.spi;
 
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
@@ -37,9 +38,6 @@ import org.apache.myfaces.spi.impl.SpiUtils;
  */
 public abstract class WebConfigProviderFactory
 {
-
-    protected static final String FACTORY_DEFAULT = DefaultWebConfigProviderFactory.class.getName();
-
     private static final String FACTORY_KEY = WebConfigProviderFactory.class.getName();
 
     public static WebConfigProviderFactory getWebConfigProviderFactory(ExternalContext ctx)
@@ -59,21 +57,15 @@ public abstract class WebConfigProviderFactory
             {
                 final ExternalContext ectx = ctx;
                 factory = (WebConfigProviderFactory) AccessController.doPrivileged(
-                        new java.security.PrivilegedExceptionAction<Object>()
-                        {
-                            @Override
-                            public Object run() throws PrivilegedActionException
-                            {
-                                return SpiUtils.build(ectx,
-                                        WebConfigProviderFactory.class,
-                                        FACTORY_DEFAULT);
-                            }
-                        });
+                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx,
+                                WebConfigProviderFactory.class,
+                                DefaultWebConfigProviderFactory.class));
             }
             else
             {
                 factory = (WebConfigProviderFactory)
-                        SpiUtils.build(ctx, WebConfigProviderFactory.class, FACTORY_DEFAULT);
+                        SpiUtils.build(ctx, WebConfigProviderFactory.class,
+                                DefaultWebConfigProviderFactory.class);
             }
         }
         catch (PrivilegedActionException pae)

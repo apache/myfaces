@@ -33,7 +33,7 @@ import org.apache.myfaces.view.facelets.tag.TagLibrary;
 final class NamespaceUnit extends CompilationUnit
 {
 
-    private final Map<String, String> ns = new HashMap<String, String>();
+    private final Map<String, String> ns = new HashMap<>();
     private final TagLibrary library;
 
     public NamespaceUnit(TagLibrary library)

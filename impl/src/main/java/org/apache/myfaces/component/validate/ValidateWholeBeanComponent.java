@@ -92,7 +92,7 @@ public class ValidateWholeBeanComponent extends UIInput
     
     public void setValidationGroups(String validationGroups)
     {
-        getStateHelper().put(PropertyKeys.validationGroups, validationGroups );
+        getStateHelper().put(PropertyKeys.validationGroups, validationGroups);
     }
     
     @JSFProperty(defaultValue="false")

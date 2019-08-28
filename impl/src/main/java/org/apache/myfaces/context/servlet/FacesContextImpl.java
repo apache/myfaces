@@ -44,8 +44,7 @@ import org.apache.myfaces.cdi.FacesScopeProvider;
 
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.context.ReleasableFacesContextFactory;
-import org.apache.myfaces.context.ReleasableExternalContext;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -101,7 +100,7 @@ public class FacesContextImpl extends FacesContextImplBase
      * @param facesContextFactory
      */
     public FacesContextImpl(final ExternalContext externalContext,
-            final ReleasableExternalContext defaultExternalContext , 
+            final ExternalContext defaultExternalContext , 
             final ReleasableFacesContextFactory facesContextFactory)
     {
         // setCurrentInstance is called in constructor of super class
@@ -111,7 +110,7 @@ public class FacesContextImpl extends FacesContextImplBase
     }
     
     public FacesContextImpl(final ExternalContext externalContext,
-            final ReleasableExternalContext defaultExternalContext , 
+            final ExternalContext defaultExternalContext , 
             final ReleasableFacesContextFactory facesContextFactory,
             final ApplicationFactory applicationFactory,
             final RenderKitFactory renderKitFactory,
@@ -178,15 +177,10 @@ public class FacesContextImpl extends FacesContextImplBase
             _orderedMessages = new ArrayList<>();
         }
         
-        List<FacesMessage> lst = _messages.get(clientId); 
-        if (lst == null)
-        {
-            lst = new ArrayList<>();
-            _messages.put(clientId, lst);
-        }
-        
+        List<FacesMessage> lst = _messages.computeIfAbsent(clientId, k -> new ArrayList<>());         
         lst.add(message);
-        _orderedMessages.add (message);
+
+        _orderedMessages.add(message);
         
         FacesMessage.Severity serSeverity = message.getSeverity();
         if (serSeverity != null)

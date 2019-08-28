@@ -45,7 +45,7 @@ import javax.faces.event.FacesListener;
 import javax.faces.render.Renderer;
 
 import javax.faces.view.Location;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ComponentUtils;
@@ -182,23 +182,6 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
 
 
     //-------------- END TAKEN FROM UICOMPONENTBASE ------------------
-    
-
-    private static Map<String, UIComponent> facets = new HashMap<String, UIComponent>()
-    {
-
-        @Override
-        public void putAll(Map<? extends String, ? extends UIComponent> map)
-        {
-            // do nothing
-        }
-
-        @Override
-        public UIComponent put(String name, UIComponent value)
-        {
-            return null;
-        }
-    };
 
     private UIComponent parent;
 
@@ -305,8 +288,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
     @Override
     public List<UIComponent> getChildren()
     {
-        List<UIComponent> children = Collections.emptyList();
-        return children;
+        return Collections.emptyList();
     }
 
     @Override
@@ -324,7 +306,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
     @Override
     public Map<String, UIComponent> getFacets()
     {
-        return facets;
+        return Collections.emptyMap();
     }
 
     @Override
@@ -339,13 +321,9 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Iterator<UIComponent> getFacetsAndChildren()
-    {
-        // Performance: Collections.emptyList() is Singleton,
-        // but .iterator() creates new instance of AbstractList$Itr every invocation, because
-        // emptyList() extends AbstractList.  Therefore we cannot use Collections.emptyList() here. 
+    { 
         return Collections.emptyIterator();
     }
 

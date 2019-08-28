@@ -40,6 +40,7 @@ import javax.faces.context.Flash;
 import javax.inject.Named;
 import org.apache.myfaces.cdi.view.ViewTransientScoped;
 
+@ApplicationScoped
 public class JsfArtifactProducer
 {
    @Produces
@@ -203,19 +204,6 @@ public class JsfArtifactProducer
    }
    */
 
-   /*
-   Produced by FlowMapProducer now
-   
-   @Produces
-   @Named("flowScope")
-   @FlowMap
-   @FacesScoped
-   public Map<Object, Object> getFlowMap()
-   {
-      return FacesContext.getCurrentInstance().getApplication().getFlowHandler().getCurrentFlowScope();
-   }
-   */
-   
    @Produces
    @Named("viewScope")
    @ViewMap

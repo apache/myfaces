@@ -176,8 +176,7 @@ public class UISelectOne extends UIInput
             {
                 return; // Matched & Required false, so return ok.
             }
-            if (! _SelectItemsUtil.isNoSelectionOption(context, this, value, 
-                    items.iterator(), converter))
+            if (! _SelectItemsUtil.isNoSelectionOption(context, this, value, items.iterator(), converter))
             {
                 return; // Matched & Required true & No-selection did NOT match, so return ok.
             }

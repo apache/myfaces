@@ -148,7 +148,7 @@ Tutorial : Configuring MyFaces 2 to run on Google App Engine with IntelliJ IDEA
 
   [[2]] Now, we will add the MyFaces jars as an "External Library". I did this step to solve 
         compilation problems in my managed beans. Without explicitly adding an External Library, "javax.faces" 
-        namespace is not visible in my managed beans –which we will create in the next steps- even if the jars 
+        namespace is not visible in my managed beans ï¿½which we will create in the next steps- even if the jars 
         exist in "WEB-INF/lib". I am sure an experienced IDEA user can solve this problem in a better way.
 
     [[a]] Right-click on the project and select "Module Settings".
@@ -202,7 +202,7 @@ Tutorial : Configuring MyFaces 2 to run on Google App Engine with IntelliJ IDEA
 
 [images/gaetutorial-idea/myfaces2-gae-idea-tut-22-jar-verification.jpg] MyFaces Jar Verification
 
-    [[e]] Put el-api-x.x.jar and el-impl-1.1.jar –which you've downloaded at step 3 of 
+    [[e]] Put el-api-x.x.jar and el-impl-1.1.jar ï¿½which you've downloaded at step 3 of 
           "Downloading and Configuration" section- into "WEB-INF/lib".
 
 [images/gaetutorial-idea/myfaces2-gae-idea-tut-23-paste-el-jars.jpg] Paste EL Jars
@@ -214,19 +214,6 @@ Tutorial : Configuring MyFaces 2 to run on Google App Engine with IntelliJ IDEA
 +---------------------------------------------------------------------------------------------------------+
 <web-app ...
    ...
-   <!--
-      We need to set annotation lifecycle provider manually as org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider.
-      Other providers use some classes that are restricted on Google App Engine.    
-   --> 
-   <context-param>
-      <param-name>
-         org.apache.myfaces.config.annotation.LifecycleProvider
-      </param-name>
-      <param-value>
-         org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider
-      </param-value>
-   </context-param>
-
    <!--
       Need to set a secret to avoid javax.crypto.BadPaddingException.
       "param-value" must be Base64 encoded.

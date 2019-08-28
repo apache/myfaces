@@ -28,7 +28,7 @@ import java.util.List;
 import javax.faces.context.ExternalContext;
 import org.apache.myfaces.config.MyfacesConfig;
 
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.FaceletConfigResourceProvider;
 import org.apache.myfaces.util.ContainerUtils;
 import org.apache.myfaces.config.util.GAEUtils;
@@ -54,7 +54,7 @@ public class DefaultFaceletConfigResourceProvider extends FaceletConfigResourceP
     public Collection<URL> getFaceletTagLibConfigurationResources(
             ExternalContext context) throws IOException
     {
-        List<URL> urlSet = new ArrayList<URL>();
+        List<URL> urlSet = new ArrayList<>();
         
         String jarFilesToScanParam = MyfacesConfig.getCurrentInstance(context).getGaeJsfJarFiles();
         jarFilesToScanParam = jarFilesToScanParam != null ? jarFilesToScanParam.trim() : null;
@@ -62,8 +62,8 @@ public class DefaultFaceletConfigResourceProvider extends FaceletConfigResourceP
             jarFilesToScanParam != null &&
             jarFilesToScanParam.length() > 0)
         {
-            Collection<URL> urlsGAE = GAEUtils.searchInWebLib(
-                    context, getClassLoader(), jarFilesToScanParam, META_INF_PREFIX, FACELET_TAGLIB_SUFFIX);
+            Collection<URL> urlsGAE = GAEUtils.searchInWebLib(context, ClassUtils.getCurrentLoader(this),
+                    jarFilesToScanParam, META_INF_PREFIX, FACELET_TAGLIB_SUFFIX);
             if (urlsGAE != null)
             {
                 urlSet.addAll(urlsGAE);
@@ -72,19 +72,10 @@ public class DefaultFaceletConfigResourceProvider extends FaceletConfigResourceP
         else
         {
             //Scan files inside META-INF ending with .faces-config.xml
-            URL[] urls = Classpath.search(getClassLoader(), META_INF_PREFIX, FACELET_TAGLIB_SUFFIX);
+            URL[] urls = Classpath.search(ClassUtils.getCurrentLoader(this), META_INF_PREFIX, FACELET_TAGLIB_SUFFIX);
             Collections.addAll(urlSet, urls);
         }
         return urlSet;
     }
 
-    private ClassLoader getClassLoader()
-    {
-        ClassLoader loader = ClassUtils.getContextClassLoader();
-        if (loader == null)
-        {
-            loader = this.getClass().getClassLoader();
-        }
-        return loader;
-    }
 }

@@ -40,7 +40,7 @@ public class HtmlBodyClientBehaviorRendererTest extends AbstractClientBehaviorTe
     {
         super.setUp();
         attrs = (HtmlRenderedClientEventAttr[]) 
-            org.apache.myfaces.util.ArrayUtils.concat( 
+            org.apache.myfaces.util.lang.ArrayUtils.concat( 
                     HtmlClientEventAttributesUtil.generateClientBehaviorEventAttrs(),
                 new HtmlRenderedClientEventAttr[]{
                     new HtmlRenderedClientEventAttr(HTML.ONLOAD_ATTR, ClientBehaviorEvents.LOAD),

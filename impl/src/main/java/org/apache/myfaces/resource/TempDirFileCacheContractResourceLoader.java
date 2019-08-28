@@ -266,7 +266,6 @@ public class TempDirFileCacheContractResourceLoader extends ContractResourceLoad
     
     public static class FileProducer 
     {
-        
         public volatile boolean created = false;
         
         public FileProducer()

@@ -21,7 +21,7 @@ package org.apache.myfaces.renderkit;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 
 public class ContentTypeUtils
 {

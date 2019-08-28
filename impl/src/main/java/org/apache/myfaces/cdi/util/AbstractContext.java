@@ -39,7 +39,7 @@ public abstract class AbstractContext implements Context
     /**
      * Whether the Context is for a passivating scope.
      */
-    private final boolean passivatingScope;
+    private boolean passivatingScope;
 
     protected AbstractContext(BeanManager beanManager)
     {

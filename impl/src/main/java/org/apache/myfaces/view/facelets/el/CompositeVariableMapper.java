@@ -35,7 +35,6 @@ public final class CompositeVariableMapper extends VariableMapper
 {
 
     private final VariableMapper var0;
-
     private final VariableMapper var1;
 
     public CompositeVariableMapper(VariableMapper var0, VariableMapper var1)

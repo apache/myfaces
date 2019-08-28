@@ -43,25 +43,15 @@ final class TextUnit extends CompilationUnit
 {
 
     private final StringBuffer buffer;
-
     private final StringBuffer textBuffer;
-
     private final List<Instruction> instructionBuffer;
-
     private final Stack<Tag> tags;
-
     private final List<Object> children;
-
     private boolean startTagOpen;
-
     private final String alias;
-
     private final String id;
-    
     private final List<Object> messages;
-
     private final boolean escapeInlineText;
-
     private final boolean compressSpaces;
 
     public TextUnit(String alias, String id)
@@ -89,6 +79,7 @@ final class TextUnit extends CompilationUnit
         this.compressSpaces = compressSpaces;
     }
 
+    @Override
     public FaceletHandler createFaceletHandler()
     {
         this.flushBufferToConfig(true);
@@ -304,12 +295,11 @@ final class TextUnit extends CompilationUnit
         TagAttribute[] attrs = tag.getAttributes().getAll();
         if (attrs.length > 0)
         {
-            for (int i = 0; i < attrs.length; i++)
+            for (TagAttribute attr : attrs)
             {
-                String qname = attrs[i].getQName();
-                String value = attrs[i].getValue();
+                String qname = attr.getQName();
+                String value = attr.getValue();
                 this.buffer.append(' ').append(qname).append("=\"").append(value).append('"');
-
                 ELText txt = ELText.parseAllowEmptyString(value);
                 if (txt != null)
                 {
@@ -728,6 +718,7 @@ final class TextUnit extends CompilationUnit
         return 0;
     }
 
+    @Override
     public String toString()
     {
         return "TextUnit[" + this.children.size() + ']';

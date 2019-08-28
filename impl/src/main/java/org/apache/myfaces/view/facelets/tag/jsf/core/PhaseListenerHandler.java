@@ -41,7 +41,7 @@ import javax.faces.view.facelets.TagException;
 import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 @JSFFaceletTag(
@@ -67,15 +67,17 @@ public class PhaseListenerHandler extends TagHandler
         private PhaseListener getInstance()
         {
             PhaseListener instance = null;
-            FacesContext faces = FacesContext.getCurrentInstance();
-            if (faces == null)
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            if (facesContext == null)
             {
                 return null;
             }
+            
             if (this.binding != null)
             {
-                instance = (PhaseListener) binding.getValue(faces.getELContext());
+                instance = (PhaseListener) binding.getValue(facesContext.getELContext());
             }
+            
             if (instance == null && type != null)
             {
                 try
@@ -88,7 +90,7 @@ public class PhaseListenerHandler extends TagHandler
                 }
                 if (this.binding != null)
                 {
-                    binding.setValue(faces.getELContext(), instance);
+                    binding.setValue(facesContext.getELContext(), instance);
                 }
             }
             return instance;
@@ -124,7 +126,6 @@ public class PhaseListenerHandler extends TagHandler
     }
 
     private final TagAttribute binding;
-
     private final String listenerType;
 
     public PhaseListenerHandler(TagConfig config)

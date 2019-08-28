@@ -53,9 +53,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
     private static final String ITEM_DISABLED_PROP = JSFAttr.ITEM_DISABLED_ATTR;
     private static final String ITEM_LABEL_ESCAPED_PROP = JSFAttr.ITEM_LABEL_ESCAPED_ATTR;
     private static final String NO_SELECTION_VALUE_PROP = JSFAttr.NO_SELECTION_VALUE_ATTR;
-    
-    private static final Iterator<UIComponent> _EMPTY_UICOMPONENT_ITERATOR = Collections.<UIComponent>emptyIterator();
-    
+
     private final Iterator<UIComponent> _children;
     private Iterator<? extends Object> _nestedItems;
     private SelectItem _nextItem;
@@ -68,7 +66,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
     {
         _children = selectItemsParent.getChildCount() > 0
                 ? selectItemsParent.getChildren().iterator()
-                : _EMPTY_UICOMPONENT_ITERATOR;
+                : Collections.<UIComponent>emptyIterator();
         _facesContext = facesContext;
     }
 
@@ -162,7 +160,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                     // value is any kind of array (primitive or non-primitive)
                     // --> we have to use class Array to get the values
                     final int length = Array.getLength(value);
-                    Collection<Object> items = new ArrayList<Object>(length);
+                    Collection<Object> items = new ArrayList<>(length);
                     for (int i = 0; i < length; i++)
                     {
                         items.add(Array.get(value, i));
@@ -179,7 +177,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 else if (value instanceof Map)
                 {
                     Map<Object, Object> map = ((Map<Object, Object>) value);
-                    Collection<SelectItem> items = new ArrayList<SelectItem>(map.size());
+                    Collection<SelectItem> items = new ArrayList<>(map.size());
                     for (Map.Entry<Object, Object> entry : map.entrySet())
                     {
                         items.add(new SelectItem(entry.getValue(), entry.getKey().toString()));

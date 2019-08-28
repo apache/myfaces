@@ -23,7 +23,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchKeywordContext;
 import javax.faces.component.search.SearchKeywordResolver;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 
 public class CompositeSearchKeywordResolver extends SearchKeywordResolver
 {

@@ -37,13 +37,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,6 +70,16 @@ public final class FactoryFinder
     public static final String SEARCH_EXPRESSION_CONTEXT_FACTORY = 
             "javax.faces.component.search.SearchExpressionContextFactory";
 
+    private static final Map<String, Class<?>> FACTORY_MAPPING = new HashMap<String, Class<?>>();
+    private static final ClassLoader MYFACES_CLASSLOADER;
+    
+    private static final String INJECTION_PROVIDER_INSTANCE = "oam.spi.INJECTION_PROVIDER_KEY";
+    private static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
+    private static final String BEAN_ENTRY_CLASS_NAME = "org.apache.myfaces.cdi.util.BeanEntry";
+
+    private static final Logger LOGGER = Logger.getLogger(FactoryFinder.class.getName());
+    
+    
     /**
      * used as a monitor for itself and _factories. Maps in this map are used as monitors for themselves and the
      * corresponding maps in _factories.
@@ -89,61 +98,30 @@ public final class FactoryFinder
     private static Map<ClassLoader, Map<String, Object>> factories
             = new HashMap<ClassLoader, Map<String, Object>>();
 
-    private static final Set<String> VALID_FACTORY_NAMES = new HashSet<String>();
-    private static final Map<String, Class<?>> ABSTRACT_FACTORY_CLASSES = new HashMap<String, Class<?>>();
-    private static final ClassLoader MYFACES_CLASSLOADER;
-    
-    private static final String INJECTION_PROVIDER_INSTANCE = "oam.spi.INJECTION_PROVIDER_KEY";
-    private static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
-    private static final String BEAN_ENTRY_CLASS_NAME = "org.apache.myfaces.cdi.util.BeanEntry";
-
-    private static final Logger LOGGER = Logger.getLogger(FactoryFinder.class.getName());
-
     static
-    {
-        VALID_FACTORY_NAMES.add(APPLICATION_FACTORY);
-        VALID_FACTORY_NAMES.add(EXCEPTION_HANDLER_FACTORY);
-        VALID_FACTORY_NAMES.add(EXTERNAL_CONTEXT_FACTORY);
-        VALID_FACTORY_NAMES.add(FACES_CONTEXT_FACTORY);
-        VALID_FACTORY_NAMES.add(LIFECYCLE_FACTORY);
-        VALID_FACTORY_NAMES.add(PARTIAL_VIEW_CONTEXT_FACTORY);
-        VALID_FACTORY_NAMES.add(RENDER_KIT_FACTORY);
-        VALID_FACTORY_NAMES.add(TAG_HANDLER_DELEGATE_FACTORY);
-        VALID_FACTORY_NAMES.add(VIEW_DECLARATION_LANGUAGE_FACTORY);
-        VALID_FACTORY_NAMES.add(VISIT_CONTEXT_FACTORY);
-        VALID_FACTORY_NAMES.add(FACELET_CACHE_FACTORY);
-        VALID_FACTORY_NAMES.add(FLASH_FACTORY);
-        VALID_FACTORY_NAMES.add(FLOW_HANDLER_FACTORY);
-        VALID_FACTORY_NAMES.add(CLIENT_WINDOW_FACTORY);
-        VALID_FACTORY_NAMES.add(SEARCH_EXPRESSION_CONTEXT_FACTORY);
-        
-        ABSTRACT_FACTORY_CLASSES.put(APPLICATION_FACTORY, ApplicationFactory.class);
-        ABSTRACT_FACTORY_CLASSES.put(EXCEPTION_HANDLER_FACTORY, ExceptionHandlerFactory.class);
-        ABSTRACT_FACTORY_CLASSES.put(EXTERNAL_CONTEXT_FACTORY, ExternalContextFactory.class);
-        ABSTRACT_FACTORY_CLASSES.put(FACES_CONTEXT_FACTORY, FacesContextFactory.class);
-        ABSTRACT_FACTORY_CLASSES.put(LIFECYCLE_FACTORY, LifecycleFactory.class);
-        ABSTRACT_FACTORY_CLASSES.put(PARTIAL_VIEW_CONTEXT_FACTORY, PartialViewContextFactory.class);
-        ABSTRACT_FACTORY_CLASSES.put(RENDER_KIT_FACTORY, RenderKitFactory.class);
-        ABSTRACT_FACTORY_CLASSES.put(TAG_HANDLER_DELEGATE_FACTORY, TagHandlerDelegateFactory.class);
-        ABSTRACT_FACTORY_CLASSES.put(VIEW_DECLARATION_LANGUAGE_FACTORY, ViewDeclarationLanguageFactory.class);
-        ABSTRACT_FACTORY_CLASSES.put(VISIT_CONTEXT_FACTORY, VisitContextFactory.class);
-        ABSTRACT_FACTORY_CLASSES.put(FACELET_CACHE_FACTORY, FaceletCacheFactory.class);
-        ABSTRACT_FACTORY_CLASSES.put(FLASH_FACTORY, FlashFactory.class);
-        ABSTRACT_FACTORY_CLASSES.put(FLOW_HANDLER_FACTORY, FlowHandlerFactory.class);
-        ABSTRACT_FACTORY_CLASSES.put(CLIENT_WINDOW_FACTORY, ClientWindowFactory.class);
-        ABSTRACT_FACTORY_CLASSES.put(SEARCH_EXPRESSION_CONTEXT_FACTORY, SearchExpressionContextFactory.class);
+    {        
+        FACTORY_MAPPING.put(APPLICATION_FACTORY, ApplicationFactory.class);
+        FACTORY_MAPPING.put(EXCEPTION_HANDLER_FACTORY, ExceptionHandlerFactory.class);
+        FACTORY_MAPPING.put(EXTERNAL_CONTEXT_FACTORY, ExternalContextFactory.class);
+        FACTORY_MAPPING.put(FACES_CONTEXT_FACTORY, FacesContextFactory.class);
+        FACTORY_MAPPING.put(LIFECYCLE_FACTORY, LifecycleFactory.class);
+        FACTORY_MAPPING.put(PARTIAL_VIEW_CONTEXT_FACTORY, PartialViewContextFactory.class);
+        FACTORY_MAPPING.put(RENDER_KIT_FACTORY, RenderKitFactory.class);
+        FACTORY_MAPPING.put(TAG_HANDLER_DELEGATE_FACTORY, TagHandlerDelegateFactory.class);
+        FACTORY_MAPPING.put(VIEW_DECLARATION_LANGUAGE_FACTORY, ViewDeclarationLanguageFactory.class);
+        FACTORY_MAPPING.put(VISIT_CONTEXT_FACTORY, VisitContextFactory.class);
+        FACTORY_MAPPING.put(FACELET_CACHE_FACTORY, FaceletCacheFactory.class);
+        FACTORY_MAPPING.put(FLASH_FACTORY, FlashFactory.class);
+        FACTORY_MAPPING.put(FLOW_HANDLER_FACTORY, FlowHandlerFactory.class);
+        FACTORY_MAPPING.put(CLIENT_WINDOW_FACTORY, ClientWindowFactory.class);
+        FACTORY_MAPPING.put(SEARCH_EXPRESSION_CONTEXT_FACTORY, SearchExpressionContextFactory.class);
         try
         {
             ClassLoader classLoader;
             if (System.getSecurityManager() != null)
             {
-                classLoader = (ClassLoader) AccessController.doPrivileged(new java.security.PrivilegedExceptionAction()
-                {
-                    public Object run()
-                    {
-                        return FactoryFinder.class.getClassLoader();
-                    }
-                });
+                classLoader = (ClassLoader) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> FactoryFinder.class.getClassLoader());
             }
             else
             {
@@ -291,7 +269,6 @@ public final class FactoryFinder
         synchronized (registeredFactoryNames)
         {
             factoryClassNames = registeredFactoryNames.get(classLoader);
-
             if (factoryClassNames == null)
             {
                 String message
@@ -315,33 +292,18 @@ public final class FactoryFinder
                 throw new IllegalArgumentException("no factory " + factoryName + " configured for this application.");
             }
 
-            factoryMap = factories.get(classLoader);
-
-            if (factoryMap == null)
-            {
-                factoryMap = new HashMap<String, Object>();
-                factories.put(classLoader, factoryMap);
-            }
+            factoryMap = factories.computeIfAbsent(classLoader, k -> new HashMap<>());
         }
 
         List beanEntryStorage;
-
-        synchronized (factoryClassNames)
-        {
-            beanEntryStorage = (List)factoryMap.get(INJECTED_BEAN_STORAGE_KEY);
-
-            if (beanEntryStorage == null)
-            {
-                beanEntryStorage = new CopyOnWriteArrayList();
-                factoryMap.put(INJECTED_BEAN_STORAGE_KEY, beanEntryStorage);
-            }
-        }
-
         List<String> classNames;
         Object factory;
         Object injectionProvider;
         synchronized (factoryClassNames)
         {
+            beanEntryStorage = (List)factoryMap.computeIfAbsent(INJECTED_BEAN_STORAGE_KEY,
+                    k -> new CopyOnWriteArrayList());
+            
             factory = factoryMap.get(factoryName);
             if (factory != null)
             {
@@ -363,7 +325,7 @@ public final class FactoryFinder
         }
 
         // release lock while calling out
-        factory = newFactoryInstance(ABSTRACT_FACTORY_CLASSES.get(factoryName), 
+        factory = newFactoryInstance(FACTORY_MAPPING.get(factoryName), 
             classNames.iterator(), classLoader, injectionProvider, beanEntryStorage);
 
         synchronized (factoryClassNames)
@@ -536,15 +498,7 @@ public final class FactoryFinder
                             current = delegationConstructor.newInstance(new Object[] { current });
                             injectAndPostConstruct(injectionProvider, current, injectedBeanStorage);
                         }
-                        catch (InstantiationException e)
-                        {
-                            throw new FacesException(e);
-                        }
-                        catch (IllegalAccessException e)
-                        {
-                            throw new FacesException(e);
-                        }
-                        catch (InvocationTargetException e)
+                        catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
                         {
                             throw new FacesException(e);
                         }
@@ -560,15 +514,7 @@ public final class FactoryFinder
 
             return current;
         }
-        catch (ClassNotFoundException e)
-        {
-            throw new FacesException(e);
-        }
-        catch (InstantiationException e)
-        {
-            throw new FacesException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
         {
             throw new FacesException(e);
         }
@@ -651,25 +597,13 @@ public final class FactoryFinder
                 return;
             }
 
-            factoryClassNames = registeredFactoryNames.get(classLoader);
-
-            if (factoryClassNames == null)
-            {
-                factoryClassNames = new HashMap<String, List<String>>();
-                registeredFactoryNames.put(classLoader, factoryClassNames);
-            }
+            factoryClassNames = registeredFactoryNames.computeIfAbsent(classLoader,
+                    k -> new HashMap<>());
         }
 
         synchronized (factoryClassNames)
         {
-            List<String> classNameList = factoryClassNames.get(factoryName);
-
-            if (classNameList == null)
-            {
-                classNameList = new ArrayList<String>();
-                factoryClassNames.put(factoryName, classNameList);
-            }
-
+            List<String> classNameList = factoryClassNames.computeIfAbsent(factoryName, k -> new ArrayList<>());
             classNameList.add(implName);
         }
     }
@@ -777,7 +711,7 @@ public final class FactoryFinder
 
     private static void checkFactoryName(String factoryName)
     {
-        if (!VALID_FACTORY_NAMES.contains(factoryName))
+        if (!FACTORY_MAPPING.containsKey(factoryName))
         {
             throw new IllegalArgumentException("factoryName '" + factoryName + '\'');
         }
@@ -790,13 +724,8 @@ public final class FactoryFinder
             ClassLoader classLoader = null;
             if (System.getSecurityManager() != null)
             {
-                classLoader = (ClassLoader) AccessController.doPrivileged(new java.security.PrivilegedExceptionAction()
-                {
-                    public Object run()
-                    {
-                        return Thread.currentThread().getContextClassLoader();
-                    }
-                });
+                classLoader = (ClassLoader) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> Thread.currentThread().getContextClassLoader());
             }
             else
             {

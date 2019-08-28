@@ -28,7 +28,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.myfaces.context.servlet.ServletExternalContextImpl;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)

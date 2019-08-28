@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.webapp;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.FacesConfigValidator;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -61,21 +60,19 @@ import javax.faces.push.PushContext;
 import javax.websocket.DeploymentException;
 import javax.websocket.server.ServerContainer;
 import javax.websocket.server.ServerEndpointConfig;
-import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.push.EndpointImpl;
 import org.apache.myfaces.push.WebsocketConfigurator;
 import org.apache.myfaces.push.WebsocketFacesInit;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.FacesFlowProvider;
 import org.apache.myfaces.spi.FacesFlowProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinder;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
-import org.apache.myfaces.context.ReleasableExternalContext;
-import org.apache.myfaces.util.LangUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  * Performs common initialization tasks.
@@ -84,30 +81,12 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
 {
     private static final Logger log = Logger.getLogger(AbstractFacesInitializer.class.getName());
 
-    /**
-     * Indicate if log all web config params should be done before initialize the webapp. 
-     * <p>
-     * If is set in "auto" mode, web config params are only logged on "Development" and "Production" project stages.
-     * </p> 
-     */
-    @JSFWebConfigParam(expectedValues="true, auto, false", defaultValue="auto")
-    public static final String INIT_PARAM_LOG_WEB_CONTEXT_PARAMS = "org.apache.myfaces.LOG_WEB_CONTEXT_PARAMS";
-    public static final String INIT_PARAM_LOG_WEB_CONTEXT_PARAMS_DEFAULT ="auto";
-    
-    /**
-     * This parameter enables automatic extensionless mapping for all JSF views.
-     */
-    @JSFWebConfigParam(since="2.3", expectedValues = "true, false", defaultValue = "false")
-    public static final String INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING = 
-            "org.apache.myfaces.AUTOMATIC_EXTENSIONLESS_MAPPING";
-    public static final boolean INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT = false;
-    
     public static final String CDI_BEAN_MANAGER_INSTANCE = "oam.cdi.BEAN_MANAGER_INSTANCE";
     
     private static final String CDI_SERVLET_CONTEXT_BEAN_MANAGER_ATTRIBUTE = 
         "javax.enterprise.inject.spi.BeanManager";
 
-    private static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
+    public static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
 
     /**
      * Performs all necessary initialization tasks like configuring this JSF
@@ -232,9 +211,9 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             //Start ViewPoolProcessor if necessary
             ViewPoolProcessor.initialize(facesContext);
             
-            Boolean automaticExtensionlessMapping = WebConfigParamUtils.getBooleanInitParameter(
-                    externalContext, INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING, 
-                    INIT_PARAM_AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT);
+            Boolean automaticExtensionlessMapping = WebConfigParamUtils.getBooleanInitParameter(externalContext,
+                    MyfacesConfig.AUTOMATIC_EXTENSIONLESS_MAPPING, 
+                    MyfacesConfig.AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT);
             if (Boolean.TRUE.equals(automaticExtensionlessMapping))
             {
                 initAutomaticExtensionlessMapping(facesContext, servletContext);
@@ -289,8 +268,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         if (ExternalSpecifications.isCDIAvailable(externalContext))
         {
             BeanManager beanManager = CDIUtils.getBeanManager(externalContext);
-            CdiAnnotationProviderExtension extension =
-                    BeanProvider.getContextualReference(beanManager, CdiAnnotationProviderExtension.class, true);
+            CdiAnnotationProviderExtension extension = CDIUtils.getOptional(beanManager,
+                    CdiAnnotationProviderExtension.class);
             if (extension != null)
             {
                 extension.release();
@@ -376,7 +355,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         // clear UIViewParameter default renderer map
         try
         {
-            Class<?> c = Class.forName("javax.faces.component.UIViewParameter");
+            Class<?> c = ClassUtils.classForName("javax.faces.component.UIViewParameter");
             Method m = c.getDeclaredMethod("releaseRenderer");
             m.setAccessible(true);
             m.invoke(null);
@@ -440,7 +419,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     {
         String expressionFactoryClassName
                 = MyfacesConfig.getCurrentInstance(externalContext).getExpressionFactory();
-        if (LangUtils.isNotBlank(expressionFactoryClassName))
+        if (StringUtils.isNotBlank(expressionFactoryClassName))
         {
             if (log.isLoggable(Level.FINE))
             {
@@ -522,7 +501,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, startup);
         ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
         FacesContext facesContext = new StartupFacesContextImpl(externalContext, 
-                (ReleasableExternalContext) externalContext, exceptionHandler, startup);
+                externalContext, exceptionHandler, startup);
         
         // If getViewRoot() is called during application startup or shutdown, 
         // it should return a new UIViewRoot with its locale set to Locale.getDefault().
@@ -582,8 +561,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         }
         if (beanManager != null)
         {
-            externalContext.getApplicationMap().put(CDI_BEAN_MANAGER_INSTANCE,
-                beanManager);
+            externalContext.getApplicationMap().put(CDI_BEAN_MANAGER_INSTANCE, beanManager);
         }
     }
 
@@ -730,34 +708,31 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         
         if (Boolean.TRUE.equals(b))
         {
-            // According to https://tyrus.java.net/documentation/1.13/index/deployment.html section 3.2
-            // we can create a websocket programmatically, getting ServerContainer instance from this location
+            // get the instance
+            // see https://docs.oracle.com/javaee/7/api/javax/websocket/server/ServerContainer.html)
             final ServerContainer serverContainer = (ServerContainer) 
-                    servletContext.getAttribute("javax.websocket.server.ServerContainer");
-
-            if (serverContainer != null)
+                    servletContext.getAttribute(ServerContainer.class.getName());
+            if (serverContainer == null)
             {
-                try 
-                {
-                    serverContainer.addEndpoint(ServerEndpointConfig.Builder
-                            .create(EndpointImpl.class, EndpointImpl.JAVAX_FACES_PUSH_PATH)
-                            .configurator(new WebsocketConfigurator(externalContext)).build());
-                    
-                    //Init LRU cache
-                    WebsocketFacesInit.initWebsocketSessionLRUCache(externalContext);
-                    
-                    externalContext.getApplicationMap().put("org.apache.myfaces.push", "true");
-                }
-                catch (DeploymentException e)
-                {
-                    log.log(Level.INFO, "Exception on Initialize Websocket Endpoint: ", e);
-                }
+                log.log(Level.INFO, "f:websocket support enabled but cannot found websocket ServerContainer instance "
+                        + "on current context.");
+                return;
             }
-            else
+
+            try 
             {
-                log.log(Level.INFO, "f:websocket support enabled but cannot found websocket ServerContainer instance "+
-                        "on current context. If websocket library is available, please include a FakeEndpoint instance "
-                        + "into your code to force enable it (Tyrus users).");
+                serverContainer.addEndpoint(ServerEndpointConfig.Builder
+                        .create(EndpointImpl.class, EndpointImpl.JAVAX_FACES_PUSH_PATH)
+                        .configurator(new WebsocketConfigurator(externalContext)).build());
+
+                //Init LRU cache
+                WebsocketFacesInit.initWebsocketSessionLRUCache(externalContext);
+
+                externalContext.getApplicationMap().put("org.apache.myfaces.push", "true");
+            }
+            catch (DeploymentException e)
+            {
+                log.log(Level.INFO, "Exception on initialize Websocket Endpoint: ", e);
             }
         }
     }
@@ -766,6 +741,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
      * 
      * @since 2.3
      * @param facesContext 
+     * @param servletContext
      */
     protected void initAutomaticExtensionlessMapping(FacesContext facesContext, ServletContext servletContext)
     {

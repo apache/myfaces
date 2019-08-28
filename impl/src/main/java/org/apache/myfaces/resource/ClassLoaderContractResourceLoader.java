@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.Iterator;
 import javax.faces.application.ResourceVisitOption;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
  *

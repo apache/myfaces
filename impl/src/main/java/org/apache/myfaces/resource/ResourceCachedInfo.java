@@ -27,7 +27,6 @@ import java.net.URL;
 public class ResourceCachedInfo
 {
     private final URL url;
-
     private final String requestPath;
 
     public ResourceCachedInfo(URL url, String requestPath)

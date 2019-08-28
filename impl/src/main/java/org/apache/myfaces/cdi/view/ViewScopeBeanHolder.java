@@ -32,11 +32,9 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
-import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.context.ExceptionHandlerImpl;
-import org.apache.myfaces.context.ReleasableExternalContext;
 
 /**
  *
@@ -83,22 +81,7 @@ public class ViewScopeBeanHolder implements Serializable
      */
     public ViewScopeContextualStorage getContextualStorage(BeanManager beanManager, String viewScopeId)
     {
-        ViewScopeContextualStorage contextualStorage = storageMap.get(viewScopeId);
-        if (contextualStorage == null)
-        {
-            synchronized (this)
-            {            
-                contextualStorage = storageMap.get(viewScopeId);
-                if (contextualStorage == null)
-                {
-                    MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance();
-                    contextualStorage = new ViewScopeContextualStorage(beanManager,
-                            myfacesConfig.isCdiPassivationSupported());
-                    storageMap.put(viewScopeId, contextualStorage);
-                }
-            }
-        }
-        return contextualStorage;
+        return storageMap.computeIfAbsent(viewScopeId, k -> new ViewScopeContextualStorage(beanManager));
     }
 
     public Map<String, ViewScopeContextualStorage> getStorageMap()
@@ -161,7 +144,7 @@ public class ViewScopeBeanHolder implements Serializable
                         ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
                         ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
                         facesContext = new StartupFacesContextImpl(externalContext, 
-                                (ReleasableExternalContext) externalContext, exceptionHandler, false);
+                                externalContext, exceptionHandler, false);
                         ViewScopeContextImpl.destroyAllActive(contextualStorage, facesContext);
                     }
                     finally
@@ -207,7 +190,7 @@ public class ViewScopeBeanHolder implements Serializable
                     ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
                     ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
                     facesContext = new StartupFacesContextImpl(externalContext, 
-                            (ReleasableExternalContext) externalContext, exceptionHandler, false);
+                            externalContext, exceptionHandler, false);
                     for (ViewScopeContextualStorage contextualStorage : oldContextStorages.values())
                     {
                         ViewScopeContextImpl.destroyAllActive(contextualStorage, facesContext);

@@ -424,7 +424,7 @@
             </dependency>
 
 
-            <!-- tomcat 7 support (LifecycleProvider) -->
+            <!-- tomcat 7 support (InjectionProvider) -->
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-catalina</artifactId>

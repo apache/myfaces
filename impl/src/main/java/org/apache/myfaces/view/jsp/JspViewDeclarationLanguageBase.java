@@ -157,7 +157,7 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
         // handle character encoding as of section 2.5.2.2 of JSF 1.1
         if(null != externalContext.getSession(false))
         {
-          externalContext.getSessionMap().put(ViewHandler.CHARACTER_ENCODING_KEY, 
+            externalContext.getSessionMap().put(ViewHandler.CHARACTER_ENCODING_KEY, 
                   externalContext.getResponseCharacterEncoding());
         }
 

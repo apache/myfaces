@@ -60,79 +60,64 @@ public class RequestViewContext
         this.requestViewMetadata = new RequestViewMetadata();
     }
 
-    static public RequestViewContext getCurrentInstance()
+    public static RequestViewContext getCurrentInstance()
     {
-        FacesContext ctx = FacesContext.getCurrentInstance();
-        return getCurrentInstance(ctx);
+        return getCurrentInstance(FacesContext.getCurrentInstance());
     }
     
-    static public RequestViewContext getCurrentInstance(FacesContext ctx)
+    public static RequestViewContext getCurrentInstance(FacesContext ctx)
     {
         return getCurrentInstance(ctx, ctx.getViewRoot());
     }
     
     @SuppressWarnings("unchecked")
-    static public RequestViewContext getCurrentInstance(FacesContext ctx, UIViewRoot root)
+    public static RequestViewContext getCurrentInstance(FacesContext ctx, UIViewRoot root)
     {
-        Map<UIViewRoot, RequestViewContext> map
-                = (Map<UIViewRoot, RequestViewContext>) ctx.getAttributes().get(VIEW_CONTEXT_KEY);
-        RequestViewContext rvc = null;        
-        if (map == null)
+        return getCurrentInstance(ctx, root, true);
+    }
+    
+    public static RequestViewContext getCurrentInstance(FacesContext ctx, UIViewRoot root, boolean create)
+    {
+        Map<UIViewRoot, RequestViewContext> map =
+                (Map<UIViewRoot, RequestViewContext>) ctx.getAttributes().get(VIEW_CONTEXT_KEY);
+        
+        if (create && map == null)
         {
             map = new HashMap<>();
-            rvc = new RequestViewContext();
-            map.put(root, rvc);
             ctx.getAttributes().put(VIEW_CONTEXT_KEY, map);
-            return rvc;
         }
-        else
+
+        if (map != null)
         {
-            rvc = map.get(root); 
-            if (rvc == null)
+            RequestViewContext rvc = map.get(root); 
+            if (create && rvc == null)
             {
                 rvc = new RequestViewContext();
                 map.put(root, rvc);
             }
             return rvc;
         }
-    }
-    
-    static public RequestViewContext getCurrentInstance(FacesContext ctx, UIViewRoot root, boolean create)
-    {
-        if (create)
-        {
-            return getCurrentInstance(ctx, root);
-        }
-        Map<UIViewRoot, RequestViewContext> map
-                = (Map<UIViewRoot, RequestViewContext>) ctx.getAttributes().get(VIEW_CONTEXT_KEY);
-        if (map != null)
-        {
-            return map.get(root);
-        }
+
         return null;
     }
     
-    static public RequestViewContext newInstance(RequestViewMetadata rvm)
+    public static RequestViewContext newInstance(RequestViewMetadata rvm)
     {
         RequestViewContext clone = new RequestViewContext(rvm.cloneInstance());
         return clone;
     }
     
-    static public void setCurrentInstance(FacesContext ctx, UIViewRoot root, RequestViewContext rvc)
+    public static void setCurrentInstance(FacesContext ctx, UIViewRoot root, RequestViewContext rvc)
     {
         Map<UIViewRoot, RequestViewContext> map
                 = (Map<UIViewRoot, RequestViewContext>) ctx.getAttributes().get(VIEW_CONTEXT_KEY);
         if (map == null)
         {
             map = new HashMap<>();
-            rvc = new RequestViewContext();
-            map.put(root, rvc);
             ctx.getAttributes().put(VIEW_CONTEXT_KEY, map);
         }
-        else
-        {
-            map.put(root, rvc);
-        }
+
+        map.put(root, rvc);
     }
 
     public boolean isResourceDependencyAlreadyProcessed(ResourceDependency dependency)
@@ -171,16 +156,13 @@ public class RequestViewContext
             renderTargetMap = new HashMap<>(8);
         }
         renderTargetMap.put(target, value);
+
         if (renderTargetMapComponents == null)
         {
             renderTargetMapComponents = new HashMap<>(8);
         }
-        List<UIComponent> componentList = renderTargetMapComponents.get(target);
-        if (componentList == null)
-        {
-            componentList = new ArrayList<>(8);
-            renderTargetMapComponents.put(target, componentList);
-        }
+        
+        List<UIComponent> componentList = renderTargetMapComponents.computeIfAbsent(target, k -> new ArrayList<>(8));
         if (!componentList.contains(component))
         {
             componentList.add(component);

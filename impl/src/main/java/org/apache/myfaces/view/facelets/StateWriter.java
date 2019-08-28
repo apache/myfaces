@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets;
 
-import org.apache.myfaces.util.FastWriter;
+import org.apache.myfaces.util.lang.FastWriter;
 
 import javax.faces.context.FacesContext;
 import java.io.IOException;
@@ -83,8 +83,6 @@ public final class StateWriter extends Writer
     
     private static void setCurrentInstance(StateWriter stateWriter, FacesContext facesContext)
     {
-        //FacesContext facesContext = FacesContext.getCurrentInstance();
-
         if (stateWriter == null)
         {
             facesContext.getAttributes().remove(CURRENT_WRITER_KEY);

@@ -322,7 +322,7 @@ public class DefaultTagDecorator implements TagDecorator
                 //convertedTagAttributes[j] = tagAttribute;
                 
                 convertedNamespace = PASS_THROUGH_NAMESPACE;
-                qname = "p:"+tagAttribute.getLocalName();
+                qname = "p:" + tagAttribute.getLocalName();
                 
                 convertedTagAttributes[j] = new TagAttributeImpl(tagAttribute.getLocation(), 
                     convertedNamespace, tagAttribute.getLocalName(), qname, tagAttribute.getValue());
@@ -522,7 +522,7 @@ public class DefaultTagDecorator implements TagDecorator
                              // if namespace is the same match
                              return this;
                          }
-                         else if (attributeNS == "" && attr.getNamespace() == null)
+                         else if ("".equals(attributeNS) && attr.getNamespace() == null)
                          {
                              // if namespace is empty match
                              return this;

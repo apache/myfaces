@@ -24,6 +24,7 @@ import java.security.PrivilegedExceptionAction;
 import javax.faces.FacesException;
 import javax.faces.FacesWrapper;
 import javax.faces.context.ExternalContext;
+import org.apache.myfaces.spi.impl.DefaultViewScopeProviderFactory;
 import org.apache.myfaces.spi.impl.SpiUtils;
 
 /**
@@ -31,10 +32,7 @@ import org.apache.myfaces.spi.impl.SpiUtils;
  * @author Leonardo Uribe
  */
 public abstract class ViewScopeProviderFactory implements FacesWrapper<ViewScopeProviderFactory>
-{
-    protected static final String FACTORY_DEFAULT = 
-        "org.apache.myfaces.spi.impl.DefaultViewScopeProviderFactory";
-    
+{    
     private static final String FACTORY_KEY = ViewScopeProviderFactory.class.getName();
     
     public static ViewScopeProviderFactory getViewScopeHandlerFactory(ExternalContext ctx)
@@ -52,22 +50,16 @@ public abstract class ViewScopeProviderFactory implements FacesWrapper<ViewScope
             if (System.getSecurityManager() != null)
             {
                 final ExternalContext ectx = ctx;
-                lpf = (ViewScopeProviderFactory)
-                        AccessController.doPrivileged(new PrivilegedExceptionAction<Object>()
-                        {
-                            @Override
-                            public Object run() throws PrivilegedActionException
-                            {
-                                return SpiUtils.build(ectx,
-                                        ViewScopeProviderFactory.class,
-                                        FACTORY_DEFAULT);
-                            }
-                        });
+                lpf = (ViewScopeProviderFactory) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> SpiUtils.build(ectx,
+                                ViewScopeProviderFactory.class,
+                                DefaultViewScopeProviderFactory.class));
             }
             else
             {
                 lpf = (ViewScopeProviderFactory)
-                        SpiUtils.build(ctx, ViewScopeProviderFactory.class, FACTORY_DEFAULT);
+                        SpiUtils.build(ctx, ViewScopeProviderFactory.class,
+                                DefaultViewScopeProviderFactory.class);
             }
         }
         catch (PrivilegedActionException pae)

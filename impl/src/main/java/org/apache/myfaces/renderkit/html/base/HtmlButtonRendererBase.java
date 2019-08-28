@@ -21,7 +21,6 @@ package org.apache.myfaces.renderkit.html.base;
 import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -140,10 +139,7 @@ public class HtmlButtonRendererBase extends HtmlRenderer
         {
             childrenList = getChildren(uiComponent);
         }
-        else
-        {
-           childrenList = Collections.emptyList();
-        }
+
         List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
                 facesContext, childrenList, false, false);
 

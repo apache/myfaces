@@ -36,29 +36,24 @@ import org.apache.myfaces.util.ComponentUtils;
 public final class CheckDuplicateIdFaceletUtils
 {
     
-    public static void checkIdsStatefulComponents (FacesContext context, UIComponent view)
+    public static void checkIdsStatefulComponents(FacesContext context, UIComponent view)
     {
-        checkIdsStatefulComponents (context, view, new HashSet<String>());
+        checkIdsStatefulComponents(context, view, new HashSet<>());
     }
 
-    private static void checkIdsStatefulComponents (FacesContext context, 
-            UIComponent component, Set<String> existingIds)
+    private static void checkIdsStatefulComponents(FacesContext context, UIComponent component,
+            Set<String> existingIds)
     {
-        String id;
-        
         if (component == null)
         {
             return;
         }
-        
+
         // Need to use this form of the client ID method so we generate the client-side ID.
-        
-        id = component.getClientId (context);
-        
+        String id = component.getClientId(context);
         if (!existingIds.add (id))
         {
-            DuplicateIdException duplicateIdException = createAndQueueException(context, component, id);
-            throw duplicateIdException;
+            throw createAndQueueException(context, component, id);
         }
         
         int facetCount = component.getFacetCount();
@@ -84,40 +79,35 @@ public final class CheckDuplicateIdFaceletUtils
 
     public static void checkIds(FacesContext context, UIComponent view)
     {
-        checkIds (context, view, new HashSet<String>());
+        checkIds(context, view, new HashSet<>());
     }
     
     private static void checkIds(FacesContext context, UIComponent component, Set<String> existingIds)
     {
-        String id;
-        
         if (component == null)
         {
             return;
         }
-        
+
         // Need to use this form of the client ID method so we generate the client-side ID.
-        
-        id = component.getClientId (context);
-        
-        if (!existingIds.add (id))
+        String id = component.getClientId(context);
+        if (!existingIds.add(id))
         {
-            DuplicateIdException duplicateIdException = createAndQueueException(context, component, id);
-            throw duplicateIdException;
+            throw createAndQueueException(context, component, id);
         }
-        
+
         int facetCount = component.getFacetCount();
         if (facetCount > 0)
         {
             for (UIComponent facet : component.getFacets().values())
             {
-                checkIds (context, facet, existingIds);
+                checkIds(context, facet, existingIds);
             }
         }
         for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
         {
             UIComponent child = component.getChildren().get(i);
-            checkIds (context, child, existingIds);
+            checkIds(context, child, existingIds);
         }
     }
 
@@ -143,17 +133,14 @@ public final class CheckDuplicateIdFaceletUtils
             // doesn't come from Facelets VDL.
             message += ComponentUtils.getPathToComponent(firstComponent);
         }
-        
-        // 2) we store the first commponent in exception attributes
-        DuplicateIdException duplicateIdException = new DuplicateIdException 
-                (message, firstComponent, component);
-        
-        ExceptionQueuedEventContext exceptionContext 
-        = new ExceptionQueuedEventContext(context, duplicateIdException,
-                component, context.getCurrentPhaseId());
 
-        
+        // 2) we store the first commponent in exception attributes
+        DuplicateIdException duplicateIdException = new DuplicateIdException(message, firstComponent, component);
+
+        ExceptionQueuedEventContext exceptionContext = new ExceptionQueuedEventContext(context, duplicateIdException,
+                component, context.getCurrentPhaseId());
         context.getApplication().publishEvent(context, ExceptionQueuedEvent.class, exceptionContext);
+
         return duplicateIdException;
     }
 }

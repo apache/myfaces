@@ -35,7 +35,7 @@ public class ExternalContextResourceLoaderIterator implements Iterator<String>
     private String basePath;
     private int maxDepth;
     private ResourceVisitOption[] options;
-    private Deque<String> stack = new LinkedList<String>();
+    private Deque<String> stack;
 
     public ExternalContextResourceLoaderIterator(FacesContext facesContext, String path,
              int maxDepth, ResourceVisitOption... options)
@@ -65,6 +65,10 @@ public class ExternalContextResourceLoaderIterator implements Iterator<String>
                 }
                 else
                 {
+                    if (stack == null)
+                    {
+                        stack = new LinkedList<>();
+                    }
                     stack.add(p);
                 }
             }
@@ -90,75 +94,78 @@ public class ExternalContextResourceLoaderIterator implements Iterator<String>
     @Override
     public boolean hasNext()
     {
-        if (!stack.isEmpty())
+        if (stack == null || stack.isEmpty())
         {
-            String path = stack.peek();
-            do 
+            return false;
+        }
+
+        String path = stack.peek();
+        do 
+        {
+            if (ResourceLoaderUtils.isDirectory(path))
             {
-                if (ResourceLoaderUtils.isDirectory(path))
+                path = stack.pop();
+                int depth = ResourceLoaderUtils.getDepth(path);
+                if (depth < maxDepth)
                 {
-                    path = stack.pop();
-                    int depth = ResourceLoaderUtils.getDepth(path);
-                    if (depth < maxDepth)
+                    Set<String> list = facesContext.getExternalContext().getResourcePaths(path);
+                    if (list != null)
                     {
-                        Set<String> list = facesContext.getExternalContext().getResourcePaths(path);
-                        if (list != null)
-                        {
-                            stack.addAll(list);
-                        }
-                    }
-                    if (!stack.isEmpty())
-                    {
-                        path = stack.peek();
-                    }
-                    else
-                    {
-                        path = null;
+                        stack.addAll(list);
                     }
                 }
+                if (!stack.isEmpty())
+                {
+                    path = stack.peek();
+                }
+                else
+                {
+                    path = null;
+                }
             }
-            while (path != null && ResourceLoaderUtils.isDirectory(path) && !stack.isEmpty());
-
-            return !stack.isEmpty();
         }
-        return false;
+        while (path != null && ResourceLoaderUtils.isDirectory(path) && !stack.isEmpty());
+
+        return !stack.isEmpty();
     }
 
     @Override
     public String next()
     {
-        if (!stack.isEmpty())
+        if (stack == null || stack.isEmpty())
         {
-            String path = stack.pop();
-            do 
+            return null;
+        }
+
+        String path = stack.pop();
+        do 
+        {
+            if (ResourceLoaderUtils.isDirectory(path))
             {
-                if (ResourceLoaderUtils.isDirectory(path))
+                int depth = ResourceLoaderUtils.getDepth(path);
+                if (depth < maxDepth)
                 {
-                    int depth = ResourceLoaderUtils.getDepth(path);
-                    if (depth < maxDepth)
+                    Set<String> list = facesContext.getExternalContext().getResourcePaths(path);
+                    if (list != null)
                     {
-                        Set<String> list = facesContext.getExternalContext().getResourcePaths(path);
-                        if (list != null)
-                        {
-                            stack.addAll(list);
-                        }
-                    }
-                    if (!stack.isEmpty())
-                    {
-                        path = stack.pop();
-                    }
-                    else
-                    {
-                        path = null;
+                        stack.addAll(list);
                     }
                 }
+                if (!stack.isEmpty())
+                {
+                    path = stack.pop();
+                }
+                else
+                {
+                    path = null;
+                }
             }
-            while (path != null && ResourceLoaderUtils.isDirectory(path) && !stack.isEmpty());
-            if (path != null)
-            {
-                // Calculate name based on url, basePath.
-                return path;
-            }
+        }
+        while (path != null && ResourceLoaderUtils.isDirectory(path) && !stack.isEmpty());
+        if (path != null)
+        {
+            // Calculate name based on url, basePath.
+            return path;
         }
         return null;
     }

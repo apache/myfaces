@@ -102,7 +102,6 @@ public class RenderFacetHandler extends ComponentHandler
             BeanDescriptor beanDescriptor = beanInfo.getBeanDescriptor(); 
 
             List<String> facetList = (List<String>) beanDescriptor.getValue(RENDER_FACET_USED);
-            
             if (facetList == null)
             {
                 //2. If not found create it and set

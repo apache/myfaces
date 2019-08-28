@@ -50,16 +50,15 @@ import javax.faces.render.FacesRenderer;
 import javax.faces.validator.FacesValidator;
 import javax.faces.view.facelets.FaceletsResourceResolver;
 
-import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProviderFactory;
 import org.apache.myfaces.util.ContainerUtils;
 import org.apache.myfaces.config.util.GAEUtils;
 import org.apache.myfaces.config.util.JarUtils;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.view.facelets.util.Classpath;
 
 /**
@@ -146,9 +145,12 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         if (MyfacesConfig.getCurrentInstance(ctx).isUseCdiForAnnotationScanning())
         {
             BeanManager beanManager = CDIUtils.getBeanManager(ctx);
-            CdiAnnotationProviderExtension extension =
-                    BeanProvider.getContextualReference(beanManager, CdiAnnotationProviderExtension.class, false);
-            return extension.getMap();
+            CdiAnnotationProviderExtension extension = CDIUtils.getOptional(beanManager,
+                    CdiAnnotationProviderExtension.class);
+            if (extension != null)
+            {
+                return extension.getMap();
+            }
         }
 
         Map<Class<? extends Annotation>,Set<Class<?>>> map = new HashMap<>();
@@ -206,24 +208,26 @@ public class DefaultAnnotationProvider extends AnnotationProvider
     @Override
     public Set<URL> getBaseUrls(ExternalContext context) throws IOException
     {
+        ClassLoader cl = ClassUtils.getCurrentLoader(this);
+        
         String jarFilesToScanParam = MyfacesConfig.getCurrentInstance(context).getGaeJsfJarFiles();
         jarFilesToScanParam = jarFilesToScanParam != null ? jarFilesToScanParam.trim() : null;
         if (ContainerUtils.isRunningOnGoogleAppEngine(context) && 
             jarFilesToScanParam != null &&
             jarFilesToScanParam.length() > 0)
         {
-            Set<URL> urlSet = new HashSet<URL>();
+            Set<URL> urlSet = new HashSet<>();
             
             //This usually happens when maven-jetty-plugin is used
             //Scan jars looking for paths including META-INF/faces-config.xml
-            Enumeration<URL> resources = getClassLoader().getResources(FACES_CONFIG_IMPLICIT);
+            Enumeration<URL> resources = cl.getResources(FACES_CONFIG_IMPLICIT);
             while (resources.hasMoreElements())
             {
                 urlSet.add(resources.nextElement());
             }
             
             Collection<URL> urlsGAE = GAEUtils.searchInWebLib(
-                    context, getClassLoader(), jarFilesToScanParam, META_INF_PREFIX, FACES_CONFIG_SUFFIX);
+                    context, cl, jarFilesToScanParam, META_INF_PREFIX, FACES_CONFIG_SUFFIX);
             if (urlsGAE != null)
             {
                 urlSet.addAll(urlsGAE);
@@ -236,14 +240,14 @@ public class DefaultAnnotationProvider extends AnnotationProvider
 
             //This usually happens when maven-jetty-plugin is used
             //Scan jars looking for paths including META-INF/faces-config.xml
-            Enumeration<URL> resources = getClassLoader().getResources(FACES_CONFIG_IMPLICIT);
+            Enumeration<URL> resources = cl.getResources(FACES_CONFIG_IMPLICIT);
             while (resources.hasMoreElements())
             {
                 urlSet.add(resources.nextElement());
             }
 
             //Scan files inside META-INF ending with .faces-config.xml
-            URL[] urls = Classpath.search(getClassLoader(), META_INF_PREFIX, FACES_CONFIG_SUFFIX);
+            URL[] urls = Classpath.search(cl, META_INF_PREFIX, FACES_CONFIG_SUFFIX);
             Collections.addAll(urlSet, urls);
 
             return urlSet;
@@ -512,7 +516,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
             List<Class<?>> list)
     {
 
-        ClassLoader loader = getClassLoader();
+        ClassLoader loader = ClassUtils.getCurrentLoader(this);
 
         Set<String> paths = externalContext.getResourcePaths(prefix);
         if(paths == null)
@@ -671,16 +675,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
 
         return null;
     }
-        
-    private ClassLoader getClassLoader()
-    {
-        ClassLoader loader = ClassUtils.getContextClassLoader();
-        if (loader == null)
-        {
-            loader = this.getClass().getClassLoader();
-        }
-        return loader;
-    }
+
     
     private void processClass(Map<Class<? extends Annotation>,Set<Class<?>>> map, Class<?> clazz)
     {
@@ -690,18 +685,8 @@ public class DefaultAnnotationProvider extends AnnotationProvider
             Class<? extends Annotation> annotationClass = anno.annotationType();
             if (JSF_ANNOTATION_CLASSES.contains(annotationClass))
             {
-                Set<Class<?>> set = map.get(annotationClass);
-                if (set == null)
-                {
-                    set = new HashSet<Class<?>>();
-                    set.add(clazz);
-                    map.put(annotationClass, set);
-                }
-                else
-                {
-                    set.add(clazz);
-                }
-
+                Set<Class<?>> set = map.computeIfAbsent(annotationClass, k -> new HashSet<>());
+                set.add(clazz);
             }
         }
     }

@@ -64,9 +64,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.config.ConfigFilesXmlValidationUtils;
 import org.apache.myfaces.config.DefaultFacesConfigurationProvider;
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider;
 import org.apache.myfaces.config.element.FacesConfig;
-import org.apache.myfaces.config.impl.elements.FactoryImpl;
+import org.apache.myfaces.config.impl.element.FactoryImpl;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.lifecycle.ViewNotFoundException;
 import org.apache.myfaces.test.core.annotation.DeclareFacesConfig;
@@ -74,7 +73,7 @@ import org.apache.myfaces.test.core.annotation.TestConfig;
 import org.apache.myfaces.test.core.mock.DefaultContext;
 import org.apache.myfaces.test.core.mock.MockInitialContextFactory;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigurationProvider;
 import org.apache.myfaces.spi.impl.DefaultFacesConfigurationProviderFactory;
 import org.apache.myfaces.spi.impl.NoInjectionAnnotationInjectionProvider;
@@ -242,8 +241,6 @@ public abstract class AbstractMyFacesTestCase
         servletContext.addInitParameter(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,"-1");
         servletContext.addInitParameter("org.apache.myfaces.spi.InjectionProvider", 
             NoInjectionAnnotationInjectionProvider.class.getName());
-        servletContext.addInitParameter("org.apache.myfaces.config.annotation.LifecycleProvider",
-            NoInjectionAnnotationLifecycleProvider.class.getName());
     }
     
     /**
@@ -701,18 +698,18 @@ public abstract class AbstractMyFacesTestCase
                 }
                 else
                 {
-                    if (BEFORE_RENDER_STEP == step.intValue())
+                    if (BEFORE_RENDER_STEP == step)
                     {
                         executeBuildViewCycle(facesContext);
                         executeViewHandlerRender(facesContext);
                         executeAfterRender(facesContext);
                     }
-                    else if (BUILD_VIEW_CYCLE_STEP == step.intValue())
+                    else if (BUILD_VIEW_CYCLE_STEP == step)
                     {
                         executeViewHandlerRender(facesContext);
                         executeAfterRender(facesContext);
                     }
-                    else if (VIEWHANDLER_RENDER_STEP == step.intValue())
+                    else if (VIEWHANDLER_RENDER_STEP == step)
                     {
                         executeAfterRender(facesContext);
                     }

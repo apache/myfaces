@@ -35,9 +35,6 @@ import java.security.PrivilegedActionException;
  */
 public abstract class FacesConfigurationMergerFactory
 {
-
-    protected static final String FACTORY_DEFAULT = DefaultFacesConfigurationMergerFactory.class.getName();
-
     private static final String FACTORY_KEY = FacesConfigurationMergerFactory.class.getName();
 
     public static FacesConfigurationMergerFactory getFacesConfigurationMergerFactory(ExternalContext ctx)
@@ -59,21 +56,15 @@ public abstract class FacesConfigurationMergerFactory
             {
                 final ExternalContext ectx = ctx;
                 factory = (FacesConfigurationMergerFactory) AccessController.doPrivileged(
-                        new java.security.PrivilegedExceptionAction<Object>()
-                        {
-                            @Override
-                            public Object run() throws PrivilegedActionException
-                            {
-                                return SpiUtils.build(ectx,
-                                        FacesConfigurationMergerFactory.class,
-                                        FACTORY_DEFAULT);
-                            }
-                        });
+                        (java.security.PrivilegedExceptionAction) () -> SpiUtils.build(ectx,
+                                FacesConfigurationMergerFactory.class,
+                                DefaultFacesConfigurationMergerFactory.class));
             }
             else
             {
                 factory = (FacesConfigurationMergerFactory) SpiUtils
-                        .build(ctx, FacesConfigurationMergerFactory.class, FACTORY_DEFAULT);
+                        .build(ctx, FacesConfigurationMergerFactory.class,
+                                DefaultFacesConfigurationMergerFactory.class);
             }
         }
         catch (PrivilegedActionException pae)

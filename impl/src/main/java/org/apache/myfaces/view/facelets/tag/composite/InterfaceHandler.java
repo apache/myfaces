@@ -145,8 +145,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
         
         // Note that only if ProjectStage is Development, The "displayName",
         // "shortDescription", "expert", "hidden", and "preferred" attributes are exposed
-        final boolean development = FacesContext.getCurrentInstance()
-                .isProjectStage(ProjectStage.Development);
+        final boolean development = FacesContext.getCurrentInstance().isProjectStage(ProjectStage.Development);
         
         // note that we don't have to check the componentType and any unspecified
         // attributes here, because these ones are stored as a ValueExpression in the
@@ -158,7 +157,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
             // Check if all InterfaceDescriptorCreator children are cacheable.
             // If so, we can cache this instance, otherwise not.
             attrHandlerList = 
-                TagHandlerUtils.findNextByType( nextHandler, InterfaceDescriptorCreator.class);
+                TagHandlerUtils.findNextByType(nextHandler, InterfaceDescriptorCreator.class);
             for (InterfaceDescriptorCreator handler : attrHandlerList)
             {
                 if (!handler.isCacheable())
@@ -202,12 +201,10 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
         if ( ((AbstractFaceletContext)ctx).isBuildingCompositeComponentMetadata() )
         {
             FaceletCompositionContext fcc = FaceletCompositionContext.getCurrentInstance(ctx);
-            UIComponent compositeBaseParent
-                    = fcc.getCompositeComponentFromStack();
+            UIComponent compositeBaseParent = fcc.getCompositeComponentFromStack();
             
             CompositeComponentBeanInfo beanInfo = 
                 (CompositeComponentBeanInfo) compositeBaseParent.getAttributes().get(UIComponent.BEANINFO_KEY);
-            
             if (beanInfo == null)
             {
                 if (log.isLoggable(Level.SEVERE))

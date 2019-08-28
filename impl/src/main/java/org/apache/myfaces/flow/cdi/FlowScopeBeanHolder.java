@@ -47,7 +47,6 @@ import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.flow.FlowUtils;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.context.ExceptionHandlerImpl;
-import org.apache.myfaces.context.ReleasableExternalContext;
 
 
 /**
@@ -105,21 +104,7 @@ public class FlowScopeBeanHolder implements Serializable
      */
     public ContextualStorage getContextualStorage(BeanManager beanManager, String flowClientWindowId)
     {
-        ContextualStorage contextualStorage = storageMap.get(flowClientWindowId);
-        if (contextualStorage == null)
-        {
-            synchronized (this)
-            {
-                contextualStorage = storageMap.get(flowClientWindowId);
-                if (contextualStorage == null)
-                {
-                    contextualStorage = new ContextualStorage(beanManager, true, true);
-                    storageMap.put(flowClientWindowId, contextualStorage);
-                }
-            }
-        }
-
-        return contextualStorage;
+        return storageMap.computeIfAbsent(flowClientWindowId, k -> new ContextualStorage(beanManager, true, true));
     }
     
     public ContextualStorage getContextualStorageNoCreate(BeanManager beanManager, String flowClientWindowId)
@@ -137,18 +122,14 @@ public class FlowScopeBeanHolder implements Serializable
         Map<Object, Object> map = null;
         if (create)
         {
-            ContextualStorage contextualStorage = getContextualStorage(
-                beanManager, flowClientWindowId);
-            ContextualInstanceInfo info = contextualStorage.getStorage().get(CURRENT_FLOW_SCOPE_MAP);
-            if (info == null)
-            {
-                info = new ContextualInstanceInfo<Object>();
-                contextualStorage.getStorage().put(CURRENT_FLOW_SCOPE_MAP, info);
-            }
+            ContextualStorage contextualStorage = getContextualStorage(beanManager, flowClientWindowId);
+            ContextualInstanceInfo info = contextualStorage.getStorage().computeIfAbsent(CURRENT_FLOW_SCOPE_MAP,
+                    k -> new ContextualInstanceInfo<>());
+
             map = (Map<Object, Object>) info.getContextualInstance();
             if (map == null)
             {
-                map = new HashMap<Object,Object>();
+                map = new HashMap<>();
                 info.setContextualInstance(map);
             }
         }
@@ -236,8 +217,8 @@ public class FlowScopeBeanHolder implements Serializable
                 {
                     ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
                     ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
-                    facesContext = new StartupFacesContextImpl(externalContext, 
-                            (ReleasableExternalContext) externalContext, exceptionHandler, false);
+                    facesContext = new StartupFacesContextImpl(externalContext, externalContext, exceptionHandler,
+                            false);
                     for (ContextualStorage contextualStorage : oldContextStorages.values())
                     {
                         FlowScopedContextImpl.destroyAllActive(contextualStorage);

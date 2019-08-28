@@ -19,7 +19,7 @@
 package org.apache.myfaces.spi.impl;
 
 import org.apache.myfaces.resource.DefaultResourceLibraryContractsProvider;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.ResourceLibraryContractsProvider;
 import org.apache.myfaces.spi.ResourceLibraryContractsProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
@@ -59,21 +59,9 @@ public class DefaultResourceLibraryContractsProviderFactory extends ResourceLibr
         {
             if (System.getSecurityManager() != null)
             {
-                returnValue
-                        = AccessController.doPrivileged(
-                            new PrivilegedExceptionAction<ResourceLibraryContractsProvider>()
-                        {
-                            @Override
-                            public ResourceLibraryContractsProvider run() throws ClassNotFoundException,
-                                    NoClassDefFoundError,
-                                    InstantiationException,
-                                    IllegalAccessException,
-                                    InvocationTargetException,
-                                    PrivilegedActionException
-                            {
-                                return resolveResourceLibraryContractsProviderFromService(extContext);
-                            }
-                        });
+                returnValue = (ResourceLibraryContractsProvider) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () ->
+                                resolveResourceLibraryContractsProviderFromService(extContext));
             }
             else
             {

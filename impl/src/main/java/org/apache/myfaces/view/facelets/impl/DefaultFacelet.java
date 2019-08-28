@@ -52,9 +52,9 @@ import org.apache.myfaces.view.facelets.AbstractFacelet;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.FaceletFactory;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.compiler.EncodingHandler;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
-
 
 /**
  * Default Facelet implementation.
@@ -254,11 +254,11 @@ final class DefaultFacelet extends AbstractFacelet
         // Disable dynamic component top level if the parent is a
         // dynamic wrapper, to allow the content to be reorganized properly under
         // a refresh.
-        if (parent.getAttributes().containsKey("oam.vf.DYN_WRAPPER"))
+        if (parent.getAttributes().containsKey(FaceletViewDeclarationLanguage.DYN_WRAPPER))
         {
             fcctx.setDynamicComponentTopLevel(false);
         }
-        
+
         FaceletContext oldCtx = (FaceletContext) facesContext.getAttributes().get(
             FaceletContext.FACELET_CONTEXT_KEY);
         DefaultFaceletContext ctx = new DefaultFaceletContext(facesContext, this, fcctx);

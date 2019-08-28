@@ -56,6 +56,7 @@ public class ELText
             this.text = text;
         }
 
+        @Override
         public boolean isLiteralText()
         {
             return false;
@@ -508,7 +509,7 @@ public class ELText
         int vlen = 0;
 
         StringBuilder buff = new StringBuilder(128);
-        List<ELText> text = new ArrayList<ELText>();
+        List<ELText> text = new ArrayList<>();
         ELText t = null;
         ValueExpression ve = null;
 
@@ -593,7 +594,7 @@ public class ELText
         int vlen = 0;
 
         StringBuilder buff = new StringBuilder(128);
-        List<ELText> text = new ArrayList<ELText>();
+        List<ELText> text = new ArrayList<>();
         ELText t = null;
         ValueExpression ve = null;
 

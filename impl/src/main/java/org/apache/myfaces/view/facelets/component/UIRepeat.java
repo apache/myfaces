@@ -57,10 +57,11 @@ import javax.faces.render.Renderer;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
-import org.apache.myfaces.cdi.model.DataModelBuilderProxy;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.cdi.model.FacesDataModelManager;
+import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ExternalSpecifications;
+import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 
 /**
  *  
@@ -110,10 +111,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     private transient Object _origVarStatus;
 
     private transient FacesContext _facesContext;
-    
-    static final Integer RESET_MODE_OFF = 0;
-    static final Integer RESET_MODE_SOFT = 1;
-    static final Integer RESET_MODE_HARD = 2;    
     
     public UIRepeat()
     {
@@ -239,8 +236,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             DataModel dataModel = null;
             if (ExternalSpecifications.isCDIAvailable(getFacesContext().getExternalContext()))
             {
-                dataModel = (new DataModelBuilderProxy()).createDataModel(
-                        getFacesContext(), value.getClass(), value);
+                dataModel = FacesDataModelManager.createDataModel(getFacesContext(), value.getClass(), value);
             }
             if (dataModel == null)
             {
@@ -1696,16 +1692,18 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     {
         if (context.getViewRoot() != null)
         {
-            if (context.getViewRoot().getAttributes().get("oam.view.resetSaveStateMode") == RESET_MODE_SOFT)
+            if (context.getViewRoot().getAttributes().get(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY)
+                    == ViewPoolProcessor.RESET_MODE_SOFT)
             {
                 _dataModelMap.clear();
-                _isValidChilds=true;
+                _isValidChilds = true;
                 //_rowTransientStates.clear();
             }
-            if (context.getViewRoot().getAttributes().get("oam.view.resetSaveStateMode") == RESET_MODE_HARD)
+            else if (context.getViewRoot().getAttributes().get(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY)
+                    == ViewPoolProcessor.RESET_MODE_HARD)
             {
                 _dataModelMap.clear();
-                _isValidChilds=true;
+                _isValidChilds = true;
                 //_rowTransientStates.clear();
                 _rowStates.clear();
                 //_rowDeltaStates.clear();

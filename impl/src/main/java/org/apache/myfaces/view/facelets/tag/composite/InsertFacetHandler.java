@@ -103,7 +103,6 @@ public class InsertFacetHandler extends TagHandler
             
             CompositeComponentBeanInfo beanInfo = 
                 (CompositeComponentBeanInfo) compositeBaseParent.getAttributes().get(UIComponent.BEANINFO_KEY);
-            
             if (beanInfo == null)
             {
                 if (log.isLoggable(Level.SEVERE))
@@ -116,7 +115,6 @@ public class InsertFacetHandler extends TagHandler
             BeanDescriptor beanDescriptor = beanInfo.getBeanDescriptor(); 
 
             List<String> facetList = (List<String>) beanDescriptor.getValue(INSERT_FACET_USED);
-            
             if (facetList == null)
             {
                 //2. If not found create it and set
@@ -128,7 +126,6 @@ public class InsertFacetHandler extends TagHandler
 
             Map<String, PropertyDescriptor> insertFacetPropertyDescriptorMap = (Map<String, PropertyDescriptor>)
                 beanDescriptor.getValue(INSERT_FACET_KEYS);
-        
             if (insertFacetPropertyDescriptorMap == null)
             {
                 insertFacetPropertyDescriptorMap = new HashMap<>(5);
@@ -143,7 +140,6 @@ public class InsertFacetHandler extends TagHandler
             String facetName = _name.getValue(ctx);
             
             AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
-            
             actx.includeCompositeComponentDefinition(parent, facetName);
         }
         

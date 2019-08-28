@@ -23,7 +23,6 @@ import org.apache.myfaces.view.facelets.tag.MetadataImpl;
 import org.apache.myfaces.view.facelets.tag.MetadataTargetImpl;
 
 import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRule;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.Metadata;
@@ -39,12 +38,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.view.facelets.tag.NullMetadata;
 
 public class CompositeMetaRulesetImpl extends MetaRuleset
 {
-    private final static Metadata NONE = new NullMetadata();
-
     private final static Logger log = Logger.getLogger(CompositeMetadataTargetImpl.class.getName());
     
     private static final String METADATA_KEY
@@ -178,7 +176,7 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
 
         if (_mappers.isEmpty())
         {
-            return NONE;
+            return NullMetadata.INSTANCE;
         }
         else
         {
@@ -231,13 +229,4 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
 
         return meta;
     }    
-
-    private static class NullMetadata extends Metadata
-    {
-        @Override
-        public void applyMetadata(FaceletContext ctx, Object instance)
-        {
-            // do nothing
-        }
-    }
 }

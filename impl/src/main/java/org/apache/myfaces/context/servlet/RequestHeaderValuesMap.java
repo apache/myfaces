@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.myfaces.util.AbstractAttributeMap;
+import org.apache.myfaces.util.lang.AbstractAttributeMap;
 
 /**
  * HttpServletRequest header values (multi-value headers) as Map of String[].
@@ -36,26 +36,24 @@ import org.apache.myfaces.util.AbstractAttributeMap;
  */
 public final class RequestHeaderValuesMap extends AbstractAttributeMap<String[]>
 {
-    private final HttpServletRequest _httpServletRequest;
-    private final Map<String, String[]> _valueCache = new HashMap<String, String[]>();
+    private final HttpServletRequest httpServletRequest;
+    private final Map<String, String[]> attributeValueCache = new HashMap<>();
 
     RequestHeaderValuesMap(final HttpServletRequest httpServletRequest)
     {
-        _httpServletRequest = httpServletRequest;
+        this.httpServletRequest = httpServletRequest;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     protected String[] getAttribute(final String key)
     {
-        String[] ret = _valueCache.get(key);
-        if (ret == null)
+        return attributeValueCache.computeIfAbsent(key, k ->
         {
-            ret = toArray(_httpServletRequest.getHeaders(key));
-            _valueCache.put(key, ret);
-        }
-
-        return ret;
+            Enumeration<String> asEnumeration = httpServletRequest.getHeaders(k);
+            List<String> asList = Collections.list(asEnumeration);
+            return asList.toArray(new String[asList.size()]);
+        });
     }
 
     @Override
@@ -74,18 +72,6 @@ public final class RequestHeaderValuesMap extends AbstractAttributeMap<String[]>
     @SuppressWarnings("unchecked")
     protected Enumeration<String> getAttributeNames()
     {
-        return _httpServletRequest.getHeaderNames();
-    }
-
-    private String[] toArray(Enumeration<String> e)
-    {
-        List<String> ret = new ArrayList<String>();
-
-        while (e.hasMoreElements())
-        {
-            ret.add(e.nextElement());
-        }
-
-        return ret.toArray(new String[ret.size()]);
+        return httpServletRequest.getHeaderNames();
     }
 }

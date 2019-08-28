@@ -28,7 +28,7 @@ import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 
 /**
  * RenderKitFactory implementation as defined in Spec. JSF.7.3

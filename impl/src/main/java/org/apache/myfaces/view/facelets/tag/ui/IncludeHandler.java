@@ -38,7 +38,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
@@ -110,18 +110,14 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
         String uniqueId = null;
         if (!src.isLiteral())
         {
-            uniqueId = actx.generateUniqueFaceletTagId(
-                fcc.startComponentUniqueIdSection(), tagId);
+            uniqueId = actx.generateUniqueFaceletTagId(fcc.startComponentUniqueIdSection(), tagId);
         }
         else if (_params != null)
         {
-            uniqueId = actx.generateUniqueFaceletTagId(
-                fcc.generateUniqueComponentId(), tagId);
+            uniqueId = actx.generateUniqueFaceletTagId(fcc.generateUniqueComponentId(), tagId);
         }
         if (!src.isLiteral())
         {
-            //String uniqueId = fcc.startComponentUniqueIdSection();
-            //path = getSrcValue(actx, fcc, parent, uniqueId);
             String restoredPath = (String) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
             if (restoredPath != null)
             {
@@ -165,9 +161,6 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
             ctx.setVariableMapper(new VariableMapperWrapper(orig));
             try
             {
-                //Only ui:param could be inside ui:include.
-                //this.nextHandler.apply(ctx, null);
-                
                 URL url = null;
                 boolean oldMarkInitialState = false;
                 Boolean isBuildingInitialState = null;
@@ -257,8 +250,8 @@ public final class IncludeHandler extends TagHandler implements ComponentContain
                 fcc.endComponentUniqueIdSection();
             }
         }
-        if (!src.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() &&
-            !fcc.isRefreshingTransientBuild())
+        if (!src.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS()
+                && !fcc.isRefreshingTransientBuild())
         {
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);

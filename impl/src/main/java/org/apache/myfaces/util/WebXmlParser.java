@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.util;
 
+import org.apache.myfaces.util.lang.StringUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -44,6 +45,16 @@ import org.xml.sax.InputSource;
 public class WebXmlParser
 {
     private static final Logger LOGGER = Logger.getLogger(WebXmlParser.class.getName());
+
+    private static final String ERROR_PAGE_EXCEPTION_TYPE_EXPRESSION =
+            "*[local-name() = 'error-page']/*[local-name() = 'exception-type']";
+    private static final String LOCATION_EXPRESSION =
+            "*[local-name() = 'location']";
+    private static final String ERROR_CODE_500_LOCATION_EXPRESSION =
+            "*[local-name() = 'error-page'][*[local-name() = 'error-code'] = '500'] / *[local-name() = 'location']";
+    private static final String ERROR_PAGE_NO_CODE_AND_TYPE_EXPRESSION =
+            "*[local-name() = 'error-page'][not(*[local-name() = 'error-code']) and not"
+            + "(*[local-name() = 'exception-type'])]/*[local-name() = 'location']";
 
     private static final String KEY_ERROR_PAGES = WebXmlParser.class.getName() + ".errorpages";
     
@@ -160,7 +171,6 @@ public class WebXmlParser
 
     private static Document toDocument(URL url) throws Exception
     {
-
         InputStream is = null;
 
         try
@@ -245,7 +255,7 @@ public class WebXmlParser
 
         XPath xpath = XPathFactory.newInstance().newXPath();
 
-        NodeList exceptionTypes = (NodeList) xpath.compile("error-page/exception-type")
+        NodeList exceptionTypes = (NodeList) xpath.compile(ERROR_PAGE_EXCEPTION_TYPE_EXPRESSION)
                 .evaluate(webXml, XPathConstants.NODESET);
 
         for (int i = 0; i < exceptionTypes.getLength(); i++)
@@ -255,7 +265,7 @@ public class WebXmlParser
             String exceptionType = node.getTextContent().trim();
             String key = Throwable.class.getName().equals(exceptionType) ? null : exceptionType;
 
-            String location = xpath.compile("location").evaluate(node.getParentNode()).trim();
+            String location = xpath.compile(LOCATION_EXPRESSION).evaluate(node.getParentNode()).trim();
 
             if (!errorPages.containsKey(key))
             {
@@ -265,15 +275,14 @@ public class WebXmlParser
 
         if (!errorPages.containsKey(null))
         {
-            String defaultLocation = xpath.compile("error-page[error-code=500]/location").evaluate(webXml).trim();
+            String defaultLocation = xpath.compile(ERROR_CODE_500_LOCATION_EXPRESSION).evaluate(webXml).trim();
 
-            if (LangUtils.isBlank(defaultLocation))
+            if (StringUtils.isBlank(defaultLocation))
             {
-                defaultLocation = xpath.compile("error-page[not(error-code) and not(exception-type)]/location")
-                        .evaluate(webXml).trim();
+                defaultLocation = xpath.compile(ERROR_PAGE_NO_CODE_AND_TYPE_EXPRESSION).evaluate(webXml).trim();
             }
 
-            if (!LangUtils.isBlank(defaultLocation))
+            if (!StringUtils.isBlank(defaultLocation))
             {
                 errorPages.put(null, defaultLocation);
             }
@@ -281,5 +290,5 @@ public class WebXmlParser
 
         return errorPages;
     }
-
+    
 }

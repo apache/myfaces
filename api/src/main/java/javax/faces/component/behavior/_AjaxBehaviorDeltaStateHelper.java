@@ -101,22 +101,13 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         if (_createDeltas())
         {
             //Track delta case
-            Map<Object, Boolean> deltaListMapValues = (Map<Object, Boolean>) _deltas.get(key);
-            if (deltaListMapValues == null)
-            {
-                deltaListMapValues = new InternalDeltaListMap<Object, Boolean>(3);
-                _deltas.put(key, deltaListMapValues);
-            }
+            Map<Object, Boolean> deltaListMapValues = (Map<Object, Boolean>) _deltas.computeIfAbsent(key,
+                    k -> new InternalDeltaListMap<>(3));
             deltaListMapValues.put(value, Boolean.TRUE);
         }
 
         //Handle change on full map
-        List<Object> fullListValues = (List<Object>) _fullState.get(key);
-        if (fullListValues == null)
-        {
-            fullListValues = new InternalList<Object>(3);
-            _fullState.put(key, fullListValues);
-        }
+        List<Object> fullListValues = (List<Object>) _fullState.computeIfAbsent(key, k -> new InternalList<>(3));
         fullListValues.add(value);
     }
 
@@ -190,12 +181,8 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         if (_createDeltas())
         {
             //Track delta case
-            Map<String, Object> mapValues = (Map<String, Object>) _deltas.get(key);
-            if (mapValues == null)
-            {
-                mapValues = new InternalMap<String, Object>();
-                _deltas.put(key, mapValues);
-            }
+            Map<String, Object> mapValues = (Map<String, Object>) _deltas.computeIfAbsent(key,
+                    k -> new InternalMap<>());
             if (mapValues.containsKey(mapKey))
             {
                 returnValue = mapValues.put(mapKey, value);
@@ -208,12 +195,8 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         }
 
         //Handle change on full map
-        Map<String, Object> mapValues = (Map<String, Object>) _fullState.get(key);
-        if (mapValues == null)
-        {
-            mapValues = new InternalMap<String, Object>();
-            _fullState.put(key, mapValues);
-        }
+        Map<String, Object> mapValues = (Map<String, Object>) _fullState.computeIfAbsent(key,
+                k -> new InternalMap<>());
         if (returnSet)
         {
             mapValues.put(mapKey, value);

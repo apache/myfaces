@@ -54,7 +54,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         // prefix to ensure the generated ids are unique, but that's only necessary
         // when no seed is provided. If a seed is provided, that one is already unique
         // for all the view, so the following logic is not necessary.
-        if (!isPrependId() && seed==null )
+        if (!isPrependId() && seed == null)
         {
             bld = new StringBuilder();
             UniqueIdVendor parentUniqueIdVendor = _ComponentUtils.closest(UniqueIdVendor.class, this);
@@ -89,7 +89,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
 
         // Generate an identifier for a component. The identifier will be prefixed with
         // UNIQUE_ID_PREFIX, and will be unique within this UIViewRoot.
-        if(seed==null)
+        if(seed == null)
         {
             Integer uniqueIdCounter = (Integer) getStateHelper().get(PropertyKeys.uniqueIdCounter);
             uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
@@ -106,14 +106,12 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
     
     public boolean isSubmitted()
     {
-        //return _submitted;
         return (Boolean) getTransientStateHelper().getTransient(PropertyKeys.submitted, false);
     }
 
     public void setSubmitted(boolean submitted)
     {
         getTransientStateHelper().putTransient(PropertyKeys.submitted, submitted);
-        //_submitted = submitted;
     }
 
     @Override
@@ -137,8 +135,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                     return;
                 }
 
-                int facetCount = getFacetCount();
-                if (facetCount > 0)
+                if (getFacetCount() > 0)
                 {
                     for (UIComponent facet : getFacets().values())
                     {
@@ -151,7 +148,6 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                     UIComponent child = getChildren().get(i);
                     child.processDecodes(context);
                 }
-                
             }
             finally
             {
@@ -192,9 +188,8 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
 
                 //Pre validation event dispatch for component
                 context.getApplication().publishEvent(context, PreValidateEvent.class, getClass(), this);
-                
-                int facetCount = getFacetCount();
-                if (facetCount > 0)
+
+                if (getFacetCount() > 0)
                 {
                     for (UIComponent facet : getFacets().values())
                     {
@@ -246,9 +241,8 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                 {
                     return;
                 }
-                
-                int facetCount = getFacetCount();
-                if (facetCount > 0)
+
+                if (getFacetCount() > 0)
                 {
                     for (UIComponent facet : getFacets().values())
                     {
@@ -324,41 +318,41 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                 VisitResult res = context.invokeVisitCallback(this, callback);
                 switch (res)
                 {
-                //we are done nothing has to be processed anymore
-                case COMPLETE:
-                    return true;
+                    //we are done nothing has to be processed anymore
+                    case COMPLETE:
+                        return true;
 
-                case REJECT:
-                    return false;
+                    case REJECT:
+                        return false;
 
-                //accept
-                default:
-                    // Take advantage of the fact this is a NamingContainer
-                    // and we can know if there are ids to visit inside it
-                    Collection<String> subtreeIdsToVisit = context.getSubtreeIdsToVisit(this);
+                    //accept
+                    default:
+                        // Take advantage of the fact this is a NamingContainer
+                        // and we can know if there are ids to visit inside it
+                        Collection<String> subtreeIdsToVisit = context.getSubtreeIdsToVisit(this);
 
-                    if (subtreeIdsToVisit != null && !subtreeIdsToVisit.isEmpty())
-                    {
-                        if (getFacetCount() > 0)
+                        if (subtreeIdsToVisit != null && !subtreeIdsToVisit.isEmpty())
                         {
-                            for (UIComponent facet : getFacets().values())
+                            if (getFacetCount() > 0)
                             {
-                                if (facet.visitTree(context, callback))
+                                for (UIComponent facet : getFacets().values())
+                                {
+                                    if (facet.visitTree(context, callback))
+                                    {
+                                        return true;
+                                    }
+                                }
+                            }
+                            for (int i = 0, childCount = getChildCount(); i < childCount; i++)
+                            {
+                                UIComponent child = getChildren().get(i);
+                                if (child.visitTree(context, callback))
                                 {
                                     return true;
                                 }
                             }
                         }
-                        for (int i = 0, childCount = getChildCount(); i < childCount; i++)
-                        {
-                            UIComponent child = getChildren().get(i);
-                            if (child.visitTree(context, callback))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
+                        return false;
                 }
             }
             finally
@@ -409,11 +403,13 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         {
             return super.getContainerClientId(ctx);
         }
+
         UIComponent parentNamingContainer = _ComponentUtils.findParentNamingContainer(this, false);
         if (parentNamingContainer != null)
         {
             return parentNamingContainer.getContainerClientId(ctx);
         }
+
         return null;
     }
 

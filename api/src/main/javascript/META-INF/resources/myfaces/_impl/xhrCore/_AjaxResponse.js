@@ -456,6 +456,8 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
                 case this.CMD_UPDATE:
                     this.processUpdate(request, context, changes[i]);
                     break;
+                //this one needs a csp spec extension for the global eval
+                //for now we recycle the csp for this case from the jsf.js file
                 case this.CMD_EVAL:
                     _Lang.globalEval(changes[i].firstChild.data);
                     break;

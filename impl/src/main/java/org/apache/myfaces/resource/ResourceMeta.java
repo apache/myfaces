@@ -46,4 +46,8 @@ public abstract class ResourceMeta
     {
         return null;
     }
+    
+    public abstract Long getLastModified();
+    
+    public abstract void setLastModified(Long lastModified);
 }

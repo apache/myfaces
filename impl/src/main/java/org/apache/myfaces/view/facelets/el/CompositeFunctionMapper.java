@@ -36,7 +36,6 @@ public final class CompositeFunctionMapper extends FunctionMapper
 {
 
     private final FunctionMapper fn0;
-
     private final FunctionMapper fn1;
 
     public CompositeFunctionMapper(FunctionMapper fn0, FunctionMapper fn1)
@@ -48,6 +47,7 @@ public final class CompositeFunctionMapper extends FunctionMapper
     /**
      * @see javax.el.FunctionMapper#resolveFunction(java.lang.String, java.lang.String)
      */
+    @Override
     public Method resolveFunction(String prefix, String name)
     {
         Method m = this.fn0.resolveFunction(prefix, name);

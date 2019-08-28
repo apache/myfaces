@@ -32,7 +32,7 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.tag.ComponentTagDeclarationLibrary;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
@@ -187,8 +187,7 @@ public class FaceletsCompilerSupport
                         context.getExternalContext()).getFaceletProcessingConfigurations());
     }
     
-    private static class LoadComponentTagDeclarationFacesContextWrapper 
-        extends FacesContextWrapper
+    private static class LoadComponentTagDeclarationFacesContextWrapper extends FacesContextWrapper
     {
         private FacesContext delegate;
         private UIViewRoot root;

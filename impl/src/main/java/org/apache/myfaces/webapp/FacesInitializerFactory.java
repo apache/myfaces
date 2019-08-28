@@ -21,9 +21,8 @@ package org.apache.myfaces.webapp;
 import javax.faces.FacesException;
 import javax.servlet.ServletContext;
 
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.ContainerUtils;
 
 /**
@@ -34,19 +33,7 @@ import org.apache.myfaces.util.ContainerUtils;
  * @version $Revision$ $Date$
  */
 public class FacesInitializerFactory
-{
- 
-    /**
-     * Indicate the class implementing FacesInitializer interface that will
-     * be used to setup MyFaces Core contexts.
-     * <p>This is used when some custom task must be done specifically when
-     * a myfaces web context is initialized or destroyed, or when MyFaces should
-     * be initialized in some custom environment. 
-     * </p>
-     */
-    @JSFWebConfigParam(since = "2.0.1", desc = "Class name of a custom FacesInitializer implementation.")
-    private static final String FACES_INITIALIZER_PARAM = "org.apache.myfaces.FACES_INITIALIZER";
-    
+{   
     /**
      * Gets the FacesInitializer for the system.
      * @param context
@@ -69,7 +56,7 @@ public class FacesInitializerFactory
      */
     private static FacesInitializer _getFacesInitializerFromInitParam(ServletContext context)
     {
-        String initializerClassName = context.getInitParameter(FACES_INITIALIZER_PARAM);
+        String initializerClassName = context.getInitParameter(MyfacesConfig.FACES_INITIALIZER);
         if (initializerClassName != null)
         {
             try

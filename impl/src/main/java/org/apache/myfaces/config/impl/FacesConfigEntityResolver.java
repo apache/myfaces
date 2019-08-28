@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 
 import javax.faces.context.ExternalContext;
 
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
@@ -60,6 +60,7 @@ public class FacesConfigEntityResolver implements EntityResolver
     {
     }
 
+    @Override
     public InputSource resolveEntity(String publicId,
                                      String systemId)
         throws IOException

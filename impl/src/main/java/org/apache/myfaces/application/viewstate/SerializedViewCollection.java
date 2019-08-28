@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.spi.ViewScopeProvider;
-import org.apache.myfaces.util.LRULinkedHashMap;
+import org.apache.myfaces.util.lang.LRULinkedHashMap;
 
 /**
  *
@@ -169,7 +169,7 @@ class SerializedViewCollection implements Serializable
                         {
                             Integer vscount = _viewScopeIdCounts.get(oldViewScopeId);
                             vscount = vscount - 1;
-                            if (vscount != null && vscount.intValue() < 1)
+                            if (vscount < 1)
                             {
                                 _viewScopeIdCounts.remove(oldViewScopeId);
                                 viewScopeProvider.destroyViewScopeMap(context, oldViewScopeId);
@@ -212,7 +212,7 @@ class SerializedViewCollection implements Serializable
                 {
                     Integer vscount = _viewScopeIdCounts.get(oldViewScopeId);
                     vscount = vscount - 1;
-                    if (vscount != null && vscount.intValue() < 1)
+                    if (vscount < 1)
                     {
                         _viewScopeIdCounts.remove(oldViewScopeId);
                         viewScopeProvider.destroyViewScopeMap(context, oldViewScopeId);

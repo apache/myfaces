@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.lifecycle;
 
+import org.apache.myfaces.util.token.TokenGenerator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -366,7 +367,7 @@ public class CODIClientSideWindow extends ClientWindow
     
     protected String createWindowId(FacesContext context)
     {
-        String windowId = clientWindowTokenGenerator._getNextToken();
+        String windowId = clientWindowTokenGenerator.getNextToken();
         setId(windowId);
         return windowId;
     }

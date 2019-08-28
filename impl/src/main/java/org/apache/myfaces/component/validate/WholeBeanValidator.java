@@ -28,9 +28,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -49,7 +46,6 @@ import javax.faces.component.visit.VisitCallback;
 import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
-import javax.faces.validator.BeanValidator;
 import static javax.faces.validator.BeanValidator.EMPTY_VALIDATION_GROUPS_PATTERN;
 import static javax.faces.validator.BeanValidator.MESSAGE_ID;
 import static javax.faces.validator.BeanValidator.VALIDATION_GROUPS_DELIMITER;
@@ -63,7 +59,8 @@ import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 import javax.validation.metadata.BeanDescriptor;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.MessageUtils;
 import org.apache.myfaces.util.MyFacesObjectInputStream;
 import org.apache.myfaces.util.ExternalSpecifications;
@@ -170,7 +167,7 @@ public class WholeBeanValidator implements Validator
         }
         catch (Exception ex)
         {
-            Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
+            log.log(Level.FINEST, null, ex);
         }
         
         if (base instanceof Serializable)
@@ -187,7 +184,7 @@ public class WholeBeanValidator implements Validator
             }
             catch (Exception ex) 
             {
-                Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
+                log.log(Level.FINEST, null, ex);
             }
         }
         else
@@ -203,7 +200,7 @@ public class WholeBeanValidator implements Validator
             }
             catch (Exception ex)
             {
-                Logger.getLogger(WholeBeanValidator.class.getName()).log(Level.FINEST, null, ex);
+                log.log(Level.FINEST, null, ex);
             }
         }
         
@@ -336,49 +333,17 @@ public class WholeBeanValidator implements Validator
                 clazz = clazz.trim();
                 if (!clazz.isEmpty())
                 {
-                    Class<?> theClass = null;
-                    ClassLoader cl = null;
-                    if (System.getSecurityManager() != null) 
-                    {
-                        try 
-                        {
-                            cl = AccessController.doPrivileged(new PrivilegedExceptionAction<ClassLoader>()
-                                    {
-                                        public ClassLoader run() throws PrivilegedActionException
-                                        {
-                                            return Thread.currentThread().getContextClassLoader();
-                                        }
-                                    });
-                        }
-                        catch (PrivilegedActionException pae)
-                        {
-                            throw new FacesException(pae);
-                        }
-                    }
-                    else
-                    {
-                        cl = Thread.currentThread().getContextClassLoader();
-                    }
-                    
                     try
-                    {                        
-                        // Try WebApp ClassLoader first
-                        theClass = Class.forName(clazz,false,cl);
-                    }
-                    catch (ClassNotFoundException ignore)
                     {
-                        try
-                        {
-                            // fallback: Try ClassLoader for BeanValidator (i.e. the myfaces.jar lib)
-                            theClass = Class.forName(clazz,false, BeanValidator.class.getClassLoader());
-                        }
-                        catch (ClassNotFoundException e)
-                        {
-                            throw new RuntimeException("Could not load validation group", e);
-                        }                        
+                        Class<?> theClass = ClassUtils.classForName(clazz);
+
+                        // the class was found
+                        validationGroupsList.add(theClass);
                     }
-                    // the class was found
-                    validationGroupsList.add(theClass);
+                    catch (ClassNotFoundException e)
+                    {
+                        throw new RuntimeException("Could not load validation group", e);                     
+                    }
                 }
             }
                     
@@ -424,12 +389,14 @@ public class WholeBeanValidator implements Validator
             this.facesContext = facesContext;
         }
 
+        @Override
         public String interpolate(final String s, final MessageInterpolator.Context context)
         {
             Locale locale = facesContext.getViewRoot().getLocale();
             return interpolator.interpolate(s, context, locale);
         }
 
+        @Override
         public String interpolate(final String s, final MessageInterpolator.Context context, final Locale locale)
         {
             return interpolator.interpolate(s, context, locale);

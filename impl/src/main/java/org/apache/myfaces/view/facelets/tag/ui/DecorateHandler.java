@@ -74,25 +74,28 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
     private final TagAttribute _template;
 
     private final Map<String, DefineHandler> _handlers;
-
     private final ParamHandler[] _params;
 
-    /**
-     * @param config
-     */
     public DecorateHandler(TagConfig config)
     {
         super(config);
         _template = getRequiredAttribute("template");
         
         ArrayList<DefineHandler> handlers = TagHandlerUtils.findNextByType(nextHandler, DefineHandler.class);
-        _handlers = new HashMap<>(handlers.size());
-        for (DefineHandler handler : handlers)
+        if (handlers.isEmpty())
         {
-            _handlers.put(handler.getName(), handler);
-            if (log.isLoggable(Level.FINE))
+            _handlers = null;
+        }
+        else
+        {
+            _handlers = new HashMap<>(handlers.size());
+            for (DefineHandler handler : handlers)
             {
-                log.fine(tag + " found Define[" + handler.getName() + ']');
+                _handlers.put(handler.getName(), handler);
+                if (log.isLoggable(Level.FINE))
+                {
+                    log.fine(tag + " found Define[" + handler.getName() + ']');
+                }
             }
         }
 
@@ -145,8 +148,6 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
             boolean markInitialState = false;
             if (!_template.isLiteral())
             {
-                //String uniqueId = fcc.startComponentUniqueIdSection();
-                //path = getTemplateValue(actx, fcc, parent, uniqueId);
                 String restoredPath = (String) ComponentSupport.restoreInitialTagState(ctx, fcc, parent, uniqueId);
                 if (restoredPath != null)
                 {
@@ -217,7 +218,6 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
             }
             finally
             {
-                //ctx.setVariableMapper(orig);
                 actx.popClient(this);
             }
         }
@@ -228,8 +228,8 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
                 fcc.endComponentUniqueIdSection();
             }
         }
-        if (!_template.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() &&
-            !fcc.isRefreshingTransientBuild())
+        if (!_template.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS()
+                && !fcc.isRefreshingTransientBuild())
         {
             //Mark the parent component to be saved and restored fully.
             ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
@@ -246,16 +246,14 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
     {
         if (name != null)
         {
-            DefineHandler handler = _handlers.get(name);
+            DefineHandler handler = _handlers == null ? null : _handlers.get(name);
             if (handler != null)
             {
                 handler.applyDefinition(ctx, parent);
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
         else
         {

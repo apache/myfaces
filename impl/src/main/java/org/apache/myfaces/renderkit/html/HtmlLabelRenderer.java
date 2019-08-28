@@ -19,10 +19,8 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,11 +30,11 @@ import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlOutputLabel;
 import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
@@ -58,9 +56,6 @@ import org.apache.myfaces.util.ComponentUtils;
 public class HtmlLabelRenderer extends HtmlRenderer
 {
     private static final Logger log = Logger.getLogger(HtmlLabelRenderer.class.getName());
-
-    private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
-            EnumSet.of(SearchExpressionHint.RESOLVE_SINGLE_COMPONENT, SearchExpressionHint.IGNORE_NO_RESULT);
     
     @Override
     protected boolean isCommonPropertiesOptimizationEnabled(FacesContext facesContext)
@@ -237,7 +232,8 @@ public class HtmlLabelRenderer extends HtmlRenderer
     protected String getClientId(FacesContext facesContext, UIComponent uiComponent, String forAttr)
     {
         SearchExpressionContext searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
-                facesContext, uiComponent, EXPRESSION_HINTS, null);
+                facesContext, uiComponent,
+                MyFacesSearchExpressionHints.SET_RESOLVE_SINGLE_COMPONENT_IGNORE_NO_RESULT, null);
 
         return facesContext.getApplication().getSearchExpressionHandler().resolveClientId(
                 searchExpressionContext, forAttr);

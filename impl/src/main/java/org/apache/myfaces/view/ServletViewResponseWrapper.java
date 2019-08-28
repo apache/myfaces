@@ -76,6 +76,7 @@ public class ServletViewResponseWrapper extends HttpServletResponseWrapper imple
         _status = status;
     }
 
+    @Override
     public int getStatus()
     {
         return _status;
@@ -111,6 +112,7 @@ public class ServletViewResponseWrapper extends HttpServletResponseWrapper imple
         }
     }
 
+    @Override
     public void flushToWriter(Writer writer,String encoding) throws IOException
     {
         if (_charArrayWriter != null)

@@ -36,8 +36,8 @@ import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.TagDecorator;
 
 import org.apache.myfaces.config.element.FaceletsProcessing;
-import org.apache.myfaces.util.Assert;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.BaseMultipleTagDecorator;
 import org.apache.myfaces.view.facelets.tag.BaseTagDecorator;
 import org.apache.myfaces.view.facelets.tag.CompositeTagDecorator;
@@ -61,24 +61,14 @@ public abstract class Compiler
     private static final TagLibrary EMPTY_LIBRARY = new CompositeTagLibrary(new TagLibrary[0]);
 
     private boolean validating = false;
-
     private boolean trimmingWhitespace = false;
-
     private boolean trimmingComments = false;
-
-    private final List<TagLibrary> libraries = new ArrayList<TagLibrary>();
-
-    private final List<TagDecorator> decorators = new ArrayList<TagDecorator>();
-
-    private final Map<String, String> features = new HashMap<String, String>();
-
+    private final List<TagLibrary> libraries = new ArrayList<>();
+    private final List<TagDecorator> decorators = new ArrayList<>();
+    private final Map<String, String> features = new HashMap<>();
     private boolean developmentProjectStage = false;
-
     private Collection<FaceletsProcessing> faceletsProcessingConfigurations;
 
-    /**
-     * 
-     */
     public Compiler()
     {
 
@@ -128,9 +118,9 @@ public abstract class Compiler
                 new CompositeTagDecorator(this.decorators.toArray(
                     new TagDecorator[this.decorators.size()])));
         }
+
         // JSF 2.2 has always enabled the default tag decorator.
         return new BaseTagDecorator(new DefaultTagDecorator());
-        //return EMPTY_DECORATOR;
     }
 
     public final void addTagDecorator(TagDecorator decorator)
@@ -144,8 +134,7 @@ public abstract class Compiler
 
     public final ExpressionFactory createExpressionFactory()
     {
-        ExpressionFactory el = null;
-        el = (ExpressionFactory) this.featureInstance(EXPRESSION_FACTORY);
+        ExpressionFactory el = (ExpressionFactory) this.featureInstance(EXPRESSION_FACTORY);
         if (el == null)
         {
             try
@@ -167,7 +156,7 @@ public abstract class Compiler
         return el;
     }
 
-    private final Object featureInstance(String name)
+    private Object featureInstance(String name)
     {
         String type = (String) this.features.get(name);
         if (type != null)

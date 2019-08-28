@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import javax.enterprise.inject.spi.BeanManager;
-import org.apache.myfaces.cdi.util.BeanProvider;
 
 /**
  * 
@@ -49,13 +48,11 @@ public class FlowScopeMap implements Map
         {
             if (create)
             {
-                _flowScopeBeanHolder = CDIUtils.lookup(_beanManager,
-                    FlowScopeBeanHolder.class);
+                _flowScopeBeanHolder = CDIUtils.get(_beanManager, FlowScopeBeanHolder.class);
             }
             else if (!_initOptional)
             {
-                _flowScopeBeanHolder = BeanProvider.getContextualReference(
-                    _beanManager, FlowScopeBeanHolder.class, true);
+                _flowScopeBeanHolder = CDIUtils.get(_beanManager, FlowScopeBeanHolder.class, false);
                 _initOptional = true;
             }
         }

@@ -27,8 +27,9 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.util.ClassUtils;
-import org.apache.myfaces.util.StringUtils;
+import org.apache.myfaces.spi.InjectionProvider;
+import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 
 /**
@@ -56,7 +57,7 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(defaultValue="2",since="1.1", classType="java.lang.Long")
     public static final String CONFIG_REFRESH_PERIOD = "org.apache.myfaces.CONFIG_REFRESH_PERIOD";
-    public static final long CONFIG_REFRESH_PERIOD_DEFAULT = 2;
+    private static final long CONFIG_REFRESH_PERIOD_DEFAULT = 2;
 
     /**
      * Define if the input field that should store the state (javax.faces.ViewState) should render 
@@ -75,7 +76,7 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1", 
             ignoreUpperLowerCase=true, group="state")
-    private static final String  RENDER_VIEWSTATE_ID = "org.apache.myfaces.RENDER_VIEWSTATE_ID";
+    public static final String RENDER_VIEWSTATE_ID = "org.apache.myfaces.RENDER_VIEWSTATE_ID";
     private static final boolean RENDER_VIEWSTATE_ID_DEFAULT = true;
 
     /**
@@ -95,7 +96,7 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1.6", 
             ignoreUpperLowerCase=true, group="render")
-    private static final String  STRICT_XHTML_LINKS = "org.apache.myfaces.STRICT_XHTML_LINKS";
+    public static final String STRICT_XHTML_LINKS = "org.apache.myfaces.STRICT_XHTML_LINKS";
     private static final boolean STRICT_XHTML_LINKS_DEFAULT = true;
     
     /**
@@ -106,7 +107,7 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false, on, off, yes, no",since="1.2.3",
             ignoreUpperLowerCase=true, group="render")
-    private static final String RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON = 
+    public static final String RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON = 
         "org.apache.myfaces.RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON";
     private static final boolean RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT= false;
 
@@ -119,7 +120,7 @@ public class MyfacesConfig
      * </p>
      */
     @JSFWebConfigParam(since="1.2.7")
-    private static final String DELEGATE_FACES_SERVLET = "org.apache.myfaces.DELEGATE_FACES_SERVLET";
+    public static final String DELEGATE_FACES_SERVLET = "org.apache.myfaces.DELEGATE_FACES_SERVLET";
 
     /**
      * Indicate if the facelet associated to the view should be reapplied when the view is refreshed.
@@ -136,7 +137,7 @@ public class MyfacesConfig
             ignoreUpperLowerCase=true, group="state")
     public final static String REFRESH_TRANSIENT_BUILD_ON_PSS = 
         "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS"; 
-    public final static String REFRESH_TRANSIENT_BUILD_ON_PSS_DEFAULT = "auto";
+    private final static String REFRESH_TRANSIENT_BUILD_ON_PSS_DEFAULT = "auto";
 
     /**
      * Enable or disable a special mode that enable full state for parent components containing c:if, c:forEach, 
@@ -151,7 +152,7 @@ public class MyfacesConfig
             tags="performance", ignoreUpperLowerCase=true, group="state")
     public final static String REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE = 
         "org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE";
-    public final static boolean REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE_DEFAULT = false;
+    private final static boolean REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE_DEFAULT = false;
     
     /**
      * If set to <code>true</code>, tag library XML files and faces config XML files using schema 
@@ -159,7 +160,7 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since="2.0", expectedValues="true, false, on, off, yes, no", ignoreUpperLowerCase=true)
     public final static String VALIDATE_XML = "org.apache.myfaces.VALIDATE_XML";
-    public final static boolean VALIDATE_XML_DEFAULT = false;
+    private final static boolean VALIDATE_XML_DEFAULT = false;
     
     /**
      * Wrap content inside script with xml comment to prevent old browsers to display it. By default it is true. 
@@ -168,7 +169,7 @@ public class MyfacesConfig
             ignoreUpperLowerCase=true, group="render")
     public final static String WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG = 
         "org.apache.myfaces.WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG";
-    public final static boolean WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT = false;
+    private final static boolean WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT = false;
     
     /**
      * If set true, render the form submit script inline, as in myfaces core 1.2 and earlier versions 
@@ -177,7 +178,7 @@ public class MyfacesConfig
             ignoreUpperLowerCase=true, group="render")
     public final static String RENDER_FORM_SUBMIT_SCRIPT_INLINE = 
         "org.apache.myfaces.RENDER_FORM_SUBMIT_SCRIPT_INLINE";
-    public final static boolean RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT = false;
+    private final static boolean RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT = false;
     
     /**
      * Enable/disable DebugPhaseListener feature, with provide useful information about ValueHolder 
@@ -188,7 +189,7 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since="2.0.8")
     public final static String DEBUG_PHASE_LISTENER = "org.apache.myfaces.DEBUG_PHASE_LISTENER";
-    public final static boolean DEBUG_PHASE_LISTENER_DEFAULT = false;
+    private final static boolean DEBUG_PHASE_LISTENER_DEFAULT = false;
     
     /**
      * Change default getType() behavior for composite component EL resolver, from return null 
@@ -203,7 +204,7 @@ public class MyfacesConfig
     @JSFWebConfigParam(since="2.0.10", expectedValues="true, false", defaultValue="false", group="EL")
     public final static String STRICT_JSF_2_CC_EL_RESOLVER = 
         "org.apache.myfaces.STRICT_JSF_2_CC_EL_RESOLVER";
-    public final static boolean STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT = false;
+    private final static boolean STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT = false;
     
     /**
      * Define the default content type that the default ResponseWriter generates, when no match can be derived from
@@ -213,7 +214,7 @@ public class MyfacesConfig
             defaultValue="text/html", group="render")
     public final static String DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE = 
         "org.apache.myfaces.DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE";
-    public final static String DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT = "text/html";
+    private final static String DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT = "text/html";
 
     /**
      * Enable or disable a cache used to "remember" the generated facelets unique ids and reduce 
@@ -225,7 +226,7 @@ public class MyfacesConfig
                  "and reduce the impact over memory usage.")
     public static final String VIEW_UNIQUE_IDS_CACHE_ENABLED = 
         "org.apache.myfaces.VIEW_UNIQUE_IDS_CACHE_ENABLED";
-    public static final boolean VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT = true;
+    private static final boolean VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT = true;
     
     /**
      * Set the size of the cache used to store strings generated using SectionUniqueIdCounter
@@ -235,7 +236,7 @@ public class MyfacesConfig
             group="viewhandler", tags="performance")
     public static final String COMPONENT_UNIQUE_IDS_CACHE_SIZE =
         "org.apache.myfaces.COMPONENT_UNIQUE_IDS_CACHE_SIZE";
-    public static final int COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT = 100;
+    private static final int COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT = 100;
 
     /**
     * If set false, myfaces won't support JSP. JSP are deprecated in JSF 2.X. Default value is true. 
@@ -247,7 +248,7 @@ public class MyfacesConfig
          "JSF 2.X. Default value is true.",
          group="EL", tags="performance ")
     public final static String SUPPORT_JSP = "org.apache.myfaces.SUPPORT_JSP";
-    public final static boolean SUPPORT_JSP_DEFAULT = true;
+    private final static boolean SUPPORT_JSP_DEFAULT = true;
     
     /**
      * When the application runs inside Google Application Engine container (GAE),
@@ -259,7 +260,7 @@ public class MyfacesConfig
     @JSFWebConfigParam(since = "2.1.8, 2.0.14", expectedValues="none, myfavoritejsflib-*.jar",
             tags="performance, GAE")
     public static final String GAE_JSF_JAR_FILES = "org.apache.myfaces.GAE_JSF_JAR_FILES";
-    public final static String GAE_JSF_JAR_FILES_DEFAULT = null;
+    private final static String GAE_JSF_JAR_FILES_DEFAULT = null;
 
     /**
      * When the application runs inside Google Application Engine container (GAE),
@@ -275,7 +276,7 @@ public class MyfacesConfig
             tags="performance, GAE")
     public static final String GAE_JSF_ANNOTATIONS_JAR_FILES = 
             "org.apache.myfaces.GAE_JSF_ANNOTATIONS_JAR_FILES";
-    public final static String GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT = null;
+    private final static String GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT = null;
     
     /**
      * If this param is set to true, a check will be done in Restore View Phase to check
@@ -288,13 +289,13 @@ public class MyfacesConfig
             group="viewhandler")
     public static final String STRICT_JSF_2_VIEW_NOT_FOUND = 
             "org.apache.myfaces.STRICT_JSF_2_VIEW_NOT_FOUND";
-    public final static boolean STRICT_JSF_2_VIEW_NOT_FOUND_DEFAULT = false;
+    private final static boolean STRICT_JSF_2_VIEW_NOT_FOUND_DEFAULT = false;
 
     @JSFWebConfigParam(defaultValue = "false", since = "2.2.0", expectedValues="true, false", group="render",
             tags="performance",
             desc="Enable or disable an early flush which allows to send e.g. the HTML-Head to the client " +
                     "while the rest gets rendered. It's a well known technique to reduce the time for loading a page.")
-    private static final String EARLY_FLUSH_ENABLED =
+    public static final String EARLY_FLUSH_ENABLED =
         "org.apache.myfaces.EARLY_FLUSH_ENABLED";
     private static final boolean EARLY_FLUSH_ENABLED_DEFAULT = false;
     
@@ -307,7 +308,7 @@ public class MyfacesConfig
             group="viewhandler")
     public static final String STRICT_JSF_2_FACELETS_COMPATIBILITY = 
             "org.apache.myfaces.STRICT_JSF_2_FACELETS_COMPATIBILITY";
-    public final static boolean STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT = false;    
+    private final static boolean STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT = false;    
     
     /**
      * This param makes h:form component to render the view state and other hidden fields
@@ -318,7 +319,7 @@ public class MyfacesConfig
             group="render")
     public static final String RENDER_FORM_VIEW_STATE_AT_BEGIN =
             "org.apache.myfaces.RENDER_FORM_VIEW_STATE_AT_BEGIN";
-    public final static boolean RENDER_FORM_VIEW_STATE_AT_BEGIN_DEFAULT = false;
+    private final static boolean RENDER_FORM_VIEW_STATE_AT_BEGIN_DEFAULT = false;
     
     /**
      * Defines whether flash scope is disabled, preventing add the Flash cookie to the response. 
@@ -327,7 +328,7 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(defaultValue="false",since="2.0.5")
     public static final String FLASH_SCOPE_DISABLED = "org.apache.myfaces.FLASH_SCOPE_DISABLED";
-    public static final boolean FLASH_SCOPE_DISABLED_DEFAULT = false;
+    private static final boolean FLASH_SCOPE_DISABLED_DEFAULT = false;
     
     /**
      * Defines the amount (default = 20) of the latest views are stored in session.
@@ -372,7 +373,7 @@ public class MyfacesConfig
      * org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION) + 1 = 6.
      */
     @JSFWebConfigParam(since="2.2.6", group="state", tags="performance")
-    static final String NUMBER_OF_FLASH_TOKENS_IN_SESSION = 
+    public static final String NUMBER_OF_FLASH_TOKENS_IN_SESSION = 
             "org.apache.myfaces.NUMBER_OF_FLASH_TOKENS_IN_SESSION";
     
     /**
@@ -386,23 +387,23 @@ public class MyfacesConfig
      * org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION) + 1 = 6.
      */
     @JSFWebConfigParam(since="2.2.6", group="state", tags="performance")
-    static final String NUMBER_OF_FACES_FLOW_CLIENT_WINDOW_IDS_IN_SESSION = 
+    public static final String NUMBER_OF_FACES_FLOW_CLIENT_WINDOW_IDS_IN_SESSION = 
             "org.apache.myfaces.FACES_FLOW_CLIENT_WINDOW_IDS_IN_SESSION";
     
     /**
      * This parameter specifies whether or not the ImportHandler will be supported
      */
     @JSFWebConfigParam(since="2.2.9", defaultValue="false", expectedValues="true,false", group="EL")
-    protected static final String SUPPORT_EL_3_IMPORT_HANDLER = "org.apache.myfaces.SUPPORT_EL_3_IMPORT_HANDLER";
-    public final static boolean SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT = false;
+    public static final String SUPPORT_EL_3_IMPORT_HANDLER = "org.apache.myfaces.SUPPORT_EL_3_IMPORT_HANDLER";
+    private final static boolean SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT = false;
 
     /**
      * This parameter specifies whether or not the Origin header app path should be checked 
      */
     @JSFWebConfigParam(since="2.3", defaultValue="false", expectedValues="true,false")
-    protected static final String STRICT_JSF_2_ORIGIN_HEADER_APP_PATH = 
+    public static final String STRICT_JSF_2_ORIGIN_HEADER_APP_PATH = 
             "org.apache.myfaces.STRICT_JSF_2_ORIGIN_HEADER_APP_PATH";
-    public final static boolean STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT = false;
+    private final static boolean STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT = false;
 
     /**
      * Allow slash in the library name of a Resource. 
@@ -411,7 +412,7 @@ public class MyfacesConfig
             expectedValues="true, false", group="resources")
     public static final String STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME = 
             "org.apache.myfaces.STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME";
-    public static final boolean STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME_DEFAULT = false;
+    private static final boolean STRICT_JSF_2_ALLOW_SLASH_LIBRARY_NAME_DEFAULT = false;
     
     /**
      * Define the default buffer size that is used between Resource.getInputStream() and 
@@ -420,7 +421,7 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since="2.1.10, 2.0.16", defaultValue="2048", group="resources")
     public static final String RESOURCE_BUFFER_SIZE = "org.apache.myfaces.RESOURCE_BUFFER_SIZE";
-    public static final int RESOURCE_BUFFER_SIZE_DEFAULT = 2048;
+    private static final int RESOURCE_BUFFER_SIZE_DEFAULT = 2048;
     
     /**
      * Validate if the managed beans and navigations rules are correct.
@@ -437,7 +438,7 @@ public class MyfacesConfig
     @JSFWebConfigParam(since="2.2.9", tags = "performance", defaultValue = "false")
     public static final String USE_CDI_FOR_ANNOTATION_SCANNING
             = "org.apache.myfaces.annotation.USE_CDI_FOR_ANNOTATION_SCANNING";
-    public static final boolean USE_CDI_FOR_ANNOTATION_SCANNING_DEFAULT = false;
+    private static final boolean USE_CDI_FOR_ANNOTATION_SCANNING_DEFAULT = false;
     
     
     /**
@@ -447,7 +448,7 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(defaultValue = "500", since = "2.0.2", group="resources", 
             classType="java.lang.Integer", tags="performance")
-    private static final String RESOURCE_HANDLER_CACHE_SIZE = 
+    public static final String RESOURCE_HANDLER_CACHE_SIZE = 
         "org.apache.myfaces.RESOURCE_HANDLER_CACHE_SIZE";
     private static final int RESOURCE_HANDLER_CACHE_SIZE_DEFAULT = 500;
 
@@ -458,7 +459,7 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", group="resources", 
             expectedValues="true,false", tags="performance")
-    private static final String RESOURCE_HANDLER_CACHE_ENABLED = 
+    public static final String RESOURCE_HANDLER_CACHE_ENABLED = 
         "org.apache.myfaces.RESOURCE_HANDLER_CACHE_ENABLED";
     private static final boolean RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT = true;
     
@@ -477,7 +478,7 @@ public class MyfacesConfig
 
     @JSFWebConfigParam(defaultValue = "300000")
     public static final String WEBSOCKET_MAX_IDLE_TIMEOUT = "org.apache.myfaces.WEBSOCKET_MAX_IDLE_TIMEOUT";
-    public static final long WEBSOCKET_MAX_IDLE_TIMEOUT_DEFAULT = 300000L;
+    private static final long WEBSOCKET_MAX_IDLE_TIMEOUT_DEFAULT = 300000L;
     
     /**
      * Defines how to generate the csrf session token.
@@ -486,7 +487,7 @@ public class MyfacesConfig
             defaultValue="none", group="state")
     public static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN
             = "org.apache.myfaces.RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN";
-    public static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_DEFAULT = "random";
+    private static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_DEFAULT = "random";
   
     public static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
     public static final String RANDOM_KEY_IN_WEBSOCKET_SESSION_TOKEN_RANDOM = "random";
@@ -499,7 +500,7 @@ public class MyfacesConfig
     @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="0", group="state")
     public static final String CLIENT_VIEW_STATE_TIMEOUT = 
             "org.apache.myfaces.CLIENT_VIEW_STATE_TIMEOUT";
-    public static final Long CLIENT_VIEW_STATE_TIMEOUT_DEFAULT = 0L;
+    private static final Long CLIENT_VIEW_STATE_TIMEOUT_DEFAULT = 0L;
    
     
     /**
@@ -509,7 +510,7 @@ public class MyfacesConfig
             defaultValue="random", group="state")
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN";
-    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_DEFAULT = "random";
+    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_DEFAULT = "random";
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM = "random";
     
@@ -520,7 +521,7 @@ public class MyfacesConfig
     @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="8", group="state")
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH";
-    public static final int RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_DEFAULT = 8;
+    private static final int RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_LENGTH_DEFAULT = 8;
     
     /**
      * Sets the random class to initialize the secure random id generator. 
@@ -544,7 +545,7 @@ public class MyfacesConfig
     @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="SHA1PRNG", group="state")
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM";
-    public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_DEFAULT = "SHA1PRNG";
+    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_DEFAULT = "SHA1PRNG";
     
     /**
      * Defines how to generate the csrf session token.
@@ -552,7 +553,7 @@ public class MyfacesConfig
     @JSFWebConfigParam(since="2.2.0", expectedValues="secureRandom, random", defaultValue="none", group="state")
     public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN
             = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN";
-    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_DEFAULT = "random";
+    private static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_DEFAULT = "random";
     
     public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
     public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_RANDOM = "random";
@@ -567,7 +568,7 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(defaultValue="true",since="1.1", expectedValues="true,false", group="state", tags="performance")
     public static final String COMPRESS_STATE_IN_SESSION = "org.apache.myfaces.COMPRESS_STATE_IN_SESSION";
-    public static final boolean COMPRESS_STATE_IN_SESSION_DEFAULT = true;
+    private static final boolean COMPRESS_STATE_IN_SESSION_DEFAULT = true;
     
     /**
      * Allow use flash scope to keep track of the views used in session and the previous ones,
@@ -580,7 +581,7 @@ public class MyfacesConfig
     @JSFWebConfigParam(since="2.0.6", defaultValue="false", expectedValues="true, false", group="state")
     public static final String USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION
             = "org.apache.myfaces.USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION";
-    public static final boolean USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION_DEFAULT = false;
+    private static final boolean USE_FLASH_SCOPE_PURGE_VIEWS_IN_SESSION_DEFAULT = false;
     
     /**
      * Add autocomplete="off" to the view state hidden field. Enabled by default.
@@ -589,7 +590,7 @@ public class MyfacesConfig
            defaultValue="true", group="state")
     public static final String AUTOCOMPLETE_OFF_VIEW_STATE = 
             "org.apache.myfaces.AUTOCOMPLETE_OFF_VIEW_STATE";
-    public static final boolean AUTOCOMPLETE_OFF_VIEW_STATE_DEFAULT = true;
+    private static final boolean AUTOCOMPLETE_OFF_VIEW_STATE_DEFAULT = true;
     
     /**
      * Set the max time in miliseconds set on the "Expires" header for a resource rendered by 
@@ -598,7 +599,7 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(since="2.0", defaultValue="604800000", group="resources", tags="performance")
     public static final String RESOURCE_MAX_TIME_EXPIRES = "org.apache.myfaces.RESOURCE_MAX_TIME_EXPIRES";
-    public static final long RESOURCE_MAX_TIME_EXPIRES_DEFAULT = 604800000L;
+    private static final long RESOURCE_MAX_TIME_EXPIRES_DEFAULT = 604800000L;
     
 
     /**
@@ -607,7 +608,7 @@ public class MyfacesConfig
      * loaded in a lazy way.
      */
     @JSFWebConfigParam(defaultValue="true",since="2.0",tags="performance")
-    private static final String LAZY_LOAD_CONFIG_OBJECTS = "org.apache.myfaces.LAZY_LOAD_CONFIG_OBJECTS";
+    public static final String LAZY_LOAD_CONFIG_OBJECTS = "org.apache.myfaces.LAZY_LOAD_CONFIG_OBJECTS";
     private static final boolean LAZY_LOAD_CONFIG_OBJECTS_DEFAULT = true;
 
     
@@ -633,38 +634,38 @@ public class MyfacesConfig
             classType="java.lang.Integer",
             desc="Controls the size of the viewId related caches: " + 
                     "VIEWID_EXISTS_CACHE_ENABLED, VIEWID_PROTECTED_CACHE_ENABLED, VIEWID_DERIVE_CACHE_ENABLED")
-    private static final String VIEWID_CACHE_SIZE = "org.apache.myfaces.VIEWID_CACHE_SIZE";
+    public static final String VIEWID_CACHE_SIZE = "org.apache.myfaces.VIEWID_CACHE_SIZE";
     private static final int VIEWID_CACHE_SIZE_DEFAULT = 500;
 
     @JSFWebConfigParam(defaultValue = "true", since = "2.0.2", expectedValues="true, false", group="viewhandler", 
             tags="performance",
             desc="Enable or disable the cache used to 'remember' if a view exists or not and reduce the impact " +
                  "of sucesive calls to ExternalContext.getResource().")
-    private static final String VIEWID_EXISTS_CACHE_ENABLED = "org.apache.myfaces.VIEWID_EXISTS_CACHE_ENABLED";
+    public static final String VIEWID_EXISTS_CACHE_ENABLED = "org.apache.myfaces.VIEWID_EXISTS_CACHE_ENABLED";
     private static final boolean VIEWID_EXISTS_CACHE_ENABLED_DEFAULT = true;
     
 
     @JSFWebConfigParam(defaultValue = "true", since = "3.0.0", expectedValues="true, false", group="viewhandler", 
             tags="performance",
             desc="Enable or disable the cache used to 'remember' if a view is protected or not.")
-    private static final String VIEWID_PROTECTED_CACHE_ENABLED = "org.apache.myfaces.VIEWID_PROTECTED_CACHE_ENABLED";
+    public static final String VIEWID_PROTECTED_CACHE_ENABLED = "org.apache.myfaces.VIEWID_PROTECTED_CACHE_ENABLED";
     private static final boolean VIEWID_PROTECTED_CACHE_ENABLED_DEFAULT = true;
     
     @JSFWebConfigParam(defaultValue = "true", since = "3.0.0", expectedValues="true, false", group="viewhandler", 
             tags="performance",
             desc="Enable or disable the cache used to 'remember' the derived viewId from the rawViewId.")
-    private static final String VIEWID_DERIVE_CACHE_ENABLED = "org.apache.myfaces.VIEWID_DERIVE_CACHE_ENABLED";
+    public static final String VIEWID_DERIVE_CACHE_ENABLED = "org.apache.myfaces.VIEWID_DERIVE_CACHE_ENABLED";
     private static final boolean VIEWID_DERIVE_CACHE_ENABLED_DEFAULT = true;
     
     @JSFWebConfigParam(defaultValue=".jsp", since="2.3", group="viewhandler")
     public static final String JSP_SUFFIX = "org.apache.myfaces.JSP_SUFFIX";
-    public static final String JSP_SUFFIX_DEFAULT = ".jsp";
+    private static final String JSP_SUFFIX_DEFAULT = ".jsp";
 
     /**
      * Enforce f:validateBean to be called first before any JSF validator.
      */
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since = "2.2.10", group="validation")
-    private final static String BEAN_BEFORE_JSF_VALIDATION
+    public final static String BEAN_BEFORE_JSF_VALIDATION
             = "org.apache.myfaces.validator.BEAN_BEFORE_JSF_VALIDATION";
     private final static boolean BEAN_BEFORE_JSF_VALIDATION_DEFAULT = false;
 
@@ -683,7 +684,7 @@ public class MyfacesConfig
             tags = "performance")
     public static final String INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN = 
             "org.apache.myfaces.INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN";
-    public static final boolean INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN_DEFAULT = false;
+    private static final boolean INITIALIZE_SKIP_JAR_FACES_CONFIG_SCAN_DEFAULT = false;
     
     /**
      * If this param is set to true, the check for faces servlet mapping is not done 
@@ -716,20 +717,20 @@ public class MyfacesConfig
                        group="state", tags="performance")
     public static final String CHECK_ID_PRODUCTION_MODE
             = "org.apache.myfaces.CHECK_ID_PRODUCTION_MODE";
-    public static final String CHECK_ID_PRODUCTION_MODE_DEFAULT = "auto";
+    private static final String CHECK_ID_PRODUCTION_MODE_DEFAULT = "auto";
     public static final String CHECK_ID_PRODUCTION_MODE_TRUE = "true";
     public static final String CHECK_ID_PRODUCTION_MODE_AUTO = "auto";
     
     @JSFWebConfigParam(since = "2.1", defaultValue = "false", expectedValues = "true, false", tags = "performance")
     public final static String MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW
             = "org.apache.myfaces.MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW";
-    public static final boolean MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW_DEFAULT = false;
+    private static final boolean MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW_DEFAULT = false;
   
     /**
      * Class implementing ResourceResolver interface used to locate facelet resources. 
      */
     @JSFWebConfigParam(since = "2.0", alias = "facelets.RESOURCE_RESOLVER")
-    public final static String RESOURCE_RESOLVER = "javax.faces.FACELETS_RESOURCE_RESOLVER";
+    public final static String FACELETS_RESOURCE_RESOLVER = "javax.faces.FACELETS_RESOURCE_RESOLVER";
     
     /**
      * Indicates if expressions generated by facelets should be cached or not.
@@ -767,16 +768,59 @@ public class MyfacesConfig
     @JSFWebConfigParam(since="2.0.9, 2.1.3" , defaultValue="true", expectedValues="true, false")
     public static final String WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE
             = "org.apache.myfaces.WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE";
-    public static final boolean WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE_DEFAULT = true;
+    private static final boolean WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE_DEFAULT = true;
     
     /**
-     * Deactivates the passivation capables of MyFaces CDI scopes.
-     * This is e.g. required on Quarkus.
+     * Defines if the last-modified should be cached of the resources when the ProjectStage is Production.
+     * If the cache is disabled, each last-modified request will read the last-modified from the file.
      */
     @JSFWebConfigParam(since="3.0.0" , defaultValue="true", expectedValues="true, false")
-    public static final String CDI_PASSIVATION_SUPPORTED
-            = "org.apache.myfaces.CDI_PASSIVATION_SUPPORTED";
-    public static final boolean CDI_PASSIVATION_SUPPORTED_DEFAULT = true;
+    public static final String RESOURCE_CACHE_LAST_MODIFIED
+            = "org.apache.myfaces.RESOURCE_CACHE_LAST_MODIFIED";
+    private static final boolean RESOURCE_CACHE_LAST_MODIFIED_DEFAULT = true;
+
+    /**
+     * Indicate if log all web config params should be done before initialize the webapp. 
+     * <p>
+     * If is set in "auto" mode, web config params are only logged on "Development" and "Production" project stages.
+     * </p> 
+     */
+    @JSFWebConfigParam(expectedValues="true, auto, false", defaultValue="auto")
+    public static final String LOG_WEB_CONTEXT_PARAMS = "org.apache.myfaces.LOG_WEB_CONTEXT_PARAMS";
+    private static final String LOG_WEB_CONTEXT_PARAMS_DEFAULT = "auto";
+    
+    /**
+     * This parameter enables automatic extensionless mapping for all JSF views.
+     */
+    @JSFWebConfigParam(since="2.3", expectedValues = "true, false", defaultValue = "false")
+    public static final String AUTOMATIC_EXTENSIONLESS_MAPPING = 
+            "org.apache.myfaces.AUTOMATIC_EXTENSIONLESS_MAPPING";
+    public static final boolean AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT = false;
+    
+    /**
+     * Indicate the class implementing FacesInitializer interface that will
+     * be used to setup MyFaces Core contexts.
+     * <p>This is used when some custom task must be done specifically when
+     * a myfaces web context is initialized or destroyed, or when MyFaces should
+     * be initialized in some custom environment. 
+     * </p>
+     */
+    @JSFWebConfigParam(since = "2.0.1", desc = "Class name of a custom FacesInitializer implementation.")
+    public static final String FACES_INITIALIZER = "org.apache.myfaces.FACES_INITIALIZER";
+    
+
+    /**
+     * Define the class implementing InjectionProvider interface to handle dependendy injection,
+     * PostConstruct and PreDestroy callbacks.
+     * 
+     * <p>This also can be configured using a SPI entry (/META-INF/services/...).</p>
+     */
+    @JSFWebConfigParam(name="org.apache.myfaces.spi.InjectionProvider", since="2.2")
+    public static final String INJECTION_PROVIDER = InjectionProvider.class.getName();
+    
+    @JSFWebConfigParam(name="org.apache.myfaces.WEBSOCKET_MAX_CONNECTIONS", since="2.3")
+    public static final String WEBSOCKET_MAX_CONNECTIONS = "org.apache.myfaces.WEBSOCKET_MAX_CONNECTIONS";
+    public static final Integer WEBSOCKET_MAX_CONNECTIONS_DEFAULT = 5000;
     
     // we need it, applicationImpl not ready probably
     private ProjectStage projectStage = ProjectStage.Production;
@@ -855,8 +899,9 @@ public class MyfacesConfig
     private String faceletsViewSuffix = ViewHandler.DEFAULT_FACELETS_SUFFIX;
     private ELExpressionCacheMode elExpressionCacheMode;
     private boolean wrapTagExceptionsAsContextAware = WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE_DEFAULT;
-    private boolean cdiPassivationSupported = CDI_PASSIVATION_SUPPORTED_DEFAULT;
-    
+    private boolean resourceCacheLastModified = RESOURCE_CACHE_LAST_MODIFIED_DEFAULT;
+    private boolean logWebContextParams = false;
+    private int websocketMaxConnections = WEBSOCKET_MAX_CONNECTIONS_DEFAULT;
     
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -900,14 +945,8 @@ public class MyfacesConfig
     
     public static MyfacesConfig getCurrentInstance(ExternalContext extCtx)
     {
-        MyfacesConfig myfacesConfig = (MyfacesConfig) extCtx.getApplicationMap().get(APPLICATION_MAP_PARAM_NAME);
-        if (myfacesConfig == null)
-        {
-            myfacesConfig = createAndInitializeMyFacesConfig(extCtx);
-            extCtx.getApplicationMap().put(APPLICATION_MAP_PARAM_NAME, myfacesConfig);
-        }
-
-        return myfacesConfig;
+        return (MyfacesConfig) extCtx.getApplicationMap().computeIfAbsent(
+                APPLICATION_MAP_PARAM_NAME, k -> createAndInitializeMyFacesConfig(extCtx));
     }
     
     public MyfacesConfig()
@@ -1101,6 +1140,10 @@ public class MyfacesConfig
         
         cfg.resourceHandlerCacheEnabled = getBoolean(extCtx, RESOURCE_HANDLER_CACHE_ENABLED,
                 RESOURCE_HANDLER_CACHE_ENABLED_DEFAULT);
+        if (cfg.projectStage != ProjectStage.Production)
+        {
+            cfg.resourceHandlerCacheEnabled = false;
+        }
         
         cfg.resourceHandlerCacheSize = getInt(extCtx, RESOURCE_HANDLER_CACHE_SIZE,
                 RESOURCE_HANDLER_CACHE_SIZE_DEFAULT);
@@ -1230,7 +1273,7 @@ public class MyfacesConfig
         cfg.markInitialStateWhenApplyBuildView = getBoolean(extCtx, MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW,
                 MARK_INITIAL_STATE_WHEN_APPLY_BUILD_VIEW_DEFAULT);
         
-        cfg.resourceResolver = getString(extCtx, RESOURCE_RESOLVER,
+        cfg.resourceResolver = getString(extCtx, FACELETS_RESOURCE_RESOLVER,
                 null);
         
         cfg.viewSuffix = StringUtils.splitShortString(
@@ -1251,9 +1294,28 @@ public class MyfacesConfig
         cfg.wrapTagExceptionsAsContextAware = getBoolean(extCtx, WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE,
                 WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE_DEFAULT);
         
-        cfg.cdiPassivationSupported = getBoolean(extCtx, CDI_PASSIVATION_SUPPORTED,
-                CDI_PASSIVATION_SUPPORTED_DEFAULT);
+        cfg.resourceCacheLastModified = getBoolean(extCtx, RESOURCE_CACHE_LAST_MODIFIED,
+                RESOURCE_CACHE_LAST_MODIFIED_DEFAULT);
+        if (cfg.projectStage == ProjectStage.Development)
+        {
+            cfg.resourceCacheLastModified = false;
+        }
         
+        String logWebContextParams = getString(extCtx, LOG_WEB_CONTEXT_PARAMS,
+                LOG_WEB_CONTEXT_PARAMS_DEFAULT);    
+        if (logWebContextParams.equals("false") || (logWebContextParams.equals("auto")
+                && (cfg.projectStage == ProjectStage.SystemTest || cfg.projectStage == ProjectStage.UnitTest)))
+        {
+            cfg.logWebContextParams = false;
+        }
+        else
+        {
+            cfg.logWebContextParams = true;
+        }
+        
+        cfg.websocketMaxConnections = getInt(extCtx, WEBSOCKET_MAX_CONNECTIONS,
+                WEBSOCKET_MAX_CONNECTIONS_DEFAULT);
+
         return cfg;
     }
 
@@ -1704,10 +1766,20 @@ public class MyfacesConfig
         return wrapTagExceptionsAsContextAware;
     }
 
-    public boolean isCdiPassivationSupported()
+    public boolean isResourceCacheLastModified()
     {
-        return cdiPassivationSupported;
+        return resourceCacheLastModified;
     }
-    
+
+    public boolean isLogWebContextParams()
+    {
+        return logWebContextParams;
+    }
+
+    public int getWebsocketMaxConnections()
+    {
+        return websocketMaxConnections;
+    }
+
 }
 

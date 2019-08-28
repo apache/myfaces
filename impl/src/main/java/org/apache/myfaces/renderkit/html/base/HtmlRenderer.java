@@ -101,7 +101,6 @@ public abstract class HtmlRenderer
     protected boolean shouldRenderId(FacesContext context, UIComponent  component)
     {
         String id = component.getId();
-
         // Otherwise, if ID isn't set, don't bother
         if (id == null)
         {

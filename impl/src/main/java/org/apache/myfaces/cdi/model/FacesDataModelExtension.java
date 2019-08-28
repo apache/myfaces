@@ -19,12 +19,9 @@
 
 package org.apache.myfaces.cdi.model;
 
-import java.lang.reflect.Type;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -32,62 +29,47 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessManagedBean;
-import javax.faces.model.DataModel;
 import javax.faces.model.FacesDataModel;
 import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 
-/**
- *
- */
 public class FacesDataModelExtension implements Extension
 {
-    private Set<DataModelInfo> types = new HashSet<DataModelInfo>();
+    private Set<FacesDataModelInfo> types = new HashSet<>();
 
-    void beforeBeanDiscovery(
-        @Observes final BeforeBeanDiscovery event, BeanManager beanManager)
+    void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event, BeanManager beanManager)
     {
-        AnnotatedType beanHolder = beanManager.createAnnotatedType(FacesDataModelClassBeanHolder.class);
+        AnnotatedType beanHolder = beanManager.createAnnotatedType(FacesDataModelManager.class);
         event.addAnnotatedType(beanHolder, beanHolder.getJavaClass().getName());
     }
 
     public <T> void collect(@Observes ProcessManagedBean<T> event)
     {
-        if (event.getAnnotatedBeanClass().isAnnotationPresent(FacesDataModel.class))
+        Annotated annotated = event.getAnnotatedBeanClass();
+        if (annotated.isAnnotationPresent(FacesDataModel.class))
         {
-            Annotated annotated = event.getAnnotatedBeanClass();
-            
-            Type type = annotated.getBaseType();
+            FacesDataModel model = (FacesDataModel) annotated.getAnnotation(FacesDataModel.class);
 
-            FacesDataModel conv = (FacesDataModel) annotated.getAnnotation(FacesDataModel.class);
-            
-            boolean hasValue = conv.forClass() != null;
+            boolean hasValue = model.forClass() != null;
             if (hasValue)
             {
-                types.add(new DataModelInfo(type, conv.forClass()));
+                types.add(new FacesDataModelInfo(annotated.getBaseType(), model.forClass()));
             }
-        }
-    }
-    
-    public void afterBean(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
-    {
-        for (DataModelInfo typeInfo : types)
-        {
-            afterBeanDiscovery.addBean(new DynamicDataModelProducer(beanManager, typeInfo));
         }
     }
     
     public void afterDeploymentValidation(@Observes AfterDeploymentValidation adv, BeanManager beanManager)
     {
-        FacesDataModelClassBeanHolder holder = CDIUtils.lookup(beanManager, FacesDataModelClassBeanHolder.class);
-        for (DataModelInfo typeInfo : types)
+        FacesDataModelManager facesDataModelManager = CDIUtils.get(beanManager, FacesDataModelManager.class);
+
+        for (FacesDataModelInfo typeInfo : types)
         {
-            holder.addFacesDataModel(typeInfo.getForClass(), 
+            facesDataModelManager.addFacesDataModel(typeInfo.getForClass(), 
                     ClassUtils.simpleClassForName(typeInfo.getType().getTypeName()));
         }
-        // Initialize unmodifiable wrapper
-        Map<Class<?>,Class<? extends DataModel>> map = holder.getClassInstanceToDataModelWrapperClassMap();
-        
+
+        facesDataModelManager.init();
+
         types.clear();
     }
 }

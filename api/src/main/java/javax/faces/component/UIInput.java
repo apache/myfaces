@@ -192,6 +192,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         {
             throw new NullPointerException("context");
         }
+
         try
         {
             setCachedFacesContext(context);
@@ -206,7 +207,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
             setCachedFacesContext(null);
             popComponentFromEL(context);
         }
+
         super.processDecodes(context);
+
         try
         {
             setCachedFacesContext(context);
@@ -228,6 +231,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
                 {
                     context.getApplication().publishEvent(context,  PostValidateEvent.class, getClass(), this);
                 }
+
                 if (!isValid())
                 {
                     context.renderResponse();
@@ -248,6 +252,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         {
             throw new NullPointerException("context");
         }
+        
         try
         {
             setCachedFacesContext(context);
@@ -262,13 +267,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
             setCachedFacesContext(null);
             popComponentFromEL(context);
         }
-
-        //super.processValidators(context);
         
         // Call the processValidators() method of all facets and children of this UIComponent, in the order
         // determined by a call to getFacetsAndChildren().
-        int facetCount = getFacetCount();
-        if (facetCount > 0)
+        if (getFacetCount() > 0)
         {
             for (UIComponent facet : getFacets().values())
             {
@@ -303,6 +305,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
                 {
                     context.getApplication().publishEvent(context,  PostValidateEvent.class, getClass(), this);
                 }
+
                 if (!isValid())
                 {
                     context.validationFailed();
@@ -338,6 +341,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
             setCachedFacesContext(null);
             popComponentFromEL(context);
         }
+
         super.processUpdates(context);
 
         try
@@ -353,6 +357,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
                 context.renderResponse();
                 throw e;
             }
+
             if (!isValid())
             {
                 context.renderResponse();
@@ -386,14 +391,11 @@ public class UIInput extends UIOutput implements EditableValueHolder
         {
             throw new NullPointerException();
         }
-        if (!isValid())
+        if (!isValid() || !isLocalValueSet())
         {
             return;
         }
-        if (!isLocalValueSet())
-        {
-            return;
-        }
+
         ValueExpression expression = getValueExpression("value");
         if (expression == null)
         {
@@ -879,14 +881,10 @@ public class UIInput extends UIOutput implements EditableValueHolder
         
         if (_validatorList == null)
         {
-            //normally add user 0-3 validators: 
-            _validatorList = new _DeltaList<Validator>(3);
+            _validatorList = new _DeltaList<>(3);
         }
 
         _validatorList.add(validator);
-        
-        // The argument validator must be inspected for the presence of the ResourceDependency annotation.
-        //_handleAnnotations(FacesContext.getCurrentInstance(), validator);
     }
 
     /** See getValidator. */
@@ -905,8 +903,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
     @Override
     public Validator[] getValidators()
     {
-        if (_ExternalSpecifications.isBeanValidationAvailable() &&
-            Boolean.TRUE.equals(this.getAttributes().containsKey(BEAN_BEFORE_JSF_PROPERTY)))
+        if (_ExternalSpecifications.isBeanValidationAvailable()
+                && Boolean.TRUE.equals(this.getAttributes().containsKey(BEAN_BEFORE_JSF_PROPERTY)))
         {
             int bvIndex = -1;
             for (int i = 0; i < _validatorList.size(); i++)
@@ -937,13 +935,15 @@ public class UIInput extends UIOutput implements EditableValueHolder
             }
             else
             {
-                return _validatorList == null ? EMPTY_VALIDATOR_ARRAY
+                return _validatorList == null
+                        ? EMPTY_VALIDATOR_ARRAY
                         : _validatorList.toArray(new Validator[_validatorList.size()]);
             }
         }
         else
         {
-            return _validatorList == null ? EMPTY_VALIDATOR_ARRAY
+            return _validatorList == null
+                    ? EMPTY_VALIDATOR_ARRAY
                     : _validatorList.toArray(new Validator[_validatorList.size()]);
         }
     }
@@ -1188,9 +1188,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
             Object attachedState = holder.saveState(facesContext);
             if (attachedState != null)
             {
-                return new _AttachedDeltaWrapper(_validatorList.getClass(),
-                        attachedState);
+                return new _AttachedDeltaWrapper(_validatorList.getClass(), attachedState);
             }
+
             //_validatorList instances once is created never changes, we can return null
             return null;
         }
@@ -1207,17 +1207,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
     @SuppressWarnings("unchecked")
     private Map<String, List<Object[]>> _getDebugInfoMap()
     {
-        Map<String, Object> requestMap = getFacesContext()
-                .getExternalContext().getRequestMap();
-        Map<String, List<Object[]>> debugInfo = (Map<String, List<Object[]>>) 
-                requestMap.get(DEBUG_INFO_KEY + getClientId());
-        if (debugInfo == null)
-        {
-            // no debug info available yet, create one and put it on the attributes map
-            debugInfo = new HashMap<String, List<Object[]>>();
-            requestMap.put(DEBUG_INFO_KEY + getClientId(), debugInfo);
-        }
-        return debugInfo;
+        Map<String, Object> requestMap = getFacesContext().getExternalContext().getRequestMap();
+        return (Map<String, List<Object[]>>) 
+                requestMap.computeIfAbsent(DEBUG_INFO_KEY + getClientId(), k -> new HashMap<>());
     }
     
     /**
@@ -1228,16 +1220,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
     private List<Object[]> _getFieldDebugInfos(final String field)
     {
         Map<String, List<Object[]>> debugInfo = _getDebugInfoMap();
-        List<Object[]> fieldDebugInfo = debugInfo.get(field);
-        if (fieldDebugInfo == null)
-        {
-            // no field debug-infos yet, create them and store it in the Map
-            fieldDebugInfo = new ArrayList<Object[]>();
-            debugInfo.put(field, fieldDebugInfo);
-        }
-        return fieldDebugInfo;
+        return debugInfo.computeIfAbsent(field, k -> new ArrayList<Object[]>());
     }
-    
+
     /**
      * Creates the field debug-info for the given field, which changed
      * from oldValue to newValue.
@@ -1288,7 +1273,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         // use Throwable to get the current call stack
         Throwable throwableHelper = new Throwable();
         StackTraceElement[] stackTraceElements = throwableHelper.getStackTrace();
-        List<StackTraceElement> debugStackTraceElements = new LinkedList<StackTraceElement>();
+        List<StackTraceElement> debugStackTraceElements = new LinkedList<>();
         
         // + 1 because this method should also be skipped
         for (int i = skipStackTaceElements + 1; i < stackTraceElements.length; i++)

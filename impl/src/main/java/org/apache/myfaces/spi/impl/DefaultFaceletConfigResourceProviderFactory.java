@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.spi.impl;
 
-import org.apache.myfaces.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.FaceletConfigResourceProvider;
 import org.apache.myfaces.spi.FaceletConfigResourceProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
@@ -59,20 +59,8 @@ public class DefaultFaceletConfigResourceProviderFactory extends FaceletConfigRe
         {
             if (System.getSecurityManager() != null)
             {
-                returnValue
-                        = AccessController.doPrivileged(new PrivilegedExceptionAction<FaceletConfigResourceProvider>()
-                        {
-                            @Override
-                            public FaceletConfigResourceProvider run() throws ClassNotFoundException,
-                                    NoClassDefFoundError,
-                                    InstantiationException,
-                                    IllegalAccessException,
-                                    InvocationTargetException,
-                                    PrivilegedActionException
-                            {
-                                return resolveFaceletConfigResourceProviderFromService(extContext);
-                            }
-                        });
+                returnValue = (FaceletConfigResourceProvider) AccessController.doPrivileged(
+                        (PrivilegedExceptionAction) () -> resolveFaceletConfigResourceProviderFromService(extContext));
             }
             else
             {

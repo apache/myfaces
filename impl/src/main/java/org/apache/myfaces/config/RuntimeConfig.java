@@ -45,7 +45,7 @@ import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.ResourceBundle;
 import org.apache.myfaces.config.element.ViewPoolMapping;
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
-import org.apache.myfaces.util.Assert;
+import org.apache.myfaces.util.lang.Assert;
 
 /**
  * Holds all configuration information (from the faces-config xml files) that is needed later during runtime. The config
@@ -104,8 +104,6 @@ public class RuntimeConfig
     
     private List<String> _resourceResolvers = new ArrayList<String>();
     
-    private List<Object> _injectedObjects = new ArrayList<Object>();
-    
     private List<FaceletTagLibrary> _faceletTagLibraries = new ArrayList<FaceletTagLibrary>();
     
     private Map<Integer, String> _namespaceById = new HashMap<Integer, String>();
@@ -126,14 +124,8 @@ public class RuntimeConfig
     
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
-        RuntimeConfig runtimeConfig = (RuntimeConfig) externalContext.getApplicationMap().get(
-                APPLICATION_MAP_PARAM_NAME);
-        if (runtimeConfig == null)
-        {
-            runtimeConfig = new RuntimeConfig();
-            externalContext.getApplicationMap().put(APPLICATION_MAP_PARAM_NAME, runtimeConfig);
-        }
-        return runtimeConfig;
+        return (RuntimeConfig) externalContext.getApplicationMap().computeIfAbsent(
+                APPLICATION_MAP_PARAM_NAME, k -> new RuntimeConfig());
     }
 
     public void purge()
@@ -144,7 +136,6 @@ public class RuntimeConfig
         _externalContextResourceLibraryContracts.clear();
         _classLoaderResourceLibraryContracts.clear();
         _resourceLibraryContracts.clear();
-        _injectedObjects.clear();
         _faceletTagLibraries.clear();
         _faceletTemplates.clear();
         
@@ -418,23 +409,13 @@ public class RuntimeConfig
 
     public void addContractMapping(String urlPattern, String[] contracts)
     {
-        List<String> contractsList = _contractMappings.get(urlPattern);
-        if (contractsList == null)
-        {
-            contractsList = new ArrayList<String>();
-            _contractMappings.put(urlPattern, contractsList);
-        }
+        List<String> contractsList = _contractMappings.computeIfAbsent(urlPattern, k -> new ArrayList<>());
         Collections.addAll(contractsList, contracts);
     }
     
     public void addContractMapping(String urlPattern, String contract)
     {
-        List<String> contractsList = _contractMappings.get(urlPattern);
-        if (contractsList == null)
-        {
-            contractsList = new ArrayList<String>();
-            _contractMappings.put(urlPattern, contractsList);
-        }
+        List<String> contractsList = _contractMappings.computeIfAbsent(urlPattern, k -> new ArrayList<>());
         contractsList.add(contract);
     }    
     
@@ -446,19 +427,6 @@ public class RuntimeConfig
     public void addResourceResolver(String resourceResolver)
     {
         _resourceResolvers.add(resourceResolver);
-    }
-
-    /**
-     * @return the _injectedObjects
-     */
-    public List<Object> getInjectedObjects()
-    {
-        return _injectedObjects;
-    }
-
-    public void addInjectedObject(Object object)
-    {
-        _injectedObjects.add(object);
     }
 
     public Map<Integer, String> getNamespaceById()

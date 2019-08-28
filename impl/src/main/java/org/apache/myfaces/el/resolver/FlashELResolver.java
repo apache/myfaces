@@ -244,7 +244,7 @@ public class FlashELResolver extends ELResolver
 
     private static void setDoKeepPromotion(boolean value, FacesContext facesContext)
     {
-        facesContext.getAttributes().put(KEEP_STATUS_KEY, Boolean.valueOf(value));
+        facesContext.getAttributes().put(KEEP_STATUS_KEY, value);
     }
     
     // get the FacesContext from the ELContext

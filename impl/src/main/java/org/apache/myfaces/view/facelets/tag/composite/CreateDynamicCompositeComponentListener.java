@@ -96,7 +96,7 @@ public class CreateDynamicCompositeComponentListener
         // have any side effect (counts as a refresh).
         Integer step = (Integer) component.getAttributes().get(
             CompositeComponentResourceTagHandler.CREATE_CC_ON_POST_ADD_TO_VIEW); 
-        if (step != null && step.intValue() == 0)
+        if (step != null && step == 0)
         {
             component.getAttributes().put(CompositeComponentResourceTagHandler.CREATE_CC_ON_POST_ADD_TO_VIEW, 1);
         }
@@ -119,7 +119,6 @@ public class CreateDynamicCompositeComponentListener
                 facetName = ComponentSupport.findFacetNameByComponentInstance(parent, component);
             }
             
-            
             try
             {
                 if (facetName != null)
@@ -129,10 +128,10 @@ public class CreateDynamicCompositeComponentListener
                 }
                 // The trick here is restore MARK_CREATED, just to allow ComponentTagHandlerDelegate to
                 // find the component. Then we reset it to exclude it from facelets refresh algorithm.
-                String markId = (String) component.getAttributes().get("oam.vf.GEN_MARK_ID");
+                String markId = (String) component.getAttributes().get(FaceletViewDeclarationLanguage.GEN_MARK_ID);
                 if (markId == null)
                 {
-                    ((AbstractFacelet)componentFacelet).applyDynamicComponentHandler(
+                    ((AbstractFacelet) componentFacelet).applyDynamicComponentHandler(
                         facesContext, component, baseKey);
                 }
                 else
@@ -140,7 +139,7 @@ public class CreateDynamicCompositeComponentListener
                     try
                     {
                         component.getAttributes().put(ComponentSupport.MARK_CREATED, markId);
-                        ((AbstractFacelet)componentFacelet).applyDynamicComponentHandler(
+                        ((AbstractFacelet) componentFacelet).applyDynamicComponentHandler(
                             facesContext, component.getParent(), baseKey);
                     }
                     finally
@@ -191,8 +190,7 @@ public class CreateDynamicCompositeComponentListener
     @Override
     public Object saveState(FacesContext context)
     {
-        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(
-            context.getExternalContext());
+        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(context.getExternalContext());
         Object[] values = new Object[4];
         Integer tagId = runtimeConfig.getIdByNamespace().get(taglibURI);
         if (tagId != null)
@@ -234,10 +232,10 @@ public class CreateDynamicCompositeComponentListener
         else if (values[0] instanceof Object[])
         {
             Object[] def = (Object[])values[0];
-            String ns = ( ((Integer)def[0]).intValue() == 0) ? 
+            String ns = (((Integer) def[0]) == 0) ? 
                 CompositeResourceLibrary.NAMESPACE_PREFIX :
                 CompositeResourceLibrary.ALIAS_NAMESPACE_PREFIX;
-            taglibURI = ns + (String)(((Object[])values[0])[1]);
+            taglibURI = ns + (String) ((Object[]) values[0])[1];
         }
         tagName = (String)values[1];
         attributes = (Map<String,Object>) values[2];
