@@ -886,9 +886,8 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
 
                 if (paramMap == null)
                 {
-                    paramMap = new HashMap<String, List<String>>();
+                    paramMap = new HashMap<>(5, 1f);
                 }
-                
                 List<String> values = paramMap.computeIfAbsent(currentName, k -> new ArrayList<>(1));
 
                 try
@@ -916,7 +915,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                 {
                     if (paramMap == null)
                     {
-                        paramMap = new HashMap<>();
+                        paramMap = new HashMap<>(5, 1f);
                     }
                     paramMap.put(key, pair.getValue());
                 }
@@ -938,7 +937,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                         value.add(entry.getValue());
                         if (paramMap == null)
                         {
-                            paramMap = new HashMap<>();
+                            paramMap = new HashMap<>(5, 1f);
                         }
                         paramMap.put(entry.getKey(), value);
                     }
@@ -946,7 +945,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
             }
         }        
 
-        boolean hasParams = paramMap != null && paramMap.size()>0;
+        boolean hasParams = paramMap != null && paramMap.size() > 0;
 
         if (!hasParams && fragment == null) 
         {

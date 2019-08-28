@@ -1803,7 +1803,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         if (listenerSuccessMap == null)
         {
-            listenerSuccessMap = new HashMap<>(7, 1f);
+            listenerSuccessMap = new HashMap<>(PhaseId.VALUES.size(), 1f);
         }
         return listenerSuccessMap;
     }

@@ -177,7 +177,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 Flow targetFlow = calculateTargetFlow(facesContext, outcome, flowHandler, 
                                                       activeFlows, toFlowDocumentId);
                 
-                Map<String,List<String>> navigationCaseParameters = navigationCase.getParameters();
+                Map<String, List<String>> navigationCaseParameters = navigationCase.getParameters();
                 
                 // Spec: If this navigation is a flow transition (where current flow is not the same as the new flow)
                 // sourceFlow and targetFlow could both be null so need to have multiple checks here
@@ -189,8 +189,9 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                     {
                         if (navigationCaseParameters == null)
                         {
-                            navigationCaseParameters = new HashMap<>();
+                            navigationCaseParameters = new HashMap<>(5, 1f);
                         }
+                        
                         // If current flow (sourceFlow) is not null and new flow (targetFlow) is null,
                         // include the following entries:
                         if (currentFlow != null && targetFlow == null)

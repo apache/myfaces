@@ -39,7 +39,7 @@ public class LifecycleFactoryImpl extends LifecycleFactory
      * do not block, and it is more often retrieval (at begin of all requests) than addition (when 
      * startup listener is called and configuration occur). 
      */
-    private final Map<String, Lifecycle> _lifecycles = new ConcurrentHashMap<>();
+    private final Map<String, Lifecycle> _lifecycles = new ConcurrentHashMap<>(3, 1f);
 
     public LifecycleFactoryImpl()
     {

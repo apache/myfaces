@@ -98,7 +98,7 @@ public class OutcomeTargetUtils
                     true, false);
             if (validParams.size() > 0)
             {
-                parameters = new HashMap<>();
+                parameters = new HashMap<>(5, 1f);
             }
             for (int i = 0, size = validParams.size(); i < size; i++)
             {
@@ -124,17 +124,17 @@ public class OutcomeTargetUtils
         {
             if (parameters == null)
             {
-                parameters = new HashMap<>();
+                parameters = new HashMap<>(5, 1f);
             }
             if (!parameters.containsKey(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME))
             {
-                List<String> list = new ArrayList<String>(1);
+                List<String> list = new ArrayList<>(1);
                 list.add(navigationCase.getToFlowDocumentId());
                 parameters.put(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, list);
             }
             if (!parameters.containsKey(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME))
             {
-                List<String> list2 = new ArrayList<String>(1);
+                List<String> list2 = new ArrayList<>(1);
                 list2.add(navigationCase.getFromOutcome());
                 parameters.put(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME, list2);
             }
@@ -147,7 +147,7 @@ public class OutcomeTargetUtils
         {
             if (parameters == null)
             {
-                parameters = new HashMap<String, List<String>>();
+                parameters = new HashMap<>(5, 1f);
             }
             for (Map.Entry<String, List<String>> entry : navigationCaseParams.entrySet())
             {

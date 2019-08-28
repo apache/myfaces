@@ -111,8 +111,7 @@ public class DefaultFacesFlowProvider extends FacesFlowProvider
      * This wrapper is used to implement the maps for the flash scope.
      * For more information see the SubKeyMap doc.
      */
-    Map<Object, Object> createOrRestoreMap(FacesContext context, String prefix,
-        boolean create)
+    Map<Object, Object> createOrRestoreMap(FacesContext context, String prefix, boolean create)
     {
         ExternalContext external = context.getExternalContext();
         Map<String, Object> sessionMap = external.getSessionMap();

@@ -53,12 +53,8 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
 
-        Map<String, MetadataTarget> metadata = (Map<String, MetadataTarget>) applicationMap.get(METADATA_KEY);
-        if (metadata == null)
-        {
-            metadata = new HashMap<>();
-            applicationMap.put(METADATA_KEY, metadata);
-        }
+        Map<String, MetadataTarget> metadata = (Map<String, MetadataTarget>) applicationMap.computeIfAbsent(
+                METADATA_KEY, k -> new HashMap<>());
 
         return metadata;
     }
@@ -202,12 +198,12 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
         return this;
     }
 
-    private final MetadataTarget _getMetadataTarget()
+    private MetadataTarget _getMetadataTarget()
     {
         return _meta;
     }
     
-    private final MetadataTarget _getBaseMetadataTarget()
+    private MetadataTarget _getBaseMetadataTarget()
     {
         Map<String, MetadataTarget> metadata = getMetaData();
         String key = _type.getName();

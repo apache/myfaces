@@ -43,7 +43,7 @@ public class CdiAnnotationProviderExtension implements Extension
 
     public CdiAnnotationProviderExtension()
     {
-        map = new HashMap<>();
+        map = new HashMap<>(8, 1f);
         annotationsToScan = new Class[] {
             FacesComponent.class,
             FacesBehavior.class,

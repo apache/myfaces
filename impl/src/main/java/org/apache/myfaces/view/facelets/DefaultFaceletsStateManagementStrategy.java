@@ -670,7 +670,6 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         if (view == null)
         {
             // Not much that can be done.
-            
             return null;
         }
         
@@ -720,7 +719,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                 faceletViewState = view.getAttributes().get(ComponentSupport.FACELET_STATE_INSTANCE);
                 if (faceletViewState != null)
                 {
-                    ((Map<String, Object>)states).put(ComponentSupport.FACELET_STATE_INSTANCE,
+                    ((Map<String, Object>) states).put(ComponentSupport.FACELET_STATE_INSTANCE,
                             UIComponentBase.saveAttachedState(context, faceletViewState));
                     //Do not save on UIViewRoot
                     view.getAttributes().remove(ComponentSupport.FACELET_STATE_INSTANCE);
@@ -743,7 +742,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                     saveStateOnMapVisitTree(context,(Map<String,Object>) states, view);
                 }
                 
-                if (((Map<String,Object>)states).isEmpty())
+                if (((Map<String,Object>) states).isEmpty())
                 {
                     states = null;
                 }
@@ -782,8 +781,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         return serializedView;
     }
     
-    private void restoreViewRootOnlyFromMap(final FacesContext context, final Object viewState,
-            final UIComponent view)
+    private void restoreViewRootOnlyFromMap(final FacesContext context, final Object viewState, final UIComponent view)
     {
         // Only viewState found, process it but skip tree
         // traversal, saving some time.

@@ -36,8 +36,7 @@ public final class NavigationUtils
 {
     public static Set<NavigationCase> convertNavigationCasesToAPI(NavigationRule rule)
     {
-        List<? extends org.apache.myfaces.config.element.NavigationCase> configCases = 
-                rule.getNavigationCases();
+        List<? extends org.apache.myfaces.config.element.NavigationCase> configCases = rule.getNavigationCases();
         
         Set<NavigationCase> apiCases = new HashSet<>(configCases.size());
         for (org.apache.myfaces.config.element.NavigationCase configCase : configCases)
@@ -78,17 +77,17 @@ public final class NavigationUtils
      * Evaluate all EL expressions found as parameters and return a map that can be used for 
      * redirect or render bookmark links
      * 
+     * @param facesContext
      * @param parameters parameter map retrieved from NavigationCase.getParameters()
      * @return
      */
     public static Map<String, List<String> > getEvaluatedNavigationParameters(
             FacesContext facesContext, 
-            Map<String, List<String> > parameters)
+            Map<String, List<String>> parameters)
     {
-        Map<String,List<String>> evaluatedParameters = null;
-        if (parameters != null && parameters.size() > 0)
+        if (parameters != null && !parameters.isEmpty())
         {
-            evaluatedParameters = new HashMap<String, List<String>>();
+            Map<String,List<String>> evaluatedParameters = new HashMap<>(parameters.size());
             for (Map.Entry<String, List<String>> pair : parameters.entrySet())
             {
                 boolean containsEL = false;
@@ -110,12 +109,11 @@ public final class NavigationUtils
                     evaluatedParameters.put(pair.getKey(), pair.getValue());
                 }
             }
+            
+            return evaluatedParameters;
         }
-        else
-        {
-            evaluatedParameters = parameters;
-        }
-        return evaluatedParameters;
+
+        return parameters;
     }
     
     /**
@@ -130,7 +128,7 @@ public final class NavigationUtils
         // note that we have to create a new List here, because if we
         // change any value on the given List, it will be changed in the
         // NavigationCase too and the EL expression won't be evaluated again
-        List<String> target = new ArrayList<String>(values.size());
+        List<String> target = new ArrayList<>(values.size());
         for (String value : values)
         {
             if (_isExpression(value))
