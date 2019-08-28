@@ -194,7 +194,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         {
             if (clientIds == null)
             {
-                clientIds = new ArrayList<>();
+                clientIds = new ArrayList<>(5);
             }
             clientIds.add(target.getClientId(context));
         }
@@ -213,7 +213,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
         {
             if (clientIds == null)
             {
-                clientIds = new ArrayList<>();
+                clientIds = new ArrayList<>(5);
             }
             clientIds.add(clientId);
         }

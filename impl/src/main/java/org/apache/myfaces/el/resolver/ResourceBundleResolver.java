@@ -178,11 +178,10 @@ public final class ResourceBundleResolver extends ELResolver
             return null;
         }
 
-        final ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>();
-
         final Map<String, org.apache.myfaces.config.element.ResourceBundle> resourceBundles =
                 runtimeConfig(context).getResourceBundles();
-
+        
+        final ArrayList<FeatureDescriptor> descriptors = new ArrayList<>(resourceBundles.size());
         for (org.apache.myfaces.config.element.ResourceBundle resourceBundle : resourceBundles.values())
         {
             descriptors.add(makeDescriptor(resourceBundle));
@@ -205,7 +204,7 @@ public final class ResourceBundleResolver extends ELResolver
     // get the FacesContext from the ELContext
     private static FacesContext facesContext(final ELContext context)
     {
-        return (FacesContext)context.getContext(FacesContext.class);
+        return (FacesContext) context.getContext(FacesContext.class);
     }
 
     private static ResourceBundle getResourceBundle(final ELContext context, final String property)

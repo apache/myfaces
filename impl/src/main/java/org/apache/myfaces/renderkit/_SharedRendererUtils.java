@@ -98,8 +98,7 @@ class _SharedRendererUtils
         
         if (expression != null)
         {
-            Class<?> modelType = expression
-                    .getType(facesContext.getELContext());
+            Class<?> modelType = expression.getType(facesContext.getELContext());
             if (modelType == null)
             {
                 // FIXME temporal workaround for MYFACES-2552
@@ -119,8 +118,7 @@ class _SharedRendererUtils
                 {
                     // the compononent does not have an attached converter
                     // --> try to get a registered-by-class converter
-                    converter = facesContext.getApplication().createConverter(
-                            componentType);
+                    converter = facesContext.getApplication().createConverter(componentType);
 
                     if (converter == null)
                     {
@@ -131,9 +129,8 @@ class _SharedRendererUtils
                             // target is not an Object array
                             // and not a String array (checked some lines above)
                             // and we do not have a Converter
-                            throw new ConverterException(
-                                    "Could not obtain a Converter for "
-                                            + componentType.getName());
+                            throw new ConverterException("Could not obtain a Converter for "
+                                    + componentType.getName());
                         }
                     }
                 }
@@ -150,8 +147,7 @@ class _SharedRendererUtils
                     converter = getSelectItemsValueConverter(iterator, facesContext);
                 }
 
-                Object collectionTypeAttr = component.getAttributes().get(
-                        COLLECTION_TYPE_KEY);
+                Object collectionTypeAttr = component.getAttributes().get(COLLECTION_TYPE_KEY);
                 if (collectionTypeAttr != null)
                 {
                     Class<?> collectionType = getClassFromAttribute(facesContext, collectionTypeAttr);
@@ -166,6 +162,7 @@ class _SharedRendererUtils
                                         + "String, a Class object or a ValueExpression pointing "
                                         + "to a String or a Class object.");
                     }
+                    
                     // now we have a collectionType --> but is it really some kind of Collection
                     if (!Collection.class.isAssignableFrom(collectionType))
                     {
@@ -174,6 +171,7 @@ class _SharedRendererUtils
                                 + component.getClientId(facesContext)
                                 + " does not point to a valid type of Collection.");
                     }
+                    
                     // now we have a real collectionType --> try to instantiate it
                     try
                     {
@@ -232,13 +230,11 @@ class _SharedRendererUtils
                             }
                             else if (Set.class.isAssignableFrom(modelType))
                             {
-                                targetForConvertedValues = new HashSet(
-                                        submittedValue.length);
+                                targetForConvertedValues = new HashSet(submittedValue.length);
                             }
                             else
                             {
-                                targetForConvertedValues = new ArrayList(
-                                        submittedValue.length);
+                                targetForConvertedValues = new ArrayList(submittedValue.length);
                             }
                         }
                     }
@@ -284,6 +280,7 @@ class _SharedRendererUtils
             {
                 value = submittedValue[i];
             }
+
             // store it in targetForConvertedValues
             if (isArray)
             {
