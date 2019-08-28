@@ -97,19 +97,23 @@ public class ResourceLoaderUtils
             // and then close that connection again.
 
             URL jarFileUrl = ((JarURLConnection) connection).getJarFileURL();
-            URLConnection jarFileConnection = jarFileUrl.openConnection();
+            URLConnection jarFileConnection = null;
 
             try
             {
+                jarFileConnection = jarFileUrl.openConnection();
                 modified = jarFileConnection.getLastModified();
             }
             finally
             {
                 try
                 {
-                    jarFileConnection.getInputStream().close();
+                    if (jarFileConnection != null)
+                    {
+                        jarFileConnection.getInputStream().close();
+                    }
                 }
-                catch (Exception exception)
+                catch (Exception e)
                 {
                     // Ignored
                 }

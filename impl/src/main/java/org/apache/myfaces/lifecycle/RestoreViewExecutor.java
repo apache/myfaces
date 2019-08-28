@@ -140,8 +140,7 @@ class RestoreViewExecutor extends PhaseExecutor
             if (checkViewNotFound(facesContext))
             {
                 String derivedViewId = viewHandler.deriveLogicalViewId(facesContext, viewId);
-                ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, 
-                    derivedViewId);
+                ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(facesContext, derivedViewId);
             
                 // viewHandler.deriveLogicalViewId() could trigger an InvalidViewIdException, which
                 // it is handled internally sending a 404 error code set the response as complete.
@@ -367,19 +366,15 @@ class RestoreViewExecutor extends PhaseExecutor
                     if (!ExternalContextUtils.isPortlet(facesContext.getExternalContext()))
                     {
                         // Any check beyond this point only has sense for servlet requests.
-                        String referer = facesContext.getExternalContext().
-                            getRequestHeaderMap().get("Referer");
+                        String referer = facesContext.getExternalContext().getRequestHeaderMap().get("Referer");
                         if (referer != null)
                         {
-                            valid = valid && checkRefererOrOriginHeader(
-                                facesContext, viewHandler, referer);
+                            valid = valid && checkRefererOrOriginHeader(facesContext, viewHandler, referer);
                         }
-                        String origin = facesContext.getExternalContext().
-                            getRequestHeaderMap().get("Origin");
+                        String origin = facesContext.getExternalContext().getRequestHeaderMap().get("Origin");
                         if (valid && origin != null)
                         {
-                            valid = valid && checkRefererOrOriginHeader(
-                                facesContext, viewHandler, origin);
+                            valid = valid && checkRefererOrOriginHeader(facesContext, viewHandler, origin);
                         }
                     }
                 }

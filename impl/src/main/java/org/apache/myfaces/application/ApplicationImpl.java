@@ -399,7 +399,7 @@ public class ApplicationImpl extends Application
 
         try
         {
-            return getResourceBundle(bundleName, locale, getClassLoader());
+            return getResourceBundle(bundleName, locale, ClassUtils.getContextClassLoader());
         }
         catch (MissingResourceException e)
         {
@@ -413,11 +413,6 @@ public class ApplicationImpl extends Application
                                          + name + "': " + e.getMessage(), e1);
             }
         }
-    }
-
-    private ClassLoader getClassLoader()
-    {
-        return ClassUtils.getContextClassLoader();
     }
 
     String getBundleName(final FacesContext facesContext, final String name)

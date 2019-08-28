@@ -24,6 +24,7 @@ import javax.faces.FacesWrapper;
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
 import javax.faces.context.FacesContext;
+import javax.faces.context.PartialViewContext;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.resource.ContractResource;
@@ -113,10 +114,9 @@ public class ResourceUtils
 
         // Check if this is an ajax request. If so, we don't need to include it, because that was
         // already done and in the worst case, jsf script was already loaded on the page.
-        if (facesContext.getPartialViewContext() != null && 
-                (facesContext.getPartialViewContext().isPartialRequest() ||
-                 facesContext.getPartialViewContext().isAjaxRequest() )
-            )
+        PartialViewContext partialViewContext = facesContext.getPartialViewContext();
+        if (partialViewContext != null && 
+                (partialViewContext.isPartialRequest() || partialViewContext.isAjaxRequest()))
         {
             return;
         }
@@ -133,7 +133,6 @@ public class ResourceUtils
 
         //mark as rendered
         facesContext.getAttributes().put(RENDERED_JSF_JS, Boolean.TRUE);
-        return;
     }
 
     public static String getContractName(Resource resource)

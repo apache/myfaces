@@ -40,7 +40,6 @@ public class AnnotatedFlowConfigurator
         FacesFlowProvider provider = factory.getFacesFlowProvider(facesContext.getExternalContext());
         
         Iterator<Flow> it = provider.getAnnotatedFlows(facesContext);
-        
         if (it != null)
         {
             if (it.hasNext())
@@ -50,10 +49,9 @@ public class AnnotatedFlowConfigurator
             while (it.hasNext())
             {
                 Flow flow = it.next();
-
                 if (flow instanceof FlowImpl)
                 {
-                    ((FlowImpl)flow).freeze();
+                    ((FlowImpl) flow).freeze();
                 }
 
                 facesContext.getApplication().getFlowHandler().addFlow(facesContext, flow);

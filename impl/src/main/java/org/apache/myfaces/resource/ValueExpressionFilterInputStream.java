@@ -38,15 +38,15 @@ import org.apache.myfaces.util.lang.DynamicPushbackInputStream;
 
 public class ValueExpressionFilterInputStream extends InputStream
 {
-    private PushbackInputStream delegate;
-    private String libraryName;
-    private String resourceName;
-    private String contractName;
+    private final PushbackInputStream delegate;
+    private final String libraryName;
+    private final String resourceName;
+    private final String contractName;
     
     public ValueExpressionFilterInputStream(InputStream in, String libraryName, String resourceName)
     {
         super();
-        delegate = new DynamicPushbackInputStream(in,300);
+        this.delegate = new DynamicPushbackInputStream(in,300);
         this.libraryName = libraryName;
         this.resourceName = resourceName;
         this.contractName = null;
@@ -55,59 +55,62 @@ public class ValueExpressionFilterInputStream extends InputStream
     public ValueExpressionFilterInputStream(InputStream in, Resource resource)
     {
         super();
-        delegate = new DynamicPushbackInputStream(in,300);
+        this.delegate = new DynamicPushbackInputStream(in,300);
         this.libraryName = resource.getLibraryName();
         this.resourceName = resource.getResourceName();
-        this.contractName = (resource instanceof ContractResource) ? 
-                ((ContractResource)resource).getContractName() : null;
+        this.contractName = (resource instanceof ContractResource)
+                ? ((ContractResource)resource).getContractName()
+                : null;
     }
 
     @Override
     public int read() throws IOException
     {
         int c1 = delegate.read();
-        
         if (c1 == -1)
         {
             return -1;
         }
         
-        if ( ((char)c1) == '#')
+        if (((char) c1) == '#')
         {
             int c2 = delegate.read();
             if (c2 == -1)
             {
                 return -1;
             }
-            if (((char)c2) == '{')
+            if (((char) c2) == '{')
             {
-                //It is a value expression. We need
-                //to look for a occurrence of } to 
-                //extract the expression and evaluate it,
-                //the result should be unread.
-                List<Integer> expressionList = new ArrayList<Integer>();
+                //It is a value expression. We need to look for a occurrence of } to 
+                //extract the expression and evaluate it, the result should be unread.
+                List<Integer> expressionList = null;
                 int c3 = delegate.read();
-                while ( c3 != -1 && ((char)c3) != '}' )
+                while (c3 != -1 && ((char) c3) != '}')
                 {
+                    if (expressionList == null)
+                    {
+                       expressionList = new ArrayList<>();
+                    }
                     expressionList.add(c3);
                     c3 = delegate.read();
                 }
                 
                 if (c3 == -1)
                 {
-                    //get back the data, because we can't
-                    //extract any value expression
-                    for (int i = 0; i < expressionList.size(); i++)
+                    //get back the data, because we can't extract any value expression
+                    if (expressionList != null)
                     {
-                        delegate.unread(expressionList.get(i));
+                        for (int i = 0; i < expressionList.size(); i++)
+                        {
+                            delegate.unread(expressionList.get(i));
+                        }
                     }
                     delegate.unread(c2);
                     return c1;
                 }
                 else
                 {
-                    //EL expression found. Evaluate it and pushback
-                    //the result into the stream
+                    //EL expression found. Evaluate it and pushback the result into the stream
                     FacesContext context = FacesContext.getCurrentInstance();
                     ELContext elContext = context.getELContext();
                     try
@@ -120,13 +123,14 @@ public class ValueExpressionFilterInputStream extends InputStream
                         {
                             ResourceELUtils.saveResourceContractForResolver(context, contractName);
                         }
+
                         ValueExpression ve = context.getApplication().
                             getExpressionFactory().createValueExpression(
                                     elContext,
-                                    "#{"+convertToExpression(expressionList)+ '}',
+                                    "#{" + convertToExpression(expressionList) + '}',
                                     String.class);
+
                         String value = (String) ve.getValue(elContext);
-                        
                         for (int i = value.length()-1; i >= 0 ; i--)
                         {
                             delegate.unread((int) value.charAt(i));
@@ -134,7 +138,7 @@ public class ValueExpressionFilterInputStream extends InputStream
                     }
                     catch(ELException e)
                     {
-                        ExceptionQueuedEventContext equecontext = new ExceptionQueuedEventContext (
+                        ExceptionQueuedEventContext equecontext = new ExceptionQueuedEventContext(
                                 context, e, null);
                         context.getApplication().publishEvent (context, ExceptionQueuedEvent.class, equecontext);
                         
@@ -142,14 +146,17 @@ public class ValueExpressionFilterInputStream extends InputStream
                         if (log.isLoggable(Level.SEVERE))
                         {
                             log.severe("Cannot evaluate EL expression " + convertToExpression(expressionList)
-                                    + " in resource " + (libraryName == null?"":libraryName) + ':' +
+                                    + " in resource " + (libraryName == null ? "" : libraryName) + ':' +
                                     (resourceName == null?"":resourceName));
                         }
                         
                         delegate.unread(c3);
-                        for (int i = expressionList.size()-1; i >= 0; i--)
+                        if (expressionList != null)
                         {
-                            delegate.unread(expressionList.get(i));
+                            for (int i = expressionList.size()-1; i >= 0; i--)
+                            {
+                                delegate.unread(expressionList.get(i));
+                            }
                         }
                         delegate.unread(c2);
                         return c1;
@@ -185,6 +192,11 @@ public class ValueExpressionFilterInputStream extends InputStream
     
     private String convertToExpression(List<Integer> expressionList)
     {
+        if (expressionList == null)
+        {
+            return "";
+        }
+        
         char[] exprArray = new char[expressionList.size()];
         
         for (int i = 0; i < expressionList.size(); i++)

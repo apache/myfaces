@@ -106,7 +106,7 @@ public class LifecycleImpl extends Lifecycle
     @Override
     public void execute(FacesContext facesContext) throws FacesException
     {
-        if(!facesContext.isProjectStage(ProjectStage.Production))
+        if (!facesContext.isProjectStage(ProjectStage.Production))
         {
             new FacesConfigurator(facesContext.getExternalContext()).update();
         }

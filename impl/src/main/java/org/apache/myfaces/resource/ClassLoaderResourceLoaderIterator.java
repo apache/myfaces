@@ -238,7 +238,7 @@ public class ClassLoaderResourceLoaderIterator implements Iterator<String>
         private int maxDepth;
         private ResourceVisitOption[] options;
         
-        private Deque<File> stack = new LinkedList<File>();
+        private Deque<File> stack;
         private String basePathName;
 
         public FileDepthIterator(File directory, String basePath, int maxDepth, ResourceVisitOption... options)
@@ -249,7 +249,11 @@ public class ClassLoaderResourceLoaderIterator implements Iterator<String>
             this.options = options;
             
             File[] list = this.directory.listFiles();
-            Collections.addAll(stack, list);
+            if (list != null && list.length > 0)
+            {
+                stack = new LinkedList<>();
+                Collections.addAll(stack, list);
+            }
 
             this.basePathName = this.directory.getPath().replace(File.separatorChar, '/');
         }
@@ -257,71 +261,75 @@ public class ClassLoaderResourceLoaderIterator implements Iterator<String>
         @Override
         public boolean hasNext()
         {
-            if (!stack.isEmpty())
+            if (stack == null || stack.isEmpty())
             {
-                File file = stack.peek();
-                do 
+                return false;
+            }
+ 
+            File file = stack.peek();
+            do 
+            {
+                if (file.isDirectory())
                 {
-                    if (file.isDirectory())
+                    file = stack.pop();
+                    int depth = ResourceLoaderUtils.getDepth(calculatePath(file));
+                    if (depth < maxDepth)
                     {
-                        file = stack.pop();
-                        int depth = ResourceLoaderUtils.getDepth(calculatePath(file));
-                        if (depth < maxDepth)
-                        {
-                            File[] list = file.listFiles();
-                            stack.addAll(Arrays.asList(list));
-                        }
-                        if (!stack.isEmpty())
-                        {
-                            file = stack.peek();
-                        }
-                        else
-                        {
-                            file = null;
-                        }
+                        File[] list = file.listFiles();
+                        stack.addAll(Arrays.asList(list));
+                    }
+                    if (!stack.isEmpty())
+                    {
+                        file = stack.peek();
+                    }
+                    else
+                    {
+                        file = null;
                     }
                 }
-                while (file != null && file.isDirectory() && !stack.isEmpty());
-                
-                return !stack.isEmpty();
             }
-            return false;
+            while (file != null && file.isDirectory() && !stack.isEmpty());
+
+            return !stack.isEmpty();
         }
 
         @Override
         public String next()
         {
-            if (!stack.isEmpty())
+            if (stack == null || stack.isEmpty())
             {
-                File file = stack.pop();
-                do 
+                return null;
+            }
+
+            File file = stack.pop();
+            do 
+            {
+                if (file.isDirectory())
                 {
-                    if (file.isDirectory())
+                    int depth = ResourceLoaderUtils.getDepth(calculatePath(file));
+                    if (depth < maxDepth)
                     {
-                        int depth = ResourceLoaderUtils.getDepth(calculatePath(file));
-                        if (depth < maxDepth)
-                        {
-                            File[] list = file.listFiles();
-                            stack.addAll(Arrays.asList(list));
-                        }
-                        if (!stack.isEmpty())
-                        {
-                            file = stack.pop();
-                        }
-                        else
-                        {
-                            file = null;
-                        }
+                        File[] list = file.listFiles();
+                        stack.addAll(Arrays.asList(list));
+                    }
+                    if (!stack.isEmpty())
+                    {
+                        file = stack.pop();
+                    }
+                    else
+                    {
+                        file = null;
                     }
                 }
-                while (file != null && file.isDirectory() && !stack.isEmpty());
-                if (file != null)
-                {
-                    // Calculate name based on url, basePath.
-                    String path = calculatePath(file);
-                    return path;
-                }
             }
+            while (file != null && file.isDirectory() && !stack.isEmpty());
+            if (file != null)
+            {
+                // Calculate name based on url, basePath.
+                String path = calculatePath(file);
+                return path;
+            }
+
             return null;
         }
         

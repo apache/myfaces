@@ -27,11 +27,13 @@ public class SelectItemTag
     extends org.apache.myfaces.taglib.core.UIComponentELTagBase
 {
 
+    @Override
     public String getComponentType()
     {
         return "javax.faces.SelectItem";
     }
 
+    @Override
     public String getRendererType()
     {
         return null;
@@ -45,6 +47,7 @@ public class SelectItemTag
     private ValueExpression _escape;
     private ValueExpression _noSelectionOption;
 
+    @Override
     protected void setProperties(UIComponent component)
     {
         super.setProperties(component);

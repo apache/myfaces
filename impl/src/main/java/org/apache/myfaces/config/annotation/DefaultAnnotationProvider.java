@@ -208,24 +208,26 @@ public class DefaultAnnotationProvider extends AnnotationProvider
     @Override
     public Set<URL> getBaseUrls(ExternalContext context) throws IOException
     {
+        ClassLoader cl = ClassUtils.getCurrentLoader(this);
+        
         String jarFilesToScanParam = MyfacesConfig.getCurrentInstance(context).getGaeJsfJarFiles();
         jarFilesToScanParam = jarFilesToScanParam != null ? jarFilesToScanParam.trim() : null;
         if (ContainerUtils.isRunningOnGoogleAppEngine(context) && 
             jarFilesToScanParam != null &&
             jarFilesToScanParam.length() > 0)
         {
-            Set<URL> urlSet = new HashSet<URL>();
+            Set<URL> urlSet = new HashSet<>();
             
             //This usually happens when maven-jetty-plugin is used
             //Scan jars looking for paths including META-INF/faces-config.xml
-            Enumeration<URL> resources = getClassLoader().getResources(FACES_CONFIG_IMPLICIT);
+            Enumeration<URL> resources = cl.getResources(FACES_CONFIG_IMPLICIT);
             while (resources.hasMoreElements())
             {
                 urlSet.add(resources.nextElement());
             }
             
             Collection<URL> urlsGAE = GAEUtils.searchInWebLib(
-                    context, getClassLoader(), jarFilesToScanParam, META_INF_PREFIX, FACES_CONFIG_SUFFIX);
+                    context, cl, jarFilesToScanParam, META_INF_PREFIX, FACES_CONFIG_SUFFIX);
             if (urlsGAE != null)
             {
                 urlSet.addAll(urlsGAE);
@@ -238,14 +240,14 @@ public class DefaultAnnotationProvider extends AnnotationProvider
 
             //This usually happens when maven-jetty-plugin is used
             //Scan jars looking for paths including META-INF/faces-config.xml
-            Enumeration<URL> resources = getClassLoader().getResources(FACES_CONFIG_IMPLICIT);
+            Enumeration<URL> resources = cl.getResources(FACES_CONFIG_IMPLICIT);
             while (resources.hasMoreElements())
             {
                 urlSet.add(resources.nextElement());
             }
 
             //Scan files inside META-INF ending with .faces-config.xml
-            URL[] urls = Classpath.search(getClassLoader(), META_INF_PREFIX, FACES_CONFIG_SUFFIX);
+            URL[] urls = Classpath.search(cl, META_INF_PREFIX, FACES_CONFIG_SUFFIX);
             Collections.addAll(urlSet, urls);
 
             return urlSet;
@@ -514,7 +516,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
             List<Class<?>> list)
     {
 
-        ClassLoader loader = getClassLoader();
+        ClassLoader loader = ClassUtils.getCurrentLoader(this);
 
         Set<String> paths = externalContext.getResourcePaths(prefix);
         if(paths == null)
@@ -673,16 +675,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
 
         return null;
     }
-        
-    private ClassLoader getClassLoader()
-    {
-        ClassLoader loader = ClassUtils.getContextClassLoader();
-        if (loader == null)
-        {
-            loader = this.getClass().getClassLoader();
-        }
-        return loader;
-    }
+
     
     private void processClass(Map<Class<? extends Annotation>,Set<Class<?>>> map, Class<?> clazz)
     {

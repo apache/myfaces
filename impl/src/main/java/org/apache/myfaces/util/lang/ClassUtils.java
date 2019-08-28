@@ -445,7 +445,7 @@ public final class ClassUtils
     public static ClassLoader getCurrentLoader(Object defaultObject)
     {
         ClassLoader loader = getContextClassLoader();
-        if(loader == null)
+        if (loader == null)
         {
             loader = defaultObject.getClass().getClassLoader();
         }

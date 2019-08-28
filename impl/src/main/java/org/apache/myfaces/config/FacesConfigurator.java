@@ -381,8 +381,8 @@ public class FacesConfigurator
         {
             return;
         }
+        
         long refreshPeriod = (MyfacesConfig.getCurrentInstance(_externalContext).getConfigRefreshPeriod()) * 1000;
-
         if (refreshPeriod > 0)
         {
             long ttl = lastUpdate + refreshPeriod;
@@ -522,7 +522,7 @@ public class FacesConfigurator
     private List<String> getConfigFilesList()
     {
         String configFiles = _externalContext.getInitParameter(FacesServlet.CONFIG_FILES_ATTR);
-        List<String> configFilesList = new ArrayList<String>();
+        List<String> configFilesList = new ArrayList<>();
         if (configFiles != null)
         {
             StringTokenizer st = new StringTokenizer(configFiles, ",", false);
@@ -653,7 +653,7 @@ public class FacesConfigurator
         _callInjectAndPostConstruct(resourceHandler);
         application.setResourceHandler(resourceHandler);
 
-        List<Locale> locales = new ArrayList<Locale>();
+        List<Locale> locales = new ArrayList<>();
         for (String locale : dispenser.getSupportedLocalesIterator())
         {
             locales.add(LocaleUtils.toLocale(locale));
@@ -693,9 +693,7 @@ public class FacesConfigurator
                 }
                 else
                 {
-                    application.subscribeToEvent(
-                            (Class<? extends SystemEvent>) eventClass,
-                            listener);
+                    application.subscribeToEvent((Class<? extends SystemEvent>) eventClass, listener);
                 }
             }
             catch (ClassNotFoundException e)
@@ -1275,12 +1273,12 @@ public class FacesConfigurator
             
             flow.setStartNodeId(flowDefinition.getStartNode());
             
-            if (!isEmptyString(flowDefinition.getInitializer()))
+            if (StringUtils.isNotEmpty(flowDefinition.getInitializer()))
             {
                 flow.setInitializer(application.getExpressionFactory().createMethodExpression(
                     facesContext.getELContext(), flowDefinition.getInitializer(), null, NO_PARAMETER_TYPES));
             }
-            if (!isEmptyString(flowDefinition.getFinalizer()))
+            if (StringUtils.isNotEmpty(flowDefinition.getFinalizer()))
             {
                 flow.setFinalizer(application.getExpressionFactory().createMethodExpression(
                     facesContext.getELContext(), flowDefinition.getFinalizer(), null, NO_PARAMETER_TYPES));
@@ -1308,13 +1306,13 @@ public class FacesConfigurator
             for (FacesFlowMethodCall methodCall : flowDefinition.getMethodCallList())
             {
                 MethodCallNodeImpl node = new MethodCallNodeImpl(methodCall.getId());
-                if (!isEmptyString(methodCall.getMethod()))
+                if (StringUtils.isNotEmpty(methodCall.getMethod()))
                 {
                     node.setMethodExpression(
                         application.getExpressionFactory().createMethodExpression(
                             facesContext.getELContext(), methodCall.getMethod(), null, NO_PARAMETER_TYPES));
                 }
-                if (!isEmptyString(methodCall.getDefaultOutcome()))
+                if (StringUtils.isNotEmpty(methodCall.getDefaultOutcome()))
                 {
                     node.setOutcome(
                         application.getExpressionFactory().createValueExpression(
@@ -1348,7 +1346,7 @@ public class FacesConfigurator
                 SwitchNodeImpl node = new SwitchNodeImpl(flowSwitch.getId());
                 
                 if (flowSwitch.getDefaultOutcome() != null &&
-                    !isEmptyString(flowSwitch.getDefaultOutcome().getFromOutcome()))
+                    StringUtils.isNotEmpty(flowSwitch.getDefaultOutcome().getFromOutcome()))
                 {
                     if (ELText.isLiteral(flowSwitch.getDefaultOutcome().getFromOutcome()))
                     {
@@ -1367,7 +1365,7 @@ public class FacesConfigurator
                 {
                     SwitchCaseImpl nodeCase = new SwitchCaseImpl();
                     nodeCase.setFromOutcome(navCase.getFromOutcome());
-                    if (!isEmptyString(navCase.getIf()))
+                    if (StringUtils.isNotEmpty(navCase.getIf()))
                     {
                         nodeCase.setCondition(
                             application.getExpressionFactory().createValueExpression(
@@ -1390,7 +1388,7 @@ public class FacesConfigurator
             {
                 ReturnNodeImpl node = new ReturnNodeImpl(flowReturn.getId());
                 if (flowReturn.getNavigationCase() != null &&
-                    !isEmptyString(flowReturn.getNavigationCase().getFromOutcome()))
+                    StringUtils.isNotEmpty(flowReturn.getNavigationCase().getFromOutcome()))
                 {
                     if (ELText.isLiteral(flowReturn.getNavigationCase().getFromOutcome()))
                     {
@@ -1446,19 +1444,6 @@ public class FacesConfigurator
     {
         return Boolean.TRUE.equals(facesContext.getExternalContext().
             getApplicationMap().get(ENABLE_DEFAULT_WINDOW_MODE));
-    }
-    
-    private boolean isEmptyString(String value)
-    {
-        if (value == null)
-        {
-            return true;
-        }
-        else if (value.length() <= 0)
-        {
-            return true;
-        }
-        return false;
     }
 
     public void configureProtectedViews()

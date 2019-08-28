@@ -36,15 +36,15 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory
     @JSFWebConfigParam(since="2.2",defaultValue="url")
     public static final String INIT_PARAM_DEFAULT_WINDOW_MODE = 
         "org.apache.myfaces.DEFAULT_WINDOW_MODE";
+
+    public static final String WINDOW_MODE_NONE = "none";
+    public static final String WINDOW_MODE_URL = "url";
+    public static final String WINDOW_MODE_CLIENT = "client";
     
     private String windowMode;
     private TokenGenerator windowTokenGenerator;
     private ClientConfig clientConfig;
     private WindowContextConfig windowContextConfig;
-    
-    public static final String WINDOW_MODE_NONE = "none";
-    public static final String WINDOW_MODE_URL = "url";
-    public static final String WINDOW_MODE_CLIENT = "client";
 
     public ClientWindowFactoryImpl()
     {
@@ -69,14 +69,10 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory
             }
             else if (WINDOW_MODE_CLIENT.equals(getWindowMode(facesContext)))
             {
-                //clientWindow = new DefaultClientWindow(windowTokenGenerator);
-                return new CODIClientSideWindow(windowTokenGenerator,
-                        windowContextConfig, clientConfig);
+                return new CODIClientSideWindow(windowTokenGenerator, windowContextConfig, clientConfig);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
     }
     
