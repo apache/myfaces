@@ -420,7 +420,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
         // The alias is used later for informative purposes, so we append 
         // some prefix to identify later where the errors comes from.
-        String alias = "/compositeComponentMetadata/" + _removeFirst(url.getFile(), getBaseUrl().getFile());
+        URL baseUrl = getBaseUrl();
+        String alias = "/compositeComponentMetadata/" + _removeFirst(url.getFile(), baseUrl == null ? "" : baseUrl.getFile());
         try
         {
             FaceletHandler h = _compiler.compileCompositeComponentMetadata(url, alias);
