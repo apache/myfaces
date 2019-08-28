@@ -86,7 +86,7 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
         
         if (_supportedVDLs == null)
         {
-            List<ViewDeclarationLanguage> list = new ArrayList<>();
+            List<ViewDeclarationLanguage> list = new ArrayList<>(_supportedLanguages.length);
             for (ViewDeclarationLanguageStrategy strategy : _supportedLanguages)
             {        
                 list.add(strategy.getViewDeclarationLanguage());

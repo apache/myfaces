@@ -204,7 +204,7 @@ public class PartialViewContextImpl extends PartialViewContext
                         = StringUtils.splitShortString(_replaceTabOrEnterCharactersWithSpaces(executeMode), ' ');
 
                 //The collection must be mutable
-                List<String> tempList = new ArrayList<String>();
+                List<String> tempList = new ArrayList<>(clientIds.length);
                 for (String clientId : clientIds)
                 {
                     if (clientId.length() > 0)
@@ -233,7 +233,7 @@ public class PartialViewContextImpl extends PartialViewContext
             }
             else
             {
-                _executeClientIds = new ArrayList<String>();
+                _executeClientIds = new ArrayList<>(5);
             }
         }
         return _executeClientIds;
@@ -288,7 +288,7 @@ public class PartialViewContextImpl extends PartialViewContext
                         = StringUtils.splitShortString(_replaceTabOrEnterCharactersWithSpaces(renderMode), ' ');
 
                 //The collection must be mutable
-                List<String> tempList = new ArrayList<String>();
+                List<String> tempList = new ArrayList<>(clientIds.length);
                 for (String clientId : clientIds)
                 {
                     if (clientId.length() > 0)
@@ -300,7 +300,7 @@ public class PartialViewContextImpl extends PartialViewContext
             }
             else
             {
-                _renderClientIds = new ArrayList<String>();
+                _renderClientIds = new ArrayList<>(5);
                 if (PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode))
                 {
                     _renderClientIds.add(PartialResponseWriter.RENDER_ALL_MARKER);

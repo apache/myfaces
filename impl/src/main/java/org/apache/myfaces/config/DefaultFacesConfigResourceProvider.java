@@ -58,8 +58,7 @@ public class DefaultFacesConfigResourceProvider extends FacesConfigResourceProvi
     }
 
     @Override
-    public Collection<URL> getMetaInfConfigurationResources(
-            ExternalContext context) throws IOException
+    public Collection<URL> getMetaInfConfigurationResources(ExternalContext context) throws IOException
     {
         List<URL> urlSet = new ArrayList<URL>();
         

@@ -293,12 +293,7 @@ public class FlowScopeBeanHolder implements Serializable
         Flow flow = flowHandler.getCurrentFlow(facesContext);
         String flowMapKey = FlowUtils.getFlowMapKey(facesContext, flow);
 
-        List<String> activeFlowKeys = activeFlowMapKeys.get(baseKey);
-        if (activeFlowKeys == null)
-        {
-            activeFlowKeys = new ArrayList<String>();
-            
-        }
+        List<String> activeFlowKeys = activeFlowMapKeys.computeIfAbsent(baseKey, k -> new ArrayList<String>());
         activeFlowKeys.add(0, flowMapKey);
         activeFlowMapKeys.put(baseKey, activeFlowKeys);
         refreshClientWindow(facesContext);
