@@ -34,7 +34,7 @@ import org.apache.myfaces.cdi.util.CDIUtils;
 @ApplicationScoped
 public class FacesDataModelManager
 {
-    private volatile Map<Class<?>, Class<? extends DataModel>> facesDataModels;
+    private volatile Map<Class<?>, Class<? extends DataModel>> facesDataModels = null;
 
     public Map<Class<?>, Class<? extends DataModel>> getFacesDataModels()
     {
@@ -58,16 +58,19 @@ public class FacesDataModelManager
 
     public void init()
     {
-        if (facesDataModels == null)
+        if (facesDataModels != null)
         {
-            facesDataModels = new ConcurrentHashMap<>();
+            facesDataModels = Collections.unmodifiableMap(facesDataModels);
         }
-
-        facesDataModels = Collections.unmodifiableMap(facesDataModels);
     }
 
     public DataModel tryToCreateDataModel(FacesContext facesContext, Class<?> forClass, Object value)
     {
+        if (facesDataModels == null)
+        {
+            return null;
+        }
+
         Class<? extends DataModel> dataModelClass = facesDataModels.get(forClass);
         if (dataModelClass != null)
         {

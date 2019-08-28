@@ -38,9 +38,9 @@ public class NamedEventManager
 {
     private HashMap<String, Collection<Class<? extends ComponentSystemEvent>>> events;
     
-    public NamedEventManager ()
+    public NamedEventManager()
     {
-        events = new HashMap<>();
+        events = new HashMap<>(6, 1f);
         
         // Special spec-defined values.
         addNamedEvent("postAddToView", PostAddToViewEvent.class);

@@ -62,7 +62,7 @@ public class ViewTransientScopeBeanHolder
                 .getTransientStateHelper().getTransient(VIEW_TRANSIENT_SCOPE_MAP);
     }
 
-    public Map<Object, Object> getFacesScopeMap(
+    public Map<Object, Object> getViewTransientScopeMap(
         BeanManager beanManager, FacesContext facesContext, boolean create)
     {
         Map<Object, Object> map = null;
