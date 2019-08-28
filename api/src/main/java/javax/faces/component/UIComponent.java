@@ -874,7 +874,7 @@ public abstract class UIComponent
         // Make sure the map exists
         if (_systemEventListenerClassMap == null)
         {
-            _systemEventListenerClassMap = new HashMap<>();
+            _systemEventListenerClassMap = new HashMap<>(4, 1f);
         }
 
         List<SystemEventListener> listeners = _systemEventListenerClassMap.computeIfAbsent(eventClass,
@@ -1311,7 +1311,6 @@ public abstract class UIComponent
 
     private static class BundleMap implements Map<String, String>
     {
-
         private ResourceBundle _bundle;
         private List<String> _values;
 
@@ -1359,7 +1358,7 @@ public abstract class UIComponent
         {
             if (_values == null)
             {
-                _values = new ArrayList<String>();
+                _values = new ArrayList<>();
                 for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements(); )
                 {
                     String v = _bundle.getString(enumer.nextElement());

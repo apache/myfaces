@@ -331,26 +331,19 @@ public abstract class UIComponentBase extends UIComponent
     public void addClientBehavior(String eventName, ClientBehavior behavior)
     {
         Collection<String> eventNames = getEventNames();
-        
-        if(eventNames == null)
+        if (eventNames == null)
         {
-            //component didn't implement getEventNames properly
-            //log an error and return
-            if(log.isLoggable(Level.SEVERE))
-            {
-                log.severe("attempted to add a behavior to a component which did not properly "
-                           + "implement getEventNames.  getEventNames must not return null");
-                return;
-            }
+            throw new IllegalStateException("Attempting to add a Behavior to a component, "
+                    + "that does not support any event types. getEventTypes() must return a non-null Set.");
         }
-        
-        if(eventNames.contains(eventName))
+
+        if (eventNames.contains(eventName))
         {
             if (_behaviorsMap == null)
             {
-                _behaviorsMap = new HashMap<>();
+                _behaviorsMap = new HashMap<>(5, 1f);
             }
-            
+
             // Normally have client only 1 client behaviour per event name, so size 2 must be sufficient:
             List<ClientBehavior> behaviorsForEvent = _behaviorsMap.computeIfAbsent(eventName,
                     k -> new _DeltaList<>(2));
@@ -463,6 +456,7 @@ public abstract class UIComponentBase extends UIComponent
 
     }
 
+    @Override
     public void encodeAll(FacesContext context) throws IOException
     {
         if (context == null)
@@ -1207,7 +1201,7 @@ public abstract class UIComponentBase extends UIComponent
         if (_facesListeners == null)
         {
             // How many facesListeners have single component normally? 
-            _facesListeners = new _DeltaList<FacesListener>(5);
+            _facesListeners = new _DeltaList<>(5);
         }
         _facesListeners.add(listener);
     }
@@ -1242,6 +1236,7 @@ public abstract class UIComponentBase extends UIComponent
         {
             return (FacesListener[]) Array.newInstance(clazz, 0);
         }
+
         List<FacesListener> lst = null;
         // perf: _facesListeners is RandomAccess instance (javax.faces.component._DeltaList)
         for (int i = 0, size = _facesListeners.size(); i < size; i++)
@@ -1251,12 +1246,13 @@ public abstract class UIComponentBase extends UIComponent
             {
                 if (lst == null)
                 {
-                    lst = new ArrayList<FacesListener>();
+                    lst = new ArrayList<>(5);
                 }
                 lst.add(facesListener);
             }
         }
-        if (lst == null)
+
+        if (lst == null || lst.isEmpty())
         {
             return (FacesListener[]) Array.newInstance(clazz, 0);
         }
@@ -1725,7 +1721,7 @@ public abstract class UIComponentBase extends UIComponent
             }
             else
             {
-                List<Object> lst = new ArrayList<Object>(((Collection<?>) attachedObject).size());
+                List<Object> lst = new ArrayList<>(((Collection<?>) attachedObject).size());
                 for (Object item : (Collection<?>) attachedObject)
                 {
                     if (item != null)

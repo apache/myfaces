@@ -41,7 +41,7 @@ class _NavigationUtils
         Map<String,List<String>> evaluatedParameters = null;
         if (parameters != null && parameters.size() > 0)
         {
-            evaluatedParameters = new HashMap<>();
+            evaluatedParameters = new HashMap<>(5, 1f);
             for (Map.Entry<String, List<String>> pair : parameters.entrySet())
             {
                 boolean containsEL = false;

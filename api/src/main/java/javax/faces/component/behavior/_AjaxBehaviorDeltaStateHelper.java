@@ -68,7 +68,6 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         this._target = component;
         _fullState = new HashMap<Serializable, Object>();
         _deltas = null;
-        //_stateHolderKeys = new HashSet<Serializable>();
     }
 
     /**

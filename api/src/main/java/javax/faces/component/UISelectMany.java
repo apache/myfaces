@@ -314,11 +314,13 @@ public class UISelectMany extends UIInput
         {
             // all selected values must match to the values of the available options
 
+            // Since the iterator is used twice, it has sense to traverse it only once.
             Collection<SelectItem> items = new ArrayList<>();
             for (Iterator<SelectItem> iter = new _SelectItemsIterator(this, context); iter.hasNext();)
             {
                 items.add(iter.next());
             }
+
             Converter converter = getConverter();
             while (itemValues.hasNext())
             {

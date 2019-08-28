@@ -1637,7 +1637,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     
     public List<SystemEventListener> getViewListenersForEventClass(Class<? extends SystemEvent> systemEvent)
     {
-        checkNull (systemEvent, "systemEvent");
+        checkNull(systemEvent, "systemEvent");
         if (_systemEventListeners == null)
         {
             return null;
@@ -1649,12 +1649,12 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         List<SystemEventListener> listeners;
         
-        checkNull (systemEvent, "systemEvent");
-        checkNull (listener, "listener");
+        checkNull(systemEvent, "systemEvent");
+        checkNull(listener, "listener");
         
         if (_systemEventListeners == null)
         {
-            _systemEventListeners = new HashMap<>();
+            _systemEventListeners = new HashMap<>(4);
         }
         
         listeners = _systemEventListeners.get(systemEvent);
@@ -1803,7 +1803,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         if (listenerSuccessMap == null)
         {
-            listenerSuccessMap = new HashMap<>();
+            listenerSuccessMap = new HashMap<>(7, 1f);
         }
         return listenerSuccessMap;
     }

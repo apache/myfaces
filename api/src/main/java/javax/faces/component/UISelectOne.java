@@ -164,7 +164,7 @@ public class UISelectOne extends UIInput
         Converter converter = getConverter();
 
         // Since the iterator is used twice, it has sense to traverse it only once.
-        Collection<SelectItem> items = new ArrayList<SelectItem>();
+        Collection<SelectItem> items = new ArrayList<>();
         for (Iterator<SelectItem> iter = new _SelectItemsIterator(this, context); iter.hasNext();)
         {
             items.add(iter.next());
@@ -172,11 +172,11 @@ public class UISelectOne extends UIInput
         
         if (_SelectItemsUtil.matchValue(context, this, value, items.iterator(), converter))
         {
-            if (! this.isRequired())
+            if (!this.isRequired())
             {
                 return; // Matched & Required false, so return ok.
             }
-            if (! _SelectItemsUtil.isNoSelectionOption(context, this, value, items.iterator(), converter))
+            if (!_SelectItemsUtil.isNoSelectionOption(context, this, value, items.iterator(), converter))
             {
                 return; // Matched & Required true & No-selection did NOT match, so return ok.
             }

@@ -59,7 +59,7 @@ public abstract class ViewMetadata
                  UIComponent component = children.next();
                  if (result == null)
                  {
-                     result = new LinkedList<UIViewParameter>();
+                     result = new LinkedList<>();
                  }
                  if (component instanceof UIViewParameter)
                  {
@@ -104,11 +104,11 @@ public abstract class ViewMetadata
                  UIComponent component = children.next();
                  if (result == null)
                  {
-                     result = new LinkedList<UIViewAction>();
+                     result = new LinkedList<>();
                  }
                  if (component instanceof UIViewAction)
                  {
-                      result.add ((UIViewAction) component);
+                      result.add((UIViewAction) component);
                  }
             }
         }
@@ -120,7 +120,7 @@ public abstract class ViewMetadata
         }
         else
         {
-            return Collections.unmodifiableCollection (result);
+            return Collections.unmodifiableCollection(result);
         }
     }
     
@@ -160,11 +160,11 @@ public abstract class ViewMetadata
                  UIComponent component = children.next();
                  if (result == null)
                  {
-                     result = new LinkedList<UIImportConstants>();
+                     result = new LinkedList<>();
                  }
                  if (component instanceof UIImportConstants)
                  {
-                      result.add ((UIImportConstants) component);
+                      result.add((UIImportConstants) component);
                  }
             }
         }
