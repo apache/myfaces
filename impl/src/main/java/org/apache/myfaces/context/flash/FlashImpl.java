@@ -395,30 +395,35 @@ public class FlashImpl extends Flash implements ReleasableFlash
     // NOTE that all these methods do not necessarily delegate to the same Map,
     // because we differentiate between reading and writing operations.
     
+    @Override
     public void clear()
     {
         _checkFlashScopeDisabled();
         _getFlashMapForWriting().clear();
     }
 
+    @Override
     public boolean containsKey(Object key)
     {
         _checkFlashScopeDisabled();
         return _getFlashMapForReading().containsKey(key);
     }
 
+    @Override
     public boolean containsValue(Object value)
     {
         _checkFlashScopeDisabled();
         return _getFlashMapForReading().containsValue(value);
     }
 
+    @Override
     public Set<java.util.Map.Entry<String, Object>> entrySet()
     {
         _checkFlashScopeDisabled();
         return _getFlashMapForReading().entrySet();
     }
 
+    @Override
     public Object get(Object key)
     {
         _checkFlashScopeDisabled();
@@ -439,18 +444,21 @@ public class FlashImpl extends Flash implements ReleasableFlash
         return _getFlashMapForReading().get(key);
     }
     
+    @Override
     public boolean isEmpty()
     {
         _checkFlashScopeDisabled();
         return _getFlashMapForReading().isEmpty();
     }
 
+    @Override
     public Set<String> keySet()
     {
         _checkFlashScopeDisabled();
         return _getFlashMapForReading().keySet();
     }
 
+    @Override
     public Object put(String key, Object value)
     {
         _checkFlashScopeDisabled();
@@ -483,12 +491,14 @@ public class FlashImpl extends Flash implements ReleasableFlash
         }
     }
 
+    @Override
     public void putAll(Map<? extends String, ? extends Object> m)
     {
         _checkFlashScopeDisabled();
         _getFlashMapForWriting().putAll(m);
     }
 
+    @Override
     public Object remove(Object key)
     {
         _checkFlashScopeDisabled();
@@ -500,12 +510,14 @@ public class FlashImpl extends Flash implements ReleasableFlash
         return _getFlashMapForWriting().remove(key);
     }
 
+    @Override
     public int size()
     {
         _checkFlashScopeDisabled();
         return _getFlashMapForReading().size();
     }
 
+    @Override
     public Collection<Object> values()
     {
         _checkFlashScopeDisabled();
@@ -673,7 +685,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
     
                     if (messageList == null)
                     {
-                        messageList = new ArrayList<MessageEntry>();
+                        messageList = new ArrayList<>();
                     }
                     messageList.add(new MessageEntry(clientId, message));
                 }
@@ -873,7 +885,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
         ExternalContext external = context.getExternalContext();
         Map<String, Object> sessionMap = external.getSessionMap();
 
-        return new SubKeyMap<Object>(sessionMap, prefix);
+        return new SubKeyMap<>(sessionMap, prefix);
     }
 
     /**
@@ -1113,6 +1125,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
         return lruMap;
     }
 
+    @Override
     public void clearFlashMap(FacesContext facesContext, String clientWindowId, String token)
     {
         if ((!_flashScopeDisabled) && 
