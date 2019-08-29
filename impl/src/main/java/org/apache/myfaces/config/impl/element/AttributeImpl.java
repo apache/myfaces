@@ -43,7 +43,7 @@ public class AttributeImpl extends org.apache.myfaces.config.element.Attribute i
     {
         if (description == null)
         {
-            description = new ArrayList<>();
+            description = new ArrayList<>(1);
         }
         description.add(value);
     }
@@ -62,7 +62,7 @@ public class AttributeImpl extends org.apache.myfaces.config.element.Attribute i
     {
         if (displayName == null)
         {
-            displayName = new ArrayList<>();
+            displayName = new ArrayList<>(1);
         }
         displayName.add(value);
     }
@@ -81,7 +81,7 @@ public class AttributeImpl extends org.apache.myfaces.config.element.Attribute i
     {
         if (icon == null)
         {
-            icon = new ArrayList<>();
+            icon = new ArrayList<>(1);
         }
         icon.add(value);
     }
@@ -144,7 +144,7 @@ public class AttributeImpl extends org.apache.myfaces.config.element.Attribute i
     {
         if (attributeExtension == null)
         {
-            attributeExtensions = new ArrayList<>();
+            attributeExtensions = new ArrayList<>(1);
         }
         attributeExtensions.add(attributeExtension);
     }

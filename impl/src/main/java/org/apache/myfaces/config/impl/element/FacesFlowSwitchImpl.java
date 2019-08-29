@@ -47,7 +47,7 @@ public class FacesFlowSwitchImpl extends org.apache.myfaces.config.element.Faces
     {
         if (navigationCaseList == null)
         {
-            navigationCaseList = new ArrayList<>();
+            navigationCaseList = new ArrayList<>(5);
         }
         navigationCaseList.add(navcase);
     }

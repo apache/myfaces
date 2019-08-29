@@ -55,7 +55,7 @@ public class ViewPoolMappingImpl extends ViewPoolMapping implements Serializable
     {
         if (parameterList == null)
         {
-            parameterList = new ArrayList<>();
+            parameterList = new ArrayList<>(3);
         }
         parameterList.add(parameter);
     }

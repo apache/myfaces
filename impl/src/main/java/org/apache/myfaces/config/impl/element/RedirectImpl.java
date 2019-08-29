@@ -35,9 +35,9 @@ public class RedirectImpl extends org.apache.myfaces.config.element.Redirect imp
     {
         if (viewParams == null)
         {
-            viewParams = new HashMap<>();
+            viewParams = new HashMap<>(3, 1f);
         }
-        List<String> params = viewParams.computeIfAbsent(viewParam.getName(), k -> new ArrayList<>());
+        List<String> params = viewParams.computeIfAbsent(viewParam.getName(), k -> new ArrayList<>(3));
         params.add(viewParam.getValue());
     }
     

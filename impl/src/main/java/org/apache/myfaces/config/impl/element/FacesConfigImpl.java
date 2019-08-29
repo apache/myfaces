@@ -182,7 +182,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         validators.put(id, validatorClass);
     }
     
-    public void addBehavior (Behavior behavior)
+    public void addBehavior(Behavior behavior)
     {
         if (behaviors == null)
         {
@@ -191,7 +191,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         behaviors.add (behavior);
     }
     
-    public void addNamedEvent (NamedEvent namedEvent)
+    public void addNamedEvent(NamedEvent namedEvent)
     {
         if (namedEvents == null)
         {

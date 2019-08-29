@@ -19,6 +19,7 @@
 package org.apache.myfaces.config.impl.element;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apache.myfaces.config.element.FacesFlowCall;
 import org.apache.myfaces.config.element.FacesFlowParameter;
@@ -34,19 +35,22 @@ public class FacesFlowCallImpl extends FacesFlowCall
     private List<FacesFlowParameter> outboundParameterList;
     private String id;
 
-    public FacesFlowCallImpl()
-    {
-        outboundParameterList = new ArrayList<>();
-    }
-
     @Override
     public List<FacesFlowParameter> getOutboundParameterList()
     {
+        if (outboundParameterList == null)
+        {
+            return Collections.emptyList();
+        }
         return outboundParameterList;
     }
     
     public void addOutboundParameter(FacesFlowParameter parameter)
     {
+        if (outboundParameterList == null)
+        {
+            outboundParameterList = new ArrayList<>(3);
+        }
         outboundParameterList.add(parameter);
     }
 

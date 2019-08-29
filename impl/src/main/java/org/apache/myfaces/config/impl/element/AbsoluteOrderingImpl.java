@@ -31,7 +31,7 @@ public class AbsoluteOrderingImpl extends org.apache.myfaces.config.element.Abso
     {
         if (orderList == null)
         {
-            orderList = new ArrayList<>();
+            orderList = new ArrayList<>(3);
         }
         orderList.add(slot);
     }

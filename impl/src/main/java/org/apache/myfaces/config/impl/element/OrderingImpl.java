@@ -32,7 +32,7 @@ public class OrderingImpl extends org.apache.myfaces.config.element.Ordering imp
     {
         if (beforeList == null)
         {
-            beforeList = new ArrayList<>();
+            beforeList = new ArrayList<>(3);
         }
         beforeList.add(slot);
     }
@@ -51,7 +51,7 @@ public class OrderingImpl extends org.apache.myfaces.config.element.Ordering imp
     {
         if (afterList == null)
         {
-            afterList = new ArrayList<>();
+            afterList = new ArrayList<>(3);
         }
         afterList.add(slot);
     }

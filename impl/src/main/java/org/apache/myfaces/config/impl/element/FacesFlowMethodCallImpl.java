@@ -81,7 +81,7 @@ public class FacesFlowMethodCallImpl extends org.apache.myfaces.config.element.F
     {
         if (parameterList == null)
         {
-            parameterList = new ArrayList<>();
+            parameterList = new ArrayList<>(3);
         }
         parameterList.add(parameter);
     }

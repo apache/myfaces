@@ -120,7 +120,7 @@ public class NavigationCaseBuilderImpl extends NavigationCaseBuilder
             Map<String, List<String>> map = _navigationCaseImpl.getParameters();
             if (map == null)
             {
-                map = new HashMap<>();
+                map = new HashMap<>(3, 1f);
                 _navigationCaseImpl.setParameters(map);
             }
             

@@ -69,7 +69,7 @@ public class FacesFlowDefinitionImpl extends org.apache.myfaces.config.element.F
     {
         if (viewList == null)
         {
-            viewList = new ArrayList<>();
+            viewList = new ArrayList<>(3);
         }
         viewList.add(view);
     }
@@ -88,7 +88,7 @@ public class FacesFlowDefinitionImpl extends org.apache.myfaces.config.element.F
     {
         if (switchList == null)
         {
-            switchList = new ArrayList<>();
+            switchList = new ArrayList<>(3);
         }
         switchList.add(switchItem);
     }
@@ -107,7 +107,7 @@ public class FacesFlowDefinitionImpl extends org.apache.myfaces.config.element.F
     {
         if (returnList == null)
         {
-            returnList = new ArrayList<>();
+            returnList = new ArrayList<>(3);
         }
         returnList.add(value);
     }
@@ -126,7 +126,7 @@ public class FacesFlowDefinitionImpl extends org.apache.myfaces.config.element.F
     {
         if (navigationRuleList == null)
         {
-            navigationRuleList = new ArrayList<>();
+            navigationRuleList = new ArrayList<>(3);
         }
         navigationRuleList.add(value);
     }
@@ -145,7 +145,7 @@ public class FacesFlowDefinitionImpl extends org.apache.myfaces.config.element.F
     {
         if (flowCallList == null)
         {
-            flowCallList = new ArrayList<>();
+            flowCallList = new ArrayList<>(3);
         }
         flowCallList.add(value);
     }
@@ -164,7 +164,7 @@ public class FacesFlowDefinitionImpl extends org.apache.myfaces.config.element.F
     {
         if (methodCallList == null)
         {
-            methodCallList = new ArrayList<>();
+            methodCallList = new ArrayList<>(3);
         }
         methodCallList.add(value);
     }
@@ -195,7 +195,7 @@ public class FacesFlowDefinitionImpl extends org.apache.myfaces.config.element.F
     {
         if (inboundParameterList == null)
         {
-            inboundParameterList = new ArrayList<>();
+            inboundParameterList = new ArrayList<>(3);
         }
         inboundParameterList.add(value);
     }

@@ -52,7 +52,7 @@ public class PropertyImpl extends org.apache.myfaces.config.element.Property imp
     {
         if (description == null)
         {
-            description = new ArrayList<>();
+            description = new ArrayList<>(1);
         }
         description.add(value);
     }
@@ -72,7 +72,7 @@ public class PropertyImpl extends org.apache.myfaces.config.element.Property imp
     {
         if (displayName == null)
         {
-            displayName = new ArrayList<String>();
+            displayName = new ArrayList<>(1);
         }
 
         displayName.add(value);
@@ -93,7 +93,7 @@ public class PropertyImpl extends org.apache.myfaces.config.element.Property imp
     {
         if (icon == null)
         {
-            icon = new ArrayList<>();
+            icon = new ArrayList<>(1);
         }
 
         icon.add(value);
@@ -157,7 +157,7 @@ public class PropertyImpl extends org.apache.myfaces.config.element.Property imp
     {
         if (propertyExtensions == null)
         {
-            propertyExtensions = new ArrayList<>();
+            propertyExtensions = new ArrayList<>(1);
         }
         propertyExtensions.add(propertyExtension);
     }

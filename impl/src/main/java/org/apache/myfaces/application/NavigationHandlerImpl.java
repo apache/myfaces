@@ -1439,8 +1439,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
 
             Map<String, Set<NavigationCase>> cases = new HashMap<>(HashMapUtils.calcCapacity(rulesSize));
 
-            List<_WildcardPattern> wildcardPatterns = new ArrayList<_WildcardPattern>();
-
+            List<_WildcardPattern> wildcardPatterns = new ArrayList<>();
             for (NavigationRule rule : rules)
             {
                 String fromViewId = rule.getFromViewId();
@@ -1458,7 +1457,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 Set<NavigationCase> set = cases.get(fromViewId);
                 if (set == null)
                 {
-                    set = new HashSet<NavigationCase>(convertNavigationCasesToAPI(rule));
+                    set = new HashSet<>(convertNavigationCasesToAPI(rule));
                     cases.put(fromViewId, set);
                     if (fromViewId.endsWith(ASTERISK))
                     {

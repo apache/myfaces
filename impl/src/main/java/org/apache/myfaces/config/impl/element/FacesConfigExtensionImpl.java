@@ -55,7 +55,7 @@ public class FacesConfigExtensionImpl extends org.apache.myfaces.config.element.
     {
         if (_faceletsProcessingList == null)
         {
-            _faceletsProcessingList = new ArrayList<>();
+            _faceletsProcessingList = new ArrayList<>(5);
         }
         _faceletsProcessingList.add(elem);
     }
@@ -79,7 +79,7 @@ public class FacesConfigExtensionImpl extends org.apache.myfaces.config.element.
     {
         if (viewPoolMappings == null)
         {
-            viewPoolMappings = new ArrayList<>();
+            viewPoolMappings = new ArrayList<>(5);
         }
         viewPoolMappings.add(mapping);
     }
@@ -103,7 +103,7 @@ public class FacesConfigExtensionImpl extends org.apache.myfaces.config.element.
     {
         if (faceletsTemplateMappings == null)
         {
-            faceletsTemplateMappings = new ArrayList<>();
+            faceletsTemplateMappings = new ArrayList<>(5);
         }
         faceletsTemplateMappings.add(mapping);
     }

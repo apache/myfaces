@@ -69,7 +69,7 @@ public class ContractMappingImpl extends ContractMapping
     {
         if (contractsList == null)
         {
-            contractsList = new ArrayList<>();
+            contractsList = new ArrayList<>(5);
         }
         contractsList.add(contract);
     }
@@ -78,7 +78,7 @@ public class ContractMappingImpl extends ContractMapping
     {
         if (urlPatternList == null)
         {
-            urlPatternList = new ArrayList<>();
+            urlPatternList = new ArrayList<>(5);
         }
         urlPatternList.add(urlPattern);
     }
