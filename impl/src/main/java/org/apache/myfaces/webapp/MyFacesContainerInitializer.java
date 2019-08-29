@@ -166,7 +166,7 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
             if (conflictMappings != null && !conflictMappings.isEmpty())
             {
                 //at least one of the attempted mappings is in use, remove and try again
-                Set<String> newMappings = new HashSet<String>(Arrays.asList(mappings));
+                Set<String> newMappings = new HashSet<>(Arrays.asList(mappings));
                 newMappings.removeAll(conflictMappings);
                 mappings = newMappings.toArray(new String[newMappings.size()]);
                 servlet.addMapping(mappings);
