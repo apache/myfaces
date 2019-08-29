@@ -96,7 +96,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
             dispenser.feed(annotationFacesConfig);
         }
 
-        List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
+        List<FacesConfig> appConfigResources = new ArrayList<>();
 
         // META-INF/faces-config.xml files
         appConfigResources.addAll(facesConfigProvider.getClassloaderFacesConfig(externalContext));
@@ -153,7 +153,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
             //1. Scan all appConfigResources and create a list
             //containing all resources not mentioned directly, preserving the
             //order founded
-            List<FacesConfig> othersResources = new ArrayList<FacesConfig>();
+            List<FacesConfig> othersResources = new ArrayList<>();
             List<OrderSlot> slots = webAppConfig.getAbsoluteOrdering().getOrderList();
             for (FacesConfig resource : appConfigResources)
             {
@@ -246,19 +246,18 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
      */
     protected List<FacesConfig> applySortingAlgorithm(List<FacesConfig> appConfigResources) throws FacesException
     {
-
         //0. Convert the references into a graph
-        List<Vertex<FacesConfig>> vertexList = new ArrayList<Vertex<FacesConfig>>();
+        List<Vertex<FacesConfig>> vertexList = new ArrayList<>();
         for (FacesConfig config : appConfigResources)
         {
-            Vertex<FacesConfig> v = null;
+            Vertex<FacesConfig> v;
             if (config.getName() != null)
             {
-                v = new Vertex<FacesConfig>(config.getName(), config);
+                v = new Vertex<>(config.getName(), config);
             }
             else
             {
-                v = new Vertex<FacesConfig>(config);
+                v = new Vertex<>(config);
             }
             vertexList.add(v);
         }
@@ -307,9 +306,9 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
         }
 
         //2. Classify into categories
-        List<Vertex<FacesConfig>> beforeAfterOthersList = new ArrayList<Vertex<FacesConfig>>();
-        List<Vertex<FacesConfig>> othersList = new ArrayList<Vertex<FacesConfig>>();
-        List<Vertex<FacesConfig>> referencedList = new ArrayList<Vertex<FacesConfig>>();
+        List<Vertex<FacesConfig>> beforeAfterOthersList = new ArrayList<>();
+        List<Vertex<FacesConfig>> othersList = new ArrayList<>();
+        List<Vertex<FacesConfig>> referencedList = new ArrayList<>();
 
         for (int i = 0; i < vertexList.size(); i++)
         {
@@ -353,7 +352,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
         }
 
         //4. Add referenced nodes
-        List<FacesConfig> sortedList = new ArrayList<FacesConfig>();
+        List<FacesConfig> sortedList = new ArrayList<>();
         for (Vertex<FacesConfig> v : referencedList)
         {
             sortedList.add((FacesConfig)v.getNode());
@@ -458,7 +457,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
      */
     protected List<FacesConfig> sortRelativeOrderingList(List<FacesConfig> preOrderedList)
     {
-        List<FacesConfig> sortedList = new ArrayList<FacesConfig>();
+        List<FacesConfig> sortedList = new ArrayList<>();
 
         for (int i=0; i < preOrderedList.size(); i++)
         {
@@ -530,16 +529,14 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
                     //after some action is applied a check of the condition is made.
                     int beforeWeight = 0;
                     int afterWeight = 0;
-                    for (OrderSlot slot : resource.getOrdering()
-                            .getBeforeList())
+                    for (OrderSlot slot : resource.getOrdering().getBeforeList())
                     {
                         if (slot instanceof FacesConfigNameSlot)
                         {
                             beforeWeight++;
                         }
                     }
-                    for (OrderSlot slot : resource.getOrdering()
-                            .getAfterList())
+                    for (OrderSlot slot : resource.getOrdering().getAfterList())
                     {
                         if (slot instanceof FacesConfigNameSlot)
                         {
@@ -555,8 +552,6 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
                     {
                         applyAfterRule(sortedList, resource);
                     }
-
-
                 }
             }
             else
@@ -632,7 +627,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
     {
         //Only before rules
         boolean configOthers = false;
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
 
         for (OrderSlot slot : resource.getOrdering().getBeforeList())
         {
@@ -698,7 +693,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
     private void applyAfterRule(List<FacesConfig> sortedList, FacesConfig resource) throws FacesException
     {
         boolean configOthers = false;
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
 
         for (OrderSlot slot : resource.getOrdering().getAfterList())
         {
@@ -770,7 +765,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
 
         //0. Clean up: remove all not found resource references from the ordering
         //descriptions.
-        List<String> availableReferences = new ArrayList<String>();
+        List<String> availableReferences = new ArrayList<>();
         for (FacesConfig resource : appConfigResources)
         {
             String name = resource.getName();
@@ -824,27 +819,26 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
         }
         else
         {
-            appFilteredConfigResources = new ArrayList<FacesConfig>(appConfigResources);
+            appFilteredConfigResources = new ArrayList<>(appConfigResources);
         }
         Collections.sort(appFilteredConfigResources,
                 new Comparator<FacesConfig>()
                 {
+                    @Override
                     public int compare(FacesConfig o1, FacesConfig o2)
                     {
                         int o1Weight = 0;
                         int o2Weight = 0;
                         if (o1.getOrdering() != null)
                         {
-                            for (OrderSlot slot : o1.getOrdering()
-                                    .getBeforeList())
+                            for (OrderSlot slot : o1.getOrdering().getBeforeList())
                             {
                                 if (slot instanceof FacesConfigNameSlot)
                                 {
                                     o1Weight++;
                                 }
                             }
-                            for (OrderSlot slot : o1.getOrdering()
-                                    .getAfterList())
+                            for (OrderSlot slot : o1.getOrdering().getAfterList())
                             {
                                 if (slot instanceof FacesConfigNameSlot)
                                 {
@@ -854,16 +848,14 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
                         }
                         if (o2.getOrdering() != null)
                         {
-                            for (OrderSlot slot : o2.getOrdering()
-                                    .getBeforeList())
+                            for (OrderSlot slot : o2.getOrdering().getBeforeList())
                             {
                                 if (slot instanceof FacesConfigNameSlot)
                                 {
                                     o2Weight++;
                                 }
                             }
-                            for (OrderSlot slot : o2.getOrdering()
-                                    .getAfterList())
+                            for (OrderSlot slot : o2.getOrdering().getAfterList())
                             {
                                 if (slot instanceof FacesConfigNameSlot)
                                 {
@@ -875,11 +867,11 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
                     }
                 });
 
-        List<FacesConfig> postOrderedList = new LinkedList<FacesConfig>();
-        List<FacesConfig> othersList = new ArrayList<FacesConfig>();
+        List<FacesConfig> postOrderedList = new LinkedList<>();
+        List<FacesConfig> othersList = new ArrayList<>();
 
-        List<String> nameBeforeStack = new ArrayList<String>();
-        List<String> nameAfterStack = new ArrayList<String>();
+        List<String> nameBeforeStack = new ArrayList<>();
+        List<String> nameAfterStack = new ArrayList<>();
 
         boolean[] visitedSlots = new boolean[appFilteredConfigResources.size()];
 

@@ -65,8 +65,7 @@ public class ConfigFilesXmlValidationUtils
         private final String _baseURI;
         private final InputStream _input;
         
-        public LSInputImpl(String publicId,
-                String systemId, String baseURI, InputStream input)
+        public LSInputImpl(String publicId,String systemId, String baseURI, InputStream input)
         {
             super();
             _publicId = publicId;
@@ -75,74 +74,90 @@ public class ConfigFilesXmlValidationUtils
             _input = input;
         }
 
+        @Override
         public String getBaseURI()
         {
             return _baseURI;
         }
 
+        @Override
         public InputStream getByteStream()
         {
             return _input;
         }
 
+        @Override
         public boolean getCertifiedText()
         {
             return false;
         }
 
+        @Override
         public Reader getCharacterStream()
         {
             return null;
         }
 
+        @Override
         public String getEncoding()
         {
             return null;
         }
 
+        @Override
         public String getPublicId()
         {
             return _publicId;
         }
 
+        @Override
         public String getStringData()
         {
             return null;
         }
 
+        @Override
         public String getSystemId()
         {
             return _systemId;
         }
 
+        @Override
         public void setBaseURI(String baseURI)
         {
         }
 
+        @Override
         public void setByteStream(InputStream byteStream)
         {
         }
 
+        @Override
         public void setCertifiedText(boolean certifiedText)
         {
         }
 
+        @Override
         public void setCharacterStream(Reader characterStream)
         {
         }
 
+        @Override
         public void setEncoding(String encoding)
         {
         }
 
+        @Override
         public void setPublicId(String publicId)
         {
         }
 
+        @Override
         public void setStringData(String stringData)
         {
         }
 
+        @Override
         public void setSystemId(String systemId)
         {
         }
@@ -150,7 +165,7 @@ public class ConfigFilesXmlValidationUtils
     
     public static class ValidatorLSResourceResolver implements LSResourceResolver
     {
-
+        @Override
         public LSInput resolveResource(String type, String namespaceURI,
                 String publicId, String systemId, String baseURI)
         {
@@ -184,17 +199,20 @@ public class ConfigFilesXmlValidationUtils
     
     public static class ValidationErrorHandler implements ErrorHandler
     {
+        @Override
         public void fatalError(SAXParseException exception) throws SAXException
         {
             throw exception;
         }
         
+        @Override
         public void error(SAXParseException exception) throws SAXException
         {
             Logger log = Logger.getLogger(ConfigFilesXmlValidationUtils.class.getName());
             log.log(Level.SEVERE, exception.getMessage(), exception);
         }
 
+        @Override
         public void warning(SAXParseException exception) throws SAXException
         {
             Logger log = Logger.getLogger(ConfigFilesXmlValidationUtils.class.getName());
@@ -202,11 +220,10 @@ public class ConfigFilesXmlValidationUtils
         }
     }
     
-    public static void validateFacesConfigFile(URL xmlFile,
-            ExternalContext externalContext, String version) throws SAXException, IOException
+    public static void validateFacesConfigFile(URL xmlFile,ExternalContext externalContext, String version)
+            throws SAXException, IOException
     {
-        SchemaFactory schemaFactory = SchemaFactory
-                .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
         Source schemaFile = getFacesConfigSchemaFileAsSource(externalContext, version);
         if (schemaFile == null)
@@ -288,12 +305,10 @@ public class ConfigFilesXmlValidationUtils
                         (handler.isVersion21() ? "2.1" : (handler.isVersion20() ? "2.0" : 
                         (handler.isVersion12() ? "1.2" : "1.1"))));
         }
-
         catch (Throwable e)
         {
             // Most likely a result of our aborted parse, so ignore.
         }
-
         finally
         {
             if (input != null)
@@ -302,7 +317,6 @@ public class ConfigFilesXmlValidationUtils
                 {
                     input.close();
                 }
-
                 catch (Throwable e)
                 {
                 }
@@ -458,7 +472,7 @@ public class ConfigFilesXmlValidationUtils
         }
     }
 
-    private static final boolean isTaglibDocument20OrLater (URL url)
+    private static boolean isTaglibDocument20OrLater(URL url)
     {
         URLConnection conn = null;
         InputStream input = null;
@@ -487,7 +501,6 @@ public class ConfigFilesXmlValidationUtils
             {
                 parser.parse (input, handler);
             }
-            
             catch (SAXException e)
             {
                 // This is as a result of our aborted parse, so ignore.
@@ -495,12 +508,10 @@ public class ConfigFilesXmlValidationUtils
             
             result = handler.isVersion20OrLater();
         }
-        
         catch (Throwable e)
         {
             // Most likely a result of our aborted parse, so ignore.
         }
-        
         finally
         {
             if (input != null)
@@ -509,7 +520,6 @@ public class ConfigFilesXmlValidationUtils
                 {
                     input.close();
                 }
-                
                 catch (Throwable e)
                 {
                 }
