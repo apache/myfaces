@@ -113,7 +113,7 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
     @Override
     public void onStartup(Set<Class<?>> clazzes, ServletContext servletContext) throws ServletException
     {
-        log.log(Level.INFO, "Using " + MyFacesContainerInitializer.class.getName());
+        log.log(Level.INFO, "Using " + this.getClass().getName());
 
 
         MyFacesHttpSessionListener httpSessionListener = new MyFacesHttpSessionListener();
