@@ -507,14 +507,13 @@ public final class RendererUtils
         catch (FacesException e)
         {
             log.log(Level.SEVERE,
-                    "No Converter for type " + arrayComponentType.getName()
-                            + " found", e);
+                    "No Converter for type " + arrayComponentType.getName() + " found",
+                    e);
             return null;
         }
     }
 
-    public static void checkParamValidity(FacesContext facesContext,
-            UIComponent uiComponent, Class compClass)
+    public static void checkParamValidity(FacesContext facesContext, UIComponent uiComponent, Class compClass)
     {
         Assert.notNull(facesContext, "facesContext");
         Assert.notNull(uiComponent, "uiComponent");
@@ -527,15 +526,14 @@ public final class RendererUtils
         }
     }
 
-    public static void renderChildren(FacesContext facesContext,
-            UIComponent component) throws IOException
+    public static void renderChildren(FacesContext facesContext, UIComponent component) throws IOException
     {
-        if (component.getChildCount() > 0)
+        int childCount = component.getChildCount();
+        if (childCount > 0)
         {
-            for (int i = 0; i < component.getChildCount(); i++)
+            for (int i = 0; i < childCount; i++)
             {
                 UIComponent child = component.getChildren().get(i);
-                //renderChild(facesContext, child);
                 child.encodeAll(facesContext);
             }
         }

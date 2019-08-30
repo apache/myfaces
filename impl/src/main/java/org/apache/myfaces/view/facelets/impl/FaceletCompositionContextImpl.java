@@ -699,9 +699,10 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
         else if (id == null
                  && Boolean.TRUE.equals(component.getAttributes().get(ComponentSupport.FACET_CREATED_UIPANEL_MARKER)))
         {
-            if (component.getChildCount() > 0)
+            int childCount = component.getChildCount();
+            if (childCount > 0)
             {
-                for (int i = 0, size = component.getChildCount(); i < size; i++)
+                for (int i = 0, size = childCount; i < size; i++)
                 {
                     UIComponent child = component.getChildren().get(i);
                     id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);

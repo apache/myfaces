@@ -50,10 +50,11 @@ public class TreeStructureManager
                                                                  component.getId());
 
         //children
-        if (component.getChildCount() > 0)
+        int childCount = component.getChildCount();
+        if (childCount > 0)
         {
             List<TreeStructComponent> structChildList = new ArrayList<>();
-            for (int i = 0, childCount = component.getChildCount(); i < childCount; i++)
+            for (int i = 0; i < childCount; i++)
             {
                 UIComponent child = component.getChildren().get(i);
                 if (!child.isTransient())
@@ -117,7 +118,7 @@ public class TreeStructureManager
 
         //children
         TreeStructComponent[] childArray = treeStructComp.getChildren();
-        if (childArray != null)
+        if (childArray != null && childArray.length > 0)
         {
             List<UIComponent> childList = component.getChildren();
             for (int i = 0, len = childArray.length; i < len; i++)
@@ -129,7 +130,7 @@ public class TreeStructureManager
 
         //facets
         Object[] facetArray = treeStructComp.getFacets();
-        if (facetArray != null)
+        if (facetArray != null && facetArray.length > 0)
         {
             Map<String, UIComponent> facetMap = component.getFacets();
             for (int i = 0, len = facetArray.length; i < len; i++)

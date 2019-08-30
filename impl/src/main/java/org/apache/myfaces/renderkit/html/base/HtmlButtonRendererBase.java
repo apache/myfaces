@@ -133,15 +133,9 @@ public class HtmlButtonRendererBase extends HtmlRenderer
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
             }
         }
-        
-        List<UIComponent> childrenList = null;
-        if (getChildCount(uiComponent) > 0)
-        {
-            childrenList = getChildren(uiComponent);
-        }
 
         List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
-                facesContext, childrenList, false, false);
+                facesContext, getChildren(uiComponent), false, false);
 
         String commandOnclick = (String)uiComponent.getAttributes().get(HTML.ONCLICK_ATTR);
         

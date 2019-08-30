@@ -49,6 +49,11 @@ public abstract class HtmlRenderer
      */
     public List<UIComponent> getChildren(UIComponent component) 
     {
+        if (component.getChildCount() == 0)
+        {
+            return null;
+        }
+        
         return component.getChildren();
     }
 

@@ -281,7 +281,7 @@ public class OutcomeTargetUtils
                     // add the param
                     if (params == null)
                     {
-                        params = new ArrayList<>();
+                        params = new ArrayList<>(5);
                     }
                     params.add(param);
                 }

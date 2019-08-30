@@ -629,15 +629,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
         //add child parameters
         StringBuilder params = SharedStringBuilder.get(context, SB_ADD_CHILD_PARAMETERS);
         params.append('[');
-        
-        List<UIComponent> childrenList = null;
-        if (getChildCount(component) > 0)
-        {
-            childrenList = getChildren(component);
-        }
 
         List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
-                context, childrenList, false, false);
+                context, getChildren(component), false, false);
         for (int j = 0, size = validParams.size(); j < size; j++) 
         {
             UIParameter param = validParams.get(j);
@@ -706,14 +700,8 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
                                           String charEncoding)
             throws IOException
     {
-        List<UIComponent> childrenList = null;
-        if (getChildCount(linkComponent) > 0)
-        {
-            childrenList = getChildren(linkComponent);
-        }
-
         List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
-                facesContext, childrenList, false, false);
+                facesContext, getChildren(linkComponent), false, false);
         
         for (int i = 0, size = validParams.size(); i < size; i++)
         {

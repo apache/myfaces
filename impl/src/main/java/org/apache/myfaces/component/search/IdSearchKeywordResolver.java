@@ -118,9 +118,10 @@ public class IdSearchKeywordResolver extends SearchKeywordResolver
             }
         }
 
-        if (base.getChildCount() > 0)
+        int childCount = base.getChildCount();
+        if (childCount > 0)
         {
-            for (int i = 0, childCount = base.getChildCount(); i < childCount; i++)
+            for (int i = 0; i < childCount; i++)
             {
                 UIComponent child = base.getChildren().get(i);
                 withId(context, id, child, callback);

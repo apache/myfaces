@@ -160,37 +160,26 @@ public class HtmlFormatRenderer extends HtmlRenderer
     private String getOutputFormatText(FacesContext facesContext, UIComponent htmlOutputFormat)
     {
         String pattern = RendererUtils.getStringValue(facesContext, htmlOutputFormat);
-        Object[] args;
-        if (htmlOutputFormat.getChildCount() == 0)
-        {
-            args = EMPTY_ARGS;
-        }
-        else
+        Object[] args = EMPTY_ARGS;
+        if (htmlOutputFormat.getChildCount() > 0)
         {
             List<Object> argsList = null;
-            
-            if (htmlOutputFormat.getChildCount() > 0)
+
+            List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
+                    facesContext, htmlOutputFormat.getChildren(), false, false, false);
+            for (int i = 0, size = validParams.size(); i < size; i++)
             {
-                List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
-                        facesContext, htmlOutputFormat.getChildren(), false, false, false);
-                for (int i = 0, size = validParams.size(); i < size; i++)
+                UIParameter param = validParams.get(i);
+                if (argsList == null)
                 {
-                    UIParameter param = validParams.get(i);
-                    if (argsList == null)
-                    {
-                        argsList = new ArrayList<>();
-                    }
-                    argsList.add(param.getValue());
+                    argsList = new ArrayList<>();
                 }
+                argsList.add(param.getValue());
             }
             
             if (argsList != null)
             {
                 args = argsList.toArray(new Object[argsList.size()]);
-            }
-            else
-            {
-                args = EMPTY_ARGS;
             }
         }
 
