@@ -24,6 +24,8 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.component.NamingContainer;
@@ -50,6 +52,8 @@ import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageBase;
  */
 public final class ComponentSupport
 {
+    private static final Logger LOG = Logger.getLogger(ComponentSupport.class.getName());
+    
     private static final Method SET_CACHED_FACES_CONTEXT;
         
     static
@@ -66,6 +70,7 @@ public final class ComponentSupport
         }
         catch (NoSuchMethodException | SecurityException ex)
         {
+            LOG.log(Level.SEVERE, ex.getMessage(), ex);
             method = null;
         }
         SET_CACHED_FACES_CONTEXT = method;

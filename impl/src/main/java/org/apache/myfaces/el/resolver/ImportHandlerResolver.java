@@ -58,18 +58,11 @@ public class ImportHandlerResolver extends ScopedAttributeResolver
                 elClassConstructor = elClass.getConstructor(Class.class);
             }
         }
-        catch (SecurityException ex)
+        catch (SecurityException | ClassNotFoundException | NoSuchMethodException ex)
         {
             //No op
         }
-        catch (ClassNotFoundException ex)
-        {
-            //No op
-        } 
-        catch (NoSuchMethodException e) 
-        {
-            // No op
-        }
+
         EL_CLASS = elClass;
         GET_IMPORT_HANDLER_METHOD = getImportHandlerMethod;
         IMPORT_HANDLER_RESOLVE_CLASS_METHOD = importHandlerResolveClassMethod;
