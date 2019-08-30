@@ -83,7 +83,7 @@ public class CompositeComponentPropertyDescriptor extends PropertyDescriptor
         
         // Properties that comes here are targets, default, required,
         // method-signature and type.
-        Map<String,Object> map = new HashMap<>(6,1);
+        Map<String,Object> map = new HashMap<>(6, 1);
         
         for (Enumeration<String> e = attributeNames(); e.hasMoreElements();)
         {

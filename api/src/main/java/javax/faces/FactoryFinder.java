@@ -85,7 +85,7 @@ public final class FactoryFinder
      * corresponding maps in _factories.
      */
     private static Map<ClassLoader, Map<String, List<String>>> registeredFactoryNames
-            = new HashMap<ClassLoader, Map<String, List<String>>>();
+            = new HashMap<ClassLoader, Map<String, List<String>>>(5);
 
     /**
      * Maps from classLoader to another map, the container (i.e. Tomcat) will create a class loader for each web app
@@ -96,7 +96,7 @@ public final class FactoryFinder
      * name, i.e. FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MyFactory.class).
      */
     private static Map<ClassLoader, Map<String, Object>> factories
-            = new HashMap<ClassLoader, Map<String, Object>>();
+            = new HashMap<ClassLoader, Map<String, Object>>(5);
 
     static
     {        
@@ -301,7 +301,7 @@ public final class FactoryFinder
         Object injectionProvider;
         synchronized (factoryClassNames)
         {
-            beanEntryStorage = (List)factoryMap.computeIfAbsent(INJECTED_BEAN_STORAGE_KEY,
+            beanEntryStorage = (List) factoryMap.computeIfAbsent(INJECTED_BEAN_STORAGE_KEY,
                     k -> new CopyOnWriteArrayList());
             
             factory = factoryMap.get(factoryName);

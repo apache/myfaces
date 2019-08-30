@@ -1654,7 +1654,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         
         if (_systemEventListeners == null)
         {
-            _systemEventListeners = new HashMap<>(4);
+            _systemEventListeners = new HashMap<>(4, 1f);
         }
         
         listeners = _systemEventListeners.get(systemEvent);

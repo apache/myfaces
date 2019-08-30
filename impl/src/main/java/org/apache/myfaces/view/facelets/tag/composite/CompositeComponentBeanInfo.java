@@ -200,7 +200,7 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo
         out.writeBoolean(_descriptor.isPreferred());
         out.writeObject(_descriptor.getShortDescription());
         
-        Map<String,Object> map = new HashMap<String, Object>(4,1);
+        Map<String,Object> map = new HashMap<>(4, 1);
         
         for (Enumeration<String> e = _descriptor.attributeNames(); e.hasMoreElements();)
         {
@@ -236,7 +236,7 @@ public class CompositeComponentBeanInfo extends SimpleBeanInfo
             else if (_propertyDescriptorsMap == null)
             {
                 int initCapacity = (_propertyDescriptors.size() * 4 + 3) / 3;
-                _propertyDescriptorsMap = new HashMap<String, PropertyDescriptor>(initCapacity);
+                _propertyDescriptorsMap = new HashMap<>(initCapacity);
                 for (PropertyDescriptor p : _propertyDescriptors)
                 {
                     if (!_propertyDescriptorsMap.containsKey(p.getName()))

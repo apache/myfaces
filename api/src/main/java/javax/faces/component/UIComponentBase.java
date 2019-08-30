@@ -53,7 +53,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.event.PhaseId;
 
@@ -1504,14 +1503,10 @@ public abstract class UIComponentBase extends UIComponent
                     {
                         if (facetMap == null)
                         {
-                            facetMap = new HashMap<String, Object>(facetCount, 1);
+                            facetMap = new HashMap<>(facetCount, 1);
                         }
 
                         facetMap.put(entry.getKey(), component.processSaveState(context));
-
-                        // Ensure that UIComponent.popComponentFromEL(javax.faces.context.FacesContext) is called
-                        // correctly after each child or facet.
-                        // popComponentFromEL(context);
                     }
                 }
             }
@@ -1531,7 +1526,7 @@ public abstract class UIComponentBase extends UIComponent
                     {
                         if (childrenList == null)
                         {
-                            childrenList = new ArrayList<Object>(childCount);
+                            childrenList = new ArrayList<>(childCount);
                         }
 
                         Object childState = child.processSaveState(context);
@@ -1539,9 +1534,6 @@ public abstract class UIComponentBase extends UIComponent
                         { // FIXME: Isn't that check dangerous for restoration since the child isn't marked transient?
                             childrenList.add(childState);
                         }
-
-                        // Ensure that UIComponent.popComponentFromEL(javax.faces.context.FacesContext) is called
-                        // correctly after each child or facet.
                     }
                 }
             }
@@ -1551,6 +1543,8 @@ public abstract class UIComponentBase extends UIComponent
         }
         finally
         {
+            // Ensure that UIComponent.popComponentFromEL(javax.faces.context.FacesContext) is called
+            // correctly after each child or facet.
             popComponentFromEL(context);
         }
 
@@ -1591,10 +1585,6 @@ public abstract class UIComponentBase extends UIComponent
                     if (facetState != null)
                     {
                         entry.getValue().processRestoreState(context, facetState);
-
-                        // After returning from the processRestoreState() method on a child or facet, call
-                        // UIComponent.popComponentFromEL(javax.faces.context.FacesContext)
-                        // popComponentFromEL(context);
                     }
                     else
                     {
@@ -1620,10 +1610,6 @@ public abstract class UIComponentBase extends UIComponent
                         if (childState != null)
                         {
                             child.processRestoreState(context, childState);
-
-                            // After returning from the processRestoreState() method on a child or facet, call
-                            // UIComponent.popComponentFromEL(javax.faces.context.FacesContext)
-                            // popComponentFromEL(context);
                         }
                         else
                         {
@@ -1635,6 +1621,8 @@ public abstract class UIComponentBase extends UIComponent
         }
         finally
         {
+            // After returning from the processRestoreState() method on a child or facet, call
+            // UIComponent.popComponentFromEL(javax.faces.context.FacesContext)
             popComponentFromEL(context);
         }
     }
@@ -1646,13 +1634,8 @@ public abstract class UIComponentBase extends UIComponent
      */
     private String getComponentLocation(UIComponent component)
     {
-        Location location = (Location) component.getAttributes()
-                .get(UIComponent.VIEW_LOCATION_KEY);
-        if (location != null)
-        {
-            return location.toString();
-        }
-        return null;
+        Location location = (Location) component.getAttributes().get(UIComponent.VIEW_LOCATION_KEY);
+        return location == null ? null : location.toString();
     }
 
     @Override
@@ -2176,8 +2159,7 @@ public abstract class UIComponentBase extends UIComponent
         if (stateObj != null)
         {
             Map<Class<? extends SystemEvent>, Object> stateMap = (Map<Class<? extends SystemEvent>, Object>) stateObj;
-            int initCapacity = (stateMap.size() * 4 + 3) / 3;
-            _systemEventListenerClassMap = new HashMap<>(initCapacity);
+            _systemEventListenerClassMap = new HashMap<>(stateMap.size(), 1f);
             for (Map.Entry<Class<? extends SystemEvent>, Object> entry : stateMap.entrySet())
             {
                 _systemEventListenerClassMap.put(entry.getKey(),
@@ -2196,10 +2178,9 @@ public abstract class UIComponentBase extends UIComponent
         if (stateObj != null)
         {
             Map<Class<? extends SystemEvent>, Object> stateMap = (Map<Class<? extends SystemEvent>, Object>) stateObj;
-            int initCapacity = (stateMap.size() * 4 + 3) / 3;
             if (_systemEventListenerClassMap == null)
             {
-                _systemEventListenerClassMap = new HashMap<>(initCapacity);
+                _systemEventListenerClassMap = new HashMap<>(stateMap.size(), 1f);
             }
             for (Map.Entry<Class<? extends SystemEvent>, Object> entry : stateMap.entrySet())
             {
@@ -2451,12 +2432,8 @@ public abstract class UIComponentBase extends UIComponent
      * String d = sb2.toString();
      * </code></pre>
      *
+     * @param facesContext
      */
-    static StringBuilder _getSharedStringBuilder()
-    {
-        return _getSharedStringBuilder(FacesContext.getCurrentInstance());
-    }
-
     static StringBuilder _getSharedStringBuilder(FacesContext facesContext)
     {
         Map<Object, Object> attributes = facesContext.getAttributes();

@@ -691,8 +691,7 @@ public abstract class UIComponent
             throw new NullPointerException("name can not be null");
         }
 
-        Map<String, Object> bindings = (Map<String, Object>) getStateHelper().
-                get(PropertyKeys.bindings);
+        Map<String, Object> bindings = (Map<String, Object>) getStateHelper().get(PropertyKeys.bindings);
         if (bindings != null)
         {
             return (ValueExpression) bindings.get(name);
@@ -821,8 +820,7 @@ public abstract class UIComponent
             // Do it inside UIComponent.processEvent() is better because in facelets
             // UILeaf we can skip this part just overriding the method.
             
-            List<SystemEventListener> listeners = this.getListenersForEventClass(
-                PostRestoreStateEvent.class);
+            List<SystemEventListener> listeners = this.getListenersForEventClass(PostRestoreStateEvent.class);
             if (!listeners.isEmpty())
             {
                 for (int i  = 0, size = listeners.size(); i < size; i++)
@@ -909,7 +907,6 @@ public abstract class UIComponent
         if (_systemEventListenerClassMap != null)
         {
             List<SystemEventListener> listeners = _systemEventListenerClassMap.get(eventClass);
-
             if (listeners != null && !listeners.isEmpty())
             {
                 for (Iterator<SystemEventListener> it = listeners.iterator(); it.hasNext(); )
@@ -1153,7 +1150,7 @@ public abstract class UIComponent
                 else
                 {
                     UIComponent previousCompositeComponent = null;
-                    for (int i = componentStack.size()-1; i >= 0; i--)
+                    for (int i = componentStack.size() - 1; i >= 0; i--)
                     {
                         UIComponent component = componentStack.get(i);
                         if (component._isCompositeComponent())
@@ -1246,7 +1243,7 @@ public abstract class UIComponent
         }
         else
         {
-            List<UIComponent> componentStack= (List<UIComponent>) contextAttributes.computeIfAbsent(
+            List<UIComponent> componentStack = (List<UIComponent>) contextAttributes.computeIfAbsent(
                     UIComponent._COMPONENT_STACK, k -> new ArrayList<>());
             componentStack.add(component);
             if (component._isCompositeComponent())
@@ -1383,7 +1380,7 @@ public abstract class UIComponent
         @Override
         public Set<Map.Entry<String, String>> entrySet()
         {
-            Set<Entry<String, String>> set = new HashSet<Entry<String, String>>();
+            Set<Entry<String, String>> set = new HashSet<>();
             for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements(); )
             {
                 final String k = enumer.nextElement();
@@ -1415,7 +1412,7 @@ public abstract class UIComponent
         @Override
         public Set<String> keySet()
         {
-            Set<String> set = new HashSet<String>();
+            Set<String> set = new HashSet<>();
             for (Enumeration<String> enumer = _bundle.getKeys(); enumer.hasMoreElements(); )
             {
                 set.add(enumer.nextElement());
@@ -1450,7 +1447,6 @@ public abstract class UIComponent
 
     static class EventListenerWrapper implements SystemEventListener, PartialStateHolder
     {
-
         private Class<?> componentClass;
         private ComponentSystemEventListener listener;
 
@@ -1641,8 +1637,6 @@ public abstract class UIComponent
                 }
                 else if ((listenerCapability & LISTENER_TYPE_RENDERER) != 0)
                 {
-                    //listener = (ComponentSystemEventListener)
-                    //        UIComponent.getCurrentComponent(context).getRenderer(context);
                     Renderer renderer = _component.getRenderer(context);
                     Integer i = (Integer) values[1];
                     if (i != null && i >= 0)
@@ -1736,8 +1730,8 @@ public abstract class UIComponent
                         {
                             return null;
                         }
-                        return new Object[]{componentClass,
-                                            new _AttachedDeltaWrapper(listener.getClass(), listenerSaved)};
+                        return new Object[] { componentClass,
+                                            new _AttachedDeltaWrapper(listener.getClass(), listenerSaved) };
                     }
                     else
                     {

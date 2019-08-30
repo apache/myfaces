@@ -522,7 +522,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
     {
         if (_facetHandlersMap == null)
         {
-            Map<String, FaceletHandler> map = new HashMap<String, FaceletHandler>();
+            Map<String, FaceletHandler> map = new HashMap<>(_facetHandlers.size());
 
             for (FaceletHandler handler : _facetHandlers)
             {

@@ -171,7 +171,7 @@ public class ResourceImpl extends Resource implements ContractResource
         
         if (facesContext.getApplication().getResourceHandler().isResourceRequest(facesContext))
         {
-            Map<String, String> headers = new HashMap<>(2);
+            Map<String, String> headers = new HashMap<>(2, 1f);
             
             long lastModified = getLastModified(facesContext);
             

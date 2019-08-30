@@ -331,5 +331,4 @@ public class FacetHandler extends TagHandler implements InterfaceDescriptorCreat
     {
         _cacheable = cacheable;
     }
-
 }

@@ -51,7 +51,7 @@ class PhaseListenerManager
         this.lifecycle = lifecycle;
         this.facesContext = facesContext;
         this.phaseListeners = phaseListeners;
-        this.listenerSuccessMap = new HashMap<>(PhaseId.VALUES.size());
+        this.listenerSuccessMap = new HashMap<>(PhaseId.VALUES.size(), 1f);
        
     }
  

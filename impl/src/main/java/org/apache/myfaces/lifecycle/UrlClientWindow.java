@@ -98,7 +98,7 @@ public class UrlClientWindow extends ClientWindow
             String id = context.getExternalContext().getClientWindow().getId();
             if (id != null)
             {
-                queryParamsMap = new HashMap<String, String>(2,1);
+                queryParamsMap = new HashMap<String, String>(2, 1);
                 queryParamsMap.put(ResponseStateManager.CLIENT_WINDOW_URL_PARAM, id);
             }
         }

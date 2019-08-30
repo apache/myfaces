@@ -1012,8 +1012,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         {
             if (_flashFactory == null)
             {
-                _flashFactory = (FlashFactory) FactoryFinder.getFactory(
-                    FactoryFinder.FLASH_FACTORY);
+                _flashFactory = (FlashFactory) FactoryFinder.getFactory(FactoryFinder.FLASH_FACTORY);
                 if (_flashFactory == null)
                 {
                     //Fallback to servlet default flash

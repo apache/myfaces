@@ -1129,7 +1129,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             if (StringUtils.isNotBlank(queryString))
             {
                 String[] splitQueryParams = AMP_PATTERN.split(queryString); // "&" or "&amp;"
-                params = new HashMap<>(splitQueryParams.length, (splitQueryParams.length* 4 + 3) / 3);
+                params = new HashMap<>(splitQueryParams.length, 1f);
                 for (String queryParam : splitQueryParams)
                 {
                     String[] splitParam = StringUtils.splitShortString(queryParam, '=');

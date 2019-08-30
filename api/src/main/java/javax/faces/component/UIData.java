@@ -164,16 +164,16 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     // Holds for each row the states of the child components of this UIData.
     // Note that only "partial" component state is saved: the component fields
     // that are expected to vary between rows.
-    private Map<String, Object> _rowStates = new HashMap<String, Object>();
-    private Map<String, Map<String, Object> > _rowDeltaStates = new HashMap<String, Map<String, Object> >();
-    private Map<String, Map<String, Object> > _rowTransientStates = new HashMap<String, Map<String, Object> >();
+    private Map<String, Object> _rowStates = new HashMap<>();
+    private Map<String, Map<String, Object>> _rowDeltaStates = new HashMap<>();
+    private Map<String, Map<String, Object>> _rowTransientStates = new HashMap<>();
 
     /**
      * Handle case where this table is nested inside another table. See method getDataModel for more details.
      * <p>
      * Key: parentClientId (aka rowId when nested within a parent table) Value: DataModel
      */
-    private Map<String, DataModel> _dataModelMap = new HashMap<String, DataModel>();
+    private Map<String, DataModel> _dataModelMap = new HashMap<>(3, 1f);
 
     // will be set to false if the data should not be refreshed at the beginning of the encode phase
     private boolean _isValidChilds = true;

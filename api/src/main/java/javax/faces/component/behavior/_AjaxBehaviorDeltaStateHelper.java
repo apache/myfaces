@@ -66,8 +66,8 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
     {
         super();
         this._target = component;
-        _fullState = new HashMap<Serializable, Object>();
-        _deltas = null;
+        this._fullState = new HashMap<>();
+        this._deltas = null;
     }
 
     /**
@@ -81,7 +81,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         {
             if (_deltas == null)
             {
-                _deltas = new HashMap<Serializable, Object>(2);
+                _deltas = new HashMap<>(2, 1f);
             }
             return true;
         }
@@ -101,7 +101,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         {
             //Track delta case
             Map<Object, Boolean> deltaListMapValues = (Map<Object, Boolean>) _deltas.computeIfAbsent(key,
-                    k -> new InternalDeltaListMap<>(3));
+                    k -> new InternalDeltaListMap<>(3, 1f));
             deltaListMapValues.put(value, Boolean.TRUE);
         }
 
@@ -181,7 +181,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
         {
             //Track delta case
             Map<String, Object> mapValues = (Map<String, Object>) _deltas.computeIfAbsent(key,
-                    k -> new InternalMap<>());
+                    k -> new InternalMap<>(8, 1f));
             if (mapValues.containsKey(mapKey))
             {
                 returnValue = mapValues.put(mapKey, value);
@@ -195,7 +195,7 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
 
         //Handle change on full map
         Map<String, Object> mapValues = (Map<String, Object>) _fullState.computeIfAbsent(key,
-                k -> new InternalMap<>());
+                k -> new InternalMap<>(8, 1f));
         if (returnSet)
         {
             mapValues.put(mapKey, value);
@@ -325,12 +325,11 @@ class _AjaxBehaviorDeltaStateHelper<A extends AjaxBehavior> implements StateHelp
             }
             else
             {
-                returnValue = map.remove(valueOrKey);
+                returnValue = map.remove((String) valueOrKey);
             }
 
             if (map.isEmpty())
             {
-                //stateMap.remove(key);
                 stateMap.put(key, null);
             }
         }

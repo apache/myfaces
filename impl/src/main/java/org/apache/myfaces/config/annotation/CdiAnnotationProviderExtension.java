@@ -43,7 +43,6 @@ public class CdiAnnotationProviderExtension implements Extension
 
     public CdiAnnotationProviderExtension()
     {
-        map = new HashMap<>(8, 1f);
         annotationsToScan = new Class[] {
             FacesComponent.class,
             FacesBehavior.class,
@@ -54,6 +53,7 @@ public class CdiAnnotationProviderExtension implements Extension
             FacesBehaviorRenderer.class,
             FaceletsResourceResolver.class
         };
+        map = new HashMap<>(annotationsToScan.length, 1f);
     }
 
     <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat)

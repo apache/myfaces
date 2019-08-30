@@ -39,6 +39,7 @@ class SerializedViewCollection implements Serializable
     private static final Object[] EMPTY_STATES = new Object[]{null, null};
 
     private static final long serialVersionUID = -3734849062185115847L;
+
     private final List<SerializedViewKey> _keys = new ArrayList<>(MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION_DEFAULT);
     private final Map<SerializedViewKey, Object> _serializedViews = new HashMap<>();
 
@@ -118,12 +119,12 @@ class SerializedViewCollection implements Serializable
         {
             if (_viewScopeIds == null)
             {
-                _viewScopeIds = new HashMap<SerializedViewKey, String>();
+                _viewScopeIds = new HashMap<>();
             }
             _viewScopeIds.put(key, viewScopeId);
             if (_viewScopeIdCounts == null)
             {
-                _viewScopeIdCounts = new HashMap<String, Integer>();
+                _viewScopeIdCounts = new HashMap<>();
             }
             Integer vscount = _viewScopeIdCounts.get(viewScopeId);
             vscount = (vscount == null) ? 1 : vscount + 1;

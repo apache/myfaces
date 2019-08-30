@@ -42,7 +42,7 @@ public class WebsocketViewBean implements Serializable
      * This map hold all tokens that are related to the current scope. 
      * This map use as key channel and as value channelTokens
      */
-    private Map<String, List<WebsocketChannel>> channelTokenListMap = new HashMap<>(2);
+    private Map<String, List<WebsocketChannel>> channelTokenListMap = new HashMap<>(2, 1f);
 
     /**
      * This map hold all tokens related to the current view. The reason to do this is the connections must follow
@@ -54,7 +54,7 @@ public class WebsocketViewBean implements Serializable
      * per view. In that way, the token can be used to identify on the client if a websocket initialization request
      * can share a websocket connection or not, simplifying code design.
      */
-    private Map<String, WebsocketChannelMetadata> tokenList = new HashMap<>(2);
+    private Map<String, WebsocketChannelMetadata> tokenList = new HashMap<>(2, 1f);
     
     public void registerToken(String token, WebsocketChannelMetadata metadata)
     {

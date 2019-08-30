@@ -161,8 +161,8 @@ class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
     {
         super();
         this._target = target;
-        _fullState = new HashMap<Serializable, Object>();
-        _deltas = null;
+        this._fullState = new HashMap<>();
+        this._deltas = null;
     }
 
     /**
@@ -176,7 +176,7 @@ class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
         {
             if (_deltas == null)
             {
-                _deltas = new HashMap<Serializable, Object>(2);
+                _deltas = new HashMap<>(2, 1f);
             }
             return true;
         }
@@ -196,7 +196,7 @@ class _DeltaStateHelper <A extends AjaxBehavior> implements StateHelper
         {
             //Track delta case
             Map<Object, Boolean> deltaListMapValues = (Map<Object, Boolean>) _deltas.computeIfAbsent(key,
-                    k -> new InternalDeltaListMap<>(3));
+                    k -> new InternalDeltaListMap<>(3, 1f));
             deltaListMapValues.put(value, Boolean.TRUE);
         }
 
