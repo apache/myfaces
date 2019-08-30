@@ -2055,8 +2055,7 @@ public abstract class UIComponentBase extends UIComponent
         if (stateObj != null)
         {
             Map<String, Object> stateMap = (Map<String, Object>) stateObj;
-            int initCapacity = (stateMap.size() * 4 + 3) / 3;
-            _behaviorsMap = new HashMap<>(initCapacity);
+            _behaviorsMap = new HashMap<>(stateMap.size(), 1f);
             _unmodifiableBehaviorsMap = null;
             for (Map.Entry<String, Object> entry : stateMap.entrySet())
             {
@@ -2078,10 +2077,9 @@ public abstract class UIComponentBase extends UIComponent
         {
             _unmodifiableBehaviorsMap = null;
             Map<String, Object> stateMap = (Map<String, Object>) stateObj;
-            int initCapacity = (stateMap.size() * 4 + 3) / 3;
             if (_behaviorsMap == null)
             {
-                _behaviorsMap = new HashMap<>(initCapacity);
+                _behaviorsMap = new HashMap<>(stateMap.size(), 1f);
             }
             for (Map.Entry<String, Object> entry : stateMap.entrySet())
             {
