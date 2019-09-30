@@ -822,6 +822,19 @@ public class MyfacesConfig
     public static final String WEBSOCKET_MAX_CONNECTIONS = "org.apache.myfaces.WEBSOCKET_MAX_CONNECTIONS";
     public static final Integer WEBSOCKET_MAX_CONNECTIONS_DEFAULT = 5000;
     
+    
+    /**
+     * Defines if the clientbehavior scripts are passed as string or function to the jsf.util.chain.
+     * "As string" is actually the default behavior of both MyFaces (until 3.0) and Mojarra.
+     * "As function" is quite usefull for CSP as no string needs to be evaluated as function.
+     * 
+     * Our jsf.util.chain supports both of course.
+     */
+    @JSFWebConfigParam(name="org.apache.myfaces.RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING", since="3.0", defaultValue = "false")
+    public static final String RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING = "org.apache.myfaces.RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING";
+    public static final boolean RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING_DEFAULT = false;
+    
+    
     // we need it, applicationImpl not ready probably
     private ProjectStage projectStage = ProjectStage.Production;
     private boolean strictJsf2AllowSlashLibraryName;
@@ -902,6 +915,7 @@ public class MyfacesConfig
     private boolean resourceCacheLastModified = RESOURCE_CACHE_LAST_MODIFIED_DEFAULT;
     private boolean logWebContextParams = false;
     private int websocketMaxConnections = WEBSOCKET_MAX_CONNECTIONS_DEFAULT;
+    private boolean renderClientBehaviorScriptsAsString = RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING_DEFAULT;
     
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -1315,6 +1329,9 @@ public class MyfacesConfig
         
         cfg.websocketMaxConnections = getInt(extCtx, WEBSOCKET_MAX_CONNECTIONS,
                 WEBSOCKET_MAX_CONNECTIONS_DEFAULT);
+
+        cfg.renderClientBehaviorScriptsAsString = getBoolean(extCtx, RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING,
+                RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING_DEFAULT);
 
         return cfg;
     }
@@ -1781,5 +1798,9 @@ public class MyfacesConfig
         return websocketMaxConnections;
     }
 
+    public boolean isRenderClientBehaviorScriptsAsString()
+    {
+        return renderClientBehaviorScriptsAsString;
+    }
 }
 

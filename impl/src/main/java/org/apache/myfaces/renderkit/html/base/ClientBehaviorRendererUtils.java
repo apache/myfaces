@@ -30,12 +30,15 @@ import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.behavior.ClientBehaviorHint;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.JavascriptContext;
 import org.apache.myfaces.util.lang.StringUtils;
 
 public class ClientBehaviorRendererUtils
 {
+    private static final boolean RENDER_AS_STRING = false;
+    
     public static void decodeClientBehaviors(FacesContext facesContext, UIComponent component)
     {
         if (!(component instanceof ClientBehaviorHolder))
@@ -132,6 +135,7 @@ public class ClientBehaviorRendererUtils
      * renderer default script
      *
      * @param eventName    event name ("onclick" etc...)
+     * @param config       the {@link MyfacesConfig}
      * @param uiComponent  the component which has the attachement (or should have)
      * @param facesContext the facesContext
      * @param params       params map of params which have to be dragged into the request
@@ -139,7 +143,9 @@ public class ClientBehaviorRendererUtils
      *         an empty string if none is present
      */
     private static boolean getClientBehaviorScript(FacesContext facesContext,
-            UIComponent uiComponent, String sourceId, String eventName,
+            MyfacesConfig config,
+            UIComponent uiComponent,
+            String sourceId, String eventName,
             Map<String, List<ClientBehavior>> clientBehaviors,
             JavascriptContext target,
             Collection<ClientBehaviorContext.Parameter> params)
@@ -176,7 +182,7 @@ public class ClientBehaviorRendererUtils
             {
                 ClientBehavior clientBehavior = attachedEventBehaviors.get(i);
                 submitting = appendClientBehaviourScript(target, context, 
-                        submitting, i < (size -1), clientBehavior);   
+                        submitting, i < (size -1), clientBehavior, config);   
             }
         }
         else 
@@ -186,7 +192,7 @@ public class ClientBehaviorRendererUtils
             {
                 ClientBehavior clientBehavior = clientIterator.next();
                 submitting = appendClientBehaviourScript(target, context, submitting, 
-                        clientIterator.hasNext(), clientBehavior);
+                        clientIterator.hasNext(), clientBehavior, config);
             }
         }
         
@@ -194,16 +200,15 @@ public class ClientBehaviorRendererUtils
     }
 
     private static boolean appendClientBehaviourScript(JavascriptContext target, ClientBehaviorContext context, 
-            boolean submitting, boolean hasNext, ClientBehavior clientBehavior)
+            boolean submitting, boolean hasNext, ClientBehavior clientBehavior, MyfacesConfig config)
     {
         String script = clientBehavior.getScript(context);
+
         // The script _can_ be null, and in fact is for <f:ajax disabled="true" />
         if (script != null)
         {
-            //either strings or functions, but I assume string is more appropriate 
-            //since it allows access to the
-            //origin as this!
-            target.append('\'' + escapeJavaScriptForChain(script) + '\'');
+            addFunction(script, target, config);
+
             if (hasNext)
             {
                 target.append(", ");
@@ -221,7 +226,8 @@ public class ClientBehaviorRendererUtils
     }
 
     public static String buildBehaviorChain(FacesContext facesContext,
-            UIComponent uiComponent, String eventName,
+            UIComponent uiComponent,
+            String eventName,
             Collection<ClientBehaviorContext.Parameter> params,
             Map<String, List<ClientBehavior>> clientBehaviors,
             String userEventCode, String serverEventCode)
@@ -232,23 +238,24 @@ public class ClientBehaviorRendererUtils
     }
 
     public static String buildBehaviorChain(FacesContext facesContext,
-            UIComponent uiComponent, String sourceId, String eventName,
+            UIComponent uiComponent,
+            String sourceId, String eventName,
             Collection<ClientBehaviorContext.Parameter> params,
             Map<String, List<ClientBehavior>> clientBehaviors,
             String userEventCode, String serverEventCode)
     {
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext);
+
         List<String> functions = new ArrayList<>(3);
         if (StringUtils.isNotBlank(userEventCode))
         {
-            // escape every ' in the user event code since it will
-            // be a string attribute of jsf.util.chain
-            functions.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
+            addFunction(userEventCode, functions, config);
         }
         
         JavascriptContext chainContext = new JavascriptContext();
         
         JavascriptContext behaviorContext = new JavascriptContext();
-        getClientBehaviorScript(facesContext, uiComponent, sourceId,
+        getClientBehaviorScript(facesContext, config, uiComponent, sourceId,
                 eventName, clientBehaviors, behaviorContext, params);
         
         String behaviorScript = behaviorContext.toString();
@@ -258,7 +265,7 @@ public class ClientBehaviorRendererUtils
         }
         if (StringUtils.isNotBlank(serverEventCode))
         {
-            functions.add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
+            addFunction(serverEventCode, functions, config);
         }
 
         // It's possible that there are no behaviors to render.
@@ -292,19 +299,6 @@ public class ClientBehaviorRendererUtils
         return chainContext.toString();
     }
 
-    /**
-     * @param facesContext
-     * @param uiComponent
-     * @param eventName1
-     * @param params1
-     * @param eventName2
-     * @param params2
-     * @param clientBehaviors
-     * @param userEventCode
-     * @param serverEventCode
-     
-     * @return
-     */
     public static String buildBehaviorChain(FacesContext facesContext,
             UIComponent uiComponent,
             String eventName1,
@@ -315,7 +309,8 @@ public class ClientBehaviorRendererUtils
             String userEventCode,
             String serverEventCode)
     {
-        return buildBehaviorChain(facesContext, uiComponent, null,
+        return buildBehaviorChain(facesContext,
+                uiComponent, null,
                 eventName1, params1,
                 eventName2, params2,
                 clientBehaviors, userEventCode, serverEventCode);
@@ -332,21 +327,23 @@ public class ClientBehaviorRendererUtils
             String userEventCode,
             String serverEventCode)
     {
+        MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext);
+        
         List<String> functions = new ArrayList<>(3);
         if (StringUtils.isNotBlank(userEventCode))
         {
-            functions.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
+            addFunction(userEventCode, functions, config);
         }
 
         JavascriptContext chainContext = new JavascriptContext();
         
         JavascriptContext behaviorContext1 = new JavascriptContext();
-        boolean submitting1 = getClientBehaviorScript(facesContext,
+        boolean submitting1 = getClientBehaviorScript(facesContext, config,
                 uiComponent, sourceId, eventName1, clientBehaviors,
                 behaviorContext1, params1);
 
         JavascriptContext behaviorContext2 = new JavascriptContext();
-        boolean submitting2 = getClientBehaviorScript(facesContext,
+        boolean submitting2 = getClientBehaviorScript(facesContext, config,
                 uiComponent, sourceId, eventName2, clientBehaviors,
                 behaviorContext2, params2);
 
@@ -367,7 +364,7 @@ public class ClientBehaviorRendererUtils
 
         if (StringUtils.isNotBlank(serverEventCode))
         {
-            functions.add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
+            addFunction(serverEventCode, functions, config);
         }
         
         // It's possible that there are no behaviors to render.  For example, if we have
@@ -453,4 +450,43 @@ public class ClientBehaviorRendererUtils
             return out.toString();
         }
     }
+    
+    private static void addFunction(String function, List<String> functions, MyfacesConfig config)
+    {
+        if (StringUtils.isNotBlank(function))
+        {
+            // either strings or functions are allowed
+            if (config.isRenderClientBehaviorScriptsAsString())
+            {
+                // escape every ' in the user event code since it will be a string attribute of jsf.util.chain
+                functions.add('\'' + escapeJavaScriptForChain(function) + '\'');
+            }
+            else
+            {
+                functions.add("function(event){" + function + "}");
+            }
+        }
+    }
+    
+    private static void addFunction(String function, JavascriptContext target, MyfacesConfig config)
+    {
+        if (StringUtils.isNotBlank(function))
+        {
+            // either strings or functions are allowed
+            if (config.isRenderClientBehaviorScriptsAsString())
+            {
+                // escape every ' in the user event code since it will be a string attribute of jsf.util.chain
+                target.append('\'');
+                target.append(escapeJavaScriptForChain(function));
+                target.append('\'');
+            }
+            else
+            {
+                target.append("function(event){");
+                target.append(function);
+                target.append('}');
+            }
+        }
+    }
+
 }
