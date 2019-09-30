@@ -52,7 +52,7 @@ public class ClientBehaviorRendererUtils
             if (behaviorEventName != null)
             {
                 List<ClientBehavior> clientBehaviorList = clientBehaviors.get(behaviorEventName);
-                if (clientBehaviorList != null&& !clientBehaviorList.isEmpty())
+                if (clientBehaviorList != null && !clientBehaviorList.isEmpty())
                 {
                     String sourceId = paramMap.get(ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME);
                     String componentClientId = component.getClientId(facesContext);
@@ -98,9 +98,7 @@ public class ClientBehaviorRendererUtils
      * @param behaviors map of behaviors attached to the component
      * @return true if client behavior with given name is attached, false otherwise
      */
-    public static boolean hasClientBehavior(String eventName,
-            Map<String, List<ClientBehavior>> behaviors,
-            FacesContext facesContext)
+    public static boolean hasClientBehavior(String eventName, Map<String, List<ClientBehavior>> behaviors)
     {
         if (behaviors == null)
         {
@@ -150,6 +148,7 @@ public class ClientBehaviorRendererUtils
             target.append(RendererUtils.EMPTY_STRING);
             return false;
         }
+
         boolean renderClientBehavior = clientBehaviors != null && clientBehaviors.size() > 0;
         if (!renderClientBehavior)
         {
@@ -175,7 +174,7 @@ public class ClientBehaviorRendererUtils
             for (int i = 0, size = attachedEventBehaviors.size(); i < size; i++)
             {
                 ClientBehavior clientBehavior = attachedEventBehaviors.get(i);
-                submitting = _appendClientBehaviourScript(target, context, 
+                submitting = appendClientBehaviourScript(target, context, 
                         submitting, i < (size -1), clientBehavior);   
             }
         }
@@ -185,7 +184,7 @@ public class ClientBehaviorRendererUtils
             while (clientIterator.hasNext())
             {
                 ClientBehavior clientBehavior = clientIterator.next();
-                submitting = _appendClientBehaviourScript(target, context, submitting, 
+                submitting = appendClientBehaviourScript(target, context, submitting, 
                         clientIterator.hasNext(), clientBehavior);
             }
         }
@@ -193,7 +192,7 @@ public class ClientBehaviorRendererUtils
         return submitting;
     }
 
-    private static boolean _appendClientBehaviourScript(JavascriptContext target, ClientBehaviorContext context, 
+    private static boolean appendClientBehaviourScript(JavascriptContext target, ClientBehaviorContext context, 
             boolean submitting, boolean hasNext, ClientBehavior clientBehavior)
     {
         String script = clientBehavior.getScript(context);

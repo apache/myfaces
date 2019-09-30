@@ -1825,9 +1825,9 @@ public final class HtmlRendererUtils
             throws IOException
     {
         boolean hasChange = ClientBehaviorRendererUtils.hasClientBehavior(
-                ClientBehaviorEvents.CHANGE, clientBehaviors, facesContext);
+                ClientBehaviorEvents.CHANGE, clientBehaviors);
         boolean hasValueChange = ClientBehaviorRendererUtils.hasClientBehavior(
-                ClientBehaviorEvents.VALUECHANGE, clientBehaviors, facesContext);
+                ClientBehaviorEvents.VALUECHANGE, clientBehaviors);
 
         if (hasChange && hasValueChange)
         {
@@ -1865,9 +1865,9 @@ public final class HtmlRendererUtils
             throws IOException
     {
         boolean hasChange = ClientBehaviorRendererUtils.hasClientBehavior(
-                ClientBehaviorEvents.CHANGE, clientBehaviors, facesContext);
+                ClientBehaviorEvents.CHANGE, clientBehaviors);
         boolean hasValueChange = ClientBehaviorRendererUtils.hasClientBehavior(
-                ClientBehaviorEvents.VALUECHANGE, clientBehaviors, facesContext);
+                ClientBehaviorEvents.VALUECHANGE, clientBehaviors);
 
         if (hasChange && hasValueChange)
         {

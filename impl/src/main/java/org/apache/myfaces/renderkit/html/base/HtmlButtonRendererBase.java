@@ -170,8 +170,8 @@ public class HtmlButtonRendererBase extends HtmlRenderer
             }
         }
         
-        if (ClientBehaviorRendererUtils.hasClientBehavior(ClientBehaviorEvents.CLICK, behaviors, facesContext)
-                || ClientBehaviorRendererUtils.hasClientBehavior(ClientBehaviorEvents.ACTION, behaviors, facesContext))
+        if (ClientBehaviorRendererUtils.hasClientBehavior(ClientBehaviorEvents.CLICK, behaviors)
+                || ClientBehaviorRendererUtils.hasClientBehavior(ClientBehaviorEvents.ACTION, behaviors))
         {
             if (!reset && !button)
             {
