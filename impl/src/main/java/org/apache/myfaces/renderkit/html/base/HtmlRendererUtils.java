@@ -1500,12 +1500,12 @@ public final class HtmlRendererUtils
             Map<String, List<ClientBehavior>> clientBehaviors,
             String userEventCode, String serverEventCode)
     {
-        List<String> finalParams = new ArrayList<>(3);
+        List<String> functions = new ArrayList<>(3);
         if (StringUtils.isNotBlank(userEventCode))
         {
             // escape every ' in the user event code since it will
             // be a string attribute of jsf.util.chain
-            finalParams.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
+            functions.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
         }
         
         JavascriptContext chainContext = new JavascriptContext();
@@ -1517,16 +1517,16 @@ public final class HtmlRendererUtils
         String behaviorScript = behaviorContext.toString();
         if (StringUtils.isNotBlank(behaviorScript))
         {
-            finalParams.add(behaviorScript);
+            functions.add(behaviorScript);
         }
         if (StringUtils.isNotBlank(serverEventCode))
         {
-            finalParams.add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
+            functions.add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
         }
 
         // It's possible that there are no behaviors to render.
         // For example, if we have <f:ajax disabled="true" /> as the only behavior.
-        int size = finalParams.size();
+        int size = functions.size();
         if (size > 0)
         {
             //according to the spec jsf.util.chain has to be used to build up the 
@@ -1546,7 +1546,7 @@ public final class HtmlRendererUtils
                 {
                     chainContext.append(", ");
                 }
-                chainContext.append(finalParams.get(i));
+                chainContext.append(functions.get(i));
             }
 
             chainContext.append(");");
@@ -1595,10 +1595,10 @@ public final class HtmlRendererUtils
             String userEventCode,
             String serverEventCode)
     {
-        List<String> finalParams = new ArrayList<>(3);
+        List<String> functions = new ArrayList<>(3);
         if (StringUtils.isNotBlank(userEventCode))
         {
-            finalParams.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
+            functions.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
         }
 
         JavascriptContext chainContext = new JavascriptContext();
@@ -1619,24 +1619,24 @@ public final class HtmlRendererUtils
         String behaviorScript1 = behaviorContext1.toString();
         if (StringUtils.isNotBlank(behaviorScript1))
         {
-            finalParams.add(behaviorScript1);
+            functions.add(behaviorScript1);
         }
 
         String behaviorScript2 = behaviorContext2.toString();
         if (StringUtils.isNotBlank(behaviorScript2))
         {
-            finalParams.add(behaviorScript2);
+            functions.add(behaviorScript2);
         }
 
         if (StringUtils.isNotBlank(serverEventCode))
         {
-            finalParams.add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
+            functions.add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
         }
         
         // It's possible that there are no behaviors to render.  For example, if we have
         // <f:ajax disabled="true" /> as the only behavior.
         
-        int size = finalParams.size();
+        int size = functions.size();
         if (size > 0)
         {
             if (!submitting)
@@ -1660,7 +1660,7 @@ public final class HtmlRendererUtils
                 {
                     chainContext.append(", ");
                 }
-                chainContext.append(finalParams.get(i));
+                chainContext.append(functions.get(i));
             }
 
             chainContext.append(");");
