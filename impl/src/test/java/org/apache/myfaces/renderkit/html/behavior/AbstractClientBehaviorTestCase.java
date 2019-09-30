@@ -163,8 +163,7 @@ public abstract class AbstractClientBehaviorTestCase extends FaceletTestCase
             int startPropIndex = propIndex + propStart.length(); 
             int endPropIndex = output.indexOf('"' , startPropIndex );
             String propertyValue = output.substring(startPropIndex, endPropIndex);
-            Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains("jsf.ajax.request("));
-            Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME));
+            Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains("myfaces.ab("));
             Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains(attr.getClientEvent()));
             return endPropIndex + 1;
         }
@@ -215,8 +214,7 @@ public abstract class AbstractClientBehaviorTestCase extends FaceletTestCase
             int endPropIndex = output.indexOf('"' , startPropIndex );
             String propertyValue = output.substring(startPropIndex, endPropIndex);
             Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.startsWith("jsf.util.chain("));
-            Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains("jsf.ajax.request("));
-            Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME));
+            Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains("myfaces.ab("));
             Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains(attr.getClientEvent()));
             Assert.assertTrue("Property: " + attr.getName()+" Output: "+output, propertyValue.contains(value));
             return endPropIndex + 1;

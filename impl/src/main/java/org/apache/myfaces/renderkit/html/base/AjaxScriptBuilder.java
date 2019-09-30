@@ -128,9 +128,9 @@ public class AjaxScriptBuilder
         }
         else
         {
-            sb.append("'");
+            sb.append('\'');
             sb.append(sourceId);
-            sb.append("'");
+            sb.append('\'');
 
             if (!sourceId.trim().equals(component.getClientId(context)))
             {
@@ -153,7 +153,7 @@ public class AjaxScriptBuilder
                 }
             }
         }
-        sb.append(",");
+        sb.append(',');
 
         sb.append(commandScript == null ? "event" : "null");
         sb.append(",'");
@@ -161,13 +161,18 @@ public class AjaxScriptBuilder
         sb.append(eventName);
         sb.append("',");
         
-        SearchExpressionHandler seHandler = context.getApplication().getSearchExpressionHandler();
-        SearchExpressionContext seContext = SearchExpressionContext.createSearchExpressionContext(
-                context, component,
-                MyFacesSearchExpressionHints.SET_RESOLVE_CLIENT_SIDE_RESOLVE_SINGLE_COMPONENT, null);
-        
+        SearchExpressionHandler seHandler = null;
+        SearchExpressionContext seContext = null;
+        if (StringUtils.isNotBlank(execute) || StringUtils.isNotBlank(render))
+        {
+            seHandler = context.getApplication().getSearchExpressionHandler();
+            seContext = SearchExpressionContext.createSearchExpressionContext(
+                    context, component,
+                    MyFacesSearchExpressionHints.SET_RESOLVE_CLIENT_SIDE_RESOLVE_SINGLE_COMPONENT, null);
+        }
+
         appendIds(sb, execute, seHandler, seContext);
-        sb.append(",");
+        sb.append(',');
 
         appendIds(sb, render, seHandler, seContext);
         
@@ -224,13 +229,13 @@ public class AjaxScriptBuilder
                     }
                 }
 
-                sb.append("}");
+                sb.append('}');
             }
 
-            sb.append("}");
+            sb.append('}');
         }
 
-        sb.append(")");
+        sb.append(')');
     }
     
     private static void appendIds(StringBuilder sb, String expressions,
@@ -270,7 +275,7 @@ public class AjaxScriptBuilder
         }
 
         char lastChar = builder.charAt(builder.length() - 1);
-        if ((lastChar != ',') && (lastChar != '{'))
+        if (lastChar != ',' && lastChar != '{')
         {
             builder.append(',');
         }
@@ -279,7 +284,7 @@ public class AjaxScriptBuilder
         builder.append(name);
         builder.append('\'');
         
-        builder.append(":");
+        builder.append(':');
 
         if (value == null)
         {

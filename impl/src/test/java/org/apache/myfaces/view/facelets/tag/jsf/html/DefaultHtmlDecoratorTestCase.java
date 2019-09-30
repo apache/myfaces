@@ -46,6 +46,7 @@ import javax.faces.view.Location;
 import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagAttribute;
 import javax.faces.view.facelets.TagDecorator;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
@@ -69,6 +70,8 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         super.setUpServletObjects();
         //servletContext.addInitParameter(FaceletViewDeclarationLanguage.PARAM_DECORATORS,
         //    DefaultTagDecorator.class.getName());
+
+        servletContext.addInitParameter(MyfacesConfig.RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING, "true");
     }
 
     @Test
@@ -586,8 +589,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         HtmlRenderedAttr[] attrs = new HtmlRenderedAttr[]{
             new HtmlRenderedAttr("onclick", 
                     "jsf.util.chain(this, event,'alert(\\'hello\\')', "
-                    + "'jsf.ajax.request(this,event,{render:\\'myForm:box5 \\',"
-                            + "\\'javax.faces.behavior.event\\':\\'click\\'})');"),
+                    + "'myfaces.ab(this,event,\\'click\\',\\'\\',\\'myForm:box5\\')');"),
         };
         
         HtmlCheckAttributesUtil.checkRenderedAttributes(attrs, sw.toString());

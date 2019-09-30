@@ -34,6 +34,7 @@ import javax.faces.convert.ConverterException;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
@@ -66,6 +67,8 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
     public void setUp() throws Exception
     {
         super.setUp();
+ 
+        servletContext.addInitParameter(MyfacesConfig.RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING, "true");
 
         outputText = new HtmlOutputText();
         inputText = new HtmlInputText();

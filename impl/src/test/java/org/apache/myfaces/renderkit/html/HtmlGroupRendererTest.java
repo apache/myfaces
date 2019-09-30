@@ -28,6 +28,7 @@ import junit.framework.Test;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
 import junit.framework.TestSuite;
+import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
@@ -58,6 +59,8 @@ public class HtmlGroupRendererTest extends AbstractJsfTestCase
     public void setUp() throws Exception
     {
         super.setUp();
+        
+        servletContext.addInitParameter(MyfacesConfig.RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING, "true");
 
         panelGroup = new HtmlPanelGroup();
 
@@ -135,10 +138,11 @@ public class HtmlGroupRendererTest extends AbstractJsfTestCase
             panelGroup.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
             assertTrue(output.matches(".+id=\".+\".+"));
-            assertTrue(output.matches(".+jsf.ajax.request.+"));
+            assertTrue(output.contains("myfaces.ab"));
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             fail(e.getMessage());
         }
     }

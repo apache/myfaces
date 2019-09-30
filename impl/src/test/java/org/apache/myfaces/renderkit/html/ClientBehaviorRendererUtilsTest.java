@@ -28,6 +28,7 @@ import javax.faces.component.behavior.*;
 import javax.faces.component.html.HtmlInputText;
 
 import java.util.*;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.html.base.ClientBehaviorRendererUtils;
 
 public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
@@ -36,6 +37,13 @@ public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
     public ClientBehaviorRendererUtilsTest(String name)
     {
         super(name);
+    }
+    
+    public void setUp() throws Exception
+    {
+        super.setUp();
+        
+        servletContext.addInitParameter(MyfacesConfig.RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING, "true");
     }
 
     public void testBuildBehaviorChain()
