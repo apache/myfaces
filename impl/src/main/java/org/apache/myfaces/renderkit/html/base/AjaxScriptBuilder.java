@@ -191,16 +191,12 @@ public class AjaxScriptBuilder
             {
                 appendProperty(sb, "resetValues", resetValues, false);
             }
-            if (params != null && !params.isEmpty())
+            if ((params != null && !params.isEmpty()) || (uiParams != null && !uiParams.isEmpty()))
             {
-                if (commandScript != null)
-                {
-                    appendProperty(sb, "params", params.iterator().next().getName(), false);
-                }
-                else
-                {
-                    appendProperty(sb, "params", "{", false);
+                appendProperty(sb, "params", "{", false);
 
+                if (params != null && !params.isEmpty())
+                {
                     if (params instanceof RandomAccess)
                     {
                         List<ClientBehaviorContext.Parameter> list = (List<ClientBehaviorContext.Parameter>) params;
@@ -217,17 +213,18 @@ public class AjaxScriptBuilder
                             appendProperty(sb, param.getName(), param.getValue(), true);
                         }
                     }
+                }
 
-                    sb.append("}");
-                }
-            }
-            if (uiParams != null && uiParams.size() > 0)
-            {
-                for (int i = 0, size = uiParams.size(); i < size; i++)
+                if (uiParams != null && uiParams.size() > 0)
                 {
-                    UIParameter param = uiParams.get(i);
-                    appendProperty(sb, param.getName(), param.getValue(), true);
+                    for (int i = 0, size = uiParams.size(); i < size; i++)
+                    {
+                        UIParameter param = uiParams.get(i);
+                        appendProperty(sb, param.getName(), param.getValue(), true);
+                    }
                 }
+
+                sb.append("}");
             }
 
             sb.append("}");
@@ -262,14 +259,12 @@ public class AjaxScriptBuilder
         sb.append('\'');
     }
 
-    // Appends an name/value property pair to a JSON object.  Assumes
-    // object has already been opened by the caller.
     public static void appendProperty(StringBuilder builder, 
                                       String name,
                                       Object value,
                                       boolean quoteValue)
     {
-        if ((null == name) || (name.length() == 0))
+        if (StringUtils.isBlank(name))
         {
             throw new IllegalArgumentException();
         }
@@ -280,7 +275,10 @@ public class AjaxScriptBuilder
             builder.append(',');
         }
 
-        appendQuotedValue(builder, name);
+        builder.append('\'');
+        builder.append(name);
+        builder.append('\'');
+        
         builder.append(":");
 
         if (value == null)
@@ -289,34 +287,13 @@ public class AjaxScriptBuilder
         }
         else if (quoteValue)
         {
-            appendQuotedValue(builder, value.toString());
+            builder.append('\'');
+            builder.append(value.toString());
+            builder.append('\'');
         }
         else
         {
             builder.append(value.toString());
         }
-    }
-    
-    // Append a script to the chain, escaping any single quotes, since
-    // our script content is itself nested within single quotes.
-    public static void appendQuotedValue(StringBuilder builder, String script)
-    {
-        builder.append("'");
-
-        int length = script.length();
-
-        for (int i = 0; i < length; i++)
-        {
-            char c = script.charAt(i);
-
-            if (c == '\'' || c == '\\')
-            {
-                builder.append('\\');
-            } 
-
-            builder.append(c);
-        }
-
-        builder.append("'");
     }
 }
