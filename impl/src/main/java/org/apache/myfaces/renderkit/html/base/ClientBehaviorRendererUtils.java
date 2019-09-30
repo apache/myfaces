@@ -35,7 +35,7 @@ import org.apache.myfaces.renderkit.html.util.JavascriptContext;
 import org.apache.myfaces.util.lang.StringUtils;
 
 public class ClientBehaviorRendererUtils
-{   
+{
     public static void decodeClientBehaviors(FacesContext facesContext, UIComponent component)
     {
         if (!(component instanceof ClientBehaviorHolder))
@@ -110,14 +110,15 @@ public class ClientBehaviorRendererUtils
     public static Collection<ClientBehaviorContext.Parameter> getClientBehaviorContextParameters(
             Map<String, String> params)
     {
-        List<ClientBehaviorContext.Parameter> paramList = null;
-        if (params != null)
+        if (params == null || params.isEmpty())
         {
-            paramList = new ArrayList<>(params.size());
-            for (Map.Entry<String, String> paramEntry : params.entrySet())
-            {
-                paramList.add(new ClientBehaviorContext.Parameter(paramEntry.getKey(), paramEntry.getValue()));
-            }
+            return null;
+        }
+        
+        List<ClientBehaviorContext.Parameter> paramList = new ArrayList<>(params.size());
+        for (Map.Entry<String, String> paramEntry : params.entrySet())
+        {
+            paramList.add(new ClientBehaviorContext.Parameter(paramEntry.getKey(), paramEntry.getValue()));
         }
         return paramList;
     }
@@ -324,7 +325,7 @@ public class ClientBehaviorRendererUtils
             UIComponent uiComponent,
             String sourceId,
             String eventName1,
-            Collection<ClientBehaviorContext.Parameter> params,
+            Collection<ClientBehaviorContext.Parameter> params1,
             String eventName2,
             Collection<ClientBehaviorContext.Parameter> params2,
             Map<String, List<ClientBehavior>> clientBehaviors,
@@ -342,7 +343,7 @@ public class ClientBehaviorRendererUtils
         JavascriptContext behaviorContext1 = new JavascriptContext();
         boolean submitting1 = getClientBehaviorScript(facesContext,
                 uiComponent, sourceId, eventName1, clientBehaviors,
-                behaviorContext1, params);
+                behaviorContext1, params1);
 
         JavascriptContext behaviorContext2 = new JavascriptContext();
         boolean submitting2 = getClientBehaviorScript(facesContext,
