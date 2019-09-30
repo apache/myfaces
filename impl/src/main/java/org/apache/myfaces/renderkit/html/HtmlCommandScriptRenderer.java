@@ -20,24 +20,19 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.RandomAccess;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIForm;
 import javax.faces.component.UIParameter;
 import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlCommandScript;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchExpressionHandler;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.ActionEvent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
-import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
+import org.apache.myfaces.renderkit.html.base.AjaxScriptBuilder;
 import org.apache.myfaces.renderkit.html.base.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
@@ -52,17 +47,7 @@ import org.apache.myfaces.util.SharedStringBuilder;
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Command", type = "javax.faces.Script")
 public class HtmlCommandScriptRenderer extends HtmlRenderer
 {
-    private static final String AJAX_KEY_ONERROR = "onerror";
-    private static final String AJAX_KEY_ONEVENT = "onevent";
-    private static final String AJAX_KEY_EXECUTE = "execute";
-    private static final String AJAX_KEY_RENDER = "render";
-    private static final String AJAX_KEY_RESETVALUES = "resetValues";
-
-    private static final String AJAX_VAL_THIS = "this";
-    private static final String JS_AJAX_REQUEST = "jsf.ajax.request";
-    
     private static final String AJAX_SB = "oam.renderkit.AJAX_SB";
-    private static final String AJAX_PARAM_SB = "oam.renderkit.AJAX_PARAM_SB";
     
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException
@@ -98,14 +83,24 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         script.append("var "+name+" = function(o){var o=(typeof o==='object')&&o?o:{};");
         script.prettyLine();
         
+        List<UIParameter> uiParams = HtmlRendererUtils.getValidUIParameterChildren(
+                context, getChildren(commandScript), false, false);
         
-        Collection<ClientBehaviorContext.Parameter> eventParameters = null;    
-        //eventParameters.add(new ClientBehaviorContext.Parameter("params", "o"));
-        ClientBehaviorContext ccc = ClientBehaviorContext.createClientBehaviorContext(
-                                    context, component, "action",
-                                    commandScript.getClientId(context), eventParameters);
-        
-        script.append(makeAjax(context, ccc, commandScript).toString());
+        StringBuilder ajax = SharedStringBuilder.get(context, AJAX_SB, 60);
+
+        AjaxScriptBuilder.build(context,
+                ajax,
+                commandScript,
+                commandScript.getClientId(context),
+                "action",
+                commandScript.getExecute(),
+                commandScript.getRender(),
+                commandScript.getResetValues(),
+                commandScript.getOnerror(),
+                commandScript.getOnevent(),
+                uiParams);
+
+        script.append(ajax.toString());
         script.decreaseIndent();
         script.append("}");
         
@@ -182,271 +177,5 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
         {
             ClientBehaviorRendererUtils.decodeClientBehaviors(facesContext, component);
         }
-    }
-
-    /**
-     * builds the generic ajax call depending upon
-     * the ajax behavior parameters
-     *
-     * @param context  the Client behavior context
-     * @param behavior the behavior
-     * @param commandScript the component
-     * @return a fully working javascript with calls into jsf.js
-     */
-    private StringBuilder makeAjax(FacesContext facesContext, ClientBehaviorContext context,
-            HtmlCommandScript commandScript)
-    {
-        StringBuilder retVal = SharedStringBuilder.get(context.getFacesContext(), AJAX_SB, 60);
-        StringBuilder paramBuffer = SharedStringBuilder.get(context.getFacesContext(), AJAX_PARAM_SB, 20);
-    
-        SearchExpressionContext searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
-                context.getFacesContext(), context.getComponent(),
-                MyFacesSearchExpressionHints.SET_RESOLVE_CLIENT_SIDE_RESOLVE_SINGLE_COMPONENT, null);
-        
-        String executes = resolveExpressionsAsParameter(paramBuffer, AJAX_KEY_EXECUTE, commandScript.getExecute(),
-                searchExpressionContext);
-        String render = resolveExpressionsAsParameter(paramBuffer, AJAX_KEY_RENDER, commandScript.getRender(),
-                searchExpressionContext);
-
-        String onError = commandScript.getOnerror();
-        if (StringUtils.isNotBlank(onError))
-        {
-            paramBuffer.setLength(0);
-            paramBuffer.append(AJAX_KEY_ONERROR);
-            paramBuffer.append(':');
-            paramBuffer.append(onError);
-            onError = paramBuffer.toString();
-        }
-        else
-        {
-            onError = null;
-        }
-
-        String onEvent = commandScript.getOnevent();
-        if (StringUtils.isNotBlank(onEvent))
-        {
-            paramBuffer.setLength(0);
-            paramBuffer.append(AJAX_KEY_ONEVENT);
-            paramBuffer.append(':');
-            paramBuffer.append(onEvent);
-            onEvent = paramBuffer.toString();
-        }
-        else
-        {
-            onEvent = null;
-        }
-
-        String resetValues = null;
-        if (Boolean.TRUE.equals(commandScript.getResetValues()))
-        {
-            paramBuffer.setLength(0);
-            paramBuffer.append(AJAX_KEY_RESETVALUES);
-            paramBuffer.append(':');
-            paramBuffer.append("true");
-            resetValues = paramBuffer.toString();
-        }
-
-        String sourceId = null;
-        if (context.getSourceId() == null)
-        {
-            sourceId = AJAX_VAL_THIS;
-        }
-        else
-        {
-            paramBuffer.setLength(0);
-            paramBuffer.append('\'');
-            paramBuffer.append(context.getSourceId());
-            paramBuffer.append('\'');
-            sourceId = paramBuffer.toString();
-
-            if (!context.getSourceId().trim().equals(
-                context.getComponent().getClientId(context.getFacesContext())))
-            {
-                // Check if sourceId is not a clientId and there is no execute set
-                UIComponent ref = context.getComponent();
-                ref = (ref.getParent() == null) ? ref : ref.getParent();
-                UIComponent instance = null;
-                try
-                {
-                    instance = ref.findComponent(context.getSourceId());
-                }
-                catch (IllegalArgumentException e)
-                {
-                    // No Op
-                }
-                if (instance == null && executes == null)
-                {
-                    // set the clientId of the component so the behavior can be decoded later,
-                    // otherwise the behavior will fail
-                    executes = resolveExpressionsAsParameter(paramBuffer, AJAX_KEY_EXECUTE,
-                            context.getComponent().getClientId(context.getFacesContext()), searchExpressionContext);
-                }
-            }
-        }
-
-        String event = context.getEventName();
-
-        retVal.append(JS_AJAX_REQUEST);
-        retVal.append('(');
-        retVal.append(sourceId);
-        retVal.append(",window.event,myfaces._impl._util._Lang.mixMaps(");
-        
-        Collection<ClientBehaviorContext.Parameter> params = context.getParameters();
-        int paramSize = (params != null) ? params.size() : 0;
-
-        List<String> parameterList = new ArrayList<>(paramSize + 2);
-        if (executes != null)
-        {
-            parameterList.add(executes);
-        }
-        if (render != null)
-        {
-            parameterList.add(render);
-        }
-        if (onError != null)
-        {
-            parameterList.add(onError);
-        }
-        if (onEvent != null)
-        {
-            parameterList.add(onEvent);
-        }
-        if (resetValues != null)
-        {
-            parameterList.add(resetValues);
-        }
-        if (paramSize > 0)
-        {
-            /**
-             * see ClientBehaviorContext.html of the spec
-             * the param list has to be added in the post back
-             */
-            // params are in 99% RamdonAccess instace created in
-            // HtmlRendererUtils.getClientBehaviorContextParameters(Map<String, String>)
-            if (params instanceof RandomAccess)
-            {
-                List<ClientBehaviorContext.Parameter> list = (List<ClientBehaviorContext.Parameter>) params;
-                for (int i = 0, size = list.size(); i < size; i++)
-                {
-                    ClientBehaviorContext.Parameter param = list.get(i);
-                    append(paramBuffer, parameterList, param.getName(), param.getValue());
-                }
-            }
-            else
-            {
-                for (ClientBehaviorContext.Parameter param : params)
-                {
-                    append(paramBuffer, parameterList, param.getName(), param.getValue());
-                }
-            }
-        }
-
-        List<UIParameter> uiParams = HtmlRendererUtils.getValidUIParameterChildren(
-                facesContext, getChildren(commandScript), false, false);
-        if (uiParams != null && uiParams.size() > 0)
-        {
-            for (int i = 0, size = uiParams.size(); i < size; i++)
-            {
-                UIParameter param = uiParams.get(i);
-                append(paramBuffer, parameterList, param.getName(), param.getValue());
-            }
-        }
-            
-        paramBuffer.setLength(0);
-        paramBuffer.append('\'');
-        paramBuffer.append(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME);
-        paramBuffer.append("\':\'");
-        paramBuffer.append(event);
-        paramBuffer.append('\'');
-        parameterList.add(paramBuffer.toString());
-
-        /**
-         * I assume here for now that the options are the same which also
-         * can be sent via the options attribute to javax.faces.ajax
-         * this still needs further clarifications but I assume so for now
-         */
-        retVal.append(buildOptions(paramBuffer, parameterList));
-
-        //mixMaps
-        retVal.append(",o,false))");
-
-        return retVal;
-    }
-
-    private void append(StringBuilder paramBuffer, List<String> parameterList, String paramName, Object paramValue)
-    {
-        //Both name and value should be quoted
-        paramBuffer.setLength(0);
-        paramBuffer.append('\'');
-        paramBuffer.append(paramName);
-        paramBuffer.append("\':\'");
-        if (paramValue != null)
-        {
-            paramBuffer.append(paramValue.toString());
-        }
-        paramBuffer.append('\'');
-        parameterList.add(paramBuffer.toString());
-    }
-
-    private StringBuilder buildOptions(StringBuilder retVal, List<String> options)
-    {
-        retVal.setLength(0);
-
-        retVal.append('{');
-
-        boolean first = true;
-
-        for (int i = 0, size = options.size(); i < size; i++)
-        {
-            String option = options.get(i);
-            if (StringUtils.isNotBlank(option))
-            {
-                if (!first)
-                {
-                    retVal.append(',');
-                }
-                else
-                {
-                    first = false;
-                }
-                retVal.append(option);
-            }
-        }
-        retVal.append('}');
-        return retVal;
-    }
-
-    private String resolveExpressionsAsParameter(StringBuilder retVal, String target, String expressions,
-            SearchExpressionContext searchExpressionContext)
-    {
-        if (StringUtils.isNotBlank(expressions))
-        {
-            retVal.setLength(0);
-            retVal.append(target);
-            retVal.append(':');
-            retVal.append('\'');
-
-            SearchExpressionHandler handler =
-                    searchExpressionContext.getFacesContext().getApplication().getSearchExpressionHandler();
-            List<String> clientIds =
-                    handler.resolveClientIds(searchExpressionContext, expressions);
-            
-            if (clientIds != null && !clientIds.isEmpty())
-            {
-                for (int i = 0; i < clientIds.size(); i++)
-                {
-                    if (i > 0)
-                    {
-                        retVal.append(' ');
-                    }
-                    retVal.append(clientIds.get(i));
-                }
-            }
-            
-            retVal.append('\'');
-            return retVal.toString();
-        }
-
-        return null;
     }
 }

@@ -18,12 +18,6 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.RandomAccess;
-
 import javax.faces.FacesException;
 import javax.faces.component.ActionSource;
 import javax.faces.component.EditableValueHolder;
@@ -31,14 +25,11 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.AjaxBehavior;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchExpressionHandler;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.render.ClientBehaviorRenderer;
-import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
-import org.apache.myfaces.util.lang.StringUtils;
+import org.apache.myfaces.renderkit.html.base.AjaxScriptBuilder;
 import org.apache.myfaces.util.SharedStringBuilder;
 
 /**
@@ -47,22 +38,9 @@ import org.apache.myfaces.util.SharedStringBuilder;
  */
 public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
 {
-
-    private static final String AJAX_KEY_ONERROR = "onerror";
-    private static final String AJAX_KEY_ONEVENT = "onevent";
-    private static final String AJAX_KEY_EXECUTE = "execute";
-    private static final String AJAX_KEY_RENDER = "render";
-    private static final String AJAX_KEY_DELAY = "delay";
-    private static final String AJAX_KEY_RESETVALUES = "resetValues";
-
-    private static final String AJAX_VAL_THIS = "this";
-    private static final String AJAX_VAL_EVENT = "event";
-    private static final String JS_AJAX_REQUEST = "jsf.ajax.request";
-
     private static final String ERR_NO_AJAX_BEHAVIOR = "The behavior must be an instance of AjaxBehavior";
 
     private static final String AJAX_SB = "oam.renderkit.AJAX_SB";
-    private static final String AJAX_PARAM_SB = "oam.renderkit.AJAX_PARAM_SB";
 
     @Override
     public void decode(FacesContext context, UIComponent component, ClientBehavior behavior)
@@ -88,14 +66,29 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
             return null;
         }
 
-        return makeAjax(behaviorContext, ajaxBehavior).toString();
+        StringBuilder retVal = SharedStringBuilder.get(behaviorContext.getFacesContext(), AJAX_SB, 60);
+
+        AjaxScriptBuilder.build(behaviorContext.getFacesContext(),
+                retVal,
+                behaviorContext.getComponent(),
+                behaviorContext.getSourceId(),
+                behaviorContext.getEventName(),
+                ajaxBehavior.getExecute(),
+                ajaxBehavior.getRender(),
+                ajaxBehavior.getDelay(),
+                ajaxBehavior.isResetValues(),
+                ajaxBehavior.getOnerror(),
+                ajaxBehavior.getOnevent(),
+                behaviorContext.getParameters());
+  
+        return retVal.toString();
     }
 
     private void dispatchBehaviorEvent(UIComponent component, AjaxBehavior ajaxBehavior)
     {
         AjaxBehaviorEvent event = new AjaxBehaviorEvent(component, ajaxBehavior);
 
-        boolean isImmediate = false;
+        boolean isImmediate;
         if (ajaxBehavior.isImmediateSet())
         {
             isImmediate = ajaxBehavior.isImmediate();
@@ -125,344 +118,6 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
             isImmediate = ((ActionSource)component).isImmediate();
         }
         return isImmediate;
-    }
-
-
-    /**
-     * builds the generic ajax call depending upon
-     * the ajax behavior parameters
-     *
-     * @param context  the Client behavior context
-     * @param behavior the behavior
-     * @return a fully working javascript with calls into jsf.js
-     */
-    private StringBuilder makeAjax(ClientBehaviorContext context, AjaxBehavior behavior)
-    {
-        StringBuilder retVal = SharedStringBuilder.get(context.getFacesContext(), AJAX_SB, 60);
-        StringBuilder paramBuffer = SharedStringBuilder.get(context.getFacesContext(), AJAX_PARAM_SB, 20);
-
-        String executes = mapToString(context, paramBuffer, AJAX_KEY_EXECUTE, behavior.getExecute());
-        String render = mapToString(context, paramBuffer, AJAX_KEY_RENDER, behavior.getRender());
-
-        String onError = behavior.getOnerror();
-        if (StringUtils.isNotBlank(onError))
-        {
-            paramBuffer.setLength(0);
-            paramBuffer.append(AJAX_KEY_ONERROR);
-            paramBuffer.append(':');
-            paramBuffer.append(onError);
-            onError = paramBuffer.toString();
-        }
-        else
-        {
-            onError = null;
-        }
-        
-        String onEvent = behavior.getOnevent();
-        if (StringUtils.isNotBlank(onEvent))
-        {
-            paramBuffer.setLength(0);
-            paramBuffer.append(AJAX_KEY_ONEVENT);
-            paramBuffer.append(':');
-            paramBuffer.append(onEvent);
-            onEvent = paramBuffer.toString();
-        }
-        else
-        {
-            onEvent = null;
-        }
-
-        String delay = behavior.getDelay();
-        if (StringUtils.isNotBlank(delay))
-        {
-            paramBuffer.setLength(0);
-            paramBuffer.append(AJAX_KEY_DELAY);
-            paramBuffer.append(':');
-            if ("none".equals(delay))
-            {
-                paramBuffer.append('\'');
-                paramBuffer.append(delay);
-                paramBuffer.append('\'');
-            }
-            else
-            {
-                paramBuffer.append(delay);
-            }
-            delay = paramBuffer.toString();
-        }
-        else
-        {
-            delay = null;
-        }
-
-        String resetValues = Boolean.toString(behavior.isResetValues());
-        if (resetValues.equals("true"))
-        {
-            paramBuffer.setLength(0);
-            paramBuffer.append(AJAX_KEY_RESETVALUES);
-            paramBuffer.append(':');
-            paramBuffer.append(resetValues);
-            resetValues = paramBuffer.toString();
-        }
-        else
-        {
-            resetValues = null;
-        }
-
-        String sourceId;
-        if (context.getSourceId() == null)
-        {
-            sourceId = AJAX_VAL_THIS;
-        }
-        else
-        {
-            paramBuffer.setLength(0);
-            paramBuffer.append('\'');
-            paramBuffer.append(context.getSourceId());
-            paramBuffer.append('\'');
-            sourceId = paramBuffer.toString();
-
-            if (!context.getSourceId().trim().equals(
-                context.getComponent().getClientId(context.getFacesContext())))
-            {
-                // Check if sourceId is not a clientId and there is no execute set
-                UIComponent ref = context.getComponent();
-                ref = (ref.getParent() == null) ? ref : ref.getParent();
-                UIComponent instance = null;
-                try
-                {
-                    instance = ref.findComponent(context.getSourceId());
-                }
-                catch (IllegalArgumentException e)
-                {
-                    // No Op
-                }
-                if (instance == null && executes == null)
-                {
-                    // set the clientId of the component so the behavior can be decoded later,
-                    // otherwise the behavior will fail
-                    List<String> list = new ArrayList<>();
-                    list.add(context.getComponent().getClientId(context.getFacesContext()));
-                    executes = mapToString(context, paramBuffer, AJAX_KEY_EXECUTE, list);
-                }
-            }
-        }
-
-
-        String event = context.getEventName();
-
-        retVal.append(JS_AJAX_REQUEST);
-        retVal.append('(');
-        retVal.append(sourceId);
-        retVal.append(',');
-        retVal.append(AJAX_VAL_EVENT);
-        retVal.append(',');
-
-        Collection<ClientBehaviorContext.Parameter> params = context.getParameters();
-        int paramSize = (params != null) ? params.size() : 0;
-
-        List<String> parameterList = new ArrayList<>(paramSize + 2);
-        if (executes != null)
-        {
-            parameterList.add(executes);
-        }
-        if (render != null)
-        {
-            parameterList.add(render);
-        }
-        if (onError != null)
-        {
-            parameterList.add(onError);
-        }
-        if (onEvent != null)
-        {
-            parameterList.add(onEvent);
-        }
-        /*
-         * since version 2.2
-         */
-        if (delay != null)
-        {
-            parameterList.add(delay);
-        }
-        /*
-         * since version 2.2
-         */
-        if (resetValues != null)
-        {
-            parameterList.add(resetValues);
-        }
-        if (paramSize > 0)
-        {
-            /**
-             * see ClientBehaviorContext.html of the spec
-             * the param list has to be added in the post back
-             */
-            // params are in 99% RamdonAccess instace created in
-            // HtmlRendererUtils.getClientBehaviorContextParameters(Map<String, String>)
-            if (params instanceof RandomAccess)
-            {
-                List<ClientBehaviorContext.Parameter> list = (List<ClientBehaviorContext.Parameter>) params;
-                for (int i = 0, size = list.size(); i < size; i++)
-                {
-                    ClientBehaviorContext.Parameter param = list.get(i);
-                    append(paramBuffer, parameterList, param);
-                }
-            }
-            else
-            {
-                for (ClientBehaviorContext.Parameter param : params)
-                {
-                    append(paramBuffer, parameterList, param);
-                }
-            }
-        }
-
-        paramBuffer.setLength(0);
-        paramBuffer.append('\'');
-        paramBuffer.append(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME);
-        paramBuffer.append('\'');
-        paramBuffer.append(':');
-        paramBuffer.append('\'');
-        paramBuffer.append(event);
-        paramBuffer.append('\'');
-        parameterList.add(paramBuffer.toString());
-
-        /**
-         * I assume here for now that the options are the same which also
-         * can be sent via the options attribute to javax.faces.ajax
-         * this still needs further clarifications but I assume so for now
-         */
-        retVal.append(buildOptions(paramBuffer, parameterList));
-
-        retVal.append(')');
-
-        return retVal;
-    }
-
-    private void append(StringBuilder paramBuffer, List<String> parameterList, ClientBehaviorContext.Parameter param)
-    {
-        // Both name and value should be quoted
-        paramBuffer.setLength(0);
-        paramBuffer.append('\'');
-        paramBuffer.append(param.getName());
-        paramBuffer.append('\'');
-        paramBuffer.append(':');
-        paramBuffer.append('\'');
-        paramBuffer.append(param.getValue().toString());
-        paramBuffer.append('\'');
-        parameterList.add(paramBuffer.toString());
-    }
-
-
-    private StringBuilder buildOptions(StringBuilder retVal, List<String> options)
-    {
-        retVal.setLength(0);
-
-        retVal.append('{');
-
-        boolean first = true;
-
-        for (int i = 0, size = options.size(); i < size; i++)
-        {
-            String option = options.get(i);
-            if (StringUtils.isNotBlank(option))
-            {
-                if (!first)
-                {
-                    retVal.append(',');
-                }
-                else
-                {
-                    first = false;
-                }
-                retVal.append(option);
-            }
-        }
-        retVal.append('}');
-        return retVal;
-    }
-
-    private String mapToString(ClientBehaviorContext context, StringBuilder retVal,
-            String target, Collection<String> dataHolder)
-    {
-        //Clear buffer
-        retVal.setLength(0);
-
-        if (dataHolder == null)
-        {
-            dataHolder = Collections.emptyList();
-        }
-
-        int executeSize = dataHolder.size();
-        if (executeSize > 0)
-        {
-            retVal.append(target);
-            retVal.append(':');
-            retVal.append('\'');
-
-            int cnt = 0;
-
-            SearchExpressionContext searchExpressionContext = null;
-            
-            // perf: dataHolder is a Collection : ajaxBehaviour.getExecute()
-            // and ajaxBehaviour.getRender() API
-            // In most cases comes here a ArrayList, because
-            // javax.faces.component.behavior.AjaxBehavior.getCollectionFromSpaceSplitString
-            // creates it.
-            if (dataHolder instanceof RandomAccess)
-            {
-                List<String> list = (List<String>) dataHolder;
-                for (; cnt  < executeSize; cnt++)
-                {
-                    if (searchExpressionContext == null)
-                    {
-                        searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
-                                context.getFacesContext(), context.getComponent(),
-                                MyFacesSearchExpressionHints.SET_RESOLVE_CLIENT_SIDE_RESOLVE_SINGLE_COMPONENT, null);
-                    }
-                    
-                    String strVal = list.get(cnt);
-                    build(context, executeSize, retVal, cnt, strVal, searchExpressionContext);
-                }
-            }
-            else
-            {
-                for (String strVal : dataHolder)
-                {
-                    if (searchExpressionContext == null)
-                    {
-                        searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
-                                context.getFacesContext(), context.getComponent(),
-                                MyFacesSearchExpressionHints.SET_RESOLVE_CLIENT_SIDE_RESOLVE_SINGLE_COMPONENT, null);
-                    }
-                    
-                    cnt++;
-                    build(context, executeSize, retVal, cnt, strVal, searchExpressionContext);
-                }
-            }
-
-            retVal.append('\'');
-            return retVal.toString();
-        }
-        return null;
-
-    }
-
-    public void build(ClientBehaviorContext context,
-            int size, StringBuilder retVal, int cnt,
-            String strVal, SearchExpressionContext searchExpressionContext)
-    {
-        if (StringUtils.isNotBlank(strVal))
-        {
-            SearchExpressionHandler handler = context.getFacesContext().getApplication().getSearchExpressionHandler();
-            String clientId = handler.resolveClientId(searchExpressionContext, strVal.trim());
-            retVal.append(clientId);
-            if (cnt < size)
-            {
-                retVal.append(' ');
-            }
-        }
     }
 
     private void assertBehavior(ClientBehavior behavior)
