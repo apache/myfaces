@@ -31,4 +31,5 @@ public abstract class LocaleConfig implements Serializable
 
     public abstract List<String> getSupportedLocales();
     
+    public abstract void addSupportedLocale(String locale);
 }

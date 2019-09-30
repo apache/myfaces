@@ -186,7 +186,7 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
             {
                 if (!localeConfig.getSupportedLocales().contains(localeConfig.getDefaultLocale()))
                 {
-                    localeConfig.getSupportedLocales().add(localeConfig.getDefaultLocale());
+                    localeConfig.addSupportedLocale(localeConfig.getDefaultLocale());
                 }
             }
         }
