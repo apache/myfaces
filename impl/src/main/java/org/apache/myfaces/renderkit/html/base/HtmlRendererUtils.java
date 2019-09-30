@@ -1476,13 +1476,15 @@ public final class HtmlRendererUtils
             {
                 target.append(", ");
             }
+            
+            // MYFACES-3836 If no script provided by the client behavior, ignore the 
+            // submitting hint because. it is evidence the client behavior is disabled.
+            if (!submitting)
+            {
+                submitting = clientBehavior.getHints().contains(ClientBehaviorHint.SUBMITTING);
+            }
         }
-        // MYFACES-3836 If no script provided by the client behavior, ignore the 
-        // submitting hint because. it is evidence the client behavior is disabled.
-        if (script != null && !submitting)
-        {
-            submitting = clientBehavior.getHints().contains(ClientBehaviorHint.SUBMITTING);
-        }
+
         return submitting;
     }
 
@@ -1561,66 +1563,75 @@ public final class HtmlRendererUtils
     /**
      * @param facesContext
      * @param uiComponent
-     * @param clientBehaviors
      * @param eventName1
+     * @param params1
      * @param eventName2
+     * @param params2
+     * @param clientBehaviors
      * @param userEventCode
      * @param serverEventCode
-     * @param params
+     
      * @return
      * @since 4.0.0
      */
     public static String buildBehaviorChain(FacesContext facesContext,
-            UIComponent uiComponent, String eventName1,
-            Collection<ClientBehaviorContext.Parameter> params,
+            UIComponent uiComponent,
+            String eventName1,
+            Collection<ClientBehaviorContext.Parameter> params1,
             String eventName2,
             Collection<ClientBehaviorContext.Parameter> params2,
             Map<String, List<ClientBehavior>> clientBehaviors,
-            String userEventCode, String serverEventCode)
+            String userEventCode,
+            String serverEventCode)
     {
-        return buildBehaviorChain(facesContext, uiComponent,
-                null, eventName1, params,
-                eventName2, params2, clientBehaviors, userEventCode,
-                serverEventCode);
+        return buildBehaviorChain(facesContext, uiComponent, null,
+                eventName1, params1,
+                eventName2, params2,
+                clientBehaviors, userEventCode, serverEventCode);
     }
 
     public static String buildBehaviorChain(FacesContext facesContext,
-            UIComponent uiComponent, String sourceId, String eventName1,
+            UIComponent uiComponent,
+            String sourceId,
+            String eventName1,
             Collection<ClientBehaviorContext.Parameter> params,
             String eventName2,
             Collection<ClientBehaviorContext.Parameter> params2,
             Map<String, List<ClientBehavior>> clientBehaviors,
-            String userEventCode, String serverEventCode)
+            String userEventCode,
+            String serverEventCode)
     {
-        List<String> finalParams = new ArrayList<String>(3);
+        List<String> finalParams = new ArrayList<>(3);
         if (StringUtils.isNotBlank(userEventCode))
         {
             finalParams.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
         }
 
-        JavascriptContext behaviorCode = new JavascriptContext();
-        JavascriptContext retVal = new JavascriptContext();
+        JavascriptContext chainContext = new JavascriptContext();
+        
+        JavascriptContext behaviorContext1 = new JavascriptContext();
         boolean submitting1 = getClientBehaviorScript(facesContext,
                 uiComponent, sourceId, eventName1, clientBehaviors,
-                behaviorCode, params);
-        JavascriptContext behaviorCode2 = new JavascriptContext();
+                behaviorContext1, params);
+
+        JavascriptContext behaviorContext2 = new JavascriptContext();
         boolean submitting2 = getClientBehaviorScript(facesContext,
                 uiComponent, sourceId, eventName2, clientBehaviors,
-                behaviorCode2, params2);
+                behaviorContext2, params2);
 
         // ClientBehaviors for both events have to be checked for the Submitting hint
         boolean submitting = submitting1 || submitting2;
         
-        String behaviorCodeStr = behaviorCode.toString();
-        if (StringUtils.isNotBlank(behaviorCodeStr))
+        String behaviorScript1 = behaviorContext1.toString();
+        if (StringUtils.isNotBlank(behaviorScript1))
         {
-            finalParams.add(behaviorCodeStr);
+            finalParams.add(behaviorScript1);
         }
 
-        String behaviorCode2Str = behaviorCode2.toString();
-        if (StringUtils.isNotBlank(behaviorCode2Str))
+        String behaviorScript2 = behaviorContext2.toString();
+        if (StringUtils.isNotBlank(behaviorScript2))
         {
-            finalParams.add(behaviorCode2Str);
+            finalParams.add(behaviorScript2);
         }
 
         if (StringUtils.isNotBlank(serverEventCode))
@@ -1636,37 +1647,36 @@ public final class HtmlRendererUtils
         {
             if (!submitting)
             {
-                retVal.append("return ");
+                chainContext.append("return ");
             }
             //according to the spec jsf.util.chain has to be used to build up the 
             //behavior and scripts
             if (sourceId == null)
             {
-                retVal.append("jsf.util.chain(this, event,");
+                chainContext.append("jsf.util.chain(this, event,");
             }
             else
             {
-                retVal.append("jsf.util.chain(document.getElementById('" + sourceId + "'), event,");
+                chainContext.append("jsf.util.chain(document.getElementById('" + sourceId + "'), event,");
             }
             int cursor = 0;
             while (cursor != size)
             {
-                retVal.append(finalParams.get(cursor));
+                chainContext.append(finalParams.get(cursor));
                 cursor++;
                 if (cursor != size)
                 {
-                    retVal.append(", ");
+                    chainContext.append(", ");
                 }
             }
-            retVal.append(");");
+            chainContext.append(");");
             if (submitting)
             {
-                retVal.append(" return false;");
+                chainContext.append(" return false;");
             }
         }
 
-        return retVal.toString();
-
+        return chainContext.toString();
     }
 
     /**
@@ -1878,7 +1888,7 @@ public final class HtmlRendererUtils
         if (cbl.size() > 1 || (cbl.size() == 1 && attributeValue != null))
         {
             return renderHTMLAttribute(writer, componentProperty, htmlAttrName,
-                    HtmlRendererUtils.buildBehaviorChain(facesContext,
+                    buildBehaviorChain(facesContext,
                             component, sourceId, eventName,
                             eventParameters, clientBehaviors, attributeValue,
                             RendererUtils.EMPTY_STRING));
@@ -1969,7 +1979,7 @@ public final class HtmlRendererUtils
         else
         {
             return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
-                    HtmlRendererUtils.buildBehaviorChain(facesContext,
+                    buildBehaviorChain(facesContext,
                             component, sourceId, eventName,
                             eventParameters, clientBehaviors, attributeValue,
                             serverSideScript));
