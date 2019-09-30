@@ -256,7 +256,7 @@ public class HtmlFormRendererBase extends HtmlRenderer
             htmlForm.setSubmitted(false);
         }
         
-        HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
+        ClientBehaviorRendererUtils.decodeClientBehaviors(facesContext, component);
     }
 
 

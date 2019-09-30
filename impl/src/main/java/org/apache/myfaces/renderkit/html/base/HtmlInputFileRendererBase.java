@@ -78,7 +78,7 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
         
         if (component instanceof ClientBehaviorHolder && !HtmlRendererUtils.isDisabled(component))
         {
-            HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
+            ClientBehaviorRendererUtils.decodeClientBehaviors(facesContext, component);
         }
     }
     

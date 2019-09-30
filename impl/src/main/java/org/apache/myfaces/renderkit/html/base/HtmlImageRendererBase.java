@@ -50,7 +50,7 @@ public class HtmlImageRendererBase extends HtmlRenderer
     {
         super.decode(context, component);
         
-        HtmlRendererUtils.decodeClientBehaviors(context, component);
+        ClientBehaviorRendererUtils.decodeClientBehaviors(context, component);
     }
 
     @Override

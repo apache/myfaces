@@ -99,7 +99,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             }
             if (component instanceof ClientBehaviorHolder && !disabled)
             {
-                HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
+                ClientBehaviorRendererUtils.decodeClientBehaviors(facesContext, component);
             }
             if (activateActionEvent)
             {
@@ -111,7 +111,7 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             //do nothing
             if (component instanceof ClientBehaviorHolder && !HtmlRendererUtils.isDisabled(component))
             {
-                HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
+                ClientBehaviorRendererUtils.decodeClientBehaviors(facesContext, component);
             }
         }
         else
@@ -538,10 +538,10 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
             
             //render a javascript that chain the related code
             Collection<ClientBehaviorContext.Parameter> paramList = 
-                HtmlRendererUtils.getClientBehaviorContextParameters(
+                ClientBehaviorRendererUtils.getClientBehaviorContextParameters(
                     HtmlRendererUtils.mapAttachedParamsToStringValues(facesContext, component));
             
-            onclick = HtmlRendererUtils.buildBehaviorChain(facesContext, component,
+            onclick = ClientBehaviorRendererUtils.buildBehaviorChain(facesContext, component,
                     ClientBehaviorEvents.CLICK, paramList, ClientBehaviorEvents.ACTION, paramList, behaviors,
                     commandOnclick , hasSubmittingBehavior ? null : serverEventCode);
         }

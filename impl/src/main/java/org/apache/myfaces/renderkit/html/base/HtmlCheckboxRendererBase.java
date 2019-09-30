@@ -479,7 +479,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
 
         if (component instanceof ClientBehaviorHolder && !HtmlRendererUtils.isDisabled(component))
         {
-            HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
+            ClientBehaviorRendererUtils.decodeClientBehaviors(facesContext, component);
         }
     }
 

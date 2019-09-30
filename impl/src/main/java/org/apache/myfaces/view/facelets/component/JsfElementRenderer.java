@@ -30,6 +30,7 @@ import javax.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.RendererUtils;
+import org.apache.myfaces.renderkit.html.base.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
 import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
@@ -60,7 +61,7 @@ public class JsfElementRenderer extends HtmlRenderer
         // Check for npe
         super.decode(context, component);
         
-        HtmlRendererUtils.decodeClientBehaviors(context, component);
+        ClientBehaviorRendererUtils.decodeClientBehaviors(context, component);
     }
 
     @Override

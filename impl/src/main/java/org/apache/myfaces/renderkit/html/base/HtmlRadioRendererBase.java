@@ -533,10 +533,9 @@ public class HtmlRadioRendererBase extends HtmlRenderer
         {
             HtmlRendererUtils.decodeUISelectOne(facesContext, uiComponent);
         }
-        if (uiComponent instanceof ClientBehaviorHolder &&
-                !HtmlRendererUtils.isDisabled(uiComponent))
+        if (uiComponent instanceof ClientBehaviorHolder && !HtmlRendererUtils.isDisabled(uiComponent))
         {
-            HtmlRendererUtils.decodeClientBehaviors(facesContext, uiComponent);
+            ClientBehaviorRendererUtils.decodeClientBehaviors(facesContext, uiComponent);
         }
     }
 

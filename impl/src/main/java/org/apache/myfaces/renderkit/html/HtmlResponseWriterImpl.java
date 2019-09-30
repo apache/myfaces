@@ -36,7 +36,6 @@ import javax.faces.render.Renderer;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.ContentTypeUtils;
-import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.UnicodeEncoder;
 import org.apache.myfaces.util.CommentUtils;
 import org.apache.myfaces.util.ComponentUtils;
@@ -204,7 +203,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
             boolean wrapScriptContentWithXmlCommentTag)
     {
         this(writer,contentType, characterEncoding, wrapScriptContentWithXmlCommentTag, 
-                contentType != null && HtmlRendererUtils.isXHTMLContentType(contentType) ? 
+                contentType != null && ContentTypeUtils.isXHTMLContentType(contentType) ? 
                     ContentTypeUtils.XHTML_CONTENT_TYPE : ContentTypeUtils.HTML_CONTENT_TYPE);
     }
     
@@ -260,7 +259,7 @@ public class HtmlResponseWriterImpl extends ResponseWriter
 
     public static boolean supportsContentType(String contentType)
     {
-        String[] supportedContentTypes = HtmlRendererUtils.getSupportedContentTypes();
+        String[] supportedContentTypes = ContentTypeUtils.getSupportedContentTypes();
         for (String supportedContentType : supportedContentTypes)
         {
             if (supportedContentType.contains(contentType))

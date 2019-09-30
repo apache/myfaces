@@ -37,6 +37,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
+import org.apache.myfaces.renderkit.html.base.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
 import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
@@ -74,7 +75,7 @@ public class HtmlLabelRenderer extends HtmlRenderer
     {
         super.decode(context, component);  // check for NP
         
-        HtmlRendererUtils.decodeClientBehaviors(context, component);
+        ClientBehaviorRendererUtils.decodeClientBehaviors(context, component);
     }
 
     @Override

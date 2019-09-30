@@ -38,6 +38,7 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.event.ActionEvent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
+import org.apache.myfaces.renderkit.html.base.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
 import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
@@ -176,9 +177,10 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
                 }
             }
         }
+
         if (component instanceof ClientBehaviorHolder && !HtmlRendererUtils.isDisabled(component))
         {
-            HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
+            ClientBehaviorRendererUtils.decodeClientBehaviors(facesContext, component);
         }
     }
 

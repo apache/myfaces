@@ -69,10 +69,9 @@ public class HtmlButtonRendererBase extends HtmlRenderer
         // MYFACES-3960 Decode, decode client behavior and queue action event at the end
         boolean activateActionEvent = !isReset(uiComponent) && isSubmitted(facesContext, uiComponent) && !disabled;
         
-        if (uiComponent instanceof ClientBehaviorHolder &&
-                !disabled)
+        if (uiComponent instanceof ClientBehaviorHolder && !disabled)
         {
-            HtmlRendererUtils.decodeClientBehaviors(facesContext, uiComponent);
+            ClientBehaviorRendererUtils.decodeClientBehaviors(facesContext, uiComponent);
         }
         
         if (activateActionEvent)
@@ -171,8 +170,8 @@ public class HtmlButtonRendererBase extends HtmlRenderer
             }
         }
         
-        if (HtmlRendererUtils.hasClientBehavior(ClientBehaviorEvents.CLICK, behaviors, facesContext)
-                || HtmlRendererUtils.hasClientBehavior(ClientBehaviorEvents.ACTION, behaviors, facesContext))
+        if (ClientBehaviorRendererUtils.hasClientBehavior(ClientBehaviorEvents.CLICK, behaviors, facesContext)
+                || ClientBehaviorRendererUtils.hasClientBehavior(ClientBehaviorEvents.ACTION, behaviors, facesContext))
         {
             if (!reset && !button)
             {
@@ -186,10 +185,10 @@ public class HtmlButtonRendererBase extends HtmlRenderer
             else
             {
                 Collection<ClientBehaviorContext.Parameter> paramList = 
-                    HtmlRendererUtils.getClientBehaviorContextParameters(
+                    ClientBehaviorRendererUtils.getClientBehaviorContextParameters(
                         HtmlRendererUtils.mapAttachedParamsToStringValues(facesContext, uiComponent));
                     
-                String onClick = HtmlRendererUtils.buildBehaviorChain(facesContext, uiComponent,
+                String onClick = ClientBehaviorRendererUtils.buildBehaviorChain(facesContext, uiComponent,
                         ClientBehaviorEvents.CLICK, paramList, ClientBehaviorEvents.ACTION, paramList, behaviors,
                         commandOnclick , null);
                 if (onClick.length() != 0)
@@ -200,8 +199,8 @@ public class HtmlButtonRendererBase extends HtmlRenderer
             
             Map<String, Object> attributes = uiComponent.getAttributes(); 
             
-            HtmlRendererUtils.buildBehaviorChain(facesContext, uiComponent, ClientBehaviorEvents.DBLCLICK, null,
-                    behaviors, (String) attributes.get(HTML.ONDBLCLICK_ATTR), "");
+            ClientBehaviorRendererUtils.buildBehaviorChain(facesContext, uiComponent, ClientBehaviorEvents.DBLCLICK,
+                    null, behaviors, (String) attributes.get(HTML.ONDBLCLICK_ATTR), "");
         }
         else
         {
@@ -324,10 +323,11 @@ public class HtmlButtonRendererBase extends HtmlRenderer
 
         //according to the specification in jsf.util.chain jdocs and the spec document we have to use
         //jsf.util.chain to chain the functions and
-        Collection<ClientBehaviorContext.Parameter> paramList = HtmlRendererUtils.getClientBehaviorContextParameters(
-                HtmlRendererUtils.mapAttachedParamsToStringValues(facesContext, uiComponent));
+        Collection<ClientBehaviorContext.Parameter> paramList =
+                ClientBehaviorRendererUtils.getClientBehaviorContextParameters(
+                        HtmlRendererUtils.mapAttachedParamsToStringValues(facesContext, uiComponent));
         
-        return HtmlRendererUtils.buildBehaviorChain(facesContext, uiComponent,
+        return ClientBehaviorRendererUtils.buildBehaviorChain(facesContext, uiComponent,
                 ClientBehaviorEvents.CLICK, paramList, ClientBehaviorEvents.ACTION, paramList, behaviors,
                 userOnClick , sb.toString());
     }

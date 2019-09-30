@@ -61,12 +61,11 @@ public class HtmlGridRendererBase extends HtmlRenderer
         // Check for npe
         super.decode(context, component);
         
-        HtmlRendererUtils.decodeClientBehaviors(context, component);
+        ClientBehaviorRendererUtils.decodeClientBehaviors(context, component);
     }
 
     @Override
-    public void encodeBegin(FacesContext facesContext, UIComponent component)
-            throws IOException
+    public void encodeBegin(FacesContext facesContext, UIComponent component) throws IOException
     {
         // all work done in encodeEnd()
     }
@@ -79,8 +78,7 @@ public class HtmlGridRendererBase extends HtmlRenderer
     }
 
     @Override
-    public void encodeEnd(FacesContext facesContext, UIComponent component)
-            throws IOException
+    public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, component, UIPanel.class);
 

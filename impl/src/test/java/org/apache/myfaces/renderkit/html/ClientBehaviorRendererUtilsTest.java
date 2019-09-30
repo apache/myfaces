@@ -28,11 +28,12 @@ import javax.faces.component.behavior.*;
 import javax.faces.component.html.HtmlInputText;
 
 import java.util.*;
+import org.apache.myfaces.renderkit.html.base.ClientBehaviorRendererUtils;
 
-public class HtmlRendererUtilsTest extends AbstractJsfTestCase
+public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
 {
 
-    public HtmlRendererUtilsTest(String name)
+    public ClientBehaviorRendererUtilsTest(String name)
     {
         super(name);
     }
@@ -45,13 +46,13 @@ public class HtmlRendererUtilsTest extends AbstractJsfTestCase
         Collection<ClientBehaviorContext.Parameter> params = new ArrayList<ClientBehaviorContext.Parameter>();
         
         UIComponent component = new HtmlInputText();
-        Assert.assertEquals("", HtmlRendererUtils.buildBehaviorChain(facesContext, component, 
+        Assert.assertEquals("", ClientBehaviorRendererUtils.buildBehaviorChain(facesContext, component, 
                 component.getClientId(facesContext),
                 ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, null,
                 null));
 
         Assert.assertEquals("return jsf.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'suppe');",
-                HtmlRendererUtils.buildBehaviorChain(facesContext,
+                ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                         component, component.getClientId(facesContext), ClientBehaviorEvents.CLICK, 
                         params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
                         "suppe"));
@@ -74,7 +75,7 @@ public class HtmlRendererUtilsTest extends AbstractJsfTestCase
         behaviors.put(ClientBehaviorEvents.CLICK, Arrays.asList(submittingBehavior));
 
         Assert.assertEquals("jsf.util.chain(document.getElementById('j_id__v_0'), event,'huhn', 'script()', 'suppe'); return false;",
-                HtmlRendererUtils.buildBehaviorChain(facesContext,
+                ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                         component, component.getClientId(facesContext),
                         ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
                         "suppe"));
@@ -89,12 +90,12 @@ public class HtmlRendererUtilsTest extends AbstractJsfTestCase
         Collection<ClientBehaviorContext.Parameter> params = new ArrayList<ClientBehaviorContext.Parameter>();
         
         UIComponent component = new HtmlInputText();
-        Assert.assertEquals("", HtmlRendererUtils.buildBehaviorChain(facesContext, component, 
+        Assert.assertEquals("", ClientBehaviorRendererUtils.buildBehaviorChain(facesContext, component, 
                 ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, null,
                 null));
 
         Assert.assertEquals("return jsf.util.chain(this, event,'huhn', 'suppe');",
-                HtmlRendererUtils.buildBehaviorChain(facesContext,
+                ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                         component, ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
                         "suppe"));
 
@@ -116,7 +117,7 @@ public class HtmlRendererUtilsTest extends AbstractJsfTestCase
         behaviors.put(ClientBehaviorEvents.CLICK, Arrays.asList(submittingBehavior));
 
         Assert.assertEquals("jsf.util.chain(this, event,'huhn', 'script()', 'suppe'); return false;",
-                HtmlRendererUtils.buildBehaviorChain(facesContext,
+                ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                         component, 
                         ClientBehaviorEvents.CLICK, params, ClientBehaviorEvents.ACTION, params, behaviors, "huhn",
                         "suppe"));
@@ -126,10 +127,10 @@ public class HtmlRendererUtilsTest extends AbstractJsfTestCase
     public void testEscapeJavaScriptForChain()
     {
         
-        Assert.assertEquals("var foo = &quot; \\\\&quot; test &quot;; alert(foo);", HtmlRendererUtils.escapeJavaScriptForChain("var foo = &quot; \\&quot; test &quot;; alert(foo);"));
+        Assert.assertEquals("var foo = &quot; \\\\&quot; test &quot;; alert(foo);", ClientBehaviorRendererUtils.escapeJavaScriptForChain("var foo = &quot; \\&quot; test &quot;; alert(foo);"));
         
-        Assert.assertEquals("var foo = \\'bar \\'", HtmlRendererUtils.escapeJavaScriptForChain("var foo = 'bar '"));
+        Assert.assertEquals("var foo = \\'bar \\'", ClientBehaviorRendererUtils.escapeJavaScriptForChain("var foo = 'bar '"));
         
-        Assert.assertEquals("var foo = \\'bar \\\\\\' \\'", HtmlRendererUtils.escapeJavaScriptForChain("var foo = 'bar \\' '"));
+        Assert.assertEquals("var foo = \\'bar \\\\\\' \\'", ClientBehaviorRendererUtils.escapeJavaScriptForChain("var foo = 'bar \\' '"));
     }
 }

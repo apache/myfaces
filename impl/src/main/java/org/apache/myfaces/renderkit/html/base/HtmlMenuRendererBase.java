@@ -120,10 +120,10 @@ public class HtmlMenuRendererBase
         {
             throw new IllegalArgumentException("Unsupported component class " + uiComponent.getClass().getName());
         }
-        if (uiComponent instanceof ClientBehaviorHolder &&
-                !HtmlRendererUtils.isDisabled(uiComponent))
+
+        if (uiComponent instanceof ClientBehaviorHolder && !HtmlRendererUtils.isDisabled(uiComponent))
         {
-            HtmlRendererUtils.decodeClientBehaviors(facesContext, uiComponent);
+            ClientBehaviorRendererUtils.decodeClientBehaviors(facesContext, uiComponent);
         }
     }
 

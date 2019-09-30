@@ -20,7 +20,6 @@ package org.apache.myfaces.renderkit;
 
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 
 public class ContentTypeUtils
@@ -41,6 +40,13 @@ public class ContentTypeUtils
     
     public static final String[] AJAX_XHTML_ALLOWED_CONTENT_TYPES = {XHTML_CONTENT_TYPE};
 
+    public static final String DEFAULT_CHAR_ENCODING = "ISO-8859-1";
+
+    // The order is important in this case.
+    private static final String[] SUPPORTED_CONTENT_TYPES = {
+            HTML_CONTENT_TYPE, //Prefer this over any other, because IE does not support XHTML content type
+            XHTML_CONTENT_TYPE, APPLICATION_XML_CONTENT_TYPE,
+            TEXT_XML_CONTENT_TYPE, TEXT_ANY_CONTENT_TYPE, ANY_CONTENT_TYPE };
 
     /**
      * Indicate if the passes content type match one of the options passed. 
@@ -65,7 +71,7 @@ public class ContentTypeUtils
             String[] htmlContentTypes, String[] xhtmlContentTypes)
     {
         String[] contentTypeList = splitContentTypeListString(contentTypeListString);
-        String[] supportedContentTypeArray = HtmlRendererUtils.getSupportedContentTypes();
+        String[] supportedContentTypeArray = getSupportedContentTypes();
         String selectedContentType = null;
         for (int i = 0; i < supportedContentTypeArray.length; i++)
         {
@@ -124,6 +130,18 @@ public class ContentTypeUtils
             contentTypeListString = "*/*";
         }
         return contentTypeListString;
+    }
+
+    public static String[] getSupportedContentTypes()
+    {
+        return SUPPORTED_CONTENT_TYPES;
+    }
+
+    public static boolean isXHTMLContentType(String contentType)
+    {
+        return contentType.contains(XHTML_CONTENT_TYPE)
+                || contentType.contains(APPLICATION_XML_CONTENT_TYPE)
+                || contentType.contains(TEXT_XML_CONTENT_TYPE);
     }
 
 }

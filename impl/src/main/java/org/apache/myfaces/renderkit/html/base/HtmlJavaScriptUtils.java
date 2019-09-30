@@ -37,8 +37,7 @@ public final class HtmlJavaScriptUtils
     
     private static void appendClearHiddenCommandFormParamsFunctionCall(JavascriptContext context, String formName)
     {
-        String functionName = HtmlRendererUtils
-                .getClearHiddenCommandFormParamsFunctionName(formName);
+        String functionName = getClearHiddenCommandFormParamsFunctionName(formName);
         if (formName == null)
         {
             context.prettyLine();
@@ -89,47 +88,5 @@ public final class HtmlJavaScriptUtils
     {
         return "clear_" + JavascriptUtils.getValidJavascriptName(formName, false);
     }
-    
-    /**
-     * This function correctly escapes the given JavaScript code
-     * for the use in the jsf.util.chain() JavaScript function.
-     * It also handles double-escaping correclty.
-     *
-     * @param javaScript
-     * @return
-     */
-    public static String escapeJavaScriptForChain(String javaScript)
-    {
-        StringBuilder out = null;
-        for (int pos = 0; pos < javaScript.length(); pos++)
-        {
-            char c = javaScript.charAt(pos);
-
-            if (c == '\\' || c == '\'')
-            {
-                if (out == null)
-                {
-                    out = new StringBuilder(javaScript.length() + 8);
-                    if (pos > 0)
-                    {
-                        out.append(javaScript, 0, pos);
-                    }
-                }
-                out.append('\\');
-            }
-            if (out != null)
-            {
-                out.append(c);
-            }
-        }
-
-        if (out == null)
-        {
-            return javaScript;
-        }
-        else
-        {
-            return out.toString();
-        }
-    }
+   
 }

@@ -333,7 +333,7 @@ public class HtmlTextRendererBase
             HtmlRendererUtils.decodeUIInput(facesContext, component);
             if (component instanceof ClientBehaviorHolder && !HtmlRendererUtils.isDisabled(component))
             {
-                HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
+                ClientBehaviorRendererUtils.decodeClientBehaviors(facesContext, component);
             }
         }
         else if (component instanceof UIOutput)

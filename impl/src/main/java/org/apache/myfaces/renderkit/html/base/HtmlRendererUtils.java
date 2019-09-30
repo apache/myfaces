@@ -18,9 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html.base;
 
-import org.apache.myfaces.renderkit.html.util.JavascriptContext;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,7 +26,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.RandomAccess;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,7 +44,6 @@ import javax.faces.component.UISelectOne;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.behavior.ClientBehaviorHint;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlDataTable;
 import javax.faces.component.html.HtmlMessages;
@@ -69,7 +65,6 @@ import org.apache.myfaces.renderkit.html.util.HTMLEncoder;
 import org.apache.myfaces.renderkit.html.util.OutcomeTargetUtils;
 import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 
 public final class HtmlRendererUtils
@@ -359,59 +354,6 @@ public final class HtmlRendererUtils
                 }
             }
             return VisitResult.ACCEPT;
-        }
-    }
-
-    public static void decodeClientBehaviors(FacesContext facesContext, UIComponent component)
-    {
-        if (component instanceof ClientBehaviorHolder)
-        {
-            ClientBehaviorHolder clientBehaviorHolder = (ClientBehaviorHolder) component;
-            Map<String, List<ClientBehavior>> clientBehaviors = clientBehaviorHolder.getClientBehaviors();
-            if (clientBehaviors != null && !clientBehaviors.isEmpty())
-            {
-                Map<String, String> paramMap = facesContext.getExternalContext().getRequestParameterMap();
-                String behaviorEventName = paramMap.get(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME);
-                if (behaviorEventName != null)
-                {
-                    List<ClientBehavior> clientBehaviorList = clientBehaviors.get(behaviorEventName);
-                    if (clientBehaviorList != null&& !clientBehaviorList.isEmpty())
-                    {
-                        String sourceId = paramMap.get(ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME);
-                        String componentClientId = component.getClientId(facesContext);
-                        String clientId = sourceId;
-                        if (sourceId.startsWith(componentClientId) &&
-                            sourceId.length() > componentClientId.length())
-                        {
-                            String item = sourceId.substring(componentClientId.length()+1);
-                            // If is item it should be an integer number, otherwise it can be related to a child 
-                            // component, because that could conflict with the clientId naming convention.
-                            if (StringUtils.isInteger(item))
-                            {
-                                clientId = componentClientId;
-                            }
-                        }
-                        if (component.getClientId(facesContext).equals(clientId))
-                        {
-                            if (clientBehaviorList instanceof RandomAccess)
-                            {
-                                for (int i = 0, size = clientBehaviorList.size(); i < size; i++)
-                                {
-                                    ClientBehavior clientBehavior = clientBehaviorList.get(i);
-                                    clientBehavior.decode(facesContext, component);
-                                }
-                            } 
-                            else
-                            {
-                                for (ClientBehavior clientBehavior : clientBehaviorList)
-                                {
-                                    clientBehavior.decode(facesContext, component);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -1260,18 +1202,6 @@ public final class HtmlRendererUtils
     }
 
     /**
-     * Prefixes the given String with "clear_" and removes special characters
-     *
-     * @param formName
-     * @return String
-     */
-    public static String getClearHiddenCommandFormParamsFunctionName(
-            String formName)
-    {
-        return HtmlJavaScriptUtils.getClearHiddenCommandFormParamsFunctionName(formName);
-    }
-
-    /**
      * Get the name of the request parameter that holds the id of the
      * link-type component that caused the form to be submitted.
      * <p>
@@ -1325,367 +1255,8 @@ public final class HtmlRendererUtils
         return OutcomeTargetUtils.getOutcomeTargetHref(facesContext, component);
     }
 
-    private static final String HTML_CONTENT_TYPE = "text/html";
-    private static final String TEXT_ANY_CONTENT_TYPE = "text/*";
-    private static final String ANY_CONTENT_TYPE = "*/*";
-    public static final String DEFAULT_CHAR_ENCODING = "ISO-8859-1";
-    private static final String XHTML_CONTENT_TYPE = "application/xhtml+xml";
-    private static final String APPLICATION_XML_CONTENT_TYPE = "application/xml";
-    private static final String TEXT_XML_CONTENT_TYPE = "text/xml";
-    // The order is important in this case.
-    private static final String[] SUPPORTED_CONTENT_TYPES = {
-            HTML_CONTENT_TYPE, //Prefer this over any other, because IE does not support XHTML content type
-            XHTML_CONTENT_TYPE, APPLICATION_XML_CONTENT_TYPE,
-            TEXT_XML_CONTENT_TYPE, TEXT_ANY_CONTENT_TYPE, ANY_CONTENT_TYPE };
 
 
-    public static String[] getSupportedContentTypes()
-    {
-        //String[] supportedContentTypeArray = new String[]{
-        // HTML_CONTENT_TYPE,TEXT_ANY_CONTENT_TYPE,ANY_CONTENT_TYPE,
-        // XHTML_CONTENT_TYPE,APPLICATION_XML_CONTENT_TYPE,TEXT_XML_CONTENT_TYPE};
-        return SUPPORTED_CONTENT_TYPES;
-    }
-
-    public static boolean isXHTMLContentType(String contentType)
-    {
-        return contentType.contains(XHTML_CONTENT_TYPE)
-                || contentType.contains(APPLICATION_XML_CONTENT_TYPE)
-                || contentType.contains(TEXT_XML_CONTENT_TYPE);
-    }
-
-    /**
-     * Checks if the given component has a behavior attachment with a given name.
-     *
-     * @param eventName the event name to be checked for
-     * @param behaviors map of behaviors attached to the component
-     * @return true if client behavior with given name is attached, false otherwise
-     */
-    public static boolean hasClientBehavior(String eventName,
-            Map<String, List<ClientBehavior>> behaviors,
-            FacesContext facesContext)
-    {
-        if (behaviors == null)
-        {
-            return false;
-        }
-        return (behaviors.get(eventName) != null);
-    }
-
-    public static Collection<ClientBehaviorContext.Parameter> getClientBehaviorContextParameters(
-            Map<String, String> params)
-    {
-        List<ClientBehaviorContext.Parameter> paramList = null;
-        if (params != null)
-        {
-            paramList = new ArrayList<ClientBehaviorContext.Parameter>(params.size());
-            for (Map.Entry<String, String> paramEntry : params.entrySet())
-            {
-                paramList.add(new ClientBehaviorContext.Parameter(paramEntry.getKey(), paramEntry.getValue()));
-            }
-        }
-        return paramList;
-    }
-
-    /**
-     * builds the chained behavior script which then can be reused
-     * in following order by the other script building parts
-     * <p/>
-     * user defined event handling script
-     * behavior script
-     * renderer default script
-     *
-     * @param eventName    event name ("onclick" etc...)
-     * @param uiComponent  the component which has the attachement (or should have)
-     * @param facesContext the facesContext
-     * @param params       params map of params which have to be dragged into the request
-     * @return a string representation of the javascripts for the attached event behavior,
-     *         an empty string if none is present
-     */
-    private static boolean getClientBehaviorScript(FacesContext facesContext,
-            UIComponent uiComponent, String sourceId, String eventName,
-            Map<String, List<ClientBehavior>> clientBehaviors,
-            JavascriptContext target,
-            Collection<ClientBehaviorContext.Parameter> params)
-    {
-        if (!(uiComponent instanceof ClientBehaviorHolder))
-        {
-            target.append(RendererUtils.EMPTY_STRING);
-            return false;
-        }
-        boolean renderClientBehavior = clientBehaviors != null && clientBehaviors.size() > 0;
-        if (!renderClientBehavior)
-        {
-            target.append(RendererUtils.EMPTY_STRING);
-            return false;
-        }
-        
-        List<ClientBehavior> attachedEventBehaviors = clientBehaviors.get(eventName);
-        if (attachedEventBehaviors == null || attachedEventBehaviors.isEmpty())
-        {
-            target.append(RendererUtils.EMPTY_STRING);
-            return false;
-        }
-        
-        ClientBehaviorContext context = ClientBehaviorContext
-                .createClientBehaviorContext(facesContext, uiComponent, eventName, sourceId, params);
-        boolean submitting = false;
-        
-        // List<ClientBehavior>  attachedEventBehaviors is  99% _DeltaList created in
-        // javax.faces.component.UIComponentBase.addClientBehavior
-        if (attachedEventBehaviors instanceof RandomAccess)
-        {
-            for (int i = 0, size = attachedEventBehaviors.size(); i < size; i++)
-            {
-                ClientBehavior clientBehavior = attachedEventBehaviors.get(i);
-                submitting = _appendClientBehaviourScript(target, context, 
-                        submitting, i < (size -1), clientBehavior);   
-            }
-        }
-        else 
-        {
-            Iterator<ClientBehavior> clientIterator = attachedEventBehaviors.iterator();
-            while (clientIterator.hasNext())
-            {
-                ClientBehavior clientBehavior = clientIterator.next();
-                submitting = _appendClientBehaviourScript(target, context, submitting, 
-                        clientIterator.hasNext(), clientBehavior);
-            }
-        }
-        
-        return submitting;
-    }
-
-    private static boolean _appendClientBehaviourScript(JavascriptContext target, ClientBehaviorContext context, 
-            boolean submitting, boolean hasNext, ClientBehavior clientBehavior)
-    {
-        String script = clientBehavior.getScript(context);
-        // The script _can_ be null, and in fact is for <f:ajax disabled="true" />
-        if (script != null)
-        {
-            //either strings or functions, but I assume string is more appropriate 
-            //since it allows access to the
-            //origin as this!
-            target.append('\'' + escapeJavaScriptForChain(script) + '\'');
-            if (hasNext)
-            {
-                target.append(", ");
-            }
-            
-            // MYFACES-3836 If no script provided by the client behavior, ignore the 
-            // submitting hint because. it is evidence the client behavior is disabled.
-            if (!submitting)
-            {
-                submitting = clientBehavior.getHints().contains(ClientBehaviorHint.SUBMITTING);
-            }
-        }
-
-        return submitting;
-    }
-
-    public static String buildBehaviorChain(FacesContext facesContext,
-            UIComponent uiComponent, String eventName,
-            Collection<ClientBehaviorContext.Parameter> params,
-            Map<String, List<ClientBehavior>> clientBehaviors,
-            String userEventCode, String serverEventCode)
-    {
-        return buildBehaviorChain(facesContext, uiComponent,
-                null, eventName, params,
-                clientBehaviors, userEventCode, serverEventCode);
-    }
-
-    public static String buildBehaviorChain(FacesContext facesContext,
-            UIComponent uiComponent, String sourceId, String eventName,
-            Collection<ClientBehaviorContext.Parameter> params,
-            Map<String, List<ClientBehavior>> clientBehaviors,
-            String userEventCode, String serverEventCode)
-    {
-        List<String> functions = new ArrayList<>(3);
-        if (StringUtils.isNotBlank(userEventCode))
-        {
-            // escape every ' in the user event code since it will
-            // be a string attribute of jsf.util.chain
-            functions.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
-        }
-        
-        JavascriptContext chainContext = new JavascriptContext();
-        
-        JavascriptContext behaviorContext = new JavascriptContext();
-        getClientBehaviorScript(facesContext, uiComponent, sourceId,
-                eventName, clientBehaviors, behaviorContext, params);
-        
-        String behaviorScript = behaviorContext.toString();
-        if (StringUtils.isNotBlank(behaviorScript))
-        {
-            functions.add(behaviorScript);
-        }
-        if (StringUtils.isNotBlank(serverEventCode))
-        {
-            functions.add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
-        }
-
-        // It's possible that there are no behaviors to render.
-        // For example, if we have <f:ajax disabled="true" /> as the only behavior.
-        int size = functions.size();
-        if (size > 0)
-        {
-            //according to the spec jsf.util.chain has to be used to build up the 
-            //behavior and scripts
-            if (sourceId == null)
-            {
-                chainContext.append("jsf.util.chain(this, event,");
-            }
-            else
-            {
-                chainContext.append("jsf.util.chain(document.getElementById('" + sourceId + "'), event,");
-            }
-
-            for (int i = 0; i < size; i++)
-            {
-                if (i != 0)
-                {
-                    chainContext.append(", ");
-                }
-                chainContext.append(functions.get(i));
-            }
-
-            chainContext.append(");");
-        }
-
-        return chainContext.toString();
-    }
-
-    /**
-     * @param facesContext
-     * @param uiComponent
-     * @param eventName1
-     * @param params1
-     * @param eventName2
-     * @param params2
-     * @param clientBehaviors
-     * @param userEventCode
-     * @param serverEventCode
-     
-     * @return
-     */
-    public static String buildBehaviorChain(FacesContext facesContext,
-            UIComponent uiComponent,
-            String eventName1,
-            Collection<ClientBehaviorContext.Parameter> params1,
-            String eventName2,
-            Collection<ClientBehaviorContext.Parameter> params2,
-            Map<String, List<ClientBehavior>> clientBehaviors,
-            String userEventCode,
-            String serverEventCode)
-    {
-        return buildBehaviorChain(facesContext, uiComponent, null,
-                eventName1, params1,
-                eventName2, params2,
-                clientBehaviors, userEventCode, serverEventCode);
-    }
-
-    public static String buildBehaviorChain(FacesContext facesContext,
-            UIComponent uiComponent,
-            String sourceId,
-            String eventName1,
-            Collection<ClientBehaviorContext.Parameter> params,
-            String eventName2,
-            Collection<ClientBehaviorContext.Parameter> params2,
-            Map<String, List<ClientBehavior>> clientBehaviors,
-            String userEventCode,
-            String serverEventCode)
-    {
-        List<String> functions = new ArrayList<>(3);
-        if (StringUtils.isNotBlank(userEventCode))
-        {
-            functions.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
-        }
-
-        JavascriptContext chainContext = new JavascriptContext();
-        
-        JavascriptContext behaviorContext1 = new JavascriptContext();
-        boolean submitting1 = getClientBehaviorScript(facesContext,
-                uiComponent, sourceId, eventName1, clientBehaviors,
-                behaviorContext1, params);
-
-        JavascriptContext behaviorContext2 = new JavascriptContext();
-        boolean submitting2 = getClientBehaviorScript(facesContext,
-                uiComponent, sourceId, eventName2, clientBehaviors,
-                behaviorContext2, params2);
-
-        // ClientBehaviors for both events have to be checked for the Submitting hint
-        boolean submitting = submitting1 || submitting2;
-        
-        String behaviorScript1 = behaviorContext1.toString();
-        if (StringUtils.isNotBlank(behaviorScript1))
-        {
-            functions.add(behaviorScript1);
-        }
-
-        String behaviorScript2 = behaviorContext2.toString();
-        if (StringUtils.isNotBlank(behaviorScript2))
-        {
-            functions.add(behaviorScript2);
-        }
-
-        if (StringUtils.isNotBlank(serverEventCode))
-        {
-            functions.add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
-        }
-        
-        // It's possible that there are no behaviors to render.  For example, if we have
-        // <f:ajax disabled="true" /> as the only behavior.
-        
-        int size = functions.size();
-        if (size > 0)
-        {
-            if (!submitting)
-            {
-                chainContext.append("return ");
-            }
-            //according to the spec jsf.util.chain has to be used to build up the 
-            //behavior and scripts
-            if (sourceId == null)
-            {
-                chainContext.append("jsf.util.chain(this, event,");
-            }
-            else
-            {
-                chainContext.append("jsf.util.chain(document.getElementById('" + sourceId + "'), event,");
-            }
-            
-            for (int i = 0; i < size; i++)
-            {
-                if (i != 0)
-                {
-                    chainContext.append(", ");
-                }
-                chainContext.append(functions.get(i));
-            }
-
-            chainContext.append(");");
-
-            if (submitting)
-            {
-                chainContext.append(" return false;");
-            }
-        }
-
-        return chainContext.toString();
-    }
-
-    /**
-     * This function correctly escapes the given JavaScript code
-     * for the use in the jsf.util.chain() JavaScript function.
-     * It also handles double-escaping correclty.
-     *
-     * @param javaScript
-     * @return
-     */
-    public static String escapeJavaScriptForChain(String javaScript)
-    {
-        return HtmlJavaScriptUtils.escapeJavaScriptForChain(javaScript);
-    }
 
     public static Map<String, String> mapAttachedParamsToStringValues(
             FacesContext facesContext, UIComponent uiComponent)
@@ -1883,7 +1454,7 @@ public final class HtmlRendererUtils
         if (cbl.size() > 1 || (cbl.size() == 1 && attributeValue != null))
         {
             return renderHTMLAttribute(writer, componentProperty, htmlAttrName,
-                    buildBehaviorChain(facesContext,
+                    ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                             component, sourceId, eventName,
                             eventParameters, clientBehaviors, attributeValue,
                             RendererUtils.EMPTY_STRING));
@@ -1974,7 +1545,7 @@ public final class HtmlRendererUtils
         else
         {
             return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
-                    buildBehaviorChain(facesContext,
+                    ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                             component, sourceId, eventName,
                             eventParameters, clientBehaviors, attributeValue,
                             serverSideScript));
@@ -2046,7 +1617,7 @@ public final class HtmlRendererUtils
         else
         {
             return renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
-                    HtmlRendererUtils.buildBehaviorChain(facesContext,
+                    ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                             component, sourceId, eventName,
                             eventParameters, eventName2, eventParameters2,
                             clientBehaviors, attributeValue, serverSideScript));
@@ -2253,14 +1824,14 @@ public final class HtmlRendererUtils
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
-        boolean hasChange = HtmlRendererUtils.hasClientBehavior(
+        boolean hasChange = ClientBehaviorRendererUtils.hasClientBehavior(
                 ClientBehaviorEvents.CHANGE, clientBehaviors, facesContext);
-        boolean hasValueChange = HtmlRendererUtils.hasClientBehavior(
+        boolean hasValueChange = ClientBehaviorRendererUtils.hasClientBehavior(
                 ClientBehaviorEvents.VALUECHANGE, clientBehaviors, facesContext);
 
         if (hasChange && hasValueChange)
         {
-            String chain = HtmlRendererUtils.buildBehaviorChain(facesContext,
+            String chain = ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                     uiComponent, ClientBehaviorEvents.CHANGE, null,
                     ClientBehaviorEvents.VALUECHANGE, null, clientBehaviors,
                     (String) uiComponent.getAttributes().get(HTML.ONCHANGE_ATTR), null);
@@ -2293,14 +1864,14 @@ public final class HtmlRendererUtils
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
-        boolean hasChange = HtmlRendererUtils.hasClientBehavior(
+        boolean hasChange = ClientBehaviorRendererUtils.hasClientBehavior(
                 ClientBehaviorEvents.CHANGE, clientBehaviors, facesContext);
-        boolean hasValueChange = HtmlRendererUtils.hasClientBehavior(
+        boolean hasValueChange = ClientBehaviorRendererUtils.hasClientBehavior(
                 ClientBehaviorEvents.VALUECHANGE, clientBehaviors, facesContext);
 
         if (hasChange && hasValueChange)
         {
-            String chain = HtmlRendererUtils.buildBehaviorChain(facesContext,
+            String chain = ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                     uiComponent, sourceId, ClientBehaviorEvents.CHANGE,
                     null, ClientBehaviorEvents.VALUECHANGE, null,
                     clientBehaviors,

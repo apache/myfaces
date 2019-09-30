@@ -49,7 +49,7 @@ public class HtmlGroupRendererBase extends HtmlRenderer
         // Check for npe
         super.decode(context, component);
         
-        HtmlRendererUtils.decodeClientBehaviors(context, component);
+        ClientBehaviorRendererUtils.decodeClientBehaviors(context, component);
     }
 
     @Override

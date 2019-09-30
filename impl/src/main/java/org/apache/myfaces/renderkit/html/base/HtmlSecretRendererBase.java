@@ -213,12 +213,12 @@ public class HtmlSecretRendererBase extends HtmlRenderer
     @Override
     public void decode(FacesContext facesContext, UIComponent component)
     {
-        org.apache.myfaces.renderkit.RendererUtils.checkParamValidity(facesContext, component, UIInput.class);
+        RendererUtils.checkParamValidity(facesContext, component, UIInput.class);
+
         HtmlRendererUtils.decodeUIInput(facesContext, component);
-        if (component instanceof ClientBehaviorHolder &&
-                !HtmlRendererUtils.isDisabled(component))
+        if (component instanceof ClientBehaviorHolder && !HtmlRendererUtils.isDisabled(component))
         {
-            HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
+            ClientBehaviorRendererUtils.decodeClientBehaviors(facesContext, component);
         }
     }
 

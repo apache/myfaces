@@ -208,11 +208,11 @@ public class HtmlTextareaRendererBase extends HtmlRenderer
     public void decode(FacesContext facesContext, UIComponent component)
     {
         RendererUtils.checkParamValidity(facesContext, component, UIInput.class);
+
         HtmlRendererUtils.decodeUIInput(facesContext, component);
-        if (component instanceof ClientBehaviorHolder &&
-            !HtmlRendererUtils.isDisabled(component))
+        if (component instanceof ClientBehaviorHolder && !HtmlRendererUtils.isDisabled(component))
         {
-            HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
+            ClientBehaviorRendererUtils.decodeClientBehaviors(facesContext, component);
         }
     }
 

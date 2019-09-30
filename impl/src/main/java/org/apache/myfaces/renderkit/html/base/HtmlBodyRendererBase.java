@@ -50,7 +50,7 @@ public class HtmlBodyRendererBase extends HtmlRenderer
         // check for npe
         super.decode(context, component);
         
-        HtmlRendererUtils.decodeClientBehaviors(context, component);
+        ClientBehaviorRendererUtils.decodeClientBehaviors(context, component);
     }
 
     @Override

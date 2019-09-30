@@ -29,6 +29,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.RendererUtils;
+import org.apache.myfaces.renderkit.html.base.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
 
 public class CommonEventUtils
@@ -107,7 +108,7 @@ public class CommonEventUtils
         if (cbl.size() > 1 || (cbl.size() == 1 && attributeValue != null))
         {
             return HtmlRendererUtils.renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
-                    HtmlRendererUtils.buildBehaviorChain(facesContext,
+                    ClientBehaviorRendererUtils.buildBehaviorChain(facesContext,
                             component, sourceId, eventName,
                             eventParameters, clientBehaviors, attributeValue,
                             RendererUtils.EMPTY_STRING));

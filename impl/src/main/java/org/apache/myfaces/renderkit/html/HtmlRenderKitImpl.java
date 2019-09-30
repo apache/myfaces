@@ -43,7 +43,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderK
 import org.apache.myfaces.renderkit.LazyRenderKit;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.ContentTypeUtils;
-import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
 import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.util.lang.ClassUtils;
 
@@ -324,13 +323,13 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
         }
         else
         {
-            writerContentType = HtmlRendererUtils.isXHTMLContentType(selectedContentType) ? 
+            writerContentType = ContentTypeUtils.isXHTMLContentType(selectedContentType) ? 
                     ContentTypeUtils.XHTML_CONTENT_TYPE : ContentTypeUtils.HTML_CONTENT_TYPE;
         }
         
         if (characterEncoding == null)
         {
-            characterEncoding = HtmlRendererUtils.DEFAULT_CHAR_ENCODING;
+            characterEncoding = ContentTypeUtils.DEFAULT_CHAR_ENCODING;
         }
 
         if (myfacesConfig.isEarlyFlushEnabled() && facesContext.isProjectStage(ProjectStage.Production))
