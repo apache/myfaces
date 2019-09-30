@@ -898,8 +898,6 @@ public final class RendererUtils
       * @param facesContext a {@link FacesContext}
       * @param component a {@link UIComponent}
       * @param attributeName name of attribute that represents "image", "icon", "source", ... 
-      * 
-      * @since 4.0.1
       */
     public static String getIconSrc(final FacesContext facesContext,
             final UIComponent component, final String attributeName)

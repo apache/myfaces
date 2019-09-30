@@ -29,9 +29,6 @@ import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.resource.ContractResource;
 
-/**
- * @since 4.0.1
- */
 public class ResourceUtils
 {
     public final static String MYFACES_LIBRARY_NAME = "org.apache.myfaces";

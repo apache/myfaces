@@ -485,7 +485,6 @@ public final class ExternalContextUtils
      * 
      * @param ec
      * @return an HttpServletResponse if we have one or null if we do not
-     * @since 4.0
      */
     public static HttpServletResponse getHttpServletResponse(ExternalContext ec)
     {

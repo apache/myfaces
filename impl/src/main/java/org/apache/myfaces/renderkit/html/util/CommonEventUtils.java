@@ -238,7 +238,6 @@ public class CommonEventUtils
      * @param uiComponent
      * @param clientBehaviors
      * @throws IOException
-     * @since 4.0.0
      */
     public static void renderBehaviorizedEventHandlersWithoutOnclick(
             FacesContext facesContext, ResponseWriter writer,
@@ -321,7 +320,6 @@ public class CommonEventUtils
      * @param uiComponent
      * @param clientBehaviors
      * @throws IOException
-     * @since 4.0.0
      */
     public static void renderBehaviorizedFieldEventHandlers(
             FacesContext facesContext, ResponseWriter writer,

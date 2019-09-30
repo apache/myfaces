@@ -362,9 +362,6 @@ public final class HtmlRendererUtils
         }
     }
 
-    /**
-     * @since 4.0.0
-     */
     public static void decodeClientBehaviors(FacesContext facesContext, UIComponent component)
     {
         if (component instanceof ClientBehaviorHolder)
@@ -1363,7 +1360,6 @@ public final class HtmlRendererUtils
      * @param eventName the event name to be checked for
      * @param behaviors map of behaviors attached to the component
      * @return true if client behavior with given name is attached, false otherwise
-     * @since 4.0.0
      */
     public static boolean hasClientBehavior(String eventName,
             Map<String, List<ClientBehavior>> behaviors,
@@ -1405,7 +1401,6 @@ public final class HtmlRendererUtils
      * @param params       params map of params which have to be dragged into the request
      * @return a string representation of the javascripts for the attached event behavior,
      *         an empty string if none is present
-     * @since 4.0.0
      */
     private static boolean getClientBehaviorScript(FacesContext facesContext,
             UIComponent uiComponent, String sourceId, String eventName,
@@ -1488,9 +1483,6 @@ public final class HtmlRendererUtils
         return submitting;
     }
 
-    /**
-     * @since 4.0.0
-     */
     public static String buildBehaviorChain(FacesContext facesContext,
             UIComponent uiComponent, String eventName,
             Collection<ClientBehaviorContext.Parameter> params,
@@ -1516,48 +1508,51 @@ public final class HtmlRendererUtils
             finalParams.add('\'' + escapeJavaScriptForChain(userEventCode) + '\'');
         }
         
-        JavascriptContext behaviorCode = new JavascriptContext();
-        JavascriptContext retVal = new JavascriptContext();
-        getClientBehaviorScript(facesContext, uiComponent, sourceId,
-                eventName, clientBehaviors, behaviorCode, params);
+        JavascriptContext chainContext = new JavascriptContext();
         
-        String behaviorCodeStr = behaviorCode.toString();
-        if (StringUtils.isNotBlank(behaviorCodeStr))
+        JavascriptContext behaviorContext = new JavascriptContext();
+        getClientBehaviorScript(facesContext, uiComponent, sourceId,
+                eventName, clientBehaviors, behaviorContext, params);
+        
+        String behaviorScript = behaviorContext.toString();
+        if (StringUtils.isNotBlank(behaviorScript))
         {
-            finalParams.add(behaviorCodeStr);
+            finalParams.add(behaviorScript);
         }
         if (StringUtils.isNotBlank(serverEventCode))
         {
             finalParams.add('\'' + escapeJavaScriptForChain(serverEventCode) + '\'');
         }
-        
-        Iterator<String> it = finalParams.iterator();
-        // It's possible that there are no behaviors to render.  For example, if we have
-        // <f:ajax disabled="true" /> as the only behavior.
-        if (it.hasNext())
+
+        // It's possible that there are no behaviors to render.
+        // For example, if we have <f:ajax disabled="true" /> as the only behavior.
+        int size = finalParams.size();
+        if (size > 0)
         {
             //according to the spec jsf.util.chain has to be used to build up the 
             //behavior and scripts
             if (sourceId == null)
             {
-                retVal.append("jsf.util.chain(this, event,");
+                chainContext.append("jsf.util.chain(this, event,");
             }
             else
             {
-                retVal.append("jsf.util.chain(document.getElementById('" + sourceId + "'), event,");
+                chainContext.append("jsf.util.chain(document.getElementById('" + sourceId + "'), event,");
             }
-            while (it.hasNext())
+
+            for (int i = 0; i < size; i++)
             {
-                retVal.append(it.next());
-                if (it.hasNext())
+                if (i != 0)
                 {
-                    retVal.append(", ");
+                    chainContext.append(", ");
                 }
+                chainContext.append(finalParams.get(i));
             }
-            retVal.append(");");
+
+            chainContext.append(");");
         }
 
-        return retVal.toString();
+        return chainContext.toString();
     }
 
     /**
@@ -1572,7 +1567,6 @@ public final class HtmlRendererUtils
      * @param serverEventCode
      
      * @return
-     * @since 4.0.0
      */
     public static String buildBehaviorChain(FacesContext facesContext,
             UIComponent uiComponent,
@@ -1659,17 +1653,18 @@ public final class HtmlRendererUtils
             {
                 chainContext.append("jsf.util.chain(document.getElementById('" + sourceId + "'), event,");
             }
-            int cursor = 0;
-            while (cursor != size)
+            
+            for (int i = 0; i < size; i++)
             {
-                chainContext.append(finalParams.get(cursor));
-                cursor++;
-                if (cursor != size)
+                if (i != 0)
                 {
                     chainContext.append(", ");
                 }
+                chainContext.append(finalParams.get(i));
             }
+
             chainContext.append(");");
+
             if (submitting)
             {
                 chainContext.append(" return false;");
@@ -1705,10 +1700,12 @@ public final class HtmlRendererUtils
                 UIParameter param = validParams.get(i);
                 String name = param.getName();
                 Object value = param.getValue();
+
                 if (retVal == null)
                 {
-                    retVal = new HashMap<String, String>();
+                    retVal = new HashMap<>(3);
                 }
+
                 if (value instanceof String)
                 {
                     retVal.put(name, (String) value);
@@ -1781,7 +1778,6 @@ public final class HtmlRendererUtils
      * @param clientBehaviors
      * @return
      * @throws IOException
-     * @since 4.0.1
      */
     public static boolean renderBehaviorizedAttribute(
             FacesContext facesContext, ResponseWriter writer,
@@ -1818,7 +1814,6 @@ public final class HtmlRendererUtils
      * @param htmlAttrName
      * @return
      * @throws IOException
-     * @since 4.0.1
      */
     public static boolean renderBehaviorizedAttribute(
             FacesContext facesContext, ResponseWriter writer,
@@ -2058,10 +2053,7 @@ public final class HtmlRendererUtils
         }
     }
     // CHECKSTYLE: ON
-    
-    /**
-     * @since 4.0.0
-     */
+
     public static void renderBehaviorizedEventHandlers(
             FacesContext facesContext, ResponseWriter writer,
             UIComponent uiComponent,
@@ -2113,9 +2105,6 @@ public final class HtmlRendererUtils
                 clientBehaviors, HTML.ONKEYUP_ATTR);
     }
 
-    /**
-     * @since 4.0.0
-     */
     public static void renderBehaviorizedEventHandlersWithoutOnclick(
             FacesContext facesContext, ResponseWriter writer,
             UIComponent uiComponent,
@@ -2188,9 +2177,6 @@ public final class HtmlRendererUtils
                 HTML.ONKEYUP_ATTR);
     }
 
-    /**
-     * @since 4.0.0
-     */
     public static void renderBehaviorizedFieldEventHandlers(
             FacesContext facesContext, ResponseWriter writer,
             UIComponent uiComponent,
@@ -2221,9 +2207,6 @@ public final class HtmlRendererUtils
                 uiComponent, ClientBehaviorEvents.SELECT, clientBehaviors, HTML.ONSELECT_ATTR);
     }
 
-    /**
-     * @since 4.0.0
-     */
     public static void renderBehaviorizedFieldEventHandlersWithoutOnchange(
             FacesContext facesContext, ResponseWriter writer,
             UIComponent uiComponent,
@@ -2264,9 +2247,6 @@ public final class HtmlRendererUtils
                 uiComponent, ClientBehaviorEvents.BLUR, clientBehaviors, HTML.ONBLUR_ATTR);
     }
 
-    /**
-     * @since 4.0.0
-     */
     public static boolean renderBehaviorizedOnchangeEventHandler(
             FacesContext facesContext, ResponseWriter writer,
             UIComponent uiComponent,
