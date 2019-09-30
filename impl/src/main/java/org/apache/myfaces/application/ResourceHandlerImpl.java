@@ -629,7 +629,8 @@ public class ResourceHandlerImpl extends ResourceHandler
 
     private static boolean isConnectionAbort(IOException e)
     {
-        return e.getClass().getCanonicalName().equals("org.apache.catalina.connector.ClientAbortException");
+        return e.getClass().getCanonicalName().equals("org.apache.catalina.connector.ClientAbortException")
+                || e.getClass().getCanonicalName().equals("org.eclipse.jetty.io.EofException");
     }
 
     /**
