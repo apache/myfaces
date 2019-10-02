@@ -94,13 +94,11 @@ public class CommonEventUtils
             String htmlAttrName, String attributeValue) throws IOException
     {
 
-        List<ClientBehavior> cbl = (clientBehaviors != null) ? clientBehaviors
-                .get(eventName) : null;
-
+        List<ClientBehavior> cbl = (clientBehaviors != null) ? clientBehaviors.get(eventName) : null;
         if (cbl == null || cbl.isEmpty())
         {
-            return HtmlRendererUtils.renderHTMLStringAttribute(writer, componentProperty, htmlAttrName,
-                    attributeValue);
+            return HtmlRendererUtils.renderHTMLStringAttribute(writer, componentProperty,
+                    htmlAttrName, attributeValue);
         }
 
         if (cbl.size() > 1 || (cbl.size() == 1 && attributeValue != null))
@@ -114,14 +112,13 @@ public class CommonEventUtils
         else
         {
             //Only 1 behavior and attrValue == null, so just render it directly
+            ClientBehaviorContext ctx = ClientBehaviorContext.createClientBehaviorContext(
+                                    facesContext, component, eventName,sourceId, eventParameters);
             return HtmlRendererUtils.renderHTMLStringAttribute(
                     writer,
                     componentProperty,
                     htmlAttrName,
-                    cbl.get(0).getScript(
-                            ClientBehaviorContext.createClientBehaviorContext(
-                                    facesContext, component, eventName,
-                                    sourceId, eventParameters)));
+                    cbl.get(0).getScript(ctx));
         }
     }
 

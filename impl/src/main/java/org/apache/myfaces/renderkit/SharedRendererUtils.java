@@ -41,9 +41,9 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
+import org.apache.myfaces.renderkit.html.util.SelectItemsIterator;
 
 import org.apache.myfaces.util.ComponentUtils;
-import org.apache.myfaces.renderkit.html.util.SelectItemsIterator;
 import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.util.lang.ClassUtils;
 
@@ -52,7 +52,7 @@ import org.apache.myfaces.util.lang.ClassUtils;
  * the org.apache.myfaces.renderkit package.
  * Please note: Any changes here must also apply to the class in the other package!
  */
-class _SharedRendererUtils
+public class SharedRendererUtils
 {
     static final String COLLECTION_TYPE_KEY = "collectionType";
     static final String VALUE_TYPE_KEY = "valueType";
@@ -434,7 +434,7 @@ class _SharedRendererUtils
         return converter;
     }
 
-    private static final Logger log = Logger.getLogger(_SharedRendererUtils.class.getName());
+    private static final Logger log = Logger.getLogger(SharedRendererUtils.class.getName());
 
     /**
      * This method is different in the two versions of _SharedRendererUtils.

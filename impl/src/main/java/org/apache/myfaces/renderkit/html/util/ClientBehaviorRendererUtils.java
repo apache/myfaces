@@ -36,8 +36,6 @@ import org.apache.myfaces.util.lang.StringUtils;
 
 public class ClientBehaviorRendererUtils
 {
-    private static final boolean RENDER_AS_STRING = false;
-    
     public static void decodeClientBehaviors(FacesContext facesContext, UIComponent component)
     {
         if (!(component instanceof ClientBehaviorHolder))

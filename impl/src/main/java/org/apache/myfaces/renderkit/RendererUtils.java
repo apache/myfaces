@@ -442,7 +442,7 @@ public final class RendererUtils
         if (considerValueType)
         {
             // try to get a converter from the valueType attribute
-            converter = _SharedRendererUtils.getValueTypeConverter(facesContext, component);
+            converter = SharedRendererUtils.getValueTypeConverter(facesContext, component);
             if (converter != null)
             {
                 return converter;
@@ -472,7 +472,7 @@ public final class RendererUtils
         if (Collection.class.isAssignableFrom(valueType) || Object.class.equals(valueType))
         {
             // try to get the by-type-converter from the type of the SelectItems
-            return _SharedRendererUtils.getSelectItemsValueConverter(
+            return SharedRendererUtils.getSelectItemsValueConverter(
                     new SelectItemsIterator(component, facesContext),
                     facesContext);
         }
@@ -495,7 +495,7 @@ public final class RendererUtils
         {
             // There is no converter for Object class
             // try to get the by-type-converter from the type of the SelectItems
-            return _SharedRendererUtils.getSelectItemsValueConverter(
+            return SharedRendererUtils.getSelectItemsValueConverter(
                     new SelectItemsIterator(component, facesContext),
                     facesContext);
         }
@@ -848,7 +848,7 @@ public final class RendererUtils
                             + ComponentUtils.getPathToComponent(selectMany) + "expected");
         }
 
-        return _SharedRendererUtils.getConvertedUISelectManyValue(facesContext,
+        return SharedRendererUtils.getConvertedUISelectManyValue(facesContext,
                 selectMany, (String[]) submittedValue, considerValueType);
     }
 

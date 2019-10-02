@@ -96,24 +96,27 @@ public class OutcomeTargetUtils
         {
             List<UIParameter> validParams = getValidUIParameterChildren(facesContext, component.getChildren(),
                     true, false);
-            if (validParams.size() > 0)
+
+            int size = validParams.size();
+            if (size > 0)
             {
                 parameters = new HashMap<>(5, 1f);
-            }
-            for (int i = 0, size = validParams.size(); i < size; i++)
-            {
-                UIParameter param = validParams.get(i);
-                String name = param.getName();
-                Object value = param.getValue();
-                if (parameters.containsKey(name))
+
+                for (int i = 0; i < size; i++)
                 {
-                    parameters.get(name).add(value.toString());
-                }
-                else
-                {
-                    List<String> list = new ArrayList<>(1);
-                    list.add(value.toString());
-                    parameters.put(name, list);
+                    UIParameter param = validParams.get(i);
+                    String name = param.getName();
+                    Object value = param.getValue();
+                    if (parameters.containsKey(name))
+                    {
+                        parameters.get(name).add(value.toString());
+                    }
+                    else
+                    {
+                        List<String> list = new ArrayList<>(1);
+                        list.add(value.toString());
+                        parameters.put(name, list);
+                    }
                 }
             }
         }
