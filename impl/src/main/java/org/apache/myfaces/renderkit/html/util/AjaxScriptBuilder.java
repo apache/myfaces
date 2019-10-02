@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.html.base;
+package org.apache.myfaces.renderkit.html.util;
 
 import java.util.Collection;
 import java.util.List;

@@ -16,14 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.html.base;
+package org.apache.myfaces.renderkit.html.util;
 
-import org.apache.myfaces.renderkit.html.util.JavascriptContext;
 import java.util.logging.Logger;
 
 import javax.faces.context.FacesContext;
-
-import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 
 public final class HtmlJavaScriptUtils
 {

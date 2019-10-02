@@ -37,12 +37,12 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
 import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.renderkit.html.base.ClientBehaviorRendererUtils;
+import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
 import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
-import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
+import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.ComponentUtils;
 

@@ -32,7 +32,7 @@ import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import org.apache.myfaces.renderkit.RendererUtils;
-import static org.apache.myfaces.renderkit.html.base.HtmlRendererUtils.isHideNoSelectionOption;
+import static org.apache.myfaces.renderkit.html.util.HtmlRendererUtils.isHideNoSelectionOption;
 
 /**
  * Utility methods to manipulate SelectItem/SelectItems

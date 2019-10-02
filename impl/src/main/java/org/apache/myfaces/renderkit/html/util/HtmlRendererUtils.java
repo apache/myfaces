@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.html.base;
+package org.apache.myfaces.renderkit.html.util;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -59,12 +59,8 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
-import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.renderkit.html.util.HTMLEncoder;
-import org.apache.myfaces.renderkit.html.util.OutcomeTargetUtils;
 import org.apache.myfaces.util.ComponentUtils;
-import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 
 public final class HtmlRendererUtils

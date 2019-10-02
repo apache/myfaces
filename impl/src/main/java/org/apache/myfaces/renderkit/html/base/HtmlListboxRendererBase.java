@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html.base;
 
+import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
+import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;

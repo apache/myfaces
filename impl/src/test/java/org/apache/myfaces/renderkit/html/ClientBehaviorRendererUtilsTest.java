@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
+import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.junit.Assert;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
@@ -29,7 +29,7 @@ import javax.faces.component.html.HtmlInputText;
 
 import java.util.*;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.renderkit.html.base.ClientBehaviorRendererUtils;
+import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 
 public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
 {

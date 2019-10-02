@@ -30,12 +30,12 @@ import javax.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.renderkit.html.base.ClientBehaviorRendererUtils;
+import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
 import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
-import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
+import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 
 /**

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.html.base;
+package org.apache.myfaces.renderkit.html.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +32,6 @@ import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.renderkit.html.util.JavascriptContext;
 import org.apache.myfaces.util.lang.StringUtils;
 
 public class ClientBehaviorRendererUtils

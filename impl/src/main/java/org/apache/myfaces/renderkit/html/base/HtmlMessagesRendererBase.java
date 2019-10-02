@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html.base;
 
+import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;

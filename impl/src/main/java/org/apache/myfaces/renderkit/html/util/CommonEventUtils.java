@@ -29,8 +29,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.renderkit.html.base.ClientBehaviorRendererUtils;
-import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
 
 public class CommonEventUtils
 {

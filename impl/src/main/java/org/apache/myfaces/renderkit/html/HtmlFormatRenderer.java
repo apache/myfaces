@@ -39,7 +39,7 @@ import org.apache.myfaces.renderkit.html.util.CommonPropertyConstants;
 import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
-import org.apache.myfaces.renderkit.html.base.HtmlRendererUtils;
+import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.util.ComponentUtils;
 
 /**
