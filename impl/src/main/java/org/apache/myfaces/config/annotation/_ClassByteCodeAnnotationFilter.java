@@ -33,7 +33,6 @@ import java.util.logging.Logger;
  */
 class _ClassByteCodeAnnotationFilter
 {
-    
     private static final Logger log = Logger.getLogger(_ClassByteCodeAnnotationFilter.class.getName());
     
     //Constants used to define type in cp_info structure
@@ -63,9 +62,8 @@ class _ClassByteCodeAnnotationFilter
      * @return
      * @throws IOException
      */
-    public boolean couldContainAnnotationsOnClassDef(DataInput in,
-            Set<String> byteCodeAnnotationsNames)
-        throws IOException
+    public static boolean couldContainAnnotationsOnClassDef(DataInput in, Set<String> byteCodeAnnotationsNames)
+            throws IOException
     {
         /* According to Java VM Spec, each .class file contains
          * a single class or interface definition. The structure

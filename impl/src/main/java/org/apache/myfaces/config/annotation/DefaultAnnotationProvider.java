@@ -87,18 +87,18 @@ public class DefaultAnnotationProvider extends AnnotationProvider
      * inside application JARs.</p>
      */
     private static final String FACES_CONFIG_IMPLICIT = "META-INF/faces-config.xml";
-    
-    private final _ClassByteCodeAnnotationFilter _filter;
 
     /**
      * This set contains the annotation names that this AnnotationConfigurator is able to scan
      * in the format that is read from .class file.
      */
-    private static Set<String> byteCodeAnnotationsNames;
+    private static final Set<String> JSF_ANNOTATION_NAMES;
+    
+    private static final Set<Class<? extends Annotation>> JSF_ANNOTATION_CLASSES;
 
     static
     {
-        Set<String> bcan = new HashSet<String>(10, 1f);
+        Set<String> bcan = new HashSet<>(10, 1f);
         bcan.add("Ljavax/faces/component/FacesComponent;");
         bcan.add("Ljavax/faces/component/behavior/FacesBehavior;");
         bcan.add("Ljavax/faces/convert/FacesConverter;");
@@ -109,30 +109,23 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         //bcan.add("Ljavax/faces/event/ListenersFor;");
         bcan.add("Ljavax/faces/render/FacesBehaviorRenderer;");
         bcan.add("Ljavax/faces/view/facelets/FaceletsResourceResolver;");
+        JSF_ANNOTATION_NAMES = Collections.unmodifiableSet(bcan);
 
-        byteCodeAnnotationsNames = Collections.unmodifiableSet(bcan);
+        Set<Class<? extends Annotation>> ancl = new HashSet<>(10, 1f);
+        ancl.add(FacesComponent.class);
+        ancl.add(FacesBehavior.class);
+        ancl.add(FacesConverter.class);
+        ancl.add(FacesValidator.class);
+        ancl.add(FacesRenderer.class);
+        ancl.add(NamedEvent.class);
+        ancl.add(FacesBehaviorRenderer.class);
+        ancl.add(FaceletsResourceResolver.class);
+        JSF_ANNOTATION_CLASSES = Collections.unmodifiableSet(ancl);
     }
-    
-    private static final Set<Class<? extends Annotation>> JSF_ANNOTATION_CLASSES;
-    
-    static
-    {
-        Set<Class<? extends Annotation>> bcan = new HashSet<Class<? extends Annotation>>(10, 1f);
-        bcan.add(FacesComponent.class);
-        bcan.add(FacesBehavior.class);
-        bcan.add(FacesConverter.class);
-        bcan.add(FacesValidator.class);
-        bcan.add(FacesRenderer.class);
-        bcan.add(NamedEvent.class);
-        bcan.add(FacesBehaviorRenderer.class);
-        bcan.add(FaceletsResourceResolver.class);
-        JSF_ANNOTATION_CLASSES = Collections.unmodifiableSet(bcan);
-    }
-    
+
     public DefaultAnnotationProvider()
     {
         super();
-        _filter = new _ClassByteCodeAnnotationFilter();
     }
     
     @Override
@@ -213,7 +206,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
     {
         if (urls != null && !urls.isEmpty())
         {
-            List<Class<?>> list = new ArrayList<Class<?>>();
+            List<Class<?>> list = new ArrayList<>();
             for (URL url : urls)
             {
                 try
@@ -234,11 +227,6 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         return Collections.emptyList();
     }
 
-    protected Collection<Class<?>> getAnnotatedMyfacesImplClasses(ExternalContext ctx, URL url)
-    {
-        return Collections.emptyList();
-    }
-
     protected Collection<Class<?>> getAnnotatedWebInfClasses(ExternalContext ctx) throws IOException
     {
         String scanPackages = MyfacesConfig.getCurrentInstance(ctx).getScanPackages();
@@ -248,11 +236,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
             {
                 return packageClasses(ctx, scanPackages);
             }
-            catch (ClassNotFoundException e)
-            {
-                throw new FacesException(e);
-            }
-            catch (IOException e)
+            catch (ClassNotFoundException | IOException e)
             {
                 throw new FacesException(e);
             }
@@ -272,11 +256,10 @@ public class DefaultAnnotationProvider extends AnnotationProvider
      * @exception ClassNotFoundException if a located class cannot be loaded
      * @exception IOException if an input/output error occurs
      */
-    private List<Class<?>> packageClasses(final ExternalContext externalContext,
-            final String scanPackages) throws ClassNotFoundException, IOException
+    private List<Class<?>> packageClasses(final ExternalContext externalContext, final String scanPackages)
+            throws ClassNotFoundException, IOException
     {
-
-        List<Class<?>> list = new ArrayList<Class<?>>();
+        List<Class<?>> list = new ArrayList<>();
 
         String[] scanPackageTokens = scanPackages.split(",");
         for (String scanPackageToken : scanPackageTokens)
@@ -292,9 +275,8 @@ public class DefaultAnnotationProvider extends AnnotationProvider
             }
             else
             {
-                List<Class> list2 = new ArrayList<Class>();
-                _PackageInfo.getInstance().getClasses(list2, scanPackageToken);
-                for (Class c : list2)
+                Class[] classes = PackageInfo.getClasses(scanPackageToken);
+                for (Class c : classes)
                 {
                     list.add(c);                    
                 }
@@ -344,7 +326,8 @@ public class DefaultAnnotationProvider extends AnnotationProvider
             try
             {
                 in = new DataInputStream(jar.getInputStream(entry));
-                couldContainAnnotation = _filter.couldContainAnnotationsOnClassDef(in, byteCodeAnnotationsNames);
+                couldContainAnnotation = _ClassByteCodeAnnotationFilter.couldContainAnnotationsOnClassDef(in,
+                        JSF_ANNOTATION_NAMES);
             }
             catch (IOException e)
             {
@@ -381,14 +364,11 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                 {
                     clazz = loader.loadClass(name.replace('/', '.'));
                 }
-                catch (NoClassDefFoundError e)
+                catch (NoClassDefFoundError | Exception e)
                 {
                     // Skip this class - we cannot analyze classes we cannot load
                 }
-                catch (Exception e)
-                {
-                    // Skip this class - we cannot analyze classes we cannot load
-                }
+                // Skip this class - we cannot analyze classes we cannot load
                 if (clazz != null)
                 {
                     list.add(clazz);
@@ -412,7 +392,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
      */
     private List<Class<?>> webClasses(ExternalContext externalContext)
     {
-        List<Class<?>> list = new ArrayList<Class<?>>();
+        List<Class<?>> list = new ArrayList<>();
         webClasses(externalContext, WEB_CLASSES_PREFIX, list);
         return list;
     }
@@ -428,21 +408,18 @@ public class DefaultAnnotationProvider extends AnnotationProvider
      *
      * @exception ClassNotFoundException if a located class cannot be loaded
      */
-    private void webClasses(ExternalContext externalContext, String prefix,
-            List<Class<?>> list)
+    private void webClasses(ExternalContext externalContext, String prefix, List<Class<?>> list)
     {
-
         ClassLoader loader = ClassUtils.getCurrentLoader(this);
 
         Set<String> paths = externalContext.getResourcePaths(prefix);
-        if(paths == null)
+        if (paths == null)
         {
             return; //need this in case there is no WEB-INF/classes directory
         }
         if (log.isLoggable(Level.FINEST))
         {
-            log.finest("webClasses(" + prefix + ") - Received " + paths.size()
-                    + " paths to check");
+            log.finest("webClasses(" + prefix + ") - Received " + paths.size() + " paths to check");
         }
 
         String path = null;
@@ -451,15 +428,14 @@ public class DefaultAnnotationProvider extends AnnotationProvider
         {
             if (log.isLoggable(Level.WARNING))
             {
-                log
-                        .warning("AnnotationConfigurator does not found classes "
-                                + "for annotations in "
-                                + prefix
-                                + " ."
-                                + " This could happen because maven jetty plugin is used"
-                                + " (goal jetty:run). Try configure "
-                                + MyfacesConfig.SCAN_PACKAGES + " init parameter "
-                                + "or use jetty:run-exploded instead.");
+                log.warning("AnnotationConfigurator does not found classes "
+                            + "for annotations in "
+                            + prefix
+                            + " ."
+                            + " This could happen because maven jetty plugin is used"
+                            + " (goal jetty:run). Try configure "
+                            + MyfacesConfig.SCAN_PACKAGES + " init parameter "
+                            + "or use jetty:run-exploded instead.");
             }
         }
         else
@@ -478,8 +454,8 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                     try
                     {
                         in = new DataInputStream(externalContext.getResourceAsStream(path));
-                        couldContainAnnotation = _filter.couldContainAnnotationsOnClassDef(in,
-                                byteCodeAnnotationsNames);
+                        couldContainAnnotation = _ClassByteCodeAnnotationFilter.couldContainAnnotationsOnClassDef(in,
+                                JSF_ANNOTATION_NAMES);
                     }
                     catch (IOException e)
                     {
@@ -520,14 +496,11 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                         {
                             clazz = loader.loadClass(path);
                         }
-                        catch (NoClassDefFoundError e)
+                        catch (NoClassDefFoundError | Exception e)
                         {
                             // Skip this class - we cannot analyze classes we cannot load
                         }
-                        catch (Exception e)
-                        {
-                            // Skip this class - we cannot analyze classes we cannot load
-                        }
+                        // Skip this class - we cannot analyze classes we cannot load
                         if (clazz != null)
                         {
                             list.add(clazz);

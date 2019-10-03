@@ -25,6 +25,7 @@ import java.net.JarURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -35,8 +36,6 @@ import java.util.logging.Logger;
 import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
- * Copied from org.apache.shale.tiger.view.faces.PackageInfo
- * 
  * <p>Utility class with methods that support getting a recursive list of
  * classes starting with a specific package name.</p>
  * 
@@ -44,48 +43,27 @@ import org.apache.myfaces.util.lang.ClassUtils;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-class _PackageInfo
+class PackageInfo
 {
-
-    /**
-     * <p>The <code>Log</code> instance we will be using.</p>
-     */
-    private transient Logger log = null;
-
-    /**
-     * the singleton for this class
-     */
-    private final static _PackageInfo INSTANCE = new _PackageInfo();
-
-    /**
-     * <p>Get the singleton instance of this class.</p>
-     */
-    public final static _PackageInfo getInstance()
-    {
-
-        return INSTANCE;
-
-    }
+    private static final Logger LOG = Logger.getLogger(PackageInfo.class.getName());
 
     /**
      * <p>Return an array of all classes, visible to our application class loader,
      * in the specified Java package.</p>
      *
-     * @param classes List of matching classes being accumulated
      * @param pckgname Package name used to select matching classes
      *
      * @throws ClassNotFoundException
      */
-    public Class[] getClasses(final List<Class> classes, final String pckgname)
-            throws ClassNotFoundException
+    public static Class[] getClasses(final String pckgname) throws ClassNotFoundException
     {
-
+        List<Class> classes = new ArrayList<>();
+        
         Enumeration resources;
         ClassLoader cld;
         String path;
         try
         {
-
             // convert the package name to a path
             path = pckgname.replace('.', '/');
 
@@ -101,19 +79,10 @@ class _PackageInfo
             {
                 throw new ClassNotFoundException("No resource for " + path);
             }
-
         }
-        catch (NullPointerException e)
+        catch (NullPointerException | IOException e)
         {
-            throw (ClassNotFoundException) new ClassNotFoundException(pckgname
-                    + " (" + pckgname
-                    + ") does not appear to be a valid package", e);
-        }
-        catch (IOException e)
-        {
-            throw (ClassNotFoundException) new ClassNotFoundException(pckgname
-                    + " (" + pckgname
-                    + ") does not appear to be a valid package", e);
+            throw new ClassNotFoundException(pckgname + " does not appear to be a valid package", e);
         }
 
         // iterate through all resources containing the package in question
@@ -127,9 +96,7 @@ class _PackageInfo
             }
             catch (IOException e)
             {
-                throw (ClassNotFoundException) new ClassNotFoundException(
-                        pckgname + " (" + pckgname
-                                + ") does not appear to be a valid package", e);
+                throw new ClassNotFoundException(pckgname + " does not appear to be a valid package", e);
             }
 
             if (connection instanceof JarURLConnection)
@@ -143,10 +110,7 @@ class _PackageInfo
                 }
                 catch (IOException e)
                 {
-                    throw (ClassNotFoundException) new ClassNotFoundException(
-                            pckgname + " (" + pckgname
-                                    + ") does not appear to be a valid package",
-                            e);
+                    throw new ClassNotFoundException(pckgname + " does not appear to be a valid package", e);
                 }
                 Enumeration<JarEntry> entries = jarFile.entries();
                 while (entries.hasMoreElements())
@@ -175,7 +139,7 @@ class _PackageInfo
                 }
                 catch (URISyntaxException e)
                 {
-                    log().log(Level.WARNING, "error loading directory " + connection, e);
+                    LOG.log(Level.WARNING, "error loading directory " + connection, e);
                     continue;
                 }
 
@@ -185,8 +149,7 @@ class _PackageInfo
 
         if (classes.size() < 1)
         {
-            throw new ClassNotFoundException(pckgname
-                    + " does not appear to be a valid package");
+            throw new ClassNotFoundException(pckgname + " does not appear to be a valid package");
         }
 
         Class[] resolvedClasses = new Class[classes.size()];
@@ -200,11 +163,9 @@ class _PackageInfo
      *
      * @param entryName Filename to be converted
      */
-    protected String filenameToClassname(String entryName)
+    protected static String filenameToClassname(String entryName)
     {
-
         return entryName.substring(0, entryName.length() - 6).replace('/', '.');
-
     }
 
     /**
@@ -215,23 +176,16 @@ class _PackageInfo
      * @param cld ClassLoader from which to load the specified class
      * @param className Name of the class to be loaded
      */
-    protected void loadClass(List<Class> classes, ClassLoader cld,
-            String className)
+    protected static void loadClass(List<Class> classes, ClassLoader cld, String className)
     {
-
         try
         {
             classes.add(cld.loadClass(className));
         }
-        catch (NoClassDefFoundError e)
+        catch (NoClassDefFoundError | ClassNotFoundException e)
         {
-            log().log(Level.WARNING, "error loading class " + className, e);
+            LOG.log(Level.WARNING, "error loading class " + className, e);
         }
-        catch (ClassNotFoundException e)
-        {
-            log().log(Level.WARNING, "error loading class " + className, e);
-        }
-
     }
 
     /**
@@ -243,19 +197,17 @@ class _PackageInfo
      * @param cld ClassLoader being searched for matching classes
      * @param pckgname Package name used to select matching classes
      */
-    protected void listFilesRecursive(final List<Class> classes,
+    protected static void listFilesRecursive(final List<Class> classes,
             final File base, final ClassLoader cld, final String pckgname)
     {
-
         base.listFiles(new FileFilter()
         {
-
+            @Override
             public boolean accept(File file)
             {
                 if (file.isDirectory())
                 {
-                    listFilesRecursive(classes, file, cld, pckgname + '.'
-                            + file.getName());
+                    listFilesRecursive(classes, file, cld, pckgname + '.' + file.getName());
                     return false;
                 }
                 if (!file.getName().toLowerCase().endsWith(".class"))
@@ -263,30 +215,11 @@ class _PackageInfo
                     return false;
                 }
 
-                String className = filenameToClassname(pckgname + '.'
-                        + file.getName());
+                String className = filenameToClassname(pckgname + '.' + file.getName());
                 loadClass(classes, cld, className);
 
                 return false;
             }
-
         });
-
     }
-
-    /**
-     * <p>Return the <code>Log</code> instance to be used for this class,
-     * instantiating a new one if necessary.</p>
-     */
-    private Logger log()
-    {
-
-        if (log == null)
-        {
-            log = Logger.getLogger(_PackageInfo.class.getName());
-        }
-        return log;
-
-    }
-
 }
