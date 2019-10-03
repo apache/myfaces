@@ -136,7 +136,6 @@ import org.apache.myfaces.spi.InjectionProviderException;
 import org.apache.myfaces.spi.InjectionProviderFactory;
 import org.apache.myfaces.spi.ResourceLibraryContractsProvider;
 import org.apache.myfaces.spi.ResourceLibraryContractsProviderFactory;
-import org.apache.myfaces.util.ContainerUtils;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.util.NavigationUtils;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
@@ -374,14 +373,6 @@ public class FacesConfigurator
 
     public void update()
     {
-        //Google App Engine does not allow to get last modified time of a file; 
-        //and when an application is running on GAE there is no way to update faces config xml file.
-        //thus, no need to check if the config file is modified.
-        if (ContainerUtils.isRunningOnGoogleAppEngine(_externalContext))
-        {
-            return;
-        }
-        
         long refreshPeriod = (MyfacesConfig.getCurrentInstance(_externalContext).getConfigRefreshPeriod()) * 1000;
         if (refreshPeriod > 0)
         {

@@ -19,9 +19,7 @@
 package org.apache.myfaces.util;
 
 import org.apache.myfaces.util.lang.ClassUtils;
-import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
-
 
 /**
  * Utilities for determining the current container and for the unified
@@ -31,11 +29,6 @@ import javax.servlet.ServletContext;
 public class ContainerUtils
 {
     /**
-     * Used for determining whether Myfaces is running on Google App Engine.
-     */
-    private static final String GAE_SERVER_INFO_BEGINNING = "Google App Engine";
-
-    /**
      * Determines whether we're running in a Servlet 2.5/JSP 2.1 environment.
      * 
      * @return <code>true</code> if we're running in a JSP 2.1 environment,
@@ -43,12 +36,6 @@ public class ContainerUtils
      */
     public static boolean isJsp21(ServletContext context)
     {
-        //if running on GAE, treat like it is JSP 2.0
-        if(isRunningOnGoogleAppEngine(context))
-        {
-            return false;
-        }
-        
         try 
         {
             // simply check if the class JspApplicationContext is available
@@ -62,60 +49,5 @@ public class ContainerUtils
         
         return false;
     }
-    
-    private static Boolean runningOnGoogleAppEngine = null;
-    
-    /**Returns true if running on Google App Engine (both production and development environment).
-     * <p>If this method returns true, then
-     * <ul>
-     * <li>MyFaces is initialized as in JSP 2.0 or less environment.</li>
-     * <li>Last modification check of faces config is not done during update.</li>
-     * </ul>
-     */
-    public static boolean isRunningOnGoogleAppEngine(
-            ServletContext servletContext)
-    {
-        if (runningOnGoogleAppEngine != null)
-        {
-            return runningOnGoogleAppEngine;
-        }
-        else
-        {
-            return isServerGoogleAppEngine(servletContext.getServerInfo());
-        }
-    }
-
-    /**
-     * @see ContainerUtils#isRunningOnGoogleAppEngine(ServletContext)
-     */
-    public static boolean isRunningOnGoogleAppEngine(
-            ExternalContext externalContext)
-    {
-
-        if (runningOnGoogleAppEngine != null)
-        {
-            return runningOnGoogleAppEngine;
-        }
-        else
-        {
-            String serverInfo = ExternalContextUtils.getServerInfo(externalContext);
-            
-            return isServerGoogleAppEngine(serverInfo);
-        }
-    }
-
-    private static boolean isServerGoogleAppEngine(String serverInfo)
-    {
-        //for GAE, server info can be "Google App Engine/x.x.x" or "Google App Engine Development/x.x.x" 
-        if (serverInfo != null && serverInfo.startsWith(GAE_SERVER_INFO_BEGINNING))
-        {
-            runningOnGoogleAppEngine = Boolean.TRUE;
-        }
-        else
-        {
-            runningOnGoogleAppEngine = Boolean.FALSE;
-        }
-
-        return runningOnGoogleAppEngine;
-    }
+  
 }

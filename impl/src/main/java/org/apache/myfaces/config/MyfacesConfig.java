@@ -249,35 +249,7 @@ public class MyfacesConfig
          group="EL", tags="performance ")
     public final static String SUPPORT_JSP = "org.apache.myfaces.SUPPORT_JSP";
     private final static boolean SUPPORT_JSP_DEFAULT = true;
-    
-    /**
-     * When the application runs inside Google Application Engine container (GAE),
-     * indicate which jar files should be scanned for files (faces-config, facelets taglib
-     * or annotations). It accept simple wildcard patterns like myfavoritejsflib-*.jar or 
-     * myfavoritejsflib-1.1.?.jar. By default, all the classpath is scanned for files 
-     * annotations (so it adds an small delay on startup).
-     */
-    @JSFWebConfigParam(since = "2.1.8, 2.0.14", expectedValues="none, myfavoritejsflib-*.jar",
-            tags="performance, GAE")
-    public static final String GAE_JSF_JAR_FILES = "org.apache.myfaces.GAE_JSF_JAR_FILES";
-    private final static String GAE_JSF_JAR_FILES_DEFAULT = null;
 
-    /**
-     * When the application runs inside Google Application Engine container (GAE),
-     * indicate which jar files should be scanned for annotations. This param overrides
-     * org.apache.myfaces.GAE_JSF_JAR_FILES behavior that tries to find faces-config.xml or
-     * files ending with .faces-config.xml in /META-INF folder and if that so, try to
-     * find JSF annotations in the whole jar file. It accept simple wildcard patterns 
-     * like myfavoritejsflib-*.jar or myfavoritejsflib-1.1.?.jar.
-     * By default, all the classpath is scanned for annotations (so it adds an small
-     * delay on startup).
-     */
-    @JSFWebConfigParam(since = "2.1.8, 2.0.14", expectedValues="none, myfavoritejsflib-*.jar",
-            tags="performance, GAE")
-    public static final String GAE_JSF_ANNOTATIONS_JAR_FILES = 
-            "org.apache.myfaces.GAE_JSF_ANNOTATIONS_JAR_FILES";
-    private final static String GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT = null;
-    
     /**
      * If this param is set to true, a check will be done in Restore View Phase to check
      * if the viewId exists or not and if it does not exists, a 404 response will be thrown.
@@ -855,8 +827,6 @@ public class MyfacesConfig
     private boolean viewUniqueIdsCacheEnabled = VIEW_UNIQUE_IDS_CACHE_ENABLED_DEFAULT;
     private int componentUniqueIdsCacheSize = COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT;
     private boolean supportJSP = SUPPORT_JSP_DEFAULT;
-    private String gaeJsfJarFiles = GAE_JSF_JAR_FILES_DEFAULT;
-    private String gaeJsfAnnotationsJarFiles = GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT;
     private boolean strictJsf2ViewNotFound = STRICT_JSF_2_VIEW_NOT_FOUND_DEFAULT;
     private boolean earlyFlushEnabled = EARLY_FLUSH_ENABLED_DEFAULT;
     private boolean strictJsf2FaceletsCompatibility = STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT;
@@ -1055,12 +1025,6 @@ public class MyfacesConfig
         
         cfg.supportJSP = getBoolean(extCtx, SUPPORT_JSP,
                 SUPPORT_JSP_DEFAULT);
-                
-        cfg.gaeJsfJarFiles = getString(extCtx, GAE_JSF_JAR_FILES,
-                GAE_JSF_JAR_FILES_DEFAULT);
-        
-        cfg.gaeJsfAnnotationsJarFiles = getString(extCtx, GAE_JSF_ANNOTATIONS_JAR_FILES,
-                GAE_JSF_ANNOTATIONS_JAR_FILES_DEFAULT);
 
         cfg.strictJsf2ViewNotFound = getBoolean(extCtx, STRICT_JSF_2_VIEW_NOT_FOUND,
                 STRICT_JSF_2_VIEW_NOT_FOUND_DEFAULT);
@@ -1501,16 +1465,6 @@ public class MyfacesConfig
     public boolean isSupportJSP()
     {
         return supportJSP;
-    }
-
-    public String getGaeJsfJarFiles()
-    {
-        return gaeJsfJarFiles;
-    }
-
-    public String getGaeJsfAnnotationsJarFiles()
-    {
-        return gaeJsfAnnotationsJarFiles;
     }
 
     public boolean isStrictJsf2ViewNotFound()

@@ -30,8 +30,6 @@ import javax.faces.context.ExternalContext;
 
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigResourceProvider;
-import org.apache.myfaces.util.ContainerUtils;
-import org.apache.myfaces.config.util.GAEUtils;
 import org.apache.myfaces.view.facelets.util.Classpath;
 
 /**
@@ -72,25 +70,9 @@ public class DefaultFacesConfigResourceProvider extends FacesConfigResourceProvi
             urlSet.add(resources.nextElement());
         }
 
-        String jarFilesToScanParam = MyfacesConfig.getCurrentInstance(context).getGaeJsfJarFiles();
-        jarFilesToScanParam = jarFilesToScanParam != null ? jarFilesToScanParam.trim() : null;
-        if (ContainerUtils.isRunningOnGoogleAppEngine(context) && 
-            jarFilesToScanParam != null &&
-            jarFilesToScanParam.length() > 0)
-        {
-            Collection<URL> urlsGAE = GAEUtils.searchInWebLib(context, cl,
-                    jarFilesToScanParam, META_INF_PREFIX, FACES_CONFIG_SUFFIX);
-            if (urlsGAE != null)
-            {
-                urlSet.addAll(urlsGAE);
-            }
-        }
-        else
-        {
-            //Scan files inside META-INF ending with .faces-config.xml
-            URL[] urls = Classpath.search(cl, META_INF_PREFIX, FACES_CONFIG_SUFFIX);
-            Collections.addAll(urlSet, urls);
-        }
+        //Scan files inside META-INF ending with .faces-config.xml
+        URL[] urls = Classpath.search(cl, META_INF_PREFIX, FACES_CONFIG_SUFFIX);
+        Collections.addAll(urlSet, urls);
         
         return urlSet;
     }
