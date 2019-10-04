@@ -326,7 +326,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
             try
             {
                 in = new DataInputStream(jar.getInputStream(entry));
-                couldContainAnnotation = _ClassByteCodeAnnotationFilter.couldContainAnnotationsOnClassDef(in,
+                couldContainAnnotation = ClassByteCodeAnnotationFilter.couldContainAnnotationsOnClassDef(in,
                         JSF_ANNOTATION_NAMES);
             }
             catch (IOException e)
@@ -454,7 +454,7 @@ public class DefaultAnnotationProvider extends AnnotationProvider
                     try
                     {
                         in = new DataInputStream(externalContext.getResourceAsStream(path));
-                        couldContainAnnotation = _ClassByteCodeAnnotationFilter.couldContainAnnotationsOnClassDef(in,
+                        couldContainAnnotation = ClassByteCodeAnnotationFilter.couldContainAnnotationsOnClassDef(in,
                                 JSF_ANNOTATION_NAMES);
                     }
                     catch (IOException e)

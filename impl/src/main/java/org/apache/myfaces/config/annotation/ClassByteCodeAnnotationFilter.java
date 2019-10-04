@@ -31,9 +31,9 @@ import java.util.logging.Logger;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-class _ClassByteCodeAnnotationFilter
+class ClassByteCodeAnnotationFilter
 {
-    private static final Logger log = Logger.getLogger(_ClassByteCodeAnnotationFilter.class.getName());
+    private static final Logger log = Logger.getLogger(ClassByteCodeAnnotationFilter.class.getName());
     
     //Constants used to define type in cp_info structure
     private static final int CP_INFO_CLASS = 7;
