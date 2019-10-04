@@ -194,6 +194,7 @@ class LogMetaInfUtils
             return url;
         }
 
+        @Override
         public int compareTo(JarInfo info)
         {
             return version.compareTo(info.version);
