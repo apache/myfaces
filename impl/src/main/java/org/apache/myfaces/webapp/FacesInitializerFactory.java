@@ -23,7 +23,7 @@ import javax.servlet.ServletContext;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.lang.ClassUtils;
-import org.apache.myfaces.util.ContainerUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 
 /**
  * Simple Factory to get a FacesInitializer implementation either from a web.xml
@@ -89,18 +89,15 @@ public class FacesInitializerFactory
     {
         // No MyfacesConfig available yet, we must read the parameter directly:
         String initParameter = context.getInitParameter(MyfacesConfig.SUPPORT_JSP);
-        if (Boolean.FALSE.toString().equals(initParameter))
+        if (StringUtils.isBlank(initParameter) || Boolean.TRUE.toString().equals(initParameter))
         {
-            return new FaceletsInitilializer();
-        } 
-        else if (ContainerUtils.isJsp21(context)) 
-        {
-            return new Jsp21FacesInitializer();
-        } 
-        else 
-        {
-            return new Jsp20FacesInitializer();
+            if (ClassUtils.simpleClassForName("javax.servlet.jsp.JspApplicationContext", false) != null)
+            {
+                return new JspFacesInitializer();
+            }
         }
+
+        return new FaceletsInitilializer();
     }
     
 }

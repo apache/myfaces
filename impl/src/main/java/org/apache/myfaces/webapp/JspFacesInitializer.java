@@ -44,9 +44,9 @@ import org.apache.myfaces.util.lang.ClassUtils;
  * Initializes MyFaces in a JSP 2.1 environment.
  *
  */
-public class Jsp21FacesInitializer extends AbstractFacesInitializer
+public class JspFacesInitializer extends AbstractFacesInitializer
 {
-    private static final Logger log = Logger.getLogger(Jsp21FacesInitializer.class.getName());
+    private static final Logger log = Logger.getLogger(JspFacesInitializer.class.getName());
     
     /**
      * Cached instance of the JspFactory to use.

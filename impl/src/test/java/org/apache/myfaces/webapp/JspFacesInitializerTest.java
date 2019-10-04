@@ -41,10 +41,10 @@ import org.easymock.classextension.IMocksControl;
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class Jsp21FacesInitializerTest extends AbstractJsfTestCase
+public class JspFacesInitializerTest extends AbstractJsfTestCase
 {
 
-    public Jsp21FacesInitializerTest(String name)
+    public JspFacesInitializerTest(String name)
     {
         super(name);
     }
@@ -57,7 +57,7 @@ public class Jsp21FacesInitializerTest extends AbstractJsfTestCase
     {
         // TODO adapt this test case for MyFaces 2.0, because currently it checks nothing!
         
-        Jsp21FacesInitializer initializer = new Jsp21FacesInitializer();
+        JspFacesInitializer initializer = new JspFacesInitializer();
         IMocksControl control = EasyMock.createControl();
         
         JspFactory jspFactory = control.createMock(JspFactory.class);
