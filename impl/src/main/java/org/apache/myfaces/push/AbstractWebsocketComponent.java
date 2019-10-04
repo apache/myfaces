@@ -44,12 +44,6 @@ public abstract class AbstractWebsocketComponent extends UIOutput implements Cli
         {
             return true;
         }
-
-        @Override
-        public boolean containsAll(Collection<?> c)
-        {
-            return true;
-        }
     });
 
     @JSFProperty
