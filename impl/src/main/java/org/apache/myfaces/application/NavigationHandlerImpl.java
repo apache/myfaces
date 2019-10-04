@@ -164,12 +164,6 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             }
             if (navigationCase.isRedirect() || isViewActionProcessingBroadcastAndRequiresRedirect)
             { 
-                //&& (!PortletUtil.isPortletRequest(facesContext)))
-                // Spec section 7.4.2 says "redirects not possible" in this case for portlets
-                //But since the introduction of portlet bridge and the 
-                //removal of portlet code in myfaces core 2.0, this condition
-                //no longer applies
-
                 // Need to add the FlowHandler parameters here.
                 FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
                 List<Flow> activeFlows = FlowHandlerImpl.getActiveFlows(facesContext, flowHandler);

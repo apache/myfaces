@@ -49,12 +49,6 @@ public class ViewIdSupport
 
     private static final String JAVAX_SERVLET_INCLUDE_PATH_INFO = "javax.servlet.include.path_info";
     
-    /**
-     * Constant defined on javax.portlet.faces.Bridge class that helps to 
-     * define if the current request is a portlet request or not.
-     */
-    private static final String PORTLET_LIFECYCLE_PHASE = "javax.portlet.faces.phase";    
-    
     private static final Logger log = Logger.getLogger(ViewIdSupport.class.getName());
     
     private static final String VIEW_HANDLER_SUPPORT_SB = "oam.viewhandler.SUPPORT_SB";
@@ -558,7 +552,7 @@ public class ViewIdSupport
         boolean traceEnabled = log.isLoggable(Level.FINEST);
         
         String viewId = null;
-        if (requestMap.containsKey(PORTLET_LIFECYCLE_PHASE))
+        if (ExternalContextUtils.isPortlet(externalContext))
         {
             viewId = (String) externalContext.getRequestPathInfo();
         }
