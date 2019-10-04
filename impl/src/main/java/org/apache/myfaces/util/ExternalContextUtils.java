@@ -87,60 +87,6 @@ public final class ExternalContextUtils
     }
 
     /**
-     * This method is used when a ExternalContext object is not available,
-     * like in TomahawkFacesContextFactory.
-     * 
-     * According to TOMAHAWK-1331, the object context could receive an
-     * instance of javax.portlet.PortletContext or javax.portlet.PortletConfig,
-     * so we check both cases.
-     * 
-     * @param context
-     * @param request
-     * @return
-     */
-    public static final RequestType getRequestType(Object context, Object request)
-    {
-        //Stuff is laid out strangely in this class in order to optimize
-        //performance.  We want to do as few instanceof's as possible so
-        //things are laid out according to the expected frequency of the
-        //various requests occurring.
-
-        if(_PORTLET_10_SUPPORTED || _PORTLET_20_SUPPORTED)
-        {
-            if (_PORTLET_CONFIG_CLASS.isInstance(context) ||
-                _PORTLET_CONTEXT_CLASS.isInstance(context))
-            {
-                //We are inside of a portlet container
-                
-                if(_PORTLET_RENDER_REQUEST_CLASS.isInstance(request))
-                {
-                    return RequestType.RENDER;
-                }
-                
-                if(_PORTLET_RESOURCE_REQUEST_CLASS != null)
-                {
-                    if(_PORTLET_ACTION_REQUEST_CLASS.isInstance(request))
-                    {
-                        return RequestType.ACTION;
-                    }
-
-                    //We are in a JSR-286 container
-                    if(_PORTLET_RESOURCE_REQUEST_CLASS.isInstance(request))
-                    {
-                        return RequestType.RESOURCE;
-                    }
-                    
-                    return RequestType.EVENT;
-                }
-                
-                return RequestType.ACTION;
-            }
-        }
-        
-        return RequestType.SERVLET;
-    }
-
-    /**
      * Returns the value of {@link RequestType#isPortlet()} for the current
      * RequestType. This is a convenience function designed to perform a quick
      * check of the current request. If more capabilities need to be tested for
