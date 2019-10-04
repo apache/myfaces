@@ -19,6 +19,7 @@
 
 package org.apache.myfaces.push;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import javax.faces.component.UIOutput;
@@ -36,7 +37,15 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
         defaultRendererType="org.apache.myfaces.WebsocketComponent")
 public abstract class AbstractWebsocketComponent extends UIOutput implements ClientBehaviorHolder
 {
-    
+    private static final Collection<String> EVERY_EVENT = Collections.unmodifiableList(new ArrayList<String>()
+    {
+        @Override
+        public boolean contains(Object object)
+        {
+            return true;
+        }
+    });
+
     @JSFProperty
     public abstract String getChannel();
     
@@ -61,7 +70,6 @@ public abstract class AbstractWebsocketComponent extends UIOutput implements Cli
     @Override
     public Collection<String> getEventNames()
     {
-        return Collections.emptyList();
+        return EVERY_EVENT;
     }
-    
 }
