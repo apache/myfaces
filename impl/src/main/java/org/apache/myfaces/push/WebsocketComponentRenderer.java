@@ -43,6 +43,7 @@ import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilderBean;
 import org.apache.myfaces.push.cdi.WebsocketSessionBean;
 import org.apache.myfaces.push.cdi.WebsocketViewBean;
 import org.apache.myfaces.shared.renderkit.html.HTML;
+import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**
@@ -79,6 +80,12 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
     private HtmlBufferResponseWriterWrapper getResponseWriter(FacesContext context)
     {
         return HtmlBufferResponseWriterWrapper.getInstance(context.getResponseWriter());
+    }
+
+    @Override
+    public void decode(FacesContext facesContext, UIComponent component)
+    {
+        HtmlRendererUtils.decodeClientBehaviors(facesContext, component);
     }
 
     @Override
