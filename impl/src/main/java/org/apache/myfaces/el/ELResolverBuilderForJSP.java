@@ -52,13 +52,12 @@ public class ELResolverBuilderForJSP extends ELResolverBuilder
     public void build(FacesContext facesContext, CompositeELResolver compositeElResolver)
     {
         // add the ELResolvers to a List first to be able to sort them
-        List<ELResolver> list = new ArrayList<ELResolver>();
+        List<ELResolver> list = new ArrayList<>();
         
         if (isReplaceImplicitObjectResolverWithCDIResolver(facesContext))
         {
             //Add CDI ELResolver instead.
-            BeanManager beanManager = CDIUtils.getBeanManager(
-                    FacesContext.getCurrentInstance().getExternalContext());
+            BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
             list.add(beanManager.getELResolver());
         }
         else
