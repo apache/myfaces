@@ -88,11 +88,8 @@ class _NavigationUtils
         for (int i = 0; i < values.size(); i++)
         {
             String value = values.get(i);
-            if (_isExpression(value))
-            {
-                // evaluate the ValueExpression
-                value = context.getApplication().evaluateExpressionGet(context, value, String.class);
-            }
+            // evaluate the ValueExpression
+            value = context.getApplication().evaluateExpressionGet(context, value, String.class);
             target.add(value);
         }
         return target;

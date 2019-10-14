@@ -129,13 +129,11 @@ public final class NavigationUtils
         // change any value on the given List, it will be changed in the
         // NavigationCase too and the EL expression won't be evaluated again
         List<String> target = new ArrayList<>(values.size());
-        for (String value : values)
+        for (int i = 0; i < values.size(); i++)
         {
-            if (_isExpression(value))
-            {
-                // evaluate the ValueExpression
-                value = context.getApplication().evaluateExpressionGet(context, value, String.class);
-            }
+            String value = values.get(i);
+            // evaluate the ValueExpression
+            value = context.getApplication().evaluateExpressionGet(context, value, String.class);
             target.add(value);
         }
         return target;
