@@ -132,8 +132,11 @@ public final class NavigationUtils
         for (int i = 0; i < values.size(); i++)
         {
             String value = values.get(i);
-            // evaluate the ValueExpression
-            value = context.getApplication().evaluateExpressionGet(context, value, String.class);
+            if (_isExpression(value))
+            {
+                // evaluate the ValueExpression
+                value = context.getApplication().evaluateExpressionGet(context, value, String.class);
+            }
             target.add(value);
         }
         return target;
