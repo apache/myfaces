@@ -155,8 +155,9 @@ public final class IfHandler extends TagHandler implements ComponentContainerHan
         {
             fcc.endComponentUniqueIdSection();
         }
-        //AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
+
         ComponentSupport.saveInitialTagState(ctx, fcc, parent, uniqueId, b);
+
         if (fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS() && !fcc.isRefreshingTransientBuild())
         {
             //Mark the parent component to be saved and restored fully.
