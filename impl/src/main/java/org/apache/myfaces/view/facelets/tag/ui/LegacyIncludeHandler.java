@@ -36,6 +36,7 @@ import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
@@ -116,7 +117,7 @@ public final class LegacyIncludeHandler extends TagHandler implements ComponentC
                 if (!PhaseId.RESTORE_VIEW.equals(ctx.getFacesContext().getCurrentPhaseId()))
                 {
                     path = this.src.getValue(ctx);
-                    if (path == null || path.length() == 0)
+                    if (StringUtils.isBlank(path))
                     {
                         return;
                     }
@@ -143,7 +144,7 @@ public final class LegacyIncludeHandler extends TagHandler implements ComponentC
         }
         try
         {
-            if (path == null || path.length() == 0)
+            if (StringUtils.isBlank(path))
             {
                 return;
             }

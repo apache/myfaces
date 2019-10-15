@@ -19,6 +19,7 @@
 package org.apache.myfaces.view.facelets.tag.ui;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
@@ -86,6 +87,7 @@ public final class InsertHandler extends TagHandler implements TemplateClient, C
     {
         AbstractFaceletContext actx = (AbstractFaceletContext) ctx;
         actx.extendClient(this);
+
         boolean found = false;
         try
         {
@@ -105,11 +107,12 @@ public final class InsertHandler extends TagHandler implements TemplateClient, C
     public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException, FacesException,
             FaceletException, ELException
     {
-        if (this.name == name || this.name != null && this.name.equals(name))
+        if (Objects.equals(this.name, name))
         {
             this.nextHandler.apply(ctx, parent);
             return true;
         }
+
         return false;
     }
 }

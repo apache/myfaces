@@ -39,6 +39,7 @@ import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
@@ -156,7 +157,7 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
                     if (!PhaseId.RESTORE_VIEW.equals(ctx.getFacesContext().getCurrentPhaseId()))
                     {
                         path = this._template.getValue(ctx);
-                        if (path == null || path.isEmpty())
+                        if (StringUtils.isBlank(path))
                         {
                             return;
                         }
@@ -204,8 +205,7 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
                         //unset markInitialState flag
                         if (isBuildingInitialState == null)
                         {
-                            ctx.getFacesContext().getAttributes().remove(
-                                    StateManager.IS_BUILDING_INITIAL_STATE);
+                            ctx.getFacesContext().getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);
                         }
                         else
                         {
@@ -226,18 +226,20 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
             if (!_template.isLiteral())
             {
                 fcc.endComponentUniqueIdSection();
+                
+                if (fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS()
+                        && !fcc.isRefreshingTransientBuild())
+                {
+                    //Mark the parent component to be saved and restored fully.
+                    ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
+                }
+                if (fcc.isDynamicComponentSection())
+                {
+                    ComponentSupport.markComponentToRefreshDynamically(ctx.getFacesContext(), parent);
+                }
             }
         }
-        if (!_template.isLiteral() && fcc.isUsingPSSOnThisView() && fcc.isRefreshTransientBuildOnPSS()
-                && !fcc.isRefreshingTransientBuild())
-        {
-            //Mark the parent component to be saved and restored fully.
-            ComponentSupport.markComponentToRestoreFully(ctx.getFacesContext(), parent);
-        }
-        if (!_template.isLiteral() && fcc.isDynamicComponentSection())
-        {
-            ComponentSupport.markComponentToRefreshDynamically(ctx.getFacesContext(), parent);
-        }
+
     }
 
     @Override
