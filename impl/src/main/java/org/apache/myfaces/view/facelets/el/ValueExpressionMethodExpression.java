@@ -22,6 +22,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Objects;
 
 import javax.el.ELContext;
 import javax.el.MethodExpression;
@@ -90,13 +91,9 @@ public class ValueExpressionMethodExpression extends MethodExpression
         {
             return false;
         }
+
         ValueExpressionMethodExpression other = (ValueExpressionMethodExpression) obj;
-        if ((this.valueExpression == null && other.valueExpression != null) || 
-             (this.valueExpression != null && !this.valueExpression.equals(other.valueExpression)))
-        {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.valueExpression, other.valueExpression);
     }
 
     @Override
