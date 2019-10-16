@@ -608,7 +608,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                         {
                             if (childStates == null)
                             {
-                                childStates = new ArrayList<Object[]>(
+                                childStates = new ArrayList<>(
                                         parent.getFacetCount()
                                         + parent.getChildCount()
                                         - totalChildCount
@@ -653,7 +653,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     {
                         if (childStates == null)
                         {
-                            childStates = new ArrayList<Object[]>(
+                            childStates = new ArrayList<>(
                                     parent.getFacetCount()
                                     + parent.getChildCount()
                                     - totalChildCount
@@ -689,7 +689,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                         {
                             if (childStates == null)
                             {
-                                childStates = new ArrayList<Object[]>(
+                                childStates = new ArrayList<>(
                                         parent.getFacetCount()
                                         + parent.getChildCount()
                                         - totalChildCount
