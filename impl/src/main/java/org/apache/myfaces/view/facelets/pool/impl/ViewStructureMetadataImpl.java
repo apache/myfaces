@@ -35,39 +35,26 @@ public class ViewStructureMetadataImpl extends ViewStructureMetadata
         this.viewState = viewState;
         this.rvc = rvc;
     }
-    
-    /**
-     * @return the viewState
-     */
+
     @Override
     public Object getViewRootState()
     {
         return viewState;
     }
 
-    /**
-     * @param viewState the viewState to set
-     */
     public void setViewState(Object viewState)
     {
         this.viewState = viewState;
     }
 
-    /**
-     * @return the rvc
-     */
     @Override
     public RequestViewMetadata getRequestViewMetadata()
     {
         return rvc;
     }
 
-    /**
-     * @param rvc the rvc to set
-     */
     public void setRequestViewMetadata(RequestViewMetadata rvc)
     {
         this.rvc = rvc;
     }
-    
 }
