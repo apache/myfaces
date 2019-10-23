@@ -186,9 +186,7 @@ public class TemplateContextImpl extends TemplateContext
                 try
                 {
                     actx.pushPageContext(this._pageContext);
-                    found = this._target
-                            .apply(actx,
-                                    parent, name);
+                    found = this._target.apply(actx, parent, name);
                 }
                 finally
                 {
