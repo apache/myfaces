@@ -41,12 +41,6 @@
         <url>https://issues.apache.org/jira/browse/MYFACES</url>
     </issueManagement>
 
-    <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/parent</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/parent</developerConnection>
-        <url>http://svn.apache.org/repos/asf/myfaces/core/trunk/parent</url>
-    </scm>
-
     <build>
     
         <!-- Since Maven 3.0, this is required to add scpexe as protocol for deploy. -->
