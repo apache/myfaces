@@ -31,12 +31,6 @@
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/myfaces/core/trunk/assembly</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/myfaces/core/trunk/assembly</developerConnection>
-    <url>http://svn.apache.org/repos/asf/myfaces/core/trunk/assembly</url>
-  </scm>
-
   <build>
 
     <plugins>
