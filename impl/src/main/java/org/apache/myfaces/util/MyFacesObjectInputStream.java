@@ -57,9 +57,6 @@ public class MyFacesObjectInputStream extends ObjectInputStream
     protected Class resolveProxyClass(String[] interfaces) 
             throws IOException, ClassNotFoundException
     {
-        // Only option that would match the current code would be to
-        // expand ClassLoaderExtension to handle 'getProxyClass', which
-        // would break all existing ClassLoaderExtension implementations
         Class[] cinterfaces = new Class[interfaces.length];
         for (int i = 0; i < interfaces.length; i++)
         {
