@@ -223,7 +223,10 @@ public class ApplicationImpl extends Application
     private SearchExpressionHandler _searchExpressionHandler;
     
     private SearchKeywordResolver _searchExpressionResolver;
-    
+
+    private Map<Class<?>, Map<String, PropertyDescriptor>> converterPDCache
+            = new ConcurrentHashMap<>();
+
     /**
      * Represents semantic null in _componentClassMap. 
      */
@@ -1656,9 +1659,6 @@ public class ApplicationImpl extends Application
 
     }
 
-    private Map<Class<?>, Map<String, PropertyDescriptor>> converterPDCache
-            = new ConcurrentHashMap<>();
-            
     private void setConverterProperties(final Class<?> converterClass, final Converter converter)
     {
         final org.apache.myfaces.config.element.Converter converterConfig = _runtimeConfig
