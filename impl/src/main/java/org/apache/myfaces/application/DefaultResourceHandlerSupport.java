@@ -101,7 +101,7 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
                 }
             }
             else
-            {            
+            {
                 //The ExternalContextResourceLoader has precedence over
                 //ClassLoaderResourceLoader, so it goes first.
                 String renderedJSFJS = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),

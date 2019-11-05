@@ -51,10 +51,8 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
     /**
      * Define the mode used for jsf.js file:
      * <ul>
-     * <li>normal : contains everything, including jsf-i18n.js, jsf-experimental.js and jsf-legacy.js</li>
-     * <li>minimal-modern : is the core jsf with a baseline of ie9+,
-     * without jsf-i18n.js, jsf-experimental.js and jsf-legacy.js</li>
-     * <li>minimal: which is the same with a baseline of ie6, without jsf-i18n.js, jsf-experimental.js</li>
+     * <li>normal : contains everything, including i18n (jsf-i18n.js)</li>
+     * <li>minimal: contains everything, excluding i18n (jsf-i18n.js)</li>
      * </ul>
      * <p>If org.apache.myfaces.USE_MULTIPLE_JS_FILES_FOR_JSF_UNCOMPRESSED_JS param is set to true and project stage
      * is Development, this param is ignored.</p>
@@ -184,20 +182,10 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
                 return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
                         ResourceUtils.JSF_MINIMAL_JS_RESOURCE_NAME, false);
             }
-            else if (_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_MINIMAL_MODERN) )
-            {
-                return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
-                        ResourceUtils.JSF_MINIMAL_MODERN_JS_RESOURCE_NAME, false);
-            }
-            else
-            {
-                return null;
-            }
+            return null;
         }
         else if (javaxFacesLib && !_developmentStage && !_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL) &&
-                                   (ResourceUtils.JSF_MYFACES_JSFJS_I18N.equals(resourceName) ||
-                                   ResourceUtils.JSF_MYFACES_JSFJS_EXPERIMENTAL.equals(resourceName) ||
-                                   ResourceUtils.JSF_MYFACES_JSFJS_LEGACY.equals(resourceName)) )
+                                   (ResourceUtils.JSF_MYFACES_JSFJS_I18N.equals(resourceName)))
         {
             return new ResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion);
         }
