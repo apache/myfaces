@@ -37,6 +37,7 @@ public class ResourceUtils
     public final static String JSF_MYFACES_JSFJS_NORMAL = "normal";
     
     public final static String JSF_UNCOMPRESSED_JS_RESOURCE_NAME = "jsf-uncompressed.js";
+    public final static String JSF_UNCOMPRESSED_FULL_JS_RESOURCE_NAME = "jsf-uncompressed-full.js";
     public final static String JSF_MINIMAL_JS_RESOURCE_NAME = "jsf-minimal.js";
     public final static String JSF_MYFACES_JSFJS_I18N = "jsf-i18n.js";
 

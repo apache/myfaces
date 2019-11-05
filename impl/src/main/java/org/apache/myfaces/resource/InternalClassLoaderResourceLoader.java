@@ -174,7 +174,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
                     // because this part is only called in debugging mode
                     //in production only in debugging
                     return new AliasResourceMetaImpl(prefix, libraryName, libraryVersion, resourceName, resourceVersion,
-                                                     "jsf-uncompressed-full.js", false);
+                                                     ResourceUtils.JSF_UNCOMPRESSED_FULL_JS_RESOURCE_NAME, false);
                 }
             }
             else if (_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_MINIMAL) )
