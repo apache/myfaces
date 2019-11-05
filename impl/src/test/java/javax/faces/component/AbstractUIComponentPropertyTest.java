@@ -18,15 +18,16 @@
  */
 package javax.faces.component;
 
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.myfaces.test.mock.MockFacesContext;
-import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.junit.After;
@@ -81,10 +82,24 @@ public abstract class AbstractUIComponentPropertyTest<T>
 
     protected abstract UIComponent createComponent();
 
+    protected PropertyDescriptor getPropertyDescriptor(Class<?> clazz, String property) throws IntrospectionException
+    {
+        for (PropertyDescriptor pd : Introspector.getBeanInfo(clazz).getPropertyDescriptors())
+        {
+            if (pd.getName().equals(property))
+            {
+                return pd;
+            }
+        }
+        return null;
+    }
+    
     @Test
     public void testDefaultValue() throws Exception
     {
-        Assert.assertEquals(_defaultValue, PropertyUtils.getProperty(_component, _property));
+        Object val = getPropertyDescriptor(_component.getClass(), _property).getReadMethod()
+                .invoke(_component);
+        Assert.assertEquals(_defaultValue, val);
     }
 
     @Test
@@ -92,8 +107,12 @@ public abstract class AbstractUIComponentPropertyTest<T>
     {
         for (T testValue : _testValues)
         {
-            PropertyUtils.setProperty(_component, _property, testValue);
-            Assert.assertEquals(testValue, PropertyUtils.getProperty(_component, _property));
+            getPropertyDescriptor(_component.getClass(), _property).getWriteMethod()
+                    .invoke(_component, testValue);
+            
+            Object val = getPropertyDescriptor(_component.getClass(), _property).getReadMethod()
+                    .invoke(_component);
+            Assert.assertEquals(testValue, val);
         }
     }
 
@@ -106,7 +125,10 @@ public abstract class AbstractUIComponentPropertyTest<T>
             expect(_valueExpression.getValue(eq(_facesContext.getELContext()))).andReturn(testValue);
             _mocksControl.replay();
             _component.setValueExpression(_property, _valueExpression);
-            Assert.assertEquals(testValue, PropertyUtils.getProperty(_component, _property));
+            
+            Object val = getPropertyDescriptor(_component.getClass(), _property).getReadMethod()
+                    .invoke(_component);
+            Assert.assertEquals(testValue, val);
             _mocksControl.reset();
         }
     }
@@ -122,7 +144,10 @@ public abstract class AbstractUIComponentPropertyTest<T>
             _mocksControl.reset();
             expect(_valueExpression.getValue(eq(_facesContext.getELContext()))).andReturn(testValue);
             _mocksControl.replay();
-            Assert.assertEquals(testValue, PropertyUtils.getProperty(_component, _property));
+            
+            Object val = getPropertyDescriptor(_component.getClass(), _property).getReadMethod()
+                    .invoke(_component);
+            Assert.assertEquals(testValue, val);
             _mocksControl.reset();
         }
     }

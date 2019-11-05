@@ -19,8 +19,8 @@
 
 package org.apache.myfaces.test.mock.lifecycle;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.myfaces.test.util.Jsf11Utils;
 import org.apache.myfaces.test.util.Jsf12Utils;
 import org.apache.myfaces.test.util.JsfVersion;
@@ -44,7 +44,7 @@ import javax.faces.event.PhaseId;
 class RestoreViewExecutor implements PhaseExecutor
 {
 
-    private static final Log log = LogFactory.getLog(RestoreViewExecutor.class);
+    private static final Logger log = Logger.getLogger(RestoreViewExecutor.class.getName());
     private RestoreViewSupport _restoreViewSupport;
 
     public boolean execute(FacesContext facesContext)
@@ -72,9 +72,9 @@ class RestoreViewExecutor implements PhaseExecutor
 
         if (viewRoot != null)
         {
-            if (log.isTraceEnabled())
+            if (log.isLoggable(Level.FINEST))
             {
-                log.trace("View already exists in the FacesContext");
+                log.log(Level.FINEST, "View already exists in the FacesContext");
             }
 
             viewRoot.setLocale(facesContext.getExternalContext()
@@ -88,9 +88,9 @@ class RestoreViewExecutor implements PhaseExecutor
         // Determine if this request is a postback or initial request
         if (restoreViewSupport.isPostback(facesContext))
         {
-            if (log.isTraceEnabled())
+            if (log.isLoggable(Level.FINEST))
             {
-                log.trace("Request is a postback");
+                log.log(Level.FINEST, "Request is a postback");
             }
 
             viewRoot = viewHandler.restoreView(facesContext, viewId);
@@ -109,10 +109,9 @@ class RestoreViewExecutor implements PhaseExecutor
         }
         else
         {
-            if (log.isTraceEnabled())
+            if (log.isLoggable(Level.FINEST))
             {
-                log
-                        .trace("Request is not a postback. New UIViewRoot will be created");
+                log.log(Level.FINEST, "Request is not a postback. New UIViewRoot will be created");
             }
 
             viewRoot = viewHandler.createView(facesContext, viewId);
@@ -183,8 +182,7 @@ class RestoreViewExecutor implements PhaseExecutor
             int dot = viewId.lastIndexOf('.');
             if (dot == -1)
             {
-                log
-                        .error("Assumed extension mapping, but there is no extension in "
+                log.log(Level.SEVERE, "Assumed extension mapping, but there is no extension in "
                                 + viewId);
                 viewId = null;
             }

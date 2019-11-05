@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
@@ -59,8 +61,6 @@ import javax.faces.render.Renderer;
 import javax.faces.validator.Validator;
 import javax.faces.view.ViewDeclarationLanguage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.test.mock.resource.MockResourceHandler;
 
 /**
@@ -213,7 +213,7 @@ public abstract class MockApplication20 extends MockApplication12
 
     // ------------------------------------------------------ Instance Variables
 
-    private static final Log log = LogFactory.getLog(MockApplication20.class);
+    private static final Logger log = Logger.getLogger(MockApplication20.class.getName());
 
     private final Map<Class<? extends SystemEvent>, SystemListenerEntry> _systemEventListenerClassMap = 
         new ConcurrentHashMap<Class<? extends SystemEvent>, SystemListenerEntry>();
@@ -468,7 +468,7 @@ public abstract class MockApplication20 extends MockApplication12
         if (renderer == null)
         {
             // If no such Renderer can be found, a message must be logged with a helpful error message.
-            log.error("renderer cannot be found for component type " + componentType + " and renderer type "
+            log.log(Level.SEVERE, "renderer cannot be found for component type " + componentType + " and renderer type "
                     + rendererType);
         }
         else
@@ -620,16 +620,18 @@ public abstract class MockApplication20 extends MockApplication12
             // If the act of invoking the processListener method causes an AbortProcessingException to be thrown, 
             // processing of the listeners must be aborted, no further processing of the listeners for this event must 
             // take place, and the exception must be logged with Level.SEVERE.
-            log.error("Event processing was aborted", e);
+            log.log(Level.SEVERE, "Event processing was aborted", e);
         }
     }
 
+    @Override
     public void publishEvent(FacesContext facesContext,
             Class<? extends SystemEvent> systemEventClass, Object source)
     {
         publishEvent(facesContext, systemEventClass, source.getClass(), source);
     }
 
+    @Override
     public ProjectStage getProjectStage()
     {
         // If the value has already been determined by a previous call to this
@@ -994,17 +996,17 @@ public abstract class MockApplication20 extends MockApplication12
                     }
                     catch (InstantiationException e)
                     {
-                        log.error("Could not instantiate component class name = " + fqcn, e);
+                        log.log(Level.SEVERE, "Could not instantiate component class name = " + fqcn, e);
                         throw new FacesException("Could not instantiate component class name = " + fqcn, e);
                     }
                     catch (IllegalAccessException e)
                     {
-                        log.error("Could not instantiate component class name = " + fqcn, e);
+                        log.log(Level.SEVERE, "Could not instantiate component class name = " + fqcn, e);
                         throw new FacesException("Could not instantiate component class name = " + fqcn, e);
                     }
                     catch (Exception e)
                     {
-                        log.error("Could not instantiate component class name = " + fqcn, e);
+                        log.log(Level.SEVERE, "Could not instantiate component class name = " + fqcn, e);
                     }
                 }
 

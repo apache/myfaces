@@ -21,13 +21,13 @@ package org.apache.myfaces.test.mock.lifecycle;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.faces.lifecycle.Lifecycle;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * This class encapsulates the logic used to call PhaseListeners.  It was 
@@ -40,8 +40,7 @@ import org.apache.commons.logging.LogFactory;
 class PhaseListenerManager
 {
 
-    private static final Log log = LogFactory
-            .getLog(PhaseListenerManager.class);
+    private static final Logger log = Logger.getLogger(PhaseListenerManager.class.getName());
 
     private Lifecycle lifecycle;
     private FacesContext facesContext;
@@ -88,7 +87,7 @@ class PhaseListenerManager
                 catch (Exception e)
                 {
                     beforePhaseSuccess[i] = false; // redundant - for clarity
-                    log.error("Exception in PhaseListener "
+                    log.log(Level.SEVERE, "Exception in PhaseListener "
                             + phaseId.toString() + " beforePhase.", e);
                     return;
                 }
@@ -115,7 +114,7 @@ class PhaseListenerManager
                 }
                 catch (Exception e)
                 {
-                    log.error("Exception in PhaseListener "
+                    log.log(Level.SEVERE, "Exception in PhaseListener "
                             + phaseId.toString() + " afterPhase", e);
                 }
             }

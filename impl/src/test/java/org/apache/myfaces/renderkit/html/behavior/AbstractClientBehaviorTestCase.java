@@ -22,13 +22,11 @@ import javax.faces.FactoryFinder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.behavior.ClientBehaviorContext;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.ResponseWriter;
 
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.util.lang.FastWriter;
-import org.apache.myfaces.test.config.ConfigParser;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.junit.Assert;
 import org.junit.Test;
@@ -41,7 +39,6 @@ public abstract class AbstractClientBehaviorTestCase extends FaceletTestCase
 {
     protected ResponseWriter writer;
     protected FastWriter outputWriter; 
-    protected ConfigParser parser;
 
     protected abstract HtmlRenderedClientEventAttr[] getClientBehaviorHtmlRenderedAttributes();
     
@@ -82,8 +79,7 @@ public abstract class AbstractClientBehaviorTestCase extends FaceletTestCase
     protected void setUpRenderKit() throws Exception
     {
         super.setUpRenderKit();
-        parser = new ConfigParser();
-        parser.parse(parser.getPlatformURLs());
+
         //parser.parse(this.getClass().getResource("/META-INF/faces-config.xml"));    
         request.setServletPath("/test");
     }

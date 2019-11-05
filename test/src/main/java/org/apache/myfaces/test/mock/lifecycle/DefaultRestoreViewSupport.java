@@ -21,15 +21,14 @@ package org.apache.myfaces.test.mock.lifecycle;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author: mbr $)
@@ -42,7 +41,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
 
     private static final String JAVAX_SERVLET_INCLUDE_PATH_INFO = "javax.servlet.include.path_info";
 
-    private final Log log = LogFactory.getLog(DefaultRestoreViewSupport.class);
+    private static final Logger log = Logger.getLogger(DefaultRestoreViewSupport.class.getName());
 
     public void processComponentBinding(FacesContext facesContext,
             UIComponent component)
@@ -67,12 +66,11 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
 
         String viewId = (String) requestMap
                 .get(JAVAX_SERVLET_INCLUDE_PATH_INFO);
-        boolean traceEnabled = log.isTraceEnabled();
         if (viewId != null)
         {
-            if (traceEnabled)
+            if (log.isLoggable(Level.FINEST))
             {
-                log.trace("Calculated viewId '" + viewId
+                log.log(Level.FINEST, "Calculated viewId '" + viewId
                         + "' from request param '"
                         + JAVAX_SERVLET_INCLUDE_PATH_INFO + '\'');
             }
@@ -80,9 +78,9 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         else
         {
             viewId = externalContext.getRequestPathInfo();
-            if (viewId != null && traceEnabled)
+            if (viewId != null && log.isLoggable(Level.FINEST))
             {
-                log.trace("Calculated viewId '" + viewId
+                log.log(Level.FINEST, "Calculated viewId '" + viewId
                         + "' from request path info");
             }
         }
@@ -91,9 +89,9 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         {
             viewId = (String) requestMap
                     .get(JAVAX_SERVLET_INCLUDE_SERVLET_PATH);
-            if (viewId != null && traceEnabled)
+            if (viewId != null && log.isLoggable(Level.FINEST))
             {
-                log.trace("Calculated viewId '" + viewId
+                log.log(Level.FINEST, "Calculated viewId '" + viewId
                         + "' from request param '"
                         + JAVAX_SERVLET_INCLUDE_SERVLET_PATH + '\'');
             }
@@ -102,9 +100,9 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         if (viewId == null)
         {
             viewId = externalContext.getRequestServletPath();
-            if (viewId != null && traceEnabled)
+            if (viewId != null && log.isLoggable(Level.FINEST))
             {
-                log.trace("Calculated viewId '" + viewId
+                log.log(Level.FINEST, "Calculated viewId '" + viewId
                         + "' from request servlet path");
             }
         }

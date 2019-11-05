@@ -20,6 +20,9 @@ package org.apache.myfaces.application;
 
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -90,7 +94,6 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.myfaces.cdi.wrapper.FacesBehaviorCDIWrapper;
 import org.apache.myfaces.cdi.wrapper.FacesClientBehaviorCDIWrapper;
 import org.apache.myfaces.cdi.wrapper.FacesConverterCDIWrapper;
@@ -1653,6 +1656,9 @@ public class ApplicationImpl extends Application
 
     }
 
+    private Map<Class<?>, Map<String, PropertyDescriptor>> converterPDCache
+            = new ConcurrentHashMap<>();
+            
     private void setConverterProperties(final Class<?> converterClass, final Converter converter)
     {
         final org.apache.myfaces.config.element.Converter converterConfig = _runtimeConfig
@@ -1666,13 +1672,40 @@ public class ApplicationImpl extends Application
 
         if (converterConfig != null && !converterConfig.getProperties().isEmpty())
         {
+            Map<String, PropertyDescriptor> pds = converterPDCache.computeIfAbsent(converterClass, c ->
+            {
+                HashMap<String, PropertyDescriptor> map = new HashMap<>(converterConfig.getProperties().size());
+                try
+                {
+                    for (PropertyDescriptor pd : Introspector.getBeanInfo(c).getPropertyDescriptors())
+                    {
+                        for (Property property : converterConfig.getProperties())
+                        {
+                            if (Objects.equals(pd.getName(), property.getPropertyName()))
+                            {
+                                map.put(property.getPropertyName(), pd);
+                            }
+                        }
+                    }
+                }
+                catch (IntrospectionException e)
+                {
+                    log.log(Level.SEVERE,
+                            "Could not read properties for setting default values of converter: "
+                                    + converterClass.getSimpleName(),
+                            e);
+                }
+                return map;
+            });
+
             for (int i = 0; i < converterConfig.getProperties().size(); i++)
             {
                 Property property = converterConfig.getProperties().get(i);
-                
                 try
                 {
-                    BeanUtils.setProperty(converter, property.getPropertyName(), property.getDefaultValue());
+                    PropertyDescriptor pd = pds.get(property.getPropertyName());
+                    Object convertedValue = ClassUtils.convertToType(property.getDefaultValue(), pd.getPropertyType());
+                    pd.getWriteMethod().invoke(converter, convertedValue);
                 }
                 catch (Throwable th)
                 {

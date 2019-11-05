@@ -693,8 +693,6 @@
                                     javax.servlet.annotation;version="[3, 5)";resolution:=optional,
                                     javax.xml.parsers,
                                     org.apache;resolution:=optional,
-                                    org.apache.commons.beanutils;version="[1.8.3, 2.0.0)",
-                                    org.apache.commons.logging;version="[1.1.1, 2.0.0)",
                                     org.w3c.dom,
                                     org.xml.sax,
                                     org.xml.sax.helpers,
@@ -1053,12 +1051,6 @@
         <dependency>
             <groupId>org.apache.myfaces.buildtools</groupId>
             <artifactId>myfaces-builder-annotations</artifactId>
-        </dependency>
-
-        <!-- Commons -->
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
         </dependency>
 
         <!-- tomcat 7 support (InjectionProvider) -->
