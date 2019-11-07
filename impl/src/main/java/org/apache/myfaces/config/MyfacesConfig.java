@@ -806,6 +806,17 @@ public class MyfacesConfig
     public static final String RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING = "org.apache.myfaces.RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING";
     public static final boolean RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING_DEFAULT = false;
     
+    /**
+     * Defines if a session should be created (if one does not exist) before response rendering.
+     * When this parameter is set to true, a session will be created even when client side state 
+     * saving or stateless views are used, which can lead to unintended resource consumption.
+     * When this parameter is set to false, a session will only be created before response 
+     * rendering if a view is not transient and server side state saving is in use.     
+     */
+    @JSFWebConfigParam(since="2.3.6", defaultValue="false", expectedValues="true,false")
+    protected static final String ALWAYS_FORCE_SESSION_CREATION = 
+            "org.apache.myfaces.ALWAYS_FORCE_SESSION_CREATION";
+    public final static boolean ALWAYS_FORCE_SESSION_CREATION_DEFAULT = false;
     
     // we need it, applicationImpl not ready probably
     private ProjectStage projectStage = ProjectStage.Production;
@@ -886,6 +897,7 @@ public class MyfacesConfig
     private boolean logWebContextParams = false;
     private int websocketMaxConnections = WEBSOCKET_MAX_CONNECTIONS_DEFAULT;
     private boolean renderClientBehaviorScriptsAsString = RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING_DEFAULT;
+    private boolean alwaysForceSessionCreation = ALWAYS_FORCE_SESSION_CREATION_DEFAULT;
     
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -1296,6 +1308,9 @@ public class MyfacesConfig
 
         cfg.renderClientBehaviorScriptsAsString = getBoolean(extCtx, RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING,
                 RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING_DEFAULT);
+
+        cfg.alwaysForceSessionCreation = getBoolean(extCtx, ALWAYS_FORCE_SESSION_CREATION,
+                ALWAYS_FORCE_SESSION_CREATION_DEFAULT);
 
         return cfg;
     }
@@ -1755,6 +1770,11 @@ public class MyfacesConfig
     public boolean isRenderClientBehaviorScriptsAsString()
     {
         return renderClientBehaviorScriptsAsString;
+    }
+
+    public boolean isAlwaysForceSessionCreation()
+    {
+        return alwaysForceSessionCreation;
     }
 }
 
