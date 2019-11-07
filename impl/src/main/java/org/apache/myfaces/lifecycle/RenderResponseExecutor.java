@@ -29,7 +29,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PostRenderViewEvent;
@@ -48,6 +47,7 @@ class RenderResponseExecutor extends PhaseExecutor
 {
     
     private static final Logger log = Logger.getLogger(RenderResponseExecutor.class.getName());
+    private MyfacesConfig _myfacesConfig;
     
     public boolean execute(FacesContext facesContext)
     {
@@ -173,8 +173,11 @@ class RenderResponseExecutor extends PhaseExecutor
     {
         if (context.getExternalContext().getSession(false) == null) 
         {
-            ExternalContext ec = context.getExternalContext();
-            if (MyfacesConfig.getCurrentInstance(ec).isAlwaysForceSessionCreation() 
+            if (_myfacesConfig == null) 
+            {
+                _myfacesConfig = MyfacesConfig.getCurrentInstance(context.getExternalContext());
+            }
+            if (_myfacesConfig.isAlwaysForceSessionCreation() 
                     || (!context.getViewRoot().isTransient() 
                     && !context.getApplication().getStateManager().isSavingStateInClient(context))) 
             {

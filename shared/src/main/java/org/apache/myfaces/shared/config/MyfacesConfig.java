@@ -537,7 +537,11 @@ public class MyfacesConfig
     public final static boolean STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT = false;
 
     /**
-     * Defines if a session should be created (if one does not exist) before response rendering
+     * Defines if a session should be created (if one does not exist) before response rendering.
+     * When this parameter is set to true, a session will be created even when client side state 
+     * saving or stateless views are used, which can lead to unintended resource consumption.
+     * When this parameter is set to false, a session will only be created before response 
+     * rendering if a view is not transient and server side state saving is in use.
      */
     @JSFWebConfigParam(since="2.3.6", defaultValue="true", expectedValues="true,false")
     protected static final String ALWAYS_FORCE_SESSION_CREATION = 
