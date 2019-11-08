@@ -167,6 +167,14 @@ class RenderResponseExecutor extends PhaseExecutor
      * Create a session if the ALWAYS_FORCE_SESSION_CREATION param is set to true, or if the
      * current view is not transient and server side state saving is in use.
      * 
+     * Note: if the current view is transient or client side state saving is in use, it is 
+     * not technically correct to create a session here, since a session should not be
+     * required for those cases and creating one will cause undesirable memory usage.  
+     * However, if we do not create a session before rendering begins and view or session
+     * scope beans are created later on, then the response might be committed before those 
+     * scopes have a chance to create a session and so the session cookie will not be set.
+     * See MYFACES-4309
+     * 
      * @param FacesContext
      */
     private void forceSessionCreation(FacesContext context) 
