@@ -536,6 +536,19 @@ public class MyfacesConfig
             "org.apache.myfaces.STRICT_JSF_2_ORIGIN_HEADER_APP_PATH";
     public final static boolean STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT = false;
 
+    /**
+     * Defines if a session should be created (if one does not exist) before response rendering.
+     * When this parameter is set to true, a session will be created even when client side state 
+     * saving or stateless views are used, which can lead to unintended resource consumption.
+     * When this parameter is set to false, a session will only be created before response 
+     * rendering if a view is not transient and server side state saving is in use.
+     */
+    @JSFWebConfigParam(since="2.3.6", defaultValue="true", expectedValues="true,false")
+    protected static final String ALWAYS_FORCE_SESSION_CREATION = 
+            "org.apache.myfaces.ALWAYS_FORCE_SESSION_CREATION";
+    public final static boolean ALWAYS_FORCE_SESSION_CREATION_DEFAULT = true;
+
+
     private boolean _prettyHtml;
     private boolean _detectJavascript;
     private boolean _allowJavascript;
@@ -578,6 +591,7 @@ public class MyfacesConfig
     private Integer _numberOfFacesFlowClientWindowIdsInSession;
     private boolean _supportEL3ImportHandler;
     private boolean _strictJsf2OriginHeaderAppPath;
+    private boolean _alwaysForceSessionCreation;
 
     private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -690,6 +704,7 @@ public class MyfacesConfig
                         INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT)+1);
         setSupportEL3ImportHandler(SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT);
         setStrictJsf2OriginHeaderAppPath(STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT);
+        setAlwaysForceSessionCreation(ALWAYS_FORCE_SESSION_CREATION_DEFAULT);
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -889,6 +904,10 @@ public class MyfacesConfig
         myfacesConfig.setStrictJsf2OriginHeaderAppPath(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
                         STRICT_JSF_2_ORIGIN_HEADER_APP_PATH, 
                         STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT));
+
+        myfacesConfig.setAlwaysForceSessionCreation(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
+                        ALWAYS_FORCE_SESSION_CREATION, 
+                        ALWAYS_FORCE_SESSION_CREATION_DEFAULT));
         
         if (TOMAHAWK_AVAILABLE)
         {
@@ -1543,5 +1562,18 @@ public class MyfacesConfig
     public void setStrictJsf2OriginHeaderAppPath(boolean strictJsf2OriginHeaderAppPath)
     {
         this._strictJsf2OriginHeaderAppPath = strictJsf2OriginHeaderAppPath;
+    }
+
+    public boolean isAlwaysForceSessionCreation()
+    {
+        return _alwaysForceSessionCreation;
+    }
+    
+    /**
+     * @param alwaysForceSessionCreation the _alwaysForceSessionCreation to set
+     */
+    public void setAlwaysForceSessionCreation(boolean alwaysForceSessionCreation)
+    {
+        this._alwaysForceSessionCreation = alwaysForceSessionCreation;
     }
 }
