@@ -36,7 +36,7 @@ import javax.faces.event.PostRenderViewEvent;
 import javax.faces.event.PreRenderViewEvent;
 import javax.faces.view.ViewDeclarationLanguage;
 
-import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.config.MyfacesConfig;
 
 /**
  * Implements the render response phase (JSF Spec 2.2.6)
