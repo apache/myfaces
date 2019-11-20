@@ -81,12 +81,9 @@ public abstract class UIComponentBase extends UIComponent
     private static final String _STRING_BUILDER_KEY
             = "javax.faces.component.UIComponentBase.SHARED_STRING_BUILDER";
 
+    // See ViewPoolProcessor for comments and usages
     static final int RESET_MODE_OFF = 0;
-    // A soft reset clears the "transient" state or those internal attributes used by the component
-    // but it does not clear the "delta" state.
     static final int RESET_MODE_SOFT = 1;
-    // A hard reset destroy both the "transient" state and the "delta" state. If the component cannot be reset,
-    // saveState() should return a non null value.
     static final int RESET_MODE_HARD = 2;
 
     private _ComponentAttributesMap _attributesMap = null;
