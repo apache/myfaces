@@ -19,6 +19,9 @@
 
 package org.apache.myfaces.cdi.wrapper;
 
+import java.lang.reflect.Type;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.util.TypeLiteral;
 import javax.faces.FacesWrapper;
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
@@ -32,6 +35,10 @@ import org.apache.myfaces.cdi.util.CDIUtils;
  */
 public class FacesConverterCDIWrapper implements PartialStateHolder, Converter, FacesWrapper<Converter>
 {
+    private static final Type CONVERTER_TYPE = new TypeLiteral<Converter<?>>() { 
+        private static final long serialVersionUID = 1L; 
+    }.getType(); 
+
     private transient Converter delegate;
 
     private Class<?> forClass;
@@ -65,17 +72,28 @@ public class FacesConverterCDIWrapper implements PartialStateHolder, Converter, 
     {
         if (delegate == null)
         {
+            BeanManager bm = CDIUtils.getBeanManager(FacesContext.getCurrentInstance().getExternalContext());
+
             if (converterId != null)
             {
-                delegate = (Converter) CDIUtils.get(CDIUtils.getBeanManager(
-                    FacesContext.getCurrentInstance().getExternalContext()), 
-                        Converter.class, true, new FacesConverterAnnotationLiteral(Object.class, converterId));
+                FacesConverterAnnotationLiteral literal =
+                        new FacesConverterAnnotationLiteral(Object.class, converterId);
+                delegate = (Converter) CDIUtils.get(bm, CONVERTER_TYPE, true, literal);
+
+                if (delegate == null)
+                {
+                    delegate = (Converter) CDIUtils.get(bm, Converter.class, true, literal);
+                }
             }
             else if (forClass != null)
             {
-                delegate = (Converter) CDIUtils.get(CDIUtils.getBeanManager(
-                    FacesContext.getCurrentInstance().getExternalContext()), 
-                        Converter.class, true, new FacesConverterAnnotationLiteral(forClass, ""));
+                FacesConverterAnnotationLiteral literal = new FacesConverterAnnotationLiteral(forClass, "");
+                delegate = (Converter) CDIUtils.get(bm, CONVERTER_TYPE, true, literal);
+
+                if (delegate == null)
+                {
+                    delegate = (Converter) CDIUtils.get(bm, Converter.class, true, literal);
+                }
             }
         }
         return delegate;

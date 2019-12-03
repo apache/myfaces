@@ -99,6 +99,21 @@ public class CDIUtils
         }
     }
 
+    public static <T> T get(BeanManager beanManager, Type type, boolean create, Annotation... qualifiers)
+    {
+        try
+        {
+            Set<Bean<?>> beans = beanManager.getBeans(type, qualifiers);
+            Bean<T> bean = (Bean<T>) beanManager.resolve(beans);
+
+            return (bean != null) ? get(beanManager, bean, type, create) : null;
+        }
+        catch (ContextNotActiveException e)
+        {
+            return null;
+        }
+    }
+
     public static <T> T get(BeanManager beanManager, Bean<T> bean, Type type, boolean create)
     {
         if (create)

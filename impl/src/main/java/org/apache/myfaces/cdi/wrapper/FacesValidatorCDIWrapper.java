@@ -19,6 +19,9 @@
 
 package org.apache.myfaces.cdi.wrapper;
 
+import java.lang.reflect.Type;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.util.TypeLiteral;
 import javax.faces.FacesWrapper;
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
@@ -29,6 +32,11 @@ import org.apache.myfaces.cdi.util.CDIUtils;
 
 public class FacesValidatorCDIWrapper implements PartialStateHolder, Validator, FacesWrapper<Validator>
 {
+    private static final Type VALIDATOR_TYPE = new TypeLiteral<Validator<?>>() 
+    { 
+        private static final long serialVersionUID = 1L; 
+    }.getType();
+
     private transient Validator delegate;
     
     private String validatorId;
@@ -55,9 +63,14 @@ public class FacesValidatorCDIWrapper implements PartialStateHolder, Validator, 
     {
         if (delegate == null)
         {
-            delegate = (Validator) CDIUtils.get(CDIUtils.getBeanManager(
-                FacesContext.getCurrentInstance().getExternalContext()), 
-                    Validator.class, true, new FacesValidatorAnnotationLiteral(validatorId));
+            BeanManager bm = CDIUtils.getBeanManager(FacesContext.getCurrentInstance().getExternalContext());
+            FacesValidatorAnnotationLiteral literal = new FacesValidatorAnnotationLiteral(validatorId);
+            delegate = (Validator) CDIUtils.get(bm, VALIDATOR_TYPE, true, literal);
+            
+            if (delegate == null)
+            {
+                delegate = (Validator) CDIUtils.get(bm, Validator.class, true, literal);
+            }
         }
         return delegate;
     }
