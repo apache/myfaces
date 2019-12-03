@@ -35,7 +35,8 @@ import org.apache.myfaces.cdi.util.CDIUtils;
  */
 public class FacesConverterCDIWrapper implements PartialStateHolder, Converter, FacesWrapper<Converter>
 {
-    private static final Type CONVERTER_TYPE = new TypeLiteral<Converter<?>>() { 
+    private static final Type CONVERTER_TYPE = new TypeLiteral<Converter<?>>()
+    { 
         private static final long serialVersionUID = 1L; 
     }.getType(); 
 
