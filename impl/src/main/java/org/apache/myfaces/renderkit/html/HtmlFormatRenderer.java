@@ -163,22 +163,17 @@ public class HtmlFormatRenderer extends HtmlRenderer
         Object[] args = EMPTY_ARGS;
         if (htmlOutputFormat.getChildCount() > 0)
         {
-            List<Object> argsList = null;
-
             List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
                     facesContext, htmlOutputFormat.getChildren(), false, false, false);
-            for (int i = 0, size = validParams.size(); i < size; i++)
+            if (validParams != null && !validParams.isEmpty())
             {
-                UIParameter param = validParams.get(i);
-                if (argsList == null)
+                List<Object> argsList = new ArrayList<>(validParams.size());
+                for (int i = 0, size = validParams.size(); i < size; i++)
                 {
-                    argsList = new ArrayList<>();
+                    UIParameter param = validParams.get(i);
+                    argsList.add(param.getValue());
                 }
-                argsList.add(param.getValue());
-            }
-            
-            if (argsList != null)
-            {
+
                 args = argsList.toArray(new Object[argsList.size()]);
             }
         }
