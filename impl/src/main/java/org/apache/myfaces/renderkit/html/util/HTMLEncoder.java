@@ -342,7 +342,6 @@ public abstract class HTMLEncoder
         offset = Math.max(0, offset);
         int realLength = Math.min(length, string.length - offset);
 
-        //StringBuilder sb = null;    //create later on demand
         String app;
         char c = ' ';
         char prevC;
@@ -845,7 +844,6 @@ public abstract class HTMLEncoder
     public static void encodeURIAttribute(Writer writer, final String string, final String characterEncoding)
         throws IOException
     {
-        //StringBuilder sb = null;    //create later on demand
         int start = 0;
         String app;
         char c;
@@ -1010,7 +1008,6 @@ public abstract class HTMLEncoder
                     }
                     else
                     {
-                        //app = percentEncode(c, UTF8);
                         if (start < i)
                         {
                             writer.write(string, start, i-start);
@@ -1021,7 +1018,6 @@ public abstract class HTMLEncoder
                 }
                 else
                 {
-                    //app = percentEncode(c, UTF8);
                     if (start < i)
                     {
                         writer.write(string, start, i-start);
@@ -1036,14 +1032,12 @@ public abstract class HTMLEncoder
                 {
                     // The remaining part of the URI are data that should be encoded
                     // using the document character encoding.
-                    //app = c + encodeURIQuery(string.substring(i+1), characterEncoding);
                     if (start < i)
                     {
                         writer.write(string, start, i-start);
                     }
                     start = i+1;
                     writer.write(c);
-                    //encodeURIQuery(writer, string.substring(i+1), characterEncoding);
                     encodeURIQuery(writer, string, i+1, characterEncoding);
                     endLoop = true;
                 }
@@ -1123,15 +1117,10 @@ public abstract class HTMLEncoder
         byte [] byteArray =  baos.toByteArray();
         for (int i=0; i < byteArray.length; i++)
         {
-            //builder.append('%');
-            //builder.append(HEX_CHARSET.charAt( (( ((short) byteArray[i] & 0xFF ) >> 0x4) % 0x10)) );
-            //builder.append(HEX_CHARSET.charAt( ((short) byteArray[i] & 0xFF ) % 0x10));
             currentWriter.write('%');
             currentWriter.write(HEX_CHARSET.charAt( (( ((short) byteArray[i] & 0xFF ) >> 0x4) % 0x10)) );
             currentWriter.write(HEX_CHARSET.charAt( ((short) byteArray[i] & 0xFF ) % 0x10));
         }
-        
-        //return builder.toString();
     }
     
     /**
@@ -1145,13 +1134,12 @@ public abstract class HTMLEncoder
     private static void encodeURIQuery(Writer writer, final String string, int offset, final String characterEncoding)
             throws IOException
     {
-        //StringBuilder sb = null;    //create later on demand
         int start = offset;
         int length = string.length();
         int realLength = length-offset;
         String app;
         char c;
-        //boolean endLoop = false;
+
         for (int i = offset; i < length; ++i)
         {
             app = null;
@@ -1177,7 +1165,6 @@ public abstract class HTMLEncoder
             {
                 // The percent encoding on this part should be done using UTF-8 charset
                 // as RFC 3986 Section 3.2.2 says
-                //app = percentEncode(c, characterEncoding);
                 if (start < i)
                 {
                     writer.write(string, start, i-start);
@@ -1198,7 +1185,6 @@ public abstract class HTMLEncoder
                     }
                     else
                     {
-                        //app = percentEncode(c, characterEncoding);
                         if (start < i)
                         {
                             writer.write(string, start, i-start);
