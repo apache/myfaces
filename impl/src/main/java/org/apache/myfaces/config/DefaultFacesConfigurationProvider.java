@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.config;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import org.apache.myfaces.config.annotation.AnnotationConfigurator;
 import org.apache.myfaces.config.element.FacesConfig;
@@ -376,7 +377,29 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     {
         try
         {
-            FacesConfig webAppConfig = null;
+            // just return a empty FacesConfigImpl if the file is empty
+            // we just do a shortcut here, otherwise validateXML would log a error/exception
+            try (InputStream stream = ectx.getResourceAsStream(DEFAULT_FACES_CONFIG))
+            {
+                if (stream != null)
+                {
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = stream.read(buffer)) != -1)
+                    {
+                        out.write(buffer, 0, length);
+                    }
+                    out.flush();
+
+                    String content = new String(out.toByteArray());
+                    if (content.trim().isEmpty())
+                    {
+                        return new FacesConfigImpl();
+                    }
+                }
+            }
+
             // web application config
             if (MyfacesConfig.getCurrentInstance(ectx).isValidateXML())
             {
@@ -386,17 +409,20 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     validateFacesConfig(ectx, url);
                 }
             }
-            InputStream stream = ectx.getResourceAsStream(DEFAULT_FACES_CONFIG);
-            if (stream != null)
+
+            try (InputStream stream = ectx.getResourceAsStream(DEFAULT_FACES_CONFIG))
             {
-                if (log.isLoggable(Level.INFO))
+                if (stream != null)
                 {
-                    log.info("Reading config /WEB-INF/faces-config.xml");
+                    if (log.isLoggable(Level.INFO))
+                    {
+                        log.info("Reading config /WEB-INF/faces-config.xml");
+                    }
+                    return getUnmarshaller(ectx).getFacesConfig(stream, DEFAULT_FACES_CONFIG);
                 }
-                webAppConfig = getUnmarshaller(ectx).getFacesConfig(stream, DEFAULT_FACES_CONFIG);
-                stream.close();
             }
-            return webAppConfig;
+
+            return null;
         }
         catch (IOException e)
         {
