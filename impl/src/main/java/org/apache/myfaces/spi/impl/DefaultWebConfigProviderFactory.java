@@ -72,11 +72,8 @@ public class DefaultWebConfigProviderFactory extends WebConfigProviderFactory
                 returnValue = resolveWebXmlProviderFromService(extContext);
             }
         }
-        catch (ClassNotFoundException | NoClassDefFoundError e)
-        {
-            // ignore
-        }
-        catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
+        catch (ClassNotFoundException | NoClassDefFoundError | InstantiationException | IllegalAccessException
+                | InvocationTargetException e)
         {
             getLogger().log(Level.SEVERE, "", e);
         }
@@ -85,6 +82,11 @@ public class DefaultWebConfigProviderFactory extends WebConfigProviderFactory
             throw new FacesException(e);
         }
 
+        if (returnValue == null)
+        {
+            returnValue = new DefaultWebConfigProvider();
+        }
+ 
         return returnValue;
     }
 

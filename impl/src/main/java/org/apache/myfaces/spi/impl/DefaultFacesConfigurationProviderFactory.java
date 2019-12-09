@@ -73,13 +73,9 @@ public class DefaultFacesConfigurationProviderFactory extends FacesConfiguration
                 {
                     returnValue = resolveFacesConfigurationProviderFromService(extContext);
                 }
-                externalContext.getApplicationMap().put(FACES_CONFIGURATION_PROVIDER_INSTANCE_KEY, returnValue);
             }
-            catch (ClassNotFoundException | NoClassDefFoundError e)
-            {
-                // ignore
-            }
-            catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
+            catch (ClassNotFoundException | NoClassDefFoundError | InstantiationException | IllegalAccessException
+                    | InvocationTargetException e)
             {
                 getLogger().log(Level.SEVERE, "", e);
             }
@@ -88,6 +84,13 @@ public class DefaultFacesConfigurationProviderFactory extends FacesConfiguration
                 throw new FacesException(e);
             }
         }
+        
+        if (returnValue == null)
+        {
+            returnValue = new DefaultFacesConfigurationProvider();
+        }
+
+        externalContext.getApplicationMap().put(FACES_CONFIGURATION_PROVIDER_INSTANCE_KEY, returnValue);
 
         return returnValue;
     }
