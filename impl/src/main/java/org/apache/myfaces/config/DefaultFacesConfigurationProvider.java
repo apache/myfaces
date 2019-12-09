@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.config;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import org.apache.myfaces.config.annotation.AnnotationConfigurator;
 import org.apache.myfaces.config.element.FacesConfig;
@@ -393,6 +394,28 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     {
         try
         {
+            // skip parsing/validating a empty faces-config.xml to avoid warn/error logs
+            try (InputStream stream = ectx.getResourceAsStream(DEFAULT_FACES_CONFIG))
+            {
+                if (stream != null)
+                {
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = stream.read(buffer)) != -1)
+                    {
+                        out.write(buffer, 0, length);
+                    }
+                    out.flush();
+
+                    String content = new String(out.toByteArray());
+                    if (content.trim().isEmpty())
+                    {
+                        return new FacesConfigImpl();
+                    }
+                }
+            }
+
             FacesConfig webAppConfig = null;
             // web application config
             if (MyfacesConfig.getCurrentInstance(ectx).isValidateXML())
