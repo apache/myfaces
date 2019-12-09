@@ -377,8 +377,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     {
         try
         {
-            // just return a empty FacesConfigImpl if the file is empty
-            // we just do a shortcut here, otherwise validateXML would log a error/exception
+            // skip parsing/validating a empty faces-config.xml to avoid warn/error logs
             try (InputStream stream = ectx.getResourceAsStream(DEFAULT_FACES_CONFIG))
             {
                 if (stream != null)
