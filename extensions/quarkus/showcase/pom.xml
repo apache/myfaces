@@ -6,11 +6,11 @@
     <groupId>io.quarkus</groupId>
     <artifactId>quarkus-myfaces-showcase</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>Quarkus - MyFaces - Showcase</name>
+    <name>Apache MyFaces Core 3.0 - Extensions - Quarkus - Showcase</name>
 
     <properties>
-		<quarkus.version>1.1.0.CR1</quarkus.version>
-		<myfaces.version>3.0.0-SNAPSHOT</myfaces.version>
+        <quarkus.version>1.1.0.CR1</quarkus.version>
+        <myfaces.version>3.0.0-SNAPSHOT</myfaces.version>
         <failsafe.version>2.22.0</failsafe.version>
         <surefire.version>2.22.0</surefire.version>
 
@@ -44,13 +44,13 @@
             <version>${myfaces.version}</version>
         </dependency>
         <dependency>
-			<groupId>org.apache.myfaces.core.extensions.quarkus</groupId>
-			<artifactId>myfaces-quarkus-deployment</artifactId>
+            <groupId>org.apache.myfaces.core.extensions.quarkus</groupId>
+            <artifactId>myfaces-quarkus-deployment</artifactId>
             <version>${myfaces.version}</version>
         </dependency>
         <dependency>
-    <groupId>org.apache.myfaces.core.extensions.quarkus</groupId>
-    <artifactId>myfaces-quarkus-runtime</artifactId>
+            <groupId>org.apache.myfaces.core.extensions.quarkus</groupId>
+            <artifactId>myfaces-quarkus-runtime</artifactId>
             <version>${myfaces.version}</version>
         </dependency>
 
