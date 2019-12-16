@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+        </h:head>
+
+        <h:body>
+            <p:growl>
+                <p:autoUpdate />
+            </p:growl>
+
+            <h:form id="form">
+                <h:inputText value="#{inputController.val}" validator="myVal" />
+                <p:commandButton process="@form" update="@form" value="Submit" />
+
+
+                <h:dataTable value="#{myBacking.cars}" var="car">
+                    <h:column>#{car.id}</h:column>
+                </h:dataTable>
+
+            </h:form>
+        </h:body>
+
+    </f:view>
+</html>
+

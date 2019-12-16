@@ -58,6 +58,7 @@
         <!--
         <module>integration-tests</module>
         -->
+	<module>extensions</module>
     </modules>
 
     <build>

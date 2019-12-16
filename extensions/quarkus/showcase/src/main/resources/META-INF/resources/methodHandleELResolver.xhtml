@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+
+        <f:metadata>
+            <f:phaseListener binding="#{methodHandleELResolverBean}" />
+        </f:metadata>
+
+        <h:head>
+        </h:head>
+
+        <h:body>
+            <h:form id="form">
+
+                Setter &amp; Getter test:
+                <h:inputText value="#{methodHandleELResolverBean.test}" />
+                <h:inputText value="#{methodHandleELResolverBean.test2}" />
+                <p:commandButton process="@form" update="@form" value="Process and Update" />
+                <p:commandButton process="@this" update="@form" value="Update only" />
+
+            </h:form>
+
+                <br />
+
+                <ui:repeat var="car" value="#{methodHandleELResolverBean.cars}">
+                    <h:outputText value="#{car.id}" />
+                    <h:outputText value="#{car.year}" />
+                    <h:outputText value="#{car.brand}" />
+                    <h:outputText value="#{car.color}" />
+                </ui:repeat>
+        </h:body>
+
+    </f:view>
+</html>
+

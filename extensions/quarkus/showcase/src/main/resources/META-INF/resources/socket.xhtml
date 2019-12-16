@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" 
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      >
+    <h:head>
+        <title>JSF 2.3: Websocket Sample</title>
+        <script>
+            function onMessage(message, channel, event) {
+            console.log('jsf push message::' + message + ", channel ::" + channel + ", event::" + event);
+            document.getElementById("message").innerHTML = message;
+            }
+        </script>    
+    </h:head>
+    <h:body>
+        <h1>JSF 2.3: Hello Websocket </h1>
+        <div id="message" />
+        <hr />
+        <h:form id="form">
+            <div>
+                <h:commandButton 
+                    id="sendMessage" 
+                    type="submit"
+                    action="#{socketView.sendMessage()}" value="Send Message">
+                    <f:ajax />
+                </h:commandButton>
+            </div>
+            <div>
+                <h:outputLabel for="messageInput" value="Say hi to JSF Websocket" />
+                <h:inputText 
+                    id="messageInput" 
+                    value="#{socketView.message}"/>
+
+            </div>
+            <h:panelGroup layout="block" id="messageFromInputBox">
+                Input text is :: #{socketView.message}
+            </h:panelGroup>
+            <div>
+                <h:commandButton 
+                    id="sendMessage2" 
+                    action="#{socketView.sendMessage2()}" 
+                    value="Send Message from Input Box">
+                    <f:ajax execute="@form" render="messageFromInputBox" />
+                </h:commandButton>
+            </div>
+            <div>
+                <button 
+                    jsf:id="sendMessage3" 
+                    jsf:action="#{socketView.sendMessage2()}" >
+                    Send Message from Input Box(HTML 5 Button)
+                    <f:ajax execute="@form" render="messageFromInputBox" />
+                </button>
+            </div>
+        </h:form>
+        <f:websocket channel="helloChannel" onmessage="onMessage" />
+    </h:body> 
+</html>
