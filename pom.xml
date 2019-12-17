@@ -29,13 +29,13 @@
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-core-module</artifactId>
     <packaging>pom</packaging>
-    <name>Apache MyFaces Core 3.0</name>
+    <name>Apache MyFaces Core 2.3-next</name>
     <description>
         This project is the home of the MyFaces implementation of the JavaServer Faces 3.0 specification, and
         consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
-    <version>3.0.0-SNAPSHOT</version>
-    <url>http://myfaces.apache.org/core30</url>
+    <version>2.3-next-SNAPSHOT</version>
+    <url>http://myfaces.apache.org/core23-next</url>
 
     <issueManagement>
         <system>jira</system>

@@ -617,13 +617,13 @@ public class MyfacesConfig
     private static final boolean VIEWID_EXISTS_CACHE_ENABLED_DEFAULT = true;
     
 
-    @JSFWebConfigParam(defaultValue = "true", since = "3.0.0", expectedValues="true, false", group="viewhandler", 
+    @JSFWebConfigParam(defaultValue = "true", since = "2.3-next", expectedValues="true, false", group="viewhandler", 
             tags="performance",
             desc="Enable or disable the cache used to 'remember' if a view is protected or not.")
     public static final String VIEWID_PROTECTED_CACHE_ENABLED = "org.apache.myfaces.VIEWID_PROTECTED_CACHE_ENABLED";
     private static final boolean VIEWID_PROTECTED_CACHE_ENABLED_DEFAULT = true;
     
-    @JSFWebConfigParam(defaultValue = "true", since = "3.0.0", expectedValues="true, false", group="viewhandler", 
+    @JSFWebConfigParam(defaultValue = "true", since = "2.3-next", expectedValues="true, false", group="viewhandler", 
             tags="performance",
             desc="Enable or disable the cache used to 'remember' the derived viewId from the rawViewId.")
     public static final String VIEWID_DERIVE_CACHE_ENABLED = "org.apache.myfaces.VIEWID_DERIVE_CACHE_ENABLED";
@@ -746,7 +746,7 @@ public class MyfacesConfig
      * Defines if the last-modified should be cached of the resources when the ProjectStage is Production.
      * If the cache is disabled, each last-modified request will read the last-modified from the file.
      */
-    @JSFWebConfigParam(since="3.0.0" , defaultValue="true", expectedValues="true, false")
+    @JSFWebConfigParam(since="2.3-next" , defaultValue="true", expectedValues="true, false")
     public static final String RESOURCE_CACHE_LAST_MODIFIED
             = "org.apache.myfaces.RESOURCE_CACHE_LAST_MODIFIED";
     private static final boolean RESOURCE_CACHE_LAST_MODIFIED_DEFAULT = true;

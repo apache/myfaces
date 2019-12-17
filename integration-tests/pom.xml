@@ -23,8 +23,8 @@
 
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-integration-tests</artifactId>
-    <name>Apache MyFaces Core 3.0 - Integration Tests</name>
-    <version>3.0.0-SNAPSHOT</version>
+    <name>Apache MyFaces Core 2.3-next - Integration Tests</name>
+    <version>2.3-next-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <build>

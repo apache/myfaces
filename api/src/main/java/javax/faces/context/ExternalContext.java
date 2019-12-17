@@ -806,7 +806,7 @@ public abstract class ExternalContext
     public abstract String encodeWebsocketURL(String url);
 
     /**
-     * @since 3.0
+     * @since 2.3-next
      */
     public abstract void release(); 
 }

@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-integration-tests</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>2.3-next-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -30,7 +30,7 @@
 
     <groupId>org.apache.myfaces.core.integration-tests</groupId>
     <artifactId>faceletToXhtmlMappingDisabled</artifactId>
-    <name>Apache MyFaces Core 3.0 - Integration Tests - faceletToXhtmlMappingDisabled</name>
+    <name>Apache MyFaces Core 2.3-next - Integration Tests - faceletToXhtmlMappingDisabled</name>
     <packaging>war</packaging>
 
 </project>
