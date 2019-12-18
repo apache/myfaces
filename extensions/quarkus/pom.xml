@@ -54,13 +54,6 @@
                     <excludes>**/*$$accessor.java</excludes>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-                <configuration>
-                    <exclude>target/**</exclude>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 </project>

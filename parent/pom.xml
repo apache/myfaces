@@ -254,7 +254,7 @@
                                 <exclude>**/*/MANIFEST.MF</exclude>
                                 <exclude>.git</exclude>
                                 <exclude>.gitignore</exclude>
-                                <exclude>target/**</exclude>
+                                <exclude>**/target/**/*</exclude>
                                 <exclude>src/main/resources/META-INF/licenses/*-LICENSE.txt</exclude>
                                 <exclude>src/main/resources/META-INF/licenses/*-LICENSE.TXT</exclude>
                                 <exclude>src/main/resources/META-INF/services/**</exclude>
