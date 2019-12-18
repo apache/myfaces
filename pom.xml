@@ -86,18 +86,6 @@
         </pluginManagement>
         <plugins>
 
-            <!-- license checker needs to exclude some kinds of files -->
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <!-- This file is created during a release and needs no licensing text -->
-                        <exclude>DEPENDENCIES</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-scm-publish-plugin</artifactId>

@@ -50,7 +50,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.9.1</version>
                 <executions>
                   <execution>
                     <id>parse-version</id>
@@ -59,22 +58,6 @@
                     </goals>
                   </execution>
                 </executions>
-            </plugin>
-
-
-            <!-- license checker needs to exclude some kinds of files -->
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <!-- dojo has combined new bsd + AFL 2.1 license -->
-                        <exclude>src/main/resources/META-INF/licenses/dojo-LICENSE.TXT</exclude>
-
-                        <!-- facelets has non-standard APL license -->
-                        <exclude>src/main/resources/META-INF/licenses/facelets-LICENSE.txt</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
 
             <plugin>

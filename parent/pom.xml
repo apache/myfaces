@@ -147,7 +147,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>1.5</version>
+                    <version>1.9.1</version>
                 </plugin>
 
                 <plugin>
@@ -249,6 +249,18 @@
                     <plugin>
                         <groupId>org.apache.rat</groupId>
                         <artifactId>apache-rat-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/*/MANIFEST.MF</exclude>
+                                <exclude>.git</exclude>
+                                <exclude>.gitignore</exclude>
+                                <exclude>target/**</exclude>
+                                <exclude>src/main/resources/META-INF/licenses/*-LICENSE.txt</exclude>
+                                <exclude>src/main/resources/META-INF/licenses/*-LICENSE.TXT</exclude>
+                                <exclude>src/main/resources/META-INF/services/**</exclude>
+                                <exclude>DEPENDENCIES</exclude>
+                            </excludes>
+                        </configuration>
                         <executions>
                             <execution>
                                 <phase>verify</phase>
