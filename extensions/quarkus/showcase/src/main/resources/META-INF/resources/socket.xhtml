@@ -1,5 +1,23 @@
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
 <!DOCTYPE html>
-<html lang="en" 
+<html lang="en"
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:jsf="http://xmlns.jcp.org/jsf"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
@@ -13,7 +31,7 @@
             console.log('jsf push message::' + message + ", channel ::" + channel + ", event::" + event);
             document.getElementById("message").innerHTML = message;
             }
-        </script>    
+        </script>
     </h:head>
     <h:body>
         <h1>JSF 2.3: Hello Websocket </h1>
@@ -21,8 +39,8 @@
         <hr />
         <h:form id="form">
             <div>
-                <h:commandButton 
-                    id="sendMessage" 
+                <h:commandButton
+                    id="sendMessage"
                     type="submit"
                     action="#{socketView.sendMessage()}" value="Send Message">
                     <f:ajax />
@@ -30,8 +48,8 @@
             </div>
             <div>
                 <h:outputLabel for="messageInput" value="Say hi to JSF Websocket" />
-                <h:inputText 
-                    id="messageInput" 
+                <h:inputText
+                    id="messageInput"
                     value="#{socketView.message}"/>
 
             </div>
@@ -39,16 +57,16 @@
                 Input text is :: #{socketView.message}
             </h:panelGroup>
             <div>
-                <h:commandButton 
-                    id="sendMessage2" 
-                    action="#{socketView.sendMessage2()}" 
+                <h:commandButton
+                    id="sendMessage2"
+                    action="#{socketView.sendMessage2()}"
                     value="Send Message from Input Box">
                     <f:ajax execute="@form" render="messageFromInputBox" />
                 </h:commandButton>
             </div>
             <div>
-                <button 
-                    jsf:id="sendMessage3" 
+                <button
+                    jsf:id="sendMessage3"
                     jsf:action="#{socketView.sendMessage2()}" >
                     Send Message from Input Box(HTML 5 Button)
                     <f:ajax execute="@form" render="messageFromInputBox" />
@@ -56,5 +74,5 @@
             </div>
         </h:form>
         <f:websocket channel="helloChannel" onmessage="onMessage" />
-    </h:body> 
+    </h:body>
 </html>
