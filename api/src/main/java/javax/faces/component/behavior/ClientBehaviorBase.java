@@ -74,9 +74,6 @@ public class ClientBehaviorBase extends BehaviorBase implements ClientBehavior
         return Collections.<ClientBehaviorHint>emptySet();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getRendererType()
     {
         return null;
