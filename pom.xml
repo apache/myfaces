@@ -202,7 +202,7 @@
     </distributionManagement>
 
     <properties>
-        <siteModule.path>core30/module</siteModule.path>
+        <siteModule.path>core23/module</siteModule.path>
         <site.mainDirectory>${user.home}/myfaces-site/checkout</site.mainDirectory>
         <siteContent.path>${user.home}/myfaces-site/site/${siteModule.path}</siteContent.path>
         <!-- it's a default location for performance reason (not checkout the content all the time)
