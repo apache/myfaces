@@ -1,5 +1,5 @@
  ------
- Myfaces Core 2.3
+ Myfaces Core 2.3-next
  ------
 
  ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -20,9 +20,22 @@
  ~~ under the License.
  
 
-MyFaces Core 2.3 Project
+MyFaces Core 2.3-next Project
 
-  This project provides an implementation of the JavaServer Faces 2.3 (JSF 2.3) specification.
+  This project provides an (not fully compatible!) implementation of the JavaServer Faces (JSF) 2.3 specification.
+
+    2.3-next is a preview for the next (real) JSF version, which will remove ManagedBeans and FacesEL.
+    Compared to 2.3, it contains the following changes:
+    
+    * Removed shared modules and a !BIG! code cleanup
+    * Removed FacesEL implementation
+    * Removed ManagedBeans but register the found @ManagedBeans as CDI beans
+    * No commons dependencies required anymore
+    * 1MB less size (including dependencies)
+    * Up to 15% better performance
+    * A Quarkus extensions!
+
+    Modules:
 
     * The API submodule implements all of the classes that are defined in the specification. 
       If you are looking for API documentation about the classes that your JSF application
@@ -37,12 +50,8 @@ MyFaces Core 2.3 Project
   
   Additionally, there are other submodules:  
       
-    * The Shared internal submodule provides support "invisible" classes "shared" between other 
-      projects in MyFaces land like Tomahawk, Orchestra and Portlet Bridge. A copy of these 
-      classes are added to Impl submodule.
-      
-    * The Bundle submodule provides both API and Impl classes into a single jar file with 
-      a OSGi MANIFEST.MF.
+    * The Bundle submodule provides both API and Impl classes into a single jar file with a OSGi MANIFEST.MF.
+    * The quarkus extensions
 
   If you want to know more about how JavaServer(tm) Faces works, take a look at the documentation
   referenced from the main MyFaces site.

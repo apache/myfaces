@@ -53,46 +53,7 @@
                 <li><a class="externalLink" href="https://youtube.com/watch?v=bxP9IuJbcDQ">How to Publish a Java Library to Maven Central</a></li>
             </ul>
 
-            <h3>1. Preparing shared 4.2.9 (optional)</h3>
-
-            <ul>
-                <p><b>NOTE:</b> This step is optional. The current project structure does not required a "shared project" release, since it just copy the code inside the shared module in myfaces core.</p>
-                <br/>
-
-                <li>Change shared/core/pom.xml variable to mirror updated shared copy from core and run from shared root path</li>
-                <div class="source">
-                    <pre>
-mvn clean install -Dsynch-shared=true
-                    </pre>
-                </div>
-                Try -DdryRun=true SUCCESS
-                <div class="source">
-                    <pre>
-mvn release:prepare -DtagBase=https://svn.apache.org/repos/asf/myfaces/shared/tags -DdryRun=true    
-                    </pre>
-                </div>       
-                Release it! FAIL
-                <div class="source">
-                    <pre>
-mvn release:prepare -DtagBase=https://svn.apache.org/repos/asf/myfaces/shared/tags -Dresume=false
-mvn install
-mvn release:rollback
-mvn release:prepare -DtagBase=https://svn.apache.org/repos/asf/myfaces/shared/tags -Dresume=false
-                    </pre>
-                </div>
-        
-                <p><b>NOTE:</b> Preparing the release will create the new tag in SVN, automatically checking in on your behalf. Note: If you're located in Europe then release:prepare may fail with 'Unable to tag SCM' and 'svn: No such revision X'. Wait 10 seconds and run mvn release:prepare again.</p>
-
-                <li><p>Stage the release for a vote</p></li>
-                <div class="source">
-                    <pre>
-mvn release:perform -DtagBase=https://svn.apache.org/repos/asf/myfaces/shared/tags
-                    </pre>
-                </div>
-            
-            </ul>
-
-            <h3>2. Preparing Core 2.3.0</h3>
+            <h3>1. Preparing Core 2.3.0</h3>
 
             <ul>
                 <li><p>Once the environment is configured, you need to checkout the MyFaces 2.3.x development branch (currently the master branch in GitHub) <a class="externalLink" href="https://github.com/apache/myfaces">https://github.com/apache/myfaces</a> and run the following commands to prepare the MyFaces Core</p></li>
@@ -162,7 +123,7 @@ mvn release:perform -DperformRelease=true
             </ul>
 
 
-            <h3>3. JIRA Release Management</h3>
+            <h3>2. JIRA Release Management</h3>
             <br/>
             <ul>
                 <li>Create 2.3.1 and 2.3.1-SNAPSHOT versions</li> 
@@ -175,14 +136,14 @@ mvn release:perform -DperformRelease=true
             <p>Go to the following link perform these steps under the MyFaces Core Project: <a class="externalLink" href="https://issues.apache.org/jira/secure/Dashboard.jspa">JIRA Dashboard</a></p>
 
 
-            <h3>4. TCK</h3>
+            <h3>3. TCK</h3>
             <br/>
             <ul>
                 <li>We can skip TCK step if there is no TCK for JSF 2.3</li>
             </ul>
 
 
-            <h3>5. Generate assembly</h3>
+            <h3>4. Generate assembly</h3>
             <br/>
             <ul>
                 <li>Automatically done by maven on release:perform step and should be available in the nexus maven repository to do the final deploy.</li>
