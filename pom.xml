@@ -35,7 +35,7 @@
         consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
     <version>2.3-next-SNAPSHOT</version>
-    <url>http://myfaces.apache.org/core23-next</url>
+    <url>http://myfaces.apache.org/core23next</url>
 
     <issueManagement>
         <system>jira</system>
@@ -202,7 +202,7 @@
     </distributionManagement>
 
     <properties>
-        <siteModule.path>core23/module</siteModule.path>
+        <siteModule.path>core23next/module</siteModule.path>
         <site.mainDirectory>${user.home}/myfaces-site/checkout</site.mainDirectory>
         <siteContent.path>${user.home}/myfaces-site/site/${siteModule.path}</siteContent.path>
         <!-- it's a default location for performance reason (not checkout the content all the time)
