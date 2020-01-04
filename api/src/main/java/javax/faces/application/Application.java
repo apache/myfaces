@@ -505,20 +505,20 @@ public abstract class Application
      * outcome of this event, as follows:</li>
      * 
      * <li>If the originating component has a non-<code>null action</code> property, retrieve the <code>
-     *             MethodBinding</code> from the property, and call <code>invoke()</code>
+     *             MethodExpression</code> from the property, and call <code>invoke()</code>
      * on it. Convert the returned value (if any) to a String, and use it as the logical outcome.</li>
      * <li>Otherwise, the logical outcome is null.</li>
      * <li>The <code>processAction()</code> method must finally retrieve the <code>NavigationHandler</code> instance 
      *         for this application and call <code>NavigationHandler.handleNavigation(javax.faces.context.FacesContext, 
      *                                     java.lang.String, java.lang.String)</code> passing:</li>
      * <li>the {@link FacesContext} for the current request</li>
-     * <li>If there is a <code>MethodBinding</code> instance for the <code>action</code> property of this component, the
-     * result of calling {@link MethodBinding#getExpressionString()} on it, null otherwise</li>
+     * <li>If there is a <code>MethodExpression</code> instance for the <code>action</code> property of this component, the
+     * result of calling {@link javax.el.MethodExpression#getExpressionString()} on it, null otherwise</li>
      * <li>the logical outcome as determined above</li>
      * </ul>
      * <p>
      * Note that the specification for the default <code>ActionListener</code> contiues to call for the use of a
-     * deprecated property (<code>action</code>) and class (<code>MethodBinding</code>). Unfortunately, this is
+     * deprecated property (<code>action</code>) and class (<code>MethodExpression</code>). Unfortunately, this is
      * necessary because the default ActionListener must continue to work with components that do not implement
      * {@link javax.faces.component.ActionSource2}, and only implement {@link javax.faces.component.ActionSource}.
      */
