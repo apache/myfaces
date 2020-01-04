@@ -512,8 +512,8 @@ public abstract class Application
      *         for this application and call <code>NavigationHandler.handleNavigation(javax.faces.context.FacesContext, 
      *                                     java.lang.String, java.lang.String)</code> passing:</li>
      * <li>the {@link FacesContext} for the current request</li>
-     * <li>If there is a <code>MethodExpression</code> instance for the <code>action</code> property of this component, the
-     * result of calling {@link javax.el.MethodExpression#getExpressionString()} on it, null otherwise</li>
+     * <li>If there is a <code>MethodExpression</code> instance for the <code>action</code> property of this component, 
+     * the result of calling {@link javax.el.MethodExpression#getExpressionString()} on it, null otherwise</li>
      * <li>the logical outcome as determined above</li>
      * </ul>
      * <p>
