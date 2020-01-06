@@ -1174,14 +1174,15 @@
             <!-- override PMD settings to set targetJdk -->
             <plugin>
                 <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.12.0</version>
                 <configuration>
                     <rulesets>
-                        <ruleset>/rulesets/basic.xml</ruleset>
-                        <ruleset>/rulesets/unusedcode.xml</ruleset>
+                        <ruleset>/rulesets/java/basic.xml</ruleset>
+                        <ruleset>/rulesets/java/unusedcode.xml</ruleset>
                     </rulesets>
                     <linkXref>true</linkXref>
                     <minimumTokens>100</minimumTokens>
-                    <targetJdk>1.5</targetJdk>
+                    <targetJdk>1.8</targetJdk>
                 </configuration>
                 <reportSets>
                     <reportSet>

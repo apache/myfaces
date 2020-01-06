@@ -624,19 +624,15 @@
             <!-- override PMD settings to set targetJdk -->
             <plugin>
                 <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.12.0</version>
                 <configuration>
                     <rulesets>
-                        <ruleset>/rulesets/basic.xml</ruleset>
-                        <ruleset>/rulesets/unusedcode.xml</ruleset>
+                        <ruleset>/rulesets/java/basic.xml</ruleset>
+                        <ruleset>/rulesets/java/unusedcode.xml</ruleset>
                     </rulesets>
                     <linkXRef>true</linkXRef>
                     <minimumTokens>100</minimumTokens>
-                    <targetJdk>1.5</targetJdk>
-                    <excludes>
-                        <!-- these class make the PMD plugin crash (NullPointerException). -->
-                        <exclude>org/apache/myfaces/el/convert/PropertyResolverToELResolver.java</exclude>
-                        <exclude>org/apache/myfaces/el/PropertyResolverImpl.java</exclude>
-                    </excludes>
+                    <targetJdk>1.8</targetJdk>
                 </configuration>
                 <reportSets>
                     <reportSet>
