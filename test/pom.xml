@@ -142,22 +142,28 @@
                 </plugins>
             </build>
         </profile>
-    </profiles>
+    </profiles>   
+    
     <reporting>
-      <plugins>
-        <plugin>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <reportSets>
-            <reportSet>
-              <id>non-aggregate</id>
-              <configuration>
-              </configuration>
-              <reports>
-                <report>javadoc</report>
-              </reports>
-            </reportSet>
-          </reportSets>
-        </plugin>
-      </plugins>
+        <plugins>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <source>8</source>
+                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <id>non-aggregate</id>
+                        <configuration>
+                        </configuration>
+                        <reports>
+                            <report>javadoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
     </reporting>
 </project>
