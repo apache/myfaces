@@ -217,7 +217,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>2.7</version>
+                    <version>3.0.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -312,16 +312,37 @@
     <reporting>
         <plugins>
             <plugin>
-                <!-- disable the plugin for this site project -->
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <source>8</source>
+                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-pmd-plugin</artifactId>
                 <version>3.12.0</version>
-                <!--
+                <configuration>
+                    <rulesets>
+                        <ruleset>/rulesets/java/basic.xml</ruleset>
+                        <ruleset>/rulesets/java/unusedcode.xml</ruleset>
+                    </rulesets>
+                    <linkXref>true</linkXref>
+                    <minimumTokens>100</minimumTokens>
+                    <targetJdk>1.8</targetJdk>
+                </configuration>
                 <reportSets>
-                    <reportSet />
-                </reportSets>-->
+                    <reportSet>
+                        <reports>
+                            <report>pmd</report>
+                            <report>cpd</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
             <plugin>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

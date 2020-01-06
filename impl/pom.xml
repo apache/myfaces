@@ -1134,14 +1134,6 @@
     <reporting>
         <plugins>
             <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.1.1</version>
-                <configuration>
-                    <source>8</source>
-                    <additionalJOption>-Xdoclint:none</additionalJOption>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-changelog-plugin</artifactId>
                 <reportSets>
                     <reportSet>
@@ -1170,29 +1162,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>taglist-maven-plugin</artifactId>
-            </plugin>
-
-            <!-- override PMD settings to set targetJdk -->
-            <plugin>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.12.0</version>
-                <configuration>
-                    <rulesets>
-                        <ruleset>/rulesets/java/basic.xml</ruleset>
-                        <ruleset>/rulesets/java/unusedcode.xml</ruleset>
-                    </rulesets>
-                    <linkXref>true</linkXref>
-                    <minimumTokens>100</minimumTokens>
-                    <targetJdk>1.8</targetJdk>
-                </configuration>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>pmd</report>
-                            <report>cpd</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
             </plugin>
 
         </plugins>
