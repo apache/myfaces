@@ -867,12 +867,9 @@
             </activation>
             <build>
                 <plugins>
-
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <configuration>
-                            <excludePackageNames>org.apache.myfaces.ee</excludePackageNames>
-                        </configuration>
                         <executions>
                             <execution>
                                 <id>attach-javadoc</id>
@@ -888,7 +885,6 @@
                         <artifactId>maven-taglib-plugin</artifactId>
                         <version>2.4</version>
                         <executions>
-
                             <execution>
                                 <id>tlddoc-facelets</id>
                                 <!--
@@ -1139,6 +1135,12 @@
         <plugins>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <source>8</source>
+                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-changelog-plugin</artifactId>
