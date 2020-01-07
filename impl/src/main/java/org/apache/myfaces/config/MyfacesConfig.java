@@ -1037,6 +1037,10 @@ public class MyfacesConfig
         
         cfg.supportJSP = getBoolean(extCtx, SUPPORT_JSP,
                 SUPPORT_JSP_DEFAULT);
+        if (cfg.supportJSP && ClassUtils.simpleClassForName("javax.servlet.jsp.JspApplicationContext", false) == null)
+        {
+            cfg.supportJSP = false;
+        }
 
         cfg.strictJsf2ViewNotFound = getBoolean(extCtx, STRICT_JSF_2_VIEW_NOT_FOUND,
                 STRICT_JSF_2_VIEW_NOT_FOUND_DEFAULT);
