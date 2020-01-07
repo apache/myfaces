@@ -157,7 +157,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * <p>
      * If a submitted value has been converted but not yet pushed into the
      * model, then return that locally-cached value (see isLocalValueSet).
-     * <p>
+     * </p>
      * Otherwise, evaluate an EL expression to fetch a value from the model. 
      */
     @JSFExclude
