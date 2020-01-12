@@ -47,7 +47,7 @@ public class FacesConfigValidator
     
     public static List<String> validate(Collection<? extends NavigationRule> navRules, ExternalContext ctx)
     {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
 
         if (navRules != null)
         {

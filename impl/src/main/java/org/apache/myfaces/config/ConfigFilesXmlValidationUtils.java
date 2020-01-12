@@ -268,8 +268,6 @@ public class ConfigFilesXmlValidationUtils
 
     public static final String getFacesConfigVersion(URL url)
     {
-        URLConnection conn = null;
-        InputStream input = null;
         String result = "2.0";
 
         try
@@ -287,18 +285,18 @@ public class ConfigFilesXmlValidationUtils
 
             parser = factory.newSAXParser();
 
-            conn = url.openConnection();
+            URLConnection conn = url.openConnection();
             conn.setUseCaches(false);
-            input = conn.getInputStream();
-
-            try
+            try (InputStream input = conn.getInputStream())
             {
-                parser.parse(input, handler);
-            }
-
-            catch (SAXException e)
-            {
-                // This is as a result of our aborted parse, so ignore.
+                try
+                {
+                    parser.parse(input, handler);
+                }
+                catch (SAXException e)
+                {
+                    // This is as a result of our aborted parse, so ignore.
+                }
             }
 
             result = handler.isVersion23OrLater() ? "2.3" : (handler.isVersion22() ? "2.2" : 
@@ -308,19 +306,6 @@ public class ConfigFilesXmlValidationUtils
         catch (Throwable e)
         {
             // Most likely a result of our aborted parse, so ignore.
-        }
-        finally
-        {
-            if (input != null)
-            {
-                try
-                {
-                    input.close();
-                }
-                catch (Throwable e)
-                {
-                }
-            }
         }
 
         return result;

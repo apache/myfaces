@@ -832,7 +832,7 @@ public class FacesConfigurator
     {
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(_externalContext);
         FacesConfigData dispenser = getDispenser();
-        List<String> knownNamespaces = new ArrayList<String>();
+        List<String> knownNamespaces = new ArrayList<>();
         
         for (ComponentTagDeclaration declaration : dispenser.getComponentTagDeclarations())
         {

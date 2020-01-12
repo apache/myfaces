@@ -171,11 +171,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             stream.close();
             return facesConfig;
         }
-        catch (IOException e)
-        {
-            throw new FacesException(e);
-        }
-        catch (SAXException e)
+        catch (IOException | SAXException e)
         {
             throw new FacesException(e);
         }
@@ -214,69 +210,55 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                         log.info("Found " + factoryName + " factory implementation: " + className);
                     }
 
-                    if (factoryName.equals(FactoryFinder.APPLICATION_FACTORY))
+                    switch (factoryName)
                     {
-                        factory.addApplicationFactory(className);
-                    } 
-                    else if(factoryName.equals(FactoryFinder.EXCEPTION_HANDLER_FACTORY)) 
-                    {
-                        factory.addExceptionHandlerFactory(className);
-                    } 
-                    else if (factoryName.equals(FactoryFinder.EXTERNAL_CONTEXT_FACTORY))
-                    {
-                        factory.addExternalContextFactory(className);
-                    } 
-                    else if (factoryName.equals(FactoryFinder.FACES_CONTEXT_FACTORY))
-                    {
-                        factory.addFacesContextFactory(className);
-                    } 
-                    else if (factoryName.equals(FactoryFinder.LIFECYCLE_FACTORY))
-                    {
-                        factory.addLifecycleFactory(className);
-                    } 
-                    else if (factoryName.equals(FactoryFinder.RENDER_KIT_FACTORY))
-                    {
-                        factory.addRenderkitFactory(className);
-                    } 
-                    else if(factoryName.equals(FactoryFinder.TAG_HANDLER_DELEGATE_FACTORY)) 
-                    {
-                        factory.addTagHandlerDelegateFactory(className);
-                    } 
-                    else if (factoryName.equals(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY))
-                    {
-                        factory.addPartialViewContextFactory(className);
-                    } 
-                    else if(factoryName.equals(FactoryFinder.VISIT_CONTEXT_FACTORY)) 
-                    {
-                        factory.addVisitContextFactory(className);
-                    } 
-                    else if(factoryName.equals(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)) 
-                    {
-                        factory.addViewDeclarationLanguageFactory(className);
-                    }
-                    else if(factoryName.equals(FactoryFinder.FLASH_FACTORY)) 
-                    {
-                        factory.addFlashFactory(className);
-                    }
-                    else if(factoryName.equals(FactoryFinder.FLOW_HANDLER_FACTORY)) 
-                    {
-                        factory.addFlowHandlerFactory(className);
-                    }
-                    else if(factoryName.equals(FactoryFinder.CLIENT_WINDOW_FACTORY)) 
-                    {
-                        factory.addClientWindowFactory(className);
-                    }
-                    else if(factoryName.equals(FactoryFinder.FACELET_CACHE_FACTORY)) 
-                    {
-                        factory.addFaceletCacheFactory(className);
-                    }
-                    else if(factoryName.equals(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY)) 
-                    {
-                        factory.addSearchExpressionContextFactory(className);
-                    }
-                    else
-                    {
-                        throw new IllegalStateException("Unexpected factory name " + factoryName);
+                        case FactoryFinder.APPLICATION_FACTORY:
+                            factory.addApplicationFactory(className);
+                            break;
+                        case FactoryFinder.EXCEPTION_HANDLER_FACTORY:
+                            factory.addExceptionHandlerFactory(className);
+                            break;
+                        case FactoryFinder.EXTERNAL_CONTEXT_FACTORY:
+                            factory.addExternalContextFactory(className);
+                            break;
+                        case FactoryFinder.FACES_CONTEXT_FACTORY:
+                            factory.addFacesContextFactory(className);
+                            break;
+                        case FactoryFinder.LIFECYCLE_FACTORY:
+                            factory.addLifecycleFactory(className);
+                            break;
+                        case FactoryFinder.RENDER_KIT_FACTORY:
+                            factory.addRenderkitFactory(className);
+                            break;
+                        case FactoryFinder.TAG_HANDLER_DELEGATE_FACTORY:
+                            factory.addTagHandlerDelegateFactory(className);
+                            break;
+                        case FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY:
+                            factory.addPartialViewContextFactory(className);
+                            break;
+                        case FactoryFinder.VISIT_CONTEXT_FACTORY:
+                            factory.addVisitContextFactory(className);
+                            break;
+                        case FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY:
+                            factory.addViewDeclarationLanguageFactory(className);
+                            break;
+                        case FactoryFinder.FLASH_FACTORY:
+                            factory.addFlashFactory(className);
+                            break;
+                        case FactoryFinder.FLOW_HANDLER_FACTORY:
+                            factory.addFlowHandlerFactory(className);
+                            break;
+                        case FactoryFinder.CLIENT_WINDOW_FACTORY:
+                            factory.addClientWindowFactory(className);
+                            break;
+                        case FactoryFinder.FACELET_CACHE_FACTORY:
+                            factory.addFaceletCacheFactory(className);
+                            break;
+                        case FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY:
+                            factory.addSearchExpressionContextFactory(className);
+                            break;
+                        default:
+                            throw new IllegalStateException("Unexpected factory name " + factoryName);
                     }
                 }
             }
@@ -294,7 +276,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     @Override
     public List<FacesConfig> getClassloaderFacesConfig(ExternalContext ectx)
     {
-        List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
+        List<FacesConfig> appConfigResources = new ArrayList<>();
         try
         {
             FacesConfigResourceProvider provider = FacesConfigResourceProviderFactory.
@@ -337,7 +319,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     @Override
     public List<FacesConfig> getContextSpecifiedFacesConfig(ExternalContext ectx)
     {
-        List<FacesConfig> appConfigResources = new ArrayList<FacesConfig>();
+        List<FacesConfig> appConfigResources = new ArrayList<>();
         try
         {
             for (String systemId : getConfigFilesList(ectx))
@@ -423,11 +405,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
 
             return null;
         }
-        catch (IOException e)
-        {
-            throw new FacesException(e);
-        }
-        catch (SAXException e)
+        catch (IOException | SAXException e)
         {
             throw new FacesException(e);
         }
@@ -444,7 +422,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     private List<String> getConfigFilesList(ExternalContext ectx)
     {
         String configFiles = ectx.getInitParameter(FacesServlet.CONFIG_FILES_ATTR);
-        List<String> configFilesList = new ArrayList<String>();
+        List<String> configFilesList = new ArrayList<>();
         if (configFiles != null)
         {
             StringTokenizer st = new StringTokenizer(configFiles, ",", false);
@@ -510,8 +488,8 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             
             if (builder != null)
             {
-                List<FacesConfig> facesConfigList = new ArrayList<FacesConfig>();
-                List<Document> documentList = new ArrayList<Document>();
+                List<FacesConfig> facesConfigList = new ArrayList<>();
+                List<Document> documentList = new ArrayList<>();
                 for (ApplicationConfigurationPopulator populator : instances)
                 {
                     // Spec says "... For each implementation, create a fresh org.w3c.dom.Document 
@@ -557,19 +535,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                             FacesConfig facesConfig = getUnmarshaller(ectx).getFacesConfig(xmlAsWriter.toString());
                             facesConfigList.add(facesConfig);
                         }
-                        catch (IOException ex)
-                        {
-                            log.log(Level.SEVERE, "Error while reading faces-config from populator", ex);
-                        }
-                        catch (SAXException ex)
-                        {
-                            log.log(Level.SEVERE, "Error while reading faces-config from populator", ex);
-                        }
-                        catch (TransformerConfigurationException ex)
-                        {
-                            log.log(Level.SEVERE, "Error while reading faces-config from populator", ex);
-                        }
-                        catch (TransformerException ex)
+                        catch (IOException | SAXException | TransformerException ex)
                         {
                             log.log(Level.SEVERE, "Error while reading faces-config from populator", ex);
                         }
@@ -588,14 +554,13 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     @Override
     public List<FacesConfig> getFacesFlowFacesConfig(ExternalContext ectx)
     {
-        List<FacesConfig> configFilesList;
         Set<String> directoryPaths = ectx.getResourcePaths("/");
         if (directoryPaths == null)
         {
             return Collections.emptyList();
         }
-        configFilesList = new ArrayList<FacesConfig>();
         
+        List<FacesConfig> configFilesList = new ArrayList<>();
         List<String> contextSpecifiedList = getConfigFilesList(ectx);
         
         for (String dirPath : directoryPaths)
@@ -670,14 +635,11 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 validateFacesConfig(ectx, url);
             }            
         }
-        catch (IOException e)
+        catch (IOException | SAXException e)
         {
             throw new FacesException(e);
         }
-        catch (SAXException e)
-        {
-            throw new FacesException(e);
-        }
+
         InputStream stream = ectx.getResourceAsStream(systemId);
         PushbackInputStream pbstream = new PushbackInputStream(stream, 10);
         try
@@ -743,11 +705,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             }
             return facesConfig;
         }
-        catch (IOException e)
-        {
-            throw new FacesException(e);
-        }
-        catch (SAXException e)
+        catch (IOException | SAXException e)
         {
             throw new FacesException(e);
         }
@@ -770,7 +728,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     @Override
     public List<FacesConfig> getFaceletTaglibFacesConfig(ExternalContext externalContext)
     {
-        List<FacesConfig> facesConfigFilesList = new ArrayList<FacesConfig>();
+        List<FacesConfig> facesConfigFilesList = new ArrayList<>();
         
         String param = WebConfigParamUtils.getStringInitParameter(externalContext,
                 ViewHandler.FACELETS_LIBRARIES_PARAM_NAME);
@@ -826,13 +784,11 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     }
                     if (log.isLoggable(Level.FINE))
                     {
-                        //log.fine("Added Library from: " + urls[i]);
                         log.fine("Added Library from: " + url);
                     }
                 }
                 catch (Exception e)
                 {
-                    //log.log(Level.SEVERE, "Error Loading Library: " + urls[i], e);
                     log.log(Level.SEVERE, "Error Loading Library: " + url, e);
                 }
             }
