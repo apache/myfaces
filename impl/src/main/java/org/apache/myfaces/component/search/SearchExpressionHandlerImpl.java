@@ -370,7 +370,7 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
 
     @Override
     public void invokeOnComponent(final SearchExpressionContext searchExpressionContext,
-            UIComponent previous, String topExpression, ContextCallback topCallback)
+            UIComponent previous, String topExpression, final ContextCallback topCallback)
     {
         if (topExpression == null)
         {
@@ -407,8 +407,6 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                     command.length()+1 < topExpression.length() ?
                         topExpression.substring(1+command.length()+1) : null;
 
-            final ContextCallback parentCallback = topCallback;
-
             // If the keyword is @child, @composite, @form, @namingcontainer, @next, @none, @parent, @previous,
             // @root, @this ,  all commands change the source to be applied the action
             if (remaining != null)
@@ -417,20 +415,21 @@ public class SearchExpressionHandlerImpl extends SearchExpressionHandler
                 {
                     throw new FacesException("Expression cannot have keywords or ids at the right side: "+command);
                 }
+
                 this.applyKeyword(searchExpressionContext, previous, command, remaining, new ContextCallback()
                     {
                         @Override
                         public void invokeContextCallback(FacesContext facesContext, UIComponent target)
                         {
                             handler.invokeOnComponent(
-                                    searchExpressionContext, target, remaining, parentCallback);
+                                    searchExpressionContext, target, remaining, topCallback);
                         }
                     });
             }
             else
             {
                 // Command completed, apply parent callback
-                this.applyKeyword(searchExpressionContext, previous, command, null, parentCallback);
+                this.applyKeyword(searchExpressionContext, previous, command, null, topCallback);
             }
             
         }
