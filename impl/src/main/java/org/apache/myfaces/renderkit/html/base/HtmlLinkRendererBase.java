@@ -589,6 +589,8 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
     protected String buildServerOnclick(FacesContext facesContext, UIComponent component, 
             String clientId, UIComponent form) throws IOException
     {
+        ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, facesContext.getResponseWriter());
+
         StringBuilder onClick = SharedStringBuilder.get(facesContext, SB_BUILD_ONCLICK);
 
         StringBuilder params = addChildParameters(facesContext, component, form);
