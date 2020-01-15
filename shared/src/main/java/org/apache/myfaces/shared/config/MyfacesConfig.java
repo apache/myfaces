@@ -54,29 +54,6 @@ public class MyfacesConfig
     public static final String  INIT_PARAM_RESOURCE_VIRTUAL_PATH_DEFAULT = "/faces/myFacesExtensionResource";
 
     /**
-     * If true, rendered HTML code will be formatted, so that it is "human readable".
-     * i.e. additional line separators and whitespace will be written, that do not
-     * influence the HTML code. Default: "true"
-     */
-    @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1",
-            ignoreUpperLowerCase=true, group="render")
-    private static final String  INIT_PARAM_PRETTY_HTML = "org.apache.myfaces.PRETTY_HTML";
-    private static final boolean INIT_PARAM_PRETTY_HTML_DEFAULT = true;
-
-    /**
-     * This parameter tells MyFaces if javascript code should be allowed in the rendered HTML output.
-     * If javascript is allowed, command_link anchors will have javascript code 
-     * that submits the corresponding form.
-     * If javascript is not allowed, the state saving info and nested parameters ill be 
-     * added as url parameters.
-     * Default: "true"
-     */
-    @JSFWebConfigParam(defaultValue="true", expectedValues="true, false, on, off, yes, no",since="1.1",
-            ignoreUpperLowerCase=true, group="render")
-    private static final String  INIT_PARAM_ALLOW_JAVASCRIPT = "org.apache.myfaces.ALLOW_JAVASCRIPT";
-    private static final boolean INIT_PARAM_ALLOW_JAVASCRIPT_DEFAULT = true;
-
-    /**
      * Deprecated: tomahawk specific param to detect javascript, but it is no longer valid anymore.
      */
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false, on, off, yes, no",since="1.1",
@@ -149,14 +126,6 @@ public class MyfacesConfig
     @JSFWebConfigParam(defaultValue="2",since="1.1", classType="java.lang.Long")
     public static final String INIT_PARAM_CONFIG_REFRESH_PERIOD = "org.apache.myfaces.CONFIG_REFRESH_PERIOD";
     public static final long INIT_PARAM_CONFIG_REFRESH_PERIOD_DEFAULT = 2;
-
-    /**
-     * Set the view state using a javascript function instead a hidden input field.
-     */
-    @JSFWebConfigParam(defaultValue="false", expectedValues="true, false, on, off, yes, no",since="1.1", 
-            ignoreUpperLowerCase=true, deprecated=true, group="state")
-    private static final String  INIT_PARAM_VIEWSTATE_JAVASCRIPT = "org.apache.myfaces.VIEWSTATE_JAVASCRIPT";
-    private static final boolean INIT_PARAM_VIEWSTATE_JAVASCRIPT_DEFAULT = false;
 
     /**
      * Define if the input field that should store the state (javax.faces.ViewState) should render 
@@ -291,15 +260,6 @@ public class MyfacesConfig
     public final static String INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG = 
         "org.apache.myfaces.WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG";
     public final static boolean INIT_PARAM_WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT = false;
-    
-    /**
-     * If set true, render the form submit script inline, as in myfaces core 1.2 and earlier versions 
-     */
-    @JSFWebConfigParam(since="2.0.2", expectedValues="true, false, on, off, yes, no", defaultValue="false", 
-            ignoreUpperLowerCase=true, group="render")
-    public final static String INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE = 
-        "org.apache.myfaces.RENDER_FORM_SUBMIT_SCRIPT_INLINE";
-    public final static boolean INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT = false;
     
     /**
      * Enable/disable DebugPhaseListener feature, with provide useful information about ValueHolder 
@@ -567,16 +527,13 @@ public class MyfacesConfig
     public final static boolean ALWAYS_FORCE_SESSION_CREATION_DEFAULT = true;
 
 
-    private boolean _prettyHtml;
     private boolean _detectJavascript;
-    private boolean _allowJavascript;
     private boolean _autoScroll;
     private String _addResourceClass;
     private String _resourceVirtualPath;
     private boolean _checkExtensionsFilter;
     private boolean _readonlyAsDisabledForSelect;
     private long _configRefreshPeriod;
-    private boolean _viewStateJavascript;
     private boolean _renderViewStateId;
     private boolean _strictXhtmlLinks;
     private boolean _renderClearJavascriptOnButton;
@@ -588,7 +545,6 @@ public class MyfacesConfig
     private boolean refreshTransientBuildOnPSSPreserveState;
     private boolean _validateXML;
     private boolean _wrapScriptContentWithXmlCommentTag;
-    private boolean _renderFormSubmitScriptInline;
     private boolean _debugPhaseListenerEnabled;
     private boolean _strictJsf2RefreshTargetAjax;
     private boolean _strictJsf2CCELResolver;
@@ -680,16 +636,13 @@ public class MyfacesConfig
     
     public MyfacesConfig()
     {
-        setPrettyHtml(INIT_PARAM_PRETTY_HTML_DEFAULT);
-        setAllowJavascript(INIT_PARAM_ALLOW_JAVASCRIPT_DEFAULT);
         setRenderClearJavascriptOnButton(INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT);
         setRenderHiddenFieldsForLinkParams(INIT_PARAM_RENDER_HIDDEN_FIELDS_FOR_LINK_PARAMS_DEFAULT);
         setSaveFormSubmitLinkIE(INIT_PARAM_SAVE_FORM_SUBMIT_LINK_IE_DEFAULT);
         setReadonlyAsDisabledForSelect(INIT_READONLY_AS_DISABLED_FOR_SELECT_DEFAULT);
         setRenderViewStateId(INIT_PARAM_RENDER_VIEWSTATE_ID_DEFAULT);
         setStrictXhtmlLinks(INIT_PARAM_STRICT_XHTML_LINKS_DEFAULT);
-        setConfigRefreshPeriod(INIT_PARAM_CONFIG_REFRESH_PERIOD_DEFAULT);        
-        setViewStateJavascript(INIT_PARAM_VIEWSTATE_JAVASCRIPT_DEFAULT);        
+        setConfigRefreshPeriod(INIT_PARAM_CONFIG_REFRESH_PERIOD_DEFAULT);               
         setRefreshTransientBuildOnPSS(true);
         setRefreshTransientBuildOnPSSAuto(true);
         setRefreshTransientBuildOnPSSPreserveState(INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE_DEFAULT);
@@ -702,7 +655,6 @@ public class MyfacesConfig
         //The default is true but we'll let it false because it depends if 
         //tomahawk is on classpath and no test environment is set
         setCheckExtensionsFilter(false);
-        setRenderFormSubmitScriptInline(INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT);
         setDebugPhaseListenerEnabled(INIT_PARAM_DEBUG_PHASE_LISTENER_DEFAULT);
         setStrictJsf2RefreshTargetAjax(INIT_PARAM_STRICT_JSF_2_REFRESH_TARGET_AJAX_DEFAULT);
         setStrictJsf2CCELResolver(INIT_PARAM_STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT);
@@ -734,11 +686,6 @@ public class MyfacesConfig
         
         MyfacesConfig myfacesConfig = new MyfacesConfig();
 
-        myfacesConfig.setPrettyHtml(getBooleanInitParameter(extCtx, INIT_PARAM_PRETTY_HTML,
-                                                            INIT_PARAM_PRETTY_HTML_DEFAULT));
-        myfacesConfig.setAllowJavascript(getBooleanInitParameter(extCtx, INIT_PARAM_ALLOW_JAVASCRIPT,
-                                                                 INIT_PARAM_ALLOW_JAVASCRIPT_DEFAULT));
-
         myfacesConfig.setRenderClearJavascriptOnButton(getBooleanInitParameter(extCtx, 
                                                             INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON,
                                                             INIT_PARAM_RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON_DEFAULT));
@@ -757,15 +704,9 @@ public class MyfacesConfig
                                                                    INIT_PARAM_RENDER_VIEWSTATE_ID_DEFAULT));
         myfacesConfig.setStrictXhtmlLinks(getBooleanInitParameter(extCtx, INIT_PARAM_STRICT_XHTML_LINKS,
                                                                   INIT_PARAM_STRICT_XHTML_LINKS_DEFAULT));
-        myfacesConfig.setRenderFormSubmitScriptInline(getBooleanInitParameter(extCtx,
-                                                                  INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE,
-                                                                  INIT_PARAM_RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT));
         
         myfacesConfig.setConfigRefreshPeriod(getLongInitParameter(extCtx, INIT_PARAM_CONFIG_REFRESH_PERIOD,
                 INIT_PARAM_CONFIG_REFRESH_PERIOD_DEFAULT));
-
-        myfacesConfig.setViewStateJavascript(getBooleanInitParameter(extCtx, INIT_PARAM_VIEWSTATE_JAVASCRIPT,
-                INIT_PARAM_VIEWSTATE_JAVASCRIPT_DEFAULT));
 
         myfacesConfig.setDelegateFacesServlet(extCtx.getInitParameter(INIT_PARAM_DELEGATE_FACES_SERVLET));
         
@@ -1066,16 +1007,6 @@ public class MyfacesConfig
          return this._resourceVirtualPath;
      }
 
-    public boolean isPrettyHtml()
-    {
-        return _prettyHtml;
-    }
-
-    private void setPrettyHtml(boolean prettyHtml)
-    {
-        _prettyHtml = prettyHtml;
-    }
-
     public boolean isDetectJavascript()
     {
         return _detectJavascript;
@@ -1169,21 +1100,6 @@ public class MyfacesConfig
         return RI_IMPL_AVAILABLE;
     }
 
-    /**
-     * Do not use this in renderers directly!
-     * You should use {@link org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils#isJavascriptAllowed}
-     * to determine if javascript is allowed or not.
-     */
-    public boolean isAllowJavascript()
-    {
-        return _allowJavascript;
-    }
-
-    private void setAllowJavascript(boolean allowJavascript)
-    {
-        _allowJavascript = allowJavascript;
-    }
-
     public boolean isAutoScroll()
     {
         return _autoScroll;
@@ -1226,19 +1142,6 @@ public class MyfacesConfig
     public void setCheckExtensionsFilter(boolean extensionsFilter)
     {
         _checkExtensionsFilter = extensionsFilter;
-    }
-
-    /**
-     * 
-     */
-    public boolean isViewStateJavascript()
-    {
-        return _viewStateJavascript;
-    }
-
-    private void setViewStateJavascript(boolean viewStateJavascript)
-    {
-        _viewStateJavascript = viewStateJavascript;
     }
 
     public void setRenderClearJavascriptOnButton(
@@ -1348,17 +1251,6 @@ public class MyfacesConfig
             boolean wrapScriptContentWithXmlCommentTag)
     {
         this._wrapScriptContentWithXmlCommentTag = wrapScriptContentWithXmlCommentTag;
-    }
-
-    public boolean isRenderFormSubmitScriptInline()
-    {
-        return _renderFormSubmitScriptInline;
-    }
-
-    public void setRenderFormSubmitScriptInline(
-            boolean renderFormSubmitScriptInline)
-    {
-        _renderFormSubmitScriptInline = renderFormSubmitScriptInline;
     }
 
     public boolean isDebugPhaseListenerEnabled()
