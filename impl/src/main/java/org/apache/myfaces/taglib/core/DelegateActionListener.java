@@ -131,8 +131,7 @@ public class DelegateActionListener implements ActionListener, StateHolder
                 }
                 else
                 {
-                    className = (String) _type.getValue(facesContext
-                            .getELContext());
+                    className = (String) _type.getValue(facesContext.getELContext());
                 }
 
                 listener = (ActionListener) ClassUtils.newInstance(className);
@@ -140,8 +139,7 @@ public class DelegateActionListener implements ActionListener, StateHolder
                 {
                     try
                     {
-                        _binding
-                                .setValue(facesContext.getELContext(), listener);
+                        _binding.setValue(facesContext.getELContext(), listener);
                     }
                     catch (ELException e)
                     {

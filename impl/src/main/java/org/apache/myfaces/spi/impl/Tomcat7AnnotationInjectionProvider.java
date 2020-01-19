@@ -41,7 +41,7 @@ public class Tomcat7AnnotationInjectionProvider extends InjectionProvider
 
     public Tomcat7AnnotationInjectionProvider(ExternalContext externalContext)
     {
-        instanceManagers = new WeakHashMap<ClassLoader, InstanceManager>();
+        instanceManagers = new WeakHashMap<>();
     }
 
     @Override

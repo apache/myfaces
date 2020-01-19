@@ -40,8 +40,7 @@ public class ResourceAnnotationInjectionProvider extends NoInjectionAnnotationIn
      * most certainly cause a memory leak! Furthermore we can manually cleanup the Map when
      * the webapp is undeployed just by removing the Map for the current ClassLoader. 
      */
-    private volatile static WeakHashMap<ClassLoader, Map<Class,Field[]> > declaredFieldBeans = 
-            new WeakHashMap<ClassLoader, Map<Class, Field[]>>();
+    private volatile static WeakHashMap<ClassLoader, Map<Class,Field[]> > declaredFieldBeans = new WeakHashMap<>();
 
     protected Context context;
     private static final String JAVA_COMP_ENV = "java:comp/env/";
@@ -55,31 +54,22 @@ public class ResourceAnnotationInjectionProvider extends NoInjectionAnnotationIn
     {
         ClassLoader cl = ClassUtils.getContextClassLoader();
         
-        Map<Class,Field[]> metadata = (Map<Class,Field[]>)
-                declaredFieldBeans.get(cl);
-
+        Map<Class,Field[]> metadata = declaredFieldBeans.get(cl);
         if (metadata == null)
         {
             // Ensure thread-safe put over _metadata, and only create one map
             // per classloader to hold metadata.
             synchronized (declaredFieldBeans)
             {
-                metadata = createDeclaredFieldBeansMap(cl, metadata);
+                metadata = (Map<Class,Field[]>) declaredFieldBeans.get(cl);
+                if (metadata == null)
+                {
+                    metadata = new HashMap<>();
+                    declaredFieldBeans.put(cl, metadata);
+                }
             }
         }
 
-        return metadata;
-    }
-    
-    private static Map<Class,Field[]> createDeclaredFieldBeansMap(
-            ClassLoader cl, Map<Class,Field[]> metadata)
-    {
-        metadata = (Map<Class,Field[]>) declaredFieldBeans.get(cl);
-        if (metadata == null)
-        {
-            metadata = new HashMap<Class,Field[]>();
-            declaredFieldBeans.put(cl, metadata);
-        }
         return metadata;
     }
 
