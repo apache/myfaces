@@ -32,7 +32,7 @@ import org.xml.sax.SAXException;
  */
 public interface FacesConfigUnmarshaller<T>
 {
-    public T getFacesConfig(InputStream in, String systemId) throws IOException, SAXException;
+    T getFacesConfig(InputStream in, String systemId) throws IOException, SAXException;
     
-    public T getFacesConfig(String s) throws IOException, SAXException;
+    T getFacesConfig(String s) throws IOException, SAXException;
 }

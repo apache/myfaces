@@ -1042,8 +1042,8 @@ public class FacesConfigurator
         knownNamespaces.add("http://xmlns.jcp.org/jsf/passthrough");
         knownNamespaces.add("http://java.sun.com/jsf/passthrough");
         
-        Map<Integer, String> namespaceById = new HashMap<Integer, String>();
-        Map<String, Integer> idByNamespace = new HashMap<String, Integer>();
+        Map<Integer, String> namespaceById = new HashMap<>();
+        Map<String, Integer> idByNamespace = new HashMap<>();
         // Sort them to ensure the same id 
         Collections.sort(knownNamespaces);
         for (int i = 0; i < knownNamespaces.size(); i++)
@@ -1096,7 +1096,7 @@ public class FacesConfigurator
                     {
                         // Add renderer using LazyRenderKit interface. This will have the effect of improve startup
                         // time avoiding load renderer classes that are not used.
-                        ((LazyRenderKit)renderKit).addRenderer(element.getComponentFamily(), 
+                        ((LazyRenderKit) renderKit).addRenderer(element.getComponentFamily(), 
                             element.getRendererType(), element.getRendererClass());
                     }
                     else

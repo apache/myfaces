@@ -237,10 +237,12 @@ public class ConfigFilesXmlValidationUtils
         Validator validator = schema.newValidator();
         URLConnection conn = xmlFile.openConnection();
         conn.setUseCaches(false);
-        InputStream is = conn.getInputStream();
-        Source source = new StreamSource(is);
-        validator.setErrorHandler(VALIDATION_ERROR_HANDLER);
-        validator.validate(source);
+        try (InputStream is = conn.getInputStream())
+        {
+            Source source = new StreamSource(is);
+            validator.setErrorHandler(VALIDATION_ERROR_HANDLER);
+            validator.validate(source);
+        }
     }
 
     private static Source getFacesConfigSchemaFileAsSource(ExternalContext externalContext, String version)
@@ -422,10 +424,12 @@ public class ConfigFilesXmlValidationUtils
         Validator validator = schema.newValidator();
         URLConnection conn = xmlFile.openConnection();
         conn.setUseCaches(false);
-        InputStream is = conn.getInputStream();
-        Source source = new StreamSource(is);
-        validator.setErrorHandler(VALIDATION_ERROR_HANDLER);
-        validator.validate(source);
+        try (InputStream is = conn.getInputStream())
+        {
+            Source source = new StreamSource(is);
+            validator.setErrorHandler(VALIDATION_ERROR_HANDLER);
+            validator.validate(source);
+        }
     }
     
     private static Source getFaceletSchemaFileAsSource(ExternalContext externalContext)
@@ -459,10 +463,6 @@ public class ConfigFilesXmlValidationUtils
 
     private static boolean isTaglibDocument20OrLater(URL url)
     {
-        URLConnection conn = null;
-        InputStream input = null;
-        boolean result = false;
-        
         try
         {
             SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -471,47 +471,34 @@ public class ConfigFilesXmlValidationUtils
             
             // We need to create a non-validating, non-namespace aware parser used to simply check
             // which version of the facelets taglib document we are dealing with.
-
             factory.setNamespaceAware(false);
             factory.setFeature("http://xml.org/sax/features/validation", false);
             factory.setValidating(false);
             
             parser = factory.newSAXParser();
             
-            conn = url.openConnection();
+            URLConnection conn = url.openConnection();
             conn.setUseCaches(false);
-            input = conn.getInputStream();
-            
-            try
+            try (InputStream input = conn.getInputStream())
             {
-                parser.parse (input, handler);
-            }
-            catch (SAXException e)
-            {
-                // This is as a result of our aborted parse, so ignore.
+                try
+                {
+                    parser.parse (input, handler);
+                }
+                catch (SAXException e)
+                {
+                    // This is as a result of our aborted parse, so ignore.
+                }
             }
             
-            result = handler.isVersion20OrLater();
+            return handler.isVersion20OrLater();
         }
         catch (Throwable e)
         {
             // Most likely a result of our aborted parse, so ignore.
         }
-        finally
-        {
-            if (input != null)
-            {
-                try
-                {
-                    input.close();
-                }
-                catch (Throwable e)
-                {
-                }
-            }
-        }
         
-        return result;
+        return false;
     }
 
     
@@ -524,29 +511,28 @@ public class ConfigFilesXmlValidationUtils
     {
         private boolean version20OrLater;
         
-        public boolean isVersion20OrLater ()
+        public boolean isVersion20OrLater()
         {
             return this.version20OrLater;
         }
         
         @Override
-        public void startElement (String uri, String localName, String name, Attributes attributes) throws SAXException
+        public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException
         {
-            if (name.equals ("facelet-taglib"))
+            if (name.equals("facelet-taglib"))
             {
                 int length = attributes.getLength();
                 
                 for (int i = 0; i < length; i++)
                 {
                     String attrName = attributes.getLocalName(i);
-                    attrName = (attrName != null)
-                            ? ( (attrName.length() > 0) ? attrName : attributes.getQName(i))
+                    attrName = attrName != null
+                            ? ((attrName.length() > 0) ? attrName : attributes.getQName(i))
                             : attributes.getQName(i);
-                    if (attrName.equals ("version"))
+                    if (attrName.equals("version"))
                     {
                         // This document has a "version" attribute in the <facelet-taglib> element, so
                         // it must be a 2.0 or later document as this attribute was never required before.
-
                         this.version20OrLater = true;
                     }
                 }

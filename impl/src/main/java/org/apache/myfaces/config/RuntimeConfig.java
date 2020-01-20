@@ -62,9 +62,9 @@ public class RuntimeConfig
 
     private static final String APPLICATION_MAP_PARAM_NAME = RuntimeConfig.class.getName();
 
-    private final Collection<NavigationRule> _navigationRules = new ArrayList<NavigationRule>();
+    private final Collection<NavigationRule> _navigationRules = new ArrayList<>();
     private boolean _navigationRulesChanged = false;
-    private final Map<String, ResourceBundle> _resourceBundles = new HashMap<String, ResourceBundle>();
+    private final Map<String, ResourceBundle> _resourceBundles = new HashMap<>();
     
     private String _facesVersion;
     
@@ -78,12 +78,12 @@ public class RuntimeConfig
     private Predicate<ELResolver> _elResolverPredicate;
 
     private final Map<String, org.apache.myfaces.config.element.Converter> _converterClassNameToConfigurationMap =
-        new ConcurrentHashMap<String, org.apache.myfaces.config.element.Converter>();
+        new ConcurrentHashMap<>();
     
     private NamedEventManager _namedEventManager;
     
     private final Map<String, FaceletsProcessing> _faceletsProcessingByFileExtension =
-        new HashMap<String, FaceletsProcessing>();
+        new HashMap<>();
     
     /**
      * JSF 2.2 section 11.4.2.1. 
@@ -93,29 +93,28 @@ public class RuntimeConfig
      * to a contract that is not available to the application, an informative error 
      * message must be logged. ..."
      */
-    private Set<String> _externalContextResourceLibraryContracts = new HashSet<String>();
-    private Set<String> _classLoaderResourceLibraryContracts = new HashSet<String>();
-    private Set<String> _resourceLibraryContracts = new HashSet<String>();
+    private Set<String> _externalContextResourceLibraryContracts = new HashSet<>();
+    private Set<String> _classLoaderResourceLibraryContracts = new HashSet<>();
+    private Set<String> _resourceLibraryContracts = new HashSet<>();
     
-    private Map<String, List<String>> _contractMappings = new HashMap<String, List<String>>();
+    private Map<String, List<String>> _contractMappings = new HashMap<>();
     
-    private List<ComponentTagDeclaration> _componentTagDeclarations = 
-            new ArrayList<ComponentTagDeclaration>();
+    private List<ComponentTagDeclaration> _componentTagDeclarations = new ArrayList<>();
     
-    private List<String> _resourceResolvers = new ArrayList<String>();
+    private List<String> _resourceResolvers = new ArrayList<>();
     
-    private List<FaceletTagLibrary> _faceletTagLibraries = new ArrayList<FaceletTagLibrary>();
+    private List<FaceletTagLibrary> _faceletTagLibraries = new ArrayList<>();
     
-    private Map<Integer, String> _namespaceById = new HashMap<Integer, String>();
-    private Map<String, Integer> _idByNamespace = new HashMap<String, Integer>();
+    private Map<Integer, String> _namespaceById = new HashMap<>();
+    private Map<String, Integer> _idByNamespace = new HashMap<>();
     
-    private List<ViewPoolMapping> _viewPoolMappings = new ArrayList<ViewPoolMapping>();
+    private List<ViewPoolMapping> _viewPoolMappings = new ArrayList<>();
     
-    private List<FaceletsTemplateMapping> _faceletsTemplateMappings = new ArrayList<FaceletsTemplateMapping>();
+    private List<FaceletsTemplateMapping> _faceletsTemplateMappings = new ArrayList<>();
     
-    private List<SearchKeywordResolver> _searchExpressionResolvers = new ArrayList<SearchKeywordResolver>();
+    private List<SearchKeywordResolver> _searchExpressionResolvers = new ArrayList<>();
     
-    private List<String> _faceletTemplates = new ArrayList<String>();
+    private List<String> _faceletTemplates = new ArrayList<>();
 
     public static RuntimeConfig getCurrentInstance(FacesContext facesContext)
     {
@@ -152,8 +151,8 @@ public class RuntimeConfig
         _contractMappings.clear();
         _componentTagDeclarations.clear();
         _resourceResolvers.clear();
-        _namespaceById = new HashMap<Integer, String>();
-        _idByNamespace = new HashMap<String, Integer>();
+        _namespaceById = new HashMap<>();
+        _idByNamespace = new HashMap<>();
         _viewPoolMappings.clear();
         _faceletsTemplateMappings.clear();
     }
@@ -261,7 +260,7 @@ public class RuntimeConfig
     {
         if (facesConfigElResolvers == null)
         {
-            facesConfigElResolvers = new ArrayList<ELResolver>();
+            facesConfigElResolvers = new ArrayList<>();
         }
         facesConfigElResolvers.add(resolver);
     }
@@ -275,7 +274,7 @@ public class RuntimeConfig
     {
         if (applicationElResolvers == null)
         {
-            applicationElResolvers = new ArrayList<ELResolver>();
+            applicationElResolvers = new ArrayList<>();
         }
         applicationElResolvers.add(resolver);
     }
@@ -463,7 +462,7 @@ public class RuntimeConfig
     {
         if (_searchExpressionResolvers == null)
         {
-            _searchExpressionResolvers = new ArrayList<SearchKeywordResolver>();
+            _searchExpressionResolvers = new ArrayList<>();
         }
         _searchExpressionResolvers.add(resolver);
     }
