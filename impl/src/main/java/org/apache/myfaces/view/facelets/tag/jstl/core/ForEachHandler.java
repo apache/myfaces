@@ -426,13 +426,28 @@ public final class ForEachHandler extends TagHandler implements ComponentContain
         ValueExpression vO = this.capture(v, pctx);
         ValueExpression vsO = this.capture(vs, pctx);
         Object value = null;
+        Iterator<?> itr = this.toIterator(src);
         try
         {
             int size = restoredSavedOption.getValueList().size();
             for (int si = 0; si < size; si++)
             {
                 Object[] stateValue = restoredSavedOption.getValueList().get(si);
-                value = stateValue[1];
+                if (itr.hasNext())
+                {
+                    value = itr.next();
+                    if (!value.equals(stateValue[1]))
+                    {
+                        // replace the restored value so that the correct instance gets used
+                        Object[] state = {stateValue[0], value, stateValue[2]};
+                        restoredSavedOption.getValueList().set(si, state);
+                    }
+                }
+                else
+                {
+                    value = stateValue[1];
+                }
+
                 String base = (String) stateValue[0];
 
                 try
