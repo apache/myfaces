@@ -172,15 +172,6 @@ public class MyfacesConfig
     private final static boolean WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT = false;
     
     /**
-     * If set true, render the form submit script inline, as in myfaces core 1.2 and earlier versions 
-     */
-    @JSFWebConfigParam(since="2.0.2", expectedValues="true, false, on, off, yes, no", defaultValue="false", 
-            ignoreUpperLowerCase=true, group="render")
-    public final static String RENDER_FORM_SUBMIT_SCRIPT_INLINE = 
-        "org.apache.myfaces.RENDER_FORM_SUBMIT_SCRIPT_INLINE";
-    private final static boolean RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT = false;
-    
-    /**
      * Enable/disable DebugPhaseListener feature, with provide useful information about ValueHolder 
      * variables (submittedValue, localValue, value).
      * Note evaluate those getters for each component could cause some unwanted side effects when 
@@ -831,7 +822,6 @@ public class MyfacesConfig
     private boolean refreshTransientBuildOnPSSPreserveState = REFRESH_TRANSIENT_BUILD_ON_PSS_PRESERVE_STATE_DEFAULT;
     private boolean validateXML = VALIDATE_XML_DEFAULT;
     private boolean wrapScriptContentWithXmlCommentTag = WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG_DEFAULT;
-    private boolean renderFormSubmitScriptInline = RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT;
     private boolean debugPhaseListenerEnabled = DEBUG_PHASE_LISTENER_DEFAULT;
     private boolean strictJsf2CCELResolver = STRICT_JSF_2_CC_EL_RESOLVER_DEFAULT;
     private String defaultResponseWriterContentTypeMode = DEFAULT_RESPONSE_WRITER_CONTENT_TYPE_MODE_DEFAULT;
@@ -976,9 +966,6 @@ public class MyfacesConfig
         
         cfg.strictXhtmlLinks = getBoolean(extCtx, STRICT_XHTML_LINKS,
                 STRICT_XHTML_LINKS_DEFAULT);
-
-        cfg.renderFormSubmitScriptInline = getBoolean(extCtx, RENDER_FORM_SUBMIT_SCRIPT_INLINE,
-                RENDER_FORM_SUBMIT_SCRIPT_INLINE_DEFAULT);
         
         cfg.configRefreshPeriod = getLong(extCtx, CONFIG_REFRESH_PERIOD,
                 CONFIG_REFRESH_PERIOD_DEFAULT);
@@ -1449,11 +1436,6 @@ public class MyfacesConfig
     public boolean isWrapScriptContentWithXmlCommentTag()
     {
         return wrapScriptContentWithXmlCommentTag;
-    }
-
-    public boolean isRenderFormSubmitScriptInline()
-    {
-        return renderFormSubmitScriptInline;
     }
 
     public boolean isDebugPhaseListenerEnabled()
