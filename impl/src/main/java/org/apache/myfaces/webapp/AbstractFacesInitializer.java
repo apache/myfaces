@@ -895,5 +895,29 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         {
             log.severe("'org.apache.myfaces.STRICT_JSF_2_REFRESH_TARGET_AJAX' is not supported anymore since 2.3.");
         }
+
+        value = externalContext.getInitParameter("org.apache.myfaces.ALLOW_JAVASCRIPT");
+        if (value != null && !value.isEmpty())
+        {
+            log.severe("'org.apache.myfaces.ALLOW_JAVASCRIPT' is not supported anymore.");
+        }
+
+        value = externalContext.getInitParameter("org.apache.myfaces.VIEWSTATE_JAVASCRIPT");
+        if (value != null && !value.isEmpty())
+        {
+            log.severe("'org.apache.myfaces.VIEWSTATE_JAVASCRIPT' is not supported anymore.");
+        }
+
+        value = externalContext.getInitParameter("org.apache.myfaces.PRETTY_HTML");
+        if (value != null && !value.isEmpty())
+        {
+            log.severe("'org.apache.myfaces.PRETTY_HTML' is not supported anymore.");
+        }
+
+        value = externalContext.getInitParameter("org.apache.myfaces.RENDER_FORM_SUBMIT_SCRIPT_INLINE");
+        if (value != null && !value.isEmpty())
+        {
+            log.severe("'org.apache.myfaces.RENDER_FORM_SUBMIT_SCRIPT_INLINE' is not supported anymore.");
+        }
     }
 }
