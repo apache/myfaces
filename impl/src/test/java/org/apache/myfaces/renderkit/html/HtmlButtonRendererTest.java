@@ -121,7 +121,6 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
         };
         
         MockServletContext servletContext = new MockServletContext();
-        servletContext.addInitParameter("org.apache.myfaces.ALLOW_JAVASCRIPT", "false");
         MockExternalContext mockExtCtx = new MockExternalContext(servletContext, 
                 new MockHttpServletRequest(), new MockHttpServletResponse());
         MyfacesConfig config = MyfacesConfig.getCurrentInstance(mockExtCtx);
@@ -169,7 +168,6 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
            };
         
         MockServletContext servletContext = new MockServletContext();
-        servletContext.addInitParameter("org.apache.myfaces.ALLOW_JAVASCRIPT", "true");
         MockExternalContext mockExtCtx = new MockExternalContext(servletContext, 
                 new MockHttpServletRequest(), new MockHttpServletResponse());
         MyfacesConfig config = MyfacesConfig.getCurrentInstance(mockExtCtx);

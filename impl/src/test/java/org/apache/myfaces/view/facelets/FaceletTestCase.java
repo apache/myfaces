@@ -80,13 +80,10 @@ public abstract class FaceletTestCase extends AbstractJsfConfigurableMockTestCas
         //This params are optional
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME,
                 StateManager.STATE_SAVING_METHOD_CLIENT);
-        servletContext.addInitParameter("org.apache.myfaces.PRETTY_HTML","true");
-        servletContext.addInitParameter("org.apache.myfaces.ALLOW_JAVASCRIPT","true");
         servletContext.addInitParameter("org.apache.myfaces.RENDER_CLEAR_JAVASCRIPT_FOR_BUTTON","false");
         servletContext.addInitParameter("org.apache.myfaces.RENDER_VIEWSTATE_ID","true");
         servletContext.addInitParameter("org.apache.myfaces.STRICT_XHTML_LINKS","true");
         servletContext.addInitParameter("org.apache.myfaces.CONFIG_REFRESH_PERIOD","0");
-        servletContext.addInitParameter("org.apache.myfaces.VIEWSTATE_JAVASCRIPT","false");
         servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, "UnitTest");
     }
     
