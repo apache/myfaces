@@ -483,7 +483,7 @@
                 <pluginRepository>
                     <id>java.net.repo</id>
                     <name>java.net repository</name>
-                    <url>http://download.java.net/maven/2/</url>
+                    <url>https://download.java.net/maven/2/</url>
                 </pluginRepository>
             </pluginRepositories>
         </profile>
