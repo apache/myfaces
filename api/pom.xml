@@ -477,15 +477,6 @@
                 <plugins>
                 </plugins>
             </build>
-
-            <!-- mojarra is only available on java.net -->
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>java.net.repo</id>
-                    <name>java.net repository</name>
-                    <url>https://download.java.net/maven/2/</url>
-                </pluginRepository>
-            </pluginRepositories>
         </profile>
 
         <!--
