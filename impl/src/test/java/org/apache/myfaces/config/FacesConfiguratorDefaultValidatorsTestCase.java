@@ -32,6 +32,7 @@ import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.util.ExternalSpecifications;
+import org.apache.myfaces.util.lang.Lazy;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
 import org.junit.Assert;
 import org.junit.Test;
@@ -110,7 +111,10 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfConfi
         {
             Field field = ExternalSpecifications.class.getDeclaredField("beanValidationAvailable");
             field.setAccessible(true);
-            field.set(ExternalSpecifications.class, available);
+            field.set(ExternalSpecifications.class, new Lazy<>(() ->
+            {
+                return available;
+            }));
         }
         catch (Exception e)
         {

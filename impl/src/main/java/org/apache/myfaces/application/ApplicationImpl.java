@@ -126,6 +126,7 @@ import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.util.lang.Lazy;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.ELText;
@@ -194,7 +195,7 @@ public class ApplicationImpl extends Application
     private final RuntimeConfig _runtimeConfig;
     private final MyfacesConfig _myfacesConfig;
 
-    private ELResolver elResolver;
+    private Lazy<ELResolver> elResolver;
 
     private ELResolverBuilder resolverBuilderForFaces;
 
@@ -279,6 +280,23 @@ public class ApplicationImpl extends Application
         {
             _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = true;
         }
+        
+        elResolver = new Lazy<>(() -> {
+            CompositeELResolver celr;
+            if (_myfacesConfig.isSupportJSP())
+            {
+                celr = new FacesCompositeELResolver(Scope.Faces);
+            }
+            else
+            {
+                celr = new CompositeELResolver();
+            }
+
+            new ELResolverBuilderForFaces(_runtimeConfig, _myfacesConfig)
+                    .build(getFacesContext(), celr);
+
+            return celr;
+        });
     }
 
     // ~ Methods
@@ -340,44 +358,7 @@ public class ApplicationImpl extends Application
     @Override
     public final ELResolver getELResolver()
     {
-        // we don't need synchronization here since it is ok to have multiple
-        // instances of the elresolver
-        if (elResolver == null)
-        {
-            elResolver = createFacesResolver();
-        }
-        return elResolver;
-    }
-
-    private ELResolver createFacesResolver()
-    {
-        FacesContext facesContext = getFacesContext();
-        boolean supportJSP = _myfacesConfig.isSupportJSP();
-        CompositeELResolver resolver;
-        if (supportJSP)
-        {
-            resolver = new FacesCompositeELResolver(Scope.Faces);
-        }
-        else
-        {
-            resolver = new CompositeELResolver();
-        }
-        getResolverBuilderForFaces().build(facesContext, resolver);
-        return resolver;
-    }
-
-    protected final ELResolverBuilder getResolverBuilderForFaces()
-    {
-        if (resolverBuilderForFaces == null)
-        {
-            resolverBuilderForFaces = new ELResolverBuilderForFaces(_runtimeConfig, _myfacesConfig);
-        }
-        return resolverBuilderForFaces;
-    }
-
-    public final void setResolverBuilderForFaces(final ELResolverBuilder factory)
-    {
-        resolverBuilderForFaces = factory;
+        return elResolver.get();
     }
 
     @Override

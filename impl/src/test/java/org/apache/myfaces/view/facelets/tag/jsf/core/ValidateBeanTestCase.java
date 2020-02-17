@@ -27,6 +27,7 @@ import javax.faces.validator.BeanValidator;
 import javax.faces.validator.Validator;
 
 import org.apache.myfaces.util.ExternalSpecifications;
+import org.apache.myfaces.util.lang.Lazy;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.junit.Assert;
 import org.junit.Test;
@@ -61,7 +62,10 @@ public class ValidateBeanTestCase extends FaceletTestCase
         {
             Field field = ExternalSpecifications.class.getDeclaredField("beanValidationAvailable");
             field.setAccessible(true);
-            field.set(ExternalSpecifications.class, available);
+            field.set(ExternalSpecifications.class, new Lazy<>(() ->
+            {
+                return available;
+            }));
         }
         catch (Exception e)
         {

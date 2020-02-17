@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import javax.faces.context.ExternalContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Validation;
+import org.apache.myfaces.util.lang.Lazy;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 
 /**
@@ -42,10 +43,81 @@ public final class ExternalSpecifications
 {
     private static final Logger log = Logger.getLogger(ExternalSpecifications.class.getName());
 
-    private static volatile Boolean beanValidationAvailable;
+    private static Lazy<Boolean> beanValidationAvailable = new Lazy<>(() ->
+    {
+        boolean available;
+        try
+        {
+            try
+            {
+                available = (ClassUtils.classForName("javax.validation.Validation") != null);
+            }
+            catch(ClassNotFoundException e)
+            {
+                available = false;
+            }
+
+            if (available)
+            {
+                try
+                {
+                    // Trial-error approach to check for Bean Validation impl existence.
+                    // If any Exception occurs here, we assume that Bean Validation is not available.
+                    // The cause may be anything, i.e. NoClassDef, config error...
+                    Validation.buildDefaultValidatorFactory().getValidator();
+                }
+                catch (Throwable t)
+                {
+                    //log.log(Level.FINE, "Error initializing Bean Validation (could be normal)", t);
+                    available = false;
+                }
+            }
+        }
+        catch (Throwable t)
+        {
+            log.log(Level.FINE, "Error loading class (could be normal)", t);
+            available = false;
+        }
+
+        log.info("MyFaces Core Bean Validation support " + (available ? "enabled" : "disabled"));
+
+        return available;
+    });
+    
     private static volatile Boolean cdiAvailable;
-    private static volatile Boolean el3Available;
-    private static volatile Boolean sevlet4Available;
+    
+    private static Lazy<Boolean> el3Available  = new Lazy<>(() ->
+    {
+        boolean available;
+        try
+        {
+            available = ClassUtils.classForName("javax.el.StaticFieldELResolver") != null ;
+        }
+        catch (Throwable t)
+        {
+            available = false;
+        }
+        log.info("MyFaces Core EL 3.0 support " + (available ? "enabled" : "disabled"));
+
+        return available;
+    });
+
+    private static Lazy<Boolean> sevlet4Available = new Lazy<>(() ->
+    {
+        boolean available;
+        try
+        {
+            available = ClassUtils.classForName("javax.servlet.http.PushBuilder") != null
+                    && HttpServletRequest.class.getMethod("newPushBuilder", (Class[]) null) != null;
+        }
+        catch (Throwable t)
+        {
+            available = false;
+        }
+        log.info("MyFaces Core Servlet 4.0 support " + (available ? "enabled" : "disabled"));
+
+        return available;
+    });
 
     /**
      * This method determines if Bean Validation is present.
@@ -56,44 +128,7 @@ public final class ExternalSpecifications
      */
     public static boolean isBeanValidationAvailable()
     {
-        if (beanValidationAvailable == null)
-        {
-            try
-            {
-                try
-                {
-                    beanValidationAvailable = (ClassUtils.classForName("javax.validation.Validation") != null);
-                }
-                catch(ClassNotFoundException e)
-                {
-                    beanValidationAvailable = Boolean.FALSE;
-                }
-
-                if (beanValidationAvailable)
-                {
-                    try
-                    {
-                        // Trial-error approach to check for Bean Validation impl existence.
-                        // If any Exception occurs here, we assume that Bean Validation is not available.
-                        // The cause may be anything, i.e. NoClassDef, config error...
-                        Validation.buildDefaultValidatorFactory().getValidator();
-                    }
-                    catch (Throwable t)
-                    {
-                        //log.log(Level.FINE, "Error initializing Bean Validation (could be normal)", t);
-                        beanValidationAvailable = false;
-                    }
-                }
-            }
-            catch (Throwable t)
-            {
-                log.log(Level.FINE, "Error loading class (could be normal)", t);
-                beanValidationAvailable = false;
-            }
-
-            log.info("MyFaces Core Bean Validation support " + (beanValidationAvailable ? "enabled" : "disabled"));
-        }
-        return beanValidationAvailable;
+        return beanValidationAvailable.get();
     }
     
     public static boolean isCDIAvailable(ExternalContext externalContext)
@@ -119,37 +154,12 @@ public final class ExternalSpecifications
     
     public static boolean isEL3Available()
     {
-        if (el3Available == null)
-        {
-            try
-            {
-                el3Available = ClassUtils.classForName("javax.el.StaticFieldELResolver") != null ;
-            }
-            catch (Throwable t)
-            {
-                el3Available = false;
-            }
-            log.info("MyFaces Core EL 3.0 support " + (el3Available ? "enabled" : "disabled"));
-        }
-        return el3Available;
+        return el3Available.get();
     }
 
     public static boolean isServlet4Available()
     {
-        if (sevlet4Available == null)
-        {
-            try
-            {
-                sevlet4Available = ClassUtils.classForName("javax.servlet.http.PushBuilder") != null
-                        && HttpServletRequest.class.getMethod("newPushBuilder", (Class[]) null) != null;
-            }
-            catch (Throwable t)
-            {
-                sevlet4Available = false;
-            }
-            log.info("MyFaces Core Servlet 4.0 support " + (sevlet4Available ? "enabled" : "disabled"));
-        }
-        return sevlet4Available;
+        return sevlet4Available.get();
     }
 
     /**
