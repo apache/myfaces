@@ -423,9 +423,8 @@ class MyFacesProcessor
         List<Class<?>> classes = new ArrayList<>();
        
         classNames.addAll(collectClassAndSubclasses(combinedIndex, Renderer.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, javax.el.ValueExpression.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, "org.primefaces.component.api.Widget"));
         classNames.addAll(collectClassAndSubclasses(combinedIndex, ClientBehaviorRenderer.class.getName()));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, javax.el.ValueExpression.class.getName()));
         classNames.addAll(collectClassAndSubclasses(combinedIndex, SystemEvent.class.getName()));
         classNames.addAll(collectClassAndSubclasses(combinedIndex, FacesContext.class.getName()));
 
@@ -435,7 +434,6 @@ class MyFacesProcessor
         }
 
         classNames.addAll(Arrays.asList(
-            "org.primefaces.behavior.ajax.AjaxBehavior",
             "org.primefaces.config.PrimeEnvironment",
             "com.lowagie.text.pdf.MappedRandomAccessFile",
             "org.apache.myfaces.application._ApplicationUtils",
@@ -490,6 +488,7 @@ class MyFacesProcessor
         classNames.addAll(collectClassAndSubclasses(combinedIndex, ELResolver.class.getName()));
         classNames.addAll(collectClassAndSubclasses(combinedIndex, MethodRule.class.getName()));
         classNames.addAll(collectClassAndSubclasses(combinedIndex, MetaRuleset.class.getName()));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, "org.primefaces.component.api.Widget"));
         classNames.addAll(Arrays.asList(
                 "org.primefaces.util.ComponentUtils",
                 "org.primefaces.expression.SearchExpressionUtils",
