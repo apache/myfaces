@@ -18,6 +18,9 @@
  */
 package org.apache.myfaces.core.extensions.quarkus.deployment;
 
+import com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl;
+import com.sun.org.apache.xpath.internal.functions.FuncLocalPart;
+import com.sun.org.apache.xpath.internal.functions.FuncNot;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -72,8 +75,12 @@ import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
+import io.quarkus.deployment.builditem.AdditionalApplicationArchiveMarkerBuildItem;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBundleBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import org.apache.myfaces.core.extensions.quarkus.runtime.MyFacesRecorder;
 import org.apache.myfaces.core.extensions.quarkus.runtime.QuarkusFacesInitilializer;
 import org.apache.myfaces.core.extensions.quarkus.runtime.scopes.QuarkusFacesScopeContext;
@@ -86,6 +93,49 @@ import io.quarkus.runtime.configuration.ProfileManager;
 import io.quarkus.undertow.deployment.ListenerBuildItem;
 import io.quarkus.undertow.deployment.ServletBuildItem;
 import io.quarkus.undertow.deployment.ServletInitParamBuildItem;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.el.ELResolver;
+import javax.faces.FactoryFinder;
+import javax.faces.component.UIComponent;
+import javax.faces.component.behavior.Behavior;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.event.ExceptionQueuedEventContext;
+import javax.faces.event.SystemEvent;
+import javax.faces.render.ClientBehaviorRenderer;
+import javax.faces.render.Renderer;
+import javax.faces.validator.Validator;
+import javax.faces.view.facelets.ComponentHandler;
+import javax.faces.view.facelets.ConverterHandler;
+import javax.faces.view.facelets.MetaRuleset;
+import javax.faces.view.facelets.TagHandler;
+import javax.faces.view.facelets.ValidatorHandler;
+import org.apache.el.ValueExpressionImpl;
+import org.apache.myfaces.application.ApplicationImpl;
+import org.apache.myfaces.application.viewstate.StateUtils;
+import org.apache.myfaces.cdi.util.BeanEntry;
+import org.apache.myfaces.config.FacesConfigurator;
+import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusFactoryFinderProvider;
+import org.apache.myfaces.el.ELResolverBuilderForFaces;
+import org.apache.myfaces.el.resolver.ImportHandlerResolver;
+import org.apache.myfaces.lifecycle.RestoreViewSupport;
+import org.apache.myfaces.renderkit.ErrorPageWriter;
+import org.apache.myfaces.spi.FactoryFinderProviderFactory;
+import org.apache.myfaces.spi.impl.DefaultWebConfigProviderFactory;
+import org.apache.myfaces.util.ExternalContextUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.view.ViewScopeProxyMap;
+import org.apache.myfaces.view.facelets.compiler.SAXCompiler;
+import org.apache.myfaces.view.facelets.compiler.TagLibraryConfig;
+import org.apache.myfaces.view.facelets.tag.MethodRule;
+import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
+import org.apache.myfaces.webapp.AbstractFacesInitializer;
+import org.apache.myfaces.webapp.FaceletsInitilializer;
+import org.apache.myfaces.webapp.MyFacesContainerInitializer;
+import org.jboss.jandex.ClassInfo;
 
 class MyFacesProcessor
 {
@@ -125,6 +175,25 @@ class MyFacesProcessor
             FacesBehaviorRenderer.class.getName(),
             FaceletsResourceResolver.class.getName(),
             FlowDefinition.class.getName()
+    };
+    
+    private static final String[] FACTORIES =
+    {
+        FactoryFinder.APPLICATION_FACTORY,
+        FactoryFinder.EXCEPTION_HANDLER_FACTORY,
+        FactoryFinder.EXTERNAL_CONTEXT_FACTORY,
+        FactoryFinder.FACES_CONTEXT_FACTORY,
+        FactoryFinder.LIFECYCLE_FACTORY,
+        FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
+        FactoryFinder.RENDER_KIT_FACTORY,
+        FactoryFinder.TAG_HANDLER_DELEGATE_FACTORY,
+        FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY,
+        FactoryFinder.VISIT_CONTEXT_FACTORY,
+        FactoryFinder.FACELET_CACHE_FACTORY,
+        FactoryFinder.FLASH_FACTORY,
+        FactoryFinder.FLOW_HANDLER_FACTORY,
+        FactoryFinder.CLIENT_WINDOW_FACTORY,
+        FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY
     };
 
     @BuildStep
@@ -333,5 +402,197 @@ class MyFacesProcessor
                         flowId.asString());
             }
         }
+    }
+
+    @BuildStep
+    void produceApplicationArchiveMarker(
+            BuildProducer<AdditionalApplicationArchiveMarkerBuildItem> additionalArchiveMarkers)
+    {
+        additionalArchiveMarkers.produce(new AdditionalApplicationArchiveMarkerBuildItem("org/primefaces/component"));
+        additionalArchiveMarkers.produce(new AdditionalApplicationArchiveMarkerBuildItem("javax/faces/component"));
+        additionalArchiveMarkers.produce(new AdditionalApplicationArchiveMarkerBuildItem("org/apache/myfaces/view"));
+    }
+
+    @BuildStep
+    @Record(ExecutionTime.STATIC_INIT)
+    void registerForLimitedReflection(MyFacesRecorder recorder,
+            BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
+            CombinedIndexBuildItem combinedIndex)
+    {
+        List<String> classNames = new ArrayList<>();
+        List<Class<?>> classes = new ArrayList<>();
+       
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, Renderer.class.getName()));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, javax.el.ValueExpression.class.getName()));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, "org.primefaces.component.api.Widget"));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, ClientBehaviorRenderer.class.getName()));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, SystemEvent.class.getName()));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, FacesContext.class.getName()));
+
+        for (String factory : FACTORIES)
+        {
+            classNames.addAll(collectClassAndSubclasses(combinedIndex, factory));
+        }
+
+        classNames.addAll(Arrays.asList(
+            "org.primefaces.behavior.ajax.AjaxBehavior",
+            "org.primefaces.config.PrimeEnvironment",
+            "com.lowagie.text.pdf.MappedRandomAccessFile",
+            "org.apache.myfaces.application._ApplicationUtils",
+            "com.sun.el.util.ReflectionUtil",
+            "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+            "org.primefaces.util.MessageFactory",
+            "javax.faces.component._DeltaStateHelper",
+            "javax.faces.component._DeltaStateHelper$InternalMap"));
+
+        classes.addAll(Arrays.asList(
+                DefaultWebConfigProviderFactory.class,
+                ErrorPageWriter.class,
+                DocumentBuilderFactoryImpl.class,
+                FuncLocalPart.class,
+                FuncNot.class,
+                MyFacesContainerInitializer.class,
+                RestoreViewSupport.class,
+                ExceptionQueuedEventContext.class,
+                FacesConfigurator.class,
+                FaceletsInitilializer.class,
+                ImportHandlerResolver.class,
+                TagLibraryConfig.class,
+                String.class,
+                ValueExpressionImpl.class,
+                ViewScopeProxyMap.class,
+                SAXCompiler.class,
+                StateUtils.class,
+                ApplicationImpl.class));
+
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(false, false, classNames.toArray(new String[classNames.size()])));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(false, false, classes.toArray(new Class[classes.size()])));
+    }
+    
+    @BuildStep
+    @Record(ExecutionTime.STATIC_INIT)
+    void registerForMethodReflection(MyFacesRecorder recorder, BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
+                               CombinedIndexBuildItem combinedIndex)
+    {        
+        List<String> classNames = new ArrayList<>();
+        List<Class<?>> classes = new ArrayList<>();
+        
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, TagHandler.class.getName()));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, ConverterHandler.class.getName()));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, ComponentHandler.class.getName()));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, ValidatorHandler.class.getName()));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, UIComponent.class.getName()));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, Converter.class.getName()));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, Validator.class.getName()));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, Behavior.class.getName()));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, ELResolver.class.getName()));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, MethodRule.class.getName()));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, MetaRuleset.class.getName()));
+        classNames.addAll(Arrays.asList(
+                "org.primefaces.util.ComponentUtils",
+                "org.primefaces.expression.SearchExpressionUtils",
+                "org.primefaces.util.SecurityUtils",
+                "org.primefaces.util.LangUtils",
+                "javax.faces._FactoryFinderProviderFactory",
+                "io.quarkus.myfaces.showcase.view.LazyView",
+                "io.quarkus.myfaces.showcase.view.LazyView_ClientProxy",
+                "io.quarkus.myfaces.showcase.view.Car",
+                "io.quarkus.myfaces.showcase.view.LazyCarDataModel",
+                "io.quarkus.myfaces.showcase.view.CarService",
+                "io.quarkus.myfaces.showcase.view.LazySorter"));
+
+        classes.addAll(Arrays.asList(
+                ClassUtils.class,
+                FactoryFinderProviderFactory.class,
+                ComponentSupport.class,
+                QuarkusFactoryFinderProvider.class,
+                ELResolverBuilderForFaces.class,
+                AbstractFacesInitializer.class,
+                ExternalContextUtils.class,
+                BeanEntry.class));
+        
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, false, classNames.toArray(new String[classNames.size()])));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, false, classes.toArray(new Class[classes.size()])));
+    }
+
+    
+    @BuildStep
+    @Record(ExecutionTime.STATIC_INIT)
+    void registerForFieldReflection(MyFacesRecorder recorder, BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
+                               CombinedIndexBuildItem combinedIndex)
+    {     
+        reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, 
+                "javax.faces.context_MyFacesExternalContextHelper",
+                "org.apache.myfaces.core.extensions.quarkus.showcase.view.LazyView_ClientProxy"));
+    }
+
+    @BuildStep
+    void substrateResourceBuildItems(BuildProducer<NativeImageResourceBuildItem> nativeImageResourceProducer,
+                                     BuildProducer<NativeImageResourceBundleBuildItem> resourceBundleBuildItem)
+    {
+        nativeImageResourceProducer
+                .produce(new NativeImageResourceBuildItem("META-INF/maven/org.primefaces/primefaces/pom.properties"));
+        nativeImageResourceProducer.produce(new NativeImageResourceBuildItem(
+                "META-INF/rsc/myfaces-dev-error.xml",
+                "META-INF/rsc/myfaces-dev-debug.xml", 
+                "org/apache/myfaces/resource/default.dtd",
+                "org/apache/myfaces/resource/datatypes.dtd", 
+                "META-INF/web-fragment.xml",
+                "META-INF/resources/org/apache/myfaces/windowId/windowhandler.html",
+                "org/apache/myfaces/resource/facelet-taglib_1_0.dtd", 
+                "org/apache/myfaces/resource/javaee_5.xsd",
+                "org/apache/myfaces/resource/web-facelettaglibrary_2_0.xsd",
+                "org/apache/myfaces/resource/XMLSchema.dtd", 
+                "org/apache/myfaces/resource/facesconfig_1_0.dtd",
+                "org/apache/myfaces/resource/web-facesconfig_1_1.dtd",
+                "org/apache/myfaces/resource/web-facesconfig_1_2.dtd", 
+                "org/apache/myfaces/resource/web-facesconfig_2_0.dtd",
+                "org/apache/myfaces/resource/web-facesconfig_2_1.dtd",
+                "org/apache/myfaces/resource/web-facesconfig_2_2.dtd", 
+                "org/apache/myfaces/resource/web-facesconfig_2_3.dtd",
+                "org/apache/myfaces/resource/web-facesconfig_3_0.dtd",
+                "org/apache/myfaces/resource/xml.xsd",
+                "META-INF/rsc/myfaces-dev-error-include.xml",
+                "META-INF/services/javax.servlet.ServletContainerInitializer"));
+
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_ar"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_ca"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_cs"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_de"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_en"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_es"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_fr"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_it"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_ja"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_mt"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_nl"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_pl"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_pt_PR"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_ru"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_sk"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_zh_CN"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_zh_HK"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.faces.Messages_zh_TW"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.el.PrivateMessages"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.servlet.LocalStrings"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.el.LocalStrings"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_en"));
+    }
+    
+    public List<String> collectClassAndSubclasses(CombinedIndexBuildItem combinedIndex, String className)
+    {
+        List<String> classes = combinedIndex.getIndex()
+                .getAllKnownSubclasses(DotName.createSimple(className))
+                .stream()
+                .map(ClassInfo::toString)
+                .collect(Collectors.toList());
+        classes.add(className);
+        return classes;
     }
 }

@@ -40,7 +40,7 @@
     </modules>
 
     <properties>
-        <quarkus.version>1.1.0.CR1</quarkus.version>
+        <quarkus.version>1.2.1.Final</quarkus.version>
     </properties>
 
     <build>

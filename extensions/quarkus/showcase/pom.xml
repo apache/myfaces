@@ -25,8 +25,8 @@
     <name>Apache MyFaces Core 2.3-next - Extensions - Quarkus - Showcase</name>
 
     <properties>
-        <quarkus.version>1.1.0.CR1</quarkus.version>
-        <myfaces.version>2.3-next-M1</myfaces.version>
+        <quarkus.version>1.2.1.Final</quarkus.version>
+        <myfaces.version>2.3-next-SNAPSHOT</myfaces.version>
         <failsafe.version>2.22.0</failsafe.version>
         <surefire.version>2.22.0</surefire.version>
 
