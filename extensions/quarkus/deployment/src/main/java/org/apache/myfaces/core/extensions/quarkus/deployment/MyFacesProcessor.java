@@ -114,7 +114,6 @@ import javax.faces.view.facelets.ConverterHandler;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagHandler;
 import javax.faces.view.facelets.ValidatorHandler;
-import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.cdi.util.BeanEntry;
 import org.apache.myfaces.config.FacesConfigurator;
@@ -522,7 +521,7 @@ class MyFacesProcessor
                                CombinedIndexBuildItem combinedIndex)
     {     
         reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, 
-                "javax.faces.context_MyFacesExternalContextHelper",
+                "javax.faces.context._MyFacesExternalContextHelper",
                 "org.apache.myfaces.core.extensions.quarkus.showcase.view.LazyView_ClientProxy"));
     }
 
