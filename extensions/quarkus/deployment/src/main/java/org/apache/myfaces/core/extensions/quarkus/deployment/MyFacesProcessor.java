@@ -592,12 +592,12 @@ class MyFacesProcessor
     {     
         List<String> classNames = new ArrayList<>();
         classNames.addAll(Arrays.asList(
-                "io.quarkus.myfaces.showcase.view.LazyView",
-                "io.quarkus.myfaces.showcase.view.LazyView_ClientProxy",
-                "io.quarkus.myfaces.showcase.view.Car",
-                "io.quarkus.myfaces.showcase.view.LazyCarDataModel",
-                "io.quarkus.myfaces.showcase.view.CarService",
-                "io.quarkus.myfaces.showcase.view.LazySorter"));
+                "org.apache.myfaces.core.extensions.quarkus.showcase.view.LazyView",
+                "org.apache.myfaces.core.extensions.quarkus.showcase.view.LazyView_ClientProxy",
+                "org.apache.myfaces.core.extensions.quarkus.showcase.view.Car",
+                "org.apache.myfaces.core.extensions.quarkus.showcase.view.LazyCarDataModel",
+                "org.apache.myfaces.core.extensions.quarkus.showcase.view.CarService",
+                "org.apache.myfaces.core.extensions.quarkus.showcase.view.LazySorter"));
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, false, classNames.toArray(new String[classNames.size()])));
 
