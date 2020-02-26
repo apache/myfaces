@@ -99,6 +99,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.el.ELResolver;
 import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.Behavior;
 import javax.faces.context.FacesContext;
@@ -113,14 +114,12 @@ import javax.faces.view.facelets.ConverterHandler;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagHandler;
 import javax.faces.view.facelets.ValidatorHandler;
-import org.apache.el.ValueExpressionImpl;
 import org.apache.myfaces.application.ApplicationImpl;
 import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.cdi.util.BeanEntry;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusFactoryFinderProvider;
 import org.apache.myfaces.el.ELResolverBuilderForFaces;
-import org.apache.myfaces.el.resolver.ImportHandlerResolver;
 import org.apache.myfaces.lifecycle.RestoreViewSupport;
 import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.spi.FactoryFinderProviderFactory;
@@ -427,6 +426,7 @@ class MyFacesProcessor
         classNames.addAll(collectClassAndSubclasses(combinedIndex, javax.el.ValueExpression.class.getName()));
         classNames.addAll(collectClassAndSubclasses(combinedIndex, SystemEvent.class.getName()));
         classNames.addAll(collectClassAndSubclasses(combinedIndex, FacesContext.class.getName()));
+        classNames.addAll(collectClassAndSubclasses(combinedIndex, Application.class.getName()));
 
         for (String factory : FACTORIES)
         {
@@ -454,14 +454,11 @@ class MyFacesProcessor
                 ExceptionQueuedEventContext.class,
                 FacesConfigurator.class,
                 FaceletsInitilializer.class,
-                ImportHandlerResolver.class,
                 TagLibraryConfig.class,
                 String.class,
-                ValueExpressionImpl.class,
                 ViewScopeProxyMap.class,
                 SAXCompiler.class,
-                StateUtils.class,
-                ApplicationImpl.class));
+                StateUtils.class));
 
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(false, false, classNames.toArray(new String[classNames.size()])));
