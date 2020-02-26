@@ -290,22 +290,14 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                 {
                     validateFacesConfig(ectx, url);
                 }
-                InputStream stream = null;
-                try
+                
+                try (InputStream stream = openStreamWithoutCache(url))
                 {
-                    stream = openStreamWithoutCache(url);
                     if (log.isLoggable(Level.FINE))
                     {
                         log.fine("Reading config: " + url.toExternalForm());
                     }
                     appConfigResources.add(getUnmarshaller(ectx).getFacesConfig(stream, url.toExternalForm()));
-                }
-                finally
-                {
-                    if (stream != null)
-                    {
-                        stream.close();
-                    }
                 }
             }
         }
@@ -331,20 +323,22 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                     {
                         validateFacesConfig(ectx, url);
                     }
-                }            
-                InputStream stream = ectx.getResourceAsStream(systemId);
-                if (stream == null)
-                {
-                    log.severe("Faces config resource " + systemId + " not found");
-                    continue;
                 }
-    
-                if (log.isLoggable(Level.INFO))
+
+                try (InputStream stream = ectx.getResourceAsStream(systemId))
                 {
-                    log.info("Reading config " + systemId);
+                    if (stream == null)
+                    {
+                        log.severe("Faces config resource " + systemId + " not found");
+                        continue;
+                    }
+
+                    if (log.isLoggable(Level.INFO))
+                    {
+                        log.info("Reading config " + systemId);
+                    }
+                    appConfigResources.add(getUnmarshaller(ectx).getFacesConfig(stream, systemId));
                 }
-                appConfigResources.add(getUnmarshaller(ectx).getFacesConfig(stream, systemId));
-                stream.close();
             }
         }
         catch (Throwable e)
@@ -575,7 +569,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
                         !webDirPath.equals("/WEB-INF/classes/"))
                     {
                         String flowName = webDirPath.substring(9, webDirPath.length() - 1);
-                        String filePath = webDirPath+flowName+"-flow.xml";
+                        String filePath = webDirPath + flowName + "-flow.xml";
                         if (!contextSpecifiedList.contains(filePath))
                         {
                             try
@@ -601,7 +595,7 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
             {
                 // Look on /<flowName>/<flowName>-flow.xml
                 String flowName = dirPath.substring(1, dirPath.length() - 1);
-                String filePath = dirPath+flowName+"-flow.xml";
+                String filePath = dirPath + flowName + "-flow.xml";
                 if (!contextSpecifiedList.contains(filePath))
                 {
                     try
