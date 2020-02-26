@@ -490,13 +490,7 @@ class MyFacesProcessor
                 "org.primefaces.expression.SearchExpressionUtils",
                 "org.primefaces.util.SecurityUtils",
                 "org.primefaces.util.LangUtils",
-                "javax.faces._FactoryFinderProviderFactory",
-                "io.quarkus.myfaces.showcase.view.LazyView",
-                "io.quarkus.myfaces.showcase.view.LazyView_ClientProxy",
-                "io.quarkus.myfaces.showcase.view.Car",
-                "io.quarkus.myfaces.showcase.view.LazyCarDataModel",
-                "io.quarkus.myfaces.showcase.view.CarService",
-                "io.quarkus.myfaces.showcase.view.LazySorter"));
+                "javax.faces._FactoryFinderProviderFactory"));
 
         classes.addAll(Arrays.asList(
                 ClassUtils.class,
@@ -521,8 +515,7 @@ class MyFacesProcessor
                                CombinedIndexBuildItem combinedIndex)
     {     
         reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, 
-                "javax.faces.context._MyFacesExternalContextHelper",
-                "org.apache.myfaces.core.extensions.quarkus.showcase.view.LazyView_ClientProxy"));
+                "javax.faces.context._MyFacesExternalContextHelper"));
     }
 
     @BuildStep
@@ -589,5 +582,26 @@ class MyFacesProcessor
                 .collect(Collectors.toList());
         classes.add(className);
         return classes;
+    }
+    
+    @BuildStep
+    @Record(ExecutionTime.STATIC_INIT)
+    void registerWebappClassesForReflection(MyFacesRecorder recorder,
+            BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
+            CombinedIndexBuildItem combinedIndex)
+    {     
+        List<String> classNames = new ArrayList<>();
+        classNames.addAll(Arrays.asList(
+                "io.quarkus.myfaces.showcase.view.LazyView",
+                "io.quarkus.myfaces.showcase.view.LazyView_ClientProxy",
+                "io.quarkus.myfaces.showcase.view.Car",
+                "io.quarkus.myfaces.showcase.view.LazyCarDataModel",
+                "io.quarkus.myfaces.showcase.view.CarService",
+                "io.quarkus.myfaces.showcase.view.LazySorter"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, false, classNames.toArray(new String[classNames.size()])));
+
+        reflectiveClass.produce(new ReflectiveClassBuildItem(true, true,
+                "org.apache.myfaces.core.extensions.quarkus.showcase.view.LazyView_ClientProxy"));
     }
 }
