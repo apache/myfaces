@@ -113,17 +113,17 @@ public class DefaultAnnotationProvider extends AnnotationProvider
     static
     {
         Set<String> bcan = new HashSet<String>(10, 1f);
-        bcan.add("Ljavax/faces/component/FacesComponent;");
-        bcan.add("Ljavax/faces/component/behavior/FacesBehavior;");
-        bcan.add("Ljavax/faces/convert/FacesConverter;");
-        bcan.add("Ljavax/faces/validator/FacesValidator;");
-        bcan.add("Ljavax/faces/render/FacesRenderer;");
-        bcan.add("Ljavax/faces/bean/ManagedBean;");
-        bcan.add("Ljavax/faces/event/NamedEvent;");
-        //bcan.add("Ljavax/faces/event/ListenerFor;");
-        //bcan.add("Ljavax/faces/event/ListenersFor;");
-        bcan.add("Ljavax/faces/render/FacesBehaviorRenderer;");
-        bcan.add("Ljavax/faces/view/facelets/FaceletsResourceResolver;");
+        bcan.add("Ljakarta/faces/component/FacesComponent;");
+        bcan.add("Ljakarta/faces/component/behavior/FacesBehavior;");
+        bcan.add("Ljakarta/faces/convert/FacesConverter;");
+        bcan.add("Ljakarta/faces/validator/FacesValidator;");
+        bcan.add("Ljakarta/faces/render/FacesRenderer;");
+        bcan.add("Ljakarta/faces/bean/ManagedBean;");
+        bcan.add("Ljakarta/faces/event/NamedEvent;");
+        //bcan.add("Ljakarta/faces/event/ListenerFor;");
+        //bcan.add("Ljakarta/faces/event/ListenersFor;");
+        bcan.add("Ljakarta/faces/render/FacesBehaviorRenderer;");
+        bcan.add("Ljakarta/faces/view/facelets/FaceletsResourceResolver;");
 
         byteCodeAnnotationsNames = Collections.unmodifiableSet(bcan);
     }

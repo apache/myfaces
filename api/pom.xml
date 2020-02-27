@@ -527,7 +527,7 @@
                                 </comparisonArtifact>
                             </comparisonArtifacts>
                             <includes>
-                                <include>javax/faces/**</include>
+                                <include>jakarta/faces/**</include>
                             </includes>
                         </configuration>
                         <executions>

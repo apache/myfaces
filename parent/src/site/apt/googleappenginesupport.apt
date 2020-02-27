@@ -4,8 +4,8 @@
  Ali Ok
  ------
  2010-04-08
- ------- 
- 
+ -------
+
 ~~ Licensed to the Apache Software Foundation (ASF) under one
 ~~ or more contributor license agreements.  See the NOTICE file
 ~~ distributed with this work for additional information
@@ -31,42 +31,42 @@ Myfaces Core 2.0 on Google App Engine
 
   In order to run Myfaces on Google App Engine, you need to complete the steps below. Configuration explained in this document is tested with
   Google App Engine 1.3.0.
-  
-  You can also find tutorials for {{{http://myfaces.apache.org/core20/myfaces2-googleappengine-eclipse-tutorial.html}Eclipse}} and {{{http://myfaces.apache.org/core20/myfaces2-googleappengine-idea-tutorial.html}IntelliJ IDEA}}.  
+
+  You can also find tutorials for {{{http://myfaces.apache.org/core20/myfaces2-googleappengine-eclipse-tutorial.html}Eclipse}} and {{{http://myfaces.apache.org/core20/myfaces2-googleappengine-idea-tutorial.html}IntelliJ IDEA}}.
 
    * Download a Myfaces Core <<<2.0.0-beta-3>>> or a version released <<later>> than <<<2.0.0-beta-3>>>. Google App Engine support is not available for older versions.
      Extract and put following files into war/WEB-INF/lib:
-       
+
        * myfaces-api-2.0.x.jar
-       
+
        * myfaces-impl-2.0.x.jar
-       
+
        * commons-beanutils-1.x.x.jar
-       
+
        * commons-collections-3.x.jar
-       
+
        * commons-digester-x.x.jar
-       
+
        * commons-discovery-0.x.jar
-       
+
        * commons-logging-1.x.x.jar
-        
+
 
    * Add following lines into your web.xml.
 
 +------------------------------------------------------------------------+
       <web-app>
         ...
-                
-        <!-- 
+
+        <!--
            We need to set annotation lifecycyle provider manually as org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider.
-           Other providers use some classes that are restricted on Google App Engine. 	
-        -->  
+           Other providers use some classes that are restricted on Google App Engine.
+        -->
         <context-param>
             <param-name>org.apache.myfaces.config.annotation.LifecycleProvider</param-name>
             <param-value>org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider</param-value>
         </context-param>
-        
+
         <!--
             Need to set a secret to avoid javax.crypto.BadPaddingException.
             "param-value" must be Base64 encoded.
@@ -76,39 +76,39 @@ Myfaces Core 2.0 on Google App Engine
             <param-name>org.apache.myfaces.SECRET</param-name>
             <param-value>NzY1NDMyMTA=</param-value>
         </context-param>
-        
+
         <!--
            Facelets configuration fragment
         -->
         <context-param>
-          <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+          <param-name>jakarta.faces.DEFAULT_SUFFIX</param-name>
           <param-value>.xhtml</param-value>
         </context-param>
-        
+
         <servlet>
           <servlet-name>Faces Servlet</servlet-name>
-          <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+          <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
         </servlet>
-        
+
         <servlet-mapping>
           <servlet-name>Faces Servlet</servlet-name>
           <url-pattern>*.jsf</url-pattern>
         </servlet-mapping>
-        ...      
+        ...
       </web-app>
 +------------------------------------------------------------------------+
 
    * Enable sessions on App Engine. To do this, add line below to war/WEB-INF/appengine-web.xml.
-   
+
 +------------------------------------------------------------------------+
       <sessions-enabled>true</sessions-enabled>
 +------------------------------------------------------------------------+
 
-   
-   * Although Google App Engine is said to support JSP 2.1, JSP implementation version(2.0) 
-     does not match JSP API version(2.1). So, we need to supply Unified Expression Language 
+
+   * Although Google App Engine is said to support JSP 2.1, JSP implementation version(2.0)
+     does not match JSP API version(2.1). So, we need to supply Unified Expression Language
      implementation jars. You can find them {{{https://uel.dev.java.net/}here}}.
-     Put el-api-1.x.jar and el-impl-1.x.jar into war/WEB-INF/lib.  
+     Put el-api-1.x.jar and el-impl-1.x.jar into war/WEB-INF/lib.
 
    * If you have a faces-config.xml, please check that you use the header for JSF2:
 
@@ -125,7 +125,7 @@ Myfaces Core 2.0 on Google App Engine
 
 
    * Here is the <<sample>> directory structure:
-   
+
 +------------------------------------------------------------------------+
    +<Your Google App Engine Project Folder>
      + src
@@ -154,6 +154,6 @@ Myfaces Core 2.0 on Google App Engine
            - geronimo-jpa_3.0_spec-1.1.1.jar
            - geronimo-jta_1.1_spec-1.1.1.jar
            - jdo2-api-2.3-eb.jar
-           - myfaces-api-2.0.0-beta-3.jar 
-           - myfaces-impl-2.0.0-beta-3.jar 
+           - myfaces-api-2.0.0-beta-3.jar
+           - myfaces-impl-2.0.0-beta-3.jar
 +------------------------------------------------------------------------+

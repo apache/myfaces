@@ -48,7 +48,7 @@ public class ClassByteCodeAnnotationFilterTest extends TestCase
         super.setUp();
         filter = new _ClassByteCodeAnnotationFilter();
         annotationNames = new HashSet<String>(
-                Arrays.asList("Ljavax/faces/bean/ManagedBean;")
+                Arrays.asList("Ljakarta/faces/bean/ManagedBean;")
         );
     }
 
