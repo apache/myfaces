@@ -22,8 +22,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.myfaces.shared.util.ClassUtils;
 
-import javax.faces.FactoryFinder;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.FacesContext;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;

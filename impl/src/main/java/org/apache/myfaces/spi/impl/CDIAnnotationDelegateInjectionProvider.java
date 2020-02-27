@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.spi.impl;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderException;

@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
-import javax.faces.view.ValueHolderAttachedObjectTarget;
+import jakarta.faces.view.ValueHolderAttachedObjectTarget;
 
 /**
  * 

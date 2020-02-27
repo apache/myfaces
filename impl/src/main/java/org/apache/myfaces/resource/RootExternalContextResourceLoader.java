@@ -23,10 +23,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Set;
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.ResourceVisitOption;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.ResourceVisitOption;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.shared.resource.ExternalContextResourceLoaderIterator;
 import org.apache.myfaces.shared.resource.ResourceLoader;
 import org.apache.myfaces.shared.resource.ResourceMeta;

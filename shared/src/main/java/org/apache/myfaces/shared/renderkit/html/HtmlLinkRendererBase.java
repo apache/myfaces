@@ -27,20 +27,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
 
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutcomeTarget;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIParameter;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.behavior.ClientBehaviorHint;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.component.html.HtmlCommandLink;
-import javax.faces.component.html.HtmlOutputLink;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.ActionEvent;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutcomeTarget;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.behavior.ClientBehaviorHint;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlCommandLink;
+import jakarta.faces.component.html.HtmlOutputLink;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.ActionEvent;
 
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
@@ -585,9 +585,9 @@ public abstract class HtmlLinkRendererBase
         List<ClientBehavior> eventBehaviors = clientBehaviors.get(eventName);
         if (eventBehaviors != null && !eventBehaviors.isEmpty())
         {
-            // perf: in 99% cases is  eventBehaviors javax.faces.component._DeltaList._DeltaList(int) = RandomAccess
-            // instance created in javax.faces.component.UIComponentBase.addClientBehavior(String, ClientBehavior), but
-            // component libraries can provide own implementation
+            // perf: in 99% cases is  eventBehaviors jakarta.faces.component._DeltaList._DeltaList(int) = RandomAccess
+            // instance created in jakarta.faces.component.UIComponentBase.addClientBehavior(String, ClientBehavior),
+            // but component libraries can provide own implementation
             if (eventBehaviors instanceof RandomAccess)
             {
                 for (int i = 0, size = eventBehaviors.size(); i < size; i++)

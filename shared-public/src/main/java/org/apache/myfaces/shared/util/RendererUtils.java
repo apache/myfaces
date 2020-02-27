@@ -21,8 +21,8 @@ package org.apache.myfaces.shared.util;
 import java.io.IOException;
 import java.util.Iterator;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 /**
  * 

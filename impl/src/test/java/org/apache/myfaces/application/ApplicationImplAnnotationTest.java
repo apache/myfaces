@@ -23,22 +23,22 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import javax.el.ValueExpression;
-import javax.faces.FactoryFinder;
-import javax.faces.application.ResourceDependency;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIComponentBase;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIPanel;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.DateTimeConverter;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.event.ListenerFor;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.Renderer;
-import javax.faces.render.RendererWrapper;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.DateTimeConverter;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.render.RendererWrapper;
 
 import org.apache.myfaces.component.ComponentResourceContainer;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -66,7 +66,7 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
     protected void setFactories() throws Exception
     {
         ((MockServletContext)servletContext).addInitParameter(
-                "javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE", "true");
+                "jakarta.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE", "true");
         super.setFactories();
         FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY,
                 ApplicationFactoryImpl.class.getName());
@@ -107,7 +107,7 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
         RenderKitFactory renderKitFactory = (RenderKitFactory)
         FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         renderKit = new MockRenderKit();
-        renderKit.addRenderer("javax.faces.Output", "javax.faces.resource.Script", new HtmlScriptRenderer());
+        renderKit.addRenderer("jakarta.faces.Output", "jakarta.faces.resource.Script", new HtmlScriptRenderer());
         renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT, renderKit);
     }
 
@@ -124,9 +124,9 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
      */
     public static class UITestComponentA extends UIComponentBase
     {
-        public static final String COMPONENT_TYPE = "javax.faces.TestComponentA";
-        public static final String COMPONENT_FAMILY = "javax.faces.TestComponentA";
-        public static final String DEFAULT_RENDERER_TYPE = "javax.faces.TestComponentA";
+        public static final String COMPONENT_TYPE = "jakarta.faces.TestComponentA";
+        public static final String COMPONENT_FAMILY = "jakarta.faces.TestComponentA";
+        public static final String DEFAULT_RENDERER_TYPE = "jakarta.faces.TestComponentA";
 
         public UITestComponentA()
         {
@@ -481,9 +481,9 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
     @ResourceDependency(name = "testResource.js")
     public static class UITestComponentB extends UIComponentBase
     {
-        public static final String COMPONENT_TYPE = "javax.faces.TestComponentB";
-        public static final String COMPONENT_FAMILY = "javax.faces.TestComponentB";
-        public static final String DEFAULT_RENDERER_TYPE = "javax.faces.TestComponentB";
+        public static final String COMPONENT_TYPE = "jakarta.faces.TestComponentB";
+        public static final String COMPONENT_FAMILY = "jakarta.faces.TestComponentB";
+        public static final String DEFAULT_RENDERER_TYPE = "jakarta.faces.TestComponentB";
 
         public UITestComponentB()
         {
@@ -658,7 +658,7 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
     @Test
     public void testDatetimeconverterDefaultTimezoneIsSystemTimezoneInitParameter()
     {
-        application.addConverter(java.util.Date.class, "javax.faces.convert.DateTimeConverter");
+        application.addConverter(java.util.Date.class, "jakarta.faces.convert.DateTimeConverter");
         Converter converter = application.createConverter(java.util.Date.class);
         Assert.assertEquals(((DateTimeConverter) converter).getTimeZone(), TimeZone.getDefault());
     }

@@ -22,17 +22,17 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.regex.Pattern;
 
-import javax.faces.FacesException;
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.ViewHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.shared.util.ArrayUtils;
 import org.apache.myfaces.shared.util.StringUtils;
@@ -263,7 +263,7 @@ public class CompositeResourceLibrary implements TagLibrary
                             Resource compositeComponentResource
                                     = new CompositeResouceWrapper(compositeComponentResourceWrapped);
                             ComponentConfig componentConfig = new ComponentConfigWrapper(tag,
-                                    "javax.faces.NamingContainer", null);
+                                    "jakarta.faces.NamingContainer", null);
 
                             return new CompositeComponentResourceTagHandler(componentConfig,
                                                                             compositeComponentResource);

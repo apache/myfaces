@@ -19,7 +19,7 @@
 
 package org.apache.myfaces.cdi.scope;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 
 /**

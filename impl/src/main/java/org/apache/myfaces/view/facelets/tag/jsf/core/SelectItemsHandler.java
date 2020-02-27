@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf.core;
 
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
@@ -27,7 +27,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 @JSFFaceletTag(
         name = "f:selectItems",
         bodyContent = "empty",
-        componentClass="javax.faces.component.UISelectItems")
+        componentClass="jakarta.faces.component.UISelectItems")
 public class SelectItemsHandler extends ComponentHandler
 {
 

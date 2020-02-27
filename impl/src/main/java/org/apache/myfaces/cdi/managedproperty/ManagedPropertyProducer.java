@@ -24,9 +24,9 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.FacesException;
-import javax.faces.annotation.ManagedProperty;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.annotation.ManagedProperty;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.AbstractDynamicProducer;
 import org.apache.myfaces.shared.util.ClassUtils;
 

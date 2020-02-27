@@ -42,54 +42,54 @@ import javax.el.ELException;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
-import javax.faces.FacesException;
-import javax.faces.FacesWrapper;
-import javax.faces.application.Application;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.Resource;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.application.ViewVisitOption;
-import javax.faces.component.ActionSource2;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitHint;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ActionListener;
-import javax.faces.event.MethodExpressionActionListener;
-import javax.faces.event.MethodExpressionValueChangeListener;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.event.PostRestoreStateEvent;
-import javax.faces.event.ValueChangeEvent;
-import javax.faces.event.ValueChangeListener;
-import javax.faces.render.RenderKit;
-import javax.faces.render.ResponseStateManager;
-import javax.faces.validator.MethodExpressionValidator;
-import javax.faces.validator.Validator;
-import javax.faces.view.ActionSource2AttachedObjectHandler;
-import javax.faces.view.ActionSource2AttachedObjectTarget;
-import javax.faces.view.AttachedObjectHandler;
-import javax.faces.view.AttachedObjectTarget;
-import javax.faces.view.BehaviorHolderAttachedObjectHandler;
-import javax.faces.view.BehaviorHolderAttachedObjectTarget;
-import javax.faces.view.EditableValueHolderAttachedObjectHandler;
-import javax.faces.view.EditableValueHolderAttachedObjectTarget;
-import javax.faces.view.StateManagementStrategy;
-import javax.faces.view.ValueHolderAttachedObjectHandler;
-import javax.faces.view.ValueHolderAttachedObjectTarget;
-import javax.faces.view.ViewDeclarationLanguage;
-import javax.faces.view.ViewMetadata;
-import javax.faces.view.facelets.Facelet;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.ResourceResolver;
+import jakarta.faces.FacesException;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.application.ViewVisitOption;
+import jakarta.faces.component.ActionSource2;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.event.MethodExpressionActionListener;
+import jakarta.faces.event.MethodExpressionValueChangeListener;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.event.PostRestoreStateEvent;
+import jakarta.faces.event.ValueChangeEvent;
+import jakarta.faces.event.ValueChangeListener;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.faces.validator.MethodExpressionValidator;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.view.ActionSource2AttachedObjectHandler;
+import jakarta.faces.view.ActionSource2AttachedObjectTarget;
+import jakarta.faces.view.AttachedObjectHandler;
+import jakarta.faces.view.AttachedObjectTarget;
+import jakarta.faces.view.BehaviorHolderAttachedObjectHandler;
+import jakarta.faces.view.BehaviorHolderAttachedObjectTarget;
+import jakarta.faces.view.EditableValueHolderAttachedObjectHandler;
+import jakarta.faces.view.EditableValueHolderAttachedObjectTarget;
+import jakarta.faces.view.StateManagementStrategy;
+import jakarta.faces.view.ValueHolderAttachedObjectHandler;
+import jakarta.faces.view.ValueHolderAttachedObjectTarget;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.view.ViewMetadata;
+import jakarta.faces.view.facelets.Facelet;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.ResourceResolver;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.application.StateManagerImpl;
 
@@ -159,7 +159,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     private static final Class<?>[] VALIDATOR_SIGNATURE
             = new Class[]{FacesContext.class, UIComponent.class, Object.class};
 
-    public static final String CHARACTER_ENCODING_KEY = "javax.faces.request.charset";
+    public static final String CHARACTER_ENCODING_KEY = "jakarta.faces.request.charset";
 
     public final static long DEFAULT_REFRESH_PERIOD = 0;
     public final static long DEFAULT_REFRESH_PERIOD_PRODUCTION = -1;
@@ -199,7 +199,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
      * Class implementing ResourceResolver interface used to locate facelet resources. 
      */
     @JSFWebConfigParam(since = "2.0", alias = "facelets.RESOURCE_RESOLVER")
-    public final static String PARAM_RESOURCE_RESOLVER = "javax.faces.FACELETS_RESOURCE_RESOLVER";
+    public final static String PARAM_RESOURCE_RESOLVER = "jakarta.faces.FACELETS_RESOURCE_RESOLVER";
 
     /**
      * Class implementing ResourceResolver interface used to locate facelet resources.
@@ -237,7 +237,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     public final static String MARK_INITIAL_STATE_KEY = "org.apache.myfaces.MARK_INITIAL_STATE";
     
     public final static String IS_BUILDING_INITIAL_STATE_KEY_ALIAS
-            = "javax.faces.view.ViewDeclarationLanguage.IS_BUILDING_INITIAL_STATE";
+            = "jakarta.faces.view.ViewDeclarationLanguage.IS_BUILDING_INITIAL_STATE";
 
     public final static String CLEAN_TRANSIENT_BUILD_ON_RESTORE
             = "org.apache.myfaces.CLEAN_TRANSIENT_BUILD_ON_RESTORE";
@@ -1044,7 +1044,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
         // "...For each attribute that is a MethodExpression..." This means we have to scan
         // all attributes with "method-signature" attribute and no "type" attribute
-        // javax.faces.component._ComponentAttributesMap uses BeanInfo.getPropertyDescriptors to
+        // jakarta.faces.component._ComponentAttributesMap uses BeanInfo.getPropertyDescriptors to
         // traverse over it, but here the metadata returned by UIComponent.BEANINFO_KEY is available
         // only for composite components.
         // That means somewhere we need to create a custom BeanInfo object for composite components
@@ -1809,8 +1809,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     @Override
     public StateManagementStrategy getStateManagementStrategy(FacesContext context, String viewId)
     {
-        // Use partial state saving strategy only if javax.faces.PARTIAL_STATE_SAVING is "true" and
-        // the current view is not on javax.faces.FULL_STATE_SAVING_VIEW_IDS.
+        // Use partial state saving strategy only if jakarta.faces.PARTIAL_STATE_SAVING is "true" and
+        // the current view is not on jakarta.faces.FULL_STATE_SAVING_VIEW_IDS.
         if (_partialStateSaving && _stateMgmtStrategy == null)
         {
             _stateMgmtStrategy = new DefaultFaceletsStateManagementStrategy(context);

@@ -23,22 +23,22 @@ import java.io.Serializable;
 
 import javax.el.ELException;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.component.ActionSource;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ActionListener;
-import javax.faces.view.ActionSource2AttachedObjectHandler;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributeException;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagException;
-import javax.faces.view.facelets.TagHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.view.ActionSource2AttachedObjectHandler;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
+import jakarta.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
@@ -49,8 +49,8 @@ import org.apache.myfaces.view.facelets.util.ReflectionUtil;
 /**
  * Register an ActionListener instance on the UIComponent associated with the closest parent UIComponent custom action.
  * 
- * See javax.faces.event.ActionListener
- * See javax.faces.component.ActionSource
+ * See jakarta.faces.event.ActionListener
+ * See jakarta.faces.component.ActionSource
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -151,8 +151,8 @@ public final class ActionListenerHandler extends TagHandler
     /*
      * (non-Javadoc)
      * 
-     * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, 
-     * javax.faces.component.UIComponent)
+     * See jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext,
+     * jakarta.faces.component.UIComponent)
      */
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException

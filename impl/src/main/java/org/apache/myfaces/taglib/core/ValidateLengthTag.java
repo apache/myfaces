@@ -20,8 +20,8 @@ package org.apache.myfaces.taglib.core;
 
 import org.apache.myfaces.convert.ConverterUtils;
 
-import javax.faces.validator.LengthValidator;
-import javax.faces.validator.Validator;
+import jakarta.faces.validator.LengthValidator;
+import jakarta.faces.validator.Validator;
 import javax.servlet.jsp.JspException;
 
 /**
@@ -33,7 +33,7 @@ public class ValidateLengthTag extends GenericMinMaxValidatorTag<Integer>
 {
     private static final long serialVersionUID = 4858632671998693059L;
 
-    private static final String VALIDATOR_ID = "javax.faces.Length";
+    private static final String VALIDATOR_ID = "jakarta.faces.Length";
 
     @Override
     protected Validator createValidator() throws JspException

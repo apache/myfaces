@@ -25,7 +25,7 @@ import java.net.URL;
 import java.util.jar.JarEntry;
 import java.util.logging.Logger;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.xml.sax.EntityResolver;

@@ -21,9 +21,9 @@ package org.apache.myfaces.shared.context.flash;
 
 import java.io.Serializable;
 import java.util.Map;
-import javax.faces.FacesWrapper;
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
 import org.apache.myfaces.shared.util.LRULinkedHashMap;
 
 /**

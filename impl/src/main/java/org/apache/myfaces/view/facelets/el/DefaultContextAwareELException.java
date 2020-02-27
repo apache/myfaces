@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
-import javax.faces.view.Location;
+import jakarta.faces.view.Location;
 
 /**
  * Default implementation of {@link ContextAwareExceptionWrapper}, used for delegation

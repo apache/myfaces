@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.application;
 
-import javax.faces.application.ProjectStage;
-import javax.faces.application.ResourceHandler;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.resource.ClassLoaderContractResourceLoader;
 import org.apache.myfaces.resource.ExternalContextContractResourceLoader;
 import org.apache.myfaces.resource.FacesFlowClassLoaderResourceLoader;
@@ -144,7 +144,7 @@ public class DefaultResourceHandlerSupport extends BaseResourceHandlerSupport
 
             if (directory.startsWith("/"))
             {
-                throw new IllegalStateException("javax.faces.WEBAPP_CONTRACTS_DIRECTORY cannot start with '/");
+                throw new IllegalStateException("jakarta.faces.WEBAPP_CONTRACTS_DIRECTORY cannot start with '/");
             }
             
             if (TempDirFileCacheResourceLoader.isValidCreateTemporalFiles(facesContext))

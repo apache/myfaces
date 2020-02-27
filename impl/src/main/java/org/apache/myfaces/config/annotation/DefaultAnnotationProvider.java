@@ -39,17 +39,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.inject.spi.BeanManager;
 
-import javax.faces.FacesException;
-import javax.faces.bean.ManagedBean;
-import javax.faces.component.FacesComponent;
-import javax.faces.component.behavior.FacesBehavior;
-import javax.faces.context.ExternalContext;
-import javax.faces.convert.FacesConverter;
-import javax.faces.event.NamedEvent;
-import javax.faces.render.FacesBehaviorRenderer;
-import javax.faces.render.FacesRenderer;
-import javax.faces.validator.FacesValidator;
-import javax.faces.view.facelets.FaceletsResourceResolver;
+import jakarta.faces.FacesException;
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.behavior.FacesBehavior;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.convert.FacesConverter;
+import jakarta.faces.event.NamedEvent;
+import jakarta.faces.render.FacesBehaviorRenderer;
+import jakarta.faces.render.FacesRenderer;
+import jakarta.faces.validator.FacesValidator;
+import jakarta.faces.view.facelets.FaceletsResourceResolver;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.cdi.util.BeanProvider;

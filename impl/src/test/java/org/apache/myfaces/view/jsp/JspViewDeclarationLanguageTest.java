@@ -20,8 +20,8 @@ package org.apache.myfaces.view.jsp;
 
 import java.io.IOException;
 
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 

@@ -21,8 +21,8 @@ package org.apache.myfaces.spi;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.spi.impl.DefaultWebConfigProviderFactory;
 import org.apache.myfaces.spi.impl.SpiUtils;

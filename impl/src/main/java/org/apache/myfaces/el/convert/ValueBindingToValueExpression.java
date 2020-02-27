@@ -26,10 +26,10 @@ import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 import javax.el.ValueExpression;
-import javax.faces.component.StateHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.ValueBinding;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.ValueBinding;
 
 import org.apache.myfaces.shared.util.ClassUtils;
 
@@ -40,7 +40,7 @@ import org.apache.myfaces.shared.util.ClassUtils;
  * 
  * ATTENTION: If you make changes to this class, treat {@link ValueBindingToValueExpression} accordingly.
  * 
- * See javax.faces.component._ValueBindingToValueExpression
+ * See jakarta.faces.component._ValueBindingToValueExpression
  * 
  * @author Stan Silvert
  */
@@ -276,7 +276,7 @@ public class ValueBindingToValueExpression extends ValueExpression implements St
         {
             return invoker.invoke();
         }
-        catch (javax.faces.el.PropertyNotFoundException e)
+        catch (jakarta.faces.el.PropertyNotFoundException e)
         {
             throw new PropertyNotFoundException(e.getMessage(), e);
         }

@@ -21,15 +21,15 @@ package org.apache.myfaces.config;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.faces.FacesException;
-import javax.faces.application.ProjectStage;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ProjectStage;
 
 import org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl;
 import org.apache.myfaces.config.impl.digester.elements.ManagedPropertyImpl;
 import org.apache.myfaces.el.unified.resolver.ManagedBeanResolver;
-import org.apache.myfaces.test.mock.MockApplication20;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
+import org.apache.myfaces.test.mock.MockApplication;
 
 /**
  * Class used to test ManagedBeanBuilder
@@ -86,7 +86,7 @@ public class ManagedBeanBuilderTest extends AbstractJsfTestCase
         super.setUp();
         
         // override MockApplication20 to get a ProjectStage
-        application = new MockApplication20() {
+        application = new MockApplication() {
 
             @Override
             public ProjectStage getProjectStage()

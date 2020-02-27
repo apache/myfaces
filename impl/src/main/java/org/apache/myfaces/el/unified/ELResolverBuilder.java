@@ -19,11 +19,11 @@
 package org.apache.myfaces.el.unified;
 
 import javax.el.CompositeELResolver;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * The ELResolverBuilder is responsible to build the el resolver which is used by the application through
- * {@link javax.faces.application.Application#getELResolver()} according to 1.2 spec
+ * {@link jakarta.faces.application.Application#getELResolver()} according to 1.2 spec
  * section 5.6.2 or to be used as the el resolver for jsp
  * according to 1.2 spec section 5.6.1
  * 

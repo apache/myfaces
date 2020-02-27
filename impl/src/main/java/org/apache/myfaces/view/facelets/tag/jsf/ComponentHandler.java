@@ -24,20 +24,20 @@ import java.util.logging.Logger;
 
 import javax.el.ELException;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.application.Application;
-import javax.faces.component.ActionSource;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.ValueHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.MetaRuleset;
-import javax.faces.view.facelets.MetaTagHandler;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagException;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.MetaTagHandler;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagException;
 
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 
@@ -45,7 +45,7 @@ import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
  * Implementation of the tag logic used in the JSF specification. This is your golden hammer for wiring UIComponents to
  * Facelets.
  * 
- * @deprecated Use javax.faces.view.facelets.ComponentHandler instead
+ * @deprecated Use jakarta.faces.view.facelets.ComponentHandler instead
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -92,8 +92,8 @@ public class ComponentHandler extends MetaTagHandler
      * for deletion.</li>
      * </ol>
      * 
-     * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, 
-     *  javax.faces.component.UIComponent)
+     * See jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext,
+     *  jakarta.faces.component.UIComponent)
      * 
      * @throws TagException
      *             if the UIComponent parent is null
@@ -208,7 +208,8 @@ public class ComponentHandler extends MetaTagHandler
      * createComponent on the Application, otherwise just pass the componentType String. <p> If the binding was used,
      * then set the ValueExpression "binding" on the created UIComponent.</p>
      * 
-     * See Application#createComponent(javax.faces.el.ValueBinding, javax.faces.context.FacesContext, java.lang.String)
+     * See Application#createComponent(jakarta.faces.el.ValueBinding, jakarta.faces.context.FacesContext,
+     *      java.lang.String)
      * See Application#createComponent(java.lang.String)
      * @param ctx
      *            FaceletContext to use in creating a component

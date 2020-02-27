@@ -27,9 +27,10 @@ import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
 
+import jakarta.faces.el.ValueBinding;
 import junit.framework.TestCase;
 
 import org.apache.myfaces.TestRunner;
@@ -84,7 +85,7 @@ public class ValueExpressionToValueBindingTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#getType(javax.faces.context.FacesContext)}.
+     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#getType(FacesContext)}.
      */
     public void testGetType()
     {
@@ -97,7 +98,7 @@ public class ValueExpressionToValueBindingTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#getType(javax.faces.context.FacesContext)}.
+     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#getType(FacesContext)}.
      */
     public void testGetTypeExceptions() throws Exception
     {
@@ -123,13 +124,13 @@ public class ValueExpressionToValueBindingTest extends TestCase
         }
         assertException(EvaluationException.class, new GetTypeExceptionMockRunner(new ELException()));
         mockControl.reset();
-        assertException(javax.faces.el.PropertyNotFoundException.class, new GetTypeExceptionMockRunner(
+        assertException(jakarta.faces.el.PropertyNotFoundException.class, new GetTypeExceptionMockRunner(
                 new PropertyNotFoundException()));
     }
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#getValue(javax.faces.context.FacesContext)}.
+     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#getValue(FacesContext)}.
      */
     public void testGetValue()
     {
@@ -143,7 +144,7 @@ public class ValueExpressionToValueBindingTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#getValue(javax.faces.context.FacesContext)}.
+     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#getValue(FacesContext)}.
      */
     public void testGetValueExceptions()
     {
@@ -169,13 +170,13 @@ public class ValueExpressionToValueBindingTest extends TestCase
         }
         assertException(EvaluationException.class, new GetValueExceptionMockRunner(new ELException()));
         mockControl.reset();
-        assertException(javax.faces.el.PropertyNotFoundException.class, new GetValueExceptionMockRunner(
+        assertException(jakarta.faces.el.PropertyNotFoundException.class, new GetValueExceptionMockRunner(
                 new PropertyNotFoundException()));
     }
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#isReadOnly(javax.faces.context.FacesContext)}.
+     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#isReadOnly(FacesContext)}.
      */
     public void testIsReadOnly()
     {
@@ -194,7 +195,7 @@ public class ValueExpressionToValueBindingTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#isReadOnly(javax.faces.context.FacesContext)}.
+     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#isReadOnly(FacesContext)}.
      */
     public void testIsReadOnlyExceptions()
     {
@@ -220,13 +221,13 @@ public class ValueExpressionToValueBindingTest extends TestCase
         }
         assertException(EvaluationException.class, new IsReadOnlyExceptionMockRunner(new ELException()));
         mockControl.reset();
-        assertException(javax.faces.el.PropertyNotFoundException.class, new IsReadOnlyExceptionMockRunner(
+        assertException(jakarta.faces.el.PropertyNotFoundException.class, new IsReadOnlyExceptionMockRunner(
                 new PropertyNotFoundException()));
     }
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#setValue(javax.faces.context.FacesContext, java.lang.Object)}.
+     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#setValue(FacesContext, java.lang.Object)}.
      */
     public void testSetValue()
     {
@@ -240,7 +241,7 @@ public class ValueExpressionToValueBindingTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#setValue(javax.faces.context.FacesContext, java.lang.Object)}.
+     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#setValue(FacesContext, java.lang.Object)}.
      */
     public void testSetValueExceptions()
     {
@@ -268,7 +269,7 @@ public class ValueExpressionToValueBindingTest extends TestCase
         }
         assertException(EvaluationException.class, new SetValueExceptionMockRunner(new ELException()));
         mockControl.reset();
-        assertException(javax.faces.el.PropertyNotFoundException.class, new SetValueExceptionMockRunner(
+        assertException(jakarta.faces.el.PropertyNotFoundException.class, new SetValueExceptionMockRunner(
                 new PropertyNotFoundException()));
     }
 
@@ -288,7 +289,7 @@ public class ValueExpressionToValueBindingTest extends TestCase
     }
 
     /**
-     * Test method for {@link javax.faces.el.ValueBinding#getExpressionString()}.
+     * Test method for {@link ValueBinding#getExpressionString()}.
      */
     public void testGetExpressionString()
     {

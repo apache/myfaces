@@ -29,8 +29,8 @@ import javax.el.MethodExpression;
 import javax.el.MethodInfo;
 import javax.el.MethodNotFoundException;
 import javax.el.PropertyNotFoundException;
-import javax.faces.FacesWrapper;
-import javax.faces.view.facelets.TagAttribute;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
  * 

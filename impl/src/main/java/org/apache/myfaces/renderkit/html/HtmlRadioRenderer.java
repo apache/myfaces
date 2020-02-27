@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.html.HtmlRadioRendererBase;
 
@@ -31,8 +31,8 @@ import org.apache.myfaces.shared.renderkit.html.HtmlRadioRendererBase;
  */
 @JSFRenderer(
     renderKitId="HTML_BASIC",
-    family="javax.faces.SelectOne",
-    type="javax.faces.Radio")
+    family="jakarta.faces.SelectOne",
+    type="jakarta.faces.Radio")
 public class HtmlRadioRenderer
         extends HtmlRadioRendererBase
 {

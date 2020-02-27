@@ -161,8 +161,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.myfaces.test</groupId>
-            <artifactId>myfaces-test23</artifactId>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-test</artifactId>
+            <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

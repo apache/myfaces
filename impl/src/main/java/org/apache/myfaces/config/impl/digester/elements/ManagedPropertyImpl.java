@@ -20,8 +20,8 @@ package org.apache.myfaces.config.impl.digester.elements;
 
 import java.io.Serializable;
 
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.ValueBinding;
 
 import org.apache.myfaces.util.ContainerUtils;
 

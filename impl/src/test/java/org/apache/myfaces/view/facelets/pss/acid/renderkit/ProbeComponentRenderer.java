@@ -20,10 +20,10 @@ package org.apache.myfaces.view.facelets.pss.acid.renderkit;
 
 import java.io.IOException;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.render.FacesRenderer;
-import javax.faces.render.Renderer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.FacesRenderer;
+import jakarta.faces.render.Renderer;
 
 @FacesRenderer(componentFamily = "com.myapp", rendererType = "testcomponent")
 public class ProbeComponentRenderer extends Renderer

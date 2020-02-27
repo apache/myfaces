@@ -19,8 +19,8 @@
 package org.apache.myfaces.view.facelets.test.component;
 
 import javax.el.ExpressionFactory;
-import javax.faces.application.StateManager;
-import javax.faces.component.UIComponent;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIComponent;
 import junit.framework.Assert;
 
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
@@ -42,7 +42,7 @@ public class FacesComponentAnnotationMyFacesRequestTestCase extends AbstractMyFa
         super.setUpWebConfigParams();
         servletContext.addInitParameter("org.apache.myfaces.annotation.SCAN_PACKAGES","org.apache.myfaces.view.facelets.test.component");
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
-        servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
+        servletContext.addInitParameter("jakarta.faces.PARTIAL_STATE_SAVING", "true");
         servletContext.addInitParameter(MyfacesConfig.INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
     }
     

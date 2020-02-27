@@ -18,17 +18,17 @@
  */
 package org.apache.myfaces.flow;
 
-import javax.faces.context.FacesContext;
-import javax.faces.flow.Flow;
-import javax.faces.flow.FlowCallNode;
-import javax.faces.flow.MethodCallNode;
-import javax.faces.flow.Parameter;
-import javax.faces.flow.ReturnNode;
-import javax.faces.flow.SwitchCase;
-import javax.faces.flow.SwitchNode;
-import javax.faces.flow.ViewNode;
-import javax.faces.flow.builder.FlowBuilder;
-import javax.faces.flow.builder.SwitchCaseBuilder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.FlowCallNode;
+import jakarta.faces.flow.MethodCallNode;
+import jakarta.faces.flow.Parameter;
+import jakarta.faces.flow.ReturnNode;
+import jakarta.faces.flow.SwitchCase;
+import jakarta.faces.flow.SwitchNode;
+import jakarta.faces.flow.ViewNode;
+import jakarta.faces.flow.builder.FlowBuilder;
+import jakarta.faces.flow.builder.SwitchCaseBuilder;
 import org.apache.myfaces.flow.builder.FlowBuilderImpl;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.Assert;

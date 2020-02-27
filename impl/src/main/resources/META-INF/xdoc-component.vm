@@ -148,7 +148,7 @@ $baseContent
   <td>$type</td>
 #if ($property.jspName == "action")
   <td>Yes</td>
-#elseif ($property.isMethodBinding() || $property.isMethodExpression())
+#elseif ($property.className == "jakarta.faces.el.MethodBinding" || $property.isMethodExpression())
   <td>Only EL</td>
 #elseif ($property.jspName == "binding")
   <td>Only EL</td>

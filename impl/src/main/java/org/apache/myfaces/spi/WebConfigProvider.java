@@ -20,7 +20,7 @@ package org.apache.myfaces.spi;
 
 import java.util.List;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 
 /**
  * SPI to provide a custom WebConfigProvider implementation.
@@ -37,7 +37,7 @@ public abstract class WebConfigProvider
      * By default, the algorithm contemplate these three options:
      * </p>
      * <ol>
-     *   <li>Mappings related to registered servlet class javax.faces.webapp.FacesServlet.</li>
+     *   <li>Mappings related to registered servlet class jakarta.faces.webapp.FacesServlet.</li>
      *   <li>Mappings related to registered servlet class implementing
      *   org.apache.myfaces.shared.webapp.webxml.DelegatedFacesServlet interface.</li>
      *   <li>Mappings related to registered servlet class registered

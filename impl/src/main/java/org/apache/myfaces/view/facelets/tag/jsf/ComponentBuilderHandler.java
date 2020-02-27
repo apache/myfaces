@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
 
 /**
  * This interface provide a way to delegate component creation

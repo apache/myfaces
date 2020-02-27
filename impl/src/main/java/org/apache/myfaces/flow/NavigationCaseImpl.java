@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
-import javax.faces.application.NavigationCase;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.context.FacesContext;
 
 /**
  *

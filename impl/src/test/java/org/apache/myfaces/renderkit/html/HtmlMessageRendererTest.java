@@ -19,12 +19,12 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
-import javax.faces.FactoryFinder;
+import jakarta.faces.FactoryFinder;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.component.html.HtmlForm;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlMessage;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.html.HtmlForm;
+import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.component.html.HtmlMessage;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;

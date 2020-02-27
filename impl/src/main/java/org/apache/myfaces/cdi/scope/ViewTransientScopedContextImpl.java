@@ -27,7 +27,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.PassivationCapable;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 

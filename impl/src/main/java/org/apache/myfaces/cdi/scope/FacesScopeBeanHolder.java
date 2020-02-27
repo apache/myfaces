@@ -21,7 +21,7 @@ package org.apache.myfaces.cdi.scope;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 

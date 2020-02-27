@@ -24,10 +24,10 @@ import java.util.List;
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ELResolver;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyNotFoundException;
-import javax.faces.el.PropertyResolver;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.PropertyNotFoundException;
+import jakarta.faces.el.PropertyResolver;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

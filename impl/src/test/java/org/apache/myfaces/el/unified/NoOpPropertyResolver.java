@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.el.unified;
 
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyNotFoundException;
-import javax.faces.el.PropertyResolver;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.PropertyNotFoundException;
+import jakarta.faces.el.PropertyResolver;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)

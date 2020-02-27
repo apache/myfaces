@@ -19,13 +19,13 @@
 package org.apache.myfaces.application.flow;
 
 import javax.el.ExpressionFactory;
-import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.NavigationCase;
-import javax.faces.application.StateManager;
-import javax.faces.component.UICommand;
-import javax.faces.flow.Flow;
-import javax.faces.flow.FlowHandler;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.application.ConfigurableNavigationHandler;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.render.ResponseStateManager;
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.junit.Assert;
@@ -50,10 +50,10 @@ public class FlowMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
         super.setUpWebConfigParams();
         servletContext.addInitParameter("org.apache.myfaces.annotation.SCAN_PACKAGES","org.apache.myfaces.application.flow");
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
-        servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
+        servletContext.addInitParameter("jakarta.faces.PARTIAL_STATE_SAVING", "true");
         servletContext.addInitParameter(MyfacesConfig.INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
-        servletContext.addInitParameter("javax.faces.CONFIG_FILES", "/WEB-INF/flow1-flow.xml");
-        servletContext.addInitParameter("javax.faces.CLIENT_WINDOW_MODE", "url");
+        servletContext.addInitParameter("jakarta.faces.CONFIG_FILES", "/WEB-INF/flow1-flow.xml");
+        servletContext.addInitParameter("jakarta.faces.CLIENT_WINDOW_MODE", "url");
     }
     
     @Test

@@ -20,10 +20,10 @@ package org.apache.myfaces.taglib.core;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.Validator;
-import javax.faces.webapp.ValidatorELTag;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.webapp.ValidatorELTag;
 import javax.servlet.jsp.JspException;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
@@ -69,10 +69,10 @@ public class ValidatorImplTag extends ValidatorELTag
     }
 
     /**
-     * A ValueExpression that evaluates to an implementation of the javax.faces.validator.Validator interface.
+     * A ValueExpression that evaluates to an implementation of the jakarta.faces.validator.Validator interface.
      */
     @JSFJspAttribute(className="javax.el.ValueExpression",
-            deferredValueType="javax.faces.validator.Validator")
+            deferredValueType="jakarta.faces.validator.Validator")
     public void setBinding(ValueExpression binding)
     {
         _binding = binding;

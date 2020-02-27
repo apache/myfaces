@@ -23,10 +23,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ExpressionFactory;
-import javax.faces.FactoryFinder;
-import javax.faces.context.ExternalContext;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.LifecycleFactory;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.lifecycle.LifecycleFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;

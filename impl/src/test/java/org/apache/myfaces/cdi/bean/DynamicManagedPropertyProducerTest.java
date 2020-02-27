@@ -20,7 +20,7 @@
 package org.apache.myfaces.cdi.bean;
 
 import javax.el.ExpressionFactory;
-import javax.faces.component.UIOutput;
+import jakarta.faces.component.UIOutput;
 import org.apache.myfaces.mc.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.junit.Assert;
 import org.junit.Test;

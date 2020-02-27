@@ -25,13 +25,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.NavigationCase;
-import javax.faces.component.UIViewParameter;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.view.ViewMetadata;
+import jakarta.faces.application.ConfigurableNavigationHandler;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.component.UIViewParameter;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.view.ViewMetadata;
 
 import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.view.facelets.FaceletTestCase;

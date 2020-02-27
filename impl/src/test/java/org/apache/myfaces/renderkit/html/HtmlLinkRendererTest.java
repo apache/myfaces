@@ -20,25 +20,20 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
 
-import javax.faces.component.UIForm;
-import javax.faces.component.UIParameter;
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.html.HtmlCommandLink;
-import javax.faces.component.html.HtmlOutcomeTargetLink;
-import javax.faces.component.html.HtmlOutputLink;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.html.HtmlCommandLink;
+import jakarta.faces.component.html.HtmlOutcomeTargetLink;
+import jakarta.faces.component.html.HtmlOutputLink;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.myfaces.application.NavigationHandlerImpl;
-import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
-import org.apache.myfaces.test.mock.MockExternalContext;
-import org.apache.myfaces.test.mock.MockHttpServletRequest;
-import org.apache.myfaces.test.mock.MockHttpServletResponse;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
-import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 

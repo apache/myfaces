@@ -22,11 +22,11 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.component.UIColumn;
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.html.HtmlDataTable;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.model.ListDataModel;
+import jakarta.faces.component.UIColumn;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.html.HtmlDataTable;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.model.ListDataModel;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

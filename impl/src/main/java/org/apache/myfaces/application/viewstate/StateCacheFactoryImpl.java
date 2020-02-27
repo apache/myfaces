@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.application.viewstate;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.spi.StateCacheProvider;

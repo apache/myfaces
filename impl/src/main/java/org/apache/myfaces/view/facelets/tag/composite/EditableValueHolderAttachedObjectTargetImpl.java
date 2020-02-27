@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
-import javax.faces.view.EditableValueHolderAttachedObjectTarget;
+import jakarta.faces.view.EditableValueHolderAttachedObjectTarget;
 
 /**
  * 

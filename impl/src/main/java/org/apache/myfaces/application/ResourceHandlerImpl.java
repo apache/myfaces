@@ -31,11 +31,11 @@ import org.apache.myfaces.shared.util.ExternalContextUtils;
 import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.ResourceWrapper;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.ResourceWrapper;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,9 +57,9 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import javax.faces.application.ResourceVisitOption;
-import javax.faces.application.ViewHandler;
-import javax.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.application.ResourceVisitOption;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.view.ViewDeclarationLanguage;
 import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 import org.apache.myfaces.shared.resource.ContractResource;
 import org.apache.myfaces.shared.resource.ContractResourceLoader;
@@ -510,11 +510,11 @@ public class ResourceHandlerImpl extends ResourceHandler
     {
         if (resourceName.endsWith(".js"))
         {
-            return "javax.faces.resource.Script";
+            return "jakarta.faces.resource.Script";
         }
         else if (resourceName.endsWith(".css"))
         {
-            return "javax.faces.resource.Stylesheet";
+            return "jakarta.faces.resource.Stylesheet";
         }
         return null;
     }

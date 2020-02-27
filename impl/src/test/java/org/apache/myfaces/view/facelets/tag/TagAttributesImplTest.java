@@ -19,7 +19,7 @@
 package org.apache.myfaces.view.facelets.tag;
 
 import java.util.Arrays;
-import javax.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttribute;
 import org.junit.Assert;
 import org.junit.Test;
 

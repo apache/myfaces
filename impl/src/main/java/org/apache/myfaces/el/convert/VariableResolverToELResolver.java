@@ -23,9 +23,9 @@ import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.VariableResolver;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.VariableResolver;
 import java.beans.FeatureDescriptor;
 import java.util.Collection;
 import java.util.HashSet;
@@ -132,7 +132,7 @@ public final class VariableResolverToELResolver extends ELResolver
                 result = variableResolver.resolveVariable(facesContext(context), strProperty);
             }
         }
-        catch (javax.faces.el.PropertyNotFoundException e)
+        catch (jakarta.faces.el.PropertyNotFoundException e)
         {
             context.setPropertyResolved(false);
             throw new PropertyNotFoundException(e.getMessage(), e);

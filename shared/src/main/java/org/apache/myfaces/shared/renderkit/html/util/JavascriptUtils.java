@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.shared.config.MyfacesConfig;
 

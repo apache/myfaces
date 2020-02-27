@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.html.HtmlButtonRendererBase;
@@ -31,8 +31,8 @@ import org.apache.myfaces.shared.renderkit.html.HtmlButtonRendererBase;
  */
 @JSFRenderer(
     renderKitId="HTML_BASIC",
-    family="javax.faces.Command",
-    type="javax.faces.Button")
+    family="jakarta.faces.Command",
+    type="jakarta.faces.Button")
 public class HtmlButtonRenderer
     extends HtmlButtonRendererBase
 {

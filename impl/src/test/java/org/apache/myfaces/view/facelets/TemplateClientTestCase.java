@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets;
 
-import javax.faces.component.UIViewRoot;
+import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.view.facelets.util.FastWriter;
 import org.apache.myfaces.test.mock.MockResponseWriter;

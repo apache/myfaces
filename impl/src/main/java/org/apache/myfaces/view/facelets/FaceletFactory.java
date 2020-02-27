@@ -19,14 +19,14 @@
 package org.apache.myfaces.view.facelets;
 
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.view.facelets.FaceletException;
+import jakarta.faces.FacesException;
+import jakarta.faces.view.facelets.FaceletException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.Facelet;
-import javax.faces.view.facelets.FaceletContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.Facelet;
+import jakarta.faces.view.facelets.FaceletContext;
 
 /**
  * FaceletFactory for producing Facelets relative to the context of the underlying implementation.

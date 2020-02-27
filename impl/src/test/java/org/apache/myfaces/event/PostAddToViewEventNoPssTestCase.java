@@ -18,19 +18,7 @@
  */
 package org.apache.myfaces.event;
 
-import javax.faces.application.StateManager;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIViewRoot;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.PhaseId;
-
-import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
-import org.easymock.EasyMock;
-import org.easymock.IAnswer;
-import org.junit.Assert;
-import org.junit.Test;
+import jakarta.faces.application.StateManager;
 
 public class PostAddToViewEventNoPssTestCase extends PostAddToViewEventTestCase
 {

@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderers;
@@ -33,12 +33,12 @@ import org.apache.myfaces.shared.renderkit.html.HtmlTextRendererBase;
 @JSFRenderers(renderers={
     @JSFRenderer(
         renderKitId="HTML_BASIC",
-        family="javax.faces.Input",
-        type="javax.faces.Text"),
+        family="jakarta.faces.Input",
+        type="jakarta.faces.Text"),
     @JSFRenderer(
         renderKitId="HTML_BASIC",
-        family="javax.faces.Output",
-        type="javax.faces.Text")
+        family="jakarta.faces.Output",
+        type="jakarta.faces.Text")
 })
 public class HtmlTextRenderer
         extends HtmlTextRendererBase

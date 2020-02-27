@@ -28,8 +28,8 @@ import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessProducer;
 import javax.enterprise.inject.spi.Producer;
-import javax.faces.push.Push;
-import javax.faces.push.PushContext;
+import jakarta.faces.push.Push;
+import jakarta.faces.push.PushContext;
 
 /**
  *

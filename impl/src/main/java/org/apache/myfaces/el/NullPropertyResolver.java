@@ -19,10 +19,10 @@
 package org.apache.myfaces.el;
 
 import javax.el.ELContext;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyNotFoundException;
-import javax.faces.el.PropertyResolver;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.PropertyNotFoundException;
+import jakarta.faces.el.PropertyResolver;
 
 /**
  * Default PropertyResolver.  See JSF 1.2 spec section 5.8.2

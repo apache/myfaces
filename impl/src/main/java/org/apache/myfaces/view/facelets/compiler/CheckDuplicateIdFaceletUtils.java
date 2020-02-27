@@ -21,11 +21,11 @@ package org.apache.myfaces.view.facelets.compiler;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ExceptionQueuedEvent;
-import javax.faces.event.ExceptionQueuedEventContext;
-import javax.faces.view.Location;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ExceptionQueuedEvent;
+import jakarta.faces.event.ExceptionQueuedEventContext;
+import jakarta.faces.view.Location;
 
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 

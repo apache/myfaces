@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.Stack;
 
 import javax.el.ELException;
-import javax.faces.application.FacesMessage;
-import javax.faces.view.facelets.CompositeFaceletHandler;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagException;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.view.facelets.CompositeFaceletHandler;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagException;
 
 import org.apache.myfaces.shared.renderkit.html.HTML;
 import org.apache.myfaces.view.facelets.el.ELText;

@@ -20,9 +20,9 @@ package org.apache.myfaces.taglib.core;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.webapp.ConverterELTag;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.webapp.ConverterELTag;
 import javax.servlet.jsp.JspException;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
@@ -63,7 +63,7 @@ public class ConverterImplTag extends ConverterELTag
      * A ValueExpression that evaluates to a Converter.
      */
     @JSFJspAttribute(className="javax.el.ValueExpression",
-            deferredValueType="javax.faces.convert.Converter")
+            deferredValueType="jakarta.faces.convert.Converter")
     public void setBinding(ValueExpression binding)
     {
         _binding = binding;

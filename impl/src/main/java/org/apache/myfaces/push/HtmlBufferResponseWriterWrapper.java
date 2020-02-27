@@ -19,7 +19,7 @@
 package org.apache.myfaces.push;
 
 
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.context.ResponseWriter;
 import java.io.*;
 import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
 

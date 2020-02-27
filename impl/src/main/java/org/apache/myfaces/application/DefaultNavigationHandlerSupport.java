@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.application;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.lifecycle.DefaultRestoreViewSupport;
 import org.apache.myfaces.lifecycle.RestoreViewSupport;
 

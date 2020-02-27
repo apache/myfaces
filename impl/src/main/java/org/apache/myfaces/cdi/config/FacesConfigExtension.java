@@ -27,7 +27,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessManagedBean;
-import javax.faces.annotation.FacesConfig;
+import jakarta.faces.annotation.FacesConfig;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
 /**

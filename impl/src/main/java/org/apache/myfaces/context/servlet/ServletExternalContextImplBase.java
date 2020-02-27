@@ -24,8 +24,8 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.lifecycle.ClientWindow;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.lifecycle.ClientWindow;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.context.ReleaseableExternalContext;

@@ -24,8 +24,8 @@ import org.apache.myfaces.spi.FaceletConfigResourceProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 import org.apache.myfaces.view.facelets.compiler.DefaultFaceletConfigResourceProvider;
 
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;

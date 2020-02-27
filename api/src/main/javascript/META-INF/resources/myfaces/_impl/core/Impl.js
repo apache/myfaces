@@ -48,15 +48,15 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      * [STATIC] constants
      */
 
-    P_PARTIAL_SOURCE:"javax.faces.source",
-    P_VIEWSTATE:"javax.faces.ViewState",
-    P_CLIENTWINDOW:"javax.faces.ClientWindow",
-    P_AJAX:"javax.faces.partial.ajax",
-    P_EXECUTE:"javax.faces.partial.execute",
-    P_RENDER:"javax.faces.partial.render",
-    P_EVT:"javax.faces.partial.event",
-    P_WINDOW_ID:"javax.faces.ClientWindow",
-    P_RESET_VALUES:"javax.faces.partial.resetValues",
+    P_PARTIAL_SOURCE:"jakarta.faces.source",
+    P_VIEWSTATE:"jakarta.faces.ViewState",
+    P_CLIENTWINDOW:"jakarta.faces.ClientWindow",
+    P_AJAX:"jakarta.faces.partial.ajax",
+    P_EXECUTE:"jakarta.faces.partial.execute",
+    P_RENDER:"jakarta.faces.partial.render",
+    P_EVT:"jakarta.faces.partial.event",
+    P_WINDOW_ID:"jakarta.faces.ClientWindow",
+    P_RESET_VALUES:"jakarta.faces.partial.resetValues",
 
     /* message types */
     ERROR:"error",
@@ -84,7 +84,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
 
     /**
      * collect and encode data for a given form element (must be of type form)
-     * find the javax.faces.ViewState element and encode its value as well!
+     * find the jakarta.faces.ViewState element and encode its value as well!
      * return a concatenated string of the encoded values!
      *
      * @throws Error in case of the given element not being of type form!
@@ -241,18 +241,18 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         */
 
         /**
-         * binding contract the javax.faces.source must be set
+         * binding contract the jakarta.faces.source must be set
          */
         passThrgh[this.P_PARTIAL_SOURCE] = elementId;
 
         /**
-         * javax.faces.partial.ajax must be set to true
+         * jakarta.faces.partial.ajax must be set to true
          */
         passThrgh[this.P_AJAX] = true;
 
         /**
          * if resetValues is set to true
-         * then we have to set javax.faces.resetValues as well
+         * then we have to set jakarta.faces.resetValues as well
          * as pass through parameter
          * the value has to be explicitly true, according to
          * the specs jsdoc

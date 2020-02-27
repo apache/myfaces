@@ -24,8 +24,8 @@ import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.taglib.UIComponentELTagBase;
 
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyContent;
 
@@ -41,13 +41,13 @@ public class VerbatimTag extends UIComponentELTagBase
     @Override
     public String getComponentType()
     {
-        return "javax.faces.Output";
+        return "jakarta.faces.Output";
     }
 
     @Override
     public String getRendererType()
     {
-        return "javax.faces.Text";
+        return "jakarta.faces.Text";
     }
 
     // HtmlOutputText attributes

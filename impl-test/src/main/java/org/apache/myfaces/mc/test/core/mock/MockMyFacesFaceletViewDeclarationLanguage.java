@@ -23,11 +23,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.application.Resource;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.facelets.FaceletFactory;

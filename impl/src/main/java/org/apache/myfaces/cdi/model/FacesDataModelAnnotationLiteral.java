@@ -20,7 +20,7 @@ package org.apache.myfaces.cdi.model;
 
 import java.util.Objects;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.model.FacesDataModel;
+import jakarta.faces.model.FacesDataModel;
 
 /**
  *

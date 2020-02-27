@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.element.ManagedBean;

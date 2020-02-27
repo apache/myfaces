@@ -23,8 +23,8 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
-import javax.faces.application.ResourceVisitOption;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.ResourceVisitOption;
+import jakarta.faces.context.FacesContext;
 
 /**
  *

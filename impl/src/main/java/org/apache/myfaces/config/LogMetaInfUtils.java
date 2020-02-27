@@ -21,7 +21,7 @@ package org.apache.myfaces.config;
 
 import org.apache.myfaces.shared.util.ClassUtils;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;

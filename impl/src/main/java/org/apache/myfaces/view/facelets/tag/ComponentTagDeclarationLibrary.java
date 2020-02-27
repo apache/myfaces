@@ -24,13 +24,14 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagHandler;
 
 /**
  *
@@ -133,7 +134,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
      * Add a ComponentHandler with the specified componentType and rendererType, aliased by the tag name.
      * 
      * See ComponentHandler
-     * See javax.faces.application.Application#createComponent(java.lang.String)
+     * See jakarta.faces.application.Application#createComponent(java.lang.String)
      * @param name
      *            name to use, "foo" would be &lt;my:foo /&gt;
      * @param componentType
@@ -239,7 +240,7 @@ public class ComponentTagDeclarationLibrary implements TagLibrary
         public TagHandler createHandler(TagConfig cfg) throws FacesException, ELException
         {
             ComponentConfig ccfg = new ComponentConfigWrapper(cfg, this.componentType, this.renderType);
-            return new javax.faces.view.facelets.ComponentHandler(ccfg);
+            return new ComponentHandler(ccfg);
         }
     }
 

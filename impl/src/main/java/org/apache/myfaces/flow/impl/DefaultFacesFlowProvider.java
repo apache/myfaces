@@ -21,9 +21,9 @@ package org.apache.myfaces.flow.impl;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.Flow;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
 import org.apache.myfaces.flow.util.FlowUtils;
 import org.apache.myfaces.spi.FacesFlowProvider;
 

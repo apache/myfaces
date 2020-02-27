@@ -19,11 +19,12 @@
 package org.apache.myfaces.view.facelets.el;
 
 import javax.el.ELException;
-import javax.faces.view.Location;
+
+import jakarta.faces.view.Location;
 
 /**
  * Implementation of types {@link ELException}, {@link ContextAware}
- * and {@link javax.faces.FacesWrapper}
+ * and {@link jakarta.faces.FacesWrapper}
  *
  * @author martinkoci
  *

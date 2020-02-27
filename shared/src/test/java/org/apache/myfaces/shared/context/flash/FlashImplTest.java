@@ -24,18 +24,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.event.PhaseId;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.event.PhaseId;
 import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 
-import org.apache.myfaces.test.mock.MockExternalContext20;
-import org.apache.myfaces.test.mock.MockFacesContext20;
-import org.apache.myfaces.test.mock.MockHttpServletRequest;
-import org.apache.myfaces.test.mock.MockHttpServletResponse;
+import org.apache.myfaces.test.mock.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -57,7 +54,7 @@ public class FlashImplTest extends AbstractJsfTestCase
         super.setUpFacesContext();
 
         // Unfortunately, setUpExternalContext() does not work, b/c MockFacesContext20 overwrites it!
-        externalContext = new MockExternalContext21(servletContext, request, response);
+        externalContext = new MockExternalContext(servletContext, request, response);
         facesContext.setExternalContext(externalContext);
     }
 

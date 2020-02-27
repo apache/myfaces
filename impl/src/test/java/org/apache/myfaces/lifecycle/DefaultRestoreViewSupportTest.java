@@ -24,8 +24,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.Assert;
 import org.apache.myfaces.FacesTestCase;
 import org.apache.myfaces.TestRunner;
@@ -47,7 +49,7 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.lifecycle.DefaultRestoreViewSupport#processComponentBinding(javax.faces.context.FacesContext, javax.faces.component.UIComponent)}.
+     * {@link org.apache.myfaces.lifecycle.DefaultRestoreViewSupport#processComponentBinding(FacesContext, UIComponent)}.
      */
     /*
     public void testProcessComponentBinding()
@@ -77,7 +79,7 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.lifecycle.DefaultRestoreViewSupport#calculateViewId(javax.faces.context.FacesContext)}.
+     * {@link org.apache.myfaces.lifecycle.DefaultRestoreViewSupport#calculateViewId(FacesContext)}.
      */
     public void testCalculateViewIdFromRequestAttributeIncludePathInfo()
     {
@@ -99,7 +101,7 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.lifecycle.DefaultRestoreViewSupport#calculateViewId(javax.faces.context.FacesContext)}.
+     * {@link org.apache.myfaces.lifecycle.DefaultRestoreViewSupport#calculateViewId(FacesContext)}.
      */
     public void testCalculateViewIdFromRequestPathInfo()
     {
@@ -123,7 +125,7 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.lifecycle.DefaultRestoreViewSupport#calculateViewId(javax.faces.context.FacesContext)}.
+     * {@link org.apache.myfaces.lifecycle.DefaultRestoreViewSupport#calculateViewId(FacesContext)}.
      */
     public void testCalculateViewIdFromRequestAttributeIncludeServletPath()
     {
@@ -147,7 +149,7 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.lifecycle.DefaultRestoreViewSupport#calculateViewId(javax.faces.context.FacesContext)}.
+     * {@link org.apache.myfaces.lifecycle.DefaultRestoreViewSupport#calculateViewId(FacesContext)}.
      */
     public void testCalculateViewIdFromRequestServletPath()
     {
@@ -173,7 +175,7 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.lifecycle.DefaultRestoreViewSupport#calculateViewId(javax.faces.context.FacesContext)}.
+     * {@link org.apache.myfaces.lifecycle.DefaultRestoreViewSupport#calculateViewId(FacesContext)}.
      */
     public void testCalculateViewIdFacesException()
     {
@@ -199,7 +201,7 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.lifecycle.DefaultRestoreViewSupport#isPostback(javax.faces.context.FacesContext)}.
+     * {@link org.apache.myfaces.lifecycle.DefaultRestoreViewSupport#isPostback(FacesContext)}.
      */
     public void testIsPostback()
     {

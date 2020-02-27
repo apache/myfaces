@@ -20,7 +20,7 @@ package org.apache.myfaces.webapp;
 
 import javax.el.ELContextEvent;
 import javax.el.ELContextListener;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * EL context listener which installs the faces context (if present) into el context and dispatches el context events to

@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.pool;
 
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
 

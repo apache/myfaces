@@ -20,11 +20,11 @@ package org.apache.myfaces.taglib.core;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
-import javax.faces.component.StateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.ConverterException;
 
 /**
  * This class is used in conjunction with ConverterImplTag. 

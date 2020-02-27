@@ -25,9 +25,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.context.ApplicationScoped;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
-import javax.faces.model.DataModel;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.DataModel;
 
 /**
  *

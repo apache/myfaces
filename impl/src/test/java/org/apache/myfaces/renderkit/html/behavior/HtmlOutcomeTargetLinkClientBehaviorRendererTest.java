@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html.behavior;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.html.HtmlOutcomeTargetLink;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlOutcomeTargetLink;
 
 import org.apache.myfaces.application.NavigationHandlerImpl;
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;

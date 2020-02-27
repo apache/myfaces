@@ -18,16 +18,16 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf.html;
 
-import javax.faces.component.UIForm;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UISelectItem;
-import javax.faces.component.UISelectOne;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlCommandButton;
-import javax.faces.component.html.HtmlForm;
-import javax.faces.component.html.HtmlMessages;
-import javax.faces.component.html.HtmlSelectOneMenu;
-import javax.faces.convert.IntegerConverter;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.UISelectOne;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlCommandButton;
+import jakarta.faces.component.html.HtmlForm;
+import jakarta.faces.component.html.HtmlMessages;
+import jakarta.faces.component.html.HtmlSelectOneMenu;
+import jakarta.faces.convert.IntegerConverter;
 
 import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
@@ -68,15 +68,15 @@ public class SelectTestCase extends FaceletTestCase
     protected void setupRenderers() throws Exception
     {
         renderKit.addRenderer(UIOutput.COMPONENT_FAMILY,
-                "javax.faces.Text", new HtmlTextRenderer());        
+                "jakarta.faces.Text", new HtmlTextRenderer());
         renderKit.addRenderer(UIForm.COMPONENT_FAMILY,
-                "javax.faces.Form", new HtmlFormRenderer());
+                "jakarta.faces.Form", new HtmlFormRenderer());
         renderKit.addRenderer(HtmlSelectOneMenu.COMPONENT_FAMILY,
-                "javax.faces.Menu", new HtmlMenuRenderer());        
+                "jakarta.faces.Menu", new HtmlMenuRenderer());
         renderKit.addRenderer(HtmlCommandButton.COMPONENT_FAMILY,
-                "javax.faces.Button", new HtmlButtonRenderer());
+                "jakarta.faces.Button", new HtmlButtonRenderer());
         renderKit.addRenderer(HtmlMessages.COMPONENT_FAMILY,
-                "javax.faces.Messages", new HtmlMessagesRenderer());
+                "jakarta.faces.Messages", new HtmlMessagesRenderer());
     }
 
     @Test

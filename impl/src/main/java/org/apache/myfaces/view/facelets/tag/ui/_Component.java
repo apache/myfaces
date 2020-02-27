@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.ui;
 
-import javax.faces.component.UIComponentBase;
+import jakarta.faces.component.UIComponentBase;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
@@ -35,7 +35,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  */
 @JSFComponent(
         configExcluded=true,
-        defaultRendererType="javax.faces.resource.Script")
+        defaultRendererType="jakarta.faces.resource.Script")
 abstract class _Component extends UIComponentBase
 {
     public final static String COMPONENT_TYPE = "facelets.ui.ComponentRef";

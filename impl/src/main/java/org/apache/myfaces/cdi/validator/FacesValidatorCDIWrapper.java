@@ -23,12 +23,12 @@ import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.TypeLiteral;
-import javax.faces.FacesWrapper;
-import javax.faces.component.PartialStateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.component.PartialStateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.validator.ValidatorException;
 
 import org.apache.myfaces.cdi.util.CDIUtils;
 

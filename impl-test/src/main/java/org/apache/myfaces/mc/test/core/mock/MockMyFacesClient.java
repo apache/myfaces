@@ -20,20 +20,20 @@ package org.apache.myfaces.mc.test.core.mock;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIInput;
-import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.html.HtmlCommandButton;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.html.HtmlCommandButton;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.render.ResponseStateManager;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -226,7 +226,7 @@ public class MockMyFacesClient
     protected void internalAjax(String source, String event, String execute, String render, 
         boolean submit, boolean resetValues)
     {
-        parameters.put("javax.faces.partial.ajax", "true");
+        parameters.put("jakarta.faces.partial.ajax", "true");
         parameters.put(ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME, event);
         parameters.put(PartialViewContext.PARTIAL_EVENT_PARAM_NAME, "action".equals(event) ? "click" : event);
         applyStateFromPreviousRequest();
@@ -235,15 +235,15 @@ public class MockMyFacesClient
         parameters.put(ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME, source);
         if (execute == null)
         {
-            parameters.put("javax.faces.partial.execute", source);
+            parameters.put("jakarta.faces.partial.execute", source);
         }
         else
         {
-            parameters.put("javax.faces.partial.execute", execute);
+            parameters.put("jakarta.faces.partial.execute", execute);
         }
         if (render != null)
         {
-            parameters.put("javax.faces.partial.render", render);
+            parameters.put("jakarta.faces.partial.render", render);
         }
         
         if (submit)
@@ -254,7 +254,7 @@ public class MockMyFacesClient
         
         if (resetValues)
         {
-            parameters.put("javax.faces.partial.resetValues", "true");
+            parameters.put("jakarta.faces.partial.resetValues", "true");
         }
         
         headers.put("Faces-Request", "partial/ajax");

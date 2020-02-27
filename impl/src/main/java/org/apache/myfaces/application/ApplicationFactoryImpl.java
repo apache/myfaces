@@ -21,10 +21,10 @@ package org.apache.myfaces.application;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -67,7 +67,7 @@ public class ApplicationFactoryImpl extends ApplicationFactory
     @Override
     public Application getApplication()
     {
-        //Put it on ApplicationMap, so javax.faces.application.Application
+        //Put it on ApplicationMap, so jakarta.faces.application.Application
         //class can find it. This allows wrapped jsf 1.1 application instances
         //to work correctly in jsf 1.2 as ri does.
         if (_application != null && !_myfacesInstanceAddedToApplicationMap)

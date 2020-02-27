@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.html.HtmlTableRendererBase;
@@ -31,8 +31,8 @@ import org.apache.myfaces.shared.renderkit.html.HtmlTableRendererBase;
  */
 @JSFRenderer(
     renderKitId="HTML_BASIC",
-    family="javax.faces.Data",
-    type="javax.faces.Table")
+    family="jakarta.faces.Data",
+    type="jakarta.faces.Table")
 public class HtmlTableRenderer
     extends HtmlTableRendererBase
 {

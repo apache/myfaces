@@ -19,9 +19,9 @@
 
 package org.apache.myfaces.view.facelets.tag.jsf.core;
 
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ValueChangeEvent;
-import javax.faces.event.ValueChangeListener;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ValueChangeEvent;
+import jakarta.faces.event.ValueChangeListener;
 
 public class ValueChangeListenerImpl implements ValueChangeListener {
 

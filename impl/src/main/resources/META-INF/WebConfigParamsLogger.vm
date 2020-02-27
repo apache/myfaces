@@ -23,8 +23,8 @@ package org.apache.myfaces.webapp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.ProjectStage;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.StringUtils;

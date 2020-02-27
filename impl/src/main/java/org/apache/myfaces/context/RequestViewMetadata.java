@@ -24,8 +24,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.faces.application.ResourceDependency;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.view.facelets.el.ELText;
 
 /**

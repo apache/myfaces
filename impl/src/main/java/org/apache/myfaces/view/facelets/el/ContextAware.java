@@ -20,14 +20,14 @@ package org.apache.myfaces.view.facelets.el;
 
 
 /**
- * Identification inferface for types that know about {@link javax.faces.view.Location}
+ * Identification inferface for types that know about {@link jakarta.faces.view.Location}
  * and XML attribute name/value pair.
  * 
  *  <ol>
  *      <li>Location -  location instance - see {@link LocationAware}</li>
  *      <li>expressionString - expression String {@link javax.el.Expression#getExpressionString()}</li>
  *      <li>qName - the qualified name for attribute
- *      {@link javax.faces.view.facelets.TagAttribute#getQName()}</li>
+ *      {@link jakarta.faces.view.facelets.TagAttribute#getQName()}</li>
  *  </ol>   
  * 
  *  If type implements this interface, we can say that it knows where instance

@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets.compiler;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.jsf.html.HtmlLibrary;
 import org.junit.Test;

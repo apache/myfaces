@@ -26,10 +26,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Producer;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.Flow;
-import javax.faces.flow.builder.FlowBuilder;
-import javax.faces.flow.builder.FlowBuilderParameter;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.builder.FlowBuilder;
+import jakarta.faces.flow.builder.FlowBuilderParameter;
 import javax.inject.Inject;
 import javax.inject.Named;
 

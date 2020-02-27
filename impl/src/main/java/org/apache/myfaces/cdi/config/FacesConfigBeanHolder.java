@@ -20,7 +20,7 @@
 package org.apache.myfaces.cdi.config;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.faces.annotation.FacesConfig;
+import jakarta.faces.annotation.FacesConfig;
 
 /**
  *

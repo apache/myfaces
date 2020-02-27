@@ -20,8 +20,8 @@ package org.apache.myfaces.test.utils;
 
 import java.util.Map;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 

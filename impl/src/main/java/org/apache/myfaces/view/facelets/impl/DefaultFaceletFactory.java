@@ -29,17 +29,17 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.ViewResource;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.Facelet;
-import javax.faces.view.facelets.FaceletCache;
-import javax.faces.view.facelets.FaceletCacheFactory;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.ResourceResolver;
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ViewResource;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.Facelet;
+import jakarta.faces.view.facelets.FaceletCache;
+import jakarta.faces.view.facelets.FaceletCacheFactory;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.ResourceResolver;
 
 import org.apache.myfaces.shared.resource.ResourceLoaderUtils;
 import org.apache.myfaces.view.facelets.AbstractFaceletCache;
@@ -75,7 +75,7 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
     private Map<String, URL> _relativeLocations;
 
-    private javax.faces.view.facelets.ResourceResolver _resolver;
+    private ResourceResolver _resolver;
     private DefaultResourceResolver _defaultResolver;
     
     private FaceletCache<Facelet> _faceletCache;
@@ -278,8 +278,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
     /**
      * Resolves a path based on the passed URL. If the path starts with '/', then resolve the path against
-     * {@link javax.faces.context.ExternalContext#getResource(java.lang.String)
-     * javax.faces.context.ExternalContext#getResource(java.lang.String)}. Otherwise create a new URL via
+     * {@link jakarta.faces.context.ExternalContext#getResource(java.lang.String)
+     * jakarta.faces.context.ExternalContext#getResource(java.lang.String)}. Otherwise create a new URL via
      * {@link URL#URL(java.net.URL, java.lang.String) URL(URL, String)}.
      * 
      * @param source

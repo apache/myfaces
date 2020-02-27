@@ -20,8 +20,8 @@ package org.apache.myfaces.shared.application;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.application.ProjectStage;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.ConcurrentLRUCache;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;

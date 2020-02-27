@@ -23,8 +23,8 @@ import java.io.FileFilter;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
-import javax.faces.application.ResourceVisitOption;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.ResourceVisitOption;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.shared.util.ClassUtils;
 

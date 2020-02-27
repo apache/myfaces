@@ -21,10 +21,10 @@ package org.apache.myfaces.el.convert;
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ELResolver;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyNotFoundException;
-import javax.faces.el.PropertyResolver;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.PropertyNotFoundException;
+import jakarta.faces.el.PropertyResolver;
 
 /**
  * 
@@ -54,7 +54,7 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
         }
         catch (javax.el.PropertyNotFoundException e)
         {
-            throw new javax.faces.el.PropertyNotFoundException(e);
+            throw new PropertyNotFoundException(e);
         }
         catch (ELException e)
         {
@@ -74,7 +74,7 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
         }
         catch (javax.el.PropertyNotFoundException e)
         {
-            throw new javax.faces.el.PropertyNotFoundException(e);
+            throw new PropertyNotFoundException(e);
         }
         catch (ELException e)
         {
@@ -93,7 +93,7 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
         }
         catch (javax.el.PropertyNotFoundException e)
         {
-            throw new javax.faces.el.PropertyNotFoundException(e);
+            throw new PropertyNotFoundException(e);
         }
         catch (ELException e)
         {
@@ -113,7 +113,7 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
         }
         catch (javax.el.PropertyNotFoundException e)
         {
-            throw new javax.faces.el.PropertyNotFoundException(e);
+            throw new PropertyNotFoundException(e);
         }
         catch (ELException e)
         {
@@ -131,7 +131,7 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
         }
         catch (javax.el.PropertyNotFoundException e)
         {
-            throw new javax.faces.el.PropertyNotFoundException(e);
+            throw new PropertyNotFoundException(e);
         }
         catch (ELException e)
         {
@@ -150,7 +150,7 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
         }
         catch (javax.el.PropertyNotFoundException e)
         {
-            throw new javax.faces.el.PropertyNotFoundException(e);
+            throw new PropertyNotFoundException(e);
         }
         catch (ELException e)
         {
@@ -169,7 +169,7 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
         }
         catch (javax.el.PropertyNotFoundException e)
         {
-            throw new javax.faces.el.PropertyNotFoundException(e);
+            throw new PropertyNotFoundException(e);
         }
         catch (ELException e)
         {
@@ -188,7 +188,7 @@ public final class ELResolverToPropertyResolver extends PropertyResolver
         }
         catch (javax.el.PropertyNotFoundException e)
         {
-            throw new javax.faces.el.PropertyNotFoundException(e);
+            throw new PropertyNotFoundException(e);
         }
         catch (ELException e)
         {

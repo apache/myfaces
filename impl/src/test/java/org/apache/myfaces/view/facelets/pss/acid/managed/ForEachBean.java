@@ -20,9 +20,9 @@ package org.apache.myfaces.view.facelets.pss.acid.managed;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.bean.SessionScoped;
 
 /**
  *

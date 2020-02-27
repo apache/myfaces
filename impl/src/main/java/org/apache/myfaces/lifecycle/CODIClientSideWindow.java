@@ -25,12 +25,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import javax.faces.FacesException;
-import javax.faces.application.Resource;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.lifecycle.ClientWindow;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Resource;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.render.ResponseStateManager;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 

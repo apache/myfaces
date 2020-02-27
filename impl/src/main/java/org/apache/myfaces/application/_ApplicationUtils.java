@@ -22,10 +22,10 @@ package org.apache.myfaces.application;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
 
 /**
  *
@@ -97,7 +97,7 @@ class _ApplicationUtils
         {
             // perf: org.apache.myfaces.application.ApplicationImpl.
             //    SystemListenerEntry.getSpecificSourceListenersNotNull(Class<?>)
-            // or javax.faces.component.UIComponent.subscribeToEvent(
+            // or jakarta.faces.component.UIComponent.subscribeToEvent(
             //      Class<? extends SystemEvent>, ComponentSystemEventListener)
             // creates a ArrayList:
             for (int i  = 0, size = listeners.size(); i < size; i++)
@@ -112,11 +112,11 @@ class _ApplicationUtils
                     // an Object. This same event instance must be passed to all listener instances.
                     event = _createEvent(facesContext, systemEventClass, source, event);
 
-                    // Call SystemEvent.isAppropriateListener(javax.faces.event.FacesListener), passing the listener
+                    // Call SystemEvent.isAppropriateListener(jakarta.faces.event.FacesListener), passing the listener
                     // instance as the argument. If this returns false, take no action on the listener.
                     if (event.isAppropriateListener(listener))
                     {
-                        // Call SystemEvent.processListener(javax.faces.event.FacesListener), passing the listener
+                        // Call SystemEvent.processListener(jakarta.faces.event.FacesListener), passing the listener
                         // instance.
                         event.processListener(listener);
                     }
@@ -161,11 +161,12 @@ class _ApplicationUtils
                         // an Object. This same event instance must be passed to all listener instances.
                         event = _createEvent(facesContext, systemEventClass, source, event);
     
-                        // Call SystemEvent.isAppropriateListener(javax.faces.event.FacesListener), passing the listener
-                        // instance as the argument. If this returns false, take no action on the listener.
+                        // Call SystemEvent.isAppropriateListener(jakarta.faces.event.FacesListener),
+                        // passing the listener instance as the argument.
+                        // If this returns false, take no action on the listener.
                         if (event.isAppropriateListener(listener))
                         {
-                            // Call SystemEvent.processListener(javax.faces.event.FacesListener), passing the listener
+                            // Call SystemEvent.processListener(jakarta.faces.event.FacesListener), passing the listener
                             // instance.
                             event.processListener(listener);
                         }

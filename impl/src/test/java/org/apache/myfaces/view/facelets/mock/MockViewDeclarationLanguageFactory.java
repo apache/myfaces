@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.mock;
 
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewDeclarationLanguage;
-import javax.faces.view.ViewDeclarationLanguageFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.view.ViewDeclarationLanguageFactory;
 
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.facelets.MockFaceletViewDeclarationLanguage;

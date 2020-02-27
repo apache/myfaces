@@ -26,10 +26,10 @@ import java.util.logging.Logger;
 
 import javax.el.ELResolver;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.annotation.FacesConfig;
-import javax.faces.context.FacesContext;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
+import jakarta.faces.annotation.FacesConfig;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.PropertyResolver;
+import jakarta.faces.el.VariableResolver;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
@@ -79,7 +79,7 @@ public class ResolverBuilderBase
     /**
      * add the el resolvers from the faces config, the el resolver wrapper for variable resolver, the el resolver
      * wrapper for the property resolver and the el resolvers added by
-     * {@link javax.faces.application.Application#addELResolver(ELResolver)}.
+     * {@link jakarta.faces.application.Application#addELResolver(ELResolver)}.
      * The resolvers where only added if they are not null
      * 
      * @param resolvers

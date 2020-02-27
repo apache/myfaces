@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
  * The values here are relative to the web context path, defined by 
  * AbstractMyFacesTestCase.getWebappContextFilePath() and
  * AbstractMyFacesTestCase.getWebappContextURI(), so it can be seen as an alias for
- * javax.faces.CONFIG_FILES web config param, just to make easier work with different
+ * jakarta.faces.CONFIG_FILES web config param, just to make easier work with different
  * config files. 
  *
  */

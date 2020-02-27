@@ -19,11 +19,11 @@
 
 package org.apache.myfaces.cdi.behavior;
 
-import javax.faces.FacesWrapper;
-import javax.faces.component.PartialStateHolder;
-import javax.faces.component.behavior.Behavior;
-import javax.faces.context.FacesContext;
-import javax.faces.event.BehaviorEvent;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.component.PartialStateHolder;
+import jakarta.faces.component.behavior.Behavior;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.BehaviorEvent;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
 /**

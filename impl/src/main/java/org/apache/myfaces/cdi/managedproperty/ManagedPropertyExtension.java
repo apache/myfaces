@@ -28,7 +28,7 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessManagedBean;
-import javax.faces.annotation.ManagedProperty;
+import jakarta.faces.annotation.ManagedProperty;
 
 /**
  *

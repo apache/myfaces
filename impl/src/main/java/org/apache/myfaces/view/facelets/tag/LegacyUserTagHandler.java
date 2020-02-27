@@ -28,14 +28,14 @@ import java.util.Map;
 import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagException;
-import javax.faces.view.facelets.TagHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
+import jakarta.faces.view.facelets.TagHandler;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
 import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
@@ -87,7 +87,7 @@ final class LegacyUserTagHandler extends TagHandler implements TemplateClient, C
      * 
      * @see TagAttribute#getValueExpression(FaceletContext, Class)
      * @see VariableMapper
-     * @see javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
+     * @see jakarta.faces.view.facelets.FaceletHandler#apply(FaceletContext, UIComponent)
      */
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException

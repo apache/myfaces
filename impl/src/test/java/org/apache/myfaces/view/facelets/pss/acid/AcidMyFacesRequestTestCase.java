@@ -21,14 +21,14 @@ package org.apache.myfaces.view.facelets.pss.acid;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.el.ExpressionFactory;
-import javax.faces.application.StateManager;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewParameter;
-import javax.faces.component.html.HtmlDataTable;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewParameter;
+import jakarta.faces.component.html.HtmlDataTable;
 
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
@@ -59,9 +59,9 @@ public class AcidMyFacesRequestTestCase extends AbstractMyFacesRequestTestCase
     {
         super.setUpWebConfigParams();
         servletContext.addInitParameter("org.apache.myfaces.annotation.SCAN_PACKAGES","org.apache.myfaces.view.facelets.pss.acid");
-        servletContext.addInitParameter("javax.faces.FACELETS_LIBRARIES", "/WEB-INF/testcomponent.taglib.xml");
+        servletContext.addInitParameter("jakarta.faces.FACELETS_LIBRARIES", "/WEB-INF/testcomponent.taglib.xml");
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
-        servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
+        servletContext.addInitParameter("jakarta.faces.PARTIAL_STATE_SAVING", "true");
         servletContext.addInitParameter(MyfacesConfig.INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
     }
     

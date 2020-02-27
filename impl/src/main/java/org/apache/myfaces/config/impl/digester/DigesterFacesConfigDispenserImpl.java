@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.render.RenderKitFactory;
+import jakarta.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.element.Behavior;
@@ -849,7 +849,7 @@ public class DigesterFacesConfigDispenserImpl extends FacesConfigDispenser
     }
 
     /**
-     * @return Collection over {@link javax.faces.event.PhaseListener} implementation class names
+     * @return Collection over {@link jakarta.faces.event.PhaseListener} implementation class names
      */
     @Override
     public Collection<String> getLifecyclePhaseListeners()

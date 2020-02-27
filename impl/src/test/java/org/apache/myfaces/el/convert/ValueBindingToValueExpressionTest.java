@@ -25,15 +25,16 @@ import java.util.Date;
 
 import javax.el.ELContext;
 import javax.el.ELException;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.ValueBinding;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.ValueBinding;
 
+import jakarta.faces.el.PropertyNotFoundException;
 import junit.framework.TestCase;
 
 import org.apache.myfaces.TestRunner;
 import org.apache.myfaces.mock.ExceptionMockRunner;
-import org.apache.myfaces.test.mock.MockFacesContext12;
+import org.apache.myfaces.test.mock.MockFacesContext;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 
@@ -119,7 +120,7 @@ public class ValueBindingToValueExpressionTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#ValueBindingToValueExpression(javax.faces.el.ValueBinding)}.
+     * {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#ValueBindingToValueExpression(ValueBinding)}.
      */
     public void testValueBindingToValueExpressionValueBinding()
     {
@@ -199,7 +200,7 @@ public class ValueBindingToValueExpressionTest extends TestCase
         assertException(ELException.class, new GetTypeExceptionMockRunner(new EvaluationException()));
         mockControl.reset();
         assertException(javax.el.PropertyNotFoundException.class, new GetTypeExceptionMockRunner(
-                new javax.faces.el.PropertyNotFoundException()));
+                new PropertyNotFoundException()));
     }
 
     /**
@@ -247,7 +248,7 @@ public class ValueBindingToValueExpressionTest extends TestCase
         assertException(ELException.class, new SetValueExceptionMockRunner(new EvaluationException()));
         mockControl.reset();
         assertException(javax.el.PropertyNotFoundException.class, new SetValueExceptionMockRunner(
-                new javax.faces.el.PropertyNotFoundException()));
+                new PropertyNotFoundException()));
     }
 
     /**
@@ -268,7 +269,7 @@ public class ValueBindingToValueExpressionTest extends TestCase
     public void testGetExpectedType()
     {
         Object expectedValue = new Date();
-        facesContext = new MockFacesContext12();
+        facesContext = new MockFacesContext();
         expect(binding.getValue(eq(facesContext))).andReturn(expectedValue);
         mockControl.replay();
         assertEquals(Date.class, testimpl.getExpectedType());

@@ -25,8 +25,8 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.FacesException;
-import javax.faces.convert.Converter;
+import jakarta.faces.FacesException;
+import jakarta.faces.convert.Converter;
 import org.apache.myfaces.cdi.util.AbstractDynamicProducer;
 import org.apache.myfaces.shared.util.ClassUtils;
 

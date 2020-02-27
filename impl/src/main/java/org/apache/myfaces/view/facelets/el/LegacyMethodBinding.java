@@ -22,10 +22,10 @@ import java.io.Serializable;
 
 import javax.el.ELException;
 import javax.el.MethodExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.MethodNotFoundException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.MethodNotFoundException;
 
 /**
  * For legacy ActionSources
@@ -50,7 +50,7 @@ public final class LegacyMethodBinding extends MethodBinding implements
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.el.MethodBinding#getType(javax.faces.context.FacesContext)
+     * @see jakarta.faces.el.MethodBinding#getType(jakarta.faces.context.FacesContext)
      */
     public Class getType(FacesContext context) throws MethodNotFoundException
     {
@@ -71,7 +71,7 @@ public final class LegacyMethodBinding extends MethodBinding implements
     /*
      * (non-Javadoc)
      * 
-     * @see javax.faces.el.MethodBinding#invoke(javax.faces.context.FacesContext,
+     * @see jakarta.faces.el.MethodBinding#invoke(jakarta.faces.context.FacesContext,
      *      java.lang.Object[])
      */
     public Object invoke(FacesContext context, Object[] params)

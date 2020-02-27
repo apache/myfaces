@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.flow;
 
-import javax.faces.flow.FlowNode;
+import jakarta.faces.flow.FlowNode;
 
 /**
  *

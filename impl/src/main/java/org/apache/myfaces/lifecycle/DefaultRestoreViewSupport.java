@@ -26,21 +26,21 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitContextFactory;
-import javax.faces.component.visit.VisitHint;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PostRestoreStateEvent;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.ResponseStateManager;
-import javax.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitContextFactory;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PostRestoreStateEvent;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.shared.application.FacesServletMapping;
 import org.apache.myfaces.shared.application.InvalidViewIdException;
@@ -70,7 +70,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
 
     private final Logger log = Logger.getLogger(DefaultRestoreViewSupport.class.getName());
     
-    private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
+    private static final String SKIP_ITERATION_HINT = "jakarta.faces.visit.SKIP_ITERATION";
     
     private static final Set<VisitHint> VISIT_HINTS = Collections.unmodifiableSet( 
             EnumSet.of(VisitHint.SKIP_ITERATION));

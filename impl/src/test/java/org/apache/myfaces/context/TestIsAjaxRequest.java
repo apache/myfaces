@@ -18,8 +18,8 @@ package org.apache.myfaces.context;
 
 import java.util.Map;
 
-import javax.faces.FactoryFinder;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
@@ -62,7 +62,7 @@ public class TestIsAjaxRequest extends AbstractJsfTestCase {
 
     public void testEntry() {
         request.addHeader("Faces-Request", "partial/ajax");
-        request.addParameter("javax.faces.partial.ajax","true");
+        request.addParameter("jakarta.faces.partial.ajax","true");
         assertTrue("no ajax request found", context.getPartialViewContext().isAjaxRequest());
     }
 

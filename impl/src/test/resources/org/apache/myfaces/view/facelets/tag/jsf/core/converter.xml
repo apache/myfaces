@@ -17,6 +17,6 @@
              xmlns:h="http://java.sun.com/jsf/html"
              xmlns:f="http://java.sun.com/jsf/core">
 	<h:outputText id="out1" value="42.5">
-		<f:converter converterId="javax.faces.Number"/>
+		<f:converter converterId="jakarta.faces.Number"/>
 	</h:outputText>
 </composition>

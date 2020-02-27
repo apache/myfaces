@@ -21,7 +21,7 @@ package org.apache.myfaces.spi.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.shared_impl.webapp.webxml.WebXml;
 import org.apache.myfaces.spi.ServletMapping;

@@ -22,11 +22,11 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
-import javax.faces.FactoryFinder;
-import javax.faces.validator.BeanValidator;
-import javax.faces.validator.LengthValidator;
-import javax.faces.validator.RequiredValidator;
-import javax.faces.webapp.FacesServlet;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.validator.BeanValidator;
+import jakarta.faces.validator.LengthValidator;
+import jakarta.faces.validator.RequiredValidator;
+import jakarta.faces.webapp.FacesServlet;
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
@@ -120,7 +120,7 @@ public class FacesConfiguratorDefaultValidatorsTestCase extends AbstractJsfConfi
 
     /**
      * Tests the case that the default bean validator is disabled with the config parameter
-     * javax.faces.validator.DISABLE_DEFAULT_BEAN_VALIDATOR, but it is defined in the faces-config.
+     * jakarta.faces.validator.DISABLE_DEFAULT_BEAN_VALIDATOR, but it is defined in the faces-config.
      * In this case the bean validator should be installed as a default validator.
      */
     @Test

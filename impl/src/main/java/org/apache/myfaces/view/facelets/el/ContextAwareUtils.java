@@ -19,7 +19,7 @@
 package org.apache.myfaces.view.facelets.el;
 
 import javax.el.ELContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;

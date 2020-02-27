@@ -22,23 +22,23 @@ import java.beans.BeanInfo;
 import java.io.IOException;
 import java.util.Iterator;
 
-import javax.faces.FactoryFinder;
-import javax.faces.application.Resource;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlCommandButton;
-import javax.faces.component.html.HtmlForm;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.ResponseStateManager;
-import javax.faces.view.StateManagementStrategy;
-import javax.faces.view.ViewDeclarationLanguage;
-import javax.faces.view.ViewDeclarationLanguageFactory;
-import javax.faces.view.ViewMetadata;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlCommandButton;
+import jakarta.faces.component.html.HtmlForm;
+import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.faces.view.StateManagementStrategy;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.view.ViewDeclarationLanguageFactory;
+import jakarta.faces.view.ViewMetadata;
 
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.StateManagerImpl;
@@ -70,7 +70,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         
         FactoryFinder.setFactory(FactoryFinder.VISIT_CONTEXT_FACTORY, VisitContextFactoryImpl.class.getName());
         
-        RenderKitFactory renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory("javax.faces.render.RenderKitFactory");
+        RenderKitFactory renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory("jakarta.faces.render.RenderKitFactory");
         renderKit = new MockRenderKit()
         {
             ResponseStateManager stateManager = new ResponseStateManager(){
@@ -144,7 +144,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
         DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
         
-        servletContext.addInitParameter("javax.faces.STATE_SAVING_METHOD", "client");
+        servletContext.addInitParameter("jakarta.faces.STATE_SAVING_METHOD", "client");
         
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         vdl.buildView(facesContext, viewRoot);
@@ -172,7 +172,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
         DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
         
-        servletContext.addInitParameter("javax.faces.STATE_SAVING_METHOD", "client");
+        servletContext.addInitParameter("jakarta.faces.STATE_SAVING_METHOD", "client");
         
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         vdl.buildView(facesContext, viewRoot);
@@ -211,7 +211,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
         DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
         
-        servletContext.addInitParameter("javax.faces.STATE_SAVING_METHOD", "client");
+        servletContext.addInitParameter("jakarta.faces.STATE_SAVING_METHOD", "client");
         
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         
@@ -279,7 +279,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
         DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
         
-        servletContext.addInitParameter("javax.faces.STATE_SAVING_METHOD", "client");
+        servletContext.addInitParameter("jakarta.faces.STATE_SAVING_METHOD", "client");
         
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         vdl.buildView(facesContext, viewRoot);
@@ -347,7 +347,7 @@ public class DefaultFaceletsStateManagementStrategyTest extends
         ViewDeclarationLanguage vdl =((MockViewDeclarationLanguageFactory)FactoryFinder.getFactory(FactoryFinder.VIEW_DECLARATION_LANGUAGE_FACTORY)).vdl;
         DefaultFaceletsStateManagementStrategy stateManagement = new DefaultFaceletsStateManagementStrategy();
         
-        servletContext.addInitParameter("javax.faces.STATE_SAVING_METHOD", "client");
+        servletContext.addInitParameter("jakarta.faces.STATE_SAVING_METHOD", "client");
         
         UIViewRoot viewRoot = vdl.createView(facesContext, "/root");
         vdl.buildView(facesContext, viewRoot);

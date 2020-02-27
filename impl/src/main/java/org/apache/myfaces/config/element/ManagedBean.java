@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

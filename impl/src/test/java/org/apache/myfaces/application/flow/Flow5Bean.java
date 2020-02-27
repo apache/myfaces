@@ -20,8 +20,8 @@
 package org.apache.myfaces.application.flow;
 
 import java.io.Serializable;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.FlowScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.FlowScoped;
 import javax.inject.Named;
 
 /**

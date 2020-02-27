@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.tag;
 
-import javax.faces.view.facelets.MetaRuleset;
-import javax.faces.view.facelets.MetaTagHandler;
-import javax.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.MetaTagHandler;
+import jakarta.faces.view.facelets.TagConfig;
 
 import org.apache.myfaces.view.facelets.util.ParameterCheck;
 

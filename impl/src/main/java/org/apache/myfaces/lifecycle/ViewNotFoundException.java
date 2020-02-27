@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.lifecycle;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 /**
  * This exception is thrown when a view is not present before start

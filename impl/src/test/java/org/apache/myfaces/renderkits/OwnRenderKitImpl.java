@@ -20,11 +20,11 @@ package org.apache.myfaces.renderkits;
 
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
 
-import javax.faces.context.ResponseStream;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.RenderKit;
-import javax.faces.render.Renderer;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.context.ResponseStream;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.render.ResponseStateManager;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;

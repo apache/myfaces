@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.pss.acid.managed;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.bean.SessionScoped;
 
 /**
  *

@@ -20,8 +20,8 @@ package org.apache.myfaces.shared.resource;
 
 import java.util.Map;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.application.FacesServletMapping;
@@ -89,9 +89,9 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
             {
                 // Mapping using a suffix. In this case we have to strip 
                 // the suffix. If we have a url like:
-                // http://localhost:8080/testjsf20/javax.faces.resource/imagen.jpg.jsf?ln=dojo
+                // http://localhost:8080/testjsf20/jakarta.faces.resource/imagen.jpg.jsf?ln=dojo
                 // 
-                // The servlet path is /javax.faces.resource/imagen.jpg.jsf
+                // The servlet path is /jakarta.faces.resource/imagen.jpg.jsf
                 //
                 // For obtain the resource name we have to remove the .jsf suffix and 
                 // the prefix ResourceHandler.RESOURCE_IDENTIFIER
@@ -106,10 +106,10 @@ public class BaseResourceHandlerSupport extends ResourceHandlerSupport
             {
                 // Mapping using prefix. In this case we have to strip 
                 // the prefix used for mapping. If we have a url like:
-                // http://localhost:8080/testjsf20/faces/javax.faces.resource/imagen.jpg?ln=dojo
+                // http://localhost:8080/testjsf20/faces/jakarta.faces.resource/imagen.jpg?ln=dojo
                 //
                 // The servlet path is /faces
-                // and the path info is /javax.faces.resource/imagen.jpg
+                // and the path info is /jakarta.faces.resource/imagen.jpg
                 //
                 // For obtain the resource name we have to remove the /faces prefix and 
                 // then the prefix ResourceHandler.RESOURCE_IDENTIFIER

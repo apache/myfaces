@@ -20,9 +20,9 @@ package org.apache.myfaces.view.facelets.updateheadres.managed;
 
 import java.io.Serializable;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-import javax.faces.event.ActionEvent;
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.bean.ViewScoped;
+import jakarta.faces.event.ActionEvent;
 
 @ManagedBean(name="ajaxContentBean")
 @ViewScoped

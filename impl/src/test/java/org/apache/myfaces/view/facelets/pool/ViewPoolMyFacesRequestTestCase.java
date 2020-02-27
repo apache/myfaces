@@ -22,16 +22,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javax.el.ExpressionFactory;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.StateManager;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewParameter;
-import javax.faces.component.UIViewRoot;
-import javax.faces.view.ViewMetadata;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewParameter;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.view.ViewMetadata;
 
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
@@ -69,7 +69,7 @@ public class ViewPoolMyFacesRequestTestCase extends AbstractMyFacesRequestTestCa
         servletContext.addInitParameter(ViewPoolImpl.INIT_PARAM_VIEW_POOL_ENTRY_MODE, "soft");
         servletContext.addInitParameter(ViewPoolImpl.INIT_PARAM_VIEW_POOL_MAX_POOL_SIZE, "20");
         servletContext.addInitParameter("org.apache.myfaces.CACHE_EL_EXPRESSIONS", "alwaysRecompile");
-        servletContext.addInitParameter("javax.faces.CONFIG_FILES", "/view-pool-faces-config.xml");
+        servletContext.addInitParameter("jakarta.faces.CONFIG_FILES", "/view-pool-faces-config.xml");
         servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, "Production");
     }
 

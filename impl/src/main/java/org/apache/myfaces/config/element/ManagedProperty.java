@@ -20,8 +20,8 @@ package org.apache.myfaces.config.element;
 
 import java.io.Serializable;
 
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.ValueBinding;
 
 
 

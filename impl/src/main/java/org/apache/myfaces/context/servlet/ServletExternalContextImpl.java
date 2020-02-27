@@ -37,14 +37,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
-import javax.faces.context.FlashFactory;
-import javax.faces.context.PartialResponseWriter;
-import javax.faces.context.PartialViewContext;
-import javax.faces.lifecycle.ClientWindow;
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
+import jakarta.faces.context.FlashFactory;
+import jakarta.faces.context.PartialResponseWriter;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.lifecycle.ClientWindow;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -83,7 +83,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
      * Indicates the port used for websocket connections.
      */
     @JSFWebConfigParam(since = "2.3")
-    public static final java.lang.String WEBSOCKET_ENDPOINT_PORT = "javax.faces.WEBSOCKET_ENDPOINT_PORT";
+    public static final java.lang.String WEBSOCKET_ENDPOINT_PORT = "jakarta.faces.WEBSOCKET_ENDPOINT_PORT";
 
     private ServletRequest _servletRequest;
     private ServletResponse _servletResponse;

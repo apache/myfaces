@@ -52,55 +52,55 @@
    
    <!-- behaviors by id -->
    <behavior>
-      <behavior-id>javax.faces.behavior.Ajax</behavior-id>
-      <behavior-class>javax.faces.component.behavior.AjaxBehavior</behavior-class>
+      <behavior-id>jakarta.faces.behavior.Ajax</behavior-id>
+      <behavior-class>jakarta.faces.component.behavior.AjaxBehavior</behavior-class>
    </behavior>
    
    <!-- standard converters by class -->
    
    <converter>
       <converter-for-class>java.math.BigDecimal</converter-for-class>
-      <converter-class>javax.faces.convert.BigDecimalConverter</converter-class>
+      <converter-class>jakarta.faces.convert.BigDecimalConverter</converter-class>
    </converter>
    <converter>
       <converter-for-class>java.math.BigInteger</converter-for-class>
-      <converter-class>javax.faces.convert.BigIntegerConverter</converter-class>
+      <converter-class>jakarta.faces.convert.BigIntegerConverter</converter-class>
    </converter>
    <converter>
       <converter-for-class>java.lang.Boolean</converter-for-class>
-      <converter-class>javax.faces.convert.BooleanConverter</converter-class>
+      <converter-class>jakarta.faces.convert.BooleanConverter</converter-class>
    </converter>
    <converter>
       <converter-for-class>java.lang.Byte</converter-for-class>
-      <converter-class>javax.faces.convert.ByteConverter</converter-class>
+      <converter-class>jakarta.faces.convert.ByteConverter</converter-class>
    </converter>
    <converter>
       <converter-for-class>java.lang.Character</converter-for-class>
-      <converter-class>javax.faces.convert.CharacterConverter</converter-class>
+      <converter-class>jakarta.faces.convert.CharacterConverter</converter-class>
    </converter>
    <converter>
       <converter-for-class>java.lang.Double</converter-for-class>
-      <converter-class>javax.faces.convert.DoubleConverter</converter-class>
+      <converter-class>jakarta.faces.convert.DoubleConverter</converter-class>
    </converter>
    <converter>
       <converter-for-class>java.lang.Enum</converter-for-class>
-      <converter-class>javax.faces.convert.EnumConverter</converter-class>
+      <converter-class>jakarta.faces.convert.EnumConverter</converter-class>
    </converter>
    <converter>
       <converter-for-class>java.lang.Float</converter-for-class>
-      <converter-class>javax.faces.convert.FloatConverter</converter-class>
+      <converter-class>jakarta.faces.convert.FloatConverter</converter-class>
    </converter>
    <converter>
       <converter-for-class>java.lang.Integer</converter-for-class>
-      <converter-class>javax.faces.convert.IntegerConverter</converter-class>
+      <converter-class>jakarta.faces.convert.IntegerConverter</converter-class>
    </converter>
    <converter>
       <converter-for-class>java.lang.Long</converter-for-class>
-      <converter-class>javax.faces.convert.LongConverter</converter-class>
+      <converter-class>jakarta.faces.convert.LongConverter</converter-class>
    </converter>
    <converter>
       <converter-for-class>java.lang.Short</converter-for-class>
-      <converter-class>javax.faces.convert.ShortConverter</converter-class>
+      <converter-class>jakarta.faces.convert.ShortConverter</converter-class>
    </converter>
 
 </faces-config>

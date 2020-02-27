@@ -19,17 +19,17 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import javax.el.MethodExpression;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.MethodExpressionValueChangeListener;
-import javax.faces.event.ValueChangeEvent;
-import javax.faces.validator.MethodExpressionValidator;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.MetaRule;
-import javax.faces.view.facelets.Metadata;
-import javax.faces.view.facelets.MetadataTarget;
-import javax.faces.view.facelets.TagAttribute;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.MethodExpressionValueChangeListener;
+import jakarta.faces.event.ValueChangeEvent;
+import jakarta.faces.validator.MethodExpressionValidator;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.TagAttribute;
 
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 

@@ -23,18 +23,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.FacesWrapper;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIWebsocket;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.event.ListenerFor;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.render.Renderer;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIWebsocket;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.push.cdi.WebsocketApplicationBean;
@@ -51,8 +51,8 @@ import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
  */
 @JSFRenderer(
         renderKitId = "HTML_BASIC",
-        family = "javax.faces.Script",
-        type = "javax.faces.Websocket")
+        family = "jakarta.faces.Script",
+        type = "jakarta.faces.Websocket")
 @ListenerFor(systemEventClass = PostAddToViewEvent.class)
 public class WebsocketComponentRenderer extends Renderer implements ComponentSystemEventListener
 {

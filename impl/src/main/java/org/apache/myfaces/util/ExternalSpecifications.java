@@ -21,7 +21,7 @@ package org.apache.myfaces.util;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 

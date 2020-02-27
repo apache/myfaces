@@ -34,26 +34,26 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.el.ExpressionFactory;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.FacesContextFactory;
-import javax.faces.context.Flash;
-import javax.faces.event.ExceptionQueuedEvent;
-import javax.faces.event.ExceptionQueuedEventContext;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
-import javax.faces.event.PreRenderViewEvent;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.view.ViewDeclarationLanguage;
-import javax.faces.webapp.FacesServlet;
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.FacesContextFactory;
+import jakarta.faces.context.Flash;
+import jakarta.faces.event.ExceptionQueuedEvent;
+import jakarta.faces.event.ExceptionQueuedEventContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.event.PreRenderViewEvent;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.lifecycle.LifecycleFactory;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.webapp.FacesServlet;
 import javax.naming.Context;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -91,7 +91,6 @@ import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.mock.MockWebContainer;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
-import static org.apache.myfaces.webapp.AbstractFacesInitializer.CDI_BEAN_MANAGER_INSTANCE;
 import org.apache.myfaces.webapp.FacesInitializer;
 import org.apache.myfaces.webapp.StartupServletContextListener;
 import org.junit.runners.model.FrameworkMethod;
@@ -229,9 +228,9 @@ public class AbstractJsfTestContainer
      * 
      * <ul>
      * <li>"org.apache.myfaces.INITIALIZE_ALWAYS_STANDALONE", "true"</li>
-     * <li>"javax.faces.PROJECT_STAGE", "UnitTest"</li>
-     * <li>"javax.faces.PARTIAL_STATE_SAVING", "true"</li>
-     * <li>"javax.faces.FACELETS_REFRESH_PERIOD", "-1"</li>
+     * <li>"jakarta.faces.PROJECT_STAGE", "UnitTest"</li>
+     * <li>"jakarta.faces.PARTIAL_STATE_SAVING", "true"</li>
+     * <li>"jakarta.faces.FACELETS_REFRESH_PERIOD", "-1"</li>
      * </ul>
      * 
      */
@@ -239,8 +238,8 @@ public class AbstractJsfTestContainer
     {
         // Required parameters
         servletContext.addInitParameter("org.apache.myfaces.INITIALIZE_ALWAYS_STANDALONE", "true");
-        servletContext.addInitParameter("javax.faces.PROJECT_STAGE", "UnitTest");
-        servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
+        servletContext.addInitParameter("jakarta.faces.PROJECT_STAGE", "UnitTest");
+        servletContext.addInitParameter("jakarta.faces.PARTIAL_STATE_SAVING", "true");
         servletContext.addInitParameter(ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,"-1");
         servletContext.addInitParameter("org.apache.myfaces.config.annotation.LifecycleProvider",
             NoInjectionAnnotationLifecycleProvider.class.getName());
@@ -1285,7 +1284,7 @@ public class AbstractJsfTestContainer
     
     public String getRenderedContent(FacesContext facesContext) throws IOException
     {
-        MockPrintWriter writer1 = (MockPrintWriter) (((HttpServletResponse) 
+        MockPrintWriter writer1 = (MockPrintWriter) (((HttpServletResponse)
             facesContext.getExternalContext().getResponse()).getWriter());
         return String.valueOf(writer1.content());
     }

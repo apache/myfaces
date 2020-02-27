@@ -32,29 +32,31 @@ import java.util.Map;
 import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
-import javax.faces.FacesException;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.Resource;
-import javax.faces.component.ActionSource;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UniqueIdVendor;
-import javax.faces.component.ValueHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import javax.faces.view.AttachedObjectHandler;
-import javax.faces.view.ViewDeclarationLanguage;
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.MetaRuleset;
-import javax.faces.view.facelets.Metadata;
-import javax.faces.view.facelets.TagException;
-import javax.faces.view.facelets.TextHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UniqueIdVendor;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.view.AttachedObjectHandler;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.CompositeFaceletHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.FacetHandler;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.Metadata;
 
+import jakarta.faces.view.facelets.TagException;
+import jakarta.faces.view.facelets.TextHandler;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.TemplateClient;
@@ -102,10 +104,10 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
     {
         super(config);
         _resource = resource;
-        _facetHandlers = TagHandlerUtils.findNextByType(nextHandler, javax.faces.view.facelets.FacetHandler.class,
+        _facetHandlers = TagHandlerUtils.findNextByType(nextHandler, FacetHandler.class,
                                                         InsertFacetHandler.class);
         _componentHandlers = TagHandlerUtils.findNextByType(nextHandler,
-                javax.faces.view.facelets.ComponentHandler.class,
+                ComponentHandler.class,
                 ComponentContainerHandler.class, TextHandler.class);
         _dynamicCompositeComponent = false;
     }
@@ -286,15 +288,15 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         
         List<String> insertFacetList = (List<String>) beanDescriptor.getValue(InsertFacetHandler.INSERT_FACET_USED);
         
-        if (nextHandler instanceof javax.faces.view.facelets.CompositeFaceletHandler)
+        if (nextHandler instanceof CompositeFaceletHandler)
         {
             for (FaceletHandler handler :
-                    ((javax.faces.view.facelets.CompositeFaceletHandler)nextHandler).getHandlers())
+                    ((CompositeFaceletHandler)nextHandler).getHandlers())
             {
-                if (handler instanceof javax.faces.view.facelets.FacetHandler)
+                if (handler instanceof FacetHandler)
                 {
                     if (insertFacetList == null ||
-                        !insertFacetList.contains(((javax.faces.view.facelets.FacetHandler)handler).getFacetName(ctx)))
+                        !insertFacetList.contains(((FacetHandler)handler).getFacetName(ctx)))
                     {
                         handler.apply(ctx, c);
                     }
@@ -309,7 +311,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
                 }
                 else if (insertChildrenUsed)
                 {
-                    if (!(handler instanceof javax.faces.view.facelets.ComponentHandler ||
+                    if (!(handler instanceof ComponentHandler ||
                             handler instanceof ComponentContainerHandler ||
                             handler instanceof TextHandler))
                     {
@@ -324,10 +326,10 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
         }
         else
         {
-            if (nextHandler instanceof javax.faces.view.facelets.FacetHandler)
+            if (nextHandler instanceof FacetHandler)
             {
                 if (insertFacetList == null ||
-                    !insertFacetList.contains(((javax.faces.view.facelets.FacetHandler)nextHandler).getFacetName(ctx)))
+                    !insertFacetList.contains(((FacetHandler)nextHandler).getFacetName(ctx)))
                 {
                     nextHandler.apply(ctx, c);
                 }
@@ -342,7 +344,7 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             }
             else if (insertChildrenUsed)
             {
-                if (!(nextHandler instanceof javax.faces.view.facelets.ComponentHandler ||
+                if (!(nextHandler instanceof ComponentHandler ||
                       nextHandler instanceof ComponentContainerHandler ||
                       nextHandler instanceof TextHandler))
                 {
@@ -529,9 +531,9 @@ public class CompositeComponentResourceTagHandler extends ComponentHandler
             
             for (FaceletHandler handler : _facetHandlers)
             {
-                if (handler instanceof javax.faces.view.facelets.FacetHandler )
+                if (handler instanceof FacetHandler)
                 {
-                    map.put( ((javax.faces.view.facelets.FacetHandler)handler).getFacetName(ctx), handler);
+                    map.put( ((FacetHandler)handler).getFacetName(ctx), handler);
                 }
                 else if (handler instanceof InsertFacetHandler)
                 {

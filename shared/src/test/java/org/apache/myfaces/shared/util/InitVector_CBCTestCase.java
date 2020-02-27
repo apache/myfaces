@@ -17,10 +17,9 @@
 
 package org.apache.myfaces.shared.util;
 
-import junit.framework.Test;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 public class InitVector_CBCTestCase extends AbstractJsfTestCase {
 

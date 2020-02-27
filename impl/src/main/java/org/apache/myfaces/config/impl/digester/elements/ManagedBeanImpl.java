@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.view.facelets.el.ELText;

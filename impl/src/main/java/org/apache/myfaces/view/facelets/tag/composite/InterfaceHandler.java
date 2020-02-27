@@ -24,14 +24,14 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.view.Location;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.Location;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
@@ -227,7 +227,7 @@ public class InterfaceHandler extends TagHandler implements InterfaceDescriptorC
             {
                 // componentType is required by Application.createComponent(FacesContext, Resource)
                 // to instantiate the base component for this composite component. It should be
-                // as family javax.faces.NamingContainer .
+                // as family jakarta.faces.NamingContainer .
                 descriptor.setValue(UIComponent.COMPOSITE_COMPONENT_TYPE_KEY, 
                         _componentType.getValueExpression(ctx, String.class));
             }

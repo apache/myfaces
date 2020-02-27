@@ -28,7 +28,7 @@ public class SingleContractNoPSSMyFacesRequestTestCase extends SingleContractMyF
     protected void setUpWebConfigParams() throws Exception
     {
         super.setUpWebConfigParams();
-        servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "false");
+        servletContext.addInitParameter("jakarta.faces.PARTIAL_STATE_SAVING", "false");
     }
     
 }

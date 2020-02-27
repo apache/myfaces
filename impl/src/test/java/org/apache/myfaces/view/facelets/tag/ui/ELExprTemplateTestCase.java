@@ -19,7 +19,7 @@
 
 package org.apache.myfaces.view.facelets.tag.ui;
 
-import javax.faces.component.UIViewRoot;
+import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;

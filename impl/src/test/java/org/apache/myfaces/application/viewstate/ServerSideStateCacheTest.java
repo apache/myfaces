@@ -23,8 +23,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.StateManager;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.StateManager;
 
 import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMultipleRequestsTestCase;

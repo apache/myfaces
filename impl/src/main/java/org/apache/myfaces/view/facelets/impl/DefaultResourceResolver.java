@@ -20,9 +20,9 @@ package org.apache.myfaces.view.facelets.impl;
 
 import java.net.URL;
 
-import javax.faces.application.ViewResource;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.ResourceResolver;
+import jakarta.faces.application.ViewResource;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.ResourceResolver;
 import org.apache.myfaces.view.facelets.FaceletFactory;
 
 

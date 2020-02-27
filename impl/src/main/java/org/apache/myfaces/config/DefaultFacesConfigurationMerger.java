@@ -32,8 +32,8 @@ import org.apache.myfaces.spi.FacesConfigurationMerger;
 import org.apache.myfaces.spi.FacesConfigurationProvider;
 import org.apache.myfaces.spi.FacesConfigurationProviderFactory;
 
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -100,7 +100,7 @@ public class DefaultFacesConfigurationMerger extends FacesConfigurationMerger
         // META-INF/faces-config.xml files
         appConfigResources.addAll(facesConfigProvider.getClassloaderFacesConfig(externalContext));
         
-        // faces-config.xml files from javax.faces.CONFIG_FILES
+        // faces-config.xml files from jakarta.faces.CONFIG_FILES
         appConfigResources.addAll(facesConfigProvider.getContextSpecifiedFacesConfig(externalContext));
         
         // JSF 2.2 ApplicationConfigurationResourceDocumentPopulator FacesConfig

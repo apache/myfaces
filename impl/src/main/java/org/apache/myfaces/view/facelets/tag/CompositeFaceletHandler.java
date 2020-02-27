@@ -21,17 +21,17 @@ package org.apache.myfaces.view.facelets.tag;
 import java.io.IOException;
 
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.FaceletHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
 
 /**
  * A FaceletHandler that is derived of 1 or more, inner FaceletHandlers. This class would be found if the next
  * FaceletHandler is structually, a body with multiple child elements as defined in XML.
  * 
- * @deprecated use javax.faces.view.facelets.CompositeFaceletHandler
+ * @deprecated use jakarta.faces.view.facelets.CompositeFaceletHandler
  * @author Jacob Hookom
  * @version $Id$
  */

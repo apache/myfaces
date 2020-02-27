@@ -20,18 +20,18 @@ package org.apache.myfaces.view.facelets.compiler;
 
 import java.util.Collection;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.component.NamingContainer;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.UniqueIdVendor;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.ValueBinding;
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.UniqueIdVendor;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.validator.ValidatorException;
 
 /**
  * A collection of static helper methods for locating UIComponents.
@@ -392,7 +392,7 @@ class _ComponentUtils
     }
     
     /**
-     * Call {@link UIComponent#pushComponentToEL(javax.faces.context.FacesContext,javax.faces.component.UIComponent)},
+     * Call {@link UIComponent#pushComponentToEL(FacesContext, UIComponent)},
      * reads the isRendered property, call {@link
      * UIComponent#popComponentFromEL} and returns the value of isRendered.
      */

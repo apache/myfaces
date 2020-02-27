@@ -27,23 +27,23 @@ import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.MethodExpression;
 import javax.el.MethodNotFoundException;
-import javax.faces.FacesException;
-import javax.faces.component.PartialStateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.event.PostRenderViewEvent;
-import javax.faces.event.PreRenderViewEvent;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributeException;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.PartialStateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.event.PostRenderViewEvent;
+import jakarta.faces.event.PreRenderViewEvent;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
@@ -69,8 +69,8 @@ public final class EventHandler extends TagHandler
     @JSFFaceletAttribute(name="listener",
             className="javax.el.MethodExpression",
             deferredMethodSignature=
-            "public void listener(javax.faces.event.ComponentSystemEvent evt) "
-            + "throws javax.faces.event.AbortProcessingException")
+            "public void listener(jakarta.faces.event.ComponentSystemEvent evt) "
+            + "throws jakarta.faces.event.AbortProcessingException")
     private TagAttribute listener;
     
     @JSFFaceletAttribute(name="type",
@@ -252,7 +252,7 @@ public final class EventHandler extends TagHandler
         if (!ComponentSystemEvent.class.isAssignableFrom (eventClass))
         {
             throw new TagAttributeException (type, "Event class " + eventClass.getName() +
-                " is not of type javax.faces.event.ComponentSystemEvent");
+                " is not of type jakarta.faces.event.ComponentSystemEvent");
         }
         
         return (Class<? extends ComponentSystemEvent>) eventClass;

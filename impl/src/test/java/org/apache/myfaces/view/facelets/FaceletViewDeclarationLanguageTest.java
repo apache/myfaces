@@ -22,11 +22,11 @@ import java.util.Locale;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewParameter;
-import javax.faces.component.UIViewRoot;
-import javax.faces.view.ViewMetadata;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewParameter;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.view.ViewMetadata;
 import org.apache.myfaces.view.facelets.bean.ViewBean;
 
 /**

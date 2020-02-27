@@ -18,13 +18,17 @@
  */
 package org.apache.myfaces.shared.renderkit.html;
 
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorBase;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.behavior.ClientBehaviorHint;
 import junit.framework.Assert;
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.*;
-import javax.faces.component.html.HtmlInputText;
+import jakarta.faces.component.UIComponent;
+
+import jakarta.faces.component.html.HtmlInputText;
 
 import java.util.*;
 

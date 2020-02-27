@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.view.facelets;
 
-import javax.faces.component.UIComponent;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.FacesListener;
-import javax.faces.event.SystemEventListener;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.FacesListener;
+import jakarta.faces.event.SystemEventListener;
 
 /**
  * TODO: Remove it since after MYFACES-2389 this is not necessary anymore.

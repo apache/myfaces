@@ -26,12 +26,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Utility class to support multilingual FacesMessages using ResourceBundles.
@@ -50,8 +50,8 @@ public final class MessageUtils
         // nope
     }
 
-    /** Default bundle for messages (<code>javax.faces.Messages</code>) */
-    private static final String DEFAULT_BUNDLE = "javax.faces.Messages";
+    /** Default bundle for messages (<code>jakarta.faces.Messages</code>) */
+    private static final String DEFAULT_BUNDLE = "jakarta.faces.Messages";
 
     /** Suffix for message details (<code>_detail</code>)*/
     private static final String DETAIL_SUFFIX = "_detail";
@@ -685,7 +685,7 @@ public final class MessageUtils
         else
         {
             ApplicationFactory afactory = (ApplicationFactory)FactoryFinder.getFactory(
-                    "javax.faces.application.ApplicationFactory");
+                    "jakarta.faces.application.ApplicationFactory");
             return afactory.getApplication();
         }
     }

@@ -18,13 +18,13 @@
  */
 package org.apache.myfaces.event;
 
-import javax.faces.application.StateManager;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewRoot;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.PhaseId;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.PhaseId;
 
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
@@ -44,7 +44,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
         super.setUpWebConfigParams();
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
         servletContext.addInitParameter("org.apache.myfaces.REFRESH_TRANSIENT_BUILD_ON_PSS", "true");
-        servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
+        servletContext.addInitParameter("jakarta.faces.PARTIAL_STATE_SAVING", "true");
     }
 
     /**
@@ -94,7 +94,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
                             .getCurrentArguments()[0];
                     Assert.assertTrue(e.getComponent() instanceof UIViewRoot);
                     Assert.assertEquals(PhaseId.RESTORE_VIEW, facesContext.getCurrentPhaseId());
-                    Assert.assertTrue(facesContext.getAttributes().containsKey("javax.faces.IS_BUILDING_INITIAL_STATE"));
+                    Assert.assertTrue(facesContext.getAttributes().containsKey("jakarta.faces.IS_BUILDING_INITIAL_STATE"));
                     Assert.assertFalse(FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext));
                     return null;
                 }
@@ -172,7 +172,7 @@ public class PostAddToViewEventTestCase extends AbstractMyFacesRequestTestCase
                             .getCurrentArguments()[0];
                     Assert.assertTrue(e.getComponent() instanceof UIForm);
                     Assert.assertEquals(PhaseId.RESTORE_VIEW, facesContext.getCurrentPhaseId());
-                    Assert.assertTrue(facesContext.getAttributes().containsKey("javax.faces.IS_BUILDING_INITIAL_STATE"));
+                    Assert.assertTrue(facesContext.getAttributes().containsKey("jakarta.faces.IS_BUILDING_INITIAL_STATE"));
                     Assert.assertFalse(FaceletViewDeclarationLanguage.isRefreshingTransientBuild(facesContext));
                     return null;
                 }

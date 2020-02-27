@@ -28,30 +28,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.StateManager;
-import javax.faces.component.ContextCallback;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIComponentBase;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitContextFactory;
-import javax.faces.component.visit.VisitHint;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.event.PreRemoveFromViewEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.ResponseStateManager;
-import javax.faces.view.StateManagementStrategy;
-import javax.faces.view.ViewDeclarationLanguage;
-import javax.faces.view.ViewDeclarationLanguageFactory;
-import javax.faces.view.ViewMetadata;
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.ContextCallback;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitContextFactory;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.event.PreRemoveFromViewEvent;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.faces.view.StateManagementStrategy;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.view.ViewDeclarationLanguageFactory;
+import jakarta.faces.view.ViewMetadata;
 import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.context.RequestViewContext;
@@ -73,7 +73,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
  * 
  * The following considerations apply for this class:
  * 
- * 1. This StateManagementStrategy should only be active if javax.faces.PARTIAL_STATE_SAVING
+ * 1. This StateManagementStrategy should only be active if jakarta.faces.PARTIAL_STATE_SAVING
  *    config param is active(true). See javadoc on StateManager for details.
  * 2. A map using component clientId as keys are used to hold the state.
  * 3. Each component has a valid id after ViewDeclarationLanguage.buildView().
@@ -84,7 +84,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
  * 5. A SystemEventListener is used to keep track for added and removed components, listen
  *    PostAddToViewEvent and PreRemoveFromViewEvent event triggered by UIComponent.setParent()
  *    method.
- * 6. It is not possible to use javax.faces.component.visit API to traverse the component
+ * 6. It is not possible to use jakarta.faces.component.visit API to traverse the component
  *    tree during save/restore, because UIData.visitTree traverse all rows and we only need
  *    to restore state per component (not per row).
  * 7. It is necessary to preserve the order of the children added/removed between requests.
@@ -149,7 +149,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
     private static final String CHECK_ID_PRODUCTION_MODE_TRUE = "true";
     private static final String CHECK_ID_PRODUCTION_MODE_AUTO = "auto";
     
-    private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
+    private static final String SKIP_ITERATION_HINT = "jakarta.faces.visit.SKIP_ITERATION";
     
     private static final String SERIALIZED_VIEW_REQUEST_ATTR = 
         StateManagerImpl.class.getName() + ".SERIALIZED_VIEW";

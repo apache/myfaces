@@ -19,7 +19,7 @@
 package org.apache.myfaces.shared.util;
 
 import java.util.Set;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  *

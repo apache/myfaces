@@ -21,7 +21,7 @@ package org.apache.myfaces.flow.impl;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  *

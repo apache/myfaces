@@ -24,12 +24,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.component.UIViewRoot;
-import javax.faces.event.PreDestroyCustomScopeEvent;
-import javax.faces.event.PreDestroyViewMapEvent;
-import javax.faces.event.ScopeContext;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.event.PreDestroyCustomScopeEvent;
+import jakarta.faces.event.PreDestroyViewMapEvent;
+import jakarta.faces.event.ScopeContext;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
 
 import org.apache.myfaces.config.annotation.LifecycleProvider;
 

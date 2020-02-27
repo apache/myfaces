@@ -28,8 +28,8 @@ import java.net.URLStreamHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
 /**
@@ -43,7 +43,7 @@ public final class Resource
     protected final static Logger log = Logger.getLogger(Resource.class.getName());
 
     /**
-     * Get an URL of an internal resource. First, {@link javax.faces.context.ExternalContext#getResource(String)} is
+     * Get an URL of an internal resource. First, {@link ExternalContext#getResource(String)} is
      * checked for an non-null URL return value. In the case of a null return value (as it is the case for Weblogic 8.1
      * for a packed war), a URL with a special URL handler is constructed, which can be used for <em>opening</em> a
      * serlvet resource later. Internally, this special URL handler will call

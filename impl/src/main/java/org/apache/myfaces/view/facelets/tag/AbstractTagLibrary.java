@@ -26,23 +26,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.BehaviorConfig;
-import javax.faces.view.facelets.BehaviorHandler;
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.ConverterConfig;
-import javax.faces.view.facelets.ConverterHandler;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
-import javax.faces.view.facelets.ValidatorConfig;
-import javax.faces.view.facelets.ValidatorHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.BehaviorConfig;
+import jakarta.faces.view.facelets.BehaviorHandler;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.ConverterConfig;
+import jakarta.faces.view.facelets.ConverterHandler;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagHandler;
+import jakarta.faces.view.facelets.ValidatorConfig;
+import jakarta.faces.view.facelets.ValidatorHandler;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResouceWrapper;
@@ -146,7 +146,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
      * Add a ComponentHandler with the specified componentType and rendererType, aliased by the tag name.
      * 
      * See ComponentHandler
-     * See javax.faces.application.Application#createComponent(java.lang.String)
+     * See jakarta.faces.application.Application#createComponent(java.lang.String)
      * @param name
      *            name to use, "foo" would be &lt;my:foo /&gt;
      * @param componentType
@@ -188,8 +188,8 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /**
      * Add a ConvertHandler for the specified converterId
      * 
-     * See javax.faces.view.facelets.ConverterHandler
-     * See javax.faces.application.Application#createConverter(java.lang.String)
+     * See jakarta.faces.view.facelets.ConverterHandler
+     * See jakarta.faces.application.Application#createConverter(java.lang.String)
      * @param name
      *            name to use, "foo" would be &lt;my:foo /&gt;
      * @param converterId
@@ -203,9 +203,9 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /**
      * Add a ConvertHandler for the specified converterId of a TagHandler type
      * 
-     * See javax.faces.view.facelets.ConverterHandler
-     * See javax.faces.view.facelets.ConverterConfig
-     * See javax.faces.application.Application#createConverter(java.lang.String)
+     * See jakarta.faces.view.facelets.ConverterHandler
+     * See jakarta.faces.view.facelets.ConverterConfig
+     * See jakarta.faces.application.Application#createConverter(java.lang.String)
      * 
      * @param name
      *            name to use, "foo" would be &lt;my:foo /&gt;
@@ -222,8 +222,8 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /**
      * Add a ValidateHandler for the specified validatorId
      * 
-     * See javax.faces.view.facelets.ValidatorHandler
-     * See javax.faces.application.Application#createValidator(java.lang.String)
+     * See jakarta.faces.view.facelets.ValidatorHandler
+     * See jakarta.faces.application.Application#createValidator(java.lang.String)
      * 
      * @param name
      *            name to use, "foo" would be &lt;my:foo /&gt;
@@ -238,9 +238,9 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /**
      * Add a ValidateHandler for the specified validatorId
      * 
-     * See javax.faces.view.facelets.ValidatorHandler
-     * See javax.faces.view.facelets.ValidatorConfig
-     * See javax.faces.application.Application#createValidator(java.lang.String)
+     * See jakarta.faces.view.facelets.ValidatorHandler
+     * See jakarta.faces.view.facelets.ValidatorConfig
+     * See jakarta.faces.application.Application#createValidator(java.lang.String)
      * @param name
      *            name to use, "foo" would be &lt;my:foo /&gt;
      * @param validatorId
@@ -808,7 +808,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
                 Resource compositeComponentResource
                         = new CompositeResouceWrapper(compositeComponentResourceWrapped);
                 ComponentConfig componentConfig = new ComponentConfigWrapper(cfg,
-                        "javax.faces.NamingContainer", null);
+                        "jakarta.faces.NamingContainer", null);
 
                 return new CompositeComponentResourceTagHandler(componentConfig,
                                                                 compositeComponentResource);

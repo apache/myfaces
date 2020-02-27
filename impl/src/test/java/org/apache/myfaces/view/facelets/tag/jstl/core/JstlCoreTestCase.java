@@ -26,14 +26,14 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.el.ExpressionFactory;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlCommandButton;
-import javax.faces.component.html.HtmlForm;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlCommandButton;
+import jakarta.faces.component.html.HtmlForm;
+import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
@@ -43,7 +43,6 @@ import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.Employee;
 import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
-import org.apache.myfaces.view.facelets.util.FastWriter;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -80,13 +79,13 @@ public final class JstlCoreTestCase extends FaceletTestCase {
     protected void setupRenderers() throws Exception
     {
         renderKit.addRenderer(UIForm.COMPONENT_FAMILY,
-                "javax.faces.Form", new HtmlFormRenderer());
+                "jakarta.faces.Form", new HtmlFormRenderer());
         renderKit.addRenderer(HtmlCommandButton.COMPONENT_FAMILY,
-                "javax.faces.Button", new HtmlButtonRenderer());
+                "jakarta.faces.Button", new HtmlButtonRenderer());
         renderKit.addRenderer(HtmlInputText.COMPONENT_FAMILY,
-                "javax.faces.Text", new HtmlTextRenderer());
+                "jakarta.faces.Text", new HtmlTextRenderer());
         renderKit.addRenderer(HtmlOutputText.COMPONENT_FAMILY,
-                "javax.faces.Text", new HtmlTextRenderer());
+                "jakarta.faces.Text", new HtmlTextRenderer());
     }
     
     @Test

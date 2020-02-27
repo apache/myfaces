@@ -21,9 +21,9 @@ package org.apache.myfaces.shared.renderkit.html.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import javax.faces.FacesWrapper;
-import javax.faces.component.StateHolder;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.context.FacesContext;
 import javax.servlet.http.Part;
 
 public class HttpPartWrapper implements Part, FacesWrapper<Part>, StateHolder

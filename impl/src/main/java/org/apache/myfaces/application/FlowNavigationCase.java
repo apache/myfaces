@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.application;
 
-import javax.faces.application.NavigationCase;
-import javax.faces.application.NavigationCaseWrapper;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.NavigationCaseWrapper;
 
 /**
  * Wrapper that helps overriding toFlowDocumentId and fromOutcome, to build

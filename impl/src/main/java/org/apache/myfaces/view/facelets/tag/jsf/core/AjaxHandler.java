@@ -24,26 +24,26 @@ import java.util.List;
 import java.util.Map;
 
 import javax.el.MethodExpression;
-import javax.faces.application.ResourceHandler;
-import javax.faces.component.PartialStateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UniqueIdVendor;
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.event.AjaxBehaviorListener;
-import javax.faces.view.BehaviorHolderAttachedObjectHandler;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributeException;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagException;
-import javax.faces.view.facelets.TagHandler;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.component.PartialStateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UniqueIdVendor;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.AjaxBehaviorEvent;
+import jakarta.faces.event.AjaxBehaviorListener;
+import jakarta.faces.view.BehaviorHolderAttachedObjectHandler;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
+import jakarta.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
@@ -129,8 +129,8 @@ public class AjaxHandler extends TagHandler implements
      * 
      */
     @JSFFaceletAttribute(name = "listener", className = "javax.el.MethodExpression",
-            deferredMethodSignature = "public void m(javax.faces.event.AjaxBehaviorEvent evt) "
-                                      + "throws javax.faces.event.AbortProcessingException")
+            deferredMethodSignature = "public void m(jakarta.faces.event.AjaxBehaviorEvent evt) "
+                                      + "throws jakarta.faces.event.AbortProcessingException")
     private final TagAttribute _listener;
 
     /**
@@ -266,7 +266,7 @@ public class AjaxHandler extends TagHandler implements
     {
         // Register the standard ajax library on the current page in this way:
         //
-        // <h:outputScript name="jsf.js" library="javax.faces" target="head"/>
+        // <h:outputScript name="jsf.js" library="jakarta.faces" target="head"/>
         //
         // If no h:head component is in the page, we must anyway render the script inline,
         // so the only way to make sure we are doing this is add a outputScript component.
@@ -277,7 +277,7 @@ public class AjaxHandler extends TagHandler implements
         if (!facesContext.getAttributes().containsKey(STANDARD_JSF_AJAX_LIBRARY_LOADED))
         {
             UIComponent outputScript = facesContext.getApplication().
-                createComponent(facesContext, "javax.faces.Output", "javax.faces.resource.Script");
+                createComponent(facesContext, "jakarta.faces.Output", "jakarta.faces.resource.Script");
             outputScript.getAttributes().put(JSFAttr.NAME_ATTR, ResourceHandler.JSF_SCRIPT_RESOURCE_NAME);
             outputScript.getAttributes().put(JSFAttr.LIBRARY_ATTR, ResourceHandler.JSF_SCRIPT_LIBRARY_NAME);
             outputScript.getAttributes().put(JSFAttr.TARGET_ATTR, "head");

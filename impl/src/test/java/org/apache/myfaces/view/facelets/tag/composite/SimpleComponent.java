@@ -19,7 +19,7 @@
 package org.apache.myfaces.view.facelets.tag.composite;
 
 import javax.el.MethodExpression;
-import javax.faces.component.UINamingContainer;
+import jakarta.faces.component.UINamingContainer;
 
 public class SimpleComponent extends UINamingContainer
 {

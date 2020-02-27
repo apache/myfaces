@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.taglib.html;
 
-import javax.faces.component.html.HtmlForm;
+import jakarta.faces.component.html.HtmlForm;
 
 import org.apache.myfaces.el.LiteralValueExpression;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;

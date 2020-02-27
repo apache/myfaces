@@ -20,12 +20,12 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIOutput;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.convert.ConverterException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.convert.ConverterException;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
@@ -40,7 +40,7 @@ import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Input", type = "javax.faces.Hidden")
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Input", type = "jakarta.faces.Hidden")
 public class HtmlHiddenRenderer extends HtmlRenderer
 {
     @Override

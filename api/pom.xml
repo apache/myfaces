@@ -102,7 +102,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <configuration>
-                    <excludes>javax/faces/component/**/*.java</excludes>
+                    <excludes>jakarta/faces/component/**/*.java</excludes>
                 </configuration>
             </plugin>
 
@@ -136,7 +136,7 @@
                         <phase>process-resources</phase>
                         <configuration>
                             <descriptor>${basedir}/src/assembler/jsfscripts-uncompressed-compiler.xml</descriptor>
-                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
+                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/jakarta.faces/</outputDirectory>
                             <excludes>
                                 <exclude>**/myfaces/_impl/core/Impl.js</exclude>
                                 <exclude>**/myfaces/_impl/_util/*</exclude>
@@ -153,7 +153,7 @@
                         <phase>process-resources</phase>
                         <configuration>
                             <descriptor>${basedir}/src/assembler/jsfscripts-uncompressed-full-compiler.xml</descriptor>
-                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
+                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/jakarta.faces/</outputDirectory>
                             <excludes>
                                 <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
                                 <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
@@ -168,7 +168,7 @@
                         <phase>process-resources</phase>
                         <configuration>
                             <descriptor>${basedir}/src/assembler/jsfscripts-minimal-compiler.xml</descriptor>
-                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
+                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/jakarta.faces/</outputDirectory>
                             <excludes>
                                 <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
                                 <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
@@ -183,7 +183,7 @@
                         <phase>process-resources</phase>
                         <configuration>
                             <descriptor>${basedir}/src/assembler/jsfscripts-minimal-modern-compiler.xml</descriptor>
-                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/javax.faces/</outputDirectory>
+                            <outputDirectory>${basedir}/target/classes/META-INF/internal-resources/jakarta.faces/</outputDirectory>
                             <excludes>
                                 <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
                                 <exclude>**/myfaces/_impl/_util/_UnitTest.js</exclude>
@@ -244,7 +244,7 @@
                         <phase>process-resources</phase>
 
                         <configuration>
-                            <scripts>target/classes/META-INF/resources/javax.faces/</scripts>
+                            <scripts>target/classes/META-INF/resources/jakarta.faces/</scripts>
                             <excludes>
                                 <exclude>jsf-uncompressed.js</exclude>
                                 <exclude>jsf-uncompressed-full.js</exclude>
@@ -279,7 +279,7 @@
                         <phase>process-resources</phase>
 
                         <configuration>
-                            <scripts>target/classes/META-INF/internal-resources/javax.faces/</scripts>
+                            <scripts>target/classes/META-INF/internal-resources/jakarta.faces/</scripts>
                             <excludes>
                                 <exclude>jsf-uncompressed.js</exclude>
                                 <exclude>jsf-uncompressed-full.js</exclude>
@@ -293,7 +293,7 @@
                     <optimizationLevel>0</optimizationLevel>
                     <sourceDirectory>src/main/javascript</sourceDirectory>
                     <webappDirectory>${basedir}</webappDirectory>
-                    <outputDirectory>${basedir}/target/classes/META-INF/resources/javax.faces/</outputDirectory>
+                    <outputDirectory>${basedir}/target/classes/META-INF/resources/jakarta.faces/</outputDirectory>
                 </configuration>
             </plugin>
 
@@ -339,17 +339,17 @@
                     <sources>
                         <source>../../../../test/javascript/org/apache/myfaces/mockups/BrowserMockups.js</source>
                         <!--
-                        <source>javax/faces/_util/OpenAjax.js</source>
+                        <source>jakarta/faces/_util/OpenAjax.js</source>
                         -->
-                        <source>javax/faces/_util/_JSF2Utils.js</source>
-                        <source>javax/faces/ajax/Ajax.js</source>
+                        <source>jakarta/faces/_util/_JSF2Utils.js</source>
+                        <source>jakarta/faces/ajax/Ajax.js</source>
                         <source>../../../../test/javascript/org/apache/myfaces/test/_TestScenario.js</source>
                     </sources>
                     <testSourceDirectory>src/test/javascript/org/apache/myfaces</testSourceDirectory>
                     <reportsDirectory>target/surefire-reports</reportsDirectory>
                     <testSuites>
                         <testSuite>
-                            <name>javax.faces.Ajax</name>
+                            <name>jakarta.faces.Ajax</name>
                             <type>TESTSUITES</type>
                             <includes>
                                 <include>test/MockupTest.js</include>
@@ -417,7 +417,7 @@
                                     javax.servlet.jsp.jstl.sql;version="[1.1.2, 2.0.0)",
                                     javax.servlet.jsp.tagext;version="[2.1.0, 3.2)",
                                     org.apache.commons.logging;version="[1.1.1, 2.0.0)",
-                                    javax.faces.*;version="${project.version}"
+                                    jakarta.faces.*;version="${project.version}"
                                 </Import-Package>
                                 <Require-Bundle>
                                     org.apache.myfaces.core.impl;bundle-version="${parsedVersion.osgiVersion}"
@@ -522,7 +522,7 @@
                             <comparisonArtifacts>
                                 <comparisonArtifact>
                                     <groupId>org.glassfish</groupId>
-                                    <artifactId>javax.faces</artifactId>
+                                    <artifactId>jakarta.faces</artifactId>
                                     <version>2.3.0</version>
                                 </comparisonArtifact>
                             </comparisonArtifacts>
@@ -660,11 +660,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.myfaces.test</groupId>
-            <artifactId>myfaces-test23</artifactId>
         </dependency>
 
         <!-- easymock -->

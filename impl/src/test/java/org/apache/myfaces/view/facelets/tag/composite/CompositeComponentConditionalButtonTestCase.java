@@ -20,13 +20,11 @@
 package org.apache.myfaces.view.facelets.tag.composite;
 
 import javax.el.ExpressionFactory;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.UIViewRoot;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UIViewRoot;
 
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.bean.HelloWorld;
 import org.junit.Assert;

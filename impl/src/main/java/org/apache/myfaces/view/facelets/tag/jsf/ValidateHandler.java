@@ -22,17 +22,17 @@ import java.io.IOException;
 
 import javax.el.ELException;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.validator.Validator;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.MetaRuleset;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagException;
-import javax.faces.view.facelets.ValidatorConfig;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
+import jakarta.faces.view.facelets.ValidatorConfig;
 
 import org.apache.myfaces.view.facelets.tag.MetaTagHandlerImpl;
 
@@ -42,7 +42,7 @@ import org.apache.myfaces.view.facelets.tag.MetaTagHandlerImpl;
  * set/create Validator is the passed UIComponent's parent is null, signifying that it wasn't restored from an existing
  * tree.</p>
  * 
- * @deprecated use javax.faces.view.facelets.ValidatorHandler instead
+ * @deprecated use jakarta.faces.view.facelets.ValidatorHandler instead
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -73,8 +73,8 @@ public class ValidateHandler extends MetaTagHandlerImpl
 
     /**
      * 
-     * See javax.faces.view.facelets.FaceletHandler#apply(
-     *      javax.faces.view.facelets.FaceletContext, javax.faces.component.UIComponent)
+     * See jakarta.faces.view.facelets.FaceletHandler#apply(
+     *      jakarta.faces.view.facelets.FaceletContext, jakarta.faces.component.UIComponent)
      */
     public final void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException,
             FaceletException, ELException

@@ -19,14 +19,14 @@
 package org.apache.myfaces.view.facelets.tag.jsf.core;
 
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.convert.Converter;
-import javax.faces.view.facelets.ConverterConfig;
-import javax.faces.view.facelets.ConverterHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.MetaRuleset;
-import javax.faces.view.facelets.TagAttribute;
+import jakarta.faces.FacesException;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.view.facelets.ConverterConfig;
+import jakarta.faces.view.facelets.ConverterHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 
@@ -57,9 +57,9 @@ public final class ConvertDelegateHandler extends ConverterHandler
     /**
      * Uses the specified "converterId" to pull an instance from the Application
      * 
-     * See javax.faces.application.Application#createComponent(java.lang.String)
+     * See jakarta.faces.application.Application#createComponent(java.lang.String)
      * See org.apache.myfaces.view.facelets.tag.jsf.ConverterHandler#createConverter(
-     * javax.faces.view.facelets.FaceletContext)
+     * jakarta.faces.view.facelets.FaceletContext)
      */
     protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException
     {

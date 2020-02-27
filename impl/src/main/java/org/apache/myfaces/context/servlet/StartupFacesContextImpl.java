@@ -21,13 +21,13 @@ package org.apache.myfaces.context.servlet;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.PartialViewContext;
-import javax.faces.context.ResponseStream;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.PhaseId;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.context.ResponseStream;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.PhaseId;
 
 import org.apache.myfaces.context.ReleaseableExternalContext;
 

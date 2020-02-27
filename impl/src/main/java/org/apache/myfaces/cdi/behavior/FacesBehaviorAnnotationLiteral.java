@@ -20,7 +20,7 @@ package org.apache.myfaces.cdi.behavior;
 
 import java.util.Objects;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.component.behavior.FacesBehavior;
+import jakarta.faces.component.behavior.FacesBehavior;
 
 /**
  *

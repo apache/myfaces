@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.application.ProjectStage;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ProjectStage;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl;
-import org.apache.myfaces.test.mock.MockApplication20;
+import org.apache.myfaces.test.mock.MockApplication;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 
@@ -77,7 +77,7 @@ public class ManagedBeanResolverTest extends AbstractJsfTestCase
         super.setUp();
         
         // override MockApplication20 to get a ProjectStage
-        application = new MockApplication20() {
+        application = new MockApplication() {
 
             @Override
             public ProjectStage getProjectStage()

@@ -35,34 +35,34 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import javax.faces.FacesException;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIOutcomeTarget;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIParameter;
-import javax.faces.component.UISelectBoolean;
-import javax.faces.component.UISelectMany;
-import javax.faces.component.UISelectOne;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.behavior.ClientBehaviorHint;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.component.html.HtmlDataTable;
-import javax.faces.component.html.HtmlMessages;
-import javax.faces.component.html.HtmlPanelGrid;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitHint;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.convert.Converter;
-import javax.faces.model.SelectItem;
-import javax.faces.model.SelectItemGroup;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIOutcomeTarget;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.UISelectBoolean;
+import jakarta.faces.component.UISelectMany;
+import jakarta.faces.component.UISelectOne;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.behavior.ClientBehaviorHint;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlDataTable;
+import jakarta.faces.component.html.HtmlMessages;
+import jakarta.faces.component.html.HtmlPanelGrid;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.model.SelectItem;
+import jakarta.faces.model.SelectItemGroup;
 
 import org.apache.myfaces.shared.component.DisplayValueOnlyCapable;
 import org.apache.myfaces.shared.component.EscapeCapable;
@@ -1953,7 +1953,7 @@ public final class HtmlRendererUtils
         boolean submitting = false;
         
         // List<ClientBehavior>  attachedEventBehaviors is  99% _DeltaList created in
-        // javax.faces.component.UIComponentBase.addClientBehavior
+        // jakarta.faces.component.UIComponentBase.addClientBehavior
         if (attachedEventBehaviors instanceof RandomAccess)
         {
             for (int i = 0, size = attachedEventBehaviors.size(); i < size; i++)

@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.util;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.shared.util.ExternalContextUtils;
@@ -68,8 +68,8 @@ public class ContainerUtils
      * 
      * <p>
      * <strong>NOTICE</strong> This method is just a copy of
-     * {@link javax.faces.webapp.UIComponentTag#isValueReference(String)}, but it's required
-     * because the class UIComponentTag depends on a JSP 2.1 container 
+     * {@link jakarta.faces.webapp.UIComponentTag#isValueReference(String)}, but it's required
+     * because the class jakarta.faces.webapp.UIComponentTag depends on a JSP 2.1 container
      * (for example, it indirectly implements the interface JspIdConsumer)
      * and therefore internal classes shouldn't access this class. That's
      * also the reason why this method is inside the class ContainerUtils,

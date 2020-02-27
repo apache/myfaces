@@ -22,8 +22,8 @@ import org.apache.myfaces.shared.renderkit.JSFAttr;
 
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.webapp.UIComponentELTag;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.webapp.UIComponentELTag;
 
 public abstract class UIComponentELTagBase extends UIComponentELTag
 {

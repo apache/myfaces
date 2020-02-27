@@ -22,14 +22,14 @@ import java.io.Serializable;
 import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
-import javax.faces.webapp.UIComponentELTag;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.PhaseEvent;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.webapp.UIComponentELTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -74,7 +74,7 @@ public class PhaseListenerTag extends TagSupport
      * Value binding expression that evaluates to a PhaseListener.
      */
     @JSFJspAttribute(className="javax.el.ValueExpression",
-            deferredValueType="javax.faces.event.PhaseListener")
+            deferredValueType="jakarta.faces.event.PhaseListener")
     public void setBinding(ValueExpression binding)
     {
         this.binding = binding;
@@ -115,7 +115,7 @@ public class PhaseListenerTag extends TagSupport
         // JSF-Spec 1.2 9.4.9
         // If binding is set, call binding.getValue() to obtain a reference to the
         // PhaseListener instance. If there is no exception thrown, and binding.getValue()
-        // returned a non-null object that implements javax.faces.event.PhaseListener, register
+        // returned a non-null object that implements jakarta.faces.event.PhaseListener, register
         // it by calling addPhaseListener(). If there was an exception thrown, rethrow the
         // exception as a JspException.
 

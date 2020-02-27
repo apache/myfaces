@@ -21,9 +21,9 @@ package org.apache.myfaces.view.facelets.tag.composite;
 import java.beans.FeatureDescriptor;
 import java.util.Arrays;
 
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
  * TagAttribute utils for &lt;composite:xxx&gt; TagHandlers.

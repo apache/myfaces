@@ -22,13 +22,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
@@ -142,7 +142,7 @@ public class HtmlBodyRendererBase extends HtmlRenderer
         ResponseWriter writer = facesContext.getResponseWriter();
         UIViewRoot root = facesContext.getViewRoot();
         // Perf: use indexes for iteration over children,
-        // componentResources are javax.faces.component._ComponentChildrenList._ComponentChildrenList(UIComponent)  
+        // componentResources are jakarta.faces.component._ComponentChildrenList._ComponentChildrenList(UIComponent)
         List<UIComponent> componentResources = root.getComponentResources(facesContext,
                 HTML.BODY_TARGET);
         int childrenCount = componentResources.size();

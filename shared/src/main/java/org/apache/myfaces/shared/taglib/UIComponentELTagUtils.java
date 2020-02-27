@@ -23,19 +23,19 @@ import java.util.logging.Logger;
 import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
-import javax.faces.component.ActionSource2;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIGraphic;
-import javax.faces.component.UIParameter;
-import javax.faces.component.UISelectBoolean;
-import javax.faces.component.ValueHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.event.MethodExpressionActionListener;
-import javax.faces.event.MethodExpressionValueChangeListener;
-import javax.faces.validator.MethodExpressionValidator;
+import jakarta.faces.component.ActionSource2;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIGraphic;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.UISelectBoolean;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.event.MethodExpressionActionListener;
+import jakarta.faces.event.MethodExpressionValueChangeListener;
+import jakarta.faces.validator.MethodExpressionValidator;
 
 /**
  * @since 1.2

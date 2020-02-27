@@ -44,15 +44,15 @@ import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 
 import javax.el.ExpressionFactory;
-import javax.faces.application.Application;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PostConstructApplicationEvent;
-import javax.faces.event.PreDestroyApplicationEvent;
-import javax.faces.event.SystemEvent;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PostConstructApplicationEvent;
+import jakarta.faces.event.PreDestroyApplicationEvent;
+import jakarta.faces.event.SystemEvent;
 import javax.servlet.ServletContext;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -62,8 +62,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.application.ViewVisitOption;
-import javax.faces.push.PushContext;
+import jakarta.faces.application.ViewVisitOption;
+import jakarta.faces.push.PushContext;
 import javax.servlet.ServletRegistration;
 import javax.websocket.DeploymentException;
 import javax.websocket.server.ServerContainer;
@@ -422,7 +422,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         // clear UIViewParameter default renderer map
         try
         {
-            Class<?> c = Class.forName("javax.faces.component.UIViewParameter");
+            Class<?> c = Class.forName("jakarta.faces.component.UIViewParameter");
             Method m = c.getDeclaredMethod("releaseRenderer");
             m.setAccessible(true);
             m.invoke(null);
@@ -602,7 +602,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
 
     /**
      * The intention of this method is provide a point where CDI integration is done.
-     * Faces Flow and javax.faces.view.ViewScope requires CDI in order to work, so
+     * Faces Flow and jakarta.faces.view.ViewScope requires CDI in order to work, so
      * this method should set a BeanManager instance on application map under
      * the key "oam.cdi.BEAN_MANAGER_INSTANCE". The default implementation look on
      * ServletContext first and then use JNDI.

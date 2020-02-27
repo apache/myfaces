@@ -19,18 +19,15 @@
 package org.apache.myfaces.view.facelets.tag.ui;
 
 import javax.el.ExpressionFactory;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.context.ResponseWriter;
 
-import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.util.FastWriter;
 import org.junit.Assert;
 import org.junit.Test;
@@ -71,7 +68,7 @@ public class TestUserTags extends FaceletTestCase {
     protected void setupRenderers() throws Exception
     {
         renderKit.addRenderer(UIOutput.COMPONENT_FAMILY,
-                "javax.faces.Text", new HtmlTextRenderer());
+                "jakarta.faces.Text", new HtmlTextRenderer());
     }
     
     @Test

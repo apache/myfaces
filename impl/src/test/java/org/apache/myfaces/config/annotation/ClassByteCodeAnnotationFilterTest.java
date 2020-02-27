@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.faces.bean.ManagedBean;
+import jakarta.faces.bean.ManagedBean;
 
 import junit.framework.TestCase;
 

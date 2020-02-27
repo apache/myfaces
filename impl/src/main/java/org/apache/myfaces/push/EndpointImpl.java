@@ -24,9 +24,9 @@ import java.io.Serializable;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.event.WebsocketEvent;
-import javax.faces.event.WebsocketEvent.Closed;
-import javax.faces.event.WebsocketEvent.Opened;
+import jakarta.faces.event.WebsocketEvent;
+import jakarta.faces.event.WebsocketEvent.Closed;
+import jakarta.faces.event.WebsocketEvent.Opened;
 import javax.websocket.CloseReason;
 import javax.websocket.CloseReason.CloseCodes;
 import javax.websocket.Endpoint;
@@ -39,7 +39,7 @@ import javax.websocket.Session;
 public class EndpointImpl extends Endpoint
 {
 
-    public static final String JAVAX_FACES_PUSH_PATH = "/javax.faces.push/{channel}";
+    public static final String JAVAX_FACES_PUSH_PATH = "/jakarta.faces.push/{channel}";
 
     public static final String PUSH_CHANNEL_PARAMETER = "channel";
     

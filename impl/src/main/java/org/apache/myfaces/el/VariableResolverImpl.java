@@ -21,10 +21,10 @@ package org.apache.myfaces.el;
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ValueExpression;
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.VariableResolver;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.VariableResolver;
 
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver;
 import org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope;

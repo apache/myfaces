@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.SwitchCase;
-import javax.faces.flow.SwitchNode;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.SwitchCase;
+import jakarta.faces.flow.SwitchNode;
 
 /**
  *

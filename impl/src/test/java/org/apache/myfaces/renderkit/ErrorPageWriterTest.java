@@ -21,9 +21,8 @@ package org.apache.myfaces.renderkit;
 import java.io.StringWriter;
 
 import javax.el.ValueExpression;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlOutputText;
-import javax.validation.constraints.AssertTrue;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlOutputText;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

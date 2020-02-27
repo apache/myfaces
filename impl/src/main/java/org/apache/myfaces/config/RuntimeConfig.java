@@ -34,10 +34,10 @@ import java.util.logging.Logger;
 
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
-import javax.faces.component.search.SearchKeywordResolver;
-import javax.faces.context.ExternalContext;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
+import jakarta.faces.component.search.SearchKeywordResolver;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.el.PropertyResolver;
+import jakarta.faces.el.VariableResolver;
 
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.FaceletsProcessing;

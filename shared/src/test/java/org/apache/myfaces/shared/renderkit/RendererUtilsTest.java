@@ -22,16 +22,16 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import javax.el.ELContext;
-import javax.faces.application.Application;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIPanel;
-import javax.faces.component.html.HtmlGraphicImage;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.html.HtmlGraphicImage;
+import jakarta.faces.context.FacesContext;
 
 import junit.framework.Assert;
 
@@ -64,7 +64,7 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
 
 	String resourceName = "picture.gif";
 
-	String requestPath = "/somePrefix/faces/javax.faces.resource/picture.gif?ln=\"images\"";
+	String requestPath = "/somePrefix/faces/jakarta.faces.resource/picture.gif?ln=\"images\"";
 
 	// a Component instance:
 	HtmlGraphicImage graphicImage = new HtmlGraphicImage();

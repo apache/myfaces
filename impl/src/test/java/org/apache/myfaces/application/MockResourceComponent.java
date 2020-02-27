@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.application;
 
-import javax.faces.component.UINamingContainer;
+import jakarta.faces.component.UINamingContainer;
 
 /**
  * Test component for ApplicationImplJsfTest.testCreateComponentFromResource()

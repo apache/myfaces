@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.application;
 
-import javax.faces.FacesWrapper;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.context.FacesContext;
 
 /**
  * @deprecated Use org.apache.myfaces.spi.StateCacheProvider instead

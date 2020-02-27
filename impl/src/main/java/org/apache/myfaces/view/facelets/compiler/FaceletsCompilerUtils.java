@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.compiler;
 
-import javax.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagConfig;
 
 /**
  * Utility class for facelets (which need access to the compiler package).

@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf.html;
 
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributes;
-import javax.faces.view.facelets.TagDecorator;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributes;
+import jakarta.faces.view.facelets.TagDecorator;
 
 import org.apache.myfaces.view.facelets.tag.TagAttributesImpl;
 

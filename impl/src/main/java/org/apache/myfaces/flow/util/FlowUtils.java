@@ -19,8 +19,8 @@
 package org.apache.myfaces.flow.util;
 
 import java.util.List;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.Flow;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
 import org.apache.myfaces.flow.FlowHandlerImpl;
 import org.apache.myfaces.flow.FlowReference;
 

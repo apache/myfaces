@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.application.viewstate.token;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  *

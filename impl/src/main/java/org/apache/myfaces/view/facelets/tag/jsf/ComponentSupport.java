@@ -26,16 +26,16 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.faces.FacesException;
-import javax.faces.component.NamingContainer;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.UniqueIdVendor;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributeException;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.UniqueIdVendor;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
 
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.ComponentState;
@@ -82,7 +82,7 @@ public final class ComponentSupport
     /**
      * The UIPanel components, which are dynamically generated to serve as a container for
      * facets with multiple non panel children, are marked with this attribute.
-     * This constant is duplicate in javax.faces.webapp.UIComponentClassicTagBase
+     * This constant is duplicate in jakarta.faces.webapp.UIComponentClassicTagBase
      */
     public final static String FACET_CREATED_UIPANEL_MARKER = "oam.vf.createdUIPanel";
 
@@ -570,7 +570,7 @@ public final class ComponentSupport
     /**
      * Create a new UIPanel for the use as a dynamically 
      * created container for multiple children in a facet.
-     * Duplicate in javax.faces.webapp.UIComponentClassicTagBase.
+     * Duplicate in jakarta.faces.webapp.UIComponentClassicTagBase.
      * @param facesContext
      * @return
      */

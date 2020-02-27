@@ -20,15 +20,15 @@ package org.apache.myfaces.renderkits;
 
 import java.io.StringWriter;
 
-import javax.faces.FactoryFinder;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
-import org.apache.myfaces.test.mock.MockFacesContext12;
+import org.apache.myfaces.test.mock.MockFacesContext;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 
 /**
@@ -56,7 +56,7 @@ public class OwnRenderkitTest extends AbstractJsfTestCase {
 
         writer = new MockResponseWriter(new StringWriter(), null, null);
         facesContext.setResponseWriter(writer);
-        MockFacesContext12.getCurrentInstance();
+        MockFacesContext.getCurrentInstance();
 
         facesContext.getViewRoot().setRenderKitId("OWN_BASIC");
         facesContext.getRenderKit().addRenderer(

@@ -20,13 +20,11 @@ package org.apache.myfaces.view.facelets.tag.composite;
 
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.UIViewRoot;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UIViewRoot;
 
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.junit.Assert;
 import org.junit.Test;
@@ -46,7 +44,7 @@ public class CompositeComponentMethodExpressionTestCase extends FaceletTestCase
     protected void setUpServletObjects() throws Exception
     {
         super.setUpServletObjects();
-        servletContext.addInitParameter("javax.faces.FACELETS_LIBRARIES", "/test-facelet.taglib.xml");
+        servletContext.addInitParameter("jakarta.faces.FACELETS_LIBRARIES", "/test-facelet.taglib.xml");
     }
     
     @Override

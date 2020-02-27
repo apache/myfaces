@@ -73,7 +73,7 @@ $baseContent
 #else
               <xs:documentation><![CDATA[]]></xs:documentation>
 #end
-#if ($property.isMethodExpression() || $property.isMethodBinding())
+#if ($property.isMethodExpression() || $property.className == "jakarta.faces.el.MethodBinding")
 #if ($property.getMethodBindingSignature())
 #set ($sig = $property.getMethodBindingSignature())
               <xs:documentation><![CDATA[Deferred Method Signature: $sig.returnType myMethod( $sig.parameterTypesAsString )]]></xs:documentation>

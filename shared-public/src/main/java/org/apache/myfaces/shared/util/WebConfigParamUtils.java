@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.shared.util;
 
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
 
 /**
  * Utility class to handle web config parameters

@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf.html;
 
-import javax.faces.component.UIOutput;
+import jakarta.faces.component.UIOutput;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
@@ -26,7 +26,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 /**
  * TODO: DOCUMENT ME!
  * <p>
- * This tag is backed using a javax.faces.component.UIOutput component instance.
+ * This tag is backed using a jakarta.faces.component.UIOutput component instance.
  * In other words, instances of this component class are created when it is resolved
  * a Resource annotation, so there is no concrete class or specific tag handler for it,
  * but there exists a concrete renderer for it.
@@ -34,7 +34,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  */
 @JSFComponent(
         configExcluded=true,
-        defaultRendererType="javax.faces.resource.Script")
+        defaultRendererType="jakarta.faces.resource.Script")
 abstract class _HtmlOutputScript extends UIOutput
 {
 

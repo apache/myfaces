@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.tag;
 
-import javax.faces.view.facelets.Metadata;
-import javax.faces.view.facelets.MetadataTarget;
-import javax.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
  * A potential rule for Metadata on the passed MetadataTarget
@@ -28,7 +28,7 @@ import javax.faces.view.facelets.TagAttribute;
  * See org.apache.myfaces.view.facelets.tag.Metadata
  * See org.apache.myfaces.view.facelets.tag.MetadataTarget
  * 
- * @deprecated use javax.faces.view.facelets.MetaRule 
+ * @deprecated use jakarta.faces.view.facelets.MetaRule
  * @author Jacob Hookom
  * @version $Id$
  */

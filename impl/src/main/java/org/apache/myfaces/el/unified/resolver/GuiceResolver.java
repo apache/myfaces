@@ -22,9 +22,9 @@ package org.apache.myfaces.el.unified.resolver;
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.config.element.ManagedBean;
 

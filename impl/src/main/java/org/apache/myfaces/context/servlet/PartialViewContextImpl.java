@@ -29,26 +29,26 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FactoryFinder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewParameter;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitContextFactory;
-import javax.faces.component.visit.VisitHint;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialResponseWriter;
-import javax.faces.context.PartialViewContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.PhaseId;
-import javax.faces.lifecycle.ClientWindow;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.view.ViewMetadata;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewParameter;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitContextFactory;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialResponseWriter;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.view.ViewMetadata;
 import org.apache.myfaces.application.ResourceHandlerImpl;
 
 import org.apache.myfaces.context.PartialResponseWriterImpl;
@@ -62,7 +62,7 @@ public class PartialViewContextImpl extends PartialViewContext
 
     private static final String FACES_REQUEST = "Faces-Request";
     private static final String PARTIAL_AJAX = "partial/ajax";
-    private static final String PARTIAL_AJAX_REQ = "javax.faces.partial.ajax";
+    private static final String PARTIAL_AJAX_REQ = "jakarta.faces.partial.ajax";
     private static final String PARTIAL_PROCESS = "partial/process";
 
     /**
@@ -126,7 +126,7 @@ public class PartialViewContextImpl extends PartialViewContext
             _ajaxRequest = (requestType != null && PARTIAL_AJAX.equals(requestType));
             String reqParmamterPartialAjax = _facesContext.getExternalContext().
                     getRequestParameterMap().get(PARTIAL_AJAX_REQ);
-            //jsdoc reference in an ajax request the javax.faces.partial.ajax must be set as ajax parameter
+            //jsdoc reference in an ajax request the jakarta.faces.partial.ajax must be set as ajax parameter
             //the other one is Faces-Request == partial/ajax which is basically the same
             _ajaxRequest = _ajaxRequest || reqParmamterPartialAjax != null;
         }
@@ -252,7 +252,7 @@ public class PartialViewContextImpl extends PartialViewContext
                         tempList.add(clientId);
                     }
                 }
-                // The "javax.faces.source" parameter needs to be added to the list of
+                // The "jakarta.faces.source" parameter needs to be added to the list of
                 // execute ids if missing (otherwise, we'd never execute an action associated
                 // with, e.g., a button).
 
@@ -502,7 +502,7 @@ public class PartialViewContextImpl extends PartialViewContext
                     }
                     else
                     {
-                        // In JSF 2.3 it was added javax.faces.Resource as an update target to add scripts or
+                        // In JSF 2.3 it was added jakarta.faces.Resource as an update target to add scripts or
                         // stylesheets inside <head> tag. In that sense 
                         // org.apache.myfaces.STRICT_JSF_2_REFRESH_TARGET_AJAX web config param, which was a 
                         // workaround for dynamic refresh can be deprecated.
@@ -623,12 +623,12 @@ public class PartialViewContextImpl extends PartialViewContext
             List<UIComponent> list = rvc.getRenderTargetComponentList(target);
             if (list != null && !list.isEmpty())
             {
-                writer.startUpdate("javax.faces.Resource");
+                writer.startUpdate("jakarta.faces.Resource");
                 for (UIComponent component : list)
                 {
                     boolean resourceRendered = false;
-                    if ("javax.faces.resource.Script".equals(component.getRendererType()) ||
-                        "javax.faces.resource.Stylesheet".equals(component.getRendererType()))
+                    if ("jakarta.faces.resource.Script".equals(component.getRendererType()) ||
+                        "jakarta.faces.resource.Stylesheet".equals(component.getRendererType()))
                     {
                         String resourceName = (String) 
                                 component.getAttributes().get(JSFAttr.NAME_ATTR);

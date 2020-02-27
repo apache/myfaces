@@ -33,11 +33,11 @@
  */
 package ${component.packageName};
 
-#if ($component.className.startsWith("javax.faces.component.html"))
-import javax.faces.el.ValueBinding;
+#if ($component.className.startsWith("jakarta.faces.component.html"))
+import jakarta.faces.el.ValueBinding;
 #end
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 $utils.importTagClasses($component)
 
 #if ($component.isTemplate())
@@ -102,7 +102,7 @@ $innersource
 ## TODO: this condition should be checked for parent components
 ## and csv implements
 #if ($component.implements)
-#if ($component.implements == "javax.faces.component.behavior.ClientBehaviorHolder")
+#if ($component.implements == "jakarta.faces.component.behavior.ClientBehaviorHolder")
     static private final java.util.Collection<String> CLIENT_EVENTS_LIST = 
         java.util.Collections.unmodifiableCollection(
             java.util.Arrays.asList(
@@ -119,19 +119,19 @@ $innersource
 
     public java.util.Collection<String> getEventNames()
     {
-        return CLIENT_EVENTS_LIST;
+    return CLIENT_EVENTS_LIST;
     }
 
     @Override
-    public void addClientBehavior(String eventName, javax.faces.component.behavior.ClientBehavior behavior)
+    public void addClientBehavior(String eventName, jakarta.faces.component.behavior.ClientBehavior behavior)
     {
-        super.addClientBehavior(eventName, behavior);
-        _CommonEventConstants.markEvent(this, eventName);
+    super.addClientBehavior(eventName, behavior);
+    _CommonEventConstants.markEvent(this, eventName);
     }
-#end
-#end
-#if ($component.defaultEventName)
-#if ($component.defaultEventName != "")
+    #end
+    #end
+    #if ($component.defaultEventName)
+        #if ($component.defaultEventName != "")
 
     //ClientBehaviorHolder default: $component.defaultEventName
     public String getDefaultEventName()
@@ -139,10 +139,10 @@ $innersource
         return "$component.defaultEventName";
     }
 #end
-#end
+    #end
 
-#set ($propertyList = ${component.propertyComponentList})
-    
+    #set ($propertyList = ${component.propertyComponentList})
+
 #foreach( $property in $propertyList )
 #set ($field = $property.fieldName)
 #set ($type = $utils.getClassFromFullClass($property.className))
@@ -326,7 +326,7 @@ $innersource
 #end
 #end
 
-#if ($component.className.startsWith("javax.faces.component.html") && $overrideSetValueExpression)
+    #if ($component.className.startsWith("jakarta.faces.component.html") && $overrideSetValueExpression)
     public void setValueBinding(String name, ValueBinding binding)
     {
         super.setValueBinding(name, binding);
@@ -340,15 +340,15 @@ $innersource
     }
 #end
 
-#if ($component.className.startsWith("javax.faces.component.html"))
+    #if ($component.className.startsWith("jakarta.faces.component.html"))
     protected enum PropertyKeys
     {
-#else
+    #else
     enum PropertyKeys
     {
-#end
-#set ($comma = "")
-#set ($addc = "false")
+    #end
+    #set ($comma = "")
+    #set ($addc = "false")
 #foreach( $property in $propertyList )
 #if ($property.name == "for")
 #set ($addc = "true")
@@ -380,7 +380,7 @@ $innersource
 #end
 #set($comma = ",")
 #end
-#if ("true" == $addc)
+    #if ("true" == $addc)
         ;
         String c;
         
@@ -401,7 +401,7 @@ $innersource
 #end
     }
 
-#set ($primitiveCount = 1) ## $propertyList.size() + 1 
+    #set ($primitiveCount = 1) ## $propertyList.size() + 1
 #foreach( $property in $propertyList )
 #if ($property.isPartialStateHolder())
 #set ($primitiveCount = $primitiveCount + 1)
@@ -410,9 +410,9 @@ $innersource
 #end
 #end
 #end
-## saveState and restoreState methods only has sense if we have properties
-## that does not use StateHelper class.
-#if ($primitiveCount > 1)
+    ## saveState and restoreState methods only has sense if we have properties
+    ## that does not use StateHelper class.
+    #if ($primitiveCount > 1)
 
     public void markInitialState()
     {
@@ -559,4 +559,4 @@ $innersource
 #end
     }
 #end
-}
+    }

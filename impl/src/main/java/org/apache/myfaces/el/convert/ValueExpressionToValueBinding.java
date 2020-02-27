@@ -20,18 +20,19 @@ package org.apache.myfaces.el.convert;
 
 import javax.el.ELException;
 import javax.el.ValueExpression;
-import javax.faces.component.StateHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyNotFoundException;
-import javax.faces.el.ValueBinding;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.PropertyNotFoundException;
+import jakarta.faces.el.ValueBinding;
 
 import org.apache.myfaces.shared.util.ClassUtils;
 
 /**
  * Converter for legacy ValueBinding objects. See JSF 1.2 section 5.8.3
  * 
- * ATTENTION: If you make changes to this class, treat javax.faces.component.ValueExpressionToValueBinding accordingly.
+ * ATTENTION: If you make changes to this class,
+ * treat jakarta.faces.component.ValueExpressionToValueBinding accordingly.
  * 
  * See ValueExpressionToValueBinding
  * 
@@ -139,7 +140,7 @@ public class ValueExpressionToValueBinding extends ValueBinding implements State
         }
         catch (javax.el.PropertyNotFoundException e)
         {
-            throw new javax.faces.el.PropertyNotFoundException(e);
+            throw new PropertyNotFoundException(e);
         }
         catch (ELException e)
         {
@@ -157,7 +158,7 @@ public class ValueExpressionToValueBinding extends ValueBinding implements State
         }
         catch (javax.el.PropertyNotFoundException e)
         {
-            throw new javax.faces.el.PropertyNotFoundException(e);
+            throw new PropertyNotFoundException(e);
         }
         catch (ELException e)
         {
@@ -175,7 +176,7 @@ public class ValueExpressionToValueBinding extends ValueBinding implements State
         }
         catch (javax.el.PropertyNotFoundException e)
         {
-            throw new javax.faces.el.PropertyNotFoundException(e);
+            throw new PropertyNotFoundException(e);
         }
         catch (ELException e)
         {
@@ -192,7 +193,7 @@ public class ValueExpressionToValueBinding extends ValueBinding implements State
         }
         catch (javax.el.PropertyNotFoundException e)
         {
-            throw new javax.faces.el.PropertyNotFoundException(e);
+            throw new PropertyNotFoundException(e);
         }
         catch (ELException e)
         {

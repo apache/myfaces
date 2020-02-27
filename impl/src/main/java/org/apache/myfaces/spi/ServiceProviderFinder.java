@@ -21,8 +21,8 @@ package org.apache.myfaces.spi;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
-import javax.faces.FactoryFinder;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.ExternalContext;
 
 /**
  * This class provides an interface to override SPI handling done by

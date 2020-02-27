@@ -24,11 +24,11 @@ import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyResolver;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.PropertyResolver;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.List;
@@ -88,7 +88,7 @@ public final class PropertyResolverToELResolver extends ELResolver
                 FacesContext.getCurrentInstance().getELContext().isPropertyResolved());
 
         }
-        catch (javax.faces.el.PropertyNotFoundException e)
+        catch (jakarta.faces.el.PropertyNotFoundException e)
         {
             context.setPropertyResolved(false);
             throw new PropertyNotFoundException(e.getMessage(), e);
@@ -136,7 +136,7 @@ public final class PropertyResolverToELResolver extends ELResolver
                 FacesContext.getCurrentInstance().getELContext().isPropertyResolved());
             return result;
         }
-        catch (javax.faces.el.PropertyNotFoundException e)
+        catch (jakarta.faces.el.PropertyNotFoundException e)
         {
             context.setPropertyResolved(false);
             throw new PropertyNotFoundException(e.getMessage(), e);
@@ -185,7 +185,7 @@ public final class PropertyResolverToELResolver extends ELResolver
 
             return value;
         }
-        catch (javax.faces.el.PropertyNotFoundException e)
+        catch (jakarta.faces.el.PropertyNotFoundException e)
         {
             context.setPropertyResolved(false);
             throw new PropertyNotFoundException(e.getMessage(), e);
@@ -234,7 +234,7 @@ public final class PropertyResolverToELResolver extends ELResolver
 
             return value;
         }
-        catch (javax.faces.el.PropertyNotFoundException e)
+        catch (jakarta.faces.el.PropertyNotFoundException e)
         {
             context.setPropertyResolved(false);
             throw new PropertyNotFoundException(e.getMessage(), e);

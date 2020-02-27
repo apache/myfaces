@@ -26,7 +26,7 @@ import org.apache.myfaces.shared.util.ClassUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;

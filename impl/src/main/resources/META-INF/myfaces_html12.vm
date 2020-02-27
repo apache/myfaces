@@ -60,7 +60,7 @@ $baseContent
 #if ($property.isRequired())
          <required>$property.isRequired()</required>
 #end
-#if ($property.isMethodExpression() || $property.isMethodBinding())
+#if ($property.isMethodExpression() || $property.className == "jakarta.faces.el.MethodBinding")
 #if ($property.getMethodBindingSignature())
         <deferred-method>
 #set ($sig = $property.getMethodBindingSignature())

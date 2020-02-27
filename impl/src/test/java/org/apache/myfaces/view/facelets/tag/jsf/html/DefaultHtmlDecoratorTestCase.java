@@ -19,33 +19,33 @@
 package org.apache.myfaces.view.facelets.tag.jsf.html;
 
 import java.io.StringWriter;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlBody;
-import javax.faces.component.html.HtmlCommandButton;
-import javax.faces.component.html.HtmlCommandLink;
-import javax.faces.component.html.HtmlGraphicImage;
-import javax.faces.component.html.HtmlHead;
-import javax.faces.component.html.HtmlInputFile;
-import javax.faces.component.html.HtmlInputHidden;
-import javax.faces.component.html.HtmlInputSecret;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlInputTextarea;
-import javax.faces.component.html.HtmlOutcomeTargetButton;
-import javax.faces.component.html.HtmlOutcomeTargetLink;
-import javax.faces.component.html.HtmlOutputLabel;
-import javax.faces.component.html.HtmlOutputLink;
-import javax.faces.component.html.HtmlSelectBooleanCheckbox;
-import javax.faces.component.html.HtmlSelectManyListbox;
-import javax.faces.component.html.HtmlSelectOneListbox;
-import javax.faces.context.ResponseWriter;
-import javax.faces.view.Location;
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagDecorator;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlBody;
+import jakarta.faces.component.html.HtmlCommandButton;
+import jakarta.faces.component.html.HtmlCommandLink;
+import jakarta.faces.component.html.HtmlGraphicImage;
+import jakarta.faces.component.html.HtmlHead;
+import jakarta.faces.component.html.HtmlInputFile;
+import jakarta.faces.component.html.HtmlInputHidden;
+import jakarta.faces.component.html.HtmlInputSecret;
+import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.component.html.HtmlInputTextarea;
+import jakarta.faces.component.html.HtmlOutcomeTargetButton;
+import jakarta.faces.component.html.HtmlOutcomeTargetLink;
+import jakarta.faces.component.html.HtmlOutputLabel;
+import jakarta.faces.component.html.HtmlOutputLink;
+import jakarta.faces.component.html.HtmlSelectBooleanCheckbox;
+import jakarta.faces.component.html.HtmlSelectManyListbox;
+import jakarta.faces.component.html.HtmlSelectOneListbox;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.view.Location;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagDecorator;
 import org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
@@ -113,12 +113,12 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         {
             if (child instanceof UIOutput)
             {
-                if ("javax.faces.resource.Script".equals(child.getRendererType()))
+                if ("jakarta.faces.resource.Script".equals(child.getRendererType()))
                 {
                     Assert.assertEquals("osc", child.getId());
                     scriptsFound++;
                 }
-                if ("javax.faces.resource.Stylesheet".equals(child.getRendererType()))
+                if ("jakarta.faces.resource.Stylesheet".equals(child.getRendererType()))
                 {
                     Assert.assertEquals("osh", child.getId());
                     linksFound++;
@@ -127,7 +127,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         }
         for (UIComponent child : root.getComponentResources(facesContext, "head"))
         {
-            if ("javax.faces.resource.Stylesheet".equals(child.getRendererType()))
+            if ("jakarta.faces.resource.Stylesheet".equals(child.getRendererType()))
             {
                 Assert.assertEquals("osh", child.getId());
                 linksFound++;
@@ -322,7 +322,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
 
         UIComponent box1 = root.findComponent("myForm:box1");
         Assert.assertNotNull(box1);
-        Assert.assertEquals(box1.getRendererType(), "javax.faces.passthrough.Element");
+        Assert.assertEquals(box1.getRendererType(), "jakarta.faces.passthrough.Element");
         
         //StringWriter sw = new StringWriter();
         //MockResponseWriter mrw = new MockResponseWriter(sw);
@@ -371,7 +371,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         //       pt:data_up="Going Up">Hello World!</input>
         UIComponent input2 = root.findComponent("myForm:box2");
         Assert.assertFalse(input2 instanceof UIInput);
-        Assert.assertEquals(input2.getRendererType(), "javax.faces.passthrough.Element");
+        Assert.assertEquals(input2.getRendererType(), "jakarta.faces.passthrough.Element");
         
         Assert.assertEquals(input2.getPassThroughAttributes().get("placeholder"), "Enter text");
         //Assert.assertEquals(input2.getAttributes().get("placeholder"), "Enter text");
@@ -400,7 +400,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
         //</jsf:element>
         UIComponent input3 = root.findComponent("myForm:box3");
         Assert.assertFalse(input3 instanceof UIInput);
-        Assert.assertEquals(input3.getRendererType(), "javax.faces.passthrough.Element");     
+        Assert.assertEquals(input3.getRendererType(), "jakarta.faces.passthrough.Element");
 
         Assert.assertEquals(input3.getAttributes().get("placeholder"), "Enter text");
         Assert.assertNull(input3.getPassThroughAttributes().get("placeholder"));
@@ -586,7 +586,7 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
             new HtmlRenderedAttr("onclick", 
                     "jsf.util.chain(this, event,'alert(\\'hello\\')', "
                     + "'jsf.ajax.request(this,event,{render:\\'myForm:box5 \\',"
-                            + "\\'javax.faces.behavior.event\\':\\'click\\'})');"),
+                            + "\\'jakarta.faces.behavior.event\\':\\'click\\'})');"),
         };
         
         HtmlCheckAttributesUtil.checkRenderedAttributes(attrs, sw.toString());
@@ -634,6 +634,6 @@ public class DefaultHtmlDecoratorTestCase extends FaceletTestCase
             Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, sw.toString()));
         }
         Assert.assertTrue(sw.toString().contains("<img "));
-        Assert.assertTrue(sw.toString().contains("javax.faces.resource/external.png"));
+        Assert.assertTrue(sw.toString().contains("jakarta.faces.resource/external.png"));
     }      
 }

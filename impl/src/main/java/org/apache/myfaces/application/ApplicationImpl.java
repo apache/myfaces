@@ -45,53 +45,53 @@ import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.FacesWrapper;
-import javax.faces.application.Application;
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceDependencies;
-import javax.faces.application.ResourceDependency;
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIComponentBase;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.behavior.Behavior;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorBase;
-import javax.faces.component.behavior.FacesBehavior;
-import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchKeywordResolver;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.DateTimeConverter;
-import javax.faces.convert.FacesConverter;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.ReferenceSyntaxException;
-import javax.faces.el.ValueBinding;
-import javax.faces.el.VariableResolver;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ActionListener;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.event.ListenerFor;
-import javax.faces.event.ListenersFor;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-import javax.faces.event.SystemEventListenerHolder;
-import javax.faces.flow.FlowHandler;
-import javax.faces.render.ClientBehaviorRenderer;
-import javax.faces.render.RenderKit;
-import javax.faces.render.Renderer;
-import javax.faces.render.RendererWrapper;
-import javax.faces.validator.FacesValidator;
-import javax.faces.validator.Validator;
-import javax.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.FacesException;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceDependencies;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.behavior.Behavior;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorBase;
+import jakarta.faces.component.behavior.FacesBehavior;
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.component.search.SearchKeywordResolver;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.DateTimeConverter;
+import jakarta.faces.convert.FacesConverter;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.PropertyResolver;
+import jakarta.faces.el.ReferenceSyntaxException;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.el.VariableResolver;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.ListenersFor;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+import jakarta.faces.event.SystemEventListenerHolder;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.render.ClientBehaviorRenderer;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.render.RendererWrapper;
+import jakarta.faces.validator.FacesValidator;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.view.ViewDeclarationLanguage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -168,7 +168,7 @@ public class ApplicationImpl extends Application
     @JSFWebConfigParam(defaultValue="Production",
             expectedValues="Development, Production, SystemTest, UnitTest",
             since="2.0")
-    private static final String PROJECT_STAGE_PARAM_NAME = "javax.faces.PROJECT_STAGE";
+    private static final String PROJECT_STAGE_PARAM_NAME = "jakarta.faces.PROJECT_STAGE";
 
     /**
      * Indicate if the classes associated to components, converters, validators or behaviors
@@ -257,7 +257,7 @@ public class ApplicationImpl extends Application
     private Map<Class<? extends Behavior>, Boolean> _cdiManagedBehaviorMap
             = new ConcurrentHashMap<Class<? extends Behavior>, Boolean>();
     
-    /** Value of javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE parameter */
+    /** Value of jakarta.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE parameter */
     private boolean _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = false; 
     
     private SearchExpressionHandler _searchExpressionHandler;
@@ -1298,7 +1298,7 @@ public class ApplicationImpl extends Application
 
         /*
          * Obtain a reference to the ViewDeclarationLanguage for this Application instance by calling
-         * ViewHandler.getViewDeclarationLanguage(javax.faces.context.FacesContext, java.lang.String), passing the
+         * ViewHandler.getViewDeclarationLanguage(jakarta.faces.context.FacesContext, java.lang.String), passing the
          * viewId found by calling UIViewRoot.getViewId() on the UIViewRoot in the argument FacesContext.
          */
         UIViewRoot view = context.getViewRoot();
@@ -1308,8 +1308,8 @@ public class ApplicationImpl extends Application
 
         /*
          * Obtain a reference to the composite component metadata for this composite component by calling
-         * ViewDeclarationLanguage.getComponentMetadata(javax.faces.context.FacesContext,
-         * javax.faces.application.Resource), passing the facesContext and componentResource arguments to this method.
+         * ViewDeclarationLanguage.getComponentMetadata(jakarta.faces.context.FacesContext,
+         * jakarta.faces.application.Resource), passing the facesContext and componentResource arguments to this method.
          * This version of JSF specification uses JavaBeans as the API to the component metadata.
          */
         BeanInfo metadata = vdl.getComponentMetadata(context, componentResource);
@@ -1340,8 +1340,8 @@ public class ApplicationImpl extends Application
         {
             /*
              * Otherwise, determine if a script based component for this Resource can be found by calling
-             * ViewDeclarationLanguage.getScriptComponentResource(javax.faces.context.FacesContext,
-             * javax.faces.application.Resource). If the result is non-null, and is a script written in one of the
+             * ViewDeclarationLanguage.getScriptComponentResource(jakarta.faces.context.FacesContext,
+             * jakarta.faces.application.Resource). If the result is non-null, and is a script written in one of the
              * languages listed in JSF 4.3 of the specification prose document, create a UIComponent instance from the
              * script resource.
              */
@@ -1419,7 +1419,7 @@ public class ApplicationImpl extends Application
 
                 /*
                  * If none of the previous steps have yielded a UIComponent instance, call
-                 * createComponent(java.lang.String) passing "javax.faces.NamingContainer" as the argument.
+                 * createComponent(java.lang.String) passing "jakarta.faces.NamingContainer" as the argument.
                  */
                 if (component == null)
                 {
@@ -1431,9 +1431,9 @@ public class ApplicationImpl extends Application
 
         /*
          * Call UIComponent.setRendererType(java.lang.String) on the UIComponent instance, passing
-         * "javax.faces.Composite" as the argument.
+         * "jakarta.faces.Composite" as the argument.
          */
-        component.setRendererType("javax.faces.Composite");
+        component.setRendererType("jakarta.faces.Composite");
 
         /*
          * Store the argument Resource in the attributes Map of the UIComponent under the key,
@@ -2012,7 +2012,7 @@ public class ApplicationImpl extends Application
         {
             Application application = context.getApplication();
             
-            // Create a UIOutput instance by passing javax.faces.Output. to 
+            // Create a UIOutput instance by passing jakarta.faces.Output. to
             // Application.createComponent(java.lang.String).
             UIOutput output = (UIOutput) application.createComponent(context, UIOutput.COMPONENT_TYPE, null);
             
@@ -2069,8 +2069,8 @@ public class ApplicationImpl extends Application
             else
             {
                 // Otherwise, if target is null, call 
-                // UIViewRoot.addComponentResource(javax.faces.context.FacesContext, 
-                // javax.faces.component.UIComponent), passing the UIOutput instance as the second argument.
+                // UIViewRoot.addComponentResource(jakarta.faces.context.FacesContext,
+                // jakarta.faces.component.UIComponent), passing the UIOutput instance as the second argument.
                 context.getViewRoot().addComponentResource(context, output);
             }
         }
@@ -2538,7 +2538,7 @@ public class ApplicationImpl extends Application
         // If this annotation is not present on the class in question, no action must be taken.
         if (annotation != null)
         {
-            // Create a UIOutput instance by passing javax.faces.Output. to
+            // Create a UIOutput instance by passing jakarta.faces.Output. to
             // Application.createComponent(java.lang.String).
             UIOutput output = (UIOutput) createComponent(context, UIOutput.COMPONENT_TYPE, null);
 
@@ -2607,8 +2607,9 @@ public class ApplicationImpl extends Application
             }
             else
             {
-                // Otherwise, if target is null, call UIViewRoot.addComponentResource(javax.faces.context.FacesContext,
-                // javax.faces.component.UIComponent), passing the UIOutput instance as the second argument.
+                // Otherwise, if target is null, call
+                // UIViewRoot.addComponentResource(jakarta.faces.context.FacesContext,
+                // jakarta.faces.component.UIComponent), passing the UIOutput instance as the second argument.
                 context.getViewRoot().addComponentResource(context, output);
             }
         }

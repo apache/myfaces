@@ -21,16 +21,16 @@ package org.apache.myfaces.view.facelets.tag.jsf.core;
 import java.util.TimeZone;
 
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.convert.Converter;
-import javax.faces.convert.DateTimeConverter;
-import javax.faces.view.facelets.ConverterConfig;
-import javax.faces.view.facelets.ConverterHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.MetaRuleset;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributeException;
+import jakarta.faces.FacesException;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.DateTimeConverter;
+import jakarta.faces.view.facelets.ConverterConfig;
+import jakarta.faces.view.facelets.ConverterHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
@@ -46,7 +46,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 @JSFFaceletTag(
         name = "f:convertDateTime",
         bodyContent = "empty", 
-        converterClass="javax.faces.convert.DateTimeConverter")
+        converterClass="jakarta.faces.convert.DateTimeConverter")
 public final class ConvertDateTimeHandler extends ConverterHandler
 {
 
@@ -80,7 +80,7 @@ public final class ConvertDateTimeHandler extends ConverterHandler
      * Returns a new DateTimeConverter
      * 
      * See DateTimeConverter
-     * See javax.faces.view.facelets.ConverterHandler#createConverter(javax.faces.view.facelets.FaceletContext)
+     * See jakarta.faces.view.facelets.ConverterHandler#createConverter(jakarta.faces.view.facelets.FaceletContext)
      */
     protected Converter createConverter(FaceletContext ctx) throws FacesException, ELException, FaceletException
     {
@@ -91,7 +91,7 @@ public final class ConvertDateTimeHandler extends ConverterHandler
     /**
      * Implements tag spec, see taglib documentation.
      * 
-     * See org.apache.myfaces.view.facelets.tag.ObjectHandler#setAttributes(javax.faces.view.facelets.FaceletContext,
+     * See org.apache.myfaces.view.facelets.tag.ObjectHandler#setAttributes(jakarta.faces.view.facelets.FaceletContext,
      * java.lang.Object)
      */
     public void setAttributes(FaceletContext ctx, Object obj)

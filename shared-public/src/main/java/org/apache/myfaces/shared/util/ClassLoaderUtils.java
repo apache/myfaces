@@ -39,7 +39,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 /**
  * Utility methods for accessing classes and resources using an appropriate

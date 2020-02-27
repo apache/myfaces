@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.application;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.application.viewstate.token.StateTokenProcessor;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
@@ -102,7 +102,7 @@ public abstract class StateCache<K, V>
      * 
      * @param facesContext
      * @param serializedView The state that will be used to derive the token returned.
-     * @return A token (usually encoded on javax.faces.ViewState input hidden field) that will be passed to 
+     * @return A token (usually encoded on jakarta.faces.ViewState input hidden field) that will be passed to
      *         ResponseStateManager.writeState or ResponseStateManager.getViewState to be 
      *         output to the client.
      */

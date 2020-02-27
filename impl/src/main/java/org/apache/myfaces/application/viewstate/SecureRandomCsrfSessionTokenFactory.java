@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.application.viewstate;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.myfaces.application.StateCache;

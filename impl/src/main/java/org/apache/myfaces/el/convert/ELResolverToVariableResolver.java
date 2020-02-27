@@ -21,9 +21,9 @@ package org.apache.myfaces.el.convert;
 import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.PropertyNotFoundException;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.VariableResolver;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.VariableResolver;
 
 /**
  * Provides ELResolver wrapper so that legacy apps which rely on a VariableResolver can still work.

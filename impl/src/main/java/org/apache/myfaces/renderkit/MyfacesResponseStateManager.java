@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.renderkit;
 
-import javax.faces.context.FacesContext;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.ResponseStateManager;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)

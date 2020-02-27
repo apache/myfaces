@@ -21,10 +21,10 @@ package org.apache.myfaces.application;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.NavigationCase;
-import javax.faces.application.NavigationHandler;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.ConfigurableNavigationHandler;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.context.FacesContext;
 
 /**
  * This class is used as a double wrapper for NavigationHandler

@@ -19,7 +19,7 @@
 package org.apache.myfaces.lifecycle;
 
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import java.io.Serializable;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -48,7 +48,7 @@ public class ClientConfig implements Serializable
 
     protected String windowHandlerHtml;
 
-    /** lazily initiated via {@link #getUserAgent(javax.faces.context.FacesContext)} */
+    /** lazily initiated via {@link #getUserAgent(FacesContext)} */
     private volatile String userAgent = null;
 
     /**
@@ -214,7 +214,7 @@ public class ClientConfig implements Serializable
      * @return <code>true</code> if the Request should get 'intercepted' and the intermediate
      *        windowhandler.html page should get rendered first. By returning <code>false</code>
      *        the requested page will get rendered intermediately.
-     * @see #getUserAgent(javax.faces.context.FacesContext) for determining the UserAgent
+     * @see #getUserAgent(FacesContext) for determining the UserAgent
      */
     public boolean isClientSideWindowHandlerRequest(FacesContext facesContext)
     {

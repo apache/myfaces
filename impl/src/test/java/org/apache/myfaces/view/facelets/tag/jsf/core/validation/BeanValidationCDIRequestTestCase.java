@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf.core.validation;
 
-import javax.faces.application.StateManager;
-import javax.faces.component.UIInput;
-import javax.faces.validator.BeanValidator;
-import javax.faces.validator.Validator;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.validator.BeanValidator;
+import jakarta.faces.validator.Validator;
 import org.apache.myfaces.mc.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.junit.Assert;
@@ -47,9 +47,9 @@ public class BeanValidationCDIRequestTestCase extends AbstractMyFacesCDIRequestT
         servletContext.addInitParameter("org.apache.myfaces.annotation.SCAN_PACKAGES",
                 "org.apache.myfaces.view.facelets.tag.jsf.core.validation");
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
-        servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
+        servletContext.addInitParameter("jakarta.faces.PARTIAL_STATE_SAVING", "true");
         servletContext.addInitParameter(MyfacesConfig.INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
-        servletContext.addInitParameter("javax.faces.CLIENT_WINDOW_MODE", "url");
+        servletContext.addInitParameter("jakarta.faces.CLIENT_WINDOW_MODE", "url");
         servletContext.addInitParameter("org.apache.myfaces.validator.BEAN_BEFORE_JSF_VALIDATION", "true");
     }
     

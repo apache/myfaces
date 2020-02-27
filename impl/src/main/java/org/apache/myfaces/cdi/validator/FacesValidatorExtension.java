@@ -28,7 +28,7 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessManagedBean;
-import javax.faces.validator.FacesValidator;
+import jakarta.faces.validator.FacesValidator;
 
 /**
  *

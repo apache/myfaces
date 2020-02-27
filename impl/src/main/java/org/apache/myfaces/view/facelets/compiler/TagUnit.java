@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.compiler;
 
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagConfig;
 
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 

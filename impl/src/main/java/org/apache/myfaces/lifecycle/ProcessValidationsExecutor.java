@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.lifecycle;
 
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
 
 /**
  * Implements the process validations phase (JSF Spec 2.2.3)

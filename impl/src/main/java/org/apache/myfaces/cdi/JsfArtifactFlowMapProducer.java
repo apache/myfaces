@@ -22,9 +22,9 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.annotation.FlowMap;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.FlowScoped;
+import jakarta.faces.annotation.FlowMap;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.FlowScoped;
 import org.apache.myfaces.cdi.util.AbstractDynamicProducer;
 import org.apache.myfaces.cdi.util.ParameterizedTypeImpl;
 

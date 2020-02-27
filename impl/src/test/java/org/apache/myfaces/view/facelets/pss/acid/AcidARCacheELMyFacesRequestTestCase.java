@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.view.facelets.pss.acid;
 
-import javax.faces.application.StateManager;
 import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 
 public class AcidARCacheELMyFacesRequestTestCase extends AcidMyFacesRequestTestCase

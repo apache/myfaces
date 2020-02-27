@@ -21,10 +21,10 @@ package org.apache.myfaces.renderkit.html;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.Renderer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.Renderer;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 
@@ -35,7 +35,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
  * @author Leonardo Uribe
  *
  */
-@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.Doctype")
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Output", type = "jakarta.faces.Doctype")
 public class HtmlDoctypeRenderer extends Renderer
 {
 

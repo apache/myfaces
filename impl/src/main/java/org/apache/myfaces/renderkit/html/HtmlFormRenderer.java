@@ -20,8 +20,8 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.html.HtmlFormRendererBase;
@@ -36,8 +36,8 @@ import org.apache.myfaces.shared.renderkit.html.HtmlFormRendererBase;
  */
 @JSFRenderer(
     renderKitId="HTML_BASIC",
-    family="javax.faces.Form",
-    type="javax.faces.Form")
+    family="jakarta.faces.Form",
+    type="jakarta.faces.Form")
 public class HtmlFormRenderer
         extends HtmlFormRendererBase
 {

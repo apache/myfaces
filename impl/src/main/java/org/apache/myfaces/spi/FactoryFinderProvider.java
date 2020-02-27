@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.spi;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 /**
- * Provide an interface to override {@link javax.faces.FactoryFinder} class
+ * Provide an interface to override {@link FactoryFinder} class
  * methods. 
  * 
  * @since 2.0.5
@@ -31,7 +31,7 @@ import javax.faces.FacesException;
 public interface FactoryFinderProvider
 {
     /**
-     * See {@link javax.faces.FactoryFinder#getFactory(String)} javadoc for details
+     * See {@link FactoryFinder#getFactory(String)} javadoc for details
      * 
      * @param factoryName
      * @return
@@ -40,14 +40,14 @@ public interface FactoryFinderProvider
     public Object getFactory(String factoryName) throws FacesException;
     
     /**
-     * See {@link javax.faces.FactoryFinder#releaseFactories()} javadoc for details
+     * See {@link jakarta.faces.FactoryFinder#releaseFactories()} javadoc for details
      * 
      * @throws FacesException
      */
     public void releaseFactories() throws FacesException;
     
     /**
-     * See {@link javax.faces.FactoryFinder#setFactory(String, String)} javadoc for details
+     * See {@link jakarta.faces.FactoryFinder#setFactory(String, String)} javadoc for details
      * 
      * @param factoryName
      * @param implName

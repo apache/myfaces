@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.html.HtmlImageRendererBase;
@@ -32,8 +32,8 @@ import org.apache.myfaces.shared.renderkit.html.HtmlImageRendererBase;
  */
 @JSFRenderer(
     renderKitId="HTML_BASIC",
-    family="javax.faces.Graphic",
-    type="javax.faces.Image")
+    family="jakarta.faces.Graphic",
+    type="jakarta.faces.Image")
 public class HtmlImageRenderer
 extends HtmlImageRendererBase
 {

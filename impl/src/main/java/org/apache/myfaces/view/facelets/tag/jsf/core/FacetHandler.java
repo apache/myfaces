@@ -21,14 +21,14 @@ package org.apache.myfaces.view.facelets.tag.jsf.core;
 import java.io.IOException;
 
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagException;
-import javax.faces.view.facelets.TagHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
+import jakarta.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 
@@ -41,9 +41,9 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 @JSFFaceletTag(
         name = "f:facet",
         bodyContent = "JSP", 
-        tagClass="javax.faces.webapp.FacetTag")
+        tagClass="jakarta.faces.webapp.FacetTag")
 public final class FacetHandler extends TagHandler 
-    implements javax.faces.view.facelets.FacetHandler
+    implements jakarta.faces.view.facelets.FacetHandler
 {
 
     public static final String KEY = "facelets.FACET_NAME";
@@ -59,8 +59,8 @@ public final class FacetHandler extends TagHandler
     /*
      * (non-Javadoc)
      * 
-     * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext, 
-     * javax.faces.component.UIComponent)
+     * See jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext,
+     * jakarta.faces.component.UIComponent)
      */
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException, FaceletException,
             ELException

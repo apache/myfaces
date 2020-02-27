@@ -20,21 +20,17 @@
 package org.apache.myfaces.view.facelets.tag.ui;
 
 import javax.el.ExpressionFactory;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.context.ResponseWriter;
 
-import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.renderkit.html.HtmlCompositeComponentRenderer;
 import org.apache.myfaces.renderkit.html.HtmlCompositeFacetRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.test.mock.MockExternalContext;
-import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.util.FastWriter;
 import org.junit.Assert;
@@ -64,12 +60,12 @@ public class IncludeParamTestCase extends FaceletTestCase
     @Override
     protected void setupRenderers() throws Exception
     {
-        renderKit.addRenderer(UIOutput.COMPONENT_FAMILY, "javax.faces.Text",
+        renderKit.addRenderer(UIOutput.COMPONENT_FAMILY, "jakarta.faces.Text",
                 new HtmlTextRenderer());
         renderKit.addRenderer(UINamingContainer.COMPONENT_TYPE,
-                "javax.faces.Composite", new HtmlCompositeComponentRenderer());
+                "jakarta.faces.Composite", new HtmlCompositeComponentRenderer());
         renderKit.addRenderer(UIOutput.COMPONENT_TYPE, 
-                "javax.faces.CompositeFacet", new HtmlCompositeFacetRenderer());
+                "jakarta.faces.CompositeFacet", new HtmlCompositeFacetRenderer());
     }
 
     @Override

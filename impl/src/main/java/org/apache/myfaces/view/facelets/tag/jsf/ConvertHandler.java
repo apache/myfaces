@@ -22,18 +22,18 @@ import java.io.IOException;
 
 import javax.el.ELException;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.component.ValueHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.view.facelets.ConverterConfig;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.MetaRuleset;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagException;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.view.facelets.ConverterConfig;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
 
 import org.apache.myfaces.view.facelets.tag.MetaTagHandlerImpl;
 
@@ -43,11 +43,11 @@ import org.apache.myfaces.view.facelets.tag.MetaTagHandlerImpl;
  * set/create Converter is the passed UIComponent's parent is null, signifying that it wasn't restored from an existing
  * tree.</p>
  * 
- * See javax.faces.webapp.ConverterELTag
- * See javax.faces.convert.Converter
- * See javax.faces.component.ValueHolder
+ * See jakarta.faces.webapp.ConverterELTag
+ * See jakarta.faces.convert.Converter
+ * See jakarta.faces.component.ValueHolder
  * 
- * @deprecated use javax.faces.view.facelets.ConverterHandler instead
+ * @deprecated use jakarta.faces.view.facelets.ConverterHandler instead
  * @author Jacob Hookom
  * @version $Id$
  */
@@ -82,7 +82,7 @@ public class ConvertHandler extends MetaTagHandlerImpl
      * <li>Cast to ValueHolder</li>
      * <li>If "binding" attribute was specified, fetch/create and re-bind to expression.</li>
      * <li>Otherwise, call {@link #createConverter(FaceletContext) createConverter}.</li>
-     * <li>Call {@link #setAttributes(javax.faces.view.facelets.FaceletContext, java.lang.Object)} 
+     * <li>Call {@link #setAttributes(FaceletContext, java.lang.Object)}
      * on Converter instance.</li>
      * <li>Set the Converter on the ValueHolder</li>
      * <li>If the ValueHolder has a localValue, convert it and set the value</li>
@@ -91,8 +91,8 @@ public class ConvertHandler extends MetaTagHandlerImpl
      * See ValueHolder
      * See Converter
      * See #createConverter(FaceletContext)
-     * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext,
-     *          javax.faces.component.UIComponent)
+     * See jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext,
+     *          jakarta.faces.component.UIComponent)
      */
     public final void apply(FaceletContext ctx, UIComponent parent) throws IOException, FacesException,
             FaceletException, ELException

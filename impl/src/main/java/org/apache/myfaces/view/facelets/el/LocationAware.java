@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
-import javax.faces.view.Location;
+import jakarta.faces.view.Location;
 
 /**
  * Identification inferface for types that know about {@link Location}.
@@ -26,8 +26,8 @@ import javax.faces.view.Location;
  * If type implements this interface, we can say that it knows where instance
  * implementing this interfaces is located in facelets view.
  * 
- * {@link javax.faces.component.UIComponent} is LocationAware-like, because it knows
- * it's Location: {@link javax.faces.component.UIComponent#VIEW_LOCATION_KEY}
+ * {@link jakarta.faces.component.UIComponent} is LocationAware-like, because it knows
+ * it's Location: {@link jakarta.faces.component.UIComponent#VIEW_LOCATION_KEY}
  * 
  * @author martinkoci
  */

@@ -27,16 +27,16 @@ import java.util.Map;
 import javax.el.ELContext;
 import javax.el.ELContextEvent;
 import javax.el.ELContextListener;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.el.unified.FacesELContext;
@@ -240,10 +240,10 @@ public abstract class FacesContextImplBase extends FacesContext
 
     /**
      * Returns a mutable map of attributes associated with this faces context when
-     * {@link javax.faces.context.FacesContext#release()} is called the map must be cleared!
+     * {@link FacesContext#release()} is called the map must be cleared!
      * 
      * Note this map is not associated with the request map the request map still is accessible via the
-     * {@link javax.faces.context.ExternalContext#getRequestMap()} method!
+     * {@link ExternalContext#getRequestMap()} method!
      * 
      * Also the scope is different to the request map, this map has the scope of the context, and is cleared once the
      * release method on the context is called!

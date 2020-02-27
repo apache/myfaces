@@ -18,20 +18,20 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf.core;
 
-import javax.faces.component.UIImportConstants;
-import javax.faces.component.UIParameter;
-import javax.faces.component.UISelectItem;
-import javax.faces.component.UISelectItems;
-import javax.faces.component.UIViewAction;
-import javax.faces.component.UIViewParameter;
-import javax.faces.convert.DateTimeConverter;
-import javax.faces.convert.NumberConverter;
-import javax.faces.validator.BeanValidator;
-import javax.faces.validator.DoubleRangeValidator;
-import javax.faces.validator.LengthValidator;
-import javax.faces.validator.LongRangeValidator;
-import javax.faces.validator.RegexValidator;
-import javax.faces.validator.RequiredValidator;
+import jakarta.faces.component.UIImportConstants;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.UISelectItems;
+import jakarta.faces.component.UIViewAction;
+import jakarta.faces.component.UIViewParameter;
+import jakarta.faces.convert.DateTimeConverter;
+import jakarta.faces.convert.NumberConverter;
+import jakarta.faces.validator.BeanValidator;
+import jakarta.faces.validator.DoubleRangeValidator;
+import jakarta.faces.validator.LengthValidator;
+import jakarta.faces.validator.LongRangeValidator;
+import jakarta.faces.validator.RegexValidator;
+import jakarta.faces.validator.RequiredValidator;
 import org.apache.myfaces.component.validate.ValidateWholeBeanComponent;
 
 import org.apache.myfaces.view.facelets.tag.AbstractTagLibrary;
@@ -93,7 +93,7 @@ public final class CoreLibrary extends AbstractTagLibrary
 
         this.addTagHandler("setPropertyActionListener", SetPropertyActionListenerHandler.class);
 
-        this.addComponent("subview", "javax.faces.NamingContainer", null);
+        this.addComponent("subview", "jakarta.faces.NamingContainer", null);
 
         this.addValidator("validateBean", BeanValidator.VALIDATOR_ID);
         
@@ -119,11 +119,11 @@ public final class CoreLibrary extends AbstractTagLibrary
         
         this.addComponent("importConstants", UIImportConstants.COMPONENT_TYPE, null);
 
-        this.addComponent("verbatim", "javax.faces.HtmlOutputText", "javax.faces.Text", VerbatimHandler.class);
+        this.addComponent("verbatim", "jakarta.faces.HtmlOutputText", "jakarta.faces.Text", VerbatimHandler.class);
         
         this.addComponent("validateWholeBean", ValidateWholeBeanComponent.COMPONENT_TYPE, null);
         
-        this.addComponent("websocket", "javax.faces.Websocket", 
-                "javax.faces.Websocket", WebsocketHandler.class);
+        this.addComponent("websocket", "jakarta.faces.Websocket",
+                "jakarta.faces.Websocket", WebsocketHandler.class);
     }
 }

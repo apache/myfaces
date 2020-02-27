@@ -19,9 +19,9 @@
 package org.apache.myfaces.el;
 
 import javax.el.ELException;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.VariableResolver;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.VariableResolver;
 
 import org.apache.myfaces.shared.util.Assert;
 

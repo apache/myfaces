@@ -21,11 +21,11 @@ package org.apache.myfaces.shared.context.flash;
 import org.apache.myfaces.shared.util.SubKeyMap;
 import org.apache.myfaces.shared.util.ExternalContextUtils;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
-import javax.faces.event.PhaseId;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
+import jakarta.faces.event.PhaseId;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
@@ -41,11 +41,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
-import javax.faces.event.PostKeepFlashValueEvent;
-import javax.faces.event.PostPutFlashValueEvent;
-import javax.faces.event.PreClearFlashEvent;
-import javax.faces.event.PreRemoveFlashValueEvent;
-import javax.faces.lifecycle.ClientWindow;
+import jakarta.faces.event.PostKeepFlashValueEvent;
+import jakarta.faces.event.PostPutFlashValueEvent;
+import jakarta.faces.event.PreClearFlashEvent;
+import jakarta.faces.event.PreRemoveFlashValueEvent;
+import jakarta.faces.lifecycle.ClientWindow;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 
 /**
@@ -201,7 +201,7 @@ public class FlashImpl extends Flash implements ReleasableFlash
         _flashScopeDisabled = MyfacesConfig.getCurrentInstance(externalContext).isFlashScopeDisabled();
     }
     
-    // ~ methods from javax.faces.context.Flash -------------------------------
+    // ~ methods from jakarta.faces.context.Flash -------------------------------
 
     /**
      * Used to restore the redirect value and the FacesMessages of the previous 

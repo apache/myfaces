@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.el;
 
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.VariableResolver;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.VariableResolver;
 
 /**
  * This is the default VariableResolver. See JSF 1.2 spec section 5.8.1

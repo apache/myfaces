@@ -19,8 +19,8 @@
 
 package org.apache.myfaces.shared.util;
 
-import javax.faces.component.NamingContainer;
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
 
 /**
  * 

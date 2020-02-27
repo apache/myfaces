@@ -18,12 +18,12 @@
  */
 package org.apache.myfaces.view.facelets.pss.acid.component;
 
-import javax.faces.component.FacesComponent;
-import javax.faces.component.UIPanel;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ListenerFor;
-import javax.faces.event.PostRestoreStateEvent;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.PostRestoreStateEvent;
 
 /**
  *

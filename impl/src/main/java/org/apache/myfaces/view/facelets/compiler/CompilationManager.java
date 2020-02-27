@@ -24,13 +24,13 @@ import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributeException;
-import javax.faces.view.facelets.TagDecorator;
-import javax.faces.view.facelets.TagException;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
+import jakarta.faces.view.facelets.TagDecorator;
+import jakarta.faces.view.facelets.TagException;
 
 import org.apache.myfaces.view.facelets.tag.TagAttributesImpl;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;

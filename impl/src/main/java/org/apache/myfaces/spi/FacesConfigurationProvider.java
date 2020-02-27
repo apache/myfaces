@@ -20,7 +20,7 @@ package org.apache.myfaces.spi;
 
 import java.util.List;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.config.element.FacesConfig;
 
@@ -78,7 +78,7 @@ public abstract class FacesConfigurationProvider
     public abstract List<FacesConfig> getClassloaderFacesConfig(ExternalContext ectx);
     
     /**
-     * Return the FacesConfig object model retrieved from javax.faces.CONFIG_FILES web config attribute
+     * Return the FacesConfig object model retrieved from jakarta.faces.CONFIG_FILES web config attribute
      * 
      * @param ectx
      * @return

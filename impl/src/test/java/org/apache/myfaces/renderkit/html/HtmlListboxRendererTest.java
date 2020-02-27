@@ -22,12 +22,12 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.component.UISelectItem;
-import javax.faces.component.UISelectItems;
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.html.HtmlSelectManyListbox;
-import javax.faces.component.html.HtmlSelectOneListbox;
-import javax.faces.model.SelectItem;
+import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.UISelectItems;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.html.HtmlSelectManyListbox;
+import jakarta.faces.component.html.HtmlSelectOneListbox;
+import jakarta.faces.model.SelectItem;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

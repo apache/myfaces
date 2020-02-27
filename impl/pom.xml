@@ -189,7 +189,7 @@
                            <jsfVersion>12</jsfVersion>
                            <templateTagName>tagClass12.vm</templateTagName>
                            <packageContains>org.apache</packageContains>
-                           <typePrefix>javax.faces</typePrefix>
+                           <typePrefix>jakarta.faces</typePrefix>
                            <modelIds>
                                <modelId>myfaces-api</modelId>
                            </modelIds>
@@ -767,7 +767,7 @@
                                     org.apache.jasper.el;resolution:=optional,
                                     org.apache.el;resolution:=optional,
                                     org.apache.tomcat;resolution:=optional,
-                                    javax.faces.*;version="${project.version}",
+                                    jakarta.faces.*;version="${project.version}",
                                     *
                                 </Import-Package>
                             </instructions>
@@ -1109,6 +1109,13 @@
             <artifactId>myfaces-api</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- this dependency will be packed together with the main artifact of this pom -->
         <!--
         <dependency>
@@ -1258,8 +1265,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.myfaces.test</groupId>
-            <artifactId>myfaces-test23</artifactId>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- easymock -->

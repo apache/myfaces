@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html.behavior;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.html.HtmlPanelGrid;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlPanelGrid;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)

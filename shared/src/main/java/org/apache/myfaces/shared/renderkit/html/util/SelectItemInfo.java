@@ -19,8 +19,8 @@
 
 package org.apache.myfaces.shared.renderkit.html.util;
 
-import javax.faces.component.UIComponent;
-import javax.faces.model.SelectItem;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.model.SelectItem;
 
 /**
  * 

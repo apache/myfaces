@@ -32,7 +32,7 @@ myfaces._impl.xhrCore._AjaxRequest = _MF_CLS(_PFX_XHR + "_ExtAjaxRequest", myfac
     /**
      * Spec. 13.3.1
      * Collect and encode input elements.
-     * Additionally the hidden element javax.faces.ViewState
+     * Additionally the hidden element jakarta.faces.ViewState
      * Enhancement partial page submit
      *
      * @return  an element of formDataWrapper

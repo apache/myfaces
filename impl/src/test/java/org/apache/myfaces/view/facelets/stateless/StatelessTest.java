@@ -18,15 +18,13 @@
  */
 package org.apache.myfaces.view.facelets.stateless;
 
-import javax.faces.application.StateManager;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.render.ResponseStateManager; 
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -48,7 +46,7 @@ public class StatelessTest extends AbstractMyFacesRequestTestCase
         super.setUpWebConfigParams();
         servletContext.addInitParameter("org.apache.myfaces.annotation.SCAN_PACKAGES","org.apache.myfaces.view.facelets.stateless");
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER);
-        servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
+        servletContext.addInitParameter("jakarta.faces.PARTIAL_STATE_SAVING", "true");
         servletContext.addInitParameter(MyfacesConfig.INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
         servletContext.addInitParameter("org.apache.myfaces.STRICT_JSF_2_REFRESH_TARGET_AJAX", "true");
     }

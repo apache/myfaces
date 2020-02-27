@@ -29,8 +29,8 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.context.ExternalContext;
-import javax.faces.view.ViewScoped;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.view.ViewScoped;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 
 /**

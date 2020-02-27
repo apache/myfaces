@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf.core.reset;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.event.ActionEvent;
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.bean.SessionScoped;
+import jakarta.faces.event.ActionEvent;
 
 /**
  *

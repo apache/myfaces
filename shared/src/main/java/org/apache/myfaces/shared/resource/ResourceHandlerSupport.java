@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.shared.resource;
 
-import javax.faces.application.ResourceHandler;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.context.FacesContext;
 
 /**
  * A utility class to isolate a ResourceHandler implementation from its
@@ -37,7 +37,7 @@ public abstract class ResourceHandlerSupport
      * 
      * For example:
      * 
-     * /javax.faces.resource/image.jpg
+     * /jakarta.faces.resource/image.jpg
      * 
      * This is used on ResourceHandler.handleResourceRequest()
      * 

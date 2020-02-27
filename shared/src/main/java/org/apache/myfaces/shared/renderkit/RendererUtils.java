@@ -37,33 +37,33 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.NamingContainer;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UISelectMany;
-import javax.faces.component.UISelectOne;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.ValueHolder;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
-import javax.faces.el.PropertyNotFoundException;
-import javax.faces.el.ValueBinding;
-import javax.faces.event.PhaseId;
-import javax.faces.model.SelectItem;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UISelectMany;
+import jakarta.faces.component.UISelectOne;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.ConverterException;
+import jakarta.faces.el.PropertyNotFoundException;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.model.SelectItem;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.shared.renderkit.html.util.FormInfo;
 import org.apache.myfaces.shared.util.HashMapUtils;
@@ -722,9 +722,9 @@ public final class RendererUtils
     }
 
     /**
-     * Call {@link UIComponent#pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)}, 
+     * Call {@link UIComponent#pushComponentToEL(FacesContext, UIComponent)},
      * reads the isRendered property, call {@link
-     * UIComponent#popComponentFromEL(javax.faces.context.FacesContext)} and returns the value of isRendered.
+     * UIComponent#popComponentFromEL(FacesContext)} and returns the value of isRendered.
      */
     public static boolean isRendered(FacesContext facesContext,
             UIComponent uiComponent)
@@ -1498,7 +1498,7 @@ public final class RendererUtils
       * Checks for name/library attributes on component and if they are avaliable,
       * creates {@link Resource} and returns it's path suitable for rendering.
       * If component doesn't have name/library gets value for attribute named <code>attributeName</code> 
-      * returns it processed with {@link #toResourceUri(javax.faces.context.FacesContext, java.lang.Object)}
+      * returns it processed with {@link #toResourceUri(FacesContext, java.lang.Object)}
       *       
       * @param facesContext a {@link FacesContext}
       * @param component a {@link UIComponent}

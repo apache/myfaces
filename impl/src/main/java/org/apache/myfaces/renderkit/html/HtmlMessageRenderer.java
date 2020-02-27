@@ -22,11 +22,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
@@ -38,7 +38,7 @@ import org.apache.myfaces.shared.renderkit.html.HtmlMessageRendererBase;
  * @author Thomas Spiegl
  * @version $Revision$ $Date$
  */
-@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Message", type = "javax.faces.Message")
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Message", type = "jakarta.faces.Message")
 public class HtmlMessageRenderer extends HtmlMessageRendererBase
 {
     // private static final Log log = LogFactory.getLog(HtmlMessageRenderer.class);

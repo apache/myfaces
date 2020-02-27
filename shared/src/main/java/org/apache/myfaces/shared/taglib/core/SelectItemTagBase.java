@@ -21,7 +21,7 @@ package org.apache.myfaces.shared.taglib.core;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 
 public class SelectItemTagBase
     extends org.apache.myfaces.shared.taglib.UIComponentELTagBase
@@ -30,7 +30,7 @@ public class SelectItemTagBase
 
     public String getComponentType()
     {
-        return "javax.faces.SelectItem";
+        return "jakarta.faces.SelectItem";
     }
 
     public String getRendererType()

@@ -25,13 +25,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIParameter;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlOutputFormat;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlOutputFormat;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
@@ -48,7 +48,7 @@ import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
  * @author Thomas Spiegl
  * @version $Revision$ $Date$
  */
-@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.Format")
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Output", type = "jakarta.faces.Format")
 public class HtmlFormatRenderer extends HtmlRenderer
 {
     private static final Logger log = Logger.getLogger(HtmlFormatRenderer.class.getName());

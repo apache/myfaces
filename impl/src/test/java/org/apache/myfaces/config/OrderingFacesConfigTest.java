@@ -24,7 +24,7 @@ import org.apache.myfaces.config.impl.digester.elements.FacesConfigNameSlotImpl;
 import org.apache.myfaces.config.impl.digester.elements.OrderingImpl;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

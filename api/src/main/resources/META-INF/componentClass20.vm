@@ -33,11 +33,13 @@
  */
 package ${component.packageName};
 
-#if ($component.className.startsWith("javax.faces.component.html"))
-import javax.faces.el.ValueBinding;
+#if ($component.className.startsWith("jakarta.faces.component.html"))
+import jakarta.faces.el.ValueBinding;
 #end
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.application.FacesMessage;
 $utils.importTagClasses($component)
 
 #if ($component.isTemplate())
@@ -102,7 +104,7 @@ $innersource
 ## TODO: this condition should be checked for parent components
 ## and csv implements
 #if ($component.implements)
-#if ( ($component.implements == "javax.faces.component.behavior.ClientBehaviorHolder")
+#if ( ($component.implements == "jakarta.faces.component.behavior.ClientBehaviorHolder")
      && (${utils.getClassFromFullClass($component.className)} != "UIWebsocket"))
     static private final java.util.Collection<String> CLIENT_EVENTS_LIST = 
         java.util.Collections.unmodifiableCollection(
@@ -124,7 +126,7 @@ $innersource
     }
 
     @Override
-    public void addClientBehavior(String eventName, javax.faces.component.behavior.ClientBehavior behavior)
+    public void addClientBehavior(String eventName, ClientBehavior behavior)
     {
         super.addClientBehavior(eventName, behavior);
         _CommonEventConstants.markEvent(this, eventName);
@@ -133,7 +135,7 @@ $innersource
 #end
 
 #if ($component.implements)
-#if ( ($component.implements == "javax.faces.component.behavior.ClientBehaviorHolder")
+#if ( ($component.implements == "jakarta.faces.component.behavior.ClientBehaviorHolder")
      && (${utils.getClassFromFullClass($component.className)} == "UIWebsocket"))
     // Start UIWebsocket getEventNames template
     @Override
@@ -421,7 +423,7 @@ $innersource
 #end
 #end
 
-#if ($component.className.startsWith("javax.faces.component.html") && $overrideSetValueExpression)
+#if ($component.className.startsWith("jakarta.faces.component.html") && $overrideSetValueExpression)
     public void setValueBinding(String name, ValueBinding binding)
     {
         super.setValueBinding(name, binding);
@@ -435,7 +437,7 @@ $innersource
     }
 #end
 
-#if ($component.className.startsWith("javax.faces.component.html"))
+#if ($component.className.startsWith("jakarta.faces.component.html"))
     protected enum PropertyKeys
     {
 #else

@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.faces.context.Flash;
+import jakarta.faces.context.Flash;
 import javax.servlet.ServletContext;
 
 /**

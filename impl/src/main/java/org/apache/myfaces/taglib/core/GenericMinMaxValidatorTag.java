@@ -20,8 +20,8 @@ package org.apache.myfaces.taglib.core;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.Validator;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.Validator;
 import javax.servlet.jsp.JspException;
 
 /**

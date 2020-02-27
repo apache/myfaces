@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderers;
 import org.apache.myfaces.shared.renderkit.html.HtmlListboxRendererBase;
@@ -32,12 +32,12 @@ import org.apache.myfaces.shared.renderkit.html.HtmlListboxRendererBase;
 @JSFRenderers(renderers={
     @JSFRenderer(
         renderKitId="HTML_BASIC",
-        family="javax.faces.SelectOne",
-        type="javax.faces.Listbox"),   
+        family="jakarta.faces.SelectOne",
+        type="jakarta.faces.Listbox"),
     @JSFRenderer(
         renderKitId="HTML_BASIC",
-        family="javax.faces.SelectMany",
-        type="javax.faces.Listbox")
+        family="jakarta.faces.SelectMany",
+        type="jakarta.faces.Listbox")
 })
 public class HtmlListboxRenderer
         extends HtmlListboxRendererBase

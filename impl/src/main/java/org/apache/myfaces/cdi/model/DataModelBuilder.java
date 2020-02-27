@@ -19,8 +19,8 @@
 
 package org.apache.myfaces.cdi.model;
 
-import javax.faces.context.FacesContext;
-import javax.faces.model.DataModel;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.DataModel;
 
 /**
  *

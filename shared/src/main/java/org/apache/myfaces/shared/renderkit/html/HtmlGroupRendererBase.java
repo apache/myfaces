@@ -20,15 +20,15 @@ package org.apache.myfaces.shared.renderkit.html;
 
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlPanelGroup;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlPanelGroup;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import javax.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehavior;
 import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 public class HtmlGroupRendererBase

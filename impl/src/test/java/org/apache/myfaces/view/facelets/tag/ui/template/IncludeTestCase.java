@@ -19,13 +19,12 @@
 package org.apache.myfaces.view.facelets.tag.ui.template;
 
 import java.io.StringWriter;
-import javax.faces.application.ViewHandler;
+import jakarta.faces.application.ViewHandler;
 
-import javax.faces.component.UIViewRoot;
+import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
-import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.junit.Assert;
 import org.junit.Test;
 

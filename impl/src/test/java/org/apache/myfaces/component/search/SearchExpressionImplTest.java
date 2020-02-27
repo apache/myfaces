@@ -24,15 +24,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.faces.application.StateManager;
-import javax.faces.component.ContextCallback;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
-import javax.faces.component.search.ComponentNotFoundException;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchExpressionHint;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.ContextCallback;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.search.ComponentNotFoundException;
+import jakarta.faces.component.search.SearchExpressionContext;
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.component.search.SearchExpressionHint;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.mc.test.core.AbstractMyFacesRequestTestCase;
 import org.junit.Assert;
 import org.junit.Test;
@@ -54,7 +54,7 @@ public class SearchExpressionImplTest extends AbstractMyFacesRequestTestCase
         super.setUpWebConfigParams();
         servletContext.addInitParameter("org.apache.myfaces.annotation.SCAN_PACKAGES","org.apache.myfaces.component.search");
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
-        servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
+        servletContext.addInitParameter("jakarta.faces.PARTIAL_STATE_SAVING", "true");
     }
 
     @Test

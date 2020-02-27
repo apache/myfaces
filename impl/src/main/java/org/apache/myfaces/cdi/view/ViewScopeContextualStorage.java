@@ -28,7 +28,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.inject.spi.Bean;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 

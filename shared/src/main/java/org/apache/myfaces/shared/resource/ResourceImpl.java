@@ -25,16 +25,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.faces.application.ProjectStage;
-import javax.faces.application.Resource;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.Resource;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Default implementation for resources
  */
 public class ResourceImpl extends Resource implements ContractResource
 {
-    protected final static String JAVAX_FACES_LIBRARY_NAME = "javax.faces";
+    protected final static String JAVAX_FACES_LIBRARY_NAME = "jakarta.faces";
     protected final static String JSF_JS_RESOURCE_NAME = "jsf.js";
 
 

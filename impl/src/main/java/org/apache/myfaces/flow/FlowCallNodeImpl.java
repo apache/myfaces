@@ -22,9 +22,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.FlowCallNode;
-import javax.faces.flow.Parameter;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.FlowCallNode;
+import jakarta.faces.flow.Parameter;
 
 /**
  *

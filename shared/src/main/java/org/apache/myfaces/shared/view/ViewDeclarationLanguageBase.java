@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.shared.view;
 
-import javax.faces.application.Application;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.shared.application.InvalidViewIdException;
 

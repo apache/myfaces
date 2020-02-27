@@ -20,7 +20,7 @@ package org.apache.myfaces.cdi.converter;
 
 import java.util.Objects;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.convert.FacesConverter;
+import jakarta.faces.convert.FacesConverter;
 
 /**
  *

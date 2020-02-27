@@ -20,9 +20,9 @@ package org.apache.myfaces.shared.renderkit.html;
 
 import java.io.IOException;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ResponseWriter;
 
 public final class CommonPropertyUtils
 {

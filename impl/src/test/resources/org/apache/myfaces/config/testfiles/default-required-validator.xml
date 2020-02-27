@@ -22,7 +22,7 @@
 
     <application>
         <default-validators>
-            <validator-id>javax.faces.Required</validator-id>
+            <validator-id>jakarta.faces.Required</validator-id>
         </default-validators>
     </application>
  

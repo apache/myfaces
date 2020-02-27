@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag;
 
-import javax.faces.view.facelets.Tag;
-import javax.faces.view.facelets.TagDecorator;
+import jakarta.faces.view.facelets.Tag;
+import jakarta.faces.view.facelets.TagDecorator;
 
 /**
  *

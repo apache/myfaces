@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.renderkit.html.behavior;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.html.HtmlOutputLink;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlOutputLink;
 
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.shared.renderkit.html.HTML;

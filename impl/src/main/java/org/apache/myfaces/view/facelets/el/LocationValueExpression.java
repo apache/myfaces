@@ -26,9 +26,9 @@ import java.io.ObjectOutput;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.el.ValueReference;
-import javax.faces.FacesWrapper;
-import javax.faces.context.FacesContext;
-import javax.faces.view.Location;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.Location;
 
 /**
  * A ValueExpression that contains the original ValueExpression and

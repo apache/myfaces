@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.event;
 
-import javax.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEvent;
 
 /**
  *

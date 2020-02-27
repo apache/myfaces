@@ -25,8 +25,8 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.faces.view.facelets.FaceletCache;
-import javax.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletCache;
+import jakarta.faces.view.facelets.FaceletException;
 
 import org.apache.myfaces.shared.resource.ResourceLoaderUtils;
 import org.apache.myfaces.view.facelets.util.ParameterCheck;

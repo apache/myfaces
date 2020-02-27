@@ -29,33 +29,33 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
-import javax.faces.FacesWrapper;
-import javax.faces.application.Application;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.ActionSource;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UniqueIdVendor;
-import javax.faces.component.ValueHolder;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitHint;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import javax.faces.validator.BeanValidator;
-import javax.faces.validator.Validator;
-import javax.faces.view.EditableValueHolderAttachedObjectHandler;
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.MetaRuleset;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagException;
-import javax.faces.view.facelets.TagHandlerDelegate;
-import javax.faces.view.facelets.ValidatorHandler;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UniqueIdVendor;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.validator.BeanValidator;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.view.EditableValueHolderAttachedObjectHandler;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagException;
+import jakarta.faces.view.facelets.TagHandlerDelegate;
+import jakarta.faces.view.facelets.ValidatorHandler;
 
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
@@ -160,8 +160,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
         {
             // Check if the component is a relocatable component done overriding the tag handler
             if (_componentType != null && _rendererType != null &&
-                (_rendererType.equals("javax.faces.resource.Script") ||
-                 _rendererType.equals("javax.faces.resource.Stylesheet")) &&
+                (_rendererType.equals("jakarta.faces.resource.Script") ||
+                 _rendererType.equals("jakarta.faces.resource.Stylesheet")) &&
                 _componentType.equals(UIOutput.COMPONENT_TYPE))
             {
                 _relocatableResourceHandler = ComponentRelocatableResourceHandler.INSTANCE;
@@ -193,8 +193,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * for deletion.</li>
      * </ol>
      * 
-     * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext,
-     * javax.faces.component.UIComponent)
+     * See jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext,
+     * jakarta.faces.component.UIComponent)
      * 
      * @throws TagException
      *             if the UIComponent parent is null
@@ -497,7 +497,8 @@ public class ComponentTagHandlerDelegate extends TagHandlerDelegate
      * createComponent on the Application, otherwise just pass the componentType String. <p> If the binding was used,
      * then set the ValueExpression "binding" on the created UIComponent.</p>
      * 
-     * See Application#createComponent(javax.faces.el.ValueBinding, javax.faces.context.FacesContext, java.lang.String)
+     * See Application#createComponent(jakarta.faces.el.ValueBinding, jakarta.faces.context.FacesContext,
+     *      java.lang.String)
      * See Application#createComponent(java.lang.String)
      * @param ctx
      *            FaceletContext to use in creating a component

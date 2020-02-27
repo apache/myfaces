@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view;
 
-import javax.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.view.ViewDeclarationLanguage;
 
 /**
  * This class represents a supported {@link ViewDeclarationLanguage} in the application. Notably,

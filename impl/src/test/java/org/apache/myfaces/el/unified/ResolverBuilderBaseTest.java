@@ -25,8 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.el.ELResolver;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.VariableResolver;
+import jakarta.faces.el.PropertyResolver;
+import jakarta.faces.el.VariableResolver;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.convert.PropertyResolverToELResolver;

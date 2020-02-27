@@ -21,7 +21,7 @@ package org.apache.myfaces.el.unified.resolver.implicitobject;
 import java.beans.FeatureDescriptor;
 
 import javax.el.ELContext;
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver

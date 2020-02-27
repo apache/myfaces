@@ -18,13 +18,13 @@
  */
 package org.apache.myfaces.view.facelets.pss.acid.managed;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewParameter;
-import javax.faces.component.html.HtmlPanelGroup;
-import javax.faces.context.FacesContext;
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.bean.RequestScoped;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewParameter;
+import jakarta.faces.component.html.HtmlPanelGroup;
+import jakarta.faces.context.FacesContext;
 
 /**
  *

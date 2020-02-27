@@ -28,7 +28,7 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessManagedBean;
-import javax.faces.convert.FacesConverter;
+import jakarta.faces.convert.FacesConverter;
 
 /**
  *

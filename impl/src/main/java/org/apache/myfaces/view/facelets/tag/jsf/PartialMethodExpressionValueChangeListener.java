@@ -19,9 +19,9 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import javax.el.MethodExpression;
-import javax.faces.component.PartialStateHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.event.MethodExpressionValueChangeListener;
+import jakarta.faces.component.PartialStateHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.MethodExpressionValueChangeListener;
 
 public class PartialMethodExpressionValueChangeListener extends MethodExpressionValueChangeListener
     implements PartialStateHolder

@@ -19,9 +19,9 @@
 package org.apache.myfaces.view.facelets.tag.jstl.core;
 
 import javax.el.ExpressionFactory;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.util.FastWriter;

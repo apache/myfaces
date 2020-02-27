@@ -19,9 +19,9 @@
 
 package org.apache.myfaces.view.facelets;
 
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlOutputText;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlOutputText;
 
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.view.facelets.util.FastWriter;
@@ -49,7 +49,7 @@ public class TagTestCase extends FaceletTestCase {
     protected void setupRenderers() throws Exception
     {
         renderKit.addRenderer(UIOutput.COMPONENT_FAMILY,
-                "javax.faces.Text", new HtmlTextRenderer());
+                "jakarta.faces.Text", new HtmlTextRenderer());
     }
     
     @Test

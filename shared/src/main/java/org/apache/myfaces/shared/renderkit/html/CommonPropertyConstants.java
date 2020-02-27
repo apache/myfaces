@@ -21,13 +21,13 @@ package org.apache.myfaces.shared.renderkit.html;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 
 /**
  * This is a list of the most common properties used by a JSF html
  * component, organized by interfaces.
  * 
- * This is a copy from javax.faces.component._CommonPropertyConstants
+ * This is a copy from jakarta.faces.component._CommonPropertyConstants
  * and should be synchronized with this copy on shared
  */
 public class CommonPropertyConstants

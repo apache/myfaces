@@ -22,12 +22,12 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.lifecycle.ClientWindow;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
@@ -46,7 +46,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 {
     private static final Logger log = Logger.getLogger(HtmlResponseStateManager.class.getName());
 
-    public static final String STANDARD_STATE_SAVING_PARAM = "javax.faces.ViewState";
+    public static final String STANDARD_STATE_SAVING_PARAM = "jakarta.faces.ViewState";
     
     private static final String VIEW_STATE_COUNTER = "oam.partial.VIEW_STATE_COUNTER";
     private static final String CLIENT_WINDOW_COUNTER = "oam.partial.CLIENT_WINDOW_COUNTER";
@@ -130,7 +130,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         if (myfacesConfig.isRenderViewStateId())
         {
             // responseWriter.writeAttribute(HTML.ID_ATTR, STANDARD_STATE_SAVING_PARAM, null);
-            // JSF 2.2 if javax.faces.ViewState is used as the id, in portlet
+            // JSF 2.2 if jakarta.faces.ViewState is used as the id, in portlet
             // case it will be duplicate ids and that not xml friendly.
             responseWriter.writeAttribute(HTML.ID_ATTR,
                 HtmlResponseStateManager.generateUpdateViewStateId(
@@ -171,7 +171,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
     }
 
     /**
-     * Reconstructs the state from the "javax.faces.ViewState" request parameter.
+     * Reconstructs the state from the "jakarta.faces.ViewState" request parameter.
      * 
      * @param facesContext
      *            the current FacesContext
@@ -243,7 +243,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         {
             // "... java.lang.IllegalStateException - if this method is invoked 
             // and the statefulness of the preceding call to writeState(
-            // javax.faces.context.FacesContext, java.lang.Object) cannot be determined.
+            // jakarta.faces.context.FacesContext, java.lang.Object) cannot be determined.
             throw new IllegalStateException(
                 "Cannot decide if the view is stateless or not, since the request is "
                 + "not postback (no preceding writeState(...)).");
@@ -286,7 +286,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         // According to the javascript doc of jsf.ajax.response,
         //
         // The new syntax looks like this:
-        // <update id="<VIEW_ROOT_CONTAINER_CLIENT_ID><SEP>javax.faces.ClientWindow<SEP><UNIQUE_PER_VIEW_NUMBER>">
+        // <update id="<VIEW_ROOT_CONTAINER_CLIENT_ID><SEP>jakarta.faces.ClientWindow<SEP><UNIQUE_PER_VIEW_NUMBER>">
         //    <![CDATA[...]]>
         // </update>
         //
@@ -314,7 +314,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         // According to the javascript doc of jsf.ajax.response,
         //
         // The new syntax looks like this:
-        // <update id="<VIEW_ROOT_CONTAINER_CLIENT_ID><SEP>javax.faces.ViewState<SEP><UNIQUE_PER_VIEW_NUMBER>">
+        // <update id="<VIEW_ROOT_CONTAINER_CLIENT_ID><SEP>jakarta.faces.ViewState<SEP><UNIQUE_PER_VIEW_NUMBER>">
         //    <![CDATA[...]]>
         // </update>
         //

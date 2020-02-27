@@ -19,8 +19,8 @@
 package org.apache.myfaces.taglib.core;
 
 import javax.el.ValueExpression;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.event.ValueChangeListener;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.event.ValueChangeListener;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
@@ -75,12 +75,12 @@ public class ValueChangeListenerTag extends GenericListenerTag<EditableValueHold
     }
 
     /**
-     * Value binding expression that evaluates to an implementation of the javax.faces.event.ValueChangeListener
+     * Value binding expression that evaluates to an implementation of the jakarta.faces.event.ValueChangeListener
      * interface.
      */
     @Override
     @JSFJspAttribute(className="javax.el.ValueExpression",
-            deferredValueType="javax.faces.event.ValueChangeListener")
+            deferredValueType="jakarta.faces.event.ValueChangeListener")
     public void setBinding(ValueExpression binding)
     {
         super.setBinding(binding);

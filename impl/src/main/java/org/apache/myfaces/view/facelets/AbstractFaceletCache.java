@@ -20,8 +20,8 @@ package org.apache.myfaces.view.facelets;
 
 import java.io.IOException;
 import java.net.URL;
-import javax.faces.view.facelets.FaceletCache;
-import javax.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletCache;
+import jakarta.faces.view.facelets.FaceletContext;
 
 /**
  * Extended FaceletCache contract that supports additional Myfaces specific concepts

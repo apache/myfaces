@@ -19,7 +19,7 @@
 package org.apache.myfaces.shared.renderkit.html.util;
 
 import java.util.Map;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 public class SharedStringBuilder
 {

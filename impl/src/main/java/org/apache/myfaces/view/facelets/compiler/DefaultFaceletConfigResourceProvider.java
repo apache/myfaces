@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 
 import org.apache.myfaces.shared.util.ClassUtils;

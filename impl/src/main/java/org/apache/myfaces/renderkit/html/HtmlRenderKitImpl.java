@@ -28,16 +28,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.application.ProjectStage;
+import jakarta.faces.application.ProjectStage;
 
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseStream;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.ClientBehaviorRenderer;
-import javax.faces.render.RenderKit;
-import javax.faces.render.Renderer;
-import javax.faces.render.RendererWrapper;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseStream;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.ClientBehaviorRenderer;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.render.RendererWrapper;
+import jakarta.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderKit;
 import org.apache.myfaces.renderkit.LazyRenderKit;

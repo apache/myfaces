@@ -20,15 +20,15 @@ package org.apache.myfaces.taglib.core;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.RequiredValidator;
-import javax.faces.validator.Validator;
-import javax.faces.webapp.ValidatorELTag;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.RequiredValidator;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.webapp.ValidatorELTag;
 import javax.servlet.jsp.JspException;
 
 /**
- * JSP Tag class for {@link javax.faces.validator.RequiredValidator}.
+ * JSP Tag class for {@link RequiredValidator}.
  *
  * @author Leonardo Uribe
  * @since 2.0

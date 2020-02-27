@@ -37,16 +37,16 @@ import java.util.logging.Logger;
 
 import javax.el.ELException;
 import javax.el.ExpressionFactory;
-import javax.faces.FacesException;
-import javax.faces.application.Resource;
-import javax.faces.application.ViewResource;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.UniqueIdVendor;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.FaceletHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ViewResource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.UniqueIdVendor;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 
 import org.apache.myfaces.view.facelets.AbstractFacelet;
@@ -124,8 +124,8 @@ final class DefaultFacelet extends AbstractFacelet
     }    
 
     /**
-     * @see org.apache.myfaces.view.facelets.Facelet#apply(javax.faces.context.FacesContext,
-     *      javax.faces.component.UIComponent)
+     * @see org.apache.myfaces.view.facelets.Facelet#apply(FacesContext,
+     *      UIComponent)
      */
     public void apply(FacesContext facesContext, UIComponent parent) throws IOException, FacesException,
             FaceletException, ELException
@@ -530,7 +530,7 @@ final class DefaultFacelet extends AbstractFacelet
      * Used for delegation by the DefaultFaceletContext. First pulls the URL from {@link #getRelativePath(String)
      * getRelativePath(String)}, then calls
      * {@link #include(org.apache.myfaces.view.facelets.AbstractFaceletContext,
-     * javax.faces.component.UIComponent, java.net.URL)}.
+     * UIComponent, java.net.URL)}.
      * 
      * @see FaceletContext#includeFacelet(UIComponent, String)
      * @param ctx

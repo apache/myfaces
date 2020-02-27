@@ -20,11 +20,11 @@ package org.apache.myfaces.shared.renderkit.html;
 
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.render.Renderer;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.Renderer;
 import java.io.IOException;
 import java.util.List;
 

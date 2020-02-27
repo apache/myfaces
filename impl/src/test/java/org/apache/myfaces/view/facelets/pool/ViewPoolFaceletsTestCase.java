@@ -18,12 +18,12 @@
  */
 package org.apache.myfaces.view.facelets.pool;
 
-import javax.faces.application.ProjectStage;
-import javax.faces.application.StateManager;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.event.PhaseId;
-import javax.faces.render.RenderKitFactory;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.render.RenderKitFactory;
 import junit.framework.Assert;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
@@ -43,7 +43,7 @@ public class ViewPoolFaceletsTestCase extends FaceletTestCase
         super.setUpServletObjects();
         servletContext.addInitParameter(StateManager.PARTIAL_STATE_SAVING_PARAM_NAME, "true");
         servletContext.addInitParameter(MyfacesConfig.INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
-        servletContext.addInitParameter("javax.faces.FACELETS_LIBRARIES", "/test-facelet.taglib.xml");
+        servletContext.addInitParameter("jakarta.faces.FACELETS_LIBRARIES", "/test-facelet.taglib.xml");
         //servletContext.addInitParameter(ViewPoolProcessor.INIT_PARAM_VIEW_POOL_ENABLED, "true");
         servletContext.addInitParameter("org.apache.myfaces.CACHE_EL_EXPRESSIONS", "alwaysRecompile");
         servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, "Production");

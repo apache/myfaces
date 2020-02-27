@@ -26,25 +26,27 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.CustomScoped;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.NoneScoped;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
-import javax.faces.component.FacesComponent;
-import javax.faces.component.behavior.FacesBehavior;
-import javax.faces.context.ExternalContext;
-import javax.faces.convert.FacesConverter;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.NamedEvent;
-import javax.faces.render.FacesBehaviorRenderer;
-import javax.faces.render.FacesRenderer;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.validator.FacesValidator;
-import javax.faces.view.facelets.FaceletsResourceResolver;
+import jakarta.faces.FacesException;
+import jakarta.faces.bean.ApplicationScoped;
+import jakarta.faces.bean.CustomScoped;
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.bean.ManagedProperty;
+import jakarta.faces.bean.NoneScoped;
+import jakarta.faces.bean.RequestScoped;
+import jakarta.faces.bean.SessionScoped;
+import jakarta.faces.bean.ViewScoped;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.behavior.Behavior;
+import jakarta.faces.component.behavior.FacesBehavior;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.convert.FacesConverter;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.NamedEvent;
+import jakarta.faces.render.FacesBehaviorRenderer;
+import jakarta.faces.render.FacesRenderer;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.validator.FacesValidator;
+import jakarta.faces.view.facelets.FaceletsResourceResolver;
 
 import org.apache.myfaces.config.impl.digester.elements.ApplicationImpl;
 import org.apache.myfaces.config.impl.digester.elements.BehaviorImpl;
@@ -58,13 +60,13 @@ import org.apache.myfaces.spi.AnnotationProviderFactory;
  * Configure all annotations that needs to be defined at startup.
  *
  * <ul>
- * <li>{@link javax.faces.component.FacesComponent}</li>
- * <li>{@link javax.faces.convert.FacesConverter}</li>
- * <li>{@link javax.faces.validator.FacesValidator}</li>
- * <li>{@link javax.faces.render.FacesRenderer}</li>
- * <li>{@link javax.faces.bean.ManagedBean}</li>
- * <li>{@link javax.faces.bean.ManagedProperty}</li>
- * <li>{@link javax.faces.render.FacesBehaviorRenderer}</li>
+ * <li>{@link FacesComponent}</li>
+ * <li>{@link FacesConverter}</li>
+ * <li>{@link FacesValidator}</li>
+ * <li>{@link FacesRenderer}</li>
+ * <li>{@link ManagedBean}</li>
+ * <li>{@link ManagedProperty}</li>
+ * <li>{@link FacesBehaviorRenderer}</li>
  * </ul>
  * <p>
  * Some parts copied from org.apache.shale.tiger.view.faces.LifecycleListener2
@@ -307,8 +309,8 @@ public class AnnotationConfigurator
     {
         for (Class<?> clazz : classes)
         {
-            javax.faces.bean.ManagedBean bean =
-                    (javax.faces.bean.ManagedBean) clazz.getAnnotation(javax.faces.bean.ManagedBean.class);
+            ManagedBean bean =
+                    (ManagedBean) clazz.getAnnotation(ManagedBean.class);
 
             if (bean != null)
             {
@@ -410,8 +412,8 @@ public class AnnotationConfigurator
                     {
                         log.finest("  Scanning field '" + field.getName() + "'");
                     }
-                    javax.faces.bean.ManagedProperty property = (javax.faces.bean.ManagedProperty) field
-                            .getAnnotation(javax.faces.bean.ManagedProperty.class);
+                    ManagedProperty property = (ManagedProperty) field
+                            .getAnnotation(ManagedProperty.class);
                     if (property != null)
                     {
                         if (log.isLoggable(Level.FINE))
@@ -454,8 +456,8 @@ public class AnnotationConfigurator
 
                     if (log.isLoggable(Level.WARNING))
                     {
-                        log.warning(clazz.getName() + " is annotated with @javax.faces.event.NamedEvent, but does "
-                                    + "not extend javax.faces.event.ComponentSystemEvent");
+                        log.warning(clazz.getName() + " is annotated with @jakarta.faces.event.NamedEvent, but does "
+                                    + "not extend jakarta.faces.event.ComponentSystemEvent");
                     }
                 }
                 // Have to register @NamedEvent annotations with the NamedEventManager class since
@@ -480,15 +482,15 @@ public class AnnotationConfigurator
             {
                 // Can only apply @FacesBehavior to Behavior implementors.
 
-                if (!javax.faces.component.behavior.Behavior.class.isAssignableFrom(clazz))
+                if (!Behavior.class.isAssignableFrom(clazz))
                 {
                     // Just log this.  We'll catch it later in the runtime.
 
                     if (log.isLoggable(Level.WARNING))
                     {
                         log.warning(clazz.getName()
-                                    + " is annotated with @javax.faces.component.behavior.FacesBehavior, "
-                                    + "but does not implement javax.faces.component.behavior.Behavior");
+                                    + " is annotated with @jakarta.faces.component.behavior.FacesBehavior, "
+                                    + "but does not implement jakarta.faces.component.behavior.Behavior");
                     }
                 }
 

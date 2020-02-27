@@ -20,10 +20,10 @@ package org.apache.myfaces.taglib.core;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.Validator;
-import javax.faces.webapp.ValidatorELTag;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.webapp.ValidatorELTag;
 import javax.servlet.jsp.JspException;
 
 /**

@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.shared.application;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * TODO: RENAME - This class is now used by ViewDeclarationLanguageBase

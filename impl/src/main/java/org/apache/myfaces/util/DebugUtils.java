@@ -32,15 +32,15 @@ import java.util.logging.Logger;
 
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.ValueHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.event.FacesListener;
-import javax.faces.validator.Validator;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.FacesListener;
+import jakarta.faces.validator.Validator;
 
 /**
  * Utilities for logging.
@@ -68,12 +68,12 @@ public class DebugUtils
         IGNORE_ATTRIBUTES.add("valueChangeListeners");
         IGNORE_ATTRIBUTES.add("validators");
         IGNORE_ATTRIBUTES.add("rowData");
-        IGNORE_ATTRIBUTES.add("javax.faces.webapp.COMPONENT_IDS");
-        IGNORE_ATTRIBUTES.add("javax.faces.webapp.FACET_NAMES");
-        IGNORE_ATTRIBUTES.add("javax.faces.webapp.CURRENT_VIEW_ROOT");
+        IGNORE_ATTRIBUTES.add("jakarta.faces.webapp.COMPONENT_IDS");
+        IGNORE_ATTRIBUTES.add("jakarta.faces.webapp.FACET_NAMES");
+        IGNORE_ATTRIBUTES.add("jakarta.faces.webapp.CURRENT_VIEW_ROOT");
     }
 
-    private static final String JSF_COMPONENT_PACKAGE = "javax.faces.component.";
+    private static final String JSF_COMPONENT_PACKAGE = "jakarta.faces.component.";
     private static final String MYFACES_COMPONENT_PACKAGE = "org.apache.myfaces.component.";
 
     private DebugUtils()
@@ -349,9 +349,9 @@ public class DebugUtils
         {
             return;
         }
-        if (name.startsWith("javax.faces.webapp.UIComponentTag."))
+        if (name.startsWith("jakarta.faces.webapp.UIComponentTag."))
         {
-            name = name.substring("javax.faces.webapp.UIComponentTag.".length());
+            name = name.substring("jakarta.faces.webapp.UIComponentTag.".length());
         }
         stream.print(' ');
         stream.print(name);

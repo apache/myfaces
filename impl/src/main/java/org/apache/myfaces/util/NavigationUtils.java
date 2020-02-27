@@ -21,6 +21,8 @@ package org.apache.myfaces.util;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import jakarta.faces.application.NavigationCase;
 import org.apache.myfaces.config.element.NavigationRule;
 
 /**
@@ -29,12 +31,12 @@ import org.apache.myfaces.config.element.NavigationRule;
  */
 public final class NavigationUtils
 {
-    public static Set<javax.faces.application.NavigationCase> convertNavigationCasesToAPI(NavigationRule rule)
+    public static Set<NavigationCase> convertNavigationCasesToAPI(NavigationRule rule)
     {
         Collection<? extends org.apache.myfaces.config.element.NavigationCase> configCases = 
                 rule.getNavigationCases();
-        Set<javax.faces.application.NavigationCase> apiCases = 
-                new HashSet<javax.faces.application.NavigationCase>(configCases.size());
+        Set<NavigationCase> apiCases =
+                new HashSet<NavigationCase>(configCases.size());
         
         for(org.apache.myfaces.config.element.NavigationCase configCase : configCases)
         {   
@@ -46,7 +48,7 @@ public final class NavigationUtils
                 {
                     includeViewParams = Boolean.valueOf(includeViewParamsAttribute);
                 }
-                apiCases.add(new javax.faces.application.NavigationCase(rule.getFromViewId(),
+                apiCases.add(new NavigationCase(rule.getFromViewId(),
                         configCase.getFromAction(),
                                                 configCase.getFromOutcome(),configCase.getIf(),
                         configCase.getToViewId(),
@@ -54,7 +56,7 @@ public final class NavigationUtils
             }
             else
             {
-                apiCases.add(new javax.faces.application.NavigationCase(rule.getFromViewId(),
+                apiCases.add(new NavigationCase(rule.getFromViewId(),
                         configCase.getFromAction(),
                                                 configCase.getFromOutcome(),configCase.getIf(),
                                                 configCase.getToViewId(),null,false,false));

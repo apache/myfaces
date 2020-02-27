@@ -27,18 +27,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
 import java.util.Set;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIParameter;
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.component.html.HtmlCommandScript;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchExpressionHint;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.ActionEvent;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlCommandScript;
+import jakarta.faces.component.search.SearchExpressionContext;
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.component.search.SearchExpressionHint;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.ActionEvent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.renderkit.html.HTML;
@@ -52,8 +52,8 @@ import org.apache.myfaces.shared.util.StringUtils;
 
 @JSFRenderer(
     renderKitId="HTML_BASIC",
-    family="javax.faces.Command",
-    type="javax.faces.Script")
+    family="jakarta.faces.Command",
+    type="jakarta.faces.Script")
 public class HtmlCommandScriptRenderer extends HtmlRenderer
 {
     private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
@@ -412,7 +412,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
 
         /**
          * I assume here for now that the options are the same which also
-         * can be sent via the options attribute to javax.faces.ajax
+         * can be sent via the options attribute to jakarta.faces.ajax
          * this still needs further clarifications but I assume so for now
          */
         retVal.append(buildOptions(paramBuffer, parameterList));

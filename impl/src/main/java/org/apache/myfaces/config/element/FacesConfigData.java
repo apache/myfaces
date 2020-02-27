@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+
 import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 
 
@@ -214,7 +215,7 @@ public abstract class FacesConfigData implements Serializable
 
 
     /**
-     * @return Iterator over {@link javax.faces.event.PhaseListener} implementation class names
+     * @return Iterator over {@link jakarta.faces.event.PhaseListener} implementation class names
      */
     public abstract Collection<String> getLifecyclePhaseListeners();
 

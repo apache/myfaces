@@ -26,14 +26,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.application.ResourceDependency;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitHint;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.FacesContext;
 
 /**
  *
@@ -48,7 +48,7 @@ public class RequestViewContext
     
     public static final String RESOURCE_DEPENDENCY_INSPECTED_CLASS = "oam.RDClass";
     
-    private static final String SKIP_ITERATION_HINT = "javax.faces.visit.SKIP_ITERATION";
+    private static final String SKIP_ITERATION_HINT = "jakarta.faces.visit.SKIP_ITERATION";
     
     private static final Set<VisitHint> VISIT_HINTS = Collections.unmodifiableSet( 
             EnumSet.of(VisitHint.SKIP_ITERATION));

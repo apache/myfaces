@@ -21,8 +21,8 @@ package org.apache.myfaces.view.facelets.pool;
 import java.io.Serializable;
 import java.util.Locale;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.bean.SessionScoped;
 
 /**
  *

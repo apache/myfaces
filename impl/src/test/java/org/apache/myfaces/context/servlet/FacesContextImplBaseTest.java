@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,18 +25,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;

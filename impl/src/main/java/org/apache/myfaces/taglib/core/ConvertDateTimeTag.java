@@ -23,9 +23,9 @@ import org.apache.myfaces.shared.util.LocaleUtils;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.DateTimeConverter;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.DateTimeConverter;
 import javax.servlet.jsp.JspException;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -67,7 +67,7 @@ public class ConvertDateTimeTag extends ConverterTag
         {
             CONVERTER_ID =
                     facesContext.getApplication().getExpressionFactory().createValueExpression(
-                        facesContext.getELContext(), "javax.faces.DateTime", String.class);
+                        facesContext.getELContext(), "jakarta.faces.DateTime", String.class);
         }
         else
         {

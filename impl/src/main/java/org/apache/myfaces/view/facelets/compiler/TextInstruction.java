@@ -22,8 +22,8 @@ import java.io.IOException;
 
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.view.facelets.el.ELText;
 

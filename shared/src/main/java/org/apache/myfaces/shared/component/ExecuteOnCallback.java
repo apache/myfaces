@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.shared.component;
 
-import javax.faces.context.FacesContext;
-import javax.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.component.UIComponent;
 
 /**
  * With findComponent - you get a component, but this component might

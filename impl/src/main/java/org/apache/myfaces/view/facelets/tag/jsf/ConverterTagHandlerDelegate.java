@@ -21,18 +21,18 @@ package org.apache.myfaces.view.facelets.tag.jsf;
 import java.io.IOException;
 
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.ValueHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.view.ValueHolderAttachedObjectHandler;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.ConverterHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.MetaRuleset;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagException;
-import javax.faces.view.facelets.TagHandlerDelegate;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.view.ValueHolderAttachedObjectHandler;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.ConverterHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagException;
+import jakarta.faces.view.facelets.TagHandlerDelegate;
 
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
@@ -71,8 +71,8 @@ public class ConverterTagHandlerDelegate extends TagHandlerDelegate implements V
      * See ValueHolder
      * See Converter
      * See #createConverter(FaceletContext)
-     * See javax.faces.view.facelets.FaceletHandler#apply(javax.faces.view.facelets.FaceletContext,
-     *     javax.faces.component.UIComponent)
+     * See jakarta.faces.view.facelets.FaceletHandler#apply(jakarta.faces.view.facelets.FaceletContext,
+     *     jakarta.faces.component.UIComponent)
      */
     @Override
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException

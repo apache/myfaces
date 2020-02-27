@@ -20,8 +20,8 @@ package org.apache.myfaces.push.cdi;
 
 import java.util.Map;
 import java.util.Random;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.myfaces.application.StateCache;

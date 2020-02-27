@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.html.HtmlOutcomeTargetButtonRendererBase;
@@ -29,8 +29,8 @@ import org.apache.myfaces.shared.renderkit.html.HtmlOutcomeTargetButtonRendererB
  * @version $Revision$ $Date$
  */
 @JSFRenderer(renderKitId = "HTML_BASIC",
-        family="javax.faces.OutcomeTarget",
-        type="javax.faces.Button")
+        family="jakarta.faces.OutcomeTarget",
+        type="jakarta.faces.Button")
 public class HtmlOutcomeTargetButtonRenderer extends HtmlOutcomeTargetButtonRendererBase
 {
     @Override

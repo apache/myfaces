@@ -24,9 +24,9 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Pattern;
-import javax.faces.application.ResourceVisitOption;
+import jakarta.faces.application.ResourceVisitOption;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * A resource loader implementation which loads resources from the webapp root. It uses the methods on ExternalContext

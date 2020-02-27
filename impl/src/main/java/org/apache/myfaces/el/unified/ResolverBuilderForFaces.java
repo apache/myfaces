@@ -32,7 +32,7 @@ import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 import javax.el.ResourceBundleELResolver;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
 import org.apache.myfaces.config.RuntimeConfig;

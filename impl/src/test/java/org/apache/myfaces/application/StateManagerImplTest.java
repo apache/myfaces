@@ -21,11 +21,11 @@ package org.apache.myfaces.application;
 import java.io.BufferedWriter;
 import java.io.CharArrayWriter;
 
-import javax.faces.application.StateManager;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
 import org.apache.myfaces.shared.util.StateUtils;

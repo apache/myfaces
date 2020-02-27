@@ -26,20 +26,20 @@ import java.util.List;
 import java.util.RandomAccess;
 import java.util.Set;
 
-import javax.faces.FacesException;
-import javax.faces.component.ActionSource;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchExpressionHint;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.render.ClientBehaviorRenderer;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.search.SearchExpressionContext;
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.component.search.SearchExpressionHint;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AjaxBehaviorEvent;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.render.ClientBehaviorRenderer;
 import org.apache.myfaces.shared.renderkit.html.util.SharedStringBuilder;
 
 /**
@@ -345,7 +345,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
 
         /**
          * I assume here for now that the options are the same which also
-         * can be sent via the options attribute to javax.faces.ajax
+         * can be sent via the options attribute to jakarta.faces.ajax
          * this still needs further clarifications but I assume so for now
          */
         retVal.append(buildOptions(paramBuffer, parameterList));
@@ -427,7 +427,7 @@ public class HtmlAjaxBehaviorRenderer extends ClientBehaviorRenderer
             // perf: dataHolder is a Collection : ajaxBehaviour.getExecute()
             // and ajaxBehaviour.getRender() API
             // In most cases comes here a ArrayList, because
-            // javax.faces.component.behavior.AjaxBehavior.getCollectionFromSpaceSplitString
+            // jakarta.faces.component.behavior.AjaxBehavior.getCollectionFromSpaceSplitString
             // creates it.
             if (dataHolder instanceof RandomAccess)
             {

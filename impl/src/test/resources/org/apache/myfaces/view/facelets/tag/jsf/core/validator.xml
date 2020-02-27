@@ -18,7 +18,7 @@
              xmlns:f="http://java.sun.com/jsf/core">
     <h:form id="form" prependId="false">
 		<h:inputText id="input">
-			<f:validator validatorId="javax.faces.Length"/>
+			<f:validator validatorId="jakarta.faces.Length"/>
 		</h:inputText>
 	</h:form>
 </composition>

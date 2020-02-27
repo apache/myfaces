@@ -18,23 +18,18 @@
  */
 package org.apache.myfaces.lifecycle;
 
-import static org.apache.myfaces.Assert.assertException;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.same;
 
-import java.util.HashMap;
 import java.util.Locale;
 
-import javax.faces.application.ViewExpiredException;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.event.PhaseId;
 
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.FacesTestCase;
-import org.apache.myfaces.TestRunner;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -58,7 +53,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.lifecycle.RestoreViewExecutor#execute(javax.faces.context.FacesContext)}.
+     * {@link org.apache.myfaces.lifecycle.RestoreViewExecutor#execute(FacesContext)}.
      */
     public void testExecuteWithExistingViewRoot()
     {
@@ -82,7 +77,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.lifecycle.RestoreViewExecutor#execute(javax.faces.context.FacesContext)}.
+     * {@link org.apache.myfaces.lifecycle.RestoreViewExecutor#execute(FacesContext)}.
      *//*
     public void testExecuteWOExistingViewRootNoPostBack()
     {
@@ -118,7 +113,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.lifecycle.RestoreViewExecutor#execute(javax.faces.context.FacesContext)}.
+     * {@link org.apache.myfaces.lifecycle.RestoreViewExecutor#execute(FacesContext)}.
      *//*
     public void testExecuteWOExistingViewRootPostBack()
     {
@@ -143,7 +138,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.lifecycle.RestoreViewExecutor#execute(javax.faces.context.FacesContext)}.
+     * {@link org.apache.myfaces.lifecycle.RestoreViewExecutor#execute(FacesContext)}.
      *//*
     public void testExecuteWOExistingViewRootPostBackAndViewExpired()
     {
@@ -182,10 +177,10 @@ public class RestoreViewExecutorTest extends FacesTestCase
     public void testGetRestoreViewSupport() throws Exception
     {
         expect(_facesContext.getExternalContext()).andReturn(_externalContext).anyTimes();
-        expect(_externalContext.getInitParameter("javax.faces.FACELETS_VIEW_MAPPINGS")).andReturn(null).anyTimes();
+        expect(_externalContext.getInitParameter("jakarta.faces.FACELETS_VIEW_MAPPINGS")).andReturn(null).anyTimes();
         expect(_externalContext.getInitParameter("facelets.VIEW_MAPPINGS")).andReturn(null).anyTimes();
-        expect(_externalContext.getInitParameter("javax.faces.FACELETS_SUFFIX")).andReturn(null).anyTimes();
-        expect(_externalContext.getInitParameter("javax.faces.DEFAULT_SUFFIX")).andReturn(null).anyTimes();
+        expect(_externalContext.getInitParameter("jakarta.faces.FACELETS_SUFFIX")).andReturn(null).anyTimes();
+        expect(_externalContext.getInitParameter("jakarta.faces.DEFAULT_SUFFIX")).andReturn(null).anyTimes();
         _mocksControl.replay();
         assertTrue(DefaultRestoreViewSupport.class.equals(new RestoreViewExecutor().getRestoreViewSupport(_facesContext).getClass()));
         _mocksControl.verify();

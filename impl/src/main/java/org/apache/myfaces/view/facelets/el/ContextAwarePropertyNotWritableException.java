@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
-import javax.faces.view.Location;
+import jakarta.faces.view.Location;
 
 /**
  * Implementation of types {@link javax.el.PropertyNotWritableException},
- * {@link ContextAware} and {@link javax.faces.FacesWrapper}
+ * {@link ContextAware} and {@link jakarta.faces.FacesWrapper}
  *
  * @author martinkoci
  *

@@ -20,10 +20,10 @@ package org.apache.myfaces.view.facelets.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.util.ClassUtils;
 
@@ -125,8 +125,8 @@ public class FaceletsViewDeclarationLanguageUtils
         {
             for (UIComponent component : componentResources)
             {
-                if ("javax.faces.resource.Script".equals(component.getRendererType()) ||
-                    "javax.faces.resource.Stylesheet".equals(component.getRendererType()))
+                if ("jakarta.faces.resource.Script".equals(component.getRendererType()) ||
+                    "jakarta.faces.resource.Stylesheet".equals(component.getRendererType()))
                 {
                     String resourceName = (String) component.getAttributes().get(JSFAttr.NAME_ATTR);
                     String libraryName = (String) component.getAttributes().get(JSFAttr.LIBRARY_ATTR);

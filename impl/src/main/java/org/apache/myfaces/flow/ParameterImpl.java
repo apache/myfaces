@@ -19,7 +19,7 @@
 package org.apache.myfaces.flow;
 
 import javax.el.ValueExpression;
-import javax.faces.flow.Parameter;
+import jakarta.faces.flow.Parameter;
 
 /**
  *

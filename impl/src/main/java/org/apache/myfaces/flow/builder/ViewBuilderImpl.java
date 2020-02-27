@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.flow.builder;
 
-import javax.faces.flow.builder.ViewBuilder;
+import jakarta.faces.flow.builder.ViewBuilder;
 import org.apache.myfaces.flow.FlowImpl;
 import org.apache.myfaces.flow.ViewNodeImpl;
 

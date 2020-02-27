@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.view.facelets;
 
-import javax.faces.application.StateManager;
-import javax.faces.component.UIViewRoot;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;

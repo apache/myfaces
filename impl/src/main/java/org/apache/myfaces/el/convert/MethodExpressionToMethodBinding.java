@@ -20,19 +20,19 @@ package org.apache.myfaces.el.convert;
 
 import javax.el.ELException;
 import javax.el.MethodExpression;
-import javax.faces.component.StateHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.MethodNotFoundException;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.MethodNotFoundException;
 
 /**
  * Converts a MethodExpression to a MethodBinding. See JSF 1.2 spec section 5.8.4
  * 
- * ATTENTION: If you make changes to this class, treat javax.faces.component._MethodExpressionToMethodBinding
+ * ATTENTION: If you make changes to this class, treat jakarta.faces.component._MethodExpressionToMethodBinding
  * accordingly.
  * 
- * See javax.faces.component._MethodExpressionToMethodBinding
+ * See jakarta.faces.component._MethodExpressionToMethodBinding
  * 
  * @author Stan Silvert
  */
@@ -70,7 +70,7 @@ public final class MethodExpressionToMethodBinding extends MethodBinding impleme
         }
         catch (javax.el.MethodNotFoundException e)
         {
-            throw new javax.faces.el.MethodNotFoundException(e);
+            throw new MethodNotFoundException(e);
         }
     }
 
@@ -85,7 +85,7 @@ public final class MethodExpressionToMethodBinding extends MethodBinding impleme
         }
         catch (javax.el.MethodNotFoundException e)
         {
-            throw new javax.faces.el.MethodNotFoundException(e);
+            throw new MethodNotFoundException(e);
         }
         catch (ELException e)
         {

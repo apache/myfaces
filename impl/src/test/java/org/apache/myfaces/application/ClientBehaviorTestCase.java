@@ -21,16 +21,16 @@ package org.apache.myfaces.application;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.FactoryFinder;
-import javax.faces.application.ResourceDependencies;
-import javax.faces.application.ResourceDependency;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIComponentBase;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIPanel;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorBase;
-import javax.faces.component.behavior.FacesBehavior;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ResourceDependencies;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorBase;
+import jakarta.faces.component.behavior.FacesBehavior;
 
 import org.apache.myfaces.component.ComponentResourceContainer;
 import org.apache.myfaces.config.RuntimeConfig;
@@ -102,9 +102,9 @@ public class ClientBehaviorTestCase extends AbstractJsfConfigurableMockTestCase
 
     public static class UITestComponentWithBehavior extends UIComponentBase
     {
-        public static final String COMPONENT_TYPE = "javax.faces.UITestComponentWithBehavior";
-        public static final String COMPONENT_FAMILY = "javax.faces.UITestComponentWithBehavior";
-        public static final String DEFAULT_RENDERER_TYPE = "javax.faces.UITestComponentWithBehavior";
+        public static final String COMPONENT_TYPE = "jakarta.faces.UITestComponentWithBehavior";
+        public static final String COMPONENT_FAMILY = "jakarta.faces.UITestComponentWithBehavior";
+        public static final String DEFAULT_RENDERER_TYPE = "jakarta.faces.UITestComponentWithBehavior";
 
         static private final java.util.Collection<String> CLIENT_EVENTS_LIST =
             java.util.Collections.unmodifiableCollection(

@@ -28,8 +28,8 @@ import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessProducer;
 import javax.enterprise.inject.spi.Producer;
-import javax.faces.flow.Flow;
-import javax.faces.flow.builder.FlowDefinition;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.builder.FlowDefinition;
 
 /**
  * This extension is responsible of scan flow definitions through CDI. For example:

@@ -19,13 +19,13 @@
 package org.apache.myfaces.shared.renderkit.html.util;
 
 import java.io.IOException;
-import javax.faces.FacesWrapper;
+import jakarta.faces.FacesWrapper;
 
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
@@ -38,7 +38,7 @@ import org.apache.myfaces.shared.resource.ContractResource;
 public class ResourceUtils
 {
     @Deprecated //Use the one from JSF 2.3 ResourceHandler
-    public final static String JAVAX_FACES_LIBRARY_NAME = "javax.faces";
+    public final static String JAVAX_FACES_LIBRARY_NAME = "jakarta.faces";
     @Deprecated //Use the one from JSF 2.3 ResourceHandler
     public final static String JSF_JS_RESOURCE_NAME = "jsf.js";
 
@@ -64,10 +64,10 @@ public class ResourceUtils
     public final static String BODY_TARGET = "body";
     public final static String FORM_TARGET = "form";
 
-    public static final String JAVAX_FACES_OUTPUT_COMPONENT_TYPE = "javax.faces.Output";
-    public static final String JAVAX_FACES_TEXT_RENDERER_TYPE = "javax.faces.Text";
-    public static final String DEFAULT_SCRIPT_RENDERER_TYPE = "javax.faces.resource.Script";
-    public static final String DEFAULT_STYLESHEET_RENDERER_TYPE = "javax.faces.resource.Stylesheet";
+    public static final String JAVAX_FACES_OUTPUT_COMPONENT_TYPE = "jakarta.faces.Output";
+    public static final String JAVAX_FACES_TEXT_RENDERER_TYPE = "jakarta.faces.Text";
+    public static final String DEFAULT_SCRIPT_RENDERER_TYPE = "jakarta.faces.resource.Script";
+    public static final String DEFAULT_STYLESHEET_RENDERER_TYPE = "jakarta.faces.resource.Stylesheet";
 
     public static void markScriptAsRendered(FacesContext facesContext, String libraryName, String resourceName)
     {

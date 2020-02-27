@@ -20,10 +20,10 @@
 package org.apache.myfaces.push;
 
 import java.io.IOException;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.Renderer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 
 /**
@@ -31,7 +31,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRendere
  */
 @JSFRenderer(
     renderKitId = "HTML_BASIC",
-    family = "javax.faces.Output",
+    family = "jakarta.faces.Output",
     type = "org.apache.myfaces.WebsocketInit")
 public class WebsocketInitRenderer extends Renderer
 {

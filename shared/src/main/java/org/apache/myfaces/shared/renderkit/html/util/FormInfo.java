@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.shared.renderkit.html.util;
 
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 
 public class FormInfo
 {

@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.renderkit.html.behavior;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.component.html.HtmlBody;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlBody;
 
 import org.apache.myfaces.shared.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.shared.renderkit.html.HTML;

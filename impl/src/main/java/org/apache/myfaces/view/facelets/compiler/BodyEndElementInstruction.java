@@ -22,8 +22,8 @@ import java.io.IOException;
 
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
-import javax.faces.application.ProjectStage;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils;
 

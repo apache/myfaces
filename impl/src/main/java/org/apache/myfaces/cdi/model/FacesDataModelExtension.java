@@ -32,8 +32,8 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessManagedBean;
-import javax.faces.model.DataModel;
-import javax.faces.model.FacesDataModel;
+import jakarta.faces.model.DataModel;
+import jakarta.faces.model.FacesDataModel;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.shared.util.ClassUtils;
 

@@ -20,8 +20,8 @@ package org.apache.myfaces.taglib.core;
 
 import org.apache.myfaces.convert.ConverterUtils;
 
-import javax.faces.validator.DoubleRangeValidator;
-import javax.faces.validator.Validator;
+import jakarta.faces.validator.DoubleRangeValidator;
+import jakarta.faces.validator.Validator;
 import javax.servlet.jsp.JspException;
 
 /**
@@ -33,7 +33,7 @@ public class ValidateDoubleRangeTag extends GenericMinMaxValidatorTag<Double>
 {
     private static final long serialVersionUID = 6396116656224588016L;
 
-    private static final String VALIDATOR_ID = "javax.faces.DoubleRange";
+    private static final String VALIDATOR_ID = "jakarta.faces.DoubleRange";
 
     @Override
     protected Validator createValidator() throws JspException

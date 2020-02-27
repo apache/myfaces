@@ -22,17 +22,17 @@ import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.context.ExceptionHandlerFactory;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.ExternalContextFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.context.FacesContextFactory;
-import javax.faces.context.PartialViewContextFactory;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.render.RenderKitFactory;
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.context.ExceptionHandlerFactory;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContextFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.FacesContextFactory;
+import jakarta.faces.context.PartialViewContextFactory;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.shared.util.ClassUtils;
@@ -64,7 +64,7 @@ public class FacesContextFactoryImpl extends FacesContextFactory implements Rele
     private final PartialViewContextFactory _partialViewContextFactory;
     
     /**
-     * This var is assigned as the same as javax.faces.context.ExternalContext._firstInstance,
+     * This var is assigned as the same as jakarta.faces.context.ExternalContext._firstInstance,
      * and since it is a static reference and does not change, we can cache it here safely.
      * 
      * We need
@@ -78,7 +78,7 @@ public class FacesContextFactoryImpl extends FacesContextFactory implements Rele
         ThreadLocal<ExternalContext> firstExternalContextInstance = null;
         try
         {
-            Class clazz = ClassUtils.classForName("javax.faces.context._MyFacesExternalContextHelper");
+            Class clazz = ClassUtils.classForName("jakarta.faces.context._MyFacesExternalContextHelper");
             Field externalContextFirstInstance = clazz.getDeclaredField("firstInstance");
             externalContextFirstInstance.setAccessible(true);
             

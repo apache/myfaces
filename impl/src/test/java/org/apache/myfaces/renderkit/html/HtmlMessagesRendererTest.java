@@ -19,10 +19,10 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
-import javax.faces.FactoryFinder;
+import jakarta.faces.FactoryFinder;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.component.html.HtmlMessages;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.html.HtmlMessages;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;

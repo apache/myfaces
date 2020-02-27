@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.renderkit.html.behavior;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UISelectItem;
-import javax.faces.component.html.HtmlSelectOneMenu;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.html.HtmlSelectOneMenu;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)

@@ -19,7 +19,7 @@
 
 package org.apache.myfaces.component.search;
 
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 
 /**
  *

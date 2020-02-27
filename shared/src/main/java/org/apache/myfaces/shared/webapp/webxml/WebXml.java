@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.webapp.FacesServlet;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.webapp.FacesServlet;
 
 import org.apache.myfaces.shared.config.MyfacesConfig;
 

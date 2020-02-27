@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.shared.context.flash;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Implement this interface, so ClientWindowFlashTokenLRUMap can remove the resources

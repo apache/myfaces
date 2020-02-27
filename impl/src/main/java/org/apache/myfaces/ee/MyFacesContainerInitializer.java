@@ -27,33 +27,33 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.ResourceDependencies;
-import javax.faces.application.ResourceDependency;
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.CustomScoped;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.NoneScoped;
-import javax.faces.bean.ReferencedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
-import javax.faces.component.FacesComponent;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.FacesBehavior;
-import javax.faces.context.ExternalContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
-import javax.faces.event.ListenerFor;
-import javax.faces.event.ListenersFor;
-import javax.faces.event.NamedEvent;
-import javax.faces.model.FacesDataModel;
-import javax.faces.render.FacesBehaviorRenderer;
-import javax.faces.render.FacesRenderer;
-import javax.faces.render.Renderer;
-import javax.faces.validator.FacesValidator;
-import javax.faces.validator.Validator;
-import javax.faces.webapp.FacesServlet;
+import jakarta.faces.application.ResourceDependencies;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.bean.ApplicationScoped;
+import jakarta.faces.bean.CustomScoped;
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.bean.ManagedProperty;
+import jakarta.faces.bean.NoneScoped;
+import jakarta.faces.bean.ReferencedBean;
+import jakarta.faces.bean.RequestScoped;
+import jakarta.faces.bean.SessionScoped;
+import jakarta.faces.bean.ViewScoped;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.FacesBehavior;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.FacesConverter;
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.ListenersFor;
+import jakarta.faces.event.NamedEvent;
+import jakarta.faces.model.FacesDataModel;
+import jakarta.faces.render.FacesBehaviorRenderer;
+import jakarta.faces.render.FacesRenderer;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.validator.FacesValidator;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.webapp.FacesServlet;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
@@ -176,7 +176,7 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
         // 2. A faces-config.xml file is found in the META-INF directory of a jar in the application's classpath.
         // 3. A filename ending in .faces-config.xml is found in the META-INF directory of a jar in the 
         //    application's classpath.
-        // 4. The javax.faces.CONFIG_FILES context param is declared in web.xml or web-fragment.xml.
+        // 4. The jakarta.faces.CONFIG_FILES context param is declared in web.xml or web-fragment.xml.
         // 5. The Set of classes passed to the onStartup() method of the ServletContainerInitializer 
         //    implementation is not empty.
         if ((clazzes != null && !clazzes.isEmpty()) || isFacesConfigPresent(servletContext))
@@ -302,8 +302,8 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
                 return true;
             }
 
-            // 4. The javax.faces.CONFIG_FILES context param is declared in web.xml or web-fragment.xml.
-            // check for alternate faces-config files specified by javax.faces.CONFIG_FILES
+            // 4. The jakarta.faces.CONFIG_FILES context param is declared in web.xml or web-fragment.xml.
+            // check for alternate faces-config files specified by jakarta.faces.CONFIG_FILES
             String configFilesAttrValue = servletContext.getInitParameter(FacesServlet.CONFIG_FILES_ATTR);
             if (configFilesAttrValue != null)
             {

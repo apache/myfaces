@@ -20,7 +20,7 @@ package org.apache.myfaces.taglib.core;
 
 import org.apache.myfaces.shared.taglib.UIComponentELTagBase;
 
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 import javax.el.ValueExpression;
 
 /**
@@ -35,7 +35,7 @@ public class ParamTag extends UIComponentELTagBase
     @Override
     public String getComponentType()
     {
-        return "javax.faces.Parameter";
+        return "jakarta.faces.Parameter";
     }
 
     @Override

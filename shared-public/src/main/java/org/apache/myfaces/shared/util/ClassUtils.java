@@ -19,8 +19,8 @@
 package org.apache.myfaces.shared.util;
 
 import javax.el.ExpressionFactory;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;

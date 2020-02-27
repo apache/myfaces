@@ -19,10 +19,11 @@
 package org.apache.myfaces;
 
 import javax.el.ELContext;
-import javax.faces.application.Application;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
+import jakarta.faces.context.MockFacesContext;
 import junit.framework.TestCase;
 
 import org.apache.myfaces.test.mock.MockFacesContext12;
@@ -46,7 +47,7 @@ public abstract class FacesTestCase extends TestCase
         _mocksControl = EasyMock.createControl();
         _externalContext = _mocksControl.createMock(ExternalContext.class);
         _facesContext = _mocksControl.createMock(FacesContext.class);
-        MockFacesContext12.setCurrentInstance(_facesContext);
+        MockFacesContext.setCurrentInstance(_facesContext);
         _application = _mocksControl.createMock(Application.class);
         _elContext = _mocksControl.createMock(ELContext.class);        
     }

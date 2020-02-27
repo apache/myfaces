@@ -20,10 +20,10 @@ package org.apache.myfaces.view.facelets.tag.jsf.html;
 
 import java.util.Iterator;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.FaceletContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.FaceletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;

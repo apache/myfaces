@@ -20,8 +20,8 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
 
-import javax.faces.component.UIParameter;
-import javax.faces.component.html.HtmlOutputFormat;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.html.HtmlOutputFormat;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
-import javax.faces.application.ResourceHandler;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.context.ExternalContext;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.spi.ResourceLibraryContractsProvider;
@@ -36,8 +36,8 @@ import org.apache.myfaces.view.facelets.util.Classpath;
 public class DefaultResourceLibraryContractsProvider extends ResourceLibraryContractsProvider
 {
     private static final String META_INF_CONTRACTS_PREFIX = "META-INF/contracts/";
-    private static final String META_INF_CONTRACTS_SUFFIX = "javax.faces.contract.xml";
-    private static final String META_INF_CONTRACTS_FILE = "/javax.faces.contract.xml";
+    private static final String META_INF_CONTRACTS_SUFFIX = "jakarta.faces.contract.xml";
+    private static final String META_INF_CONTRACTS_FILE = "/jakarta.faces.contract.xml";
     private static final String CONTRACTS = "contracts";
 
     @Override
@@ -49,7 +49,7 @@ public class DefaultResourceLibraryContractsProvider extends ResourceLibraryCont
         
         if (directory.startsWith("/"))
         {
-            throw new IllegalStateException("javax.faces.WEBAPP_CONTRACTS_DIRECTORY cannot start with '/");
+            throw new IllegalStateException("jakarta.faces.WEBAPP_CONTRACTS_DIRECTORY cannot start with '/");
         }
         if (directory.endsWith("/"))
         {

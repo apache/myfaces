@@ -21,7 +21,7 @@ package org.apache.myfaces.shared.config;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
@@ -128,10 +128,10 @@ public class MyfacesConfig
     public static final long INIT_PARAM_CONFIG_REFRESH_PERIOD_DEFAULT = 2;
 
     /**
-     * Define if the input field that should store the state (javax.faces.ViewState) should render 
-     * id="javax.faces.ViewState".
+     * Define if the input field that should store the state (jakarta.faces.ViewState) should render
+     * id="jakarta.faces.ViewState".
      * 
-     * JSF API 1.2 defines a "javax.faces.ViewState" client parameter, that must be rendered as both the "name"
+     * JSF API 1.2 defines a "jakarta.faces.ViewState" client parameter, that must be rendered as both the "name"
      * and the "id" attribute of the hidden input that is rendered for the purpose of state saving
      * (see ResponseStateManager.VIEW_STATE_PARAM).
      * Actually this causes duplicate id attributes and thus invalid XHTML pages when multiple forms are rendered on
@@ -203,7 +203,7 @@ public class MyfacesConfig
     
     /**
      * Define an alternate class name that will be used to initialize MyFaces, instead the default 
-     * javax.faces.webapp.FacesServlet.
+     * jakarta.faces.webapp.FacesServlet.
      * 
      * <p>This helps MyFaces to detect the mappings and other additional configuration used to setup the 
      * environment, and prevent abort initialization if no FacesServlet config is detected.
@@ -299,7 +299,7 @@ public class MyfacesConfig
 
     /**
      * Enable or disable a cache used to "remember" the generated facelets unique ids and reduce 
-     * the impact on memory usage, only active if javax.faces.FACELETS_REFRESH_PERIOD is -1 (no refresh).
+     * the impact on memory usage, only active if jakarta.faces.FACELETS_REFRESH_PERIOD is -1 (no refresh).
      */
     @JSFWebConfigParam(defaultValue = "true", since = "2.0.13, 2.1.7", expectedValues="true, false", 
             group="viewhandler", tags="performance",
@@ -320,15 +320,15 @@ public class MyfacesConfig
     public static final int INIT_PARAM_COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT = 100;
 
     /**
-    * If set false, myfaces won't support JSP and javax.faces.el. JSP are deprecated in JSF 2.X, javax.faces.el in 
+    * If set false, myfaces won't support JSP and jakarta.faces.el. JSP are deprecated in JSF 2.X, jakarta.faces.el in
     * in JSF 1.2. Default value is true. 
     * 
     * If this property is set is false, JSF 1.1 VariableResolver and PropertyResolver config (replaced in JSF 1.2 by
     * ELResolver) and all related logic for JSP is skipped, making EL evaluation faster.  
     */
     @JSFWebConfigParam(since="2.0.13,2.1.7", expectedValues="true,false", defaultValue="true",
-         desc="If set false, myfaces won't support JSP and javax.faces.el. JSP are deprecated in " +
-         "JSF 2.X, javax.faces.el in in JSF 1.2. Default value is true.",
+         desc="If set false, myfaces won't support JSP and jakarta.faces.el. JSP are deprecated in " +
+         "JSF 2.X, jakarta.faces.el in in JSF 1.2. Default value is true.",
          group="EL", tags="performance ")
     public final static String INIT_PARAM_SUPPORT_JSP_AND_FACES_EL = "org.apache.myfaces.SUPPORT_JSP_AND_FACES_EL";
     public final static boolean INIT_PARAM_SUPPORT_JSP_AND_FACES_EL_DEFAULT = true;
@@ -456,7 +456,7 @@ public class MyfacesConfig
     
     /**
      * Indicate the max number of flash tokens stored into session. It is only active when 
-     * javax.faces.CLIENT_WINDOW_MODE is enabled and javax.faces.STATE_SAVING_METHOD is set
+     * jakarta.faces.CLIENT_WINDOW_MODE is enabled and jakarta.faces.STATE_SAVING_METHOD is set
      * to "server". Each flash token is associated to one client window id at
      * the same time, so this param is related to the limit of active client windows per session. 
      * By default is the same number as in 
@@ -469,7 +469,7 @@ public class MyfacesConfig
     
     /**
      * Indicate the max number of client window ids stored into session by faces flow. It is only active when 
-     * javax.faces.CLIENT_WINDOW_MODE is enabled and javax.faces.STATE_SAVING_METHOD is set
+     * jakarta.faces.CLIENT_WINDOW_MODE is enabled and jakarta.faces.STATE_SAVING_METHOD is set
      * to "server". This param is related to the limit of active client 
      * windows per session, and it is used to cleanup flow scope beans when a client window or view becomes 
      * invalid. 
@@ -1013,7 +1013,7 @@ public class MyfacesConfig
    }
 
     /**
-     * JSF API 1.2 defines a "javax.faces.ViewState" client parameter, that must be rendered as both the "name"
+     * JSF API 1.2 defines a "jakarta.faces.ViewState" client parameter, that must be rendered as both the "name"
      * and the "id" attribute of the hidden input that is rendered for the purpose of state saving
      * (see ResponseStateManager.VIEW_STATE_PARAM).
      * Actually this causes duplicate id attributes and thus invalid XHTML pages when multiple forms are rendered on
@@ -1023,7 +1023,7 @@ public class MyfacesConfig
      * <li>false - to omit rendering of the id attribute (which is only needed for very special AJAX/Javascript 
      * components)</li></ul>
      * <p>Default value is: true (for backwards compatibility and JSF 1.2 compliancy) </p>
-     * @return true, if the client state hidden input "javax.faces.ViewState" id attribute should be rendered
+     * @return true, if the client state hidden input "jakarta.faces.ViewState" id attribute should be rendered
      */
     public boolean isRenderViewStateId()
     {

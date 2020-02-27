@@ -24,7 +24,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
-import javax.faces.view.ViewScoped;
+import jakarta.faces.view.ViewScoped;
 
 /**
  * Handle ViewScope related features.

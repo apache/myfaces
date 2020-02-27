@@ -33,12 +33,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import javax.faces.FacesWrapper;
-import javax.faces.application.StateManager;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.application.StateManager;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.lifecycle.ClientWindow;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.lifecycle.ClientWindow;
 
 import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.application.viewstate.token.ServiceSideStateTokenProcessor;
@@ -109,7 +109,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
     public static final boolean DEFAULT_COMPRESS_SERVER_STATE_PARAM = true;
 
     /**
-     * Default value for <code>javax.faces.SERIALIZE_SERVER_STATE and 
+     * Default value for <code>jakarta.faces.SERIALIZE_SERVER_STATE and
      * org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</code> context parameter.
      */
     public static final boolean DEFAULT_SERIALIZE_STATE_IN_SESSION = false;

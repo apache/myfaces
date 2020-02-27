@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 import org.apache.myfaces.shared.util.ClassUtils;
 
 /**
- * <p>{@link javax.faces.FactoryFinder} is a class with three methods:</p>
+ * <p>{@link jakarta.faces.FactoryFinder} is a class with three methods:</p>
  * 
  * <code>
  * public final class FactoryFinder
@@ -53,7 +53,7 @@ import org.apache.myfaces.shared.util.ClassUtils;
  * <ul>
  * <li>Look factories on META-INF/services/[factoryClassName]</li>
  * <li>Look META-INF/faces-config.xml or META-INF/[prefix].faces-config.xml</li>
- * <li>Look the files pointed by javax.faces.CONFIG_FILES web config param 
+ * <li>Look the files pointed by jakarta.faces.CONFIG_FILES web config param
  *     (note WEB-INF/web.xml is taken into consideration)</li>
  * <li>Look the applicationFacesConfig on WEB-INF/faces-config.xml</li>
  * </ul>
@@ -111,7 +111,7 @@ import org.apache.myfaces.shared.util.ClassUtils;
  *     The singleton will be responsible to decide which FactoryFinderProvider 
  *     should be used, based on the current thread information.</li>
  * <li>Add utility methods to retrieve the required objects and call the methods 
- *     using reflection from javax.faces.FactoryFinder</li>
+ *     using reflection from jakarta.faces.FactoryFinder</li>
  * </ol>
  * 
  * <p>This class implements the proposed solution. Note by definition, this factory 
@@ -127,7 +127,7 @@ public abstract class FactoryFinderProviderFactory
     private static volatile FactoryFinderProviderFactory instance = null;
     
     /**
-     * Set the instance to be used by {@link javax.faces.FactoryFinder} to resolve
+     * Set the instance to be used by {@link jakarta.faces.FactoryFinder} to resolve
      * factories. 
      * 
      * <p>This method should be called before any "web context" is initialized in the
@@ -147,7 +147,7 @@ public abstract class FactoryFinderProviderFactory
         // this call are met, _initialized should be false.
         try
         {
-            Class clazz = ClassUtils.classForName("javax.faces.FactoryFinder");
+            Class clazz = ClassUtils.classForName("jakarta.faces.FactoryFinder");
             Field field = clazz.getDeclaredField("initialized");
             field.setAccessible(true);
             
@@ -185,7 +185,7 @@ public abstract class FactoryFinderProviderFactory
     
     /**
      * Retrieve the installed instance of this class to be used by 
-     * {@link javax.faces.FactoryFinder}. If no factory is set, return null
+     * {@link jakarta.faces.FactoryFinder}. If no factory is set, return null
      * 
      * @return
      */

@@ -22,10 +22,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.ResourceVisitOption;
-import javax.faces.application.StateManager;
-import javax.faces.component.UICommand;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.ResourceVisitOption;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UICommand;
 
 
 import org.apache.myfaces.config.RuntimeConfig;
@@ -51,9 +51,9 @@ public class SingleContractMyFacesRequestTestCase extends AbstractMyFacesRequest
         super.setUpWebConfigParams();
         servletContext.addInitParameter("org.apache.myfaces.annotation.SCAN_PACKAGES","org.apache.myfaces.application.contracts");
         servletContext.addInitParameter(StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_CLIENT);
-        servletContext.addInitParameter("javax.faces.PARTIAL_STATE_SAVING", "true");
+        servletContext.addInitParameter("jakarta.faces.PARTIAL_STATE_SAVING", "true");
         servletContext.addInitParameter(MyfacesConfig.INIT_PARAM_REFRESH_TRANSIENT_BUILD_ON_PSS, "auto");
-        servletContext.addInitParameter("javax.faces.CONFIG_FILES", "/no-contract-faces-config.xml");
+        servletContext.addInitParameter("jakarta.faces.CONFIG_FILES", "/no-contract-faces-config.xml");
         servletContext.addInitParameter(ProjectStage.PROJECT_STAGE_PARAM_NAME, ProjectStage.Production.toString());
     }
     

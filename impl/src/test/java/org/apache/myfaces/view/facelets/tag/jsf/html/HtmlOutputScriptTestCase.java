@@ -20,8 +20,8 @@ package org.apache.myfaces.view.facelets.tag.jsf.html;
 
 import java.io.StringWriter;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;

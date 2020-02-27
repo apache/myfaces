@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.test.component;
 
-import javax.faces.render.FacesRenderer;
-import javax.faces.render.Renderer;
+import jakarta.faces.render.FacesRenderer;
+import jakarta.faces.render.Renderer;
 
 @FacesRenderer(componentFamily = "oam.my.UIPanel2", rendererType = "oam.my.UIPanel2")
 public class MyUIPanel2Renderer extends Renderer

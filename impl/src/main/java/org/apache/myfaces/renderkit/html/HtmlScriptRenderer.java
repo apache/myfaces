@@ -22,20 +22,20 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.Resource;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.event.ListenerFor;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.event.PreRenderViewEvent;
-import javax.faces.render.Renderer;
-import javax.faces.view.Location;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.event.PreRenderViewEvent;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.view.Location;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
@@ -52,7 +52,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * @version $Revision$ $Date$
  * @since 2.0
  */
-@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.resource.Script")
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Output", type = "jakarta.faces.resource.Script")
 @ListenerFor(systemEventClass = PostAddToViewEvent.class)
 public class HtmlScriptRenderer extends Renderer implements ComponentSystemEventListener
 {

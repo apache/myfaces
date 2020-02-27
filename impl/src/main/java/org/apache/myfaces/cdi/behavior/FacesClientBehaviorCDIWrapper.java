@@ -20,14 +20,14 @@
 package org.apache.myfaces.cdi.behavior;
 
 import java.util.Set;
-import javax.faces.FacesWrapper;
-import javax.faces.component.PartialStateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.behavior.ClientBehaviorHint;
-import javax.faces.context.FacesContext;
-import javax.faces.event.BehaviorEvent;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.component.PartialStateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.behavior.ClientBehaviorHint;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.BehaviorEvent;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
 /**

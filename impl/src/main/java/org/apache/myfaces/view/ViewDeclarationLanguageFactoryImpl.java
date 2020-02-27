@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewDeclarationLanguage;
-import javax.faces.view.ViewDeclarationLanguageFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.view.ViewDeclarationLanguageFactory;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.config.MyfacesConfig;
@@ -48,7 +48,7 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
      * Disable facelets VDL from the current application project. 
      */
     @JSFWebConfigParam(since="2.0", defaultValue="false", expectedValues="true,false", group="viewhandler")
-    public static final String PARAM_DISABLE_JSF_FACELET = "javax.faces.DISABLE_FACELET_JSF_VIEWHANDLER";
+    public static final String PARAM_DISABLE_JSF_FACELET = "jakarta.faces.DISABLE_FACELET_JSF_VIEWHANDLER";
 
     private static final String FACELETS_1_VIEW_HANDLER = "com.sun.facelets.FaceletViewHandler";
 
@@ -148,7 +148,7 @@ public class ViewDeclarationLanguageFactoryImpl extends ViewDeclarationLanguageF
     
     /**
      * Determines if the current application uses Facelets-2.
-     * To accomplish that it looks at the init param javax.faces.DISABLE_FACELET_JSF_VIEWHANDLER,
+     * To accomplish that it looks at the init param jakarta.faces.DISABLE_FACELET_JSF_VIEWHANDLER,
      * 
      * @param context the <code>FacesContext</code>
      * @return <code>true</code> if the current application uses the built in Facelets-2,

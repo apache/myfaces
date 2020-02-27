@@ -20,7 +20,7 @@ package org.apache.myfaces.cdi.validator;
 
 import java.util.Objects;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.validator.FacesValidator;
+import jakarta.faces.validator.FacesValidator;
 
 /**
  *

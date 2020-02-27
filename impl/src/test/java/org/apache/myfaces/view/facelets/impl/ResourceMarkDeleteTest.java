@@ -20,9 +20,9 @@ package org.apache.myfaces.view.facelets.impl;
 
 import java.io.IOException;
 import java.util.List;
-import javax.faces.application.StateManager;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.junit.Assert;
 import org.junit.Test;

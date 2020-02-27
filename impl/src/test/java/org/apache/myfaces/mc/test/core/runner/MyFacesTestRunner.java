@@ -20,7 +20,7 @@ package org.apache.myfaces.mc.test.core.runner;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.mc.test.core.annotation.TestContainer;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderFactory;

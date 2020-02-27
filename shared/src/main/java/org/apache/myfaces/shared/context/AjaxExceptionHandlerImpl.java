@@ -28,16 +28,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialResponseWriter;
-import javax.faces.context.PartialViewContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ExceptionQueuedEvent;
-import javax.faces.event.ExceptionQueuedEventContext;
-import javax.faces.event.SystemEvent;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialResponseWriter;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ExceptionQueuedEvent;
+import jakarta.faces.event.ExceptionQueuedEventContext;
+import jakarta.faces.event.SystemEvent;
 
 /**
  * 
@@ -62,8 +62,8 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandler
     //required an Ajax response (PartialViewContext.isAjaxRequest() returns true)
     //
     //Implementations may choose to include a specialized ExceptionHandler for 
-    //Ajax that extends from javax.faces.context.ExceptionHandlerWrapper, and 
-    //have the javax.faces.context.ExceptionHandlerFactory implementation 
+    //Ajax that extends from jakarta.faces.context.ExceptionHandlerWrapper, and
+    //have the jakarta.faces.context.ExceptionHandlerFactory implementation
     //install it if the environment requires it. ..."
     
     private static final Logger log = Logger.getLogger(AjaxExceptionHandlerImpl.class.getName());
@@ -164,7 +164,7 @@ public class AjaxExceptionHandlerImpl extends ExceptionHandler
                     Throwable exception = context.getException();
                     
                     // Upon encountering the first such Exception that is not an instance of
-                    // javax.faces.event.AbortProcessingException
+                    // jakarta.faces.event.AbortProcessingException
                     if (!shouldSkip(exception))
                     {
                         // set handledAndThrown so that getHandledExceptionQueuedEvent() returns this event

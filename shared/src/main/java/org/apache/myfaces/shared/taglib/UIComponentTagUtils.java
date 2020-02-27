@@ -20,21 +20,21 @@ package org.apache.myfaces.shared.taglib;
 
 import java.util.logging.Logger;
 
-import javax.faces.component.ActionSource;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIGraphic;
-import javax.faces.component.UIParameter;
-import javax.faces.component.UISelectBoolean;
-import javax.faces.component.ValueHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.ValueBinding;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ValueChangeEvent;
-import javax.faces.webapp.UIComponentTag;
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIGraphic;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.UISelectBoolean;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.ValueChangeEvent;
+import jakarta.faces.webapp.UIComponentTag;
 
 import org.apache.myfaces.shared.el.SimpleActionMethodBinding;
 

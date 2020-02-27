@@ -25,7 +25,7 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
 
 import javax.el.ExpressionFactory;
-import javax.faces.webapp.FacesServlet;
+import jakarta.faces.webapp.FacesServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;

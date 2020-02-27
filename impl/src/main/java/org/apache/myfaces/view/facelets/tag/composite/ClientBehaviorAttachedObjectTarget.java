@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
-import javax.faces.view.BehaviorHolderAttachedObjectTarget;
+import jakarta.faces.view.BehaviorHolderAttachedObjectTarget;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)

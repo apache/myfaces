@@ -20,14 +20,14 @@
 package org.apache.myfaces.view.facelets.tag.ui;
 
 import java.io.StringWriter;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIParameter;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlCommandButton;
-import javax.faces.component.html.HtmlForm;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlPanelGrid;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlCommandButton;
+import jakarta.faces.component.html.HtmlForm;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.component.html.HtmlPanelGrid;
 import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.renderkit.html.HtmlGridRenderer;
@@ -69,13 +69,13 @@ public class RemoveTestCase extends FaceletTestCase
     protected void setupRenderers() throws Exception
     {
         renderKit.addRenderer(UIOutput.COMPONENT_FAMILY,
-                "javax.faces.Text", new HtmlTextRenderer());
+                "jakarta.faces.Text", new HtmlTextRenderer());
         renderKit.addRenderer(UIForm.COMPONENT_FAMILY,
-                "javax.faces.Form", new HtmlFormRenderer());
+                "jakarta.faces.Form", new HtmlFormRenderer());
         renderKit.addRenderer(HtmlCommandButton.COMPONENT_FAMILY,
-                "javax.faces.Button", new HtmlButtonRenderer());
+                "jakarta.faces.Button", new HtmlButtonRenderer());
         renderKit.addRenderer(HtmlPanelGrid.COMPONENT_FAMILY,
-                "javax.faces.Grid", new HtmlGridRenderer());
+                "jakarta.faces.Grid", new HtmlGridRenderer());
     }        
     
     @Test

@@ -24,7 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import javax.faces.component.UINamingContainer;
+import jakarta.faces.component.UINamingContainer;
 
 import junit.framework.TestCase;
 
