@@ -38,6 +38,14 @@ import jakarta.faces.el.VariableResolver;
  */
 public class MockApplication extends MockApplication22
 {
+    private VariableResolver variableResolver;
+    private PropertyResolver propertyResolver;
+    
+    public MockApplication()
+    {
+        setVariableResolver(new MockVariableResolver());
+        setPropertyResolver(new MockPropertyResolver());
+    }
 
     @Override
     public UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType)
@@ -49,36 +57,52 @@ public class MockApplication extends MockApplication22
     @Override
     public MethodBinding createMethodBinding(String ref, Class<?>[] params) throws ReferenceSyntaxException
     {
-        return null;
+        if (ref == null)
+        {
+            throw new NullPointerException();
+        }
+        else
+        {
+            return (new MockMethodBinding(this, ref, params));
+        }
     }
 
     @Override
     public ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException
     {
-        return null;
+        if (ref == null)
+        {
+            throw new NullPointerException();
+        }
+        else
+        {
+            return (new MockValueBinding(this, ref));
+        }
     }
 
     @Override
     public PropertyResolver getPropertyResolver()
     {
-        return null;
+        return this.propertyResolver;
     }
 
     @Override
     public VariableResolver getVariableResolver()
     {
-        return null;
+
+        return this.variableResolver;
+    }
+
+    @Override
+    public void setVariableResolver(VariableResolver variableResolver)
+    {
+        this.variableResolver = variableResolver;
     }
 
     @Override
     public void setPropertyResolver(PropertyResolver resolver)
     {
-
+        this.propertyResolver = resolver;
     }
 
-    @Override
-    public void setVariableResolver(VariableResolver resolver)
-    {
-
-    }
 }
