@@ -21,6 +21,7 @@ package org.apache.myfaces.application;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.faces.FacesException;
 
@@ -40,7 +41,7 @@ public class ViewIdSupportMockTest extends FacesTestCase
         super.setUp();
 
         Mockito.when(_facesContext.getExternalContext()).thenReturn(_externalContext);
-        Mockito.when(_externalContext.getApplicationMap()).thenReturn(new HashMap<String, Object>());
+        Mockito.when(_externalContext.getApplicationMap()).thenReturn(new ConcurrentHashMap<String, Object>());
 
         viewIdSupport = ViewIdSupport.getInstance(_facesContext);
     }
