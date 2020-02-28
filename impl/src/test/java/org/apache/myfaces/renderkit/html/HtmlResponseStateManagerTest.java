@@ -20,9 +20,9 @@ package org.apache.myfaces.renderkit.html;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.faces.render.ResponseStateManager;
 import static junit.framework.TestCase.assertEquals;
-import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;
 import org.apache.myfaces.test.FacesTestCase;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -33,7 +33,7 @@ public class HtmlResponseStateManagerTest extends FacesTestCase
     public void testIsPostback()
     {
         Mockito.when(_facesContext.getExternalContext()).thenReturn(_externalContext);
-        Mockito.when(_externalContext.getApplicationMap()).thenReturn(new HashMap<>());
+        Mockito.when(_externalContext.getApplicationMap()).thenReturn(new ConcurrentHashMap<>());
         
         HtmlResponseStateManager hrsm = Mockito.spy(HtmlResponseStateManager.class);
 
@@ -48,7 +48,7 @@ public class HtmlResponseStateManagerTest extends FacesTestCase
     public void testIsNoPostback()
     {
         Mockito.when(_facesContext.getExternalContext()).thenReturn(_externalContext);
-        Mockito.when(_externalContext.getApplicationMap()).thenReturn(new HashMap<>());
+        Mockito.when(_externalContext.getApplicationMap()).thenReturn(new ConcurrentHashMap<>());
         Mockito.when(_externalContext.getRequestParameterMap()).thenReturn(new HashMap<>());
         
         HtmlResponseStateManager hrsm = Mockito.spy(HtmlResponseStateManager.class);
