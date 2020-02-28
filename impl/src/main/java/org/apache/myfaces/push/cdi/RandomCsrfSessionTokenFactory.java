@@ -22,11 +22,11 @@ import java.util.Map;
 import java.util.Random;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import javax.xml.bind.DatatypeConverter;
 
 import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.shared.renderkit.RendererUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.shared.util.Hex;
 
 /**
  * @since 2.2
@@ -78,6 +78,6 @@ class RandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
     public String createCryptographicallyStrongTokenFromSession(FacesContext context)
     {
         byte[] key = generateKey(context);
-        return DatatypeConverter.printHexBinary(key);
+        return new String(Hex.encodeHex(key));
     }
 }

@@ -19,10 +19,10 @@
 package org.apache.myfaces.application.viewstate;
 
 import jakarta.faces.context.FacesContext;
-import javax.xml.bind.DatatypeConverter;
 
 import org.apache.myfaces.application.StateCache;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.shared.util.Hex;
 
 /**
  * This factory generate a key composed by a counter and a random number. The
@@ -79,6 +79,6 @@ class SecureRandomCsrfSessionTokenFactory extends CsrfSessionTokenFactory
     public String createCryptographicallyStrongTokenFromSession(FacesContext context)
     {
         byte[] key = generateKey(context);
-        return DatatypeConverter.printHexBinary(key);
+        return new String(Hex.encodeHex(key));
     }
 }
