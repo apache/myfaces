@@ -21,6 +21,8 @@ package org.apache.myfaces.core.extensions.quarkus.showcase.view;
 import java.util.Comparator;
 import org.primefaces.model.SortOrder;
 
+import static org.apache.commons.lang3.StringUtils.capitalize;
+
 public class LazySorter implements Comparator<Car> {
  
     private String sortField;
@@ -34,8 +36,8 @@ public class LazySorter implements Comparator<Car> {
     @Override
     public int compare(Car car1, Car car2) {
         try {
-            Object value1 = Car.class.getField(this.sortField).get(car1);
-            Object value2 = Car.class.getField(this.sortField).get(car2);
+            Object value1 = Car.class.getMethod("get"+capitalize(this.sortField)).invoke(car1);
+            Object value2 = Car.class.getMethod("get"+capitalize(this.sortField)).invoke(car2);
  
             int value = ((Comparable) value1).compareTo(value2);
              
