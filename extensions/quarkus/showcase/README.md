@@ -1,10 +1,10 @@
 # Quarkus MyFaces Showcase
 
-This sample application 
+This sample application shows Quarkus Myfaces extension usage
 
 ## Running
 
-`mvn clean package && java -jar `
+`mvn clean package -DskipTests && java -jar ./target/quarkus-myfaces-showcase-1.0-SNAPSHOT-runner.jar`
 
 ## Dev mode
 
