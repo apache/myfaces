@@ -33,7 +33,7 @@ import javax.inject.Named;
 public class MethodHandleELResolverBean implements Serializable, PhaseListener {
 
     @Inject
-    private CarService service;
+    CarService service;
     
     private List<Car> cars;
     

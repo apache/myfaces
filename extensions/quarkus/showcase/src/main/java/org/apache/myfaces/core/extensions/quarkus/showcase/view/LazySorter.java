@@ -42,7 +42,7 @@ public class LazySorter implements Comparator<Car> {
             return SortOrder.ASCENDING.equals(sortOrder) ? value : -1 * value;
         } 
         catch(Exception e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 }
