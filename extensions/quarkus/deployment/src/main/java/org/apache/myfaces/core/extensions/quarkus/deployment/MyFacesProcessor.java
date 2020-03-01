@@ -142,23 +142,16 @@ class MyFacesProcessor
     private static final Class[] BEAN_CLASSES =
     {
             JsfApplicationArtifactHolder.class,
-
             JsfArtifactProducer.class,
-
             FacesConfigBeanHolder.class,
-
             FacesDataModelManager.class,
-
             ViewScopeBeanHolder.class,
-
             CdiAnnotationProviderExtension.class,
-
             PushContextFactoryBean.class,
             WebsocketChannelTokenBuilderBean.class,
             WebsocketSessionBean.class,
             WebsocketViewBean.class,
             WebsocketApplicationBean.class,
-
             FlowBuilderFactoryBean.class,
             FlowScopeBeanHolder.class
     };
@@ -435,13 +428,10 @@ class MyFacesProcessor
         }
 
         classNames.addAll(Arrays.asList(
-            "org.primefaces.behavior.ajax.AjaxBehavior",
             "org.primefaces.config.PrimeEnvironment",
             "com.lowagie.text.pdf.MappedRandomAccessFile",
             "org.apache.myfaces.application._ApplicationUtils",
-             "org.apache.el.ExpressionFactoryImpl",
-            "com.sun.el.util.ReflectionUtil",
-            "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+            "org.apache.el.ExpressionFactoryImpl",
             "org.primefaces.util.MessageFactory",
             "javax.faces.component._DeltaStateHelper",
             "javax.faces.component._DeltaStateHelper$InternalMap"));
@@ -485,7 +475,6 @@ class MyFacesProcessor
         classNames.addAll(collectClassAndSubclasses(combinedIndex, ELResolver.class.getName()));
         classNames.addAll(collectClassAndSubclasses(combinedIndex, MethodRule.class.getName()));
         classNames.addAll(collectClassAndSubclasses(combinedIndex, MetaRuleset.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, "org.primefaces.component.api.Widget"));
         classNames.addAll(Arrays.asList(
                 "org.primefaces.util.ComponentUtils",
                 "org.primefaces.expression.SearchExpressionUtils",
