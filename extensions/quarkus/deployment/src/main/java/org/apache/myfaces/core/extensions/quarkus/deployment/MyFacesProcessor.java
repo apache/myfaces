@@ -624,8 +624,6 @@ class MyFacesProcessor
             // and try to register the ClientProxy
             reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, type.name().toString() + "_ClientProxy"));
         }
-
-        types.stream().forEach(c -> System.err.println(c));
     }
     
     void collectPublicTypes(ClassInfo type, List<ClassInfo> publicTypes, CombinedIndexBuildItem combinedIndex)
