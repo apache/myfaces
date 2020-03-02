@@ -30,7 +30,7 @@ public class InputController implements Serializable{
     
     @Inject
     @ManagedProperty(value = "#{carService}")
-    private CarService carService;
+    CarService carService;
     
     private String val;
 

@@ -51,6 +51,7 @@ import org.apache.myfaces.cdi.view.ViewTransientScoped;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.config.element.NamedEvent;
+import org.apache.myfaces.core.extensions.quarkus.runtime.exception.QuarkusExceptionHandlerFactory;
 import org.apache.myfaces.flow.cdi.FlowBuilderFactoryBean;
 import org.apache.myfaces.flow.cdi.FlowScopeBeanHolder;
 import org.apache.myfaces.push.cdi.PushContextFactoryBean;
@@ -141,23 +142,16 @@ class MyFacesProcessor
     private static final Class[] BEAN_CLASSES =
     {
             JsfApplicationArtifactHolder.class,
-
             JsfArtifactProducer.class,
-
             FacesConfigBeanHolder.class,
-
             FacesDataModelManager.class,
-
             ViewScopeBeanHolder.class,
-
             CdiAnnotationProviderExtension.class,
-
             PushContextFactoryBean.class,
             WebsocketChannelTokenBuilderBean.class,
             WebsocketSessionBean.class,
             WebsocketViewBean.class,
             WebsocketApplicationBean.class,
-
             FlowBuilderFactoryBean.class,
             FlowScopeBeanHolder.class
     };
@@ -191,7 +185,8 @@ class MyFacesProcessor
         FactoryFinder.FLASH_FACTORY,
         FactoryFinder.FLOW_HANDLER_FACTORY,
         FactoryFinder.CLIENT_WINDOW_FACTORY,
-        FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY
+        FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY,
+        QuarkusExceptionHandlerFactory.class.getName()
     };
 
     @BuildStep
@@ -436,8 +431,7 @@ class MyFacesProcessor
             "org.primefaces.config.PrimeEnvironment",
             "com.lowagie.text.pdf.MappedRandomAccessFile",
             "org.apache.myfaces.application._ApplicationUtils",
-            "com.sun.el.util.ReflectionUtil",
-            "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+            "org.apache.el.ExpressionFactoryImpl",
             "org.primefaces.util.MessageFactory",
             "javax.faces.component._DeltaStateHelper",
             "javax.faces.component._DeltaStateHelper$InternalMap"));
@@ -478,19 +472,20 @@ class MyFacesProcessor
         classNames.addAll(collectClassAndSubclasses(combinedIndex, ComponentHandler.class.getName()));
         classNames.addAll(collectClassAndSubclasses(combinedIndex, ValidatorHandler.class.getName()));
         classNames.addAll(collectClassAndSubclasses(combinedIndex, UIComponent.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, Converter.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, Validator.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, Behavior.class.getName()));
         classNames.addAll(collectClassAndSubclasses(combinedIndex, ELResolver.class.getName()));
         classNames.addAll(collectClassAndSubclasses(combinedIndex, MethodRule.class.getName()));
         classNames.addAll(collectClassAndSubclasses(combinedIndex, MetaRuleset.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, "org.primefaces.component.api.Widget"));
         classNames.addAll(Arrays.asList(
                 "org.primefaces.util.ComponentUtils",
                 "org.primefaces.expression.SearchExpressionUtils",
                 "org.primefaces.util.SecurityUtils",
                 "org.primefaces.util.LangUtils",
                 "javax.faces._FactoryFinderProviderFactory"));
+
+        classNames.addAll(collectImplementors(combinedIndex, Converter.class.getName()));
+        classNames.addAll(collectImplementors(combinedIndex, Validator.class.getName()));
+        classNames.addAll(collectImplementors(combinedIndex, Behavior.class.getName()));
+
 
         classes.addAll(Arrays.asList(
                 ClassUtils.class,
@@ -577,6 +572,17 @@ class MyFacesProcessor
     {
         List<String> classes = combinedIndex.getIndex()
                 .getAllKnownSubclasses(DotName.createSimple(className))
+                .stream()
+                .map(ClassInfo::toString)
+                .collect(Collectors.toList());
+        classes.add(className);
+        return classes;
+    }
+
+    public List<String> collectImplementors(CombinedIndexBuildItem combinedIndex, String className)
+    {
+        List<String> classes = combinedIndex.getIndex()
+                .getAllKnownImplementors(DotName.createSimple(className))
                 .stream()
                 .map(ClassInfo::toString)
                 .collect(Collectors.toList());

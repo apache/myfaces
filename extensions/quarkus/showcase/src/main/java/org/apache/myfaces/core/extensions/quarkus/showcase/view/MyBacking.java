@@ -27,7 +27,8 @@ import javax.inject.Named;
 @RequestScoped
 public class MyBacking {
     
-    @Inject private CarService carService;
+    @Inject
+    CarService carService;
     
     private MyCollection<Car> cars;
     

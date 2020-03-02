@@ -28,7 +28,8 @@ import javax.inject.Inject;
 @FacesValidator(value = "myVal", managed = true)
 public class MyValidator implements Validator<String>{
     
-    @Inject private CarService carService;
+    @Inject
+    CarService carService;
     
     public MyValidator()
     {
