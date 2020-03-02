@@ -103,7 +103,7 @@ public class StartupServletContextListener implements ServletContextListener
         }
         else
         {
-            log.info("MyFaces already initialized");
+            log.finest("MyFaces already initialized");
         }
     }
 
