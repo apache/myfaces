@@ -94,6 +94,7 @@ import io.quarkus.runtime.configuration.ProfileManager;
 import io.quarkus.undertow.deployment.ListenerBuildItem;
 import io.quarkus.undertow.deployment.ServletBuildItem;
 import io.quarkus.undertow.deployment.ServletInitParamBuildItem;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -115,6 +116,8 @@ import javax.faces.view.facelets.ConverterHandler;
 import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagHandler;
 import javax.faces.view.facelets.ValidatorHandler;
+import javax.inject.Named;
+import org.apache.el.ExpressionFactoryImpl;
 import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.cdi.util.BeanEntry;
 import org.apache.myfaces.config.FacesConfigurator;
@@ -134,7 +137,10 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.webapp.AbstractFacesInitializer;
 import org.apache.myfaces.webapp.FaceletsInitilializer;
 import org.apache.myfaces.webapp.MyFacesContainerInitializer;
+import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.ClassInfo;
+import org.jboss.jandex.FieldInfo;
+import org.jboss.jandex.MethodInfo;
 
 class MyFacesProcessor
 {
@@ -309,12 +315,6 @@ class MyFacesProcessor
             initParam.produce(new ServletInitParamBuildItem(
                     ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, "1"));
         }
-
-        // primefaces perf
-        initParam.produce(new ServletInitParamBuildItem(
-                "primefaces.SUBMIT", "partial"));
-        initParam.produce(new ServletInitParamBuildItem(
-                "primefaces.MOVE_SCRIPTS_TO_BOTTOM", "true"));
     }
 
     @BuildStep
@@ -401,7 +401,6 @@ class MyFacesProcessor
     void produceApplicationArchiveMarker(
             BuildProducer<AdditionalApplicationArchiveMarkerBuildItem> additionalArchiveMarkers)
     {
-        additionalArchiveMarkers.produce(new AdditionalApplicationArchiveMarkerBuildItem("org/primefaces/component"));
         additionalArchiveMarkers.produce(new AdditionalApplicationArchiveMarkerBuildItem("javax/faces/component"));
         additionalArchiveMarkers.produce(new AdditionalApplicationArchiveMarkerBuildItem("org/apache/myfaces/view"));
     }
@@ -415,26 +414,22 @@ class MyFacesProcessor
         List<String> classNames = new ArrayList<>();
         List<Class<?>> classes = new ArrayList<>();
        
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, Renderer.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, ClientBehaviorRenderer.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, javax.el.ValueExpression.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, SystemEvent.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, FacesContext.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, Application.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, Renderer.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, ClientBehaviorRenderer.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, javax.el.ValueExpression.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, SystemEvent.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, FacesContext.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, Application.class.getName()));
 
         for (String factory : FACTORIES)
         {
-            classNames.addAll(collectClassAndSubclasses(combinedIndex, factory));
+            classNames.addAll(collectSubclasses(combinedIndex, factory));
         }
 
         classNames.addAll(Arrays.asList(
-            "org.primefaces.config.PrimeEnvironment",
-            "com.lowagie.text.pdf.MappedRandomAccessFile",
-            "org.apache.myfaces.application._ApplicationUtils",
-            "org.apache.el.ExpressionFactoryImpl",
-            "org.primefaces.util.MessageFactory",
             "javax.faces.component._DeltaStateHelper",
-            "javax.faces.component._DeltaStateHelper$InternalMap"));
+            "javax.faces.component._DeltaStateHelper$InternalMap",
+            "org.apache.myfaces.application._ApplicationUtils"));
 
         classes.addAll(Arrays.asList(
                 DefaultWebConfigProviderFactory.class,
@@ -451,7 +446,8 @@ class MyFacesProcessor
                 String.class,
                 ViewScopeProxyMap.class,
                 SAXCompiler.class,
-                StateUtils.class));
+                StateUtils.class,
+                ExpressionFactoryImpl.class));
 
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(false, false, classNames.toArray(new String[classNames.size()])));
@@ -467,25 +463,20 @@ class MyFacesProcessor
         List<String> classNames = new ArrayList<>();
         List<Class<?>> classes = new ArrayList<>();
         
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, TagHandler.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, ConverterHandler.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, ComponentHandler.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, ValidatorHandler.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, UIComponent.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, ELResolver.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, MethodRule.class.getName()));
-        classNames.addAll(collectClassAndSubclasses(combinedIndex, MetaRuleset.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, TagHandler.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, ConverterHandler.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, ComponentHandler.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, ValidatorHandler.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, UIComponent.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, ELResolver.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, MethodRule.class.getName()));
+        classNames.addAll(collectSubclasses(combinedIndex, MetaRuleset.class.getName()));
         classNames.addAll(Arrays.asList(
-                "org.primefaces.util.ComponentUtils",
-                "org.primefaces.expression.SearchExpressionUtils",
-                "org.primefaces.util.SecurityUtils",
-                "org.primefaces.util.LangUtils",
                 "javax.faces._FactoryFinderProviderFactory"));
 
         classNames.addAll(collectImplementors(combinedIndex, Converter.class.getName()));
         classNames.addAll(collectImplementors(combinedIndex, Validator.class.getName()));
         classNames.addAll(collectImplementors(combinedIndex, Behavior.class.getName()));
-
 
         classes.addAll(Arrays.asList(
                 ClassUtils.class,
@@ -517,8 +508,6 @@ class MyFacesProcessor
     void substrateResourceBuildItems(BuildProducer<NativeImageResourceBuildItem> nativeImageResourceProducer,
                                      BuildProducer<NativeImageResourceBundleBuildItem> resourceBundleBuildItem)
     {
-        nativeImageResourceProducer
-                .produce(new NativeImageResourceBuildItem("META-INF/maven/org.primefaces/primefaces/pom.properties"));
         nativeImageResourceProducer.produce(new NativeImageResourceBuildItem(
                 "META-INF/rsc/myfaces-dev-error.xml",
                 "META-INF/rsc/myfaces-dev-debug.xml", 
@@ -564,11 +553,9 @@ class MyFacesProcessor
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.el.PrivateMessages"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.servlet.LocalStrings"));
         resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("javax.el.LocalStrings"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages"));
-        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_en"));
     }
     
-    public List<String> collectClassAndSubclasses(CombinedIndexBuildItem combinedIndex, String className)
+    public List<String> collectSubclasses(CombinedIndexBuildItem combinedIndex, String className)
     {
         List<String> classes = combinedIndex.getIndex()
                 .getAllKnownSubclasses(DotName.createSimple(className))
@@ -589,25 +576,150 @@ class MyFacesProcessor
         classes.add(className);
         return classes;
     }
-    
+
+
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
     void registerWebappClassesForReflection(MyFacesRecorder recorder,
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
             CombinedIndexBuildItem combinedIndex)
-    {     
-        List<String> classNames = new ArrayList<>();
-        classNames.addAll(Arrays.asList(
-                "org.apache.myfaces.core.extensions.quarkus.showcase.view.LazyView",
-                "org.apache.myfaces.core.extensions.quarkus.showcase.view.LazyView_ClientProxy",
-                "org.apache.myfaces.core.extensions.quarkus.showcase.view.Car",
-                "org.apache.myfaces.core.extensions.quarkus.showcase.view.LazyCarDataModel",
-                "org.apache.myfaces.core.extensions.quarkus.showcase.view.CarService",
-                "org.apache.myfaces.core.extensions.quarkus.showcase.view.LazySorter"));
-        reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, false, classNames.toArray(new String[classNames.size()])));
+    {
+        List<ClassInfo> types = new ArrayList<>();
 
-        reflectiveClass.produce(new ReflectiveClassBuildItem(true, true,
-                "org.apache.myfaces.core.extensions.quarkus.showcase.view.LazyView_ClientProxy"));
+        // loop all @Named beans
+        for (AnnotationInstance ai :
+                combinedIndex.getIndex().getAnnotations(DotName.createSimple(Named.class.getName())))
+        {
+            if (ai.target().kind() == AnnotationTarget.Kind.CLASS)
+            {
+                types.add(ai.target().asClass());
+            }
+            else if (ai.target().kind() == AnnotationTarget.Kind.FIELD)
+            {
+                types.add(ai.target().asField().asClass());
+            }
+            else if (ai.target().kind() == AnnotationTarget.Kind.METHOD)
+            {
+                types.add(combinedIndex.getIndex().getClassByName(ai.target().asMethod().returnType().name()));
+            }
+        }
+
+        // sort our duplicate
+        types = types.stream().distinct().collect(Collectors.toList());
+        types.removeIf(ci -> ci == null);
+
+        // collect all public types from getters and fields
+        List<ClassInfo> temp = new ArrayList();
+        types.stream().forEach(ci -> collectPublicTypes(ci, temp, combinedIndex));
+        types.addAll(temp);
+
+        // sort our duplicate
+        types = types.stream().distinct().collect(Collectors.toList());
+        types.removeIf(ci -> ci == null);
+
+        for (ClassInfo type : types)
+        { 
+            // register type
+            reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, type.name().toString()));
+            // and try to register the ClientProxy
+            reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, type.name().toString() + "_ClientProxy"));
+        }
+
+        types.stream().forEach(c -> System.err.println(c));
     }
+    
+    void collectPublicTypes(ClassInfo type, List<ClassInfo> publicTypes, CombinedIndexBuildItem combinedIndex)
+    {
+        if (type == null)
+        {
+            return;
+        }
+        
+        ClassInfo ci = (ClassInfo) type;
+        for (MethodInfo mi : ci.methods())
+        {
+            if (Modifier.isPublic(mi.flags()) && mi.name().startsWith("get"))
+            {
+                ClassInfo returnType =
+                        combinedIndex.getIndex().getClassByName(mi.returnType().name());
+                if (returnType == null || publicTypes.contains(returnType))
+                {
+                    continue;
+                }
+                publicTypes.add(returnType);
+                collectPublicTypes(returnType, publicTypes, combinedIndex);
+            }
+        }
+        for (FieldInfo fi : ci.fields())
+        {
+            if (Modifier.isPublic(fi.flags()) && !Modifier.isStatic(fi.flags()))
+            {
+                ClassInfo fieldType =
+                        combinedIndex.getIndex().getClassByName(fi.type().name());
+                if (fieldType == null || publicTypes.contains(fieldType))
+                {
+                    continue;
+                }
+                publicTypes.add(fieldType);
+                collectPublicTypes(fieldType, publicTypes, combinedIndex);
+            }
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    @BuildStep
+    void buildPrimeFacesRecommendedInitParams(BuildProducer<ServletInitParamBuildItem> initParam) throws IOException
+    {
+        initParam.produce(new ServletInitParamBuildItem(
+                "primefaces.SUBMIT", "partial"));
+        initParam.produce(new ServletInitParamBuildItem(
+                "primefaces.MOVE_SCRIPTS_TO_BOTTOM", "true"));
+    }
+
+    @BuildStep
+    void producePrimeFacesApplicationArchiveMarker(
+            BuildProducer<AdditionalApplicationArchiveMarkerBuildItem> additionalArchiveMarkers)
+    {
+        additionalArchiveMarkers.produce(new AdditionalApplicationArchiveMarkerBuildItem("org/primefaces/component"));
+    }
+    
+    @BuildStep
+    void substratePrimeFacesResourceBuildItems(BuildProducer<NativeImageResourceBuildItem> nativeImageResourceProducer,
+                                     BuildProducer<NativeImageResourceBundleBuildItem> resourceBundleBuildItem)
+    {
+        nativeImageResourceProducer
+                .produce(new NativeImageResourceBuildItem("META-INF/maven/org.primefaces/primefaces/pom.properties"));
+        
+
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages"));
+        resourceBundleBuildItem.produce(new NativeImageResourceBundleBuildItem("org.primefaces.Messages_en"));
+    }
+    
+    @BuildStep
+    @Record(ExecutionTime.STATIC_INIT)
+    void registerPrimeFaces(MyFacesRecorder recorder,
+            BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
+            CombinedIndexBuildItem combinedIndex)
+    {
+        reflectiveClass.produce(new ReflectiveClassBuildItem(true, false,
+                "org.primefaces.util.ComponentUtils",
+                "org.primefaces.expression.SearchExpressionUtils",
+                "org.primefaces.util.SecurityUtils",
+                "org.primefaces.util.LangUtils"));
+        
+        reflectiveClass.produce(new ReflectiveClassBuildItem(false, false, 
+                "org.primefaces.config.PrimeEnvironment",
+                "org.primefaces.util.MessageFactory",
+                "com.lowagie.text.pdf.MappedRandomAccessFile"));
+    }
+    
+    
 }
