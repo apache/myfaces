@@ -60,6 +60,16 @@
                     <scanIntervalSeconds>5</scanIntervalSeconds>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -186,19 +196,19 @@
                 <dependency>
                     <groupId>org.apache.tomcat.embed</groupId>
                     <artifactId>tomcat-embed-core</artifactId>
-                    <version>9.0.12</version>
+                    <version>9.0.31</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.tomcat.embed</groupId>
                     <artifactId>tomcat-embed-jasper</artifactId>
-                    <version>9.0.12</version>
+                    <version>9.0.31</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.tomcat.embed</groupId>
                     <artifactId>tomcat-embed-websocket</artifactId>
-                    <version>9.0.12</version>
+                    <version>9.0.31</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
@@ -228,25 +238,25 @@
                 <dependency>
                     <groupId>org.apache.tomcat.embed</groupId>
                     <artifactId>tomcat-embed-core</artifactId>
-                    <version>8.0.53</version>
+                    <version>8.5.51</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.tomcat.embed</groupId>
                     <artifactId>tomcat-embed-jasper</artifactId>
-                    <version>8.0.53</version>
+                    <version>8.5.51</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.tomcat.embed</groupId>
                     <artifactId>tomcat-embed-websocket</artifactId>
-                    <version>8.0.53</version>
+                    <version>8.5.51</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.tomcat.embed</groupId>
                     <artifactId>tomcat-embed-logging-juli</artifactId>
-                    <version>8.0.53</version>
+                    <version>8.5.51</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
