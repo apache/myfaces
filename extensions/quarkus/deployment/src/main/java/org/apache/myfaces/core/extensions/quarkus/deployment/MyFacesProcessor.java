@@ -123,7 +123,6 @@ import org.apache.myfaces.cdi.util.BeanEntry;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusFactoryFinderProvider;
 import org.apache.myfaces.el.ELResolverBuilderForFaces;
-import org.apache.myfaces.lifecycle.RestoreViewSupport;
 import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.spi.FactoryFinderProviderFactory;
 import org.apache.myfaces.spi.impl.DefaultWebConfigProviderFactory;
@@ -440,7 +439,6 @@ class MyFacesProcessor
                 DefaultWebConfigProviderFactory.class,
                 ErrorPageWriter.class,
                 MyFacesContainerInitializer.class,
-                RestoreViewSupport.class,
                 ExceptionQueuedEventContext.class,
                 FacesConfigurator.class,
                 FaceletsInitilializer.class,
