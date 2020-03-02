@@ -107,12 +107,12 @@ public final class MetaRulesetImpl extends MetaRuleset
         // the properties with alias are very few, so set an initial size close to
         // the number of attributes is ok.
         int initialSize = allAttributes.length > 0 ? (allAttributes.length * 4 + 3) / 3 : 4;
-        _attributes = new HashMap<String, TagAttribute>(initialSize);
-        _mappers = new ArrayList<Metadata>(initialSize);
+        _attributes = new HashMap<>(initialSize);
+        _mappers = new ArrayList<>(initialSize);
         // Usually ComponentTagHandlerDelegate has 5 rules at max
         // and CompositeComponentResourceTagHandler 6, so 8 is a good number
-        _rules = new ArrayList<MetaRule>(8); 
-        _passthroughRules = new ArrayList<MetaRule>(2);
+        _rules = new ArrayList<>(8); 
+        _passthroughRules = new ArrayList<>(2);
 
         // Passthrough attributes are different from normal attributes, because they
         // are just rendered into the markup without additional processing from the

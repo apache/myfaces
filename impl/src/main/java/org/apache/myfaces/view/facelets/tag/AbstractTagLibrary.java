@@ -67,8 +67,8 @@ public abstract class AbstractTagLibrary implements TagLibrary
     {
         _namespace = namespace;
         _aliasNamespace = aliasNamespace;
-        _factories = new HashMap<String, TagHandlerFactory>();
-        _functions = new HashMap<String, Method>();
+        _factories = new HashMap<>();
+        _functions = new HashMap<>();
     }
     
     public AbstractTagLibrary(String namespace)
