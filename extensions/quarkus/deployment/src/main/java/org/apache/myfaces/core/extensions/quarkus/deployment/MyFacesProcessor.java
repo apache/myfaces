@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.core.extensions.quarkus.deployment;
 
-import com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl;
 import com.sun.org.apache.xpath.internal.functions.FuncLocalPart;
 import com.sun.org.apache.xpath.internal.functions.FuncNot;
 import java.io.IOException;
@@ -117,6 +116,7 @@ import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagHandler;
 import javax.faces.view.facelets.ValidatorHandler;
 import javax.inject.Named;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.el.ExpressionFactoryImpl;
 import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.cdi.util.BeanEntry;
@@ -421,6 +421,11 @@ class MyFacesProcessor
         classNames.addAll(collectSubclasses(combinedIndex, FacesContext.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, Application.class.getName()));
 
+        // Web.xml parsing
+        classNames.addAll(collectSubclasses(combinedIndex, DocumentBuilderFactory.class.getName()));
+        classNames.add(FuncLocalPart.class.getName());
+        classNames.add(FuncNot.class.getName());
+
         for (String factory : FACTORIES)
         {
             classNames.addAll(collectSubclasses(combinedIndex, factory));
@@ -434,9 +439,6 @@ class MyFacesProcessor
         classes.addAll(Arrays.asList(
                 DefaultWebConfigProviderFactory.class,
                 ErrorPageWriter.class,
-                DocumentBuilderFactoryImpl.class,
-                FuncLocalPart.class,
-                FuncNot.class,
                 MyFacesContainerInitializer.class,
                 RestoreViewSupport.class,
                 ExceptionQueuedEventContext.class,
@@ -463,6 +465,8 @@ class MyFacesProcessor
         List<String> classNames = new ArrayList<>();
         List<Class<?>> classes = new ArrayList<>();
         
+        classNames.add("javax.faces._FactoryFinderProviderFactory");
+        
         classNames.addAll(collectSubclasses(combinedIndex, TagHandler.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, ConverterHandler.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, ComponentHandler.class.getName()));
@@ -471,8 +475,6 @@ class MyFacesProcessor
         classNames.addAll(collectSubclasses(combinedIndex, ELResolver.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, MethodRule.class.getName()));
         classNames.addAll(collectSubclasses(combinedIndex, MetaRuleset.class.getName()));
-        classNames.addAll(Arrays.asList(
-                "javax.faces._FactoryFinderProviderFactory"));
 
         classNames.addAll(collectImplementors(combinedIndex, Converter.class.getName()));
         classNames.addAll(collectImplementors(combinedIndex, Validator.class.getName()));
