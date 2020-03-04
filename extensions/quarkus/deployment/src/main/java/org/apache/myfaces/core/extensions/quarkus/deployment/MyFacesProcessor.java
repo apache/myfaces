@@ -589,7 +589,7 @@ class MyFacesProcessor
 
         DotName produces = DotName.createSimple(Produces.class.getName());
         
-        // loop all @Named beans
+        // loop all @Named beans and @Produces
         for (AnnotationInstance ai :
                 combinedIndex.getIndex().getAnnotations(DotName.createSimple(Named.class.getName())))
         {
