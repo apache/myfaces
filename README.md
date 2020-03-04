@@ -2,6 +2,21 @@
 
 Apache's implementation of the JavaServer Faces specification 
 
+## Branches
+
+### Master
+
+Master / 2.3-next equals the JSF 2.3 API but delegates @ManagedBeans to CDI. The implementation of the old FacesEL (javax.faces.el.*) has been completely removed.
+
+### 3.0.x
+
+The upcoming Jakarta Faces 3.0. It's equals to JSF 2.3 but with "jakarta.faces" packages and constants instead of "javax.faces".
+
+### 2.3.x
+
+JavaServer Faces 2.3 implementation
+
+
 ## Minimum Requirements (trunk / 2.3-next)
 
 - Java 1.8
