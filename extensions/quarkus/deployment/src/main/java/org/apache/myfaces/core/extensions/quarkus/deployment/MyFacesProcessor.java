@@ -18,8 +18,6 @@
  */
 package org.apache.myfaces.core.extensions.quarkus.deployment;
 
-import com.sun.org.apache.xpath.internal.functions.FuncLocalPart;
-import com.sun.org.apache.xpath.internal.functions.FuncNot;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -99,6 +97,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.el.ELResolver;
+import javax.enterprise.inject.Produces;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
@@ -140,6 +139,7 @@ import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.MethodInfo;
+import org.jboss.jandex.Type;
 
 class MyFacesProcessor
 {
@@ -422,9 +422,9 @@ class MyFacesProcessor
 
         // Web.xml parsing
         classNames.addAll(collectSubclasses(combinedIndex, DocumentBuilderFactory.class.getName()));
-        classNames.add(FuncLocalPart.class.getName());
-        classNames.add(FuncNot.class.getName());
-
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncLocalPart");
+        classNames.add("com.sun.org.apache.xpath.internal.functions.FuncNot");
+        
         for (String factory : FACTORIES)
         {
             classNames.addAll(collectSubclasses(combinedIndex, factory));
@@ -585,7 +585,10 @@ class MyFacesProcessor
             CombinedIndexBuildItem combinedIndex)
     {
         List<ClassInfo> types = new ArrayList<>();
+        List<String> typeNames = new ArrayList<>();
 
+        DotName produces = DotName.createSimple(Produces.class.getName());
+        
         // loop all @Named beans
         for (AnnotationInstance ai :
                 combinedIndex.getIndex().getAnnotations(DotName.createSimple(Named.class.getName())))
@@ -593,14 +596,78 @@ class MyFacesProcessor
             if (ai.target().kind() == AnnotationTarget.Kind.CLASS)
             {
                 types.add(ai.target().asClass());
-            }
+            } 
             else if (ai.target().kind() == AnnotationTarget.Kind.FIELD)
             {
-                types.add(ai.target().asField().asClass());
+                if (ai.target().asField().annotation(produces) != null)
+                {
+                    try
+                    {
+                        types.add(ai.target().asField().asClass());
+                    }
+                    catch (Exception e)
+                    {
+                        try
+                        {
+                            // extract the class name via the toString()... there is no other way?
+                            String className = ai.target().asField().toString();
+                            className = className.substring(0, className.indexOf("<"));
+
+                            ClassInfo ci = combinedIndex.getIndex().getClassByName(DotName.createSimple(className));
+                            if (ci == null)
+                            {
+                                //try to add the name
+                                typeNames.add(className);
+                            }
+                            else
+                            {
+                                types.add(ci);
+                            }
+                        }
+                        catch (Exception e1)
+                        {
+                            // no class, also no generic type -> ignore
+                        }
+                    }
+                }
             }
             else if (ai.target().kind() == AnnotationTarget.Kind.METHOD)
             {
-                types.add(combinedIndex.getIndex().getClassByName(ai.target().asMethod().returnType().name()));
+                if (ai.target().asMethod().annotation(produces) != null)
+                {
+                    if (ai.target().asMethod().returnType().kind() == Type.Kind.CLASS)
+                    {
+                        ClassInfo ci = combinedIndex.getIndex().getClassByName(
+                                ai.target().asMethod().returnType().asClassType().name());
+                        if (ci == null)
+                        {
+                            //try to add the name
+                            typeNames.add(ai.target().asMethod().returnType().asClassType().name().toString()); 
+                        }
+                        else
+                        {
+                            types.add(ci);
+                        }
+                    }
+                    else if (ai.target().asMethod().returnType().kind() == Type.Kind.PARAMETERIZED_TYPE)
+                    {
+                        // extract the class name via the toString()...
+                        // ai.target().asMethod().returnType().asParameterizedType().owner() returns null?!
+                        String className = ai.target().asMethod().returnType().asParameterizedType().toString();
+                        className = className.substring(0, className.indexOf("<"));
+
+                        ClassInfo ci = combinedIndex.getIndex().getClassByName(DotName.createSimple(className));
+                        if (ci == null)
+                        {
+                            //try to add the name
+                            typeNames.add(className);
+                        }
+                        else
+                        {
+                            types.add(ci);
+                        }
+                    }
+                }
             }
         }
 
@@ -618,11 +685,24 @@ class MyFacesProcessor
         types.removeIf(ci -> ci == null);
 
         for (ClassInfo type : types)
-        { 
+        {
             // register type
             reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, type.name().toString()));
             // and try to register the ClientProxy
             reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, type.name().toString() + "_ClientProxy"));
+        }
+        
+
+        // sort our duplicate
+        typeNames = typeNames.stream().distinct().collect(Collectors.toList());
+        typeNames.removeIf(ci -> ci == null || ci.trim().isEmpty());
+
+        for (String typeName : typeNames)
+        {
+            // register type
+            reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, typeName));
+            // and try to register the ClientProxy
+            reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, typeName + "_ClientProxy"));
         }
     }
     
