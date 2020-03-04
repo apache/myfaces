@@ -1,6 +1,6 @@
 # Apache MyFaces Core
 
-Apache's implementation of the JavaServer Faces specification 
+Apache's implementation of the JavaServer Faces (JSF) and Jakarta Faces specification 
 
 ## Branches
 
