@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
@@ -54,7 +55,7 @@ public class LazyCarDataModel extends LazyDataModel<Car> {
     }
 
     @Override
-    public List<Car> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+    public List<Car> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filters) {
         List<Car> data = new ArrayList<Car>();
 
         //filter
@@ -65,7 +66,7 @@ public class LazyCarDataModel extends LazyDataModel<Car> {
                 for (Iterator<String> it = filters.keySet().iterator(); it.hasNext();) {
                     try {
                         String filterProperty = it.next();
-                        Object filterValue = filters.get(filterProperty);
+                        Object filterValue = filters.get(filterProperty).getFilterValue();
                         String fieldValue = String.valueOf(car.getClass().getField(filterProperty).get(car));
 
                         if (filterValue == null || fieldValue.startsWith(filterValue.toString())) {
