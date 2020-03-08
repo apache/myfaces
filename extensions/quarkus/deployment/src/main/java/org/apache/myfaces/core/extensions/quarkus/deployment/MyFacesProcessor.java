@@ -788,8 +788,8 @@ class MyFacesProcessor
             CombinedIndexBuildItem combinedIndex)
     {
         reflectiveClass.produce(new ReflectiveClassBuildItem(true, false,
-                "org.primefaces.util.ComponentUtils",
-                "org.primefaces.expression.SearchExpressionUtils",
+                "org.primefaces.util.ComponentUtils","org.primefaces.util.ComponentTraversalUtils",
+                "org.primefaces.expression.SearchExpressionUtils","org.primefaces.util.EscapeUtils",
                 "org.primefaces.util.SecurityUtils",
                 "org.primefaces.util.LangUtils"));
         
