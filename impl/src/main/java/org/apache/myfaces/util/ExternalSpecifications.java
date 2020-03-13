@@ -86,7 +86,7 @@ public final class ExternalSpecifications
     
     private static volatile Boolean cdiAvailable;
     
-    private static Lazy<Boolean> el3Available  = new Lazy<>(() ->
+    private static Lazy<Boolean> el3Available = new Lazy<>(() ->
     {
         boolean available;
         try
