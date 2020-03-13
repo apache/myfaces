@@ -86,7 +86,7 @@ public class ResponseMockup extends HttpServlet {
             throws ServletException, IOException {
 
         //we simulate viewscoped here
-        String origin = (String) request.getParameter("origin");
+        String origin = request.getParameter("origin");
         origin = (origin != null) ? origin : "";
 
         ViewData viewData = (ViewData) request.getSession().getAttribute(VIEW_DATA + origin);
@@ -98,11 +98,11 @@ public class ResponseMockup extends HttpServlet {
         response.setContentType("text/xml;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
-        String op = (String) request.getParameter("op");
+        String op = request.getParameter("op");
 
         PartialResponse root = new PartialResponse();
 
-        /**
+        /*
          * field ids needed in form:
          * changesArea
          * deleteable
@@ -205,16 +205,15 @@ public class ResponseMockup extends HttpServlet {
         //we omit our xml builder for now
         StringBuilder replacement = new StringBuilder();
 
-        replacement.append("<body class=\"tundra\"> " +
-                "    <div id=\"myfaces.logging\"><div id = \"centerDiv\">\n" +
-                "        <h1>Selenium Test for body change done</h1>\n");
-        for (int cnt = 0; cnt < 300; viewData.cnt++) {
-            replacement.append("        <div id = \"testResults" + cnt + "\" ></div>\n");
+        replacement.append("<body class=\"tundra\"> ");
+        replacement.append("    <div id=\"myfaces.logging\"><div id = \"centerDiv\">\n");
+        replacement.append("        <h1>Selenium Test for body change done</h1>\n");
+        for (int cnt = 0; cnt < 20; cnt++) {
+            replacement.append("        <div id = \"testResults" + cnt + "\"></div>\n");
         }
-        replacement.append("            <h3>Body replacement test successful</h3>\n" +
-                //             "   <script type='text/javascript'>alert('hello from embedded script in replacement body');</script>            </div>" +
-                "    </div>" +
-                "</body>");
+        replacement.append("            <h3>Body replacement test successful</h3>\n");
+        replacement.append("    </div>");
+        replacement.append("</body>");
 
         Changes changes = new Changes(root);
         root.addElement(changes);
