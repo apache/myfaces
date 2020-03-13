@@ -633,6 +633,7 @@
                             <value>COMPAT,CLDR</value>
                         </property>
                     </systemProperties>
+                    <argLine>-Djava.locale.providers=COMPAT,CLDR</argLine>
                 </configuration>
 
                 <executions>
