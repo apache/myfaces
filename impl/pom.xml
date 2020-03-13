@@ -620,7 +620,21 @@
                         <exclude>**/ApplicationImplTest*</exclude>
                         <exclude>**/FactoryFinderProviderTest*</exclude>
                     </excludes>
+                    <systemProperties>
+                        <!--
+                        Java 9 introduce CLDR locales as defaults
+                        some tests however fail because the local
+                        checks follow the java conventions.
+                        Setting it to provider should enable locale behavior
+                        across all supported JDKs
+                        -->
+                        <property>
+                            <name>java.locale.providers</name>
+                            <value>COMPAT,CLDR</value>
+                        </property>
+                    </systemProperties>
                 </configuration>
+
                 <executions>
                     <execution>
                         <id>isolateCLTests</id>
