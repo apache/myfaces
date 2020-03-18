@@ -630,10 +630,10 @@
                         -->
                         <property>
                             <name>java.locale.providers</name>
-                            <value>COMPAT,CLDR</value>
+                            <value>COMPAT</value>
                         </property>
                     </systemProperties>
-                    <argLine>-Djava.locale.providers=COMPAT,CLDR</argLine>
+                    <argLine>-Djava.locale.providers=COMPAT</argLine>
                 </configuration>
 
                 <executions>
