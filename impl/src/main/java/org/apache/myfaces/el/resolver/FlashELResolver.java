@@ -66,12 +66,12 @@ public class FlashELResolver extends ELResolver
         }
 
         String strProperty = property.toString();
-
         if (FLASH.equals(strProperty))
         {
             throw new PropertyNotWritableException();
         }
-        else if (base instanceof Flash)
+
+        if (base instanceof Flash)
         {
             context.setPropertyResolved(true);
             try
@@ -89,7 +89,6 @@ public class FlashELResolver extends ELResolver
     public boolean isReadOnly(ELContext context, Object base, Object property)
             throws NullPointerException, PropertyNotFoundException, ELException
     {
-
         if (property == null)
         {
             throw new PropertyNotFoundException();
@@ -100,13 +99,13 @@ public class FlashELResolver extends ELResolver
         }
 
         String strProperty = property.toString();
-
         if (FLASH.equals(strProperty))
         {
             context.setPropertyResolved(true);
             return true;
         }
-        else if (base instanceof Flash)
+
+        if (base instanceof Flash)
         {
             context.setPropertyResolved(true);
         }
@@ -262,7 +261,6 @@ public class FlashELResolver extends ELResolver
     public Class<?> getType(ELContext context, Object base, Object property)
             throws NullPointerException, PropertyNotFoundException, ELException
     {
-
         if (property == null)
         {
             throw new PropertyNotFoundException();
@@ -291,7 +289,7 @@ public class FlashELResolver extends ELResolver
     @Override
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
     {
-        ArrayList<FeatureDescriptor> descriptors = new ArrayList<FeatureDescriptor>(1);
+        ArrayList<FeatureDescriptor> descriptors = new ArrayList<>(1);
 
         descriptors.add(makeDescriptor(FLASH,
                 "Represents the current flash scope", Object.class));
@@ -338,7 +336,8 @@ public class FlashELResolver extends ELResolver
         {
             return Object.class;
         }
-        else if (FLASH.equals(base.toString()))
+
+        if (FLASH.equals(base.toString()))
         {
             return Object.class;
         }

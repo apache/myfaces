@@ -52,7 +52,7 @@ public final class ImportConstantsELResolver extends ELResolver
 
     private static final String IMPORT_CONSTANTS = "oam.importConstants";
     
-    private Map<String, Map<String, Object>> constantsTypeMap = new ConcurrentHashMap<String, Map<String, Object>>();
+    private Map<String, Map<String, Object>> constantsTypeMap = new ConcurrentHashMap<>();
 
     @Override
     public Object getValue(final ELContext context, final Object base,

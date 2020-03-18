@@ -83,32 +83,35 @@ public class ImportHandlerResolver extends ScopedAttributeResolver
     public Object getValue(final ELContext context, final Object base, final Object property)
         throws NullPointerException, PropertyNotFoundException, ELException
     {
-        if (EL_CLASS != null && EL_CLASS_CONSTRUCTOR != null 
-                        && GET_IMPORT_HANDLER_METHOD != null && IMPORT_HANDLER_RESOLVE_CLASS_METHOD != null ) 
+        if (EL_CLASS == null
+                || EL_CLASS_CONSTRUCTOR == null 
+                || GET_IMPORT_HANDLER_METHOD == null
+                || IMPORT_HANDLER_RESOLVE_CLASS_METHOD == null)
         {
-            Object importHandler = null;
-            try 
-            {
-                // In an EL 3+ environment, the ELContext will have a getImportHandler() method
-                importHandler = GET_IMPORT_HANDLER_METHOD.invoke(context);
-                if (importHandler != null) 
-                {
-                    Class<?> clazz;
-                    clazz = (Class<?>) IMPORT_HANDLER_RESOLVE_CLASS_METHOD
-                        .invoke(importHandler, property.toString());
-                    if (clazz != null) 
-                    {
-                        context.setPropertyResolved(true);
-                        return EL_CLASS_CONSTRUCTOR.newInstance(clazz);
-                    }
-                }
-            } 
-            catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException
-                    | InstantiationException ex) 
-            {
-                //No op
-            }            
+            return null;
         }
+
+        try 
+        {
+            // In an EL 3+ environment, the ELContext will have a getImportHandler() method
+            Object importHandler = GET_IMPORT_HANDLER_METHOD.invoke(context);
+            if (importHandler != null) 
+            {
+                Class<?> clazz = (Class<?>) IMPORT_HANDLER_RESOLVE_CLASS_METHOD.invoke(
+                        importHandler, property.toString());
+                if (clazz != null) 
+                {
+                    context.setPropertyResolved(true);
+                    return EL_CLASS_CONSTRUCTOR.newInstance(clazz);
+                }
+            }
+        } 
+        catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException
+                | InstantiationException ex) 
+        {
+            //No op
+        }            
+
         return null;
     }
 }

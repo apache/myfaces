@@ -45,15 +45,15 @@ import java.util.Arrays;
  */
 public final class FacesCompositeELResolver extends org.apache.myfaces.el.resolver.CompositeELResolver
 {
+    public static final String SCOPE = FacesCompositeELResolver.class.getName() + ".Scope";
+    
     private final Scope _scope;
 
     public enum Scope
     {
         Faces, JSP, NONE
     }
-    
-    public static final String SCOPE = "org.apache.myfaces.el.unified.resolver.FacesCompositeELResolver.Scope";
-    
+
     public FacesCompositeELResolver(final Scope scope)
     {
         if (scope == null)
@@ -65,7 +65,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.resolv
 
     private static FacesContext facesContext(final ELContext context)
     {
-        FacesContext facesContext = (FacesContext)context.getContext(FacesContext.class);
+        FacesContext facesContext = (FacesContext) context.getContext(FacesContext.class);
         if (facesContext == null)
         {
             facesContext = FacesContext.getCurrentInstance();
@@ -81,6 +81,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.resolv
         {
             return null;
         }
+
         final Map<Object, Object> requestMap = facesContext.getAttributes();
         Scope prevScope = null;
         try
@@ -91,7 +92,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.resolv
         }
         finally
         {
-            if(prevScope != null)
+            if (prevScope != null)
             {
                 setScope(requestMap, prevScope);
             }
@@ -111,6 +112,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.resolv
         {
             return null;
         }
+
         final Map<Object, Object> requestMap = facesContext.getAttributes();
         Scope prevScope = null;
         try
@@ -118,11 +120,10 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.resolv
             prevScope = getScope(requestMap);
             setScope(requestMap);
             return super.getFeatureDescriptors(context, base);
-
         }
         finally
         {
-            if(prevScope != null)
+            if (prevScope != null)
             {
                 setScope(requestMap, prevScope);
             }
@@ -141,6 +142,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.resolv
         {
             return null;
         }
+
         final Map<Object, Object> requestMap = facesContext.getAttributes();
         Scope prevScope = null;
         try
@@ -151,7 +153,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.resolv
         }
         finally
         {
-            if(prevScope != null)
+            if (prevScope != null)
             {
                 setScope(requestMap, prevScope);
             }
@@ -170,6 +172,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.resolv
         {
             return null;
         }
+
         final Map<Object, Object> requestMap = facesContext.getAttributes();
         Scope prevScope = null;
         try
@@ -180,7 +183,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.resolv
         }
         finally
         {
-            if(prevScope != null)
+            if (prevScope != null)
             {
                 setScope(requestMap, prevScope);
             }
@@ -199,6 +202,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.resolv
         {
             return false;
         }
+
         final Map<Object, Object> requestMap = facesContext.getAttributes();
         Scope prevScope = null;
         try
@@ -209,7 +213,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.resolv
         }
         finally
         {
-            if(prevScope != null)
+            if (prevScope != null)
             {
                 setScope(requestMap, prevScope);
             }
@@ -228,6 +232,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.resolv
         {
             return;
         }
+
         final Map<Object, Object> requestMap = facesContext.getAttributes();
         Scope prevScope = null;
         try
@@ -239,7 +244,7 @@ public final class FacesCompositeELResolver extends org.apache.myfaces.el.resolv
         }
         finally
         {
-            if(prevScope != null)
+            if (prevScope != null)
             {
                 setScope(requestMap, prevScope);
             }

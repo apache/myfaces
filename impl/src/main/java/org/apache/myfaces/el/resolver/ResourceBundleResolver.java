@@ -79,7 +79,6 @@ public final class ResourceBundleResolver extends ELResolver
 
         // base is null and property is a String value, check for resource bundle.
         final ResourceBundle bundle = getResourceBundle(context, (String)property);
-
         if (bundle != null)
         {
             throw new PropertyNotWritableException("ResourceBundles are read-only");
@@ -104,7 +103,6 @@ public final class ResourceBundleResolver extends ELResolver
         }
 
         final ResourceBundle bundle = getResourceBundle(context, (String)property);
-
         if (bundle != null)
         {
             context.setPropertyResolved(true);
@@ -132,7 +130,6 @@ public final class ResourceBundleResolver extends ELResolver
         }
 
         final ResourceBundle bundle = getResourceBundle(context, (String)property);
-
         if (bundle != null)
         {
             context.setPropertyResolved(true);
@@ -160,7 +157,6 @@ public final class ResourceBundleResolver extends ELResolver
         }
 
         final ResourceBundle bundle = getResourceBundle(context, (String)property);
-
         if (bundle != null)
         {
             context.setPropertyResolved(true);
