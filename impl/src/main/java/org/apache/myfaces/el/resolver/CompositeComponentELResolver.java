@@ -109,9 +109,9 @@ public final class CompositeComponentELResolver extends ELResolver
 
                 if (StringUtils.isNotBlank((String) property))
                 {
-                    if (evalMap._propertyDescriptors != null)
+                    if (evalMap.propertyDescriptors != null)
                     {
-                        for (PropertyDescriptor pd : evalMap._propertyDescriptors)
+                        for (PropertyDescriptor pd : evalMap.propertyDescriptors)
                         {
                             if (property.equals(pd.getName()))
                             {
@@ -272,85 +272,83 @@ public final class CompositeComponentELResolver extends ELResolver
     private final class CompositeComponentAttributesMapWrapper 
             implements CompositeComponentExpressionHolder, Map<String, Object>
     {
-
-        private final UIComponent _component;
-        private final BeanInfo _beanInfo;
-        private final Map<String, Object> _originalMap;
-        private final PropertyDescriptor [] _propertyDescriptors;
-        private final CompositeComponentBeanInfo _ccBeanInfo;
+        private final UIComponent component;
+        private final BeanInfo beanInfo;
+        private final Map<String, Object> originalMap;
+        private final PropertyDescriptor[] propertyDescriptors;
+        private final CompositeComponentBeanInfo ccBeanInfo;
 
         private CompositeComponentAttributesMapWrapper(UIComponent component)
         {
-            this._component = component;
-            this._originalMap = component.getAttributes();
-            this._beanInfo = (BeanInfo) _originalMap.get(UIComponent.BEANINFO_KEY);
-            this._propertyDescriptors = _beanInfo.getPropertyDescriptors();
-            this._ccBeanInfo = (this._beanInfo instanceof CompositeComponentBeanInfo) ?
-                (CompositeComponentBeanInfo) this._beanInfo : null;
+            this.component = component;
+            this.originalMap = component.getAttributes();
+            this.beanInfo = (BeanInfo) originalMap.get(UIComponent.BEANINFO_KEY);
+            this.propertyDescriptors = beanInfo.getPropertyDescriptors();
+            this.ccBeanInfo = beanInfo instanceof CompositeComponentBeanInfo
+                    ? (CompositeComponentBeanInfo) beanInfo
+                    : null;
         }
 
         @Override
         public ValueExpression getExpression(String name)
         {
-            ValueExpression valueExpr = _component.getValueExpression(name);
-
-            return valueExpr;
+            ValueExpression ve = component.getValueExpression(name);
+            return ve;
         }
 
         @Override
         public void clear()
         {
-            _originalMap.clear();
+            originalMap.clear();
         }
 
         @Override
         public boolean containsKey(Object key)
         {
-            boolean value = _originalMap.containsKey(key);
+            boolean value = originalMap.containsKey(key);
             if (value)
             {
                 return value;
             }
+ 
+            if (ccBeanInfo != null)
+            {
+                PropertyDescriptor attribute = ccBeanInfo.getPropertyDescriptorsMap().get((String) key);
+                if (attribute != null)
+                {
+                    return attribute.getValue("default") != null;
+                }
+            }
             else
             {
-                if (_ccBeanInfo == null)
+                for (PropertyDescriptor attribute : propertyDescriptors)
                 {
-                    for (PropertyDescriptor attribute : _propertyDescriptors)
-                    {
-                        if (attribute.getName().equals(key))
-                        {
-                            return attribute.getValue("default") != null;
-                        }
-                    }
-                }
-                else
-                {
-                    PropertyDescriptor attribute = _ccBeanInfo.getPropertyDescriptorsMap().get(key);
-                    if (attribute != null)
+                    if (attribute.getName().equals(key))
                     {
                         return attribute.getValue("default") != null;
                     }
                 }
             }
+ 
             return false;
         }
 
         @Override
         public boolean containsValue(Object value)
         {
-            return _originalMap.containsValue(value);
+            return originalMap.containsValue(value);
         }
 
         @Override
         public Set<java.util.Map.Entry<String, Object>> entrySet()
         {
-            return _originalMap.entrySet();
+            return originalMap.entrySet();
         }
 
         @Override
         public Object get(Object key)
         {
-            Object obj = _originalMap.get(key);
+            Object obj = originalMap.get(key);
             if (obj != null)
             {
                 // _originalMap is a _ComponentAttributesMap and thus any
@@ -362,70 +360,66 @@ public final class CompositeComponentELResolver extends ELResolver
                 // ValueExpressions here, but can return obj directly.
                 return obj;
             }
-            else
+
+            if (ccBeanInfo != null)
             {
-                if (_ccBeanInfo == null)
+                PropertyDescriptor attribute = ccBeanInfo.getPropertyDescriptorsMap().get(key);
+                if (attribute != null)
                 {
-                    for (PropertyDescriptor attribute : _propertyDescriptors)
-                    {
-                        if (attribute.getName().equals(key))
-                        {
-                            obj = attribute.getValue("default");
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    PropertyDescriptor attribute = _ccBeanInfo.getPropertyDescriptorsMap().get(key);
-                    if (attribute != null)
-                    {
-                        obj = attribute.getValue("default");
-                    }
-                }
-                // We have to check for a ValueExpression and also evaluate it
-                // here, because in the PropertyDescriptor the default values are
-                // always stored as (Tag-)ValueExpressions.
-                if (obj != null && obj instanceof ValueExpression)
-                {
-                    return ((ValueExpression) obj).getValue(FacesContext.getCurrentInstance().getELContext());
-                }
-                else
-                {
-                    return obj;                    
+                    obj = attribute.getValue("default");
                 }
             }
+            else
+            {
+                for (PropertyDescriptor attribute : propertyDescriptors)
+                {
+                    if (attribute.getName().equals(key))
+                    {
+                        obj = attribute.getValue("default");
+                        break;
+                    }
+                }
+            }
+
+            // We have to check for a ValueExpression and also evaluate it
+            // here, because in the PropertyDescriptor the default values are
+            // always stored as (Tag-)ValueExpressions.
+            if (obj != null && obj instanceof ValueExpression)
+            {
+                return ((ValueExpression) obj).getValue(FacesContext.getCurrentInstance().getELContext());
+            }
+
+            return obj;
         }
         
         @Override
         public boolean isEmpty()
         {
-            return _originalMap.isEmpty();
+            return originalMap.isEmpty();
         }
 
         @Override
         public Set<String> keySet()
         {
-            return _originalMap.keySet();
+            return originalMap.keySet();
         }
 
         @Override
         public Object put(String key, Object value)
         {
-            ValueExpression valueExpression = _component.getValueExpression(key);
+            ValueExpression valueExpression = component.getValueExpression(key);
             
             // Per the spec, if the result is a ValueExpression, call setValue().
             if (valueExpression != null)
             {
                 valueExpression.setValue(FacesContext.getCurrentInstance().getELContext(), value);
-
                 return null;
             }
 
             // Really this map is used to resolve ValueExpressions like 
             // #{cc.attrs.somekey}, so the value returned is not expected to be used, 
             // but is better to delegate to keep the semantic of this method.
-            return _originalMap.put(key, value);
+            return originalMap.put(key, value);
         }
 
         @Override
@@ -440,19 +434,19 @@ public final class CompositeComponentELResolver extends ELResolver
         @Override
         public Object remove(Object key)
         {
-            return _originalMap.remove(key);
+            return originalMap.remove(key);
         }
 
         @Override
         public int size()
         {
-            return _originalMap.size();
+            return originalMap.size();
         }
 
         @Override
         public Collection<Object> values()
         {
-            return _originalMap.values();
+            return originalMap.values();
         }
     }
 }
