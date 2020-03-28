@@ -68,7 +68,6 @@ import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
 import io.quarkus.arc.deployment.BeanRegistrarBuildItem;
 import io.quarkus.arc.deployment.BeanRegistrationPhaseBuildItem;
 import io.quarkus.arc.deployment.ContextRegistrarBuildItem;
-import io.quarkus.arc.processor.ContextRegistrar;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
@@ -173,7 +172,7 @@ class MyFacesProcessor
             FaceletsResourceResolver.class.getName(),
             FlowDefinition.class.getName()
     };
-    
+
     private static final String[] FACTORIES =
     {
         FactoryFinder.APPLICATION_FACTORY,
@@ -232,29 +231,24 @@ class MyFacesProcessor
     @BuildStep
     void buildCdiScopes(BuildProducer<ContextRegistrarBuildItem> contextRegistrar) throws IOException
     {
-        contextRegistrar.produce(new ContextRegistrarBuildItem(new ContextRegistrar()
-        {
-            @Override
-            public void register(ContextRegistrar.RegistrationContext registrationContext)
-            {
-                registrationContext.configure(ViewScoped.class)
-                        .normal()
-                        .contextClass(QuarkusViewScopeContext.class)
-                        .done();
-                registrationContext.configure(FacesScoped.class)
-                        .normal()
-                        .contextClass(QuarkusFacesScopeContext.class)
-                        .done();
-                registrationContext.configure(ViewTransientScoped.class)
-                        .normal()
-                        .contextClass(QuarkusViewTransientScopeContext.class)
-                        .done();
-                registrationContext.configure(FlowScoped.class)
-                        .normal()
-                        .contextClass(QuarkusFlowScopedContext.class)
-                        .done();
-            }
-        }));
+        contextRegistrar.produce(new ContextRegistrarBuildItem(registrationContext -> {
+            registrationContext.configure(ViewScoped.class)
+                    .normal()
+                    .contextClass(QuarkusViewScopeContext.class)
+                    .done();
+            registrationContext.configure(FacesScoped.class)
+                    .normal()
+                    .contextClass(QuarkusFacesScopeContext.class)
+                    .done();
+            registrationContext.configure(ViewTransientScoped.class)
+                    .normal()
+                    .contextClass(QuarkusViewTransientScopeContext.class)
+                    .done();
+            registrationContext.configure(FlowScoped.class)
+                    .normal()
+                    .contextClass(QuarkusFlowScopedContext.class)
+                    .done();
+        }, ViewScoped.class, FacesScoped.class, ViewTransientScoped.class, FlowScoped.class));
     }
 
     @BuildStep

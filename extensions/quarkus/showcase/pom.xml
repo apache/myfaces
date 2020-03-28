@@ -25,7 +25,7 @@
     <name>Apache MyFaces Core 2.3-next - Extensions - Quarkus - Showcase</name>
 
     <properties>
-        <quarkus.version>1.2.1.Final</quarkus.version>
+        <quarkus.version>1.3.1.Final</quarkus.version>
         <myfaces.version>2.3-next-SNAPSHOT</myfaces.version>
         <failsafe.version>2.22.0</failsafe.version>
         <surefire.version>2.22.0</surefire.version>
@@ -69,7 +69,12 @@
             <artifactId>validation-api</artifactId>
             <version>2.0.1.Final</version>
         </dependency>
-
+        <dependency> <!-- workaround for https://github.com/quarkusio/quarkus/issues/7359 -->
+            <groupId>com.fasterxml.woodstox</groupId>
+            <artifactId>woodstox-core</artifactId>
+            <version>5.0.2</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>
@@ -80,6 +85,12 @@
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
             <version>2.35.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.5.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
