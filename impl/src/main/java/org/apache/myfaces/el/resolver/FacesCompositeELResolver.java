@@ -30,9 +30,6 @@ import java.util.Arrays;
  * This composite el resolver will be used at the top level resolver for faces
  * ({@link javax.faces.application.Application#getELResolver()})
  * and jsp (the one we add with {@link javax.servlet.jsp.JspApplicationContext#addELResolver(javax.el.ELResolver)}.
- * It keeps track of its scope to let the variable resolver {@link org.apache.myfaces.el.VariableResolverImpl}
- * know in which scope it is executed. This is
- * necessarry to call either the faces or the jsp resolver head.
  * </p>
  * <p>
  * This implementation does nothing if there is no actual faces context. This is necessarry since we registered our
