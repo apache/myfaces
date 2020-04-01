@@ -55,6 +55,28 @@
                     <excludes>**/*$$accessor.java</excludes>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*/README.md</exclude>
+                        <exclude>**/*/MANIFEST.MF</exclude>
+                        <exclude>.git</exclude>
+                        <exclude>.gitignore</exclude>
+                        <exclude>**/target/**/*</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
