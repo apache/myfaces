@@ -66,6 +66,7 @@
                         <exclude>.git</exclude>
                         <exclude>.gitignore</exclude>
                         <exclude>**/target/**/*</exclude>
+                        <exclude>src/main/resources/META-INF/services/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
