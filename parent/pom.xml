@@ -193,6 +193,22 @@
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.16</version>
+                    <configuration>
+                        <systemProperties>
+                             <!--
+                             Java 9 introduce CLDR locales as defaults
+                             some tests however fail because the local
+                             checks follow the java conventions.
+                             Setting it to provider should enable locale behavior
+                             across all supported JDKs
+                             -->
+                             <property>
+                                 <name>java.locale.providers</name>
+                                 <value>COMPAT</value>
+                             </property>
+                         </systemProperties>
+                         <argLine>-Djava.locale.providers=COMPAT</argLine>
+                    </configuration>
                 </plugin>
 
                 <plugin>
