@@ -26,7 +26,7 @@
 
     <properties>
         <quarkus.version>1.3.1.Final</quarkus.version>
-        <myfaces.version>2.3-next-SNAPSHOT</myfaces.version>
+        <myfaces.version>2.3-next-M2</myfaces.version>
         <failsafe.version>2.22.0</failsafe.version>
         <surefire.version>2.22.0</surefire.version>
 
