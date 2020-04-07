@@ -806,17 +806,17 @@ public class MyfacesConfig
      * rendering if a view is not transient and server side state saving is in use.     
      */
     @JSFWebConfigParam(since="2.3.6", defaultValue="false", expectedValues="true,false")
-    protected static final String ALWAYS_FORCE_SESSION_CREATION = 
+    public static final String ALWAYS_FORCE_SESSION_CREATION = 
             "org.apache.myfaces.ALWAYS_FORCE_SESSION_CREATION";
-    public final static boolean ALWAYS_FORCE_SESSION_CREATION_DEFAULT = false;
+    protected final static boolean ALWAYS_FORCE_SESSION_CREATION_DEFAULT = false;
     
     /**
      * Defines if MethodHandles and LambdaMetafactory instead of Reflection should be used for getter/setter.
      */
     @JSFWebConfigParam(since="2.3-next", defaultValue="true", expectedValues="true,false", tags="performance")
-    protected static final String USE_METHOD_HANDLES = 
+    public static final String USE_METHOD_HANDLES = 
             "org.apache.myfaces.USE_METHOD_HANDLES";
-    public final static boolean USE_METHOD_HANDLES_DEFAULT = true;
+    protected final static boolean USE_METHOD_HANDLES_DEFAULT = true;
     
     
     // we need it, applicationImpl not ready probably
