@@ -67,7 +67,7 @@ public class MethodHandleBeanELResolver extends BeanELResolver
 
     public MethodHandleBeanELResolver()
     {
-        cache = new ConcurrentHashMap<>();
+        cache = new ConcurrentHashMap<>(500);
     }
 
     @Override
