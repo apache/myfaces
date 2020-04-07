@@ -788,12 +788,12 @@ public class MyfacesConfig
     
     /**
      * Defines if the clientbehavior scripts are passed as string or function to the jsf.util.chain.
-     * "As string" is actually the default behavior of both MyFaces (until 3.0) and Mojarra.
+     * "As string" is actually the default behavior of both MyFaces (until 2.3-next) and Mojarra.
      * "As function" is quite usefull for CSP as no string needs to be evaluated as function.
      * 
      * Our jsf.util.chain supports both of course.
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING", since="3.0", defaultValue = "false")
+    @JSFWebConfigParam(name="org.apache.myfaces.RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING", since="2.3-next", defaultValue = "false")
     public static final String RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING = "org.apache.myfaces.RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING";
     public static final boolean RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING_DEFAULT = false;
     
@@ -808,6 +808,17 @@ public class MyfacesConfig
     protected static final String ALWAYS_FORCE_SESSION_CREATION = 
             "org.apache.myfaces.ALWAYS_FORCE_SESSION_CREATION";
     public final static boolean ALWAYS_FORCE_SESSION_CREATION_DEFAULT = false;
+    
+    /**
+     * Defines if our own BeanELResolver will be used for better performance.
+     * It uses MethodHandles and LambdaMetafactory for getter/setter calls instead of reflection.
+     */
+    @JSFWebConfigParam(since="2.3-next", defaultValue="true", expectedValues="true,false",
+            group="EL", tags="performance")
+    protected static final String USE_METHOD_HANDLE_BEAN_EL_RESOLVER = 
+            "org.apache.myfaces.USE_METHOD_HANDLE_BEAN_EL_RESOLVER";
+    public final static boolean USE_METHOD_HANDLE_BEAN_EL_RESOLVER_DEFAULT = true;
+    
     
     // we need it, applicationImpl not ready probably
     private ProjectStage projectStage = ProjectStage.Production;
@@ -888,6 +899,7 @@ public class MyfacesConfig
     private int websocketMaxConnections = WEBSOCKET_MAX_CONNECTIONS_DEFAULT;
     private boolean renderClientBehaviorScriptsAsString = RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING_DEFAULT;
     private boolean alwaysForceSessionCreation = ALWAYS_FORCE_SESSION_CREATION_DEFAULT;
+    private boolean useMethodHandleBeanElResolver = USE_METHOD_HANDLE_BEAN_EL_RESOLVER_DEFAULT;
     
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -1302,6 +1314,9 @@ public class MyfacesConfig
 
         cfg.alwaysForceSessionCreation = getBoolean(extCtx, ALWAYS_FORCE_SESSION_CREATION,
                 ALWAYS_FORCE_SESSION_CREATION_DEFAULT);
+
+        cfg.useMethodHandleBeanElResolver = getBoolean(extCtx, USE_METHOD_HANDLE_BEAN_EL_RESOLVER,
+                USE_METHOD_HANDLE_BEAN_EL_RESOLVER_DEFAULT);
 
         return cfg;
     }
@@ -1761,6 +1776,11 @@ public class MyfacesConfig
     public boolean isAlwaysForceSessionCreation()
     {
         return alwaysForceSessionCreation;
+    }
+
+    public boolean isUseMethodHandleBeanElResolver()
+    {
+        return useMethodHandleBeanElResolver;
     }
 }
 

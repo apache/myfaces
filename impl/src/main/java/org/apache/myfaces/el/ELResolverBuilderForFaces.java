@@ -140,7 +140,7 @@ public class ELResolverBuilderForFaces extends ELResolverBuilder
         list.add(new MapELResolver());
         list.add(new ListELResolver());
         list.add(new ArrayELResolver());
-        if (MethodHandleBeanELResolver.isSupported())
+        if (myfacesConfig.isUseMethodHandleBeanElResolver() && MethodHandleBeanELResolver.isSupported())
         {
             list.add(new MethodHandleBeanELResolver());
         }
