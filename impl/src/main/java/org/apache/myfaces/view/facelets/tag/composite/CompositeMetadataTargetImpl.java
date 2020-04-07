@@ -40,32 +40,29 @@ import org.apache.myfaces.util.lang.ClassUtils;
  */
 final class CompositeMetadataTargetImpl extends MetadataTarget
 {
-    private final Map<String, PropertyDescriptor> _pd;
-    
-    private final MetadataTarget _delegate;
-    
-    private final BeanInfo _beanInfo;
+    private final Map<String, PropertyDescriptor> descriptors;
+    private final MetadataTarget delegate;
+    private final BeanInfo beanInfo;
 
     public CompositeMetadataTargetImpl(MetadataTarget delegate, BeanInfo beanInfo) throws IntrospectionException
     {
-        _delegate = delegate;
-        _beanInfo = beanInfo;
+        this.delegate = delegate;
+        this.beanInfo = beanInfo;
+        this.descriptors = new HashMap<>();
         
-        _pd = new HashMap<String, PropertyDescriptor>();
-        
-        for (PropertyDescriptor descriptor : _beanInfo.getPropertyDescriptors())
+        for (PropertyDescriptor descriptor : beanInfo.getPropertyDescriptors())
         {
-            _pd.put(descriptor.getName(), descriptor);
+            this.descriptors.put(descriptor.getName(), descriptor);
         }
     }
 
     @Override
     public PropertyDescriptor getProperty(String name)
     {
-        PropertyDescriptor pd = _delegate.getProperty(name); 
+        PropertyDescriptor pd = delegate.getProperty(name); 
         if (pd == null)
         {
-            pd = _pd.get(name);
+            pd = descriptors.get(name);
         }
         return pd;
     }
@@ -79,7 +76,7 @@ final class CompositeMetadataTargetImpl extends MetadataTarget
             Object type = pd.getValue("type");
             if (type != null)
             {
-                type = ((ValueExpression)type).getValue(FacesContext.getCurrentInstance().getELContext());
+                type = ((ValueExpression) type).getValue(FacesContext.getCurrentInstance().getELContext());
                 if (type instanceof String)
                 {
                     try
@@ -114,7 +111,7 @@ final class CompositeMetadataTargetImpl extends MetadataTarget
     @Override
     public Class<?> getTargetClass()
     {
-        return _delegate.getTargetClass();
+        return delegate.getTargetClass();
     }
 
     @Override
@@ -132,6 +129,6 @@ final class CompositeMetadataTargetImpl extends MetadataTarget
     @Override
     public boolean isTargetInstanceOf(Class type)
     {
-        return _delegate.isTargetInstanceOf(type);
+        return delegate.isTargetInstanceOf(type);
     }
 }

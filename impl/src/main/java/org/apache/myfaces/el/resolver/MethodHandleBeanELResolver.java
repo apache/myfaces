@@ -34,24 +34,12 @@ public class MethodHandleBeanELResolver extends BeanELResolver
 
     public MethodHandleBeanELResolver()
     {
-        if (MethodHandleUtils.isSupported())
-        {
-            cache = new ConcurrentHashMap<>(1000);
-        }
-        else
-        {
-            cache = null;
-        }
+        cache = new ConcurrentHashMap<>(1000);
     }
 
     @Override
     public Class<?> getType(ELContext context, Object base, Object property)
     {
-        if (!MethodHandleUtils.isSupported())
-        {
-            return super.getType(context, base, property);
-        }
-
         Objects.requireNonNull(context);
         if (base == null || property == null)
         {
@@ -60,18 +48,13 @@ public class MethodHandleBeanELResolver extends BeanELResolver
 
         context.setPropertyResolved(base, property);
 
-        return getPropertyDescriptor(base, property).getType();
+        return getPropertyDescriptor(base, property).getPropertyType();
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Object getValue(ELContext context, Object base, Object property)
-    {
-        if (!MethodHandleUtils.isSupported())
-        {
-            return super.getValue(context, base, property);
-        }
-        
+    {        
         Objects.requireNonNull(context);
         if (base == null || property == null)
         {
@@ -82,7 +65,7 @@ public class MethodHandleBeanELResolver extends BeanELResolver
 
         try
         {
-            return getPropertyDescriptor(base, property).getGetter().apply(base);
+            return getPropertyDescriptor(base, property).getReadFunction().apply(base);
         }
         catch (Exception e)
         {
@@ -94,12 +77,6 @@ public class MethodHandleBeanELResolver extends BeanELResolver
     @Override
     public void setValue(ELContext context, Object base, Object property, Object value)
     {
-        if (!MethodHandleUtils.isSupported())
-        {
-            super.setValue(context, base, property, value);
-            return;
-        }
-        
         Objects.requireNonNull(context);
         if (base == null || property == null)
         {
@@ -109,7 +86,7 @@ public class MethodHandleBeanELResolver extends BeanELResolver
         context.setPropertyResolved(base, property);
 
         MethodHandleUtils.LambdaPropertyDescriptor propertyDescriptor = getPropertyDescriptor(base, property);
-        if (propertyDescriptor.getSetter() == null)
+        if (propertyDescriptor.getWriteFunction() == null)
         {
             throw new PropertyNotWritableException("Property \"" + (String) property
                     + "\" in \"" + base.getClass().getName() + "\" is not writable!");
@@ -117,7 +94,7 @@ public class MethodHandleBeanELResolver extends BeanELResolver
 
         try
         {
-            propertyDescriptor.getSetter().accept(base, value);
+            propertyDescriptor.getWriteFunction().accept(base, value);
         }
         catch (Exception e)
         {
@@ -128,11 +105,6 @@ public class MethodHandleBeanELResolver extends BeanELResolver
     @Override
     public boolean isReadOnly(ELContext context, Object base, Object property)
     {
-        if (!MethodHandleUtils.isSupported())
-        {
-            return super.isReadOnly(context, base, property);
-        }
-
         Objects.requireNonNull(context);
         if (base == null || property == null)
         {
@@ -141,17 +113,12 @@ public class MethodHandleBeanELResolver extends BeanELResolver
 
         context.setPropertyResolved(base, property);
 
-        return getPropertyDescriptor(base, property).getSetter() == null;
+        return getPropertyDescriptor(base, property).getWriteFunction() == null;
     }
 
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base)
     {
-        if (!MethodHandleUtils.isSupported())
-        {
-            return super.getCommonPropertyType(context, base);
-        }
-        
         if (base != null)
         {
             return Object.class;

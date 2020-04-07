@@ -27,6 +27,7 @@ import javax.faces.view.facelets.MetaRule;
 import javax.faces.view.facelets.Metadata;
 import javax.faces.view.facelets.MetadataTarget;
 import javax.faces.view.facelets.TagAttribute;
+import org.apache.myfaces.view.facelets.tag.MethodHandleMetadataTargetImpl;
 
 /**
  * Copy of org.apache.myfaces.view.facelets.tag.jsf.ComponentRule
@@ -131,6 +132,27 @@ final class CompositeComponentRule extends MetaRule
                 }
                 
                 return new ValueExpressionMetadata(name, type, attribute);
+            }
+            else if (meta instanceof MethodHandleMetadataTargetImpl)
+            {
+                if (((MethodHandleMetadataTargetImpl) meta).getWriteFunction(name) == null)
+                {
+                    Class<?> type = meta.getPropertyType(name);
+                    if (type == null)
+                    {
+                        if (((MethodHandleMetadataTargetImpl) meta).getLambdaProperty(name) == null)
+                        {
+                            // this was an attribute literal, but not property
+                            warnAttr(attribute, meta.getTargetClass(), name);
+                        }
+
+                        return new LiteralAttributeMetadata(name, attribute.getValue());
+                    }
+                    else
+                    {
+                        return new TypedLiteralAttributeMetadata(name, type, attribute);
+                    }
+                }
             }
             else if (meta.getWriteMethod(name) == null)
             {

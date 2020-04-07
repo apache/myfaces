@@ -20,6 +20,7 @@ package org.apache.myfaces.view.facelets.tag;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.function.BiConsumer;
 
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.MetaRule;
@@ -40,18 +41,38 @@ public final class BeanPropertyTagRule extends MetaRule
     @Override
     public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta)
     {
-        Method m = meta.getWriteMethod(name);
-
-        // if the property is writable
-        if (m != null)
+        if (meta instanceof MethodHandleMetadataTargetImpl)
         {
-            if (attribute.isLiteral())
+            BiConsumer<Object, Object> f = ((MethodHandleMetadataTargetImpl) meta).getWriteFunction(name);
+
+            // if the property is writable
+            if (f != null)
             {
-                return new LiteralPropertyMetadata(m, attribute);
+                if (attribute.isLiteral())
+                {
+                    return new LiteralPropertyMetadata(meta.getPropertyType(name), f, attribute);
+                }
+                else
+                {
+                    return new DynamicPropertyMetadata(meta.getPropertyType(name), f, attribute);
+                }
             }
-            else
+        }
+        else
+        {
+            Method m = meta.getWriteMethod(name);
+
+            // if the property is writable
+            if (m != null)
             {
-                return new DynamicPropertyMetadata(m, attribute);
+                if (attribute.isLiteral())
+                {
+                    return new LiteralPropertyMetadata(meta.getPropertyType(name), m, attribute);
+                }
+                else
+                {
+                    return new DynamicPropertyMetadata(meta.getPropertyType(name), m, attribute);
+                }
             }
         }
 
@@ -60,27 +81,53 @@ public final class BeanPropertyTagRule extends MetaRule
     
     final static class LiteralPropertyMetadata extends Metadata
     {
+        private final Class<?> propertyType;
         private final Method method;
+        private final BiConsumer<Object, Object> function;
         private final TagAttribute attribute;
-        private Object[] value;
+        private Object value;
+        private Object[] valueArgs;
 
-        public LiteralPropertyMetadata(Method method, TagAttribute attribute)
+        public LiteralPropertyMetadata(Class<?> propertyType, Method method, TagAttribute attribute)
         {
+            this.propertyType = propertyType;
             this.method = method;
+            this.function = null;
+            this.attribute = attribute;
+        }
+        
+        public LiteralPropertyMetadata(Class<?> propertyType, BiConsumer<Object, Object> function,
+                TagAttribute attribute)
+        {
+            this.propertyType = propertyType;
+            this.method = null;
+            this.function = function;
             this.attribute = attribute;
         }
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
-            if (value == null)
-            {
-                String str = this.attribute.getValue();
-                value = new Object[] { ctx.getExpressionFactory().coerceToType(str, method.getParameterTypes()[0]) };
-            }
             try
             {
-                method.invoke(instance, this.value);
+                if (method != null)
+                {
+                    if (valueArgs == null)
+                    {
+                        String str = this.attribute.getValue();
+                        valueArgs = new Object[] { ctx.getExpressionFactory().coerceToType(str, propertyType) };
+                    }
+                    method.invoke(instance, valueArgs);
+                }
+                else if (function != null)
+                {
+                    if (value == null)
+                    {
+                        String str = this.attribute.getValue();
+                        value = ctx.getExpressionFactory().coerceToType(str, propertyType);
+                    }
+                    function.accept(instance, value);
+                }
             }
             catch (InvocationTargetException e)
             {
@@ -96,23 +143,41 @@ public final class BeanPropertyTagRule extends MetaRule
 
     final static class DynamicPropertyMetadata extends Metadata
     {
+        private final Class<?> propertyType;
         private final Method method;
+        private final BiConsumer<Object, Object> function;
         private final TagAttribute attribute;
-        private final Class<?> type;
 
-        public DynamicPropertyMetadata(Method method, TagAttribute attribute)
+        public DynamicPropertyMetadata(Class<?> propertyType, Method method, TagAttribute attribute)
         {
+            this.propertyType = propertyType;
             this.method = method;
-            this.type = method.getParameterTypes()[0];
+            this.function = null;
             this.attribute = attribute;
         }
 
+        public DynamicPropertyMetadata(Class<?> propertyType, BiConsumer<Object, Object> function,
+                TagAttribute attribute)
+        {
+            this.propertyType = propertyType;
+            this.method = null;
+            this.function = function;
+            this.attribute = attribute;
+        }
+        
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
             try
             {
-                method.invoke(instance, new Object[] { attribute.getObject(ctx, type) });
+                if (method != null)
+                {
+                    method.invoke(instance, new Object[] { attribute.getObject(ctx, propertyType) });
+                }
+                else if (function != null)
+                {
+                    function.accept(instance, attribute.getObject(ctx, propertyType));
+                }
             }
             catch (InvocationTargetException e)
             {

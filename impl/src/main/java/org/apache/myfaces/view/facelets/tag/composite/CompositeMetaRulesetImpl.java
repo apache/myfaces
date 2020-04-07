@@ -38,7 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.lang.Assert;
+import org.apache.myfaces.view.facelets.tag.MethodHandleMetadataTargetImpl;
 import org.apache.myfaces.view.facelets.tag.NullMetadata;
 
 public class CompositeMetaRulesetImpl extends MetaRuleset
@@ -213,7 +215,14 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
         {
             try
             {
-                meta = new MetadataTargetImpl(_type);
+                if (MyfacesConfig.getCurrentInstance().isUseMethodHandles())
+                {
+                    meta = new MethodHandleMetadataTargetImpl(_type);
+                }
+                else
+                {
+                    meta = new MetadataTargetImpl(_type);
+                }
             }
             catch (IntrospectionException e)
             {

@@ -27,7 +27,9 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.ObjDoubleConsumer;
@@ -51,48 +53,53 @@ public class MethodHandleUtils
         }
     }
 
-    public static boolean isSupported()
-    {
-        return privateLookupIn != null;
-    }
-    
     public static class LambdaPropertyDescriptor
     {
-        private Class<?> type;
-        private Function getter;
-        private BiConsumer setter;
+        private PropertyDescriptor wrapped;
+        private Function<Object, Object> readFunction;
+        private BiConsumer<Object, Object> writeFunction;
 
-        public Class<?> getType()
+        public PropertyDescriptor getWrapped()
         {
-            return type;
+            return wrapped;
         }
 
-        public Function getGetter()
+        public Class<?> getPropertyType()
         {
-            return getter;
+            return wrapped.getPropertyType();
         }
 
-        public BiConsumer getSetter()
+        public Function<Object, Object> getReadFunction()
         {
-            return setter;
+            return readFunction;
+        }
+
+        public BiConsumer<Object, Object> getWriteFunction()
+        {
+            return writeFunction;
         }
     }
 
-    public static HashMap<String, LambdaPropertyDescriptor> getLambdaPropertyDescriptors(Class<?> target)
+    public static Map<String, LambdaPropertyDescriptor> getLambdaPropertyDescriptors(Class<?> target)
     {
         try
         {            
             PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(target).getPropertyDescriptors();
+            if (propertyDescriptors == null || propertyDescriptors.length == 0)
+            {
+                return Collections.emptyMap();
+            }
+
             HashMap<String, LambdaPropertyDescriptor> properties = new HashMap<>(propertyDescriptors.length);
 
+            MethodHandles.Lookup lookup = (MethodHandles.Lookup) privateLookupIn.invoke(null, target,
+                    MethodHandles.lookup());
+            
             for (PropertyDescriptor pd : Introspector.getBeanInfo(target).getPropertyDescriptors())
             {
                 LambdaPropertyDescriptor lpd = new LambdaPropertyDescriptor();
-                lpd.type = pd.getPropertyType();
-                
-                MethodHandles.Lookup lookup = (MethodHandles.Lookup) privateLookupIn.invoke(null, target,
-                        MethodHandles.lookup());
-
+                lpd.wrapped = pd;
+ 
                 Method getter = pd.getReadMethod();
                 if (getter != null)
                 {
@@ -103,14 +110,14 @@ public class MethodHandleUtils
                             MethodType.methodType(Object.class, Object.class),
                             getterHandle,
                             getterHandle.type());
-                    lpd.getter = (Function) getterCallSite.getTarget().invokeExact();
+                    lpd.readFunction = (Function) getterCallSite.getTarget().invokeExact();
                 }
 
                 Method setter = pd.getWriteMethod();
                 if (setter != null)
                 {
                     MethodHandle setterHandle = lookup.unreflect(setter);
-                    lpd.setter = createSetter(lookup, lpd, setterHandle);
+                    lpd.writeFunction = createSetter(lookup, lpd, setterHandle);
                 }
                 
                 properties.put(pd.getName(), lpd);
@@ -129,52 +136,53 @@ public class MethodHandleUtils
             MethodHandle setterHandle)
             throws LambdaConversionException, Throwable
     {
+        Class<?> propertyType = propertyInfo.getPropertyType();
         // special handling for primitives required, see https://dzone.com/articles/setters-method-handles-and-java-11
-        if (propertyInfo.type.isPrimitive())
+        if (propertyType.isPrimitive())
         {
-            if (propertyInfo.type == double.class)
+            if (propertyType == double.class)
             {
                 ObjDoubleConsumer consumer = (ObjDoubleConsumer) createSetterCallSite(
                         lookup, setterHandle, ObjDoubleConsumer.class, double.class).getTarget().invokeExact();
                 return (a, b) -> consumer.accept(a, (double) b);
             }
-            else if (propertyInfo.type == int.class)
+            else if (propertyType == int.class)
             {
                 ObjIntConsumer consumer = (ObjIntConsumer) createSetterCallSite(
                         lookup, setterHandle, ObjIntConsumer.class, int.class).getTarget().invokeExact();
                 return (a, b) -> consumer.accept(a, (int) b);
             }
-            else if (propertyInfo.type == long.class)
+            else if (propertyType == long.class)
             {
                 ObjLongConsumer consumer = (ObjLongConsumer) createSetterCallSite(
                         lookup, setterHandle, ObjLongConsumer.class, long.class).getTarget().invokeExact();
                 return (a, b) -> consumer.accept(a, (long) b);
             }
-            else if (propertyInfo.type == float.class)
+            else if (propertyType == float.class)
             {
                 ObjFloatConsumer consumer = (ObjFloatConsumer) createSetterCallSite(
                         lookup, setterHandle, ObjFloatConsumer.class, float.class).getTarget().invokeExact();
                 return (a, b) -> consumer.accept(a, (float) b);
             }
-            else if (propertyInfo.type == byte.class)
+            else if (propertyType == byte.class)
             {
                 ObjByteConsumer consumer = (ObjByteConsumer) createSetterCallSite(
                         lookup, setterHandle, ObjByteConsumer.class, byte.class).getTarget().invokeExact();
                 return (a, b) -> consumer.accept(a, (byte) b);
             }
-            else if (propertyInfo.type == char.class)
+            else if (propertyType == char.class)
             {
                 ObjCharConsumer consumer = (ObjCharConsumer) createSetterCallSite(
                         lookup, setterHandle, ObjCharConsumer.class, char.class).getTarget().invokeExact();
                 return (a, b) -> consumer.accept(a, (char) b);
             }
-            else if (propertyInfo.type == short.class)
+            else if (propertyType == short.class)
             {
                 ObjShortConsumer consumer = (ObjShortConsumer) createSetterCallSite(
                         lookup, setterHandle, ObjShortConsumer.class, short.class).getTarget().invokeExact();
                 return (a, b) -> consumer.accept(a, (short) b);
             }
-            else if (propertyInfo.type == boolean.class)
+            else if (propertyType == boolean.class)
             {
                 ObjBooleanConsumer consumer = (ObjBooleanConsumer) createSetterCallSite(
                         lookup, setterHandle, ObjBooleanConsumer.class, boolean.class).getTarget().invokeExact();
@@ -182,7 +190,7 @@ public class MethodHandleUtils
             }
             else
             {
-                throw new RuntimeException("Type is not supported yet: " + propertyInfo.type.getName());
+                throw new RuntimeException("Type is not supported yet: " + propertyType.getName());
             }
         }
         else

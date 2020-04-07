@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.config;
 
+import java.lang.invoke.MethodHandles;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.ProjectStage;
@@ -810,14 +811,12 @@ public class MyfacesConfig
     public final static boolean ALWAYS_FORCE_SESSION_CREATION_DEFAULT = false;
     
     /**
-     * Defines if our own BeanELResolver will be used for better performance.
-     * It uses MethodHandles and LambdaMetafactory for getter/setter calls instead of reflection.
+     * Defines if MethodHandles and LambdaMetafactory instead of Reflection should be used for getter/setter.
      */
-    @JSFWebConfigParam(since="2.3-next", defaultValue="true", expectedValues="true,false",
-            group="EL", tags="performance")
-    protected static final String USE_METHOD_HANDLE_BEAN_EL_RESOLVER = 
-            "org.apache.myfaces.USE_METHOD_HANDLE_BEAN_EL_RESOLVER";
-    public final static boolean USE_METHOD_HANDLE_BEAN_EL_RESOLVER_DEFAULT = true;
+    @JSFWebConfigParam(since="2.3-next", defaultValue="true", expectedValues="true,false", tags="performance")
+    protected static final String USE_METHOD_HANDLES = 
+            "org.apache.myfaces.USE_METHOD_HANDLES";
+    public final static boolean USE_METHOD_HANDLES_DEFAULT = true;
     
     
     // we need it, applicationImpl not ready probably
@@ -899,7 +898,7 @@ public class MyfacesConfig
     private int websocketMaxConnections = WEBSOCKET_MAX_CONNECTIONS_DEFAULT;
     private boolean renderClientBehaviorScriptsAsString = RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING_DEFAULT;
     private boolean alwaysForceSessionCreation = ALWAYS_FORCE_SESSION_CREATION_DEFAULT;
-    private boolean useMethodHandleBeanElResolver = USE_METHOD_HANDLE_BEAN_EL_RESOLVER_DEFAULT;
+    private boolean useMethodHandles = USE_METHOD_HANDLES_DEFAULT;
     
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -1315,8 +1314,20 @@ public class MyfacesConfig
         cfg.alwaysForceSessionCreation = getBoolean(extCtx, ALWAYS_FORCE_SESSION_CREATION,
                 ALWAYS_FORCE_SESSION_CREATION_DEFAULT);
 
-        cfg.useMethodHandleBeanElResolver = getBoolean(extCtx, USE_METHOD_HANDLE_BEAN_EL_RESOLVER,
-                USE_METHOD_HANDLE_BEAN_EL_RESOLVER_DEFAULT);
+        cfg.useMethodHandles = getBoolean(extCtx, USE_METHOD_HANDLES,
+                USE_METHOD_HANDLES_DEFAULT);
+        if (cfg.useMethodHandles)
+        {
+            try
+            {
+                 MethodHandles.class.getMethod("privateLookupIn", Class.class,
+                        MethodHandles.Lookup.class);
+            }
+            catch (NoSuchMethodException e)
+            {
+                cfg.useMethodHandles = false;
+            }
+        }
 
         return cfg;
     }
@@ -1778,9 +1789,9 @@ public class MyfacesConfig
         return alwaysForceSessionCreation;
     }
 
-    public boolean isUseMethodHandleBeanElResolver()
+    public boolean isUseMethodHandles()
     {
-        return useMethodHandleBeanElResolver;
+        return useMethodHandles;
     }
 }
 

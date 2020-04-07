@@ -50,7 +50,7 @@ public final class ExternalSpecifications
         {
             try
             {
-                available = (ClassUtils.classForName("javax.validation.Validation") != null);
+                available = ClassUtils.classForName("javax.validation.Validation") != null;
             }
             catch(ClassNotFoundException e)
             {

@@ -20,6 +20,7 @@ package org.apache.myfaces.view.facelets.tag;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.function.BiConsumer;
 
 import javax.el.MethodExpression;
 import javax.faces.view.facelets.FaceletContext;
@@ -71,36 +72,55 @@ public final class MethodRule extends MetaRule
 
     private class MethodExpressionMetadata extends Metadata
     {
-        private final Method _method;
-        private final TagAttribute _attribute;
-        private Class<?>[] _paramList;
-        private Class<?> _returnType;
+        private final Method method;
+        private final BiConsumer<Object, Object> function;
+        private final TagAttribute attribute;
+        private Class<?>[] paramList;
+        private Class<?> returnType;
 
         public MethodExpressionMetadata(Method method, TagAttribute attribute, Class<?> returnType, 
-                                        Class<?>[] paramList)
+                Class<?>[] paramList)
         {
-            _method = method;
-            _attribute = attribute;
-            _paramList = paramList;
-            _returnType = returnType;
+            this.method = method;
+            this.function = null;
+            this.attribute = attribute;
+            this.paramList = paramList;
+            this.returnType = returnType;
+        }
+        
+        public MethodExpressionMetadata(BiConsumer<Object, Object> function, TagAttribute attribute,
+                Class<?> returnType, Class<?>[] paramList)
+        {
+            this.method = null;
+            this.function = function;
+            this.attribute = attribute;
+            this.paramList = paramList;
+            this.returnType = returnType;
         }
 
         @Override
         public void applyMetadata(FaceletContext ctx, Object instance)
         {
-            MethodExpression expr = _attribute.getMethodExpression(ctx, _returnType, _paramList);
+            MethodExpression expr = attribute.getMethodExpression(ctx, returnType, paramList);
 
             try
             {
-                _method.invoke(instance, new Object[] { expr });
+                if (method != null)
+                {
+                    method.invoke(instance, new Object[] { expr });
+                }
+                else if (function != null)
+                {
+                    function.accept(instance, expr);
+                }
             }
             catch (InvocationTargetException e)
             {
-                throw new TagAttributeException(_attribute, e.getCause());
+                throw new TagAttributeException(attribute, e.getCause());
             }
             catch (Exception e)
             {
-                throw new TagAttributeException(_attribute, e);
+                throw new TagAttributeException(attribute, e);
             }
         }
     }
