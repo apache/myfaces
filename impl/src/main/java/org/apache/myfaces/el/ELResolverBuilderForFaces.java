@@ -46,6 +46,7 @@ import org.apache.myfaces.el.resolver.ResourceResolver;
 import org.apache.myfaces.el.resolver.ScopedAttributeResolver;
 import org.apache.myfaces.el.resolver.implicitobject.ImplicitObjectResolver;
 import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.el.resolver.MethodHandleBeanELResolver;
 import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
@@ -139,8 +140,15 @@ public class ELResolverBuilderForFaces extends ELResolverBuilder
         list.add(new MapELResolver());
         list.add(new ListELResolver());
         list.add(new ArrayELResolver());
-        list.add(new BeanELResolver());
-        
+        if (MethodHandleBeanELResolver.isSupported())
+        {
+            list.add(new MethodHandleBeanELResolver());
+        }
+        else
+        {
+            list.add(new BeanELResolver());
+        }
+
         // give the user a chance to sort the resolvers
         sortELResolvers(list, Scope.Faces);
         
