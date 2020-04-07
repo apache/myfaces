@@ -58,11 +58,6 @@ public class MethodHandleBeanELResolver extends BeanELResolver
         }
     }
 
-    public static boolean isSupported()
-    {
-        return privateLookupIn != null;
-    }
-
     private final ConcurrentHashMap<String, Map<String, PropertyInfo>> cache;
 
     public MethodHandleBeanELResolver()
@@ -73,6 +68,11 @@ public class MethodHandleBeanELResolver extends BeanELResolver
     @Override
     public Class<?> getType(ELContext context, Object base, Object property)
     {
+        if (privateLookupIn == null)
+        {
+            return super.getType(context, base, property);
+        }
+
         Objects.requireNonNull(context);
         if (base == null || property == null)
         {
@@ -88,6 +88,11 @@ public class MethodHandleBeanELResolver extends BeanELResolver
     @Override
     public Object getValue(ELContext context, Object base, Object property)
     {
+        if (privateLookupIn == null)
+        {
+            return super.getValue(context, base, property);
+        }
+        
         Objects.requireNonNull(context);
         if (base == null || property == null)
         {
@@ -110,6 +115,12 @@ public class MethodHandleBeanELResolver extends BeanELResolver
     @Override
     public void setValue(ELContext context, Object base, Object property, Object value)
     {
+        if (privateLookupIn == null)
+        {
+            super.setValue(context, base, property, value);
+            return;
+        }
+        
         Objects.requireNonNull(context);
         if (base == null || property == null)
         {
@@ -146,6 +157,11 @@ public class MethodHandleBeanELResolver extends BeanELResolver
     @Override
     public boolean isReadOnly(ELContext context, Object base, Object property)
     {
+        if (privateLookupIn == null)
+        {
+            return super.isReadOnly(context, base, property);
+        }
+
         Objects.requireNonNull(context);
         if (base == null || property == null)
         {
@@ -160,6 +176,11 @@ public class MethodHandleBeanELResolver extends BeanELResolver
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base)
     {
+        if (privateLookupIn == null)
+        {
+            return super.getCommonPropertyType(context, base);
+        }
+        
         if (base != null)
         {
             return Object.class;
