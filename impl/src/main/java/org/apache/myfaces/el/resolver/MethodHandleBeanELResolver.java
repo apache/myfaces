@@ -35,15 +35,19 @@ import java.util.function.Function;
 import java.util.function.ObjDoubleConsumer;
 import java.util.function.ObjIntConsumer;
 import java.util.function.ObjLongConsumer;
+import java.util.logging.Logger;
 
 import javax.el.BeanELResolver;
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
+import org.apache.myfaces.bean.ManagedBeanExtension;
 
 public class MethodHandleBeanELResolver extends BeanELResolver
 {
+    private static final Logger LOG = Logger.getLogger(ManagedBeanExtension.class.getName());
+
     private static Method privateLookupIn;
 
     static
@@ -55,6 +59,8 @@ public class MethodHandleBeanELResolver extends BeanELResolver
         }
         catch (Exception e)
         {
+            LOG.info("MethodHandles#privateLookupIn not found or accessible. Skip using "
+                    + MethodHandleBeanELResolver.class.getName());
         }
     }
 
@@ -62,7 +68,14 @@ public class MethodHandleBeanELResolver extends BeanELResolver
 
     public MethodHandleBeanELResolver()
     {
-        cache = new ConcurrentHashMap<>(1000);
+        if (privateLookupIn == null)
+        {
+            cache = null;
+        }
+        else
+        {
+            cache = new ConcurrentHashMap<>(1000);
+        }
     }
 
     @Override
