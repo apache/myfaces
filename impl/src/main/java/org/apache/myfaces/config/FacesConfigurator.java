@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.config;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -317,18 +316,7 @@ public class FacesConfigurator
     //Taken from trinidad URLUtils
     private long getResourceLastModified(URL url) throws IOException
     {
-        if ("file".equals(url.getProtocol()))
-        {
-            String externalForm = url.toExternalForm();
-            // Remove the "file:"
-            File file = new File(externalForm.substring(5));
-
-            return file.lastModified();
-        }
-        else
-        {
-            return getResourceLastModified(url.openConnection());
-        }
+        return getResourceLastModified(url.openConnection());
     }
 
     //Taken from trinidad URLUtils
