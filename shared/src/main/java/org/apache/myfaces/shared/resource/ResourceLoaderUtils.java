@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.shared.resource;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
@@ -79,18 +78,7 @@ public class ResourceLoaderUtils
     //Taken from trinidad URLUtils
     public static long getResourceLastModified(URL url) throws IOException
     {
-        if ("file".equals(url.getProtocol()))
-        {
-            String externalForm = url.toExternalForm();
-            // Remove the "file:"
-            File file = new File(externalForm.substring(5));
-
-            return file.lastModified();
-        }
-        else
-        {
-            return getResourceLastModified(url.openConnection());
-        }
+        return getResourceLastModified(url.openConnection());
     }
 
     //Taken from trinidad URLUtils
