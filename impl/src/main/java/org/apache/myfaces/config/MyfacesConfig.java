@@ -950,6 +950,17 @@ public class MyfacesConfig
     {
         numberOfFlashTokensInSession = (NUMBER_OF_VIEWS_IN_SESSION_DEFAULT
                 / NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT) + 1;
+
+        try
+        {
+            MethodHandles.class.getMethod("privateLookupIn", Class.class,
+                    MethodHandles.Lookup.class);
+            useMethodHandles = true;
+        }
+        catch (NoSuchMethodException e)
+        {
+            useMethodHandles = false;
+        }
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -1320,7 +1331,7 @@ public class MyfacesConfig
         {
             try
             {
-                 MethodHandles.class.getMethod("privateLookupIn", Class.class,
+                MethodHandles.class.getMethod("privateLookupIn", Class.class,
                         MethodHandles.Lookup.class);
             }
             catch (NoSuchMethodException e)
