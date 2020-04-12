@@ -34,9 +34,9 @@ public final class HtmlLibrary extends AbstractHtmlLibrary
     {
         super(NAMESPACE, ALIAS_NAMESPACE);
         
-        this.addHtmlComponent ("body", "javax.faces.OutputBody", "javax.faces.Body");
+        this.addHtmlComponent("body", "javax.faces.OutputBody", "javax.faces.Body");
         
-        this.addHtmlComponent ("button", "javax.faces.HtmlOutcomeTargetButton", "javax.faces.Button");
+        this.addHtmlComponent("button", "javax.faces.HtmlOutcomeTargetButton", "javax.faces.Button");
         
         this.addHtmlComponent("column", "javax.faces.HtmlColumn", null);
 
@@ -54,7 +54,7 @@ public final class HtmlLibrary extends AbstractHtmlLibrary
 
         this.addHtmlComponent("graphicImage", "javax.faces.HtmlGraphicImage", "javax.faces.Image");
         
-        this.addHtmlComponent ("head", "javax.faces.OutputHead", "javax.faces.Head");
+        this.addHtmlComponent("head", "javax.faces.OutputHead", "javax.faces.Head");
         
         this.addHtmlComponent("inputHidden", "javax.faces.HtmlInputHidden", "javax.faces.Hidden");
 
@@ -66,7 +66,7 @@ public final class HtmlLibrary extends AbstractHtmlLibrary
 
         this.addHtmlComponent("inputFile", "javax.faces.HtmlInputFile", "javax.faces.File");
         
-        this.addHtmlComponent ("link", "javax.faces.HtmlOutcomeTargetLink", "javax.faces.Link");
+        this.addHtmlComponent("link", "javax.faces.HtmlOutcomeTargetLink", "javax.faces.Link");
         
         this.addHtmlComponent("message", "javax.faces.HtmlMessage", "javax.faces.Message");
 
