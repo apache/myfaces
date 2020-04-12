@@ -139,6 +139,7 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
     @ResourceDependency(library = "testLib", name = "testResource.js")
     public static class TestRendererA extends Renderer implements ComponentSystemEventListener
     {
+        @Override
         public void processEvent(ComponentSystemEvent event)
         {
             FacesContext.getCurrentInstance().getAttributes().put("oam.test.TestRendererA", Boolean.TRUE);
@@ -160,6 +161,7 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
             return delegate;
         }
 
+        @Override
         public void processEvent(ComponentSystemEvent event)
         {
             // Note there is no @ListenerFor annotation, so this should not happen, but the interesting thing
@@ -187,6 +189,7 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
             return delegate;
         }
 
+        @Override
         public void processEvent(ComponentSystemEvent event)
         {
             FacesContext.getCurrentInstance().getAttributes().put("oam.test.TestRendererWrapper", Boolean.TRUE);
