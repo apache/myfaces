@@ -65,7 +65,7 @@ public class MethodHandleMetadataTargetImpl extends MetadataTarget
     @Override
     public Method getReadMethod(String name)
     {
-        throw new UnsupportedOperationException("Not supported!");
+        throw new UnsupportedOperationException("Please use the getReadFunction for better performance!");
     }
 
     @Override
@@ -77,7 +77,7 @@ public class MethodHandleMetadataTargetImpl extends MetadataTarget
     @Override
     public Method getWriteMethod(String name)
     {
-        throw new UnsupportedOperationException("Not supported!");
+        throw new UnsupportedOperationException("Please use the getWriteFunction for better performance!");
     }
 
     @Override
