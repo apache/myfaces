@@ -325,8 +325,8 @@ public final class StateUtils
 
             //EtM Composition Approach
             int macLenght = mac.getMacLength();
-            byte[] secure = new byte[cipher.getOutputSize(insecure.length)+ macLenght];
-            int secureCount = cipher.doFinal(insecure,0,insecure.length,secure);
+            byte[] secure = new byte[cipher.getOutputSize(insecure.length) + macLenght];
+            int secureCount = cipher.doFinal(insecure, 0, insecure.length, secure);
             mac.update(secure, 0, secureCount);
             mac.doFinal(secure, secureCount);
                         
@@ -450,13 +450,13 @@ public final class StateUtils
 
             //EtM Composition Approach
             int macLenght = mac.getMacLength();
-            mac.update(secure, 0, secure.length-macLenght);
+            mac.update(secure, 0, secure.length - macLenght);
             byte[] signedDigestHash = mac.doFinal();
 
             boolean isMacEqual = true;
             for (int i = 0; i < signedDigestHash.length; i++)
             {
-                if (signedDigestHash[i] != secure[secure.length-macLenght+i])
+                if (signedDigestHash[i] != secure[secure.length - macLenght + i])
                 {
                     isMacEqual = false;
                     // MYFACES-2934 Must compare *ALL* bytes of the hash, 
@@ -473,7 +473,7 @@ public final class StateUtils
                 throw new ViewExpiredException();
             }
             
-            return cipher.doFinal(secure, 0, secure.length-macLenght);
+            return cipher.doFinal(secure, 0, secure.length - macLenght);
         }
         catch (Exception e)
         {
