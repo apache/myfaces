@@ -189,21 +189,10 @@ public final class StateUtils
     private static void testConfiguration(ExternalContext ctx)
     {
         String algorithmParams = ctx.getInitParameter(INIT_ALGORITHM_PARAM);
-        
-        if (algorithmParams == null)
+        if (algorithmParams != null && algorithmParams.startsWith("CBC"))
         {
-            algorithmParams = ctx.getInitParameter(INIT_ALGORITHM_PARAM.toLowerCase());
-        }
-        String iv = ctx.getInitParameter(INIT_ALGORITHM_IV);
-        
-        if (iv == null)
-        {
-            iv = ctx.getInitParameter(INIT_ALGORITHM_IV.toLowerCase());
-        }
-        
-        if (algorithmParams != null && algorithmParams.startsWith("CBC") )
-        {
-            if(iv == null)
+            String iv = ctx.getInitParameter(INIT_ALGORITHM_IV);
+            if (iv == null)
             {
                 throw new FacesException(INIT_ALGORITHM_PARAM +
                         " parameter has been set with CBC mode," +
@@ -211,14 +200,12 @@ public final class StateUtils
                         " with " + INIT_ALGORITHM_IV);
             }
         }
-
     }
     
     public static boolean enableCompression(ExternalContext externalContext)
     {
         Assert.notNull(externalContext, "externalContext");
 
-    
         return "true".equals(externalContext.getInitParameter(COMPRESS_STATE_IN_CLIENT));
     }
     
@@ -455,8 +442,7 @@ public final class StateUtils
             // keep local to avoid threading issue
             Mac mac = Mac.getInstance(macAlgorithm);
             mac.init(macSecretKey);
-            Cipher cipher = Cipher.getInstance(algorithm + '/'
-                    + algorithmParams);
+            Cipher cipher = Cipher.getInstance(algorithm + '/' + algorithmParams);
             if (iv != null)
             {
                 IvParameterSpec ivSpec = new IvParameterSpec(iv);
@@ -512,7 +498,6 @@ public final class StateUtils
      * @param ctx
      * @return
      */
-    
     public static final Object getAsObject(byte[] bytes, ExternalContext ctx)
     {
         ByteArrayInputStream input = null;
@@ -611,23 +596,17 @@ public final class StateUtils
      * @param args
      * @throws UnsupportedEncodingException
      */
-    public static void main (String[] args) throws UnsupportedEncodingException
+    public static void main(String[] args) throws UnsupportedEncodingException
     {
         byte[] bytes = encode(args[0].getBytes(ZIP_CHARSET));
-          System.out.println(new String(bytes, ZIP_CHARSET));
+        System.out.println(new String(bytes, ZIP_CHARSET));
     }
 
     private static byte[] findInitializationVector(ExternalContext ctx)
     {
-        
         byte[] iv = null;
         String ivString = ctx.getInitParameter(INIT_ALGORITHM_IV);
-        
-        if(ivString == null)
-        {
-            ivString = ctx.getInitParameter(INIT_ALGORITHM_IV.toLowerCase());
-        }
-        
+
         if (ivString != null)
         {
             iv = decode(ivString.getBytes());
@@ -638,14 +617,7 @@ public final class StateUtils
 
     private static String findAlgorithmParams(ExternalContext ctx)
     {
-        
-        String algorithmParams = ctx.getInitParameter(INIT_ALGORITHM_PARAM);
-        
-        if (algorithmParams == null)
-        {
-            algorithmParams = ctx.getInitParameter(INIT_ALGORITHM_PARAM.toLowerCase());
-        }
-        
+        String algorithmParams = ctx.getInitParameter(INIT_ALGORITHM_PARAM);        
         if (algorithmParams == null)
         {
             algorithmParams = DEFAULT_ALGORITHM_PARAMS;
@@ -661,33 +633,20 @@ public final class StateUtils
 
     private static String findAlgorithm(ExternalContext ctx)
     {
-        
         String algorithm = ctx.getInitParameter(INIT_ALGORITHM);
-        
-        if (algorithm == null)
-        {
-            algorithm = ctx.getInitParameter(INIT_ALGORITHM.toLowerCase());
-        }
 
         return findAlgorithm( algorithm );
     }
     
     private static String findAlgorithm(ServletContext ctx)
     {
-
         String algorithm = ctx.getInitParameter(INIT_ALGORITHM);
-        
-        if (algorithm == null)
-        {
-            algorithm = ctx.getInitParameter(INIT_ALGORITHM.toLowerCase());
-        }
 
         return findAlgorithm( algorithm );
     }
     
     private static String findAlgorithm(String initParam)
     {
-        
         if (initParam == null)
         {
             initParam = DEFAULT_ALGORITHM;
@@ -699,7 +658,6 @@ public final class StateUtils
         }
         
         return initParam;
-        
     }
 
     /**
@@ -711,7 +669,6 @@ public final class StateUtils
      * specified in the deployment descriptor.  The SecretKey is then 
      * stored in application scope where it can be used for all requests.
      */
-    
     public static void initSecret(ServletContext servletContext)
     {
         Assert.notNull(servletContext, "servletContext");
@@ -723,12 +680,6 @@ public final class StateUtils
 
         // Create and store SecretKey on application scope
         String cache = servletContext.getInitParameter(INIT_SECRET_KEY_CACHE);
-        
-        if(cache == null)
-        {
-            cache = servletContext.getInitParameter(INIT_SECRET_KEY_CACHE.toLowerCase());
-        }
-        
         if (!"false".equals(cache))
         {
             String algorithm = findAlgorithm(servletContext);
@@ -743,12 +694,6 @@ public final class StateUtils
         }
         
         String macCache = servletContext.getInitParameter(INIT_MAC_SECRET_KEY_CACHE);
-        
-        if(macCache == null)
-        {
-            macCache = servletContext.getInitParameter(INIT_MAC_SECRET_KEY_CACHE.toLowerCase());
-        }
-        
         if (!"false".equals(macCache))
         {
             String macAlgorithm = findMacAlgorithm(servletContext);
@@ -765,22 +710,10 @@ public final class StateUtils
         if (secretKey == null)
         {
             String cache = ctx.getInitParameter(INIT_SECRET_KEY_CACHE);
-            
-            if(cache == null)
-            {
-                cache = ctx.getInitParameter(INIT_SECRET_KEY_CACHE.toLowerCase());
-            }
-            
             if ("false".equals(cache))
             {
                 // No cache is used. This option is activated
                 String secret = ctx.getInitParameter(INIT_SECRET);
-                
-                if (secret == null)
-                {
-                    secret = ctx.getInitParameter(INIT_SECRET.toLowerCase());
-                }
-
                 if (secret == null)
                 {
                     throw new NullPointerException("Could not find secret using key '" + INIT_SECRET + '\'');
@@ -797,37 +730,26 @@ public final class StateUtils
             }
         }
         
-        if( ! ( secretKey instanceof SecretKey ) )
+        if (!(secretKey instanceof SecretKey))
         {
             throw new ClassCastException("Did not find an instance of SecretKey "
                     + "in application scope using the key '" + INIT_SECRET_KEY_CACHE + '\'');
         }
 
-        
         return (SecretKey) secretKey;
     }
 
     private static byte[] findSecret(ExternalContext ctx, String algorithm)
     {
         String secret = ctx.getInitParameter(INIT_SECRET);
-        
-        if (secret == null)
-        {
-            secret = ctx.getInitParameter(INIT_SECRET.toLowerCase());
-        }
-        
+
         return findSecret(secret, algorithm);
     }    
     
     private static byte[] findSecret(ServletContext ctx, String algorithm)
     {
         String secret = ctx.getInitParameter(INIT_SECRET);
-        
-        if (secret == null)
-        {
-            secret = ctx.getInitParameter(INIT_SECRET.toLowerCase());
-        }
-        
+
         return findSecret(secret, algorithm);
     }
     
@@ -835,14 +757,14 @@ public final class StateUtils
     {
         byte[] bytes = null;
         
-        if(secret == null)
+        if (secret == null)
         {
             try
             {
                 KeyGenerator kg = KeyGenerator.getInstance(algorithm);
                 bytes = kg.generateKey().getEncoded();
                 
-                if(log.isLoggable(Level.FINE))
+                if (log.isLoggable(Level.FINE))
                 {
                     log.fine("generated random password of length " + bytes.length);
                 }
@@ -854,7 +776,7 @@ public final class StateUtils
                 bytes = new byte[length];
                 new Random().nextBytes(bytes);
                 
-                if(log.isLoggable(Level.FINE))
+                if (log.isLoggable(Level.FINE))
                 {
                     log.fine("generated random password of length " + length);
                 }
@@ -870,35 +792,20 @@ public final class StateUtils
 
     private static String findMacAlgorithm(ExternalContext ctx)
     {
-        
         String algorithm = ctx.getInitParameter(INIT_MAC_ALGORITHM);
-        
-        if (algorithm == null)
-        {
-            algorithm = ctx.getInitParameter(INIT_MAC_ALGORITHM.toLowerCase());
-        }
 
-        return findMacAlgorithm( algorithm );
-
+        return findMacAlgorithm(algorithm);
     }
     
     private static String findMacAlgorithm(ServletContext ctx)
     {
-
         String algorithm = ctx.getInitParameter(INIT_MAC_ALGORITHM);
-        
-        if (algorithm == null)
-        {
-            algorithm = ctx.getInitParameter(INIT_MAC_ALGORITHM.toLowerCase());
-        }
 
-        return findMacAlgorithm( algorithm );
-        
+        return findMacAlgorithm(algorithm);
     }
     
     private static String findMacAlgorithm(String initParam)
     {
-        
         if (initParam == null)
         {
             initParam = DEFAULT_MAC_ALGORITHM;
@@ -910,7 +817,6 @@ public final class StateUtils
         }
         
         return initParam;
-        
     }
     
     private static SecretKey getMacSecret(ExternalContext ctx)
@@ -920,22 +826,10 @@ public final class StateUtils
         if (secretKey == null)
         {
             String cache = ctx.getInitParameter(INIT_MAC_SECRET_KEY_CACHE);
-            
-            if(cache == null)
-            {
-                cache = ctx.getInitParameter(INIT_MAC_SECRET_KEY_CACHE.toLowerCase());
-            }
-            
             if ("false".equals(cache))
             {
                 // No cache is used. This option is activated
                 String secret = ctx.getInitParameter(INIT_MAC_SECRET);
-                
-                if (secret == null)
-                {
-                    secret = ctx.getInitParameter(INIT_MAC_SECRET.toLowerCase());
-                }
-                
                 if (secret == null)
                 {
                     throw new NullPointerException("Could not find secret using key '" + INIT_MAC_SECRET + '\'');
@@ -952,37 +846,26 @@ public final class StateUtils
             }
         }
         
-        if( ! ( secretKey instanceof SecretKey ) )
+        if (!(secretKey instanceof SecretKey))
         {
             throw new ClassCastException("Did not find an instance of SecretKey "
                     + "in application scope using the key '" + INIT_MAC_SECRET_KEY_CACHE + '\'');
         }
 
-        
         return (SecretKey) secretKey;
     }
 
     private static byte[] findMacSecret(ExternalContext ctx, String algorithm)
     {
         String secret = ctx.getInitParameter(INIT_MAC_SECRET);
-        
-        if (secret == null)
-        {
-            secret = ctx.getInitParameter(INIT_MAC_SECRET.toLowerCase());
-        }
- 
+
         return findMacSecret(secret, algorithm);
     }    
     
     private static byte[] findMacSecret(ServletContext ctx, String algorithm)
     {
         String secret = ctx.getInitParameter(INIT_MAC_SECRET);
-        
-        if (secret == null)
-        {
-            secret = ctx.getInitParameter(INIT_MAC_SECRET.toLowerCase());
-        }
-        
+
         return findMacSecret(secret, algorithm);
     }
 
@@ -990,14 +873,14 @@ public final class StateUtils
     {
         byte[] bytes = null;
         
-        if(secret == null)
+        if (secret == null)
         {
             try
             {
                 KeyGenerator kg = KeyGenerator.getInstance(algorithm);
                 bytes = kg.generateKey().getEncoded();
                 
-                if(log.isLoggable(Level.FINE))
+                if (log.isLoggable(Level.FINE))
                 {
                     log.fine("generated random mac password of length " + bytes.length);
                 }
