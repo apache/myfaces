@@ -130,8 +130,11 @@ public class MethodHandleBeanELResolver extends BeanELResolver
     protected MethodHandleUtils.LambdaPropertyDescriptor getPropertyDescriptor(Object base, Object property)
     {
         Map<String, MethodHandleUtils.LambdaPropertyDescriptor> beanCache = cache.computeIfAbsent(
-                base.getClass().getName(), k -> MethodHandleUtils.getLambdaPropertyDescriptors(base.getClass()));
-        return beanCache.get((String) property);
-    }
+                base.getClass().getName(),
+                k -> new ConcurrentHashMap<>());
 
+        return beanCache.computeIfAbsent(
+                (String) property,
+                k -> MethodHandleUtils.getLambdaPropertyDescriptor(base.getClass(), k));
+    }
 }

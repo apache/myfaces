@@ -35,9 +35,9 @@ import java.util.function.Function;
 import java.util.function.ObjDoubleConsumer;
 import java.util.function.ObjIntConsumer;
 import java.util.function.ObjLongConsumer;
-import javax.el.ELException;
+import javax.faces.FacesException;
 
-public class MethodHandleUtils
+public final class MethodHandleUtils
 {
     private static Method privateLookupIn;
 
@@ -80,10 +80,67 @@ public class MethodHandleUtils
         }
     }
 
+    public static LambdaPropertyDescriptor getLambdaPropertyDescriptor(Class<?> target, String name)
+    {
+        try
+        {
+            PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(target).getPropertyDescriptors();
+            if (propertyDescriptors == null || propertyDescriptors.length == 0)
+            {
+                return null;
+            }
+            
+            for (PropertyDescriptor pd : propertyDescriptors)
+            {
+                if (name.equals(pd.getName()))
+                {
+                    MethodHandles.Lookup lookup = (MethodHandles.Lookup) privateLookupIn.invoke(null, target,
+                            MethodHandles.lookup());
+                    return createLambdaPropertyDescriptor(pd, lookup);
+                }
+            }
+
+            throw new FacesException("Property \"" + name + "\" not found on \"" + target.getName() + "\"");
+        }
+        catch (Throwable e)
+        {
+            throw new FacesException(e);
+        }
+    }
+    
+    public static LambdaPropertyDescriptor createLambdaPropertyDescriptor(PropertyDescriptor pd,
+            MethodHandles.Lookup lookup) throws Throwable
+    {
+        LambdaPropertyDescriptor lpd = new LambdaPropertyDescriptor();
+        lpd.wrapped = pd;
+
+        Method readMethod = pd.getReadMethod();
+        if (readMethod != null)
+        {
+            MethodHandle handle = lookup.unreflect(readMethod);
+            CallSite callSite = LambdaMetafactory.metafactory(lookup,
+                    "apply",
+                    MethodType.methodType(Function.class),
+                    MethodType.methodType(Object.class, Object.class),
+                    handle,
+                    handle.type());
+            lpd.readFunction = (Function) callSite.getTarget().invokeExact();
+        }
+
+        Method writeMethod = pd.getWriteMethod();
+        if (writeMethod != null)
+        {
+            MethodHandle handle = lookup.unreflect(writeMethod);
+            lpd.writeFunction = createSetter(lookup, lpd, handle);
+        }
+
+        return lpd;
+    }
+    
     public static Map<String, LambdaPropertyDescriptor> getLambdaPropertyDescriptors(Class<?> target)
     {
         try
-        {            
+        {
             PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(target).getPropertyDescriptors();
             if (propertyDescriptors == null || propertyDescriptors.length == 0)
             {
@@ -97,29 +154,7 @@ public class MethodHandleUtils
             
             for (PropertyDescriptor pd : Introspector.getBeanInfo(target).getPropertyDescriptors())
             {
-                LambdaPropertyDescriptor lpd = new LambdaPropertyDescriptor();
-                lpd.wrapped = pd;
- 
-                Method getter = pd.getReadMethod();
-                if (getter != null)
-                {
-                    MethodHandle getterHandle = lookup.unreflect(getter);
-                    CallSite getterCallSite = LambdaMetafactory.metafactory(lookup,
-                            "apply",
-                            MethodType.methodType(Function.class),
-                            MethodType.methodType(Object.class, Object.class),
-                            getterHandle,
-                            getterHandle.type());
-                    lpd.readFunction = (Function) getterCallSite.getTarget().invokeExact();
-                }
-
-                Method setter = pd.getWriteMethod();
-                if (setter != null)
-                {
-                    MethodHandle setterHandle = lookup.unreflect(setter);
-                    lpd.writeFunction = createSetter(lookup, lpd, setterHandle);
-                }
-                
+                LambdaPropertyDescriptor lpd = createLambdaPropertyDescriptor(pd, lookup);
                 properties.put(pd.getName(), lpd);
             }
             
@@ -127,7 +162,7 @@ public class MethodHandleUtils
         }
         catch (Throwable e)
         {
-            throw new ELException(e);
+            throw new FacesException(e);
         }
     }
 
