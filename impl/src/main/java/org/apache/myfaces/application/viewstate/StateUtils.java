@@ -202,6 +202,43 @@ public final class StateUtils
         }
     }
     
+    public static Cipher createCipher(ExternalContext externalContext, int mode) throws Exception
+    {
+        SecretKey secretKey = (SecretKey) getSecret(externalContext);
+        String algorithm = findAlgorithm(externalContext);
+        String algorithmParams = findAlgorithmParams(externalContext);
+        byte[] iv = findInitializationVector(externalContext);
+
+        Cipher cipher = Cipher.getInstance(algorithm + '/' + algorithmParams);
+        if (iv != null)
+        {
+            IvParameterSpec ivSpec = new IvParameterSpec(iv);
+            cipher.init(mode, secretKey, ivSpec);
+        }
+        else
+        {
+            cipher.init(mode, secretKey);
+        }
+
+        if (log.isLoggable(Level.FINE))
+        {
+            log.fine("de/encrypting with " + algorithm + '/' + algorithmParams);
+        }
+
+        return cipher;
+    }
+    
+    public static Mac createMac(ExternalContext externalContext) throws Exception
+    {
+        SecretKey macSecretKey = (SecretKey) getMacSecret(externalContext);
+        String macAlgorithm = findMacAlgorithm(externalContext);
+        
+        Mac mac = Mac.getInstance(macAlgorithm);
+        mac.init(macSecretKey);
+
+        return mac;
+    }
+    
     public static boolean enableCompression(ExternalContext externalContext)
     {
         Assert.notNull(externalContext, "externalContext");
@@ -280,35 +317,12 @@ public final class StateUtils
         Assert.notNull(externalContext, "externalContext");
 
         testConfiguration(externalContext);
-        
-        SecretKey secretKey = (SecretKey) getSecret(externalContext);
-        String algorithm = findAlgorithm(externalContext);
-        String algorithmParams = findAlgorithmParams(externalContext);
-        byte[] iv = findInitializationVector(externalContext);
-        
-        SecretKey macSecretKey = (SecretKey) getMacSecret(externalContext);
-        String macAlgorithm = findMacAlgorithm(externalContext);
-                
+
         try
         {
-            // keep local to avoid threading issue
-            Mac mac = Mac.getInstance(macAlgorithm);
-            mac.init(macSecretKey);
-            Cipher cipher = Cipher.getInstance(algorithm + '/' + algorithmParams);
-            if (iv != null)
-            {
-                IvParameterSpec ivSpec = new IvParameterSpec(iv);
-                cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
-            }
-            else
-            {
-                cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            }
-            if (log.isLoggable(Level.FINE))
-            {
-                log.fine("encrypting w/ " + algorithm + '/' + algorithmParams);
-            }
-            
+            Mac mac = createMac(externalContext);
+            Cipher cipher = createCipher(externalContext, Cipher.ENCRYPT_MODE);
+
             //EtM Composition Approach
             int macLenght = mac.getMacLength();
             byte[] secure = new byte[cipher.getOutputSize(insecure.length)+ macLenght];
@@ -428,34 +442,11 @@ public final class StateUtils
         Assert.notNull(externalContext, "externalContext");
 
         testConfiguration(externalContext);
-                
-        SecretKey secretKey = (SecretKey) getSecret(externalContext);
-        String algorithm = findAlgorithm(externalContext);
-        String algorithmParams = findAlgorithmParams(externalContext);
-        byte[] iv = findInitializationVector(externalContext);
-        
-        SecretKey macSecretKey = (SecretKey) getMacSecret(externalContext);
-        String macAlgorithm = findMacAlgorithm(externalContext);
 
         try
         {
-            // keep local to avoid threading issue
-            Mac mac = Mac.getInstance(macAlgorithm);
-            mac.init(macSecretKey);
-            Cipher cipher = Cipher.getInstance(algorithm + '/' + algorithmParams);
-            if (iv != null)
-            {
-                IvParameterSpec ivSpec = new IvParameterSpec(iv);
-                cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
-            }
-            else
-            {
-                cipher.init(Cipher.DECRYPT_MODE, secretKey);
-            }
-            if (log.isLoggable(Level.FINE))
-            {
-                log.fine("decrypting w/ " + algorithm + '/' + algorithmParams);
-            }
+            Mac mac = createMac(externalContext);
+            Cipher cipher = createCipher(externalContext, Cipher.DECRYPT_MODE);
 
             //EtM Composition Approach
             int macLenght = mac.getMacLength();
