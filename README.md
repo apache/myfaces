@@ -29,8 +29,6 @@ JavaServer Faces 2.3 implementation
 
 Servlet 4.0 will enable JSF 2.3 to serve resources via HTTP/2 push.   
 
-2.3-next equals the JSF 2.3 API but delegates @ManagedBeans to CDI. The implementation of the old FacesEL (javax.faces.el.*) has been completely removed.
-
 ## Installation
 
 mvn clean install
