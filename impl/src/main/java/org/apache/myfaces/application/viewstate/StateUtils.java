@@ -267,23 +267,22 @@ public final class StateUtils
     
     public static final byte[] getAsByteArray(Object object, ExternalContext ctx)
     {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        
         // get the Factory that was instantiated @ startup
         SerialFactory serialFactory = (SerialFactory) ctx.getApplicationMap().get(SERIAL_FACTORY);
-        
         Assert.notNull(serialFactory, "serialFactory");
         
         try
         {
-            ObjectOutputStream writer = serialFactory.getObjectOutputStream(outputStream);
-            writer.writeObject(object);
-            byte[] bytes = outputStream.toByteArray();
-            writer.close();
-            outputStream.close();
-            writer = null;
-            outputStream = null;
-            return bytes;
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+            {
+                try (ObjectOutputStream oos = serialFactory.getObjectOutputStream(baos))
+                {
+                    oos.writeObject(object);
+                    oos.flush();
+
+                    return baos.toByteArray();
+                }
+            }
         }
         catch (IOException e)
         {
@@ -342,18 +341,20 @@ public final class StateUtils
 
     public static final byte[] compress(byte[] bytes)
     {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        
         try
         {
-            GZIPOutputStream gzip = new GZIPOutputStream(baos);
-            gzip.write(bytes, 0, bytes.length);
-            gzip.finish();
-            byte[] fewerBytes = baos.toByteArray();
-            gzip.close();
-            baos.close();
-            gzip = null;
-            baos = null;
-            return fewerBytes;
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+            {
+                try (GZIPOutputStream gzip = new GZIPOutputStream(baos))
+                {
+                    gzip.write(bytes, 0, bytes.length);
+                    gzip.finish();
+                    gzip.flush();
+
+                    return baos.toByteArray();
+                }
+            }
         }
         catch (IOException e)
         {
@@ -409,28 +410,26 @@ public final class StateUtils
     public static final byte[] decompress(byte[] bytes)
     {
         Assert.notNull(bytes, "bytes");
-        
-        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buffer = new byte[bytes.length];
-        int length;
 
         try
         {
-            GZIPInputStream gis = new GZIPInputStream(bais);
-            while ((length = gis.read(buffer)) != -1)
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
             {
-                baos.write(buffer, 0, length);
-            }
+                try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes))
+                {
+                    try (GZIPInputStream gis = new GZIPInputStream(bais))
+                    {
+                        byte[] buffer = new byte[bytes.length];
+                        int length;
+                        while ((length = gis.read(buffer)) != -1)
+                        {
+                            baos.write(buffer, 0, length);
+                        }
+                    }
+                }
 
-            byte[] moreBytes = baos.toByteArray();
-            baos.close();
-            bais.close();
-            gis.close();
-            baos = null;
-            bais = null;
-            gis = null;
-            return moreBytes;
+                return baos.toByteArray();
+            }
         }
         catch (IOException e)
         {

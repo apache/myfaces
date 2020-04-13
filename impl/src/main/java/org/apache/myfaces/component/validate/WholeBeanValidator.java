@@ -21,9 +21,8 @@ package org.apache.myfaces.component.validate;
 
 import org.apache.myfaces.el.ELContextDecorator;
 import org.apache.myfaces.el.ValueReferenceResolver;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
@@ -64,6 +63,7 @@ import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.MessageUtils;
 import org.apache.myfaces.util.MyFacesObjectInputStream;
 import org.apache.myfaces.util.ExternalSpecifications;
+import org.apache.myfaces.util.lang.FastByteArrayOutputStream;
 
 /**
  *
@@ -214,20 +214,19 @@ public class WholeBeanValidator implements Validator
     
     private Object copySerializableObject(Object base)
     {
-        Object copy = null;
         try 
         {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.writeObject(base);
-            oos.flush();
-            oos.close();
-            baos.close();
-            byte[] byteData = baos.toByteArray();
-            ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
+            FastByteArrayOutputStream baos = new FastByteArrayOutputStream();
+            try (ObjectOutputStream oos = new ObjectOutputStream(baos))
+            {
+                oos.writeObject(base);
+                oos.flush();
+            }
+
+            ObjectInputStream ois = new MyFacesObjectInputStream(baos.getInputStream());
             try 
             {
-                copy = new MyFacesObjectInputStream(bais).readObject();
+                return ois.readObject();
             }
             catch (ClassNotFoundException e)
             {
@@ -238,7 +237,8 @@ public class WholeBeanValidator implements Validator
         {
             //e.printStackTrace();
         }
-        return copy;
+
+        return null;
     }    
     
     private javax.validation.Validator createValidator(final ValidatorFactory validatorFactory, 

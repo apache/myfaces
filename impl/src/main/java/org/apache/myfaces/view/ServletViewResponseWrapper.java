@@ -105,7 +105,7 @@ public class ServletViewResponseWrapper extends HttpServletResponseWrapper imple
             }
             catch (IllegalStateException e)
             {
-            getResponse().getOutputStream().write(_byteArrayWriter.toByteArray());
+                getResponse().getOutputStream().write(_byteArrayWriter.toByteArray());
             }
             _byteArrayWriter.reset();
             _byteArrayWriter.flush();
@@ -180,23 +180,22 @@ public class ServletViewResponseWrapper extends HttpServletResponseWrapper imple
 
     static class WrappedServletOutputStream extends ServletOutputStream
     {
-        private WrappedByteArrayOutputStream _byteArrayOutputStream;
-
+        private WrappedByteArrayOutputStream baos;
 
         public WrappedServletOutputStream()
         {
-            _byteArrayOutputStream = new WrappedByteArrayOutputStream(1024);
+            baos = new WrappedByteArrayOutputStream(1024);
         }
 
         @Override
         public void write(int i) throws IOException
         {
-            _byteArrayOutputStream.write(i);
+            baos.write(i);
         }
 
         public byte[] toByteArray()
         {
-            return _byteArrayOutputStream.toByteArray();
+            return baos.toByteArray();
         }
         
         /**
@@ -209,14 +208,14 @@ public class ServletViewResponseWrapper extends HttpServletResponseWrapper imple
          */
         private void writeTo(Writer out, String encoding) throws IOException
         {
-            //Get the charset based on the encoding or return the default if 
-            //encoding == null
-            Charset charset = (encoding == null) ? 
-                    Charset.defaultCharset() : Charset.forName(encoding);
+            //Get the charset based on the encoding or return the default if encoding == null
+            Charset charset = encoding == null
+                    ? Charset.defaultCharset()
+                    : Charset.forName(encoding);
+
             CharsetDecoder decoder = charset.newDecoder();
             CharBuffer decodedBuffer = decoder.decode(
-                    ByteBuffer.wrap(_byteArrayOutputStream.getInnerArray(),
-                            0,_byteArrayOutputStream.getInnerCount()));
+                    ByteBuffer.wrap(baos.getInnerArray(), 0, baos.getInnerCount()));
             if (decodedBuffer.hasArray())
             {
                 out.write(decodedBuffer.array());
@@ -225,7 +224,7 @@ public class ServletViewResponseWrapper extends HttpServletResponseWrapper imple
 
         public void reset()
         {
-            _byteArrayOutputStream.reset();
+            baos.reset();
         }
 
         @Override
@@ -248,7 +247,6 @@ public class ServletViewResponseWrapper extends HttpServletResponseWrapper imple
          */
         static class WrappedByteArrayOutputStream extends ByteArrayOutputStream
         {
-            
             public WrappedByteArrayOutputStream()
             {
                 super();

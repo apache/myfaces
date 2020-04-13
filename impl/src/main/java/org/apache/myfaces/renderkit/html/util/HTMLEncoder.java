@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.renderkit.html.util;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import org.apache.myfaces.util.lang.FastByteArrayOutputStream;
 
 /**
  * Converts Strings so that they can be used within HTML-Code.
@@ -688,28 +688,30 @@ public abstract class HTMLEncoder
     
     private static String percentEncodeNonUsAsciiCharacter(char c, String characterEncoding)
     {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(10);
-        StringBuilder builder = new StringBuilder();
+        FastByteArrayOutputStream baos = new FastByteArrayOutputStream(10);
         try
         {
-            OutputStreamWriter writer = new OutputStreamWriter(baos,characterEncoding);
-            writer.write(c);
-            writer.flush();
+            try (OutputStreamWriter writer = new OutputStreamWriter(baos, characterEncoding))
+            {
+                writer.write(c);
+                writer.flush();
+            }
         }
-        catch(IOException e)
+        catch (IOException e)
         {
-            baos.reset();
             return null;
         }
-        
-        byte [] byteArray =  baos.toByteArray();
-        for (int i=0; i < byteArray.length; i++)
+
+        StringBuilder builder = new StringBuilder();
+
+        byte[] byteArray = baos.getByteArray();
+        for (int i = 0; i < baos.getSize(); i++)
         {
             builder.append('%');
             builder.append(HEX_CHARSET.charAt( (( ((short) byteArray[i] & 0xFF ) >> 0x4) % 0x10)) );
             builder.append(HEX_CHARSET.charAt( ((short) byteArray[i] & 0xFF ) % 0x10));
         }
-        
+
         return builder.toString();
     }
 
@@ -1100,22 +1102,23 @@ public abstract class HTMLEncoder
     private static void percentEncodeNonUsAsciiCharacter(Writer currentWriter, char c, String characterEncoding) 
         throws IOException
     {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(10);
+        FastByteArrayOutputStream baos = new FastByteArrayOutputStream(10);
 
         try
         {
-            OutputStreamWriter writer = new OutputStreamWriter(baos,characterEncoding);
-            writer.write(c);
-            writer.flush();
+            try (OutputStreamWriter writer = new OutputStreamWriter(baos,characterEncoding))
+            {
+                writer.write(c);
+                writer.flush();
+            }
         }
-        catch(IOException e)
+        catch (IOException e)
         {
-            baos.reset();
             return;
         }
-        
-        byte [] byteArray =  baos.toByteArray();
-        for (int i=0; i < byteArray.length; i++)
+
+        byte[] byteArray = baos.getByteArray();
+        for (int i = 0; i < baos.getSize(); i++)
         {
             currentWriter.write('%');
             currentWriter.write(HEX_CHARSET.charAt( (( ((short) byteArray[i] & 0xFF ) >> 0x4) % 0x10)) );
