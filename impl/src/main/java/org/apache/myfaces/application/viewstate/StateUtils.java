@@ -188,7 +188,6 @@ public final class StateUtils
 
     private static void testConfiguration(ExternalContext ctx)
     {
-
         String algorithmParams = ctx.getInitParameter(INIT_ALGORITHM_PARAM);
         
         if (algorithmParams == null)
@@ -233,7 +232,6 @@ public final class StateUtils
     /**
      * This fires during the Render Response phase, saving state.
      */
-
     public static final String construct(Object object, ExternalContext ctx)
     {
         byte[] bytes = getAsByteArray(object, ctx);
@@ -265,7 +263,6 @@ public final class StateUtils
      * @param ctx
      * @return
      */
-    
     public static final byte[] getAsByteArray(Object object, ExternalContext ctx)
     {
         // get the Factory that was instantiated @ startup
