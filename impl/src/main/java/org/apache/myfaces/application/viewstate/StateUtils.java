@@ -237,15 +237,16 @@ public final class StateUtils
     public static final String construct(Object object, ExternalContext ctx)
     {
         byte[] bytes = getAsByteArray(object, ctx);
-        if( enableCompression(ctx) )
+        if (enableCompression(ctx))
         {
             bytes = compress(bytes);
         }
-        if(isSecure(ctx))
+        if (isSecure(ctx))
         {
             bytes = encrypt(bytes, ctx);
         }
         bytes = encode(bytes);
+
         try
         {
             return new String(bytes, ZIP_CHARSET);
@@ -375,21 +376,22 @@ public final class StateUtils
         byte[] bytes;
         try
         {
-            if(log.isLoggable(Level.FINE))
+            if (log.isLoggable(Level.FINE))
             {
                 log.fine("Processing state : " + string);
             }
 
             bytes = string.getBytes(ZIP_CHARSET);
             bytes = decode(bytes);
-            if(isSecure(ctx))
+            if (isSecure(ctx))
             {
                 bytes = decrypt(bytes, ctx);
             }
-            if( enableCompression(ctx) )
+            if (enableCompression(ctx))
             {
                 bytes = decompress(bytes);
             }
+
             return getAsObject(bytes, ctx);
         }
         catch (Throwable e)
