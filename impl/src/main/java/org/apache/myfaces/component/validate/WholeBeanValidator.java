@@ -216,7 +216,7 @@ public class WholeBeanValidator implements Validator
     {
         try 
         {
-            FastByteArrayOutputStream baos = new FastByteArrayOutputStream();
+            FastByteArrayOutputStream baos = new FastByteArrayOutputStream(256);
             try (ObjectOutputStream oos = new ObjectOutputStream(baos))
             {
                 oos.writeObject(base);

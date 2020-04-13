@@ -32,7 +32,7 @@ public class FastByteArrayOutputStream extends OutputStream
 
     public FastByteArrayOutputStream()
     {
-        this(1024);
+        this(32);
     }
 
     public FastByteArrayOutputStream(int size)
