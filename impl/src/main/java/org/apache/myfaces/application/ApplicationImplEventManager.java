@@ -44,7 +44,7 @@ public class ApplicationImplEventManager
         private SystemEventListener listener;
     }
     
-    private ConcurrentHashMap<Class<? extends SystemEvent>, List<EventInfo>> cache
+    private ConcurrentHashMap<Class<? extends SystemEvent>, List<EventInfo>> globalListeners
             = new ConcurrentHashMap<>();
     private ConcurrentHashMap<Class<? extends SystemEvent>, Constructor<? extends SystemEvent>> constructorCache
             = new ConcurrentHashMap<>();
@@ -92,7 +92,7 @@ public class ApplicationImplEventManager
 
             
             // global listeners
-            List<EventInfo> eventInfos = cache.get(systemEventClass);
+            List<EventInfo> eventInfos = globalListeners.get(systemEventClass);
             event = processGlobalListeners(facesContext, eventInfos, systemEventClass, source, event, sourceBaseType);
         }
         catch (AbortProcessingException e)
@@ -113,7 +113,7 @@ public class ApplicationImplEventManager
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
                                  SystemEventListener listener)
     {
-        List<EventInfo> eventInfos = cache.computeIfAbsent(systemEventClass, k -> new CopyOnWriteArrayList<>());
+        List<EventInfo> eventInfos = globalListeners.computeIfAbsent(systemEventClass, k -> new CopyOnWriteArrayList<>());
         
         EventInfo eventInfo = new EventInfo();
         eventInfo.systemEventClass = systemEventClass;
@@ -131,7 +131,7 @@ public class ApplicationImplEventManager
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
                                      SystemEventListener listener)
     {
-        List<EventInfo> eventInfos = cache.get(systemEventClass);
+        List<EventInfo> eventInfos = globalListeners.get(systemEventClass);
         if (eventInfos == null || eventInfos.isEmpty())
         {
             return;
