@@ -323,7 +323,7 @@ public final class StateUtils
             Mac mac = createMac(externalContext);
             Cipher cipher = createCipher(externalContext, Cipher.ENCRYPT_MODE);
 
-            //EtM Composition Approach
+            //EtM (Encrypt-then-MAC) Composition Approach
             int macLenght = mac.getMacLength();
             byte[] secure = new byte[cipher.getOutputSize(insecure.length) + macLenght];
             int secureCount = cipher.doFinal(insecure, 0, insecure.length, secure);
@@ -448,7 +448,7 @@ public final class StateUtils
             Mac mac = createMac(externalContext);
             Cipher cipher = createCipher(externalContext, Cipher.DECRYPT_MODE);
 
-            //EtM Composition Approach
+            //EtM (Encrypt-then-MAC) Composition Approach
             int macLenght = mac.getMacLength();
             mac.update(secure, 0, secure.length - macLenght);
             byte[] signedDigestHash = mac.doFinal();
