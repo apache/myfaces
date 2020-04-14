@@ -534,6 +534,8 @@ public class ApplicationImpl extends Application
         try
         {
             SystemEvent event = null;
+            
+            // component attached listeners
             if (source instanceof SystemEventListenerHolder)
             {
                 SystemEventListenerHolder holder = (SystemEventListenerHolder) source;
@@ -547,6 +549,7 @@ public class ApplicationImpl extends Application
                         systemEventClass, source, event);
             }
             
+            // view attached listeners
             UIViewRoot uiViewRoot = facesContext.getViewRoot();
             if (uiViewRoot != null)
             {
@@ -556,6 +559,7 @@ public class ApplicationImpl extends Application
                         systemEventClass, source, event);
             }
 
+            // global listeners
             SystemListenerEntry systemListenerEntry = _systemEventListenerClassMap.get(systemEventClass);
             if (systemListenerEntry != null)
             {
