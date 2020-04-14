@@ -548,14 +548,13 @@ public class ApplicationImpl extends Application
                         facesContext, holder.getListenersForEventClass(systemEventClass),
                         systemEventClass, source, event);
             }
-            
+
             // view attached listeners
-            UIViewRoot uiViewRoot = facesContext.getViewRoot();
-            if (uiViewRoot != null)
+            UIViewRoot viewRoot = facesContext.getViewRoot();
+            if (viewRoot != null)
             {
-                //Call listeners on view level
                 event = _ApplicationUtils._traverseListenerListWithCopy(
-                        facesContext, uiViewRoot.getViewListenersForEventClass(systemEventClass), 
+                        facesContext, viewRoot.getViewListenersForEventClass(systemEventClass), 
                         systemEventClass, source, event);
             }
 
