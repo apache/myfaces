@@ -56,13 +56,13 @@ public class ApplicationImplTest extends TestCase
     //TODO: need mock objects for VDL/VDLFactory
     //remove from excludes list in pom.xml after complete
     
-    private ApplicationImpl app;
-    private MockFacesContext context;
+    protected ApplicationImpl application;
+    protected MockFacesContext facesContext;
 
     protected void setUp() throws Exception
     {
-        app = new ApplicationImpl(new RuntimeConfig());
-        context = new MockFacesContext();
+        application = new ApplicationImpl(new RuntimeConfig());
+        facesContext = new MockFacesContext();
     }
 
     /**
@@ -75,14 +75,14 @@ public class ApplicationImplTest extends TestCase
         {
             public void run()
             {
-                app.getResourceBundle(null, "xxx");
+                application.getResourceBundle(null, "xxx");
             }
         });
         MyFacesAsserts.assertException(NullPointerException.class, new TestRunner()
         {
             public void run()
             {
-                app.getResourceBundle(context, null);
+                application.getResourceBundle(facesContext, null);
             }
         });
     }
@@ -108,7 +108,7 @@ public class ApplicationImplTest extends TestCase
         {
             public void run()
             {
-                myApp.getResourceBundle(context, "xxx");
+                myApp.getResourceBundle(facesContext, "xxx");
             }
         });
     }
@@ -130,7 +130,7 @@ public class ApplicationImplTest extends TestCase
     {
         Locale locale = new Locale("xx");
         UIViewRoot viewRoot = new UIViewRoot();
-        context.setViewRoot(viewRoot);
+        facesContext.setViewRoot(viewRoot);
         viewRoot.setLocale(locale);
         assertGetResourceBundleWithLocale(locale);
     }
@@ -143,10 +143,10 @@ public class ApplicationImplTest extends TestCase
         expect(context.getELContext()).andReturn(elcontext);
         expect(expr.getValue(elcontext)).andReturn(null);
         expr.setValue(eq(elcontext), isA(UIOutput.class));
-        app.addComponent("testComponent", UIOutput.class.getName());
+        application.addComponent("testComponent", UIOutput.class.getName());
         replay(context);
         replay(expr);
-        assertTrue(UIOutput.class.isAssignableFrom(app.createComponent(expr, context, "testComponent").getClass()));
+        assertTrue(UIOutput.class.isAssignableFrom(application.createComponent(expr, context, "testComponent").getClass()));
     }
 
     public void testCreateComponentExpressionFacesExceptionTest() throws Exception
@@ -160,7 +160,7 @@ public class ApplicationImplTest extends TestCase
         replay(expr);
         try
         {
-            app.createComponent(expr, context, "testComponent");
+            application.createComponent(expr, context, "testComponent");
         }
         catch (FacesException e)
         {
@@ -202,7 +202,7 @@ public class ApplicationImplTest extends TestCase
                 return bundle;
             }
         };
-        assertSame(bundle, myapp.getResourceBundle(context, var));
+        assertSame(bundle, myapp.getResourceBundle(facesContext, var));
     }
 
     private enum MyEnum {VALUE1, VALUE2}; 
@@ -213,9 +213,9 @@ public class ApplicationImplTest extends TestCase
      */
     public void testCreateEnumConverter() throws Exception
     {
-        app.addConverter(Enum.class, EnumConverter.class.getName());
+        application.addConverter(Enum.class, EnumConverter.class.getName());
 
-        Converter converter = app.createConverter(MyEnum.class);
+        Converter converter = application.createConverter(MyEnum.class);
         assertNotNull(converter);
         assertEquals(converter.getClass(), EnumConverter.class);
     }    
@@ -258,10 +258,10 @@ public class ApplicationImplTest extends TestCase
      */
     public void testCreateConverterForInterface() throws Exception 
     {
-        app.addConverter(Enum.class, EnumConverter.class.getName());
-    	app.addConverter(EnumCoded.class, EnumCodedTestConverter.class.getName());
+        application.addConverter(Enum.class, EnumConverter.class.getName());
+    	application.addConverter(EnumCoded.class, EnumCodedTestConverter.class.getName());
     	
-    	Converter converter = app.createConverter(AnotherEnum.class);
+    	Converter converter = application.createConverter(AnotherEnum.class);
     	assertNotNull(converter);
         assertEquals(converter.getClass(), EnumCodedTestConverter.class);
     }

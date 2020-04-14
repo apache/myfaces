@@ -19,10 +19,13 @@
 package org.apache.myfaces.event;
 
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIOutput;
 import javax.faces.component.html.HtmlHead;
+import javax.faces.component.html.HtmlInputText;
 import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
+import org.apache.myfaces.application.ApplicationImplEventManager;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
 
 import org.junit.Assert;
@@ -46,20 +49,50 @@ public class GlobalPostAddToViewEventTestCase extends AbstractJsfConfigurableMoc
     }
 
     @Test
-    public void testPostAddToViewForHead() throws Exception
+    public void postAddToViewSourceNull() throws Exception
     {
-        application.subscribeToEvent(PostAddToViewEvent.class, new HeadResourceListener());
+        ApplicationImplEventManager eventManager = new ApplicationImplEventManager();
+        
+        eventManager.subscribeToEvent(PostAddToViewEvent.class, new HeadResourceListener());
 
-        application.addComponent(HtmlHead.COMPONENT_TYPE,
-                HtmlHead.class.getName());
-        
-        HtmlHead comp = (HtmlHead) application.createComponent(facesContext, 
-                HtmlHead.COMPONENT_TYPE,
-                "javax.faces.Head");
-        
-        // Invoke PostAddToViewEvent
-        facesContext.getViewRoot().getChildren().add(comp);
+        eventManager.publishEvent(facesContext, PostAddToViewEvent.class, HtmlHead.class, new HtmlHead());
 
         Assert.assertTrue(facesContext.getAttributes().containsKey("SystemEventListenerInvokedForHead"));
+    }
+    
+    @Test
+    public void postAddToViewSourceSuperClass() throws Exception
+    {
+        ApplicationImplEventManager eventManager = new ApplicationImplEventManager();
+        
+        eventManager.subscribeToEvent(PostAddToViewEvent.class, UIOutput.class, new HeadResourceListener());
+
+        eventManager.publishEvent(facesContext, PostAddToViewEvent.class, HtmlHead.class, new HtmlHead());
+
+        Assert.assertTrue(facesContext.getAttributes().containsKey("SystemEventListenerInvokedForHead"));
+    }
+    
+    @Test
+    public void postAddToViewSourceDirect() throws Exception
+    {
+        ApplicationImplEventManager eventManager = new ApplicationImplEventManager();
+        
+        eventManager.subscribeToEvent(PostAddToViewEvent.class, HtmlHead.class, new HeadResourceListener());
+
+        eventManager.publishEvent(facesContext, PostAddToViewEvent.class, HtmlHead.class, new HtmlHead());
+
+        Assert.assertTrue(facesContext.getAttributes().containsKey("SystemEventListenerInvokedForHead"));
+    }
+    
+    @Test
+    public void postAddToViewSourceUnmatching() throws Exception
+    {
+        ApplicationImplEventManager eventManager = new ApplicationImplEventManager();
+        
+        eventManager.subscribeToEvent(PostAddToViewEvent.class, HtmlInputText.class, new HeadResourceListener());
+
+        eventManager.publishEvent(facesContext, PostAddToViewEvent.class, HtmlHead.class, new HtmlHead());
+
+        Assert.assertFalse(facesContext.getAttributes().containsKey("SystemEventListenerInvokedForHead"));
     }
 }

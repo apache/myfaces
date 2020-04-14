@@ -74,14 +74,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.DateTimeConverter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionListener;
 import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.event.ListenerFor;
 import javax.faces.event.ListenersFor;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
-import javax.faces.event.SystemEventListenerHolder;
 import javax.faces.flow.FlowHandler;
 import javax.faces.render.ClientBehaviorRenderer;
 import javax.faces.render.RenderKit;
@@ -117,7 +115,6 @@ import org.apache.myfaces.config.element.Property;
 import org.apache.myfaces.config.element.ResourceBundle;
 import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.context.RequestViewMetadata;
-import org.apache.myfaces.el.ELResolverBuilder;
 import org.apache.myfaces.el.ELResolverBuilderForFaces;
 import org.apache.myfaces.el.resolver.FacesCompositeELResolver;
 import org.apache.myfaces.el.resolver.FacesCompositeELResolver.Scope;
@@ -183,9 +180,8 @@ public class ApplicationImpl extends Application
 
     private final Map<String, Object> _validatorClassMap = new ConcurrentHashMap<>();
 
-    private final Map<Class<? extends SystemEvent>, SystemListenerEntry> _systemEventListenerClassMap
-            = new ConcurrentHashMap<>();
-
+    private ApplicationImplEventManager _eventManager;
+    
     private final Map<String, String> _defaultValidatorsIds = new HashMap<>();
     
     private volatile Map<String, String> _cachedDefaultValidatorsIds = null;
@@ -196,8 +192,6 @@ public class ApplicationImpl extends Application
     private final MyfacesConfig _myfacesConfig;
 
     private Lazy<ELResolver> elResolver;
-
-    private ELResolverBuilder resolverBuilderForFaces;
 
     private ProjectStage _projectStage;
 
@@ -262,12 +256,13 @@ public class ApplicationImpl extends Application
         _actionListener = new ActionListenerImpl();
         _defaultRenderKitId = "HTML_BASIC";
         _stateManager = new StateManagerImpl();
-        _elContextListeners = new ArrayList<ELContextListener>();
+        _elContextListeners = new ArrayList<>();
         _resourceHandler = new ResourceHandlerImpl();
         _flowHandler = new FlowHandlerImpl();
         _searchExpressionHandler = new SearchExpressionHandlerImpl();
         _runtimeConfig = runtimeConfig;
         _myfacesConfig = MyfacesConfig.getCurrentInstance(getFacesContext());
+        _eventManager = new ApplicationImplEventManager();
 
         if (log.isLoggable(Level.FINEST))
         {
@@ -516,68 +511,13 @@ public class ApplicationImpl extends Application
     public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass,
                              Class<?> sourceBaseType, Object source)
     {
-        Assert.notNull(systemEventClass, "systemEventClass");
-        Assert.notNull(source, "source");
-        
-        //Call events only if event processing is enabled.
-        if (!facesContext.isProcessingEvents())
-        {
-            return;
-        }
-        
-        // spec: If this argument is null the return from source.getClass() must be used as the sourceBaseType. 
-        if (sourceBaseType == null)
-        {
-            sourceBaseType = source.getClass();
-        }
-        
-        try
-        {
-            SystemEvent event = null;
-            
-            // component attached listeners
-            if (source instanceof SystemEventListenerHolder)
-            {
-                SystemEventListenerHolder holder = (SystemEventListenerHolder) source;
-
-                // If the source argument implements SystemEventListenerHolder, call
-                // SystemEventListenerHolder.getListenersForEventClass(java.lang.Class) on it, passing the
-                // systemEventClass
-                // argument. If the list is not empty, perform algorithm traverseListenerList on the list.
-                event = _ApplicationUtils._traverseListenerList(
-                        facesContext, holder.getListenersForEventClass(systemEventClass),
-                        systemEventClass, source, event);
-            }
-
-            // view attached listeners
-            UIViewRoot viewRoot = facesContext.getViewRoot();
-            if (viewRoot != null)
-            {
-                event = _ApplicationUtils._traverseListenerListWithCopy(
-                        facesContext, viewRoot.getViewListenersForEventClass(systemEventClass), 
-                        systemEventClass, source, event);
-            }
-
-            // global listeners
-            SystemListenerEntry systemListenerEntry = _systemEventListenerClassMap.get(systemEventClass);
-            if (systemListenerEntry != null)
-            {
-                systemListenerEntry.publish(facesContext, systemEventClass, sourceBaseType, source, event);
-            }
-        }
-        catch (AbortProcessingException e)
-        {
-            // If the act of invoking the processListener method causes an AbortProcessingException to be thrown,
-            // processing of the listeners must be aborted, no further processing of the listeners for this event must
-            // take place, and the exception must be logged with Level.SEVERE.
-            log.log(Level.SEVERE, "Event processing was aborted", e);
-        }
+        _eventManager.publishEvent(facesContext, systemEventClass, sourceBaseType, source);
     }
 
     @Override
     public void publishEvent(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass, Object source)
     {
-        publishEvent(facesContext, systemEventClass, source.getClass(), source);
+        _eventManager.publishEvent(facesContext, systemEventClass, source);
     }
 
     @Override
@@ -856,48 +796,27 @@ public class ApplicationImpl extends Application
     @Override
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
     {
-        subscribeToEvent(systemEventClass, null, listener);
+        _eventManager.subscribeToEvent(systemEventClass, listener);
     }
 
     @Override
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
                                  SystemEventListener listener)
     {
-        Assert.notNull(systemEventClass, "systemEventClass");
-        Assert.notNull(listener, "listener");
-
-        SystemListenerEntry systemListenerEntry;
-        synchronized (_systemEventListenerClassMap)
-        {
-            systemListenerEntry = _systemEventListenerClassMap.get(systemEventClass);
-            if (systemListenerEntry == null)
-            {
-                systemListenerEntry = new SystemListenerEntry();
-                _systemEventListenerClassMap.put(systemEventClass, systemListenerEntry);
-            }
-        }
-
-        systemListenerEntry.addListener(listener, sourceClass);
+        _eventManager.subscribeToEvent(systemEventClass, sourceClass, listener);
     }
     
     @Override
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
     {
-        unsubscribeFromEvent(systemEventClass, null, listener);
+        _eventManager.unsubscribeFromEvent(systemEventClass, listener);
     }
 
     @Override
     public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
                                      SystemEventListener listener)
     {
-        Assert.notNull(systemEventClass, "systemEventClass");
-        Assert.notNull(listener, "listener");
-
-        SystemListenerEntry systemListenerEntry = _systemEventListenerClassMap.get(systemEventClass);
-        if (systemListenerEntry != null)
-        {
-            systemListenerEntry.removeListener(listener, sourceClass);
-        }
+        _eventManager.unsubscribeFromEvent(systemEventClass, sourceClass, listener);
     }
 
     @Override
@@ -2432,120 +2351,7 @@ public class ApplicationImpl extends Application
         }
         return _firstRequestProcessed;
     }
-    
-    private static class SystemListenerEntry
-    {
-        private List<SystemEventListener> _lstSystemEventListener;
-        private Map<Class<?>, List<SystemEventListener>> _sourceClassMap;
 
-        public SystemListenerEntry()
-        {
-        }
-
-        public void addListener(SystemEventListener listener)
-        {
-            assert listener != null;
-
-            addListenerNoDuplicate(getAnySourceListenersNotNull(), listener);
-        }
-
-        public void addListener(SystemEventListener listener, Class<?> source)
-        {
-            assert listener != null;
-
-            if (source == null)
-            {
-                addListener(listener);
-            }
-            else
-            {
-                addListenerNoDuplicate(getSpecificSourceListenersNotNull(source), listener);
-            }
-        }
-
-        public void removeListener(SystemEventListener listener)
-        {
-            assert listener != null;
-
-            if (_lstSystemEventListener != null)
-            {
-                _lstSystemEventListener.remove(listener);
-            }
-        }
-
-        public void removeListener(SystemEventListener listener, Class<?> sourceClass)
-        {
-            assert listener != null;
-
-            if (sourceClass == null)
-            {
-                removeListener(listener);
-            }
-            else
-            {
-                if (_sourceClassMap != null)
-                {
-                    List<SystemEventListener> listeners = _sourceClassMap.get(sourceClass);
-                    if (listeners != null)
-                    {
-                        listeners.remove(listener);
-                    }
-                }
-            }
-        }
-
-        public void publish(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass,
-                Class<?> classSource, Object source, SystemEvent event)
-        {
-            if (source != null && _sourceClassMap != null)
-            {
-                event = _ApplicationUtils._traverseListenerList(facesContext, _sourceClassMap.get(classSource),
-                        systemEventClass, source, event);
-            }
-
-            _ApplicationUtils._traverseListenerList(facesContext, _lstSystemEventListener,
-                    systemEventClass, source, event);
-        }
-
-        private void addListenerNoDuplicate(List<SystemEventListener> listeners, SystemEventListener listener)
-        {
-            if (!listeners.contains(listener))
-            {
-                listeners.add(listener);
-            }
-        }
-
-        private synchronized List<SystemEventListener> getAnySourceListenersNotNull()
-        {
-            if (_lstSystemEventListener == null)
-            {
-                /*
-                 * TODO: Check if modification occurs often or not, might have to use a synchronized list instead.
-                 * 
-                 * Registrations found:
-                 */
-                _lstSystemEventListener = new CopyOnWriteArrayList<>();
-            }
-
-            return _lstSystemEventListener;
-        }
-
-        private synchronized List<SystemEventListener> getSpecificSourceListenersNotNull(Class<?> sourceClass)
-        {
-            if (_sourceClassMap == null)
-            {
-                _sourceClassMap = new ConcurrentHashMap<>();
-            }
-
-            /*
-             * TODO: Check if modification occurs often or not, might have to use a synchronized list instead.
-             * 
-             * Registrations found:
-             */
-            return _sourceClassMap.computeIfAbsent(sourceClass, k -> new CopyOnWriteArrayList<>());
-        }
-    }
-    
     /*
      * private method to look for config objects on a classmap.  The objects can be either a type string
      * or a Class<?> object.  This is done to facilitate lazy loading of config objects.   
