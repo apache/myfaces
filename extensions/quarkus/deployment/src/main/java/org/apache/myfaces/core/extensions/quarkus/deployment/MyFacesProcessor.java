@@ -116,6 +116,7 @@ import javax.faces.view.facelets.ValidatorHandler;
 import javax.inject.Named;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.el.ExpressionFactoryImpl;
+import org.apache.myfaces.application.ApplicationImplEventManager;
 import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.cdi.util.BeanEntry;
 import org.apache.myfaces.config.FacesConfigurator;
@@ -426,10 +427,10 @@ class MyFacesProcessor
 
         classNames.addAll(Arrays.asList(
             "javax.faces.component._DeltaStateHelper",
-            "javax.faces.component._DeltaStateHelper$InternalMap",
-            "org.apache.myfaces.application._ApplicationUtils"));
+            "javax.faces.component._DeltaStateHelper$InternalMap"));
 
         classes.addAll(Arrays.asList(
+                ApplicationImplEventManager.class,
                 DefaultWebConfigProviderFactory.class,
                 ErrorPageWriter.class,
                 MyFacesContainerInitializer.class,
