@@ -163,6 +163,7 @@ class MyFacesProcessor
 
     private static final String[] BEAN_DEFINING_ANNOTATION_CLASSES =
     {
+            Named.class.getName(),
             FacesComponent.class.getName(),
             FacesBehavior.class.getName(),
             FacesConverter.class.getName(),
@@ -321,8 +322,14 @@ class MyFacesProcessor
             combinedIndex.getIndex()
                     .getAnnotations(DotName.createSimple(clazz))
                     .stream()
-                    .forEach(annotation -> recorder.registerAnnotatedClass(annotation.name().toString(),
-                            annotation.target().asClass().name().toString()));
+                    .forEach(annotation -> 
+                    {
+                        if (annotation.target().kind() == AnnotationTarget.Kind.CLASS)
+                        {
+                            recorder.registerAnnotatedClass(annotation.name().toString(),
+                                    annotation.target().asClass().name().toString());
+                        }
+                    });
         }
     }
 
