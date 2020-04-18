@@ -104,7 +104,7 @@ public class ClientBehaviorRendererUtils
         {
             return false;
         }
-        return (behaviors.get(eventName) != null);
+        return behaviors.get(eventName) != null;
     }
 
     public static Collection<ClientBehaviorContext.Parameter> getClientBehaviorContextParameters(

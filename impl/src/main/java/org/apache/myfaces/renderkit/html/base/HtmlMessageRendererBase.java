@@ -246,7 +246,7 @@ public abstract class HtmlMessageRendererBase
             wrapSpan = wrapSpan || !behaviors.isEmpty();
         }
         
-        if ( wrapSpan )
+        if (wrapSpan)
         {
             span = true;
 

@@ -127,10 +127,9 @@ public abstract class HtmlLinkRendererBase extends HtmlRenderer
     {
         super.encodeBegin(facesContext, component);  //check for NP
 
-        Map<String, List<ClientBehavior>> behaviors = null;
         if (component instanceof ClientBehaviorHolder)
         {
-            behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
+            Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, facesContext.getResponseWriter());

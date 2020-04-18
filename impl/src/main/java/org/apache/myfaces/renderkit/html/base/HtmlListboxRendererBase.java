@@ -48,11 +48,10 @@ public class HtmlListboxRendererBase
             throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, null);
-        
-        Map<String, List<ClientBehavior>> behaviors = null;
+
         if (uiComponent instanceof ClientBehaviorHolder)
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(

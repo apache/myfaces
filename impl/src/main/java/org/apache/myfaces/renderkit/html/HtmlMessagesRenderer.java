@@ -46,11 +46,10 @@ public class HtmlMessagesRenderer extends HtmlMessagesRendererBase
     public void encodeEnd(FacesContext facesContext, UIComponent component) throws IOException
     {
         super.encodeEnd(facesContext, component); // check for NP�
-        
-        Map<String, List<ClientBehavior>> behaviors = null;
+
         if (component instanceof ClientBehaviorHolder)
         {
-            behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
+            Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) component).getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, facesContext.getResponseWriter());

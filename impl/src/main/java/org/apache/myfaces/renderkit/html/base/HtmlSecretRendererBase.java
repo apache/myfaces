@@ -105,10 +105,9 @@ public class HtmlSecretRendererBase extends HtmlRenderer
             writer.writeAttribute(HTML.VALUE_ATTR, strValue, JSFAttr.VALUE_ATTR);
         }
 
-        Map<String, List<ClientBehavior>> behaviors = null;
         if (uiComponent instanceof ClientBehaviorHolder)
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
             
             long commonPropertiesMarked = 0L;
             if (isCommonPropertiesOptimizationEnabled(facesContext))

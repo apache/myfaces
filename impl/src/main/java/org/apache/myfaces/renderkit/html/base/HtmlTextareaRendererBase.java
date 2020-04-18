@@ -50,10 +50,9 @@ public class HtmlTextareaRendererBase extends HtmlRenderer
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UIInput.class);
 
-        Map<String, List<ClientBehavior>> behaviors = null;
         if (uiComponent instanceof ClientBehaviorHolder)
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, 

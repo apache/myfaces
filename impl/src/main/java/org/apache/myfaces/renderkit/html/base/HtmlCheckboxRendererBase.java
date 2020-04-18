@@ -62,11 +62,10 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, null);
-        
-        Map<String, List<ClientBehavior>> behaviors = null;
+
         if (uiComponent instanceof ClientBehaviorHolder)
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
             if (!behaviors.isEmpty())
             {
                 ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, facesContext.getResponseWriter());

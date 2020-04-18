@@ -419,11 +419,10 @@ public final class HtmlRendererUtils
         {
             writer.writeAttribute(HTML.SIZE_ATTR, Integer.toString(size), null);
         }
-        
-        Map<String, List<ClientBehavior>> behaviors = null;
+
         if (uiComponent instanceof ClientBehaviorHolder)
         {
-            behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
+            Map<String, List<ClientBehavior>> behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
             renderBehaviorizedOnchangeEventHandler(facesContext, writer, uiComponent, behaviors);
             renderBehaviorizedEventHandlers(facesContext, writer, uiComponent, behaviors);
             renderBehaviorizedFieldEventHandlersWithoutOnchange(facesContext, writer, uiComponent, behaviors);
