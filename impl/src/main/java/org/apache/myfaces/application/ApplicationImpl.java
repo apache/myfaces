@@ -1607,6 +1607,16 @@ public class ApplicationImpl extends Application
                 try
                 {
                     PropertyDescriptor pd = pds.get(property.getPropertyName());
+                    // see MYFACES-2602 - skip set value if it was already set via constructor and now != null
+                    if (!pd.getPropertyType().isPrimitive())
+                    {
+                        Object defaultValue = pd.getReadMethod().invoke(converter);
+                        if (defaultValue != null)
+                        {
+                            continue;
+                        }
+                    }
+
                     Object convertedValue = ClassUtils.convertToType(property.getDefaultValue(), pd.getPropertyType());
                     pd.getWriteMethod().invoke(converter, convertedValue);
                 }
