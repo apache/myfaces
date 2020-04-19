@@ -773,7 +773,10 @@ public class ResourceHandlerImpl extends ResourceHandler
 
                 if (bundle != null)
                 {
-                    localePrefix = bundle.getString(ResourceHandler.LOCALE_PREFIX);
+                    if (bundle.containsKey(ResourceHandler.LOCALE_PREFIX))
+                    {
+                        localePrefix = bundle.getString(ResourceHandler.LOCALE_PREFIX);
+                    }
                 }
             }
             catch (MissingResourceException e)
