@@ -128,12 +128,17 @@ class _MessageUtils
     {
         try
         {
-            return bundle == null ? null : bundle.getString(key);
+            if (bundle != null && bundle.containsKey(key))
+            {
+                return bundle.getString(key);
+            }
         }
         catch (MissingResourceException e)
         {
-            return null;
+            // NOOP
         }
+
+        return null;
     }
 
 

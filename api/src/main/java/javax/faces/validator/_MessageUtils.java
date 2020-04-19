@@ -116,12 +116,17 @@ class _MessageUtils
     {
         try
         {
-            return bundle == null ? null : bundle.getString(key);
+            if (bundle != null && bundle.containsKey(key))
+            {
+                return bundle.getString(key);
+            }
         }
         catch (MissingResourceException e)
         {
-            return null;
+            // NOOP
         }
+
+        return null;
     }
 
 
@@ -175,7 +180,7 @@ class _MessageUtils
                                                         Thread.currentThread().getContextClassLoader());
                     }                   
                 }
-                catch(PrivilegedActionException pae)
+                catch (PrivilegedActionException pae)
                 {
                     throw new FacesException(pae);
                 }

@@ -24,7 +24,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -118,15 +117,7 @@ public final class LoadBundleHandler extends TagHandler
         @Override
         public boolean containsKey(Object key)
         {
-            try
-            {
-                bundle.getString(key.toString());
-                return true;
-            }
-            catch (MissingResourceException e)
-            {
-                return false;
-            }
+            return bundle.containsKey(key.toString());
         }
 
         @Override
@@ -139,7 +130,7 @@ public final class LoadBundleHandler extends TagHandler
         public Set<Map.Entry<String, String>> entrySet()
         {
             Enumeration<String> e = this.bundle.getKeys();
-            Set<Map.Entry<String, String>> s = new HashSet<Map.Entry<String, String>>();
+            Set<Map.Entry<String, String>> s = new HashSet<>();
             String k;
             while (e.hasMoreElements())
             {
@@ -154,12 +145,17 @@ public final class LoadBundleHandler extends TagHandler
         {
             try
             {
-                return this.bundle.getString((String) key);
+                if (this.bundle.containsKey((String) key))
+                {
+                    return this.bundle.getString((String) key);
+                }
             }
             catch (java.util.MissingResourceException mre)
             {
-                return "???" + key + "???";
+                // NOOP
             }
+
+            return "???" + key + "???";
         }
 
         @Override

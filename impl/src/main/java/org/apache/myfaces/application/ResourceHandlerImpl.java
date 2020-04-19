@@ -695,8 +695,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         }
         
         String bundleName = context.getApplication().getMessageBundle();
-
-        if (null != bundleName)
+        if (bundleName != null)
         {
             Locale locale = null;
             
@@ -713,8 +712,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             {
                 ResourceBundle bundle = ResourceBundle.getBundle(bundleName, locale,
                         ClassUtils.getContextClassLoader());
-
-                if (bundle != null)
+                if (bundle != null && bundle.containsKey(ResourceHandler.LOCALE_PREFIX))
                 {
                     localePrefix = bundle.getString(ResourceHandler.LOCALE_PREFIX);
                 }
@@ -724,6 +722,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                 // Ignore it and return null
             }
         }
+
         return localePrefix;
     }
     

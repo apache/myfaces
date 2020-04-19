@@ -280,7 +280,10 @@ public final class MessageUtils
             {
                 bundle = ResourceBundle.getBundle(bundleName, locale, 
                         ClassUtils.getCurrentLoader(bundleName));
-                summary = bundle.getString(messageId);
+                if (bundle.containsKey(messageId))
+                {
+                    summary = bundle.getString(messageId);
+                }
             }
             catch (MissingResourceException e)
             {
@@ -294,11 +297,15 @@ public final class MessageUtils
             {
                 bundle = ResourceBundle.getBundle(DEFAULT_BUNDLE, locale, 
                         ClassUtils.getCurrentLoader(DEFAULT_BUNDLE));
-                if(bundle == null)
+                if (bundle == null)
                 {
                     throw new NullPointerException();
                 }
-                summary = bundle.getString(messageId);
+                
+                if (bundle.containsKey(messageId))
+                {
+                    summary = bundle.getString(messageId);
+                }
             }
             catch(MissingResourceException e)
             {
@@ -306,7 +313,7 @@ public final class MessageUtils
             }
         }
 
-        if(summary == null)
+        if (summary == null)
         {
             summary = messageId;
         }
@@ -316,11 +323,16 @@ public final class MessageUtils
             throw new NullPointerException(
                 "Unable to locate ResourceBundle: bundle is null");
         }
+        
+        String detailMessageId = messageId + DETAIL_SUFFIX;
         if (params != null && locale != null)
         {
             try
             {
-                detail = bundle.getString(messageId + DETAIL_SUFFIX);
+                if (bundle.containsKey(detailMessageId))
+                {
+                    detail = bundle.getString(detailMessageId);
+                }
             }
             catch(MissingResourceException e)
             {
@@ -333,8 +345,11 @@ public final class MessageUtils
             summary = substituteParams(locale, summary, params);
             try
             {
-                detail = substituteParams(locale,
-                    bundle.getString(messageId + DETAIL_SUFFIX), params);
+                if (bundle.containsKey(detailMessageId))
+                {
+                    detail = substituteParams(locale,
+                        bundle.getString(detailMessageId), params);
+                }
             }
             catch(MissingResourceException e)
             {
@@ -358,7 +373,10 @@ public final class MessageUtils
             {
                 bundle = ResourceBundle.getBundle(bundleName, locale, 
                         ClassUtils.getCurrentLoader(bundleName));
-                summary = bundle.getString(messageId);
+                if (bundle.containsKey(messageId))
+                {
+                    summary = bundle.getString(messageId);
+                }
             }
             catch (MissingResourceException e)
             {
@@ -372,11 +390,15 @@ public final class MessageUtils
             {
                 bundle = ResourceBundle.getBundle(bundleBaseName, locale, 
                         ClassUtils.getCurrentLoader(bundleBaseName));
-                if(bundle == null)
+                if (bundle == null)
                 {
                     throw new NullPointerException();
                 }
-                summary = bundle.getString(messageId);
+                
+                if (bundle.containsKey(messageId))
+                {
+                    summary = bundle.getString(messageId);
+                }
             }
             catch(MissingResourceException e)
             {
@@ -390,11 +412,15 @@ public final class MessageUtils
             {
                 bundle = ResourceBundle.getBundle(DEFAULT_BUNDLE, locale, 
                         ClassUtils.getCurrentLoader(DEFAULT_BUNDLE));
-                if(bundle == null)
+                if (bundle == null)
                 {
                     throw new NullPointerException();
                 }
-                summary = bundle.getString(messageId);
+                
+                if (bundle.containsKey(messageId))
+                {
+                    summary = bundle.getString(messageId);
+                }
             }
             catch(MissingResourceException e)
             {
@@ -402,7 +428,7 @@ public final class MessageUtils
             }
         }
 
-        if(summary == null)
+        if (summary == null)
         {
             summary = messageId;
         }
@@ -413,11 +439,15 @@ public final class MessageUtils
                 "Unable to locate ResourceBundle: bundle is null");
         }
         
+        String detailMessageId = messageId + DETAIL_SUFFIX;
         if (params != null && locale != null)
         {
             try
             {
-                detail = bundle.getString(messageId + DETAIL_SUFFIX);
+                if (bundle.containsKey(detailMessageId))
+                {
+                    detail = bundle.getString(detailMessageId);
+                }
             }
             catch(MissingResourceException e)
             {
@@ -430,8 +460,11 @@ public final class MessageUtils
             summary = substituteParams(locale, summary, params);
             try
             {
-                detail = substituteParams(locale,
-                    bundle.getString(messageId + DETAIL_SUFFIX), params);
+                if (bundle.containsKey(detailMessageId))
+                {
+                    detail = substituteParams(locale,
+                        bundle.getString(detailMessageId), params);
+                }
             }
             catch(MissingResourceException e)
             {
@@ -529,38 +562,42 @@ public final class MessageUtils
      */
     public static FacesMessage getMessage(ResourceBundle bundle, String messageId, Object params[])
     {
+        String summary = null;
+        String detail = null;
 
-      String summary = null;
-      String detail = null;
+        try
+        {
+            if (bundle.containsKey(messageId))
+            {
+                summary = bundle.getString(messageId);
+            }
+        }
+        catch (MissingResourceException e)
+        {
+            // NoOp
+        }
 
-      try
-      {
-          summary = bundle.getString(messageId);
-      }
-      catch (MissingResourceException e)
-      {
-        // NoOp
-      }
+        if (summary == null)
+        {
+            summary = messageId;
+        }
+        summary = substituteParams(bundle.getLocale(), summary, params);
 
+        try
+        {
+            String detailMessageId = messageId + DETAIL_SUFFIX;
+            if (bundle.containsKey(detailMessageId))
+            {
+                detail = substituteParams(bundle.getLocale(),
+                    bundle.getString(detailMessageId), params);
+            }
+        }
+        catch(MissingResourceException e)
+        {
+            // NoOp
+        }
 
-      if(summary == null)
-      {
-          summary = messageId;
-      }
-
-      summary = substituteParams(bundle.getLocale(), summary, params);
-
-      try
-      {
-          detail = substituteParams(bundle.getLocale(),
-              bundle.getString(messageId + DETAIL_SUFFIX), params);
-      }
-      catch(MissingResourceException e)
-      {
-        // NoOp
-      }
-
-      return new FacesMessage(summary, detail);
+        return new FacesMessage(summary, detail);
     }
 
     /**
