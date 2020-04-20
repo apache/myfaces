@@ -37,7 +37,7 @@ public class RequestViewMetadata implements Serializable
     public static final String RESOURCE_DEPENDENCY_KEY = "oam.component.resource.RDK";
 
     // No lazy init: every view has one (UIView.class) or more classes to process   
-    private Map<Class<?>, Boolean> processedClasses = new HashMap<Class<?>,Boolean>();
+    private Map<Class<?>, Boolean> processedClasses = new HashMap<>();
     
     private Map<ResourceDependency, Boolean> addedResources;
     

@@ -971,31 +971,22 @@ public class ApplicationImpl extends Application
     {
         Assert.notEmpty(behaviorId, "behaviorId");
 
-        final Class<? extends Behavior> behaviorClass =
-                getObjectFromClassMap(behaviorId, _behaviorClassMap);
-        
+        final Class<? extends Behavior> behaviorClass = getObjectFromClassMap(behaviorId, _behaviorClassMap);
         if (behaviorClass == null)
         {
             throw new FacesException("Could not find any registered behavior-class for behaviorId : " + behaviorId);
         }
-        
-        if (!_cdiManagedBehaviorMap.containsKey(behaviorClass))
-        {
-            FacesBehavior annotation = behaviorClass.getAnnotation(FacesBehavior.class);
-            if (annotation != null && annotation.managed())
-            {
-                _cdiManagedBehaviorMap.put(behaviorClass, true);
-            }
-            else
-            {
-                _cdiManagedBehaviorMap.put(behaviorClass, false);
-            }
-        }
-        
+
         try
         {
+            boolean managed = _cdiManagedBehaviorMap.computeIfAbsent(behaviorClass, k ->
+            {
+                FacesBehavior annotation = k.getAnnotation(FacesBehavior.class);
+                return annotation == null ? false : annotation.managed();
+            });
+            
             Behavior behavior = null;
-            if (Boolean.TRUE.equals(_cdiManagedBehaviorMap.get(behaviorClass)))
+            if (managed)
             {
                 if (ClientBehavior.class.isAssignableFrom(behaviorClass))
                 {
@@ -1012,13 +1003,13 @@ public class ApplicationImpl extends Application
 
                 if (innerBehavior instanceof ClientBehaviorBase)
                 {
-                  ClientBehaviorBase clientBehavior = (ClientBehaviorBase) innerBehavior;
-                  String renderType = clientBehavior.getRendererType();
-                  if (renderType != null)
-                  {
-                    ClientBehaviorRenderer cbr = facesContext.getRenderKit().getClientBehaviorRenderer(renderType);
-                    _handleAttachedResourceDependencyAnnotations(facesContext, cbr);
-                  }
+                    ClientBehaviorBase clientBehavior = (ClientBehaviorBase) innerBehavior;
+                    String renderType = clientBehavior.getRendererType();
+                    if (renderType != null)
+                    {
+                        ClientBehaviorRenderer cbr = facesContext.getRenderKit().getClientBehaviorRenderer(renderType);
+                        _handleAttachedResourceDependencyAnnotations(facesContext, cbr);
+                    }
                 }
             }
             else
@@ -1029,13 +1020,13 @@ public class ApplicationImpl extends Application
 
                 if (behavior instanceof ClientBehaviorBase)
                 {
-                  ClientBehaviorBase clientBehavior = (ClientBehaviorBase) behavior;
-                  String renderType = clientBehavior.getRendererType();
-                  if (renderType != null)
-                  {
-                    ClientBehaviorRenderer cbr = facesContext.getRenderKit().getClientBehaviorRenderer(renderType);
-                    _handleAttachedResourceDependencyAnnotations(facesContext, cbr);
-                  }
+                    ClientBehaviorBase clientBehavior = (ClientBehaviorBase) behavior;
+                    String renderType = clientBehavior.getRendererType();
+                    if (renderType != null)
+                    {
+                        ClientBehaviorRenderer cbr = facesContext.getRenderKit().getClientBehaviorRenderer(renderType);
+                        _handleAttachedResourceDependencyAnnotations(facesContext, cbr);
+                    }
                 }
             }
 
@@ -1334,31 +1325,22 @@ public class ApplicationImpl extends Application
     {
         Assert.notEmpty(converterId, "converterId");
 
-        final Class<? extends Converter> converterClass =
-                getObjectFromClassMap(converterId, _converterIdToClassMap);
+        final Class<? extends Converter> converterClass = getObjectFromClassMap(converterId, _converterIdToClassMap);
         if (converterClass == null)
         {
             throw new FacesException("Could not find any registered converter-class by converterId : " + converterId);
         }
 
-        if (!_cdiManagedConverterMap.containsKey(converterClass))
-        {
-            FacesConverter annotation = converterClass.getAnnotation(FacesConverter.class);
-            if (annotation != null && annotation.managed())
-            {
-                _cdiManagedConverterMap.put(converterClass, true);
-            }
-            else
-            {
-                _cdiManagedConverterMap.put(converterClass, false);
-            }
-        }
-        
         try
         {
-            Converter converter = null;
+            boolean managed = _cdiManagedConverterMap.computeIfAbsent(converterClass, k ->
+            {
+                FacesConverter annotation = k.getAnnotation(FacesConverter.class);
+                return annotation == null ? false : annotation.managed();
+            });
             
-            if (Boolean.TRUE.equals(_cdiManagedConverterMap.get(converterClass)))
+            Converter converter = null;
+            if (managed)
             {
                 converter = new FacesConverterCDIWrapper(converterClass, null, converterId);
                 
@@ -1646,53 +1628,32 @@ public class ApplicationImpl extends Application
         {
             return;
         }
-        boolean classAlreadyProcessed = false;
 
-        
-        List<ResourceDependency> dependencyList = null;
-        boolean isCachedList = false;
-        
-        if(context.isProjectStage(ProjectStage.Production) && _classToResourceDependencyMap.containsKey(inspectedClass))
+        // reset cache each time
+        if (context.isProjectStage(ProjectStage.Development))
         {
-            dependencyList = _classToResourceDependencyMap.get(inspectedClass);
-            if(dependencyList == null)
-            {
-                return; //class has been inspected and did not contain any resource dependency annotations
-            }
-            else if (dependencyList.isEmpty())
-            {
-                return;
-            }
-            
-            isCachedList = true;    // else annotations were found in the cache
+            _classToResourceDependencyMap.remove(inspectedClass);
         }
         
-        if(dependencyList == null)  //not in production or the class hasn't been inspected yet
-        {   
-            ResourceDependency dependency = inspectedClass.getAnnotation(ResourceDependency.class);
-            ResourceDependencies dependencies = inspectedClass.getAnnotation(ResourceDependencies.class);
-            if(dependency != null || dependencies != null)
-            {
-                //resource dependencies were found using one or both annotations, create and build a new list
-                dependencyList = new ArrayList<ResourceDependency>();
-                
-                if(dependency != null)
-                {
-                    dependencyList.add(dependency);
-                }
-                
-                if(dependencies != null)
-                {
-                    dependencyList.addAll(Arrays.asList(dependencies.value()));
-                }
-            }
-            else
-            {
-                dependencyList = Collections.emptyList();
-            }
-        }
+        List<ResourceDependency> dependencyList = _classToResourceDependencyMap.computeIfAbsent(inspectedClass, k ->
+        {
+            List<ResourceDependency> values = new ArrayList<>(5);
 
-        //resource dependencies were found through inspection or from cache, handle them
+            ResourceDependency dependency = k.getAnnotation(ResourceDependency.class);
+            if (dependency != null)
+            {
+                values.add(dependency);
+            }
+
+            ResourceDependencies dependencies = k.getAnnotation(ResourceDependencies.class);
+            if (dependencies != null)
+            {
+                values.addAll(Arrays.asList(dependencies.value()));
+            }
+
+            return values.isEmpty() ? Collections.emptyList() : values;
+        });
+
         if (dependencyList != null && !dependencyList.isEmpty()) 
         {
             for (int i = 0, size = dependencyList.size(); i < size; i++)
@@ -1705,19 +1666,8 @@ public class ApplicationImpl extends Application
                 }
             }
         }
-        
-        //if we're in production and the list is not yet cached, store it
-        if(context.isProjectStage(ProjectStage.Production) && !isCachedList && dependencyList != null)
-        {
-            // Note at this point dependencyList cannot be null, but just let this
-            // as a sanity check.
-            _classToResourceDependencyMap.put(inspectedClass, dependencyList);
-        }
-        
-        if (!classAlreadyProcessed)
-        {
-            rvc.setClassProcessed(inspectedClass);
-        }
+
+        rvc.setClassProcessed(inspectedClass);
     }
 
     /**
@@ -1861,33 +1811,24 @@ public class ApplicationImpl extends Application
     {
         Assert.notEmpty(validatorId, "validatorId");
 
-        Class<? extends Validator> validatorClass =
-                getObjectFromClassMap(validatorId, _validatorClassMap);
+        Class<? extends Validator> validatorClass = getObjectFromClassMap(validatorId, _validatorClassMap);
         if (validatorClass == null)
         {
             String message = "Unknown validator id '" + validatorId + "'.";
             log.severe(message);
             throw new FacesException(message);
         }
-        
-        if (!_cdiManagedValidatorMap.containsKey(validatorClass))
-        {
-            FacesValidator annotation = validatorClass.getAnnotation(FacesValidator.class);
-            if (annotation != null && annotation.managed())
-            {
-                _cdiManagedValidatorMap.put(validatorClass, true);
-            }
-            else
-            {
-                _cdiManagedValidatorMap.put(validatorClass, false);
-            }
-        }
 
         try
         {
-            Validator validator = null;
+            boolean managed = _cdiManagedValidatorMap.computeIfAbsent(validatorClass, k -> 
+            {
+                FacesValidator annotation = k.getAnnotation(FacesValidator.class);
+                return annotation == null ? false : annotation.managed();
+            });
             
-            if (Boolean.TRUE.equals(_cdiManagedValidatorMap.get(validatorClass)))
+            Validator validator = null;
+            if (managed)
             {
                 validator = new FacesValidatorCDIWrapper(validatorClass, validatorId);
                 
@@ -2012,49 +1953,31 @@ public class ApplicationImpl extends Application
     private void _handleListenerForAnnotations(FacesContext context, Object inspected, Class<?> inspectedClass,
                                                UIComponent component, boolean isProduction)
     {
-        List<ListenerFor> listenerForList = null;
-        boolean isCachedList = false;
-        
-        if(isProduction)
+        // reset cache each time
+        if (!isProduction)
         {
-            listenerForList = _classToListenerForMap.get(inspectedClass);
-
-            if (listenerForList != null)
-            {
-                if (listenerForList.isEmpty())
-                {
-                    return; //class has been inspected and did not contain any listener annotations
-                }
-                
-                isCachedList = true;    // else annotations were found in the cache
-            }
+            _classToListenerForMap.remove(inspectedClass);
         }
 
-        if(listenerForList == null) //not in production or the class hasn't been inspected yet
+        List<ListenerFor> listenerForList = _classToListenerForMap.computeIfAbsent(inspectedClass, k ->
         {
-            ListenerFor listener = inspectedClass.getAnnotation(ListenerFor.class);
-            ListenersFor listeners = inspectedClass.getAnnotation(ListenersFor.class);
-            if(listener != null || listeners != null)
+            List<ListenerFor> values = new ArrayList<>();
+            
+            ListenerFor listener = k.getAnnotation(ListenerFor.class);
+            if (listener != null)
             {
-                //listeners were found using one or both annotations, create and build a new list
-                listenerForList = new ArrayList<ListenerFor>();
-                
-                if(listener != null)
-                {
-                    listenerForList.add(listener);
-                }
-                
-                if(listeners != null)
-                {
-                    listenerForList.addAll(Arrays.asList(listeners.value()));
-                }
+                values.add(listener);
             }
-            else
+
+            ListenersFor listeners = k.getAnnotation(ListenersFor.class);
+            if (listeners != null)
             {
-                listenerForList = Collections.emptyList();
+                values.addAll(Arrays.asList(listeners.value()));
             }
-        }        
- 
+            
+            return values.isEmpty() ? Collections.emptyList() : values;
+        });
+
         // listeners were found through inspection or from cache, handle them
         if (listenerForList != null && !listenerForList.isEmpty()) 
         {
@@ -2063,14 +1986,6 @@ public class ApplicationImpl extends Application
                 ListenerFor listenerFor = listenerForList.get(i);
                 _handleListenerFor(context, inspected, component, listenerFor);
             }
-        }
-        
-        //if we're in production and the list is not yet cached, store it
-        if(isProduction && !isCachedList && listenerForList != null) 
-        {
-            // Note at this point listenerForList cannot be null, but just let listenerForList != null
-            // as a sanity check.
-            _classToListenerForMap.put(inspectedClass, listenerForList);
         }
     }
 
@@ -2373,12 +2288,12 @@ public class ApplicationImpl extends Application
     {
         Object obj = classMap.get(id);
         
-        if(obj == null)
+        if (obj == null)
         {
             return null;    //object for this id wasn't found on the map
         }
         
-        if(obj instanceof Class<?>)
+        if (obj instanceof Class<?>)
         {
             return (Class<? extends T>)obj;
         }
