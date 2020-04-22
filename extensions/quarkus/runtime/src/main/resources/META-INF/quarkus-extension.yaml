@@ -1,0 +1,11 @@
+---
+name: "MyFaces"
+metadata:
+  keywords:
+  - "JSF"
+  - "Faces"
+  - "Java Server Faces"
+  guide: "https://github.com/apache/myfaces"
+  categories:
+  - "web"
+  status: "experimental"
