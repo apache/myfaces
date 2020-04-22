@@ -51,11 +51,6 @@
         <!-- MyFaces -->
         <dependency>
             <groupId>org.apache.myfaces.core.extensions.quarkus</groupId>
-            <artifactId>myfaces-quarkus-deployment</artifactId>
-            <version>${myfaces.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.myfaces.core.extensions.quarkus</groupId>
             <artifactId>myfaces-quarkus</artifactId>
             <version>${myfaces.version}</version>
         </dependency>
