@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.apache.myfaces.core.extensions.quarkus</groupId>
-    <artifactId>myfaces-quarkus-runtime</artifactId>
+    <artifactId>myfaces-quarkus</artifactId>
     <name>Apache MyFaces Core 2.3-next - Extensions - Quarkus - Runtime</name>
     <description>
         Apache MyFaces Core runtime extension for Quarkus.

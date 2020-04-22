@@ -56,7 +56,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.myfaces.core.extensions.quarkus</groupId>
-            <artifactId>myfaces-quarkus-runtime</artifactId>
+            <artifactId>myfaces-quarkus</artifactId>
             <version>${myfaces.version}</version>
         </dependency>
         <dependency>
