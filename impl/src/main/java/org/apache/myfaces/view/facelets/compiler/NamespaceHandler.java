@@ -30,6 +30,8 @@ import jakarta.faces.view.facelets.ComponentHandler;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletException;
 import jakarta.faces.view.facelets.FaceletHandler;
+import javax.el.ELContext;
+import org.apache.myfaces.el.unified.FacesELContext;
 
 import org.apache.myfaces.view.facelets.el.CompositeFunctionMapper;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
@@ -53,6 +55,11 @@ final class NamespaceHandler extends FunctionMapper implements FaceletHandler
             ELException
     {
         FunctionMapper orig = ctx.getFunctionMapper();
+        ELContext elContext = ctx.getFacesContext().getELContext();
+        if (elContext instanceof FacesELContext)
+        {
+            ((FacesELContext) elContext).setFunctionMapper(this);
+        }
         ctx.setFunctionMapper(new CompositeFunctionMapper(this, orig));
         try
         {
