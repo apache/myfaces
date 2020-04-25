@@ -21,6 +21,7 @@ package org.apache.myfaces.view.facelets.compiler;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Map;
+import javax.el.ELContext;
 
 import javax.el.ELException;
 import javax.el.FunctionMapper;
@@ -30,6 +31,7 @@ import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
+import org.apache.myfaces.el.unified.FacesELContext;
 
 import org.apache.myfaces.view.facelets.el.CompositeFunctionMapper;
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
@@ -53,6 +55,11 @@ final class NamespaceHandler extends FunctionMapper implements FaceletHandler
             ELException
     {
         FunctionMapper orig = ctx.getFunctionMapper();
+        ELContext elContext = ctx.getFacesContext().getELContext();
+        if (elContext instanceof FacesELContext)
+        {
+            ((FacesELContext) elContext).setFunctionMapper(this);
+        }
         ctx.setFunctionMapper(new CompositeFunctionMapper(this, orig));
         try
         {
