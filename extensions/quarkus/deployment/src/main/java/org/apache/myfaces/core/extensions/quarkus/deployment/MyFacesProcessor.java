@@ -430,6 +430,7 @@ class MyFacesProcessor
         classNames.addAll(collectSubclasses(combinedIndex, DocumentBuilderFactory.class.getName()));
         classNames.add("com.sun.org.apache.xpath.internal.functions.FuncLocalPart");
         classNames.add("com.sun.org.apache.xpath.internal.functions.FuncNot");
+        classNames.add("com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
         
         for (String factory : FACTORIES)
         {
@@ -750,15 +751,7 @@ class MyFacesProcessor
         }
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     @BuildStep
     void buildPrimeFacesRecommendedInitParams(BuildProducer<ServletInitParamBuildItem> initParam) throws IOException
     {
