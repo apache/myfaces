@@ -134,8 +134,7 @@ class _SharedRendererUtils
         
         if (expression != null)
         {
-            Class<?> modelType = expression
-                    .getType(facesContext.getELContext());
+            Class<?> modelType = expression.getType(facesContext.getELContext());
             if (modelType == null)
             {
                 // FIXME temporal workaround for MYFACES-2552
@@ -306,8 +305,7 @@ class _SharedRendererUtils
             Object value;
             if (converter != null)
             {
-                value = converter.getAsObject(facesContext, component,
-                        submittedValue[i]);
+                value = converter.getAsObject(facesContext, component, submittedValue[i]);
             }
             else
             {
