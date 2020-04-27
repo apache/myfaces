@@ -38,6 +38,7 @@ import javax.faces.view.ViewScoped;
 import javax.faces.view.facelets.FaceletsResourceResolver;
 import javax.faces.webapp.FacesServlet;
 
+import io.quarkus.deployment.builditem.nativeimage.RuntimeInitializedClassBuildItem;
 import org.apache.myfaces.cdi.FacesScoped;
 import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
 import org.apache.myfaces.cdi.JsfArtifactProducer;
@@ -49,6 +50,7 @@ import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.config.element.NamedEvent;
 import org.apache.myfaces.core.extensions.quarkus.runtime.exception.QuarkusExceptionHandlerFactory;
+import org.apache.myfaces.el.resolver.MethodHandleBeanELResolver;
 import org.apache.myfaces.flow.cdi.FlowBuilderFactoryBean;
 import org.apache.myfaces.flow.cdi.FlowScopeBeanHolder;
 import org.apache.myfaces.push.cdi.PushContextFactoryBean;
@@ -56,6 +58,8 @@ import org.apache.myfaces.push.cdi.WebsocketApplicationBean;
 import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilderBean;
 import org.apache.myfaces.push.cdi.WebsocketSessionBean;
 import org.apache.myfaces.push.cdi.WebsocketViewBean;
+import org.apache.myfaces.util.lang.MethodHandleUtils;
+import org.apache.myfaces.view.facelets.tag.MethodHandleMetadataTargetImpl;
 import org.apache.myfaces.webapp.StartupServletContextListener;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -426,6 +430,7 @@ class MyFacesProcessor
         classNames.addAll(collectSubclasses(combinedIndex, DocumentBuilderFactory.class.getName()));
         classNames.add("com.sun.org.apache.xpath.internal.functions.FuncLocalPart");
         classNames.add("com.sun.org.apache.xpath.internal.functions.FuncNot");
+        classNames.add("com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
         
         for (String factory : FACTORIES)
         {
@@ -746,15 +751,7 @@ class MyFacesProcessor
         }
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     @BuildStep
     void buildPrimeFacesRecommendedInitParams(BuildProducer<ServletInitParamBuildItem> initParam) throws IOException
     {
@@ -799,6 +796,17 @@ class MyFacesProcessor
                 "org.primefaces.config.PrimeEnvironment",
                 "org.primefaces.util.MessageFactory",
                 "com.lowagie.text.pdf.MappedRandomAccessFile"));
+    }
+
+    @BuildStep
+    void registerRuntimeInitialization(BuildProducer<RuntimeInitializedClassBuildItem> runtimeInitClassBuildItem)
+    {
+        runtimeInitClassBuildItem.produce(
+                new RuntimeInitializedClassBuildItem(MethodHandleBeanELResolver.class.getCanonicalName()));
+        runtimeInitClassBuildItem.produce(
+                new RuntimeInitializedClassBuildItem(MethodHandleMetadataTargetImpl.class.getCanonicalName()));
+        runtimeInitClassBuildItem.produce(
+                new RuntimeInitializedClassBuildItem(MethodHandleUtils.class.getCanonicalName()));
     }
     
     
