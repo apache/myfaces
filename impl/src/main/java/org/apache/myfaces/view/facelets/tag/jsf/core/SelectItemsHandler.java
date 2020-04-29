@@ -48,7 +48,7 @@ public class SelectItemsHandler extends ComponentHandler
      * @return
      */
     @JSFFaceletAttribute(name = "noSelectionValue",
-            className = "javax.el.ValueExpression",
+            className = "jakarta.el.ValueExpression",
             deferredValueType = "java.lang.Boolean")
     private boolean getNoSelectionValue()
     {

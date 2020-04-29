@@ -24,7 +24,7 @@ import java.util.Collection;
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
-import javax.servlet.http.Part;
+import jakarta.servlet.http.Part;
 
 public class HttpPartWrapper implements Part, FacesWrapper<Part>, StateHolder
 {

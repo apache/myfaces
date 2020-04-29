@@ -21,8 +21,8 @@ package org.apache.myfaces.view.facelets.tag.jstl.core;
 import java.io.Serializable;
 import java.util.Map;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 
 /**
  * @author Jacob Hookom

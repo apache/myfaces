@@ -37,7 +37,7 @@ public abstract class NavigationCaseBuilder
     
     public abstract NavigationCaseBuilder condition(String condition);
     
-    public abstract NavigationCaseBuilder condition(javax.el.ValueExpression condition);
+    public abstract NavigationCaseBuilder condition(jakarta.el.ValueExpression condition);
     
     public abstract NavigationCaseBuilder.RedirectBuilder redirect();
     

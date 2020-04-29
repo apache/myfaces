@@ -19,7 +19,7 @@
 
 package org.apache.myfaces.el.unified.resolver;
 
-import javax.el.ELResolver;
+import jakarta.el.ELResolver;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.impl.digester.elements.ManagedBeanImpl;

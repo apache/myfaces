@@ -25,8 +25,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.el.ELException;
-import javax.el.ValueExpression;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -92,7 +92,7 @@ final class UserTagHandler extends TagHandler implements TemplateClient, Compone
      * Facelet. Finally, replace the old VariableMapper.
      * 
      * @see TagAttribute#getValueExpression(FaceletContext, Class)
-     * @see javax.el.VariableMapper
+     * @see jakarta.el.VariableMapper
      * @see jakarta.faces.view.facelets.FaceletHandler#apply(FaceletContext,
      *        UIComponent)
      */

@@ -31,9 +31,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import javax.el.ELException;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.ELException;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.view.Location;
 import jakarta.faces.view.facelets.FaceletException;

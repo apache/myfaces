@@ -22,7 +22,7 @@ import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 
 import java.io.IOException;
-import javax.el.ELException;
+import jakarta.el.ELException;
 
 import jakarta.faces.component.UIComponent;
 

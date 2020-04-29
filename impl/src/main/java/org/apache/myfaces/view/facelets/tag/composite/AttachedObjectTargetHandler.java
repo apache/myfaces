@@ -58,7 +58,7 @@ public abstract class AttachedObjectTargetHandler<T extends AttachedObjectTarget
      * 
      */
     @JSFFaceletAttribute(name="name",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String",
             required=true)
     protected final TagAttribute _name;
@@ -67,7 +67,7 @@ public abstract class AttachedObjectTargetHandler<T extends AttachedObjectTarget
      * 
      */
     @JSFFaceletAttribute(name="targets",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     protected final TagAttribute _targets;
 

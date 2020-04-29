@@ -37,9 +37,9 @@ import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.render.RenderKit;
 import jakarta.faces.render.RenderKitFactory;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import org.apache.myfaces.cdi.scope.FacesScopeProvider;
 
 import org.apache.myfaces.context.ReleaseableExternalContext;

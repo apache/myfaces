@@ -20,8 +20,8 @@ package org.apache.myfaces.shared.view;
 
 import java.io.IOException;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
 
 /**
  * Delegates the standard OutputStream-methods (close, flush, write)

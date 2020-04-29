@@ -35,7 +35,7 @@
     <url>http://myfaces.apache.org/core23/myfaces-impl</url>
 
     <properties>
-        <openwebbeans.version>1.6.3</openwebbeans.version>
+        <openwebbeans.version>2.0.16</openwebbeans.version>
     </properties>
 
     <build>
@@ -1145,27 +1145,20 @@
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-servlet-api</artifactId>
         </dependency>
-
-        <!-- JSP 2.1 -->
         <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jsp_2.2_spec</artifactId>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-el-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-jsp-api</artifactId>
         </dependency>
 
-        <!-- JSTL 1.2 -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-        </dependency>
 
-        <!-- el 2.2 (javax.el.*) -->
-        <!--
-            NOTE that we are also compatible with el 1.0, but we need to use el 2.2 as
-            compile-dependency, because our ValueExpression wrappers need to support getValueReference().
-        -->
+        <!-- JSTL -->
         <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-el_2.2_spec</artifactId>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
         </dependency>
 
         <!-- bean-validation 1.0 (javax.validation.*) -->
@@ -1178,7 +1171,8 @@
         <!-- annotations 1.2 (javax.annotation.*) -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-annotation_1.2_spec</artifactId>
+            <artifactId>geronimo-annotation_1.3_spec</artifactId>
+            <classifier>jakarta</classifier>
         </dependency>
 
         <!-- jpa 3.0 - needed in AllAnnotationLifecycleProvider -->
@@ -1195,10 +1189,11 @@
             <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
         </dependency>
 
-		<!-- CDI -->
+        <!-- CDI -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jcdi_1.1_spec</artifactId>
+            <artifactId>geronimo-jcdi_2.0_spec</artifactId>
+            <classifier>jakarta</classifier>
         </dependency>
 
         <!-- builder-annotations like @JSFWebConfigParam -->
@@ -1207,16 +1202,17 @@
             <artifactId>myfaces-builder-annotations</artifactId>
         </dependency>
 
-		<dependency>
-			<groupId>org.apache.geronimo.specs</groupId>
-			<artifactId>geronimo-atinject_1.0_spec</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-atinject_1.0_spec</artifactId>
+            <classifier>jakarta</classifier>
+        </dependency>
 
-		<!-- Websockets -->
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-websocket-api</artifactId>
-		</dependency>
+        <!-- Websockets -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-websocket-api</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>commons-beanutils</groupId>
@@ -1281,63 +1277,107 @@
             <artifactId>easymockclassextension</artifactId>
         </dependency>
 
-        <!-- We need a real EL implementation for test ui:param tag,
-        because myfaces-test MockExpressionFactory is not designed to
-        handle VariableMapper stuff (see IncludeParamTestCase). Needed
-        to update to 7.0.0 for method invocation to work. Later
-        versions cause failures and would require org.apache.el.parser.SKIP_IDENTIFIER_CHECK=true
-        to be set.-->
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-el-api</artifactId>
-            <version>7.0.0</version>
-			<scope>test</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jasper-el</artifactId>
-            <version>7.0.0</version>
-			<scope>test</scope>
+            <version>10.0.0-M4</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- Openwebbeans for CDI Test -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-interceptor_1.2_spec</artifactId>
-            <version>1.0</version>
+            <version>1.2</version>
             <scope>test</scope>
+            <classifier>jakarta</classifier>
         </dependency>
         <dependency>
             <groupId>org.apache.openwebbeans</groupId>
             <artifactId>openwebbeans-impl</artifactId>
             <version>${openwebbeans.version}</version>
             <scope>test</scope>
+            <classifier>jakarta</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.openwebbeans</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.openwebbeans</groupId>
             <artifactId>openwebbeans-web</artifactId>
             <version>${openwebbeans.version}</version>
             <scope>test</scope>
+            <classifier>jakarta</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.openwebbeans</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.openwebbeans</groupId>
             <artifactId>openwebbeans-spi</artifactId>
             <version>${openwebbeans.version}</version>
             <scope>test</scope>
+            <classifier>jakarta</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.openwebbeans</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.openwebbeans</groupId>
             <artifactId>openwebbeans-resource</artifactId>
             <version>${openwebbeans.version}</version>
             <scope>test</scope>
+            <classifier>jakarta</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.openwebbeans</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-		<!--
         <dependency>
             <groupId>org.apache.openwebbeans</groupId>
-            <artifactId>openwebbeans-clustering</artifactId>
+            <artifactId>openwebbeans-el22</artifactId>
             <version>${openwebbeans.version}</version>
             <scope>test</scope>
-        </dependency>-->
+            <classifier>jakarta</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.openwebbeans</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.bval</groupId>

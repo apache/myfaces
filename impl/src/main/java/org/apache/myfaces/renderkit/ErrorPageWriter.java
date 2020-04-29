@@ -46,8 +46,8 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.el.Expression;
-import javax.el.ValueExpression;
+import jakarta.el.Expression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIColumn;
@@ -66,7 +66,7 @@ import jakarta.faces.el.MethodBinding;
 import jakarta.faces.el.ValueBinding;
 import jakarta.faces.render.Renderer;
 import jakarta.faces.view.Location;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.lifecycle.ViewNotFoundException;

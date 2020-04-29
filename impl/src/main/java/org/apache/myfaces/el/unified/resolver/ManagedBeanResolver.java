@@ -23,11 +23,11 @@ import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.PropertyNotFoundException;
-import javax.el.PropertyNotWritableException;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.el.PropertyNotWritableException;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIViewRoot;

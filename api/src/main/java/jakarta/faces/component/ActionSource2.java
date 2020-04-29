@@ -19,7 +19,7 @@
 
 package jakarta.faces.component;
 
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 
 /**
  * See Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>

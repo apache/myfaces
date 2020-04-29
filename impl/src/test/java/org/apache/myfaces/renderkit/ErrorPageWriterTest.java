@@ -20,7 +20,7 @@ package org.apache.myfaces.renderkit;
 
 import java.io.StringWriter;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.html.HtmlOutputText;
 

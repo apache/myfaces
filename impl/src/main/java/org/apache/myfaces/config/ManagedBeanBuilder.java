@@ -32,11 +32,11 @@ import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.util.ContainerUtils;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;

@@ -23,15 +23,15 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.el.ArrayELResolver;
-import javax.el.BeanELResolver;
-import javax.el.CompositeELResolver;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.ListELResolver;
-import javax.el.MapELResolver;
-import javax.el.ResourceBundleELResolver;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.el.ArrayELResolver;
+import jakarta.el.BeanELResolver;
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ListELResolver;
+import jakarta.el.MapELResolver;
+import jakarta.el.ResourceBundleELResolver;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
@@ -66,7 +66,7 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
         Method getStreamELResolverMethod = null;
         try
         {
-            staticFieldELResolverClass = ClassUtils.classForName("javax.el.StaticFieldELResolver");
+            staticFieldELResolverClass = ClassUtils.classForName("jakarta.el.StaticFieldELResolver");
             getStreamELResolverMethod = ExpressionFactory.class.getMethod("getStreamELResolver");
         }
         catch (NoSuchMethodException ex)
@@ -111,7 +111,8 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
 
             BeanManager beanManager = CDIUtils.getBeanManager(
                     FacesContext.getCurrentInstance().getExternalContext());
-            list.add(beanManager.getELResolver());
+            // TODO JakartaFaces
+            //list.add(beanManager.getELResolver());
         }
         else
         {

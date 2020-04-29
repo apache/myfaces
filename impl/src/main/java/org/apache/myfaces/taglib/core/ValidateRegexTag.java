@@ -18,14 +18,14 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.RegexValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.webapp.ValidatorELTag;
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * JSP Tag class for {@link RegexValidator}.

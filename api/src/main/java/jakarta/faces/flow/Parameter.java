@@ -26,6 +26,6 @@ public abstract class Parameter
 {
     public abstract String getName();
     
-    public abstract javax.el.ValueExpression getValue();
+    public abstract jakarta.el.ValueExpression getValue();
     
 }

@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.el.convert;
 
-import javax.el.ELException;
-import javax.el.ValueExpression;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
@@ -138,7 +138,7 @@ public class ValueExpressionToValueBinding extends ValueBinding implements State
         {
             getNotNullValueExpression().setValue(facesContext.getELContext(), value);
         }
-        catch (javax.el.PropertyNotFoundException e)
+        catch (jakarta.el.PropertyNotFoundException e)
         {
             throw new PropertyNotFoundException(e);
         }
@@ -156,7 +156,7 @@ public class ValueExpressionToValueBinding extends ValueBinding implements State
         {
             return getNotNullValueExpression().isReadOnly(facesContext.getELContext());
         }
-        catch (javax.el.PropertyNotFoundException e)
+        catch (jakarta.el.PropertyNotFoundException e)
         {
             throw new PropertyNotFoundException(e);
         }
@@ -174,7 +174,7 @@ public class ValueExpressionToValueBinding extends ValueBinding implements State
         {
             return getNotNullValueExpression().getValue(facesContext.getELContext());
         }
-        catch (javax.el.PropertyNotFoundException e)
+        catch (jakarta.el.PropertyNotFoundException e)
         {
             throw new PropertyNotFoundException(e);
         }
@@ -191,7 +191,7 @@ public class ValueExpressionToValueBinding extends ValueBinding implements State
         {
             return getNotNullValueExpression().getType(facesContext.getELContext());
         }
-        catch (javax.el.PropertyNotFoundException e)
+        catch (jakarta.el.PropertyNotFoundException e)
         {
             throw new PropertyNotFoundException(e);
         }

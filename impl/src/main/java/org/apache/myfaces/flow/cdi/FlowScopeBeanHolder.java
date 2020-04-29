@@ -29,16 +29,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.Flow;
 import jakarta.faces.flow.FlowHandler;
 import jakarta.faces.lifecycle.ClientWindow;
-import javax.inject.Inject;
-import javax.servlet.ServletContext;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletContext;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
@@ -64,7 +64,7 @@ public class FlowScopeBeanHolder implements Serializable
     /**
      * key: client window id + flow id
      * value: the {@link ContextualStorage} which holds all the
-     * {@link javax.enterprise.inject.spi.Bean}s.
+     * {@link jakarta.enterprise.inject.spi.Bean}s.
      */
     private Map<String, ContextualStorage> storageMap;
     
@@ -176,7 +176,7 @@ public class FlowScopeBeanHolder implements Serializable
      * a new empty one.
      * This method can be used to properly destroy the WindowBeanHolder beans
      * without having to sync heavily. Any
-     * {@link javax.enterprise.inject.spi.Bean#destroy(Object, javax.enterprise.context.spi.CreationalContext)}
+     * {@link jakarta.enterprise.inject.spi.Bean#destroy(Object, jakarta.enterprise.context.spi.CreationalContext)}
      * should be performed on the returned old storage map.
      * @return the old storageMap.
      */

@@ -21,10 +21,10 @@ package jakarta.faces.view.facelets;
 import java.io.IOException;
 import java.net.URL;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.FunctionMapper;
-import javax.el.VariableMapper;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.FunctionMapper;
+import jakarta.el.VariableMapper;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 

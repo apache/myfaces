@@ -21,8 +21,8 @@ package org.apache.myfaces.view.facelets.tag.jsf.core;
 import java.io.IOException;
 import java.io.Serializable;
 
-import javax.el.ELException;
-import javax.el.ValueExpression;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;

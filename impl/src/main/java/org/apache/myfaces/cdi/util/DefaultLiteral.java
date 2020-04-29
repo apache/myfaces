@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.cdi.util;
 
-import javax.enterprise.inject.Default;
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
- * Literal for the {@link javax.enterprise.inject.Default} annotation.
+ * Literal for the {@link jakarta.enterprise.inject.Default} annotation.
  */
 public class DefaultLiteral extends AnnotationLiteral<Default> implements Default
 {

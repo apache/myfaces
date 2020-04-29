@@ -20,8 +20,8 @@ package org.apache.myfaces.cdi;
 
 import java.lang.reflect.Type;
 import java.util.Map;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.faces.annotation.FlowMap;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.FlowScoped;

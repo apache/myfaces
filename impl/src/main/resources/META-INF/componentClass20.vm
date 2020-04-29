@@ -36,7 +36,7 @@ package ${component.packageName};
 #if ($component.className.startsWith("jakarta.faces.component.html"))
 import jakarta.faces.el.ValueBinding;
 #end
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 $utils.importTagClasses($component)
 

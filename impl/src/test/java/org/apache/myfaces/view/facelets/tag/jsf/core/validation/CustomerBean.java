@@ -19,7 +19,7 @@
 
 package org.apache.myfaces.view.facelets.tag.jsf.core.validation;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 

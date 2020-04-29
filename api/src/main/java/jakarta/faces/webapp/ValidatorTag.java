@@ -25,9 +25,9 @@ import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.tagext.TagSupport;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.Tag;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -116,11 +116,11 @@ public class ValidatorTag extends TagSupport
     /**
      * 
      * @param binding
-     * @throws javax.servlet.jsp.JspException
+     * @throws jakarta.servlet.jsp.JspException
      * 
      * @deprecated
      */
-    public void setBinding(java.lang.String binding) throws javax.servlet.jsp.JspException
+    public void setBinding(java.lang.String binding) throws jakarta.servlet.jsp.JspException
     {
         if (binding != null && !UIComponentTag.isValueReference(binding))
         {

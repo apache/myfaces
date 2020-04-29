@@ -20,14 +20,14 @@
 package org.apache.myfaces.cdi.view;
 
 
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.PassivationCapable;
+import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.PassivationCapable;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Bean;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
@@ -116,7 +116,7 @@ public class ViewScopeContextualStorage implements Serializable
 
     /**
      * Restores the Bean from its beanKey.
-     * @see #getBeanKey(javax.enterprise.context.spi.Contextual)
+     * @see #getBeanKey(jakarta.enterprise.context.spi.Contextual)
      */
     public Contextual<?> getBean(FacesContext context, Object beanKey)
     {

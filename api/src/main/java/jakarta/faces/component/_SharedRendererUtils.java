@@ -38,7 +38,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 /**
  * The util methods in this class are shared between the jakarta.faces.component package and the

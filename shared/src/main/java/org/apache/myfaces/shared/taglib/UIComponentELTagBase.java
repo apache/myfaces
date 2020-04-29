@@ -20,8 +20,8 @@ package org.apache.myfaces.shared.taglib;
 
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.webapp.UIComponentELTag;
 

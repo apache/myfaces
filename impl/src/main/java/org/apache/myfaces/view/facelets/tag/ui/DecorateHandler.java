@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UIComponent;
@@ -70,7 +70,7 @@ public final class DecorateHandler extends TagHandler implements TemplateClient,
      */
     @JSFFaceletAttribute(
             name="template",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     private final TagAttribute _template;
 

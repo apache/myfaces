@@ -24,8 +24,8 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ELResolver;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.el.ELResolver;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.PropertyResolver;

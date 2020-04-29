@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets;
 
 import java.io.IOException;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -55,5 +55,5 @@ public interface TemplateClient
      * @throws ELException
      */
     public boolean apply(FaceletContext ctx, UIComponent parent, String name) throws IOException, FacesException,
-            FaceletException, ELException;;
+            FaceletException, ELException;
 }

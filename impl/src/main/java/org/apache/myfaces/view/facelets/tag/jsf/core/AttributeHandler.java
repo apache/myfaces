@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets.tag.jsf.core;
 
 import java.io.IOException;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -37,7 +37,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
  * instead set the ValueExpression on the UIComponent. 
  * 
  * See jakarta.faces.component.UIComponent#getAttributes()
- * See jakarta.faces.component.UIComponent#setValueExpression(java.lang.String, javax.el.ValueExpression)
+ * See jakarta.faces.component.UIComponent#setValueExpression(java.lang.String, jakarta.el.ValueExpression)
  * @author Jacob Hookom
  * @version $Id$
  */

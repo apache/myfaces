@@ -21,7 +21,7 @@ package jakarta.faces.component;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.el.ValueBinding;
 
 import org.easymock.EasyMock;

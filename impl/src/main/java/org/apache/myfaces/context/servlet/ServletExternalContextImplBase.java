@@ -26,7 +26,7 @@ import java.util.Set;
 
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.lifecycle.ClientWindow;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.apache.myfaces.context.ReleaseableExternalContext;
 

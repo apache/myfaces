@@ -21,12 +21,12 @@ package org.apache.myfaces.taglib.core;
 import org.apache.myfaces.shared.taglib.UIComponentELTagUtils;
 import org.apache.myfaces.shared.util.LocaleUtils;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.convert.DateTimeConverter;
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 import java.util.Locale;
 import java.util.TimeZone;
 

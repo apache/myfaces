@@ -20,8 +20,8 @@
  */
 package ${component.tagPackage};
 
-import javax.el.ValueExpression;
-import javax.el.MethodExpression;
+import jakarta.el.ValueExpression;
+import jakarta.el.MethodExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.MethodBinding;
 import jakarta.faces.event.MethodExpressionValueChangeListener;

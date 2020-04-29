@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.jstl.core;
 
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ResponseWriter;

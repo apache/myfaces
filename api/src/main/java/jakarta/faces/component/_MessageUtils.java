@@ -21,7 +21,7 @@ package jakarta.faces.component;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import java.util.Locale;
 import java.util.MissingResourceException;

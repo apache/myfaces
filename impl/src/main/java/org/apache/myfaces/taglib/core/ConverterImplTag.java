@@ -18,12 +18,12 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.webapp.ConverterELTag;
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
@@ -52,7 +52,7 @@ public class ConverterImplTag extends ConverterELTag
     /**
      * The converter's registered ID.
      */
-    @JSFJspAttribute(className="javax.el.ValueExpression",
+    @JSFJspAttribute(className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     public void setConverterId(ValueExpression converterId)
     {
@@ -62,7 +62,7 @@ public class ConverterImplTag extends ConverterELTag
     /**
      * A ValueExpression that evaluates to a Converter.
      */
-    @JSFJspAttribute(className="javax.el.ValueExpression",
+    @JSFJspAttribute(className="jakarta.el.ValueExpression",
             deferredValueType="jakarta.faces.convert.Converter")
     public void setBinding(ValueExpression binding)
     {

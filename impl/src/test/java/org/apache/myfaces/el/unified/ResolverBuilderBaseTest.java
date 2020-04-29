@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.el.ELResolver;
+import jakarta.el.ELResolver;
 import jakarta.faces.el.PropertyResolver;
 import jakarta.faces.el.VariableResolver;
 

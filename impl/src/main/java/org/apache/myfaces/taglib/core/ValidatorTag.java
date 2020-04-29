@@ -18,13 +18,13 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.webapp.ValidatorELTag;
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * Basic Validator implementation.
@@ -69,7 +69,7 @@ public class ValidatorTag extends ValidatorELTag
     }
 
     @Override
-    protected Validator createValidator() throws javax.servlet.jsp.JspException
+    protected Validator createValidator() throws jakarta.servlet.jsp.JspException
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ELContext elContext = facesContext.getELContext();

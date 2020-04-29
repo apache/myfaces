@@ -20,7 +20,7 @@ package org.apache.myfaces.test.mock;
 
 import java.util.Enumeration;
 
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletRequest;
 
 /**
  * ServletRequest parameters as Map.

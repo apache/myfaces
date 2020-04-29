@@ -18,7 +18,7 @@
  */
 package jakarta.faces.component.behavior;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.StateHelper;
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.component.UIComponentBase;

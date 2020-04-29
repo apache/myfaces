@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
-import javax.el.ELContext;
+import jakarta.el.ELContext;
 import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
@@ -31,7 +31,7 @@ public class ContextAwareUtils
      * the location, expression string and tag name can be retrieved by
      * the ExceptionHandler implementation and used to output meaningful information about itself.
      * 
-     * <p>Note in some cases this will wrap the original javax.el.ELException, so the
+     * <p>Note in some cases this will wrap the original jakarta.el.ELException, so the
      * information will not be on the stack trace unless ExceptionHandler
      * retrieve checking if the exception implements ContextAware interface and calling getWrapped() method.
      * </p>

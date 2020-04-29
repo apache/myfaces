@@ -31,7 +31,7 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 // ATTENTION
 // This class is associated with org.apache.myfaces.shared.util.SelectItemsIterator.

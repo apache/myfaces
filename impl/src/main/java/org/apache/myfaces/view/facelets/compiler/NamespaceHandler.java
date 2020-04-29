@@ -22,15 +22,15 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import javax.el.ELException;
-import javax.el.FunctionMapper;
+import jakarta.el.ELException;
+import jakarta.el.FunctionMapper;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.ComponentHandler;
 import jakarta.faces.view.facelets.FaceletContext;
 import jakarta.faces.view.facelets.FaceletException;
 import jakarta.faces.view.facelets.FaceletHandler;
-import javax.el.ELContext;
+import jakarta.el.ELContext;
 import org.apache.myfaces.el.unified.FacesELContext;
 
 import org.apache.myfaces.view.facelets.el.CompositeFunctionMapper;

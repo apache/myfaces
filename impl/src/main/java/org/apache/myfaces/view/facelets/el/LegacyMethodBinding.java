@@ -20,8 +20,8 @@ package org.apache.myfaces.view.facelets.el;
 
 import java.io.Serializable;
 
-import javax.el.ELException;
-import javax.el.MethodExpression;
+import jakarta.el.ELException;
+import jakarta.el.MethodExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.MethodBinding;
@@ -58,7 +58,7 @@ public final class LegacyMethodBinding extends MethodBinding implements
         {
             return m.getMethodInfo(context.getELContext()).getReturnType();
         }
-        catch (javax.el.MethodNotFoundException e)
+        catch (jakarta.el.MethodNotFoundException e)
         {
             throw new MethodNotFoundException(e.getMessage(), e.getCause());
         }
@@ -81,7 +81,7 @@ public final class LegacyMethodBinding extends MethodBinding implements
         {
             return m.invoke(context.getELContext(), params);
         }
-        catch (javax.el.MethodNotFoundException e)
+        catch (jakarta.el.MethodNotFoundException e)
         {
             throw new MethodNotFoundException(e.getMessage(), e.getCause());
         }

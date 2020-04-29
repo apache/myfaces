@@ -34,7 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import java.util.regex.Pattern;
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ConfigurableNavigationHandler;
 import jakarta.faces.application.FacesMessage;

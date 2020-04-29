@@ -21,7 +21,7 @@ package org.apache.myfaces.el.unified;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.el.ELResolver;
+import jakarta.el.ELResolver;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 

@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
 import jakarta.faces.context.ExternalContext;
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 import org.apache.myfaces.push.WebsocketSessionClusterSerializedRestore;
 import org.apache.myfaces.push.util.Json;
 import org.apache.myfaces.shared.util.ClassUtils;

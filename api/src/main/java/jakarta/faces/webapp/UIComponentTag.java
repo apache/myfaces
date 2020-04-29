@@ -23,9 +23,9 @@ import jakarta.faces.el.ValueBinding;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.Tag;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.tagext.Tag;
 
 /**
  * Base class for all JSP tags that represent a JSF UIComponent.

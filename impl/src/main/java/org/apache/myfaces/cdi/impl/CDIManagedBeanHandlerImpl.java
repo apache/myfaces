@@ -19,10 +19,10 @@
 package org.apache.myfaces.cdi.impl;
 
 import java.util.Map;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;

@@ -20,7 +20,7 @@ package org.apache.myfaces.cdi.scope;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;

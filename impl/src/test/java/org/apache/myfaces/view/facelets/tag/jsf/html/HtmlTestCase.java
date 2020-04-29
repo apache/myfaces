@@ -20,7 +20,7 @@
 package org.apache.myfaces.view.facelets.tag.jsf.html;
 
 import java.io.StringWriter;
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 import jakarta.faces.component.ActionSource2;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;

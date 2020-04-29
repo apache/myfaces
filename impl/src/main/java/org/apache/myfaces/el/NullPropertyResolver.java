@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.el;
 
-import javax.el.ELContext;
+import jakarta.el.ELContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.PropertyNotFoundException;

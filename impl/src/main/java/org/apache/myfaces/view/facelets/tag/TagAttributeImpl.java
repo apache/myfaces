@@ -20,10 +20,10 @@ package org.apache.myfaces.view.facelets.tag;
 
 import java.util.Arrays;
 
-import javax.el.ELException;
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.ELException;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.Location;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -185,7 +185,7 @@ public final class TagAttributeImpl extends TagAttribute
     /**
      * Create a MethodExpression, using this attribute's value as the expression String.
      * 
-     * See ExpressionFactory#createMethodExpression(javax.el.ELContext, java.lang.String, java.lang.Class,
+     * See ExpressionFactory#createMethodExpression(jakarta.el.ELContext, java.lang.String, java.lang.Class,
      *      java.lang.Class[])
      * See MethodExpression
      * @param ctx
@@ -415,7 +415,7 @@ public final class TagAttributeImpl extends TagAttribute
      * and evaluate it.
      * 
      * See ExpressionFactory#coerceToType(java.lang.Object, java.lang.Class)
-     * See ExpressionFactory#createValueExpression(javax.el.ELContext, java.lang.String, java.lang.Class)
+     * See ExpressionFactory#createValueExpression(jakarta.el.ELContext, java.lang.String, java.lang.Class)
      * See ValueExpression
      * @param ctx
      *            FaceletContext to use
@@ -460,7 +460,7 @@ public final class TagAttributeImpl extends TagAttribute
     /**
      * Create a ValueExpression, using this attribute's literal value and the passed expected type.
      * 
-     * See ExpressionFactory#createValueExpression(javax.el.ELContext, java.lang.String, java.lang.Class)
+     * See ExpressionFactory#createValueExpression(jakarta.el.ELContext, java.lang.String, java.lang.Class)
      * See ValueExpression
      * @param ctx
      *            FaceletContext to use

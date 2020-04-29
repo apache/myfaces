@@ -36,7 +36,7 @@ import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.ResourceWrapper;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

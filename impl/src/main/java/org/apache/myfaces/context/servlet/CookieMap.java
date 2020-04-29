@@ -22,8 +22,8 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.myfaces.util.AbstractAttributeMap;
 

@@ -19,7 +19,7 @@
 package org.apache.myfaces.util;
 
 import jakarta.faces.context.ExternalContext;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.apache.myfaces.shared.util.ExternalContextUtils;
 

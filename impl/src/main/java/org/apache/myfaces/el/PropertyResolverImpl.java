@@ -21,9 +21,9 @@ package org.apache.myfaces.el;
 import java.lang.reflect.Array;
 import java.util.List;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.PropertyNotFoundException;
@@ -222,7 +222,7 @@ public final class PropertyResolverImpl extends PropertyResolver
         {
             return invoker.invoke(getELResolver(), getELContext());
         }
-        catch (javax.el.PropertyNotFoundException e)
+        catch (jakarta.el.PropertyNotFoundException e)
         {
             throw new PropertyNotFoundException("property not found: " + invoker.getMessage() + ": " + e.getMessage(),
                 e);

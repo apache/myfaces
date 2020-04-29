@@ -39,9 +39,9 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver
         this.resolvers = new SearchKeywordResolver[2];
     }
 
-    public void add(SearchKeywordResolver elResolver)
+    public void add(SearchKeywordResolver resolver)
     {
-        if (elResolver == null)
+        if (resolver == null)
         {
             throw new NullPointerException();
         }
@@ -52,7 +52,7 @@ public class CompositeSearchKeywordResolver extends SearchKeywordResolver
             System.arraycopy(this.resolvers, 0, nr, 0, this.size);
             this.resolvers = nr;
         }
-        this.resolvers[this.size++] = elResolver;
+        this.resolvers[this.size++] = resolver;
     }
 
     @Override

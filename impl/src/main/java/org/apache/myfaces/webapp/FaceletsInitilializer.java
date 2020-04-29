@@ -20,10 +20,10 @@ package org.apache.myfaces.webapp;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 /**
  * This initializer initializes only Facelets. Specially checks for
  * org.apache.myfaces.EXPRESSION_FACTORY parameter.
@@ -51,7 +51,7 @@ public class FaceletsInitilializer extends org.apache.myfaces.webapp.AbstractFac
                 {
                     if (log.isLoggable(Level.FINE))
                     {
-                        log.fine("javax.el.ExpressionFactory implementation found: " + candidate);
+                        log.fine("jakarta.el.ExpressionFactory implementation found: " + candidate);
                     }
                     break;
                 }
@@ -60,7 +60,7 @@ public class FaceletsInitilializer extends org.apache.myfaces.webapp.AbstractFac
 
         if (expressionFactory == null)
         {
-            throw new FacesException("No javax.el.ExpressionFactory found. Please provide" +
+            throw new FacesException("No jakarta.el.ExpressionFactory found. Please provide" +
                     " <context-param> in web.xml: org.apache.myfaces.EXPRESSION_FACTORY");
         }
         

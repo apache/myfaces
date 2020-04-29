@@ -26,9 +26,9 @@ import java.util.List;
  */
 public abstract class MethodCallNode extends FlowNode
 {
-    public abstract javax.el.MethodExpression getMethodExpression();
+    public abstract jakarta.el.MethodExpression getMethodExpression();
     
-    public abstract javax.el.ValueExpression getOutcome();
+    public abstract jakarta.el.ValueExpression getOutcome();
     
     public abstract List<Parameter> getParameters();
 }

@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.shared.util;
 
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 import java.io.IOException;

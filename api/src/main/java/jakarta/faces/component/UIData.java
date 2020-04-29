@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.StateManager;
@@ -54,7 +54,7 @@ import jakarta.faces.model.ListDataModel;
 import jakarta.faces.model.ResultDataModel;
 import jakarta.faces.model.ResultSetDataModel;
 import jakarta.faces.model.ScalarDataModel;
-import javax.servlet.jsp.jstl.sql.Result;
+import jakarta.servlet.jsp.jstl.sql.Result;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacet;
@@ -1612,7 +1612,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     }
 
     /**
-     * @deprecated This has been replaced by {@link #setValueExpression(java.lang.String, javax.el.ValueExpression)}.
+     * @deprecated This has been replaced by {@link #setValueExpression(java.lang.String, jakarta.el.ValueExpression)}.
      */
     @Override
     public void setValueBinding(String name, ValueBinding binding)
@@ -2214,7 +2214,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
      * <ul>
      * <li>A value of type DataModel is used directly.</li>
      * <li>Array-like parameters of type array-of-Object, java.util.List, java.sql.ResultSet or
-     * javax.servlet.jsp.jstl.sql.Result are wrapped in a corresponding DataModel that knows how to iterate over the
+     * jakarta.servlet.jsp.jstl.sql.Result are wrapped in a corresponding DataModel that knows how to iterate over the
      * elements.</li>
      * <li>Other values are wrapped in a DataModel as a single row.</li>
      * </ul>

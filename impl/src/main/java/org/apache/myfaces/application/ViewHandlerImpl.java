@@ -48,7 +48,7 @@ import jakarta.faces.render.ResponseStateManager;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.view.ViewDeclarationLanguageFactory;
 import jakarta.faces.view.ViewMetadata;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.application.viewstate.StateCacheUtils;
 import org.apache.myfaces.shared.application.DefaultViewHandlerSupport;

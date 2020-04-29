@@ -21,7 +21,7 @@ package org.apache.myfaces.taglib.core;
 import org.apache.myfaces.shared.taglib.UIComponentELTagBase;
 
 import jakarta.faces.component.UIComponent;
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 /**
  * DOCUMENT ME!

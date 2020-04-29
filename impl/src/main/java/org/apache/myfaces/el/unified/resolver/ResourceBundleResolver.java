@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.PropertyNotFoundException;
-import javax.el.PropertyNotWritableException;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.el.PropertyNotWritableException;
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
 
@@ -58,7 +58,7 @@ public final class ResourceBundleResolver extends ELResolver
         // JSF 2.0 spec section 5.6.1.4
         // "... If base is null and property is a String equal to the value of the
         // <var> element of one of the <resource-bundle>'s in the application 
-        // configuration resources throw javax.el.PropertyNotWriteable, since
+        // configuration resources throw jakarta.el.PropertyNotWriteable, since
         // ResourceBundles are read-only. ..."
         // Since something is done only when base is null, it is better to check 
         // for not null and return.

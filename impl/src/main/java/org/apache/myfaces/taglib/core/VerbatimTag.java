@@ -23,11 +23,11 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
 import org.apache.myfaces.shared.renderkit.JSFAttr;
 import org.apache.myfaces.shared.taglib.UIComponentELTagBase;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyContent;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.BodyContent;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -69,7 +69,7 @@ public class VerbatimTag extends UIComponentELTagBase
     /**
      * If true, generated markup is escaped. Default: false.
      */
-    @JSFJspAttribute(className="javax.el.ValueExpression",
+    @JSFJspAttribute(className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.Boolean")
     public void setEscape(ValueExpression escape)
     {
@@ -81,7 +81,7 @@ public class VerbatimTag extends UIComponentELTagBase
      * any subsequent form submit. The default value for this property is true.
      */
     @Override
-    @JSFJspAttribute(className="javax.el.ValueExpression",
+    @JSFJspAttribute(className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.Boolean")
     public void setRendered(ValueExpression rendered)
     {

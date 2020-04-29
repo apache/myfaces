@@ -19,8 +19,8 @@
 package org.apache.myfaces.flow.builder;
 
 import java.util.List;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.flow.Parameter;
 import jakarta.faces.flow.builder.MethodCallBuilder;
 import org.apache.myfaces.flow.FlowImpl;

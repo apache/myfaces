@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.tag.composite;
 
 import java.io.StringWriter;
 
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.test.mock.MockResponseWriter;

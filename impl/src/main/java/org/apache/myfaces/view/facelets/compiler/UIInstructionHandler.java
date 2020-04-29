@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.compiler;
 import java.io.IOException;
 import java.io.Writer;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UniqueIdVendor;

@@ -21,8 +21,8 @@ package org.apache.myfaces.view.facelets.tag.jsf.core;
 import java.io.IOException;
 import java.util.Arrays;
 
-import javax.el.ELException;
-import javax.el.MethodExpression;
+import jakarta.el.ELException;
+import jakarta.el.MethodExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIViewRoot;

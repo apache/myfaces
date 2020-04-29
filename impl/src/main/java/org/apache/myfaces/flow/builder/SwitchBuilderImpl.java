@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.flow.builder;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.flow.builder.SwitchBuilder;
 import jakarta.faces.flow.builder.SwitchCaseBuilder;
 import org.apache.myfaces.flow.FlowImpl;

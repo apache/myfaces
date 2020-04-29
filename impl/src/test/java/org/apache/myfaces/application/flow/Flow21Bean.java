@@ -21,8 +21,8 @@ package org.apache.myfaces.application.flow;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import jakarta.faces.flow.FlowScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  *

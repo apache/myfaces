@@ -41,7 +41,7 @@ public class WebsocketHandler extends ComponentHandler/* implements RelocatableR
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "channel", className = "javax.el.ValueExpression",
+    @JSFFaceletAttribute(name = "channel", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.String")
     private final TagAttribute _channel;
 

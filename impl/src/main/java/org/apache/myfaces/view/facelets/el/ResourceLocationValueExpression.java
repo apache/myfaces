@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
-import javax.el.ValueReference;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
+import jakarta.el.ValueReference;
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.Location;

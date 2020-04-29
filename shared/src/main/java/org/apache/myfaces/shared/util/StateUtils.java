@@ -44,7 +44,7 @@ import javax.crypto.spec.SecretKeySpec;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ViewExpiredException;
 import jakarta.faces.context.ExternalContext;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.serial.SerialFactory;

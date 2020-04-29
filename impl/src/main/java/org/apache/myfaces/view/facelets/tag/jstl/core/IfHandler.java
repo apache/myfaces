@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets.tag.jstl.core;
 
 import java.io.IOException;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UIComponent;

@@ -20,8 +20,8 @@
 package org.apache.myfaces.test.mock;
 
 import java.io.ByteArrayOutputStream;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
 
 /**
  * <p>Mock implementation of <code>ServletOutputStream</code>.</p>

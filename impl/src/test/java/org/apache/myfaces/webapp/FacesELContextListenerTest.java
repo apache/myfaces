@@ -20,9 +20,9 @@ package org.apache.myfaces.webapp;
 
 import static org.easymock.EasyMock.*;
 
-import javax.el.ELContext;
-import javax.el.ELContextEvent;
-import javax.el.ELContextListener;
+import jakarta.el.ELContext;
+import jakarta.el.ELContextEvent;
+import jakarta.el.ELContextListener;
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
 
@@ -40,7 +40,7 @@ public class FacesELContextListenerTest extends TestCase
 {
 
     /**
-     * Test method for {@link org.apache.myfaces.webapp.FacesELContextListener#contextCreated(javax.el.ELContextEvent)}.
+     * Test method for {@link org.apache.myfaces.webapp.FacesELContextListener#contextCreated(jakarta.el.ELContextEvent)}.
      */
     public void testContextCreated()
     {

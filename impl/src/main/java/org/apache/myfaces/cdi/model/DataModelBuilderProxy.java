@@ -19,7 +19,7 @@
 
 package org.apache.myfaces.cdi.model;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.DataModel;
 import org.apache.myfaces.cdi.util.CDIUtils;

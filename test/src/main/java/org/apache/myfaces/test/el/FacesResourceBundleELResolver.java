@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Map.Entry;
 
-import javax.el.ELContext;
-import javax.el.PropertyNotFoundException;
-import javax.el.PropertyNotWritableException;
+import jakarta.el.ELContext;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.el.PropertyNotWritableException;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.test.mock.MockApplication;
 

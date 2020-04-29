@@ -25,7 +25,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Resource;
 import jakarta.faces.application.ResourceHandler;
@@ -298,7 +298,7 @@ public abstract class AbstractTagLibrary implements TagLibrary
     /**
      * Add a Method to be used as a Function at Compilation.
      * 
-     * See javax.el.FunctionMapper
+     * See jakarta.el.FunctionMapper
      * 
      * @param name
      *            (suffix) of function name

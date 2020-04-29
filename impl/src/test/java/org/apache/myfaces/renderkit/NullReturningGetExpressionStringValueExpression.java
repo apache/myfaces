@@ -19,11 +19,11 @@
 package org.apache.myfaces.renderkit;
 import java.io.Serializable;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.PropertyNotFoundException;
-import javax.el.PropertyNotWritableException;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.el.PropertyNotWritableException;
+import jakarta.el.ValueExpression;
 
 public class NullReturningGetExpressionStringValueExpression extends ValueExpression implements Serializable {
         private static final long serialVersionUID = 1L;

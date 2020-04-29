@@ -45,7 +45,7 @@ public class ApplicationTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link Application#addELResolver(javax.el.ELResolver)}.
+     * Test method for {@link Application#addELResolver(jakarta.el.ELResolver)}.
      */
 /*
     @Test(expected=UnsupportedOperationException.class)
@@ -77,7 +77,7 @@ public class ApplicationTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link Application#createComponent(javax.el.ValueExpression, FacesContext, java.lang.String)}.
+     * {@link Application#createComponent(jakarta.el.ValueExpression, FacesContext, java.lang.String)}.
      */
 /*
     @Test(expected=UnsupportedOperationException.class)
@@ -97,7 +97,7 @@ public class ApplicationTest extends AbstractJsfTestCase
     }*/
 
     /**
-     * Test method for {@link Application#addELContextListener(javax.el.ELContextListener)}.
+     * Test method for {@link Application#addELContextListener(jakarta.el.ELContextListener)}.
      */
 /*
     @Test(expected=UnsupportedOperationException.class)
@@ -107,7 +107,7 @@ public class ApplicationTest extends AbstractJsfTestCase
     }*/
 
     /**
-     * Test method for {@link Application#removeELContextListener(javax.el.ELContextListener)}.
+     * Test method for {@link Application#removeELContextListener(jakarta.el.ELContextListener)}.
      */
 /*
     @Test(expected=UnsupportedOperationException.class)

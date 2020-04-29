@@ -21,8 +21,8 @@ package jakarta.faces.event;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-import javax.el.MethodExpression;
-import javax.el.MethodNotFoundException;
+import jakarta.el.MethodExpression;
+import jakarta.el.MethodNotFoundException;
 import jakarta.faces.component.UICommand;
 
 import org.apache.myfaces.test.base.AbstractJsfTestCase;

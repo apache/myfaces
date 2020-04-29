@@ -24,8 +24,8 @@ import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.MethodBinding;
 import jakarta.faces.el.MethodNotFoundException;
 
-import javax.el.ELException;
-import javax.el.MethodExpression;
+import jakarta.el.ELException;
+import jakarta.el.MethodExpression;
 
 /**
  * Converts a MethodExpression to a MethodBinding. See JSF 1.2 spec section 5.8.4
@@ -67,7 +67,7 @@ class _MethodExpressionToMethodBinding extends MethodBinding implements StateHol
         {
             return methodExpression.getMethodInfo(facesContext.getELContext()).getReturnType();
         }
-        catch (javax.el.MethodNotFoundException e)
+        catch (jakarta.el.MethodNotFoundException e)
         {
             throw new MethodNotFoundException(e);
         }
@@ -86,7 +86,7 @@ class _MethodExpressionToMethodBinding extends MethodBinding implements StateHol
         {
             return methodExpression.invoke(facesContext.getELContext(), params);
         }
-        catch (javax.el.MethodNotFoundException e)
+        catch (jakarta.el.MethodNotFoundException e)
         {
             throw new MethodNotFoundException(e);
         }

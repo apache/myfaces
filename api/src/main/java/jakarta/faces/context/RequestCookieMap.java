@@ -23,7 +23,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
-import javax.inject.Qualifier;
+import jakarta.inject.Qualifier;
 
 /**
  * NOTE: This class was not supposed to be here, and instead it should be on jakarta.faces.annotation package in

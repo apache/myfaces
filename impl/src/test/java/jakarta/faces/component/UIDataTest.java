@@ -74,7 +74,7 @@ public class UIDataTest extends AbstractJsfTestCase
 
     /**
      * Test method for
-     * {@link UIData#setValueExpression(java.lang.String, javax.el.ValueExpression)}.
+     * {@link UIData#setValueExpression(java.lang.String, jakarta.el.ValueExpression)}.
      */
     public void testValueExpression()
     {

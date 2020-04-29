@@ -21,7 +21,7 @@ package org.apache.myfaces.config.element;
 import java.io.Serializable;
 import java.util.Collection;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 
 /**

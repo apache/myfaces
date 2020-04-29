@@ -19,7 +19,7 @@
 package org.apache.myfaces.el.unified.resolver.implicitobject;
 
 import java.beans.FeatureDescriptor;
-import javax.el.ELContext;
+import jakarta.el.ELContext;
 import jakarta.faces.component.UIViewRoot;
 
 /**

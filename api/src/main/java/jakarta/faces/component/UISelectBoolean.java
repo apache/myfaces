@@ -18,7 +18,7 @@
  */
 package jakarta.faces.component;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.el.ValueBinding;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;

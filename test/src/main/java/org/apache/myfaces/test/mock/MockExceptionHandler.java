@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.test.mock;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 import jakarta.faces.FacesException;
 import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.event.AbortProcessingException;

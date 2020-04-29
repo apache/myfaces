@@ -41,16 +41,16 @@ public abstract class FlowBuilder
 
     public abstract FlowCallBuilder flowCallNode(String flowCallNodeId);
 
-    public abstract FlowBuilder initializer(javax.el.MethodExpression methodExpression);
+    public abstract FlowBuilder initializer(jakarta.el.MethodExpression methodExpression);
 
     public abstract FlowBuilder initializer(String methodExpression);
 
-    public abstract FlowBuilder finalizer(javax.el.MethodExpression methodExpression);
+    public abstract FlowBuilder finalizer(jakarta.el.MethodExpression methodExpression);
 
     public abstract FlowBuilder finalizer(String methodExpression);
 
     public abstract FlowBuilder inboundParameter(String name,
-        javax.el.ValueExpression value);
+        jakarta.el.ValueExpression value);
 
     public abstract FlowBuilder inboundParameter(String name,
         String value);

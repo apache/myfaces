@@ -19,7 +19,7 @@
 package org.apache.myfaces.webapp;
 
 import jakarta.faces.FacesException;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.config.MyfacesConfig;

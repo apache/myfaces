@@ -24,9 +24,9 @@ import static org.easymock.EasyMock.same;
 
 import java.util.Date;
 
-import javax.el.ELException;
-import javax.el.MethodInfo;
-import javax.el.MethodNotFoundException;
+import jakarta.el.ELException;
+import jakarta.el.MethodInfo;
+import jakarta.el.MethodNotFoundException;
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.MethodBinding;
@@ -110,7 +110,7 @@ public class _MethodBindingToMethodExpressionTest extends TestCase
     }
 
     /**
-     * Test method for {@link _MethodBindingToMethodExpression#getMethodInfo(javax.el.ELContext)}.
+     * Test method for {@link _MethodBindingToMethodExpression#getMethodInfo(jakarta.el.ELContext)}.
      */
     public void testGetMethodInfoELContext()
     {
@@ -148,7 +148,7 @@ public class _MethodBindingToMethodExpressionTest extends TestCase
 
     /**
      * Test method for
-     * {@link _MethodBindingToMethodExpression#invoke(javax.el.ELContext, java.lang.Object[])}.
+     * {@link _MethodBindingToMethodExpression#invoke(jakarta.el.ELContext, java.lang.Object[])}.
      */
     public void testInvoke()
     {

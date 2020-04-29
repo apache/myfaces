@@ -23,9 +23,9 @@ import jakarta.faces.FactoryFinder;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.ExternalContextFactory;
 import jakarta.faces.context.FlashFactory;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 import org.apache.myfaces.context.servlet.ServletExternalContextImpl;
 

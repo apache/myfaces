@@ -20,10 +20,10 @@
 package org.apache.myfaces.test.mock;
 
 import java.util.Enumeration;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSessionAttributeListener;
-import javax.servlet.http.HttpSessionContext;
-import javax.servlet.http.HttpSessionEvent;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpSessionAttributeListener;
+import jakarta.servlet.http.HttpSessionContext;
+import jakarta.servlet.http.HttpSessionEvent;
 
 /**
  * Proxy used to trigger session creation when it is accessed

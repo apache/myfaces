@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.pool;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UICommand;

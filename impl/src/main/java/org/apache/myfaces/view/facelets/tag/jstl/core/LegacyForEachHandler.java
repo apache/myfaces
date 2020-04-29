@@ -25,8 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.el.ELException;
-import javax.el.ValueExpression;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -121,7 +121,7 @@ public final class LegacyForEachHandler extends TagHandler implements ComponentC
     /**
      * Collection of items to iterate over.
      */
-    //@JSFFaceletAttribute(className="javax.el.ValueExpression")
+    //@JSFFaceletAttribute(className="jakarta.el.ValueExpression")
     private final TagAttribute items;
 
     /**

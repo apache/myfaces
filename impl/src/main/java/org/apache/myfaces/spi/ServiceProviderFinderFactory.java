@@ -20,7 +20,7 @@ package org.apache.myfaces.spi;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.ClassUtils;

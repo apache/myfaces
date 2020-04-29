@@ -21,7 +21,7 @@ package org.apache.myfaces.test.mock;
 import java.util.Enumeration;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * ServletContext init parameters as Map.

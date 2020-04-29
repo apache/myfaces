@@ -39,10 +39,10 @@ public final class ResolverForJSPInitializer implements PhaseListener
 {
     private final ELResolverBuilder _resolverBuilder;
     private volatile boolean initialized;
-    private final javax.el.CompositeELResolver _resolverForJSP;
+    private final jakarta.el.CompositeELResolver _resolverForJSP;
 
     public ResolverForJSPInitializer(final ELResolverBuilder resolverBuilder,
-                                     final javax.el.CompositeELResolver resolverForJSP)
+                                     final jakarta.el.CompositeELResolver resolverForJSP)
     {
         _resolverBuilder = resolverBuilder;
         _resolverForJSP = resolverForJSP;

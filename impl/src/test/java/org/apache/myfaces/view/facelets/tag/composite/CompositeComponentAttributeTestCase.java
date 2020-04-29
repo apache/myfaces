@@ -25,8 +25,8 @@ import java.beans.PropertyDescriptor;
 import java.io.StringWriter;
 import java.util.Map;
 
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;

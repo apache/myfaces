@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;
@@ -100,35 +100,35 @@ public class AjaxHandler extends TagHandler implements
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "disabled", className = "javax.el.ValueExpression",
+    @JSFFaceletAttribute(name = "disabled", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.Boolean")
     private final TagAttribute _disabled;
 
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "event", className = "javax.el.ValueExpression",
+    @JSFFaceletAttribute(name = "event", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.String")
     private final TagAttribute _event;
 
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "execute", className = "javax.el.ValueExpression",
+    @JSFFaceletAttribute(name = "execute", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.Object")
     private final TagAttribute _execute;
 
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "immediate", className = "javax.el.ValueExpression",
+    @JSFFaceletAttribute(name = "immediate", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.Boolean")
     private final TagAttribute _immediate;
 
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "listener", className = "javax.el.MethodExpression",
+    @JSFFaceletAttribute(name = "listener", className = "jakarta.el.MethodExpression",
             deferredMethodSignature = "public void m(jakarta.faces.event.AjaxBehaviorEvent evt) "
                                       + "throws jakarta.faces.event.AbortProcessingException")
     private final TagAttribute _listener;
@@ -136,31 +136,31 @@ public class AjaxHandler extends TagHandler implements
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "onevent", className = "javax.el.ValueExpression",
+    @JSFFaceletAttribute(name = "onevent", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.String")
     private final TagAttribute _onevent;
 
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "onerror", className = "javax.el.ValueExpression",
+    @JSFFaceletAttribute(name = "onerror", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.String")
     private final TagAttribute _onerror;
 
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "render", className = "javax.el.ValueExpression",
+    @JSFFaceletAttribute(name = "render", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.Object")
     private final TagAttribute _render;
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "delay", className = "javax.el.ValueExpression",
+    @JSFFaceletAttribute(name = "delay", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.String")
     private final TagAttribute _delay;
     
-    @JSFFaceletAttribute(name = "resetValues", className = "javax.el.ValueExpression",
+    @JSFFaceletAttribute(name = "resetValues", className = "jakarta.el.ValueExpression",
             deferredValueType = "java.lang.Boolean")
     private final TagAttribute _resetValues;
     

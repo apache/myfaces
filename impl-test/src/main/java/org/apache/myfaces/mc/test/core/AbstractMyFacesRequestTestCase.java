@@ -25,7 +25,7 @@ import java.io.IOException;
 import jakarta.faces.application.Application;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import javax.servlet.ServletRequestEvent;
+import jakarta.servlet.ServletRequestEvent;
 
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.apache.myfaces.test.mock.MockHttpServletResponse;

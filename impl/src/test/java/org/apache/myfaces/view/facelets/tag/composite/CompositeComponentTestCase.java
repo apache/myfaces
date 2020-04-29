@@ -21,8 +21,8 @@ package org.apache.myfaces.view.facelets.tag.composite;
 
 import java.io.StringWriter;
 
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.Resource;
 import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;

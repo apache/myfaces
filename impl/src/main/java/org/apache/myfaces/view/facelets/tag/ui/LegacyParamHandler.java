@@ -20,8 +20,8 @@
 package org.apache.myfaces.view.facelets.tag.ui;
 
 import java.io.IOException;
-import javax.el.ELException;
-import javax.el.ValueExpression;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -48,7 +48,7 @@ public class LegacyParamHandler extends TagHandler
      * The name of the variable to pass to the included Facelet.
      */
     //@JSFFaceletAttribute(
-    //        className="javax.el.ValueExpression",
+    //        className="jakarta.el.ValueExpression",
     //        deferredValueType="java.lang.String",
     //        required=true)
     private final TagAttribute name;
@@ -57,7 +57,7 @@ public class LegacyParamHandler extends TagHandler
      * The literal or EL expression value to assign to the named variable.
      */
     //@JSFFaceletAttribute(
-    //        className="javax.el.ValueExpression",
+    //        className="jakarta.el.ValueExpression",
     //        deferredValueType="java.lang.String",
     //        required=true)
     private final TagAttribute value;

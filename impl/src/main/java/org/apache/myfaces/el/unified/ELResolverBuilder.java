@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.el.unified;
 
-import javax.el.CompositeELResolver;
+import jakarta.el.CompositeELResolver;
 import jakarta.faces.context.FacesContext;
 
 /**

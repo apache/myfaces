@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import org.apache.myfaces.view.facelets.PageContext;
 

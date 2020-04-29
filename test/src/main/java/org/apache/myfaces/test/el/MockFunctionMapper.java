@@ -22,7 +22,7 @@ package org.apache.myfaces.test.el;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import javax.el.FunctionMapper;
+import jakarta.el.FunctionMapper;
 
 /**
  * <p>Mock implementation of <code>FunctionMapper</code>.</p>

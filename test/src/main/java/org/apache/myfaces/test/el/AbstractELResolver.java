@@ -20,7 +20,7 @@
 package org.apache.myfaces.test.el;
 
 import java.beans.FeatureDescriptor;
-import javax.el.ELResolver;
+import jakarta.el.ELResolver;
 
 /**
  * <p>Convenience base class for EL resolvers.</p>

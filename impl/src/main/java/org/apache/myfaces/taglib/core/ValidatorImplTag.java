@@ -18,13 +18,13 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.Application;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.webapp.ValidatorELTag;
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
@@ -61,7 +61,7 @@ public class ValidatorImplTag extends ValidatorELTag
     /**
      * The registered ID of the desired Validator.
      */
-    @JSFJspAttribute(className="javax.el.ValueExpression",
+    @JSFJspAttribute(className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     public void setValidatorId(ValueExpression validatorId)
     {
@@ -71,7 +71,7 @@ public class ValidatorImplTag extends ValidatorELTag
     /**
      * A ValueExpression that evaluates to an implementation of the jakarta.faces.validator.Validator interface.
      */
-    @JSFJspAttribute(className="javax.el.ValueExpression",
+    @JSFJspAttribute(className="jakarta.el.ValueExpression",
             deferredValueType="jakarta.faces.validator.Validator")
     public void setBinding(ValueExpression binding)
     {
@@ -98,7 +98,7 @@ public class ValidatorImplTag extends ValidatorELTag
     }
 
     @Override
-    protected Validator createValidator() throws javax.servlet.jsp.JspException
+    protected Validator createValidator() throws jakarta.servlet.jsp.JspException
     {
 
         if (_validatorIdString != null)
@@ -113,7 +113,7 @@ public class ValidatorImplTag extends ValidatorELTag
         return new DelegateValidator(_validatorId, _binding, _validatorIdString);
     }
 
-    protected Validator createClassicValidator() throws javax.servlet.jsp.JspException
+    protected Validator createClassicValidator() throws jakarta.servlet.jsp.JspException
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ELContext elContext = facesContext.getELContext();

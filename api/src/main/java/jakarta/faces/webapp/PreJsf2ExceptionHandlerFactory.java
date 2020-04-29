@@ -31,7 +31,7 @@ import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ELException;
+import jakarta.el.ELException;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UpdateModelException;

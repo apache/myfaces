@@ -68,7 +68,7 @@ public class InsertFacetHandler extends TagHandler
      * The name that identify the current facet.
      */
     @JSFFaceletAttribute(name="name",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String",
             required=true)
     protected final TagAttribute _name;
@@ -78,7 +78,7 @@ public class InsertFacetHandler extends TagHandler
      * this composite component.
      */
     @JSFFaceletAttribute(name="required",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="boolean")
     protected final TagAttribute _required;
     

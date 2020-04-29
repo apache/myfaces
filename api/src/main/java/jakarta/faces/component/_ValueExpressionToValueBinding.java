@@ -24,8 +24,8 @@ import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.PropertyNotFoundException;
 import jakarta.faces.el.ValueBinding;
 
-import javax.el.ELException;
-import javax.el.ValueExpression;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 
 /**
  * Converter for legacy ValueBinding objects. See JSF 1.2 section 5.8.3
@@ -134,7 +134,7 @@ class _ValueExpressionToValueBinding extends ValueBinding implements StateHolder
         {
             getNotNullValueExpression().setValue(facesContext.getELContext(), value);
         }
-        catch (javax.el.PropertyNotFoundException e)
+        catch (jakarta.el.PropertyNotFoundException e)
         {
             throw new PropertyNotFoundException(e);
         }
@@ -152,7 +152,7 @@ class _ValueExpressionToValueBinding extends ValueBinding implements StateHolder
         {
             return getNotNullValueExpression().isReadOnly(facesContext.getELContext());
         }
-        catch (javax.el.PropertyNotFoundException e)
+        catch (jakarta.el.PropertyNotFoundException e)
         {
             throw new PropertyNotFoundException(e);
         }
@@ -170,7 +170,7 @@ class _ValueExpressionToValueBinding extends ValueBinding implements StateHolder
         {
             return getNotNullValueExpression().getValue(facesContext.getELContext());
         }
-        catch (javax.el.PropertyNotFoundException e)
+        catch (jakarta.el.PropertyNotFoundException e)
         {
             throw new PropertyNotFoundException(e);
         }
@@ -187,7 +187,7 @@ class _ValueExpressionToValueBinding extends ValueBinding implements StateHolder
         {
             return getNotNullValueExpression().getType(facesContext.getELContext());
         }
-        catch (javax.el.PropertyNotFoundException e)
+        catch (jakarta.el.PropertyNotFoundException e)
         {
             throw new PropertyNotFoundException(e);
         }

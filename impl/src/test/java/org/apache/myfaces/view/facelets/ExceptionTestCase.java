@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets;
 import java.io.IOException;
 import java.util.Iterator;
 
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.ContextCallback;

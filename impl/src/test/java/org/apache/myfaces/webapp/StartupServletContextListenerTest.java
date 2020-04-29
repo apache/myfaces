@@ -24,8 +24,8 @@ import java.util.Locale;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
 
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.easymock.EasyMock;

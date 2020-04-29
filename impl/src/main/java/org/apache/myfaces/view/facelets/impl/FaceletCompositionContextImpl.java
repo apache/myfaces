@@ -77,7 +77,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
      * the location, expression string and tag name can be retrieved by
      * the ExceptionHandler implementation and used to output meaningful information about itself.
      * 
-     * <p>Note in some cases this will wrap the original javax.el.ELException,
+     * <p>Note in some cases this will wrap the original jakarta.el.ELException,
      * so the information will not be on the stack trace unless ExceptionHandler
      * retrieve checking if the exception implements ContextAware interface and calling getWrapped() method.
      * </p>

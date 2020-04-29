@@ -21,9 +21,9 @@ package org.apache.myfaces.el.unified;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.el.CompositeELResolver;
-import javax.el.ELResolver;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELResolver;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
@@ -63,7 +63,8 @@ public class ResolverBuilderForJSP extends ResolverBuilderBase implements ELReso
             //Add CDI ELResolver instead.
             BeanManager beanManager = CDIUtils.getBeanManager(
                     FacesContext.getCurrentInstance().getExternalContext());
-            list.add(beanManager.getELResolver());
+            // TODO JakartaFaces
+            //list.add(beanManager.getELResolver());
         }
         else
         {        

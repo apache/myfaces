@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.io.IOException;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.ValueHolder;
 import jakarta.faces.context.FacesContext;

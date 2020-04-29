@@ -21,8 +21,8 @@ package jakarta.faces.component;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.myfaces.test.mock.MockFacesContext;

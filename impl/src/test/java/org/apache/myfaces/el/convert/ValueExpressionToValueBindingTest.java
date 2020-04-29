@@ -23,10 +23,10 @@ import static org.easymock.EasyMock.*;
 
 import java.util.Date;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.PropertyNotFoundException;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
 
@@ -275,7 +275,7 @@ public class ValueExpressionToValueBindingTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#ValueExpressionToValueBinding(javax.el.ValueExpression)}.
+     * {@link org.apache.myfaces.el.convert.ValueExpressionToValueBinding#ValueExpressionToValueBinding(jakarta.el.ValueExpression)}.
      */
     public void testValueExpressionToValueBindingValueExpression()
     {

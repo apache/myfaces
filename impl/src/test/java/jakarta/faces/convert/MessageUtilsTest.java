@@ -18,7 +18,7 @@
  */
 package jakarta.faces.convert;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.html.HtmlInputText;
 
 import org.apache.myfaces.test.base.AbstractJsfTestCase;

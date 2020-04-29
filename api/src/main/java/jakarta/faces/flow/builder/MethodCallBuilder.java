@@ -29,7 +29,7 @@ import java.util.List;
 public abstract class MethodCallBuilder implements NodeBuilder
 {
 
-    public abstract MethodCallBuilder expression(javax.el.MethodExpression me);
+    public abstract MethodCallBuilder expression(jakarta.el.MethodExpression me);
 
     public abstract MethodCallBuilder expression(String methodExpression);
 
@@ -40,7 +40,7 @@ public abstract class MethodCallBuilder implements NodeBuilder
 
     public abstract MethodCallBuilder defaultOutcome(String outcome);
 
-    public abstract MethodCallBuilder defaultOutcome(javax.el.ValueExpression outcome);
+    public abstract MethodCallBuilder defaultOutcome(jakarta.el.ValueExpression outcome);
 
     public abstract MethodCallBuilder markAsStartNode();
 }

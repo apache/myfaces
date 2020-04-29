@@ -33,11 +33,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import javax.el.ELContextListener;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
+import jakarta.el.ELContextListener;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.ExternalContext;
@@ -516,10 +516,10 @@ public abstract class Application
      * 
      * <p>
      * Call <code>{@link #getExpressionFactory()}</code> then call
-     * <code>ExpressionFactory.createValueExpression(javax.el.ELContext, java.lang.String, java.lang.Class)</code>
+     * <code>ExpressionFactory.createValueExpression(jakarta.el.ELContext, java.lang.String, java.lang.Class)</code>
      * passing the argument <code>expression</code> and <code>expectedType</code>. Call
      * <code>{@link FacesContext#getELContext()}</code> and pass it to
-     * <code>ValueExpression.getValue(javax.el.ELContext)</code>, returning the result.
+     * <code>ValueExpression.getValue(jakarta.el.ELContext)</code>, returning the result.
      * </p>
      * 
      * <p>
@@ -527,7 +527,7 @@ public abstract class Application
      * the <code>Application</code> continue to work.
      * <p>
      * 
-     * @throws javax.el.ELException
+     * @throws jakarta.el.ELException
      */
     public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType)
                     throws ELException
@@ -651,14 +651,14 @@ public abstract class Application
 
     /**
      * <p>
-     * If no calls have been made to <code>addELContextListener(javax.el.ELContextListener)</code>, this method must
+     * If no calls have been made to <code>addELContextListener(jakarta.el.ELContextListener)</code>, this method must
      * return an empty array
      * <p>
      * .
      * 
      * <p>
      * Otherwise, return an array representing the list of listeners added by calls to
-     * <code>addELContextListener(javax.el.ELContextListener)</code>.
+     * <code>addELContextListener(jakarta.el.ELContextListener)</code>.
      * <p>
      * 
      * <p>
@@ -693,7 +693,7 @@ public abstract class Application
      * <code>PropertyResolver ChainWrapper</code> in Chapter 5 in the spec document.</li>
      * 
      * <li>Any <code>ELResolver</code> instances added by calls to
-     * <code>{@link #addELResolver(javax.el.ELResolver)}</code>.</li>
+     * <code>{@link #addELResolver(jakarta.el.ELResolver)}</code>.</li>
      * 
      * <li>The default implementation throws <code>UnsupportedOperationException</code> and is provided for the sole
      * purpose of not breaking existing applications that extend <code>{@link Application}</code>.</li>
@@ -1077,7 +1077,7 @@ public abstract class Application
      * The recommended way to affect the execution of the EL is to provide an &lt;el-resolver&gt; element at the right 
      * place in the application configuration resources which will be considered in the normal course of expression
      * evaluation. This method now will cause the argument resolver to be wrapped inside an implementation of ELResolver
-     * and exposed to the EL resolution system as if the user had called addELResolver(javax.el.ELResolver).
+     * and exposed to the EL resolution system as if the user had called addELResolver(jakarta.el.ELResolver).
      * 
      * @deprecated
      */
@@ -1129,7 +1129,7 @@ public abstract class Application
      * The recommended way to affect the execution of the EL is to provide an &lt;el-resolver&gt; element at the right 
      * place in the application configuration resources which will be considered in the normal course of expression
      * evaluation. This method now will cause the argument resolver to be wrapped inside an implementation of ELResolver
-     * and exposed to the EL resolution system as if the user had called addELResolver(javax.el.ELResolver).
+     * and exposed to the EL resolution system as if the user had called addELResolver(jakarta.el.ELResolver).
      * 
      * @deprecated
      */

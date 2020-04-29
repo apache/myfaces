@@ -21,7 +21,7 @@ package jakarta.faces.component;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;

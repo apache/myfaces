@@ -21,10 +21,10 @@ package jakarta.faces.webapp;
 
 import java.util.logging.Logger;
 
-import javax.el.ELContext;
+import jakarta.el.ELContext;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
-import javax.servlet.jsp.tagext.JspTag;
+import jakarta.servlet.jsp.tagext.JspTag;
 
 /**
  * @since 1.2

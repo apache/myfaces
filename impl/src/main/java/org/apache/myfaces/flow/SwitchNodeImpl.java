@@ -21,7 +21,7 @@ package org.apache.myfaces.flow;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.SwitchCase;
 import jakarta.faces.flow.SwitchNode;

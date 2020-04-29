@@ -23,10 +23,10 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.view.Location;
@@ -449,7 +449,7 @@ public class ELText
      * @param in
      *            String to parse
      * @return ELText instance that knows if the String was literal or not
-     * @throws javax.el.ELException
+     * @throws jakarta.el.ELException
      */
     public static ELText parse(String in) throws ELException
     {
@@ -480,7 +480,7 @@ public class ELText
      * @param in
      *            String to parse
      * @return ELText that can be re-applied later
-     * @throws javax.el.ELException
+     * @throws jakarta.el.ELException
      */
     public static ELText parse(ExpressionFactory fact, ELContext ctx, String in) throws ELException
     {

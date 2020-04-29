@@ -21,7 +21,7 @@ package org.apache.myfaces.shared.util;
 import java.text.MessageFormat;
 import java.util.Locale;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.ValueBinding;

@@ -41,7 +41,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ELResolver;
+import jakarta.el.ELResolver;
 import jakarta.faces.FacesException;
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.FactoryFinder;

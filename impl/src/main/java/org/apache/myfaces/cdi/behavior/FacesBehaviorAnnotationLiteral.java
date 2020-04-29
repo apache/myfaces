@@ -19,7 +19,7 @@
 package org.apache.myfaces.cdi.behavior;
 
 import java.util.Objects;
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.faces.component.behavior.FacesBehavior;
 
 /**

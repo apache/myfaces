@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.el.convert;
 
-import javax.el.ELException;
-import javax.el.MethodExpression;
+import jakarta.el.ELException;
+import jakarta.el.MethodExpression;
 import jakarta.faces.component.StateHolder;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
@@ -68,7 +68,7 @@ public final class MethodExpressionToMethodBinding extends MethodBinding impleme
         {
             return methodExpression.getMethodInfo(facesContext.getELContext()).getReturnType();
         }
-        catch (javax.el.MethodNotFoundException e)
+        catch (jakarta.el.MethodNotFoundException e)
         {
             throw new MethodNotFoundException(e);
         }
@@ -83,7 +83,7 @@ public final class MethodExpressionToMethodBinding extends MethodBinding impleme
         {
             return methodExpression.invoke(facesContext.getELContext(), params);
         }
-        catch (javax.el.MethodNotFoundException e)
+        catch (jakarta.el.MethodNotFoundException e)
         {
             throw new MethodNotFoundException(e);
         }

@@ -23,8 +23,8 @@ import static org.easymock.EasyMock.*;
 
 import java.util.Date;
 
-import javax.el.ELContext;
-import javax.el.ELException;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.EvaluationException;
 import jakarta.faces.el.ValueBinding;
@@ -129,7 +129,7 @@ public class ValueBindingToValueExpressionTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#isReadOnly(javax.el.ELContext)}.
+     * {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#isReadOnly(jakarta.el.ELContext)}.
      */
     public void testIsReadOnlyELContext()
     {
@@ -147,7 +147,7 @@ public class ValueBindingToValueExpressionTest extends TestCase
     }
 
     /**
-     * Test method for {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#getValue(javax.el.ELContext)}.
+     * Test method for {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#getValue(jakarta.el.ELContext)}.
      */
     public void testGetValueELContext()
     {
@@ -160,7 +160,7 @@ public class ValueBindingToValueExpressionTest extends TestCase
     }
 
     /**
-     * Test method for {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#getType(javax.el.ELContext)}.
+     * Test method for {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#getType(jakarta.el.ELContext)}.
      */
     public void testGetTypeELContext()
     {
@@ -173,7 +173,7 @@ public class ValueBindingToValueExpressionTest extends TestCase
     }
 
     /**
-     * Test method for {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#getType(javax.el.ELContext)}.
+     * Test method for {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#getType(jakarta.el.ELContext)}.
      */
     public void testGetTypeELContextExceptions() throws Exception
     {
@@ -199,13 +199,13 @@ public class ValueBindingToValueExpressionTest extends TestCase
         }
         assertException(ELException.class, new GetTypeExceptionMockRunner(new EvaluationException()));
         mockControl.reset();
-        assertException(javax.el.PropertyNotFoundException.class, new GetTypeExceptionMockRunner(
+        assertException(jakarta.el.PropertyNotFoundException.class, new GetTypeExceptionMockRunner(
                 new PropertyNotFoundException()));
     }
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#setValue(javax.el.ELContext, java.lang.Object)}.
+     * {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#setValue(jakarta.el.ELContext, java.lang.Object)}.
      */
     public void testSetValueELContextObject()
     {
@@ -219,7 +219,7 @@ public class ValueBindingToValueExpressionTest extends TestCase
 
     /**
      * Test method for
-     * {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#setValue(javax.el.ELContext, java.lang.Object)}.
+     * {@link org.apache.myfaces.el.convert.ValueBindingToValueExpression#setValue(jakarta.el.ELContext, java.lang.Object)}.
      */
     public void testSetValueELContextObjectExceptions() throws Exception
     {
@@ -247,7 +247,7 @@ public class ValueBindingToValueExpressionTest extends TestCase
         }
         assertException(ELException.class, new SetValueExceptionMockRunner(new EvaluationException()));
         mockControl.reset();
-        assertException(javax.el.PropertyNotFoundException.class, new SetValueExceptionMockRunner(
+        assertException(jakarta.el.PropertyNotFoundException.class, new SetValueExceptionMockRunner(
                 new PropertyNotFoundException()));
     }
 

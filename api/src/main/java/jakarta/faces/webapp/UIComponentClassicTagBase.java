@@ -37,14 +37,14 @@ import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.jstl.core.LoopTag;
-import javax.servlet.jsp.tagext.BodyContent;
-import javax.servlet.jsp.tagext.BodyTag;
-import javax.servlet.jsp.tagext.JspIdConsumer;
-import javax.servlet.jsp.tagext.Tag;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.jstl.core.LoopTag;
+import jakarta.servlet.jsp.tagext.BodyContent;
+import jakarta.servlet.jsp.tagext.BodyTag;
+import jakarta.servlet.jsp.tagext.JspIdConsumer;
+import jakarta.servlet.jsp.tagext.Tag;
 
 /**
  * @since 1.2
@@ -894,7 +894,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
 
     //private boolean isIncludedOrForwarded() {
     //    return getFacesContext().getExternalContext().getRequestMap().
-    //            containsKey("javax.servlet.include.request_uri");
+    //            containsKey("jakarta.servlet.include.request_uri");
     //}
 
     /** Generate diagnostic output. */

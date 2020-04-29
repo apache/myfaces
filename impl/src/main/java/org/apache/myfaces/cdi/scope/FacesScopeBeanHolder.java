@@ -20,7 +20,7 @@ package org.apache.myfaces.cdi.scope;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
@@ -111,7 +111,7 @@ public class FacesScopeBeanHolder
      * a new empty one.
      * This method can be used to properly destroy the WindowBeanHolder beans
      * without having to sync heavily. Any
-     * {@link javax.enterprise.inject.spi.Bean#destroy(Object, javax.enterprise.context.spi.CreationalContext)}
+     * {@link jakarta.enterprise.inject.spi.Bean#destroy(Object, jakarta.enterprise.context.spi.CreationalContext)}
      * should be performed on the returned old storage map.
      * @return the old storageMap.
      */

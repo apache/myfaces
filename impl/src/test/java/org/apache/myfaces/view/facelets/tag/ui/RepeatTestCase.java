@@ -24,9 +24,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.ContextCallback;
 import jakarta.faces.component.UIComponent;

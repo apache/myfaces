@@ -70,13 +70,13 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
     };
 
     @JSFFaceletAttribute(name="name",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String",
             required=true)
     private final TagAttribute _name;
     
     @JSFFaceletAttribute(name="targets",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     private final TagAttribute _targets;
     
@@ -86,7 +86,7 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
      * instead null.
      */
     @JSFFaceletAttribute(name="default",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     private final TagAttribute _default;
     
@@ -94,7 +94,7 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
      * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="displayName",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     private final TagAttribute _displayName;
 
@@ -105,7 +105,7 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
      * not ProjectStage.Production when a composite component is created.</p>
      */
     @JSFFaceletAttribute(name="required",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="boolean")
     private final TagAttribute _required;
 
@@ -113,7 +113,7 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
      * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="preferred",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="boolean")
     private final TagAttribute _preferred;
 
@@ -121,7 +121,7 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
      * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="expert",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="boolean")
     private final TagAttribute _expert;
 
@@ -129,17 +129,17 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
      * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="shortDescription",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     private final TagAttribute _shortDescription;
 
     @JSFFaceletAttribute(name="method-signature",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     private final TagAttribute _methodSignature;
 
     @JSFFaceletAttribute(name="type",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     private final TagAttribute _type;
     
@@ -149,12 +149,12 @@ public class AttributeHandler extends TagHandler implements InterfaceDescriptorC
      * Only available if ProjectStage is Development.
      */
     @JSFFaceletAttribute(name="hidden",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="boolean")
     protected final TagAttribute _hidden;
     
     @JSFFaceletAttribute(name="targetAttributeName",
-            className="javax.el.ValueExpression",
+            className="jakarta.el.ValueExpression",
             deferredValueType="java.lang.String")
     private final TagAttribute _targetAttributeName;
     

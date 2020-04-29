@@ -37,7 +37,7 @@ public interface FaceletHandler
      * @throws IOException
      * @throws jakarta.faces.FacesException
      * @throws FaceletException
-     * @throws javax.el.ELException
+     * @throws jakarta.el.ELException
      */
     public void apply(FaceletContext ctx, UIComponent parent) throws IOException;
 }

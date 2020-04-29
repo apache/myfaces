@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.flow.builder;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.flow.builder.ReturnBuilder;
 import org.apache.myfaces.flow.FlowImpl;
 import org.apache.myfaces.flow.ReturnNodeImpl;

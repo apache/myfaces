@@ -22,7 +22,7 @@ package org.apache.myfaces.shared.config;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.faces.context.ExternalContext;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.ClassUtils;

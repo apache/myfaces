@@ -26,7 +26,7 @@ import jakarta.faces.el.ValueBinding;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 import java.util.Collection;
 
 /**

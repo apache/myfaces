@@ -21,8 +21,8 @@ package org.apache.myfaces.cdi.converter;
 
 import java.lang.reflect.Type;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.TypeLiteral;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.util.TypeLiteral;
 import jakarta.faces.FacesWrapper;
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;

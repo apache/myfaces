@@ -25,7 +25,7 @@ import jakarta.faces.el.ValueBinding;
 import java.text.MessageFormat;
 import java.util.Locale;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 /** 
  * This class encapsulates a FacesMessage to evaluate the label

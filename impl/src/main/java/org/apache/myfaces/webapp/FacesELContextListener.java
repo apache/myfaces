@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.webapp;
 
-import javax.el.ELContextEvent;
-import javax.el.ELContextListener;
+import jakarta.el.ELContextEvent;
+import jakarta.el.ELContextListener;
 import jakarta.faces.context.FacesContext;
 
 /**

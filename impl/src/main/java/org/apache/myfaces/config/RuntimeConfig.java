@@ -32,8 +32,8 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.component.search.SearchKeywordResolver;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.el.PropertyResolver;

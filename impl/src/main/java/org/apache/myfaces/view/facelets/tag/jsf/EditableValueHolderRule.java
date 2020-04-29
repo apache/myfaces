@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf;
 
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;

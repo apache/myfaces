@@ -35,7 +35,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 /**
  * <p>

@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.FacesException;
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.application.Application;
@@ -57,9 +57,9 @@ import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.faces.webapp.FacesServlet;
 import javax.naming.Context;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.config.ConfigFilesXmlValidationUtils;
 import org.apache.myfaces.config.DefaultFacesConfigurationProvider;

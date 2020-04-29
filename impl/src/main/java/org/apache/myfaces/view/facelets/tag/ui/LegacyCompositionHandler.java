@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.el.ELException;
-import javax.el.VariableMapper;
+import jakarta.el.ELException;
+import jakarta.el.VariableMapper;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.view.facelets.FaceletContext;
@@ -62,7 +62,7 @@ public final class LegacyCompositionHandler extends TagHandler implements Templa
      */
     //@JSFFaceletAttribute(
     //        name="template",
-    //        className="javax.el.ValueExpression",
+    //        className="jakarta.el.ValueExpression",
     //        deferredValueType="java.lang.String")
     protected final TagAttribute _template;
 

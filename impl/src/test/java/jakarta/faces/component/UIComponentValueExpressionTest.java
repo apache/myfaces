@@ -25,9 +25,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.ValueBinding;
@@ -39,7 +39,7 @@ import org.junit.Test;
 
 /**
  * Test for {@link UIComponent#getValueExpression(String)}. and
- * {@link UIComponent#setValueExpression(String, javax.el.ValueExpression)}.
+ * {@link UIComponent#setValueExpression(String, jakarta.el.ValueExpression)}.
  */
 public class UIComponentValueExpressionTest extends UIComponentTestBase
 {

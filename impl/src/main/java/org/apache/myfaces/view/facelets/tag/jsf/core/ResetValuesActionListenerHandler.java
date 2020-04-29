@@ -25,8 +25,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import javax.el.ELException;
-import javax.el.ValueExpression;
+import jakarta.el.ELException;
+import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.component.ActionSource;
 import jakarta.faces.component.UIComponent;
@@ -64,7 +64,7 @@ public class ResetValuesActionListenerHandler extends TagHandler
     /**
      * 
      */
-    @JSFFaceletAttribute(name = "render", className = "javax.el.ValueExpression",
+    @JSFFaceletAttribute(name = "render", className = "jakarta.el.ValueExpression",
                          deferredValueType = "java.lang.Object")
     private final TagAttribute _render;
     

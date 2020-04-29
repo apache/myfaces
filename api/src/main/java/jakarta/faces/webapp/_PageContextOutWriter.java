@@ -18,7 +18,7 @@
  */
 package jakarta.faces.webapp;
 
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.io.Writer;
 

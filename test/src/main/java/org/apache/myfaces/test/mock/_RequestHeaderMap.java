@@ -21,7 +21,7 @@ package org.apache.myfaces.test.mock;
 import java.util.Enumeration;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * HttpServletRequest headers as Map.

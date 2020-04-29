@@ -43,7 +43,7 @@ import org.apache.myfaces.spi.WebConfigProviderFactory;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIViewRoot;
@@ -53,7 +53,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PostConstructApplicationEvent;
 import jakarta.faces.event.PreDestroyApplicationEvent;
 import jakarta.faces.event.SystemEvent;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -64,10 +64,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.faces.application.ViewVisitOption;
 import jakarta.faces.push.PushContext;
-import javax.servlet.ServletRegistration;
-import javax.websocket.DeploymentException;
-import javax.websocket.server.ServerContainer;
-import javax.websocket.server.ServerEndpointConfig;
+import jakarta.servlet.ServletRegistration;
+import jakarta.websocket.DeploymentException;
+import jakarta.websocket.server.ServerContainer;
+import jakarta.websocket.server.ServerEndpointConfig;
 import org.apache.myfaces.push.EndpointImpl;
 import org.apache.myfaces.push.WebsocketConfigurator;
 import org.apache.myfaces.push.WebsocketFacesInit;
@@ -116,7 +116,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     public static final String CDI_BEAN_MANAGER_INSTANCE = "oam.cdi.BEAN_MANAGER_INSTANCE";
     
     private static final String CDI_SERVLET_CONTEXT_BEAN_MANAGER_ATTRIBUTE = 
-        "javax.enterprise.inject.spi.BeanManager";
+        "jakarta.enterprise.inject.spi.BeanManager";
 
     private static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
 
@@ -648,7 +648,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             Class cdiClass = null;
             Method cdiCurrentMethod = null;
             Method cdiGetBeanManagerMethod = null;
-            cdiClass = simpleClassForNameNoException("javax.enterprise.inject.spi.CDI");
+            cdiClass = simpleClassForNameNoException("jakarta.enterprise.inject.spi.CDI");
             if (cdiClass != null)
             {
                 cdiCurrentMethod = cdiClass.getMethod("current");

@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets;
 
 import java.util.Map;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 /**
  * This class is used to encapsulate the information required at page scope.

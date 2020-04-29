@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets.pss.acid;
 
 import java.util.Set;
 import java.util.TreeSet;
-import javax.el.ExpressionFactory;
+import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.component.UICommand;
 import jakarta.faces.component.UIComponent;

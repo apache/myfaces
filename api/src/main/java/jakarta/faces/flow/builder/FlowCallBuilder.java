@@ -29,7 +29,7 @@ public abstract class FlowCallBuilder implements NodeBuilder
         String flowId);
 
     public abstract FlowCallBuilder outboundParameter(String name,
-        javax.el.ValueExpression value);
+        jakarta.el.ValueExpression value);
 
     public abstract FlowCallBuilder outboundParameter(String name,
         String value);

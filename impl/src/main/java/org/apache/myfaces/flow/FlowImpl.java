@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.el.MethodExpression;
+import jakarta.el.MethodExpression;
 import jakarta.faces.application.NavigationCase;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.Flow;

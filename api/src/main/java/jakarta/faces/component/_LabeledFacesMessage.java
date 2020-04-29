@@ -21,7 +21,7 @@ package jakarta.faces.component;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 
-import javax.el.ValueExpression;
+import jakarta.el.ValueExpression;
 
 /**
  * This class encapsulates a FacesMessage to evaluate the label expression on render response, where f:loadBundle is

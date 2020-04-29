@@ -22,9 +22,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.PropertyNotFoundException;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.PropertyNotFoundException;
 
 import org.apache.myfaces.shared.util.ClassUtils;
 
@@ -48,8 +48,8 @@ public class ImportHandlerResolver extends ScopedAttributeResolver
         try
         {
             // These classes will only be available with EL 3+
-            elClass = ClassUtils.classForName("javax.el.ELClass");
-            importHandlerClass = ClassUtils.classForName("javax.el.ImportHandler");
+            elClass = ClassUtils.classForName("jakarta.el.ELClass");
+            importHandlerClass = ClassUtils.classForName("jakarta.el.ImportHandler");
             getImportHandlerMethod = ELContext.class.getMethod("getImportHandler");
             if (elClass != null && importHandlerClass != null) 
             {

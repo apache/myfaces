@@ -22,7 +22,7 @@ import org.apache.myfaces.cdi.util.CDIUtils;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 import org.apache.myfaces.cdi.util.BeanProvider;
 
 /**

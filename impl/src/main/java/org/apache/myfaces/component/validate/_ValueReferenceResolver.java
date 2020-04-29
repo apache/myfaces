@@ -19,9 +19,9 @@
 
 package org.apache.myfaces.component.validate;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
-import javax.el.ValueReference;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
+import jakarta.el.ValueReference;
 import jakarta.faces.el.CompositeComponentExpressionHolder;
 
 final class _ValueReferenceResolver

@@ -39,9 +39,9 @@ public abstract class Flow
 
     public abstract Map<String,Parameter> getInboundParameters();
     
-    public abstract javax.el.MethodExpression getInitializer();
+    public abstract jakarta.el.MethodExpression getInitializer();
     
-    public abstract javax.el.MethodExpression getFinalizer();
+    public abstract jakarta.el.MethodExpression getFinalizer();
     
     public abstract FlowCallNode getFlowCall(Flow targetFlow);
     
