@@ -84,8 +84,24 @@ public final class ExternalSpecifications
         return available;
     });
     
-    private static volatile Boolean cdiAvailable;
-    
+    private static Lazy<Boolean> cdiAvailable = new Lazy<>(() ->
+    {
+        boolean available;
+        try
+        {
+            available = ClassUtils.classForName("javax.enterprise.inject.spi.BeanManager") != null;
+        }
+        catch (Throwable t)
+        {
+            //log.log(Level.FINE, "Error loading class (could be normal)", t);
+            available = false;
+        }
+
+        log.info("MyFaces Core CDI support " + (available ? "enabled" : "disabled"));
+ 
+        return available;
+    });
+
     private static Lazy<Boolean> el3Available = new Lazy<>(() ->
     {
         boolean available;
@@ -133,22 +149,7 @@ public final class ExternalSpecifications
     
     public static boolean isCDIAvailable(ExternalContext externalContext)
     {
-        if (cdiAvailable == null)
-        {
-            try
-            {
-                cdiAvailable = ClassUtils.classForName("javax.enterprise.inject.spi.BeanManager") != null;
-            }
-            catch (Throwable t)
-            {
-                //log.log(Level.FINE, "Error loading class (could be normal)", t);
-                cdiAvailable = false;
-            }
-
-            log.info("MyFaces Core CDI support " + (cdiAvailable ? "enabled" : "disabled"));
-        }
-
-        return cdiAvailable && 
+        return cdiAvailable.get() && 
                 externalContext.getApplicationMap().containsKey(AbstractFacesInitializer.CDI_BEAN_MANAGER_INSTANCE);
     }
     
