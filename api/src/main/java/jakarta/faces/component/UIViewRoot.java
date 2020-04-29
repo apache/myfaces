@@ -82,7 +82,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 {
     public static final String COMPONENT_FAMILY = "jakarta.faces.ViewRoot";
     public static final String COMPONENT_TYPE = "jakarta.faces.ViewRoot";
-    public static final String METADATA_FACET_NAME = "javax_faces_metadata";
+    public static final String METADATA_FACET_NAME = "UIViewRoot_faces_metadata";
     public static final String UNIQUE_ID_PREFIX = "j_id";
     public static final String VIEW_PARAMETERS_KEY = "jakarta.faces.component.VIEW_PARAMETERS_KEY";
     
@@ -166,10 +166,10 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     // an exception, should not have their afterPhase method called
     private transient Map<PhaseId, boolean[]> listenerSuccessMap;
     
-    private static final String JAVAX_FACES_LOCATION_PREFIX = "javax_faces_location_";
-    private static final String JAVAX_FACES_LOCATION_HEAD = "javax_faces_location_head";
-    private static final String JAVAX_FACES_LOCATION_BODY = "javax_faces_location_body";
-    private static final String JAVAX_FACES_LOCATION_FORM = "javax_faces_location_form";
+    private static final String JAKARTA_FACES_LOCATION_PREFIX = "jakarta_faces_location_";
+    private static final String JAKARTA_FACES_LOCATION_HEAD = "jakarta_faces_location_head";
+    private static final String JAKARTA_FACES_LOCATION_BODY = "jakarta_faces_location_body";
+    private static final String JAKARTA_FACES_LOCATION_FORM = "jakarta_faces_location_form";
     
     private static final String SKIP_VIEW_MAP_SAVE_STATE = "oam.viewPool.SKIP_VIEW_MAP_SAVE_STATE";
     
@@ -241,7 +241,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         {
             if (componentResource.getParent() != null &&
                 componentResource.getParent().getId() != null &&
-                componentResource.getParent().getId().equals(JAVAX_FACES_LOCATION_PREFIX + target))
+                componentResource.getParent().getId().equals(JAKARTA_FACES_LOCATION_PREFIX + target))
             {
                 // We can assume safely that the component is in place, because there is no way to 
                 // put a component resource on a component resource container without call addComponentResource
@@ -737,19 +737,19 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             // Set the id of the facet to be target
             if (target.equals("head"))
             {
-                facet.setId(JAVAX_FACES_LOCATION_HEAD);
+                facet.setId(JAKARTA_FACES_LOCATION_HEAD);
             }
             else if (target.equals("body"))
             {
-                facet.setId(JAVAX_FACES_LOCATION_BODY);
+                facet.setId(JAKARTA_FACES_LOCATION_BODY);
             }
             else if (target.equals("form"))
             {
-                facet.setId(JAVAX_FACES_LOCATION_FORM);
+                facet.setId(JAKARTA_FACES_LOCATION_FORM);
             }
             else
             {
-                facet.setId(JAVAX_FACES_LOCATION_PREFIX + target);
+                facet.setId(JAKARTA_FACES_LOCATION_PREFIX + target);
             }
             
             // From jsr-314-open list it was made clear this facet is transient,

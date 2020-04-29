@@ -156,12 +156,12 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
                                            String resourceName, String resourceVersion)
     {
         //handle jsf.js
-        final boolean javaxFacesLib = libraryName != null &&
+        final boolean jakartaFacesLib = libraryName != null &&
                 ResourceHandler.JSF_SCRIPT_LIBRARY_NAME.equals(libraryName);
-        final boolean javaxFaces = javaxFacesLib &&
+        final boolean jakartaFaces = jakartaFacesLib &&
                 ResourceHandler.JSF_SCRIPT_RESOURCE_NAME.equals(resourceName);
 
-        if (javaxFaces)
+        if (jakartaFaces)
         {
             if (_developmentStage)
             {
@@ -195,7 +195,7 @@ public class InternalClassLoaderResourceLoader extends ResourceLoader
                 return null;
             }
         }
-        else if (javaxFacesLib && !_developmentStage && !_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL) &&
+        else if (jakartaFacesLib && !_developmentStage && !_jsfMode.equals(ResourceUtils.JSF_MYFACES_JSFJS_NORMAL) &&
                                    (ResourceUtils.JSF_MYFACES_JSFJS_I18N.equals(resourceName) ||
                                    ResourceUtils.JSF_MYFACES_JSFJS_EXPERIMENTAL.equals(resourceName) ||
                                    ResourceUtils.JSF_MYFACES_JSFJS_LEGACY.equals(resourceName)) )

@@ -49,7 +49,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
  * rendering methods on components; see method "renderView".
  * <p>
  * This class also isolates callers from the underlying request/response system. In particular, this class does not
- * explicitly depend upon the javax.servlet apis. This allows JSF to be used on servers that do not implement the
+ * explicitly depend upon the jakarta.servlet apis. This allows JSF to be used on servers that do not implement the
  * servlet API (for example, plain CGI).
  * <p>
  * Examples:

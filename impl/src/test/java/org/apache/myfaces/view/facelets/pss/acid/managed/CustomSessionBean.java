@@ -16,7 +16,7 @@
 package org.apache.myfaces.view.facelets.pss.acid.managed;
 
 import java.io.Serializable;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.bean.ManagedBean;
 import jakarta.faces.bean.SessionScoped;
 

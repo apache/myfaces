@@ -188,7 +188,7 @@ public final class ErrorPageWriter
      */
     public static final String ERROR_PAGE_BEAN_KEY = "__myFacesErrorPageBean";
 
-    private static final String EXCEPTION_KEY = "javax.servlet.error.exception";
+    private static final String EXCEPTION_KEY = "jakarta.servlet.error.exception";
     public static final String VIEW_KEY = "org.apache.myfaces.error.UIViewRoot";
 
     private static final Logger log = Logger.getLogger(ErrorPageWriter.class.getName());

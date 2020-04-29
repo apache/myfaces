@@ -29,7 +29,7 @@ import java.util.Arrays;
  * <p>
  * This composite el resolver will be used at the top level resolver for faces
  * ({@link jakarta.faces.application.Application#getELResolver()})
- * and jsp (the one we add with {@link javax.servlet.jsp.JspApplicationContext#addELResolver(jakarta.el.ELResolver)}.
+ * and jsp (the one we add with {@link jakarta.servlet.jsp.JspApplicationContext#addELResolver(jakarta.el.ELResolver)}.
  * It keeps track of its scope to let the variable resolver {@link org.apache.myfaces.el.VariableResolverImpl}
  * know in which scope it is executed. This is
  * necessarry to call either the faces or the jsp resolver head.

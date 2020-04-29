@@ -19,7 +19,7 @@
 package org.apache.myfaces.application.flow;
 
 import java.io.Serializable;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.flow.FlowScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;

@@ -88,7 +88,7 @@ public abstract class FaceletFactory
      * Return a Facelet instance as specified by the file at the passed URI. The returned facelet is used
      * to create view metadata in this form: 
      * <p>
-     * UIViewRoot(in facet javax_faces_metadata(one or many UIViewParameter instances))
+     * UIViewRoot(in facet jakarta_faces_metadata(one or many UIViewParameter instances))
      * </p>
      * <p>
      * This method should be called from FaceletViewMetadata.createMetadataView(FacesContext context)  

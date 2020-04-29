@@ -218,7 +218,7 @@ public class RequestViewContext
         for (Map.Entry<String, UIComponent> entry : root.getFacets().entrySet())
         {
             UIComponent facet = entry.getValue();
-            if (facet.getId() != null && facet.getId().startsWith("javax_faces_location_"))
+            if (facet.getId() != null && facet.getId().startsWith("jakarta_faces_location_"))
             {
                 try
                 {

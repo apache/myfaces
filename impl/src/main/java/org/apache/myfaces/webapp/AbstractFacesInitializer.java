@@ -781,14 +781,14 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             // According to https://tyrus.java.net/documentation/1.13/index/deployment.html section 3.2
             // we can create a websocket programmatically, getting ServerContainer instance from this location
             final ServerContainer serverContainer = (ServerContainer) 
-                    servletContext.getAttribute("javax.websocket.server.ServerContainer");
+                    servletContext.getAttribute("jakarta.websocket.server.ServerContainer");
 
             if (serverContainer != null)
             {
                 try 
                 {
                     serverContainer.addEndpoint(ServerEndpointConfig.Builder
-                            .create(EndpointImpl.class, EndpointImpl.JAVAX_FACES_PUSH_PATH)
+                            .create(EndpointImpl.class, EndpointImpl.JAKARTA_FACES_PUSH_PATH)
                             .configurator(new WebsocketConfigurator(externalContext)).build());
                     
                     //Init LRU cache

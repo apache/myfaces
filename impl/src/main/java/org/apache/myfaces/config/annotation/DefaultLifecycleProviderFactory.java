@@ -262,7 +262,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory
     {
         try
         {
-                ClassUtils.classForName("javax.annotation.PreDestroy");
+                ClassUtils.classForName("jakarta.annotation.PreDestroy");
         }
         catch (ClassNotFoundException e)
         {

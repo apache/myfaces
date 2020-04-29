@@ -121,9 +121,9 @@ class RestoreViewExecutor extends PhaseExecutor
         // Determine if the current request is an attempt by the 
         // servlet container to display an error page.
         // If the request is an error page request, the servlet container
-        // is required to set the request parameter "javax.servlet.error.message".
+        // is required to set the request parameter "jakarta.servlet.error.message".
         final boolean errorPageRequest = facesContext.getExternalContext().getRequestMap()
-                                                 .get("javax.servlet.error.message") != null;
+                                                 .get("jakarta.servlet.error.message") != null;
         
         // Determine if this request is a postback or an initial request.
         // But if it is an error page request, do not treat it as a postback (since 2.0)

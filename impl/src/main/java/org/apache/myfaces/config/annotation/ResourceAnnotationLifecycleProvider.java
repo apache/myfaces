@@ -20,7 +20,7 @@ package org.apache.myfaces.config.annotation;
 
 import javax.naming.NamingException;
 import javax.naming.Context;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Field;

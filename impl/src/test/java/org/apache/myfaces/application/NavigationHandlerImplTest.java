@@ -614,7 +614,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         // simulate no available ViewRoot (in case of VEE)
         facesContext.setViewRoot(null);
         
-        facesContext.getExternalContext().getRequestMap().put("javax.servlet.include.servlet_path", "/faces/home.xhtml");
+        facesContext.getExternalContext().getRequestMap().put("jakarta.servlet.include.servlet_path", "/faces/home.xhtml");
         // test is based on:
         // http://www.nfjsone.com/blog/ed_burns/2009/09/dealing_gracefully_with_viewexpiredexception_in_jsf2
         underTest.handleNavigation(facesContext, null, "viewExpired");
@@ -629,7 +629,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         // simulate no available ViewRoot (in case of VEE)
         facesContext.setViewRoot(null);
         
-        facesContext.getExternalContext().getRequestMap().put("javax.servlet.include.servlet_path", "/home.jsf");
+        facesContext.getExternalContext().getRequestMap().put("jakarta.servlet.include.servlet_path", "/home.jsf");
         // test is based on:
         // http://www.nfjsone.com/blog/ed_burns/2009/09/dealing_gracefully_with_viewexpiredexception_in_jsf2
         underTest.handleNavigation(facesContext, null, "viewExpired.xhtml");
@@ -645,7 +645,7 @@ public class NavigationHandlerImplTest extends AbstractJsfTestCase
         // simulate no available ViewRoot (in case of VEE)
         facesContext.setViewRoot(null);
         
-        facesContext.getExternalContext().getRequestMap().put("javax.servlet.include.servlet_path", "/home.jsf");
+        facesContext.getExternalContext().getRequestMap().put("jakarta.servlet.include.servlet_path", "/home.jsf");
         // test is based on:
         // http://www.nfjsone.com/blog/ed_burns/2009/09/dealing_gracefully_with_viewexpiredexception_in_jsf2
         underTest.handleNavigation(facesContext, null, "viewExpired");

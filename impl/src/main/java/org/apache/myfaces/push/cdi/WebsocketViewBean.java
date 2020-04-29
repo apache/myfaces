@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.view.ViewScoped;
 import org.apache.myfaces.cdi.util.CDIUtils;

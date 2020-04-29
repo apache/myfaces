@@ -408,14 +408,14 @@
                                     *;version="${project.version}"
                                 </Export-Package>
                                 <Import-Package>
-                                    javax.el;version="[1.0.0, 3.1.0)",
+                                    jakarta.el;version="[1.0.0, 3.1.0)",
                                     javax.validation*;version="[1.0.0, 2.0.0)",
-                                    javax.servlet;version="[3, 5)",
-                                    javax.servlet.http;version="[3, 5)",
-                                    javax.servlet.jsp;version="[2.1.0, 3.1)",
-                                    javax.servlet.jsp.jstl.core;version="[1.1.2, 2.0.0)",
-                                    javax.servlet.jsp.jstl.sql;version="[1.1.2, 2.0.0)",
-                                    javax.servlet.jsp.tagext;version="[2.1.0, 3.2)",
+                                    jakarta.servlet;version="[3, 5)",
+                                    jakarta.servlet.http;version="[3, 5)",
+                                    jakarta.servlet.jsp;version="[2.1.0, 3.1)",
+                                    jakarta.servlet.jsp.jstl.core;version="[1.1.2, 2.0.0)",
+                                    jakarta.servlet.jsp.jstl.sql;version="[1.1.2, 2.0.0)",
+                                    jakarta.servlet.jsp.tagext;version="[2.1.0, 3.2)",
                                     org.apache.commons.logging;version="[1.1.1, 2.0.0)",
                                     jakarta.faces.*;version="${project.version}"
                                 </Import-Package>
@@ -624,7 +624,7 @@
             <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
         </dependency>
 
-        <!-- bean-validation 1.0 (javax.validation.*) -->
+        <!-- bean-validation 1.0 -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-validation_1.0_spec</artifactId>

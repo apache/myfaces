@@ -39,7 +39,7 @@ import org.apache.myfaces.shared.util.WebConfigParamUtils;
 
 /**
  * A ResourceHandlerSupport implementation for use with standard Java Servlet engines,
- * ie an engine that supports javax.servlet, and uses a standard web.xml file.
+ * ie an engine that supports jakarta.servlet, and uses a standard web.xml file.
  * 
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$

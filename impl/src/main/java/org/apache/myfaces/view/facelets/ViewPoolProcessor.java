@@ -598,9 +598,9 @@ public class ViewPoolProcessor
                     // we need to check these two cases:
                     // 1. Resources relocated by facelets
                     // 2. Resources created by effect of a @ResourceDependency annotation
-                    if (fc.getId() != null && fc.getId().startsWith("javax_faces_location_"))
+                    if (fc.getId() != null && fc.getId().startsWith("jakarta_faces_location_"))
                     {
-                        String target = fc.getId().substring("javax_faces_location_".length());
+                        String target = fc.getId().substring("jakarta_faces_location_".length());
                         Map<String, List<ResourceDependency>> addedResources = 
                             viewStructureMetadata.getRequestViewMetadata().
                                 getResourceDependencyAnnotations(context);

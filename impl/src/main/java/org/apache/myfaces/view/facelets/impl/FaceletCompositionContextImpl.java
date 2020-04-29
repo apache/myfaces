@@ -87,7 +87,7 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
     public static final String INIT_PARAM_WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE
             = "org.apache.myfaces.WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE";
     
-    private static final String JAVAX_FACES_LOCATION_PREFIX = "javax_faces_location_";
+    private static final String JAKARTA_FACES_LOCATION_PREFIX = "jakarta_faces_location_";
     
     private FacesContext _facesContext;
     
@@ -986,8 +986,8 @@ public class FaceletCompositionContextImpl extends FaceletCompositionContext
                 UIComponent fc = itr.next();
                 // It is necessary to check only the facets that are used as holder for
                 // component resources. To do that, the best way is check the ones that
-                // has id starting with "javax_faces_location_"
-                if (fc.getId() != null && fc.getId().startsWith(JAVAX_FACES_LOCATION_PREFIX))
+                // has id starting with "jakarta_faces_location_"
+                if (fc.getId() != null && fc.getId().startsWith(JAKARTA_FACES_LOCATION_PREFIX))
                 {
                     // Check all children with MARK_CREATED and if one is found, check if it was
                     // refreshed by the algorithm.

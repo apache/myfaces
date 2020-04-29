@@ -86,8 +86,8 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
         _mocksControl.checkOrder(true);
         expect(_facesContext.getExternalContext()).andReturn(_externalContext);
         Map<String, Object> map = new HashMap<String, Object>();
-        String expectedValue = "javax.servlet.include.path_info_VIEWID";
-        map.put("javax.servlet.include.path_info", expectedValue);
+        String expectedValue = "jakarta.servlet.include.path_info_VIEWID";
+        map.put("jakarta.servlet.include.path_info", expectedValue);
         expect(_externalContext.getRequestMap()).andReturn(map);
         //expect(_facesContext.getApplication()).andReturn(_application);
         //ViewHandler viewHandler = _mocksControl.createMock(ViewHandler.class);
@@ -132,8 +132,8 @@ public class DefaultRestoreViewSupportTest extends FacesTestCase
         _mocksControl.checkOrder(true);
         expect(_facesContext.getExternalContext()).andReturn(_externalContext);
         Map<String, Object> map = new HashMap<String, Object>();
-        String expectedValue = "javax.servlet.include.servlet_path_VIEWID";
-        map.put("javax.servlet.include.servlet_path", expectedValue);
+        String expectedValue = "jakarta.servlet.include.servlet_path_VIEWID";
+        map.put("jakarta.servlet.include.servlet_path", expectedValue);
         expect(_externalContext.getRequestMap()).andReturn(map);
         expect(_externalContext.getRequestPathInfo()).andReturn(null);
         //expect(_facesContext.getApplication()).andReturn(_application);

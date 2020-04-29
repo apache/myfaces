@@ -55,9 +55,9 @@ import org.apache.myfaces.shared.application.CheckedViewIdsCache;
  */
 public class DefaultRestoreViewSupport implements RestoreViewSupport
 {
-    private static final String JAVAX_SERVLET_INCLUDE_SERVLET_PATH = "javax.servlet.include.servlet_path";
+    private static final String JAKARTA_SERVLET_INCLUDE_SERVLET_PATH = "jakarta.servlet.include.servlet_path";
 
-    private static final String JAVAX_SERVLET_INCLUDE_PATH_INFO = "javax.servlet.include.path_info";
+    private static final String JAKARTA_SERVLET_INCLUDE_PATH_INFO = "jakarta.servlet.include.path_info";
     
     /**
      * Constant defined on javax.portlet.faces.Bridge class that helps to 
@@ -163,13 +163,13 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         }
         else
         {
-            viewId = (String) requestMap.get(JAVAX_SERVLET_INCLUDE_PATH_INFO);
+            viewId = (String) requestMap.get(JAKARTA_SERVLET_INCLUDE_PATH_INFO);
             if (viewId != null)
             {
                 if (traceEnabled)
                 {
                     log.finest("Calculated viewId '" + viewId + "' from request param '"
-                               + JAVAX_SERVLET_INCLUDE_PATH_INFO + "'");
+                               + JAKARTA_SERVLET_INCLUDE_PATH_INFO + "'");
                 }
             }
             else
@@ -183,11 +183,11 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
     
             if (viewId == null)
             {
-                viewId = (String) requestMap.get(JAVAX_SERVLET_INCLUDE_SERVLET_PATH);
+                viewId = (String) requestMap.get(JAKARTA_SERVLET_INCLUDE_SERVLET_PATH);
                 if (viewId != null && traceEnabled)
                 {
                     log.finest("Calculated viewId '" + viewId + "' from request param '"
-                            + JAVAX_SERVLET_INCLUDE_SERVLET_PATH + "'");
+                            + JAKARTA_SERVLET_INCLUDE_SERVLET_PATH + "'");
                 }
             }
         }

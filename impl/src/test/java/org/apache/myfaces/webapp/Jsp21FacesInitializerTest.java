@@ -52,7 +52,7 @@ public class Jsp21FacesInitializerTest extends AbstractJsfTestCase
     }
 
     /**
-     * Test method for {@link org.apache.myfaces.webapp.DefaultFacesInitializer#initFaces(javax.servlet.ServletContext)}.
+     * Test method for {@link org.apache.myfaces.webapp.DefaultFacesInitializer#initFaces(jakarta.servlet.ServletContext)}.
      * @throws Exception 
      */
     public void testInitFaces() throws Exception

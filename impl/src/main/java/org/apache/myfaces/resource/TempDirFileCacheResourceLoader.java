@@ -94,7 +94,7 @@ public class TempDirFileCacheResourceLoader extends ResourceLoaderWrapper
             try
             {
                 Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
-                File tempdir = (File) applicationMap.get("javax.servlet.context.tempdir");
+                File tempdir = (File) applicationMap.get("jakarta.servlet.context.tempdir");
                 File imagesDir = new File(tempdir, TEMP_FOLDER_BASE_DIR);
                 if (!imagesDir.exists())
                 {
@@ -120,7 +120,7 @@ public class TempDirFileCacheResourceLoader extends ResourceLoaderWrapper
     
         //1. Create temporal directory for temporal resources
         Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
-        File tempdir = (File) applicationMap.get("javax.servlet.context.tempdir");
+        File tempdir = (File) applicationMap.get("jakarta.servlet.context.tempdir");
         File imagesDir = new File(tempdir, TEMP_FOLDER_BASE_DIR);
         if (!imagesDir.exists())
         {
