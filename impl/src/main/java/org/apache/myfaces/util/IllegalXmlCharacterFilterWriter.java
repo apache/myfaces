@@ -21,6 +21,7 @@ package org.apache.myfaces.util;
 import java.io.FilterWriter;
 import java.io.IOException;
 import java.io.Writer;
+import org.apache.myfaces.shared.util.ClassUtils;
 
 /**
  * There are unicodes outside the ranges defined in the
@@ -32,7 +33,28 @@ import java.io.Writer;
 public class IllegalXmlCharacterFilterWriter extends FilterWriter
 {
     private static final char BLANK_CHAR = ' ';
+
+    // Java 1.6 doesnt support Character.isSurrogate
+    private static boolean java16;
     
+    static 
+    {
+        try
+        {
+            java16 = ClassUtils.classForName("java.util.Objects") == null;
+        }
+        catch (Throwable e)
+        {
+            java16 = true;
+        }
+
+        if (java16)
+        {
+            System.err.println("Skip using " + IllegalXmlCharacterFilterWriter.class.getName()
+                    + ", it's only available in Java 1.6+");
+        }
+    }
+
     public IllegalXmlCharacterFilterWriter(Writer out)
     {
         super(out);
@@ -41,6 +63,12 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
     @Override
     public void write(int c) throws IOException 
     {
+        if (java16)
+        {
+            super.write(c);
+            return;
+        }
+
         if (isInvalidChar(c))
         {
             super.write((int) BLANK_CHAR);
@@ -54,12 +82,24 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException 
     {
+        if (java16)
+        {
+            super.write(cbuf, off, len);
+            return;
+        }
+
         super.write(encodeCharArray(cbuf, off, len), off, len);
     }
 
     @Override
     public void write(String str, int off, int len) throws IOException 
     {
+        if (java16)
+        {
+            super.write(str, off, len);
+            return;
+        }
+
         super.write(encodeString(str, off, len), off, len);
     }
 
