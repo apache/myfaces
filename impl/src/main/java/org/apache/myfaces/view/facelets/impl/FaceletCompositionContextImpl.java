@@ -50,7 +50,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 public class FaceletCompositionContextImpl extends FaceletCompositionContext
 {
 
-    private static final String JAVAX_FACES_LOCATION_PREFIX = "javax_faces_location_";
+    public static final String JAVAX_FACES_LOCATION_PREFIX = "javax_faces_location_";
     private static final String VISIT_CONTEXT_FACTORY = "oam.vf.VisitContextFactory";
     
     private FacesContext _facesContext;

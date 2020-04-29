@@ -33,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.faces.FacesException;
 import javax.faces.application.Resource;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import org.apache.myfaces.config.MyfacesConfig;
 
 /**
@@ -76,7 +77,7 @@ public class TempDirFileCacheContractResourceLoader extends ContractResourceLoad
     
         //1. Create temporal directory for temporal resources
         Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
-        File tempdir = (File) applicationMap.get("javax.servlet.context.tempdir");
+        File tempdir = (File) applicationMap.get(ServletContext.TEMPDIR);
         File imagesDir = new File(tempdir, TEMP_FOLDER_BASE_DIR);
         if (!imagesDir.exists())
         {

@@ -32,6 +32,7 @@ import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
+import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 
 /**
  *
@@ -188,7 +189,8 @@ public class RequestViewContext
         for (Map.Entry<String, UIComponent> entry : root.getFacets().entrySet())
         {
             UIComponent facet = entry.getValue();
-            if (facet.getId() != null && facet.getId().startsWith("javax_faces_location_"))
+            if (facet.getId() != null
+                    && facet.getId().startsWith(FaceletCompositionContextImpl.JAVAX_FACES_LOCATION_PREFIX))
             {
                 try
                 {

@@ -33,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.faces.FacesException;
 import javax.faces.application.Resource;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.WebConfigParamUtils;
@@ -91,7 +92,7 @@ public class TempDirFileCacheResourceLoader extends ResourceLoaderWrapper
             try
             {
                 Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
-                File tempdir = (File) applicationMap.get("javax.servlet.context.tempdir");
+                File tempdir = (File) applicationMap.get(ServletContext.TEMPDIR);
                 File imagesDir = new File(tempdir, TEMP_FOLDER_BASE_DIR);
                 if (!imagesDir.exists())
                 {
@@ -117,7 +118,7 @@ public class TempDirFileCacheResourceLoader extends ResourceLoaderWrapper
     
         //1. Create temporal directory for temporal resources
         Map<String, Object> applicationMap = facesContext.getExternalContext().getApplicationMap();
-        File tempdir = (File) applicationMap.get("javax.servlet.context.tempdir");
+        File tempdir = (File) applicationMap.get(ServletContext.TEMPDIR);
         File imagesDir = new File(tempdir, TEMP_FOLDER_BASE_DIR);
         if (!imagesDir.exists())
         {
