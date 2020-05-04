@@ -657,10 +657,6 @@
 
     <repositories>
 
-        <repository>
-            <id>jakarta-specs-taging</id>
-            <url>https://repository.apache.org/content/repositories/orgapachegeronimo-1124/</url>
-        </repository>
     </repositories>
 
     <!--
