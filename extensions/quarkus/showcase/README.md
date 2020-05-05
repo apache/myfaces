@@ -16,7 +16,9 @@ In [dev mode](https://quarkus.io/guides/maven-tooling#development-mode) you can 
 
 ## Native mode
 
-For native mode you need at least [graalvm 20](https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-20.0.0), see graalvm instalation [instructions here](https://quarkus.io/guides/building-native-image).
+For native mode you need [graalvm 19.3.1](https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-19.3.1), see graalvm instalation [instructions here](https://quarkus.io/guides/building-native-image).
+
+> Note that for now `native mode` is not working on GraalVM **20.0.0** 
 
 Following is how to `build and run` the native image:
 

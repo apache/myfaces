@@ -25,7 +25,7 @@
     <name>Apache MyFaces Core 2.3-next - Extensions - Quarkus - Showcase</name>
 
     <properties>
-        <quarkus.version>1.4.1.Final</quarkus.version>
+        <quarkus.version>1.4.2.Final</quarkus.version>
         <myfaces.version>2.3-next-SNAPSHOT</myfaces.version>
         <failsafe.version>2.22.0</failsafe.version>
         <surefire.version>2.22.0</surefire.version>
@@ -33,6 +33,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.release>8</maven.compiler.release>
     </properties>
 
     <dependencyManagement>
