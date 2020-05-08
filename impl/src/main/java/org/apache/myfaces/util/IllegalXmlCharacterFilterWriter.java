@@ -22,6 +22,7 @@ import java.io.FilterWriter;
 import java.io.IOException;
 import java.io.Writer;
 import org.apache.myfaces.shared.util.ClassUtils;
+import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
 
 /**
  * There are unicodes outside the ranges defined in the
@@ -103,6 +104,7 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
         super.write(encodeString(str, off, len), off, len);
     }
 
+    @IgnoreJRERequirement // Java 1.6 doesnt support Character.isSurrogate
     private static String encodeString(String str, int off, int len)
     {
         if (str == null)
@@ -161,7 +163,8 @@ public class IllegalXmlCharacterFilterWriter extends FilterWriter
 
         return str;
     }
-    
+
+    @IgnoreJRERequirement // Java 1.6 doesnt support Character.isSurrogate
     private static char[] encodeCharArray(char[] cbuf, int off, int len)
     {
         if (cbuf == null)

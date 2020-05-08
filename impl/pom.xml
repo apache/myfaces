@@ -1060,9 +1060,9 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.jvnet</groupId>
-                        <artifactId>animal-sniffer</artifactId>
-                        <version>1.2</version>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>animal-sniffer-maven-plugin</artifactId>
+                        <version>1.18</version>
                         <executions>
                             <execution>
                                 <goals>
@@ -1070,8 +1070,8 @@
                                 </goals>
                                 <configuration>
                                     <signature>
-                                        <groupId>org.jvnet.animal-sniffer</groupId>
-                                        <artifactId>java1.6</artifactId>
+                                        <groupId>org.codehaus.mojo.signature</groupId>
+                                        <artifactId>java16</artifactId>
                                         <version>1.0</version>
                                     </signature>
                                 </configuration>
@@ -1268,6 +1268,14 @@
             <groupId>com.google.code.guice</groupId>
             <artifactId>guice</artifactId>
             <optional>true</optional> <!-- optional does not completely work in dependencyManagement (MNG-1630) -->
+        </dependency>
+
+        <!-- Required for @IgnoreJRERequirement -->
+        <dependency>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>animal-sniffer-annotations</artifactId>
+            <version>1.18</version>
+            <optional>true</optional>
         </dependency>
         
 
