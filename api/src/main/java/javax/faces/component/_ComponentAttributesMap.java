@@ -192,6 +192,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
             {
                 return _component.isOamVfFacetCreatedUIPanel();
             }
+
             // The most common call to this method comes from UIComponent.isCompositeComponent()
             // to reduce the impact. This is better than two lookups, once over property descriptor map
             // and the other one from the underlying map.
@@ -306,6 +307,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 return _component.isOamVfFacetCreatedUIPanel();
             }
         }
+
         // is there a javabean property to read?
         _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor((String) key);
         if (propertyDescriptor != null)
@@ -421,6 +423,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                                     }
                                 }
                             }
+
                             // We have to check for a ValueExpression and also evaluate it
                             // here, because in the PropertyDescriptor the default values are
                             // always stored as (Tag-)ValueExpressions.
@@ -435,7 +438,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 }
             }
         }
-        
+
         // Otherwise, return the actual value from the get() method. 
         return value;
     }
@@ -489,13 +492,13 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 _ccBeanInfo = null;
             }
         }
+
         _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor((String) key);
         if (propertyDescriptor != null)
         {
             throw new IllegalArgumentException("Cannot remove component property attribute");
         }
-        return _component.getStateHelper().remove(
-                UIComponentBase.PropertyKeys.attributesMap, key);
+        return _component.getStateHelper().remove(UIComponentBase.PropertyKeys.attributesMap, key);
     }
 
     /**
@@ -614,6 +617,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         {
             // Try to get descriptor map from cache
             _propertyDescriptorMap = propertyDescriptorCache.get(_component.getClass());
+
             // Cache miss: create descriptor map and put it in cache
             if (_propertyDescriptorMap == null)
             {
@@ -627,8 +631,9 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 {
                     throw new FacesException(e);
                 }
+
                 PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-                _propertyDescriptorMap = new ConcurrentHashMap<String, _PropertyDescriptorHolder>();
+                _propertyDescriptorMap = new ConcurrentHashMap<>();
                 for (int i = 0; i < propertyDescriptors.length; i++)
                 {
                     PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
@@ -639,6 +644,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                                 new _PropertyDescriptorHolder(propertyDescriptor, readMethod));
                     }
                 }
+
                 // ... and put it in cache
                 synchronized(propertyDescriptorCache)
                 {
@@ -702,6 +708,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
             throw new IllegalArgumentException("Component property " + propertyDescriptor.getName()
                                                + " is not writable");
         }
+
         try
         {
             writeMethod.invoke(_component, new Object[]{value});
@@ -721,6 +728,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         {
             throw new NullPointerException("key");
         }
+
         if (!(key instanceof String))
         {
             throw new ClassCastException("key is not a String");
