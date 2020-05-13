@@ -535,6 +535,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         {
             throw new NullPointerException("key");
         }
+
         int keyLength = ((String)key).length();
         if (keyLength >= MIN_LENGHT_CHECK)
         {
@@ -567,6 +568,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 return oldValue;
             }
         }
+
         _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor(key);
         if (propertyDescriptor == null)
         {
@@ -586,6 +588,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
             setComponentProperty(propertyDescriptor, value);
             return null;
         }
+
         // To keep this code in good shape, The fastest way to compare is look if the length first here
         // because we avoid an unnecessary cast later on equals().
         if ( Resource.COMPONENT_RESOURCE_KEY.length() == keyLength 
@@ -646,7 +649,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 }
 
                 // ... and put it in cache
-                synchronized(propertyDescriptorCache)
+                synchronized (propertyDescriptorCache)
                 {
                     // Use a synchronized block to ensure proper operation on concurrent use cases.
                     // This is a racy single check, because initialization over the same class could happen
@@ -679,6 +682,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
             throw new IllegalArgumentException("Component property " + propertyDescriptor.getName()
                                                + " is not readable");
         }
+
         try
         {
             return readMethod.invoke(_component, EMPTY_ARGS);
