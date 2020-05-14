@@ -65,7 +65,13 @@ public class MethodHandleMetadataTargetImpl extends MetadataTarget
     @Override
     public Method getReadMethod(String name)
     {
-        throw new UnsupportedOperationException("Please use the getReadFunction for better performance!");
+        MethodHandleUtils.LambdaPropertyDescriptor lpd = getLambdaProperty(name);
+        if (lpd == null)
+        {
+            return null;
+        }
+        
+        return lpd.getWrapped().getReadMethod();
     }
 
     @Override
@@ -77,7 +83,13 @@ public class MethodHandleMetadataTargetImpl extends MetadataTarget
     @Override
     public Method getWriteMethod(String name)
     {
-        throw new UnsupportedOperationException("Please use the getWriteFunction for better performance!");
+        MethodHandleUtils.LambdaPropertyDescriptor lpd = getLambdaProperty(name);
+        if (lpd == null)
+        {
+            return null;
+        }
+        
+        return lpd.getWrapped().getWriteMethod();
     }
 
     @Override
