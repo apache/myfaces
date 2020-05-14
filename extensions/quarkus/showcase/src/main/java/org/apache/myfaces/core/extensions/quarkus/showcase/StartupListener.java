@@ -28,6 +28,8 @@ public class StartupListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         sce.getServletContext().setInitParameter("primefaces.THEME", "luna-amber");
+        sce.getServletContext().setInitParameter("primefaces.UPLOADER", "commons");
+        sce.getServletContext().addFilter("PrimeFaces FileUpload Filter", "org.primefaces.webapp.filter.FileUploadFilter").addMappingForServletNames(null, false, "Faces Servlet");
     }
 
 }

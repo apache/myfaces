@@ -70,6 +70,12 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.10</version>
         </dependency>
+        <!-- needed for commons fileupload -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.3.3</version>
+        </dependency>
 
         <dependency> <!-- workaround for https://github.com/quarkusio/quarkus/issues/7359 -->
             <groupId>com.fasterxml.woodstox</groupId>
