@@ -158,7 +158,7 @@ public final class UIDebug extends UIComponentBase
                 @Override
                 protected boolean removeEldestEntry(Entry<String, String> eldest)
                 {
-                    return (this.size() > 5);
+                    return this.size() > 5;
                 }
             };
             

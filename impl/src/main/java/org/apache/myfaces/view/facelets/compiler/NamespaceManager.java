@@ -50,7 +50,7 @@ final class NamespaceManager
      */
     public NamespaceManager()
     {
-        this.namespaces = new ArrayList<NS>();
+        this.namespaces = new ArrayList<>();
     }
 
     public void reset()

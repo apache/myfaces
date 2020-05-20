@@ -63,12 +63,12 @@ public final class RepeatStatus implements Serializable
         return last;
     }
     
-    public boolean isEven ()
+    public boolean isEven()
     {
-        return ((count % 2) == 0);
+        return (count % 2) == 0;
     }
     
-    public boolean isOdd ()
+    public boolean isOdd()
     {
         return !isEven();
     }

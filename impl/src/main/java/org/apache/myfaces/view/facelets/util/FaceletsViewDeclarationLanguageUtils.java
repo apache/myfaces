@@ -43,11 +43,13 @@ public class FaceletsViewDeclarationLanguageUtils
         {
             throw new FacesException("Invalid method signature:" + signature);
         }
+
         int end = signature.lastIndexOf(' ', endName);
         if (end < 0)
         {
             throw new FacesException("Invalid method signature:" + signature);
         }
+
         try
         {
             return ClassUtils.javaDefaultTypeToClass(signature.substring(0, end));
@@ -65,7 +67,8 @@ public class FaceletsViewDeclarationLanguageUtils
      */
     public static Class[] getParameters(String signature) throws FacesException
     {
-        ArrayList<Class> params = new ArrayList<Class>();
+        ArrayList<Class> params = new ArrayList<>();
+
         // Signature is of the form
         // <return-type> S <method-name S? '('
         // < <arg-type> ( ',' <arg-type> )* )? ')'
@@ -83,6 +86,7 @@ public class FaceletsViewDeclarationLanguageUtils
                 }
                 lastArg = true;
             }
+
             String arg = signature.substring(start, p);
             if (StringUtils.isNotBlank(arg))
             {
@@ -95,12 +99,15 @@ public class FaceletsViewDeclarationLanguageUtils
                     throw new FacesException("Invalid method signature:" + signature);
                 }
             }
+            
             if (lastArg)
             {
                 break;
             }
+
             start = p + 1;
         }
+
         return params.toArray(new Class[params.size()]);
     }
 

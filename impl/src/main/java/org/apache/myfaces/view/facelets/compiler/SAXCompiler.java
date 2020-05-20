@@ -649,10 +649,10 @@ public final class SAXCompiler extends Compiler
             else if (inCompositeImplementation && 
                 (CompositeLibrary.NAMESPACE.equals(uri) || CompositeLibrary.ALIAS_NAMESPACE.equals(uri)) )
             {
-                if ( "insertFacet".equals(localName) ||
-                     "renderFacet".equals(localName) ||
-                     "insertChildren".equals(localName) || 
-                     ImplementationHandler.NAME.equals(localName))
+                if ("insertFacet".equals(localName) ||
+                    "renderFacet".equals(localName) ||
+                    "insertChildren".equals(localName) || 
+                    ImplementationHandler.NAME.equals(localName))
                 {
                     this.unit.popTag();
                 }
@@ -689,10 +689,8 @@ public final class SAXCompiler extends Compiler
             {
                 throw new SAXException("Error Traced[line: " + this.locator.getLineNumber() + "] " + e.getMessage());
             }
-            else
-            {
-                throw e;
-            }
+
+            throw e;
         }
 
         @Override
@@ -798,7 +796,8 @@ public final class SAXCompiler extends Compiler
         @Override
         public void processingInstruction(String target, String data) throws SAXException
         {
-            if (inDocument && inCompositeInterface
+            if (inDocument
+                && inCompositeInterface
                 && !unit.getFaceletsProcessingInstructions().isConsumeProcessingInstructions())
             {
                 StringBuilder sb = new StringBuilder(64);
@@ -983,11 +982,11 @@ public final class SAXCompiler extends Compiler
             {
                 if (entry.getValue() instanceof ValueExpression)
                 {
-                    stringValue = ((ValueExpression)entry.getValue()).getExpressionString();
+                    stringValue = ((ValueExpression) entry.getValue()).getExpressionString();
                 }
                 else if (entry.getValue() instanceof MethodExpression)
                 {
-                    stringValue = ((MethodExpression)entry.getValue()).getExpressionString();
+                    stringValue = ((MethodExpression) entry.getValue()).getExpressionString();
                 }
                 else if (entry.getValue() != null)
                 {

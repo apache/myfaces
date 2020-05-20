@@ -190,12 +190,12 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     }
     
     @JSFProperty(literalOnly=true)
-    public String getVarStatus ()
+    public String getVarStatus()
     {
         return (String) getStateHelper().get(PropertyKeys.varStatus);
     }
     
-    public void setVarStatus (String varStatus)
+    public void setVarStatus(String varStatus)
     {
         getStateHelper().put(PropertyKeys.varStatus, varStatus );
     }

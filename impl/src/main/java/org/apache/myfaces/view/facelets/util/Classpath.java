@@ -63,7 +63,7 @@ public final class Classpath
 
     public static URL[] search(ClassLoader loader, String prefix, String suffix) throws IOException
     {
-        Set<URL> all = new LinkedHashSet<URL>();
+        Set<URL> all = new LinkedHashSet<>();
 
         _searchResource(all, loader, prefix, prefix, suffix);
         _searchResource(all, loader, prefix + "MANIFEST.MF", prefix, suffix);
@@ -121,6 +121,7 @@ public final class Classpath
         {
             dirExists = dir.exists();
         }
+
         if (dirExists && dir.isDirectory())
         {
             File[] dirFiles = dir.listFiles();
@@ -163,46 +164,48 @@ public final class Classpath
     {
         boolean done = false;
 
-        InputStream is = _getInputStream(url);
-        if (is != null)
+        try (InputStream is = _getInputStream(url))
         {
-            try
+            if (is != null)
             {
-                ZipInputStream zis;
-                if (is instanceof ZipInputStream)
-                {
-                    zis = (ZipInputStream) is;
-                }
-                else
-                {
-                    zis = new ZipInputStream(is);
-                }
-
                 try
                 {
-                    ZipEntry entry = zis.getNextEntry();
-                    // initial entry should not be null
-                    // if we assume this is some inner jar
-                    done = entry != null;
-
-                    while (entry != null)
+                    ZipInputStream zis;
+                    if (is instanceof ZipInputStream)
                     {
-                        String entryName = entry.getName();
-                        if (entryName.endsWith(suffix))
-                        {
-                            result.add(new URL(url.toExternalForm() + entryName));
-                        }
+                        zis = (ZipInputStream) is;
+                    }
+                    else
+                    {
+                        zis = new ZipInputStream(is);
+                    }
 
-                        entry = zis.getNextEntry();
+                    try
+                    {
+                        ZipEntry entry = zis.getNextEntry();
+                        // initial entry should not be null
+                        // if we assume this is some inner jar
+                        done = entry != null;
+
+                        while (entry != null)
+                        {
+                            String entryName = entry.getName();
+                            if (entryName.endsWith(suffix))
+                            {
+                                result.add(new URL(url.toExternalForm() + entryName));
+                            }
+
+                            entry = zis.getNextEntry();
+                        }
+                    }
+                    finally
+                    {
+                        zis.close();
                     }
                 }
-                finally
+                catch (Exception ignore)
                 {
-                    zis.close();
                 }
-            }
-            catch (Exception ignore)
-            {
             }
         }
 
