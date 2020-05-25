@@ -1751,7 +1751,7 @@ public class ApplicationImpl extends Application
             String name = annotation.name();
             if (StringUtils.isNotEmpty(name))
             {
-                name = ELText.parse(getExpressionFactory(),context.getELContext(), name)
+                name = ELText.parse(getExpressionFactory(), context.getELContext(), name)
                         .toString(context.getELContext());
             }
             
