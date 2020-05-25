@@ -53,8 +53,6 @@ public abstract class SerialFactory
             {
                 if (System.getSecurityManager() != null)
                 {
-                    //Put IOException and ClassNotFoundException as "checked" exceptions,
-                    //so AccessController wrap them in a PrivilegedActionException
                     return AccessController.doPrivileged((PrivilegedExceptionAction) () -> ois.readObject());
                 }
 
