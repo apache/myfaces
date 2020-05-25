@@ -63,7 +63,7 @@ public final class CheckDuplicateIdFaceletUtils
             {
                 if (!(facet instanceof UILeaf))
                 {
-                    checkIdsStatefulComponents (context, facet, existingIds);
+                    checkIdsStatefulComponents(context, facet, existingIds);
                 }
             }
         }
@@ -72,7 +72,7 @@ public final class CheckDuplicateIdFaceletUtils
             UIComponent child = component.getChildren().get(i);
             if (!(child instanceof UILeaf))
             {
-                checkIdsStatefulComponents (context, child, existingIds);
+                checkIdsStatefulComponents(context, child, existingIds);
             }
         }
     }

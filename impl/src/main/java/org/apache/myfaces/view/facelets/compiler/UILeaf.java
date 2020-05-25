@@ -171,8 +171,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
  
     private String getComponentLocation(UIComponent component)
     {
-        Location location = (Location) component.getAttributes()
-                .get(UIComponent.VIEW_LOCATION_KEY);
+        Location location = (Location) component.getAttributes().get(UIComponent.VIEW_LOCATION_KEY);
         if (location != null)
         {
             return location.toString();
@@ -634,10 +633,8 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
             // passthrough attributes.
             return Collections.emptyMap();
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
 }
