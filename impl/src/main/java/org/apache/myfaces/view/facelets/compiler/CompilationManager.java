@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.view.Location;
 import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.Tag;
 import javax.faces.view.facelets.TagAttribute;
@@ -102,7 +103,7 @@ final class CompilationManager
         this.faceletsProcessingInstructions = instructions;
     }
 
-    public void writeInstruction(String value)
+    public void writeInstruction(String value, Location location)
     {
         if (this.finished)
         {
@@ -124,7 +125,8 @@ final class CompilationManager
         {
             unit = new TextUnit(this.alias, this.nextTagId(), 
                     faceletsProcessingInstructions.isEscapeInlineText(),
-                    faceletsProcessingInstructions.isCompressSpaces());
+                    faceletsProcessingInstructions.isCompressSpaces(),
+                    location);
             this.startUnit(unit);
         }
         unit.writeInstruction(value);
@@ -142,7 +144,7 @@ final class CompilationManager
         this.startUnit(unit);
     }
 
-    public void writeText(String value)
+    public void writeText(String value, Location location)
     {
 
         if (this.finished)
@@ -165,13 +167,14 @@ final class CompilationManager
         {
             unit = new TextUnit(this.alias, this.nextTagId(), 
                     faceletsProcessingInstructions.isEscapeInlineText(),
-                    faceletsProcessingInstructions.isCompressSpaces());
+                    faceletsProcessingInstructions.isCompressSpaces(),
+                    location);
             this.startUnit(unit);
         }
         unit.write(value);
     }
 
-    public void writeComment(String text)
+    public void writeComment(String text, Location location)
     {
         if (this.compiler.isTrimmingComments())
         {
@@ -198,18 +201,19 @@ final class CompilationManager
         {
             unit = new TextUnit(this.alias, this.nextTagId(), 
                     faceletsProcessingInstructions.isEscapeInlineText(),
-                    faceletsProcessingInstructions.isCompressSpaces());
+                    faceletsProcessingInstructions.isCompressSpaces(),
+                    location);
             this.startUnit(unit);
         }
 
         unit.writeComment(text);
     }
 
-    public void writeWhitespace(String text)
+    public void writeWhitespace(String text, Location location)
     {
         if (!this.compiler.isTrimmingWhitespace())
         {
-            this.writeText(text);
+            this.writeText(text, location);
         }
     }
 
@@ -310,7 +314,8 @@ final class CompilationManager
             {
                 unit = new TextUnit(this.alias, this.nextTagId(),
                         faceletsProcessingInstructions.isEscapeInlineText(),
-                        faceletsProcessingInstructions.isCompressSpaces());
+                        faceletsProcessingInstructions.isCompressSpaces(),
+                        orig.getLocation());
                 this.startUnit(unit);
             }
             

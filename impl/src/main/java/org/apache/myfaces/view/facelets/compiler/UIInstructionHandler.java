@@ -78,7 +78,7 @@ final class UIInstructionHandler extends AbstractUIHandler
         if (parent != null)
         {
             String facetName = this.getFacetName(ctx, parent);
-            
+
             // our id
             String id = ctx.generateUniqueId(this.id);
 

@@ -287,11 +287,11 @@ public class ELText
                         Location location = (Location) cc.getAttributes().get(CompositeComponentELUtils.LOCATION_KEY);
                         if (location != null)
                         {
-                            return new ELTextVariable(((LocationValueExpression)cached.ve).apply(
+                            return new ELTextVariable(((LocationValueExpression) cached.ve).apply(
                                     actx.getFaceletCompositionContext().getCompositeComponentLevel(), location));
                         }
                     }
-                    return new ELTextVariable(((LocationValueExpression)cached.ve).apply(
+                    return new ELTextVariable(((LocationValueExpression) cached.ve).apply(
                             actx.getFaceletCompositionContext().getCompositeComponentLevel()));
                 }
                 return cached;
@@ -303,6 +303,14 @@ public class ELText
                 ValueExpression valueExpression
                         = factory.createValueExpression(ctx, this.ve.getExpressionString(), String.class);
               
+                if (this.ve instanceof ContextAwareTagValueExpression)
+                {
+                    valueExpression = new ContextAwareTagValueExpression(
+                            ((ContextAwareTagValueExpression) this.ve).getLocation(),
+                            "expression",
+                            valueExpression);
+                }
+
                 if ((this.capabilities & EL_CC) != 0)
                 {
                     UIComponent cc = actx.getFaceletCompositionContext().getCompositeComponentFromStack();
@@ -458,21 +466,28 @@ public class ELText
         return isLiteral(null, null, in);
     }
 
+    public static ELText parse(String in) throws ELException
+    {
+        return parse(null, null, in, null);
+    }
+
     /**
      * Factory method for creating an unvalidated ELText instance. NOTE: All expressions in the passed String are
      * treated as {@link org.apache.myfaces.view.facelets.el.LocationValueExpression}.
      * 
      * @param in
      *            String to parse
+     * @param location
+     *            The location
      * @return ELText instance that knows if the String was literal or not
      * @throws javax.el.ELException
      */
-    public static ELText parse(String in) throws ELException
+    public static ELText parse(String in, Location location) throws ELException
     {
-        return parse(null, null, in);
+        return parse(null, null, in, location);
     }
     
-    public static ELText parseAllowEmptyString(String in) throws ELException
+    public static ELText parseAllowEmptyString(String in, Location location) throws ELException
     {
         if (in != null && in.length() == 0)
         {
@@ -480,8 +495,13 @@ public class ELText
         }
         else
         {
-            return parse(null, null, in);
+            return parse(null, null, in, location);
         }
+    }
+
+    public static ELText parse(ExpressionFactory fact, ELContext ctx, String in) throws ELException
+    {
+        return parse(fact, ctx, in, null);
     }
 
     /**
@@ -495,10 +515,12 @@ public class ELText
      *            ELContext to validate against
      * @param in
      *            String to parse
+     * @param location
+     *            The location
      * @return ELText that can be re-applied later
      * @throws javax.el.ELException
      */
-    public static ELText parse(ExpressionFactory fact, ELContext ctx, String in) throws ELException
+    public static ELText parse(ExpressionFactory fact, ELContext ctx, String in, Location location) throws ELException
     {
         char[] ca = in.toCharArray();
         int i = 0;
@@ -540,11 +562,20 @@ public class ELText
                         if (ctx != null && fact != null)
                         {
                             ve = fact.createValueExpression(ctx, new String(ca, i, vlen), String.class);
+                            if (location != null)
+                            {
+                                ve = new ContextAwareTagValueExpression(location, "expression", ve);
+                            }
                             t = new ELCacheableTextVariable(ve);
                         }
                         else
                         {
-                            t = new ELCacheableTextVariable(new LiteralValueExpression(new String(ca, i, vlen)));
+                            ve = new LiteralValueExpression(new String(ca, i, vlen));
+                            if (location != null)
+                            {
+                                ve = new ContextAwareTagValueExpression(location, "expression", ve);
+                            }
+                            t = new ELCacheableTextVariable(ve);
                         }
                         text.add(t);
                         i += vlen;
@@ -578,12 +609,13 @@ public class ELText
         }
     }
 
-    public static ELText[] parseAsArray(String in) throws ELException
+    public static ELText[] parseAsArray(String in, Location location) throws ELException
     {
-        return parseAsArray(null, null, in);
+        return parseAsArray(null, null, in, location);
     }
     
-    public static ELText[] parseAsArray(ExpressionFactory fact, ELContext ctx, String in) throws ELException
+    public static ELText[] parseAsArray(ExpressionFactory fact, ELContext ctx, String in, Location location)
+            throws ELException
     {
         char[] ca = in.toCharArray();
         int i = 0;
@@ -625,11 +657,20 @@ public class ELText
                         if (ctx != null && fact != null)
                         {
                             ve = fact.createValueExpression(ctx, new String(ca, i, vlen), String.class);
+                            if (location != null)
+                            {
+                                ve = new ContextAwareTagValueExpression(location, "expression", ve);
+                            }
                             t = new ELCacheableTextVariable(ve);
                         }
                         else
                         {
-                            t = new ELCacheableTextVariable(new LiteralValueExpression(new String(ca, i, vlen)));
+                            ve = new LiteralValueExpression(new String(ca, i, vlen));
+                            if (location != null)
+                            {
+                                ve = new ContextAwareTagValueExpression(location, "expression", ve);
+                            }
+                            t = new ELCacheableTextVariable(ve);
                         }
                         text.add(t);
                         i += vlen;

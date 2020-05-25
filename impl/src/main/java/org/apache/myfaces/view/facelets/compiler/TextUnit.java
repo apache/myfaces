@@ -25,6 +25,7 @@ import java.util.Stack;
 
 import javax.el.ELException;
 import javax.faces.application.FacesMessage;
+import javax.faces.view.Location;
 import javax.faces.view.facelets.CompositeFaceletHandler;
 import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.Tag;
@@ -53,18 +54,19 @@ final class TextUnit extends CompilationUnit
     private final List<Object> messages;
     private final boolean escapeInlineText;
     private final boolean compressSpaces;
+    private final Location location;
 
-    public TextUnit(String alias, String id)
+    public TextUnit(String alias, String id, Location location)
     {
-        this(alias,id,true);
+        this(alias, id, true, location);
     }
     
-    public TextUnit(String alias, String id, boolean escapeInlineText)
+    public TextUnit(String alias, String id, boolean escapeInlineText, Location location)
     {
-        this(alias,id,escapeInlineText,false);
+        this(alias, id, escapeInlineText, false, location);
     }
     
-    public TextUnit(String alias, String id, boolean escapeInlineText, boolean compressSpaces)
+    public TextUnit(String alias, String id, boolean escapeInlineText, boolean compressSpaces, Location location)
     {
         this.alias = alias;
         this.id = id;
@@ -77,6 +79,7 @@ final class TextUnit extends CompilationUnit
         this.messages = new ArrayList<Object>(4);
         this.escapeInlineText = escapeInlineText;
         this.compressSpaces = compressSpaces;
+        this.location = location;
     }
 
     @Override
@@ -131,7 +134,7 @@ final class TextUnit extends CompilationUnit
                 if (!compressSpaces)
                 {
                     //Do it as usual.
-                    ELText txt = ELText.parse(s);
+                    ELText txt = ELText.parse(s, location);
                     if (txt != null)
                     {
                         if (txt.isLiteral())
@@ -155,7 +158,7 @@ final class TextUnit extends CompilationUnit
                             {
                                 // When escape inline text is disabled (jspx case) we have to split the EL and add
                                 // separate instructions, so it can be properly escaped.
-                                ELText[] splitText = ELText.parseAsArray(s);
+                                ELText[] splitText = ELText.parseAsArray(s, location);
                                 if (splitText.length > 1)
                                 {
                                     Instruction[] array = new Instruction[splitText.length];
@@ -207,7 +210,7 @@ final class TextUnit extends CompilationUnit
                             }
                             // When escape inline text is disabled (jspx case) we have to split the EL and add
                             // separate instructions, so it can be properly escaped.
-                            ELText[] splitText = ELText.parseAsArray(s);
+                            ELText[] splitText = ELText.parseAsArray(s, location);
                             if (splitText.length > 1)
                             {
                                 Instruction[] array = new Instruction[splitText.length];
@@ -227,7 +230,7 @@ final class TextUnit extends CompilationUnit
                             }
                             else
                             {
-                                this.instructionBuffer.add(new TextInstruction(this.alias, ELText.parse(s)));
+                                this.instructionBuffer.add(new TextInstruction(this.alias, ELText.parse(s, location)));
                             }
                         }
                     }
@@ -248,7 +251,7 @@ final class TextUnit extends CompilationUnit
     public void writeInstruction(String text)
     {
         this.finishStartTag();
-        ELText el = ELText.parse(text);
+        ELText el = ELText.parse(text, location);
         if (el.isLiteral())
         {
             this.addInstruction(new LiteralXMLInstruction(text));
@@ -264,7 +267,7 @@ final class TextUnit extends CompilationUnit
     {
         this.finishStartTag();
 
-        ELText el = ELText.parse(text);
+        ELText el = ELText.parse(text, location);
         if (el.isLiteral())
         {
             this.addInstruction(new LiteralCommentInstruction(text));
@@ -300,7 +303,7 @@ final class TextUnit extends CompilationUnit
                 String qname = attr.getQName();
                 String value = attr.getValue();
                 this.buffer.append(' ').append(qname).append("=\"").append(value).append('"');
-                ELText txt = ELText.parseAllowEmptyString(value);
+                ELText txt = ELText.parseAllowEmptyString(value, location);
                 if (txt != null)
                 {
                     if (txt.isLiteral())
@@ -387,7 +390,7 @@ final class TextUnit extends CompilationUnit
                 {
                     s = trimRight(s);
                 }
-                ELText txt = ELText.parse(s);
+                ELText txt = ELText.parse(s, location);
                 if (txt != null)
                 {
                     if (compressSpaces)

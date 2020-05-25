@@ -108,7 +108,7 @@ public final class SAXCompiler extends Compiler
         {
             if (this.inDocument && (!consumingCDATA || (consumingCDATA && !swallowCDATAContent)))
             {
-                this.unit.writeText(new String(ch, start, length));
+                this.unit.writeText(new String(ch, start, length), createLocation());
             }
         }
 
@@ -117,7 +117,7 @@ public final class SAXCompiler extends Compiler
         {
             if (this.inDocument && !unit.getFaceletsProcessingInstructions().isConsumeXMLComments())
             {
-                this.unit.writeComment(new String(ch, start, length));
+                this.unit.writeComment(new String(ch, start, length), createLocation());
             }
         }
 
@@ -145,7 +145,7 @@ public final class SAXCompiler extends Compiler
             {
                 if (!this.unit.getFaceletsProcessingInstructions().isConsumeCDataSections())
                 {
-                    this.unit.writeInstruction("]]>");
+                    this.unit.writeInstruction("]]>", createLocation());
                 }
                 else
                 {
@@ -196,7 +196,7 @@ public final class SAXCompiler extends Compiler
         {
             if (this.inDocument)
             {
-                this.unit.writeWhitespace(new String(ch, start, length));
+                this.unit.writeWhitespace(new String(ch, start, length), createLocation());
             }
         }
 
@@ -225,7 +225,7 @@ public final class SAXCompiler extends Compiler
             {
                 if (!this.unit.getFaceletsProcessingInstructions().isConsumeCDataSections())
                 {
-                    this.unit.writeInstruction("<![CDATA[");
+                    this.unit.writeInstruction("<![CDATA[", createLocation());
                 }
                 else
                 {
@@ -296,7 +296,7 @@ public final class SAXCompiler extends Compiler
             {
                 StringBuilder sb = new StringBuilder(64);
                 sb.append("<?").append(target).append(' ').append(data).append("?>\n");
-                this.unit.writeInstruction(sb.toString());
+                this.unit.writeInstruction(sb.toString(), createLocation());
             }
         }
     }
@@ -334,7 +334,7 @@ public final class SAXCompiler extends Compiler
         {
             if (this.inDocument && inMetadata && (!consumingCDATA || (consumingCDATA && !swallowCDATAContent)))
             {
-                this.unit.writeText(new String(ch, start, length));
+                this.unit.writeText(new String(ch, start, length), createLocation());
             }
         }
 
@@ -343,7 +343,7 @@ public final class SAXCompiler extends Compiler
         {
             if (this.inDocument && inMetadata && !unit.getFaceletsProcessingInstructions().isConsumeXMLComments())
             {
-                this.unit.writeComment(new String(ch, start, length));
+                this.unit.writeComment(new String(ch, start, length), createLocation());
             }
         }
 
@@ -371,7 +371,7 @@ public final class SAXCompiler extends Compiler
             {
                 if (!this.unit.getFaceletsProcessingInstructions().isConsumeCDataSections())
                 {
-                    this.unit.writeInstruction("]]>");
+                    this.unit.writeInstruction("]]>", createLocation());
                 }
                 else
                 {
@@ -443,7 +443,7 @@ public final class SAXCompiler extends Compiler
         {
             if (this.inDocument && inMetadata)
             {
-                this.unit.writeWhitespace(new String(ch, start, length));
+                this.unit.writeWhitespace(new String(ch, start, length), createLocation());
             }
         }
 
@@ -472,7 +472,7 @@ public final class SAXCompiler extends Compiler
             {
                 if (!this.unit.getFaceletsProcessingInstructions().isConsumeCDataSections())
                 {
-                    this.unit.writeInstruction("<![CDATA[");
+                    this.unit.writeInstruction("<![CDATA[", createLocation());
                 }
                 else
                 {
@@ -542,7 +542,7 @@ public final class SAXCompiler extends Compiler
             {
                 StringBuilder sb = new StringBuilder(64);
                 sb.append("<?").append(target).append(' ').append(data).append("?>\n");
-                unit.writeInstruction(sb.toString());
+                unit.writeInstruction(sb.toString(), createLocation());
             }
         }        
     }
@@ -585,7 +585,7 @@ public final class SAXCompiler extends Compiler
             if (this.inDocument && inCompositeInterface && 
                     (!consumingCDATA || (consumingCDATA && !swallowCDATAContent)))
             {
-                this.unit.writeText(new String(ch, start, length));
+                this.unit.writeText(new String(ch, start, length), createLocation());
             }
         }
 
@@ -595,7 +595,7 @@ public final class SAXCompiler extends Compiler
             if (inDocument && inCompositeInterface && 
                     !unit.getFaceletsProcessingInstructions().isConsumeXMLComments())
             {
-                this.unit.writeComment(new String(ch, start, length));
+                this.unit.writeComment(new String(ch, start, length), createLocation());
             }
         }
 
@@ -623,7 +623,7 @@ public final class SAXCompiler extends Compiler
             {
                 if (!this.unit.getFaceletsProcessingInstructions().isConsumeCDataSections())
                 {
-                    this.unit.writeInstruction("]]>");
+                    this.unit.writeInstruction("]]>", createLocation());
                 }
                 else
                 {
@@ -698,7 +698,7 @@ public final class SAXCompiler extends Compiler
         {
             if (this.inDocument && inCompositeInterface)
             {
-                this.unit.writeWhitespace(new String(ch, start, length));
+                this.unit.writeWhitespace(new String(ch, start, length), createLocation());
             }
         }
 
@@ -727,7 +727,7 @@ public final class SAXCompiler extends Compiler
             {
                 if (!this.unit.getFaceletsProcessingInstructions().isConsumeCDataSections())
                 {
-                    this.unit.writeInstruction("<![CDATA[");
+                    this.unit.writeInstruction("<![CDATA[", createLocation());
                 }
                 else
                 {
@@ -802,7 +802,7 @@ public final class SAXCompiler extends Compiler
             {
                 StringBuilder sb = new StringBuilder(64);
                 sb.append("<?").append(target).append(' ').append(data).append("?>\n");
-                this.unit.writeInstruction(sb.toString());
+                this.unit.writeInstruction(sb.toString(), createLocation());
             }
         }        
     }
@@ -1065,7 +1065,7 @@ public final class SAXCompiler extends Compiler
                 {
                     if (!mngr.getFaceletsProcessingInstructions().isConsumeXmlDeclaration())
                     {
-                        mngr.writeInstruction(m.group(0) + '\n');
+                        mngr.writeInstruction(m.group(0) + '\n', null);
                     }
                     if (m.group(3) != null)
                     {

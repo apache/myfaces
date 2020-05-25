@@ -46,26 +46,33 @@ public class ContextAwareTagValueExpression
 
     private static final long serialVersionUID = 1L;
 
-    private ValueExpression _wrapped; 
-    private Location _location;
-    private String _qName;
+    private ValueExpression wrapped; 
+    private Location location;
+    private String qName;
 
     public ContextAwareTagValueExpression()
     {
         super();
     }
 
+    public ContextAwareTagValueExpression(Location location, String qName, ValueExpression valueExpression)
+    {
+        this.location = location;
+        this.qName = qName;
+        this.wrapped = valueExpression;
+    }
+
     public ContextAwareTagValueExpression(TagAttribute tagAttribute, ValueExpression valueExpression)
     {
-        _location = tagAttribute.getLocation();
-        _qName = tagAttribute.getQName();
-        _wrapped = valueExpression;
+        this.location = tagAttribute.getLocation();
+        this.qName = tagAttribute.getQName();
+        this.wrapped = valueExpression;
     }
 
     @Override
     public Class<?> getExpectedType()
     {
-        return _wrapped.getExpectedType();
+        return wrapped.getExpectedType();
     }
 
     @Override
@@ -73,7 +80,7 @@ public class ContextAwareTagValueExpression
     {
         try
         {
-            return _wrapped.getType(context);
+            return wrapped.getType(context);
         }
         catch (PropertyNotFoundException pnfe)
         {
@@ -90,7 +97,7 @@ public class ContextAwareTagValueExpression
     {
         try
         {
-            return _wrapped.getValue(context);
+            return wrapped.getValue(context);
         }
         catch (PropertyNotFoundException pnfe)
         {
@@ -126,7 +133,7 @@ public class ContextAwareTagValueExpression
     {
         try
         {
-            return _wrapped.isReadOnly(context);
+            return wrapped.isReadOnly(context);
         }
         catch (PropertyNotFoundException pnfe)
         {
@@ -143,7 +150,7 @@ public class ContextAwareTagValueExpression
     {
         try
         {
-            _wrapped.setValue(context, value);
+            wrapped.setValue(context, value);
         }
         catch (PropertyNotFoundException pnfe)
         {
@@ -163,65 +170,65 @@ public class ContextAwareTagValueExpression
     @Override
     public boolean equals(Object obj)
     {
-        return _wrapped.equals(obj);
+        return wrapped.equals(obj);
     }
 
     @Override
     public String getExpressionString()
     {
-        return _wrapped.getExpressionString();
+        return wrapped.getExpressionString();
     }
 
     @Override
     public int hashCode()
     {
-        return _wrapped.hashCode();
+        return wrapped.hashCode();
     }
 
     @Override
     public boolean isLiteralText()
     {
-        return _wrapped.isLiteralText();
+        return wrapped.isLiteralText();
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
-        _wrapped = (ValueExpression) in.readObject();
-        _location = (Location) in.readObject();
-        _qName = in.readUTF();
+        wrapped = (ValueExpression) in.readObject();
+        location = (Location) in.readObject();
+        qName = in.readUTF();
     }
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
-        out.writeObject(_wrapped);
-        out.writeObject(_location);
-        out.writeUTF(_qName);
+        out.writeObject(wrapped);
+        out.writeObject(location);
+        out.writeUTF(qName);
     }
 
     @Override
     public String toString()
     {
-        return _location + ": " + _wrapped;
+        return location + ": " + wrapped;
     }
 
     @Override
     public ValueExpression getWrapped()
     {
-        return _wrapped;
+        return wrapped;
     }
 
     @Override
     public Location getLocation()
     {
-        return _location;
+        return location;
     }
     
     @Override
     public String getQName()
     {
-        return _qName;
+        return qName;
     }
     
     @Override
