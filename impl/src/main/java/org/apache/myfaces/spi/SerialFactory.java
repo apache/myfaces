@@ -18,14 +18,52 @@
  */
 package org.apache.myfaces.spi;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import org.apache.myfaces.util.lang.FastByteArrayInputStream;
 
-public interface SerialFactory
+public abstract class SerialFactory
 {
-    ObjectOutputStream getObjectOutputStream(OutputStream outputStream) throws IOException;
-    ObjectInputStream getObjectInputStream(InputStream inputStream) throws IOException;
+    public byte[] toByteArray(Object object) throws IOException
+    {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+        {
+            try (ObjectOutputStream oos = getObjectOutputStream(baos))
+            {
+                oos.writeObject(object);
+                oos.flush();
+
+                return baos.toByteArray();
+            }
+        }
+    }
+    
+    public Object toObject(byte[] bytes) throws IOException, PrivilegedActionException, ClassNotFoundException
+    {
+        try (InputStream bias = new FastByteArrayInputStream(bytes))
+        {
+            try (ObjectInputStream ois = getObjectInputStream(bias))
+            {
+                if (System.getSecurityManager() != null)
+                {
+                    //Put IOException and ClassNotFoundException as "checked" exceptions,
+                    //so AccessController wrap them in a PrivilegedActionException
+                    return AccessController.doPrivileged((PrivilegedExceptionAction) () -> ois.readObject());
+                }
+
+                return ois.readObject();
+            }
+        }
+    }
+
+    protected abstract ObjectOutputStream getObjectOutputStream(OutputStream outputStream) throws IOException;
+
+    protected abstract ObjectInputStream getObjectInputStream(InputStream inputStream) throws IOException;
 }

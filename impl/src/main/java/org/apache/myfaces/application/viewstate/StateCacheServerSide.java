@@ -92,7 +92,7 @@ class StateCacheServerSide extends StateCache<Object, Object>
         String randomMode = config.getRandomKeyInViewStateSessionToken();
         if (MyfacesConfig.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM.equals(randomMode))
         {
-            sessionViewStorageFactory = new SessionViewStorageFactoryImpl( new KeyFactorySecureRandom(facesContext));
+            sessionViewStorageFactory = new SessionViewStorageFactoryImpl(new KeyFactorySecureRandom(facesContext));
         }
         else if (MyfacesConfig.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_RANDOM.equals(randomMode))
         {
@@ -133,7 +133,7 @@ class StateCacheServerSide extends StateCache<Object, Object>
         return null;
     }
 
-    protected void saveSerializedViewInServletSession(FacesContext context, Object serializedView)
+    protected void saveSerializedViewInSession(FacesContext context, Object serializedView)
     {
         Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
         SerializedViewCollection viewCollection = (SerializedViewCollection) sessionMap.computeIfAbsent(
@@ -210,7 +210,7 @@ class StateCacheServerSide extends StateCache<Object, Object>
         sessionMap.put(SERIALIZED_VIEW_SESSION_ATTR, viewCollection);
     }
 
-    protected Object getSerializedViewFromServletSession(FacesContext context, String viewId, Object sequence)
+    protected Object getSerializedViewFromSession(FacesContext context, String viewId, Object sequence)
     {
         ExternalContext externalContext = context.getExternalContext();
         Map<Object, Object> attributeMap = context.getAttributes();
@@ -460,7 +460,7 @@ class StateCacheServerSide extends StateCache<Object, Object>
             log.finest("Processing saveSerializedView - server-side state saving - save state");
         }
         //save state in server session
-        saveSerializedViewInServletSession(facesContext, serializedView);
+        saveSerializedViewInSession(facesContext, serializedView);
         
         if (log.isLoggable(Level.FINEST))
         {
@@ -482,7 +482,7 @@ class StateCacheServerSide extends StateCache<Object, Object>
 
         return (serverStateId == null)
                 ? null
-                : getSerializedViewFromServletSession(facesContext, viewId, serverStateId);
+                : getSerializedViewFromSession(facesContext, viewId, serverStateId);
     }
 
     @Override

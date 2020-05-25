@@ -26,16 +26,16 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import org.apache.myfaces.util.MyFacesObjectInputStream;
 
-public class DefaultSerialFactory implements SerialFactory
+public class DefaultSerialFactory extends SerialFactory
 {
     @Override
-    public ObjectOutputStream getObjectOutputStream(OutputStream outputStream) throws IOException
+    protected ObjectOutputStream getObjectOutputStream(OutputStream outputStream) throws IOException
     {
         return new ObjectOutputStream(outputStream);
     }
 
     @Override
-    public ObjectInputStream getObjectInputStream(InputStream inputStream) throws IOException
+    protected ObjectInputStream getObjectInputStream(InputStream inputStream) throws IOException
     {
         return new MyFacesObjectInputStream(inputStream);
     }

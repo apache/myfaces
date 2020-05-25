@@ -40,6 +40,11 @@ public class FastByteArrayInputStream extends InputStream
      */
     protected int pos = 0;
 
+    public FastByteArrayInputStream(byte[] buf)
+    {
+        this(buf, buf.length);
+    }
+
     public FastByteArrayInputStream(byte[] buf, int count)
     {
         this.buf = buf;

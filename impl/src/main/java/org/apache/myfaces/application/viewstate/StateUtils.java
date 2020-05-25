@@ -21,12 +21,8 @@ package org.apache.myfaces.application.viewstate;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
-import java.security.AccessController;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivilegedExceptionAction;
 import java.util.Base64;
 import java.util.Random;
 import java.util.logging.Level;
@@ -292,19 +288,10 @@ public final class StateUtils
         // get the Factory that was instantiated @ startup
         SerialFactory serialFactory = (SerialFactory) ctx.getApplicationMap().get(SERIAL_FACTORY);
         Assert.notNull(serialFactory, "serialFactory");
-        
+
         try
         {
-            try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
-            {
-                try (ObjectOutputStream oos = serialFactory.getObjectOutputStream(baos))
-                {
-                    oos.writeObject(object);
-                    oos.flush();
-
-                    return baos.toByteArray();
-                }
-            }
+            return serialFactory.toByteArray(object);
         }
         catch (IOException e)
         {
@@ -491,93 +478,17 @@ public final class StateUtils
      */
     public static final Object getAsObject(byte[] bytes, ExternalContext ctx)
     {
-        ByteArrayInputStream input = null;
+        // get the Factory that was instantiated @ startup
+        SerialFactory serialFactory = (SerialFactory) ctx.getApplicationMap().get(SERIAL_FACTORY);
+        Assert.notNull(serialFactory, "serialFactory");
 
         try
         {
-            input = new ByteArrayInputStream(bytes);
-
-            // get the Factory that was instantiated @ startup
-            SerialFactory serialFactory = (SerialFactory) ctx.getApplicationMap().get(SERIAL_FACTORY);
-            
-            Assert.notNull(serialFactory, "serialFactory");
-
-            ObjectInputStream s = null;
-            Exception pendingException = null;
-            try
-            {
-                s = serialFactory.getObjectInputStream(input); 
-                Object object = null;
-                if (System.getSecurityManager() != null)
-                {
-                    final ObjectInputStream finalS = s;
-
-                    //Put IOException and ClassNotFoundException as "checked" exceptions,
-                    //so AccessController wrap them in a PrivilegedActionException
-                    object = AccessController.doPrivileged((PrivilegedExceptionAction) () -> finalS.readObject());
-                }
-                else
-                {
-                    object = s.readObject();
-                }
-                return object;
-            }
-            catch (Exception e)
-            {
-                pendingException = e;
-                throw new FacesException(e);
-            }
-            finally
-            {
-                if (s != null)
-                {
-                    try
-                    {
-                        s.close();
-                    }
-                    catch (IOException e)
-                    {
-                        // If a previous exception is thrown 
-                        // ignore this, but if not, wrap it in a
-                        // FacesException and throw it. In this way
-                        // we preserve the original semantic of this
-                        // method, but we handle correctly the case
-                        // when we close a stream. Obviously, the 
-                        // information about this exception is lost,
-                        // but note that the interesting information 
-                        // is always on pendingException, since we
-                        // only do a readObject() on the outer try block.
-                        if (pendingException == null)
-                        {
-                            throw new FacesException(e);
-                        }                        
-                    }
-                    finally
-                    {
-                        s = null;
-                    }
-                }
-            }
+            return serialFactory.toObject(bytes);
         }
-        finally
+        catch (Exception e)
         {
-            if (input != null)
-            {
-                try
-                {
-                    input.close();
-                }
-                catch (IOException e)
-                {
-                    //ignore it, because ByteArrayInputStream.close has
-                    //no effect, but it is better to call close and preserve
-                    //semantic from previous code.
-                }
-                finally
-                {
-                    input = null;
-                }
-            }
+            throw new FacesException(e);
         }
     }
 
