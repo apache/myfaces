@@ -422,11 +422,12 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         if (loops == maxLoops && events.hasMoreEvents())
         {
             // broadcast reach maxLoops - probably a infinitive recursion:
-            boolean production = getFacesContext().isProjectStage(ProjectStage.Production);
-            Level level = production ? Level.FINE : Level.WARNING;
+            Level level = getFacesContext().isProjectStage(ProjectStage.Production)
+                    ? Level.FINE
+                    : Level.WARNING;
             if (_getLogger().isLoggable(level))
             {
-                List<String> name = new ArrayList<String>(events.getAnyPhase().size() + events.getOnPhase().size());
+                List<String> name = new ArrayList<>(events.getAnyPhase().size() + events.getOnPhase().size());
                 for (FacesEvent facesEvent : events.getAnyPhase())
                 {
                     String clientId = facesEvent.getComponent().getClientId(getFacesContext());

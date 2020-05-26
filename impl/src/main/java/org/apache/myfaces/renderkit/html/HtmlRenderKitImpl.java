@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.application.ProjectStage;
 
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseStream;
@@ -332,7 +331,7 @@ public class HtmlRenderKitImpl extends RenderKit implements LazyRenderKit
             characterEncoding = ContentTypeUtils.DEFAULT_CHAR_ENCODING;
         }
 
-        if (myfacesConfig.isEarlyFlushEnabled() && facesContext.isProjectStage(ProjectStage.Production))
+        if (myfacesConfig.isEarlyFlushEnabled())
         {
             return new EarlyFlushHtmlResponseWriterImpl(writer, selectedContentType, characterEncoding, 
                 myfacesConfig.isWrapScriptContentWithXmlCommentTag(), writerContentType);

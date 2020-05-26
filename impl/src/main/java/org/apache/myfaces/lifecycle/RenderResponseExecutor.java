@@ -109,8 +109,9 @@ class RenderResponseExecutor extends PhaseExecutor
             if (loops == maxLoops)
             {
                 // PreRenderView reach maxLoops - probably a infinitive recursion:
-                boolean production = facesContext.isProjectStage(ProjectStage.Production);
-                Level level = production ? Level.FINE : Level.WARNING;
+                Level level = facesContext.isProjectStage(ProjectStage.Production)
+                        ? Level.FINE
+                        : Level.WARNING;
                 if (log.isLoggable(level))
                 {
                     log.log(level, "Cicle over buildView-PreRenderViewEvent on RENDER_RESPONSE phase "

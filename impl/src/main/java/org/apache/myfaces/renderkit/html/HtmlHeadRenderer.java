@@ -21,7 +21,6 @@ package org.apache.myfaces.renderkit.html;
 import java.io.IOException;
 import java.util.List;
 
-import javax.faces.application.ProjectStage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
@@ -84,7 +83,7 @@ public class HtmlHeadRenderer extends Renderer
         
         writer.endElement(HTML.HEAD_ELEM);
 
-        if (myfacesConfig.isEarlyFlushEnabled() && facesContext.isProjectStage(ProjectStage.Production))
+        if (myfacesConfig.isEarlyFlushEnabled())
         {
             writer.flush();
         }

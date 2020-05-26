@@ -20,10 +20,10 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.FacesException;
-import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
@@ -124,8 +124,14 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
         {
             if (hasChildren)
             {
-                log.info("Component with resourceName " + resourceName +
-                        " and child components found. Child components will be ignored.");
+                Level level = facesContext.isProjectStage(ProjectStage.Production)
+                        ? Level.FINE
+                        : Level.WARNING;
+                if (log.isLoggable(level))
+                {
+                    log.log(level, "h:outputScript with resourceName " + resourceName + 
+                            " and child components found. Child components will be ignored.");
+                }
             }
         }
         else
@@ -144,10 +150,12 @@ public class HtmlScriptRenderer extends Renderer implements ComponentSystemEvent
             }
             else
             {
-                if (!facesContext.isProjectStage(ProjectStage.Production))
+                Level level = facesContext.isProjectStage(ProjectStage.Production)
+                        ? Level.FINE
+                        : Level.WARNING;
+                if (log.isLoggable(level))
                 {
-                    facesContext.addMessage(component.getClientId(facesContext),
-                            new FacesMessage("Component with no name and no body content, so nothing rendered."));
+                    log.log(level, "h:outputScript with no name and no body content, so nothing rendered.");
                 }
             }
         }

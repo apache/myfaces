@@ -188,12 +188,9 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 }
                 else
                 {
-                    Level level = Level.FINE;
-                    if (!_facesContext.isProjectStage(ProjectStage.Production))
-                    {
-                        level = Level.WARNING;
-                    }
-
+                    Level level = _facesContext.isProjectStage(ProjectStage.Production)
+                            ? Level.FINE
+                            : Level.WARNING;
                     if (log.isLoggable(level))
                     {
                         ValueExpression expression = _currentUISelectItems.getValueExpression("value");

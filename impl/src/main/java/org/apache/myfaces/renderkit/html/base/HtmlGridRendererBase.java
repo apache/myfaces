@@ -387,7 +387,9 @@ public class HtmlGridRendererBase extends HtmlRenderer
             {
                 if (columnIndex > 0)
                 {
-                    Level level = context.isProjectStage(ProjectStage.Production) ? Level.FINE : Level.WARNING;
+                    Level level = context.isProjectStage(ProjectStage.Production)
+                            ? Level.FINE
+                            : Level.WARNING;
                     if (log.isLoggable(level))
                     {
                         log.log(level, "PanelGrid " + ComponentUtils.getPathToComponent(component)

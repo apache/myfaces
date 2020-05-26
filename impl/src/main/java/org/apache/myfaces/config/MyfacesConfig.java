@@ -1056,6 +1056,10 @@ public class MyfacesConfig
         
         cfg.earlyFlushEnabled = getBoolean(extCtx, EARLY_FLUSH_ENABLED,
                 EARLY_FLUSH_ENABLED_DEFAULT);
+        if (cfg.projectStage != ProjectStage.Production)
+        {
+            cfg.earlyFlushEnabled = false;
+        }
 
         cfg.strictJsf2FaceletsCompatibility = getBoolean(extCtx, STRICT_JSF_2_FACELETS_COMPATIBILITY, 
                 STRICT_JSF_2_FACELETS_COMPATIBILITY_DEFAULT);

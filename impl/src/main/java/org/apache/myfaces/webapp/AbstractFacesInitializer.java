@@ -196,11 +196,9 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             
             initWebsocketIntegration(servletContext, externalContext);
 
-            if ( (facesContext.isProjectStage(ProjectStage.Development) || 
-                  facesContext.isProjectStage(ProjectStage.Production)) &&
-                 log.isLoggable(Level.FINE))
+            if (log.isLoggable(Level.FINEST))
             {
-                log.fine("ServletContext initialized.");
+                log.finest("ServletContext initialized");
             }
 
             WebConfigParamsLogger.logWebContextParams(facesContext);
@@ -220,8 +218,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             }
 
             // print out a very prominent log message if the project stage is != Production
-            if (!facesContext.isProjectStage(ProjectStage.Production) &&
-                !facesContext.isProjectStage(ProjectStage.UnitTest))
+            if (!facesContext.isProjectStage(ProjectStage.Production))
             {
                 ProjectStage projectStage = facesContext.getApplication().getProjectStage();
                 StringBuilder message = new StringBuilder("\n\n");

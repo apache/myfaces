@@ -90,9 +90,12 @@ public class HtmlImageRendererBase extends HtmlRenderer
         }
         else
         {
-            if (facesContext.isProjectStage(ProjectStage.Development) && log.isLoggable(Level.WARNING))
+            Level level = facesContext.isProjectStage(ProjectStage.Production)
+                    ? Level.FINE
+                    : Level.WARNING;
+            if (log.isLoggable(level))
             {
-                log.warning("Component UIGraphic " + uiComponent.getClientId(facesContext) 
+                log.log(level, "Component UIGraphic " + uiComponent.getClientId(facesContext) 
                         + " has no attribute url, value, name or attribute resolves to null. Path to component " 
                         + ComponentUtils.getPathToComponent(uiComponent));
             }
@@ -103,9 +106,12 @@ public class HtmlImageRendererBase extends HtmlRenderer
          */                
         if (uiComponent.getAttributes().get(HTML.ALT_ATTR) == null) 
         {
-            if(facesContext.isProjectStage(ProjectStage.Development) && log.isLoggable(Level.WARNING))
+            Level level = facesContext.isProjectStage(ProjectStage.Production)
+                    ? Level.FINE
+                    : Level.WARNING;
+            if (log.isLoggable(level))
             {
-                log.warning("Component UIGraphic " + uiComponent.getClientId(facesContext) 
+                log.log(level, "Component UIGraphic " + uiComponent.getClientId(facesContext) 
                         + " has no attribute alt or attribute resolves to null. Path to component " 
                         + ComponentUtils.getPathToComponent(uiComponent));
             }
