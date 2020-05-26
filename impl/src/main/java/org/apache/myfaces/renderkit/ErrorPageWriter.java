@@ -599,7 +599,10 @@ public final class ErrorPageWriter
         else if (ex instanceof LocationAware)
         {
             LocationAware laex = (LocationAware) ex;
-            locationString = laex.getLocation().toString();
+            if (laex.getLocation() != null)
+            {
+                locationString = laex.getLocation().toString();
+            }
         }
 
         while (ex.getCause() != null)
@@ -615,7 +618,10 @@ public final class ErrorPageWriter
             else if (ex instanceof LocationAware)
             {
                 LocationAware laex = (LocationAware) ex;
-                locationString = laex.getLocation().toString();
+                if (laex.getLocation() != null)
+                {
+                    locationString = laex.getLocation().toString();
+                }
             }
             
             if (ex.getMessage() != null)
