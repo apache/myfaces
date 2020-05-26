@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.view.facelets.el;
+package org.apache.myfaces.view.facelets;
 
 import javax.faces.view.Location;
 

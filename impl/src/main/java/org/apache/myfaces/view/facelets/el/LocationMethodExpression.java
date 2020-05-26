@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
+import org.apache.myfaces.view.facelets.LocationAware;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;

@@ -61,6 +61,7 @@ import org.apache.myfaces.cdi.model.FacesDataModelManager;
 import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.util.ExternalSpecifications;
+import org.apache.myfaces.view.facelets.LocationAwareFacesException;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 
 /**
@@ -930,13 +931,13 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         {
             if (step > 0 && (end < begin))
             {
-                throw new FacesException("on empty models, end cannot be less than begin " +
-                        "when the step is positive");
+                throw new LocationAwareFacesException("on empty models, end cannot be less than begin " +
+                        "when the step is positive", this);
             }
             else if (step < 0 && (end > begin))
             {
-                throw new FacesException("on empty models, end cannot be greater than begin " +
-                        "when the step is negative");
+                throw new LocationAwareFacesException("on empty models, end cannot be greater than begin " +
+                        "when the step is negative", this);
             }
             setStep(step);
         }
@@ -944,44 +945,37 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         {
             if (size < 0)
             {
-                throw new FacesException("iteration size cannot be less " +
-                        "than zero");
+                throw new LocationAwareFacesException("iteration size cannot be less than zero", this);
             }
             else if (!sizeIsEnd && (begin == -1) && (offset + size) > end)
             {
-                throw new FacesException("iteration size cannot be greater " +
-                        "than collection size");
+                throw new LocationAwareFacesException("iteration size cannot be greater than collection size", this);
             }
             else if (!sizeIsEnd && (begin == -1) && (offset + size) > count)
             {
-                throw new FacesException("iteration size cannot be greater " +
-                        "than collection size");
+                throw new LocationAwareFacesException("iteration size cannot be greater than collection size", this);
             }
             else if (!sizeIsEnd && (begin >= 0) && (begin + size) > end+1)
             {
-                throw new FacesException("iteration size cannot be greater " +
-                        "than collection size");
+                throw new LocationAwareFacesException("iteration size cannot be greater than collection size", this);
             }
             else if(!sizeIsEnd && (begin >= 0) && (end+1 > count))
             {
-                throw new FacesException("end cannot be greater " +
-                        "than collection size");
+                throw new LocationAwareFacesException("end cannot be greater than collection size", this);
             }
             else if(!sizeIsEnd && (begin >= 0) && (begin > count))
             {
-                throw new FacesException("begin cannot be greater " +
-                        "than collection size");
+                throw new LocationAwareFacesException("begin cannot be greater than collection size", this);
             }
         }
-        if (!_emptyModel && (begin >= 0) && (begin > end))
+
+        if (begin >= 0 && begin > end)
         {
-            throw new FacesException("begin cannot be greater " +
-                    "than end");
+            throw new LocationAwareFacesException("begin cannot be greater than end", this);
         }
-        if (!_emptyModel && (size > -1) && (offset > end))
+        if (size > -1 && offset > end)
         {
-            throw new FacesException("iteration offset cannot be greater " +
-                    "than collection size");
+            throw new LocationAwareFacesException("iteration offset cannot be greater than collection size", this);
         }
 
         if (!_emptyModel && step == -1)
@@ -991,14 +985,12 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
         if (!_emptyModel && step < 0)
         {
-            throw new FacesException("iteration step size cannot be less " +
-                    "than zero");
+            throw new LocationAwareFacesException("iteration step size cannot be less than zero", this);
         }
 
         else if (step == 0)
         {
-            throw new FacesException("iteration step size cannot be equal " +
-                    "to zero");
+            throw new LocationAwareFacesException("iteration step size cannot be equal to zero", this);
         }
 
         _end = end;

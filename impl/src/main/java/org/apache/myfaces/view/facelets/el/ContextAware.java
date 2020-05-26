@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
+import org.apache.myfaces.view.facelets.LocationAware;
+
 
 /**
  * Identification inferface for types that know about {@link javax.faces.view.Location}

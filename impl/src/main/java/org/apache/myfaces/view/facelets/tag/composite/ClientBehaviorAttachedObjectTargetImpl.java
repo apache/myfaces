@@ -66,7 +66,7 @@ public class ClientBehaviorAttachedObjectTargetImpl implements ClientBehaviorAtt
         
         if (targetsArray.length > 0)
         {
-            List<UIComponent> targetsList = new ArrayList<UIComponent>(targetsArray.length);
+            List<UIComponent> targetsList = new ArrayList<>(targetsArray.length);
             for (String target : targetsArray)
             {
                 UIComponent innerComponent = topLevelComponent.findComponent(target);
@@ -103,7 +103,7 @@ public class ClientBehaviorAttachedObjectTargetImpl implements ClientBehaviorAtt
                     if (innerComponent instanceof ClientBehaviorHolder ||
                         UIComponent.isCompositeComponent(innerComponent))
                     {
-                        List<UIComponent> targetsList = new ArrayList<UIComponent>(1);
+                        List<UIComponent> targetsList = new ArrayList<>(1);
                         targetsList.add(
                                 new ClientBehaviorRedirectEventComponentWrapper(innerComponent, getName(), getEvent()));
                         return targetsList;
