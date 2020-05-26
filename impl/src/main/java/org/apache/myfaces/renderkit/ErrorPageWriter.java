@@ -601,9 +601,9 @@ public final class ErrorPageWriter
             if (ex instanceof ContextAware)
             {
                 ContextAware caex = (ContextAware) ex;
-                contextAwareLocation = caex.getLocation().toString() + "    "
-                        + (caex.getQName() == null ? "" : (caex.getQName() + "=\""))
-                        + caex.getExpressionString() + '"';
+                contextAwareLocation = caex.getLocation().toString() + "    " +
+                        caex.getQName() + "=\"" +
+                        caex.getExpressionString() + '"';
             }
             if (ex.getMessage() != null)
             {
