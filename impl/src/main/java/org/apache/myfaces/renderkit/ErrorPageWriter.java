@@ -652,6 +652,7 @@ public final class ErrorPageWriter
         if (locationString != null)
         {
             writer.write("<br/> <br/>");
+            writer.write("Facelet: <br/>");
             writer.write(locationString);
             writer.write("<br/>");
         }
