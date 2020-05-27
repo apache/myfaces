@@ -44,6 +44,7 @@ import javax.faces.view.facelets.TagHandler;
 import javax.faces.view.facelets.ValidatorConfig;
 import javax.faces.view.facelets.ValidatorHandler;
 import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.view.facelets.LocationAwareFacesException;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeComponentResourceTagHandler;
 import org.apache.myfaces.view.facelets.tag.composite.CompositeResouceWrapper;
 
@@ -439,12 +440,14 @@ public abstract class AbstractTagLibrary implements TagLibrary
                 }
                 else
                 {
-                    throw new FacesException("Error Instantiating: " + handlerType.getName(), t);
+                    throw new LocationAwareFacesException("Error Instantiating: " + handlerType.getName(), t,
+                            cfg.getTag().getLocation());
                 }
             }
             catch (Exception e)
             {
-                throw new FacesException("Error Instantiating: " + handlerType.getName(), e);
+                throw new LocationAwareFacesException("Error Instantiating: " + handlerType.getName(), e,
+                        cfg.getTag().getLocation());
             }
         }
     }

@@ -218,7 +218,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             }
 
             // print out a very prominent log message if the project stage is != Production
-            if (!facesContext.isProjectStage(ProjectStage.Production))
+            if (!facesContext.isProjectStage(ProjectStage.Production)
+                    && !facesContext.isProjectStage(ProjectStage.UnitTest))
             {
                 ProjectStage projectStage = facesContext.getApplication().getProjectStage();
                 StringBuilder message = new StringBuilder("\n\n");

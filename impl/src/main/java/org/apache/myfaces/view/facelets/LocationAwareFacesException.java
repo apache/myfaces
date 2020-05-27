@@ -47,6 +47,12 @@ public class LocationAwareFacesException extends FacesException implements Locat
         super(cause);
         this.location = location;
     }
+    
+    public LocationAwareFacesException(Throwable cause, UIComponent component)
+    {
+        super(cause);
+        this.location = (Location) component.getAttributes().get(UIComponent.VIEW_LOCATION_KEY);
+    }
 
     public LocationAwareFacesException(String message)
     {

@@ -21,7 +21,6 @@ package org.apache.myfaces.view.facelets.component;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.context.FacesContext;
@@ -37,6 +36,7 @@ import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.view.facelets.LocationAwareFacesException;
 
 /**
  *
@@ -74,8 +74,8 @@ public class JsfElementRenderer extends HtmlRenderer
 
         if (elementName == null)
         {
-            throw new FacesException("jsf:element with clientId"
-                + component.getClientId(facesContext) + " requires 'elementName' passthrough attribute");
+            throw new LocationAwareFacesException("jsf:element with clientId"
+                + component.getClientId(facesContext) + " requires 'elementName' passthrough attribute", component);
         }
         JsfElement jsfElement = (JsfElement) component;
         Map<String, List<ClientBehavior>> behaviors = jsfElement.getClientBehaviors();

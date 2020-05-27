@@ -1085,7 +1085,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         }
         catch (IOException e)
         {
-            throw new FacesException(e);
+            throw new LocationAwareFacesException(e, this);
         }
         finally
         {
@@ -1125,10 +1125,10 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 }
                 catch (Exception e)
                 {
-                    throw new FacesException(e);
+                    throw new LocationAwareFacesException(e, this);
                 }
             }
-    
+
             // Now Look throught facets on this UIComponent
             if (this.getFacetCount() > 0)
             {

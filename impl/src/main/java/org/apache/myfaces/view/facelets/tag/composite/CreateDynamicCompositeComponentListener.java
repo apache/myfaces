@@ -20,7 +20,6 @@ package org.apache.myfaces.view.facelets.tag.composite;
 
 import java.io.IOException;
 import java.util.Map;
-import javax.faces.FacesException;
 import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -35,6 +34,7 @@ import org.apache.myfaces.view.facelets.FaceletDynamicComponentRefreshTransientB
 import org.apache.myfaces.view.facelets.FaceletFactory;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageBase;
+import org.apache.myfaces.view.facelets.LocationAwareFacesException;
 import org.apache.myfaces.view.facelets.compiler.RefreshDynamicComponentListener;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
@@ -178,12 +178,11 @@ public class CreateDynamicCompositeComponentListener
         }
         catch (IOException e)
         {
-            throw new FacesException(e);
+            throw new LocationAwareFacesException(e, component);
         }
         finally
         {
-            facesContext.getAttributes().remove(
-                FaceletViewDeclarationLanguage.REFRESHING_TRANSIENT_BUILD);
+            facesContext.getAttributes().remove(FaceletViewDeclarationLanguage.REFRESHING_TRANSIENT_BUILD);
         }
     }
 
@@ -225,8 +224,7 @@ public class CreateDynamicCompositeComponentListener
         }
         else if (values[0] instanceof Integer)
         {
-            RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(
-                context.getExternalContext());
+            RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(context.getExternalContext());
             taglibURI = runtimeConfig.getNamespaceById().get((Integer)values[0]);
         }
         else if (values[0] instanceof Object[])

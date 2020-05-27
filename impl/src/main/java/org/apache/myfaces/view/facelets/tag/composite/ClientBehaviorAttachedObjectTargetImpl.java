@@ -24,12 +24,12 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.util.lang.ArrayUtils;
 import org.apache.myfaces.util.lang.StringUtils;
+import org.apache.myfaces.view.facelets.LocationAwareFacesException;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)
@@ -81,8 +81,9 @@ public class ClientBehaviorAttachedObjectTargetImpl implements ClientBehaviorAtt
                     }
                     else
                     {
-                        throw new FacesException("Component with clientId " + innerComponent.getClientId(facesContext)
-                                                 + "should be instance of ClientBehaviorHolder");
+                        throw new LocationAwareFacesException("Component with clientId "
+                                + innerComponent.getClientId(facesContext)
+                                + "should be instance of ClientBehaviorHolder", innerComponent);
                     }
                 }
             }
@@ -110,8 +111,9 @@ public class ClientBehaviorAttachedObjectTargetImpl implements ClientBehaviorAtt
                     }
                     else
                     {
-                        throw new FacesException("Component with clientId "+ innerComponent.getClientId(facesContext)
-                                                 + "should be instance of ClientBehaviorHolder");
+                        throw new LocationAwareFacesException("Component with clientId "
+                                + innerComponent.getClientId(facesContext)
+                                + "should be instance of ClientBehaviorHolder", innerComponent);
                     }
                 }
             }
