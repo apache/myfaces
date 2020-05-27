@@ -93,7 +93,6 @@ public final class ErrorPageWriter
      */
     public static class ErrorPageBean implements Serializable
     {
-
         private static final long serialVersionUID = -79513324193326616L;
 
         public String getErrorPageHtml() throws IOException
@@ -212,7 +211,7 @@ public final class ErrorPageWriter
 
     private static String[] debugParts;
 
-    private static final String REGEX_PATTERN = ".*?\\Q,Id:\\E\\s*(\\S+)\\s*\\].*?";
+    private static final Pattern REGEX_PATTERN = Pattern.compile(".*?\\Q,Id:\\E\\s*(\\S+)\\s*\\].*?");
 
     private final static String[] IGNORE = new String[] { "parent", "rendererType" };
 
@@ -261,7 +260,7 @@ public final class ErrorPageWriter
     private static void debugHtml(Writer writer, FacesContext faces, UIViewRoot view,
                                   Collection<UIComponent> components, Throwable... exs) throws IOException
     {
-        _init(faces);
+        init(faces);
         Date now = new Date();
 
         for (int i = 0; i < errorParts.length; i++)
@@ -273,21 +272,19 @@ public final class ErrorPageWriter
                     String viewId = faces.getViewRoot().getViewId();
                     writer.write("viewId=" + viewId);
                     writer.write("<br/>");
-                    String realPath = null;
+
                     try
                     {
                         //Could not work on tomcat 7 running by cargo
-                        realPath = faces.getExternalContext().getRealPath(viewId);
-                    }
-                    catch(Throwable e)
-                    {
-                        //swallow it
-                    }
-                    if (realPath != null)
-                    {
+                        String realPath = faces.getExternalContext().getRealPath(viewId);
                         writer.write("location=" + realPath);
                         writer.write("<br/>");
                     }
+                    catch (Throwable e)
+                    {
+                        //swallow it
+                    }
+
                     writer.write("phaseId=" + faces.getCurrentPhaseId());
                     writer.write("<br/>");
                     writer.write("<br/>");
@@ -324,7 +321,7 @@ public final class ErrorPageWriter
                     {
                         writer.write("\n");
                     }
-                    _writeException(writer, e);
+                    writeException(writer, e);
                     printed = true;
                 }
             }
@@ -336,13 +333,13 @@ public final class ErrorPageWriter
             {
                 if (view != null)
                 {
-                    List<String> errorIds = _getErrorId(components, exs);
-                    _writeComponent(faces, writer, view, errorIds, true);
+                    List<String> errorIds = getErrorId(components, exs);
+                    writeComponent(faces, writer, view, errorIds, true);
                 }
             }
             else if ("vars".equals(errorParts[i]))
             {
-                _writeVariables(writer, faces, view);
+                writeVariables(writer, faces, view);
             }
             else if ("cause".equals(errorParts[i]))
             {
@@ -358,13 +355,13 @@ public final class ErrorPageWriter
                     {
                         writer.write("<br/>");
                     }
-                    _writeCause(writer, e);
+                    writeCause(writer, e);
                     if (iterator != null)
                     {
                         UIComponent uiComponent = iterator.next();
                         if (uiComponent != null)
                         {
-                            _writeComponent(faces, writer, uiComponent, null, /* writeChildren */false);
+                            writeComponent(faces, writer, uiComponent, null, /* writeChildren */false);
                         }
                     }
                     printed = true;
@@ -386,8 +383,9 @@ public final class ErrorPageWriter
      */
     public static void debugHtml(Writer writer, FacesContext faces) throws IOException
     {
-        _init(faces);
+        init(faces);
         Date now = new Date();
+
         for (int i = 0; i < debugParts.length; i++)
         {
             if ("message".equals(debugParts[i]))
@@ -400,15 +398,15 @@ public final class ErrorPageWriter
             }
             else if ("tree".equals(debugParts[i]))
             {
-                _writeComponent(faces, writer, faces.getViewRoot(), null, true);
+                writeComponent(faces, writer, faces.getViewRoot(), null, true);
             }
             else if ("extendedtree".equals(debugParts[i]))
             {
-                _writeExtendedComponentTree(writer, faces);
+                writeExtendedComponentTree(writer, faces);
             }
             else if ("vars".equals(debugParts[i]))
             {
-                _writeVariables(writer, faces, faces.getViewRoot());
+                writeVariables(writer, faces, faces.getViewRoot());
             }
             else
             {
@@ -422,7 +420,7 @@ public final class ErrorPageWriter
     {
         for (Throwable ex : exs)
         {
-            _prepareExceptionStack(ex);
+            prepareExceptionStack(ex);
         }
 
         if (!facesContext.getExternalContext().isResponseCommitted())
@@ -467,40 +465,32 @@ public final class ErrorPageWriter
         facesContext.responseComplete();
     }
 
-    private static String _getErrorTemplate(FacesContext context)
+    private static String getErrorTemplate(FacesContext context)
     {
         String errorTemplate = context.getExternalContext().getInitParameter(ERROR_TEMPLATE_RESOURCE);
-        if (errorTemplate != null)
-        {
-            return errorTemplate;
-        }
-        return ERROR_TEMPLATE;
+        return errorTemplate == null ? ERROR_TEMPLATE : errorTemplate;
     }
 
-    private static String _getDebugTemplate(FacesContext context)
+    private static String getDebugTemplate(FacesContext context)
     {
         String debugTemplate = context.getExternalContext().getInitParameter(DEBUG_TEMPLATE_RESOURCE);
-        if (debugTemplate != null)
-        {
-            return debugTemplate;
-        }
-        return DEBUG_TEMPLATE;
+        return debugTemplate == null ? DEBUG_TEMPLATE : debugTemplate;
     }
 
-    private static void _init(FacesContext context) throws IOException
+    private static void init(FacesContext context) throws IOException
     {
         if (errorParts == null)
         {
-            errorParts = _splitTemplate(_getErrorTemplate(context));
+            errorParts = splitTemplate(getErrorTemplate(context));
         }
 
         if (debugParts == null)
         {
-            debugParts = _splitTemplate(_getDebugTemplate(context));
+            debugParts = splitTemplate(getDebugTemplate(context));
         }
     }
 
-    private static String[] _splitTemplate(String rsc) throws IOException
+    private static String[] splitTemplate(String rsc) throws IOException
     {
         InputStream is = ClassUtils.getContextClassLoader().getResourceAsStream(rsc);
         if (is == null)
@@ -522,18 +512,33 @@ public final class ErrorPageWriter
             // the facelet (or jsp) does not exist.
             throw new IllegalArgumentException("Could not find resource " + rsc);
         }
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buff = new byte[512];
-        int read;
-        while ((read = is.read(buff)) != -1)
+
+        try
         {
-            baos.write(buff, 0, read);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buff = new byte[512];
+            int read;
+            while ((read = is.read(buff)) != -1)
+            {
+                baos.write(buff, 0, read);
+            }
+            String str = baos.toString();
+            return str.split("@@");
         }
-        String str = baos.toString();
-        return str.split("@@");
+        finally
+        {
+            try
+            {
+                is.close();
+            }
+            catch (IOException e)
+            {
+                // ignore
+            }
+        }
     }
 
-    private static List<String> _getErrorId(Collection<UIComponent> components, Throwable... exs)
+    private static List<String> getErrorId(Collection<UIComponent> components, Throwable... exs)
     {
         List<String> list = null;
         for (Throwable e : exs)
@@ -545,25 +550,25 @@ public final class ErrorPageWriter
                 continue;
             }
 
-            Pattern pattern = Pattern.compile(REGEX_PATTERN);
-            Matcher matcher = pattern.matcher(message);
+            Matcher matcher = REGEX_PATTERN.matcher(message);
 
             while (matcher.find())
             {
                 if (list == null)
                 {
-                    list = new ArrayList<String>();
+                    list = new ArrayList<>();
                 }
                 list.add(matcher.group(1));
             }
         }
+
         if (list != null && list.size() > 0)
         {
             return list;
         }
         else if (components != null)
         {
-            list = new ArrayList<String>();
+            list = new ArrayList<>();
             for (UIComponent uiComponent : components)
             {
                 if (uiComponent  != null)
@@ -573,19 +578,21 @@ public final class ErrorPageWriter
             }
             return list;
         }
+
         return null;
     }
 
-    private static void _writeException(Writer writer, Throwable e) throws IOException
+    private static void writeException(Writer writer, Throwable e) throws IOException
     {
         StringWriter str = new StringWriter(256);
-        PrintWriter pstr = new PrintWriter(str);
-        e.printStackTrace(pstr);
-        pstr.close();
+        try (PrintWriter pstr = new PrintWriter(str))
+        {
+            e.printStackTrace(pstr);
+        }
         writer.write(str.toString().replaceAll("<", TS));
     }
 
-    private static void _writeCause(Writer writer, Throwable ex) throws IOException
+    private static void writeCause(Writer writer, Throwable ex) throws IOException
     {
         String msg = ex.getMessage();
         String locationString = null;
@@ -650,28 +657,28 @@ public final class ErrorPageWriter
         }
     }
 
-    private static void _writeVariables(Writer writer, FacesContext faces, UIViewRoot view) throws IOException
+    private static void writeVariables(Writer writer, FacesContext faces, UIViewRoot view) throws IOException
     {
         ExternalContext ctx = faces.getExternalContext();
-        _writeVariables(writer, ctx.getRequestParameterMap(), "Request Parameters");
-        _writeVariables(writer, ctx.getRequestMap(), "Request Attributes");
+        writeVariables(writer, ctx.getRequestParameterMap(), "Request Parameters");
+        writeVariables(writer, ctx.getRequestMap(), "Request Attributes");
         if (view != null)
         {
-          _writeVariables(writer, view.getViewMap(), "View Attributes");
+          writeVariables(writer, view.getViewMap(), "View Attributes");
         }
         if (ctx.getSession(false) != null)
         {
-            _writeVariables(writer, ctx.getSessionMap(), "Session Attributes");
+            writeVariables(writer, ctx.getSessionMap(), "Session Attributes");
         }
         MyfacesConfig config = MyfacesConfig.getCurrentInstance(faces);
         if(config!=null && !config.isFlashScopeDisabled() && ctx.getFlash() != null)
         {
-            _writeVariables(writer, ctx.getFlash(), "Flash Attributes");
+            writeVariables(writer, ctx.getFlash(), "Flash Attributes");
         }
-        _writeVariables(writer, ctx.getApplicationMap(), "Application Attributes");
+        writeVariables(writer, ctx.getApplicationMap(), "Application Attributes");
     }
 
-    private static void _writeVariables(Writer writer, Map<String, ? extends Object> vars, String caption)
+    private static void writeVariables(Writer writer, Map<String, ? extends Object> vars, String caption)
             throws IOException
     {
         writer.write("<table><caption>");
@@ -681,7 +688,7 @@ public final class ErrorPageWriter
         boolean written = false;
         if (!vars.isEmpty())
         {
-            SortedMap<String, Object> sortedMap = new TreeMap<String, Object>(vars);
+            SortedMap<String, Object> sortedMap = new TreeMap<>(vars);
             for (Map.Entry<String, Object> entry : sortedMap.entrySet())
             {
                 String key = entry.getKey();
@@ -713,11 +720,11 @@ public final class ErrorPageWriter
         writer.write("</tbody></table>");
     }
 
-    private static void _writeComponent(FacesContext faces, Writer writer, UIComponent c, List<String> highlightId,
+    private static void writeComponent(FacesContext faces, Writer writer, UIComponent c, List<String> highlightId,
                                         boolean writeChildren) throws IOException
     {
         writer.write("<dl><dt");
-        if (_isText(c))
+        if (isText(c))
         {
             writer.write(" class=\"uicText\"");
         }
@@ -755,7 +762,7 @@ public final class ErrorPageWriter
                 }
             }
         }
-        _writeStart(writer, c, hasChildren, true);
+        writeStart(writer, c, hasChildren, true);
         writer.write(" - State size:" + stateSize + " bytes");
         writer.write("</dt>");
         if (hasChildren)
@@ -768,7 +775,7 @@ public final class ErrorPageWriter
                     writer.write("<span>");
                     writer.write(entry.getKey());
                     writer.write("</span>");
-                    _writeComponent(faces, writer, entry.getValue(), highlightId, true);
+                    writeComponent(faces, writer, entry.getValue(), highlightId, true);
                     writer.write("</dd>");
                 }
             }
@@ -778,12 +785,12 @@ public final class ErrorPageWriter
                 {
                     UIComponent child = c.getChildren().get(i);
                     writer.write("<dd>");
-                    _writeComponent(faces, writer, child, highlightId, writeChildren);
+                    writeComponent(faces, writer, child, highlightId, writeChildren);
                     writer.write("</dd>");
                 }
             }
             writer.write("<dt>");
-            _writeEnd(writer, c);
+            writeEnd(writer, c);
             writer.write("</dt>");
         }
         writer.write("</dl>");
@@ -797,13 +804,12 @@ public final class ErrorPageWriter
      * @param facesContext
      * @throws IOException
      */
-    private static void _writeExtendedComponentTree(Writer writer,
-            FacesContext facesContext) throws IOException
+    private static void writeExtendedComponentTree(Writer writer, FacesContext facesContext) throws IOException
     {
         VisitContext visitContext = VisitContext.createVisitContext(facesContext, null,
                 MyFacesVisitHints.SET_SKIP_UNRENDERED);
         facesContext.getViewRoot().visitTree(visitContext, new ExtendedComponentTreeVisitCallback(writer));
-        _clearVisitedFacetCountMap(facesContext);
+        clearVisitedFacetCountMap(facesContext);
     }
 
     /**
@@ -813,67 +819,66 @@ public final class ErrorPageWriter
      */
     private static class ExtendedComponentTreeVisitCallback implements VisitCallback
     {
-
-        private Writer _writer;
+        private Writer writer;
 
         public ExtendedComponentTreeVisitCallback(Writer writer)
         {
-            _writer = writer;
+            this.writer = writer;
         }
 
         @SuppressWarnings("unchecked")
+        @Override
         public VisitResult visit(VisitContext context, UIComponent target)
         {
-            final Map<String, Object> requestMap = context.getFacesContext()
-                    .getExternalContext().getRequestMap();
+            Map<String, Object> requestMap = context.getFacesContext().getExternalContext().getRequestMap();
 
             try
             {
                 if (!(target instanceof UIViewRoot))
                 {
-                    _writer.write("<dd>");
+                    writer.write("<dd>");
                 }
 
                 UIComponent parent = target.getParent();
                 boolean hasChildren = (target.getChildCount() > 0 || target.getFacetCount() > 0);
-                String facetName = _getFacetName(target);
+                String facetName = getFacetName(target);
 
                 if (!(target instanceof UIColumn))
                 {
                     if (parent instanceof UIColumn
                             && ((parent.getChildCount() > 0 && parent.getChildren().get(0) == target)
                                     ||  (facetName != null &&
-                                            _getVisitedFacetCount(context.getFacesContext(), parent) == 0)))
+                                            getVisitedFacetCount(context.getFacesContext(), parent) == 0)))
                     {
                         if (parent.getParent() instanceof UIData
-                                && _isFirstUIColumn(parent.getParent(), (UIColumn) parent))
+                                && isFirstUIColumn(parent.getParent(), (UIColumn) parent))
                         {
-                            _writer.write("<span>Row: ");
+                            writer.write("<span>Row: ");
                             int rowIndex = ((UIData) parent.getParent()).getRowIndex();
-                            _writer.write("" + rowIndex);
+                            writer.write("" + rowIndex);
                             if (rowIndex == -1)
                             {
                                 // tell the user that rowIndex == -1 stands for visiting column-facets
-                                _writer.write(" (all column facets)");
+                                writer.write(" (all column facets)");
                             }
-                            _writer.write("</span>");
+                            writer.write("</span>");
                         }
-                        _writer.write("<dl><dt>");
-                        _writeStart(_writer, parent, true, false);
-                        _writer.write("</dt><dd>");
+                        writer.write("<dl><dt>");
+                        writeStart(writer, parent, true, false);
+                        writer.write("</dt><dd>");
                     }
 
                     if (facetName != null)
                     {
-                        _writer.write("<span>" + facetName + "</span>");
-                        _incrementVisitedFacetCount(context.getFacesContext(), parent);
+                        writer.write("<span>" + facetName + "</span>");
+                        incrementVisitedFacetCount(context.getFacesContext(), parent);
                     }
-                    _writer.write("<dl><dt");
-                    if (_isText(target))
+                    writer.write("<dl><dt");
+                    if (isText(target))
                     {
-                        _writer.write(" class=\"uicText\"");
+                        writer.write(" class=\"uicText\"");
                     }
-                    _writer.write(">");
+                    writer.write(">");
 
                     Map<String, List<Object[]>> debugInfos = null;
                     // is the target a EditableValueHolder component?
@@ -903,46 +908,46 @@ public final class ErrorPageWriter
                     }
 
                     // write the component start
-                    _writeStart(_writer, target, (hasChildren || debugInfos != null || renderer != null), false);
-                    _writer.write("</dt>");
+                    writeStart(writer, target, (hasChildren || debugInfos != null || renderer != null), false);
+                    writer.write("</dt>");
 
                     if (renderer != null)
                     {
                         // write renderer info
-                        _writer.write("<div class=\"renderer\">Rendered by ");
-                        _writer.write(renderer.getClass().getCanonicalName());
-                        _writer.write("</div>");
+                        writer.write("<div class=\"renderer\">Rendered by ");
+                        writer.write(renderer.getClass().getCanonicalName());
+                        writer.write("</div>");
 
                         if (!hasChildren && debugInfos == null)
                         {
                             // close the component
-                            _writer.write("<dt>");
-                            _writeEnd(_writer, target);
-                            _writer.write("</dt>");
+                            writer.write("<dt>");
+                            writeEnd(writer, target);
+                            writer.write("</dt>");
                         }
                     }
 
                     if (debugInfos != null)
                     {
                         final String fieldid = target.getClientId() + "_lifecycle";
-                        _writer.write("<div class=\"lifecycle_values_wrapper\">");
-                        _writer.write("<a href=\"#\" onclick=\"toggle('");
-                        _writer.write(fieldid);
-                        _writer.write("'); return false;\"><span id=\"");
-                        _writer.write(fieldid);
-                        _writer.write("Off\">+</span><span id=\"");
-                        _writer.write(fieldid);
-                        _writer.write("On\" style=\"display: none;\">-</span> Value Lifecycle</a>");
-                        _writer.write("<div id=\"");
-                        _writer.write(fieldid);
-                        _writer.write("\" class=\"lifecycle_values\">");
+                        writer.write("<div class=\"lifecycle_values_wrapper\">");
+                        writer.write("<a href=\"#\" onclick=\"toggle('");
+                        writer.write(fieldid);
+                        writer.write("'); return false;\"><span id=\"");
+                        writer.write(fieldid);
+                        writer.write("Off\">+</span><span id=\"");
+                        writer.write(fieldid);
+                        writer.write("On\" style=\"display: none;\">-</span> Value Lifecycle</a>");
+                        writer.write("<div id=\"");
+                        writer.write(fieldid);
+                        writer.write("\" class=\"lifecycle_values\">");
 
                         // process any available debug info
                         for (Map.Entry<String, List<Object[]>> entry : debugInfos.entrySet())
                         {
-                            _writer.write("<span>");
-                            _writer.write(entry.getKey());
-                            _writer.write("</span><ol>");
+                            writer.write("<span>");
+                            writer.write(entry.getKey());
+                            writer.write("</span><ol>");
                             int i = 0;
                             for (Object[] debugInfo : entry.getValue())
                             {
@@ -955,49 +960,49 @@ public final class ErrorPageWriter
                                 // oldValue and newValue could be null
                                 String oldValue = debugInfo[1] == null ? "null" : debugInfo[1].toString();
                                 String newValue = debugInfo[2] == null ? "null" : debugInfo[2].toString();
-                                _writer.write("<li><b>");
-                                _writer.write(entry.getKey());
-                                _writer.write("</b> set from <b>");
-                                _writer.write(oldValue);
-                                _writer.write("</b> to <b>");
-                                _writer.write(newValue);
-                                _writer.write("</b> in Phase ");
-                                _writer.write(debugInfo[0].toString());
+                                writer.write("<li><b>");
+                                writer.write(entry.getKey());
+                                writer.write("</b> set from <b>");
+                                writer.write(oldValue);
+                                writer.write("</b> to <b>");
+                                writer.write(newValue);
+                                writer.write("</b> in Phase ");
+                                writer.write(debugInfo[0].toString());
 
                                 // check if a call stack is available
                                 if (debugInfo[3] != null)
                                 {
                                     final String stackTraceId = fieldid + '_' + entry.getKey() + '_' + i;
-                                    _writer.write("<div class=\"stacktrace_wrapper\">");
-                                    _writer.write("<a href=\"#\" onclick=\"toggle('");
-                                    _writer.write(stackTraceId);
-                                    _writer.write("'); return false;\"><span id=\"");
-                                    _writer.write(stackTraceId);
-                                    _writer.write("Off\">+</span><span id=\"");
-                                    _writer.write(stackTraceId);
-                                    _writer.write("On\" style=\"display: none;\">-</span> Call Stack</a>");
-                                    _writer.write("<div id=\"");
-                                    _writer.write(stackTraceId);
-                                    _writer.write("\" class=\"stacktrace_values\">");
-                                    _writer.write("<ul>");
+                                    writer.write("<div class=\"stacktrace_wrapper\">");
+                                    writer.write("<a href=\"#\" onclick=\"toggle('");
+                                    writer.write(stackTraceId);
+                                    writer.write("'); return false;\"><span id=\"");
+                                    writer.write(stackTraceId);
+                                    writer.write("Off\">+</span><span id=\"");
+                                    writer.write(stackTraceId);
+                                    writer.write("On\" style=\"display: none;\">-</span> Call Stack</a>");
+                                    writer.write("<div id=\"");
+                                    writer.write(stackTraceId);
+                                    writer.write("\" class=\"stacktrace_values\">");
+                                    writer.write("<ul>");
                                     for (StackTraceElement stackTraceElement
                                             : (List<StackTraceElement>) debugInfo[3])
                                     {
-                                        _writer.write("<li>");
-                                        _writer.write(stackTraceElement.toString());
-                                        _writer.write("</li>");
+                                        writer.write("<li>");
+                                        writer.write(stackTraceElement.toString());
+                                        writer.write("</li>");
                                     }
-                                    _writer.write("</ul></div></div>");
+                                    writer.write("</ul></div></div>");
                                 }
 
-                                _writer.write("</li>");
+                                writer.write("</li>");
 
                                 i++;
                             }
-                            _writer.write("</ol>");
+                            writer.write("</ol>");
                         }
 
-                        _writer.write("</div></div>");
+                        writer.write("</div></div>");
 
                         // now remove the debug info from the request map, 
                         // so that it does not appear in the scope values of the debug page 
@@ -1006,27 +1011,27 @@ public final class ErrorPageWriter
                         if (!hasChildren)
                         {
                             // close the component
-                            _writer.write("<dt>");
-                            _writeEnd(_writer, target);
-                            _writer.write("</dt>");
+                            writer.write("<dt>");
+                            writeEnd(writer, target);
+                            writer.write("</dt>");
                         }
                     }
                 }
 
                 if (!hasChildren)
                 {
-                    _writer.write("</dl>");
+                    writer.write("</dl>");
 
                     while (parent != null &&
                            ((parent.getChildCount()>0 && parent.getChildren().get(parent.getChildCount()-1) == target)
                                     || (parent.getFacetCount() != 0
-                                            && _getVisitedFacetCount(context.getFacesContext(), parent) == 
+                                            && getVisitedFacetCount(context.getFacesContext(), parent) == 
                                                     parent.getFacetCount())))
                     {
                         // target is last child of parent or the "last" facet
 
                         // remove the visited facet count from the attribute map
-                        _removeVisitedFacetCount(context.getFacesContext(), parent);
+                        removeVisitedFacetCount(context.getFacesContext(), parent);
 
                         // check for componentes that visit their children multiple times
                         if (parent instanceof UIData)
@@ -1048,13 +1053,13 @@ public final class ErrorPageWriter
                             }
                         }
 
-                        _writer.write("</dd><dt>");
-                        _writeEnd(_writer, parent);
-                        _writer.write("</dt></dl>");
+                        writer.write("</dd><dt>");
+                        writeEnd(writer, parent);
+                        writer.write("</dt></dl>");
 
                         if (!(parent instanceof UIViewRoot))
                         {
-                            _writer.write("</dd>");
+                            writer.write("</dd>");
                         }
 
                         target = parent;
@@ -1072,7 +1077,7 @@ public final class ErrorPageWriter
 
     }
 
-    private static boolean _isFirstUIColumn(UIComponent uidata, UIColumn uicolumn)
+    private static boolean isFirstUIColumn(UIComponent uidata, UIColumn uicolumn)
     {
         for (int i = 0, childCount = uidata.getChildCount(); i < childCount; i++)
         {
@@ -1085,7 +1090,7 @@ public final class ErrorPageWriter
         return false;
     }
 
-    private static String _getFacetName(UIComponent component)
+    private static String getFacetName(UIComponent component)
     {
         UIComponent parent = component.getParent();
         if (parent != null)
@@ -1104,7 +1109,7 @@ public final class ErrorPageWriter
         return null;
     }
 
-    private static int _getVisitedFacetCount(FacesContext facesContext, UIComponent component)
+    private static int getVisitedFacetCount(FacesContext facesContext, UIComponent component)
     {
         Map<UIComponent, Integer> visitedFacetCount = (Map<UIComponent, Integer>)
             facesContext.getAttributes().get(VISITED_FACET_COUNT_KEY);
@@ -1112,22 +1117,19 @@ public final class ErrorPageWriter
         {
             return 0;
         }
+
         Integer count = visitedFacetCount.get(component);
-        if (count != null)
-        {
-            return count;
-        }
-        return 0;
+        return count == null ? 0 : null;
     }
 
-    private static void _incrementVisitedFacetCount(FacesContext facesContext, UIComponent component)
+    private static void incrementVisitedFacetCount(FacesContext facesContext, UIComponent component)
     {
         Map<UIComponent, Integer> visitedFacetCount = (Map<UIComponent, Integer>)
             facesContext.getAttributes().computeIfAbsent(VISITED_FACET_COUNT_KEY, k -> new HashMap<>());
-        visitedFacetCount.put(component, _getVisitedFacetCount(facesContext, component) + 1);
+        visitedFacetCount.put(component, getVisitedFacetCount(facesContext, component) + 1);
     }
 
-    private static void _removeVisitedFacetCount(FacesContext facesContext, UIComponent component)
+    private static void removeVisitedFacetCount(FacesContext facesContext, UIComponent component)
     {
         Map<UIComponent, Integer> visitedFacetCount = (Map<UIComponent, Integer>)
             facesContext.getAttributes().get(VISITED_FACET_COUNT_KEY);
@@ -1138,7 +1140,7 @@ public final class ErrorPageWriter
         visitedFacetCount.remove(component);
     }
     
-    private static void _clearVisitedFacetCountMap(FacesContext facesContext)
+    private static void clearVisitedFacetCountMap(FacesContext facesContext)
     {
         Map<UIComponent, Integer> visitedFacetCount = (Map<UIComponent, Integer>)
             facesContext.getAttributes().get(VISITED_FACET_COUNT_KEY);
@@ -1149,18 +1151,18 @@ public final class ErrorPageWriter
         }
     }
 
-    private static void _writeEnd(Writer writer, UIComponent c) throws IOException
+    private static void writeEnd(Writer writer, UIComponent c) throws IOException
     {
-        if (!_isText(c))
+        if (!isText(c))
         {
             writer.write(TS);
             writer.write('/');
-            writer.write(_getName(c));
+            writer.write(getName(c));
             writer.write('>');
         }
     }
 
-    private static void _writeAttributes(Writer writer, UIComponent c, boolean valueExpressionValues)
+    private static void writeAttributes(Writer writer, UIComponent c, boolean valueExpressionValues)
     {
         try
         {
@@ -1189,7 +1191,7 @@ public final class ErrorPageWriter
                                 {
                                     expressionString = "";
                                 }
-                                _writeAttribute(writer, pd[i].getName(), expressionString);
+                                writeAttribute(writer, pd[i].getName(), expressionString);
                             }
                             else
                             {
@@ -1209,7 +1211,7 @@ public final class ErrorPageWriter
                                         str = v.toString();
                                     }
 
-                                    _writeAttribute(writer, pd[i].getName(), str);
+                                    writeAttribute(writer, pd[i].getName(), str);
                                 }
                             }
                         }
@@ -1224,14 +1226,14 @@ public final class ErrorPageWriter
             ValueExpression binding = c.getValueExpression("binding");
             if (binding != null)
             {
-                _writeAttribute(writer, "binding", binding.getExpressionString());
+                writeAttribute(writer, "binding", binding.getExpressionString());
             }
 
             // write the location
-            String location = _getComponentLocation(c);
+            String location = getComponentLocation(c);
             if (location != null)
             {
-                _writeAttribute(writer, "location", location);
+                writeAttribute(writer, "location", location);
             }
         }
         catch (Exception e)
@@ -1240,7 +1242,7 @@ public final class ErrorPageWriter
         }
     }
 
-    private static void _writeAttribute(Writer writer, String name, String value) throws IOException
+    private static void writeAttribute(Writer writer, String name, String value) throws IOException
     {
         writer.write(" ");
         writer.write(name);
@@ -1249,10 +1251,10 @@ public final class ErrorPageWriter
         writer.write("\"");
     }
 
-    private static void _writeStart(Writer writer, UIComponent c,
-            boolean children, boolean valueExpressionValues) throws IOException
+    private static void writeStart(Writer writer, UIComponent c, boolean children, boolean valueExpressionValues)
+            throws IOException
     {
-        if (_isText(c))
+        if (isText(c))
         {
             String str = c.toString().trim();
             writer.write(str.replaceAll("<", TS));
@@ -1260,8 +1262,8 @@ public final class ErrorPageWriter
         else
         {
             writer.write(TS);
-            writer.write(_getName(c));
-            _writeAttributes(writer, c, valueExpressionValues);
+            writer.write(getName(c));
+            writeAttributes(writer, c, valueExpressionValues);
             if (children)
             {
                 writer.write('>');
@@ -1273,18 +1275,18 @@ public final class ErrorPageWriter
         }
     }
 
-    private static String _getName(UIComponent c)
+    private static String getName(UIComponent c)
     {
         String nm = c.getClass().getName();
         return nm.substring(nm.lastIndexOf('.') + 1);
     }
 
-    private static boolean _isText(UIComponent c)
+    private static boolean isText(UIComponent c)
     {
         return (c.getClass().getName().startsWith("org.apache.myfaces.view.facelets.compiler"));
     }
 
-    private static void _prepareExceptionStack(Throwable ex)
+    private static void prepareExceptionStack(Throwable ex)
     {
 
         if (ex == null)
@@ -1293,21 +1295,21 @@ public final class ErrorPageWriter
         }
 
         // check for getRootCause and getCause-methods
-        if (!_initCausePerReflection(ex, "getRootCause"))
+        if (!initCausePerReflection(ex, "getRootCause"))
         {
-            _initCausePerReflection(ex, "getCause");
+            initCausePerReflection(ex, "getCause");
         }
 
-        _prepareExceptionStack(ex.getCause());
+        prepareExceptionStack(ex.getCause());
     }
 
-    private static boolean _initCausePerReflection(Throwable ex, String methodName)
+    private static boolean initCausePerReflection(Throwable ex, String methodName)
     {
         try
         {
-            Method causeGetter = ex.getClass().getMethod(methodName, (Class[])null);
-            Throwable rootCause = (Throwable)causeGetter.invoke(ex, (Object[])null);
-            return _initCauseIfAvailable(ex, rootCause);
+            Method causeGetter = ex.getClass().getMethod(methodName, (Class[]) null);
+            Throwable rootCause = (Throwable) causeGetter.invoke(ex, (Object[]) null);
+            return initCauseIfAvailable(ex, rootCause);
         }
         catch (Exception e1)
         {
@@ -1315,7 +1317,7 @@ public final class ErrorPageWriter
         }
     }
 
-    private static boolean _initCauseIfAvailable(Throwable th, Throwable cause)
+    private static boolean initCauseIfAvailable(Throwable th, Throwable cause)
     {
         if (cause == null)
         {
@@ -1339,10 +1341,9 @@ public final class ErrorPageWriter
      * @param component
      * @return
      */
-    private static String _getComponentLocation(UIComponent component)
+    private static String getComponentLocation(UIComponent component)
     {
-        Location location = (Location) component.getAttributes()
-                .get(UIComponent.VIEW_LOCATION_KEY);
+        Location location = (Location) component.getAttributes().get(UIComponent.VIEW_LOCATION_KEY);
         if (location != null)
         {
             return location.toString();
