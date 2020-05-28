@@ -202,4 +202,25 @@ public class NumberConverterTest extends AbstractJsfTestCase
         assertTrue(number instanceof BigInteger);
         assertEquals(BigInteger.ONE, number);
     }
+    
+    @Test(expected = ConverterException.class)
+    public void testGetAsObjectWithBigIntegerAndParsePosition()
+    {
+        facesContext.getViewRoot().setLocale(Locale.US);
+        mock.setLocale(Locale.GERMANY);
+        mock.setIntegerOnly(true);
+        mock.setGroupingUsed(false);
+        UIInput input = new UIInput();
+        facesContext.getELContext().getELResolver().setValue(facesContext.getELContext(), null,
+            "bigInteger", BigInteger.ONE);
+        ValueExpression valueExpression =
+        application
+            .getExpressionFactory()
+            .createValueExpression(facesContext.getELContext(), "#{bigInteger}", BigInteger.class);
+        input.setValueExpression("value", valueExpression);
+        Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, "1,0.0,00.00");
+        assertNotNull(number);
+        assertTrue(number instanceof BigInteger);
+        assertEquals(BigInteger.ONE, number);
+    }
 }

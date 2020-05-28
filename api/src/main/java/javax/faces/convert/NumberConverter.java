@@ -24,6 +24,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.util.Currency;
 import java.util.Locale;
 
@@ -154,27 +155,27 @@ public class NumberConverter implements Converter, PartialStateHolder
             }
             catch (ParseException pe)
             {
-                if(getPattern() != null)
+                if (getPattern() != null)
                 {
                     throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
                             PATTERN_ID,
                             new Object[]{value, "$###,###", _MessageUtils.getLabel(facesContext, uiComponent)}));
                 }
-                else if(getType().equals("number"))
+                else if (getType().equals("number"))
                 {
                     throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
                             NUMBER_ID,
                             new Object[]{value, format.format(21),
                                          _MessageUtils.getLabel(facesContext, uiComponent)}));
                 }
-                else if(getType().equals("currency"))
+                else if (getType().equals("currency"))
                 {
                     throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
                             CURRENCY_ID,
                             new Object[]{value, format.format(42.25),
                                          _MessageUtils.getLabel(facesContext, uiComponent)}));
                 }
-                else if(getType().equals("percent"))
+                else if (getType().equals("percent"))
                 {
                     throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
                             PERCENT_ID,
@@ -190,14 +191,24 @@ public class NumberConverter implements Converter, PartialStateHolder
     private Object parse(String value, NumberFormat format, Class<?> destType)
         throws ParseException
     {
+        Object parsed = null;
+        
+        ParsePosition parsePosition = new ParsePosition(0);
         if (destType == BigInteger.class)
         {
-            return ((BigDecimal) format.parse(value)).toBigInteger();
+            parsed = ((BigDecimal) format.parse(value, parsePosition)).toBigInteger();
         }
         else
         {
-            return format.parse(value);
+            parsed = format.parse(value, parsePosition);
         }
+        
+        if (parsePosition.getIndex() != value.length())
+        {
+            throw new ParseException(value, parsePosition.getIndex());
+        }
+
+        return parsed;
     }
 
     @Override
