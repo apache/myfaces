@@ -25,6 +25,7 @@ import javax.el.ValueExpression;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class NumberConverterTest extends AbstractJsfTestCase
@@ -192,18 +193,19 @@ public class NumberConverterTest extends AbstractJsfTestCase
         UIInput input = new UIInput();
         facesContext.getELContext().getELResolver().setValue(facesContext.getELContext(), null,
             "bigInteger", BigInteger.ONE);
-        ValueExpression valueExpression =
-        application
+        ValueExpression valueExpression =application
             .getExpressionFactory()
             .createValueExpression(facesContext.getELContext(), "#{bigInteger}", BigInteger.class);
         input.setValueExpression("value", valueExpression);
+        
         Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, "1");
+        
         assertNotNull(number);
         assertTrue(number instanceof BigInteger);
         assertEquals(BigInteger.ONE, number);
     }
     
-    @Test(expected = ConverterException.class)
+    @Test
     public void testGetAsObjectWithBigIntegerAndParsePosition()
     {
         facesContext.getViewRoot().setLocale(Locale.US);
@@ -213,14 +215,19 @@ public class NumberConverterTest extends AbstractJsfTestCase
         UIInput input = new UIInput();
         facesContext.getELContext().getELResolver().setValue(facesContext.getELContext(), null,
             "bigInteger", BigInteger.ONE);
-        ValueExpression valueExpression =
-        application
+        ValueExpression valueExpression = application
             .getExpressionFactory()
             .createValueExpression(facesContext.getELContext(), "#{bigInteger}", BigInteger.class);
         input.setValueExpression("value", valueExpression);
-        Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, "1,0.0,00.00");
-        assertNotNull(number);
-        assertTrue(number instanceof BigInteger);
-        assertEquals(BigInteger.ONE, number);
+        
+        try
+        {
+            Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, "1,0.0,00.00");
+            Assert.fail();
+        }
+        catch (ConverterException e)
+        {
+            // expected
+        }
     }
 }
