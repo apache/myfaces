@@ -52,6 +52,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.inject.spi.BeanManager;
@@ -172,9 +173,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
                     FacesFlowProviderFactory.getFacesFlowProviderFactory(externalContext);
             FacesFlowProvider facesFlowProvider = facesFlowProviderFactory.getFacesFlowProvider(externalContext);
             
-            MyFacesHttpSessionListener listener = (MyFacesHttpSessionListener)
-                externalContext.getApplicationMap().get(
-                    MyFacesHttpSessionListener.APPLICATION_MAP_KEY);
+            MyFacesHttpSessionListener listener = (MyFacesHttpSessionListener) externalContext.getApplicationMap()
+                    .get(MyFacesHttpSessionListener.APPLICATION_MAP_KEY);
             if (listener != null)
             {
                 listener.setViewScopeProvider(viewScopeProvider);
@@ -202,21 +202,24 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             }
 
             WebConfigParamsLogger.logWebContextParams(facesContext);
-
-            //Force output EL message
-            ExternalSpecifications.isBeanValidationAvailable();
             
             //Start ViewPoolProcessor if necessary
             ViewPoolProcessor.initialize(facesContext);
             
-            Boolean automaticExtensionlessMapping = WebConfigParamUtils.getBooleanInitParameter(externalContext,
-                    MyfacesConfig.AUTOMATIC_EXTENSIONLESS_MAPPING, 
-                    MyfacesConfig.AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT);
-            if (Boolean.TRUE.equals(automaticExtensionlessMapping))
+            MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
+            if (config.isAutomaticExtensionlessMapping())
             {
                 initAutomaticExtensionlessMapping(facesContext, servletContext);
             }
 
+            // publish resourceBundleControl to applicationMap, to make it available to the API
+            ResourceBundle.Control resourceBundleControl = config.getResourceBundleControl();
+            if (resourceBundleControl != null)
+            {
+                facesContext.getExternalContext().getApplicationMap().put(
+                        MyfacesConfig.RESOURCE_BUNDLE_CONTROL, resourceBundleControl);
+            }
+ 
             // print out a very prominent log message if the project stage is != Production
             if (!facesContext.isProjectStage(ProjectStage.Production)
                     && !facesContext.isProjectStage(ProjectStage.UnitTest))
@@ -698,8 +701,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         }
     }
     
-    protected void initWebsocketIntegration(
-            ServletContext servletContext, ExternalContext externalContext)
+    protected void initWebsocketIntegration(ServletContext servletContext, ExternalContext externalContext)
     {
         Boolean b = WebConfigParamUtils.getBooleanInitParameter(externalContext, 
                 PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME);

@@ -96,7 +96,10 @@ public class MyFacesHttpSessionListener implements HttpSessionListener
             }
             finally
             {
-                facesContext.release();
+                if (facesContext != null)
+                {
+                    facesContext.release();
+                }
             }
         }
     }

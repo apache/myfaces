@@ -40,6 +40,7 @@ import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
@@ -241,15 +242,21 @@ public final class LoadBundleHandler extends TagHandler
         ResourceBundle bundle = null;
         try
         {
+            ResourceBundle.Control bundleControl = MyfacesConfig.getCurrentInstance().getResourceBundleControl();
+            
             String name = this.basename.getValue(ctx);
             ClassLoader cl = ClassUtils.getContextClassLoader();
-            if (root != null && root.getLocale() != null)
+            Locale locale = root != null && root.getLocale() != null
+                    ? root.getLocale()
+                    : Locale.getDefault();
+
+            if (bundleControl == null)
             {
-                bundle = ResourceBundle.getBundle(name, root.getLocale(), cl);
+                bundle = ResourceBundle.getBundle(name, locale, cl);
             }
             else
             {
-                bundle = ResourceBundle.getBundle(name, Locale.getDefault(), cl);
+                bundle = ResourceBundle.getBundle(name, locale, cl, bundleControl);
             }
         }
         catch (Exception e)

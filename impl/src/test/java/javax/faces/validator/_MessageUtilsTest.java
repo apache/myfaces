@@ -18,6 +18,7 @@
  */
 package javax.faces.validator;
 
+import java.util.HashMap;
 import static org.easymock.EasyMock.expect;
 
 import java.util.Locale;
@@ -28,6 +29,7 @@ import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
+import javax.faces.context.ExternalContext;
 import org.apache.myfaces.test.mock.MockFacesContext;
 
 import org.apache.myfaces.test.mock.MockFacesContext12;
@@ -52,16 +54,19 @@ public class _MessageUtilsTest
         Application application = mocksControl.createMock(Application.class);
         ViewHandler viewHandler = mocksControl.createMock(ViewHandler.class);
         ELContext elContext = mocksControl.createMock(ELContext.class);
+        ExternalContext externalContext = mocksControl.createMock(ExternalContext.class);
         ExpressionFactory expressionFactory = mocksControl.createMock(ExpressionFactory.class);
         ValueExpression valueExpression = mocksControl.createMock(ValueExpression.class);
         facesContext.setApplication(application);
         facesContext.setViewRoot(root);
         facesContext.setELContext(elContext);
+        facesContext.setExternalContext(externalContext);
         
         expect(application.getViewHandler()).andReturn(viewHandler);
         expect(viewHandler.calculateLocale(facesContext)).andReturn(Locale.ENGLISH);
         expect(application.getMessageBundle()).andReturn("javax.faces.Messages");
         expect(application.getExpressionFactory()).andReturn(expressionFactory);
+        expect(externalContext.getApplicationMap()).andReturn(new HashMap<>());
         String s = "xxx: Validation Error: Value is greater than allowable maximum of ''xyz''";
         expect(expressionFactory.createValueExpression(elContext,s,String.class)).andReturn(valueExpression);
         expect(valueExpression.getValue(elContext)).andReturn(s);

@@ -38,6 +38,7 @@ import javax.el.ValueExpression;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
@@ -125,20 +126,34 @@ public class LoadBundleTag extends TagSupport
             throw new NullPointerException("LoadBundle: 'basename' must not be null");
         }
 
+        ResourceBundle.Control bundleControl =
+                MyfacesConfig.getCurrentInstance(facesContext).getResourceBundleControl();
         ResourceBundle bundle;
         try
         {
-            bundle = ResourceBundle.getBundle(basename,
-                                              locale,
-                                              ClassUtils.getContextClassLoader());
+            if (bundleControl == null)
+            {
+                bundle = ResourceBundle.getBundle(basename, locale, ClassUtils.getContextClassLoader());
+            }
+            else
+            {
+                bundle = ResourceBundle.getBundle(basename, locale, ClassUtils.getContextClassLoader(),
+                        bundleControl);
+            }
         }
         catch (MissingResourceException e)
         {
             try
             {
-                bundle = ResourceBundle.getBundle(basename,
-                        locale,
-                        this.getClass().getClassLoader());
+                if (bundleControl == null)
+                {
+                    bundle = ResourceBundle.getBundle(basename, locale, this.getClass().getClassLoader());
+                }
+                else
+                {
+                    bundle = ResourceBundle.getBundle(basename, locale, this.getClass().getClassLoader(),
+                            bundleControl);
+                }
             }
             catch (MissingResourceException e1)
             {

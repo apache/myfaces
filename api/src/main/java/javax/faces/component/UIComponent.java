@@ -629,9 +629,21 @@ public abstract class UIComponent
 
             try
             {
+                ResourceBundle.Control bundleControl = (ResourceBundle.Control) context.getExternalContext()
+                        .getApplicationMap().get("org.apache.myfaces.RESOURCE_BUNDLE_CONTROL");
+
                 // looks for a ResourceBundle with a base name equal to the fully qualified class
                 // name of the current UIComponent this and Locale equal to the Locale of the current UIViewRoot.
-                _resourceBundleMap = new BundleMap(ResourceBundle.getBundle(getClass().getName(), locale, loader));
+                if (bundleControl == null)
+                {
+                    _resourceBundleMap = new BundleMap(
+                            ResourceBundle.getBundle(getClass().getName(), locale, loader));
+                }
+                else
+                {
+                    _resourceBundleMap = new BundleMap(
+                            ResourceBundle.getBundle(getClass().getName(), locale, loader, bundleControl));
+                }
             }
             catch (MissingResourceException e)
             {

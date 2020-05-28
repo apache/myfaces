@@ -32,6 +32,7 @@ import javax.faces.application.ApplicationFactory;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
@@ -273,13 +274,23 @@ public final class MessageUtils
         String detail = null;
         String bundleName = getApplication().getMessageBundle();
         ResourceBundle bundle = null;
+        
+        ResourceBundle.Control bundleControl = MyfacesConfig.getCurrentInstance().getResourceBundleControl();
 
         if (bundleName != null)
         {
             try
             {
-                bundle = ResourceBundle.getBundle(bundleName, locale, 
-                        ClassUtils.getCurrentLoader(bundleName));
+                if (bundleControl == null)
+                {
+                    bundle = ResourceBundle.getBundle(bundleName, locale, ClassUtils.getCurrentLoader(bundleName));
+                }
+                else
+                {
+                    bundle = ResourceBundle.getBundle(bundleName, locale, ClassUtils.getCurrentLoader(bundleName),
+                            bundleControl);
+                }
+
                 if (bundle.containsKey(messageId))
                 {
                     summary = bundle.getString(messageId);
@@ -295,8 +306,17 @@ public final class MessageUtils
         {
             try
             {
-                bundle = ResourceBundle.getBundle(DEFAULT_BUNDLE, locale, 
-                        ClassUtils.getCurrentLoader(DEFAULT_BUNDLE));
+                if (bundleControl == null)
+                {
+                    bundle = ResourceBundle.getBundle(DEFAULT_BUNDLE, locale,
+                            ClassUtils.getCurrentLoader(DEFAULT_BUNDLE));
+                }
+                else
+                {
+                    bundle = ResourceBundle.getBundle(DEFAULT_BUNDLE, locale,
+                            ClassUtils.getCurrentLoader(DEFAULT_BUNDLE), bundleControl);
+                }
+
                 if (bundle == null)
                 {
                     throw new NullPointerException();
@@ -347,8 +367,7 @@ public final class MessageUtils
             {
                 if (bundle.containsKey(detailMessageId))
                 {
-                    detail = substituteParams(locale,
-                        bundle.getString(detailMessageId), params);
+                    detail = substituteParams(locale, bundle.getString(detailMessageId), params);
                 }
             }
             catch(MissingResourceException e)
@@ -366,13 +385,23 @@ public final class MessageUtils
         String detail = null;
         String bundleName = context.getApplication().getMessageBundle();
         ResourceBundle bundle = null;
+        
+        ResourceBundle.Control bundleControl = MyfacesConfig.getCurrentInstance().getResourceBundleControl();
 
         if (bundleName != null)
         {
             try
             {
-                bundle = ResourceBundle.getBundle(bundleName, locale, 
-                        ClassUtils.getCurrentLoader(bundleName));
+                if (bundleControl == null)
+                {
+                    bundle = ResourceBundle.getBundle(bundleName, locale, ClassUtils.getCurrentLoader(bundleName));
+                }
+                else
+                {
+                    bundle = ResourceBundle.getBundle(bundleName, locale, ClassUtils.getCurrentLoader(bundleName),
+                            bundleControl);
+                }
+
                 if (bundle.containsKey(messageId))
                 {
                     summary = bundle.getString(messageId);
@@ -388,8 +417,17 @@ public final class MessageUtils
         {
             try
             {
-                bundle = ResourceBundle.getBundle(bundleBaseName, locale, 
-                        ClassUtils.getCurrentLoader(bundleBaseName));
+                if (bundleControl == null)
+                {
+                    bundle = ResourceBundle.getBundle(bundleBaseName, locale,
+                            ClassUtils.getCurrentLoader(bundleBaseName));
+                }
+                else
+                {
+                    bundle = ResourceBundle.getBundle(bundleBaseName, locale,
+                            ClassUtils.getCurrentLoader(bundleBaseName), bundleControl);
+                }
+
                 if (bundle == null)
                 {
                     throw new NullPointerException();
@@ -410,8 +448,17 @@ public final class MessageUtils
         {
             try
             {
-                bundle = ResourceBundle.getBundle(DEFAULT_BUNDLE, locale, 
-                        ClassUtils.getCurrentLoader(DEFAULT_BUNDLE));
+                if (bundleControl == null)
+                {
+                    bundle = ResourceBundle.getBundle(DEFAULT_BUNDLE, locale, 
+                            ClassUtils.getCurrentLoader(DEFAULT_BUNDLE));
+                }
+                else
+                {
+                    bundle = ResourceBundle.getBundle(DEFAULT_BUNDLE, locale, 
+                            ClassUtils.getCurrentLoader(DEFAULT_BUNDLE), bundleControl);
+                }
+
                 if (bundle == null)
                 {
                     throw new NullPointerException();
@@ -462,8 +509,7 @@ public final class MessageUtils
             {
                 if (bundle.containsKey(detailMessageId))
                 {
-                    detail = substituteParams(locale,
-                        bundle.getString(detailMessageId), params);
+                    detail = substituteParams(locale, bundle.getString(detailMessageId), params);
                 }
             }
             catch(MissingResourceException e)

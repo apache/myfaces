@@ -406,6 +406,11 @@ public class ApplicationImpl extends Application
     java.util.ResourceBundle getResourceBundle(final String name, final Locale locale, final ClassLoader loader)
             throws MissingResourceException
     {
+        if (_myfacesConfig.getResourceBundleControl() != null)
+        {
+            return java.util.ResourceBundle.getBundle(name, locale, loader,_myfacesConfig.getResourceBundleControl());
+        }
+
         return java.util.ResourceBundle.getBundle(name, locale, loader);
     }
 

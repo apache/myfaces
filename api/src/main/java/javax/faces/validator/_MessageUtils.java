@@ -146,41 +146,69 @@ class _MessageUtils
                                             Locale locale,
                                             String bundleName)
     {
+        ResourceBundle.Control bundleControl = (ResourceBundle.Control) facesContext.getExternalContext()
+                .getApplicationMap().get("org.apache.myfaces.RESOURCE_BUNDLE_CONTROL");
+        
         try
         {
             //First we try the JSF implementation class loader
-            return ResourceBundle.getBundle(bundleName,
-                                            locale,
-                                            facesContext.getClass().getClassLoader());
+            if (bundleControl == null)
+            {
+                return ResourceBundle.getBundle(bundleName,
+                                                locale,
+                                                facesContext.getClass().getClassLoader());
+            }
+            else
+            {
+                return ResourceBundle.getBundle(bundleName,
+                                                locale,
+                                                facesContext.getClass().getClassLoader(), bundleControl);
+            }
         }
         catch (MissingResourceException ignore1)
         {
             try
             {
                 //Next we try the JSF API class loader
-                return ResourceBundle.getBundle(bundleName,
-                                                locale,
-                                                _MessageUtils.class.getClassLoader());
+                if (bundleControl == null)
+                {
+                    return ResourceBundle.getBundle(bundleName,
+                                                    locale,
+                                                    _MessageUtils.class.getClassLoader());
+                }
+                else
+                {
+                    return ResourceBundle.getBundle(bundleName,
+                                                    locale,
+                                                    _MessageUtils.class.getClassLoader(), bundleControl);
+                }
             }
             catch (MissingResourceException ignore2)
             {
                 try
                 {
                     //Last resort is the context class loader
-                    if (System.getSecurityManager() != null)
+                    ClassLoader cl;
+                    if (System.getSecurityManager() == null)
                     {
-                        ClassLoader cl = (ClassLoader) AccessController.doPrivileged(
-                                (PrivilegedExceptionAction) () -> Thread.currentThread().getContextClassLoader());
-                        return ResourceBundle.getBundle(bundleName, locale, cl);
-
+                        cl = Thread.currentThread().getContextClassLoader();
                     }
                     else
                     {
-                        return ResourceBundle.getBundle(bundleName,locale,
-                                                        Thread.currentThread().getContextClassLoader());
-                    }                   
+                        cl = (ClassLoader) AccessController.doPrivileged(
+                                (PrivilegedExceptionAction) () -> Thread.currentThread().getContextClassLoader());
+                    }
+
+                    if (bundleControl == null)
+                    {
+                        return ResourceBundle.getBundle(bundleName, locale, cl);
+                    }
+                    else
+                    {
+                        return ResourceBundle.getBundle(bundleName, locale, cl, bundleControl);
+                    }
                 }
-                catch (PrivilegedActionException pae)
+                catch(PrivilegedActionException pae)
                 {
                     throw new FacesException(pae);
                 }

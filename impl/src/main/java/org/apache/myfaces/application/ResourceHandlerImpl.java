@@ -710,8 +710,19 @@ public class ResourceHandlerImpl extends ResourceHandler
 
             try
             {
-                ResourceBundle bundle = ResourceBundle.getBundle(bundleName, locale,
-                        ClassUtils.getContextClassLoader());
+                ResourceBundle bundle;
+                ResourceBundle.Control bundleControl = MyfacesConfig.getCurrentInstance(context)
+                        .getResourceBundleControl();
+                if (bundleControl == null)
+                {
+                    bundle = ResourceBundle.getBundle(bundleName, locale, ClassUtils.getContextClassLoader());
+                }
+                else
+                {
+                    bundle = ResourceBundle.getBundle(bundleName, locale, ClassUtils.getContextClassLoader(),
+                            bundleControl);
+                }
+
                 if (bundle != null && bundle.containsKey(ResourceHandler.LOCALE_PREFIX))
                 {
                     localePrefix = bundle.getString(ResourceHandler.LOCALE_PREFIX);

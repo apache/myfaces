@@ -19,6 +19,7 @@
 package org.apache.myfaces.config;
 
 import java.lang.invoke.MethodHandles;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.ProjectStage;
@@ -818,6 +819,13 @@ public class MyfacesConfig
             "org.apache.myfaces.USE_METHOD_HANDLES";
     protected final static boolean USE_METHOD_HANDLES_DEFAULT = true;
     
+    /**
+     * Defines the {@link java.util.ResourceBundle.Control} to use for all
+     * {@link java.util.ResourceBundle#getBundle(java.lang.String)} calls.
+     */
+    @JSFWebConfigParam(since="2.3-next")
+    public static final String RESOURCE_BUNDLE_CONTROL = 
+            "org.apache.myfaces.RESOURCE_BUNDLE_CONTROL";
     
     // we need it, applicationImpl not ready probably
     private ProjectStage projectStage = ProjectStage.Production;
@@ -899,6 +907,8 @@ public class MyfacesConfig
     private boolean renderClientBehaviorScriptsAsString = RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING_DEFAULT;
     private boolean alwaysForceSessionCreation = ALWAYS_FORCE_SESSION_CREATION_DEFAULT;
     private boolean useMethodHandles = USE_METHOD_HANDLES_DEFAULT;
+    private ResourceBundle.Control resourceBundleControl;
+    private boolean automaticExtensionlessMapping = AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT;
     
     private static final boolean MYFACES_IMPL_AVAILABLE;
     private static final boolean RI_IMPL_AVAILABLE;
@@ -1343,6 +1353,15 @@ public class MyfacesConfig
                 cfg.useMethodHandles = false;
             }
         }
+        
+        String resourceBundleControl = getString(extCtx, RESOURCE_BUNDLE_CONTROL, null);
+        if (StringUtils.isNotBlank(resourceBundleControl))
+        {
+            cfg.resourceBundleControl = (ResourceBundle.Control) ClassUtils.newInstance(resourceBundleControl);
+        }
+        
+        cfg.automaticExtensionlessMapping = getBoolean(extCtx, AUTOMATIC_EXTENSIONLESS_MAPPING,
+                AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT);
 
         return cfg;
     }
@@ -1808,5 +1827,21 @@ public class MyfacesConfig
     {
         return useMethodHandles;
     }
+    
+    public ProjectStage getProjectStage()
+    {
+        return projectStage;
+    }
+
+    public ResourceBundle.Control getResourceBundleControl()
+    {
+        return resourceBundleControl;
+    }
+
+    public boolean isAutomaticExtensionlessMapping()
+    {
+        return automaticExtensionlessMapping;
+    }
+
 }
 
