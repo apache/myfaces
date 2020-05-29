@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit;
+package org.apache.myfaces.core.api.shared;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -30,38 +30,72 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
+import javax.faces.component.UIOutput;
 import javax.faces.component.UISelectMany;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
-import org.apache.myfaces.renderkit.html.util.SelectItemsIterator;
-
-import org.apache.myfaces.util.ComponentUtils;
-import org.apache.myfaces.util.lang.Assert;
-import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
- * The util methods in this class are shared between the javax.faces.component package and
- * the org.apache.myfaces.renderkit package.
- * Please note: Any changes here must also apply to the class in the other package!
+ * The util methods in this class are shared between the javax.faces.component package and the
+ * org.apache.myfaces.renderkit package. Please note: Any changes here must also apply to the class in the other
+ * package!
  */
-public class SharedRendererUtils
+public class _SharedRendererUtils
 {
     static final String COLLECTION_TYPE_KEY = "collectionType";
     static final String VALUE_TYPE_KEY = "valueType";
 
-    static Object getConvertedUISelectManyValue(FacesContext facesContext, UISelectMany component,
+    public static Converter findUIOutputConverter(FacesContext facesContext, UIOutput component)
+    {
+        // Attention!
+        // This code is duplicated in jsfapi component package.
+        // If you change something here please do the same in the other class!
+
+        Converter converter = component.getConverter();
+        if (converter != null)
+        {
+            return converter;
+        }
+
+        //Try to find out by value expression
+        ValueExpression expression = component.getValueExpression("value");
+        if (expression == null)
+        {
+            return null;
+        }
+
+        Class<?> valueType = expression.getType(facesContext.getELContext());
+        if (valueType == null)
+        {
+            return null;
+        }
+
+        if (Object.class.equals(valueType))
+        {
+            return null; //There is no converter for Object class
+        }
+
+        try
+        {
+            return facesContext.getApplication().createConverter(valueType);
+        }
+        catch (FacesException e)
+        {
+            log(facesContext, "No Converter for type " + valueType.getName() + " found", e);
+            return null;
+        }
+    }
+
+    public static Object getConvertedUISelectManyValue(FacesContext facesContext, UISelectMany component,
             String[] submittedValue) throws ConverterException
     {
-        return  getConvertedUISelectManyValue(facesContext, component,
-            submittedValue, false);
+        return getConvertedUISelectManyValue(facesContext, component, submittedValue, false);
     }
 
     /**
@@ -76,20 +110,24 @@ public class SharedRendererUtils
      * @return
      * @throws ConverterException
      */
-    static Object getConvertedUISelectManyValue(FacesContext facesContext, UISelectMany component,  
+    public static Object getConvertedUISelectManyValue(FacesContext facesContext, UISelectMany component,  
             String[] submittedValue, boolean considerValueType) throws ConverterException
     {
         // Attention!
-        // This code is duplicated in jsfapi component package (except for considerValueType).
+        // This code is duplicated in shared renderkit package (except for considerValueType).
         // If you change something here please do the same in the other class!
 
-        Assert.notNull(submittedValue, "submittedValue");
+        if (submittedValue == null)
+        {
+            throw new NullPointerException("submittedValue");
+        }
 
         ValueExpression expression = component.getValueExpression("value");
         Object targetForConvertedValues = null;
         
         // if the component has an attached converter, use it
         Converter converter = component.getConverter();
+        // at this point the valueType attribute is handled in shared.
         if (converter == null && considerValueType)
         {
             // try to get a converter from the valueType attribute
@@ -120,30 +158,27 @@ public class SharedRendererUtils
                     // --> try to get a registered-by-class converter
                     converter = facesContext.getApplication().createConverter(componentType);
 
-                    if (converter == null)
+                    if (converter == null && !Object.class.equals(componentType))
                     {
                         // could not obtain a Converter
                         // --> check if we maybe do not really have to convert
-                        if (!Object.class.equals(componentType))
-                        {
-                            // target is not an Object array
-                            // and not a String array (checked some lines above)
-                            // and we do not have a Converter
-                            throw new ConverterException("Could not obtain a Converter for "
-                                    + componentType.getName());
-                        }
+
+                        // target is not an Object array
+                        // and not a String array (checked some lines above)
+                        // and we do not have a Converter
+                        throw new ConverterException(
+                                "Could not obtain a Converter for " + componentType.getName());
                     }
                 }
                 // instantiate the array
-                targetForConvertedValues = Array.newInstance(componentType,
-                        submittedValue.length);
+                targetForConvertedValues = Array.newInstance(componentType, submittedValue.length);
             }
             else if (Collection.class.isAssignableFrom(modelType) || Object.class.equals(modelType))
             {
                 if (converter == null)
                 {
                     // try to get the by-type-converter from the type of the SelectItems
-                    SelectItemsIterator iterator = new SelectItemsIterator(component, facesContext);
+                    _SelectItemsIterator iterator = new _SelectItemsIterator(component, facesContext);
                     converter = getSelectItemsValueConverter(iterator, facesContext);
                 }
 
@@ -162,7 +197,6 @@ public class SharedRendererUtils
                                         + "String, a Class object or a ValueExpression pointing "
                                         + "to a String or a Class object.");
                     }
-                    
                     // now we have a collectionType --> but is it really some kind of Collection
                     if (!Collection.class.isAssignableFrom(collectionType))
                     {
@@ -171,7 +205,6 @@ public class SharedRendererUtils
                                 + component.getClientId(facesContext)
                                 + " does not point to a valid type of Collection.");
                     }
-                    
                     // now we have a real collectionType --> try to instantiate it
                     try
                     {
@@ -280,7 +313,6 @@ public class SharedRendererUtils
             {
                 value = submittedValue[i];
             }
-
             // store it in targetForConvertedValues
             if (isArray)
             {
@@ -306,13 +338,9 @@ public class SharedRendererUtils
      * @throws FacesException if the value is a String and the represented
      *                        class cannot be found
      */
-    static Class<?> getClassFromAttribute(FacesContext facesContext,
+    public static Class<?> getClassFromAttribute(FacesContext facesContext,
             Object attribute) throws FacesException
     {
-        // Attention!
-        // This code is duplicated in jsfapi component package.
-        // If you change something here please do the same in the other class!
-        
         Class<?> type = null;
         
         // if there is a value, it must be a ...
@@ -327,13 +355,14 @@ public class SharedRendererUtils
         {
             try
             {
-                type = ClassUtils.classForName((String) attribute);
+                type = _ClassUtils.forName((String) attribute);
             }
             catch (ClassNotFoundException cnfe)
             {
-                throw new FacesException("Unable to find class " + attribute + " on the classpath.", cnfe);
+                throw new FacesException(
+                        "Unable to find class " + attribute + " on the classpath.",
+                        cnfe);
             }
-
         }
         // ... a Class object
         else if (attribute instanceof Class)
@@ -352,7 +381,7 @@ public class SharedRendererUtils
      * @param component
      * @return
      */
-    static Converter getValueTypeConverter(FacesContext facesContext, UISelectMany component)
+    public static Converter getValueTypeConverter(FacesContext facesContext, UISelectMany component)
     {
         Converter converter = null;
         
@@ -378,10 +407,12 @@ public class SharedRendererUtils
             
             if (converter == null)
             {
-                log.log(Level.WARNING, "Found attribute valueType on component " +
-                        ComponentUtils.getPathToComponent(component) +
+                log(facesContext, 
+                        "Found attribute valueType on component " +
+                        _ComponentUtils.getPathToComponent(component) +
                         ", but could not get a by-type converter for type " + 
-                        valueType.getName());
+                        valueType.getName(),
+                        null);
             }
         }
         
@@ -395,7 +426,7 @@ public class SharedRendererUtils
      * @param facesContext
      * @return The first suitable Converter for the given SelectItems or null.
      */
-    static Converter getSelectItemsValueConverter(Iterator<SelectItem> iterator, FacesContext facesContext)
+    public static Converter getSelectItemsValueConverter(Iterator<SelectItem> iterator, FacesContext facesContext)
     {
         // Attention!
         // This code is duplicated in jsfapi component package.
@@ -434,13 +465,11 @@ public class SharedRendererUtils
         return converter;
     }
 
-    private static final Logger log = Logger.getLogger(SharedRendererUtils.class.getName());
-
     /**
      * This method is different in the two versions of _SharedRendererUtils.
      */
     private static void log(FacesContext context, String msg, Exception e)
     {
-        log.log(Level.SEVERE, msg, e);
+        context.getExternalContext().log(msg, e);
     }
 }

@@ -18,6 +18,9 @@
  */
 package javax.faces.component;
 
+import org.apache.myfaces.core.api.shared._SharedRendererUtils;
+import org.apache.myfaces.core.api.shared._ComponentUtils;
+import org.apache.myfaces.core.api.shared._SelectItemsIterator;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +40,8 @@ import javax.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperties;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.core.api.shared._ExternalSpecifications;
+import org.apache.myfaces.core.api.shared._MessageUtils;
 
 /**
  * Base class for the various component classes that allow a user to select zero or more options from a set.

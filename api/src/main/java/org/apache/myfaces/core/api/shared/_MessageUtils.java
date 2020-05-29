@@ -16,22 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.component.html;
+package org.apache.myfaces.core.api.shared;
 
-import javax.el.ValueExpression;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import javax.faces.component.UIComponent;
 
-class _MessageUtils
+import javax.el.ValueExpression;
+import javax.faces.FacesException;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+
+public class _MessageUtils
 {
     private static final String DETAIL_SUFFIX = "_detail";
 
-    static void addErrorMessage(FacesContext facesContext,
+    public static void addErrorMessage(FacesContext facesContext,
                                 UIComponent component,
                                 String messageId)
     {
@@ -43,7 +47,7 @@ class _MessageUtils
                                            null));
     }
 
-    static void addErrorMessage(FacesContext facesContext,
+    public static void addErrorMessage(FacesContext facesContext,
                                 UIComponent component,
                                 String messageId, Object[] args)
     {
@@ -55,16 +59,26 @@ class _MessageUtils
                                            args));
     }
 
-    static void addErrorMessage(FacesContext facesContext,
+    public static void addErrorMessage(FacesContext facesContext,
             UIComponent component, Throwable cause)
     {
         facesContext.addMessage(component.getClientId(facesContext),
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, cause
                         .getLocalizedMessage(), cause.getLocalizedMessage()));
     }
-
     
-    static FacesMessage getMessage(FacesContext facesContext,
+    public static FacesMessage getErrorMessage(FacesContext facesContext,
+                                        String messageId,
+                                        Object args[])
+    {
+        return getMessage(facesContext,
+                          facesContext.getViewRoot().getLocale(),
+                          FacesMessage.SEVERITY_ERROR,
+                          messageId,
+                          args);
+    }
+
+    public static FacesMessage getMessage(FacesContext facesContext,
                                    Locale locale,
                                    FacesMessage.Severity severity,
                                    String messageId,
@@ -74,6 +88,11 @@ class _MessageUtils
         ResourceBundle defBundle;
         String summary;
         String detail;
+
+        if(locale == null)
+        {
+            locale = Locale.getDefault();
+        }
 
         appBundle = getApplicationBundle(facesContext, locale);
         summary = getBundleString(appBundle, messageId);
@@ -191,7 +210,6 @@ class _MessageUtils
                 }
                 else
                 {
-                    //Next we try the JSF API class loader
                     return ResourceBundle.getBundle(bundleName,
                                                     locale,
                                                     _MessageUtils.class.getClassLoader(), bundleControl);
@@ -202,18 +220,29 @@ class _MessageUtils
                 try
                 {
                     //Last resort is the context class loader
-                    if (bundleControl == null)
+                    ClassLoader cl;
+                    if (System.getSecurityManager() == null)
                     {
-                        return ResourceBundle.getBundle(bundleName,
-                                                        locale,
-                                                        _ClassUtils.getContextClassLoader());
+                        cl = Thread.currentThread().getContextClassLoader();
                     }
                     else
                     {
-                        return ResourceBundle.getBundle(bundleName,
-                                                        locale,
-                                                        _ClassUtils.getContextClassLoader(), bundleControl);
+                        cl = (ClassLoader) AccessController.doPrivileged(
+                                (PrivilegedExceptionAction) () -> Thread.currentThread().getContextClassLoader());
                     }
+
+                    if (bundleControl == null)
+                    {
+                        return ResourceBundle.getBundle(bundleName, locale, cl);
+                    }
+                    else
+                    {
+                        return ResourceBundle.getBundle(bundleName, locale, cl, bundleControl);
+                    }
+                }
+                catch(PrivilegedActionException pae)
+                {
+                    throw new FacesException(pae);
                 }
                 catch (MissingResourceException damned)
                 {
@@ -224,7 +253,7 @@ class _MessageUtils
         }
     }
     
-    static Object getLabel(FacesContext facesContext, UIComponent component)
+    public static Object getLabel(FacesContext facesContext, UIComponent component)
     {
         Object label = component.getAttributes().get("label");
         ValueExpression expression = null;

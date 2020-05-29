@@ -23,18 +23,19 @@ import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.core.api.shared._MessageUtils;
 
 /**
  * Renders a HTML input element.
  *
  */
-@JSFComponent
-(name = "h:inputFile",
-clazz = "javax.faces.component.html.HtmlInputFile",template=true,
-tagClass = "org.apache.myfaces.taglib.html.HtmlInputFileTag",
-defaultRendererType = "javax.faces.File",
-implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
-defaultEventName = "valueChange"
+@JSFComponent(name = "h:inputFile",
+    clazz = "javax.faces.component.html.HtmlInputFile",
+    template = true,
+    tagClass = "org.apache.myfaces.taglib.html.HtmlInputFileTag",
+    defaultRendererType = "javax.faces.File",
+    implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
+    defaultEventName = "valueChange"
 )
 abstract class _HtmlInputFile extends UIInput implements _AccesskeyProperty,
     _AltProperty, _UniversalProperties, _DisabledReadonlyProperties,
@@ -43,38 +44,37 @@ abstract class _HtmlInputFile extends UIInput implements _AccesskeyProperty,
     _RoleProperty
 {
 
-  static public final String COMPONENT_FAMILY =
-    "javax.faces.Input";
-  static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlInputFile";
+    static public final String COMPONENT_FAMILY = "javax.faces.Input";
+    static public final String COMPONENT_TYPE = "javax.faces.HtmlInputFile";
 
-  /**
-   * HTML: The maximum number of characters allowed to be entered.
-   * 
-   * @JSFProperty
-   *   defaultValue = "Integer.MIN_VALUE"
-   */
-  public abstract int getMaxlength();
+    /**
+     * HTML: The maximum number of characters allowed to be entered.
+     * 
+     * @JSFProperty
+     *   defaultValue = "Integer.MIN_VALUE"
+     */
+    public abstract int getMaxlength();
 
-  /**
-   * HTML: The initial width of this control, in characters.
-   * 
-   * @JSFProperty
-   *   defaultValue = "Integer.MIN_VALUE"
-   */
-  public abstract int getSize();
+    /**
+     * HTML: The initial width of this control, in characters.
+     * 
+     * @JSFProperty
+     *   defaultValue = "Integer.MIN_VALUE"
+     */
+    public abstract int getSize();
 
-  /**
-   * If the value of this attribute is "off", render "off" as the value of the attribute.
-   * This indicates that the browser should disable its autocomplete feature for this component.
-   * This is useful for components that perform autocompletion and do not want the browser interfering.
-   * If this attribute is not set or the value is "on", render nothing.
-   *
-   * @return  the new autocomplete value
-   */
-  @JSFProperty
-  public abstract String getAutocomplete();
+    /**
+     * If the value of this attribute is "off", render "off" as the value of the attribute.
+     * This indicates that the browser should disable its autocomplete feature for this component.
+     * This is useful for components that perform autocompletion and do not want the browser interfering.
+     * If this attribute is not set or the value is "on", render nothing.
+     *
+     * @return  the new autocomplete value
+     */
+    @JSFProperty
+    public abstract String getAutocomplete();
 
+    @Override
     protected void validateValue(FacesContext context, Object convertedValue)
     {
         if (!isValid())

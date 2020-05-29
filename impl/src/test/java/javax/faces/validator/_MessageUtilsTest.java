@@ -18,6 +18,7 @@
  */
 package javax.faces.validator;
 
+import org.apache.myfaces.core.api.shared._MessageUtils;
 import java.util.HashMap;
 import static org.easymock.EasyMock.expect;
 

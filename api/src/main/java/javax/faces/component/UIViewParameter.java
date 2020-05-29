@@ -18,6 +18,7 @@
  */
 package javax.faces.component;
 
+import org.apache.myfaces.core.api.shared._ClassUtils;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -36,6 +37,7 @@ import javax.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.core.api.shared._MessageUtils;
 
 /**
  * 
@@ -196,9 +198,9 @@ public class UIViewParameter extends UIInput
             }
             else 
             {
-                Object label = _MessageUtils.getLabel (context, this);
+                Object label = _MessageUtils.getLabel(context, this);
                 
-                message = _MessageUtils.getMessage (context, context.getViewRoot().getLocale(),
+                message = _MessageUtils.getMessage(context, context.getViewRoot().getLocale(),
                      FacesMessage.SEVERITY_ERROR, REQUIRED_MESSAGE_ID, new Object[] { label });
             }
             

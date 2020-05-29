@@ -16,8 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.validator;
+package org.apache.myfaces.core.api.shared;
 
+import javax.faces.validator.BeanValidator;
+import javax.faces.validator.Validator;
 import javax.validation.Validation;
 
 /**
@@ -25,8 +27,12 @@ import javax.validation.Validation;
  * 
  * @since 2.0
  */
-final class _ValidationUtils
+public final class _BeanValidationUtils
 {
+    public static boolean isBeanValidator(Validator v)
+    {
+        return v instanceof BeanValidator;
+    }
 
     public static void tryBuildDefaultValidatorFactory()
     {

@@ -18,6 +18,7 @@
  */
 package javax.faces.component;
 
+import org.apache.myfaces.core.api.shared._ClassUtils;
 import java.util.Arrays;
 import java.util.Iterator;
 

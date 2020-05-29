@@ -18,6 +18,7 @@
  */
 package javax.faces.validator;
 
+import org.apache.myfaces.core.api.shared._MessageUtils;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;

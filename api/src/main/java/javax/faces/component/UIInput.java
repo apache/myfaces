@@ -18,6 +18,8 @@
  */
 package javax.faces.component;
 
+import org.apache.myfaces.core.api.shared._SharedRendererUtils;
+import org.apache.myfaces.core.api.shared._ComponentUtils;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFListener;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
@@ -50,6 +52,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFExclude;
+import org.apache.myfaces.core.api.shared._BeanValidationUtils;
+import org.apache.myfaces.core.api.shared._ExternalSpecifications;
+import org.apache.myfaces.core.api.shared._MessageUtils;
 
 /**
  * UICommand is a base abstraction for components that implement ActionSource.

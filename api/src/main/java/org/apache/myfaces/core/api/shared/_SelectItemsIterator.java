@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.renderkit.html.util;
+package org.apache.myfaces.core.api.shared;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -36,37 +36,37 @@ import javax.faces.component.UISelectItems;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
-import org.apache.myfaces.util.ComponentUtils;
-
 // ATTENTION
-// This class is associated with javax.faces.component._SelectItemsIterator.
+// This class is associated with org.apache.myfaces.util.SelectItemsIterator.
 // Changes here should also be applied to this class.
 
-public class SelectItemsIterator implements Iterator<SelectItem>
+public class _SelectItemsIterator implements Iterator<SelectItem>
 {
-    private static final Logger log = Logger.getLogger(SelectItemsIterator.class.getName());
     
-    private static final String VAR_PROP = JSFAttr.VAR_ATTR;
-    private static final String ITEM_VALUE_PROP = JSFAttr.ITEM_VALUE_ATTR;
-    private static final String ITEM_LABEL_PROP = JSFAttr.ITEM_LABEL_ATTR;
-    private static final String ITEM_DESCRIPTION_PROP = JSFAttr.ITEM_DESCRIPTION_ATTR;
-    private static final String ITEM_DISABLED_PROP = JSFAttr.ITEM_DISABLED_ATTR;
-    private static final String ITEM_LABEL_ESCAPED_PROP = JSFAttr.ITEM_LABEL_ESCAPED_ATTR;
-    private static final String NO_SELECTION_VALUE_PROP = JSFAttr.NO_SELECTION_VALUE_ATTR;
+    private static final Logger log = Logger.getLogger(_SelectItemsIterator.class.getName());
 
+    // org.apache.myfaces.util.SelectItemsIterator uses JSFAttr
+    private static final String VAR_ATTR = "var";
+    private static final String ITEM_VALUE_ATTR = "itemValue";
+    private static final String ITEM_LABEL_ATTR = "itemLabel";
+    private static final String ITEM_DESCRIPTION_ATTR = "itemDescription";
+    private static final String ITEM_DISABLED_ATTR = "itemDisabled";
+    private static final String ITEM_LABEL_ESCAPED_ATTR = "itemLabelEscaped";
+    private static final String NO_SELECTION_VALUE_ATTR = "noSelectionValue";
+    
     private final Iterator<UIComponent> _children;
-    private Iterator<? extends Object> _nestedItems;
+    private Iterator<?> _nestedItems;
     private SelectItem _nextItem;
     private UIComponent _currentComponent;
     private UISelectItems _currentUISelectItems;
     private Object _currentValue;
     private FacesContext _facesContext;
 
-    public SelectItemsIterator(UIComponent selectItemsParent, FacesContext facesContext)
+    public _SelectItemsIterator(UIComponent selectItemsParent, FacesContext facesContext)
     {
         _children = selectItemsParent.getChildCount() > 0
-                ? selectItemsParent.getChildren().iterator()
-                : Collections.<UIComponent>emptyIterator();
+                        ? selectItemsParent.getChildren().iterator()
+                        : Collections.<UIComponent>emptyIterator();
         _facesContext = facesContext;
     }
 
@@ -136,7 +136,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                     ValueExpression expression = uiSelectItem.getValueExpression("value");
                     throw new IllegalArgumentException("ValueExpression '"
                             + (expression == null ? null : expression.getExpressionString()) + "' of UISelectItem : "
-                            + ComponentUtils.getPathToComponent(child)
+                            + _ComponentUtils.getPathToComponent(child)
                             + " does not reference an Object of type SelectItem");
                 }
                 _nextItem = (SelectItem) item;
@@ -159,7 +159,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 {
                     // value is any kind of array (primitive or non-primitive)
                     // --> we have to use class Array to get the values
-                    final int length = Array.getLength(value);
+                    int length = Array.getLength(value);
                     Collection<Object> items = new ArrayList<>(length);
                     for (int i = 0; i < length; i++)
                     {
@@ -199,7 +199,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                                 + " array, Iterable or Map, but of type: {2}",
                                 new Object[] {
                                     (expression == null ? null : expression.getExpressionString()),
-                                    ComponentUtils.getPathToComponent(child),
+                                    _ComponentUtils.getPathToComponent(child),
                                     (value == null ? null : value.getClass().getName()) 
                                 });
                     }
@@ -242,8 +242,8 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 // write the current item into the request map under the key listed in var, if available
                 boolean wroteRequestMapVarValue = false;
                 Object oldRequestMapVarValue = null;
-                final String var = (String) attributeMap.get(VAR_PROP);
-                if (var != null && !var.isEmpty())
+                String var = (String) attributeMap.get(VAR_ATTR);
+                if(var != null && !var.isEmpty())
                 {
                     // save the current value of the key listed in var from the request map
                     oldRequestMapVarValue = _facesContext.getExternalContext().getRequestMap().put(var, item);
@@ -251,7 +251,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 }
                 
                 // check the itemValue attribute
-                Object itemValue = attributeMap.get(ITEM_VALUE_PROP);
+                Object itemValue = attributeMap.get(ITEM_VALUE_ATTR);
                 if (itemValue == null)
                 {
                     // the itemValue attribute was not provided
@@ -261,7 +261,7 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 
                 // Spec: When iterating over the select items, toString() 
                 // must be called on the string rendered attribute values
-                Object itemLabel = attributeMap.get(ITEM_LABEL_PROP);
+                Object itemLabel = attributeMap.get(ITEM_LABEL_ATTR);
                 if (itemLabel == null)
                 {
                     if (itemValue != null)
@@ -273,14 +273,14 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                 {
                     itemLabel = itemLabel.toString();
                 }
-                Object itemDescription = attributeMap.get(ITEM_DESCRIPTION_PROP);
+                Object itemDescription = attributeMap.get(ITEM_DESCRIPTION_ATTR);
                 if (itemDescription != null)
                 {
                     itemDescription = itemDescription.toString();
                 }
-                Boolean itemDisabled = getBooleanAttribute(_currentUISelectItems, ITEM_DISABLED_PROP, false);
-                Boolean itemLabelEscaped = getBooleanAttribute(_currentUISelectItems, ITEM_LABEL_ESCAPED_PROP, true);
-                Object noSelectionValue = attributeMap.get(NO_SELECTION_VALUE_PROP);
+                Boolean itemDisabled = getBooleanAttribute(_currentUISelectItems, ITEM_DISABLED_ATTR, false);
+                Boolean itemLabelEscaped = getBooleanAttribute(_currentUISelectItems, ITEM_LABEL_ESCAPED_ATTR, true);
+                Object noSelectionValue = attributeMap.get(NO_SELECTION_VALUE_ATTR);
                 item = new SelectItem(itemValue,
                         (String) itemLabel,
                         (String) itemDescription,
@@ -294,11 +294,13 @@ public class SelectItemsIterator implements Iterator<SelectItem>
                     // If there was a previous value stored with the key from var in the request map, restore it
                     if (oldRequestMapVarValue != null)
                     {
-                        _facesContext.getExternalContext().getRequestMap().put(var, oldRequestMapVarValue);
+                        _facesContext.getExternalContext()
+                                .getRequestMap().put(var, oldRequestMapVarValue);
                     }
                     else
                     {
-                        _facesContext.getExternalContext().getRequestMap().remove(var);
+                        _facesContext.getExternalContext()
+                                .getRequestMap().remove(var);
                     }
                 } 
             }
@@ -342,5 +344,4 @@ public class SelectItemsIterator implements Iterator<SelectItem>
             return Boolean.valueOf(value.toString());
         }
     }
-
 }

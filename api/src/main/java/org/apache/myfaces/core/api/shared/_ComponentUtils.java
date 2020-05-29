@@ -16,18 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.component;
+package org.apache.myfaces.core.api.shared;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 import java.util.Collection;
+import javax.faces.component.NamingContainer;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.component.UIViewRoot;
 
 /**
  * A collection of static helper methods for locating UIComponents.
  */
-class _ComponentUtils
+public class _ComponentUtils
 {
     public static final String V_ID_PREFIX = "__v_";
     public static final String RD_ID_PREFIX = "__rd_";
@@ -59,7 +63,7 @@ class _ComponentUtils
     {
     }
 
-    static UIComponent findParentNamingContainer(UIComponent component, boolean returnRootIfNotFound)
+    public static UIComponent findParentNamingContainer(UIComponent component, boolean returnRootIfNotFound)
     {
         NamingContainer result = closest(NamingContainer.class, component);
         if (result != null)
@@ -75,7 +79,7 @@ class _ComponentUtils
         return null;
     }
     
-    static <T> T closest(Class<T> type, UIComponent base) 
+    public static <T> T closest(Class<T> type, UIComponent base) 
     {
         UIComponent parent = base.getParent();
 
@@ -92,7 +96,7 @@ class _ComponentUtils
         return null;
     }
 
-    static UIComponent getRootComponent(UIComponent component)
+    public static UIComponent getRootComponent(UIComponent component)
     {
         UIComponent parent;
         for (;;)
@@ -118,7 +122,7 @@ class _ComponentUtils
      * 
      * @return findBase, a descendant of findBase, or null.
      */
-    static UIComponent findComponent(UIComponent findBase, String id, final char separatorChar)
+    public static UIComponent findComponent(UIComponent findBase, String id, final char separatorChar)
     {
         if (!(findBase instanceof NamingContainer) && id.equals(findBase.getId()))
         {
@@ -170,7 +174,7 @@ class _ComponentUtils
         return null;
     }
     
-    static UIComponent findComponentChildOrFacetFrom(UIComponent parent, String id, String innerExpr)
+    public static UIComponent findComponentChildOrFacetFrom(UIComponent parent, String id, String innerExpr)
     {
         if (parent.getFacetCount() > 0)
         {
@@ -234,7 +238,7 @@ class _ComponentUtils
         return null;
     }
 
-    static void callValidators(FacesContext context, UIInput input, Object convertedValue)
+    public static void callValidators(FacesContext context, UIInput input, Object convertedValue)
     {
         // first invoke the list of validator components
         Validator[] validators = input.getValidators();
@@ -275,7 +279,7 @@ class _ComponentUtils
         }
     }
 
-    static String getPathToComponent(UIComponent component)
+    public static String getPathToComponent(UIComponent component)
     {
         StringBuilder buf = new StringBuilder();
 
@@ -299,7 +303,7 @@ class _ComponentUtils
      * reads the isRendered property, call {@link
      * UIComponent#popComponentFromEL} and returns the value of isRendered.
      */
-    static boolean isRendered(FacesContext facesContext, UIComponent uiComponent)
+    public static boolean isRendered(FacesContext facesContext, UIComponent uiComponent)
     {
         // We must call pushComponentToEL here because ValueExpression may have 
         // implicit object "component" used. 
@@ -314,7 +318,7 @@ class _ComponentUtils
         }
     }
 
-    private static void getPathToComponent(UIComponent component, StringBuilder buf)
+    public static void getPathToComponent(UIComponent component, StringBuilder buf)
     {
         if (component == null)
         {

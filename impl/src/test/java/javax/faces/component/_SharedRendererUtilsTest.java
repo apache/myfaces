@@ -18,6 +18,7 @@
  */
 package javax.faces.component;
 
+import org.apache.myfaces.core.api.shared._SharedRendererUtils;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;

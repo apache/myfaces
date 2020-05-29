@@ -16,16 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.component;
+package org.apache.myfaces.core.api.shared;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -38,7 +40,7 @@ import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 
-final class _ClassUtils
+public class _ClassUtils
 {
     // ~ Static fields/initializers -----------------------------------------------------------------
 
@@ -63,6 +65,15 @@ final class _ClassUtils
     public static final Class<Double[]> DOUBLE_OBJECT_ARRAY_CLASS = Double[].class;
     public static final Class<String[]> STRING_OBJECT_ARRAY_CLASS = String[].class;
 
+    protected static final String[] EMPTY_STRING = new String[0];
+
+    protected static final String[] PRIMITIVE_NAMES = new String[] { "boolean", "byte", "char", "double", "float",
+                                                                    "int", "long", "short", "void" };
+
+    protected static final Class<?>[] PRIMITIVES = new Class[] { Boolean.TYPE, Byte.TYPE, Character.TYPE, Double.TYPE,
+                                                                Float.TYPE, Integer.TYPE, Long.TYPE, Short.TYPE,
+                                                                Void.TYPE };
+    
     public static final Map<String, Class<?>> COMMON_TYPES = new HashMap<String, Class<?>>(64);
     static
     {
@@ -107,14 +118,6 @@ final class _ClassUtils
         // array of void is not a valid type
     }
 
-    /** utility class, do not instantiate */
-    private _ClassUtils()
-    {
-        // utility class, disable instantiation
-    }
-
-    // ~ Methods ------------------------------------------------------------------------------------
-
     /**
      * Tries a Class.loadClass with the context class loader of the current thread first and automatically falls back to
      * the ClassUtils class loader (i.e. the loader of the myfaces.jar lib) if necessary.
@@ -126,7 +129,7 @@ final class _ClassUtils
      *             if type is null
      * @throws ClassNotFoundException
      */
-    public static Class<?> classForName(String type) throws ClassNotFoundException
+    public static <T> Class<T> classForName(String type) throws ClassNotFoundException
     {
         if (type == null)
         {
@@ -135,14 +138,14 @@ final class _ClassUtils
         try
         {
             // Try WebApp ClassLoader first
-            return Class.forName(type,
+            return (Class<T>) Class.forName(type,
                     false, // do not initialize for faster startup
                     getContextClassLoader());
         }
         catch (ClassNotFoundException ignore)
         {
             // fallback: Try ClassLoader for ClassUtils (i.e. the myfaces.jar lib)
-            return Class.forName(type,
+            return (Class<T>) Class.forName(type,
                     false, // do not initialize for faster startup
                     _ClassUtils.class.getClassLoader());
         }
@@ -158,17 +161,36 @@ final class _ClassUtils
      * @throws FacesException
      *             if class not found
      */
-    public static Class<?> simpleClassForName(String type)
+    public static Class simpleClassForName(String type)
     {
+        return simpleClassForName(type, true);
+    }
+
+    /**
+     * Same as {link {@link #simpleClassForName(String)}, but will only
+     * log the exception and rethrow a RunTimeException if logException is true.
+     *
+     * @param type
+     * @param logException - true to log/throw FacesException, false to avoid logging/throwing FacesException
+     * @return the corresponding Class
+     * @throws FacesException if class not found and logException is true
+     */
+    public static Class simpleClassForName(String type, boolean logException)
+    {
+        Class returnClass = null;
         try
         {
-            return classForName(type);
+            returnClass = classForName(type);
         }
         catch (ClassNotFoundException e)
         {
-            log.log(Level.SEVERE, "Class " + type + " not found", e);
-            throw new FacesException(e);
+            if (logException)
+            {
+                log.log(Level.SEVERE, "Class " + type + " not found", e);
+                throw new FacesException(e);
+            }
         }
+        return returnClass;
     }
 
     /**
@@ -231,6 +253,54 @@ final class _ClassUtils
             throw new FacesException(e);
         }
     }
+    
+    /**
+     * This method is similar to shared ClassUtils.javaTypeToClass,
+     * but the default package for the type is java.lang
+     *
+     * @param type
+     * @return
+     * @throws ClassNotFoundException
+     */
+    public static Class javaDefaultTypeToClass(String type)
+            throws ClassNotFoundException
+    {
+        if (type == null)
+        {
+            throw new NullPointerException("type");
+        }
+
+        // try common types and arrays of common types first
+        Class clazz = (Class) COMMON_TYPES.get(type);
+        if (clazz != null)
+        {
+            return clazz;
+        }
+
+        int len = type.length();
+        if (len > 2 && type.charAt(len - 1) == ']' && type.charAt(len - 2) == '[')
+        {
+            String componentType = type.substring(0, len - 2);
+            Class componentTypeClass = classForName(componentType);
+            return Array.newInstance(componentTypeClass, 0).getClass();
+        }
+
+        if (type.indexOf('.') == -1)
+        {
+            type = "java.lang." + type;
+        }
+        return classForName(type);
+    }
+
+    public static URL getResource(String resource)
+    {
+        URL url = getContextClassLoader().getResource(resource);
+        if (url == null)
+        {
+            url = _ClassUtils.class.getClassLoader().getResource(resource);
+        }
+        return url;
+    }
 
     public static InputStream getResourceAsStream(String resource)
     {
@@ -242,7 +312,7 @@ final class _ClassUtils
         }
         return stream;
     }
-
+    
     /**
      * @param resource
      *            Name of resource(s) to find in classpath
@@ -250,12 +320,12 @@ final class _ClassUtils
      *            The default object to use to determine the class loader (if none associated with current thread.)
      * @return Iterator over URL Objects
      */
-    public static Collection<? extends URL> getResources(String resource, Object defaultObject)
+    public static Collection<URL> getResources(String resource, Object defaultObject)
     {
         try
         {
             Enumeration<URL> resources = getCurrentLoader(defaultObject).getResources(resource);
-            List<URL> lst = new ArrayList<URL>();
+            List<URL> lst = new ArrayList<>();
             while (resources.hasMoreElements())
             {
                 lst.add(resources.nextElement());
@@ -307,7 +377,7 @@ final class _ClassUtils
         return newInstance(clazzForName);
     }
 
-    public static Object newInstance(Class<?> clazz) throws FacesException
+    public static <T> T newInstance(Class<T> clazz) throws FacesException
     {
         try
         {
@@ -330,6 +400,30 @@ final class _ClassUtils
         }
     }
 
+    public static <T> T newInstance(Class<T> clazz,
+                                    Class<?>[] constructorArgClasses,
+                                    Object... constructorArgs) throws NoSuchMethodException
+    {
+        if (constructorArgs.length == 0)
+        {
+            // no args given - use normal newInstance()
+            return newInstance(clazz);
+        }
+
+        // try to get a fitting constructor (throws NoSuchMethodException)
+        Constructor constructor = clazz.getConstructor(constructorArgClasses);
+
+        try
+        {
+            // actually create instance
+            return (T) constructor.newInstance(constructorArgs);
+        }
+        catch (Exception e)
+        {
+            throw new FacesException(e);
+        }
+    }
+    
     public static Object convertToType(Object value, Class<?> desiredClass)
     {
         if (value == null)
@@ -370,10 +464,9 @@ final class _ClassUtils
      *            The default object to use to determine the class loader (if none associated with current thread.)
      * @return ClassLoader
      */
-    protected static ClassLoader getCurrentLoader(Object defaultObject)
+    public static ClassLoader getCurrentLoader(Object defaultObject)
     {
         ClassLoader loader = getContextClassLoader();
-        
         if (loader == null)
         {
             loader = defaultObject.getClass().getClassLoader();
@@ -387,7 +480,7 @@ final class _ClassUtils
      * 
      * @return ClassLoader
      */
-    protected static ClassLoader getContextClassLoader()
+    public static ClassLoader getContextClassLoader()
     {
         if (System.getSecurityManager() != null)
         {
@@ -401,9 +494,93 @@ final class _ClassUtils
                 throw new FacesException(pae);
             }
         }
-        else
-        {
-            return Thread.currentThread().getContextClassLoader();
-        }
+
+        return Thread.currentThread().getContextClassLoader();
     }   
+    
+    public static Class<?> forNamePrimitive(String name)
+    {
+        if (name.length() <= 8)
+        {
+            int p = Arrays.binarySearch(PRIMITIVE_NAMES, name);
+            if (p >= 0)
+            {
+                return PRIMITIVES[p];
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Converts an array of Class names to Class types
+     * 
+     * @param s
+     * @return
+     * @throws ClassNotFoundException
+     */
+    public static Class<?>[] toTypeArray(String[] s) throws ClassNotFoundException
+    {
+        if (s == null)
+        {
+            return null;
+        }
+        
+        Class<?>[] c = new Class[s.length];
+        for (int i = 0; i < s.length; i++)
+        {
+            c[i] = forName(s[i]);
+        }
+        
+        return c;
+    }
+    
+    /**
+     * Converts an array of Class types to Class names
+     * 
+     * @param c
+     * @return
+     */
+    public static String[] toTypeNameArray(Class<?>[] c)
+    {
+        if (c == null)
+        {
+            return null;
+        }
+        
+        String[] s = new String[c.length];
+        for (int i = 0; i < c.length; i++)
+        {
+            s[i] = c[i].getName();
+        }
+        
+        return s;
+    }
+    
+    public static Class<?> forName(String name) throws ClassNotFoundException
+    {
+        if (name == null || name.isEmpty())
+        {
+            return null;
+        }
+        
+        Class<?> c = forNamePrimitive(name);
+        if (c == null)
+        {
+            if (name.endsWith("[]"))
+            {
+                String nc = name.substring(0, name.length() - 2);
+                //we should route through our shared forName, due to plugins and due to better classloader resolution
+                c  = classForName(nc);
+                c = Array.newInstance(c, 0).getClass();
+            }
+            else
+            {
+                c  = classForName(name);
+            }
+        }
+        
+        return c;
+    }
+
 }

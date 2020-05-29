@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.convert;
+package org.apache.myfaces.core.api.shared;
 
 import java.text.MessageFormat;
 import java.util.Locale;
@@ -29,63 +29,59 @@ import javax.faces.context.FacesContext;
  * This class encapsulates a FacesMessage to evaluate the label
  * expression on render response, where f:loadBundle is available
  */
-class _ParametrizableFacesMessage extends FacesMessage
+public class _ParametrizableFacesMessage extends FacesMessage
 {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 7792947730961657948L;
 
-    private final Object _args[];
-    private String _evaluatedDetail;
-    private String _evaluatedSummary;
-    private transient Object _evaluatedArgs[];
-    private Locale _locale;
+    private final Object args[];
+    private String evaluatedDetail;
+    private String evaluatedSummary;
+    private transient Object evaluatedArgs[];
+    private Locale locale;
 
-    public _ParametrizableFacesMessage(
-            String summary, String detail, Object[] args, Locale locale)
+    public _ParametrizableFacesMessage(String summary, String detail, Object[] args, Locale locale)
     {
         super(summary, detail);
-        if(locale == null)
+        if (locale == null)
         {
             throw new NullPointerException("locale");
         }
-        _locale = locale;
-        _args = args;
+        this.locale = locale;
+        this.args = args;
     }
 
-    public _ParametrizableFacesMessage(FacesMessage.Severity severity,
-            String summary, String detail, Object[] args, Locale locale)
+    public _ParametrizableFacesMessage(FacesMessage.Severity severity, String summary, String detail, Object[] args,
+            Locale locale)
     {
         super(severity, summary, detail);
-        if(locale == null)
+        if (locale == null)
         {
             throw new NullPointerException("locale");
         }
-        _locale = locale;
-        _args = args;
+        this.locale = locale;
+        this.args = args;
     }
 
     @Override
     public String getDetail()
     {
-        if (_evaluatedArgs == null && _args != null)
+        if (evaluatedArgs == null && args != null)
         {
             evaluateArgs();
         }
-        if (_evaluatedDetail == null)
+        if (evaluatedDetail == null)
         {
-            MessageFormat format = new MessageFormat(super.getDetail(), _locale);
-            _evaluatedDetail = format.format(_evaluatedArgs);
+            MessageFormat format = new MessageFormat(super.getDetail(), locale);
+            evaluatedDetail = format.format(evaluatedArgs);
         }
-        return _evaluatedDetail;
+        return evaluatedDetail;
     }
 
     @Override
     public void setDetail(String detail)
     {
         super.setDetail(detail);
-        _evaluatedDetail = null;
+        evaluatedDetail = null;
     }
     
     public String getUnformattedDetail()
@@ -96,23 +92,23 @@ class _ParametrizableFacesMessage extends FacesMessage
     @Override
     public String getSummary()
     {
-        if (_evaluatedArgs == null && _args != null)
+        if (evaluatedArgs == null && args != null)
         {
             evaluateArgs();
         }
-        if (_evaluatedSummary == null)
+        if (evaluatedSummary == null)
         {
-            MessageFormat format = new MessageFormat(super.getSummary(), _locale);
-            _evaluatedSummary = format.format(_evaluatedArgs);
+            MessageFormat format = new MessageFormat(super.getSummary(), locale);
+            evaluatedSummary = format.format(evaluatedArgs);
         }
-        return _evaluatedSummary;
+        return evaluatedSummary;
     }
 
     @Override
     public void setSummary(String summary)
     {
         super.setSummary(summary);
-        _evaluatedSummary = null;
+        evaluatedSummary = null;
     }
     
     public String getUnformattedSummary()
@@ -122,25 +118,27 @@ class _ParametrizableFacesMessage extends FacesMessage
 
     private void evaluateArgs()
     {
-        _evaluatedArgs = new Object[_args.length];
         FacesContext facesContext = null;
-        for (int i = 0; i < _args.length; i++)
+        
+        evaluatedArgs = new Object[args.length];
+        for (int i = 0; i < args.length; i++)
         {
-            if (_args[i] == null)
+            if (args[i] == null)
             {
                 continue;
             }
-            else if (_args[i] instanceof ValueExpression)
+
+            if (args[i] instanceof ValueExpression)
             {
                 if (facesContext == null)
                 {
                     facesContext = FacesContext.getCurrentInstance();
                 }
-                _evaluatedArgs[i] = ((ValueExpression)_args[i]).getValue(facesContext.getELContext());
+                evaluatedArgs[i] = ((ValueExpression) args[i]).getValue(facesContext.getELContext());
             }
             else 
             {
-                _evaluatedArgs[i] = _args[i];
+                evaluatedArgs[i] = args[i];
             }
         }
     }

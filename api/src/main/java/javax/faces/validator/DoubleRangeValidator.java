@@ -18,6 +18,7 @@
  */
 package javax.faces.validator;
 
+import org.apache.myfaces.core.api.shared._MessageUtils;
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;

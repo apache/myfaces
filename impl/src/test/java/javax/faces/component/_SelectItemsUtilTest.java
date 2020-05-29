@@ -18,6 +18,7 @@
  */
 package javax.faces.component;
 
+import org.apache.myfaces.core.api.shared._SelectItemsIterator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

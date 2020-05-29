@@ -48,10 +48,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.model.SelectItem;
+import org.apache.myfaces.core.api.shared._SelectItemsIterator;
+import org.apache.myfaces.core.api.shared._SharedRendererUtils;
 
 import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.util.lang.HashMapUtils;
-import org.apache.myfaces.renderkit.html.util.SelectItemsIterator;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.util.lang.Assert;
 
@@ -442,7 +443,7 @@ public final class RendererUtils
         if (considerValueType)
         {
             // try to get a converter from the valueType attribute
-            converter = SharedRendererUtils.getValueTypeConverter(facesContext, component);
+            converter = _SharedRendererUtils.getValueTypeConverter(facesContext, component);
             if (converter != null)
             {
                 return converter;
@@ -472,8 +473,8 @@ public final class RendererUtils
         if (Collection.class.isAssignableFrom(valueType) || Object.class.equals(valueType))
         {
             // try to get the by-type-converter from the type of the SelectItems
-            return SharedRendererUtils.getSelectItemsValueConverter(
-                    new SelectItemsIterator(component, facesContext),
+            return _SharedRendererUtils.getSelectItemsValueConverter(
+                    new _SelectItemsIterator(component, facesContext),
                     facesContext);
         }
 
@@ -495,8 +496,8 @@ public final class RendererUtils
         {
             // There is no converter for Object class
             // try to get the by-type-converter from the type of the SelectItems
-            return SharedRendererUtils.getSelectItemsValueConverter(
-                    new SelectItemsIterator(component, facesContext),
+            return _SharedRendererUtils.getSelectItemsValueConverter(
+                    new _SelectItemsIterator(component, facesContext),
                     facesContext);
         }
 
@@ -586,9 +587,9 @@ public final class RendererUtils
 
     private static List<SelectItem> internalGetSelectItemList(UIComponent uiComponent, FacesContext facesContext)
     {
-        List<SelectItem> list = new ArrayList<SelectItem>();
+        List<SelectItem> list = new ArrayList<>();
 
-        for (SelectItemsIterator iter = new SelectItemsIterator(uiComponent, facesContext); iter.hasNext();)
+        for (_SelectItemsIterator iter = new _SelectItemsIterator(uiComponent, facesContext); iter.hasNext();)
         {
             list.add(iter.next());
         }
@@ -848,7 +849,7 @@ public final class RendererUtils
                             + ComponentUtils.getPathToComponent(selectMany) + "expected");
         }
 
-        return SharedRendererUtils.getConvertedUISelectManyValue(facesContext,
+        return _SharedRendererUtils.getConvertedUISelectManyValue(facesContext,
                 selectMany, (String[]) submittedValue, considerValueType);
     }
 

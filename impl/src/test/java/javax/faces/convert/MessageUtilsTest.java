@@ -20,6 +20,7 @@ package javax.faces.convert;
 
 import javax.el.ValueExpression;
 import javax.faces.component.html.HtmlInputText;
+import org.apache.myfaces.core.api.shared._MessageUtils;
 
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;

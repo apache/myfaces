@@ -30,7 +30,7 @@ class _ComponentFacetMap<V extends UIComponent> implements Map<String, V>, Seria
 {
     private static final long serialVersionUID = -3456937594422167629L;
     private UIComponent _component;
-    private Map<String, V> _map = new _ArrayMap<String, V>(0,5);
+    private Map<String, V> _map = new _ArrayMap<>(0,5);
     private Set<Entry<String, V>> _entrySet = null;
     private Set<String> _keySet = null;
     private Collection<V> _valueCollection = null;

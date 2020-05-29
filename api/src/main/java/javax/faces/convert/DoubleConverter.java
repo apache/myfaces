@@ -25,6 +25,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFConvert
 
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+import org.apache.myfaces.core.api.shared._MessageUtils;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>

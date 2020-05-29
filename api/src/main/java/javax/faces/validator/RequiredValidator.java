@@ -18,6 +18,7 @@
  */
 package javax.faces.validator;
 
+import org.apache.myfaces.core.api.shared._MessageUtils;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;

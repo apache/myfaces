@@ -18,6 +18,8 @@
  */
 package javax.faces.validator;
 
+import org.apache.myfaces.core.api.shared._MessageUtils;
+import org.apache.myfaces.core.api.shared._ExternalSpecifications;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;

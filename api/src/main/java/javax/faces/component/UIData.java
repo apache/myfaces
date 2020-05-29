@@ -18,6 +18,8 @@
  */
 package javax.faces.component;
 
+import org.apache.myfaces.core.api.shared._ClassUtils;
+import org.apache.myfaces.core.api.shared._ComponentUtils;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;

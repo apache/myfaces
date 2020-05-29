@@ -75,7 +75,7 @@ class LogMetaInfUtils
         {
             Map<String, List<JarInfo>> libs = new HashMap<>(30);
 
-            Iterator<URL> it = ClassUtils.getResources("META-INF/MANIFEST.MF", LogMetaInfUtils.class);
+            Iterator<URL> it = ClassUtils.getResources("META-INF/MANIFEST.MF", LogMetaInfUtils.class).iterator();
             while (it.hasNext())
             {
                 URL url = it.next();

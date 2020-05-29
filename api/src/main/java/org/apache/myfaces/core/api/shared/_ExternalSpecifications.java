@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javax.faces.validator;
+package org.apache.myfaces.core.api.shared;
 
 /**
  * <p>
@@ -26,7 +26,7 @@ package javax.faces.validator;
  * </p>
  * @since 2.0
  */
-final class _ExternalSpecifications
+public final class _ExternalSpecifications
 {
     private static volatile Boolean beanValidationAvailable;
 
@@ -59,7 +59,7 @@ final class _ExternalSpecifications
                         // Trial-error approach to check for Bean Validation impl existence.
                         // If any Exception occurs here, we assume that Bean Validation is not available.
                         // The cause may be anything, i.e. NoClassDef, config error...
-                        _ValidationUtils.tryBuildDefaultValidatorFactory();
+                        _BeanValidationUtils.tryBuildDefaultValidatorFactory();
                     }
                     catch (Throwable t)
                     {

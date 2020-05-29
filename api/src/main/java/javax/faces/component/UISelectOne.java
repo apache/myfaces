@@ -18,6 +18,7 @@
  */
 package javax.faces.component;
 
+import org.apache.myfaces.core.api.shared._SelectItemsIterator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -30,6 +31,7 @@ import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
+import org.apache.myfaces.core.api.shared._MessageUtils;
 
 /**
  * Component for choosing one option out of a set of possibilities.

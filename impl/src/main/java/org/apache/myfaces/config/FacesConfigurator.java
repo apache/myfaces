@@ -896,8 +896,7 @@ public class FacesConfigurator
         {
             try
             {
-                Class<Comparator<ELResolver>> clazz =
-                        (Class<Comparator<ELResolver>>) ClassUtils.classForName(elResolverComparatorClass);
+                Class<Comparator<ELResolver>> clazz = ClassUtils.classForName(elResolverComparatorClass);
                 Comparator<ELResolver> comparator = ClassUtils.newInstance(clazz);
                 runtimeConfig.setELResolverComparator(comparator);
             }

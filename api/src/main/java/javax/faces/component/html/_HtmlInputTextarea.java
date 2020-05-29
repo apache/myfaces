@@ -26,13 +26,13 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
  * Renders a HTML textarea element.
  *
  */
-@JSFComponent
-(name = "h:inputTextarea",
-clazz = "javax.faces.component.html.HtmlInputTextarea",template=true,
-tagClass = "org.apache.myfaces.taglib.html.HtmlInputTextareaTag",
-defaultRendererType = "javax.faces.Textarea",
-implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
-defaultEventName = "valueChange"
+@JSFComponent(name = "h:inputTextarea",
+    clazz = "javax.faces.component.html.HtmlInputTextarea",
+    template = true,
+    tagClass = "org.apache.myfaces.taglib.html.HtmlInputTextareaTag",
+    defaultRendererType = "javax.faces.Textarea",
+    implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
+    defaultEventName = "valueChange"
 )
 abstract class _HtmlInputTextarea extends UIInput implements _AccesskeyProperty,
     _UniversalProperties, _FocusBlurProperties, _ChangeProperty,
@@ -41,25 +41,23 @@ abstract class _HtmlInputTextarea extends UIInput implements _AccesskeyProperty,
     _RoleProperty
 {
 
-  static public final String COMPONENT_FAMILY =
-    "javax.faces.Input";
-  static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlInputTextarea";
+    static public final String COMPONENT_FAMILY = "javax.faces.Input";
+    static public final String COMPONENT_TYPE = "javax.faces.HtmlInputTextarea";
 
-  /**
-   * HTML: The width of this element, in characters.
-   * 
-   * @JSFProperty
-   *   defaultValue = "Integer.MIN_VALUE"
-   */
-  public abstract int getCols();
-  
-  /**
-   * HTML: The height of this element, in characters.
-   * 
-   * @JSFProperty
-   *   defaultValue = "Integer.MIN_VALUE"
-   */
-  public abstract int getRows();
+    /**
+     * HTML: The width of this element, in characters.
+     * 
+     * @JSFProperty
+     *   defaultValue = "Integer.MIN_VALUE"
+     */
+    public abstract int getCols();
+
+    /**
+     * HTML: The height of this element, in characters.
+     * 
+     * @JSFProperty
+     *   defaultValue = "Integer.MIN_VALUE"
+     */
+    public abstract int getRows();
 
 }

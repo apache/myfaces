@@ -36,6 +36,7 @@ package ${component.packageName};
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
 import java.util.Collections;
+import org.apache.myfaces.core.api.shared._MessageUtils;
 $utils.importTagClasses($component)
 
 #if ($component.isTemplate())
