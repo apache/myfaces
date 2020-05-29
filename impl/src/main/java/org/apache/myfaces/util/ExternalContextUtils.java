@@ -54,17 +54,22 @@ public final class ExternalContextUtils
      */
     public static boolean isPortlet(ExternalContext ec)
     {
+        if (PORTLET_CONTEXT_CLASS == null)
+        {
+            return false;
+        }
+        
+        if (PORTLET_CONTEXT_CLASS.isInstance(ec.getContext()))
+        {
+            return true;
+        }
+        
         Map<String, Object> requestMap = ec.getRequestMap();
         if (requestMap.containsKey(PORTLET_LIFECYCLE_PHASE))
         {
             return true;
         }
         
-        if (PORTLET_CONTEXT_CLASS != null)
-        {
-            return PORTLET_CONTEXT_CLASS.isInstance(ec.getContext());
-        }
-
         return false;
     }
 
