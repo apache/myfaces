@@ -20,16 +20,20 @@ package javax.faces.lifecycle;
 
 import java.util.Map;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 /**
  * @since 2.2
  */
 public abstract class ClientWindow
 {
-    
+    /**
+     * Defines the ClientWindow mode to use.
+     */
+    @JSFWebConfigParam(since = "2.2.0", expectedValues = "none, url, client", defaultValue = "none")
     public static final String CLIENT_WINDOW_MODE_PARAM_NAME = 
             "javax.faces.CLIENT_WINDOW_MODE";
-    
+
     private static final String CLIENT_WINDOW_RENDER_MODE_DISABLED = 
             "org.apache.myfaces.CLIENT_WINDOW_URL_QUERY_PARAMETER_DISABLED";
     
