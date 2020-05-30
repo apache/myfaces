@@ -109,6 +109,13 @@ public class WebXmlParser
         try
         {
             Document webXml = toDocument(context.getResource("/WEB-INF/web.xml"));
+            
+            if (webXml == null)
+            {
+                // Quarkus
+                webXml = toDocument(context.getResource("/META-INF/web.xml"));
+            }
+            
             if (webXml != null)
             {
                 return parseErrorPages(webXml.getDocumentElement());
