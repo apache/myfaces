@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.lifecycle;
+package org.apache.myfaces.lifecycle.clientwindow;
 
 import org.apache.myfaces.util.token.TokenGenerator;
 import java.io.BufferedReader;

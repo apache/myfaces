@@ -48,6 +48,7 @@
       <visit-context-factory>org.apache.myfaces.component.visit.VisitContextFactoryImpl</visit-context-factory>
       <view-declaration-language-factory>org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl</view-declaration-language-factory>
       <tag-handler-delegate-factory>org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl</tag-handler-delegate-factory>
+      <client-window-factory>org.apache.myfaces.lifecycle.clientwindow.ClientWindowFactoryImpl</client-window-factory>
    </factory>
    
    <!-- behaviors by id -->

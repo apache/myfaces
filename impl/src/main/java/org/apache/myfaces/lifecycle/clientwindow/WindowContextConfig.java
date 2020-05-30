@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.lifecycle;
+package org.apache.myfaces.lifecycle.clientwindow;
 
 /**
  * Configuration for the org.apache.myfaces.extensions.cdi.core.api.scope.conversation.WindowContext

@@ -99,7 +99,7 @@ import org.apache.myfaces.context.ExternalContextFactoryImpl;
 import org.apache.myfaces.context.FacesContextFactoryImpl;
 import org.apache.myfaces.context.PartialViewContextFactoryImpl;
 import org.apache.myfaces.context.servlet.ServletFlashFactoryImpl;
-import org.apache.myfaces.lifecycle.ClientWindowFactoryImpl;
+import org.apache.myfaces.lifecycle.clientwindow.ClientWindowFactoryImpl;
 import org.apache.myfaces.flow.FlowCallNodeImpl;
 import org.apache.myfaces.flow.FlowHandlerFactoryImpl;
 import org.apache.myfaces.flow.FlowImpl;
