@@ -29,8 +29,12 @@ public abstract class ClientWindow
 {
     /**
      * Defines the ClientWindow mode to use.
+     * url = like the defined in the specs
+     * url-redirect = same like 'url' but with a initial redirect, so that the first request already contains
+     *                a valid windowId in the URL. Similar to DeltaSpile LAZY mode.
+     * client = like the DeltaSpike CLIENTWINDOW mode.
      */
-    @JSFWebConfigParam(since = "2.2.0", expectedValues = "none, url, client", defaultValue = "none")
+    @JSFWebConfigParam(since = "2.2.0", expectedValues = "none, url, url-redirect, client", defaultValue = "none")
     public static final String CLIENT_WINDOW_MODE_PARAM_NAME = 
             "javax.faces.CLIENT_WINDOW_MODE";
 

@@ -93,8 +93,16 @@ public class LifecycleImpl extends Lifecycle
         }
         if (clientWindow != null)
         {
-            clientWindow.decode(facesContext);
-            facesContext.getExternalContext().setClientWindow(clientWindow);
+            try
+            {
+                facesContext.getExternalContext().setClientWindow(clientWindow);
+                clientWindow.decode(facesContext);
+            }
+            catch (RuntimeException e)
+            {
+                facesContext.getExternalContext().setClientWindow(null);
+                throw e;
+            }
         }
     }
     

@@ -31,11 +31,10 @@ import javax.faces.render.ResponseStateManager;
  */
 public class UrlClientWindow extends ClientWindow
 {
-    private String windowId;
+    protected TokenGenerator tokenGenerator;
 
-    private TokenGenerator tokenGenerator;
-    
-    private Map<String,String> queryParamsMap;
+    private String windowId;
+    private Map<String, String> queryParamsMap;
     
     public UrlClientWindow(TokenGenerator tokenGenerator)
     {
@@ -45,37 +44,23 @@ public class UrlClientWindow extends ClientWindow
     @Override
     public void decode(FacesContext context)
     {
-        String windowId = calculateWindowId(context);
-
-        if (windowId != null)
-        {
-            // Store the current windowId.
-            setId(windowId);
-        }
-        else
-        {
-            //Generate a new windowId
-            setId(tokenGenerator.getNextToken());
-        }
-    }
-    
-    protected String calculateWindowId(FacesContext context)
-    {
         //1. If it comes as parameter, it takes precedence over any other choice, because
         //   no browser is capable to do a POST and create a new window at the same time.
-        String windowId = context.getExternalContext().getRequestParameterMap().get(
+        String requestWindowId = context.getExternalContext().getRequestParameterMap().get(
                 ResponseStateManager.CLIENT_WINDOW_PARAM);
-        if (windowId != null)
+        
+        if (requestWindowId == null)
         {
-            return windowId;
+            requestWindowId = context.getExternalContext().getRequestParameterMap().get(
+                    ResponseStateManager.CLIENT_WINDOW_URL_PARAM);
         }
-        windowId = context.getExternalContext().getRequestParameterMap().get(
-                ResponseStateManager.CLIENT_WINDOW_URL_PARAM);
-        if (windowId != null)
+        
+        if (requestWindowId == null)
         {
-            return windowId;
+            requestWindowId = tokenGenerator.getNextToken();
         }
-        return null;
+        
+        setId(requestWindowId);
     }
 
     @Override
@@ -86,8 +71,8 @@ public class UrlClientWindow extends ClientWindow
     
     public void setId(String id)
     {
-        windowId = id;
-        queryParamsMap = null;
+        this.windowId = id;
+        this.queryParamsMap = null;
     }
 
     @Override

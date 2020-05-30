@@ -39,6 +39,7 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory
 
     public static final String WINDOW_MODE_NONE = "none";
     public static final String WINDOW_MODE_URL = "url";
+    public static final String WINDOW_MODE_URL_REDIRECT = "url-redirect";
     public static final String WINDOW_MODE_CLIENT = "client";
     
     private String windowMode;
@@ -66,6 +67,10 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory
             if (WINDOW_MODE_URL.equals(getWindowMode(facesContext)))
             {
                 return new UrlClientWindow(windowTokenGenerator);
+            }
+            if (WINDOW_MODE_URL_REDIRECT.equals(getWindowMode(facesContext)))
+            {
+                return new UrlRedirectClientWindow(windowTokenGenerator);
             }
             else if (WINDOW_MODE_CLIENT.equals(getWindowMode(facesContext)))
             {
