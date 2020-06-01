@@ -493,7 +493,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
 
         protected final TemplateClient _target;
 
-        private final Set<String> _names = new HashSet<String>();
+        private final Set<String> _names = new HashSet<>();
         
         private final PageContext _pageContext;
 
@@ -538,8 +538,6 @@ final class DefaultFaceletContext extends AbstractFaceletContext
         @Override
         public boolean equals(Object o)
         {
-            // System.out.println(this.owner.getAlias() + " == " +
-            // ((DefaultFacelet) o).getAlias());
             return this._owner == o || this._target == o;
         }
 
@@ -637,7 +635,7 @@ final class DefaultFaceletContext extends AbstractFaceletContext
     {
         if (_ajaxHandlerStack == null)
         {
-            _ajaxHandlerStack = new LinkedList<AjaxHandler>();
+            _ajaxHandlerStack = new LinkedList<>();
         }
 
         _ajaxHandlerStack.addFirst(parent);
