@@ -64,8 +64,8 @@ public class CDIUtils
     {
         Bean<?> bean = bm.resolve(beans);
         CreationalContext<?> cc = bm.createCreationalContext(bean);
-        T dao = (T) bm.getReference(bean, type, cc);
-        return dao;
+        T instance = (T) bm.getReference(bean, type, cc);
+        return instance;
 
     }
     
