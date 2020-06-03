@@ -474,6 +474,16 @@ public class _ClassUtils
         return loader;
     }
     
+    public static ClassLoader getCurrentLoader(Class<?> clazz)
+    {
+        ClassLoader loader = getContextClassLoader();
+        if (loader == null && clazz != null)
+        {
+            loader = clazz.getClassLoader();
+        }
+        return loader;
+    }
+    
     /**
      * Gets the ClassLoader associated with the current thread. Returns the class loader associated with the specified
      * default object if no context loader is associated with the current thread.

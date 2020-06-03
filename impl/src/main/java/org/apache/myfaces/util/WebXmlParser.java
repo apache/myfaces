@@ -35,6 +35,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
+import org.apache.myfaces.util.lang.ClassUtils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -113,7 +114,7 @@ public class WebXmlParser
             if (webXml == null)
             {
                 // Quarkus
-                webXml = toDocument(context.getResource("/META-INF/web.xml"));
+                webXml = toDocument(ClassUtils.getCurrentLoader(WebXmlParser.class).getResource("META-INF/web.xml"));
             }
             
             if (webXml != null)
