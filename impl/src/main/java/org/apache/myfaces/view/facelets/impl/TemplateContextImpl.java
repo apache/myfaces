@@ -125,18 +125,21 @@ public class TemplateContextImpl extends TemplateContext
     public boolean includeDefinition(FaceletContext ctx, Facelet owner, UIComponent parent, String name)
             throws IOException, FaceletException, FacesException, ELException
     {
-        boolean found = false;
         TemplateManager client;
-        for (int i = 0; i < _clients.size() && !found; i++)
+        for (int i = 0; i < _clients.size(); i++)
         {
             client = _clients.get(i);
             if (client.equals(owner))
             {
                 continue;
             }
-            found = client.apply(ctx, parent, name);
+
+            if (client.apply(ctx, parent, name))
+            {
+                return true;
+            }
         }
-        return found;
+        return false;
     }
     
     private final static class TemplateManagerImpl extends TemplateManager implements TemplateClient
