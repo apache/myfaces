@@ -110,16 +110,7 @@ public final class BeanPropertyTagRule extends MetaRule
         {
             try
             {
-                if (method != null)
-                {
-                    if (valueArgs == null)
-                    {
-                        String str = this.attribute.getValue();
-                        valueArgs = new Object[] { ctx.getExpressionFactory().coerceToType(str, propertyType) };
-                    }
-                    method.invoke(instance, valueArgs);
-                }
-                else if (function != null)
+                if (function != null)
                 {
                     if (value == null)
                     {
@@ -127,6 +118,15 @@ public final class BeanPropertyTagRule extends MetaRule
                         value = ctx.getExpressionFactory().coerceToType(str, propertyType);
                     }
                     function.accept(instance, value);
+                }
+                else if (method != null)
+                {
+                    if (valueArgs == null)
+                    {
+                        String str = this.attribute.getValue();
+                        valueArgs = new Object[] { ctx.getExpressionFactory().coerceToType(str, propertyType) };
+                    }
+                    method.invoke(instance, valueArgs);
                 }
             }
             catch (InvocationTargetException e)
