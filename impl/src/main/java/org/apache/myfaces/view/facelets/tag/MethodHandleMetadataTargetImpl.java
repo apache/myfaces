@@ -71,7 +71,7 @@ public class MethodHandleMetadataTargetImpl extends MetadataTarget
             return null;
         }
         
-        return lpd.getWrapped().getReadMethod();
+        return lpd.getReadMethod();
     }
 
     @Override
@@ -89,7 +89,7 @@ public class MethodHandleMetadataTargetImpl extends MetadataTarget
             return null;
         }
         
-        return lpd.getWrapped().getWriteMethod();
+        return lpd.getWriteMethod();
     }
 
     @Override

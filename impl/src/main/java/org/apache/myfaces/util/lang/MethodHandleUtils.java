@@ -56,7 +56,9 @@ public final class MethodHandleUtils
     public static class LambdaPropertyDescriptor
     {
         private PropertyDescriptor wrapped;
+        private Method readMethod;
         private Function<Object, Object> readFunction;
+        private Method writeMethod;
         private BiConsumer<Object, Object> writeFunction;
 
         public PropertyDescriptor getWrapped()
@@ -69,11 +71,21 @@ public final class MethodHandleUtils
             return wrapped.getPropertyType();
         }
 
+        public Method getReadMethod()
+        {
+            return readMethod;
+        }
+        
         public Function<Object, Object> getReadFunction()
         {
             return readFunction;
         }
 
+        public Method getWriteMethod()
+        {
+            return writeMethod;
+        }
+        
         public BiConsumer<Object, Object> getWriteFunction()
         {
             return writeFunction;
@@ -117,6 +129,8 @@ public final class MethodHandleUtils
         Method readMethod = pd.getReadMethod();
         if (readMethod != null)
         {
+            lpd.readMethod = readMethod;
+            
             MethodHandle handle = lookup.unreflect(readMethod);
             CallSite callSite = LambdaMetafactory.metafactory(lookup,
                     "apply",
@@ -130,6 +144,8 @@ public final class MethodHandleUtils
         Method writeMethod = pd.getWriteMethod();
         if (writeMethod != null)
         {
+            lpd.writeMethod = writeMethod;
+            
             MethodHandle handle = lookup.unreflect(writeMethod);
             lpd.writeFunction = createSetter(lookup, lpd, handle);
         }
