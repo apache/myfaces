@@ -66,26 +66,16 @@ public class PropertyDescriptorUtils
     
     private static Map<String, Map<String, ? extends PropertyDescriptorWrapper>> getCache(ExternalContext ec)
     {
-        Map<String, Map<String, ? extends PropertyDescriptorWrapper>> cache =
-                (Map<String, Map<String, ? extends PropertyDescriptorWrapper>>)
-                    ec.getApplicationMap().get(CACHE_KEY);
-        if (cache == null)
-        {
-            cache = new ConcurrentHashMap<>(1000);
-        }
-
-        return cache;
+        return (Map<String, Map<String, ? extends PropertyDescriptorWrapper>>)
+                    ec.getApplicationMap().computeIfAbsent(CACHE_KEY, k -> new ConcurrentHashMap<>(1000));
     }
-    
+
     public static Map<String, ? extends PropertyDescriptorWrapper> getCachedPropertyDescriptors(ExternalContext ec,
             Class<?> target)
     {
-        return getCache(ec).computeIfAbsent(target.getName(), k -> 
-        {
-            return getPropertyDescriptors(ec, target, false);
-        });
+        return getCache(ec).computeIfAbsent(target.getName(), k -> getPropertyDescriptors(ec, target, false));
     }
-    
+
     public static boolean isMethodHandlesSupported(ExternalContext ec)
     {
         if (privateLookupIn == null)
