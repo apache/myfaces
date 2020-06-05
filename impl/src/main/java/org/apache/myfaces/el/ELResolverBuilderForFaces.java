@@ -46,7 +46,8 @@ import org.apache.myfaces.el.resolver.ResourceResolver;
 import org.apache.myfaces.el.resolver.ScopedAttributeResolver;
 import org.apache.myfaces.el.resolver.implicitobject.ImplicitObjectResolver;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.el.resolver.MethodHandleBeanELResolver;
+import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
+import org.apache.myfaces.el.resolver.LambdaBeanELResolver;
 import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
@@ -140,9 +141,9 @@ public class ELResolverBuilderForFaces extends ELResolverBuilder
         list.add(new MapELResolver());
         list.add(new ListELResolver());
         list.add(new ArrayELResolver());
-        if (myfacesConfig.isUseMethodHandles())
+        if (PropertyDescriptorUtils.isMethodHandlesSupported(facesContext.getExternalContext()))
         {
-            list.add(new MethodHandleBeanELResolver());
+            list.add(new LambdaBeanELResolver(facesContext.getExternalContext()));
         }
         else
         {

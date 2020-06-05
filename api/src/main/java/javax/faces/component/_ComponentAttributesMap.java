@@ -19,8 +19,6 @@
 package javax.faces.component;
 
 import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -28,13 +26,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.Resource;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.core.api.shared.lang.LambdaPropertyDescriptor;
+import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
+import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorWrapper;
 
 /**
  * <p>
@@ -86,12 +85,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
     // the javabean properties of the associated component. This is built by
     // introspection on the associated UIComponent. Don't serialize this as
     // it can always be recreated when needed.
-    private transient Map<String, _PropertyDescriptorHolder> _propertyDescriptorMap = null;
+    private transient Map<String, ? extends PropertyDescriptorWrapper> _propertyDescriptorMap = null;
 
-    // Cache for component property descriptors
-    private static Map<Class<?>, Map<String, _PropertyDescriptorHolder>> propertyDescriptorCache =
-        new WeakHashMap<Class<?>, Map<String, _PropertyDescriptorHolder>>();
-    
     private boolean _isCompositeComponent;
     private boolean _isCompositeComponentSet;
     
@@ -175,7 +170,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
             if (MARK_CREATED.length() == keyLength &&
                 MARK_CREATED.equals(key))
             {
-                return ((UIComponentBase)_component).getOamVfMarkCreated() != null;
+                return ((UIComponentBase) _component).getOamVfMarkCreated() != null;
             }
             else if (FACET_NAME_KEY.length() == keyLength &&
                 FACET_NAME_KEY.equals(key))
@@ -211,7 +206,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                 return _isCompositeComponent;
             }
         }
-        return getPropertyDescriptor((String) key) == null ? getUnderlyingMap().containsKey(key) : false;
+        
+        PropertyDescriptorWrapper pd = getPropertyDescriptor((String) key);
+        return pd == null || pd.getReadMethod() == null
+                ? getUnderlyingMap().containsKey(key)
+                : false;
     }
 
     /**
@@ -309,8 +308,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         }
 
         // is there a javabean property to read?
-        _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor((String) key);
-        if (propertyDescriptor != null)
+        PropertyDescriptorWrapper propertyDescriptor = getPropertyDescriptor((String) key);
+        if (propertyDescriptor != null && propertyDescriptor.getReadMethod() != null)
         {
             value = getComponentProperty(propertyDescriptor);
         }
@@ -493,8 +492,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
             }
         }
 
-        _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor((String) key);
-        if (propertyDescriptor != null)
+        PropertyDescriptorWrapper propertyDescriptor = getPropertyDescriptor((String) key);
+        if (propertyDescriptor != null && propertyDescriptor.getReadMethod() != null)
         {
             throw new IllegalArgumentException("Cannot remove component property attribute");
         }
@@ -569,8 +568,8 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
             }
         }
 
-        _PropertyDescriptorHolder propertyDescriptor = getPropertyDescriptor(key);
-        if (propertyDescriptor == null)
+        PropertyDescriptorWrapper propertyDescriptor = getPropertyDescriptor(key);
+        if (propertyDescriptor == null || propertyDescriptor.getReadMethod() == null)
         {
             if (value == null)
             {
@@ -614,51 +613,13 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      * that class.
      * <p/>
      */
-    private _PropertyDescriptorHolder getPropertyDescriptor(String key)
+    private PropertyDescriptorWrapper getPropertyDescriptor(String key)
     {
         if (_propertyDescriptorMap == null)
         {
-            // Try to get descriptor map from cache
-            _propertyDescriptorMap = propertyDescriptorCache.get(_component.getClass());
-
-            // Cache miss: create descriptor map and put it in cache
-            if (_propertyDescriptorMap == null)
-            {
-                // Create descriptor map...
-                BeanInfo beanInfo;
-                try
-                {
-                    beanInfo = Introspector.getBeanInfo(_component.getClass());
-                }
-                catch (IntrospectionException e)
-                {
-                    throw new FacesException(e);
-                }
-
-                PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-                _propertyDescriptorMap = new ConcurrentHashMap<>();
-                for (int i = 0; i < propertyDescriptors.length; i++)
-                {
-                    PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
-                    Method readMethod = propertyDescriptor.getReadMethod();
-                    if (readMethod != null)
-                    {
-                        _propertyDescriptorMap.put(propertyDescriptor.getName(),
-                                new _PropertyDescriptorHolder(propertyDescriptor, readMethod));
-                    }
-                }
-
-                // ... and put it in cache
-                synchronized (propertyDescriptorCache)
-                {
-                    // Use a synchronized block to ensure proper operation on concurrent use cases.
-                    // This is a racy single check, because initialization over the same class could happen
-                    // multiple times, but the same result is always calculated. The synchronized block 
-                    // just ensure thread-safety, because only one thread will modify the cache map
-                    // at the same time.
-                    propertyDescriptorCache.put(_component.getClass(), _propertyDescriptorMap);
-                }
-            }
+            _propertyDescriptorMap = PropertyDescriptorUtils.getCachedPropertyDescriptors(
+                    _component.getFacesContext().getExternalContext(), 
+                    _component.getClass());
         }
         return _propertyDescriptorMap.get(key);
     }
@@ -674,7 +635,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      * @throws FacesException           if any other problem occurs while invoking
      *                                  the getter method.
      */
-    private Object getComponentProperty(_PropertyDescriptorHolder propertyDescriptor)
+    private Object getComponentProperty(PropertyDescriptorWrapper propertyDescriptor)
     {
         Method readMethod = propertyDescriptor.getReadMethod();
         if (readMethod == null)
@@ -685,6 +646,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
 
         try
         {
+            if (propertyDescriptor instanceof LambdaPropertyDescriptor)
+            {
+                return ((LambdaPropertyDescriptor) propertyDescriptor).getReadFunction().apply(_component);
+            }
+
             return readMethod.invoke(_component, EMPTY_ARGS);
         }
         catch (Exception e)
@@ -704,7 +670,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
      * @throws FacesException           if any other problem occurs while invoking
      *                                  the getter method.
      */
-    private void setComponentProperty(_PropertyDescriptorHolder propertyDescriptor, Object value)
+    private void setComponentProperty(PropertyDescriptorWrapper propertyDescriptor, Object value)
     {
         Method writeMethod = propertyDescriptor.getWriteMethod();
         if (writeMethod == null)
@@ -715,7 +681,14 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
 
         try
         {
-            writeMethod.invoke(_component, new Object[]{value});
+            if (propertyDescriptor instanceof LambdaPropertyDescriptor)
+            {
+                ((LambdaPropertyDescriptor) propertyDescriptor).getWriteFunction().accept(_component, value);
+            }
+            else
+            {
+                writeMethod.invoke(_component, new Object[]{value});
+            }
         }
         catch (Exception e)
         {

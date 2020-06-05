@@ -41,9 +41,9 @@ public final class BeanPropertyTagRule extends MetaRule
     @Override
     public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta)
     {
-        if (meta instanceof MethodHandleMetadataTargetImpl)
+        if (meta instanceof LambdaMetadataTargetImpl)
         {
-            BiConsumer<Object, Object> f = ((MethodHandleMetadataTargetImpl) meta).getWriteFunction(name);
+            BiConsumer<Object, Object> f = ((LambdaMetadataTargetImpl) meta).getWriteFunction(name);
 
             // if the property is writable
             if (f != null)

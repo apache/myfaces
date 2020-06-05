@@ -34,7 +34,8 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.myfaces.config.MyfacesConfig;
+import javax.faces.context.FacesContext;
+import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.view.facelets.PassthroughRule;
 import org.apache.myfaces.view.facelets.tag.jsf.PassThroughLibrary;
@@ -325,9 +326,10 @@ public final class MetaRulesetImpl extends MetaRuleset
         {
             try
             {
-                if (MyfacesConfig.getCurrentInstance().isUseMethodHandles())
+                if (PropertyDescriptorUtils.isMethodHandlesSupported(
+                        FacesContext.getCurrentInstance().getExternalContext()))
                 {
-                    meta = new MethodHandleMetadataTargetImpl(_type);
+                    meta = new LambdaMetadataTargetImpl(_type);
                 }
                 else
                 {

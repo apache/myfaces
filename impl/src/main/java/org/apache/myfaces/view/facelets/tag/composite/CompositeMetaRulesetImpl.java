@@ -38,17 +38,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.util.lang.Assert;
-import org.apache.myfaces.view.facelets.tag.MethodHandleMetadataTargetImpl;
+import org.apache.myfaces.view.facelets.tag.LambdaMetadataTargetImpl;
 import org.apache.myfaces.view.facelets.tag.NullMetadata;
 
 public class CompositeMetaRulesetImpl extends MetaRuleset
 {
     private final static Logger log = Logger.getLogger(CompositeMetadataTargetImpl.class.getName());
     
-    private static final String METADATA_KEY
-            = "org.apache.myfaces.view.facelets.tag.composite.CompositeMetaRulesetImpl.METADATA";
+    private static final String METADATA_KEY = CompositeMetaRulesetImpl.class.getName() + ".METADATA";
 
     private static Map<String, MetadataTarget> getMetaData()
     {
@@ -215,9 +214,10 @@ public class CompositeMetaRulesetImpl extends MetaRuleset
         {
             try
             {
-                if (MyfacesConfig.getCurrentInstance().isUseMethodHandles())
+                if (PropertyDescriptorUtils.isMethodHandlesSupported(
+                        FacesContext.getCurrentInstance().getExternalContext()))
                 {
-                    meta = new MethodHandleMetadataTargetImpl(_type);
+                    meta = new LambdaMetadataTargetImpl(_type);
                 }
                 else
                 {

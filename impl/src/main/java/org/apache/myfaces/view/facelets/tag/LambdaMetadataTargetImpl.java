@@ -24,24 +24,29 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.MetadataTarget;
-import org.apache.myfaces.util.lang.MethodHandleUtils;
+import org.apache.myfaces.core.api.shared.lang.LambdaPropertyDescriptor;
+import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
+import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorWrapper;
 
-public class MethodHandleMetadataTargetImpl extends MetadataTarget
+public class LambdaMetadataTargetImpl extends MetadataTarget
 {
-    private final Map<String, MethodHandleUtils.LambdaPropertyDescriptor> propertyDescriptors;
+    private final Map<String, ? extends PropertyDescriptorWrapper> propertyDescriptors;
     private final Class<?> type;
 
-    public MethodHandleMetadataTargetImpl(Class<?> type) throws IntrospectionException
+    public LambdaMetadataTargetImpl(Class<?> type) throws IntrospectionException
     {
         this.type = type;
-        this.propertyDescriptors = MethodHandleUtils.getLambdaPropertyDescriptors(type);
+        this.propertyDescriptors = PropertyDescriptorUtils.getCachedPropertyDescriptors(
+                FacesContext.getCurrentInstance().getExternalContext(),
+                type);
     }
 
     @Override
     public PropertyDescriptor getProperty(String name)
     {
-        MethodHandleUtils.LambdaPropertyDescriptor lpd = getLambdaProperty(name);
+        LambdaPropertyDescriptor lpd = getLambdaProperty(name);
         if (lpd == null)
         {
             return null;
@@ -53,7 +58,7 @@ public class MethodHandleMetadataTargetImpl extends MetadataTarget
     @Override
     public Class<?> getPropertyType(String name)
     {
-        MethodHandleUtils.LambdaPropertyDescriptor lpd = getLambdaProperty(name);
+        LambdaPropertyDescriptor lpd = getLambdaProperty(name);
         if (lpd == null)
         {
             return null;
@@ -65,7 +70,7 @@ public class MethodHandleMetadataTargetImpl extends MetadataTarget
     @Override
     public Method getReadMethod(String name)
     {
-        MethodHandleUtils.LambdaPropertyDescriptor lpd = getLambdaProperty(name);
+        LambdaPropertyDescriptor lpd = getLambdaProperty(name);
         if (lpd == null)
         {
             return null;
@@ -83,7 +88,7 @@ public class MethodHandleMetadataTargetImpl extends MetadataTarget
     @Override
     public Method getWriteMethod(String name)
     {
-        MethodHandleUtils.LambdaPropertyDescriptor lpd = getLambdaProperty(name);
+        LambdaPropertyDescriptor lpd = getLambdaProperty(name);
         if (lpd == null)
         {
             return null;
@@ -98,14 +103,14 @@ public class MethodHandleMetadataTargetImpl extends MetadataTarget
         return type.isAssignableFrom(type);
     }
  
-    public MethodHandleUtils.LambdaPropertyDescriptor getLambdaProperty(String name)
+    public LambdaPropertyDescriptor getLambdaProperty(String name)
     {
-        return propertyDescriptors.get(name);
+        return (LambdaPropertyDescriptor) propertyDescriptors.get(name);
     }
 
     public Function<Object, Object> getReadFunction(String name)
     {
-        MethodHandleUtils.LambdaPropertyDescriptor lpd = getLambdaProperty(name);
+        LambdaPropertyDescriptor lpd = getLambdaProperty(name);
         if (lpd == null)
         {
             return null;
@@ -116,7 +121,7 @@ public class MethodHandleMetadataTargetImpl extends MetadataTarget
 
     public BiConsumer<Object, Object> getWriteFunction(String name)
     {
-        MethodHandleUtils.LambdaPropertyDescriptor lpd = getLambdaProperty(name);
+        LambdaPropertyDescriptor lpd = getLambdaProperty(name);
         if (lpd == null)
         {
             return null;

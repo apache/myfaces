@@ -26,15 +26,20 @@ import javax.el.BeanELResolver;
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.PropertyNotWritableException;
-import org.apache.myfaces.util.lang.MethodHandleUtils;
+import javax.faces.context.ExternalContext;
+import org.apache.myfaces.core.api.shared.lang.LambdaPropertyDescriptor;
+import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
+import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorWrapper;
 
-public class MethodHandleBeanELResolver extends BeanELResolver
+public class LambdaBeanELResolver extends BeanELResolver
 {
-    private final ConcurrentHashMap<String, Map<String, MethodHandleUtils.LambdaPropertyDescriptor>> cache;
+    private final ExternalContext externalContext;
+    private final ConcurrentHashMap<String, Map<String, ? extends PropertyDescriptorWrapper>> cache;
 
-    public MethodHandleBeanELResolver()
+    public LambdaBeanELResolver(ExternalContext externalContext)
     {
-        cache = new ConcurrentHashMap<>(1000);
+        this.externalContext = externalContext;
+        this.cache = new ConcurrentHashMap<>(1000);
     }
 
     @Override
@@ -85,7 +90,7 @@ public class MethodHandleBeanELResolver extends BeanELResolver
 
         context.setPropertyResolved(base, property);
 
-        MethodHandleUtils.LambdaPropertyDescriptor propertyDescriptor = getPropertyDescriptor(base, property);
+        LambdaPropertyDescriptor propertyDescriptor = getPropertyDescriptor(base, property);
         if (propertyDescriptor.getWriteFunction() == null)
         {
             throw new PropertyNotWritableException("Property \"" + (String) property
@@ -127,14 +132,12 @@ public class MethodHandleBeanELResolver extends BeanELResolver
         return null;
     }
 
-    protected MethodHandleUtils.LambdaPropertyDescriptor getPropertyDescriptor(Object base, Object property)
+    protected LambdaPropertyDescriptor getPropertyDescriptor(Object base, Object property)
     {
-        Map<String, MethodHandleUtils.LambdaPropertyDescriptor> beanCache = cache.computeIfAbsent(
+        Map<String, ? extends PropertyDescriptorWrapper> beanCache = cache.computeIfAbsent(
                 base.getClass().getName(),
-                k -> new ConcurrentHashMap<>());
+                k -> PropertyDescriptorUtils.getCachedPropertyDescriptors(externalContext, base.getClass()));
 
-        return beanCache.computeIfAbsent(
-                (String) property,
-                k -> MethodHandleUtils.getLambdaPropertyDescriptor(base.getClass(), k));
+        return (LambdaPropertyDescriptor) beanCache.get((String) property);
     }
 }

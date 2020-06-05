@@ -18,7 +18,6 @@
  */
 package org.apache.myfaces.config;
 
-import java.lang.invoke.MethodHandles;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -812,14 +811,6 @@ public class MyfacesConfig
     protected final static boolean ALWAYS_FORCE_SESSION_CREATION_DEFAULT = false;
     
     /**
-     * Defines if MethodHandles and LambdaMetafactory instead of Reflection should be used for getter/setter.
-     */
-    @JSFWebConfigParam(since="2.3-next", defaultValue="true", expectedValues="true,false", tags="performance")
-    public static final String USE_METHOD_HANDLES = 
-            "org.apache.myfaces.USE_METHOD_HANDLES";
-    protected final static boolean USE_METHOD_HANDLES_DEFAULT = true;
-    
-    /**
      * Defines the {@link java.util.ResourceBundle.Control} to use for all
      * {@link java.util.ResourceBundle#getBundle(java.lang.String)} calls.
      */
@@ -906,7 +897,6 @@ public class MyfacesConfig
     private int websocketMaxConnections = WEBSOCKET_MAX_CONNECTIONS_DEFAULT;
     private boolean renderClientBehaviorScriptsAsString = RENDER_CLIENTBEHAVIOR_SCRIPTS_AS_STRING_DEFAULT;
     private boolean alwaysForceSessionCreation = ALWAYS_FORCE_SESSION_CREATION_DEFAULT;
-    private boolean useMethodHandles = USE_METHOD_HANDLES_DEFAULT;
     private ResourceBundle.Control resourceBundleControl;
     private boolean automaticExtensionlessMapping = AUTOMATIC_EXTENSIONLESS_MAPPING_DEFAULT;
     
@@ -960,17 +950,6 @@ public class MyfacesConfig
     {
         numberOfFlashTokensInSession = (NUMBER_OF_VIEWS_IN_SESSION_DEFAULT
                 / NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT) + 1;
-
-        try
-        {
-            MethodHandles.class.getMethod("privateLookupIn", Class.class,
-                    MethodHandles.Lookup.class);
-            useMethodHandles = true;
-        }
-        catch (NoSuchMethodException e)
-        {
-            useMethodHandles = false;
-        }
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -1338,21 +1317,6 @@ public class MyfacesConfig
 
         cfg.alwaysForceSessionCreation = getBoolean(extCtx, ALWAYS_FORCE_SESSION_CREATION,
                 ALWAYS_FORCE_SESSION_CREATION_DEFAULT);
-
-        cfg.useMethodHandles = getBoolean(extCtx, USE_METHOD_HANDLES,
-                USE_METHOD_HANDLES_DEFAULT);
-        if (cfg.useMethodHandles)
-        {
-            try
-            {
-                MethodHandles.class.getMethod("privateLookupIn", Class.class,
-                        MethodHandles.Lookup.class);
-            }
-            catch (NoSuchMethodException e)
-            {
-                cfg.useMethodHandles = false;
-            }
-        }
         
         String resourceBundleControl = getString(extCtx, RESOURCE_BUNDLE_CONTROL, null);
         if (StringUtils.isNotBlank(resourceBundleControl))
@@ -1823,11 +1787,6 @@ public class MyfacesConfig
         return alwaysForceSessionCreation;
     }
 
-    public boolean isUseMethodHandles()
-    {
-        return useMethodHandles;
-    }
-    
     public ProjectStage getProjectStage()
     {
         return projectStage;

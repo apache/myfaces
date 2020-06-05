@@ -30,7 +30,6 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.flow.FlowScoped;
 import javax.faces.flow.builder.FlowDefinition;
 import javax.faces.model.FacesDataModel;
-import javax.faces.push.PushContext;
 import javax.faces.render.FacesBehaviorRenderer;
 import javax.faces.render.FacesRenderer;
 import javax.faces.validator.FacesValidator;
@@ -50,7 +49,7 @@ import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.config.element.NamedEvent;
 import org.apache.myfaces.core.extensions.quarkus.runtime.exception.QuarkusExceptionHandlerFactory;
-import org.apache.myfaces.el.resolver.MethodHandleBeanELResolver;
+import org.apache.myfaces.el.resolver.LambdaBeanELResolver;
 import org.apache.myfaces.flow.cdi.FlowBuilderFactoryBean;
 import org.apache.myfaces.flow.cdi.FlowScopeBeanHolder;
 import org.apache.myfaces.push.cdi.PushContextFactoryBean;
@@ -58,8 +57,7 @@ import org.apache.myfaces.push.cdi.WebsocketApplicationBean;
 import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilderBean;
 import org.apache.myfaces.push.cdi.WebsocketSessionBean;
 import org.apache.myfaces.push.cdi.WebsocketViewBean;
-import org.apache.myfaces.util.lang.MethodHandleUtils;
-import org.apache.myfaces.view.facelets.tag.MethodHandleMetadataTargetImpl;
+import org.apache.myfaces.view.facelets.tag.LambdaMetadataTargetImpl;
 import org.apache.myfaces.webapp.StartupServletContextListener;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -124,6 +122,7 @@ import org.apache.myfaces.application.ApplicationImplEventManager;
 import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.cdi.util.BeanEntry;
 import org.apache.myfaces.config.FacesConfigurator;
+import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.core.extensions.quarkus.runtime.spi.QuarkusFactoryFinderProvider;
 import org.apache.myfaces.el.ELResolverBuilderForFaces;
 import org.apache.myfaces.renderkit.ErrorPageWriter;
@@ -276,15 +275,6 @@ class MyFacesProcessor
 
         Optional<String> projectStage = resolveProjectStage(config);
         initParam.produce(new ServletInitParamBuildItem(ProjectStage.PROJECT_STAGE_PARAM_NAME, projectStage.get()));
-
-        Optional<String> enableWebsocketsEndpoint = config.getOptionalValue(
-                PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME,
-                String.class);
-        if (enableWebsocketsEndpoint.isPresent())
-        {
-            initParam.produce(new ServletInitParamBuildItem(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME,
-                    enableWebsocketsEndpoint.get()));
-        }
 
         // common
         initParam.produce(new ServletInitParamBuildItem(
@@ -802,11 +792,11 @@ class MyFacesProcessor
     void registerRuntimeInitialization(BuildProducer<RuntimeInitializedClassBuildItem> runtimeInitClassBuildItem)
     {
         runtimeInitClassBuildItem.produce(
-                new RuntimeInitializedClassBuildItem(MethodHandleBeanELResolver.class.getCanonicalName()));
+                new RuntimeInitializedClassBuildItem(LambdaBeanELResolver.class.getCanonicalName()));
         runtimeInitClassBuildItem.produce(
-                new RuntimeInitializedClassBuildItem(MethodHandleMetadataTargetImpl.class.getCanonicalName()));
+                new RuntimeInitializedClassBuildItem(LambdaMetadataTargetImpl.class.getCanonicalName()));
         runtimeInitClassBuildItem.produce(
-                new RuntimeInitializedClassBuildItem(MethodHandleUtils.class.getCanonicalName()));
+                new RuntimeInitializedClassBuildItem(PropertyDescriptorUtils.class.getCanonicalName()));
     }
     
     
