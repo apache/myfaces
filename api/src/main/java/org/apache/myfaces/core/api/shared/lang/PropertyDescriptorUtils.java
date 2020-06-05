@@ -93,8 +93,9 @@ public class PropertyDescriptorUtils
             return false;
         }
         
+        // activated per default
         String useMethodHandles = ec.getInitParameter(USE_METHOD_HANDLES);
-        return useMethodHandles != null && useMethodHandles.contains("true");
+        return useMethodHandles == null || useMethodHandles.trim().isEmpty() || useMethodHandles.contains("true");
     }
 
     public static Map<String, ? extends PropertyDescriptorWrapper> getPropertyDescriptors(ExternalContext ec,
