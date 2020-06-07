@@ -736,8 +736,13 @@ public final class ComponentSupport
         if (fcc.isUsingPSSOnThisView() && !fcc.isRefreshTransientBuildOnPSSPreserveState())
         {
             UIViewRoot root = getViewRoot(ctx, parent);
-            FaceletState map = (FaceletState) root.getAttributes().computeIfAbsent(FACELET_STATE_INSTANCE,
-                    k -> new FaceletState());
+            FaceletState map = (FaceletState) root.getAttributes().get(FACELET_STATE_INSTANCE);
+            if (map == null)
+            {
+                map = new FaceletState();
+                root.getAttributes().put(FACELET_STATE_INSTANCE, map);
+            }
+
             map.putState(uniqueId, value);
         }
     }

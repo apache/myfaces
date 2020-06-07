@@ -888,8 +888,12 @@ public abstract class UIComponent
             _systemEventListenerClassMap = new HashMap<>(4, 1f);
         }
 
-        List<SystemEventListener> listeners = _systemEventListenerClassMap.computeIfAbsent(eventClass,
-                k -> new _DeltaList<>(3));
+        List<SystemEventListener> listeners = _systemEventListenerClassMap.get(eventClass);
+        if (listeners == null)
+        {
+            listeners = new _DeltaList<>(3);
+            _systemEventListenerClassMap.put(eventClass, listeners);
+        }
 
         // Deal with contains? Spec is silent
         listeners.add(listener);
@@ -1239,8 +1243,14 @@ public abstract class UIComponent
 
             if (currentComponent != null)
             {
-                List<UIComponent> componentStack = (List<UIComponent>) contextAttributes.computeIfAbsent(
-                                UIComponent._COMPONENT_STACK, k -> new ArrayList<>());
+                List<UIComponent> componentStack = (List<UIComponent>)
+                        contextAttributes.get(UIComponent._COMPONENT_STACK);
+                if (componentStack == null)
+                {
+                    componentStack = new ArrayList<>();
+                    contextAttributes.put(UIComponent._COMPONENT_STACK, componentStack);
+                }
+
                 componentStack.add(currentComponent);
             }
 
@@ -1256,8 +1266,13 @@ public abstract class UIComponent
         }
         else
         {
-            List<UIComponent> componentStack = (List<UIComponent>) contextAttributes.computeIfAbsent(
-                    UIComponent._COMPONENT_STACK, k -> new ArrayList<>());
+            List<UIComponent> componentStack = (List<UIComponent>) contextAttributes.get(UIComponent._COMPONENT_STACK);
+            if (componentStack == null)
+            {
+                componentStack = new ArrayList<>();
+                contextAttributes.put(UIComponent._COMPONENT_STACK, componentStack);
+            }
+
             componentStack.add(component);
             if (component._isCompositeComponent())
             {

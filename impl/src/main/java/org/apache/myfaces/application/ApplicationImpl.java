@@ -20,9 +20,6 @@ package org.apache.myfaces.application;
 
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +31,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
-import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -121,6 +117,9 @@ import org.apache.myfaces.el.resolver.FacesCompositeELResolver.Scope;
 import org.apache.myfaces.flow.FlowHandlerImpl;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.core.api.shared.lang.LambdaPropertyDescriptor;
+import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
+import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorWrapper;
 import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.lang.Lazy;
@@ -218,9 +217,6 @@ public class ApplicationImpl extends Application
     private SearchExpressionHandler _searchExpressionHandler;
     
     private SearchKeywordResolver _searchExpressionResolver;
-
-    private Map<Class<?>, Map<String, PropertyDescriptor>> converterPDCache
-            = new ConcurrentHashMap<>();
 
     /**
      * Represents semantic null in _componentClassMap. 
@@ -984,12 +980,21 @@ public class ApplicationImpl extends Application
 
         try
         {
-            boolean managed = _cdiManagedBehaviorMap.computeIfAbsent(behaviorClass, k ->
+            if (!_cdiManagedBehaviorMap.containsKey(behaviorClass))
             {
-                FacesBehavior annotation = k.getAnnotation(FacesBehavior.class);
-                return annotation == null ? false : annotation.managed();
-            });
-            
+                FacesBehavior annotation = behaviorClass.getAnnotation(FacesBehavior.class);
+                if (annotation != null && annotation.managed())
+                {
+                    _cdiManagedBehaviorMap.put(behaviorClass, true);
+                }
+                else
+                {
+                    _cdiManagedBehaviorMap.put(behaviorClass, false);
+                }
+            }
+
+            boolean managed = _cdiManagedBehaviorMap.get(behaviorClass);
+
             Behavior behavior = null;
             if (managed)
             {
@@ -1338,12 +1343,21 @@ public class ApplicationImpl extends Application
 
         try
         {
-            boolean managed = _cdiManagedConverterMap.computeIfAbsent(converterClass, k ->
+            if (!_cdiManagedConverterMap.containsKey(converterClass))
             {
-                FacesConverter annotation = k.getAnnotation(FacesConverter.class);
-                return annotation == null ? false : annotation.managed();
-            });
+                FacesConverter annotation = converterClass.getAnnotation(FacesConverter.class);
+                if (annotation != null && annotation.managed())
+                {
+                    _cdiManagedConverterMap.put(converterClass, true);
+                }
+                else
+                {
+                    _cdiManagedConverterMap.put(converterClass, false);
+                }
+            }
             
+            boolean managed = _cdiManagedConverterMap.get(converterClass);
+
             Converter converter = null;
             if (managed)
             {
@@ -1562,42 +1576,29 @@ public class ApplicationImpl extends Application
 
         if (converterConfig != null && !converterConfig.getProperties().isEmpty())
         {
-            Map<String, PropertyDescriptor> pds = converterPDCache.computeIfAbsent(converterClass, c ->
-            {
-                HashMap<String, PropertyDescriptor> map = new HashMap<>(converterConfig.getProperties().size());
-                try
-                {
-                    for (PropertyDescriptor pd : Introspector.getBeanInfo(c).getPropertyDescriptors())
-                    {
-                        for (Property property : converterConfig.getProperties())
-                        {
-                            if (Objects.equals(pd.getName(), property.getPropertyName()))
-                            {
-                                map.put(property.getPropertyName(), pd);
-                            }
-                        }
-                    }
-                }
-                catch (IntrospectionException e)
-                {
-                    log.log(Level.SEVERE,
-                            "Could not read properties for setting default values of converter: "
-                                    + converterClass.getSimpleName(),
-                            e);
-                }
-                return map;
-            });
+            Map<String, ? extends PropertyDescriptorWrapper> pds = PropertyDescriptorUtils.getPropertyDescriptors(
+                    FacesContext.getCurrentInstance().getExternalContext(),
+                    converterClass);
 
             for (int i = 0; i < converterConfig.getProperties().size(); i++)
             {
                 Property property = converterConfig.getProperties().get(i);
                 try
                 {
-                    PropertyDescriptor pd = pds.get(property.getPropertyName());
+                    PropertyDescriptorWrapper pd = pds.get(property.getPropertyName());
                     // see MYFACES-2602 - skip set value if it was already set via constructor and now != null
                     if (!pd.getPropertyType().isPrimitive())
                     {
-                        Object defaultValue = pd.getReadMethod().invoke(converter);
+                        Object defaultValue;
+                        if (pd instanceof LambdaPropertyDescriptor)
+                        {
+                            defaultValue = ((LambdaPropertyDescriptor) pd).getReadFunction().apply(converter);
+                        }
+                        else
+                        {
+                            defaultValue = pd.getReadMethod().invoke(converter);
+                        }
+
                         if (defaultValue != null)
                         {
                             continue;
@@ -1605,7 +1606,14 @@ public class ApplicationImpl extends Application
                     }
 
                     Object convertedValue = ClassUtils.convertToType(property.getDefaultValue(), pd.getPropertyType());
-                    pd.getWriteMethod().invoke(converter, convertedValue);
+                    if (pd instanceof LambdaPropertyDescriptor)
+                    {
+                        ((LambdaPropertyDescriptor) pd).getWriteFunction().accept(converter, convertedValue);
+                    }
+                    else
+                    {
+                        pd.getWriteMethod().invoke(converter, convertedValue);
+                    }
                 }
                 catch (Throwable th)
                 {
@@ -1640,26 +1648,28 @@ public class ApplicationImpl extends Application
             _classToResourceDependencyMap.remove(inspectedClass);
         }
         
-        List<ResourceDependency> dependencyList = _classToResourceDependencyMap.computeIfAbsent(inspectedClass, k ->
+        List<ResourceDependency> dependencyList = _classToResourceDependencyMap.get(inspectedClass);
+        if (dependencyList == null)
         {
-            List<ResourceDependency> values = new ArrayList<>(5);
+            dependencyList = new ArrayList<>(5);
 
-            ResourceDependency dependency = k.getAnnotation(ResourceDependency.class);
+            ResourceDependency dependency = inspectedClass.getAnnotation(ResourceDependency.class);
             if (dependency != null)
             {
-                values.add(dependency);
+                dependencyList.add(dependency);
             }
 
-            ResourceDependencies dependencies = k.getAnnotation(ResourceDependencies.class);
+            ResourceDependencies dependencies = inspectedClass.getAnnotation(ResourceDependencies.class);
             if (dependencies != null)
             {
-                values.addAll(Arrays.asList(dependencies.value()));
+                dependencyList.addAll(Arrays.asList(dependencies.value()));
             }
 
-            return values.isEmpty() ? Collections.emptyList() : values;
-        });
+            _classToResourceDependencyMap.put(inspectedClass,
+                    dependencyList.isEmpty() ? Collections.emptyList() : dependencyList);
+        }
 
-        if (dependencyList != null && !dependencyList.isEmpty()) 
+        if (!dependencyList.isEmpty()) 
         {
             for (int i = 0, size = dependencyList.size(); i < size; i++)
             {
@@ -1826,12 +1836,21 @@ public class ApplicationImpl extends Application
 
         try
         {
-            boolean managed = _cdiManagedValidatorMap.computeIfAbsent(validatorClass, k -> 
+            if (!_cdiManagedValidatorMap.containsKey(validatorClass))
             {
-                FacesValidator annotation = k.getAnnotation(FacesValidator.class);
-                return annotation == null ? false : annotation.managed();
-            });
+                FacesValidator annotation = validatorClass.getAnnotation(FacesValidator.class);
+                if (annotation != null && annotation.managed())
+                {
+                    _cdiManagedValidatorMap.put(validatorClass, true);
+                }
+                else
+                {
+                    _cdiManagedValidatorMap.put(validatorClass, false);
+                }
+            }
             
+            boolean managed = _cdiManagedValidatorMap.get(validatorClass);
+
             Validator validator = null;
             if (managed)
             {
@@ -1964,27 +1983,29 @@ public class ApplicationImpl extends Application
             _classToListenerForMap.remove(inspectedClass);
         }
 
-        List<ListenerFor> listenerForList = _classToListenerForMap.computeIfAbsent(inspectedClass, k ->
+        List<ListenerFor> listenerForList = _classToListenerForMap.get(inspectedClass);
+        if (listenerForList == null)
         {
-            List<ListenerFor> values = new ArrayList<>();
-            
-            ListenerFor listener = k.getAnnotation(ListenerFor.class);
+            listenerForList = new ArrayList<>(5);
+
+            ListenerFor listener = inspectedClass.getAnnotation(ListenerFor.class);
             if (listener != null)
             {
-                values.add(listener);
+                listenerForList.add(listener);
             }
 
-            ListenersFor listeners = k.getAnnotation(ListenersFor.class);
+            ListenersFor listeners = inspectedClass.getAnnotation(ListenersFor.class);
             if (listeners != null)
             {
-                values.addAll(Arrays.asList(listeners.value()));
+                listenerForList.addAll(Arrays.asList(listeners.value()));
             }
             
-            return values.isEmpty() ? Collections.emptyList() : values;
-        });
+            _classToListenerForMap.put(inspectedClass, 
+                    listenerForList.isEmpty() ? Collections.emptyList() : listenerForList);
+        }
 
         // listeners were found through inspection or from cache, handle them
-        if (listenerForList != null && !listenerForList.isEmpty()) 
+        if (!listenerForList.isEmpty()) 
         {
             for (int i = 0, size = listenerForList.size(); i < size; i++)
             {

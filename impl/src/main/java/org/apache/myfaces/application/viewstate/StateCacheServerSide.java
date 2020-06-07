@@ -136,8 +136,13 @@ class StateCacheServerSide extends StateCache<Object, Object>
     protected void saveSerializedViewInSession(FacesContext context, Object serializedView)
     {
         Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
-        SerializedViewCollection viewCollection = (SerializedViewCollection) sessionMap.computeIfAbsent(
-                SERIALIZED_VIEW_SESSION_ATTR, k -> sessionViewStorageFactory.createSerializedViewCollection(context));
+        SerializedViewCollection viewCollection = (SerializedViewCollection)
+                sessionMap.get(SERIALIZED_VIEW_SESSION_ATTR);
+        if (viewCollection == null)
+        {
+            viewCollection = sessionViewStorageFactory.createSerializedViewCollection(context);
+            sessionMap.put(SERIALIZED_VIEW_SESSION_ATTR, viewCollection);
+        }
 
         Map<Object,Object> attributeMap = context.getAttributes();
         

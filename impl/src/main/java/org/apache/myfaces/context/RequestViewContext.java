@@ -84,7 +84,7 @@ public class RequestViewContext
         
         if (create && map == null)
         {
-            map = new HashMap<>();
+            map = new HashMap<>(5);
             ctx.getAttributes().put(VIEW_CONTEXT_KEY, map);
         }
 

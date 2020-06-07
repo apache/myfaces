@@ -113,9 +113,13 @@ public class ApplicationImplEventManager
     public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
                                  SystemEventListener listener)
     {
-        List<EventInfo> eventInfos = globalListeners.computeIfAbsent(systemEventClass,
-                k -> new CopyOnWriteArrayList<>());
-        
+        List<EventInfo> eventInfos = globalListeners.get(systemEventClass);
+        if (eventInfos == null)
+        {
+            eventInfos = new CopyOnWriteArrayList<>();
+            globalListeners.put(systemEventClass, eventInfos);
+        }
+
         EventInfo eventInfo = new EventInfo();
         eventInfo.systemEventClass = systemEventClass;
         eventInfo.sourceClass = sourceClass;

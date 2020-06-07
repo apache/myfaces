@@ -345,9 +345,13 @@ public abstract class UIComponentBase extends UIComponent
                 _behaviorsMap = new HashMap<>(5, 1f);
             }
 
-            // Normally have client only 1 client behaviour per event name, so size 2 must be sufficient:
-            List<ClientBehavior> behaviorsForEvent = _behaviorsMap.computeIfAbsent(eventName,
-                    k -> new _DeltaList<>(2));
+            List<ClientBehavior> behaviorsForEvent = _behaviorsMap.get(eventName);
+            if (behaviorsForEvent == null)
+            {
+                // Normally have client only 1 client behaviour per event name, so size 2 must be sufficient:
+                behaviorsForEvent = new _DeltaList<>(2);
+                _behaviorsMap.put(eventName, behaviorsForEvent);
+            }
 
             behaviorsForEvent.add(behavior);
             _unmodifiableBehaviorsMap = null;

@@ -303,14 +303,24 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         if (_createDeltas(key))
         {
             //Track delta case
-            Map<Object, Boolean> deltaListMapValues = (Map<Object, Boolean>) _deltas.computeIfAbsent(key,
-                    k -> new InternalDeltaListMap<>(3));
+            Map<Object, Boolean> deltaListMapValues = (Map<Object, Boolean>) _deltas.get(key);
+            if (deltaListMapValues == null)
+            {
+                deltaListMapValues = new InternalDeltaListMap<>(3);
+                _deltas.put(key, deltaListMapValues);
+            }
+
             deltaListMapValues.put(value, Boolean.TRUE);
         }
 
         //Handle change on full map
-        List<Object> fullListValues = (List<Object>) _fullState.computeIfAbsent(key,
-                k -> new InternalList<>(3));
+        List<Object> fullListValues = (List<Object>) _fullState.get(key);
+        if (fullListValues == null)
+        {
+            fullListValues = new InternalList<>(3);
+            _fullState.put(key, fullListValues);
+        }
+
         fullListValues.add(value);
     }
 
@@ -388,8 +398,13 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         if (_createDeltas(key))
         {
             //Track delta case
-            Map<String, Object> mapValues = (Map<String, Object>) _deltas.computeIfAbsent(key,
-                    k -> new InternalMap<>());
+            Map<String, Object> mapValues = (Map<String, Object>) _deltas.get(key);
+            if (mapValues == null)
+            {
+                mapValues = new InternalMap<>();
+                _deltas.put(key, mapValues);
+            }
+
             if (mapValues.containsKey(mapKey))
             {
                 returnValue = mapValues.put(mapKey, value);
@@ -402,8 +417,13 @@ class _DeltaStateHelper implements StateHelper, TransientStateHelper, TransientS
         }
 
         //Handle change on full map
-        Map<String, Object> mapValues = (Map<String, Object>) _fullState.computeIfAbsent(key,
-                k -> new InternalMap<>());
+        Map<String, Object> mapValues = (Map<String, Object>) _fullState.get(key);
+        if (mapValues == null)
+        {
+            mapValues = new InternalMap<>();
+            _fullState.put(key, mapValues);
+        }
+
         if (returnSet)
         {
             mapValues.put(mapKey, value);
