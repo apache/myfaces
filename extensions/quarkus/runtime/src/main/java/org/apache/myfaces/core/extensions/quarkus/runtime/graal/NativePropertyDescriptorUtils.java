@@ -27,7 +27,7 @@ import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 public final class NativePropertyDescriptorUtils
 {
     @Substitute
-    public static boolean isMethodHandlesSupported(ExternalContext ec)
+    public static boolean isUseLambdaMetafactory(ExternalContext ec)
     {
         return false;
     }

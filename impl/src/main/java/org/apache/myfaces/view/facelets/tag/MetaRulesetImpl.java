@@ -326,7 +326,7 @@ public final class MetaRulesetImpl extends MetaRuleset
         {
             try
             {
-                if (PropertyDescriptorUtils.isMethodHandlesSupported(
+                if (PropertyDescriptorUtils.isUseLambdaMetafactory(
                         FacesContext.getCurrentInstance().getExternalContext()))
                 {
                     meta = new LambdaMetadataTargetImpl(_type);

@@ -43,10 +43,10 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 public class PropertyDescriptorUtils
 {
     /**
-     * Defines if MethodHandles and LambdaMetafactory instead of Reflection should be used for getter/setter.
+     * Defines if Lambda expressions (via LambdaMetafactory) are used for getter/setter instead of Reflection.
      */
     @JSFWebConfigParam(since="2.3-next", defaultValue="true", expectedValues="true,false", tags="performance")
-    public static final String USE_METHOD_HANDLES = "org.apache.myfaces.USE_METHOD_HANDLES";
+    public static final String USE_LAMBDA_METAFACTORY = "org.apache.myfaces.USE_LAMBDA_METAFACTORY";
 
     private static final String CACHE_KEY = PropertyDescriptorUtils.class.getName() + ".CACHE";
 
@@ -76,7 +76,7 @@ public class PropertyDescriptorUtils
         return getCache(ec).computeIfAbsent(target.getName(), k -> getPropertyDescriptors(ec, target, false));
     }
 
-    public static boolean isMethodHandlesSupported(ExternalContext ec)
+    public static boolean isUseLambdaMetafactory(ExternalContext ec)
     {
         if (privateLookupIn == null)
         {
@@ -84,7 +84,7 @@ public class PropertyDescriptorUtils
         }
         
         // activated per default
-        String useMethodHandles = ec.getInitParameter(USE_METHOD_HANDLES);
+        String useMethodHandles = ec.getInitParameter(USE_LAMBDA_METAFACTORY);
         return useMethodHandles == null || useMethodHandles.trim().isEmpty() || useMethodHandles.contains("true");
     }
 
@@ -92,7 +92,7 @@ public class PropertyDescriptorUtils
             Class<?> target,
             boolean skipPropertyWithoutReadMethod)
     {
-        if (isMethodHandlesSupported(ec))
+        if (isUseLambdaMetafactory(ec))
         {
             return getLambdaPropertyDescriptors(target);
         }

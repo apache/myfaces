@@ -141,7 +141,7 @@ public class ELResolverBuilderForFaces extends ELResolverBuilder
         list.add(new MapELResolver());
         list.add(new ListELResolver());
         list.add(new ArrayELResolver());
-        if (PropertyDescriptorUtils.isMethodHandlesSupported(facesContext.getExternalContext()))
+        if (PropertyDescriptorUtils.isUseLambdaMetafactory(facesContext.getExternalContext()))
         {
             list.add(new LambdaBeanELResolver(facesContext.getExternalContext()));
         }
