@@ -942,8 +942,14 @@ public class MyfacesConfig
     
     public static MyfacesConfig getCurrentInstance(ExternalContext extCtx)
     {
-        return (MyfacesConfig) extCtx.getApplicationMap().computeIfAbsent(
-                APPLICATION_MAP_PARAM_NAME, k -> createAndInitializeMyFacesConfig(extCtx));
+        MyfacesConfig config = (MyfacesConfig) extCtx.getApplicationMap().get(APPLICATION_MAP_PARAM_NAME);
+        if (config == null)
+        {
+            config = createAndInitializeMyFacesConfig(extCtx);
+            extCtx.getApplicationMap().put(APPLICATION_MAP_PARAM_NAME, config);
+        }
+
+        return config;
     }
     
     public MyfacesConfig()

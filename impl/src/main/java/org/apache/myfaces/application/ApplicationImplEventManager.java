@@ -154,13 +154,13 @@ public class ApplicationImplEventManager
     protected SystemEvent createEvent(Class<? extends SystemEvent> systemEventClass, FacesContext facesContext,
             Object source)
     {
-        Constructor<? extends SystemEvent> constructor = constructorCache.computeIfAbsent(systemEventClass,
-                k -> getConstructor(k));
+        Constructor<? extends SystemEvent> constructor = constructorCache.get(systemEventClass);
         if (constructor == null)
         {
-            return null;
+            constructor = getConstructor(systemEventClass);
+            constructorCache.put(systemEventClass, constructor);
         }
-        
+
         try
         {
             if (constructor.getParameterTypes().length == 2)

@@ -66,14 +66,28 @@ public class PropertyDescriptorUtils
     
     private static Map<String, Map<String, ? extends PropertyDescriptorWrapper>> getCache(ExternalContext ec)
     {
-        return (Map<String, Map<String, ? extends PropertyDescriptorWrapper>>)
-                    ec.getApplicationMap().computeIfAbsent(CACHE_KEY, k -> new ConcurrentHashMap<>(1000));
+        Map<String, Map<String, ? extends PropertyDescriptorWrapper>> cache = 
+                (Map<String, Map<String, ? extends PropertyDescriptorWrapper>>) ec.getApplicationMap().get(CACHE_KEY);
+        if (cache == null)
+        {
+            cache = new ConcurrentHashMap<>(1000);
+            ec.getApplicationMap().put(CACHE_KEY, cache);
+        }
+
+        return cache;
     }
 
     public static Map<String, ? extends PropertyDescriptorWrapper> getCachedPropertyDescriptors(ExternalContext ec,
             Class<?> target)
     {
-        return getCache(ec).computeIfAbsent(target.getName(), k -> getPropertyDescriptors(ec, target, false));
+        Map<String, ? extends PropertyDescriptorWrapper> cache = getCache(ec).get(target.getName());
+        if (cache == null)
+        {
+            cache = getPropertyDescriptors(ec, target);
+            getCache(ec).put(target.getName(), cache);
+        }
+
+        return cache;
     }
 
     public static boolean isUseLambdaMetafactory(ExternalContext ec)
@@ -89,8 +103,7 @@ public class PropertyDescriptorUtils
     }
 
     public static Map<String, ? extends PropertyDescriptorWrapper> getPropertyDescriptors(ExternalContext ec,
-            Class<?> target,
-            boolean skipPropertyWithoutReadMethod)
+            Class<?> target)
     {
         if (isUseLambdaMetafactory(ec))
         {
@@ -107,10 +120,6 @@ public class PropertyDescriptorUtils
             {
                 PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
                 Method readMethod = propertyDescriptor.getReadMethod();
-                if (readMethod == null && skipPropertyWithoutReadMethod)
-                {
-                    continue;
-                }
 
                 map.put(propertyDescriptor.getName(),
                         new PropertyDescriptorWrapper(target, propertyDescriptor, readMethod));

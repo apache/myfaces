@@ -134,9 +134,12 @@ public class LambdaBeanELResolver extends BeanELResolver
 
     protected LambdaPropertyDescriptor getPropertyDescriptor(Object base, Object property)
     {
-        Map<String, ? extends PropertyDescriptorWrapper> beanCache = cache.computeIfAbsent(
-                base.getClass().getName(),
-                k -> PropertyDescriptorUtils.getCachedPropertyDescriptors(externalContext, base.getClass()));
+        Map<String, ? extends PropertyDescriptorWrapper> beanCache = cache.get(base.getClass().getName());
+        if (beanCache == null)
+        {
+            beanCache = PropertyDescriptorUtils.getCachedPropertyDescriptors(externalContext, base.getClass());
+            cache.put(base.getClass().getName(), beanCache);
+        }
 
         return (LambdaPropertyDescriptor) beanCache.get((String) property);
     }

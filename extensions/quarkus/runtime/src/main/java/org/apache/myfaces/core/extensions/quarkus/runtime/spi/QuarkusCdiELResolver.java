@@ -79,7 +79,13 @@ public class QuarkusCdiELResolver extends ELResolver
 
         String beanName = (String) property;
 
-        Optional<Object> contextualInstance = cachedProxies.computeIfAbsent(beanName, s -> resolveProxy(s));
+        Optional<Object> contextualInstance = cachedProxies.get(beanName);
+        if (contextualInstance == null)
+        {
+            contextualInstance = resolveProxy(beanName);
+            cachedProxies.put(beanName, contextualInstance);
+        }
+
         if (contextualInstance.isPresent())
         {
             context.setPropertyResolved(true);
