@@ -141,6 +141,11 @@ public class CommonEventUtils
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
+        if (commonPropertiesMarked == 0 && commonEventsMarked == 0)
+        {
+            return;
+        }
+        
         if ((commonPropertiesMarked & CommonPropertyConstants.ONCLICK_PROP) != 0 ||
             (commonEventsMarked & CommonEventConstants.CLICK_EVENT) != 0)
         {
@@ -242,6 +247,11 @@ public class CommonEventUtils
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
+        if (commonPropertiesMarked == 0 && commonEventsMarked == 0)
+        {
+            return;
+        }
+        
         if ((commonPropertiesMarked & CommonPropertyConstants.ONDBLCLICK_PROP) != 0 ||
             (commonEventsMarked & CommonEventConstants.DBLCLICK_EVENT) != 0)
         {
@@ -324,6 +334,11 @@ public class CommonEventUtils
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
+        if (commonPropertiesMarked == 0 && commonEventsMarked == 0)
+        {
+            return;
+        }
+        
         if ((commonPropertiesMarked & CommonPropertyConstants.ONFOCUS_PROP) != 0 ||
             (commonEventsMarked & CommonEventConstants.FOCUS_EVENT) != 0)
         {
@@ -361,6 +376,11 @@ public class CommonEventUtils
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
+        if (commonPropertiesMarked == 0 && commonEventsMarked == 0)
+        {
+            return;
+        }
+
         if ((commonPropertiesMarked & CommonPropertyConstants.ONBLUR_PROP) != 0 ||
             (commonEventsMarked & CommonEventConstants.BLUR_EVENT) != 0)
         {
@@ -403,6 +423,11 @@ public class CommonEventUtils
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
+        if (commonPropertiesMarked == 0 && commonEventsMarked == 0)
+        {
+            return;
+        }
+        
         if ((commonPropertiesMarked & CommonPropertyConstants.ONFOCUS_PROP) != 0 ||
             (commonEventsMarked & CommonEventConstants.FOCUS_EVENT) != 0)
         {
@@ -447,6 +472,11 @@ public class CommonEventUtils
             Map<String, List<ClientBehavior>> clientBehaviors)
             throws IOException
     {
+        if (commonPropertiesMarked == 0 && commonEventsMarked == 0)
+        {
+            return;
+        }
+
         if ((commonPropertiesMarked & CommonPropertyConstants.ONFOCUS_PROP) != 0 ||
             (commonEventsMarked & CommonEventConstants.FOCUS_EVENT) != 0)
         {
