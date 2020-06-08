@@ -32,7 +32,6 @@ import java.util.logging.Logger;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.UIOutput;
-import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlInputText;
@@ -84,21 +83,22 @@ public class HtmlTextRendererBase
 
     protected void renderOutput(FacesContext facesContext, UIComponent component) throws IOException
     {
-        
         String text = RendererUtils.getStringValue(facesContext, component);
         if (log.isLoggable(Level.FINE))
         {
             log.fine("renderOutput '" + text + '\'');
         }
+        
         boolean escape;
         if (component instanceof HtmlOutputText)
         {
-            escape = ((HtmlOutputText)component).isEscape();
+            escape = ((HtmlOutputText) component).isEscape();
         }
         else
         {
             escape = RendererUtils.getBooleanAttribute(component, JSFAttr.ESCAPE_ATTR, true); //default is to escape
         }
+
         if (text != null)
         {
             ResponseWriter writer = facesContext.getResponseWriter();
@@ -107,7 +107,7 @@ public class HtmlTextRendererBase
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 long commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
-                if ( (commonPropertiesMarked & ~(CommonPropertyConstants.ESCAPE_PROP)) > 0)
+                if (commonPropertiesMarked > 0 && (commonPropertiesMarked & ~(CommonPropertyConstants.ESCAPE_PROP)) > 0)
                 {
                     span = true;
                     writer.startElement(HTML.SPAN_ELEM, component);
@@ -384,51 +384,5 @@ public class HtmlTextRendererBase
     {
         //subclasses may act on properties of the component
         return HTML.INPUT_TYPE_TEXT;
-    }
-
-    public static void renderOutputText(FacesContext facesContext,
-            UIComponent component, String text, boolean escape)
-            throws IOException
-    {
-        if (text != null)
-        {
-            ResponseWriter writer = facesContext.getResponseWriter();
-            boolean span = false;
-
-            if (component.getId() != null
-                    && !component.getId().startsWith(UIViewRoot.UNIQUE_ID_PREFIX))
-            {
-                span = true;
-
-                writer.startElement(HTML.SPAN_ELEM, component);
-
-                HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
-
-                HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
-            }
-            else
-            {
-                span = HtmlRendererUtils.renderHTMLAttributesWithOptionalStartElement(writer,
-                                component, HTML.SPAN_ELEM, HTML.COMMON_PASSTROUGH_ATTRIBUTES);
-            }
-
-            if (escape)
-            {
-                if (log.isLoggable(Level.FINE))
-                {
-                    log.fine("renderOutputText writing '" + text + '\'');
-                }
-                writer.writeText(text, JSFAttr.VALUE_ATTR);
-            }
-            else
-            {
-                writer.write(text);
-            }
-
-            if (span)
-            {
-                writer.endElement(HTML.SPAN_ELEM);
-            }
-        }
     }
 }
