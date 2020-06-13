@@ -143,7 +143,7 @@ public class ELResolverBuilderForFaces extends ELResolverBuilder
         list.add(new ArrayELResolver());
         if (PropertyDescriptorUtils.isUseLambdaMetafactory(facesContext.getExternalContext()))
         {
-            list.add(new LambdaBeanELResolver(facesContext.getExternalContext()));
+            list.add(new LambdaBeanELResolver());
         }
         else
         {

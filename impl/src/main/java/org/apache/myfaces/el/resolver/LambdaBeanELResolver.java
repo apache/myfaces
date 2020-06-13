@@ -26,19 +26,17 @@ import javax.el.BeanELResolver;
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.PropertyNotWritableException;
-import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import org.apache.myfaces.core.api.shared.lang.LambdaPropertyDescriptor;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorWrapper;
 
 public class LambdaBeanELResolver extends BeanELResolver
 {
-    private final ExternalContext externalContext;
     private final ConcurrentHashMap<String, Map<String, ? extends PropertyDescriptorWrapper>> cache;
 
-    public LambdaBeanELResolver(ExternalContext externalContext)
+    public LambdaBeanELResolver()
     {
-        this.externalContext = externalContext;
         this.cache = new ConcurrentHashMap<>(1000);
     }
 
@@ -137,7 +135,9 @@ public class LambdaBeanELResolver extends BeanELResolver
         Map<String, ? extends PropertyDescriptorWrapper> beanCache = cache.get(base.getClass().getName());
         if (beanCache == null)
         {
-            beanCache = PropertyDescriptorUtils.getCachedPropertyDescriptors(externalContext, base.getClass());
+            beanCache = PropertyDescriptorUtils.getCachedPropertyDescriptors(
+                    FacesContext.getCurrentInstance().getExternalContext(),
+                    base.getClass());
             cache.put(base.getClass().getName(), beanCache);
         }
 
