@@ -116,6 +116,7 @@ import javax.faces.view.facelets.MetaRuleset;
 import javax.faces.view.facelets.TagHandler;
 import javax.faces.view.facelets.ValidatorHandler;
 import javax.inject.Named;
+import javax.servlet.MultipartConfigElement;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.el.ExpressionFactoryImpl;
 import org.apache.myfaces.application.ApplicationImplEventManager;
@@ -210,6 +211,7 @@ class MyFacesProcessor
             BuildProducer<ListenerBuildItem> listener) throws IOException
     {
         servlet.produce(ServletBuildItem.builder("Faces Servlet", FacesServlet.class.getName())
+                .setMultipartConfig(new MultipartConfigElement(""))
                 .addMapping("*.xhtml")
                 .build());
 
