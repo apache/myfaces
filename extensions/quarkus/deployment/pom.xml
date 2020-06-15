@@ -36,17 +36,7 @@
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-core-deployment</artifactId>
-            <version>${quarkus.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-arc-deployment</artifactId>
-            <version>${quarkus.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-undertow-deployment</artifactId>
+            <artifactId>quarkus-undertow-websockets-deployment</artifactId>
             <version>${quarkus.version}</version>
         </dependency>
         <dependency>
