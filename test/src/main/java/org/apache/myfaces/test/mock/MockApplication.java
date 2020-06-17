@@ -21,7 +21,7 @@ package org.apache.myfaces.test.mock;
 
 /**
  * <p>Mock implementation of <code>Application</code> that includes the semantics
- * added by JavaServer Faces 3.0.</p>
+ * added by JavaServer Faces 2.3.</p>
  * 
  * @author Leonardo Uribe
  * @since 1.0.0

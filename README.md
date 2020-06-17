@@ -2,13 +2,14 @@
 [![Build Status](https://travis-ci.org/apache/myfaces.svg?branch=master)](https://travis-ci.org/apache/myfaces)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Apache's implementation of the JavaServer Faces (JSF) and Jakarta Faces specification 
+Apache's implementation of the JavaServer Faces (JSF) and Jakarta Faces specification
 
 ## Branches
 
 ### Master
 
 Master / 2.3-next equals the JSF 2.3 API but delegates @ManagedBeans to CDI. The implementation of the old FacesEL (javax.faces.el.*) has been completely removed.
+It will be the base of the upcoming JSF 4.0.
 
 ### 3.0.x
 
@@ -28,7 +29,7 @@ JavaServer Faces 2.3 implementation
 - JSTL 1.2 (optional)
 - BV 1.1 (optional)
 
-Servlet 4.0 will enable JSF 2.3 to serve resources via HTTP/2 push.   
+Servlet 4.0 will enable JSF to serve resources via HTTP/2 push.
 
 ## Installation
 
@@ -84,7 +85,7 @@ mvn clean install
 
 ## Quarkus extension
 
-Since 2.3-next a Quarkus extension is available. A sample project can be found here: https://github.com/apache/myfaces/blob/master/extensions/quarkus/showcase/  
+Since 2.3-next a Quarkus extension is available. A sample project can be found here: https://github.com/apache/myfaces/blob/master/extensions/quarkus/showcase/
 
 
 ### Differences to a normal servlet container
