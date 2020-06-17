@@ -54,12 +54,12 @@ import static jakarta.faces.validator.BeanValidator.VALIDATION_GROUPS_DELIMITER;
 import static jakarta.faces.validator.BeanValidator.VALIDATOR_FACTORY_KEY;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
-import javax.validation.ConstraintViolation;
-import javax.validation.MessageInterpolator;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
-import javax.validation.groups.Default;
-import javax.validation.metadata.BeanDescriptor;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.MessageInterpolator;
+import jakarta.validation.Validation;
+import jakarta.validation.ValidatorFactory;
+import jakarta.validation.groups.Default;
+import jakarta.validation.metadata.BeanDescriptor;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.shared.util.MessageUtils;
 import org.apache.myfaces.shared.util.MyFacesObjectInputStream;
@@ -74,7 +74,7 @@ public class WholeBeanValidator implements Validator
     
     private static final Class<?>[] DEFAULT_VALIDATION_GROUPS_ARRAY = new Class<?>[] { Default.class };
 
-    private static final String DEFAULT_VALIDATION_GROUP_NAME = "javax.validation.groups.Default";
+    private static final String DEFAULT_VALIDATION_GROUP_NAME = "jakarta.validation.groups.Default";
     
     private static final String CANDIDATE_COMPONENT_VALUES_MAP = "oam.WBV.candidatesMap";
     
@@ -112,7 +112,7 @@ public class WholeBeanValidator implements Validator
 
         // Initialize Bean Validation.
         ValidatorFactory validatorFactory = createValidatorFactory(context);
-        javax.validation.Validator validator = createValidator(validatorFactory, context, 
+        jakarta.validation.Validator validator = createValidator(validatorFactory, context, 
                 (ValidateWholeBeanComponent)component);
         BeanDescriptor beanDescriptor = validator.getConstraintsForClass(valueBaseClass);
         if (!beanDescriptor.isBeanConstrained())
@@ -247,7 +247,7 @@ public class WholeBeanValidator implements Validator
         return copy;
     }    
     
-    private javax.validation.Validator createValidator(final ValidatorFactory validatorFactory, 
+    private jakarta.validation.Validator createValidator(final ValidatorFactory validatorFactory, 
             FacesContext context, ValidateWholeBeanComponent component)
     {
         // Set default validation group when setValidationGroups has not been called.

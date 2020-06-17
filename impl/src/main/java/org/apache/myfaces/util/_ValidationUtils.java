@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.util;
 
-import javax.validation.Validation;
+import jakarta.validation.Validation;
 
 /**
- * Utility class that isolates javax.validation, to prevent ClassNotFoundException
+ * Utility class that isolates jakarta.validation, to prevent ClassNotFoundException
  * 
  * @since 2.0
  * @author Leonardo Uribe (latest modification by $Author$)

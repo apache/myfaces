@@ -472,21 +472,21 @@
                 <classifier>jakarta</classifier>
             </dependency>
 
-            <!-- bean-validation 1.0 (javax.validation.*) -->
+            <!-- bean-validation 1.0 (jakarta.validation.*) -->
             <!-- NOTE that this must be compile + optional -->
             <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-validation_1.0_spec</artifactId>
-                <version>1.1</version>
+                <groupId>jakarta.validation</groupId>
+                <artifactId>jakarta.validation-api</artifactId>
+                <version>3.0.0-M1</version>
                 <scope>compile</scope>
                 <optional>true</optional>
             </dependency>
 
             <!-- jpa 3.0 - needed in AllAnnotationLifecycleProvider -->
             <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-jpa_3.0_spec</artifactId>
-                <version>1.1.1</version>
+                <groupId>jakarta.persistence</groupId>
+                <artifactId>jakarta.persistence-api</artifactId>
+                <version>3.0.0-RC2</version>
                 <scope>compile</scope>
                 <optional>true</optional>
             </dependency>

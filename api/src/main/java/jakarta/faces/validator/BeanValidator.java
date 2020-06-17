@@ -42,12 +42,12 @@ import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.el.CompositeComponentExpressionHolder;
-import javax.validation.ConstraintViolation;
-import javax.validation.MessageInterpolator;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
-import javax.validation.groups.Default;
-import javax.validation.metadata.BeanDescriptor;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.MessageInterpolator;
+import jakarta.validation.Validation;
+import jakarta.validation.ValidatorFactory;
+import jakarta.validation.groups.Default;
+import jakarta.validation.metadata.BeanDescriptor;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
@@ -122,7 +122,7 @@ public class BeanValidator implements Validator, PartialStateHolder
     
     private static final Class<?>[] DEFAULT_VALIDATION_GROUPS_ARRAY = new Class<?>[] { Default.class };
 
-    private static final String DEFAULT_VALIDATION_GROUP_NAME = "javax.validation.groups.Default";
+    private static final String DEFAULT_VALIDATION_GROUP_NAME = "jakarta.validation.groups.Default";
     
     private static final String CANDIDATE_COMPONENT_VALUES_MAP = "oam.WBV.candidatesMap";
     
@@ -189,7 +189,7 @@ public class BeanValidator implements Validator, PartialStateHolder
 
         // Initialize Bean Validation.
         ValidatorFactory validatorFactory = createValidatorFactory(context);
-        javax.validation.Validator validator = createValidator(validatorFactory, context);
+        jakarta.validation.Validator validator = createValidator(validatorFactory, context);
         BeanDescriptor beanDescriptor = validator.getConstraintsForClass(valueBaseClass);
         if (!beanDescriptor.isBeanConstrained())
         {
@@ -282,7 +282,7 @@ public class BeanValidator implements Validator, PartialStateHolder
         return Boolean.TRUE.equals(value);
     }
 
-    private javax.validation.Validator createValidator(final ValidatorFactory validatorFactory, FacesContext context)
+    private jakarta.validation.Validator createValidator(final ValidatorFactory validatorFactory, FacesContext context)
     {
         // Set default validation group when setValidationGroups has not been called.
         // The null check is there to prevent it from happening twice.
@@ -464,7 +464,7 @@ public class BeanValidator implements Validator, PartialStateHolder
         else
         {
             // When the value is being validated, postSetValidationGroups() sets
-            // validationGroups to javax.validation.groups.Default. 
+            // validationGroups to jakarta.validation.groups.Default. 
             this.validationGroups = null;
         }
         // Only the String is saved, recalculate the Class[] on state restoration.

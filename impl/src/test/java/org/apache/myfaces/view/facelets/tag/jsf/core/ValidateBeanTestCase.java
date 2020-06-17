@@ -366,7 +366,7 @@ public class ValidateBeanTestCase extends FaceletTestCase
         UIInput input = (UIInput) root.findComponent("form:input");
         
         // the validationGroups have to match the Default ones
-        Assert.assertEquals(javax.validation.groups.Default.class.getName(),
+        Assert.assertEquals(jakarta.validation.groups.Default.class.getName(),
                 _getValidationGroups(input));
     }
     
@@ -406,7 +406,7 @@ public class ValidateBeanTestCase extends FaceletTestCase
         Assert.assertEquals(validationGroups, _getValidationGroups(nestedinput));
         Assert.assertEquals(validationGroups, _getValidationGroups(doublenestedinput));
         Assert.assertEquals(validationGroups, _getValidationGroups(nestedinput2));
-        Assert.assertEquals(javax.validation.groups.Default.class.getName(),
+        Assert.assertEquals(jakarta.validation.groups.Default.class.getName(),
                 _getValidationGroups(nonnestedinput));
     }
     
@@ -449,7 +449,7 @@ public class ValidateBeanTestCase extends FaceletTestCase
         // validator and the non-nested component must get the Default validationGroups.
         Assert.assertEquals(wrappingValidationGroups, _getValidationGroups(nestedinput));
         Assert.assertEquals(componentValidationGroups, _getValidationGroups(nestedinputWithValidator));
-        Assert.assertEquals(javax.validation.groups.Default.class.getName(),
+        Assert.assertEquals(jakarta.validation.groups.Default.class.getName(),
                 _getValidationGroups(nonnestedinput));
     }
     
@@ -489,7 +489,7 @@ public class ValidateBeanTestCase extends FaceletTestCase
         // and the non-nested component must get the Default validationGroups.
         Assert.assertEquals(validationGroupsOuter, _getValidationGroups(nestedinput));
         Assert.assertEquals(validationGroupsInner, _getValidationGroups(doublenestedinput));
-        Assert.assertEquals(javax.validation.groups.Default.class.getName(),
+        Assert.assertEquals(jakarta.validation.groups.Default.class.getName(),
                 _getValidationGroups(nonnestedinput));
     }
     
@@ -555,7 +555,7 @@ public class ValidateBeanTestCase extends FaceletTestCase
         Assert.assertEquals(validationGroupsOuter, _getValidationGroups(nestedinput));
         Assert.assertFalse(_hasValidator(doublenestedinput, BeanValidator.class));
         Assert.assertEquals(validationGroupsInner, _getValidationGroups(nesteouterdisabledinput));
-        Assert.assertEquals(javax.validation.groups.Default.class.getName(),
+        Assert.assertEquals(jakarta.validation.groups.Default.class.getName(),
                 _getValidationGroups(nonnestedinput));
     }
 
