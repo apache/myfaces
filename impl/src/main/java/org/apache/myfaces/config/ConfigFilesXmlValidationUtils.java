@@ -56,6 +56,7 @@ public class ConfigFilesXmlValidationUtils
     private final static String FACES_CONFIG_SCHEMA_PATH_21 = "org/apache/myfaces/resource/web-facesconfig_2_1.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_22 = "org/apache/myfaces/resource/web-facesconfig_2_2.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_23 = "org/apache/myfaces/resource/web-facesconfig_2_3.xsd";
+    private final static String FACES_CONFIG_SCHEMA_PATH_30 = "org/apache/myfaces/resource/web-facesconfig_3_0.xsd";
     private final static String FACES_TAGLIB_SCHEMA_PATH = "org/apache/myfaces/resource/web-facelettaglibrary_2_0.xsd";
 
     public static class LSInputImpl implements LSInput
@@ -228,12 +229,13 @@ public class ConfigFilesXmlValidationUtils
 
     private static Source getFacesConfigSchemaFileAsSource(ExternalContext externalContext, String version)
     {
-        String xmlSchema = "1.2".equals(version)
-                            ? FACES_CONFIG_SCHEMA_PATH_12
+        String xmlSchema = "1.2".equals(version) ? FACES_CONFIG_SCHEMA_PATH_12
                             : ("2.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_20 
                             : ("2.1".equals(version) ? FACES_CONFIG_SCHEMA_PATH_21
-                            : ("2.2".equals(version) ? FACES_CONFIG_SCHEMA_PATH_22 : FACES_CONFIG_SCHEMA_PATH_23)));
-        
+                            : ("2.2".equals(version) ? FACES_CONFIG_SCHEMA_PATH_22
+                            : ("2.3".equals(version) ? FACES_CONFIG_SCHEMA_PATH_23
+                            : FACES_CONFIG_SCHEMA_PATH_30))));
+
         InputStream stream = ClassUtils.getResourceAsStream(xmlSchema);
         
         if (stream == null)
