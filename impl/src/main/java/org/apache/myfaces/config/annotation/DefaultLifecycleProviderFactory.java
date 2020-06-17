@@ -275,7 +275,7 @@ public class DefaultLifecycleProviderFactory extends LifecycleProviderFactory
             context = new InitialContext();
             try
             {
-                ClassUtils.classForName("javax.ejb.EJB");
+                ClassUtils.classForName("jakarta.ejb.EJB");
                 // Asume full JEE 5 container
                 return new AllAnnotationLifecycleProvider(context);
             }

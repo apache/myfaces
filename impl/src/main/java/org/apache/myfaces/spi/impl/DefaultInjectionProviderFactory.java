@@ -301,7 +301,7 @@ public class DefaultInjectionProviderFactory extends InjectionProviderFactory
             context = new InitialContext();
             try
             {
-                ClassUtils.classForName("javax.ejb.EJB");
+                ClassUtils.classForName("jakarta.ejb.EJB");
                 // Asume full JEE 5 container
                 return new AllAnnotationInjectionProvider(context);
             }

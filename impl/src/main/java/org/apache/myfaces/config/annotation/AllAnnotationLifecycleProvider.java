@@ -21,7 +21,7 @@ package org.apache.myfaces.config.annotation;
 import javax.naming.NamingException;
 import javax.naming.Context;
 import jakarta.annotation.Resource;
-import javax.ejb.EJB;
+import jakarta.ejb.EJB;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PersistenceUnit;
 

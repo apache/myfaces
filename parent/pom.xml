@@ -493,9 +493,9 @@
 
             <!-- ejb 3.0 - needed in AllAnnotationLifecycleProvider -->
             <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-ejb_3.0_spec</artifactId>
-                <version>1.0.1</version>
+                <groupId>jakarta.ejb</groupId>
+                <artifactId>jakarta.ejb-api</artifactId>
+                <version>4.0.0-RC2</version>
                 <scope>compile</scope>
                 <optional>true</optional>
             </dependency>
