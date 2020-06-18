@@ -1243,17 +1243,16 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         _facesContext = facesContext;
     }
 
+    // override the behavior from UIComponent to visit all children once per "row"
     @Override
     public boolean visitTree(VisitContext context, VisitCallback callback)
     {
-        // override the behavior from UIComponent to visit
-        // all children once per "row"
-
         boolean skipIterationHint = context.getHints().contains(VisitHint.SKIP_ITERATION);
         if (skipIterationHint)
         {
             return super.visitTree(context, callback);
         }
+        
         // push the Component to EL
         pushComponentToEL(context.getFacesContext(), this);
         try
@@ -1267,8 +1266,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             final int prevIndex = _index;
             final int prevCount = _count;
 
-            // validate attributes
-            _validateAttributes();
 
             // reset index and save scope values
             _captureScopeValues();
@@ -1290,12 +1287,13 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 default:
                     // determine if we need to visit our children
                     // Note that we need to do this check because we are a NamingContainer
-                    Collection<String> subtreeIdsToVisit = context
-                            .getSubtreeIdsToVisit(this);
-                    boolean doVisitChildren = subtreeIdsToVisit != null
-                            && !subtreeIdsToVisit.isEmpty();
+                    Collection<String> subtreeIdsToVisit = context.getSubtreeIdsToVisit(this);
+                    boolean doVisitChildren = subtreeIdsToVisit != null && !subtreeIdsToVisit.isEmpty();
                     if (doVisitChildren)
                     {
+                        // validate attributes
+                        _validateAttributes();
+   
                         // visit the facets of the component
                         if (getFacetCount() > 0)
                         {

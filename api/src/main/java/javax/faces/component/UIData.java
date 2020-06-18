@@ -2116,6 +2116,12 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
     @Override
     public boolean visitTree(VisitContext context, VisitCallback callback)
     {
+        boolean skipIterationHint = context.getHints().contains(VisitHint.SKIP_ITERATION);
+        if (skipIterationHint)
+        {
+            return super.visitTree(context, callback);
+        }
+
         // push the Component to EL
         pushComponentToEL(context.getFacesContext(), this);
         try
@@ -2163,7 +2169,6 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                                 }
                             }
 
-                            boolean skipIterationHint = context.getHints().contains(VisitHint.SKIP_ITERATION);
                             if (skipIterationHint)
                             {
                                 // If SKIP_ITERATION is enabled, do not take into account rows.
