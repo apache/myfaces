@@ -29,7 +29,8 @@
 
         <h:body>
             <h:form id="form">
-                <p:commandButton value="property action listener">
+                <p:inputText style="width:100%;" value="#{dtLazyView.inputVal}" />
+                <p:commandButton value="property action listener" actionListener="#{dtLazyView.saveInput()}">
                     <f:setPropertyActionListener value="true"
                                                  target="#{facesContext.externalContext.flash.keepMessages}"/>
                 </p:commandButton>

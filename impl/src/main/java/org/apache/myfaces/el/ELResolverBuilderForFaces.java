@@ -33,6 +33,7 @@ import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 import javax.el.ResourceBundleELResolver;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
@@ -47,6 +48,7 @@ import org.apache.myfaces.el.resolver.ScopedAttributeResolver;
 import org.apache.myfaces.el.resolver.implicitobject.ImplicitObjectResolver;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
+import org.apache.myfaces.el.resolver.EmptyStringToNullELResolver;
 import org.apache.myfaces.el.resolver.LambdaBeanELResolver;
 import org.apache.myfaces.util.lang.ClassUtils;
 
@@ -106,6 +108,12 @@ public class ELResolverBuilderForFaces extends ELResolverBuilder
         list.add(new CompositeComponentELResolver(config));
 
         addFromRuntimeConfig(list);
+
+        if ("true".equalsIgnoreCase(
+                facesContext.getExternalContext().getInitParameter(UIInput.EMPTY_STRING_AS_NULL_PARAM_NAME)))
+        {
+            list.add(new EmptyStringToNullELResolver());
+        }
 
         //Flash object is instanceof Map, so it is necessary to resolve
         //before MapELResolver. Better to put this one before

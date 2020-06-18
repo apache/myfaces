@@ -36,6 +36,8 @@ public class LazyView implements Serializable {
 
     private Car selectedCar;
 
+    private String inputVal;
+
     @Inject
     CarService service;
 
@@ -63,5 +65,18 @@ public class LazyView implements Serializable {
     public void onRowSelect(SelectEvent event) {
         FacesMessage msg = new FacesMessage("Car Selected", ((Car) event.getObject()).getId());
         FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    public String getInputVal() {
+        return inputVal;
+    }
+
+    public void setInputVal(String inputVal) {
+        this.inputVal = inputVal;
+    }
+
+    public void saveInput() {
+        System.out.println("Input val is: " + inputVal);
+        System.out.println("Input val is null?" + (inputVal == null));
     }
 }
