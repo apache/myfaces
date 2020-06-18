@@ -1281,9 +1281,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             final int prevIndex = _index;
             final int prevCount = _count;
 
-            // validate attributes
-            _validateAttributes();
-
             // reset index and save scope values
             _captureScopeValues();
             _setIndex(-1);
@@ -1310,6 +1307,9 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                             && !subtreeIdsToVisit.isEmpty();
                     if (doVisitChildren)
                     {
+                        // validate attributes
+                        _validateAttributes();
+   
                         // visit the facets of the component
                         if (getFacetCount() > 0)
                         {
