@@ -147,7 +147,7 @@ public class ClassUtils
             // fallback: Try ClassLoader for ClassUtils (i.e. the myfaces.jar lib)
             return (Class<T>) Class.forName(type,
                     false, // do not initialize for faster startup
-ClassUtils.class.getClassLoader());
+                    ClassUtils.class.getClassLoader());
         }
     }
 
@@ -383,17 +383,7 @@ ClassUtils.class.getClassLoader());
         {
             return clazz.newInstance();
         }
-        catch (NoClassDefFoundError e)
-        {
-            log.log(Level.SEVERE, "Class : " + clazz.getName() + " not found.", e);
-            throw new FacesException(e);
-        }
-        catch (InstantiationException e)
-        {
-            log.log(Level.SEVERE, e.getMessage(), e);
-            throw new FacesException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (NoClassDefFoundError | InstantiationException | IllegalAccessException e)
         {
             log.log(Level.SEVERE, e.getMessage(), e);
             throw new FacesException(e);
