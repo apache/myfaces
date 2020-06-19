@@ -45,10 +45,10 @@ import javax.faces.event.FacesListener;
 import javax.faces.render.Renderer;
 
 import javax.faces.view.Location;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.util.lang.Assert;
 
 import org.apache.myfaces.util.SharedStringBuilder;
-import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 
 class UILeaf extends UIComponent implements UntargetableComponent, Map<String, Object>
@@ -83,7 +83,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
             // NamingContainer but UniqueIdVendor is UIViewRoot. Anyway we just can't be 100% sure about this
             // fact, so it is better to scan for the closest UniqueIdVendor. If it is not found use 
             // viewRoot.createUniqueId, otherwise use UniqueIdVendor.createUniqueId(context,seed).
-            UniqueIdVendor parentUniqueIdVendor = ComponentUtils.closest(UniqueIdVendor.class, this);
+            UniqueIdVendor parentUniqueIdVendor = ComponentUtils.findClosest(UniqueIdVendor.class, this);
             if (parentUniqueIdVendor == null)
             {
                 UIViewRoot viewRoot = context.getViewRoot();
@@ -110,7 +110,7 @@ class UILeaf extends UIComponent implements UntargetableComponent, Map<String, O
             // idWasNull = true;
         }
 
-        UIComponent namingContainer = ComponentUtils.closest(UINamingContainer.class, this);
+        UIComponent namingContainer = ComponentUtils.findClosest(UINamingContainer.class, this);
         if (namingContainer != null)
         {
             String containerClientId = namingContainer.getContainerClientId(context);

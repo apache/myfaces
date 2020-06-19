@@ -41,7 +41,7 @@ import javax.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.application.viewstate.StateCacheUtils;
 import org.apache.myfaces.context.RequestViewContext;
-import org.apache.myfaces.util.ComponentUtils;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 public class StateManagerImpl extends StateManager
 {

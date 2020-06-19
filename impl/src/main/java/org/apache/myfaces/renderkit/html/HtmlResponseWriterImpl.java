@@ -35,10 +35,10 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
 import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.renderkit.ContentTypeUtils;
 import org.apache.myfaces.renderkit.html.util.UnicodeEncoder;
 import org.apache.myfaces.util.CommentUtils;
-import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.util.lang.StreamCharBuffer;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.HTMLEncoder;

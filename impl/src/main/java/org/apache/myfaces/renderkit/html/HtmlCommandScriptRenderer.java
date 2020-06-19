@@ -32,6 +32,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.ActionEvent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.renderkit.html.util.AjaxScriptBuilder;
 import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
@@ -40,7 +41,6 @@ import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.JavascriptContext;
 import org.apache.myfaces.renderkit.html.util.JavascriptUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.SharedStringBuilder;
 
@@ -157,7 +157,7 @@ public class HtmlCommandScriptRenderer extends HtmlRenderer
             if (component.getClientId(facesContext).equals(clientId))
             {
                 boolean disabled = HtmlRendererUtils.isDisabled(component);
-                UIForm form = ComponentUtils.closest(UIForm.class, component);
+                UIForm form = ComponentUtils.findClosest(UIForm.class, component);
                 boolean activateActionEvent = false;
                 if (form != null && !disabled)
                 {

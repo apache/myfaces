@@ -26,8 +26,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.view.Location;
-
-import org.apache.myfaces.util.ComponentUtils;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 /**
  *

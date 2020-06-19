@@ -39,11 +39,11 @@ import javax.faces.component.search.SearchExpressionHandler;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.util.ComponentUtils;
 
 public abstract class HtmlMessagesRendererBase extends HtmlMessageRendererBase
 {

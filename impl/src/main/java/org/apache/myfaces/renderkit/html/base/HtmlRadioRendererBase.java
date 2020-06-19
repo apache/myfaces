@@ -50,12 +50,12 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.util.ComponentUtils;
 
 public class HtmlRadioRendererBase extends HtmlRenderer
 {
@@ -144,7 +144,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
             else
             {
                 // Deferred case: find real component with attached selectItems
-                UIForm form = ComponentUtils.closest(UIForm.class, uiComponent);
+                UIForm form = ComponentUtils.findClosest(UIForm.class, uiComponent);
                 GetSelectItemListCallback callback = new GetSelectItemListCallback(selectOne, group);
                 form.visitTree(
                         VisitContext.createVisitContext(facesContext, null, FIND_SELECT_LIST_HINTS),
@@ -411,7 +411,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
         String group = uiComponent instanceof HtmlSelectOneRadio ? ((HtmlSelectOneRadio) uiComponent).getGroup() : null;
         if (group != null && !group.isEmpty())
         {
-            UIForm form = ComponentUtils.closest(UIForm.class, uiComponent);
+            UIForm form = ComponentUtils.findClosest(UIForm.class, uiComponent);
             writer.writeAttribute(HTML.NAME_ATTR, form.getClientId(facesContext) +
                     facesContext.getNamingContainerSeparatorChar() + group, null);
         }

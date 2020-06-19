@@ -38,8 +38,8 @@ import javax.faces.component.UIParameter;
 import javax.faces.context.FacesContext;
 import javax.faces.flow.FlowHandler;
 import javax.faces.lifecycle.ClientWindow;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.util.NavigationUtils;
 
 /**

@@ -45,13 +45,13 @@ import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlForm;
 import javax.faces.component.html.HtmlInputText;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.renderkit.RendererUtils;
 
 import org.apache.myfaces.renderkit.html.util.HttpPartWrapper;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.util.lang.Assert;
-import org.apache.myfaces.util.ComponentUtils;
 
 public class HtmlInputFileRendererBase extends HtmlRenderer
 {
@@ -95,7 +95,7 @@ public class HtmlInputFileRendererBase extends HtmlRenderer
                 && (facesContext.getPartialViewContext().isPartialRequest() ||
                     facesContext.getPartialViewContext().isAjaxRequest()))
         {
-            UIForm form = ComponentUtils.closest(UIForm.class, component);
+            UIForm form = ComponentUtils.findClosest(UIForm.class, component);
             if (form != null && form instanceof HtmlForm)
             {
                 String content = ((HtmlForm) form).getEnctype();

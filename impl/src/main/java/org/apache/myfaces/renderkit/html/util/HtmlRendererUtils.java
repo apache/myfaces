@@ -60,8 +60,8 @@ import javax.faces.model.SelectItemGroup;
 
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 public final class HtmlRendererUtils
 {
@@ -247,7 +247,7 @@ public final class HtmlRendererUtils
             String group = ((UISelectOne) component).getGroup();
             if (group != null && !group.isEmpty())
             {
-                UIForm form = ComponentUtils.closest(UIForm.class, component);
+                UIForm form = ComponentUtils.findClosest(UIForm.class, component);
                 String fullGroupId = form.getClientId(facesContext) +
                         facesContext.getNamingContainerSeparatorChar() + group;
                 if (paramMap.containsKey(fullGroupId))

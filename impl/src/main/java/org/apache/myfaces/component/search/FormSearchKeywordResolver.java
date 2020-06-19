@@ -25,7 +25,7 @@ import javax.faces.component.search.SearchExpressionContext;
 import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.component.search.SearchKeywordContext;
 import javax.faces.component.search.SearchKeywordResolver;
-import org.apache.myfaces.util.ComponentUtils;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 /**
  *
@@ -37,7 +37,7 @@ public class FormSearchKeywordResolver extends SearchKeywordResolver
     @Override
     public void resolve(SearchKeywordContext expressionContext, UIComponent current, String keyword)
     {
-        expressionContext.invokeContextCallback(ComponentUtils.closest(UIForm.class, current));
+        expressionContext.invokeContextCallback(ComponentUtils.findClosest(UIForm.class, current));
     }
     
     @Override
