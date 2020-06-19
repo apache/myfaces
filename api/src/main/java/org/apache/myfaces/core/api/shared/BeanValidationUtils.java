@@ -27,7 +27,7 @@ import javax.validation.Validation;
  * 
  * @since 2.0
  */
-public final class _BeanValidationUtils
+public final class BeanValidationUtils
 {
     public static boolean isBeanValidator(Validator v)
     {

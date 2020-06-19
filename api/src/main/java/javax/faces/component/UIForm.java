@@ -18,7 +18,7 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.core.api.shared._ComponentUtils;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
@@ -58,7 +58,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
         if (!isPrependId() && seed == null)
         {
             bld = new StringBuilder();
-            UniqueIdVendor parentUniqueIdVendor = _ComponentUtils.closest(UniqueIdVendor.class, this);
+            UniqueIdVendor parentUniqueIdVendor = ComponentUtils.findClosest(UniqueIdVendor.class, this);
             if (parentUniqueIdVendor == null)
             {
                 UIViewRoot viewRoot = context.getViewRoot();
@@ -73,7 +73,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
                     String location = getComponentLocation(this);
                     throw new FacesException("Cannot create clientId. No id is assigned for component"
                             + " to create an id and UIViewRoot is not defined: "
-                            + _ComponentUtils.getPathToComponent(this)
+                            + ComponentUtils.getPathToComponent(this)
                             + (location != null ? " created from: " + location : ""));
                 }
             }
@@ -405,7 +405,7 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
             return super.getContainerClientId(ctx);
         }
 
-        UIComponent parentNamingContainer = _ComponentUtils.findParentNamingContainer(this, false);
+        UIComponent parentNamingContainer = ComponentUtils.findClosestNamingContainer(this, false);
         if (parentNamingContainer != null)
         {
             return parentNamingContainer.getContainerClientId(ctx);

@@ -40,11 +40,11 @@ import javax.el.ExpressionFactory;
 import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 
-public class _ClassUtils
+public class ClassUtils
 {
     // ~ Static fields/initializers -----------------------------------------------------------------
 
-    private static final Logger log = Logger.getLogger(_ClassUtils.class.getName());
+    private static final Logger log = Logger.getLogger(ClassUtils.class.getName());
 
     public static final Class<boolean[]> BOOLEAN_ARRAY_CLASS = boolean[].class;
     public static final Class<byte[]> BYTE_ARRAY_CLASS = byte[].class;
@@ -147,7 +147,7 @@ public class _ClassUtils
             // fallback: Try ClassLoader for ClassUtils (i.e. the myfaces.jar lib)
             return (Class<T>) Class.forName(type,
                     false, // do not initialize for faster startup
-                    _ClassUtils.class.getClassLoader());
+ClassUtils.class.getClassLoader());
         }
     }
 
@@ -297,7 +297,7 @@ public class _ClassUtils
         URL url = getContextClassLoader().getResource(resource);
         if (url == null)
         {
-            url = _ClassUtils.class.getClassLoader().getResource(resource);
+            url = ClassUtils.class.getClassLoader().getResource(resource);
         }
         return url;
     }
@@ -308,7 +308,7 @@ public class _ClassUtils
         if (stream == null)
         {
             // fallback
-            stream = _ClassUtils.class.getClassLoader().getResourceAsStream(resource);
+            stream = ClassUtils.class.getClassLoader().getResourceAsStream(resource);
         }
         return stream;
     }

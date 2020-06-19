@@ -18,9 +18,9 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.core.api.shared._SharedRendererUtils;
-import org.apache.myfaces.core.api.shared._ComponentUtils;
-import org.apache.myfaces.core.api.shared._SelectItemsIterator;
+import org.apache.myfaces.core.api.shared.SharedRendererUtils;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
+import org.apache.myfaces.core.api.shared.SelectItemsIterator;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,8 +40,8 @@ import javax.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperties;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
-import org.apache.myfaces.core.api.shared._ExternalSpecifications;
-import org.apache.myfaces.core.api.shared._MessageUtils;
+import org.apache.myfaces.core.api.shared.ExternalSpecifications;
+import org.apache.myfaces.core.api.shared.MessageUtils;
 
 /**
  * Base class for the various component classes that allow a user to select zero or more options from a set.
@@ -282,7 +282,7 @@ public class UISelectMany extends UIInput
         // verify that iterator was successfully created for convertedValue type
         if (itemValues == null)
         {
-            _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, new Object[] { _MessageUtils.getLabel(
+            MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, new Object[] { MessageUtils.getLabel(
                 context, this) });
             setValid(false);
             return;
@@ -301,8 +301,8 @@ public class UISelectMany extends UIInput
             }
             else
             {
-                _MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID,
-                    new Object[] { _MessageUtils.getLabel(context, this) });
+                MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID,
+                    new Object[] { MessageUtils.getLabel(context, this) });
             }
             setValid(false);
             return;
@@ -312,7 +312,7 @@ public class UISelectMany extends UIInput
         // if we are required to validate empty fields
         if (hasValues || shouldValidateEmptyFields(context))
         {
-            _ComponentUtils.callValidators(context, this, convertedValue);
+            ComponentUtils.callValidators(context, this, convertedValue);
         }
 
         if (isValid() && hasValues)
@@ -321,7 +321,7 @@ public class UISelectMany extends UIInput
 
             // Since the iterator is used twice, it has sense to traverse it only once.
             Collection<SelectItem> items = new ArrayList<>();
-            for (Iterator<SelectItem> iter = new _SelectItemsIterator(this, context); iter.hasNext();)
+            for (Iterator<SelectItem> iter = new SelectItemsIterator(this, context); iter.hasNext();)
             {
                 items.add(iter.next());
             }
@@ -340,8 +340,8 @@ public class UISelectMany extends UIInput
                                     converter)
                         ))
                 {    
-                    _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID,
-                        new Object[] { _MessageUtils.getLabel(context, this) });
+                    MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID,
+                        new Object[] { MessageUtils.getLabel(context, this) });
                     setValid(false);
                     return;
                 }
@@ -363,7 +363,7 @@ public class UISelectMany extends UIInput
         }
         else if (submittedValue instanceof String[])
         {
-            return _SharedRendererUtils.getConvertedUISelectManyValue(context, this, (String[]) submittedValue);
+            return SharedRendererUtils.getConvertedUISelectManyValue(context, this, (String[]) submittedValue);
         }
         return submittedValue;
     }
@@ -420,7 +420,7 @@ public class UISelectMany extends UIInput
                  param = param.toLowerCase();
              }
 
-             if (param.equals("auto") && _ExternalSpecifications.isBeanValidationAvailable())
+             if (param.equals("auto") && ExternalSpecifications.isBeanValidationAvailable())
              {
                  validateEmptyFields = true;
              }

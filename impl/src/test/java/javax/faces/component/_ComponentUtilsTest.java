@@ -18,7 +18,7 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.core.api.shared._ComponentUtils;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -32,16 +32,16 @@ public class _ComponentUtilsTest extends AbstractJsfTestCase {
     @Test
     public void testIsRendered() {
         UIComponent uiComponent = new UIOutput();
-        boolean rendered = _ComponentUtils.isRendered(facesContext, uiComponent);
+        boolean rendered = ComponentUtils.isRendered(facesContext, uiComponent);
         assertTrue(rendered);
 
         uiComponent.setRendered(false);
-        rendered = _ComponentUtils.isRendered(facesContext, uiComponent);
+        rendered = ComponentUtils.isRendered(facesContext, uiComponent);
         assertFalse(rendered);
 
         UIOutput uiOutput = new UIOutput();
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, uiOutput, false);
-        rendered = _ComponentUtils.isRendered(facesContext, uiComponent);
+        rendered = ComponentUtils.isRendered(facesContext, uiComponent);
         assertFalse(rendered);
         assertEquals("isRendered must not change current component", parent,
                 UIComponent.getCurrentComponent(facesContext));

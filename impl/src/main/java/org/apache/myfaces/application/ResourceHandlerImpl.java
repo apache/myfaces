@@ -61,7 +61,7 @@ import javax.faces.application.ResourceVisitOption;
 import javax.faces.application.ViewHandler;
 import javax.faces.view.ViewDeclarationLanguage;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.core.api.shared._LocaleUtils;
+import org.apache.myfaces.core.api.shared.LocaleUtils;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.resource.ContractResource;
 import org.apache.myfaces.resource.ContractResourceLoader;
@@ -1157,11 +1157,11 @@ public class ResourceHandlerImpl extends ResourceHandler
             {
                 token = resourceId.substring(start, firstSlash);
                 //Try to derive a locale object
-                Locale locale = _LocaleUtils.deriveLocale(token);
+                Locale locale = LocaleUtils.deriveLocale(token);
 
                 // If the locale was derived and it is available, 
                 // assume that portion of the resourceId it as a locale prefix.
-                if (locale != null && _LocaleUtils.isAvailableLocale(locale))
+                if (locale != null && LocaleUtils.isAvailableLocale(locale))
                 {
                     localePrefix = token;
                     start = firstSlash+1;
@@ -1324,11 +1324,11 @@ public class ResourceHandlerImpl extends ResourceHandler
             {
                 token = resourceId.substring(start, firstSlash);
                 //Try to derive a locale object
-                Locale locale = _LocaleUtils.deriveLocale(token);
+                Locale locale = LocaleUtils.deriveLocale(token);
 
                 // If the locale was derived and it is available, 
                 // assume that portion of the resourceId it as a locale prefix.
-                if (locale != null && _LocaleUtils.isAvailableLocale(locale))
+                if (locale != null && LocaleUtils.isAvailableLocale(locale))
                 {
                     localePrefix = token;
                     start = firstSlash+1;

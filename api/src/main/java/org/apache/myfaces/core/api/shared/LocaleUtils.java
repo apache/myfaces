@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentMap;
  * @since 2.2
  * @version $Id$
  */
-public class _LocaleUtils
+public class LocaleUtils
 {
 
     /** Concurrent map of language locales by country. */
@@ -58,7 +58,7 @@ public class _LocaleUtils
      * <p>This constructor is public to permit tools that require a JavaBean instance
      * to operate.</p>
      */
-    public _LocaleUtils()
+    public LocaleUtils()
     {
         super();
     }

@@ -18,8 +18,8 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.core.api.shared._SharedRendererUtils;
-import org.apache.myfaces.core.api.shared._ComponentUtils;
+import org.apache.myfaces.core.api.shared.SharedRendererUtils;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFListener;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
@@ -52,9 +52,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFExclude;
-import org.apache.myfaces.core.api.shared._BeanValidationUtils;
-import org.apache.myfaces.core.api.shared._ExternalSpecifications;
-import org.apache.myfaces.core.api.shared._MessageUtils;
+import org.apache.myfaces.core.api.shared.BeanValidationUtils;
+import org.apache.myfaces.core.api.shared.ExternalSpecifications;
+import org.apache.myfaces.core.api.shared.MessageUtils;
 
 /**
  * UICommand is a base abstraction for components that implement ActionSource.
@@ -419,9 +419,9 @@ public class UIInput extends UIOutput implements EditableValueHolder
             //context.getExternalContext().log(e.getMessage(), e);
             
             // Create a FacesMessage with the id UPDATE_MESSAGE_ID
-            FacesMessage facesMessage = _MessageUtils.getMessage(context,
+            FacesMessage facesMessage = MessageUtils.getMessage(context,
                     context.getViewRoot().getLocale(), FacesMessage.SEVERITY_ERROR, UPDATE_MESSAGE_ID,
-                    new Object[] { _MessageUtils.getLabel(context, this) });
+                    new Object[] { MessageUtils.getLabel(context, this) });
             
             // create an UpdateModelException and enqueue it since 
             // we are not allowed to throw it directly here
@@ -460,8 +460,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
             }
             else
             {
-                _MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID,
-                    new Object[] { _MessageUtils.getLabel(context, this) });
+                MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID,
+                    new Object[] { MessageUtils.getLabel(context, this) });
             }
             setValid(false);
             return;
@@ -469,7 +469,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
         if (!isEmpty || shouldValidateEmptyFields(context))
         {
-            _ComponentUtils.callValidators(context, this, convertedValue);
+            ComponentUtils.callValidators(context, this, convertedValue);
         }
     }
     
@@ -530,7 +530,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
                  param = param.toLowerCase();
              }
 
-             if (param.equals("auto") && _ExternalSpecifications.isBeanValidationAvailable())
+             if (param.equals("auto") && ExternalSpecifications.isBeanValidationAvailable())
              {
                  validateEmptyFields = true;
              }
@@ -712,8 +712,8 @@ public class UIInput extends UIOutput implements EditableValueHolder
                 }
                 else
                 {
-                    _MessageUtils.addErrorMessage(context, this, CONVERSION_MESSAGE_ID,
-                            new Object[] { _MessageUtils.getLabel(context, this) });
+                    MessageUtils.addErrorMessage(context, this, CONVERSION_MESSAGE_ID,
+                            new Object[] { MessageUtils.getLabel(context, this) });
                 }
             }
             setValid(false);
@@ -773,7 +773,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         }
         else if (submittedValue instanceof String)
         {
-            Converter converter = _SharedRendererUtils.findUIOutputConverter(context, this);
+            Converter converter = SharedRendererUtils.findUIOutputConverter(context, this);
             if (converter != null)
             {
                 return converter.getAsObject(context, this, (String) submittedValue);
@@ -908,14 +908,14 @@ public class UIInput extends UIOutput implements EditableValueHolder
     @Override
     public Validator[] getValidators()
     {
-        if (_ExternalSpecifications.isBeanValidationAvailable()
+        if (ExternalSpecifications.isBeanValidationAvailable()
                 && Boolean.TRUE.equals(this.getAttributes().containsKey(BEAN_BEFORE_JSF_PROPERTY)))
         {
             int bvIndex = -1;
             for (int i = 0; i < _validatorList.size(); i++)
             {
                 Validator v = _validatorList.get(i);
-                if (_BeanValidationUtils.isBeanValidator(v))
+                if (BeanValidationUtils.isBeanValidator(v))
                 {
                     bvIndex = i;
                     break;

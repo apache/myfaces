@@ -18,7 +18,7 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.core.api.shared._ClassUtils;
+import org.apache.myfaces.core.api.shared.ClassUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -626,7 +626,7 @@ public abstract class UIComponent
         {
             FacesContext context = getFacesContext();
             Locale locale = context.getViewRoot().getLocale();
-            ClassLoader loader = _ClassUtils.getContextClassLoader();
+            ClassLoader loader = ClassUtils.getContextClassLoader();
 
             try
             {

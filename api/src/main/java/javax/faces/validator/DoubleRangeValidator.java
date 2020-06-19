@@ -18,7 +18,7 @@
  */
 package javax.faces.validator;
 
-import org.apache.myfaces.core.api.shared._MessageUtils;
+import org.apache.myfaces.core.api.shared.MessageUtils;
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -101,8 +101,8 @@ public class DoubleRangeValidator
         {
             if (dvalue < _minimum || dvalue > _maximum)
             {
-                Object[] args = {_minimum, _maximum,_MessageUtils.getLabel(facesContext, uiComponent)};
-                throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, NOT_IN_RANGE_MESSAGE_ID,
+                Object[] args = {_minimum, _maximum,MessageUtils.getLabel(facesContext, uiComponent)};
+                throw new ValidatorException(MessageUtils.getErrorMessage(facesContext, NOT_IN_RANGE_MESSAGE_ID,
                                                                            args));
             }
         }
@@ -110,16 +110,16 @@ public class DoubleRangeValidator
         {
             if (dvalue < _minimum)
             {
-                Object[] args = {_minimum,_MessageUtils.getLabel(facesContext, uiComponent)};
-                throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, MINIMUM_MESSAGE_ID, args));
+                Object[] args = {_minimum,MessageUtils.getLabel(facesContext, uiComponent)};
+                throw new ValidatorException(MessageUtils.getErrorMessage(facesContext, MINIMUM_MESSAGE_ID, args));
             }
         }
         else if (_maximum != null)
         {
             if (dvalue > _maximum)
             {
-                Object[] args = {_maximum,_MessageUtils.getLabel(facesContext, uiComponent)};
-                throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, MAXIMUM_MESSAGE_ID, args));
+                Object[] args = {_maximum,MessageUtils.getLabel(facesContext, uiComponent)};
+                throw new ValidatorException(MessageUtils.getErrorMessage(facesContext, MAXIMUM_MESSAGE_ID, args));
             }
         }
     }
@@ -138,8 +138,8 @@ public class DoubleRangeValidator
         }
         catch (NumberFormatException e)
         {
-            Object[] args = {_MessageUtils.getLabel(facesContext, uiComponent)};
-            throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, TYPE_MESSAGE_ID, args));
+            Object[] args = {MessageUtils.getLabel(facesContext, uiComponent)};
+            throw new ValidatorException(MessageUtils.getErrorMessage(facesContext, TYPE_MESSAGE_ID, args));
         }
     }
 

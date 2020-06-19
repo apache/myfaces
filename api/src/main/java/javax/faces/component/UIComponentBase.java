@@ -18,7 +18,7 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.core.api.shared._ComponentUtils;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
@@ -698,7 +698,7 @@ public abstract class UIComponentBase extends UIComponent
         UIComponent findBase;
         if (expr.charAt(0) == separatorChar)
         {
-            findBase = _ComponentUtils.getRootComponent(this);
+            findBase = ComponentUtils.findRootComponent(this);
             expr = expr.substring(1);
         }
         else
@@ -709,18 +709,18 @@ public abstract class UIComponentBase extends UIComponent
             }
             else
             {
-                findBase = _ComponentUtils.findParentNamingContainer(this, true /* root if not found */);
+                findBase = ComponentUtils.findClosestNamingContainer(this, true /* root if not found */);
             }
         }
 
         int separator = expr.indexOf(separatorChar);
         if (separator == -1)
         {
-            return _ComponentUtils.findComponent(findBase, expr, separatorChar);
+            return ComponentUtils.findComponent(findBase, expr, separatorChar);
         }
 
         String id = expr.substring(0, separator);
-        findBase = _ComponentUtils.findComponent(findBase, id, separatorChar);
+        findBase = ComponentUtils.findComponent(findBase, id, separatorChar);
         if (findBase == null)
         {
             return null;
@@ -900,7 +900,7 @@ public abstract class UIComponentBase extends UIComponent
             // NamingContainer but UniqueIdVendor is UIViewRoot. Anyway we just can't be 100% sure about this
             // fact, so it is better to scan for the closest UniqueIdVendor. If it is not found use 
             // viewRoot.createUniqueId, otherwise use UniqueIdVendor.createUniqueId(context,seed).
-            UniqueIdVendor parentUniqueIdVendor = _ComponentUtils.closest(UniqueIdVendor.class, this);
+            UniqueIdVendor parentUniqueIdVendor = ComponentUtils.findClosest(UniqueIdVendor.class, this);
             if (parentUniqueIdVendor == null)
             {
                 UIViewRoot viewRoot = context.getViewRoot();
@@ -914,7 +914,7 @@ public abstract class UIComponentBase extends UIComponent
                     String location = getComponentLocation(this);
                     throw new FacesException("Cannot create clientId. No id is assigned for component"
                             + " to create an id and UIViewRoot is not defined: "
-                            + _ComponentUtils.getPathToComponent(this)
+                            + ComponentUtils.getPathToComponent(this)
                             + (location != null ? " created from: " + location : ""));
                 }
             }
@@ -925,7 +925,7 @@ public abstract class UIComponentBase extends UIComponent
             setId(id);
         }
 
-        UIComponent namingContainer = _ComponentUtils.findParentNamingContainer(this, false);
+        UIComponent namingContainer = ComponentUtils.findClosestNamingContainer(this, false);
         if (namingContainer != null)
         {
             String containerClientId = namingContainer.getContainerClientId(context);
@@ -1288,7 +1288,7 @@ public abstract class UIComponentBase extends UIComponent
         if (renderer == null)
         {
             String location = getComponentLocation(this);
-            String logStr = "No Renderer found for component " + _ComponentUtils.getPathToComponent(this)
+            String logStr = "No Renderer found for component " + ComponentUtils.getPathToComponent(this)
                     + " (component-family=" + getFamily()
                     + ", renderer-type=" + rendererType + ')'
                     + (location != null ? " created from: " + location : "");

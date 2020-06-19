@@ -25,7 +25,7 @@ import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFConverter;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
-import org.apache.myfaces.core.api.shared._MessageUtils;
+import org.apache.myfaces.core.api.shared.MessageUtils;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -99,9 +99,9 @@ public class EnumConverter implements Converter, PartialStateHolder
         }
         
         Object[] params =
-            new Object[] { value, firstConstantOfEnum(), _MessageUtils.getLabel(facesContext, uiComponent) };
+            new Object[] { value, firstConstantOfEnum(), MessageUtils.getLabel(facesContext, uiComponent) };
 
-        throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, ENUM_ID, params));
+        throw new ConverterException(MessageUtils.getErrorMessage(facesContext, ENUM_ID, params));
     }
 
     @Override
@@ -135,9 +135,9 @@ public class EnumConverter implements Converter, PartialStateHolder
         catch (IllegalArgumentException e)
         {
             Object[] params =
-                    new Object[] { value, firstConstantOfEnum(), _MessageUtils.getLabel(facesContext, uiComponent) };
+                    new Object[] { value, firstConstantOfEnum(), MessageUtils.getLabel(facesContext, uiComponent) };
 
-            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, ENUM_ID, params));
+            throw new ConverterException(MessageUtils.getErrorMessage(facesContext, ENUM_ID, params));
         }
     }
 
@@ -145,8 +145,8 @@ public class EnumConverter implements Converter, PartialStateHolder
     {
         if (targetClass == null)
         {
-            Object[] params = new Object[] { value, _MessageUtils.getLabel(facesContext, uiComponent) };
-            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, ENUM_NO_CLASS_ID, params));
+            Object[] params = new Object[] { value, MessageUtils.getLabel(facesContext, uiComponent) };
+            throw new ConverterException(MessageUtils.getErrorMessage(facesContext, ENUM_NO_CLASS_ID, params));
         }
     }
 

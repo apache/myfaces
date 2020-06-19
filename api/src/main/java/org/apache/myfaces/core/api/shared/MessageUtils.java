@@ -31,7 +31,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
-public class _MessageUtils
+public class MessageUtils
 {
     private static final String DETAIL_SUFFIX = "_detail";
 
@@ -136,7 +136,7 @@ public class _MessageUtils
 
         if (args != null && args.length > 0)
         {
-            return new _ParametrizableFacesMessage(severity, summary, detail, args, locale);
+            return new ParametrizableFacesMessage(severity, summary, detail, args, locale);
         }
         else
         {
@@ -206,13 +206,13 @@ public class _MessageUtils
                 {
                     return ResourceBundle.getBundle(bundleName,
                                                     locale,
-                                                    _MessageUtils.class.getClassLoader());
+                                                    MessageUtils.class.getClassLoader());
                 }
                 else
                 {
                     return ResourceBundle.getBundle(bundleName,
                                                     locale,
-                                                    _MessageUtils.class.getClassLoader(), bundleControl);
+                                                    MessageUtils.class.getClassLoader(), bundleControl);
                 }
             }
             catch (MissingResourceException ignore2)

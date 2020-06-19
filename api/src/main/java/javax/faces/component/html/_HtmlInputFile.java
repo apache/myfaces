@@ -23,7 +23,7 @@ import javax.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
-import org.apache.myfaces.core.api.shared._MessageUtils;
+import org.apache.myfaces.core.api.shared.MessageUtils;
 
 /**
  * Renders a HTML input element.
@@ -96,8 +96,8 @@ abstract class _HtmlInputFile extends UIInput implements _AccesskeyProperty,
             }
             else
             {
-                _MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID,
-                    new Object[] { _MessageUtils.getLabel(context, this) });
+                MessageUtils.addErrorMessage(context, this, REQUIRED_MESSAGE_ID,
+                    new Object[] { MessageUtils.getLabel(context, this) });
             }
             setValid(false);
             return;

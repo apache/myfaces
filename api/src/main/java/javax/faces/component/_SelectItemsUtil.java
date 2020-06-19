@@ -18,7 +18,7 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.core.api.shared._ClassUtils;
+import org.apache.myfaces.core.api.shared.ClassUtils;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -143,11 +143,11 @@ class _SelectItemsUtil
                     {
                         targetClass = targetClass.getSuperclass();
                     }
-                    itemValue = _ClassUtils.convertToTypeNoLogging(facesContext, itemValue, targetClass);
+                    itemValue = ClassUtils.convertToTypeNoLogging(facesContext, itemValue, targetClass);
                 }
                 else
                 {
-                    itemValue = _ClassUtils.convertToTypeNoLogging(facesContext, itemValue, value.getClass());
+                    itemValue = ClassUtils.convertToTypeNoLogging(facesContext, itemValue, value.getClass());
                 }
             }
             catch (IllegalArgumentException e)

@@ -29,7 +29,7 @@ import javax.faces.context.FacesContext;
  * This class encapsulates a FacesMessage to evaluate the label
  * expression on render response, where f:loadBundle is available
  */
-public class _ParametrizableFacesMessage extends FacesMessage
+public class ParametrizableFacesMessage extends FacesMessage
 {
     private static final long serialVersionUID = 7792947730961657948L;
 
@@ -39,7 +39,7 @@ public class _ParametrizableFacesMessage extends FacesMessage
     private transient Object evaluatedArgs[];
     private Locale locale;
 
-    public _ParametrizableFacesMessage(String summary, String detail, Object[] args, Locale locale)
+    public ParametrizableFacesMessage(String summary, String detail, Object[] args, Locale locale)
     {
         super(summary, detail);
         if (locale == null)
@@ -50,7 +50,7 @@ public class _ParametrizableFacesMessage extends FacesMessage
         this.args = args;
     }
 
-    public _ParametrizableFacesMessage(FacesMessage.Severity severity, String summary, String detail, Object[] args,
+    public ParametrizableFacesMessage(FacesMessage.Severity severity, String summary, String detail, Object[] args,
             Locale locale)
     {
         super(severity, summary, detail);

@@ -18,8 +18,8 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.core.api.shared._ClassUtils;
-import org.apache.myfaces.core.api.shared._ComponentUtils;
+import org.apache.myfaces.core.api.shared.ClassUtils;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -137,7 +137,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         Method createDataModelMethod = null;
         try
         {
-            dataModelBuilderClass = _ClassUtils.classForName(FACES_DATA_MODEL_MANAGER_CLASS_NAME);
+            dataModelBuilderClass = ClassUtils.classForName(FACES_DATA_MODEL_MANAGER_CLASS_NAME);
             if (dataModelBuilderClass != null)
             {
                 createDataModelMethod = dataModelBuilderClass.getMethod("createDataModel",
@@ -1795,7 +1795,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
             UIComponent child = getChildren().get(i);
             if (child instanceof UIColumn)
             {
-                if (!_ComponentUtils.isRendered(context, child))
+                if (!ComponentUtils.isRendered(context, child))
                 {
                     // Column is not visible
                     continue;
@@ -1849,7 +1849,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 UIComponent child = getChildren().get(i);
                 if (child instanceof UIColumn)
                 {
-                    if (!_ComponentUtils.isRendered(context, child))
+                    if (!ComponentUtils.isRendered(context, child))
                     {
                         // Column is not visible
                         continue;

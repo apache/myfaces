@@ -18,7 +18,7 @@
  */
 package javax.faces.validator;
 
-import org.apache.myfaces.core.api.shared._MessageUtils;
+import org.apache.myfaces.core.api.shared.MessageUtils;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
@@ -136,8 +136,8 @@ public class RegexValidator implements Validator, PartialStateHolder
             // and type expected in validator but behaviour is not specified.
             // We use message for String conversion here:
             // javax.faces.converter.STRING={1}: Could not convert ''{0}'' to a string
-            Object[] args = {value, _MessageUtils.getLabel(context, component)};
-            throw new ValidatorException(_MessageUtils.getErrorMessage(context, "javax.faces.converter.STRING", args));
+            Object[] args = {value, MessageUtils.getLabel(context, component)};
+            throw new ValidatorException(MessageUtils.getErrorMessage(context, "javax.faces.converter.STRING", args));
         }
 
         CharSequence charSequence = (CharSequence) value;
@@ -145,7 +145,7 @@ public class RegexValidator implements Validator, PartialStateHolder
         Pattern thePattern;
         if (pattern == null || pattern.equals(EMPTY_STRING))
         {
-            throw new ValidatorException(_MessageUtils.getErrorMessage(context, PATTERN_NOT_SET_MESSAGE_ID, null));
+            throw new ValidatorException(MessageUtils.getErrorMessage(context, PATTERN_NOT_SET_MESSAGE_ID, null));
         }
 
         try
@@ -154,14 +154,14 @@ public class RegexValidator implements Validator, PartialStateHolder
         }
         catch (PatternSyntaxException pse)
         {
-            throw new ValidatorException(_MessageUtils.getErrorMessage(context, MATCH_EXCEPTION_MESSAGE_ID, null));
+            throw new ValidatorException(MessageUtils.getErrorMessage(context, MATCH_EXCEPTION_MESSAGE_ID, null));
         }
 
         if (!thePattern.matcher(charSequence).matches())
         {
             //TODO: Present the patternExpression in a more user friendly way
-            Object[] args = {thePattern, _MessageUtils.getLabel(context, component)};
-            throw new ValidatorException(_MessageUtils.getErrorMessage(context, NOT_MATCHED_MESSAGE_ID, args));
+            Object[] args = {thePattern, MessageUtils.getLabel(context, component)};
+            throw new ValidatorException(MessageUtils.getErrorMessage(context, NOT_MATCHED_MESSAGE_ID, args));
         }
     }
 

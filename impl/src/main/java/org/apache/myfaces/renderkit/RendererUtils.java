@@ -48,8 +48,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.model.SelectItem;
-import org.apache.myfaces.core.api.shared._SelectItemsIterator;
-import org.apache.myfaces.core.api.shared._SharedRendererUtils;
+import org.apache.myfaces.core.api.shared.SelectItemsIterator;
+import org.apache.myfaces.core.api.shared.SharedRendererUtils;
 
 import org.apache.myfaces.util.ComponentUtils;
 import org.apache.myfaces.util.lang.HashMapUtils;
@@ -443,7 +443,7 @@ public final class RendererUtils
         if (considerValueType)
         {
             // try to get a converter from the valueType attribute
-            converter = _SharedRendererUtils.getValueTypeConverter(facesContext, component);
+            converter = SharedRendererUtils.getValueTypeConverter(facesContext, component);
             if (converter != null)
             {
                 return converter;
@@ -473,8 +473,7 @@ public final class RendererUtils
         if (Collection.class.isAssignableFrom(valueType) || Object.class.equals(valueType))
         {
             // try to get the by-type-converter from the type of the SelectItems
-            return _SharedRendererUtils.getSelectItemsValueConverter(
-                    new _SelectItemsIterator(component, facesContext),
+            return SharedRendererUtils.getSelectItemsValueConverter(new SelectItemsIterator(component, facesContext),
                     facesContext);
         }
 
@@ -496,8 +495,7 @@ public final class RendererUtils
         {
             // There is no converter for Object class
             // try to get the by-type-converter from the type of the SelectItems
-            return _SharedRendererUtils.getSelectItemsValueConverter(
-                    new _SelectItemsIterator(component, facesContext),
+            return SharedRendererUtils.getSelectItemsValueConverter(new SelectItemsIterator(component, facesContext),
                     facesContext);
         }
 
@@ -589,7 +587,7 @@ public final class RendererUtils
     {
         List<SelectItem> list = new ArrayList<>();
 
-        for (_SelectItemsIterator iter = new _SelectItemsIterator(uiComponent, facesContext); iter.hasNext();)
+        for (SelectItemsIterator iter = new SelectItemsIterator(uiComponent, facesContext); iter.hasNext();)
         {
             list.add(iter.next());
         }
@@ -849,7 +847,7 @@ public final class RendererUtils
                             + ComponentUtils.getPathToComponent(selectMany) + "expected");
         }
 
-        return _SharedRendererUtils.getConvertedUISelectManyValue(facesContext,
+        return SharedRendererUtils.getConvertedUISelectManyValue(facesContext,
                 selectMany, (String[]) submittedValue, considerValueType);
     }
 

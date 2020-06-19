@@ -18,8 +18,8 @@
  */
 package javax.faces.validator;
 
-import org.apache.myfaces.core.api.shared._MessageUtils;
-import org.apache.myfaces.core.api.shared._ExternalSpecifications;
+import org.apache.myfaces.core.api.shared.MessageUtils;
+import org.apache.myfaces.core.api.shared.ExternalSpecifications;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -225,8 +225,8 @@ public class BeanValidator implements Validator, PartialStateHolder
             {
                 ConstraintViolation constraintViolation = (ConstraintViolation) violation;
                 String message = constraintViolation.getMessage();
-                Object[] args = new Object[]{ message, _MessageUtils.getLabel(context, component) };
-                FacesMessage msg = _MessageUtils.getErrorMessage(context, MESSAGE_ID, args);
+                Object[] args = new Object[]{ message, MessageUtils.getLabel(context, component) };
+                FacesMessage msg = MessageUtils.getErrorMessage(context, MESSAGE_ID, args);
                 messages.add(msg);
             }
             
@@ -338,7 +338,7 @@ public class BeanValidator implements Validator, PartialStateHolder
         {
             synchronized (this)
             {
-                if (_ExternalSpecifications.isBeanValidationAvailable())
+                if (ExternalSpecifications.isBeanValidationAvailable())
                 {
                     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
                     applicationMap.put(VALIDATOR_FACTORY_KEY, factory);

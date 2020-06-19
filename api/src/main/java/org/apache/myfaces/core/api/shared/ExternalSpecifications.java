@@ -20,13 +20,11 @@ package org.apache.myfaces.core.api.shared;
 
 /**
  * <p>
- * Package-private utility class for determining which specifications are available
- * in the current process. See JIRA issue: http://issues.apache.org/jira/browse/MYFACES-2386
  * This is a stripped down version of: org.apache.myfaces.util.ExternalSpecifications
  * </p>
  * @since 2.0
  */
-public final class _ExternalSpecifications
+public final class ExternalSpecifications
 {
     private static volatile Boolean beanValidationAvailable;
 
@@ -59,7 +57,7 @@ public final class _ExternalSpecifications
                         // Trial-error approach to check for Bean Validation impl existence.
                         // If any Exception occurs here, we assume that Bean Validation is not available.
                         // The cause may be anything, i.e. NoClassDef, config error...
-                        _BeanValidationUtils.tryBuildDefaultValidatorFactory();
+                        BeanValidationUtils.tryBuildDefaultValidatorFactory();
                     }
                     catch (Throwable t)
                     {
@@ -78,7 +76,7 @@ public final class _ExternalSpecifications
     /**
      * this class should not be instantiated.
      */
-    private _ExternalSpecifications()
+    private ExternalSpecifications()
     {
     }
 }

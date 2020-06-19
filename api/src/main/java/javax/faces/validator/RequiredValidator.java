@@ -18,7 +18,7 @@
  */
 package javax.faces.validator;
 
-import org.apache.myfaces.core.api.shared._MessageUtils;
+import org.apache.myfaces.core.api.shared.MessageUtils;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
@@ -81,10 +81,10 @@ public class RequiredValidator implements Validator
                             requiredMessage));
                 }
             }
-            throw new ValidatorException(_MessageUtils.getMessage(facesContext,
+            throw new ValidatorException(MessageUtils.getMessage(facesContext,
                     facesContext.getViewRoot().getLocale(),
                     FacesMessage.SEVERITY_ERROR, UIInput.REQUIRED_MESSAGE_ID,
-                    new Object[] { _MessageUtils.getLabel(facesContext,
+                    new Object[] { MessageUtils.getLabel(facesContext,
                             uiComponent) }));
         }
     }

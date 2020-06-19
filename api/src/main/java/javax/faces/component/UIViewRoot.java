@@ -18,9 +18,9 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.core.api.shared._ClassUtils;
-import org.apache.myfaces.core.api.shared._ComponentUtils;
-import org.apache.myfaces.core.api.shared._LocaleUtils;
+import org.apache.myfaces.core.api.shared.ClassUtils;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
+import org.apache.myfaces.core.api.shared.LocaleUtils;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -117,7 +117,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         try
         {
             VIEW_SCOPE_PROXY_MAP_CLASS
-                    = _ClassUtils.classForName("org.apache.myfaces.view.ViewScopeProxyMap");
+                    = ClassUtils.classForName("org.apache.myfaces.view.ViewScopeProxyMap");
         }
         catch (Exception e)
         {
@@ -127,7 +127,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         try
         {
             REQUEST_VIEW_CONTEXT_CLASS
-                    = _ClassUtils.classForName("org.apache.myfaces.context.RequestViewContext");
+                    = ClassUtils.classForName("org.apache.myfaces.context.RequestViewContext");
             REQUEST_VIEW_CONTEXT_GET_INSTANCE = REQUEST_VIEW_CONTEXT_CLASS.getMethod("getCurrentInstance",
                     new Class[] { FacesContext.class });
             REQUEST_VIEW_CONTEXT_SET_RENDER_TARGET = REQUEST_VIEW_CONTEXT_CLASS.getMethod("setRenderTarget",
@@ -478,15 +478,14 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                     PropertyKeys.resourceDependencyUniqueIdCounter);
                 uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
                 getStateHelper().put(PropertyKeys.resourceDependencyUniqueIdCounter, (uniqueIdCounter+1));
-                if (uniqueIdCounter >= _ComponentUtils.UNIQUE_COMPONENT_RD_IDS_SIZE)
+                if (uniqueIdCounter >= ComponentUtils.UNIQUE_COMPONENT_RD_IDS_SIZE)
                 {
                     StringBuilder bld = _getSharedStringBuilder(context);
-                    return bld.append(UNIQUE_ID_PREFIX).append(
-                        _ComponentUtils.RD_ID_PREFIX).append(uniqueIdCounter).toString();
+                    return bld.append(UNIQUE_ID_PREFIX).append(ComponentUtils.RD_ID_PREFIX).append(uniqueIdCounter).toString();
                 }
                 else
                 {
-                    return _ComponentUtils.UNIQUE_COMPONENT_RD_IDS[uniqueIdCounter];
+                    return ComponentUtils.UNIQUE_COMPONENT_RD_IDS[uniqueIdCounter];
                 }
             }
             else
@@ -494,15 +493,14 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 Integer uniqueIdCounter = (Integer) getStateHelper().get(PropertyKeys.uniqueIdCounter);
                 uniqueIdCounter = (uniqueIdCounter == null) ? 0 : uniqueIdCounter;
                 getStateHelper().put(PropertyKeys.uniqueIdCounter, (uniqueIdCounter+1));
-                if (uniqueIdCounter >= _ComponentUtils.UNIQUE_COMPONENT_V_IDS_SIZE)
+                if (uniqueIdCounter >= ComponentUtils.UNIQUE_COMPONENT_V_IDS_SIZE)
                 {
                     StringBuilder bld = _getSharedStringBuilder(context);
-                    return bld.append(UNIQUE_ID_PREFIX).append(
-                        _ComponentUtils.V_ID_PREFIX).append(uniqueIdCounter).toString();
+                    return bld.append(UNIQUE_ID_PREFIX).append(ComponentUtils.V_ID_PREFIX).append(uniqueIdCounter).toString();
                 }
                 else
                 {
-                    return _ComponentUtils.UNIQUE_COMPONENT_V_IDS[uniqueIdCounter];
+                    return ComponentUtils.UNIQUE_COMPONENT_V_IDS[uniqueIdCounter];
                 }
             }
         }
@@ -809,7 +807,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             }
             else
             {
-                return (Locale) _LocaleUtils.toLocale(veLocale.toString());
+                return (Locale) LocaleUtils.toLocale(veLocale.toString());
             }
         }
         else
@@ -822,7 +820,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             }
             else if (locale instanceof String)
             {
-                return _LocaleUtils.toLocale((String)locale);
+                return LocaleUtils.toLocale((String)locale);
             }
         }
 
@@ -896,7 +894,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     {
         if (_viewScope == null && create)
         {
-            _viewScope = (Map<String, Object>) _ClassUtils.newInstance(VIEW_SCOPE_PROXY_MAP_CLASS);
+            _viewScope = (Map<String, Object>) ClassUtils.newInstance(VIEW_SCOPE_PROXY_MAP_CLASS);
             FacesContext facesContext = getFacesContext();
             if (facesContext != null)
             {

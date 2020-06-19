@@ -18,7 +18,7 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.core.api.shared._SelectItemsIterator;
+import org.apache.myfaces.core.api.shared.SelectItemsIterator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -31,7 +31,7 @@ import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
-import org.apache.myfaces.core.api.shared._MessageUtils;
+import org.apache.myfaces.core.api.shared.MessageUtils;
 
 /**
  * Component for choosing one option out of a set of possibilities.
@@ -167,7 +167,7 @@ public class UISelectOne extends UIInput
 
         // Since the iterator is used twice, it has sense to traverse it only once.
         Collection<SelectItem> items = new ArrayList<>();
-        for (Iterator<SelectItem> iter = new _SelectItemsIterator(this, context); iter.hasNext();)
+        for (Iterator<SelectItem> iter = new SelectItemsIterator(this, context); iter.hasNext();)
         {
             items.add(iter.next());
         }
@@ -191,8 +191,8 @@ public class UISelectOne extends UIInput
             return;
         }
 
-        _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, 
-                new Object[] {_MessageUtils.getLabel(context, this) });
+        MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, 
+                new Object[] {MessageUtils.getLabel(context, this) });
         setValid(false);
     }
 

@@ -24,7 +24,7 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFConverter;
 
 import java.math.BigDecimal;
-import org.apache.myfaces.core.api.shared._MessageUtils;
+import org.apache.myfaces.core.api.shared.MessageUtils;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -69,10 +69,10 @@ public class BigDecimalConverter
         }
         catch (NumberFormatException e)
         {
-            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
+            throw new ConverterException(MessageUtils.getErrorMessage(facesContext,
                            DECIMAL_ID,
                            new Object[]{value,new BigDecimal(4815.16).toString(),
-                                        _MessageUtils.getLabel(facesContext, uiComponent)}), e);
+                                        MessageUtils.getLabel(facesContext, uiComponent)}), e);
         }
     }
 
@@ -100,8 +100,8 @@ public class BigDecimalConverter
         }
         catch (Exception e)
         {
-            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID,
-                    new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
+            throw new ConverterException(MessageUtils.getErrorMessage(facesContext, STRING_ID,
+                    new Object[]{value,MessageUtils.getLabel(facesContext, uiComponent)}),e);
         }
     }
 }

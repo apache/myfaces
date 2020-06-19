@@ -24,7 +24,7 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFConverter;
 
 import java.math.BigInteger;
-import org.apache.myfaces.core.api.shared._MessageUtils;
+import org.apache.myfaces.core.api.shared.MessageUtils;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -65,9 +65,9 @@ public class BigIntegerConverter implements Converter
         }
         catch (NumberFormatException e)
         {
-            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext,
+            throw new ConverterException(MessageUtils.getErrorMessage(facesContext,
                            BIGINTEGER_ID,
-                           new Object[]{value,"2345",_MessageUtils.getLabel(facesContext, uiComponent)}), e);
+                           new Object[]{value,"2345",MessageUtils.getLabel(facesContext, uiComponent)}), e);
         }
     }
 
@@ -95,8 +95,8 @@ public class BigIntegerConverter implements Converter
         }
         catch (Exception e)
         {
-            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID,
-                    new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
+            throw new ConverterException(MessageUtils.getErrorMessage(facesContext, STRING_ID,
+                    new Object[]{value,MessageUtils.getLabel(facesContext, uiComponent)}),e);
         }
     }
 

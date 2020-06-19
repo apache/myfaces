@@ -41,12 +41,7 @@ import javax.faces.convert.ConverterException;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
-/**
- * The util methods in this class are shared between the javax.faces.component package and the
- * org.apache.myfaces.renderkit package. Please note: Any changes here must also apply to the class in the other
- * package!
- */
-public class _SharedRendererUtils
+public class SharedRendererUtils
 {
     static final String COLLECTION_TYPE_KEY = "collectionType";
     static final String VALUE_TYPE_KEY = "valueType";
@@ -178,7 +173,7 @@ public class _SharedRendererUtils
                 if (converter == null)
                 {
                     // try to get the by-type-converter from the type of the SelectItems
-                    _SelectItemsIterator iterator = new _SelectItemsIterator(component, facesContext);
+                    SelectItemsIterator iterator = new SelectItemsIterator(component, facesContext);
                     converter = getSelectItemsValueConverter(iterator, facesContext);
                 }
 
@@ -355,7 +350,7 @@ public class _SharedRendererUtils
         {
             try
             {
-                type = _ClassUtils.forName((String) attribute);
+                type = ClassUtils.forName((String) attribute);
             }
             catch (ClassNotFoundException cnfe)
             {
@@ -409,7 +404,7 @@ public class _SharedRendererUtils
             {
                 log(facesContext, 
                         "Found attribute valueType on component " +
-                        _ComponentUtils.getPathToComponent(component) +
+                        ComponentUtils.getPathToComponent(component) +
                         ", but could not get a by-type converter for type " + 
                         valueType.getName(),
                         null);

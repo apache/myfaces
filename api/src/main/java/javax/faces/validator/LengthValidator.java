@@ -18,7 +18,7 @@
  */
 package javax.faces.validator;
 
-import org.apache.myfaces.core.api.shared._MessageUtils;
+import org.apache.myfaces.core.api.shared.MessageUtils;
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -102,8 +102,8 @@ public class LengthValidator
         {
             if (length < _minimum)
             {
-                Object[] args = {_minimum,_MessageUtils.getLabel(facesContext, uiComponent)};
-                throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, MINIMUM_MESSAGE_ID, args));
+                Object[] args = {_minimum,MessageUtils.getLabel(facesContext, uiComponent)};
+                throw new ValidatorException(MessageUtils.getErrorMessage(facesContext, MINIMUM_MESSAGE_ID, args));
             }
         }
 
@@ -111,8 +111,8 @@ public class LengthValidator
         {
             if (length > _maximum)
             {
-                Object[] args = {_maximum,_MessageUtils.getLabel(facesContext, uiComponent)};
-                throw new ValidatorException(_MessageUtils.getErrorMessage(facesContext, MAXIMUM_MESSAGE_ID, args));
+                Object[] args = {_maximum,MessageUtils.getLabel(facesContext, uiComponent)};
+                throw new ValidatorException(MessageUtils.getErrorMessage(facesContext, MAXIMUM_MESSAGE_ID, args));
             }
         }
     }

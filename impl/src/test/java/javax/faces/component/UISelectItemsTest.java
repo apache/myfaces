@@ -18,7 +18,7 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.core.api.shared._SelectItemsIterator;
+import org.apache.myfaces.core.api.shared.SelectItemsIterator;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +54,7 @@ public class UISelectItemsTest extends AbstractJsfTestCase
         UISelectOne selectOne = new UISelectOne();
         selectOne.getChildren().add(selectItems);
         
-        _SelectItemsIterator iter = new _SelectItemsIterator(selectOne, facesContext);
+        SelectItemsIterator iter = new SelectItemsIterator(selectOne, facesContext);
         List<String> options = new ArrayList<String>();
         while(iter.hasNext())
         {
@@ -80,7 +80,7 @@ public class UISelectItemsTest extends AbstractJsfTestCase
         UISelectOne selectOne = new UISelectOne();
         selectOne.getChildren().add(selectItems);
         
-        _SelectItemsIterator iter = new _SelectItemsIterator(selectOne, facesContext);
+        SelectItemsIterator iter = new SelectItemsIterator(selectOne, facesContext);
         int[] options = new int[3];
         for (int i = 0; i < 3; i++)
         {

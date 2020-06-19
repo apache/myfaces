@@ -36,14 +36,9 @@ import javax.faces.component.UISelectItems;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
-// ATTENTION
-// This class is associated with org.apache.myfaces.util.SelectItemsIterator.
-// Changes here should also be applied to this class.
-
-public class _SelectItemsIterator implements Iterator<SelectItem>
+public class SelectItemsIterator implements Iterator<SelectItem>
 {
-    
-    private static final Logger log = Logger.getLogger(_SelectItemsIterator.class.getName());
+    private static final Logger log = Logger.getLogger(SelectItemsIterator.class.getName());
 
     // org.apache.myfaces.util.SelectItemsIterator uses JSFAttr
     private static final String VAR_ATTR = "var";
@@ -62,7 +57,7 @@ public class _SelectItemsIterator implements Iterator<SelectItem>
     private Object _currentValue;
     private FacesContext _facesContext;
 
-    public _SelectItemsIterator(UIComponent selectItemsParent, FacesContext facesContext)
+    public SelectItemsIterator(UIComponent selectItemsParent, FacesContext facesContext)
     {
         _children = selectItemsParent.getChildCount() > 0
                         ? selectItemsParent.getChildren().iterator()
@@ -136,7 +131,7 @@ public class _SelectItemsIterator implements Iterator<SelectItem>
                     ValueExpression expression = uiSelectItem.getValueExpression("value");
                     throw new IllegalArgumentException("ValueExpression '"
                             + (expression == null ? null : expression.getExpressionString()) + "' of UISelectItem : "
-                            + _ComponentUtils.getPathToComponent(child)
+                            + ComponentUtils.getPathToComponent(child)
                             + " does not reference an Object of type SelectItem");
                 }
                 _nextItem = (SelectItem) item;
@@ -199,7 +194,7 @@ public class _SelectItemsIterator implements Iterator<SelectItem>
                                 + " array, Iterable or Map, but of type: {2}",
                                 new Object[] {
                                     (expression == null ? null : expression.getExpressionString()),
-                                    _ComponentUtils.getPathToComponent(child),
+                                    ComponentUtils.getPathToComponent(child),
                                     (value == null ? null : value.getClass().getName()) 
                                 });
                     }

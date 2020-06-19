@@ -31,7 +31,7 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
-import org.apache.myfaces.core.api.shared._SelectItemsIterator;
+import org.apache.myfaces.core.api.shared.SelectItemsIterator;
 import org.apache.myfaces.renderkit.RendererUtils;
 import static org.apache.myfaces.renderkit.html.util.HtmlRendererUtils.isHideNoSelectionOption;
 
@@ -46,7 +46,7 @@ public class SelectItemsUtils
     {
         List<SelectItemInfo> list = new ArrayList<>();
 
-        for (_SelectItemsIterator iter = new _SelectItemsIterator(uiSelectMany, facesContext); iter.hasNext();)
+        for (SelectItemsIterator iter = new SelectItemsIterator(uiSelectMany, facesContext); iter.hasNext();)
         {
             list.add(new SelectItemInfo(iter.next(), iter.getCurrentComponent(), iter.getCurrentValue()));
         }
@@ -56,7 +56,7 @@ public class SelectItemsUtils
     public static List<SelectItemInfo> getSelectItemInfoList(UISelectOne uiSelectOne, FacesContext facesContext)
     {
         List<SelectItemInfo> list = new ArrayList<>();
-        for (_SelectItemsIterator iter = new _SelectItemsIterator(uiSelectOne, facesContext); iter.hasNext();)
+        for (SelectItemsIterator iter = new SelectItemsIterator(uiSelectOne, facesContext); iter.hasNext();)
         {
             list.add(new SelectItemInfo(iter.next(), iter.getCurrentComponent(), iter.getCurrentValue()));
         }

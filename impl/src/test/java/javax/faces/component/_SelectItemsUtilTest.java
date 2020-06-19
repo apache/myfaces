@@ -18,7 +18,7 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.core.api.shared._SelectItemsIterator;
+import org.apache.myfaces.core.api.shared.SelectItemsIterator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -33,7 +33,7 @@ public class _SelectItemsUtilTest extends AbstractJsfTestCase
     private static final String NO_SELECTION_ITEM_VALUE = "1.0";
     private UISelectOne uiComponent;
     private Float value;
-    private _SelectItemsIterator iterator;
+    private SelectItemsIterator iterator;
     private UISelectItem noSelectionOption;
     private UISelectItem selectItem1;
     private UISelectItem selectItem2;
@@ -63,7 +63,7 @@ public class _SelectItemsUtilTest extends AbstractJsfTestCase
         selectItem3.setItemValue("1.3");
         uiComponent.getChildren().add(selectItem3);
         
-        iterator = new _SelectItemsIterator(uiComponent, facesContext);
+        iterator = new SelectItemsIterator(uiComponent, facesContext);
     }
 
     @After
@@ -99,7 +99,7 @@ public class _SelectItemsUtilTest extends AbstractJsfTestCase
         selectItem1.setItemValue("ONE");
         selectItem2.setItemValue("TWO");
         selectItem3.setItemValue("THREE");
-        iterator = new _SelectItemsIterator(uiComponent, facesContext);
+        iterator = new SelectItemsIterator(uiComponent, facesContext);
         
         Object enumValue = MockEnum.THREE;
         boolean matchValue = _SelectItemsUtil.matchValue(facesContext, uiComponent, enumValue, iterator, null);
@@ -118,7 +118,7 @@ public class _SelectItemsUtilTest extends AbstractJsfTestCase
         selectItem1.setItemValue("ONE");
         selectItem2.setItemValue("TWO");
         selectItem3.setItemValue("THREE");
-        iterator = new _SelectItemsIterator(uiComponent, facesContext);
+        iterator = new SelectItemsIterator(uiComponent, facesContext);
         
         Object enumValue = MockEnum.TWO;
         boolean matchValue = _SelectItemsUtil.matchValue(facesContext, uiComponent, enumValue, iterator, null);

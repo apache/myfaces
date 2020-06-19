@@ -18,7 +18,7 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.core.api.shared._ClassUtils;
+import org.apache.myfaces.core.api.shared.ClassUtils;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -37,7 +37,7 @@ import javax.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
-import org.apache.myfaces.core.api.shared._MessageUtils;
+import org.apache.myfaces.core.api.shared.MessageUtils;
 
 /**
  * 
@@ -198,9 +198,9 @@ public class UIViewParameter extends UIInput
             }
             else 
             {
-                Object label = _MessageUtils.getLabel(context, this);
+                Object label = MessageUtils.getLabel(context, this);
                 
-                message = _MessageUtils.getMessage(context, context.getViewRoot().getLocale(),
+                message = MessageUtils.getMessage(context, context.getViewRoot().getLocale(),
                      FacesMessage.SEVERITY_ERROR, REQUIRED_MESSAGE_ID, new Object[] { label });
             }
             
@@ -248,7 +248,7 @@ public class UIViewParameter extends UIInput
 
     private static Renderer getDelegateRenderer(FacesContext context)
     {
-        ClassLoader classLoader = _ClassUtils.getContextClassLoader();
+        ClassLoader classLoader = ClassUtils.getContextClassLoader();
         Renderer delegateRenderer = delegateRendererMap.get(classLoader);
         if(delegateRenderer == null)
         {

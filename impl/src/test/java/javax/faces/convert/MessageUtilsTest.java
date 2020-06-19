@@ -20,7 +20,7 @@ package javax.faces.convert;
 
 import javax.el.ValueExpression;
 import javax.faces.component.html.HtmlInputText;
-import org.apache.myfaces.core.api.shared._MessageUtils;
+import org.apache.myfaces.core.api.shared.MessageUtils;
 
 import org.apache.myfaces.test.base.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
@@ -49,7 +49,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
     {
         HtmlInputText inputText = new HtmlInputText();
         inputText.getAttributes().put("label", "testLabel");
-        Object label = _MessageUtils.getLabel(facesContext, inputText);
+        Object label = MessageUtils.getLabel(facesContext, inputText);
         assertEquals("testLabel", label);
     }
 
@@ -60,7 +60,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
         ValueExpression expression = new MockValueExpression("#{requestScope.lbl}", String.class);
         inputText.setValueExpression("label", expression);
 
-        Object label = _MessageUtils.getLabel(facesContext, inputText);
+        Object label = MessageUtils.getLabel(facesContext, inputText);
         assertEquals("testLabel", label);
     }
 
@@ -68,7 +68,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
     {
         HtmlInputText inputText = new HtmlInputText();
         inputText.setId("testId");
-        Object label = _MessageUtils.getLabel(facesContext, inputText);
+        Object label = MessageUtils.getLabel(facesContext, inputText);
         assertEquals("testId", label);
     }
 }

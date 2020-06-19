@@ -18,7 +18,7 @@
  */
 package javax.faces.validator;
 
-import org.apache.myfaces.core.api.shared._MessageUtils;
+import org.apache.myfaces.core.api.shared.MessageUtils;
 import java.util.HashMap;
 import static org.easymock.EasyMock.expect;
 
@@ -73,7 +73,7 @@ public class _MessageUtilsTest
         expect(valueExpression.getValue(elContext)).andReturn(s);
         mocksControl.replay();
 
-        Assert.assertEquals(_MessageUtils.getErrorMessage(facesContext, "javax.faces.validator.DoubleRangeValidator.MAXIMUM",
+        Assert.assertEquals(MessageUtils.getErrorMessage(facesContext, "javax.faces.validator.DoubleRangeValidator.MAXIMUM",
                 new Object[] { "xyz", "xxx" }).getDetail(),
                 "xxx: Validation Error: Value is greater than allowable maximum of 'xyz'");
     }

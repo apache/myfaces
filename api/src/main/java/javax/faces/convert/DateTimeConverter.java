@@ -42,7 +42,7 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFConverter;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
-import org.apache.myfaces.core.api.shared._MessageUtils;
+import org.apache.myfaces.core.api.shared.MessageUtils;
 
 /**
  * This tag associates a date time converter with the nearest parent UIComponent.
@@ -152,21 +152,21 @@ public class DateTimeConverter
                             currentDate = ZonedDateTime.now();
                         }
                         Object[] args = new Object[]{value,
-                                format.format(currentDate),_MessageUtils.getLabel(facesContext, uiComponent)};
+                                format.format(currentDate),MessageUtils.getLabel(facesContext, uiComponent)};
 
                         if(type.equals(TYPE_LOCAL_DATE))
                         {
-                            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, DATE_ID, args));
+                            throw new ConverterException(MessageUtils.getErrorMessage(facesContext, DATE_ID, args));
                         }
                         else if (type.equals(TYPE_LOCAL_TIME) || type.equals(TYPE_OFFSET_TIME))
                         {
-                            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, TIME_ID, args));
+                            throw new ConverterException(MessageUtils.getErrorMessage(facesContext, TIME_ID, args));
                         }
                         else if (type.equals(TYPE_LOCAL_DATE_TIME) || type.equals(TYPE_OFFSET_DATE_TIME) 
                                 || type.equals(TYPE_ZONED_DATE_TIME))
                         {
                             throw new ConverterException(
-                                    _MessageUtils.getErrorMessage(facesContext, DATETIME_ID, args));
+                                    MessageUtils.getErrorMessage(facesContext, DATETIME_ID, args));
                         }
                         else
                         {
@@ -190,20 +190,20 @@ public class DateTimeConverter
                     {
                         String type = getType();
                         Object[] args = new Object[]{value,
-                                format.format(new Date()),_MessageUtils.getLabel(facesContext, uiComponent)};
+                                format.format(new Date()),MessageUtils.getLabel(facesContext, uiComponent)};
 
                         if(type.equals(TYPE_DATE))
                         {
-                            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, DATE_ID, args));
+                            throw new ConverterException(MessageUtils.getErrorMessage(facesContext, DATE_ID, args));
                         }
                         else if (type.equals(TYPE_TIME))
                         {
-                            throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, TIME_ID, args));
+                            throw new ConverterException(MessageUtils.getErrorMessage(facesContext, TIME_ID, args));
                         }
                         else if (type.equals(TYPE_BOTH))
                         {
                             throw new ConverterException(
-                                    _MessageUtils.getErrorMessage(facesContext, DATETIME_ID, args));
+                                    MessageUtils.getErrorMessage(facesContext, DATETIME_ID, args));
                         }
                         else
                         {
@@ -249,8 +249,8 @@ public class DateTimeConverter
                 }
                 catch (Exception e)
                 {
-                    throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID,
-                            new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
+                    throw new ConverterException(MessageUtils.getErrorMessage(facesContext, STRING_ID,
+                            new Object[]{value,MessageUtils.getLabel(facesContext, uiComponent)}),e);
                 }
             }
             return null;
@@ -269,8 +269,8 @@ public class DateTimeConverter
             }
             catch (Exception e)
             {
-                throw new ConverterException(_MessageUtils.getErrorMessage(facesContext, STRING_ID,
-                        new Object[]{value,_MessageUtils.getLabel(facesContext, uiComponent)}),e);
+                throw new ConverterException(MessageUtils.getErrorMessage(facesContext, STRING_ID,
+                        new Object[]{value,MessageUtils.getLabel(facesContext, uiComponent)}),e);
             }
         }
     }

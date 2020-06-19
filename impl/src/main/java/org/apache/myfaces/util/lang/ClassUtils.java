@@ -24,10 +24,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.myfaces.core.api.shared._ClassUtils;
 
 
-public final class ClassUtils extends _ClassUtils
+public final class ClassUtils extends org.apache.myfaces.core.api.shared.ClassUtils
 {
     //~ Static fields/initializers -----------------------------------------------------------------
 

@@ -28,10 +28,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.UIViewRoot;
 
-/**
- * A collection of static helper methods for locating UIComponents.
- */
-public class _ComponentUtils
+public class ComponentUtils
 {
     public static final String V_ID_PREFIX = "__v_";
     public static final String RD_ID_PREFIX = "__rd_";
@@ -59,13 +56,13 @@ public class _ComponentUtils
         UNIQUE_COMPONENT_V_IDS = uniqueV;
     }
     
-    private _ComponentUtils()
+    private ComponentUtils()
     {
     }
 
-    public static UIComponent findParentNamingContainer(UIComponent component, boolean returnRootIfNotFound)
+    public static UIComponent findClosestNamingContainer(UIComponent component, boolean returnRootIfNotFound)
     {
-        NamingContainer result = closest(NamingContainer.class, component);
+        NamingContainer result = findClosest(NamingContainer.class, component);
         if (result != null)
         {
             return (UIComponent) result;
@@ -73,13 +70,13 @@ public class _ComponentUtils
         
         if (returnRootIfNotFound)
         {
-            return getRootComponent(component);
+            return findRootComponent(component);
         }
         
         return null;
     }
     
-    public static <T> T closest(Class<T> type, UIComponent base) 
+    public static <T> T findClosest(Class<T> type, UIComponent base) 
     {
         UIComponent parent = base.getParent();
 
@@ -96,7 +93,7 @@ public class _ComponentUtils
         return null;
     }
 
-    public static UIComponent getRootComponent(UIComponent component)
+    public static UIComponent findRootComponent(UIComponent component)
     {
         UIComponent parent;
         for (;;)
@@ -117,8 +114,6 @@ public class _ComponentUtils
      * <i>not</i> search into any child naming container components; this is expected to be handled by the caller of
      * this method.
      * <p>
-     * For an implementation of findComponent which does descend into child naming components, see
-     * org.apache.myfaces.custom.util.ComponentUtils.
      * 
      * @return findBase, a descendant of findBase, or null.
      */
