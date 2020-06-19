@@ -192,7 +192,7 @@ public abstract class DataModel<E> implements Iterable<E>
         @Override
         public E next()
         {
-            if (hasNext())
+            if (!hasNext())
             {
                 throw new NoSuchElementException("Couldn't find any element in DataModel at index " + nextRowIndex);
             }
