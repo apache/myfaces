@@ -127,7 +127,8 @@
         <dependency>
             <groupId>org.graalvm.nativeimage</groupId>
             <artifactId>svm</artifactId>
-            <version>20.0.0</version>
+            <version>20.1.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
