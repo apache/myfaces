@@ -21,12 +21,18 @@ package org.apache.myfaces.core.extensions.quarkus.showcase;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlDivision;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.net.URL;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -37,25 +43,48 @@ public class QuarkusMyFacesShowcaseTest {
     @TestHTTPResource
     URL url;
 
-    @Test
-    public void shouldOpenIndexPage() throws Exception {
-        try (final WebClient webClient = new WebClient(BrowserVersion.CHROME)) {
-            webClient.getOptions().setJavaScriptEnabled(true);
-            webClient.getOptions().setCssEnabled(false);
-            webClient.getOptions().setUseInsecureSSL(true);
-            webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-            webClient.getCookieManager().setCookiesEnabled(true);
-            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-            webClient.getCookieManager().setCookiesEnabled(true);
+    private static WebClient webClient;
 
-            final HtmlPage page = webClient.getPage(url + "/index.xhtml");
+    @BeforeAll
+    public static void initWebClient() {
+        webClient = new WebClient(BrowserVersion.CHROME);
+        webClient.getOptions().setJavaScriptEnabled(true);
+        webClient.getOptions().setCssEnabled(false);
+        webClient.getOptions().setUseInsecureSSL(true);
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+        webClient.getCookieManager().setCookiesEnabled(true);
+        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+    }
 
-            final HtmlDivision datatable = (HtmlDivision) page.getElementById("form:carTable");
-
-            assertThat(datatable).isNotNull();
-            assertThat(datatable.getByXPath("//tr[contains(@role,'row') and contains(@class,'ui-datatable-selectable')]"))
-                    .hasSize(10);
-
+    @AfterAll
+    public static void closeWebClient() {
+        if (webClient != null) {
+            webClient.close();
         }
     }
+
+
+    @Test
+    public void shouldOpenIndexPage() throws Exception {
+        final HtmlPage page = webClient.getPage(url + "/index.xhtml");
+        final HtmlDivision datatable = (HtmlDivision) page.getElementById("form:carTable");
+        assertThat(datatable).isNotNull();
+        assertThat(datatable.getByXPath("//tr[contains(@role,'row') and contains(@class,'ui-datatable-selectable')]"))
+                .hasSize(10);
+    }
+
+    @Test
+    @Disabled("Check HtmlUnit websocket support, for now this test is not working")
+    public void shouldCallWebSocket() throws IOException {
+        HtmlPage page = webClient.getPage(url + "/socket.xhtml");
+        final HtmlSubmitInput sendMessageBtn = (HtmlSubmitInput) page.getElementById("form:sendMessage");
+        page = sendMessageBtn.click();
+        webClient.waitForBackgroundJavaScript(5000);
+        DomElement message = page.getElementById("message");
+        assertThat(message.asXml())
+                .contains("hello at");
+
+    }
+
+
 }
