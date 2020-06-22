@@ -52,7 +52,7 @@
 
 
                 <include>**/_impl/xhrCore/_AjaxRequest.js</include>
-                <include>**/_impl/xhrCore/engine/_FormDataRequest.js</include>
+                <include>**/_impl/xhrCore/_FormDataRequest.js</include>
 
                 <include>**/_impl/xhrCore/_AjaxResponse.js</include>
                 <include>**/_impl/xhrCore/_Transports.js</include>

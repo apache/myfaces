@@ -46,8 +46,8 @@ if (!window.jsf) {
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:engine/XhrConst.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:engine/FormData.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:engine/BaseRequest.js']}", null, null, "UTF-8", false);
-    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:engine/_AjaxRequest.js']}", null, null, "UTF-8", false);
-    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:engine/_FormDataRequest.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxRequest.js']}", null, null, "UTF-8", false);
+    _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_FormDataRequest.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_AjaxResponse.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.xhrCore:_Transports.js']}", null, null, "UTF-8", false);
     _ls("#{resource['org.apache.myfaces.core.impl.core:Impl.js']}", null, null, "UTF-8", false);
