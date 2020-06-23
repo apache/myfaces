@@ -28,6 +28,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -45,6 +46,7 @@ import javax.faces.context.FlashFactory;
 import javax.faces.context.PartialResponseWriter;
 import javax.faces.context.PartialViewContext;
 import javax.faces.lifecycle.ClientWindow;
+import javax.faces.render.ResponseStateManager;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -888,7 +890,13 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                 {
                     paramMap = new HashMap<>(5, 1f);
                 }
-                List<String> values = paramMap.computeIfAbsent(currentName, k -> new ArrayList<>(1));
+
+                List<String> values = paramMap.get(currentName);
+                if (values == null)
+                {
+                    values = new ArrayList<>(1);
+                    paramMap.put(currentName, values);
+                }
 
                 try
                 {
@@ -924,26 +932,27 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         
         FacesContext facesContext = getCurrentFacesContext();
         ClientWindow window = facesContext.getExternalContext().getClientWindow();
-        if (window != null)
+        if (window != null && window.isClientWindowRenderModeEnabled(facesContext))
         {
-            if (window.isClientWindowRenderModeEnabled(facesContext))
+            if (paramMap == null)
             {
-                Map<String, String> map = window.getQueryURLParameters(facesContext);
-                if (map != null)
+                paramMap = new HashMap<>(5, 1f);
+            }
+
+            if (!paramMap.containsKey(ResponseStateManager.CLIENT_WINDOW_URL_PARAM))
+            {
+                paramMap.put(ResponseStateManager.CLIENT_WINDOW_URL_PARAM, Arrays.asList(window.getId()));
+            }
+
+            Map<String, String> additionalQueryURLParameters = window.getQueryURLParameters(facesContext);
+            if (additionalQueryURLParameters != null)
+            {
+                for (Map.Entry<String , String> entry : additionalQueryURLParameters.entrySet())
                 {
-                    for (Map.Entry<String , String> entry : map.entrySet())
-                    {
-                        ArrayList<String> value = new ArrayList<>(1);
-                        value.add(entry.getValue());
-                        if (paramMap == null)
-                        {
-                            paramMap = new HashMap<>(5, 1f);
-                        }
-                        paramMap.put(entry.getKey(), value);
-                    }
+                    paramMap.put(entry.getKey(), Arrays.asList(entry.getValue()));
                 }
             }
-        }        
+        }
 
         boolean hasParams = paramMap != null && paramMap.size() > 0;
 
