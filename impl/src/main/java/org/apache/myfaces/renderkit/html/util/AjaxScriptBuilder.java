@@ -198,8 +198,6 @@ public class AjaxScriptBuilder
             }
             if ((params != null && !params.isEmpty()) || (uiParams != null && !uiParams.isEmpty()))
             {
-                appendProperty(sb, "params", "{", false);
-
                 if (params != null && !params.isEmpty())
                 {
                     if (params instanceof RandomAccess)
@@ -228,8 +226,6 @@ public class AjaxScriptBuilder
                         appendProperty(sb, param.getName(), param.getValue(), true);
                     }
                 }
-
-                sb.append('}');
             }
 
             sb.append('}');
