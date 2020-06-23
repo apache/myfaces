@@ -45,6 +45,7 @@ import jakarta.faces.context.FlashFactory;
 import jakarta.faces.context.PartialResponseWriter;
 import jakarta.faces.context.PartialViewContext;
 import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.render.ResponseStateManager;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -54,6 +55,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.Arrays;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.context.flash.FlashImpl;
@@ -932,27 +934,27 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         
         FacesContext facesContext = getCurrentFacesContext();
         ClientWindow window = facesContext.getExternalContext().getClientWindow();
-        if (window != null)
+        if (window != null && window.isClientWindowRenderModeEnabled(facesContext))
         {
-            //TODO: Use StringBuilder or some optimization.
-            if (window.isClientWindowRenderModeEnabled(facesContext))
+            if (paramMap == null)
             {
-                Map<String, String> map = window.getQueryURLParameters(facesContext);
-                if (map != null)
+                paramMap = new HashMap<String, List<String>>();
+            }
+
+            if (!paramMap.containsKey(ResponseStateManager.CLIENT_WINDOW_URL_PARAM))
+            {
+                paramMap.put(ResponseStateManager.CLIENT_WINDOW_URL_PARAM, Arrays.asList(window.getId()));
+            }
+
+            Map<String, String> additionalQueryURLParameters = window.getQueryURLParameters(facesContext);
+            if (additionalQueryURLParameters != null)
+            {
+                for (Map.Entry<String , String> entry : additionalQueryURLParameters.entrySet())
                 {
-                    for (Map.Entry<String , String> entry : map.entrySet())
-                    {
-                        ArrayList<String> value = new ArrayList<String>(1);
-                        value.add(entry.getValue());
-                        if (paramMap == null)
-                        {
-                            paramMap = new HashMap<String, List<String>>();
-                        }
-                        paramMap.put(entry.getKey(), value);
-                    }
+                    paramMap.put(entry.getKey(), Arrays.asList(entry.getValue()));
                 }
             }
-        }        
+        }     
 
         boolean hasParams = paramMap != null && paramMap.size()>0;
 
