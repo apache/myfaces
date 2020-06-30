@@ -29,7 +29,7 @@ import javax.servlet.ServletResponseWrapper;
 import javax.servlet.WriteListener;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.junit.Assert;
 

@@ -22,7 +22,7 @@ package org.apache.myfaces.application.viewstate;
 
 import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.spi.impl.DefaultSerialFactory;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 
 import java.io.Serializable;
 import java.util.Arrays;

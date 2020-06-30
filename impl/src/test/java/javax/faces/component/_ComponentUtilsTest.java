@@ -21,7 +21,7 @@ package javax.faces.component;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 
 import org.apache.myfaces.test.mock.MockRenderedValueExpression;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 

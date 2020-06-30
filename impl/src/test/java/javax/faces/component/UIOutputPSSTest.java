@@ -20,7 +20,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.LongConverter;
 import org.junit.Assert;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Test;
 
 public class UIOutputPSSTest extends AbstractJsfTestCase

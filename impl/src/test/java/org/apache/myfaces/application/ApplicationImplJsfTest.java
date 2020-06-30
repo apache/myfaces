@@ -29,7 +29,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
 
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;

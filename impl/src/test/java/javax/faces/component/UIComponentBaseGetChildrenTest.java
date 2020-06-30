@@ -21,7 +21,7 @@ package javax.faces.component;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
 
 public class UIComponentBaseGetChildrenTest extends AbstractJsfTestCase

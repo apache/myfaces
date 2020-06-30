@@ -33,7 +33,7 @@ import javax.faces.event.PhaseId;
 
 import org.apache.myfaces.test.MyFacesAsserts;
 import org.apache.myfaces.test.TestRunner;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.junit.Assert;

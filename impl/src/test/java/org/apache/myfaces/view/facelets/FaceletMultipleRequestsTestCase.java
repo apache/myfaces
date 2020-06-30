@@ -54,7 +54,7 @@ import org.apache.myfaces.context.PartialViewContextFactoryImpl;
 import org.apache.myfaces.application.ViewIdSupport;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.FacesConfigurationProviderFactory;
-import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMultipleRequestsTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMultipleRequestsTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.test.mock.MockFacesContext;

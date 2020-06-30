@@ -19,7 +19,7 @@
 package org.apache.myfaces.resource;
 
 import org.apache.myfaces.resource.ResourceValidationUtils;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -21,7 +21,7 @@ package org.apache.myfaces.renderkit.html;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.junit.Assert;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.*;

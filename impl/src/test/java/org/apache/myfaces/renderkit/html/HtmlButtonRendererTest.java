@@ -29,7 +29,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.apache.myfaces.test.mock.MockHttpServletResponse;

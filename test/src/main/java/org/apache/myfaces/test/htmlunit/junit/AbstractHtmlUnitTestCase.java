@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.test.htmlunit.junit4;
+package org.apache.myfaces.test.htmlunit.junit;
 
 import java.io.IOException;
 import java.net.URL;

@@ -21,7 +21,7 @@ import java.util.Map;
 import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.context.servlet.FacesContextImpl;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
 
 /**

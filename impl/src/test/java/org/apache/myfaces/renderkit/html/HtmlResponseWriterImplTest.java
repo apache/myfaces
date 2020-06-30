@@ -25,7 +25,7 @@ import java.lang.reflect.Field;
 
 import org.apache.myfaces.util.CommentUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
 
 /**

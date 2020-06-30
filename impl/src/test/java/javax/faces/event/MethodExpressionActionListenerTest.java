@@ -25,7 +25,7 @@ import javax.el.MethodExpression;
 import javax.el.MethodNotFoundException;
 import javax.faces.component.UICommand;
 
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
 import org.junit.Assert;
 

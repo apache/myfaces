@@ -26,7 +26,7 @@ import javax.faces.event.PostAddToViewEvent;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import org.apache.myfaces.application.ApplicationImplEventManager;
-import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
 
 import org.junit.Assert;
 import org.junit.Test;

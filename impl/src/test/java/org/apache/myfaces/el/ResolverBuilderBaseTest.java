@@ -27,7 +27,7 @@ import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.resolver.CompositeELResolver;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

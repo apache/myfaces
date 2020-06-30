@@ -30,7 +30,7 @@ import javax.faces.flow.ViewNode;
 import javax.faces.flow.builder.FlowBuilder;
 import javax.faces.flow.builder.SwitchCaseBuilder;
 import org.apache.myfaces.flow.builder.FlowBuilderImpl;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 

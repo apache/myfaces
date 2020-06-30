@@ -32,7 +32,7 @@ import javax.servlet.jsp.JspFactory;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.resolver.FacesCompositeELResolver;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;

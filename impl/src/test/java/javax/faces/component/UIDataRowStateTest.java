@@ -24,7 +24,7 @@ import javax.faces.component.html.HtmlOutputText;
 import javax.faces.model.ListDataModel;
 import javax.faces.render.Renderer;
 import org.junit.Assert;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Test;
 
 public class UIDataRowStateTest extends AbstractJsfTestCase

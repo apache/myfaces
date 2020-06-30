@@ -21,7 +21,7 @@ import org.apache.myfaces.config.impl.element.AbsoluteOrderingImpl;
 import org.apache.myfaces.config.impl.element.ConfigOthersSlotImpl;
 import org.apache.myfaces.config.impl.element.FacesConfigNameSlotImpl;
 import org.apache.myfaces.config.impl.element.OrderingImpl;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 
 import javax.faces.FacesException;
 import java.util.ArrayList;

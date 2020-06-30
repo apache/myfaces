@@ -23,7 +23,7 @@ import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 

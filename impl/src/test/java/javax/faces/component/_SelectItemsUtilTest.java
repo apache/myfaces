@@ -22,7 +22,7 @@ import org.apache.myfaces.core.api.shared.SelectItemsIterator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

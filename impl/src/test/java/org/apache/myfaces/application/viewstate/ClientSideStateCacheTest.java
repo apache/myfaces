@@ -20,7 +20,7 @@ package org.apache.myfaces.application.viewstate;
 
 import javax.faces.application.StateManager;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMultipleRequestsTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMultipleRequestsTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -20,7 +20,7 @@ import org.apache.myfaces.renderkit.html.util.HTMLEncoder;
 import java.io.CharArrayWriter;
 import java.io.IOException;
 
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
 
 /**

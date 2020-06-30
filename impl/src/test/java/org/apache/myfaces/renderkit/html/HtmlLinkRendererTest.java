@@ -31,7 +31,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.myfaces.application.NavigationHandlerImpl;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;

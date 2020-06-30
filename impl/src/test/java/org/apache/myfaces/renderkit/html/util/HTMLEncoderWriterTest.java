@@ -21,7 +21,7 @@ import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
 
 /**

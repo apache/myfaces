@@ -20,7 +20,7 @@ package javax.faces.component;
 
 import javax.faces.component.html.HtmlInputText;
 
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 
 public class UIComponentAttributesTest extends AbstractJsfTestCase
 {

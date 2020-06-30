@@ -29,7 +29,7 @@ import javax.faces.validator.RequiredValidator;
 import javax.faces.webapp.FacesServlet;
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 
-import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.util.lang.Lazy;

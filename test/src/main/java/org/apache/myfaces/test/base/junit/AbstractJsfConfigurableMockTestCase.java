@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.myfaces.test.base.junit4;
+package org.apache.myfaces.test.base.junit;
 
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -38,21 +38,18 @@ import junit.framework.TestCase;
 import org.apache.myfaces.test.config.ResourceBundleVarNames;
 import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.test.mock.MockFacesContext;
-import org.apache.myfaces.test.mock.MockFacesContextFactory;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.apache.myfaces.test.mock.MockHttpServletResponse;
 import org.apache.myfaces.test.mock.MockHttpSession;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.test.mock.MockServletConfig;
 import org.apache.myfaces.test.mock.MockServletContext;
-import org.apache.myfaces.test.mock.lifecycle.MockLifecycle;
-import org.apache.myfaces.test.mock.lifecycle.MockLifecycleFactory;
 import org.junit.After;
 import org.junit.Before;
 
 /**
  * <p>Abstract JUnit 4.5 test case base class, which sets up the JavaServer Faces
- * mock object environment for multiple simulated request.  The following
+ * mock object environment for a particular simulated request.  The following
  * protected variables are initialized in the <code>setUp()</code> method, and
  * cleaned up in the <code>tearDown()</code> method:</p>
  * <ul>
@@ -77,13 +74,12 @@ import org.junit.Before;
  * your <code>setUp()</code> and <code>tearDown()</code> methods call
  * <code>super.setUp()</code> and <code>super.tearDown()</code> respectively,
  * and that you implement your own <code>suite()</code> method that exposes
- * the test methods for your test case. Additionally, check on each test
- * that setupRequest() and tearDownRequest() are called correctly.</p>
+ * the test methods for your test case.</p>
  * 
- * @since 1.0.3
+ * @since 1.0.0
  */
 
-public abstract class AbstractJsfConfigurableMultipleRequestsTestCase extends TestCase
+public abstract class AbstractJsfConfigurableMockTestCase extends TestCase
 {
 
     // ------------------------------------------------------------ Constructors
@@ -91,7 +87,7 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase extends Te
     /**
      * <p>Construct a new instance of this test case.</p>
      */
-    public AbstractJsfConfigurableMultipleRequestsTestCase()
+    public AbstractJsfConfigurableMockTestCase()
     {
     }
 
@@ -106,19 +102,15 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase extends Te
         // Set up a new thread context class loader
         setUpClassloader();
 
-        // Set up JSF Factories
+        // Set up Servlet API Objects
+        setUpServletObjects();
+
+        // Set up JSF API Objects
         FactoryFinder.releaseFactories();
 
         setFactories();
 
-        // Setup servlet context and session
-        setUpServletContextAndSession();
-        
-        setUpLifecycle();
-        
-        setUpApplication();
-        
-        setUpRenderKit();
+        setUpJSFObjects();
     }
     
     /**
@@ -140,17 +132,6 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase extends Te
     }
 
     /**
-     * This method initialize an new empty request.
-     */
-    public void setupRequest() throws Exception
-    {
-        // Set up Servlet API Objects
-        setUpServletRequestAndResponse();
-
-        setUpJSFRequestObjects();
-    }
-
-    /**
      * <p>Setup JSF object used for the test. By default it calls to the following
      * methods in this order:</p>
      * 
@@ -165,11 +146,14 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase extends Te
      * 
      * @throws Exception
      */
-    protected void setUpJSFRequestObjects() throws Exception
+    protected void setUpJSFObjects() throws Exception
     {
         setUpExternalContext();
+        setUpLifecycle();
         setUpFacesContext();
         setUpView();
+        setUpApplication();
+        setUpRenderKit();
     }
 
     /**
@@ -185,16 +169,12 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase extends Te
      * 
      * @throws Exception
      */
-    protected void setUpServletContextAndSession() throws Exception
+    protected void setUpServletObjects() throws Exception
     {
         servletContext = new MockServletContext();
         config = new MockServletConfig(servletContext);
         session = new MockHttpSession();
         session.setServletContext(servletContext);
-    }
-
-    protected void setUpServletRequestAndResponse() throws Exception
-    {
         request = new MockHttpServletRequest(session);
         request.setServletContext(servletContext);
         response = new MockHttpServletResponse();
@@ -244,9 +224,9 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase extends Te
      */
     protected void setUpLifecycle() throws Exception
     {
-        lifecycleFactory = (MockLifecycleFactory) FactoryFinder
+        lifecycleFactory = (LifecycleFactory) FactoryFinder
                 .getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        lifecycle = (MockLifecycle) lifecycleFactory
+        lifecycle = lifecycleFactory
                 .getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
     }
 
@@ -261,18 +241,13 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase extends Te
      */
     protected void setUpFacesContext() throws Exception
     {
-        facesContextFactory = (MockFacesContextFactory) FactoryFinder
+        facesContextFactory = (FacesContextFactory) FactoryFinder
                 .getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-        facesContext = (MockFacesContext) facesContextFactory.getFacesContext(
+        facesContext = (FacesContext) facesContextFactory.getFacesContext(
                 servletContext, request, response, lifecycle);
         if (facesContext.getExternalContext() != null)
         {
-            externalContext = (MockExternalContext) facesContext
-                    .getExternalContext();
-        }
-        if (facesContext instanceof MockFacesContext)
-        {
-            ((MockFacesContext) facesContext).setApplication(application);
+            externalContext = facesContext.getExternalContext();
         }
     }
 
@@ -302,6 +277,7 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase extends Te
         ApplicationFactory applicationFactory = (ApplicationFactory) FactoryFinder
                 .getFactory(FactoryFinder.APPLICATION_FACTORY);
         application = applicationFactory.getApplication();
+        ((MockFacesContext) facesContext).setApplication(application);
     }
 
     /**
@@ -317,7 +293,7 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase extends Te
                 .getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         renderKit = new MockRenderKit();
         renderKitFactory.addRenderKit(RenderKitFactory.HTML_BASIC_RENDER_KIT,
-            renderKit);
+                renderKit);
     }
 
     /**
@@ -356,22 +332,6 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase extends Te
             threadContextClassLoader = null;
             classLoaderSet = false;
         }
-    }
-
-    
-    /**
-     * This method ends the current request.
-     */
-    public void tearDownRequest()
-    {
-        externalContext = null;
-        if (facesContext != null)
-        {
-            facesContext.release();
-        }
-        facesContext = null;
-        request = null;
-        response = null;
     }
 
     // ------------------------------------------------------ Instance Variables

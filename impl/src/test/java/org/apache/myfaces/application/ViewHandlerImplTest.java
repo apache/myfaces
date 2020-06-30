@@ -35,7 +35,7 @@ import javax.faces.view.ViewMetadata;
 
 import org.junit.Assert;
 
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;

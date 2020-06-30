@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.context.servlet;
 
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

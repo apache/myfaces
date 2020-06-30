@@ -37,7 +37,7 @@ import javax.faces.context.FacesContext;
 import org.junit.Assert;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.easymock.classextension.EasyMock;
 import org.junit.Test;

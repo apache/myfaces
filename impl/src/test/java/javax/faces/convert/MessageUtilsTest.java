@@ -22,7 +22,7 @@ import javax.el.ValueExpression;
 import javax.faces.component.html.HtmlInputText;
 import org.apache.myfaces.core.api.shared.MessageUtils;
 
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.junit.Assert;
 

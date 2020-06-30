@@ -34,7 +34,7 @@ import javax.faces.component.behavior.FacesBehavior;
 
 import org.apache.myfaces.component.ComponentResourceContainer;
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.junit.Assert;
 import org.junit.Test;

@@ -21,7 +21,7 @@ package org.apache.myfaces.util;
 import org.apache.myfaces.util.CommentUtils;
 import java.io.IOException;
 
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Test;
 
 public class CommentUtilsTest extends AbstractJsfTestCase

@@ -26,7 +26,7 @@ import java.util.Map;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.StateManager;
 
-import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMultipleRequestsTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMultipleRequestsTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 

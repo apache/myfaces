@@ -24,7 +24,7 @@ import java.util.List;
 
 import javax.el.ValueExpression;
 
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.junit.Assert;
 

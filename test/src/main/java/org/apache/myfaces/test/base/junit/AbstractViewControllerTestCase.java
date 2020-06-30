@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.myfaces.test.base.junit4;
+package org.apache.myfaces.test.base.junit;
 
 import java.util.Iterator;
 

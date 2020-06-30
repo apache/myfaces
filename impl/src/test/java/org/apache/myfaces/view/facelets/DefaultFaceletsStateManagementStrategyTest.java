@@ -46,7 +46,7 @@ import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
-import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.view.ViewMetadataBase;
 import org.junit.Assert;

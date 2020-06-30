@@ -20,7 +20,7 @@ package org.apache.myfaces.application;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 

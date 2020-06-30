@@ -17,33 +17,31 @@
  * under the License.
  */
 
-package org.apache.myfaces.test.base.junit4;
+package org.apache.myfaces.test.base.junit;
 
 import java.net.URL;
 import java.net.URLClassLoader;
 
 import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.FacesContextFactory;
-import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import junit.framework.TestCase;
 
 import org.apache.myfaces.test.config.ResourceBundleVarNames;
+import org.apache.myfaces.test.mock.MockApplication;
 import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.test.mock.MockFacesContext;
+import org.apache.myfaces.test.mock.MockFacesContextFactory;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.apache.myfaces.test.mock.MockHttpServletResponse;
 import org.apache.myfaces.test.mock.MockHttpSession;
 import org.apache.myfaces.test.mock.MockRenderKit;
 import org.apache.myfaces.test.mock.MockServletConfig;
 import org.apache.myfaces.test.mock.MockServletContext;
+import org.apache.myfaces.test.mock.lifecycle.MockLifecycle;
+import org.apache.myfaces.test.mock.lifecycle.MockLifecycleFactory;
 import org.junit.After;
 import org.junit.Before;
 
@@ -53,11 +51,11 @@ import org.junit.Before;
  * protected variables are initialized in the <code>setUp()</code> method, and
  * cleaned up in the <code>tearDown()</code> method:</p>
  * <ul>
- * <li><code>application</code> (<code>Application</code>)</li>
+ * <li><code>application</code> (<code>MockApplication</code>)</li>
  * <li><code>config</code> (<code>MockServletConfig</code>)</li>
- * <li><code>externalContext</code> (<code>ExternalContext</code>)</li>
- * <li><code>facesContext</code> (<code>FacesContext</code>)</li>
- * <li><code>lifecycle</code> (<code>Lifecycle</code>)</li>
+ * <li><code>externalContext</code> (<code>MockExternalContext</code>)</li>
+ * <li><code>facesContext</code> (<code>MockFacesContext</code>)</li>
+ * <li><code>lifecycle</code> (<code>MockLifecycle</code>)</li>
  * <li><code>request</code> (<code>MockHttpServletRequest</code></li>
  * <li><code>response</code> (<code>MockHttpServletResponse</code>)</li>
  * <li><code>servletContext</code> (<code>MockServletContext</code>)</li>
@@ -67,7 +65,7 @@ import org.junit.Before;
  * <p>In addition, appropriate factory classes will have been registered with
  * <code>javax.faces.FactoryFinder</code> for <code>Application</code> and
  * <code>RenderKit</code> instances.  The created <code>FacesContext</code>
- * instance will also have been registered in the proper thread local
+ * instance will also have been registered in the apppriate thread local
  * variable, to simulate what a servlet container would do.</p>
  *
  * <p><strong>WARNING</strong> - If you choose to subclass this class, be sure
@@ -79,7 +77,7 @@ import org.junit.Before;
  * @since 1.0.0
  */
 
-public abstract class AbstractJsfConfigurableMockTestCase extends TestCase
+public abstract class AbstractJsfTestCase extends TestCase
 {
 
     // ------------------------------------------------------------ Constructors
@@ -87,7 +85,7 @@ public abstract class AbstractJsfConfigurableMockTestCase extends TestCase
     /**
      * <p>Construct a new instance of this test case.</p>
      */
-    public AbstractJsfConfigurableMockTestCase()
+    public AbstractJsfTestCase()
     {
     }
 
@@ -95,10 +93,12 @@ public abstract class AbstractJsfConfigurableMockTestCase extends TestCase
 
     /**
      * <p>Set up instance variables required by this test case.</p>
+     * 
      */
     @Before
     public void setUp() throws Exception
     {
+
         // Set up a new thread context class loader
         setUpClassloader();
 
@@ -112,7 +112,7 @@ public abstract class AbstractJsfConfigurableMockTestCase extends TestCase
 
         setUpJSFObjects();
     }
-    
+
     /**
      * Set up the thread context classloader. JSF uses the this classloader
      * in order to find related factory classes and other resources, but in
@@ -224,9 +224,9 @@ public abstract class AbstractJsfConfigurableMockTestCase extends TestCase
      */
     protected void setUpLifecycle() throws Exception
     {
-        lifecycleFactory = (LifecycleFactory) FactoryFinder
+        lifecycleFactory = (MockLifecycleFactory) FactoryFinder
                 .getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-        lifecycle = lifecycleFactory
+        lifecycle = (MockLifecycle) lifecycleFactory
                 .getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
     }
 
@@ -241,13 +241,14 @@ public abstract class AbstractJsfConfigurableMockTestCase extends TestCase
      */
     protected void setUpFacesContext() throws Exception
     {
-        facesContextFactory = (FacesContextFactory) FactoryFinder
+        facesContextFactory = (MockFacesContextFactory) FactoryFinder
                 .getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-        facesContext = (FacesContext) facesContextFactory.getFacesContext(
+        facesContext = (MockFacesContext) facesContextFactory.getFacesContext(
                 servletContext, request, response, lifecycle);
         if (facesContext.getExternalContext() != null)
         {
-            externalContext = facesContext.getExternalContext();
+            externalContext = (MockExternalContext) facesContext
+                    .getExternalContext();
         }
     }
 
@@ -276,8 +277,8 @@ public abstract class AbstractJsfConfigurableMockTestCase extends TestCase
     {
         ApplicationFactory applicationFactory = (ApplicationFactory) FactoryFinder
                 .getFactory(FactoryFinder.APPLICATION_FACTORY);
-        application = applicationFactory.getApplication();
-        ((MockFacesContext) facesContext).setApplication(application);
+        application = (MockApplication) applicationFactory.getApplication();
+        facesContext.setApplication(application);
     }
 
     /**
@@ -322,6 +323,7 @@ public abstract class AbstractJsfConfigurableMockTestCase extends TestCase
         ResourceBundleVarNames.resetNames();
 
         tearDownClassloader();
+
     }
     
     protected void tearDownClassloader() throws Exception
@@ -337,14 +339,14 @@ public abstract class AbstractJsfConfigurableMockTestCase extends TestCase
     // ------------------------------------------------------ Instance Variables
 
     // Mock object instances for our tests
-    protected Application application = null;
+    protected MockApplication application = null;
     protected MockServletConfig config = null;
-    protected ExternalContext externalContext = null;
-    protected FacesContext facesContext = null;
-    protected FacesContextFactory facesContextFactory = null;
-    protected Lifecycle lifecycle = null;
-    protected LifecycleFactory lifecycleFactory = null;
-    protected RenderKit renderKit = null;
+    protected MockExternalContext externalContext = null;
+    protected MockFacesContext facesContext = null;
+    protected MockFacesContextFactory facesContextFactory = null;
+    protected MockLifecycle lifecycle = null;
+    protected MockLifecycleFactory lifecycleFactory = null;
+    protected MockRenderKit renderKit = null;
     protected MockHttpServletRequest request = null;
     protected MockHttpServletResponse response = null;
     protected MockServletContext servletContext = null;
