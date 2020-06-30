@@ -87,19 +87,6 @@
             <artifactId>junit</artifactId>
             <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.cargo</groupId>
-            <artifactId>cargo-core-uberjar</artifactId>
-            <version>0.8</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.cargo</groupId>
-            <artifactId>cargo-ant</artifactId>
-            <version>0.8</version>
-            <optional>true</optional>
-        </dependency>
     </dependencies>
 
     <build>
@@ -117,7 +104,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <profiles>
         <profile>
             <id>generate-assembly</id>
@@ -143,6 +130,6 @@
                 </plugins>
             </build>
         </profile>
-    </profiles>   
+    </profiles>
 
 </project>
