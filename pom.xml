@@ -31,7 +31,7 @@
     <packaging>pom</packaging>
     <name>Apache MyFaces Core 2.3-next</name>
     <description>
-        This project is the home of the MyFaces implementation of the JavaServer Faces 3.0 specification, and
+        This project is the home of the MyFaces implementation of the JavaServer Faces 2.3 specification, and
         consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
     <version>2.3-next-SNAPSHOT</version>
