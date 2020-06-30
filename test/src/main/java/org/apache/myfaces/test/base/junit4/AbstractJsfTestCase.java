@@ -27,6 +27,7 @@ import javax.faces.application.ApplicationFactory;
 import javax.faces.component.UIViewRoot;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.render.RenderKitFactory;
+import junit.framework.TestCase;
 
 import org.apache.myfaces.test.config.ResourceBundleVarNames;
 import org.apache.myfaces.test.mock.MockApplication;
@@ -76,7 +77,7 @@ import org.junit.Before;
  * @since 1.0.0
  */
 
-public abstract class AbstractJsfTestCase
+public abstract class AbstractJsfTestCase extends TestCase
 {
 
     // ------------------------------------------------------------ Constructors

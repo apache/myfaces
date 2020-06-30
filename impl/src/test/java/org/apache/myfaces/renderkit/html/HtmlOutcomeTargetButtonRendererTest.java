@@ -31,9 +31,10 @@ import junit.framework.TestSuite;
 import org.apache.myfaces.application.NavigationHandlerImpl;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Assert;
 
 /**
  * Tests for HtmlOutcomeTargetButtonRenderer.
@@ -47,17 +48,7 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
     private MockResponseWriter writer;
     private HtmlOutcomeTargetButton outcomeTargetButton;
     private HtmlForm form;
-    
-    public HtmlOutcomeTargetButtonRendererTest(String name) 
-    {
-        super(name);
-    }
-    
-    public static Test suite() 
-    {
-        return new TestSuite(HtmlOutcomeTargetButtonRendererTest.class);
-    }
-    
+
     public void setUp() throws Exception 
     {
         super.setUp();
@@ -99,12 +90,12 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
         {
             outcomeTargetButton.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            assertTrue(output.matches(".+id=\".+\".+"));
-            assertTrue(output.matches(".+name=\".+\".+"));
+            Assert.assertTrue(output.matches(".+id=\".+\".+"));
+            Assert.assertTrue(output.matches(".+name=\".+\".+"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
         
     }
@@ -127,8 +118,8 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
         String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
         
         // make sure the parameters are rendered
-        assertTrue(output.contains("param1=value1"));
-        assertTrue(output.contains("param2=value2"));
+        Assert.assertTrue(output.contains("param1=value1"));
+        Assert.assertTrue(output.contains("param2=value2"));
     }
     
     /**
@@ -148,7 +139,7 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
         String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
         
         // make sure the fragment is rendered
-        assertTrue(output.contains("param1=value1#" + fragment));
+        Assert.assertTrue(output.contains("param1=value1#" + fragment));
     }
     
     /**
@@ -167,11 +158,11 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
         {
             outcomeTargetButton.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            assertTrue(output.contains("myParameter=myValue"));
+            Assert.assertTrue(output.contains("myParameter=myValue"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
     
@@ -191,11 +182,11 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
         {
             outcomeTargetButton.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            assertFalse(output.contains("myNullParameter"));
+            Assert.assertFalse(output.contains("myNullParameter"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
     
@@ -211,12 +202,12 @@ public class HtmlOutcomeTargetButtonRendererTest extends AbstractJsfTestCase
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
             
             // Assertions
-            assertFalse(output.contains(HTML.ONCLICK_ATTR)); // the output must not contain onclick 
-            assertTrue(output.contains(HTML.DISABLED_ATTR)); // the ouput must contain disabled
+            Assert.assertFalse(output.contains(HTML.ONCLICK_ATTR)); // the output must not contain onclick 
+            Assert.assertTrue(output.contains(HTML.DISABLED_ATTR)); // the ouput must contain disabled
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
         
     }

@@ -49,7 +49,7 @@ public class GlobalPostAddToViewEventTestCase extends AbstractJsfConfigurableMoc
     }
 
     @Test
-    public void postAddToViewSourceNull() throws Exception
+    public void testPostAddToViewSourceNull() throws Exception
     {
         ApplicationImplEventManager eventManager = new ApplicationImplEventManager();
         
@@ -61,7 +61,7 @@ public class GlobalPostAddToViewEventTestCase extends AbstractJsfConfigurableMoc
     }
     
     @Test
-    public void postAddToViewSourceSuperClass() throws Exception
+    public void testPostAddToViewSourceSuperClass() throws Exception
     {
         ApplicationImplEventManager eventManager = new ApplicationImplEventManager();
         
@@ -73,7 +73,7 @@ public class GlobalPostAddToViewEventTestCase extends AbstractJsfConfigurableMoc
     }
     
     @Test
-    public void postAddToViewSourceDirect() throws Exception
+    public void testPostAddToViewSourceDirect() throws Exception
     {
         ApplicationImplEventManager eventManager = new ApplicationImplEventManager();
         
@@ -85,7 +85,7 @@ public class GlobalPostAddToViewEventTestCase extends AbstractJsfConfigurableMoc
     }
     
     @Test
-    public void postAddToViewSourceUnmatching() throws Exception
+    public void testPostAddToViewSourceUnmatching() throws Exception
     {
         ApplicationImplEventManager eventManager = new ApplicationImplEventManager();
         

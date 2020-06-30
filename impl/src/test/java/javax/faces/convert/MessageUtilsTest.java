@@ -22,25 +22,21 @@ import javax.el.ValueExpression;
 import javax.faces.component.html.HtmlInputText;
 import org.apache.myfaces.core.api.shared.MessageUtils;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
+import org.junit.Assert;
 
 public class MessageUtilsTest extends AbstractJsfTestCase
 {
 
-    public MessageUtilsTest(String name)
-    {
-        super(name);
-    }
-
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         super.tearDown();
     }
@@ -50,7 +46,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
         HtmlInputText inputText = new HtmlInputText();
         inputText.getAttributes().put("label", "testLabel");
         Object label = MessageUtils.getLabel(facesContext, inputText);
-        assertEquals("testLabel", label);
+        Assert.assertEquals("testLabel", label);
     }
 
     public void testGetLabelFromValueExpression()
@@ -61,7 +57,7 @@ public class MessageUtilsTest extends AbstractJsfTestCase
         inputText.setValueExpression("label", expression);
 
         Object label = MessageUtils.getLabel(facesContext, inputText);
-        assertEquals("testLabel", label);
+        Assert.assertEquals("testLabel", label);
     }
 
     public void testGetLabelReturnsClientIdWhenLabelIsNotSpecified()
@@ -69,6 +65,6 @@ public class MessageUtilsTest extends AbstractJsfTestCase
         HtmlInputText inputText = new HtmlInputText();
         inputText.setId("testId");
         Object label = MessageUtils.getLabel(facesContext, inputText);
-        assertEquals("testId", label);
+        Assert.assertEquals("testId", label);
     }
 }

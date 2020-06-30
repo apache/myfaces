@@ -25,8 +25,9 @@ import javax.el.MethodExpression;
 import javax.el.MethodNotFoundException;
 import javax.faces.component.UICommand;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.easymock.classextension.EasyMock;
+import org.junit.Assert;
 
 /**
  * Tests for {@link MethodExpressionActionListener}
@@ -41,12 +42,8 @@ public class MethodExpressionActionListenerTest extends AbstractJsfTestCase
     private ActionEvent actionEvent;
     private Object[] paramsWithActionEvent;
 
-    public MethodExpressionActionListenerTest(String name) 
-    {
-        super(name);
-    }
-
-    protected void setUp() throws Exception 
+    @Override
+    public void setUp() throws Exception 
     {
         super.setUp();
         uiComponent = new UICommand();
@@ -60,7 +57,8 @@ public class MethodExpressionActionListenerTest extends AbstractJsfTestCase
         methodExpressionZeroArg = EasyMock.createNiceMock(MethodExpression.class);
     }
 
-    protected void tearDown() throws Exception 
+    @Override
+    public void tearDown() throws Exception 
     {
         uiComponent = null;
         actionEvent = null;
@@ -135,7 +133,7 @@ public class MethodExpressionActionListenerTest extends AbstractJsfTestCase
     {
         methodExpressionActionListener = new MethodExpressionActionListener(methodExpressionOneArg, methodExpressionZeroArg);
         Object[] expectedState = new Object [] {methodExpressionOneArg, methodExpressionZeroArg};
-        assertTrue("Both MethodExpression instances described in the constructor must be saved.", 
+        Assert.assertTrue("Both MethodExpression instances described in the constructor must be saved.", 
                 Arrays.deepEquals(expectedState, (Object[]) methodExpressionActionListener.saveState(facesContext)));
     }
 
@@ -150,11 +148,11 @@ public class MethodExpressionActionListenerTest extends AbstractJsfTestCase
         // Test if the instance variables are set to the right values via reflection
         Field oneArgField = MethodExpressionActionListener.class.getDeclaredField("methodExpressionOneArg");
         oneArgField.setAccessible(true);
-        assertEquals(methodExpressionOneArg, oneArgField.get(methodExpressionActionListener));
+        Assert.assertEquals(methodExpressionOneArg, oneArgField.get(methodExpressionActionListener));
         
         Field zeroArgField = MethodExpressionActionListener.class.getDeclaredField("methodExpressionZeroArg");
         zeroArgField.setAccessible(true);
-        assertEquals(methodExpressionZeroArg, zeroArgField.get(methodExpressionActionListener));
+        Assert.assertEquals(methodExpressionZeroArg, zeroArgField.get(methodExpressionActionListener));
     }
 
 }

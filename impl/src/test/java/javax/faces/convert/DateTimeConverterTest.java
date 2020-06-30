@@ -27,24 +27,16 @@ import java.util.TimeZone;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.junit.Assert;
 
 public class DateTimeConverterTest extends AbstractJsfTestCase
 {
     private DateTimeConverter mock;
 
-    public static void main(String[] args)
-    {
-        junit.textui.TestRunner.run(DateTimeConverterTest.class);
-    }
-
-    public DateTimeConverterTest(String name)
-    {
-        super(name);
-    }
 
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
 
@@ -55,7 +47,7 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         super.tearDown();
 
@@ -77,7 +69,7 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
         {
             mock.getAsObject(FacesContext.getCurrentInstance(), input, "15/15/15");
 
-            assertTrue("this date should not be parsable - and it is, so this is wrong.", false);
+            Assert.assertTrue("this date should not be parsable - and it is, so this is wrong.", false);
         }
         catch (ConverterException e)
         {
@@ -94,18 +86,18 @@ public class DateTimeConverterTest extends AbstractJsfTestCase
 
             String str = format.format(date);
 
-            assertEquals("12/01/01", str);
+            Assert.assertEquals("12/01/01", str);
 
             format = new SimpleDateFormat("MM/dd/yyyy");
             format.setTimeZone(TimeZone.getDefault());
 
             str = format.format(date);
 
-            assertEquals("12/01/0001", str);
+            Assert.assertEquals("12/01/0001", str);
         }
         catch (ConverterException e)
         {
-            assertTrue("this date should not be parsable - and it is, so this is wrong.", false);
+            Assert.assertTrue("this date should not be parsable - and it is, so this is wrong.", false);
         }
     }
 }

@@ -21,6 +21,7 @@ package org.apache.myfaces.config;
 
 import java.net.URL;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.junit.Assert;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -47,12 +48,20 @@ public class ConfigFilesXmlValidationUtilsTestCase extends AbstractJsfTestCase
             url , externalContext, ConfigFilesXmlValidationUtils.getFacesConfigVersion(url));
     }    
     
-    @Test(expected = SAXException.class)
+    @Test
     public void testJSFInvalidConfig1() throws Exception
     {
-        URL url = getClass().getResource("invalid-config_1.xml");
-        ConfigFilesXmlValidationUtils.validateFacesConfigFile(
-            url , externalContext, ConfigFilesXmlValidationUtils.getFacesConfigVersion(url));
+        try
+        {
+            URL url = getClass().getResource("invalid-config_1.xml");
+            ConfigFilesXmlValidationUtils.validateFacesConfigFile(
+                url , externalContext, ConfigFilesXmlValidationUtils.getFacesConfigVersion(url));
+            Assert.fail();
+        }
+        catch (SAXException e)
+        {
+            // expected
+        }
     }
     
 	/*

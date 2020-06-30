@@ -21,13 +21,13 @@ package javax.faces.component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.faces.context.FacesContext;
 
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 
 import org.apache.myfaces.dummy.data.Data;
 import org.jmock.Mock;
+import org.junit.Assert;
 
 public class InvokeOnComponentTest extends AbstractComponentTest
 {
@@ -35,13 +35,8 @@ public class InvokeOnComponentTest extends AbstractComponentTest
     Mock mock = null;
     ContextCallback cc = null;
 
-    public InvokeOnComponentTest(String arg0)
-    {
-        super(arg0);
-    }
-
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
         mock = mock(ContextCallback.class);
@@ -49,7 +44,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         // mock.verify();
         cc = null;
@@ -70,7 +65,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
             val.set(true);
         });
         
-        assertTrue(val.get());
+        Assert.assertTrue(val.get());
     }
     
     public void testInvokeOnFormPrependIdFalse() throws Exception
@@ -86,7 +81,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
             val.set(true);
         });
         
-        assertTrue(val.get());
+        Assert.assertTrue(val.get());
     }
     
     public void testInvokeOnFormPrependIdChild() throws Exception
@@ -107,7 +102,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
             val.set(true);
         });
         
-        assertTrue(val.get());
+        Assert.assertTrue(val.get());
     }
     
     public void testInvokeOnFormPrependIdFalseChild() throws Exception
@@ -128,7 +123,7 @@ public class InvokeOnComponentTest extends AbstractComponentTest
             val.set(true);
         });
         
-        assertTrue(val.get());
+        Assert.assertTrue(val.get());
     }
     
     public void atestInvokeOnComp() throws Exception

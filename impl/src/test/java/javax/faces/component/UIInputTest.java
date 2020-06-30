@@ -45,9 +45,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.test.mock.MockRenderedValueExpression;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.apache.myfaces.test.mock.visit.MockVisitCallback;
+import org.junit.Assert;
 
 public class UIInputTest extends AbstractJsfTestCase
 {
@@ -56,13 +57,8 @@ public class UIInputTest extends AbstractJsfTestCase
     private Validator mockValidator;
     private UIInput input;
 
-    public UIInputTest(String name)
-    {
-        super(name);
-    }
-
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
         input = new UIInput();
@@ -72,7 +68,7 @@ public class UIInputTest extends AbstractJsfTestCase
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         super.tearDown();
         input = null;
@@ -110,12 +106,12 @@ public class UIInputTest extends AbstractJsfTestCase
         input.validate(facesContext);
         verify(mockConverter);
 
-        assertFalse(input.isValid());
-        assertNotNull(facesContext.getMessages("testId"));
+        Assert.assertFalse(input.isValid());
+        Assert.assertNotNull(facesContext.getMessages("testId"));
 
         FacesMessage message = (FacesMessage) facesContext.getMessages("testId").next();
-        assertEquals(message.getDetail(), "Cannot convert");
-        assertEquals(message.getSummary(), "Cannot convert");
+        Assert.assertEquals(message.getDetail(), "Cannot convert");
+        Assert.assertEquals(message.getSummary(), "Cannot convert");
     }
 
     public void testWhenSpecifiedValidatorMessageIsUsedInCaseValidatorExceptionOccurs()
@@ -130,12 +126,12 @@ public class UIInputTest extends AbstractJsfTestCase
         input.validateValue(facesContext, "xxx");
         verify(mockValidator);
 
-        assertFalse(input.isValid());
-        assertNotNull(facesContext.getMessages("testId"));
+        Assert.assertFalse(input.isValid());
+        Assert.assertNotNull(facesContext.getMessages("testId"));
 
         FacesMessage message = (FacesMessage) facesContext.getMessages("testId").next();
-        assertEquals(message.getDetail(), "Cannot validate");
-        assertEquals(message.getSummary(), "Cannot validate");
+        Assert.assertEquals(message.getDetail(), "Cannot validate");
+        Assert.assertEquals(message.getSummary(), "Cannot validate");
     }
 
     public void testUpdateModelSetsTheLocalValueToModelValue()
@@ -148,7 +144,7 @@ public class UIInputTest extends AbstractJsfTestCase
         input.updateModel(facesContext);
 
         String updatedValue = expression.getValue(facesContext.getELContext()).toString();
-        assertEquals("testValue", updatedValue);
+        Assert.assertEquals("testValue", updatedValue);
     }
 
     public void testValidateWithEmptyStringWithEmptyStringAsNullEnabled()
@@ -169,7 +165,7 @@ public class UIInputTest extends AbstractJsfTestCase
                         throws ValidatorException
                 {
                     // the value must be null
-                    assertNull(value);
+                    Assert.assertNull(value);
                 }
 
                 
@@ -178,7 +174,7 @@ public class UIInputTest extends AbstractJsfTestCase
             input.setSubmittedValue("");
             input.validate(facesContext);
 
-            assertEquals(null, input.getSubmittedValue());
+            Assert.assertEquals(null, input.getSubmittedValue());
         }
         finally
         {
@@ -203,7 +199,7 @@ public class UIInputTest extends AbstractJsfTestCase
                         throws ValidatorException
                 {
                     // the value must not be null
-                    assertNotNull(value);
+                    Assert.assertNotNull(value);
                     
                     // throw Exception to ensure this was called
                     throw new RuntimeException();
@@ -228,7 +224,7 @@ public class UIInputTest extends AbstractJsfTestCase
             {
                 input.validate(facesContext);
                 
-                fail(); // validate() was not called --> fail!
+                Assert.fail(); // validate() was not called --> fail!
             }
             catch (RuntimeException e)
             {
@@ -253,8 +249,8 @@ public class UIInputTest extends AbstractJsfTestCase
             input.setSubmittedValue("asd");
             input.validate(facesContext);
 
-            assertEquals(null, input.getSubmittedValue());
-            assertEquals("asd", input.getValue());
+            Assert.assertEquals(null, input.getSubmittedValue());
+            Assert.assertEquals("asd", input.getValue());
         }
         finally
         {
@@ -274,7 +270,7 @@ public class UIInputTest extends AbstractJsfTestCase
             input.setSubmittedValue("");
             input.validate(facesContext);
 
-            assertEquals("", input.getValue());
+            Assert.assertEquals("", input.getValue());
         }
         finally
         {
@@ -294,7 +290,7 @@ public class UIInputTest extends AbstractJsfTestCase
             input.setSubmittedValue("");
             input.validate(facesContext);
 
-            assertEquals("", input.getValue());
+            Assert.assertEquals("", input.getValue());
         }
         finally
         {
@@ -314,9 +310,9 @@ public class UIInputTest extends AbstractJsfTestCase
         
         input.setSubmittedValue("123");
         
-        assertFalse(facesContext.isValidationFailed());
+        Assert.assertFalse(facesContext.isValidationFailed());
         input.processValidators(facesContext);
-        assertTrue(facesContext.isValidationFailed());
+        Assert.assertTrue(facesContext.isValidationFailed());
     }
 
     static public class InitParameterMockExternalContext extends org.apache.myfaces.test.mock.MockExternalContext {
@@ -346,7 +342,7 @@ public class UIInputTest extends AbstractJsfTestCase
         
         input.processDecodes(facesContext);
         
-        assertEquals("processDecodes must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        Assert.assertEquals("processDecodes must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
         
     }
     
@@ -357,7 +353,7 @@ public class UIInputTest extends AbstractJsfTestCase
         
         input.processDecodes(facesContext);
         
-        assertEquals("processDecodes must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        Assert.assertEquals("processDecodes must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
     }
     
     public void testProcessValidatorsRenderedFalse() throws Exception {
@@ -366,7 +362,7 @@ public class UIInputTest extends AbstractJsfTestCase
         
         input.processValidators(facesContext);
         
-        assertEquals("processValidators must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        Assert.assertEquals("processValidators must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
         
     }
     
@@ -377,7 +373,7 @@ public class UIInputTest extends AbstractJsfTestCase
         
         input.processValidators(facesContext);
         
-        assertEquals("processValidators must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        Assert.assertEquals("processValidators must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
     }
     
     
@@ -387,7 +383,7 @@ public class UIInputTest extends AbstractJsfTestCase
         
         input.processUpdates(facesContext);
         
-        assertEquals("processValidators must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        Assert.assertEquals("processValidators must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
         
     }
     
@@ -398,7 +394,7 @@ public class UIInputTest extends AbstractJsfTestCase
         
         input.processUpdates(facesContext);
         
-        assertEquals("processValidators must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        Assert.assertEquals("processValidators must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
     }
     
     public void testVisitTree() throws Exception {
@@ -408,29 +404,29 @@ public class UIInputTest extends AbstractJsfTestCase
         MockVisitCallback mockVisitCallback = new MockVisitCallback();
         input.visitTree(visitContext, mockVisitCallback);
         
-        assertEquals("visitTree must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
+        Assert.assertEquals("visitTree must not change currentComponent", parent, UIComponent.getCurrentComponent(facesContext));
     }
     
     /** Verifies no call to encode* and process* methods */
     public class VerifyNoLifecycleMethodComponent extends UIInput
     {
         public void decode(FacesContext context) {
-            fail();
+            Assert.fail();
         }
         public void validate(FacesContext context) {
-            fail();
+            Assert.fail();
         }
         public void updateModel(FacesContext context) {
-            fail();
+            Assert.fail();
         }
         public void encodeBegin(FacesContext context) throws IOException {
-            fail();
+            Assert.fail();
         }
         public void encodeChildren(FacesContext context) throws IOException {
-            fail();
+            Assert.fail();
         }
         public void encodeEnd(FacesContext context) throws IOException {
-            fail();
+            Assert.fail();
         }
     }
     

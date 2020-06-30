@@ -28,9 +28,10 @@ import junit.framework.TestSuite;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Assert;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -40,15 +41,6 @@ public class HtmlImageRendererTest extends AbstractJsfTestCase
 {
     private MockResponseWriter writer ;
     private HtmlGraphicImage graphicImage;
-    
-    public HtmlImageRendererTest(String name)
-    {
-        super(name);
-    }
-    
-    public static Test suite() {
-        return new TestSuite(HtmlImageRendererTest.class);
-    }
 
     public void setUp() throws Exception
     {
@@ -87,7 +79,7 @@ public class HtmlImageRendererTest extends AbstractJsfTestCase
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        assertEquals("<img id=\"img1\" src=\"" + src + "\"/>", output);
+        Assert.assertEquals("<img id=\"img1\" src=\"" + src + "\"/>", output);
     }
 
     public void testHtmlPropertyPassTru() throws Exception
@@ -100,7 +92,7 @@ public class HtmlImageRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 graphicImage, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -114,7 +106,7 @@ public class HtmlImageRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 graphicImage, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -128,12 +120,12 @@ public class HtmlImageRendererTest extends AbstractJsfTestCase
         {
             graphicImage.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            assertTrue(output.matches(".+id=\".+\".+"));
-            assertTrue(output.matches(".+name=\".+\".+"));
+            Assert.assertTrue(output.matches(".+id=\".+\".+"));
+            Assert.assertTrue(output.matches(".+name=\".+\".+"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
         
     }

@@ -35,8 +35,9 @@ import javax.faces.model.SelectItem;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
+import org.junit.Assert;
 
 public class HtmlEscapeRendererTest extends AbstractJsfTestCase
 {
@@ -53,12 +54,7 @@ public class HtmlEscapeRendererTest extends AbstractJsfTestCase
     
     private static String TEST_STRING = "<b>Out&p&amp;ut&aacute;</b>";
     private static String TEST_STRING_ESCAPED = "&lt;b&gt;Out&amp;p&amp;amp;ut&amp;aacute;&lt;/b&gt;";
-    
-    public static Test suite()
-    {
-        return new TestSuite(HtmlEscapeRendererTest.class); // needed in maven
-    }
-    
+
     private HtmlOutputText outputText;
     private HtmlOutputLabel outputLabel;
     private HtmlSelectOneRadio selectOneRadio;
@@ -67,11 +63,6 @@ public class HtmlEscapeRendererTest extends AbstractJsfTestCase
     private HtmlSelectManyCheckbox selectManyCheckbox;
     private HtmlSelectManyListbox selectManyListbox;
     private HtmlSelectManyMenu selectManyMenu;
- 
-    public HtmlEscapeRendererTest(String name)
-    {
-        super(name);
-    }
 
     public void setUp() throws Exception
     {
@@ -147,7 +138,7 @@ public class HtmlEscapeRendererTest extends AbstractJsfTestCase
                 outputText.encodeEnd(facesContext);
                 facesContext.renderResponse();
                 String output = swriter.toString();
-                assertTrue(output.contains(TEST_STRING_ESCAPED));
+                Assert.assertTrue(output.contains(TEST_STRING_ESCAPED));
             }
         }
     }
@@ -167,7 +158,7 @@ public class HtmlEscapeRendererTest extends AbstractJsfTestCase
                 outputText.encodeEnd(facesContext);
                 facesContext.renderResponse();
                 String output = swriter.toString();
-                assertTrue(output.contains(TEST_STRING));
+                Assert.assertTrue(output.contains(TEST_STRING));
             }
         }
     }
@@ -189,7 +180,7 @@ public class HtmlEscapeRendererTest extends AbstractJsfTestCase
                 outputLabel.encodeAll(facesContext);
                 facesContext.renderResponse();
                 String output = swriter.toString();
-                assertTrue(output.contains(TEST_STRING_ESCAPED));
+                Assert.assertTrue(output.contains(TEST_STRING_ESCAPED));
             }
         }
     }
@@ -209,7 +200,7 @@ public class HtmlEscapeRendererTest extends AbstractJsfTestCase
                 outputLabel.encodeAll(facesContext);
                 facesContext.renderResponse();
                 String output = swriter.toString();
-                assertTrue(output.contains(TEST_STRING));
+                Assert.assertTrue(output.contains(TEST_STRING));
             }
         }
     }
@@ -242,7 +233,7 @@ public class HtmlEscapeRendererTest extends AbstractJsfTestCase
         component.encodeAll(facesContext);
         facesContext.renderResponse();
         String output = swriter.toString();
-        assertTrue(output.contains(TEST_STRING_ESCAPED));
+        Assert.assertTrue(output.contains(TEST_STRING_ESCAPED));
     }
     
     public void testUISelectNoEscapeValue() throws Exception
@@ -273,6 +264,6 @@ public class HtmlEscapeRendererTest extends AbstractJsfTestCase
         component.encodeAll(facesContext);
         facesContext.renderResponse();
         String output = swriter.toString();
-        assertTrue(output.contains(TEST_STRING));
+        Assert.assertTrue(output.contains(TEST_STRING));
     }
 }

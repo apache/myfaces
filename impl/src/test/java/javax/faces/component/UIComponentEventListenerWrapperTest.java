@@ -23,15 +23,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.render.Renderer;
+import org.junit.Assert;
 
 public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
 {
-
-    public UIComponentEventListenerWrapperTest(String arg0)
-    {
-        super(arg0);
-    }
-    
     public void testUIComponentListenerNormalState()
     {
         UIComponent component = new UIOutput();
@@ -41,7 +36,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
         
         //In this case state should not be null, because state should be saved fully
-        assertNotNull(state);
+        Assert.assertNotNull(state);
         
         EventListenerWrapper wrapper2 = new EventListenerWrapper();
         //For restore we need to setup the context first
@@ -49,8 +44,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
     public void testUIComponentListenerWithPSS()
@@ -63,7 +58,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
         
         //In this case state should be null
-        assertNull(state);
+        Assert.assertNull(state);
         
         EventListenerWrapper wrapper2 = new EventListenerWrapper(component, component);
         wrapper.markInitialState();
@@ -72,8 +67,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
     public void testUIComponentListenerWithPSSFull()
@@ -88,7 +83,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
 
         //In this case state should not be null, because state should be saved fully
-        assertNotNull(state);
+        Assert.assertNotNull(state);
         
         EventListenerWrapper wrapper2 = new EventListenerWrapper(component, component);
         wrapper.markInitialState();
@@ -97,8 +92,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
 
     public static class MyCustomRenderer extends Renderer implements ComponentSystemEventListener {
@@ -121,7 +116,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
 
         //In this case state should not be null, because state should be saved fully
-        assertNotNull(state);
+        Assert.assertNotNull(state);
 
         EventListenerWrapper wrapper2 = new EventListenerWrapper();
         //For restore we need to setup the context first
@@ -129,8 +124,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
     public void testRendererListenerWithPSS()
@@ -146,7 +141,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
 
         //In this case state should be null
-        assertNull(state);
+        Assert.assertNull(state);
         
         EventListenerWrapper wrapper2 = new EventListenerWrapper(component, renderer);
         wrapper.markInitialState();
@@ -155,8 +150,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
     public void testRendererListenerWithPSSFull()
@@ -174,7 +169,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
 
         //In this case state should not be null, because state should be saved fully
-        assertNotNull(state);
+        Assert.assertNotNull(state);
         
         EventListenerWrapper wrapper2 = new EventListenerWrapper(component, renderer);
         wrapper.markInitialState();
@@ -183,8 +178,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
     public static class MyNonSerializableListener implements ComponentSystemEventListener {
@@ -213,7 +208,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
         
         //In this case state should not be null, because state should be saved fully
-        assertNotNull(state);
+        Assert.assertNotNull(state);
         
         EventListenerWrapper wrapper2 = new EventListenerWrapper();
         //For restore we need to setup the context first
@@ -221,8 +216,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
     public void testNonSerializableListenerWithPSS()
@@ -236,7 +231,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
         
         //In this case state should be null
-        assertNull(state);
+        Assert.assertNull(state);
         
         EventListenerWrapper wrapper2 = new EventListenerWrapper(component, listener);
         wrapper.markInitialState();
@@ -245,8 +240,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
     public void testNonSerializableListenerWithPSSFull()
@@ -262,7 +257,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
 
         //In this case state should not be null, because state should be saved fully
-        assertNotNull(state);
+        Assert.assertNotNull(state);
         
         EventListenerWrapper wrapper2 = new EventListenerWrapper(component, listener);
         wrapper.markInitialState();
@@ -271,8 +266,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
 
     public static class MySerializableListener implements ComponentSystemEventListener {
@@ -301,7 +296,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
         
         //In this case state should not be null, because state should be saved fully
-        assertNotNull(state);
+        Assert.assertNotNull(state);
         
         EventListenerWrapper wrapper2 = new EventListenerWrapper();
         //For restore we need to setup the context first
@@ -309,8 +304,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
     public void testSerializableListenerWithPSS()
@@ -324,7 +319,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
         
         //In this case state should be null
-        assertNull(state);
+        Assert.assertNull(state);
         
         EventListenerWrapper wrapper2 = new EventListenerWrapper(component, listener);
         wrapper.markInitialState();
@@ -333,8 +328,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
     public void testSerializableListenerWithPSSFull()
@@ -350,7 +345,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
 
         //In this case state should not be null, because state should be saved fully
-        assertNotNull(state);
+        Assert.assertNotNull(state);
         
         EventListenerWrapper wrapper2 = new EventListenerWrapper(component, listener);
         wrapper.markInitialState();
@@ -359,8 +354,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
     public static class MyStateHolderListener implements ComponentSystemEventListener, StateHolder {
@@ -420,7 +415,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
         
         //In this case state should not be null, because state should be saved fully
-        assertNotNull(state);
+        Assert.assertNotNull(state);
         
         EventListenerWrapper wrapper2 = new EventListenerWrapper();
         //For restore we need to setup the context first
@@ -428,8 +423,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
     public void testStateHolderListenerWithPSS()
@@ -443,7 +438,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
         
         //In this case state should be not null, because it implements StateHolder
-        assertNotNull(state);
+        Assert.assertNotNull(state);
         
         MyStateHolderListener listener2 = new MyStateHolderListener();
         listener2.setI(2);
@@ -454,8 +449,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
     public void testStateHolderListenerWithPSSFull()
@@ -471,7 +466,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
 
         //In this case state should not be null, because state should be saved fully
-        assertNotNull(state);
+        Assert.assertNotNull(state);
         
         EventListenerWrapper wrapper2 = new EventListenerWrapper(component, listener);
         wrapper.markInitialState();
@@ -480,8 +475,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
     public static class MyPartialStateHolderListener implements ComponentSystemEventListener, PartialStateHolder {
@@ -572,7 +567,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
         
         //In this case state should not be null, because state should be saved fully
-        assertNotNull(state);
+        Assert.assertNotNull(state);
         
         EventListenerWrapper wrapper2 = new EventListenerWrapper();
         //For restore we need to setup the context first
@@ -580,8 +575,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
     public void testPartialStateHolderListenerWithPSS()
@@ -595,7 +590,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
         
         //In this case state should be null
-        assertNull(state);
+        Assert.assertNull(state);
         
         EventListenerWrapper wrapper2 = new EventListenerWrapper(component, listener);
         wrapper.markInitialState();
@@ -604,8 +599,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
 
     public void testPartialStateHolderListenerWithPSS2()
@@ -621,7 +616,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
         
         //In this case state should be not null, because something changed inside the listener
-        assertNotNull(state);
+        Assert.assertNotNull(state);
         
         EventListenerWrapper wrapper2 = new EventListenerWrapper(component, new MyPartialStateHolderListener());
         wrapper.markInitialState();
@@ -630,8 +625,8 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
     
     public void testPartialStateHolderListenerWithPSSFull()
@@ -647,7 +642,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         Object state = wrapper.saveState(facesContext);
 
         //In this case state should not be null, because state should be saved fully
-        assertNotNull(state);
+        Assert.assertNotNull(state);
         
         EventListenerWrapper wrapper2 = new EventListenerWrapper(component, listener);
         wrapper.markInitialState();
@@ -656,7 +651,7 @@ public class UIComponentEventListenerWrapperTest  extends AbstractComponentTest
         wrapper2.restoreState(facesContext, state);
         component.popComponentFromEL(facesContext);
         
-        assertNotNull(wrapper2.getComponentSystemEventListener());
-        assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
+        Assert.assertNotNull(wrapper2.getComponentSystemEventListener());
+        Assert.assertEquals(wrapper.getComponentSystemEventListener(), wrapper2.getComponentSystemEventListener());
     }
 }

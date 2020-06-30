@@ -21,7 +21,8 @@ import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.junit.Assert;
 
 /**
  * <code>HTMLEncoderTest</code> tests <code>org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder</code>.
@@ -42,19 +43,15 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
   private String stringBlanksEncoded = "&lt;Hello   this is MyFaces speaking!&gt";
 
   private StringWriter sw;
-  
-  public HTMLEncoderWriterTest(String name) {
-    super(name);
-  }
 
     @Override
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         sw = new StringWriter(40);
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         super.tearDown();
         sw = null;
     }
@@ -65,37 +62,37 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
    */
   public void testEncodeStringNoSpecialChars() throws Exception {
     HTMLEncoder.encode(sw, stringNoSpecialChars);
-    assertEquals(stringNoSpecialCharsEncoded, sw.toString());
+    Assert.assertEquals(stringNoSpecialCharsEncoded, sw.toString());
   }
 
   public void testEncodeStringSpecialChars1() throws Exception {
     HTMLEncoder.encode(sw, stringSpecialChars1);
-    assertEquals(stringSpecialChars1Encoded, sw.toString());
+      Assert.assertEquals(stringSpecialChars1Encoded, sw.toString());
   }
 
   public void testEncodeStringSpecialChars2() throws Exception {
     HTMLEncoder.encode(sw, stringSpecialChars2);
-    assertEquals(stringSpecialChars2Encoded, sw.toString());
+    Assert.assertEquals(stringSpecialChars2Encoded, sw.toString());
   }
 
   public void testEncodeStringLineBreak1() throws Exception {
     HTMLEncoder.encode(sw, stringLineBreak, true);
-    assertEquals(stringLineBreakEncoded1, sw.toString());
+    Assert.assertEquals(stringLineBreakEncoded1, sw.toString());
   }
 
   public void testEncodeStringLineBreak2() throws Exception {
     HTMLEncoder.encode(sw, stringLineBreak, false);
-    assertEquals(stringLineBreakEncoded2, sw.toString());
+    Assert.assertEquals(stringLineBreakEncoded2, sw.toString());
   }
 
   public void testEncodeStringEmpty() throws Exception {
     HTMLEncoder.encode(sw, "");
-    assertEquals("", sw.toString());
+    Assert.assertEquals("", sw.toString());
   }
 
   public void testEncodeStringNull() throws Exception {
     HTMLEncoder.encode(sw, null);
-    assertEquals("", sw.toString());
+    Assert.assertEquals("", sw.toString());
   }
 
   public void testEncodeArrayNoSpecialChars() throws Exception {
@@ -103,9 +100,9 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       CharArrayWriter writer = new CharArrayWriter();
       char[] source = stringNoSpecialChars.toCharArray();
       HTMLEncoder.encode(source, 0, source.length, writer);
-      assertEquals(stringNoSpecialCharsEncoded.toCharArray(), writer.toCharArray());
+      assertCharArrayEquals(stringNoSpecialCharsEncoded.toCharArray(), writer.toCharArray());
     } catch (IOException e) {
-      fail(e.getMessage());
+      Assert.fail(e.getMessage());
     }
   }
 
@@ -114,9 +111,9 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       CharArrayWriter writer = new CharArrayWriter();
       char[] source = stringNoSpecialChars.toCharArray();
       HTMLEncoder.encode(source, 3, source.length - 5, writer);
-      assertEquals(stringNoSpecialCharsEncodedPartial.toCharArray(), writer.toCharArray());
+      assertCharArrayEquals(stringNoSpecialCharsEncodedPartial.toCharArray(), writer.toCharArray());
     } catch (IOException e) {
-      fail(e.getMessage());
+      Assert.fail(e.getMessage());
     }
   }
 
@@ -125,9 +122,9 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       CharArrayWriter writer = new CharArrayWriter();
       char[] source = stringSpecialChars1.toCharArray();
       HTMLEncoder.encode(source, 0, source.length, writer);
-      assertEquals(stringSpecialChars1Encoded.toCharArray(), writer.toCharArray());
+      assertCharArrayEquals(stringSpecialChars1Encoded.toCharArray(), writer.toCharArray());
     } catch (IOException e) {
-      fail(e.getMessage());
+      Assert.fail(e.getMessage());
     }
   }
 
@@ -136,9 +133,9 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       CharArrayWriter writer = new CharArrayWriter();
       char[] source = stringSpecialChars2.toCharArray();
       HTMLEncoder.encode(source, 0, source.length, writer);
-      assertEquals(stringSpecialChars2Encoded.toCharArray(), writer.toCharArray());
+      assertCharArrayEquals(stringSpecialChars2Encoded.toCharArray(), writer.toCharArray());
     } catch (IOException e) {
-      fail(e.getMessage());
+      Assert.fail(e.getMessage());
     }
   }
 
@@ -146,9 +143,9 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
     try {
       CharArrayWriter writer = new CharArrayWriter();
       HTMLEncoder.encode(new char[]{}, 0, 1, writer);
-      assertEquals(new char[]{}, writer.toCharArray());
+      assertCharArrayEquals(new char[]{}, writer.toCharArray());
     } catch (IOException e) {
-      fail(e.getMessage());
+      Assert.fail(e.getMessage());
     }
   }
 
@@ -156,9 +153,9 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
     try {
       CharArrayWriter writer = new CharArrayWriter();
       HTMLEncoder.encode(null, 0, 0, writer);
-      assertEquals(new char[]{}, writer.toCharArray());
+      assertCharArrayEquals(new char[]{}, writer.toCharArray());
     } catch (IOException e) {
-      fail(e.getMessage());
+      Assert.fail(e.getMessage());
     }
   }
 
@@ -167,9 +164,9 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       CharArrayWriter writer = new CharArrayWriter();
       char[] source = stringSpecialChars2.toCharArray();
       HTMLEncoder.encode(source, 0, source.length - 100, writer);
-      assertEquals(new char[]{}, writer.toCharArray());
+      assertCharArrayEquals(new char[]{}, writer.toCharArray());
     } catch (IOException e) {
-      fail(e.getMessage());
+      Assert.fail(e.getMessage());
     }
   }
 
@@ -178,9 +175,9 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       CharArrayWriter writer = new CharArrayWriter();
       char[] source = stringSpecialChars2.toCharArray();
       HTMLEncoder.encode(source, -100, source.length, writer);
-      assertEquals(stringSpecialChars2Encoded.toCharArray(), writer.toCharArray());
+      assertCharArrayEquals(stringSpecialChars2Encoded.toCharArray(), writer.toCharArray());
     } catch (IOException e) {
-      fail(e.getMessage());
+      Assert.fail(e.getMessage());
     }
   }
 
@@ -189,9 +186,9 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       CharArrayWriter writer = new CharArrayWriter();
       char[] source = stringSpecialChars2.toCharArray();
       HTMLEncoder.encode(source, 100000, source.length, writer);
-      assertEquals(new char[]{}, writer.toCharArray());
+      assertCharArrayEquals(new char[]{}, writer.toCharArray());
     } catch (IOException e) {
-      fail(e.getMessage());
+      Assert.fail(e.getMessage());
     }
   }
 
@@ -200,9 +197,9 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       CharArrayWriter writer = new CharArrayWriter();
       char[] source = stringLineBreak.toCharArray();
       HTMLEncoder.encode(source, 0, source.length, true, writer);
-      assertEquals(stringLineBreakEncoded1.toCharArray(), writer.toCharArray());
+      assertCharArrayEquals(stringLineBreakEncoded1.toCharArray(), writer.toCharArray());
     } catch (IOException e) {
-      fail(e.getMessage());
+      Assert.fail(e.getMessage());
     }
   }
 
@@ -211,9 +208,9 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       CharArrayWriter writer = new CharArrayWriter();
       char[] source = stringLineBreak.toCharArray();
       HTMLEncoder.encode(source, 0, source.length, false, writer);
-      assertEquals(stringLineBreakEncoded2.toCharArray(), writer.toCharArray());
+      assertCharArrayEquals(stringLineBreakEncoded2.toCharArray(), writer.toCharArray());
     } catch (IOException e) {
-      fail(e.getMessage());
+      Assert.fail(e.getMessage());
     }
   }
 
@@ -222,9 +219,9 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       CharArrayWriter writer = new CharArrayWriter();
       char[] source = stringLineBreak.toCharArray();
       HTMLEncoder.encode(source, 0, source.length + 5, false, writer);
-      assertEquals(stringLineBreakEncoded2.toCharArray(), writer.toCharArray());
+      assertCharArrayEquals(stringLineBreakEncoded2.toCharArray(), writer.toCharArray());
     } catch (IOException e) {
-      fail(e.getMessage());
+      Assert.fail(e.getMessage());
     }
   }
 
@@ -234,28 +231,19 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       char[] source = stringLineBreak.toCharArray();
       HTMLEncoder.encode(source, 4, source.length - 5, writer);
       char[] expected = stringLineBreakEncoded2Partial.toCharArray();
-      assertEquals(expected, writer.toCharArray());
+      assertCharArrayEquals(expected, writer.toCharArray());
     } catch (IOException e) {
-      fail(e.getMessage());
+      Assert.fail(e.getMessage());
     }
   }
 
-  private void assertEquals(char[] expected, char[] actual) {
-    if ((expected == null ^ actual == null) || expected.length != actual.length) {
-      fail();
-    }
-    for (int i = 0; i < expected.length; i++) {
-      assertEquals(expected[i], actual[i]);
-    }
-  }
-  
-;  public void testSimpleWriteURIAttribute() throws Exception
+  public void testSimpleWriteURIAttribute() throws Exception
   {
       String cad1 = "http://myfaces.apache.org/hello.jsf?key1=val&key2=val2#id";
       String cad2 = "http://myfaces.apache.org/hello.jsf?key1=val&amp;key2=val2#id";
       HTMLEncoder.encodeURIAttribute(sw, cad1,"UTF-8");
       String cad3 = sw.toString();
-      assertEquals(cad2, cad3);      
+      Assert.assertEquals(cad2, cad3);      
   }
   
   public void testUsAsciiEscapedCharactersBeforeQuery() throws Exception
@@ -271,14 +259,14 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       String cad2 = "?key=%22%25%3C%3E%5C%60%7B%7C%7D%5E%0A%20";
       HTMLEncoder.encodeURIAttribute(sw, cad1,"UTF-8");
       String cad3 = sw.toString();
-      assertEquals(cad2, cad3);
+      Assert.assertEquals(cad2, cad3);
       
       String cad4 = "\"%<>\\`{|}^\n ";
       String cad5 = "%22%25%3C%3E%5C%60%7B%7C%7D%5E%0A%20";
       sw = new StringWriter();
       HTMLEncoder.encodeURIAttribute(sw, cad4,"UTF-8");
       String cad6 = sw.toString();
-      assertEquals(cad5, cad6);
+      Assert.assertEquals(cad5, cad6);
       
       
   }
@@ -292,7 +280,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       String cad2 = "%C3%BC";//"http://myfaces.apache.org/he%FCll%20o.jsf?key=val#id";
       HTMLEncoder.encodeURIAttribute(sw, cad1,"UTF-8");
       String cad3 = sw.toString();
-      assertEquals(cad2, cad3);
+      Assert.assertEquals(cad2, cad3);
 
   }
   
@@ -309,13 +297,13 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       String cad1 = "?key=:/[]@!$'()*+,;="; //Omit &
       HTMLEncoder.encodeURIAttribute(sw, cad1,"UTF-8");
       String cad2 = sw.toString();
-      assertEquals(cad1, cad2);
+      Assert.assertEquals(cad1, cad2);
       
       String cad7 = ":/[]@!$&'()*+,;=";
       sw = new StringWriter(40);
       HTMLEncoder.encodeURIAttribute(sw, cad7,"UTF-8");
       String cad8 = sw.toString();
-      assertEquals(cad7, cad8);
+      Assert.assertEquals(cad7, cad8);
   }
 
   public void testNonEncodedCharactersOnURIAttribute() throws Exception
@@ -327,19 +315,19 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       String cad1 = "?key=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
       HTMLEncoder.encodeURIAttribute(sw, cad1,"UTF-8");
       String cad2 = sw.toString();
-      assertEquals(cad1, cad2);
+      Assert.assertEquals(cad1, cad2);
       
       String cad3 = "#somefile?key=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
       sw = new StringWriter(40);
       HTMLEncoder.encodeURIAttribute(sw, cad3,"UTF-8");
       String cad4 = sw.toString();
-      assertEquals(cad3, cad4);
+      Assert.assertEquals(cad3, cad4);
       
       String cad5 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
       sw = new StringWriter(40);
       HTMLEncoder.encodeURIAttribute(sw, cad5,"UTF-8");
       String cad6 = sw.toString();
-      assertEquals(cad5, cad6);
+      Assert.assertEquals(cad5, cad6);
   }
 
   public void testWriteURIAttribute() throws Exception
@@ -358,7 +346,7 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
                      "%C2%AE%C2%AF%C2%B0%C2%B1%C3%BF%C4%80";
       HTMLEncoder.encodeURIAttribute(sw, cad11,"UTF-8");
       String cad13 = sw.toString();
-      assertEquals(cad12, cad13);
+      Assert.assertEquals(cad12, cad13);
       
       String cad1= "?key=" + new String(array11,"UTF-8")+((char)(0xFF))+((char)(0x100));
       String cad2 = "?key=%C2%A1%C2%A2%C2%A3%C2%A4%C2%A5%C2%A6%C2%A7%C2%A8%C2%A9%C2%AA%C2%AB%C2%AC%C2%AD"+
@@ -366,11 +354,19 @@ public class HTMLEncoderWriterTest extends AbstractJsfTestCase {
       sw = new StringWriter(40);
       HTMLEncoder.encodeURIAttribute(sw, cad1,"UTF-8");
       String cad3 = sw.toString();
-      assertEquals(cad2, cad3);
+      Assert.assertEquals(cad2, cad3);
             
       //String cad14 = "http://myfaces.apache.org/page.jsf?key="+((char)0xFF)+((char)0x100);
       //String cad15 = HTMLEncoder.encodeURIAttribute(cad14,false);
       //assertEquals(cad14,cad15);
   }
-    
+  
+  private void assertCharArrayEquals(char[] expected, char[] actual) {
+    if ((expected == null ^ actual == null) || expected.length != actual.length) {
+      Assert.fail();
+    }
+    for (int i = 0; i < expected.length; i++) {
+      assertEquals(expected[i], actual[i]);
+    }
+  } 
 }

@@ -25,11 +25,12 @@ import javax.faces.component.html.HtmlHead;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
+import org.junit.Assert;
 
 /**
  * @author Leonardo Uribe
@@ -39,15 +40,6 @@ public class HtmlHeadRendererTest extends AbstractJsfTestCase
 
     private MockResponseWriter writer ;
     private HtmlHead head;
-
-    public HtmlHeadRendererTest(String name)
-    {
-        super(name);
-    }
-    
-    public static Test suite() {
-        return new TestSuite(HtmlHeadRendererTest.class);
-    }
 
     public void setUp() throws Exception
     {
@@ -84,7 +76,7 @@ public class HtmlHeadRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 head, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
 }

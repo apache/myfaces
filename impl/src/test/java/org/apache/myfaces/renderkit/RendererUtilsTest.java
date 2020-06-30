@@ -37,7 +37,7 @@ import javax.faces.context.FacesContext;
 import org.junit.Assert;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.easymock.classextension.EasyMock;
 import org.junit.Test;
@@ -72,11 +72,7 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
 
     private UIPanel parent;
 
-	public RendererUtilsTest(String name) {
-		super(name);
-	}
-
-	protected void setUp() throws Exception {
+	public void setUp() throws Exception {
 		super.setUp();
 
 		writer = new MockResponseWriter(new StringWriter(), null, null);
@@ -103,7 +99,7 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
 		parent = new UIPanel();
 	}
 
-	protected void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		super.tearDown();
 	}
 
@@ -124,7 +120,7 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
 		String iconSrc = RendererUtils.getIconSrc(facesContext, graphicImage,
 				HTML.IMG_ELEM);
 
-		assertEquals(
+		Assert.assertEquals(
 				"If name or name/library present, source must be obtained from ResourceHandler",
 				requestPath, iconSrc);
 
@@ -141,8 +137,8 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
 		String iconSrc = RendererUtils.getIconSrc(facesContext, graphicImage,
 				                    HTML.IMG_ELEM);
 
-		assertEquals("RES_NOT_FOUND", iconSrc);
-		assertTrue("If resource is not found, a Message must be added",
+		Assert.assertEquals("RES_NOT_FOUND", iconSrc);
+		Assert.assertTrue("If resource is not found, a Message must be added",
 				facesContext.getMessages(graphicImage.getClientId(facesContext)).hasNext());
 
 	}
@@ -155,8 +151,8 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
         uiInput.setSubmittedValue(submittedValue);
         
         String stringValue = RendererUtils.getStringValue(facesContext, uiInput);
-        assertNotNull(stringValue);
-        assertEquals("If submittedvalue is not String, toString() must be used", submittedValue.toString(), stringValue);
+        Assert.assertNotNull(stringValue);
+        Assert.assertEquals("If submittedvalue is not String, toString() must be used", submittedValue.toString(), stringValue);
     }
 
     public void testGetConvertedUIOutputValue()
@@ -167,7 +163,7 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
         
         
         Object convertedUIOutputValue = RendererUtils.getConvertedUIOutputValue(facesContext, uiInput, submittedValue);
-        assertEquals("If submittedvalue is not String, toString() must be used", submittedValue.toString(), convertedUIOutputValue);
+        Assert.assertEquals("If submittedvalue is not String, toString() must be used", submittedValue.toString(), convertedUIOutputValue);
     }
     
     @Test
@@ -175,16 +171,16 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
     {
         UIComponent uiComponent = new UIOutput();
         boolean rendered = RendererUtils.isRendered(facesContext, uiComponent);
-        assertTrue(rendered);
+        Assert.assertTrue(rendered);
         
         uiComponent.setRendered(false);
         rendered = RendererUtils.isRendered(facesContext, uiComponent);
-        assertFalse(rendered);
+        Assert.assertFalse(rendered);
         
         uiComponent = _setUpComponentStack();
         rendered = RendererUtils.isRendered(facesContext, uiComponent);
-        assertFalse(rendered);
-        assertEquals("isRendered must not change current component", parent, UIComponent.getCurrentComponent(facesContext));
+        Assert.assertFalse(rendered);
+        Assert.assertEquals("isRendered must not change current component", parent, UIComponent.getCurrentComponent(facesContext));
     }
     
     /**
@@ -216,15 +212,15 @@ public class RendererUtilsTest extends AbstractJsfTestCase {
         }
         @Override
         public void encodeBegin(FacesContext context) throws IOException {
-            fail();
+            Assert.fail();
         }
         @Override
         public void encodeChildren(FacesContext context) throws IOException {
-            fail();
+            Assert.fail();
         }
         @Override
         public void encodeEnd(FacesContext context) throws IOException {
-            fail();
+            Assert.fail();
         }
     }
     

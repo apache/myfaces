@@ -16,6 +16,7 @@
 package org.apache.myfaces.context;
 
 import junit.framework.TestCase;
+import org.junit.Assert;
 
 /**
  * Regular Expression tests used within the faces context submodules
@@ -41,10 +42,10 @@ public class ContextRegexpTest extends TestCase {
         if(len > 0) {//all others trimmed by the re
             splitted[len] =  splitted[len].trim();
         }
-        assertTrue("length assertion", splitted.length == 3);
-        assertTrue(splitted[0].trim().equals("hello"));
-        assertTrue(splitted[1].trim().equals("world"));
-        assertTrue(splitted[2].trim().equals("bla"));
+        Assert.assertTrue("length assertion", splitted.length == 3);
+        Assert.assertTrue(splitted[0].trim().equals("hello"));
+        Assert.assertTrue(splitted[1].trim().equals("world"));
+        Assert.assertTrue(splitted[2].trim().equals("bla"));
     }
 
     /**
@@ -53,8 +54,8 @@ public class ContextRegexpTest extends TestCase {
      */
     public void testCondition2() {
         String[] splitted = " ".split(RE_SPLITTER);
-        assertTrue(splitted.length == 1);
-        assertTrue(splitted[0] != null);
+        Assert.assertTrue(splitted.length == 1);
+        Assert.assertTrue(splitted[0] != null);
     }
 
     /**
@@ -63,7 +64,7 @@ public class ContextRegexpTest extends TestCase {
      */
     public void testCondition3() {
         String[] splitted = "".split(RE_SPLITTER);
-        assertTrue(splitted.length == 1);
-        assertTrue(splitted[0] != null);
+        Assert.assertTrue(splitted.length == 1);
+        Assert.assertTrue(splitted[0] != null);
     }
 }

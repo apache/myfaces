@@ -28,24 +28,16 @@ import junit.framework.TestSuite;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Assert;
 
 public class HtmlFormatRendererTest extends AbstractJsfTestCase
 {
     private MockResponseWriter writer;
     private HtmlOutputFormat outputFormat;
-    
-    public HtmlFormatRendererTest(String name)
-    {
-        super(name);
-    }
-    
-    public static Test suite() {
-        return new TestSuite(HtmlFormatRendererTest.class);
-    }
-    
+
     public void setUp() throws Exception {
         super.setUp();
         outputFormat = new HtmlOutputFormat();
@@ -82,7 +74,7 @@ public class HtmlFormatRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 outputFormat, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -94,7 +86,7 @@ public class HtmlFormatRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 outputFormat, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -117,6 +109,6 @@ public class HtmlFormatRendererTest extends AbstractJsfTestCase
         
         outputFormat.encodeAll(facesContext);
         String output = writer.getWriter().toString();
-        assertEquals("prefixvalue2-{1}suffix", output);
+        Assert.assertEquals("prefixvalue2-{1}suffix", output);
     }
 }

@@ -29,6 +29,7 @@ import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Assert;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Test;
@@ -127,7 +128,7 @@ public class HtmlMessagesRendererTest extends AbstractJsfConfigurableMockTestCas
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 messages, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -138,8 +139,8 @@ public class HtmlMessagesRendererTest extends AbstractJsfConfigurableMockTestCas
         messages.encodeEnd(facesContext);
         facesContext.renderResponse();
         String output = writer.getWriter().toString();
-        assertTrue(output.contains("warnSumary"));
-        assertTrue(!output.contains("span"));
+        Assert.assertTrue(output.contains("warnSumary"));
+        Assert.assertTrue(!output.contains("span"));
     }
     
     @Test
@@ -150,8 +151,8 @@ public class HtmlMessagesRendererTest extends AbstractJsfConfigurableMockTestCas
         messages.encodeEnd(facesContext);
         facesContext.renderResponse();
         String output = writer.getWriter().toString();
-        assertTrue(output.contains("warnSumary"));
-        assertTrue(!output.contains("span"));
+        Assert.assertTrue(output.contains("warnSumary"));
+        Assert.assertTrue(!output.contains("span"));
     }
     
     @Test
@@ -162,8 +163,8 @@ public class HtmlMessagesRendererTest extends AbstractJsfConfigurableMockTestCas
         messages.encodeEnd(facesContext);
         facesContext.renderResponse();
         String output = writer.getWriter().toString();
-        assertTrue(output.contains("warnSumary"));
-        assertTrue(!output.contains("span"));
+        Assert.assertTrue(output.contains("warnSumary"));
+        Assert.assertTrue(!output.contains("span"));
     }
     
     /**
@@ -179,9 +180,9 @@ public class HtmlMessagesRendererTest extends AbstractJsfConfigurableMockTestCas
         messages.encodeEnd(facesContext);
         facesContext.renderResponse();
         String output = writer.getWriter().toString();
-        assertTrue(output.contains("fatalSumary"));
-        assertTrue(output.contains("li class=\"fatalClass\""));
-        assertTrue(!output.contains("span"));
+        Assert.assertTrue(output.contains("fatalSumary"));
+        Assert.assertTrue(output.contains("li class=\"fatalClass\""));
+        Assert.assertTrue(!output.contains("span"));
     }
     
     /**
@@ -198,9 +199,9 @@ public class HtmlMessagesRendererTest extends AbstractJsfConfigurableMockTestCas
         messages.encodeEnd(facesContext);
         facesContext.renderResponse();
         String output = writer.getWriter().toString();
-        assertTrue(output.contains("fatalSumary"));
-        assertTrue(output.contains("td class=\"fatalClass\""));
-        assertTrue(!output.contains("span"));
+        Assert.assertTrue(output.contains("fatalSumary"));
+        Assert.assertTrue(output.contains("td class=\"fatalClass\""));
+        Assert.assertTrue(!output.contains("span"));
     }
     
     @Test
@@ -222,7 +223,7 @@ public class HtmlMessagesRendererTest extends AbstractJsfConfigurableMockTestCas
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 messages, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
 }

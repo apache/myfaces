@@ -133,19 +133,19 @@ public class UIComponentBaseTest
 //    @Test
 //    public void testGetChildCount() throws Exception
 //    {
-//        assertEquals(0, _testImpl.getChildCount());
+//        Assert.assertEquals(0, _testImpl.getChildCount());
 //        UIComponent child = _mocksControl.createMock(UIComponent.class);
 //        List<UIComponent> children = _testImpl.getChildren();
 //        expect(child.getParent()).andReturn(null);
 //        child.setParent(same(_testImpl));
 //        _mocksControl.replay();
 //        children.add(child);
-//        assertEquals(1, _testImpl.getChildCount());
+//        Assert.assertEquals(1, _testImpl.getChildCount());
 //        _mocksControl.reset();
 //        child.setParent((UIComponent) isNull());
 //        _mocksControl.replay();
 //        children.remove(child);
-//        assertEquals(0, _testImpl.getChildCount());
+//        Assert.assertEquals(0, _testImpl.getChildCount());
 //    }
 
     @Test(expected = NullPointerException.class )

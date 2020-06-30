@@ -20,7 +20,7 @@ package org.apache.myfaces.application;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -43,13 +43,8 @@ public class ResourceHandlerImplTest extends AbstractJsfTestCase
 
     private ResourceHandlerImpl resourceHandler;
 
-    public ResourceHandlerImplTest(String name)
-    {
-        super(name);
-    }
-
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
 
@@ -58,7 +53,7 @@ public class ResourceHandlerImplTest extends AbstractJsfTestCase
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         resourceHandler = null;
 

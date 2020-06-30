@@ -30,16 +30,6 @@ import org.apache.myfaces.application.viewstate.StateUtils;
 
 public class StateUtilsBlowfish_ECBTest extends AbstractStateUtilsTest
 {
-
-    public StateUtilsBlowfish_ECBTest(String name) {
-        super(name);
-    }
-
-    // No longer necessary using junit 4 to run tests
-    //public static Test suite() {
-    //    return null; // keep this method or maven won't run it
-    //}
-
     public void setUp() throws Exception
     {
         super.setUp();

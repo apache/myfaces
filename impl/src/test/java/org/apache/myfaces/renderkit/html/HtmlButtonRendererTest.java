@@ -29,7 +29,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockExternalContext;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.apache.myfaces.test.mock.MockHttpServletResponse;
@@ -38,20 +38,13 @@ import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.mock.MockServletContext;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
+import org.junit.Assert;
 
 public class HtmlButtonRendererTest extends AbstractJsfTestCase {
 
     private MockResponseWriter writer;
     private HtmlCommandButton commandButton;
     private HtmlForm form;
-    
-    public HtmlButtonRendererTest(String name) {
-        super(name);
-    }
-    
-    public static Test suite() {
-        return new TestSuite(HtmlButtonRendererTest.class);
-    }
 
     public void setUp() throws Exception {
         super.setUp();
@@ -129,7 +122,7 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 commandButton, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -176,7 +169,7 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 commandButton, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
 
     }
@@ -191,12 +184,12 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
         {
             commandButton.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            assertTrue(output.matches(".+id=\".+\".+"));
-            assertTrue(output.matches(".+name=\".+\".+"));
+            Assert.assertTrue(output.matches(".+id=\".+\".+"));
+            Assert.assertTrue(output.matches(".+name=\".+\".+"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
         
     }
@@ -225,10 +218,10 @@ public class HtmlButtonRendererTest extends AbstractJsfTestCase {
         
         commandButton.encodeAll(facesContext);
         String output = writer.getWriter().toString();
-        assertFalse(output.contains("param1"));
-        assertFalse(output.contains("value1"));
-        assertTrue(output.contains("param2"));
-        assertTrue(output.contains("value2"));
+        Assert.assertFalse(output.contains("param1"));
+        Assert.assertFalse(output.contains("value1"));
+        Assert.assertTrue(output.contains("param2"));
+        Assert.assertTrue(output.contains("value2"));
     }
     
 }

@@ -21,7 +21,8 @@ import java.util.Map;
 import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.context.servlet.FacesContextImpl;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.junit.Assert;
 
 /**
  * Tests the facesContext isAjaxRequest
@@ -33,10 +34,6 @@ import org.apache.myfaces.test.base.AbstractJsfTestCase;
 public class TestIsAjaxRequest extends AbstractJsfTestCase {
     Map<String, String> requestParameterMap = null;
     FacesContext context = null;
-
-    public TestIsAjaxRequest() {
-        super("TestIsAjaxRequest");
-    }
 
     public void setUp() throws Exception {
         super.setUp();
@@ -57,13 +54,13 @@ public class TestIsAjaxRequest extends AbstractJsfTestCase {
 
     public void testNoEntry() {
 
-        assertFalse("no ajax request found", context.getPartialViewContext().isAjaxRequest());
+        Assert.assertFalse("no ajax request found", context.getPartialViewContext().isAjaxRequest());
     }
 
     public void testEntry() {
         request.addHeader("Faces-Request", "partial/ajax");
         request.addParameter("javax.faces.partial.ajax","true");
-        assertTrue("no ajax request found", context.getPartialViewContext().isAjaxRequest());
+        Assert.assertTrue("no ajax request found", context.getPartialViewContext().isAjaxRequest());
     }
 
 }

@@ -56,6 +56,7 @@ import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -112,13 +113,13 @@ public class UIViewRootTest extends AbstractJsfTestCase
     @Test
     public void testSuperClass() throws Exception
     {
-        assertEquals(UIComponentBase.class, UIViewRoot.class.getSuperclass());
+        Assert.assertEquals(UIComponentBase.class, UIViewRoot.class.getSuperclass());
     }
 
     @Test
     public void testComponentType() throws Exception
     {
-        assertEquals("javax.faces.ViewRoot", UIViewRoot.COMPONENT_TYPE);
+        Assert.assertEquals("javax.faces.ViewRoot", UIViewRoot.COMPONENT_TYPE);
     }
 
     @Test
@@ -129,9 +130,9 @@ public class UIViewRootTest extends AbstractJsfTestCase
         _mocksControl.replay();
 
         _facesContext.setApplication(_application);
-        assertNull(_testimpl.getLocale());
+        Assert.assertNull(_testimpl.getLocale());
         _testimpl.setLocale(Locale.JAPANESE);
-        assertEquals(Locale.JAPANESE, _testimpl.getLocale());
+        Assert.assertEquals(Locale.JAPANESE, _testimpl.getLocale());
         _mocksControl.verify();
     }
 
@@ -155,7 +156,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
         {
             if (!createdIds.add(_testimpl.createUniqueId()))
             {
-                fail("duplicate id created");
+                Assert.fail("duplicate id created");
             }
         }
         _mocksControl.verify();
@@ -311,7 +312,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testSaveState()
     // {
-    // fail("Not yet implemented"); // TODO
+    // Assert.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -320,7 +321,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testRestoreState()
     // {
-    // fail("Not yet implemented"); // TODO
+    // Assert.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -328,7 +329,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testUIViewRoot()
     // {
-    // fail("Not yet implemented"); // TODO
+    // Assert.fail("Not yet implemented"); // TODO
     // }
     //
     //
@@ -337,7 +338,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testSetLocale()
     // {
-    // fail("Not yet implemented"); // TODO
+    // Assert.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -345,7 +346,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testGetRenderKitId()
     // {
-    // fail("Not yet implemented"); // TODO
+    // Assert.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -353,7 +354,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testSetRenderKitId()
     // {
-    // fail("Not yet implemented"); // TODO
+    // Assert.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -361,7 +362,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testGetViewId()
     // {
-    // fail("Not yet implemented"); // TODO
+    // Assert.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -369,7 +370,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testSetViewId()
     // {
-    // fail("Not yet implemented"); // TODO
+    // Assert.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -377,7 +378,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testAddPhaseListener()
     // {
-    // fail("Not yet implemented"); // TODO
+    // Assert.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -385,7 +386,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testRemovePhaseListener()
     // {
-    // fail("Not yet implemented"); // TODO
+    // Assert.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -393,7 +394,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testGetBeforePhaseListener()
     // {
-    // fail("Not yet implemented"); // TODO
+    // Assert.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -401,7 +402,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testSetBeforePhaseListener()
     // {
-    // fail("Not yet implemented"); // TODO
+    // Assert.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -409,7 +410,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testGetAfterPhaseListener()
     // {
-    // fail("Not yet implemented"); // TODO
+    // Assert.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -417,7 +418,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testSetAfterPhaseListener()
     // {
-    // fail("Not yet implemented"); // TODO
+    // Assert.fail("Not yet implemented"); // TODO
     // }
     //
     // /**
@@ -425,7 +426,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
     // */
     // public void testGetFamily()
     // {
-    // fail("Not yet implemented"); // TODO
+    // Assert.fail("Not yet implemented"); // TODO
     // }
     //
 
@@ -627,7 +628,7 @@ public class UIViewRootTest extends AbstractJsfTestCase
         // listener itself queues new event
         facesContext.getViewRoot().broadcastEvents(facesContext, PhaseId.INVOKE_APPLICATION);
         
-        assertEquals(15, actionListener.invocationCount);
+        Assert.assertEquals(15, actionListener.invocationCount);
         org.easymock.EasyMock.verify(differentActionListener);
     }
 

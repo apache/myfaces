@@ -25,20 +25,15 @@ import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.impl.FacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.FacesConfigUnmarshallerImpl;
 import org.apache.myfaces.config.impl.element.FacesConfigImpl;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.junit.Assert;
 
 public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
 {
-
     private FacesConfigDispenser dispenser;
     private FacesConfigUnmarshaller<FacesConfigImpl> unmarshaller;
-    
-    public FacesConfigValidatorTestCase(String name)
-    {
-        super(name);
-    }
-    
-    protected void setUp() throws Exception
+
+    public void setUp() throws Exception
     {
 
         super.setUp();
@@ -65,7 +60,7 @@ public class FacesConfigValidatorTestCase extends AbstractJsfTestCase
         
         int expected = 2;
         
-        assertTrue(list.size() + " should equal " + expected, list.size() == expected);
+        Assert.assertTrue(list.size() + " should equal " + expected, list.size() == expected);
         
     }
     

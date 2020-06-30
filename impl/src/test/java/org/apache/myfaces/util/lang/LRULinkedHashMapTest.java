@@ -25,10 +25,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * Tests were copied from org.apache.commons.collections4.map.LRUMapTest
@@ -46,46 +42,46 @@ public class LRULinkedHashMapTest<K, V> {
       Iterator<V> vit;
 
       final LRULinkedHashMap<K, V> map = new LRULinkedHashMap<>(2);
-      assertEquals(0, map.size());
+      org.junit.Assert.assertEquals(0, map.size());
 
       map.put(keys[0], values[0]);
-      assertEquals(1, map.size());
+      org.junit.Assert.assertEquals(1, map.size());
 
       map.put(keys[1], values[1]);
-      assertEquals(2, map.size());
+      org.junit.Assert.assertEquals(2, map.size());
       kit = map.keySet().iterator();
-      assertSame(keys[0], kit.next());
-      assertSame(keys[1], kit.next());
+      org.junit.Assert.assertSame(keys[0], kit.next());
+      org.junit.Assert.assertSame(keys[1], kit.next());
       vit = map.values().iterator();
-      assertSame(values[0], vit.next());
-      assertSame(values[1], vit.next());
+      org.junit.Assert.assertSame(values[0], vit.next());
+      org.junit.Assert.assertSame(values[1], vit.next());
 
       map.put(keys[2], values[2]);
-      assertEquals(2, map.size());
+      org.junit.Assert.assertEquals(2, map.size());
       kit = map.keySet().iterator();
-      assertSame(keys[1], kit.next());
-      assertSame(keys[2], kit.next());
+      org.junit.Assert.assertSame(keys[1], kit.next());
+      org.junit.Assert.assertSame(keys[2], kit.next());
       vit = map.values().iterator();
-      assertSame(values[1], vit.next());
-      assertSame(values[2], vit.next());
+      org.junit.Assert.assertSame(values[1], vit.next());
+      org.junit.Assert.assertSame(values[2], vit.next());
 
       map.put(keys[2], values[0]);
-      assertEquals(2, map.size());
+      org.junit.Assert.assertEquals(2, map.size());
       kit = map.keySet().iterator();
-      assertSame(keys[1], kit.next());
-      assertSame(keys[2], kit.next());
+      org.junit.Assert.assertSame(keys[1], kit.next());
+      org.junit.Assert.assertSame(keys[2], kit.next());
       vit = map.values().iterator();
-      assertSame(values[1], vit.next());
-      assertSame(values[0], vit.next());
+      org.junit.Assert.assertSame(values[1], vit.next());
+      org.junit.Assert.assertSame(values[0], vit.next());
 
       map.put(keys[1], values[3]);
-      assertEquals(2, map.size());
+      org.junit.Assert.assertEquals(2, map.size());
       kit = map.keySet().iterator();
-      assertSame(keys[2], kit.next());
-      assertSame(keys[1], kit.next());
+      org.junit.Assert.assertSame(keys[2], kit.next());
+      org.junit.Assert.assertSame(keys[1], kit.next());
       vit = map.values().iterator();
-      assertSame(values[0], vit.next());
-      assertSame(values[3], vit.next());
+      org.junit.Assert.assertSame(values[0], vit.next());
+      org.junit.Assert.assertSame(values[3], vit.next());
    }
 
    //-----------------------------------------------------------------------
@@ -100,65 +96,65 @@ public class LRULinkedHashMapTest<K, V> {
       map.put(keys[0], values[0]);
       map.put(keys[1], values[1]);
       kit = map.keySet().iterator();
-      assertSame(keys[0], kit.next());
-      assertSame(keys[1], kit.next());
+      org.junit.Assert.assertSame(keys[0], kit.next());
+      org.junit.Assert.assertSame(keys[1], kit.next());
       vit = map.values().iterator();
-      assertSame(values[0], vit.next());
-      assertSame(values[1], vit.next());
+      org.junit.Assert.assertSame(values[0], vit.next());
+      org.junit.Assert.assertSame(values[1], vit.next());
 
       // no change to order
       map.put(keys[1], values[1]);
       kit = map.keySet().iterator();
-      assertSame(keys[0], kit.next());
-      assertSame(keys[1], kit.next());
+      org.junit.Assert.assertSame(keys[0], kit.next());
+      org.junit.Assert.assertSame(keys[1], kit.next());
       vit = map.values().iterator();
-      assertSame(values[0], vit.next());
-      assertSame(values[1], vit.next());
+      org.junit.Assert.assertSame(values[0], vit.next());
+      org.junit.Assert.assertSame(values[1], vit.next());
 
       // no change to order
       map.put(keys[1], values[2]);
       kit = map.keySet().iterator();
-      assertSame(keys[0], kit.next());
-      assertSame(keys[1], kit.next());
+      org.junit.Assert.assertSame(keys[0], kit.next());
+      org.junit.Assert.assertSame(keys[1], kit.next());
       vit = map.values().iterator();
-      assertSame(values[0], vit.next());
-      assertSame(values[2], vit.next());
+      org.junit.Assert.assertSame(values[0], vit.next());
+      org.junit.Assert.assertSame(values[2], vit.next());
 
       // change to order
       map.put(keys[0], values[3]);
       kit = map.keySet().iterator();
-      assertSame(keys[1], kit.next());
-      assertSame(keys[0], kit.next());
+      org.junit.Assert.assertSame(keys[1], kit.next());
+      org.junit.Assert.assertSame(keys[0], kit.next());
       vit = map.values().iterator();
-      assertSame(values[2], vit.next());
-      assertSame(values[3], vit.next());
+      org.junit.Assert.assertSame(values[2], vit.next());
+      org.junit.Assert.assertSame(values[3], vit.next());
 
       // change to order
       map.get(keys[1]);
       kit = map.keySet().iterator();
-      assertSame(keys[0], kit.next());
-      assertSame(keys[1], kit.next());
+      org.junit.Assert.assertSame(keys[0], kit.next());
+      org.junit.Assert.assertSame(keys[1], kit.next());
       vit = map.values().iterator();
-      assertSame(values[3], vit.next());
-      assertSame(values[2], vit.next());
+      org.junit.Assert.assertSame(values[3], vit.next());
+      org.junit.Assert.assertSame(values[2], vit.next());
 
       // change to order
       map.get(keys[0]);
       kit = map.keySet().iterator();
-      assertSame(keys[1], kit.next());
-      assertSame(keys[0], kit.next());
+      org.junit.Assert.assertSame(keys[1], kit.next());
+      org.junit.Assert.assertSame(keys[0], kit.next());
       vit = map.values().iterator();
-      assertSame(values[2], vit.next());
-      assertSame(values[3], vit.next());
+      org.junit.Assert.assertSame(values[2], vit.next());
+      org.junit.Assert.assertSame(values[3], vit.next());
 
       // no change to order
       map.get(keys[0]);
       kit = map.keySet().iterator();
-      assertSame(keys[1], kit.next());
-      assertSame(keys[0], kit.next());
+      org.junit.Assert.assertSame(keys[1], kit.next());
+      org.junit.Assert.assertSame(keys[0], kit.next());
       vit = map.values().iterator();
-      assertSame(values[2], vit.next());
-      assertSame(values[3], vit.next());
+      org.junit.Assert.assertSame(values[2], vit.next());
+      org.junit.Assert.assertSame(values[3], vit.next());
    }
 
    @SuppressWarnings("unchecked")
@@ -167,8 +163,8 @@ public class LRULinkedHashMapTest<K, V> {
       final LRULinkedHashMap<K, V> map = new LRULinkedHashMap<>(10);
       map.put((K) "1", (V) "1");
       final Map<K, V> cloned = (Map<K, V>) map.clone();
-      assertEquals(map.size(), cloned.size());
-      assertSame(map.get("1"), cloned.get("1"));
+      org.junit.Assert.assertEquals(map.size(), cloned.size());
+      org.junit.Assert.assertSame(map.get("1"), cloned.get("1"));
    }
 
    @Test
@@ -214,7 +210,7 @@ public class LRULinkedHashMapTest<K, V> {
                      }
                   }
                } catch (final InterruptedException e) {
-                  fail("Unexpected InterruptedException");
+                  org.junit.Assert.fail("Unexpected InterruptedException");
                }
                if (i > 0) {
                   synchronized (counter) {
@@ -250,8 +246,8 @@ public class LRULinkedHashMapTest<K, V> {
          }
       }
 
-      assertEquals("Exceptions have been thrown: " + exceptions, 0, exceptions.size());
-      assertTrue("Each thread should have put at least 1 element into the map, but only "
+      org.junit.Assert.assertEquals("Exceptions have been thrown: " + exceptions, 0, exceptions.size());
+      org.junit.Assert.assertTrue("Each thread should have put at least 1 element into the map, but only "
          + counter[0] + " did succeed", counter[0] >= threads.length);
    }
 
@@ -298,7 +294,7 @@ public class LRULinkedHashMapTest<K, V> {
                      }
                   }
                } catch (final InterruptedException e) {
-                  fail("Unexpected InterruptedException");
+                  org.junit.Assert.fail("Unexpected InterruptedException");
                }
                if (i > 0) {
                   synchronized (counter) {
@@ -334,8 +330,8 @@ public class LRULinkedHashMapTest<K, V> {
          }
       }
 
-      assertEquals("Exceptions have been thrown: " + exceptions, 0, exceptions.size());
-      assertTrue("Each thread should have put at least 1 element into the map, but only "
+      org.junit.Assert.assertEquals("Exceptions have been thrown: " + exceptions, 0, exceptions.size());
+      org.junit.Assert.assertTrue("Each thread should have put at least 1 element into the map, but only "
          + counter[0] + " did succeed", counter[0] >= threads.length);
    }
 
@@ -381,7 +377,7 @@ public class LRULinkedHashMapTest<K, V> {
                      }
                   }
                } catch (final InterruptedException e) {
-                  fail("Unexpected InterruptedException");
+                  org.junit.Assert.fail("Unexpected InterruptedException");
                }
                if (i > 0) {
                   synchronized (counter) {
@@ -417,8 +413,8 @@ public class LRULinkedHashMapTest<K, V> {
          }
       }
 
-      assertEquals("Exceptions have been thrown: " + exceptions, 0, exceptions.size());
-      assertTrue("Each thread should have put at least 1 element into the map, but only "
+      org.junit.Assert.assertEquals("Exceptions have been thrown: " + exceptions, 0, exceptions.size());
+      org.junit.Assert.assertTrue("Each thread should have put at least 1 element into the map, but only "
          + counter[0] + " did succeed", counter[0] >= threads.length);
    }
 

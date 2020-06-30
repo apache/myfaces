@@ -18,23 +18,14 @@
 package org.apache.myfaces.application.viewstate;
 
 import org.apache.myfaces.application.viewstate.StateUtils;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 
 import javax.crypto.SecretKey;
+import org.junit.Assert;
 
 public class SecretKeyCacheTest extends AbstractJsfTestCase
 {
 
-    public SecretKeyCacheTest(String name)
-    {
-        super(name);
-    }
-
-    // No longer necessary using junit 4 to run tests
-    //public static Test suite() {
-    //    return null; // keep this method or maven won't run it
-    //}
-    
     public void setUp() throws Exception
     {
         super.setUp();
@@ -50,7 +41,7 @@ public class SecretKeyCacheTest extends AbstractJsfTestCase
         
         SecretKey secretKey = (SecretKey) servletContext.getAttribute(StateUtils.INIT_SECRET_KEY_CACHE);
         
-        assertTrue("Making sure MyFaces uses the " +
+        Assert.assertTrue("Making sure MyFaces uses the " +
                 "default algorithm when one is not specified",
                 StateUtils.DEFAULT_ALGORITHM.equals(secretKey.getAlgorithm()));
         
@@ -64,7 +55,7 @@ public class SecretKeyCacheTest extends AbstractJsfTestCase
 
         Object object = servletContext.getAttribute(StateUtils.INIT_SECRET_KEY_CACHE);
         
-        assertNull("Making sure StateUtils.initSecret does not create a SecretKey", object);
+        Assert.assertNull("Making sure StateUtils.initSecret does not create a SecretKey", object);
         
     }
     
@@ -74,10 +65,10 @@ public class SecretKeyCacheTest extends AbstractJsfTestCase
         
         Object object = servletContext.getAttribute(StateUtils.INIT_SECRET_KEY_CACHE);
         
-        assertFalse("Making sure StateUtils.initSecret() puts an object in application scope", 
+        Assert.assertFalse("Making sure StateUtils.initSecret() puts an object in application scope", 
                 object == null);
         
-        assertTrue("Making sure StateUtils.initSecret() is creating a SecretKey", 
+        Assert.assertTrue("Making sure StateUtils.initSecret() is creating a SecretKey", 
                 object instanceof SecretKey);
         
     }

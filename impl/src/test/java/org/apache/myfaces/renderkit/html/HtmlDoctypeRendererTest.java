@@ -25,7 +25,7 @@ import javax.faces.component.html.HtmlDoctype;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
@@ -40,15 +40,6 @@ public class HtmlDoctypeRendererTest extends AbstractJsfTestCase
 
     private MockResponseWriter writer ;
     private HtmlDoctype doctype;
-
-    public HtmlDoctypeRendererTest(String name)
-    {
-        super(name);
-    }
-    
-    public static Test suite() {
-        return new TestSuite(HtmlDoctypeRendererTest.class);
-    }
 
     public void setUp() throws Exception
     {
@@ -85,7 +76,7 @@ public class HtmlDoctypeRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 doctype, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
         
         Assert.assertTrue("Does not match with: <!DOCTYPE rootElement PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">",

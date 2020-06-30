@@ -22,17 +22,14 @@ package org.apache.myfaces.application.viewstate;
 
 import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.spi.impl.DefaultSerialFactory;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import org.junit.Assert;
 
 public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase implements Serializable
 {
-    public AbstractStateUtilsTest(String name) {
-        super(name);
-    }
-
     protected String sensitiveString;
     private static final String TEST_DATA = "This is the test data.";
     // 76543210
@@ -64,9 +61,9 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
     {
         String constructed = StateUtils.construct(sensitiveString, externalContext);
         Object object = StateUtils.reconstruct(constructed, externalContext);
-        assertTrue(object instanceof String);
+        Assert.assertTrue(object instanceof String);
         String string = (String) object;
-        assertEquals(string, sensitiveString);
+        Assert.assertEquals(string, sensitiveString);
     }
 
     /**
@@ -78,14 +75,14 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
     {
         String constructed = StateUtils.construct(TEST_DATA, externalContext);
         Object object = org.apache.myfaces.application.viewstate.StateUtils.reconstruct(constructed, externalContext);
-        assertTrue(TEST_DATA.equals(object));
+        Assert.assertTrue(TEST_DATA.equals(object));
     }
 
     public void testSerialization()
     {
         byte[] bytes = StateUtils.getAsByteArray(TEST_DATA, externalContext);
         Object object = StateUtils.getAsObject(bytes, externalContext);
-        assertTrue(TEST_DATA.equals(object));
+        Assert.assertTrue(TEST_DATA.equals(object));
     }
 
     public void testCryptography()
@@ -95,7 +92,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
         byte[] insecure = StateUtils.decrypt(secure, externalContext);
         secure = StateUtils.encrypt(insecure, externalContext); // * 2
         insecure = StateUtils.decrypt(secure, externalContext);
-        assertTrue(Arrays.equals(insecure, sensitiveBytes));
+        Assert.assertTrue(Arrays.equals(insecure, sensitiveBytes));
     }
 
     public void testCompression()
@@ -103,10 +100,10 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
         int size = 2049;
         byte[] orginalBytes = new byte[size];
         byte[] lessBytes = StateUtils.compress(orginalBytes);
-        assertTrue(lessBytes.length < orginalBytes.length);
+        Assert.assertTrue(lessBytes.length < orginalBytes.length);
         byte[] moreBytes = StateUtils.decompress(lessBytes);
-        assertTrue(moreBytes.length > lessBytes.length);
-        assertTrue(Arrays.equals(moreBytes, orginalBytes));
+        Assert.assertTrue(moreBytes.length > lessBytes.length);
+        Assert.assertTrue(Arrays.equals(moreBytes, orginalBytes));
     }
 
     public void testEncoding()
@@ -114,7 +111,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
         byte[] orginalBytes = sensitiveString.getBytes();
         byte[] encoded = StateUtils.encode(orginalBytes);
         byte[] decoded = StateUtils.decode(encoded);
-        assertTrue(Arrays.equals(decoded, orginalBytes));
+        Assert.assertTrue(Arrays.equals(decoded, orginalBytes));
     }
 
     /**
@@ -128,7 +125,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
         try
         {
             Object object = StateUtils.reconstruct(constructed, externalContext);
-            assertFalse(TEST_DATA.equals(object));
+            Assert.assertFalse(TEST_DATA.equals(object));
         }
         catch (Exception e)
         {
@@ -147,7 +144,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
         try
         {
             Object object = StateUtils.getAsObject(bytes, externalContext);
-            assertFalse(TEST_DATA.equals(object));
+            Assert.assertFalse(TEST_DATA.equals(object));
         }
         catch (Exception e)
         {
@@ -169,7 +166,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
         try
         {
             byte[] insecure = StateUtils.decrypt(secure, externalContext);
-            assertFalse(Arrays.equals(insecure, sensitiveBytes));
+            Assert.assertFalse(Arrays.equals(insecure, sensitiveBytes));
         }
         catch (Exception e)
         {
@@ -190,7 +187,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
         try
         {
             byte[] moreBytes = StateUtils.decompress(lessBytes);
-            assertFalse(Arrays.equals(moreBytes, orginalBytes));
+            Assert.assertFalse(Arrays.equals(moreBytes, orginalBytes));
         }
         catch (Exception e)
         {
@@ -210,7 +207,7 @@ public abstract class AbstractStateUtilsTest extends AbstractJsfTestCase impleme
         try
         {
             byte[] decoded = StateUtils.decode(encoded);
-            assertFalse(Arrays.equals(decoded, orginalBytes));
+            Assert.assertFalse(Arrays.equals(decoded, orginalBytes));
         }
         catch (Exception e)
         {

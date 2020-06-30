@@ -20,20 +20,14 @@ package javax.faces.component;
 
 import javax.faces.component.html.HtmlInputText;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 
 public class UIComponentAttributesTest extends AbstractJsfTestCase
 {
-
-    public UIComponentAttributesTest(String arg0)
-    {
-        super(arg0);
-    }
-
     private HtmlInputText input;
 
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
         input = new HtmlInputText();
@@ -41,7 +35,7 @@ public class UIComponentAttributesTest extends AbstractJsfTestCase
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         super.tearDown();
         input = null;
@@ -57,7 +51,7 @@ public class UIComponentAttributesTest extends AbstractJsfTestCase
         try
         {
             input.getAttributes().put("someBogus", null);
-            fail("Should have thrown NullPointerException");
+            Assert.fail("Should have thrown NullPointerException");
         }
         catch (NullPointerException npe)
         {

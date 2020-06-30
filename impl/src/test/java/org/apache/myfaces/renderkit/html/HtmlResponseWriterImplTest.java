@@ -25,7 +25,8 @@ import java.lang.reflect.Field;
 
 import org.apache.myfaces.util.CommentUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.junit.Assert;
 
 /**
  * Test class for HtmlResponseWriterImpl.
@@ -38,14 +39,9 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
 
     private StringWriter _stringWriter;
     private HtmlResponseWriterImpl _writer;
-    
-    public HtmlResponseWriterImplTest(String name)
-    {
-        super(name);
-    }
 
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
         
@@ -54,7 +50,7 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         _writer = null;
         _stringWriter = null;
@@ -84,25 +80,25 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         _writer.startDocument();
         _writer.startElement("head", null);
         
-        assertFalse("We have not entered a script element yet, so _isInsideScript should be " +
+        Assert.assertFalse("We have not entered a script element yet, so _isInsideScript should be " +
                 "false (or null).", getFieldBooleanValue(insideScriptField, _writer, false));
         
         _writer.startElement("script", null);
         
-        assertTrue("We have now entered a script element, so _isInsideScript should be " +
+        Assert.assertTrue("We have now entered a script element, so _isInsideScript should be " +
                 "true.", getFieldBooleanValue(insideScriptField, _writer, false));
         
         _writer.startElement("table", null);
         _writer.startElement("tr", null);
         _writer.startElement("td", null);
         
-        assertTrue("We have now opened various elements inside a script element, "+
+        Assert.assertTrue("We have now opened various elements inside a script element, "+
                 "but _isInsideScript should still be true.",
                 getFieldBooleanValue(insideScriptField, _writer, false));
         
         _writer.write("column value");
         
-        assertTrue("We have now written some text inside a script element, "+
+        Assert.assertTrue("We have now written some text inside a script element, "+
                 "but _isInsideScript should still be true.",
                 getFieldBooleanValue(insideScriptField, _writer, false));
         
@@ -111,16 +107,16 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         _writer.endElement("table");
         _writer.endElement("script");
         
-        assertFalse("We have now closed the script element, so _isInsideScript should be " +
+        Assert.assertFalse("We have now closed the script element, so _isInsideScript should be " +
                 "false (or null).", getFieldBooleanValue(insideScriptField, _writer, false));
         
         _writer.endElement("head");
         _writer.endDocument();
         
         String output = _stringWriter.toString();
-        assertTrue("A script start was rendered, so the output has to " +
+        Assert.assertTrue("A script start was rendered, so the output has to " +
                 "contain " + COMMENT_START, output.contains(COMMENT_START));
-        assertTrue("A script end was rendered so the output has to " + 
+        Assert.assertTrue("A script end was rendered so the output has to " + 
                 "contain " + COMMENT_END, output.contains(COMMENT_END));
     }
     
@@ -154,10 +150,10 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         _writer.endDocument();
         
         String output = _stringWriter.toString();
-        assertNotNull(output);
-        assertTrue("script does not contain body:" + innerScript, output.contains(innerScript));
-        assertTrue("script does not have start comment <!-- ", output.contains(CommentUtils.COMMENT_SIMPLE_START));
-        assertTrue("script does not have end comment --> ", output.contains("//"+CommentUtils.COMMENT_SIMPLE_END));
+        Assert.assertNotNull(output);
+        Assert.assertTrue("script does not contain body:" + innerScript, output.contains(innerScript));
+        Assert.assertTrue("script does not have start comment <!-- ", output.contains(CommentUtils.COMMENT_SIMPLE_START));
+        Assert.assertTrue("script does not have end comment --> ", output.contains("//"+CommentUtils.COMMENT_SIMPLE_END));
     }
     
     public void testScriptOnHtmlIsoEncodingAndNoScriptXhmlComments() throws IOException
@@ -171,10 +167,10 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         _writer.endDocument();
         
         String output = _stringWriter.toString();
-        assertNotNull(output);
-        assertTrue("script does not contain body:" + innerScript, output.contains(innerScript));
-        assertFalse("script have start comment <!-- ", output.contains(CommentUtils.COMMENT_SIMPLE_START));
-        assertFalse("script have end comment --> ", output.contains("//"+CommentUtils.COMMENT_SIMPLE_END));
+        Assert.assertNotNull(output);
+        Assert.assertTrue("script does not contain body:" + innerScript, output.contains(innerScript));
+        Assert.assertFalse("script have start comment <!-- ", output.contains(CommentUtils.COMMENT_SIMPLE_START));
+        Assert.assertFalse("script have end comment --> ", output.contains("//"+CommentUtils.COMMENT_SIMPLE_END));
     }
 
     public void testScriptOnHtmlUTF8AndScriptXhmlComments() throws IOException
@@ -188,10 +184,10 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         _writer.endDocument();
         
         String output = _stringWriter.toString();
-        assertNotNull(output);
-        assertTrue("script does not contain body:" + innerScript, output.contains(innerScript));
-        assertTrue("script does not have start comment <!-- ", output.contains(CommentUtils.COMMENT_SIMPLE_START));
-        assertTrue("script does not have end comment --> ", output.contains("//"+CommentUtils.COMMENT_SIMPLE_END));
+        Assert.assertNotNull(output);
+        Assert.assertTrue("script does not contain body:" + innerScript, output.contains(innerScript));
+        Assert.assertTrue("script does not have start comment <!-- ", output.contains(CommentUtils.COMMENT_SIMPLE_START));
+        Assert.assertTrue("script does not have end comment --> ", output.contains("//"+CommentUtils.COMMENT_SIMPLE_END));
     }
     
     public void testScriptOnHtmlUTF8AndNoScriptXhmlComments() throws IOException
@@ -205,10 +201,10 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         _writer.endDocument();
         
         String output = _stringWriter.toString();
-        assertNotNull(output);
-        assertTrue("script does not contain body:" + innerScript, output.contains(innerScript));
-        assertFalse("script have start comment <!-- ", output.contains(CommentUtils.COMMENT_SIMPLE_START));
-        assertFalse("script have end comment --> ", output.contains("//"+CommentUtils.COMMENT_SIMPLE_END));
+        Assert.assertNotNull(output);
+        Assert.assertTrue("script does not contain body:" + innerScript, output.contains(innerScript));
+        Assert.assertFalse("script have start comment <!-- ", output.contains(CommentUtils.COMMENT_SIMPLE_START));
+        Assert.assertFalse("script have end comment --> ", output.contains("//"+CommentUtils.COMMENT_SIMPLE_END));
     }
 
     public void testScriptOnXhtmlIsoEncoding() throws IOException
@@ -222,10 +218,10 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         _writer.endDocument();
         
         String output = _stringWriter.toString();
-        assertNotNull(output);
-        assertTrue("script does not contain body:" + innerScript, output.contains(innerScript));
-        assertTrue("script does not have start <![CDATA[ ", output.contains(CommentUtils.INLINE_SCRIPT_COMMENT+CommentUtils.CDATA_SIMPLE_START));
-        assertTrue("script does not have end ]]> ", output.contains(CommentUtils.INLINE_SCRIPT_COMMENT+CommentUtils.CDATA_SIMPLE_END));
+        Assert.assertNotNull(output);
+        Assert.assertTrue("script does not contain body:" + innerScript, output.contains(innerScript));
+        Assert.assertTrue("script does not have start <![CDATA[ ", output.contains(CommentUtils.INLINE_SCRIPT_COMMENT+CommentUtils.CDATA_SIMPLE_START));
+        Assert.assertTrue("script does not have end ]]> ", output.contains(CommentUtils.INLINE_SCRIPT_COMMENT+CommentUtils.CDATA_SIMPLE_END));
     }
 
     public void testScriptOnXhtmlUTF8Encoding() throws IOException
@@ -239,10 +235,10 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         _writer.endDocument();
         
         String output = _stringWriter.toString();
-        assertNotNull(output);
-        assertTrue("script does not contain body:" + innerScript, output.contains(innerScript));
-        assertTrue("script does not have start <![CDATA[ ", output.contains(CommentUtils.INLINE_SCRIPT_COMMENT+CommentUtils.CDATA_SIMPLE_START));
-        assertTrue("script does not have end ]]> ", output.contains(CommentUtils.INLINE_SCRIPT_COMMENT+CommentUtils.CDATA_SIMPLE_END));
+        Assert.assertNotNull(output);
+        Assert.assertTrue("script does not contain body:" + innerScript, output.contains(innerScript));
+        Assert.assertTrue("script does not have start <![CDATA[ ", output.contains(CommentUtils.INLINE_SCRIPT_COMMENT+CommentUtils.CDATA_SIMPLE_START));
+        Assert.assertTrue("script does not have end ]]> ", output.contains(CommentUtils.INLINE_SCRIPT_COMMENT+CommentUtils.CDATA_SIMPLE_END));
     }
     
     public void testStyleOnXhtmlIsoEncoding() throws IOException
@@ -256,10 +252,10 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         _writer.endDocument();
         
         String output = _stringWriter.toString();
-        assertNotNull(output);
-        assertTrue("script does not contain body:" + innerScript, output.contains(innerScript));
-        assertTrue("script does not have start <![CDATA[ ", output.contains(CommentUtils.CDATA_SIMPLE_START));
-        assertTrue("script does not have end ]]> ", output.contains(CommentUtils.CDATA_SIMPLE_END));
+        Assert.assertNotNull(output);
+        Assert.assertTrue("script does not contain body:" + innerScript, output.contains(innerScript));
+        Assert.assertTrue("script does not have start <![CDATA[ ", output.contains(CommentUtils.CDATA_SIMPLE_START));
+        Assert.assertTrue("script does not have end ]]> ", output.contains(CommentUtils.CDATA_SIMPLE_END));
     }
 
     public void testStyleOnXhtmlUTF8Encoding() throws IOException
@@ -273,10 +269,10 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         _writer.endDocument();
         
         String output = _stringWriter.toString();
-        assertNotNull(output);
-        assertTrue("script does not contain body:" + innerScript, output.contains(innerScript));
-        assertTrue("script does not have start <![CDATA[ ", output.contains(CommentUtils.CDATA_SIMPLE_START));
-        assertTrue("script does not have end ]]> ", output.contains(CommentUtils.CDATA_SIMPLE_END));
+        Assert.assertNotNull(output);
+        Assert.assertTrue("script does not contain body:" + innerScript, output.contains(innerScript));
+        Assert.assertTrue("script does not have start <![CDATA[ ", output.contains(CommentUtils.CDATA_SIMPLE_START));
+        Assert.assertTrue("script does not have end ]]> ", output.contains(CommentUtils.CDATA_SIMPLE_END));
     }
     
     /**
@@ -296,9 +292,9 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
        
         // the following should render <br />hello
         String output = _stringWriter.toString();
-        assertNotNull(output);
-        assertTrue(output.contains("<br />"));
-        assertFalse(output.contains("</br>"));
+        Assert.assertNotNull(output);
+        Assert.assertTrue(output.contains("<br />"));
+        Assert.assertFalse(output.contains("</br>"));
     }
     
     /**
@@ -320,9 +316,9 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         
      // the following should render <br>hello</br>
         String output = _stringWriter.toString();
-        assertNotNull(output);
-        assertTrue(output.contains("<br>"));
-        assertTrue(output.contains("</br>"));
+        Assert.assertNotNull(output);
+        Assert.assertTrue(output.contains("<br>"));
+        Assert.assertTrue(output.contains("</br>"));
     }
     
     /**
@@ -342,9 +338,9 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
        
         // the following should render <br />hello
         String output = _stringWriter.toString();
-        assertNotNull(output);
-        assertTrue(output.contains("<BR />"));
-        assertFalse(output.contains("</BR>"));
+        Assert.assertNotNull(output);
+        Assert.assertTrue(output.contains("<BR />"));
+        Assert.assertFalse(output.contains("</BR>"));
     }
     
     /**
@@ -366,8 +362,8 @@ public class HtmlResponseWriterImplTest extends AbstractJsfTestCase
         
      // the following should render <br>hello</br>
         String output = _stringWriter.toString();
-        assertNotNull(output);
-        assertTrue(output.contains("<BR>"));
-        assertTrue(output.contains("</BR>"));
+        Assert.assertNotNull(output);
+        Assert.assertTrue(output.contains("<BR>"));
+        Assert.assertTrue(output.contains("</BR>"));
     }
 }

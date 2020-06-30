@@ -27,9 +27,10 @@ import javax.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.util.lang.ClassUtils;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockFacesContext12;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Assert;
 
 /**
  * @author martin.haimberger
@@ -44,12 +45,7 @@ public class OwnRenderkitTest extends AbstractJsfTestCase {
         isOwnRenderKit = true;
     }
 
-
-    public OwnRenderkitTest(String name) {
-        super(name);
-    }
-
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         addRenderKit();
         inputText = new HtmlInputText();
@@ -66,7 +62,7 @@ public class OwnRenderkitTest extends AbstractJsfTestCase {
 
     }
 
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         super.tearDown();
         inputText = null;
         writer = null;
@@ -78,7 +74,7 @@ public class OwnRenderkitTest extends AbstractJsfTestCase {
         inputText.encodeEnd(facesContext);
         facesContext.renderResponse();
 
-        assertTrue(isOwnRenderKit);
+        Assert.assertTrue(isOwnRenderKit);
     }
 
 

@@ -25,6 +25,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import junit.framework.TestCase;
+import org.junit.Assert;
 
 public class _AttachedStateWrapperTest extends TestCase
 {
@@ -40,13 +41,13 @@ public class _AttachedStateWrapperTest extends TestCase
     }
 
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         super.tearDown();
     }
@@ -57,8 +58,8 @@ public class _AttachedStateWrapperTest extends TestCase
     public void test_AttachedStateWrapper()
     {
         _AttachedStateWrapper subject = new _AttachedStateWrapper(null, null);
-        assertNull(subject.getWrappedStateObject());
-        assertNull(subject.getClazz());
+        Assert.assertNull(subject.getWrappedStateObject());
+        Assert.assertNull(subject.getClazz());
     }
 
     /*
@@ -67,7 +68,7 @@ public class _AttachedStateWrapperTest extends TestCase
     public void testGetClazz()
     {
         _AttachedStateWrapper subject = new _AttachedStateWrapper(String.class, "foo");
-        assertEquals(subject.getClazz(), String.class);
+        Assert.assertEquals(subject.getClazz(), String.class);
     }
 
     /*
@@ -76,7 +77,7 @@ public class _AttachedStateWrapperTest extends TestCase
     public void testGetWrappedStateObject()
     {
         _AttachedStateWrapper subject = new _AttachedStateWrapper(String.class, "foo");
-        assertEquals(subject.getClazz(), String.class);
+        Assert.assertEquals(subject.getClazz(), String.class);
     }
 
     public void testSerialize() throws Exception
@@ -91,7 +92,7 @@ public class _AttachedStateWrapperTest extends TestCase
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
         _AttachedStateWrapper blorg = (_AttachedStateWrapper) ois.readObject();
-        assertEquals(blorg.getWrappedStateObject(), subject.getWrappedStateObject());
+        Assert.assertEquals(blorg.getWrappedStateObject(), subject.getWrappedStateObject());
         oos.close();
         ois.close();
     }

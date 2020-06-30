@@ -30,9 +30,10 @@ import junit.framework.TestSuite;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Assert;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -46,15 +47,6 @@ public class HtmlGridRendererTest extends AbstractJsfTestCase
     private MockResponseWriter writer ;
     private HtmlPanelGrid panelGrid;
     private HtmlOutputText colText;
-
-    public HtmlGridRendererTest(String name)
-    {
-        super(name);
-    }
-    
-    public static Test suite() {
-        return new TestSuite(HtmlGridRendererTest.class);
-    }
 
     public void setUp() throws Exception
     {
@@ -107,7 +99,7 @@ public class HtmlGridRendererTest extends AbstractJsfTestCase
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        assertEquals("<table><tbody>"+
+        Assert.assertEquals("<table><tbody>"+
                 "<tr><td>col1Text</td></tr>"+
                 "<tr><td>col2Text</td></tr>"+
                 "</tbody>"+"</table>", output);
@@ -120,7 +112,7 @@ public class HtmlGridRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 panelGrid, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -131,7 +123,7 @@ public class HtmlGridRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 panelGrid, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -145,12 +137,12 @@ public class HtmlGridRendererTest extends AbstractJsfTestCase
         {
             panelGrid.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            assertTrue(output.matches(".+id=\".+\".+"));
-            assertTrue(output.matches(".+name=\".+\".+"));
+            Assert.assertTrue(output.matches(".+id=\".+\".+"));
+            Assert.assertTrue(output.matches(".+name=\".+\".+"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
         
     }

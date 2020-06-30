@@ -18,7 +18,8 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.junit.Assert;
 
 /**
  * Test class for UIViewParameter.
@@ -29,14 +30,9 @@ public class UIViewParameterTest extends AbstractJsfTestCase
 {
     
     private UIViewParameter viewParameter = null;
-
-    public UIViewParameterTest(String name)
-    {
-        super(name);
-    }
     
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
         
@@ -45,7 +41,7 @@ public class UIViewParameterTest extends AbstractJsfTestCase
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         viewParameter = null;
         
@@ -62,9 +58,9 @@ public class UIViewParameterTest extends AbstractJsfTestCase
         viewParameter.setRequired(true);
         viewParameter.setSubmittedValue(null);
         
-        assertFalse(facesContext.isValidationFailed());
+        Assert.assertFalse(facesContext.isValidationFailed());
         viewParameter.processValidators(facesContext);
-        assertTrue(facesContext.isValidationFailed());
+        Assert.assertTrue(facesContext.isValidationFailed());
     }
     
     /**
@@ -80,7 +76,7 @@ public class UIViewParameterTest extends AbstractJsfTestCase
         
         viewParameter.decode(facesContext);
         
-        assertEquals(viewParameter.getSubmittedValue(), notNull);
+        Assert.assertEquals(viewParameter.getSubmittedValue(), notNull);
     }
 
 }

@@ -28,9 +28,10 @@ import junit.framework.TestSuite;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Assert;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -40,15 +41,6 @@ public class HtmlSecretRendererTest extends AbstractJsfTestCase
 {
     private MockResponseWriter writer ;
     private HtmlInputSecret inputText;
-
-    public HtmlSecretRendererTest(String name)
-    {
-        super(name);
-    }
-    
-    public static Test suite() {
-        return new TestSuite(HtmlSecretRendererTest.class);
-    }
 
     public void setUp() throws Exception
     {
@@ -81,7 +73,7 @@ public class HtmlSecretRendererTest extends AbstractJsfTestCase
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        assertEquals("<input type=\"password\" name=\"j_id__v_0\"/>", output);
+        Assert.assertEquals("<input type=\"password\" name=\"j_id__v_0\"/>", output);
     }
 
     public void testHtmlPropertyPassTru() throws Exception
@@ -91,7 +83,7 @@ public class HtmlSecretRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 inputText, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -105,12 +97,12 @@ public class HtmlSecretRendererTest extends AbstractJsfTestCase
         {
             inputText.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            assertTrue(output.matches(".+id=\".+\".+"));
-            assertTrue(output.matches(".+name=\".+\".+"));
+            Assert.assertTrue(output.matches(".+id=\".+\".+"));
+            Assert.assertTrue(output.matches(".+name=\".+\".+"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
         
     }

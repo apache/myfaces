@@ -94,13 +94,13 @@ public class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUICompon
 //    public void testSaveRestoreStateWithTransientChilds() throws Exception
 //    {
 //        _testImpl.setTransient(true);
-//        assertNull(_testImpl.processSaveState(_facesContext));
+//        Assert.assertNull(_testImpl.processSaveState(_facesContext));
 //
 //        _testImpl.setTransient(false);
 //        setUpChilds(true, true, true);
 //        _mocksControl.replay();
 //        Object state = _testImpl.processSaveState(_facesContext);
-//        assertNotNull(state);
+//        Assert.assertNotNull(state);
 //        _mocksControl.verify();
 //
 //        _mocksControl.reset();
@@ -114,13 +114,13 @@ public class UIComponentBaseProcessSaveRestoreStateTest extends AbstractUICompon
 //    public void testSaveRestoreState() throws Exception
 //    {
 //        _testImpl.setTransient(true);
-//        assertNull(_testImpl.processSaveState(_facesContext));
+//        Assert.assertNull(_testImpl.processSaveState(_facesContext));
 //
 //        _testImpl.setTransient(false);
 //        setUpChilds(true, false, false);
 //        _mocksControl.replay();
 //        Object state = _testImpl.processSaveState(_facesContext);
-//        assertNotNull(state);
+//        Assert.assertNotNull(state);
 //        _mocksControl.verify();
 //
 //        _mocksControl.reset();

@@ -20,7 +20,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.junit.Assert;
 
 /**
  * Various tests for the faces context is rendered
@@ -31,12 +32,8 @@ import org.apache.myfaces.test.base.AbstractJsfTestCase;
  */
 public class IsRenderedTest extends AbstractJsfTestCase {
 
-    public IsRenderedTest() {
-        super("IsRenderedTest");
-    }
-
     @Override
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         FactoryFinder.setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY,
         "org.apache.myfaces.context.PartialViewContextFactoryImpl");       
@@ -55,11 +52,11 @@ public class IsRenderedTest extends AbstractJsfTestCase {
         PartialViewContext pprContext = context.getPartialViewContext();
 
         pprContext.setRenderAll(true);
-        assertTrue("override should trigger no matter which condition we have", pprContext.isRenderAll());
+        Assert.assertTrue("override should trigger no matter which condition we have", pprContext.isRenderAll());
 
         context = new FacesContextImpl(servletContext, request, response);
         pprContext.setRenderAll(false);
-        assertFalse("override should trigger no matter which condition we have", pprContext.isRenderAll());
+        Assert.assertFalse("override should trigger no matter which condition we have", pprContext.isRenderAll());
     }
 
    

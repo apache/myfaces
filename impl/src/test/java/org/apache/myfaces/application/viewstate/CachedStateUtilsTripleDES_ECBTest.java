@@ -16,24 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-
 package org.apache.myfaces.application.viewstate;
 
-import org.apache.myfaces.application.viewstate.StateUtils;
 
 public class CachedStateUtilsTripleDES_ECBTest extends AbstractStateUtilsTest
 {
-
-    public CachedStateUtilsTripleDES_ECBTest(String name)
-    {
-        super(name);
-    }
-
-    // No longer necessary using junit 4 to run tests
-    //public static Test suite() {
-    //    return null; // keep this method or maven won't run it
-    //}
 
     public void setUp() throws Exception
     {

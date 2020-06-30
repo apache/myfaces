@@ -17,23 +17,15 @@
 
 package org.apache.myfaces.application.viewstate;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 
 import javax.faces.FacesException;
+import org.junit.Assert;
 
-public class InitVector_CBCTestCase extends AbstractJsfTestCase {
-
-    public InitVector_CBCTestCase(String name) {
-        super(name);
-    }
-    
-    // No longer necessary using junit 4 to run tests
-    //public static Test suite() {
-    //    return null; // keep this method or maven won't run it
-    //}    
-
-    public void setUp() throws Exception{
-    
+public class InitVector_CBCTestCase extends AbstractJsfTestCase
+{
+    public void setUp() throws Exception
+    {
         super.setUp();
         
         servletContext.addInitParameter(StateUtils.INIT_SECRET, "shouldn't matter");
@@ -46,15 +38,15 @@ public class InitVector_CBCTestCase extends AbstractJsfTestCase {
         
     }
 
-    public void testDecryption() {
-        
+    public void testDecryption()
+    {
         byte[] sensitiveBytes = "bound to fail".getBytes();
         
         try{
             
             StateUtils.decrypt(sensitiveBytes, externalContext);
             
-            fail("MyFaces should throw a meaningful " +
+            Assert.fail("MyFaces should throw a meaningful " +
                     "exception when users opt for CBC mode " +
                     "encryption w/out an initialization vector.");
             
@@ -71,7 +63,7 @@ public class InitVector_CBCTestCase extends AbstractJsfTestCase {
             
             StateUtils.encrypt(sensitiveBytes, externalContext);
             
-            fail("MyFaces should throw a meaningful " +
+            Assert.fail("MyFaces should throw a meaningful " +
                     "exception when users opt for CBC mode " +
                     "encryption w/out an initialization vector.");
             

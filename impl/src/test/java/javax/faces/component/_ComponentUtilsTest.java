@@ -19,12 +19,10 @@
 package javax.faces.component;
 
 import org.apache.myfaces.core.api.shared.ComponentUtils;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import org.apache.myfaces.test.mock.MockRenderedValueExpression;
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class _ComponentUtilsTest extends AbstractJsfTestCase {
@@ -33,17 +31,17 @@ public class _ComponentUtilsTest extends AbstractJsfTestCase {
     public void testIsRendered() {
         UIComponent uiComponent = new UIOutput();
         boolean rendered = ComponentUtils.isRendered(facesContext, uiComponent);
-        assertTrue(rendered);
+        Assert.assertTrue(rendered);
 
         uiComponent.setRendered(false);
         rendered = ComponentUtils.isRendered(facesContext, uiComponent);
-        assertFalse(rendered);
+        Assert.assertFalse(rendered);
 
         UIOutput uiOutput = new UIOutput();
         UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, uiOutput, false);
         rendered = ComponentUtils.isRendered(facesContext, uiComponent);
-        assertFalse(rendered);
-        assertEquals("isRendered must not change current component", parent,
+        Assert.assertFalse(rendered);
+        Assert.assertEquals("isRendered must not change current component", parent,
                 UIComponent.getCurrentComponent(facesContext));
     }
 

@@ -29,12 +29,13 @@ import javax.faces.component.UIComponent;
 import javax.faces.view.facelets.FaceletContext;
 
 import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockExpressionFactory;
 import org.apache.myfaces.view.facelets.impl.FaceletCacheFactoryImpl;
 import org.apache.myfaces.view.facelets.mock.MockViewDeclarationLanguageFactory;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
+import org.junit.Assert;
 
 /**
  * Test class for ApplicationImpl that extends AbstractJsfTestCase
@@ -96,22 +97,17 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
      */
     private static void assertRendererTypeResourceBeanInfo(UIComponent component, Resource resource, BeanInfo metadata)
     {
-        assertEquals(COMPOSITE_RENDERER_MSG, "javax.faces.Composite", component.getRendererType());
-        assertEquals(RESOURCE_MSG, resource, component.getAttributes().get(Resource.COMPONENT_RESOURCE_KEY));
-        assertEquals(BEANINFO_MSG, metadata, component.getAttributes().get(UIComponent.BEANINFO_KEY));
+        Assert.assertEquals(COMPOSITE_RENDERER_MSG, "javax.faces.Composite", component.getRendererType());
+        Assert.assertEquals(RESOURCE_MSG, resource, component.getAttributes().get(Resource.COMPONENT_RESOURCE_KEY));
+        Assert.assertEquals(BEANINFO_MSG, metadata, component.getAttributes().get(UIComponent.BEANINFO_KEY));
     }
 
     private TestApplicationWrapper _testApplication;
     private IMocksControl _mocksControl;
     private FaceletContext _faceletContext;
-    
-    public ApplicationImplJsfTest(String name)
-    {
-        super(name);
-    }
-    
+
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
         
@@ -132,7 +128,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         _mocksControl = null;
         _faceletContext = null;
@@ -178,7 +174,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
         UIComponent component = _testApplication.createComponent(facesContext, resource);
         
         // asserts for the first component
-        assertTrue("The component has to be an UINamingContainer", component instanceof UINamingContainer);
+        Assert.assertTrue("The component has to be an UINamingContainer", component instanceof UINamingContainer);
         assertRendererTypeResourceBeanInfo(component, resource, metadata);
         
         // ---- second component test - from a script ------------------------------------------
@@ -194,7 +190,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
         component = _testApplication.createComponent(facesContext, resource);
         
         // asserts for the second component
-        assertTrue("The component has to be a MockResourceComponent", component instanceof MockResourceComponent);
+        Assert.assertTrue("The component has to be a MockResourceComponent", component instanceof MockResourceComponent);
         assertRendererTypeResourceBeanInfo(component, resource, metadata);
         
         // remove the script resource again
@@ -237,7 +233,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
         component = _testApplication.createComponent(facesContext, componentResource);
         
         // asserts for the third component
-        assertTrue("The component has to be a MockResourceComponent", component instanceof MockResourceComponent);
+        Assert.assertTrue("The component has to be a MockResourceComponent", component instanceof MockResourceComponent);
         assertRendererTypeResourceBeanInfo(component, componentResource, metadataComponentResource);
         
         // ---- fourth component test - with a custom componentType ------------------------------
@@ -258,7 +254,7 @@ public class ApplicationImplJsfTest extends AbstractJsfTestCase
         component = _testApplication.createComponent(facesContext, resource);
         
         // asserts for the fourth component
-        assertTrue("The component has to be an instance of UIOutput", component instanceof UIOutput);
+        Assert.assertTrue("The component has to be an instance of UIOutput", component instanceof UIOutput);
         assertRendererTypeResourceBeanInfo(component, resource, metadata);*/
     }
     

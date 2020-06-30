@@ -31,7 +31,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -55,16 +56,12 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
     private static final String STD_UPDATE_RESULT = "<changes><update id=\"blaId\"><![CDATA[testing]]></update>";
     private static final String CORR_OUTPUT = "checking for correct output: ";
 
-    public PartialResponseWriterImplTest() {
-        super("PartialResponseWriterImplTest");
-    }
-
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         _contentCollector = new StringWriter(100);
     }
     
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         super.tearDown();
         _contentCollector = null;
     }
@@ -83,7 +80,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         is2.setCharacterStream(new StringReader(output));
         Document doc2 = db.parse(is2);
         doc2.normalizeDocument();
-        assertTrue(doc1.isEqualNode(doc2));
+        Assert.assertTrue(doc1.isEqualNode(doc2));
     }
 
     /**
@@ -139,7 +136,7 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
             
             checkOutput(new File(getLocalFile("nestedScriptCDATA.xml").toURI()), _contentCollector.toString());
         } catch (IOException e) {
-            fail(e.toString());
+            Assert.fail(e.toString());
         }
     }
     
@@ -153,9 +150,9 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
             // _writer.endCDATA();
             _writer.flush();
             _writer.close();
-            assertTrue(CORR_OUTPUT, _contentCollector.toString().equals("testing"));
+            Assert.assertTrue(CORR_OUTPUT, _contentCollector.toString().equals("testing"));
         } catch (IOException e) {
-            fail(e.toString());
+            Assert.fail(e.toString());
         }
     }
 
@@ -169,9 +166,9 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
             // _writer.endCDATA();
             _writer.flush();
             _writer.close();
-            assertTrue(CORR_OUTPUT, _contentCollector.toString().equals("<![CDATA[testing]]>"));
+            Assert.assertTrue(CORR_OUTPUT, _contentCollector.toString().equals("<![CDATA[testing]]>"));
         } catch (IOException e) {
-            fail(e.toString());
+            Assert.fail(e.toString());
         }
     }
 
@@ -185,9 +182,9 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
             _writer.endCDATA();
             _writer.flush();
             _writer.close();
-            assertTrue(CORR_OUTPUT+ _contentCollector.toString(), _contentCollector.toString().equals("<![CDATA[<![CDATA[testing]]><![CDATA[]]]]><![CDATA[>]]>"));
+            Assert.assertTrue(CORR_OUTPUT+ _contentCollector.toString(), _contentCollector.toString().equals("<![CDATA[<![CDATA[testing]]><![CDATA[]]]]><![CDATA[>]]>"));
         } catch (IOException e) {
-            fail(e.toString());
+            Assert.fail(e.toString());
         }
     }
 
@@ -199,9 +196,9 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
             _writer.write("testing");
             _writer.flush();
             _writer.close();
-            assertTrue(CORR_OUTPUT+ _contentCollector.toString(), _contentCollector.toString().equals("<![CDATA[<![CDATA[testing]]>"));
+            Assert.assertTrue(CORR_OUTPUT+ _contentCollector.toString(), _contentCollector.toString().equals("<![CDATA[<![CDATA[testing]]>"));
         } catch (IOException e) {
-            fail(e.toString());
+            Assert.fail(e.toString());
         }
     }
 
@@ -213,9 +210,9 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
             _writer.startUpdate("blaId");
             _writer.write("testing");
             _writer.endUpdate();
-            assertTrue(CORR_OUTPUT, _contentCollector.toString().equals(STD_UPDATE_RESULT));
+            Assert.assertTrue(CORR_OUTPUT, _contentCollector.toString().equals(STD_UPDATE_RESULT));
         } catch (IOException e) {
-            fail(e.toString());
+            Assert.fail(e.toString());
         }
     }
 
@@ -227,9 +224,9 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
             _writer.write("testing");
             _writer.endCDATA();
             _writer.endUpdate();
-            assertTrue(CORR_OUTPUT+_contentCollector.toString(), _contentCollector.toString().equals("<changes><update id=\"blaId\"><![CDATA[<![CDATA[testing]]><![CDATA[]]]]><![CDATA[>]]></update>"));
+            Assert.assertTrue(CORR_OUTPUT+_contentCollector.toString(), _contentCollector.toString().equals("<changes><update id=\"blaId\"><![CDATA[<![CDATA[testing]]><![CDATA[]]]]><![CDATA[>]]></update>"));
         } catch (IOException e) {
-            fail(e.toString());
+            Assert.fail(e.toString());
         }
     }
 
@@ -242,9 +239,9 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
             _writer.startCDATA();
             _writer.write("testing");
             _writer.endUpdate();
-            assertTrue(CORR_OUTPUT+_contentCollector.toString(), _contentCollector.toString().equals("<changes><update id=\"blaId\"><![CDATA[<![CDATA[<![CDATA[testing]]></update>"));
+            Assert.assertTrue(CORR_OUTPUT+_contentCollector.toString(), _contentCollector.toString().equals("<changes><update id=\"blaId\"><![CDATA[<![CDATA[<![CDATA[testing]]></update>"));
         } catch (IOException e) {
-            fail(e.toString());
+            Assert.fail(e.toString());
         }
     }
 
@@ -254,9 +251,9 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
             _writer.startInsertAfter("blaId");
             _writer.write("testing");
             _writer.endInsert();
-            assertTrue(CORR_OUTPUT, _contentCollector.toString().equals("<changes><insert><after id=\"blaId\"><![CDATA[testing]]></after></insert>"));
+            Assert.assertTrue(CORR_OUTPUT, _contentCollector.toString().equals("<changes><insert><after id=\"blaId\"><![CDATA[testing]]></after></insert>"));
         } catch (IOException e) {
-            fail(e.toString());
+            Assert.fail(e.toString());
         }
     }
 
@@ -266,9 +263,9 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
             _writer.startInsertBefore("blaId");
             _writer.write("testing");
             _writer.endInsert();
-            assertTrue(CORR_OUTPUT, _contentCollector.toString().equals("<changes><insert><before id=\"blaId\"><![CDATA[testing]]></before></insert>"));
+            Assert.assertTrue(CORR_OUTPUT, _contentCollector.toString().equals("<changes><insert><before id=\"blaId\"><![CDATA[testing]]></before></insert>"));
         } catch (IOException e) {
-            fail(e.toString());
+            Assert.fail(e.toString());
         }
     }
 
@@ -281,9 +278,9 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
             _writer.writeAttribute("value","]]>", null);
             _writer.endElement("input");
             _writer.endInsert();
-            assertTrue(CORR_OUTPUT+_contentCollector.toString(), _contentCollector.toString().contains("value=\"]]&gt;\""));
+            Assert.assertTrue(CORR_OUTPUT+_contentCollector.toString(), _contentCollector.toString().contains("value=\"]]&gt;\""));
         } catch (IOException e) {
-            fail(e.toString());
+            Assert.fail(e.toString());
         }
     }
 
@@ -293,9 +290,9 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
         _writer = createTestProbe();
         try {
             _writer.delete("blaId");
-            assertTrue(CORR_OUTPUT+_contentCollector.toString(), _contentCollector.toString().equals("<changes><delete id=\"blaId\"></delete>"));
+            Assert.assertTrue(CORR_OUTPUT+_contentCollector.toString(), _contentCollector.toString().equals("<changes><delete id=\"blaId\"></delete>"));
         } catch (IOException e) {
-            fail(e.toString());
+            Assert.fail(e.toString());
         }
     }
 
@@ -305,10 +302,10 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
             String illegalChars = "\u0001\u0002\u0003\u0004\u0005\u0006\u000B\f\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F\uDBFF\uDC00";
             String legalChars = "foo";
             _writer.write(illegalChars + legalChars);
-            assertEquals("All illegal XML unicode characters should have been replaced by spaces", legalChars, _contentCollector.toString().trim());
+            Assert.assertEquals("All illegal XML unicode characters should have been replaced by spaces", legalChars, _contentCollector.toString().trim());
             
         } catch (IOException e) {
-            fail(e.toString());
+            Assert.fail(e.toString());
         }
     }
 
@@ -318,10 +315,10 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
             String illegalChars = "\u0001\u0002\u0003\u0004\u0005\u0006\u000B\f\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F\uDBFF\uDC00";
             String legalChars = "foo";
             _writer.writeText(illegalChars + legalChars, null);
-            assertEquals("All illegal XML unicode characters should have been replaced by spaces", legalChars, _contentCollector.toString().trim());
+            Assert.assertEquals("All illegal XML unicode characters should have been replaced by spaces", legalChars, _contentCollector.toString().trim());
 
         } catch (IOException e) {
-            fail(e.toString());
+            Assert.fail(e.toString());
         }
     }
 
@@ -333,11 +330,11 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
             _writer.startElement(legalChars, null);
             _writer.writeAttribute(legalChars, illegalChars + legalChars, null);
             _writer.endElement(legalChars);
-            assertTrue("All illegal XML unicode characters should have been replaced by spaces", 
+            Assert.assertTrue("All illegal XML unicode characters should have been replaced by spaces", 
                     _contentCollector.toString().matches("<:X: :X:=\"[ ]+:X:\"></:X:>".replace(":X:", legalChars)));
 
         } catch (IOException e) {
-            fail(e.toString());
+            Assert.fail(e.toString());
         }
     }
     
@@ -349,10 +346,10 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
             
             String escaped = _contentCollector.toString();
             
-            assertEquals("All illegal XML unicode characters should have been replaced by spaces", input, escaped.trim());
+            Assert.assertEquals("All illegal XML unicode characters should have been replaced by spaces", input, escaped.trim());
 
         } catch (IOException e) {
-            fail(e.toString());
+            Assert.fail(e.toString());
         }
     }
     
@@ -364,10 +361,10 @@ public class PartialResponseWriterImplTest extends AbstractJsfTestCase {
             
             String escaped = _contentCollector.toString();
             
-            assertEquals("All illegal XML unicode characters should have been replaced by spaces", input, escaped.trim());
+            Assert.assertEquals("All illegal XML unicode characters should have been replaced by spaces", input, escaped.trim());
 
         } catch (IOException e) {
-            fail(e.toString());
+            Assert.fail(e.toString());
         }
     }
 

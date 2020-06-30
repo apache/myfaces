@@ -78,18 +78,6 @@ import org.jmock.cglib.MockObjectTestCase;
 public abstract class AbstractJmockJsfTestCase extends MockObjectTestCase
 {
 
-    // ------------------------------------------------------------ Constructors
-
-    /**
-     * <p>Construct a new instance of this test case.</p>
-     *
-     * @param name Name of this test case
-     */
-    public AbstractJmockJsfTestCase(String name)
-    {
-        setName(name);
-    }
-
     // ---------------------------------------------------- Overall Test Methods
 
     /**

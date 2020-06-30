@@ -31,6 +31,7 @@ import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -122,7 +123,7 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 label, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -145,7 +146,7 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
         label.encodeAll(facesContext);
 
         String page = getPageContents();
-        assertEquals("<label id=\"labelId\">&lt;span class=&quot;required&quot;&gt;field label&lt;/span&gt;</label>", page);
+        Assert.assertEquals("<label id=\"labelId\">&lt;span class=&quot;required&quot;&gt;field label&lt;/span&gt;</label>", page);
     }
 
     @Test
@@ -159,7 +160,7 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
         label.encodeAll(facesContext);
 
         String page = getPageContents();
-        assertEquals("<label id=\"labelId\"><span class=\"required\">field label</span></label>", page);
+        Assert.assertEquals("<label id=\"labelId\"><span class=\"required\">field label</span></label>", page);
     }
     
     /**
@@ -173,12 +174,12 @@ public class HtmlLabelRendererTest extends AbstractJsfConfigurableMockTestCase
         {
             label.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            assertTrue(output.matches(".+id=\".+\".+"));
-            assertTrue(output.matches(".+name=\".+\".+"));
+            Assert.assertTrue(output.matches(".+id=\".+\".+"));
+            Assert.assertTrue(output.matches(".+name=\".+\".+"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
         
     }

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
+import org.junit.Assert;
 
 public class _AttachedListStateWrapperTest extends TestCase
 {
@@ -42,13 +43,13 @@ public class _AttachedListStateWrapperTest extends TestCase
     }
 
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         super.tearDown();
     }
@@ -60,8 +61,8 @@ public class _AttachedListStateWrapperTest extends TestCase
     {
         List<Object> foo = new ArrayList<Object>();
         _AttachedListStateWrapper subject = new _AttachedListStateWrapper(foo);
-        assertNotNull(subject.getWrappedStateList());
-        assertTrue(subject.getWrappedStateList() == foo);
+        Assert.assertNotNull(subject.getWrappedStateList());
+        Assert.assertTrue(subject.getWrappedStateList() == foo);
     }
 
     public void testSerialize() throws Exception
@@ -78,7 +79,7 @@ public class _AttachedListStateWrapperTest extends TestCase
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
         _AttachedListStateWrapper blorg = (_AttachedListStateWrapper) ois.readObject();
-        assertEquals(blorg.getWrappedStateList(), subject.getWrappedStateList());
+        Assert.assertEquals(blorg.getWrappedStateList(), subject.getWrappedStateList());
         oos.close();
         ois.close();
     }

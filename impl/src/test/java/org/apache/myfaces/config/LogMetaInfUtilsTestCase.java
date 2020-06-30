@@ -19,21 +19,16 @@
 
 package org.apache.myfaces.config;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.junit.Assert;
 
 public class LogMetaInfUtilsTestCase extends AbstractJsfTestCase
 {
-
-    public LogMetaInfUtilsTestCase(String name)
-    {
-        super(name);
-    }
-
     public void testVersionNumber() throws Exception
     {
 
@@ -55,27 +50,27 @@ public class LogMetaInfUtilsTestCase extends AbstractJsfTestCase
         LogMetaInfUtils.addJarInfo(libs, new URL("file:/opt/project/tobago/tobago-example/tobago-example-demo/target/tobago-example-demo/WEB-INF/lib/slf4j-log4j12-1.6.1.jar"));
 
         final List<LogMetaInfUtils.JarInfo> mf = libs.get("myfaces-api");
-        assertEquals(2, mf.size());
-        assertEquals("1.2.11-SNAPSHOT", mf.get(0).getVersion());
-        assertEquals("2", mf.get(1).getVersion());
+        Assert.assertEquals(2, mf.size());
+        Assert.assertEquals("1.2.11-SNAPSHOT", mf.get(0).getVersion());
+        Assert.assertEquals("2", mf.get(1).getVersion());
 
         final List<LogMetaInfUtils.JarInfo> tk12 = libs.get("tomahawk12");
-        assertEquals(1, tk12.size());
-        assertEquals("1.1.10-SNAPSHOT", tk12.get(0).getVersion());
+        Assert.assertEquals(1, tk12.size());
+        Assert.assertEquals("1.1.10-SNAPSHOT", tk12.get(0).getVersion());
 
         final List<LogMetaInfUtils.JarInfo> tksb = libs.get("tomahawk-sandbox12");
-        assertEquals(1, tksb.size());
-        assertEquals("1.1.10", tksb.get(0).getVersion());
+        Assert.assertEquals(1, tksb.size());
+        Assert.assertEquals("1.1.10", tksb.get(0).getVersion());
 
         final List<LogMetaInfUtils.JarInfo> tobago = libs.get("tobago-core");
-        assertEquals(2, tobago.size());
-        assertEquals("1.5.0-alpha-3-SNAPSHOT", tobago.get(0).getVersion());
-        assertEquals("1.0.35", tobago.get(1).getVersion());
+        Assert.assertEquals(2, tobago.size());
+        Assert.assertEquals("1.5.0-alpha-3-SNAPSHOT", tobago.get(0).getVersion());
+        Assert.assertEquals("1.0.35", tobago.get(1).getVersion());
 
         final List<LogMetaInfUtils.JarInfo> other = libs.get("other");
-        assertNull(other);
+        Assert.assertNull(other);
 
         final List<LogMetaInfUtils.JarInfo> slf = libs.get("slf4j-log4j12");
-        assertNull(slf);
+        Assert.assertNull(slf);
     }
 }

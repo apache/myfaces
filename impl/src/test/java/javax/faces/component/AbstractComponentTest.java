@@ -25,26 +25,5 @@ import org.apache.myfaces.test.jmock.AbstractJmockJsfTestCase;
  */
 public abstract class AbstractComponentTest extends AbstractJmockJsfTestCase
 {
-    public AbstractComponentTest(String arg0)
-    {
-        super(arg0);
-    }
 
-    /**
-     * TODO
-     */
-    @Override
-    protected void setUp() throws Exception
-    {
-        super.setUp();
-    }
-
-    /**
-     * TODO
-     */
-    @Override
-    protected void tearDown() throws Exception
-    {
-        super.tearDown();
-    }
 }

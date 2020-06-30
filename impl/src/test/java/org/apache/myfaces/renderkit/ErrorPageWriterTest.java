@@ -31,9 +31,10 @@ import junit.framework.TestSuite;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.spi.impl.DefaultSerialFactory;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Assert;
 
 /**
  * @author Bruno Aranda (latest modification by $Author: struberg $)
@@ -41,18 +42,8 @@ import org.apache.myfaces.test.mock.MockResponseWriter;
  */
 public class ErrorPageWriterTest extends AbstractJsfTestCase
 {
-    public static Test suite()
-    {
-        return new TestSuite(ErrorPageWriterTest.class); // needed in maven
-    }
-
     private MockResponseWriter writer ;
     private HtmlOutputText outputText;
-
-    public ErrorPageWriterTest(String name)
-    {
-        super(name);
-    }
 
     public void setUp() throws Exception
     {
@@ -107,7 +98,7 @@ public class ErrorPageWriterTest extends AbstractJsfTestCase
         }
         int indexOfHasRenderedAttribute = output.indexOf("rendered=\"\"");
         boolean hasRenderedAttribute = (-1 != indexOfHasRenderedAttribute);
-        assertTrue("rendered attribute wasn't written correctly: " + surroundingText, hasRenderedAttribute);
+        Assert.assertTrue("rendered attribute wasn't written correctly: " + surroundingText, hasRenderedAttribute);
     }
     
 }

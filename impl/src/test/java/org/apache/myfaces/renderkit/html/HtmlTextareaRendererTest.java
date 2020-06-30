@@ -28,9 +28,10 @@ import junit.framework.TestSuite;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Assert;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -40,15 +41,6 @@ public class HtmlTextareaRendererTest extends AbstractJsfTestCase
 {
     private MockResponseWriter writer ;
     private HtmlInputTextarea inputTextarea;
-
-    public HtmlTextareaRendererTest(String name)
-    {
-        super(name);
-    }
-    
-    public static Test suite() {
-        return new TestSuite(HtmlTextareaRendererTest.class);
-    }
 
     public void setUp() throws Exception
     {
@@ -80,7 +72,7 @@ public class HtmlTextareaRendererTest extends AbstractJsfTestCase
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        assertEquals("<textarea name=\"j_id__v_0\"></textarea>", output);
+        Assert.assertEquals("<textarea name=\"j_id__v_0\"></textarea>", output);
     }
 
     public void testRenderColsRows() throws Exception
@@ -91,7 +83,7 @@ public class HtmlTextareaRendererTest extends AbstractJsfTestCase
         facesContext.renderResponse();
 
         String output = writer.getWriter().toString();
-        assertEquals("<textarea name=\"j_id__v_0\" cols=\"5\" rows=\"10\"></textarea>", output);
+        Assert.assertEquals("<textarea name=\"j_id__v_0\" cols=\"5\" rows=\"10\"></textarea>", output);
     }
     
     public void testHtmlPropertyPassTru() throws Exception
@@ -101,7 +93,7 @@ public class HtmlTextareaRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 inputTextarea, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -115,12 +107,12 @@ public class HtmlTextareaRendererTest extends AbstractJsfTestCase
         {
             inputTextarea.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            assertTrue(output.matches("(?s).+id=\".+\".+"));
-            assertTrue(output.matches("(?s).+name=\".+\".+"));
+            Assert.assertTrue(output.matches("(?s).+id=\".+\".+"));
+            Assert.assertTrue(output.matches("(?s).+name=\".+\".+"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
         
     }

@@ -29,8 +29,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
+import org.junit.Assert;
 
 public class _SharedRendererUtilsTest extends AbstractJsfTestCase
 {
@@ -171,14 +172,9 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
     private UISelectMany uiSelectMany;
     private String[] submittedValue;
     private Converter pojoConverter = new POJOConverter();
-    
-    public _SharedRendererUtilsTest(String name)
-    {
-        super(name);
-    }
-    
+
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
         
@@ -187,7 +183,7 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         super.tearDown();
         
@@ -202,8 +198,8 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
     public void testGetConvertedUISelectManyValueNoConverterNoValueExpression()
     {
         Object target = SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
-        assertTrue(target instanceof Object[]);
-        assertTrue(Arrays.deepEquals((Object[]) target, submittedValue));
+        Assert.assertTrue(target instanceof Object[]);
+        Assert.assertTrue(Arrays.deepEquals((Object[]) target, submittedValue));
     }
     
     /**
@@ -217,10 +213,10 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
         ValueExpression expr = new MockValueExpression("#{bean.intArrayValue}", int[].class);
         uiSelectMany.setValueExpression("value", expr);
         Object target = SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
-        assertTrue(target instanceof int[]);
+        Assert.assertTrue(target instanceof int[]);
         int[] array = (int[]) target;
-        assertTrue(new Integer(submittedValue[0]).equals(array[0]));
-        assertTrue(new Integer(submittedValue[0]).equals(array[0]));
+        Assert.assertTrue(new Integer(submittedValue[0]).equals(array[0]));
+        Assert.assertTrue(new Integer(submittedValue[0]).equals(array[0]));
         
     }
     
@@ -235,10 +231,10 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
         ValueExpression expr = new MockValueExpression("#{bean.floatArrayValue}", Float[].class);
         uiSelectMany.setValueExpression("value", expr);
         Object target = SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
-        assertTrue(target instanceof Float[]);
+        Assert.assertTrue(target instanceof Float[]);
         Float[] array = (Float[]) target;
-        assertTrue(new Float(submittedValue[0]).equals(array[0]));
-        assertTrue(new Float(submittedValue[1]).equals(array[1]));
+        Assert.assertTrue(new Float(submittedValue[0]).equals(array[0]));
+        Assert.assertTrue(new Float(submittedValue[1]).equals(array[1]));
     }
     
     /**
@@ -253,10 +249,10 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
         uiSelectMany.setValueExpression("value", expr);
         uiSelectMany.setConverter(pojoConverter);
         Object target = SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
-        assertTrue(target instanceof POJO[]);
+        Assert.assertTrue(target instanceof POJO[]);
         POJO[] array = (POJO[]) target;
-        assertTrue(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[0]).equals(array[0]));
-        assertTrue(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[1]).equals(array[1]));
+        Assert.assertTrue(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[0]).equals(array[0]));
+        Assert.assertTrue(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[1]).equals(array[1]));
     }
     
     /**
@@ -273,10 +269,10 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
         uiSelectMany.setValueExpression("value", expr);
         uiSelectMany.setConverter(pojoConverter);
         Object target = SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
-        assertTrue(target instanceof Collection);
+        Assert.assertTrue(target instanceof Collection);
         Collection collection = (Collection) target;
-        assertTrue(collection.contains(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[0])));
-        assertTrue(collection.contains(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[1])));
+        Assert.assertTrue(collection.contains(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[0])));
+        Assert.assertTrue(collection.contains(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[1])));
     }
     
     /**
@@ -295,10 +291,10 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
         uiSelectMany.setConverter(pojoConverter);
         uiSelectMany.getAttributes().put("collectionType", "java.util.HashSet");
         Object target = SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
-        assertTrue(target instanceof HashSet);
+        Assert.assertTrue(target instanceof HashSet);
         HashSet hashSet = (HashSet) target;
-        assertTrue(hashSet.contains(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[0])));
-        assertTrue(hashSet.contains(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[1])));
+        Assert.assertTrue(hashSet.contains(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[0])));
+        Assert.assertTrue(hashSet.contains(pojoConverter.getAsObject(facesContext, uiSelectMany, submittedValue[1])));
     }
     
     /**
@@ -314,7 +310,7 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
         try
         {
             SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
-            fail();
+            Assert.fail();
         }
         catch (ConverterException ce)
         {
@@ -337,7 +333,7 @@ public class _SharedRendererUtilsTest extends AbstractJsfTestCase
         try
         {
             SharedRendererUtils.getConvertedUISelectManyValue(facesContext, uiSelectMany, submittedValue);
-            fail();
+            Assert.fail();
         }
         catch (FacesException fe)
         {

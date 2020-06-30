@@ -28,6 +28,7 @@ import javax.faces.FacesException;
 import org.apache.myfaces.test.MyFacesAsserts;
 import org.apache.myfaces.test.FacesTestCase;
 import org.apache.myfaces.test.TestRunner;
+import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -36,7 +37,7 @@ public class ViewIdSupportMockTest extends FacesTestCase
     private ViewIdSupport viewIdSupport;
 
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
 
@@ -54,7 +55,7 @@ public class ViewIdSupportMockTest extends FacesTestCase
         map.put("javax.servlet.include.path_info", expectedValue);        
         Mockito.when(_externalContext.getRequestMap()).thenReturn(map);
 
-        assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
+        Assert.assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
     }
 
     public void testCalculateViewIdFromRequestPathInfo()
@@ -64,7 +65,7 @@ public class ViewIdSupportMockTest extends FacesTestCase
         String expectedValue = "requestPathInfo_VIEWID";
         Mockito.when(_externalContext.getRequestPathInfo()).thenReturn(expectedValue);
 
-        assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
+        Assert.assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
     }
 
     public void testCalculateViewIdFromRequestAttributeIncludeServletPath()
@@ -76,7 +77,7 @@ public class ViewIdSupportMockTest extends FacesTestCase
         
         Mockito.when(_externalContext.getRequestPathInfo()).thenReturn(null);
 
-        assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
+        Assert.assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
     }
 
     public void testCalculateViewIdFromRequestServletPath()
@@ -86,7 +87,7 @@ public class ViewIdSupportMockTest extends FacesTestCase
         String expectedValue = "RequestServletPath_VIEWID";
         Mockito.when(_externalContext.getRequestServletPath()).thenReturn(expectedValue);
 
-        assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
+        Assert.assertEquals(expectedValue, viewIdSupport.calculateViewId(_facesContext));
     }
 
     public void testCalculateViewIdFacesException()

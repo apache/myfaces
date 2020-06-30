@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -85,11 +86,11 @@ public class _SelectItemsUtilTest extends AbstractJsfTestCase
         
         boolean matchValue = _SelectItemsUtil.matchValue(facesContext, uiComponent, value, iterator, null);
         
-        assertTrue("Value Float 1.2 must match SelectItem.value \"1.2\" (type of String)", matchValue);
+        Assert.assertTrue("Value Float 1.2 must match SelectItem.value \"1.2\" (type of String)", matchValue);
         
         Float valueNotInSelectItems = Float.valueOf("2.0");
         matchValue = _SelectItemsUtil.matchValue(facesContext, uiComponent, valueNotInSelectItems, iterator, null);
-        assertFalse(matchValue);
+        Assert.assertFalse(matchValue);
     }
     
     @Test
@@ -104,11 +105,11 @@ public class _SelectItemsUtilTest extends AbstractJsfTestCase
         Object enumValue = MockEnum.THREE;
         boolean matchValue = _SelectItemsUtil.matchValue(facesContext, uiComponent, enumValue, iterator, null);
         
-        assertTrue("Value Enum THREE must match SelectItem.value \"THREE\" (type of String)", matchValue);
+        Assert.assertTrue("Value Enum THREE must match SelectItem.value \"THREE\" (type of String)", matchValue);
         
         enumValue = MockEnum.FOUR;
         matchValue = _SelectItemsUtil.matchValue(facesContext, uiComponent, enumValue, iterator, null);
-        assertFalse(matchValue);
+        Assert.assertFalse(matchValue);
     }
     
     @Test 
@@ -123,7 +124,7 @@ public class _SelectItemsUtilTest extends AbstractJsfTestCase
         Object enumValue = MockEnum.TWO;
         boolean matchValue = _SelectItemsUtil.matchValue(facesContext, uiComponent, enumValue, iterator, null);
         
-        assertTrue("Value Enum TWO must match SelectItem.value \"TWO\" (type of String)", matchValue);
+        Assert.assertTrue("Value Enum TWO must match SelectItem.value \"TWO\" (type of String)", matchValue);
     }
     
     private static enum MockEnum {
@@ -153,11 +154,11 @@ public class _SelectItemsUtilTest extends AbstractJsfTestCase
     {
         Float value = Float.parseFloat(NO_SELECTION_ITEM_VALUE);
         boolean noSelectionOption = _SelectItemsUtil.isNoSelectionOption(facesContext, uiComponent, value, iterator, null);
-        assertTrue(noSelectionOption);
+        Assert.assertTrue(noSelectionOption);
         
         Float valueNotInSelectItems = Float.valueOf("2.0");
         noSelectionOption = _SelectItemsUtil.isNoSelectionOption(facesContext, uiComponent, valueNotInSelectItems, iterator, null);
-        assertFalse(noSelectionOption);
+        Assert.assertFalse(noSelectionOption);
         
     }
 

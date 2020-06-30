@@ -38,10 +38,11 @@ import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Assert;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -50,19 +51,9 @@ import org.apache.myfaces.test.mock.MockResponseWriter;
 public class HtmlTextRendererTest extends AbstractJsfTestCase
 {
 
-    public static Test suite()
-    {
-        return new TestSuite(HtmlTextRendererTest.class); // needed in maven
-    }
-
     private MockResponseWriter writer ;
     private HtmlOutputText outputText;
     private HtmlInputText inputText;
-
-    public HtmlTextRendererTest(String name)
-    {
-        super(name);
-    }
 
     public void setUp() throws Exception
     {
@@ -107,8 +98,8 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
 
         String output = writer.getWriter().toString();
 
-        assertEquals("<span class=\"myStyleClass\">Output</span>", output);
-        assertNotSame("Output", output);
+        Assert.assertEquals("<span class=\"myStyleClass\">Output</span>", output);
+        Assert.assertNotSame("Output", output);
     }
     
     /**
@@ -125,7 +116,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
 
         String output = writer.getWriter().toString();
 
-        assertEquals("Output", output);
+        Assert.assertEquals("Output", output);
     }
 
     public void testHtmlPropertyPassTru() throws Exception
@@ -136,7 +127,7 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 inputText, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -204,8 +195,8 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
         // 4) renderer calls getValue(); --> getValue() evaluates the
         // value-binding, as the local-value is 'null', and I get the
         // default-value of the bean shown again
-        assertNotSame(expression.getValue(facesContext.getELContext()), inputText.getValue());
-        assertNull(inputText.getValue());
+        Assert.assertNotSame(expression.getValue(facesContext.getELContext()), inputText.getValue());
+        Assert.assertNull(inputText.getValue());
     }
     
     /**
@@ -218,12 +209,12 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
         {
             inputText.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            assertTrue(output.matches("(?s).+id=\".+\".+"));
-            assertTrue(output.matches("(?s).+name=\".+\".+"));
+            Assert.assertTrue(output.matches("(?s).+id=\".+\".+"));
+            Assert.assertTrue(output.matches("(?s).+name=\".+\".+"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
         
     }
@@ -242,11 +233,11 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
             // onchange="jsf.util.chain(document.getElementById(&apos;j_id0&apos;), event,
             //                          &apos;alert(\&apos;test\&apos;)&apos;);"
-            assertTrue(output.contains("&apos;alert(\\&apos;test\\&apos;)&apos;"));
+            Assert.assertTrue(output.contains("&apos;alert(\\&apos;test\\&apos;)&apos;"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
     
@@ -264,11 +255,11 @@ public class HtmlTextRendererTest extends AbstractJsfTestCase
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
             // onchange="jsf.util.chain(document.getElementById(&apos;j_id0&apos;), event,
             //               &apos;var test = \&apos;a\\\&apos;b\&apos;; alert(test);&apos;);"
-            assertTrue(output.contains("&apos;var test = \\&apos;a\\\\\\&apos;b\\&apos;; alert(test);&apos;"));
+            Assert.assertTrue(output.contains("&apos;var test = \\&apos;a\\\\\\&apos;b\\&apos;; alert(test);&apos;"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
     

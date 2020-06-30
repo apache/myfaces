@@ -39,7 +39,7 @@ public abstract class FacesTestCase extends TestCase
     protected Application _application;
     protected ELContext _elContext;
 
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         _externalContext = Mockito.mock(ExternalContext.class);
         _facesContext = Mockito.mock(FacesContext.class);
@@ -49,7 +49,7 @@ public abstract class FacesTestCase extends TestCase
     }
     
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         MockFacesContext12.setCurrentInstance(null);
     }

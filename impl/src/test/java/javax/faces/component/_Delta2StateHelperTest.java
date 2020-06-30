@@ -25,15 +25,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
+import org.junit.Assert;
 
 
 public class _Delta2StateHelperTest extends AbstractComponentTest
 {
-
-    public _Delta2StateHelperTest(String name)
-    {
-        super(name);
-    }
     
     public static class UITestComponent extends UIComponentBase
     {
@@ -111,13 +107,13 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
     }
 
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         super.tearDown();
     }
@@ -125,11 +121,11 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
     public void testSimpleGetterSetter() throws Exception
     {
         UITestComponent a = new UITestComponent();
-        assertNull(a.getTestProperty1());
+        Assert.assertNull(a.getTestProperty1());
         a.setTestProperty1("testProperty1");
-        assertEquals("testProperty1", a.getTestProperty1());
+        Assert.assertEquals("testProperty1", a.getTestProperty1());
         a.setTestProperty1(null);
-        assertNull(a.getTestProperty1());
+        Assert.assertNull(a.getTestProperty1());
     }
     
     public void testEmptySaveRestore() throws Exception
@@ -143,8 +139,8 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
 
         Object state2 = b.saveState(facesContext);
 
-        assertEquals(a.getTestProperty1(), b.getTestProperty1());
-        assertEquals(a.getTestProperty2(), b.getTestProperty2());        
+        Assert.assertEquals(a.getTestProperty1(), b.getTestProperty1());
+        Assert.assertEquals(a.getTestProperty2(), b.getTestProperty2());        
     }
     
     public void testSimpleSaveRestore() throws Exception
@@ -160,8 +156,8 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
 
         Object state2 = b.saveState(facesContext);
 
-        assertEquals(a.getTestProperty1(), b.getTestProperty1());
-        assertEquals(a.getTestProperty2(), b.getTestProperty2());
+        Assert.assertEquals(a.getTestProperty1(), b.getTestProperty1());
+        Assert.assertEquals(a.getTestProperty2(), b.getTestProperty2());
     }
     
     public void testDeltaStateSaveRestore()
@@ -188,10 +184,10 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
 
         Object state2 = b.saveState(facesContext);
 
-        assertNull(a.getTestProperty1());
-        assertNull(b.getTestProperty1());        
-        assertEquals("testProperty2", a.getTestProperty2());
-        assertEquals("testProperty2", b.getTestProperty2());
+        Assert.assertNull(a.getTestProperty1());
+        Assert.assertNull(b.getTestProperty1());        
+        Assert.assertEquals("testProperty2", a.getTestProperty2());
+        Assert.assertEquals("testProperty2", b.getTestProperty2());
     }
     
     public void testPutPropertyStateHelper1()
@@ -202,23 +198,23 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         Object retValue = helper.put("someProperty", "someValue");
         //No value previously set
-        assertNull(retValue);
+        Assert.assertNull(retValue);
         
         a.markInitialState();
         
         retValue = helper.put("someProperty", "someOtherValue");
         
-        assertEquals("someValue",retValue);
+        Assert.assertEquals("someValue",retValue);
         
         retValue = helper.put("someProperty", "someOtherOtherValue");
         
-        assertEquals("someOtherValue",retValue);
+        Assert.assertEquals("someOtherValue",retValue);
         
         a.clearInitialState();
         
         retValue = helper.put("someProperty", "someOtherOtherOtherValue");
         
-        assertEquals("someOtherOtherValue",retValue);
+        Assert.assertEquals("someOtherOtherValue",retValue);
     }
     
     public void testPutPropertyStateHelper2()
@@ -229,23 +225,23 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         Object retValue = helper.put("someProperty", "someValue");
         //No value previously set
-        assertNull(retValue);
+        Assert.assertNull(retValue);
         
         a.markInitialState();
         
         retValue = helper.put("someProperty", null);
         
-        assertEquals("someValue",retValue);
+        Assert.assertEquals("someValue",retValue);
         
         retValue = helper.put("someProperty", "someOtherOtherValue");
         
-        assertNull(retValue);
+        Assert.assertNull(retValue);
         
         a.clearInitialState();
         
         retValue = helper.put("someProperty", null);
         
-        assertEquals("someOtherOtherValue",retValue);
+        Assert.assertEquals("someOtherOtherValue",retValue);
     }
     
     public void testRemovePropertyStateHelper1()
@@ -256,23 +252,23 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         Object retValue = helper.put("someProperty", "someValue");
         //No value previously set
-        assertNull(retValue);
+        Assert.assertNull(retValue);
         
         a.markInitialState();
         
         retValue = helper.remove("someProperty");
         
-        assertEquals("someValue",retValue);
+        Assert.assertEquals("someValue",retValue);
         
         retValue = helper.put("someProperty", "someOtherOtherValue");
         
-        assertNull(retValue);
+        Assert.assertNull(retValue);
         
         a.clearInitialState();
         
         retValue = helper.remove("someProperty");
         
-        assertEquals("someOtherOtherValue",retValue);
+        Assert.assertEquals("someOtherOtherValue",retValue);
     }
     
     
@@ -296,15 +292,15 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         List listA = (List) helperA.get("somePropertyList");
         
-        assertEquals("someValue1",listA.get(0));
-        assertEquals("someValue2",listA.get(1));
-        assertEquals("someValue3",listA.get(2));
+        Assert.assertEquals("someValue1",listA.get(0));
+        Assert.assertEquals("someValue2",listA.get(1));
+        Assert.assertEquals("someValue3",listA.get(2));
         
         List listB = (List) helperB.get("somePropertyList");
         
-        assertEquals("someValue1",listB.get(0));
-        assertEquals("someValue2",listB.get(1));
-        assertEquals("someValue3",listB.get(2));
+        Assert.assertEquals("someValue1",listB.get(0));
+        Assert.assertEquals("someValue2",listB.get(1));
+        Assert.assertEquals("someValue3",listB.get(2));
     }
     
     public void testAddItemOnList2()
@@ -332,16 +328,16 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         if (listA != null)
         {
-            assertFalse("The list should not contain [someValue1]", listA.contains("someValue1"));
-            assertFalse("The list should not contain [someValue2]", listA.contains("someValue2"));
+            Assert.assertFalse("The list should not contain [someValue1]", listA.contains("someValue1"));
+            Assert.assertFalse("The list should not contain [someValue2]", listA.contains("someValue2"));
         }
         
         List listB = (List) helperB.get("somePropertyList");
 
         if (listB != null)
         {
-            assertFalse("The list should not contain [someValue2]", listB.contains("someValue2"));            
-            assertFalse("The list should not contain [someValue1]", listB.contains("someValue1"));
+            Assert.assertFalse("The list should not contain [someValue2]", listB.contains("someValue2"));            
+            Assert.assertFalse("The list should not contain [someValue1]", listB.contains("someValue1"));
         }
     }
     
@@ -368,15 +364,15 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         List listA = (List) helperA.get("somePropertyList");
         
-        assertTrue("The list should contain [someValue3]", listA.contains("someValue3"));
-        assertFalse("The list should not contain [someValue1]", listA.contains("someValue1"));
-        assertFalse("The list should not contain [someValue2]", listA.contains("someValue2"));
+        Assert.assertTrue("The list should contain [someValue3]", listA.contains("someValue3"));
+        Assert.assertFalse("The list should not contain [someValue1]", listA.contains("someValue1"));
+        Assert.assertFalse("The list should not contain [someValue2]", listA.contains("someValue2"));
         
         List listB = (List) helperB.get("somePropertyList");
 
-        assertTrue("The list should contain [someValue3]", listB.contains("someValue3"));
-        assertFalse("The list should not contain [someValue2]", listB.contains("someValue2"));            
-        assertFalse("The list should not contain [someValue1]", listB.contains("someValue1"));
+        Assert.assertTrue("The list should contain [someValue3]", listB.contains("someValue3"));
+        Assert.assertFalse("The list should not contain [someValue2]", listB.contains("someValue2"));            
+        Assert.assertFalse("The list should not contain [someValue1]", listB.contains("someValue1"));
     }    
     
     public void testPutItemOnMap1()
@@ -399,15 +395,15 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         Map mapA = (Map) helperA.get("somePropertyMap");
         
-        assertEquals("someValue1",mapA.get("key1"));
-        assertEquals("someValue2",mapA.get("key2"));
-        assertEquals("someValue3",mapA.get("key3"));        
+        Assert.assertEquals("someValue1",mapA.get("key1"));
+        Assert.assertEquals("someValue2",mapA.get("key2"));
+        Assert.assertEquals("someValue3",mapA.get("key3"));        
 
         Map mapB = (Map) helperB.get("somePropertyMap");
         
-        assertEquals("someValue1",mapB.get("key1"));
-        assertEquals("someValue2",mapB.get("key2"));
-        assertEquals("someValue3",mapB.get("key3"));        
+        Assert.assertEquals("someValue1",mapB.get("key1"));
+        Assert.assertEquals("someValue2",mapB.get("key2"));
+        Assert.assertEquals("someValue3",mapB.get("key3"));        
     }
     
     public void testPutRemoveItemOnMap2()
@@ -434,16 +430,16 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         if (mapA != null)
         {
-            assertNull(mapA.get("key2"));
-            assertNull(mapA.get("key1"));
+            Assert.assertNull(mapA.get("key2"));
+            Assert.assertNull(mapA.get("key1"));
         }
 
         Map mapB = (Map) helperB.get("somePropertyMap");
         
         if (mapB != null)
         {
-            assertNull(mapB.get("key2"));
-            assertNull(mapB.get("key1"));
+            Assert.assertNull(mapB.get("key2"));
+            Assert.assertNull(mapB.get("key1"));
         }
     }
     
@@ -472,16 +468,16 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         if (mapA != null)
         {
-            assertNull(mapA.get("key2"));
-            assertNull(mapA.get("key1"));
+            Assert.assertNull(mapA.get("key2"));
+            Assert.assertNull(mapA.get("key1"));
         }
 
         Map mapB = (Map) helperB.get("somePropertyMap");
         
         if (mapB != null)
         {
-            assertNull(mapB.get("key2"));
-            assertNull(mapB.get("key1"));
+            Assert.assertNull(mapB.get("key2"));
+            Assert.assertNull(mapB.get("key1"));
         }
     }
     
@@ -544,8 +540,8 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         b.restoreState(facesContext, a.saveState(facesContext));
         
-        assertTrue(a.getPhaseListeners().contains(phaseListener1));
-        assertTrue(b.getPhaseListeners().contains(phaseListener1));
+        Assert.assertTrue(a.getPhaseListeners().contains(phaseListener1));
+        Assert.assertTrue(b.getPhaseListeners().contains(phaseListener1));
     }
     
     public void testUIViewRootPhaseListener2() throws Exception
@@ -562,8 +558,8 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         b.restoreState(facesContext, a.saveState(facesContext));
         
-        assertTrue(a.getPhaseListeners().contains(phaseListener1));
-        assertTrue(b.getPhaseListeners().contains(phaseListener1));
+        Assert.assertTrue(a.getPhaseListeners().contains(phaseListener1));
+        Assert.assertTrue(b.getPhaseListeners().contains(phaseListener1));
     }
     
     public void testUIViewRootPhaseListener3() throws Exception
@@ -587,19 +583,19 @@ public class _Delta2StateHelperTest extends AbstractComponentTest
         
         b.restoreState(facesContext, a.saveState(facesContext));
         
-        assertTrue(a.getPhaseListeners().contains(phaseListener1));
-        assertTrue(b.getPhaseListeners().contains(phaseListener1));
-        assertTrue(a.getPhaseListeners().contains(phaseListener2));
-        assertTrue(b.getPhaseListeners().contains(phaseListener2));
+        Assert.assertTrue(a.getPhaseListeners().contains(phaseListener1));
+        Assert.assertTrue(b.getPhaseListeners().contains(phaseListener1));
+        Assert.assertTrue(a.getPhaseListeners().contains(phaseListener2));
+        Assert.assertTrue(b.getPhaseListeners().contains(phaseListener2));
         
         a.removePhaseListener(phaseListener1);
         a.removePhaseListener(phaseListener2);
         
         c.restoreState(facesContext, a.saveState(facesContext));
         
-        assertFalse(a.getPhaseListeners().contains(phaseListener1));
-        assertFalse(c.getPhaseListeners().contains(phaseListener1));
-        assertFalse(a.getPhaseListeners().contains(phaseListener2));
-        assertFalse(c.getPhaseListeners().contains(phaseListener2));
+        Assert.assertFalse(a.getPhaseListeners().contains(phaseListener1));
+        Assert.assertFalse(c.getPhaseListeners().contains(phaseListener1));
+        Assert.assertFalse(a.getPhaseListeners().contains(phaseListener2));
+        Assert.assertFalse(c.getPhaseListeners().contains(phaseListener2));
     }    
 }

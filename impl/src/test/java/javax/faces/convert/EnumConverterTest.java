@@ -22,7 +22,8 @@ package javax.faces.convert;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.junit.Assert;
 
 /**
  * This testcase test <code>javax.faces.convert.EnumConverter</code>.
@@ -45,20 +46,15 @@ public class EnumConverterTest extends AbstractJsfTestCase
 
     private EnumConverter converter;
 
-    public EnumConverterTest(String name)
-    {
-        super(name);
-    }
-
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
         converter = new EnumConverter(testEnum.class);
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         super.tearDown();
         converter = null;
@@ -72,7 +68,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
     {
         UIInput input = new UIInput();
         Object convertedObj = converter.getAsObject(FacesContext.getCurrentInstance(), input, "ITEM2");
-        assertEquals(convertedObj, testEnum.ITEM2);
+        Assert.assertEquals(convertedObj, testEnum.ITEM2);
     }
 
     /**
@@ -83,7 +79,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
     {
         UIInput input = new UIInput();
         Object convertedObj = converter.getAsObject(FacesContext.getCurrentInstance(), input, null);
-        assertNull(convertedObj);
+        Assert.assertNull(convertedObj);
     }
 
     /**
@@ -96,7 +92,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
         try
         {
             converter.getAsObject(FacesContext.getCurrentInstance(), input, "NO_ENUM_CONST");
-            fail("Converter exception should be thrown");
+            Assert.fail("Converter exception should be thrown");
         }
         catch (ConverterException e)
         {
@@ -115,7 +111,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
         try
         {
             testConverter.getAsObject(FacesContext.getCurrentInstance(), input, "ITEM2");
-            fail("Converter exception should be thrown");
+            Assert.fail("Converter exception should be thrown");
         }
         catch (ConverterException e)
         {
@@ -131,7 +127,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
     {
         UIInput input = new UIInput();
         String convertedStr = converter.getAsString(FacesContext.getCurrentInstance(), input, testEnum.ITEM1);
-        assertEquals(convertedStr, testEnum.ITEM1.name());
+        Assert.assertEquals(convertedStr, testEnum.ITEM1.name());
     }
 
     /**
@@ -142,7 +138,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
     {
         UIInput input = new UIInput();
         String convertedStr = converter.getAsString(FacesContext.getCurrentInstance(), input, null);
-        assertEquals(convertedStr, "");
+        Assert.assertEquals(convertedStr, "");
     }
 
     /**
@@ -155,7 +151,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
         try
         {
             String convertedStr = converter.getAsString(FacesContext.getCurrentInstance(), input, "HALLO");
-            fail("Converter exception should be thrown");
+            Assert.fail("Converter exception should be thrown");
         }
         catch (ConverterException e)
         {
@@ -174,7 +170,7 @@ public class EnumConverterTest extends AbstractJsfTestCase
         try
         {
             testConverter.getAsString(FacesContext.getCurrentInstance(), input, testEnum.ITEM1);
-            fail("Converter exception should be thrown");
+            Assert.fail("Converter exception should be thrown");
         }
         catch (ConverterException e)
         {

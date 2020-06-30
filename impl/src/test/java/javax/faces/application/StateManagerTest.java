@@ -27,28 +27,18 @@ import junit.framework.TestCase;
 import org.apache.myfaces.test.mock.MockStateManager;
 import org.easymock.MockControl;
 import org.easymock.classextension.MockClassControl;
+import org.junit.Assert;
 
 public class StateManagerTest extends TestCase
 {
-
-    public static void main(String[] args)
-    {
-        junit.textui.TestRunner.run(StateManagerTest.class);
-    }
-
-    public StateManagerTest(String name)
-    {
-        super(name);
-    }
-
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         super.tearDown();
     }
@@ -62,7 +52,7 @@ public class StateManagerTest extends TestCase
         try
         {
             subject.isSavingStateInClient(null);
-            fail("should have thrown an exception");
+            Assert.fail("should have thrown an exception");
         }
         catch (RuntimeException e)
         {
@@ -86,7 +76,7 @@ public class StateManagerTest extends TestCase
         externalControl.replay();
 
         MockStateManager subject = new MockStateManager();
-        assertEquals(true, subject.isSavingStateInClient(context));
+        Assert.assertEquals(true, subject.isSavingStateInClient(context));
     }
 
     /*
@@ -106,9 +96,9 @@ public class StateManagerTest extends TestCase
         externalControl.replay();
 
         MockStateManager subject = new MockStateManager();
-        assertEquals(false, subject.isSavingStateInClient(context));
+        Assert.assertEquals(false, subject.isSavingStateInClient(context));
         // calling a second time asserts that the code is caching the value correctly
-        assertEquals(false, subject.isSavingStateInClient(context));
+        Assert.assertEquals(false, subject.isSavingStateInClient(context));
     }
 
     /*
@@ -132,7 +122,7 @@ public class StateManagerTest extends TestCase
         externalControl.replay();
 
         MockStateManager subject = new MockStateManager();
-        assertEquals(false, subject.isSavingStateInClient(context));
+        Assert.assertEquals(false, subject.isSavingStateInClient(context));
     }
 
     /*
@@ -156,7 +146,7 @@ public class StateManagerTest extends TestCase
         externalControl.replay();
 
         MockStateManager subject = new MockStateManager();
-        assertEquals(false, subject.isSavingStateInClient(context));
+        Assert.assertEquals(false, subject.isSavingStateInClient(context));
     }
 
 }

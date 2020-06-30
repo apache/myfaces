@@ -18,12 +18,13 @@
  */
 package javax.faces.convert;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.Test;
 
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import java.util.Locale;
+import org.junit.Assert;
 
 /**
  * Test the {@link DoubleConverter}.
@@ -32,13 +33,8 @@ public class DoubleConverterTest extends AbstractJsfTestCase {
 
     private DoubleConverter mock;
 
-    public DoubleConverterTest(String name)
-    {
-        super(name);
-    }
-
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
 
@@ -46,7 +42,7 @@ public class DoubleConverterTest extends AbstractJsfTestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         super.tearDown();
 
@@ -64,21 +60,21 @@ public class DoubleConverterTest extends AbstractJsfTestCase {
 
         {
             Double d = (Double) mock.getAsObject(FacesContext.getCurrentInstance(), input, "47,3443");
-            assertNotNull(d);
-            assertEquals(47.3443d, d.doubleValue());
+            Assert.assertNotNull(d);
+            Assert.assertEquals(47.3443d, d.doubleValue(), 0);
         }
 
         {
             Double d = (Double) mock.getAsObject(FacesContext.getCurrentInstance(), input, "0,3443e3");
-            assertNotNull(d);
-            assertEquals(344.3d, d.doubleValue());
+            Assert.assertNotNull(d);
+            Assert.assertEquals(344.3d, d.doubleValue(), 0);
         }
 
         {
             // values with a dot as decimal seperator should still work...
             Double d = (Double) mock.getAsObject(FacesContext.getCurrentInstance(), input, "0.3443e3");
-            assertNotNull(d);
-            assertEquals(344.3d, d.doubleValue());
+            Assert.assertNotNull(d);
+            Assert.assertEquals(344.3d, d.doubleValue(), 0);
         }
 
     }
@@ -94,8 +90,8 @@ public class DoubleConverterTest extends AbstractJsfTestCase {
 
         {
             Double d = (Double) mock.getAsObject(FacesContext.getCurrentInstance(), input, "47.3443");
-            assertNotNull(d);
-            assertEquals(47.3443d, d.doubleValue());
+            Assert.assertNotNull(d);
+            Assert.assertEquals(47.3443d, d.doubleValue(), 0);
         }
 
         {
@@ -103,7 +99,7 @@ public class DoubleConverterTest extends AbstractJsfTestCase {
             try
             {
                 Double d = (Double) mock.getAsObject(FacesContext.getCurrentInstance(), input, "47,3443");
-                fail();
+                Assert.fail();
             }
             catch (ConverterException cev)
             {

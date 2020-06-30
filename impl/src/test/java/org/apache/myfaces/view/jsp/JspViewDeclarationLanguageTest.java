@@ -23,7 +23,8 @@ import java.io.IOException;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
+import org.junit.Assert;
 
 /**
  * Test class for JspViewDeclarationLanguage.
@@ -35,14 +36,9 @@ public class JspViewDeclarationLanguageTest extends AbstractJsfTestCase
 {
 
     private TrackingJspViewDeclarationLanguage jspVdl;
-    
-    public JspViewDeclarationLanguageTest(String name)
-    {
-        super(name);
-    }
-    
+
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
         
@@ -50,7 +46,7 @@ public class JspViewDeclarationLanguageTest extends AbstractJsfTestCase
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         jspVdl = null;
         
@@ -75,7 +71,7 @@ public class JspViewDeclarationLanguageTest extends AbstractJsfTestCase
         }
         
         // assert that buildView() was implicitly called once (by renderView())
-        assertEquals(1, jspVdl._buildViewCalled);
+        Assert.assertEquals(1, jspVdl._buildViewCalled);
     }
     
     /**
@@ -103,7 +99,7 @@ public class JspViewDeclarationLanguageTest extends AbstractJsfTestCase
         }
         
         // assert that buildView() was only called once
-        assertEquals(1, jspVdl._buildViewCalled);
+        Assert.assertEquals(1, jspVdl._buildViewCalled);
     }
     
     /**
@@ -145,7 +141,7 @@ public class JspViewDeclarationLanguageTest extends AbstractJsfTestCase
         // assert that buildView() was called twice:
         // the first time directly by jspVdl.buildView() for firstView
         // the second time implicitly by jspVdl.renderView() for secondView
-        assertEquals(2, jspVdl._buildViewCalled);
+        Assert.assertEquals(2, jspVdl._buildViewCalled);
     }
     
     

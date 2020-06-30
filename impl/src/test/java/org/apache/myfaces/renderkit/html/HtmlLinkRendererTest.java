@@ -31,11 +31,12 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.myfaces.application.NavigationHandlerImpl;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
+import org.junit.Assert;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -48,15 +49,6 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
     private HtmlCommandLink commandLink;
     private HtmlOutputLink outputLink;
     private HtmlOutcomeTargetLink outcomeTargetLink;
-
-    public HtmlLinkRendererTest(String name)
-    {
-        super(name);
-    }
-    
-    public static Test suite() {
-        return new TestSuite(HtmlLinkRendererTest.class);
-    }
 
     public void setUp() throws Exception
     {
@@ -138,7 +130,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 commandLink, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -175,7 +167,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 outputLink, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -189,12 +181,12 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         {
             outputLink.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            assertTrue(output.matches(".+id=\".+\".+"));
-            assertTrue(output.matches(".+name=\".+\".+"));
+            Assert.assertTrue(output.matches(".+id=\".+\".+"));
+            Assert.assertTrue(output.matches(".+name=\".+\".+"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
         
     }
@@ -210,12 +202,12 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
             commandLink.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
             System.out.println("----OUTPUT----"+output);
-            assertTrue(output.matches("(?s).+id=\".+\".+"));
-            assertTrue(output.matches("(?s).+name=\".+\".+"));
+            Assert.assertTrue(output.matches("(?s).+id=\".+\".+"));
+            Assert.assertTrue(output.matches("(?s).+name=\".+\".+"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
         
     }
@@ -230,12 +222,12 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         {
             outcomeTargetLink.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            assertTrue(output.matches(".+id=\".+\".+"));
-            assertTrue(output.matches(".+name=\".+\".+"));
+            Assert.assertTrue(output.matches(".+id=\".+\".+"));
+            Assert.assertTrue(output.matches(".+name=\".+\".+"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
         
     }
@@ -258,8 +250,8 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
         
         // make sure the parameters are rendered
-        assertTrue(output.contains("param1=value1"));
-        assertTrue(output.contains("param2=value2"));
+        Assert.assertTrue(output.contains("param1=value1"));
+        Assert.assertTrue(output.contains("param2=value2"));
     }
     
     /**
@@ -279,7 +271,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
         
         // make sure the fragment is rendered
-        assertTrue(output.contains("param1=value1#" + fragment));
+        Assert.assertTrue(output.contains("param1=value1#" + fragment));
     }
     
     /**
@@ -293,7 +285,7 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         outputLink.setValue("http://www.irian.at");
         outputLink.encodeAll(facesContext);
         String output = writer.getWriter().toString();
-        assertEquals("<a href=\"http://www.irian.at#fragment\"></a>", output);
+        Assert.assertEquals("<a href=\"http://www.irian.at#fragment\"></a>", output);
     }
     
     /**
@@ -315,10 +307,10 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         
         commandLink.encodeAll(facesContext);
         String output = writer.getWriter().toString();
-        assertFalse(output.contains("param1"));
-        assertFalse(output.contains("value1"));
-        assertTrue(output.contains("param2"));
-        assertTrue(output.contains("value2"));
+        Assert.assertFalse(output.contains("param1"));
+        Assert.assertFalse(output.contains("value1"));
+        Assert.assertTrue(output.contains("param2"));
+        Assert.assertTrue(output.contains("value2"));
     }
     
     /**
@@ -340,10 +332,10 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         
         outputLink.encodeAll(facesContext);
         String output = writer.getWriter().toString();
-        assertFalse(output.contains("param1"));
-        assertFalse(output.contains("value1"));
-        assertTrue(output.contains("param2"));
-        assertTrue(output.contains("value2"));
+        Assert.assertFalse(output.contains("param1"));
+        Assert.assertFalse(output.contains("value1"));
+        Assert.assertTrue(output.contains("param2"));
+        Assert.assertTrue(output.contains("value2"));
     }
     
     /**
@@ -362,11 +354,11 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         {
             outcomeTargetLink.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            assertTrue(output.contains("myParameter=myValue"));
+            Assert.assertTrue(output.contains("myParameter=myValue"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
     
@@ -386,11 +378,11 @@ public class HtmlLinkRendererTest extends AbstractJsfTestCase
         {
             outcomeTargetLink.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            assertFalse(output.contains("myNullParameter"));
+            Assert.assertFalse(output.contains("myNullParameter"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
     

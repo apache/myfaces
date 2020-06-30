@@ -24,7 +24,7 @@ import java.util.Locale;
 import javax.el.ValueExpression;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,18 +32,8 @@ public class NumberConverterTest extends AbstractJsfTestCase
 {
     private NumberConverter mock;
 
-    public static void main(String[] args)
-    {
-        junit.textui.TestRunner.run(NumberConverterTest.class);
-    }
-
-    public NumberConverterTest(String name)
-    {
-        super(name);
-    }
-
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
 
@@ -51,7 +41,7 @@ public class NumberConverterTest extends AbstractJsfTestCase
     }
 
     @Override
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         super.tearDown();
 
@@ -70,7 +60,7 @@ public class NumberConverterTest extends AbstractJsfTestCase
         mock.setType("currency");
         String stringValue = mock.getAsString(facesContext, input, new Double(12345.68d));
         Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, "12\u00a0345,68 \u20AC");
-        assertNotNull(number);
+        Assert.assertNotNull(number);
     }
     
     @Test
@@ -81,7 +71,7 @@ public class NumberConverterTest extends AbstractJsfTestCase
         UIInput input = new UIInput();
         mock.setType("currency");
         Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, "12 345,68 \u20AC");
-        assertNotNull(number);
+        Assert.assertNotNull(number);
     }
     
     /**
@@ -98,8 +88,8 @@ public class NumberConverterTest extends AbstractJsfTestCase
         Number testValue = 12345.68d;
         String stringValue = mock.getAsString(facesContext, input, testValue);
         Number number = (Number) mock.getAsObject(facesContext, input, stringValue);
-        assertNotNull(number);
-        assertEquals(testValue, number);
+        Assert.assertNotNull(number);
+        Assert.assertEquals(testValue, number);
     }
 
     /**
@@ -116,8 +106,8 @@ public class NumberConverterTest extends AbstractJsfTestCase
         Number testValue = 12345.68d;
         String stringValue = mock.getAsString(facesContext, input, testValue);
         Number number = (Number) mock.getAsObject(facesContext, input, stringValue);
-        assertNotNull(number);
-        assertEquals(testValue, number);
+        Assert.assertNotNull(number);
+        Assert.assertEquals(testValue, number);
     }
     
     /**
@@ -134,8 +124,8 @@ public class NumberConverterTest extends AbstractJsfTestCase
         Number testValue = 12345.68d;
         String stringValue = mock.getAsString(facesContext, input, testValue);
         Number number = (Number) mock.getAsObject(facesContext, input, stringValue);
-        assertNotNull(number);
-        assertEquals(testValue, number);
+        Assert.assertNotNull(number);
+        Assert.assertEquals(testValue, number);
     }
     
     @Test
@@ -148,8 +138,8 @@ public class NumberConverterTest extends AbstractJsfTestCase
         Number testValue = 12345.68d;
         String stringValue = mock.getAsString(facesContext, input, testValue);
         Number number = (Number) mock.getAsObject(facesContext, input, stringValue);
-        assertNotNull(number);
-        assertEquals(testValue, number);        
+        Assert.assertNotNull(number);
+        Assert.assertEquals(testValue, number);        
     }
 
     @Test
@@ -163,8 +153,8 @@ public class NumberConverterTest extends AbstractJsfTestCase
         Number testValue = 12345.68d;
         String stringValue = mock.getAsString(facesContext, input, testValue);
         Number number = (Number) mock.getAsObject(facesContext, input, stringValue);
-        assertNotNull(number);
-        assertEquals(testValue, number);        
+        Assert.assertNotNull(number);
+        Assert.assertEquals(testValue, number);        
     }
     
     @Test
@@ -176,11 +166,11 @@ public class NumberConverterTest extends AbstractJsfTestCase
         FacesContext.getCurrentInstance().getViewRoot().setLocale(new Locale("cs"));
         UIInput input = new UIInput();
         String stringValue = mock.getAsString(facesContext, input, new Long(7000));
-        assertEquals("must return 7&NBSP000", "7\u00a0000", stringValue);
+        Assert.assertEquals("must return 7&NBSP000", "7\u00a0000", stringValue);
         
         Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, stringValue);
-        assertNotNull(number);
-        assertEquals(new Long(7000), number);
+        Assert.assertNotNull(number);
+        Assert.assertEquals(new Long(7000), number);
     }
 
     @Test
@@ -200,9 +190,9 @@ public class NumberConverterTest extends AbstractJsfTestCase
         
         Number number = (Number) mock.getAsObject(FacesContext.getCurrentInstance(), input, "1");
         
-        assertNotNull(number);
-        assertTrue(number instanceof BigInteger);
-        assertEquals(BigInteger.ONE, number);
+        Assert.assertNotNull(number);
+        Assert.assertTrue(number instanceof BigInteger);
+        Assert.assertEquals(BigInteger.ONE, number);
     }
     
     @Test

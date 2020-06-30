@@ -32,7 +32,7 @@ import javax.servlet.jsp.JspFactory;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.el.resolver.FacesCompositeELResolver;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
@@ -43,12 +43,6 @@ import org.easymock.classextension.IMocksControl;
  */
 public class JspFacesInitializerTest extends AbstractJsfTestCase
 {
-
-    public JspFacesInitializerTest(String name)
-    {
-        super(name);
-    }
-
     /**
      * Test method for {@link org.apache.myfaces.webapp.DefaultFacesInitializer#initFaces(javax.servlet.ServletContext)}.
      * @throws Exception 

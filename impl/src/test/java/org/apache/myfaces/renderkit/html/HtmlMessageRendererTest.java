@@ -31,6 +31,7 @@ import org.apache.myfaces.test.utils.HtmlRenderedAttr;
 import org.apache.myfaces.test.base.junit4.AbstractJsfConfigurableMockTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
+import org.junit.Assert;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 
@@ -144,7 +145,7 @@ public class HtmlMessageRendererTest extends  AbstractJsfConfigurableMockTestCas
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 message, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -177,7 +178,7 @@ public class HtmlMessageRendererTest extends  AbstractJsfConfigurableMockTestCas
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 message, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
 }

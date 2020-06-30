@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.faces.render.ResponseStateManager;
 import static junit.framework.TestCase.assertEquals;
 import org.apache.myfaces.test.FacesTestCase;
+import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -41,7 +42,7 @@ public class HtmlResponseStateManagerTest extends FacesTestCase
         map.put(ResponseStateManager.VIEW_STATE_PARAM, "seomthing");
         Mockito.when(_externalContext.getRequestParameterMap()).thenReturn(map);
 
-        assertEquals(true, hrsm.isPostback(_facesContext));
+        Assert.assertEquals(true, hrsm.isPostback(_facesContext));
     }
     
     @Test
@@ -53,6 +54,6 @@ public class HtmlResponseStateManagerTest extends FacesTestCase
         
         HtmlResponseStateManager hrsm = Mockito.spy(HtmlResponseStateManager.class);
 
-        assertEquals(false, hrsm.isPostback(_facesContext));
+        Assert.assertEquals(false, hrsm.isPostback(_facesContext));
     }
 }

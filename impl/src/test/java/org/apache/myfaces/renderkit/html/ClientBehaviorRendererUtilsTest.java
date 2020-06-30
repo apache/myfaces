@@ -21,7 +21,7 @@ package org.apache.myfaces.renderkit.html;
 import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.junit.Assert;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.*;
@@ -34,11 +34,6 @@ import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
 public class ClientBehaviorRendererUtilsTest extends AbstractJsfTestCase
 {
 
-    public ClientBehaviorRendererUtilsTest(String name)
-    {
-        super(name);
-    }
-    
     public void setUp() throws Exception
     {
         super.setUp();

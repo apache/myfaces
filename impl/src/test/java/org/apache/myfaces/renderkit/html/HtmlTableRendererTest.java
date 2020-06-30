@@ -31,11 +31,12 @@ import javax.faces.model.ListDataModel;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.mock.MockRenderKitFactory;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.test.utils.HtmlCheckAttributesUtil;
 import org.apache.myfaces.test.utils.HtmlRenderedAttr;
+import org.junit.Assert;
 
 /**
  * @author Bruno Aranda (latest modification by $Author$)
@@ -45,15 +46,6 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
 {
     private MockResponseWriter writer ;
     private HtmlDataTable dataTable;
-
-    public HtmlTableRendererTest(String name)
-    {
-        super(name);
-    }
-    
-    public static Test suite() {
-        return new TestSuite(HtmlTableRendererTest.class);
-    }
 
     public void setUp() throws Exception
     {
@@ -93,7 +85,7 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 dataTable, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -104,7 +96,7 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
         HtmlCheckAttributesUtil.checkRenderedAttributes(
                 dataTable, facesContext, writer, attrs);
         if(HtmlCheckAttributesUtil.hasFailedAttrRender(attrs)) {
-            fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
+            Assert.fail(HtmlCheckAttributesUtil.constructErrorMessage(attrs, writer.getWriter().toString()));
         }
     }
     
@@ -118,12 +110,12 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
         {
             dataTable.encodeAll(facesContext);
             String output = ((StringWriter) writer.getWriter()).getBuffer().toString();
-            assertTrue(output.matches("(?s).+id=\".+\".+"));
-            assertTrue(output.matches("(?s).+name=\".+\".+"));
+            Assert.assertTrue(output.matches("(?s).+id=\".+\".+"));
+            Assert.assertTrue(output.matches("(?s).+name=\".+\".+"));
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
         
     }
@@ -170,7 +162,7 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
         
         dataTable.setValue(new ListDataModel<Person>(list));
@@ -184,20 +176,20 @@ public class HtmlTableRendererTest extends AbstractJsfTestCase
         }
         catch (Exception e)
         {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
         
-        assertTrue(output2.contains("John"));
-        assertTrue(output2.contains("Smith"));
-        assertTrue(output2.contains("class1"));
-        assertTrue(output2.contains("class2"));
+        Assert.assertTrue(output2.contains("John"));
+        Assert.assertTrue(output2.contains("Smith"));
+        Assert.assertTrue(output2.contains("class1"));
+        Assert.assertTrue(output2.contains("class2"));
         
-        assertTrue(output1.contains("John"));
-        assertTrue(output1.contains("Smith"));
-        assertTrue(output1.contains("class1"));
-        assertTrue(output1.contains("class2"));
+        Assert.assertTrue(output1.contains("John"));
+        Assert.assertTrue(output1.contains("Smith"));
+        Assert.assertTrue(output1.contains("class1"));
+        Assert.assertTrue(output1.contains("class2"));
         
-        assertEquals(output2, output1);
+        Assert.assertEquals(output2, output1);
     }
 
     public class Person

@@ -46,6 +46,7 @@ import org.apache.myfaces.test.TestRunner;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.test.mock.MockFacesContext;
 import org.apache.myfaces.test.mock.MockFacesContext12;
+import org.junit.Assert;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author$)
@@ -59,7 +60,7 @@ public class ApplicationImplTest extends TestCase
     protected ApplicationImpl application;
     protected MockFacesContext facesContext;
 
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         application = new ApplicationImpl(new RuntimeConfig());
         facesContext = new MockFacesContext();
@@ -146,7 +147,7 @@ public class ApplicationImplTest extends TestCase
         application.addComponent("testComponent", UIOutput.class.getName());
         replay(context);
         replay(expr);
-        assertTrue(UIOutput.class.isAssignableFrom(application.createComponent(expr, context, "testComponent").getClass()));
+        Assert.assertTrue(UIOutput.class.isAssignableFrom(application.createComponent(expr, context, "testComponent").getClass()));
     }
 
     public void testCreateComponentExpressionFacesExceptionTest() throws Exception
@@ -168,7 +169,7 @@ public class ApplicationImplTest extends TestCase
         }
         catch (Throwable e)
         {
-            fail("FacesException expected: " + e.getMessage());
+            Assert.fail("FacesException expected: " + e.getMessage());
         }
     }
 
@@ -189,16 +190,16 @@ public class ApplicationImplTest extends TestCase
             @Override
             String getBundleName(FacesContext facesContext, String name)
             {
-                assertEquals(var, name);
+                Assert.assertEquals(var, name);
                 return bundleName;
             }
 
             @Override
             ResourceBundle getResourceBundle(String name, Locale locale, ClassLoader loader)
             {
-                assertEquals(Thread.currentThread().getContextClassLoader(), loader);
-                assertEquals(bundleName, name);
-                assertEquals(expectedLocale, locale);
+                Assert.assertEquals(Thread.currentThread().getContextClassLoader(), loader);
+                Assert.assertEquals(bundleName, name);
+                Assert.assertEquals(expectedLocale, locale);
                 return bundle;
             }
         };
@@ -216,8 +217,8 @@ public class ApplicationImplTest extends TestCase
         application.addConverter(Enum.class, EnumConverter.class.getName());
 
         Converter converter = application.createConverter(MyEnum.class);
-        assertNotNull(converter);
-        assertEquals(converter.getClass(), EnumConverter.class);
+        Assert.assertNotNull(converter);
+        Assert.assertEquals(converter.getClass(), EnumConverter.class);
     }    
   
 
@@ -263,6 +264,6 @@ public class ApplicationImplTest extends TestCase
     	
     	Converter converter = application.createConverter(AnotherEnum.class);
     	assertNotNull(converter);
-        assertEquals(converter.getClass(), EnumCodedTestConverter.class);
+        Assert.assertEquals(converter.getClass(), EnumCodedTestConverter.class);
     }
 }

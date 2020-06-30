@@ -26,6 +26,7 @@ import javax.faces.event.PhaseId;
 import org.apache.myfaces.application.ViewIdSupport;
 
 import org.apache.myfaces.test.FacesTestCase;
+import org.junit.Assert;
 import org.mockito.Mockito;
 
 /**
@@ -40,7 +41,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
     private ViewIdSupport _viewHandlerSupport;
 
     @Override
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
         _viewHandler = Mockito.mock(ViewHandler.class);
@@ -78,7 +79,7 @@ public class RestoreViewExecutorTest extends FacesTestCase
      */
     public void testGetPhase()
     {
-        assertEquals(PhaseId.RESTORE_VIEW, _testimpl.getPhase());
+        Assert.assertEquals(PhaseId.RESTORE_VIEW, _testimpl.getPhase());
     }
 
 }

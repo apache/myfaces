@@ -24,19 +24,15 @@ import java.util.List;
 
 import javax.el.ValueExpression;
 
-import org.apache.myfaces.test.base.AbstractJsfTestCase;
+import org.apache.myfaces.test.base.junit4.AbstractJsfTestCase;
 import org.apache.myfaces.test.el.MockValueExpression;
+import org.junit.Assert;
 
 /**
  * Tests for UISelectItems.
  */
 public class UISelectItemsTest extends AbstractJsfTestCase
 {
-
-    public UISelectItemsTest(String name)
-    {
-        super(name);
-    }
 
     public void testStringListAsValue() 
     {
@@ -61,7 +57,7 @@ public class UISelectItemsTest extends AbstractJsfTestCase
             options.add((String) iter.next().getValue());
         }
         
-        assertEquals(value, options);
+        Assert.assertEquals(value, options);
     }
     
     public void testPrimitiveArrayAsValue()
@@ -87,7 +83,7 @@ public class UISelectItemsTest extends AbstractJsfTestCase
             options[i] = (Integer) iter.next().getValue();
             
             // test equality
-            assertEquals(value[i], options[i]);
+            Assert.assertEquals(value[i], options[i]);
         }
     }
 }
