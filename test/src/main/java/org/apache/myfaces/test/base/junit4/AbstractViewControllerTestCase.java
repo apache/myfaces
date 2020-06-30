@@ -43,8 +43,6 @@ public abstract class AbstractViewControllerTestCase extends
 
     /**
      * <p>Construct a new instance of this test case.</p>
-     *
-     * @param name Test case name
      */
     public AbstractViewControllerTestCase()
     {

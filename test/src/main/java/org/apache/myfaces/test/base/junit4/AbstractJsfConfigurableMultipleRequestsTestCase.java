@@ -89,8 +89,6 @@ public abstract class AbstractJsfConfigurableMultipleRequestsTestCase
 
     /**
      * <p>Construct a new instance of this test case.</p>
-     *
-     * @param name Name of this test case
      */
     public AbstractJsfConfigurableMultipleRequestsTestCase()
     {

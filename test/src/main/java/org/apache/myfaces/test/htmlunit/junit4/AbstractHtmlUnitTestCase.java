@@ -50,8 +50,6 @@ public abstract class AbstractHtmlUnitTestCase
 
     /**
      * <p>Construct a new instance of this test case.</p>
-     *
-     * @param name Name of the new test case
      */
     public AbstractHtmlUnitTestCase()
     {

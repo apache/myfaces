@@ -41,8 +41,6 @@ public class MockedJsfTestContainer implements HttpSessionListener
 
     /**
      * <p>Construct a new instance of this test case.</p>
-     *
-     * @param name Name of this test case
      */
     public MockedJsfTestContainer()
     {

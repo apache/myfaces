@@ -83,8 +83,6 @@ public abstract class AbstractJsfTestCase
 
     /**
      * <p>Construct a new instance of this test case.</p>
-     *
-     * @param name Name of this test case
      */
     public AbstractJsfTestCase()
     {
@@ -94,6 +92,7 @@ public abstract class AbstractJsfTestCase
 
     /**
      * <p>Set up instance variables required by this test case.</p>
+     * 
      */
     @Before
     public void setUp() throws Exception
