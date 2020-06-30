@@ -30,7 +30,7 @@
     <artifactId>myfaces-api</artifactId>
     <name>Apache MyFaces Core 2.3-next - API</name>
     <description>
-        The public API classes of the Apache MyFaces CORE JSF-2.3-next project
+        The public API classes of the Apache MyFaces Core JSF-2.3-next project
     </description>
     <url>http://myfaces.apache.org/core23next/myfaces-api</url>
 
