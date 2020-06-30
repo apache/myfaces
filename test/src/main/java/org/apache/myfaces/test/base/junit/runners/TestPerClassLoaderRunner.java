@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.test.runners;
+package org.apache.myfaces.test.base.junit.runners;
 
 import java.io.File;
 import java.io.IOException;

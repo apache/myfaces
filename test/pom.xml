@@ -69,17 +69,6 @@
             <optional>true</optional>
         </dependency>
 
-        <dependency>
-            <groupId>jmock</groupId>
-            <artifactId>jmock</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>jmock</groupId>
-            <artifactId>jmock-cglib</artifactId>
-            <scope>compile</scope>
-        </dependency>
-
         <!-- For the "org.apache.shale.test.cargo" package, we need to have  -->
         <!-- JUnit as a compile time dependency, not just scope="test".      -->
         <dependency>

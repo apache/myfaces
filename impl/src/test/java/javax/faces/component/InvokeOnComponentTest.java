@@ -19,6 +19,7 @@
 package javax.faces.component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -26,21 +27,19 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 
 import org.apache.myfaces.dummy.data.Data;
-import org.jmock.Mock;
 import org.junit.Assert;
+import org.mockito.Mockito;
 
 public class InvokeOnComponentTest extends AbstractComponentTest
 {
 
-    Mock mock = null;
     ContextCallback cc = null;
 
     @Override
     public void setUp() throws Exception
     {
         super.setUp();
-        mock = mock(ContextCallback.class);
-        cc = (ContextCallback) mock.proxy();
+        cc = Mockito.mock(ContextCallback.class);
     }
 
     @Override
@@ -48,7 +47,6 @@ public class InvokeOnComponentTest extends AbstractComponentTest
     {
         // mock.verify();
         cc = null;
-        mock = null;
         super.tearDown();
     }
 
@@ -143,13 +141,12 @@ public class InvokeOnComponentTest extends AbstractComponentTest
         form.getChildren().add(i3);
         this.facesContext.getViewRoot().getChildren().add(form);
 
-        mock.expects(once()).method("invokeContextCallback").with(eq(facesContext), eq(i2));
-        mock.expects(never()).method("invokeContextCallback").with(eq(facesContext), eq(i1));
-        mock.expects(never()).method("invokeContextCallback").with(eq(facesContext), eq(i3));
-        mock.expects(never()).method("invokeContextCallback").with(eq(facesContext), eq(i4));
-
         this.facesContext.getViewRoot().invokeOnComponent(facesContext, i2.getClientId(facesContext), cc);
-
+        
+        Mockito.verify(cc, Mockito.times(1)).invokeContextCallback(facesContext, i2);
+        Mockito.verify(cc, Mockito.never()).invokeContextCallback(facesContext, i1);
+        Mockito.verify(cc, Mockito.never()).invokeContextCallback(facesContext, i3);
+        Mockito.verify(cc, Mockito.never()).invokeContextCallback(facesContext, i4);
     }
 
     public void btestInvokeOnCompOnUIData() throws Exception
@@ -193,14 +190,12 @@ public class InvokeOnComponentTest extends AbstractComponentTest
         table.setValue(model);
         this.facesContext.getViewRoot().getChildren().add(table);
 
-        // there should be no call on passwd yet, b/c for UIData the invokeOnComp isn't implemented yet...
-        mock.expects(once()).method("invokeContextCallback").with(eq(facesContext), eq(table));
-        mock.expects(never()).method("invokeContextCallback").with(eq(facesContext), eq(passwd));
-        mock.expects(never()).method("invokeContextCallback").with(eq(facesContext), eq(c1));
-        mock.expects(never()).method("invokeContextCallback").with(eq(facesContext), eq(name));
-
         this.facesContext.getViewRoot().invokeOnComponent(facesContext, table.getClientId(facesContext), cc);
-
+        
+        Mockito.verify(cc, Mockito.times(1)).invokeContextCallback(facesContext, table);
+        Mockito.verify(cc, Mockito.never()).invokeContextCallback(facesContext, passwd);
+        Mockito.verify(cc, Mockito.never()).invokeContextCallback(facesContext, c1);
+        Mockito.verify(cc, Mockito.never()).invokeContextCallback(facesContext, name);
     }
 
     public void testInvokeOnCompOnUIDataChildren() throws Exception
@@ -247,14 +242,13 @@ public class InvokeOnComponentTest extends AbstractComponentTest
         System.out.println("RC; " + table.getRowCount());
         table.encodeBegin(facesContext);
         System.out.println("RC; " + table.getRowCount());
-        // there should be no call on passwd yet, b/c for UIData the invokeOnComp isn't implemented yet...
-        mock.expects(never()).method("invokeContextCallback").with(eq(facesContext), eq(table));
-        mock.expects(never()).method("invokeContextCallback").with(eq(facesContext), eq(passwd));
-        mock.expects(never()).method("invokeContextCallback").with(eq(facesContext), eq(c1));
-        mock.expects(never()).method("invokeContextCallback").with(eq(facesContext), eq(name));
 
         this.facesContext.getViewRoot().invokeOnComponent(facesContext, passwd.getClientId(facesContext), cc);
 
+        Mockito.verify(cc, Mockito.never()).invokeContextCallback(facesContext, table);
+        Mockito.verify(cc, Mockito.never()).invokeContextCallback(facesContext, passwd);
+        Mockito.verify(cc, Mockito.never()).invokeContextCallback(facesContext, c1);
+        Mockito.verify(cc, Mockito.never()).invokeContextCallback(facesContext, name);
     }
 
     protected List<Data> createTestData()

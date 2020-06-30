@@ -18,12 +18,12 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.test.jmock.AbstractJmockJsfTestCase;
+import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 
 /**
  * Abstract basis clazz for Apache MyFaces' test kit.
  */
-public abstract class AbstractComponentTest extends AbstractJmockJsfTestCase
+public abstract class AbstractComponentTest extends AbstractJsfTestCase
 {
 
 }

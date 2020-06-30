@@ -169,7 +169,7 @@ public class StartupServletContextListener implements ServletContextListener
             return false;
         }
         
-        List<StartupListener> listeners = new LinkedList<StartupListener>();
+        List<StartupListener> listeners = new LinkedList<>();
         while (it.hasNext())
         {
             listeners.add(it.next());
@@ -193,17 +193,17 @@ public class StartupServletContextListener implements ServletContextListener
         log.info("MyFaces Plugins found");
         
         String[] pluginEntries = plugins.split(",");
-        List<StartupListener> listeners = new ArrayList<StartupListener>(pluginEntries.length);
+        List<StartupListener> listeners = new ArrayList<>(pluginEntries.length);
         for (String pluginEntry : pluginEntries)
         {
             try
             {
-                Class pluginClass = null;
-                pluginClass = ClassUtils.getContextClassLoader().loadClass(pluginEntry);
+                Class pluginClass = ClassUtils.getContextClassLoader().loadClass(pluginEntry);
                 if (pluginClass == null)
                 {
                     pluginClass = this.getClass().getClassLoader().loadClass(pluginEntry);
                 }
+
                 listeners.add((StartupListener) pluginClass.newInstance());
             }
             catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
