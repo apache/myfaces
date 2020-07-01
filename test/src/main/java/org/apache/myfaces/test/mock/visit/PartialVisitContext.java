@@ -83,8 +83,9 @@ public class PartialVisitContext extends VisitContext
         _facesContext = facesContext;
 
         // Copy the client ids into a HashSet to allow for quick lookups.
-        Set<String> clientIdSet = (clientIds == null) ? new HashSet<String>()
-                : new HashSet<String>(clientIds);
+        Set<String> clientIdSet = clientIds == null
+                ? new HashSet<>()
+                : new HashSet<>(clientIds);
 
         // Initialize our various collections
         // We maintain 4 collections:

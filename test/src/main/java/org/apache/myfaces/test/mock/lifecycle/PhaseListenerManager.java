@@ -80,8 +80,7 @@ class PhaseListenerManager
             {
                 try
                 {
-                    phaseListener.beforePhase(new PhaseEvent(facesContext,
-                            phaseId, lifecycle));
+                    phaseListener.beforePhase(new PhaseEvent(facesContext, phaseId, lifecycle));
                     beforePhaseSuccess[i] = true;
                 }
                 catch (Exception e)
@@ -97,9 +96,7 @@ class PhaseListenerManager
 
     void informPhaseListenersAfter(PhaseId phaseId)
     {
-        //boolean[] beforePhaseSuccess = listenerSuccessMap.get(phaseId);
-        boolean[] beforePhaseSuccess = (boolean[]) listenerSuccessMap
-                .get(phaseId);
+        boolean[] beforePhaseSuccess = (boolean[]) listenerSuccessMap.get(phaseId);
 
         for (int i = phaseListeners.length - 1; i >= 0; i--)
         {
@@ -109,8 +106,7 @@ class PhaseListenerManager
             {
                 try
                 {
-                    phaseListener.afterPhase(new PhaseEvent(facesContext,
-                            phaseId, lifecycle));
+                    phaseListener.afterPhase(new PhaseEvent(facesContext, phaseId, lifecycle));
                 }
                 catch (Exception e)
                 {

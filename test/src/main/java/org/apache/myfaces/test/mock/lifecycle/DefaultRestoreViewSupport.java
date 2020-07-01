@@ -43,6 +43,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
 
     private static final Logger log = Logger.getLogger(DefaultRestoreViewSupport.class.getName());
 
+    @Override
     public void processComponentBinding(FacesContext facesContext,
             UIComponent component)
     {
@@ -58,14 +59,13 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         }
     }
 
+    @Override
     public String calculateViewId(FacesContext facesContext)
     {
-        //Assert.notNull(facesContext);
         ExternalContext externalContext = facesContext.getExternalContext();
         Map requestMap = externalContext.getRequestMap();
 
-        String viewId = (String) requestMap
-                .get(JAVAX_SERVLET_INCLUDE_PATH_INFO);
+        String viewId = (String) requestMap.get(JAVAX_SERVLET_INCLUDE_PATH_INFO);
         if (viewId != null)
         {
             if (log.isLoggable(Level.FINEST))
@@ -87,8 +87,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
 
         if (viewId == null)
         {
-            viewId = (String) requestMap
-                    .get(JAVAX_SERVLET_INCLUDE_SERVLET_PATH);
+            viewId = (String) requestMap.get(JAVAX_SERVLET_INCLUDE_SERVLET_PATH);
             if (viewId != null && log.isLoggable(Level.FINEST))
             {
                 log.log(Level.FINEST, "Calculated viewId '" + viewId
@@ -115,6 +114,7 @@ public class DefaultRestoreViewSupport implements RestoreViewSupport
         return viewId;
     }
 
+    @Override
     public boolean isPostback(FacesContext facesContext)
     {
         return true;

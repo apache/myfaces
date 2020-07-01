@@ -81,18 +81,12 @@ public class FullVisitContext extends VisitContext
         _hints = Collections.unmodifiableSet(hintsEnumSet);
     }
 
-    /**
-     * @see VisitContext#getFacesContext VisitContext.getFacesContext()
-     */
     @Override
     public FacesContext getFacesContext()
     {
         return _facesContext;
     }
 
-    /**
-     * @see VisitContext#getIdsToVisit VisitContext.getIdsToVisit()
-     */
     @Override
     public Collection<String> getIdsToVisit()
     {
@@ -100,9 +94,6 @@ public class FullVisitContext extends VisitContext
         return ALL_IDS;
     }
 
-    /**
-     * @see VisitContext#getSubtreeIdsToVisit VisitContext.getSubtreeIdsToVisit()
-     */
     @Override
     public Collection<String> getSubtreeIdsToVisit(UIComponent component)
     {
@@ -117,18 +108,12 @@ public class FullVisitContext extends VisitContext
         return ALL_IDS;
     }
 
-    /**
-     * @see VisitContext#getHints VisitContext.getHints
-     */
     @Override
     public Set<VisitHint> getHints()
     {
         return _hints;
     }
 
-    /**
-     * @see VisitContext#invokeVisitCallback VisitContext.invokeVisitCallback()
-     */
     @Override
     public VisitResult invokeVisitCallback(UIComponent component,
             VisitCallback callback)

@@ -32,12 +32,14 @@ import javax.faces.event.PhaseId;
  */
 class UpdateModelValuesExecutor implements PhaseExecutor
 {
+    @Override
     public boolean execute(FacesContext facesContext)
     {
         facesContext.getViewRoot().processUpdates(facesContext);
         return false;
     }
 
+    @Override
     public PhaseId getPhase()
     {
         return PhaseId.UPDATE_MODEL_VALUES;

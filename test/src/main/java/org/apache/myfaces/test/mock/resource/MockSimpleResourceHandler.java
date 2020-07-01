@@ -217,8 +217,7 @@ public class MockSimpleResourceHandler extends ResourceHandler
 
         if (null != bundleName)
         {
-            Locale locale = context.getApplication().getViewHandler()
-                    .calculateLocale(context);
+            Locale locale = context.getApplication().getViewHandler().calculateLocale(context);
 
             ResourceBundle bundle = ResourceBundle.getBundle(bundleName,
                     locale, getContextClassLoader());
@@ -227,8 +226,7 @@ public class MockSimpleResourceHandler extends ResourceHandler
             {
                 try
                 {
-                    localePrefix = bundle
-                            .getString(ResourceHandler.LOCALE_PREFIX);
+                    localePrefix = bundle.getString(ResourceHandler.LOCALE_PREFIX);
                 }
                 catch (MissingResourceException e)
                 {
@@ -252,16 +250,8 @@ public class MockSimpleResourceHandler extends ResourceHandler
         {
             try
             {
-                ClassLoader cl = AccessController
-                        .doPrivileged(new PrivilegedExceptionAction<ClassLoader>()
-                        {
-                            public ClassLoader run()
-                                    throws PrivilegedActionException
-                            {
-                                return Thread.currentThread()
-                                        .getContextClassLoader();
-                            }
-                        });
+                ClassLoader cl = AccessController.doPrivileged(
+                        (PrivilegedExceptionAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
                 return cl;
             }
             catch (PrivilegedActionException pae)

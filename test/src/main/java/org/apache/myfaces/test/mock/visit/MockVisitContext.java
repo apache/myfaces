@@ -90,16 +90,14 @@ public class MockVisitContext extends VisitContext
         // Make sure component is a NamingContainer
         if (!(component instanceof NamingContainer))
         {
-            throw new IllegalArgumentException(
-                    "Component is not a NamingContainer: " + component);
+            throw new IllegalArgumentException("Component is not a NamingContainer: " + component);
         }
 
         return ALL_IDS;
     }
 
     @Override
-    public VisitResult invokeVisitCallback(UIComponent component,
-            VisitCallback callback)
+    public VisitResult invokeVisitCallback(UIComponent component, VisitCallback callback)
     {
         return callback.visit(this, component);
     }

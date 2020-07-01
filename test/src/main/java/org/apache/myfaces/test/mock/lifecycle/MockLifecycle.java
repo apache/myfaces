@@ -61,20 +61,16 @@ public class MockLifecycle extends Lifecycle
 
     // ------------------------------------------------------- Lifecycle Methods
 
-    /** {@inheritDoc} */
+    @Override
     public void addPhaseListener(PhaseListener listener)
     {
-
         phaseListenerList.add(listener);
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void execute(FacesContext context) throws FacesException
     {
-
-        PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this,
-                context, getPhaseListeners());
+        PhaseListenerManager phaseListenerMgr = new PhaseListenerManager(this,context, getPhaseListeners());
         for (int executorIndex = 0; executorIndex < lifecycleExecutors.length; executorIndex++)
         {
             if (executePhase(context, lifecycleExecutors[executorIndex],
@@ -126,27 +122,21 @@ public class MockLifecycle extends Lifecycle
         return skipFurtherProcessing;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public PhaseListener[] getPhaseListeners()
     {
-
-        return (PhaseListener[]) phaseListenerList
-                .toArray(new PhaseListener[phaseListenerList.size()]);
-
+        return (PhaseListener[]) phaseListenerList.toArray(new PhaseListener[phaseListenerList.size()]);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void removePhaseListener(PhaseListener listener)
     {
-
         phaseListenerList.remove(listener);
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void render(FacesContext context) throws FacesException
     {
-
         // if the response is complete we should not be invoking the phase listeners
         if (isResponseComplete(context, renderExecutor.getPhase(), true))
         {
@@ -158,8 +148,7 @@ public class MockLifecycle extends Lifecycle
 
         try
         {
-            phaseListenerMgr.informPhaseListenersBefore(renderExecutor
-                    .getPhase());
+            phaseListenerMgr.informPhaseListenersBefore(renderExecutor.getPhase());
             // also possible that one of the listeners completed the response
             if (isResponseComplete(context, renderExecutor.getPhase(), true))
             {
@@ -170,14 +159,12 @@ public class MockLifecycle extends Lifecycle
         }
         finally
         {
-            phaseListenerMgr.informPhaseListenersAfter(renderExecutor
-                    .getPhase());
+            phaseListenerMgr.informPhaseListenersAfter(renderExecutor.getPhase());
         }
 
     }
 
-    private boolean isResponseComplete(FacesContext facesContext,
-            PhaseId phase, boolean before)
+    private boolean isResponseComplete(FacesContext facesContext, PhaseId phase, boolean before)
     {
         boolean flag = false;
         if (facesContext.getResponseComplete())
@@ -187,8 +174,7 @@ public class MockLifecycle extends Lifecycle
         return flag;
     }
 
-    private boolean shouldRenderResponse(FacesContext facesContext,
-            PhaseId phase, boolean before)
+    private boolean shouldRenderResponse(FacesContext facesContext, PhaseId phase, boolean before)
     {
         boolean flag = false;
         if (facesContext.getRenderResponse())

@@ -43,10 +43,8 @@ public class MockLifecycleFactory extends LifecycleFactory
      */
     public MockLifecycleFactory()
     {
-
         lifecycles = new HashMap();
         lifecycles.put(LifecycleFactory.DEFAULT_LIFECYCLE, new MockLifecycle());
-
     }
 
     // ----------------------------------------------------- Mock Object Methods
@@ -60,28 +58,22 @@ public class MockLifecycleFactory extends LifecycleFactory
 
     // ------------------------------------------------ LifecycleFactory Methods
 
-    /** {@inheritDoc} */
+    @Override
     public void addLifecycle(String lifecycleId, Lifecycle lifecycle)
     {
-
         lifecycles.put(lifecycleId, lifecycle);
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Lifecycle getLifecycle(String lifecycleId)
     {
-
         return (Lifecycle) lifecycles.get(lifecycleId);
-
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Iterator getLifecycleIds()
     {
-
         return lifecycles.keySet().iterator();
-
     }
 
 }

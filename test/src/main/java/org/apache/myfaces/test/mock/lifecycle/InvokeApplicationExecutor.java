@@ -32,12 +32,15 @@ import javax.faces.event.PhaseId;
  */
 class InvokeApplicationExecutor implements PhaseExecutor
 {
+
+    @Override
     public boolean execute(FacesContext facesContext)
     {
         facesContext.getViewRoot().processApplication(facesContext);
         return false;
     }
 
+    @Override
     public PhaseId getPhase()
     {
         return PhaseId.INVOKE_APPLICATION;

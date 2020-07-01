@@ -30,12 +30,14 @@ import javax.faces.event.PhaseId;
  */
 class ProcessValidationsExecutor implements PhaseExecutor
 {
+    @Override
     public boolean execute(FacesContext facesContext)
     {
         facesContext.getViewRoot().processValidators(facesContext);
         return false;
     }
 
+    @Override
     public PhaseId getPhase()
     {
         return PhaseId.PROCESS_VALIDATIONS;

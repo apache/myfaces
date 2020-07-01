@@ -37,6 +37,7 @@ import javax.faces.event.PhaseId;
  */
 class RenderResponseExecutor implements PhaseExecutor
 {
+    @Override
     public boolean execute(FacesContext facesContext)
     {
         Application application = facesContext.getApplication();
@@ -53,6 +54,7 @@ class RenderResponseExecutor implements PhaseExecutor
         return false;
     }
 
+    @Override
     public PhaseId getPhase()
     {
         return PhaseId.RENDER_RESPONSE;

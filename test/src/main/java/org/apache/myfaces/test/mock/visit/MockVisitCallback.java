@@ -34,6 +34,7 @@ import javax.faces.component.visit.VisitResult;
 public class MockVisitCallback implements VisitCallback
 {
 
+    @Override
     public VisitResult visit(VisitContext context, UIComponent target)
     {
         return VisitResult.ACCEPT;

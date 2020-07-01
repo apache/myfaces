@@ -117,16 +117,14 @@ public class MockResourceHandler extends ResourceHandler
                     .getExternalContext().getMimeType(resourceName);
         }
 
-        for (MockResourceLoader loader : getResourceHandlerSupport()
-                .getResourceLoaders())
+        for (MockResourceLoader loader : getResourceHandlerSupport().getResourceLoaders())
         {
             MockResourceMeta resourceMeta = deriveResourceMeta(loader,
                     resourceName, libraryName);
 
             if (resourceMeta != null)
             {
-                resource = new MockResource(resourceMeta, loader,
-                        getResourceHandlerSupport(), contentType);
+                resource = new MockResource(resourceMeta, loader, getResourceHandlerSupport(), contentType);
                 break;
             }
         }
@@ -355,16 +353,8 @@ public class MockResourceHandler extends ResourceHandler
         {
             try
             {
-                ClassLoader cl = AccessController
-                        .doPrivileged(new PrivilegedExceptionAction<ClassLoader>()
-                        {
-                            public ClassLoader run()
-                                    throws PrivilegedActionException
-                            {
-                                return Thread.currentThread()
-                                        .getContextClassLoader();
-                            }
-                        });
+                ClassLoader cl = AccessController.doPrivileged(
+                        (PrivilegedExceptionAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
                 return cl;
             }
             catch (PrivilegedActionException pae)

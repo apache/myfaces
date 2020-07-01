@@ -32,12 +32,14 @@ import javax.faces.event.PhaseId;
  */
 class ApplyRequestValuesExecutor implements PhaseExecutor
 {
+    @Override
     public boolean execute(FacesContext facesContext)
     {
         facesContext.getViewRoot().processDecodes(facesContext);
         return false;
     }
 
+    @Override
     public PhaseId getPhase()
     {
         return PhaseId.APPLY_REQUEST_VALUES;
