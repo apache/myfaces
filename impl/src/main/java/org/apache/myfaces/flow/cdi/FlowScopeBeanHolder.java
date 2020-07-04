@@ -36,6 +36,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
 import javax.faces.flow.FlowHandler;
+import javax.faces.flow.FlowScoped;
 import javax.faces.lifecycle.ClientWindow;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -104,7 +105,9 @@ public class FlowScopeBeanHolder implements Serializable
      */
     public ContextualStorage getContextualStorage(BeanManager beanManager, String flowClientWindowId)
     {
-        return storageMap.computeIfAbsent(flowClientWindowId, k -> new ContextualStorage(beanManager, true, true));
+        return storageMap.computeIfAbsent(
+                flowClientWindowId,
+                k -> new ContextualStorage(beanManager, true, beanManager.isPassivatingScope(FlowScoped.class)));
     }
     
     public ContextualStorage getContextualStorageNoCreate(BeanManager beanManager, String flowClientWindowId)
