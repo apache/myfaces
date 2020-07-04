@@ -53,7 +53,7 @@ public class FacesScopeBeanHolder
     public ContextualStorage getContextualStorage(BeanManager beanManager, FacesContext facesContext)
     {
         return (ContextualStorage) facesContext.getAttributes().computeIfAbsent(FACES_SCOPE_MAP,
-                k -> new ContextualStorage(beanManager, false, false));
+                k -> new ContextualStorage(beanManager, false));
     }
     
     public ContextualStorage getContextualStorageNoCreate(BeanManager beanManager, FacesContext facesContext)
