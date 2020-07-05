@@ -48,7 +48,7 @@ public class ViewTransientScopeBeanHolder
                 facesContext.getViewRoot().getTransientStateHelper().getTransient(VIEW_TRANSIENT_SCOPE_MAP);
         if (contextualStorage == null)
         {
-            contextualStorage = new ContextualStorage(beanManager, false, false);
+            contextualStorage = new ContextualStorage(beanManager, false);
             facesContext.getViewRoot().getTransientStateHelper()
                     .putTransient(VIEW_TRANSIENT_SCOPE_MAP, contextualStorage);
         }
