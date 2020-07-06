@@ -68,7 +68,13 @@ public class LambdaBeanELResolver extends BeanELResolver
 
         try
         {
-            return getPropertyDescriptor(base, property).getReadFunction().apply(base);
+            PropertyDescriptorWrapper pd = getPropertyDescriptor(base, property);
+            if (pd instanceof LambdaPropertyDescriptor)
+            {
+                return ((LambdaPropertyDescriptor) pd).getReadFunction().apply(base);
+            }
+
+            return pd.getWrapped().getReadMethod().invoke(base);
         }
         catch (Exception e)
         {
@@ -88,8 +94,8 @@ public class LambdaBeanELResolver extends BeanELResolver
 
         context.setPropertyResolved(base, property);
 
-        LambdaPropertyDescriptor propertyDescriptor = getPropertyDescriptor(base, property);
-        if (propertyDescriptor.getWriteFunction() == null)
+        PropertyDescriptorWrapper pd = getPropertyDescriptor(base, property);
+        if (pd.getWrapped().getWriteMethod()== null)
         {
             throw new PropertyNotWritableException("Property \"" + (String) property
                     + "\" in \"" + base.getClass().getName() + "\" is not writable!");
@@ -97,7 +103,14 @@ public class LambdaBeanELResolver extends BeanELResolver
 
         try
         {
-            propertyDescriptor.getWriteFunction().accept(base, value);
+            if (pd instanceof LambdaPropertyDescriptor)
+            {
+                ((LambdaPropertyDescriptor) pd).getWriteFunction().accept(base, value);
+            }
+            else
+            {
+                pd.getWrapped().getWriteMethod().invoke(base, value);
+            }
         }
         catch (Exception e)
         {
@@ -116,7 +129,7 @@ public class LambdaBeanELResolver extends BeanELResolver
 
         context.setPropertyResolved(base, property);
 
-        return getPropertyDescriptor(base, property).getWriteFunction() == null;
+        return getPropertyDescriptor(base, property).getWrapped().getWriteMethod() == null;
     }
 
     @Override
@@ -130,7 +143,7 @@ public class LambdaBeanELResolver extends BeanELResolver
         return null;
     }
 
-    protected LambdaPropertyDescriptor getPropertyDescriptor(Object base, Object property)
+    protected PropertyDescriptorWrapper getPropertyDescriptor(Object base, Object property)
     {
         Map<String, ? extends PropertyDescriptorWrapper> beanCache = cache.get(base.getClass().getName());
         if (beanCache == null)
@@ -141,6 +154,6 @@ public class LambdaBeanELResolver extends BeanELResolver
             cache.put(base.getClass().getName(), beanCache);
         }
 
-        return (LambdaPropertyDescriptor) beanCache.get((String) property);
+        return beanCache.get((String) property);
     }
 }

@@ -1576,7 +1576,7 @@ public class ApplicationImpl extends Application
 
         if (converterConfig != null && !converterConfig.getProperties().isEmpty())
         {
-            Map<String, ? extends PropertyDescriptorWrapper> pds = PropertyDescriptorUtils.getPropertyDescriptors(
+            Map<String, ? extends PropertyDescriptorWrapper> pds = PropertyDescriptorUtils.getCachedPropertyDescriptors(
                     FacesContext.getCurrentInstance().getExternalContext(),
                     converterClass);
 

@@ -36,12 +36,16 @@ import java.util.function.Function;
 import java.util.function.ObjDoubleConsumer;
 import java.util.function.ObjIntConsumer;
 import java.util.function.ObjLongConsumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.FacesException;
 import javax.faces.context.ExternalContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 public class PropertyDescriptorUtils
 {
+    private static final Logger LOG = Logger.getLogger(PropertyDescriptorUtils.class.getName());
+
     /**
      * Defines if Lambda expressions (via LambdaMetafactory) are used for getter/setter instead of Reflection.
      */
@@ -83,8 +87,7 @@ public class PropertyDescriptorUtils
         Map<String, ? extends PropertyDescriptorWrapper> cache = getCache(ec).get(target.getName());
         if (cache == null)
         {
-            cache = getPropertyDescriptors(ec, target);
-            getCache(ec).put(target.getName(), cache);
+            cache = getCache(ec).computeIfAbsent(target.getName(), k -> getPropertyDescriptors(ec, target));
         }
 
         return cache;
@@ -107,7 +110,23 @@ public class PropertyDescriptorUtils
     {
         if (isUseLambdaMetafactory(ec))
         {
-            return getLambdaPropertyDescriptors(target);
+            try
+            {
+                return getLambdaPropertyDescriptors(target);
+            }
+            catch (IllegalAccessException e)
+            {
+                LOG.log(Level.INFO, 
+                        "Could not generate LambdaPropertyDescriptor for "
+                                + target.getName() + ". Use PropertyDescriptor...");
+            }
+            catch (Throwable e)
+            {
+                LOG.log(Level.INFO, 
+                        "Could not generate LambdaPropertyDescriptor for "
+                                + target.getName() + ". Use PropertyDescriptor...",
+                        e);
+            }
         }
 
         try
@@ -190,32 +209,25 @@ public class PropertyDescriptorUtils
         return lpd;
     }
     
-    public static Map<String, LambdaPropertyDescriptor> getLambdaPropertyDescriptors(Class<?> target)
+    public static Map<String, LambdaPropertyDescriptor> getLambdaPropertyDescriptors(Class<?> target) throws Throwable
     {
-        try
+        PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(target).getPropertyDescriptors();
+        if (propertyDescriptors == null || propertyDescriptors.length == 0)
         {
-            PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(target).getPropertyDescriptors();
-            if (propertyDescriptors == null || propertyDescriptors.length == 0)
-            {
-                return Collections.emptyMap();
-            }
-
-            Map<String, LambdaPropertyDescriptor> properties = new ConcurrentHashMap<>(propertyDescriptors.length);
-
-            MethodHandles.Lookup lookup = (MethodHandles.Lookup)
-                    privateLookupIn.invoke(null, target, MethodHandles.lookup());
-            for (PropertyDescriptor pd : Introspector.getBeanInfo(target).getPropertyDescriptors())
-            {
-                LambdaPropertyDescriptor lpd = createLambdaPropertyDescriptor(target, pd, lookup);
-                properties.put(pd.getName(), lpd);
-            }
-            
-            return properties;
+            return Collections.emptyMap();
         }
-        catch (Throwable e)
+
+        Map<String, LambdaPropertyDescriptor> properties = new ConcurrentHashMap<>(propertyDescriptors.length);
+
+        MethodHandles.Lookup lookup = (MethodHandles.Lookup)
+                privateLookupIn.invoke(null, target, MethodHandles.lookup());
+        for (PropertyDescriptor pd : Introspector.getBeanInfo(target).getPropertyDescriptors())
         {
-            throw new FacesException(e);
+            LambdaPropertyDescriptor lpd = createLambdaPropertyDescriptor(target, pd, lookup);
+            properties.put(pd.getName(), lpd);
         }
+
+        return properties;
     }
 
     @SuppressWarnings("unchecked")
