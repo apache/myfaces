@@ -25,15 +25,12 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 
-
 /**
  * Stateless class to deal with Faces Scope. This scope depends on the current FacesContext.
  */
 public class FacesScopeBeanHolder
 {
-    
     public static final String FACES_SCOPE_MAP = "oam.FACES_SCOPE_MAP";
-    
     public static final String FACES_SCOPE_MAP_INFO = "oam.FACES_SCOPE_MAP_INFO";
     
     public FacesScopeBeanHolder()
@@ -52,10 +49,15 @@ public class FacesScopeBeanHolder
      */
     public ContextualStorage getContextualStorage(BeanManager beanManager, FacesContext facesContext)
     {
-        return (ContextualStorage) facesContext.getAttributes().computeIfAbsent(FACES_SCOPE_MAP,
-                k -> new ContextualStorage(beanManager, false));
+        ContextualStorage storage = (ContextualStorage) facesContext.getAttributes().get(FACES_SCOPE_MAP);
+        if (storage == null)
+        {
+            storage = new ContextualStorage(beanManager, false);
+            facesContext.getAttributes().put(FACES_SCOPE_MAP, storage);
+        }
+        return storage;
     }
-    
+
     public ContextualStorage getContextualStorageNoCreate(BeanManager beanManager, FacesContext facesContext)
     {
         return (ContextualStorage) facesContext.getAttributes().get(FACES_SCOPE_MAP);

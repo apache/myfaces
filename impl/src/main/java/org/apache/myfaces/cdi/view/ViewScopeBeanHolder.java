@@ -81,7 +81,13 @@ public class ViewScopeBeanHolder implements Serializable
      */
     public ViewScopeContextualStorage getContextualStorage(BeanManager beanManager, String viewScopeId)
     {
-        return storageMap.computeIfAbsent(viewScopeId, k -> new ViewScopeContextualStorage(beanManager));
+        ViewScopeContextualStorage storage = storageMap.get(viewScopeId);
+        if (storage == null)
+        {
+            storage = new ViewScopeContextualStorage(beanManager);
+            storageMap.put(viewScopeId, storage);
+        }
+        return storage;
     }
 
     public Map<String, ViewScopeContextualStorage> getStorageMap()
@@ -91,18 +97,17 @@ public class ViewScopeBeanHolder implements Serializable
 
     /**
      *
-     * This method will replace the storageMap and with
-     * a new empty one.
-     * This method can be used to properly destroy the BeanHolder beans
-     * without having to sync heavily. Any
-     * {@link javax.enterprise.inject.spi.Bean#destroy(Object, javax.enterprise.context.spi.CreationalContext)}
+     * This method will replace the storageMap and with a new empty one.
+     * This method can be used to properly destroy the BeanHolder beans without having to sync heavily.
+     * Any {@link javax.enterprise.inject.spi.Bean#destroy(Object, javax.enterprise.context.spi.CreationalContext)}
      * should be performed on the returned old storage map.
+     *
      * @return the old storageMap.
      */
     public Map<String, ViewScopeContextualStorage> forceNewStorage()
     {
         Map<String, ViewScopeContextualStorage> oldStorageMap = storageMap;
-        storageMap = new ConcurrentHashMap<String, ViewScopeContextualStorage>();
+        storageMap = new ConcurrentHashMap<>();
         return oldStorageMap;
     }
 
@@ -135,8 +140,7 @@ public class ViewScopeBeanHolder implements Serializable
             try
             {
                 FacesContext facesContext = FacesContext.getCurrentInstance();
-                if (facesContext == null &&
-                    applicationContextBean.getServletContext() != null)
+                if (facesContext == null && applicationContextBean.getServletContext() != null)
                 {
                     try
                     {
@@ -181,8 +185,7 @@ public class ViewScopeBeanHolder implements Serializable
         if (!oldContextStorages.isEmpty())
         {
             FacesContext facesContext = FacesContext.getCurrentInstance();
-            if (facesContext == null &&
-                applicationContextBean.getServletContext() != null)
+            if (facesContext == null && applicationContextBean.getServletContext() != null)
             {
                 try
                 {
