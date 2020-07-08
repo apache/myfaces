@@ -26,7 +26,7 @@ import javax.enterprise.inject.spi.Extension;
 
 public class ViewTransientScopeExtension implements Extension
 {
-    private ViewTransientScopeContex viewTransientScopedContext;
+    private ViewTransientScopeContext viewTransientScopedContext;
 
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
     {
@@ -35,7 +35,7 @@ public class ViewTransientScopeExtension implements Extension
     
     void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
     {
-        viewTransientScopedContext = new ViewTransientScopeContex(beanManager);
+        viewTransientScopedContext = new ViewTransientScopeContext(beanManager);
         afterBeanDiscovery.addContext(viewTransientScopedContext);
     }
 }

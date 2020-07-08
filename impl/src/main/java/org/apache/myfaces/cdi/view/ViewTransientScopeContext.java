@@ -34,13 +34,13 @@ import org.apache.myfaces.cdi.util.ContextualStorage;
  * Minimal implementation of ViewTransientScope.
  */
 @Typed()
-public class ViewTransientScopeContex implements Context
+public class ViewTransientScopeContext implements Context
 {
     public static final String VIEW_TRANSIENT_SCOPE_MAP = "oam.VIEW_TRANSIENT_SCOPE_MAP";
 
     private BeanManager beanManager;
     
-    public ViewTransientScopeContex(BeanManager beanManager)
+    public ViewTransientScopeContext(BeanManager beanManager)
     {
         this.beanManager = beanManager;
     }
