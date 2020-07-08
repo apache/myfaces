@@ -20,6 +20,7 @@ package org.apache.myfaces.application;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -93,11 +94,10 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
     private static final String ASTERISK = "*";
 
     private Map<String, Set<NavigationCase>> _navigationCases = null;
-    private List<_WildcardPattern> _wildcardPatterns = new ArrayList<_WildcardPattern>();
+    private List<_WildcardPattern> _wildcardPatterns = new ArrayList<>();
     private Boolean _developmentStage;
     
-    private Map<String, _FlowNavigationStructure> _flowNavigationStructureMap = 
-        new ConcurrentHashMap<String, _FlowNavigationStructure>();
+    private Map<String, _FlowNavigationStructure> _flowNavigationStructureMap = new ConcurrentHashMap<>();
     
     private ViewIdSupport viewIdSupport;
 
@@ -191,14 +191,12 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                         if (currentFlow != null && targetFlow == null)
                         {
                             // Set the TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME parameter
-                            List<String> list = new ArrayList<String>(1);
-                            list.add(FlowHandler.NULL_FLOW);
-                            navigationCaseParameters.put(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, list);
+                            navigationCaseParameters.put(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME,
+                                    Arrays.asList(FlowHandler.NULL_FLOW));
                     
                             // Set the FLOW_ID_REQUEST_PARAM_NAME
-                            List<String> list2 = new ArrayList<String>(1);
-                            list2.add("");
-                            navigationCaseParameters.put(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME, list2);
+                            navigationCaseParameters.put(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME,
+                                    Arrays.asList(""));
                         }
                         else
                         {
@@ -207,14 +205,12 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                             // If we make it this far we know the above statement is true due to the other
                             // logical checks we have hit to this point.
                             // Set the TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME parameter
-                            List<String> list = new ArrayList<String>(1);
-                            list.add((toFlowDocumentId == null ? "" : toFlowDocumentId));
-                            navigationCaseParameters.put(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, list);
+                            navigationCaseParameters.put(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME,
+                                    Arrays.asList((toFlowDocumentId == null ? "" : toFlowDocumentId)));
                             
                             // Set the FLOW_ID_REQUEST_PARAM_NAME
-                            List<String> list2 = new ArrayList<String>(1);
-                            list2.add(targetFlow.getId());
-                            navigationCaseParameters.put(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME, list2);
+                            navigationCaseParameters.put(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME,
+                                    Arrays.asList(targetFlow.getId()));
                         }
                     }
                 }            
@@ -856,7 +852,6 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
     private Flow calculateFlowCallTargetFlow(FacesContext facesContext, FlowHandler flowHandler,
         FlowCallNode flowCallNode, Flow currentFlow)
     {
-        Flow targetFlow = null;
         // " ... Let flowId be the value of its calledFlowId property and flowDocumentId 
         // be the value of its calledFlowDocumentId property. .."
 
@@ -870,7 +865,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         {
             calledFlowDocumentId = currentFlow.getDefiningDocumentId();
         }
-        targetFlow = flowHandler.getFlow(facesContext, 
+
+        Flow targetFlow = flowHandler.getFlow(facesContext, 
             calledFlowDocumentId, 
             flowCallNode.getCalledFlowId(facesContext));
         if (targetFlow == null && StringUtils.isNotBlank(calledFlowDocumentId))
@@ -1390,7 +1386,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
 
         Map<String, Set<NavigationCase>> cases = new HashMap<>(HashMapUtils.calcCapacity(rulesSize));
 
-        List<_WildcardPattern> wildcardPatterns = new ArrayList<_WildcardPattern>();
+        List<_WildcardPattern> wildcardPatterns = new ArrayList<>();
 
         for (Map.Entry<String, Set<NavigationCase>> entry : rules.entrySet())
         {
@@ -1584,9 +1580,9 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         {
             if (targetFlows == null)
             {
-                sourceFlows = new ArrayList<Flow>(4);
-                targetFlows = new ArrayList<Flow>(4);
-                targetFlowCallNodes = new ArrayList<FlowCallNode>(4);
+                sourceFlows = new ArrayList<>(4);
+                targetFlows = new ArrayList<>(4);
+                targetFlowCallNodes = new ArrayList<>(4);
             }
             this.sourceFlows.add(sourceFlow);
             this.targetFlows.add(targetFlow);
@@ -1635,7 +1631,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         {
             if (currentFlows == null)
             {
-                currentFlows = new ArrayList<Flow>();
+                currentFlows = new ArrayList<>();
             }
             currentFlows.add(flow);
         }
