@@ -40,7 +40,7 @@ import javax.faces.render.RenderKitFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import org.apache.myfaces.cdi.FacesScopeProvider;
+import org.apache.myfaces.cdi.FacesScopeContext;
 
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.context.ReleasableFacesContextFactory;
@@ -133,7 +133,7 @@ public class FacesContextImpl extends FacesContextImplBase
         assertNotReleased();
         if (ExternalSpecifications.isCDIAvailable(getExternalContext()))
         {
-            FacesScopeProvider.destroyBeans(this);
+            FacesScopeContext.destroyAllActive(this);
         }
 
         _messages = null;

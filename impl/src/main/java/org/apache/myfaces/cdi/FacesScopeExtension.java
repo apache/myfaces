@@ -26,7 +26,7 @@ import javax.enterprise.inject.spi.Extension;
 
 public class FacesScopeExtension implements Extension
 {
-    private FacesScopeContextImpl facesScopeContext;
+    private FacesScopeContext facesScopeContext;
 
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
     {
@@ -35,7 +35,7 @@ public class FacesScopeExtension implements Extension
     
     void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
     {
-        facesScopeContext = new FacesScopeContextImpl(beanManager);
+        facesScopeContext = new FacesScopeContext(beanManager);
         afterBeanDiscovery.addContext(facesScopeContext);
     }
 }

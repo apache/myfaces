@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.cdi;
+package org.apache.myfaces.cdi.view;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
@@ -31,32 +31,27 @@ import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 
 /**
- * Minimal implementation of FacesScope.
+ * Minimal implementation of ViewTransientScope.
  */
 @Typed()
-public class FacesScopeContextImpl implements Context
+public class ViewTransientScopeContex implements Context
 {
+    public static final String VIEW_TRANSIENT_SCOPE_MAP = "oam.VIEW_TRANSIENT_SCOPE_MAP";
+
     private BeanManager beanManager;
     
-    public FacesScopeContextImpl(BeanManager beanManager)
+    public ViewTransientScopeContex(BeanManager beanManager)
     {
         this.beanManager = beanManager;
     }
 
-    protected FacesScopeBeanHolder getFacesScopeBeanHolder()
-    {
-        return getFacesScopeBeanHolder(FacesContext.getCurrentInstance());
-    }
-    
-    protected FacesScopeBeanHolder getFacesScopeBeanHolder(FacesContext facesContext)
-    {
-        return new FacesScopeBeanHolder();
-    }
-    
     /**
      * An implementation has to return the underlying storage which
      * contains the items held in the Context.
+     *
      * @param createIfNotExist whether a ContextualStorage shall get created if it doesn't yet exist.
+     * @param facesContext 
+     * 
      * @return the underlying storage
      */
     protected ContextualStorage getContextualStorage(boolean createIfNotExist, FacesContext facesContext)
@@ -66,26 +61,41 @@ public class FacesScopeContextImpl implements Context
             throw new ContextNotActiveException(this.getClass().getName() + ": no current active facesContext");
         }
 
-        if (createIfNotExist)
+        ContextualStorage contextualStorage = (ContextualStorage) 
+                facesContext.getViewRoot().getTransientStateHelper().getTransient(VIEW_TRANSIENT_SCOPE_MAP);
+        if (contextualStorage == null && createIfNotExist)
         {
-            return getFacesScopeBeanHolder(facesContext).getContextualStorage(beanManager, facesContext);
+            contextualStorage = new ContextualStorage(beanManager, false);
+            facesContext.getViewRoot().getTransientStateHelper()
+                    .putTransient(VIEW_TRANSIENT_SCOPE_MAP, contextualStorage);
         }
-        else
-        {
-            return getFacesScopeBeanHolder(facesContext).getContextualStorageNoCreate(beanManager, facesContext);
-        }
+
+        return contextualStorage;
     }
 
     @Override
     public Class<? extends Annotation> getScope()
     {
-        return FacesScoped.class;
+        return ViewTransientScoped.class;
     }
 
     @Override
     public boolean isActive()
     {
-        return FacesContext.getCurrentInstance() != null;
+        return isActive(FacesContext.getCurrentInstance());
+    }
+
+    public boolean isActive(FacesContext facesContext)
+    {
+        if (facesContext == null)
+        {
+            return false;
+        }
+        else if (facesContext.getViewRoot() == null)
+        {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -167,16 +177,33 @@ public class FacesScopeContextImpl implements Context
     }
 
     /**
-     * Destroys all the Contextual Instances in the specified ContextualStorage.
-     * This is a static method to allow various holder objects to cleanup
-     * properly in &#064;PreDestroy.
+     * Make sure that the Context is really active.
+     * @throws ContextNotActiveException if there is no active
+     *         Context for the current Thread.
      */
-    public static void destroyAllActive(ContextualStorage storage)
+    protected void checkActive(FacesContext facesContext)
     {
-        Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
-        for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : contextMap.entrySet())
+        if (!isActive(facesContext))
         {
-            if (!FacesScopeBeanHolder.FACES_SCOPE_MAP_INFO.equals(entry.getKey()))
+            throw new ContextNotActiveException("CDI context with scope annotation @"
+                + getScope().getName() + " is not active with respect to the current thread");
+        }
+    }
+
+    public static void destroyAllActive(FacesContext facesContext)
+    {
+        if (facesContext == null
+                || facesContext.getViewRoot() == null)
+        {
+            return;
+        }
+
+        ContextualStorage storage = (ContextualStorage) facesContext.getViewRoot()
+                .getTransientStateHelper().putTransient(VIEW_TRANSIENT_SCOPE_MAP, null);
+        if (storage != null)
+        {
+            Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
+            for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : contextMap.entrySet())
             {
                 Contextual bean = storage.getBean(entry.getKey());
 
@@ -186,19 +213,4 @@ public class FacesScopeContextImpl implements Context
             }
         }
     }
-
-    /**
-     * Make sure that the Context is really active.
-     * @throws ContextNotActiveException if there is no active
-     *         Context for the current Thread.
-     */
-    protected void checkActive(FacesContext facesContext)
-    {
-        if (facesContext == null)
-        {
-            throw new ContextNotActiveException("CDI context with scope annotation @"
-                + getScope().getName() + " is not active with respect to the current thread");
-        }
-    }
-
 }
