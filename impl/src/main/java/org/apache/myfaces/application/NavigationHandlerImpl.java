@@ -1405,7 +1405,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             Set<NavigationCase> set = cases.get(fromViewId);
             if (set == null)
             {
-                set = new HashSet<NavigationCase>(entry.getValue());
+                set = new HashSet<>(entry.getValue());
                 cases.put(fromViewId, set);
                 if (fromViewId.endsWith(ASTERISK))
                 {
@@ -1499,8 +1499,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
     private Set<NavigationCase> convertNavigationCasesToAPI(NavigationRule rule)
     {
         Collection<? extends org.apache.myfaces.config.element.NavigationCase> configCases = rule.getNavigationCases();
-        Set<NavigationCase> apiCases = new HashSet<NavigationCase>(configCases.size());
-        
+        Set<NavigationCase> apiCases = new HashSet<>(configCases.size());
+
         for(org.apache.myfaces.config.element.NavigationCase configCase : configCases)
         {   
             if (configCase.getRedirect() != null)
