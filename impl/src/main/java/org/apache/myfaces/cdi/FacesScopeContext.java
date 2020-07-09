@@ -186,8 +186,7 @@ public class FacesScopeContext implements Context
      */
     public static void destroyAllActive(FacesContext facesContext)
     {
-        if (facesContext == null
-                || facesContext.getViewRoot() == null)
+        if (facesContext == null)
         {
             return;
         }
