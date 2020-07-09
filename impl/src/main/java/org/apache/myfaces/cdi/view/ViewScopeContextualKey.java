@@ -36,9 +36,7 @@ class ViewScopeContextualKey implements Serializable
     public ViewScopeContextualKey()
     {
     }
-    /**
-     * @return the name
-     */
+
     public String getName()
     {
         return name;

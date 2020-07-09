@@ -53,7 +53,7 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
         }
         
         return facesContext.getExternalContext().getSessionMap()
-                .containsKey(FlowScopeBeanHolder.FLOW_SCOPE_PREFIX_KEY);
+                .containsKey(FlowScopeBeanHolder.CREATED);
     }
     
     @Override

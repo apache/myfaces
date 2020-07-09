@@ -51,10 +51,8 @@ public class ViewScopeBeanHolder implements Serializable
     private Map<String, ViewScopeContextualStorage> storageMap;
     
     private static final Random RANDOM_GENERATOR = new Random();
-    
-    private static final String VIEW_SCOPE_PREFIX = "oam.view.SCOPE";
-    
-    public static final String VIEW_SCOPE_PREFIX_KEY = VIEW_SCOPE_PREFIX+".KEY";
+
+    public static final String CREATED = ViewScopeBeanHolder.class.getName() + ".CREATED";
     
     @Inject
     JsfApplicationArtifactHolder applicationContextBean;
@@ -68,9 +66,9 @@ public class ViewScopeBeanHolder implements Serializable
     {
         storageMap = new ConcurrentHashMap<>();
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        facesContext.getExternalContext().getSessionMap().put(VIEW_SCOPE_PREFIX_KEY, 1);
+        facesContext.getExternalContext().getSessionMap().put(CREATED, true);
     }
-    
+
     /**
      * This method will return the ViewScopeContextualStorage or create a new one
      * if no one is yet assigned to the current windowId.
@@ -128,7 +126,7 @@ public class ViewScopeBeanHolder implements Serializable
 
         for (ViewScopeContextualStorage contextualStorage : oldContextStorages.values())
         {
-            ViewScopeContextImpl.destroyAllActive(contextualStorage);
+            ViewScopeContext.destroyAllActive(contextualStorage);
         }
     }
     
@@ -149,7 +147,7 @@ public class ViewScopeBeanHolder implements Serializable
                         ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
                         facesContext = new StartupFacesContextImpl(externalContext, 
                                 externalContext, exceptionHandler, false);
-                        ViewScopeContextImpl.destroyAllActive(contextualStorage, facesContext);
+                        ViewScopeContext.destroyAllActive(contextualStorage, facesContext);
                     }
                     finally
                     {
@@ -158,7 +156,7 @@ public class ViewScopeBeanHolder implements Serializable
                 }
                 else
                 {
-                    ViewScopeContextImpl.destroyAllActive(contextualStorage, facesContext);
+                    ViewScopeContext.destroyAllActive(contextualStorage, facesContext);
                 }
             }
             finally
@@ -196,7 +194,7 @@ public class ViewScopeBeanHolder implements Serializable
                             externalContext, exceptionHandler, false);
                     for (ViewScopeContextualStorage contextualStorage : oldContextStorages.values())
                     {
-                        ViewScopeContextImpl.destroyAllActive(contextualStorage, facesContext);
+                        ViewScopeContext.destroyAllActive(contextualStorage, facesContext);
                     }
                 }
                 finally
@@ -208,7 +206,7 @@ public class ViewScopeBeanHolder implements Serializable
             {
                 for (ViewScopeContextualStorage contextualStorage : oldContextStorages.values())
                 {
-                    ViewScopeContextImpl.destroyAllActive(contextualStorage);
+                    ViewScopeContext.destroyAllActive(contextualStorage);
                 }
             }
         }

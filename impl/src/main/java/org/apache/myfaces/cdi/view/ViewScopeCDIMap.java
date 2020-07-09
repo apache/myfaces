@@ -189,7 +189,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
                     ViewScopeContextualStorage st = bean.getContextualStorage(beanManager, _viewScopeId);
                     if (st != null)
                     {
-                        ViewScopeContextImpl.destroyAllActive(st);
+                        ViewScopeContext.destroyAllActive(st);
                         storage = null;
                         destroyed = true;
                     }
@@ -198,7 +198,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
         }
         if (!destroyed)
         {
-            ViewScopeContextImpl.destroyAllActive(storage);
+            ViewScopeContext.destroyAllActive(storage);
         }
     }
 
@@ -211,7 +211,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
     @Override
     public Collection<Object> values()
     {
-        List<Object> values = new ArrayList<Object>(this.getNameBeanKeyMap().size());
+        List<Object> values = new ArrayList<>(this.getNameBeanKeyMap().size());
         for (Map.Entry<String, Object> entry : this.getNameBeanKeyMap().entrySet())
         {
             if (entry.getValue() != null)
@@ -229,7 +229,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
     @Override
     public Set<Entry<String, Object>> entrySet()
     {
-        Set<Entry<String, Object>> values = new HashSet<Entry<String, Object>>();
+        Set<Entry<String, Object>> values = new HashSet<>();
         for (Map.Entry<String, Object> entry : this.getNameBeanKeyMap().entrySet())
         {
             if (entry.getValue() != null)
@@ -246,7 +246,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
     
     private class EntryWrapper<String, Object> implements Entry<String, Object>
     {
-        private Map.Entry<String, Object> entry;
+        private final Map.Entry<String, Object> entry;
         
         public EntryWrapper(Map.Entry<String, Object> entry)
         {

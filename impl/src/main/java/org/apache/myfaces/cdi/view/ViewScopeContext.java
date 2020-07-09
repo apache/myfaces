@@ -41,7 +41,7 @@ import org.apache.myfaces.view.ViewScopeProxyMap;
  * @author Leonardo Uribe
  */
 @Typed()
-public class ViewScopeContextImpl implements Context
+public class ViewScopeContext implements Context
 {
 
     /**
@@ -51,7 +51,7 @@ public class ViewScopeContextImpl implements Context
     
     private boolean passivatingScope;
 
-    public ViewScopeContextImpl(BeanManager beanManager)
+    public ViewScopeContext(BeanManager beanManager)
     {
         this.beanManager = beanManager;
         this.passivatingScope = beanManager.isPassivatingScope(getScope());
@@ -64,9 +64,17 @@ public class ViewScopeContextImpl implements Context
     
     protected ViewScopeBeanHolder getViewScopeBeanHolder(FacesContext facesContext)
     {
-        return (ViewScopeBeanHolder)facesContext.getExternalContext().getApplicationMap().computeIfAbsent(
-                "oam.view.ViewScopeBeanHolder",
-                k -> CDIUtils.get(beanManager, ViewScopeBeanHolder.class));
+        ViewScopeBeanHolder beanHolder = (ViewScopeBeanHolder) facesContext.getExternalContext().getApplicationMap()
+                .get(ViewScopeBeanHolder.class.getName());
+        if (beanHolder == null)
+        {
+            beanHolder = CDIUtils.get(beanManager, ViewScopeBeanHolder.class);
+            facesContext.getExternalContext().getApplicationMap().put(
+                    ViewScopeBeanHolder.class.getName(),
+                    beanHolder);
+        }
+
+        return beanHolder;
     }
 
     public String getCurrentViewScopeId(boolean create)
@@ -93,7 +101,7 @@ public class ViewScopeContextImpl implements Context
         if (createIfNotExist && viewScopeId == null)
         {
             throw new ContextNotActiveException(
-                "ViewScopeContextImpl: no viewScopeId set for the current view yet!");
+                this.getClass().getSimpleName() + ": no viewScopeId set for the current view yet!");
         }
         if (viewScopeId != null)
         {
@@ -173,8 +181,7 @@ public class ViewScopeContextImpl implements Context
         if (contextualInstanceInfo != null)
         {
             @SuppressWarnings("unchecked")
-            final T instance =  (T) contextualInstanceInfo.getContextualInstance();
-
+            final T instance = (T) contextualInstanceInfo.getContextualInstance();
             if (instance != null)
             {
                 return instance;
@@ -196,9 +203,8 @@ public class ViewScopeContextImpl implements Context
         {
             return false;
         }
-        ContextualInstanceInfo<?> contextualInstanceInfo = 
-            storage.getStorage().get(storage.getBeanKey(bean));
-
+        
+        ContextualInstanceInfo<?> contextualInstanceInfo = storage.getStorage().get(storage.getBeanKey(bean));
         if (contextualInstanceInfo == null)
         {
             return false;

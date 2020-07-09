@@ -25,23 +25,23 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.CDI;
 import javax.faces.view.ViewScoped;
 
-import org.apache.myfaces.cdi.view.ViewScopeContextImpl;
+import org.apache.myfaces.cdi.view.ViewScopeContext;
 
 import io.quarkus.arc.InjectableContext;
 
 public class QuarkusViewScopeContext implements InjectableContext
 {
-    private ViewScopeContextImpl wrapped;
+    private ViewScopeContext wrapped;
 
     public QuarkusViewScopeContext()
     {
     }
 
-    public ViewScopeContextImpl getWrapped()
+    public ViewScopeContext getWrapped()
     {
         if (wrapped == null)
         {
-            wrapped = new ViewScopeContextImpl(CDI.current().getBeanManager());
+            wrapped = new ViewScopeContext(CDI.current().getBeanManager());
         }
         return wrapped;
     }

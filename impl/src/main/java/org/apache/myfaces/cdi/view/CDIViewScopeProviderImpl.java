@@ -106,7 +106,7 @@ public class CDIViewScopeProviderImpl extends ViewScopeProvider
         }
         
         return facesContext.getExternalContext().
-            getSessionMap().containsKey(ViewScopeBeanHolder.VIEW_SCOPE_PREFIX_KEY);
+            getSessionMap().containsKey(ViewScopeBeanHolder.CREATED);
     }
 
     @Override

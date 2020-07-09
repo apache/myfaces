@@ -74,8 +74,17 @@ public class FlowScopedContextImpl implements Context
     
     protected FlowScopeBeanHolder getFlowScopeBeanHolder(FacesContext facesContext)
     {
-        return (FlowScopeBeanHolder) facesContext.getExternalContext().getApplicationMap().computeIfAbsent(
-                "oam.flow.FlowScopeBeanHolder", k -> CDIUtils.get(beanManager, FlowScopeBeanHolder.class));
+        FlowScopeBeanHolder beanHolder = (FlowScopeBeanHolder) facesContext.getExternalContext().getApplicationMap()
+                .get(FlowScopeBeanHolder.class.getName());
+        if (beanHolder == null)
+        {
+            beanHolder = CDIUtils.get(beanManager, FlowScopeBeanHolder.class);
+            facesContext.getExternalContext().getApplicationMap().put(
+                    FlowScopeBeanHolder.class.getName(),
+                    beanHolder);
+        }
+
+        return beanHolder;
     }
     
     public String getCurrentClientWindowFlowId(FacesContext facesContext)
@@ -231,7 +240,7 @@ public class FlowScopedContextImpl implements Context
             }
             else
             {
-                throw new IllegalStateException("Flow "+ reference.getId()+
+                throw new IllegalStateException("Flow " + reference.getId()+
                     " cannot be found when resolving bean " + bean.toString());
             }
             
@@ -243,13 +252,13 @@ public class FlowScopedContextImpl implements Context
                 reference.getDocumentId() == null ? "" : reference.getDocumentId(), reference.getId());
             if (flow == null)
             {
-                throw new IllegalStateException(bean.toString() + "cannot be created because flow "+ reference.getId()+
-                    " is not registered");
+                throw new IllegalStateException(bean.toString() + "cannot be created because flow "
+                        + reference.getId() + " is not registered");
             }
             if (!flowHandler.isActive(facesContext, flow.getDefiningDocumentId(), flow.getId())) 
             {
-                throw new IllegalStateException(bean.toString() + "cannot be created if flow "+ reference.getId()+
-                    " is not active");
+                throw new IllegalStateException(bean.toString() + "cannot be created if flow "
+                        + reference.getId() + " is not active");
             }
             
             ContextualStorage storage = getContextualStorage(true, flowMapKey);
@@ -259,8 +268,7 @@ public class FlowScopedContextImpl implements Context
             if (contextualInstanceInfo != null)
             {
                 @SuppressWarnings("unchecked")
-                final T instance =  (T) contextualInstanceInfo.getContextualInstance();
-
+                final T instance = (T) contextualInstanceInfo.getContextualInstance();
                 if (instance != null)
                 {
                     return instance;
@@ -281,8 +289,7 @@ public class FlowScopedContextImpl implements Context
             if (contextualInstanceInfo != null)
             {
                 @SuppressWarnings("unchecked")
-                final T instance =  (T) contextualInstanceInfo.getContextualInstance();
-
+                final T instance = (T) contextualInstanceInfo.getContextualInstance();
                 if (instance != null)
                 {
                     return instance;
@@ -298,8 +305,7 @@ public class FlowScopedContextImpl implements Context
         if (contextualInstanceInfo != null)
         {
             @SuppressWarnings("unchecked")
-            final T instance =  (T) contextualInstanceInfo.getContextualInstance();
-
+            final T instance = (T) contextualInstanceInfo.getContextualInstance();
             if (instance != null)
             {
                 return instance;

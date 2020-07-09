@@ -33,7 +33,7 @@ import javax.faces.view.ViewScoped;
  */
 public class ViewScopeExtension implements Extension
 {
-    private ViewScopeContextImpl viewScopeContext;
+    private ViewScopeContext viewScopeContext;
 
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
     {
@@ -46,7 +46,7 @@ public class ViewScopeExtension implements Extension
     
     void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
     {
-        viewScopeContext = new ViewScopeContextImpl(beanManager);
+        viewScopeContext = new ViewScopeContext(beanManager);
         afterBeanDiscovery.addContext(viewScopeContext);
     }
 }

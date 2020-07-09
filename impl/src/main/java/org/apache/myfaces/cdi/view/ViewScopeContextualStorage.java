@@ -16,9 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.myfaces.cdi.view;
-
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
@@ -83,11 +81,11 @@ public class ViewScopeContextualStorage implements Serializable
         Object beanKey = getBeanKey(bean);
 
         // simply create the contextual instance
-        ContextualInstanceInfo<T> instanceInfo = new ContextualInstanceInfo<T>();
+        ContextualInstanceInfo<T> instanceInfo = new ContextualInstanceInfo<>();
         instanceInfo.setCreationalContext(creationalContext);
         instanceInfo.setContextualInstance(bean.create(creationalContext));
-
         contextualInstances.put(beanKey, instanceInfo);
+
         if (bean instanceof Bean)
         {
             String name = ((Bean<T>) bean).getName();
@@ -101,9 +99,10 @@ public class ViewScopeContextualStorage implements Serializable
     }
 
     /**
-     * If the context is a passivating scope then we return
-     * the passivationId of the Bean. Otherwise we use
-     * the Bean directly.
+     * If the context is a passivating scope, we return the passivationId of the bean.
+     * Otherwise we use the bean directly.
+     * 
+     * @param bean 
      * @return the key to use in the context map
      */
     public <T> Object getBeanKey(Contextual<T> bean)

@@ -72,10 +72,8 @@ public class FlowScopeBeanHolder implements Serializable
     private FacesFlowClientWindowCollection windowCollection;
     
     public static final String CURRENT_FLOW_SCOPE_MAP = "oam.CURRENT_FLOW_SCOPE_MAP";
-    
-    private static final String FLOW_SCOPE_PREFIX = "oam.flow.SCOPE";
-    
-    public static final String FLOW_SCOPE_PREFIX_KEY = FLOW_SCOPE_PREFIX+".KEY";
+
+    public static final String CREATED = FlowScopeBeanHolder.class.getName() + ".CREATED";
     
     @Inject
     JsfApplicationArtifactHolder applicationContextBean;
@@ -87,13 +85,13 @@ public class FlowScopeBeanHolder implements Serializable
     @PostConstruct
     public void init()
     {
-        storageMap = new ConcurrentHashMap<String, ContextualStorage>();
-        activeFlowMapKeys = new ConcurrentHashMap<String, List<String>>();
+        storageMap = new ConcurrentHashMap<>();
+        activeFlowMapKeys = new ConcurrentHashMap<>();
         windowCollection = null;
         
         FacesContext facesContext = FacesContext.getCurrentInstance();
         this.refreshClientWindow(facesContext);
-        facesContext.getExternalContext().getSessionMap().put(FLOW_SCOPE_PREFIX_KEY, 1);
+        facesContext.getExternalContext().getSessionMap().put(CREATED, true);
     }
     
     /**
