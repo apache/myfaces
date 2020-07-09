@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.el.BeanELResolver;
 import javax.el.ELContext;
 import javax.el.ELException;
+import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.core.api.shared.lang.LambdaPropertyDescriptor;
@@ -154,6 +155,12 @@ public class LambdaBeanELResolver extends BeanELResolver
             cache.put(base.getClass().getName(), beanCache);
         }
 
-        return beanCache.get((String) property);
+        PropertyDescriptorWrapper pd = beanCache.get((String) property);
+        if (property == null)
+        {
+            throw new PropertyNotFoundException("Property [" + property
+                    + "] not found on type [" + base.getClass().getName() + "]");
+        }
+        return pd;
     }
 }
