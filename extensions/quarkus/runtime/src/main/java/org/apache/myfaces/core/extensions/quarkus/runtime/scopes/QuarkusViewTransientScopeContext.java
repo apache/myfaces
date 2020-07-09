@@ -24,24 +24,24 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.CDI;
 
-import org.apache.myfaces.cdi.view.ViewTransientScopeContextImpl;
+import org.apache.myfaces.cdi.view.ViewTransientScopeContext;
 import org.apache.myfaces.cdi.view.ViewTransientScoped;
 
 import io.quarkus.arc.InjectableContext;
 
 public class QuarkusViewTransientScopeContext implements InjectableContext
 {
-    private ViewTransientScopeContextImpl wrapped;
+    private ViewTransientScopeContext wrapped;
 
     public QuarkusViewTransientScopeContext()
     {
     }
 
-    public ViewTransientScopeContextImpl getWrapped()
+    public ViewTransientScopeContext getWrapped()
     {
         if (wrapped == null)
         {
-            wrapped = new ViewTransientScopeContextImpl(CDI.current().getBeanManager());
+            wrapped = new ViewTransientScopeContext(CDI.current().getBeanManager());
         }
         return wrapped;
     }

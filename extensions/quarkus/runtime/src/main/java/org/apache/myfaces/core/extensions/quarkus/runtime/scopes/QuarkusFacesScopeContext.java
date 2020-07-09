@@ -24,24 +24,24 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.CDI;
 
-import org.apache.myfaces.cdi.FacesScopeContextImpl;
+import org.apache.myfaces.cdi.FacesScopeContext;
 import org.apache.myfaces.cdi.FacesScoped;
 
 import io.quarkus.arc.InjectableContext;
 
 public class QuarkusFacesScopeContext implements InjectableContext
 {
-    private FacesScopeContextImpl wrapped;
+    private FacesScopeContext wrapped;
 
     public QuarkusFacesScopeContext()
     {
     }
 
-    public FacesScopeContextImpl getWrapped()
+    public FacesScopeContext getWrapped()
     {
         if (wrapped == null)
         {
-            wrapped = new FacesScopeContextImpl(CDI.current().getBeanManager());
+            wrapped = new FacesScopeContext(CDI.current().getBeanManager());
         }
         return wrapped;
     }
