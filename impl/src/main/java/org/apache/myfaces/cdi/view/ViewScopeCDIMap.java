@@ -65,7 +65,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
     
     private ViewScopeContextualStorage getStorage()
     {
-        if (storage != null && !storage.isActive())
+        if (storage != null && !storage.isActivated())
         {
             storage = null;
         }

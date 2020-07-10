@@ -21,14 +21,10 @@ package org.apache.myfaces.cdi.view;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.PassivationCapable;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.inject.spi.Bean;
-import javax.faces.context.FacesContext;
-import org.apache.myfaces.cdi.util.CDIUtils;
-import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
+import org.apache.myfaces.cdi.util.ContextualStorage;
 
 /**
  * This Storage holds all information needed for storing
@@ -36,109 +32,55 @@ import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
  * 
  * This scope requires passivation and is not concurrent.
  */
-public class ViewScopeContextualStorage implements Serializable
+public class ViewScopeContextualStorage extends ContextualStorage
 {
     private static final long serialVersionUID = 1L;
-
-    private final Map<Object, ContextualInstanceInfo<?>> contextualInstances;
     
     private final Map<String, Object> nameBeanKeyMap;
-    
-    private transient BeanManager beanManager;
 
-    private transient volatile boolean deactivated;
+    private transient volatile boolean activated;
 
     public ViewScopeContextualStorage(BeanManager beanManager)
     {
-        this.beanManager = beanManager;
-        this.contextualInstances = new HashMap<>();
+        super(beanManager, false);
         this.nameBeanKeyMap = new HashMap<>();
-        this.deactivated = false;
+        this.activated = true;
     }
 
-    /**
-     * @return the underlying storage map.
-     */
-    public Map<Object, ContextualInstanceInfo<?>> getStorage()
-    {
-        return contextualInstances;
-    }
-    
     public Map<String, Object> getNameBeanKeyMap()
     {
         return nameBeanKeyMap;
     }
 
-    /**
-     *
-     * @param bean
-     * @param creationalContext
-     * @param <T>
-     * @return
-     */
+    @Override
     public <T> T createContextualInstance(Contextual<T> bean, CreationalContext<T> creationalContext)
     {
-        Object beanKey = getBeanKey(bean);
-
-        // simply create the contextual instance
-        ContextualInstanceInfo<T> instanceInfo = new ContextualInstanceInfo<>();
-        instanceInfo.setCreationalContext(creationalContext);
-        instanceInfo.setContextualInstance(bean.create(creationalContext));
-        contextualInstances.put(beanKey, instanceInfo);
+        T instance = super.createContextualInstance(bean, creationalContext);
 
         if (bean instanceof Bean)
         {
             String name = ((Bean<T>) bean).getName();
             if (name != null)
             {
-                nameBeanKeyMap.put(name, beanKey);
+                nameBeanKeyMap.put(name, getBeanKey(bean));
             }
         }
 
-        return instanceInfo.getContextualInstance();
+        return instance;
     }
 
-    /**
-     * If the context is a passivating scope, we return the passivationId of the bean.
-     * Otherwise we use the bean directly.
-     * 
-     * @param bean 
-     * @return the key to use in the context map
-     */
-    public <T> Object getBeanKey(Contextual<T> bean)
+    public boolean isActivated()
     {
-        if (bean instanceof PassivationCapable)
-        {
-            return ((PassivationCapable) bean).getId();
-        }
-        return bean;
+        return activated;
     }
 
-    /**
-     * Restores the Bean from its beanKey.
-     * @see #getBeanKey(javax.enterprise.context.spi.Contextual)
-     */
-    public Contextual<?> getBean(FacesContext context, Object beanKey)
+    public void activate()
     {
-        if (beanKey instanceof String) //if beanKey is a string it is a passivation capable bean id
-        {
-            if (beanManager == null)
-            {
-                beanManager = CDIUtils.getBeanManager(context.getExternalContext());
-            }
-            return beanManager.getPassivationCapableBean((String) beanKey);
-        }
-        
-        return (Contextual<?>) beanKey;
+        activated = true;
     }
-    
-    public boolean isActive()
-    {
-        return !deactivated;
-    }
-    
+
     public void deactivate()
     {
-        deactivated = true;
+        activated = false;
     }
 }

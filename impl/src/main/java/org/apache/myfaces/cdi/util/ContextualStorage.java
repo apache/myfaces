@@ -31,22 +31,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * This Storage holds all information needed for storing
- * Contextual Instances in a Context.
+ * This Storage holds all information needed for storing Contextual Instances in a Context.
  *
  * It also addresses Serialisation in case of passivating scopes.
- * 
- * NOTE: Taken from Apache DeltaSpike
  */
 public class ContextualStorage implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    private final Map<Object, ContextualInstanceInfo<?>> contextualInstances;
-
-    private final BeanManager beanManager;
-
-    private final boolean concurrent;
+    protected final Map<Object, ContextualInstanceInfo<?>> contextualInstances;
+    protected final BeanManager beanManager;
+    protected final boolean concurrent;
 
     /**
      * @param beanManager is needed for serialisation
@@ -95,7 +90,7 @@ public class ContextualStorage implements Serializable
         if (isConcurrent())
         {
             // locked approach
-            ContextualInstanceInfo<T> instanceInfo = new ContextualInstanceInfo<T>();
+            ContextualInstanceInfo<T> instanceInfo = new ContextualInstanceInfo<>();
 
             ConcurrentMap<Object, ContextualInstanceInfo<?>> concurrentMap
                 = (ConcurrentHashMap<Object, ContextualInstanceInfo<?>>) contextualInstances;
@@ -107,6 +102,7 @@ public class ContextualStorage implements Serializable
             {
                 instanceInfo = oldInstanceInfo;
             }
+
             synchronized (instanceInfo)
             {
                 T instance = instanceInfo.getContextualInstance();
@@ -135,9 +131,11 @@ public class ContextualStorage implements Serializable
     }
 
     /**
-     * If the context is a passivating scope then we return
-     * the passivationId of the Bean. Otherwise we use
-     * the Bean directly.
+     * If the context is a passivating scope then we return the passivationId of the Bean.
+     * Otherwise we use the Bean directly.
+     *
+     * @param bean
+     * 
      * @return the key to use in the context map
      */
     public <T> Object getBeanKey(Contextual<T> bean)
@@ -165,4 +163,5 @@ public class ContextualStorage implements Serializable
 
         return (Contextual<?>) beanKey;
     }
+
 }

@@ -244,7 +244,7 @@ public class ViewScopeContext implements Context
         {
             if (!(entry.getKey() instanceof ViewScopeContextualKey))
             {            
-                Contextual bean = storage.getBean(facesContext, entry.getKey());
+                Contextual bean = storage.getBean(entry.getKey());
 
                 ContextualInstanceInfo<?> contextualInstanceInfo = entry.getValue();
                 bean.destroy(contextualInstanceInfo.getContextualInstance(), 
