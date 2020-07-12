@@ -22,6 +22,7 @@ package org.apache.myfaces.push;
 import javax.faces.context.ResponseWriter;
 import java.io.*;
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
+import org.apache.myfaces.util.lang.FastWriter;
 
 /**
  * A buffer for content which should not directly be rendered to the page.
@@ -35,14 +36,15 @@ public class HtmlBufferResponseWriterWrapper extends HtmlResponseWriterImpl
     /**
      * Buffer writer to write content to and buffer it.
      *
-     * Moved from OutputStream to Writer to account for issue
-     * TOMAHAWK-648.
+     * Moved from OutputStream to Writer to account for issue TOMAHAWK-648.
      */
-    private StringWriter bufferWriter;
+    private FastWriter bufferWriter;
+
     /**
      * Writer to wrap buffer-writer.
      */
     private PrintWriter wrapperWriter;
+
     /**
      * Original response writer.
      */
@@ -66,7 +68,7 @@ public class HtmlBufferResponseWriterWrapper extends HtmlResponseWriterImpl
      */
     static public HtmlBufferResponseWriterWrapper getInstance(ResponseWriter initialWriter)
     {
-        StringWriter bufferWriter = new StringWriter();
+        FastWriter bufferWriter = new FastWriter();
         PrintWriter wrapperWriter = new PrintWriter(bufferWriter, true);
 
         return new HtmlBufferResponseWriterWrapper(initialWriter, bufferWriter, wrapperWriter);
@@ -80,7 +82,7 @@ public class HtmlBufferResponseWriterWrapper extends HtmlResponseWriterImpl
      * @param bufferWriter A buffer to store content to.
      * @param wrapperWriter A wrapper around the buffer.
      */
-    private HtmlBufferResponseWriterWrapper(ResponseWriter initialWriter, StringWriter bufferWriter,
+    private HtmlBufferResponseWriterWrapper(ResponseWriter initialWriter, FastWriter bufferWriter,
             PrintWriter wrapperWriter)
     {
         super(wrapperWriter, (initialWriter == null) ? null : initialWriter.getContentType(),

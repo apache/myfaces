@@ -1106,7 +1106,7 @@ public abstract class HTMLEncoder
 
         try
         {
-            try (OutputStreamWriter writer = new OutputStreamWriter(baos,characterEncoding))
+            try (OutputStreamWriter writer = new OutputStreamWriter(baos, characterEncoding))
             {
                 writer.write(c);
                 writer.flush();

@@ -30,7 +30,7 @@ import java.io.Writer;
  */
 public final class FastWriter extends Writer
 {
-   private char[] buff;
+    private char[] buff;
     private int size;
 
     public FastWriter()
