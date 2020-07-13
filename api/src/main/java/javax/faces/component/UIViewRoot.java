@@ -18,9 +18,9 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.core.api.shared.ClassUtils;
+import org.apache.myfaces.core.api.shared.lang.ClassUtils;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
-import org.apache.myfaces.core.api.shared.LocaleUtils;
+import org.apache.myfaces.core.api.shared.lang.LocaleUtils;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

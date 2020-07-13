@@ -61,7 +61,7 @@ import javax.faces.application.ResourceVisitOption;
 import javax.faces.application.ViewHandler;
 import javax.faces.view.ViewDeclarationLanguage;
 import org.apache.myfaces.config.MyfacesConfig;
-import org.apache.myfaces.core.api.shared.LocaleUtils;
+import org.apache.myfaces.core.api.shared.lang.LocaleUtils;
 import org.apache.myfaces.util.SharedStringBuilder;
 import org.apache.myfaces.resource.ContractResource;
 import org.apache.myfaces.resource.ContractResourceLoader;

@@ -18,7 +18,7 @@
  */
 package javax.faces.component;
 
-import org.apache.myfaces.core.api.shared.ClassUtils;
+import org.apache.myfaces.core.api.shared.lang.ClassUtils;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 import java.io.IOException;
 import java.io.Serializable;

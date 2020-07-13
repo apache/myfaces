@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.core.api.shared;
 
+import org.apache.myfaces.core.api.shared.lang.ClassUtils;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

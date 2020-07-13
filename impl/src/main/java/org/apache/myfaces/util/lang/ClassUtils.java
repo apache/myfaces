@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public final class ClassUtils extends org.apache.myfaces.core.api.shared.ClassUtils
+public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.ClassUtils
 {
     //~ Static fields/initializers -----------------------------------------------------------------
 

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.myfaces.core.api.shared;
+package org.apache.myfaces.core.api.shared.lang;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -242,7 +242,7 @@ public class LocaleUtils
      */
     public static List<Locale> localeLookupList(Locale locale, Locale defaultLocale)
     {
-        List<Locale> list = new ArrayList<Locale>(4);
+        List<Locale> list = new ArrayList<>(4);
         if (locale != null)
         {
             list.add(locale);
@@ -327,7 +327,7 @@ public class LocaleUtils
         List<Locale> langs = LANGUAGES_BY_COUNTRY.get(countryCode);
         if (langs == null)
         {
-            langs = new ArrayList<Locale>();
+            langs = new ArrayList<>();
             List<Locale> locales = availableLocaleList();
             for (int i = 0; i < locales.size(); i++)
             {
@@ -365,7 +365,7 @@ public class LocaleUtils
         List<Locale> countries = COUNTRIES_BY_LANGUAGE.get(languageCode);
         if (countries == null)
         {
-            countries = new ArrayList<Locale>();
+            countries = new ArrayList<>();
             List<Locale> locales = availableLocaleList();
             for (int i = 0; i < locales.size(); i++)
             {
@@ -395,9 +395,9 @@ public class LocaleUtils
 
         static
         {
-            List<Locale> list = new ArrayList<Locale>(Arrays.asList(Locale.getAvailableLocales()));  // extra safe
+            List<Locale> list = new ArrayList<>(Arrays.asList(Locale.getAvailableLocales()));  // extra safe
             AVAILABLE_LOCALE_LIST = Collections.unmodifiableList(list);
-            AVAILABLE_LOCALE_SET = Collections.unmodifiableSet(new HashSet<Locale>(availableLocaleList()));
+            AVAILABLE_LOCALE_SET = Collections.unmodifiableSet(new HashSet<>(availableLocaleList()));
         }
     }
 
