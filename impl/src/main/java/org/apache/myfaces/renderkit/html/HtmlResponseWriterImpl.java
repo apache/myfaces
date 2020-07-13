@@ -412,13 +412,14 @@ public class HtmlResponseWriterImpl extends ResponseWriter
                 for (Map.Entry<String, Object> entry : _passThroughAttributesMap.entrySet())
                 {
                     String key = entry.getKey();
-                    Object value = entry.getValue();
                     if (Renderer.PASSTHROUGH_RENDERER_LOCALNAME_KEY.equals(key))
                     {
                         // Special attribute stored in passthrough attribute map,
                         // skip rendering
                         continue;
                     }
+                    
+                    Object value = entry.getValue();
                     if (value instanceof ValueExpression)
                     {
                         value = ((ValueExpression)value).getValue(getFacesContext().getELContext());
