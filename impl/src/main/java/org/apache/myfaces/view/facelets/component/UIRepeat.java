@@ -74,8 +74,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
 
     public static final String COMPONENT_FAMILY = "facelets";
     
-    private static final String STRING_BUILDER_KEY
-            = UIRepeat.class.getName() + ".SHARED_STRING_BUILDER";
+    private static final String STRING_BUILDER_KEY = UIRepeat.class.getName() + ".SHARED_STRING_BUILDER";
 
     private final static DataModel<?> EMPTY_MODEL = new ListDataModel<Object>(Collections.emptyList());
     
@@ -88,14 +87,14 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     // Holds for each row the states of the child components of this UIData.
     // Note that only "partial" component state is saved: the component fields
     // that are expected to vary between rows.
-    private Map<String, Collection<Object[]>> _rowStates = new HashMap<String, Collection<Object[]>>();
+    private Map<String, Collection<Object[]>> _rowStates = new HashMap<>();
     
     /**
      * Handle case where this table is nested inside another table. See method getDataModel for more details.
      * <p>
      * Key: parentClientId (aka rowId when nested within a parent table) Value: DataModel
      */
-    private Map<String, DataModel> _dataModelMap = new HashMap<String, DataModel>();
+    private Map<String, DataModel> _dataModelMap = new HashMap<>();
     
     // will be set to false if the data should not be refreshed at the beginning of the encode phase
     private boolean _isValidChilds = true;
@@ -573,7 +572,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     {
                         if (childStates == null)
                         {
-                            childStates = new ArrayList<Object[]>(
+                            childStates = new ArrayList<>(
                                     parent.getFacetCount()
                                     + parent.getChildCount()
                                     - totalChildCount
@@ -739,7 +738,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     }
     
     /**
-     * Returns the current index.
+     * @return the current index.
      */
     public int getIndex()
     {
@@ -753,8 +752,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
     
     private void _setIndex(int index)
     {
-        // save child state
-        //_saveChildState();
         if (index < -1)
         {
             throw new IllegalArgumentException("rowIndex is less than -1");
@@ -824,9 +821,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             }
         }
 
-        // restore child state
-        //_restoreChildState();
-        
         if (_index == -1)
         {
             // reset components to initial state
@@ -1647,19 +1641,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         
         Object values[] = (Object[]) state;
         super.restoreState(context, values[0]);
-        //Object restoredRowStates = UIComponentBase.restoreAttachedState(context, values[1]);
-        /*
-        if (restoredRowStates == null)
-        {
-            if (!_rowDeltaStates.isEmpty())
-            {
-                _rowDeltaStates.clear();
-            }
-        }
-        else
-        {
-            _rowDeltaStates = (Map<String, Map<String, Object> >) restoredRowStates;
-        }*/
+
         if (values.length > 2)
         {
             Object rs = UIComponentBase.restoreAttachedState(context, values[2]);
@@ -1687,16 +1669,13 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             {
                 _dataModelMap.clear();
                 _isValidChilds = true;
-                //_rowTransientStates.clear();
             }
             else if (context.getViewRoot().getAttributes().get(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY)
                     == ViewPoolProcessor.RESET_MODE_HARD)
             {
                 _dataModelMap.clear();
                 _isValidChilds = true;
-                //_rowTransientStates.clear();
                 _rowStates.clear();
-                //_rowDeltaStates.clear();
             }
         }
         if (initialStateMarked())
@@ -1713,7 +1692,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 {
                     Object values[] = new Object[3];
                     values[0] = super.saveState(context);
-                    //values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
                     values[1] = null;
                     values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
                     return values;
@@ -1721,7 +1699,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             }
             else
             {
-                if (parentSaved == null /*&&_rowDeltaStates.isEmpty()*/)
+                if (parentSaved == null)
                 {
                     return null;
                 }
@@ -1729,7 +1707,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 {
                     Object values[] = new Object[2];
                     values[0] = super.saveState(context);
-                    //values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
                     values[1] = null;
                     return values; 
                 }
@@ -1742,7 +1719,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             {
                 Object values[] = new Object[3];
                 values[0] = super.saveState(context);
-                //values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
                 values[1] = null;
                 values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
                 return values; 
@@ -1751,7 +1727,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             {
                 Object values[] = new Object[2];
                 values[0] = super.saveState(context);
-                //values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
                 values[1] = null;
                 return values;
             }
