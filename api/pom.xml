@@ -96,12 +96,10 @@
 
             <!-- compilation and compression of our javascripts -->
             <plugin>
-                <artifactId>myfaces-javascript-plugin</artifactId>
                 <groupId>org.apache.myfaces.buildtools</groupId>
-                <version>1.0.1</version>
+                <artifactId>myfaces-javascript-plugin</artifactId>
                 <extensions>true</extensions>
                 <executions>
-
                      <execution>
                         <id>compile</id>
                         <goals>
@@ -132,6 +130,7 @@
                             </excludes>
                         </configuration>
                     </execution>
+
                     <execution>
                         <id>compile-minimal</id>
                         <goals>
@@ -160,7 +159,6 @@
                             <outputDirectory>${basedir}/target/classes/META-INF/resources/myfaces/</outputDirectory>
                             <excludes>
                                 <exclude>**/myfaces/_impl/core/jsf-uncompressed.js</exclude>
-
                             </excludes>
                         </configuration>
                     </execution>
@@ -171,55 +169,45 @@
                             <goal>compress</goal>
                         </goals>
                         <phase>process-resources</phase>
-
                         <configuration>
                             <scripts>target/classes/META-INF/resources/javax.faces/</scripts>
                             <excludes>
                                 <exclude>jsf-uncompressed.js</exclude>
                                 <exclude>jsf-uncompressed-full.js</exclude>
-
                             </excludes>
                             <compressor>yahooUI</compressor>
-
                         </configuration>
                     </execution>
+
                     <execution>
                         <id>compress-extended</id>
                         <goals>
                             <goal>compress</goal>
                         </goals>
                         <phase>process-resources</phase>
-
                         <configuration>
                             <scripts>target/classes/META-INF/resources/myfaces/</scripts>
                             <excludes>
                                 <exclude>jsf-uncompressed.js</exclude>
                                 <exclude>jsf-uncompressed-full.js</exclude>
-
                             </excludes>
                             <compressor>yahooUI</compressor>
-
                         </configuration>
                     </execution>
 
-
-
-                <execution>
+                    <execution>
                         <id>compress-alternatives</id>
                         <goals>
                             <goal>compress</goal>
                         </goals>
                         <phase>process-resources</phase>
-
                         <configuration>
                             <scripts>target/classes/META-INF/internal-resources/javax.faces/</scripts>
                             <excludes>
                                 <exclude>jsf-uncompressed-full.js</exclude>
                                 <exclude>META-INF/**/*.js</exclude>
-
                             </excludes>
                             <compressor>yahooUI</compressor>
-
                         </configuration>
                     </execution>
                 </executions>
