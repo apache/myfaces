@@ -293,21 +293,7 @@
                 </plugins>
             </build>
         </profile>
-
-        <!-- Disable doclint on java 8 as it is very strict.
-        Some javadocs issues will need to be fixed like non existent reference links -->
-        <profile>
-            <id>disable-java8-doclint</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <properties>
-                <additionalparam>-Xdoclint:none</additionalparam>
-            </properties>
-        </profile>
-
     </profiles>
-
 
     <reporting>
         <plugins>
