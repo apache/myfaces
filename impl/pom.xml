@@ -104,7 +104,19 @@
                     </excludes>
                 </configuration>
             </plugin>
-            
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        org/apache/myfaces/taglib/core/*,
+                        org/apache/myfaces/taglib/html/*,
+                        org/apache/myfaces/view/facelets/component/JsfElement.java,
+                        org/apache/myfaces/webapp/WebConfigParamsLogger.java</excludes>
+                </configuration>
+            </plugin>
+
             <!-- myfaces-build-plugin - we generate a lot of stuff with this plugin (see executions) -->
             <plugin>
                 <groupId>org.apache.myfaces.buildtools</groupId>

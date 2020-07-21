@@ -93,7 +93,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
     /** 
      * When INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL is enabled, clear required input fields when empty strings 
-     * are submitted on them
+     * are submitted on them.
      *
      * <p>Note this param is only applicable when INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL is enabled.  This 
      * property addresses an issue wherein values that had previously been populated by the model are re-displayed on 
