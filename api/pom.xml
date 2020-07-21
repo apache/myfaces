@@ -82,7 +82,6 @@
                 </executions>
             </plugin>
 
-
             <!-- license checker needs to exclude some kinds of files -->
             <plugin>
                 <groupId>org.apache.rat</groupId>
@@ -97,7 +96,15 @@
                     </excludes>
                 </configuration>
             </plugin>
-            
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <excludes>javax/faces/component/**/*.java</excludes>
+                </configuration>
+            </plugin>
+
             <!-- compilation and compression of our javascripts -->
             <plugin>
                 <artifactId>myfaces-javascript-plugin</artifactId>
