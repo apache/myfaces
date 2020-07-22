@@ -53,14 +53,21 @@ mvn clean install
 
 ### web.xml
 ```xml
-<servlet>
-    <servlet-name>facesServlet</servlet-name>
-    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-</servlet>
-<servlet-mapping>
-    <servlet-name>facesServlet</servlet-name>
-    <url-pattern>*.xhtml</url-pattern>
-</servlet-mapping>
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+    version="3.1">
+    <servlet>
+        <servlet-name>facesServlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>facesServlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+</web-app>
 ```
 
 ### index.xhtml
