@@ -60,7 +60,7 @@ mvn clean install
          version="3.1">
 
     <servlet>
-        <servlet-name>FacesServlet</servlet-name>
+        <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
     </servlet>
     <servlet-mapping>
