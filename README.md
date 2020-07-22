@@ -39,48 +39,48 @@ mvn clean install
 
 ### Dependency
 ```xml
-    <dependency>
-        <groupId>org.apache.myfaces.core</groupId>
-        <artifactId>myfaces-api</artifactId>
-        <version>2.3-next-M1</version>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.myfaces.core</groupId>
-        <artifactId>myfaces-impl</artifactId>
-        <version>2.3-next-M1</version>
-    </dependency>
+<dependency>
+    <groupId>org.apache.myfaces.core</groupId>
+    <artifactId>myfaces-api</artifactId>
+    <version>2.3-next-M1</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.myfaces.core</groupId>
+    <artifactId>myfaces-impl</artifactId>
+    <version>2.3-next-M1</version>
+</dependency>
 ```
 
 ### web.xml
 ```xml
-    <servlet>
-        <servlet-name>facesServlet</servlet-name>
-        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>facesServlet</servlet-name>
-        <url-pattern>*.xhtml</url-pattern>
-    </servlet-mapping>
+<servlet>
+    <servlet-name>facesServlet</servlet-name>
+    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>facesServlet</servlet-name>
+    <url-pattern>*.xhtml</url-pattern>
+</servlet-mapping>
 ```
 
 ### index.xhtml
 ```xml
-    <!DOCTYPE html>
-    <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:p="http://primefaces.org/ui">
 
-      <h:head>
+  <h:head>
 
-      </h:head>
+  </h:head>
 
-      <h:body>
+  <h:body>
 
-        Hello World!
+    Hello World!
 
-      </h:body>
-    </html>
+  </h:body>
+</html>
 ```
 
 ## Quarkus extension
