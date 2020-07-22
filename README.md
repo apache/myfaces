@@ -38,7 +38,7 @@ mvn clean install
 ## Usage
 
 ### Dependency
-    ```xml
+```xml
     <dependency>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-api</artifactId>
@@ -49,10 +49,10 @@ mvn clean install
         <artifactId>myfaces-impl</artifactId>
         <version>2.3-next-M1</version>
     </dependency>
-    ```
+```
 
 ### web.xml
-    ```xml
+```xml
     <servlet>
         <servlet-name>facesServlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -61,10 +61,10 @@ mvn clean install
         <servlet-name>facesServlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
-    ```
+```
 
 ### index.xhtml
-    ```xml
+```xml
     <!DOCTYPE html>
     <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
@@ -81,7 +81,7 @@ mvn clean install
 
       </h:body>
     </html>
-    ```
+```
 
 ## Quarkus extension
 
