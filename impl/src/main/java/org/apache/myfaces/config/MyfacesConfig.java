@@ -717,6 +717,7 @@ public class MyfacesConfig
                        expectedValues="noCache, strict, allowCset, always, alwaysRecompile",
                        group="EL", tags="performance")
     public static final String CACHE_EL_EXPRESSIONS = "org.apache.myfaces.CACHE_EL_EXPRESSIONS";
+    private static final String CACHE_EL_EXPRESSIONS_DEFAULT = ELExpressionCacheMode.alwaysRecompile.name();
     
     /**
      * Wrap exception caused by calls to EL expressions, so information like
@@ -1290,7 +1291,7 @@ public class MyfacesConfig
                 ViewHandler.DEFAULT_FACELETS_SUFFIX);
         
         String elExpressionCacheMode = getString(extCtx, CACHE_EL_EXPRESSIONS,
-                ELExpressionCacheMode.noCache.name());    
+                CACHE_EL_EXPRESSIONS_DEFAULT);    
         cfg.elExpressionCacheMode = Enum.valueOf(ELExpressionCacheMode.class, elExpressionCacheMode); 
  
         cfg.wrapTagExceptionsAsContextAware = getBoolean(extCtx, WRAP_TAG_EXCEPTIONS_AS_CONTEXT_AWARE,
