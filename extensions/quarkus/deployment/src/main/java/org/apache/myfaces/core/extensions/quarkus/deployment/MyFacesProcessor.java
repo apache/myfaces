@@ -292,8 +292,6 @@ class MyFacesProcessor
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.EARLY_FLUSH_ENABLED, "true"));
         initParam.produce(new ServletInitParamBuildItem(
-                MyfacesConfig.CACHE_EL_EXPRESSIONS, "alwaysRecompile"));
-        initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.COMPRESS_STATE_IN_SESSION, "false"));
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION, "15"));
