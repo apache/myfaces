@@ -51,7 +51,7 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jasper-el</artifactId>
-            <version>9.0.36</version>
+            <version>9.0.37</version>
         </dependency>
 
         <dependency>
@@ -83,6 +83,13 @@
             <groupId>jakarta.servlet.jsp.jstl</groupId>
             <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
             <version>1.2.4</version>
+            <exclusions>
+                <!-- Exclude it, we use tomcat-el as API and IMPL -->
+                <exclusion>
+                    <groupId>jakarta.el</groupId>
+                    <artifactId>jakarta.el-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId> <!-- primefaces fileupload, needed in quarkus native mode -->
