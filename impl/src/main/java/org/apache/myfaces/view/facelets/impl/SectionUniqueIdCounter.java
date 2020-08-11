@@ -111,13 +111,13 @@ public class SectionUniqueIdCounter
         
         if (!_counterStack.isEmpty())
         {
-            String lastPrefix = _counterStack.get(_counterStack.size()-1).getPrefix();
+            String lastPrefix = _counterStack.get(_counterStack.size() - 1).getPrefix();
             if (lastPrefix != null)
             {
                 _builder.append(lastPrefix);
                 _builder.append('_');
             }
-            appendToBuilder(_counterStack.get(_counterStack.size()-1).getCounter(),
+            appendToBuilder(_counterStack.get(_counterStack.size() - 1).getCounter(),
                 _radix, _builder, _bufferConversion);
         }
         
@@ -133,13 +133,13 @@ public class SectionUniqueIdCounter
         
         if (!_counterStack.isEmpty())
         {
-            String lastPrefix = _counterStack.get(_counterStack.size()-1).getPrefix();
+            String lastPrefix = _counterStack.get(_counterStack.size() - 1).getPrefix();
             if (lastPrefix != null)
             {
                 _builder.append(lastPrefix);
                 _builder.append('_');
             }
-            appendToBuilder(_counterStack.get(_counterStack.size()-1).getCounter()-1,
+            appendToBuilder(_counterStack.get(_counterStack.size() - 1).getCounter() - 1,
                 _radix, _builder, _bufferConversion);
         }
 
@@ -155,23 +155,19 @@ public class SectionUniqueIdCounter
 
     public String generateUniqueId()
     {
+        Section activeSection = _counterStack.get(_activeSection);
+
         if (_activeSection == 0 && _uniqueIdsCache != null)
         {
-            long i = _counterStack.get(_activeSection).getCounter();
-            if (((int)i) < (long)_uniqueIdsCache.length)
+            long i = activeSection.getCounter();
+            if (((int) i) < ((long) _uniqueIdsCache.length))
             {
-                _counterStack.get(_activeSection).incrementUniqueId();
-                return _uniqueIdsCache[((int)i)-1];
-            }
-            else
-            {
-                return _counterStack.get(_activeSection).generateUniqueId(_prefix);
+                activeSection.incrementUniqueId();
+                return _uniqueIdsCache[((int) i) - 1];
             }
         }
-        else
-        {
-            return _counterStack.get(_activeSection).generateUniqueId(_prefix);
-        }
+
+        return activeSection.generateUniqueId(_prefix);
     }
     
     public void generateUniqueId(StringBuilder builderToAdd)
@@ -191,12 +187,10 @@ public class SectionUniqueIdCounter
             _counterStack.get(_activeSection).generateUniqueId(_prefix);
             return;
         }
-        else
-        {
-            _counterStack.remove(_activeSection);
-            _activeSection--;
-            _counterStack.get(_activeSection).generateUniqueId(_prefix);
-        }
+
+        _counterStack.remove(_activeSection);
+        _activeSection--;
+        _counterStack.get(_activeSection).generateUniqueId(_prefix);
     }
     
     public void endUniqueIdSection(String base)
@@ -205,11 +199,9 @@ public class SectionUniqueIdCounter
         {
             return;
         }
-        else
-        {
-            _counterStack.remove(_activeSection);
-            _activeSection--;
-        }
+
+        _counterStack.remove(_activeSection);
+        _activeSection--;
     }
     
     private static class Section
