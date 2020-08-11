@@ -222,17 +222,16 @@ public class MyfacesConfig
     
     /**
      * Set the size of the cache used to store strings generated using SectionUniqueIdCounter
-     * for component ids. If this is set to 0, no cache is used. By default is set to 100.
+     * for component ids. If this is set to 0, no cache is used. By default is set to 200.
      */
     @JSFWebConfigParam(defaultValue = "100", since = "2.0.13, 2.1.7",
             group="viewhandler", tags="performance")
     public static final String COMPONENT_UNIQUE_IDS_CACHE_SIZE =
         "org.apache.myfaces.COMPONENT_UNIQUE_IDS_CACHE_SIZE";
-    private static final int COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT = 100;
+    private static final int COMPONENT_UNIQUE_IDS_CACHE_SIZE_DEFAULT = 200;
 
     /**
     * If set false, myfaces won't support JSP. JSP are deprecated in JSF 2.X. Default value is true. 
-    * 
     * If this property is set is false, all related logic for JSP is skipped.
     */
     @JSFWebConfigParam(since="2.0.13,2.1.7", expectedValues="true,false", defaultValue="true",
