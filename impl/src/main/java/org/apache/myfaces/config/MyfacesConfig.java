@@ -214,7 +214,7 @@ public class MyfacesConfig
      */
     @JSFWebConfigParam(defaultValue = "true", since = "2.0.13, 2.1.7", expectedValues="true, false", 
             group="viewhandler", tags="performance",
-            desc="Enable or disable a cache used to 'remember'  the generated facelets unique ids " + 
+            desc="Enable or disable a cache used to 'remember' the generated facelets unique ids " + 
                  "and reduce the impact over memory usage.")
     public static final String VIEW_UNIQUE_IDS_CACHE_ENABLED = 
         "org.apache.myfaces.VIEW_UNIQUE_IDS_CACHE_ENABLED";
