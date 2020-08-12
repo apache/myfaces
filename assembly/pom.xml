@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-core-project</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.0-RC1</version>
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
