@@ -92,6 +92,8 @@ import io.quarkus.runtime.configuration.ProfileManager;
 import io.quarkus.undertow.deployment.ListenerBuildItem;
 import io.quarkus.undertow.deployment.ServletBuildItem;
 import io.quarkus.undertow.deployment.ServletInitParamBuildItem;
+import io.quarkus.undertow.deployment.WebMetadataBuildItem;
+
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -144,6 +146,8 @@ import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.MethodInfo;
 import org.jboss.jandex.Type;
+import org.jboss.metadata.web.spec.ServletMetaData;
+import org.jboss.metadata.web.spec.WebMetaData;
 
 class MyFacesProcessor
 {
@@ -206,14 +210,28 @@ class MyFacesProcessor
     }
 
     @BuildStep
-    void buildServlet(BuildProducer<FeatureBuildItem> feature,
+    void buildServlet(WebMetadataBuildItem  webMetaDataBuildItem,
+            BuildProducer<FeatureBuildItem> feature,
             BuildProducer<ServletBuildItem> servlet,
             BuildProducer<ListenerBuildItem> listener) throws IOException
     {
-        servlet.produce(ServletBuildItem.builder("Faces Servlet", FacesServlet.class.getName())
-                .setMultipartConfig(new MultipartConfigElement(""))
-                .addMapping("*.xhtml")
-                .build());
+        WebMetaData webMetaData = webMetaDataBuildItem.getWebMetaData();
+        ServletMetaData facesServlet = null;
+        if (webMetaData.getServlets() != null)
+        {
+            facesServlet = webMetaData.getServlets().stream()
+                .filter(servletMeta -> FacesServlet.class.getName().equals(servletMeta.getServletClass()))
+                .findFirst()
+                .orElse(null);
+        }
+        if (facesServlet == null)
+        {
+            // Only define here if not explictly defined in web.xml
+            servlet.produce(ServletBuildItem.builder("Faces Servlet", FacesServlet.class.getName())
+                    .setMultipartConfig(new MultipartConfigElement(""))
+                    .addMapping("*.xhtml")
+                    .build());
+        }
 
         // sometimes Quarkus doesn't scan web-fragments?! lets add it manually
         listener.produce(new ListenerBuildItem(StartupServletContextListener.class.getName()));
