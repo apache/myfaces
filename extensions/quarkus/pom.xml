@@ -63,6 +63,7 @@
                     <excludes>
                         <exclude>**/*/README.md</exclude>
                         <exclude>**/*/MANIFEST.MF</exclude>
+                        <exclude>**/*.iml</exclude>
                         <exclude>.git</exclude>
                         <exclude>.gitignore</exclude>
                         <exclude>**/target/**/*</exclude>
