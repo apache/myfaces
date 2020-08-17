@@ -166,6 +166,7 @@ public class ManagedBeanDestroyerListener implements
                 {
                     ServletContext servletContext = event.getSession().getServletContext();
                     ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, false);
+                    ((StartupServletExternalContextImpl)externalContext).setSession(event.getSession());
                     ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
                     facesContext = new StartupFacesContextImpl(externalContext, 
                             (ReleaseableExternalContext) externalContext, exceptionHandler, false);
