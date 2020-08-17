@@ -23,6 +23,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.security.Principal;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -30,6 +32,7 @@ import java.util.Map;
 
 import javax.faces.context.Flash;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 
 /**
  * An ExternalContext implementation for Servlet environments, which is used
@@ -46,7 +49,8 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
     
     private boolean _startup;
     private ServletContext _servletContext;
-    
+    private HttpSession _session;
+
     public StartupServletExternalContextImpl(final ServletContext servletContext,
             boolean startup)
     {
@@ -54,7 +58,17 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
         _servletContext = servletContext;
         _startup = startup;
     }
-    
+
+    /**
+     * Allow an HttpSession to be saved for later calls to getSession*
+     *
+     * @param session
+     */
+    public void setSession(HttpSession session)
+    {
+        _session = session;
+    }
+
     // ~ Methods which are valid to be called during startup and shutdown------
     
     // Note that all methods, which are valid to be called during startup and
@@ -184,7 +198,11 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
     @Override
     public Object getSession(boolean create)
     {
-        if (create)
+        if (_session != null)
+        {
+            return _session;
+        }
+        else if (create)
         {
             throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
         }
@@ -194,7 +212,11 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
     @Override
     public String getSessionId(boolean create)
     {
-        if (create)
+        if (_session != null)
+        {
+            return _session.getId();
+        }
+        else if (create)
         {
             throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
         }
@@ -204,7 +226,22 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
     @Override
     public Map<String, Object> getSessionMap()
     {
-        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        if (_session != null)
+        {
+            Map<String, Object> sessionMap = new HashMap<String, Object>();
+            Enumeration<String> attributes = _session.getAttributeNames();
+            while (attributes.hasMoreElements())
+            {
+                String name = attributes.nextElement();
+                Object value = _session.getAttribute(name);
+                sessionMap.put(name, value);
+            }
+            return sessionMap;
+        }
+        else
+        {
+            throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+        }
     }
 
     @Override
