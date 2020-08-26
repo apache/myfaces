@@ -34,7 +34,7 @@
         This project is the home of the MyFaces implementation of the JavaServer Faces 2.3 specification, and
         consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
-    <version>2.3-next-SNAPSHOT</version>
+    <version>2.3-next-M4</version>
     <url>http://myfaces.apache.org/core23next</url>
 
     <issueManagement>
@@ -518,4 +518,8 @@
         <siteDeploy.url>file://${user.home}/myfaces-site/site/${siteModule.path}</siteDeploy.url>
         <siteScmPublish.url>scm:svn:https://svn.apache.org/repos/asf/myfaces/site/publish/</siteScmPublish.url>
     </properties>
+
+  <scm>
+    <tag>2.3-next-M4</tag>
+  </scm>
 </project>
