@@ -466,16 +466,20 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
         List<String> clientIdsAdded = getClientIdsAdded(view);
         if (clientIdsAdded != null)
         {
-            Set<String> idsAddedSet = new HashSet<>(HashMapUtils.calcCapacity(clientIdsAdded.size()));
-            
-            AddComponentCallback addCallback = null;
-            
-            // perf: clientIds are ArrayList: see method setClientsIdsAdded(String)
-            for (int i = 0, size = clientIdsAdded.size(); i < size; i++)
+            if (!clientIdsAdded.isEmpty())
             {
-                String clientId = clientIdsAdded.get(i);
-                if (!idsAddedSet.contains(clientId))
+                Set<String> idsAddedSet = new HashSet<>(HashMapUtils.calcCapacity(clientIdsAdded.size()));
+                AddComponentCallback addCallback = null;
+
+                // perf: clientIds are ArrayList: see method setClientsIdsAdded(String)
+                for (int i = 0, size = clientIdsAdded.size(); i < size; i++)
                 {
+                    String clientId = clientIdsAdded.get(i);
+                    if (idsAddedSet.contains(clientId))
+                    {
+                        continue;
+                    }
+
                     final AttachedFullStateWrapper wrapper = (AttachedFullStateWrapper) states.get(clientId);
                     if (wrapper != null)
                     {
@@ -484,8 +488,7 @@ public class DefaultFaceletsStateManagementStrategy extends StateManagementStrat
                         {
                             if (addedState.length == 2)
                             {
-                                view = (UIViewRoot)
-                                        internalRestoreTreeStructure((TreeStructComponent) addedState[0]);
+                                view = (UIViewRoot) internalRestoreTreeStructure((TreeStructComponent) addedState[0]);
                                 view.processRestoreState(context, addedState[1]);
                                 break;
                             }
