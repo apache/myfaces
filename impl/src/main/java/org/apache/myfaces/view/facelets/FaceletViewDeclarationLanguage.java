@@ -2372,8 +2372,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     private void _initializeContractMappings(ExternalContext context)
     {
         RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(context);
-        List<String> prefixWildcardKeys = new ArrayList<String>();
-        Map<String, List<String>> contractMappings = new HashMap<String, List<String>>();
+        List<String> prefixWildcardKeys = new ArrayList<>();
+        Map<String, List<String>> contractMappings = new HashMap<>();
         
         for (Map.Entry<String, List<String>> entry : runtimeConfig.getContractMappings().entrySet())
         {
@@ -2382,7 +2382,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
             {
                 prefixWildcardKeys.add(urlPattern);
             }
-            contractMappings.put(entry.getKey(), new ArrayList<String>(entry.getValue()));
+            contractMappings.put(entry.getKey(), new ArrayList<>(entry.getValue()));
         }
         
         Collections.sort(prefixWildcardKeys, new FaceletsVDLUtils.KeyComparator());
@@ -2404,11 +2404,12 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         if (contracts == null)
         {
             //Check prefix mapping
-            for (String prefix : this._prefixWildcardKeys)
+            for (int i = 0; i < this._prefixWildcardKeys.size(); i++)
             {
+                String prefix = this._prefixWildcardKeys.get(i);
                 if (FaceletsVDLUtils.matchPattern(viewId, prefix))
                 {
-                    contracts =  this._contractMappings.get(prefix);
+                    contracts = this._contractMappings.get(prefix);
                     break;
                 }
             }
