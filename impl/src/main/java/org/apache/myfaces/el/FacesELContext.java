@@ -18,8 +18,12 @@
  */
 package org.apache.myfaces.el;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import javax.el.ELContext;
 import javax.el.ELResolver;
+import javax.el.EvaluationListener;
 import javax.el.FunctionMapper;
 import javax.el.VariableMapper;
 import javax.faces.context.FacesContext;
@@ -34,6 +38,9 @@ public class FacesELContext extends ELContext
     private ELResolver _elResolver;
     private FunctionMapper _functionMapper;
     private VariableMapper _variableMapper;
+
+    // overwrite to optimize access and reduce created objects
+    private List<EvaluationListener> listeners;
 
     public FacesELContext(ELResolver elResolver, FacesContext facesContext)
     {
@@ -69,4 +76,65 @@ public class FacesELContext extends ELContext
         return _elResolver;
     }
 
+    @Override
+    public void addEvaluationListener(EvaluationListener listener)
+    {
+        if (listeners == null)
+        {
+            listeners = new ArrayList<>();
+        }
+
+        listeners.add(listener);
+    }
+
+    @Override
+    public List<EvaluationListener> getEvaluationListeners()
+    {
+        return listeners == null ? Collections.emptyList() : listeners;
+    }
+
+    @Override
+    public void notifyBeforeEvaluation(String expression)
+    {
+        if (listeners == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < listeners.size(); i++)
+        {
+            EvaluationListener listener = listeners.get(i);
+            listener.beforeEvaluation(this, expression);
+        }
+    }
+
+    @Override
+    public void notifyAfterEvaluation(String expression)
+    {
+        if (listeners == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < listeners.size(); i++)
+        {
+            EvaluationListener listener = listeners.get(i);
+            listener.afterEvaluation(this, expression);
+        }
+    }
+
+    @Override
+    public void notifyPropertyResolved(Object base, Object property)
+    {
+        if (listeners == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < listeners.size(); i++)
+        {
+            EvaluationListener listener = listeners.get(i);
+            listener.propertyResolved(this, base, property);
+        }
+    }
 }
