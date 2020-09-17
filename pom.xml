@@ -30,7 +30,7 @@
     <packaging>pom</packaging>
     <name>Apache MyFaces JSF-3.0 Core Module</name>
     <description>
-        This project is the home of the MyFaces implementation of the JavaServer Faces 2.3 specification, and
+        This project is the home of the MyFaces implementation of the Jakarta Server Faces 3.0 specification, and
         consists of an API module (jakarta.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
     <version>3.0.0-SNAPSHOT</version>
@@ -60,7 +60,7 @@
     </modules>
 
     <build>
-    
+
         <!-- Since Maven 3.0, this is required to add scpexe as protocol for deploy. -->
         <extensions>
           <extension>
@@ -87,7 +87,7 @@
           </plugins>
         </pluginManagement>
         <plugins>
-    
+
           <!-- license checker needs to exclude some kinds of files -->
           <plugin>
                 <groupId>org.apache.rat</groupId>
@@ -121,7 +121,7 @@
           </plugin>
         </plugins>
     </build>
-    
+
     <profiles>
 
         <!-- TODO jakobk: we could change this to -Papache-release -->
@@ -197,8 +197,8 @@
         </repository>
 
     </repositories>
-    
-    <!-- 
+
+    <!--
     <distributionManagement>
         <site>
             <id>apache.website</id>
@@ -208,8 +208,8 @@
     </distributionManagement>
     -->
     <!-- To deploy the site, use site:stage-deploy goal and commit changes manually on
-         https://svn.apache.org/repos/asf/myfaces/site/publish/ 
-         
+         https://svn.apache.org/repos/asf/myfaces/site/publish/
+
          -->
   <distributionManagement>
     <site>

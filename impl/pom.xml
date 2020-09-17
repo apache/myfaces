@@ -30,7 +30,7 @@
     <artifactId>myfaces-impl</artifactId>
     <name>Apache MyFaces JSF-3.0 Core Impl</name>
     <description>
-        The private implementation classes of the Apache MyFaces Core JSF-2.3 Implementation
+        The private implementation classes of the Apache MyFaces Core JSF-3.0 Implementation
     </description>
     <url>http://myfaces.apache.org/core23/myfaces-impl</url>
 

@@ -1,5 +1,5 @@
  ------
- MyFaces Core 2.3: API
+ MyFaces Core 3.0: API
  ------
 
  ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -19,11 +19,10 @@
  ~~ specific language governing permissions and limitations
  ~~ under the License.
 
-MyFaces Core 2.3: API Project
+MyFaces Core 3.0: API Project
 
   The API submodule implements all of the classes that are defined in the specification.
   If you are looking for API documentation about the classes that your JSF application
   needs to use, then see the javadoc for this module.
-  
+
   Check the download page or you can check the nightly builds {{{https://repository.apache.org/content/repositories/snapshots/org/apache/myfaces/core}here}}.
-  

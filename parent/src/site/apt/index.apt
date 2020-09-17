@@ -1,5 +1,5 @@
  ------
- Myfaces Core 2.3
+ MyFaces Core 3.0
  ------
 
  ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -18,13 +18,13 @@
  ~~ KIND, either express or implied.  See the License for the
  ~~ specific language governing permissions and limitations
  ~~ under the License.
- 
 
-MyFaces Core 2.3 Project
 
-  This project provides an implementation of the JavaServer Faces 2.3 (JSF 2.3) specification.
+MyFaces Core 3.0 Project
 
-    * The API submodule implements all of the classes that are defined in the specification. 
+  This project provides an implementation of the Jakarta Server Faces 3.0 (JSF (Faces) 3.0) specification.
+
+    * The API submodule implements all of the classes that are defined in the specification.
       If you are looking for API documentation about the classes that your JSF application
       needs to use, then see the javadoc for the API module.
 
@@ -34,26 +34,27 @@ MyFaces Core 2.3 Project
 
   These two libraries (myfaces-api.jar and myfaces-impl.jar) are deployed together with your
   code to form a JSF web application.
-  
-  Additionally, there are other submodules:  
-      
-    * The Shared internal submodule provides support "invisible" classes "shared" between other 
-      projects in MyFaces land like Tomahawk, Orchestra and Portlet Bridge. A copy of these 
+
+  Additionally, there are other submodules:
+
+    * The Shared internal submodule provides support "invisible" classes "shared" between other
+      projects in MyFaces land like Tomahawk, Orchestra and Portlet Bridge. A copy of these
       classes are added to Impl submodule.
-      
-    * The Bundle submodule provides both API and Impl classes into a single jar file with 
+
+    * The Bundle submodule provides both API and Impl classes into a single jar file with
       a OSGi MANIFEST.MF.
 
-  If you want to know more about how JavaServer(tm) Faces works, take a look at the documentation
+  If you want to know more about how Jakarta Server Faces works, take a look at the documentation
   referenced from the main MyFaces site.
 
 Requirements
 
-  JSF 2.3 requires java 1.8 or later, JSP 2.2, JSTL 1.2, CDI 2.0, WebSocket 1.1 and a Java Servlet 4.0 implementation.
+  JSF (Faces) 3.0 requires Java 1.8 or later, JSP (Pages) 3.0, JSTL 2.0, CDI 3.0, WebSocket 2.0 and a Jakarta Servlet 5.0 implementation.
 
 Specifications
 
-  MyFaces implements {{{https://www.jcp.org/en/jsr/detail?id=372}Java Specification Request 372}}
-  Each major release of MyFaces is certified against the Sun TCK to ensure compliance.
-  
+  MyFaces implements {{{https://jakarta.ee/specifications/faces/3.0/} EE4J Jakarta Server Faces Specification }}
+
+  As the Jakarta Server Faces 3.0 TCK has not yet been released, no certification has yet been performed to assure compliance.
+
   Check the download page or you can check the nightly builds {{{https://repository.apache.org/content/repositories/snapshots/org/apache/myfaces/core}here}}.
