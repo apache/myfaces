@@ -58,6 +58,10 @@ public class ResourceHandlerCache
         }
     }
     
+    public boolean isResourceHandlerCacheEnabled()
+    {
+        return _resourceCacheEnabled;
+    }
     
     public ResourceValue getResource(String resourceName, String libraryName, String contentType, String localePrefix)
     {
@@ -67,7 +71,7 @@ public class ResourceHandlerCache
     public ResourceValue getResource(String resourceName, String libraryName, String contentType, String localePrefix,
             String contractName)
     {
-        if (!_resourceCacheEnabled)
+        if (!isResourceHandlerCacheEnabled())
         {
             return null;
         }
@@ -90,7 +94,7 @@ public class ResourceHandlerCache
     public boolean containsResource(String resourceName, String libraryName, String contentType, String localePrefix,
             String contractName)
     {
-        if (!_resourceCacheEnabled)
+        if (!isResourceHandlerCacheEnabled())
         {
             return false;
         }
@@ -108,7 +112,7 @@ public class ResourceHandlerCache
     public void putResource(String resourceName, String libraryName, String contentType, String localePrefix,
             String contractName, ResourceMeta resource, ResourceLoader loader, ResourceCachedInfo info)
     {
-        if (!_resourceCacheEnabled)
+        if (!isResourceHandlerCacheEnabled())
         {
             return;
         }
@@ -124,7 +128,7 @@ public class ResourceHandlerCache
     
     public ResourceValue getResource(String resourceId)
     {
-        if (!_resourceCacheEnabled)
+        if (!isResourceHandlerCacheEnabled())
         {
             return null;
         }
@@ -139,7 +143,7 @@ public class ResourceHandlerCache
 
     public ResourceValue getResource(String resourceId, String contractName)
     {
-        if (!_resourceCacheEnabled)
+        if (!isResourceHandlerCacheEnabled())
         {
             return null;
         }
@@ -154,7 +158,7 @@ public class ResourceHandlerCache
     
     public boolean containsResource(String resourceId, String contractName)
     {
-        if (!_resourceCacheEnabled)
+        if (!isResourceHandlerCacheEnabled())
         {
             return false;
         }
@@ -164,7 +168,7 @@ public class ResourceHandlerCache
     
     public boolean containsResource(String resourceId)
     {
-        if (!_resourceCacheEnabled)
+        if (!isResourceHandlerCacheEnabled())
         {
             return false;
         }
@@ -174,7 +178,7 @@ public class ResourceHandlerCache
 
     public void putResource(String resourceId, ResourceMeta resource, ResourceLoader loader, ResourceCachedInfo info)
     {
-        if (!_resourceCacheEnabled)
+        if (!isResourceHandlerCacheEnabled())
         {
             return;
         }
@@ -202,7 +206,7 @@ public class ResourceHandlerCache
     public boolean containsViewResource(String resourceName, String contentType, String localePrefix,
             String contractName)
     {
-        if (!_resourceCacheEnabled)
+        if (!isResourceHandlerCacheEnabled())
         {
             return false;
         }
@@ -219,7 +223,7 @@ public class ResourceHandlerCache
     public ResourceValue getViewResource(String resourceName, String contentType, String localePrefix,
             String contractName)
     {
-        if (!_resourceCacheEnabled)
+        if (!isResourceHandlerCacheEnabled())
         {
             return null;
         }
@@ -243,7 +247,7 @@ public class ResourceHandlerCache
         String localePrefix, String contractName, ResourceMeta resource, ResourceLoader loader,
         ResourceCachedInfo info)
     {
-        if (!_resourceCacheEnabled)
+        if (!isResourceHandlerCacheEnabled())
         {
             return;
         }
@@ -259,7 +263,7 @@ public class ResourceHandlerCache
     
     public Boolean libraryExists(String libraryName)
     {
-        if (!_resourceCacheEnabled)
+        if (!isResourceHandlerCacheEnabled())
         {
             return null;
         }
@@ -274,7 +278,7 @@ public class ResourceHandlerCache
     
     public void confirmLibraryExists(String libraryName)
     {
-        if (!_resourceCacheEnabled)
+        if (!isResourceHandlerCacheEnabled())
         {
             return;
         }
@@ -289,7 +293,7 @@ public class ResourceHandlerCache
     
     public void confirmLibraryNotExists(String libraryName)
     {
-        if (!_resourceCacheEnabled)
+        if (!isResourceHandlerCacheEnabled())
         {
             return;
         }
