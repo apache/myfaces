@@ -206,12 +206,6 @@ public class TempDirFileCacheResourceLoader extends ResourceLoaderWrapper
     {
         return getResourceInputStream(resourceMeta, null);
     }
-    
-    @Override
-    public boolean resourceExists(ResourceMeta resourceMeta)
-    {
-        return super.resourceExists(resourceMeta);
-    }
 
     @SuppressWarnings("unchecked")
     private File createOrGetTempFile(FacesContext facesContext, ResourceMeta resourceMeta)

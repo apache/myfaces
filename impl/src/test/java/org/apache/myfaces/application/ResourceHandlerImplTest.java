@@ -289,13 +289,11 @@ public class ResourceHandlerImplTest extends AbstractJsfTestCase
         Mockito.verify(loader, Mockito.times(4)).createResourceMeta(
                 Mockito.any(), Mockito.eq("test"), Mockito.any(), Mockito.eq("test.png"), Mockito.any());
     }
-    
-    @Ignore
+
     @Test
-    public void testNegativeCache()
+    public void testResourceExistsCache()
     {
         ResourceLoader loader = Mockito.spy(new ClassLoaderResourceLoader(null));
-        Mockito.when(loader.resourceExists(Mockito.any())).thenReturn(false);
 
         ResourceHandlerCache cache = Mockito.spy(new ResourceHandlerCache());   
         
@@ -313,9 +311,8 @@ public class ResourceHandlerImplTest extends AbstractJsfTestCase
 
         Mockito.verify(cache, Mockito.times(4)).getResource(
                 Mockito.eq("test.png"), Mockito.eq("test"), Mockito.eq("test"), Mockito.any());
-        Mockito.verify(cache, Mockito.times(1)).putResource(
-                Mockito.eq("test.png"), Mockito.eq("test"), Mockito.eq("test"), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-        Mockito.verify(loader, Mockito.times(1)).createResourceMeta(
-                Mockito.any(), Mockito.eq("test"), Mockito.any(), Mockito.eq("test.png"), Mockito.any());
+        Mockito.verify(loader, Mockito.times(1)).getResourceURL(Mockito.any());
+        Mockito.verify(loader, Mockito.never()).getResourceInputStream(Mockito.any());
+        
     }
 }

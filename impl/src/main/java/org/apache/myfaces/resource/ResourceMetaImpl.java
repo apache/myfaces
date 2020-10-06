@@ -18,6 +18,8 @@
  */
 package org.apache.myfaces.resource;
 
+import java.util.Objects;
+
 /**
  * Contains the metadata information to reference a resource 
  */
@@ -160,4 +162,58 @@ public class ResourceMetaImpl extends ResourceMeta
         this.lastModified = lastModified;
     }
 
+    @Override
+    public int hashCode()
+    {
+        int hash = 3;
+        hash = 79 * hash + Objects.hashCode(this._libraryName);
+        hash = 79 * hash + Objects.hashCode(this._libraryVersion);
+        hash = 79 * hash + Objects.hashCode(this._resourceName);
+        hash = 79 * hash + Objects.hashCode(this._resourceVersion);
+        hash = 79 * hash + Objects.hashCode(this._contractName);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+        {
+            return true;
+        }
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final ResourceMetaImpl other = (ResourceMetaImpl) obj;
+        if (!Objects.equals(this._prefix, other._prefix))
+        {
+            return false;
+        }
+        if (!Objects.equals(this._libraryName, other._libraryName))
+        {
+            return false;
+        }
+        if (!Objects.equals(this._libraryVersion, other._libraryVersion))
+        {
+            return false;
+        }
+        if (!Objects.equals(this._resourceName, other._resourceName))
+        {
+            return false;
+        }
+        if (!Objects.equals(this._resourceVersion, other._resourceVersion))
+        {
+            return false;
+        }
+        if (!Objects.equals(this._contractName, other._contractName))
+        {
+            return false;
+        }
+        return true;
+    }
 }

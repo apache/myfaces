@@ -24,6 +24,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import javax.faces.application.ResourceVisitOption;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.util.lang.ConcurrentLRUCache;
 
 /**
  * Base class for resource loaders.  Resource loaders can lookup resources 
@@ -34,11 +36,23 @@ public abstract class ResourceLoader
     
     public static final String VERSION_INVALID = "INVALID";
     
-    private String _prefix;
+    private String prefix;
+    private boolean resourceCacheEnabled;
+    private ConcurrentLRUCache<Object, Boolean> resourceExistsCache;
     
     public ResourceLoader(String prefix)
     {
-        _prefix = prefix;
+        this.prefix = prefix;
+        
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext);
+        this.resourceCacheEnabled = myfacesConfig.isResourceHandlerCacheEnabled();
+        
+        if (this.resourceCacheEnabled)
+        {
+            int maxSize = myfacesConfig.getResourceHandlerCacheSize();
+            this.resourceExistsCache =  new ConcurrentLRUCache<>(maxSize * 2, maxSize);
+        }
     }
 
     public abstract String getResourceVersion(String path);
@@ -70,7 +84,23 @@ public abstract class ResourceLoader
     
     public boolean resourceExists(ResourceMeta resourceMeta)
     {
-        return (getResourceURL(resourceMeta) != null);
+        if (resourceMeta == null)
+        {
+            return false;
+        }
+
+        if (resourceCacheEnabled)
+        {
+            Boolean exists = resourceExistsCache.get(resourceMeta);
+            if (exists == null)
+            {
+                exists = getResourceURL(resourceMeta) != null;
+                resourceExistsCache.put(resourceMeta, exists);
+            }
+            return exists;
+        }
+
+        return getResourceURL(resourceMeta) != null;
     }
 
     public Iterator<String> iterator(FacesContext facesContext, 
@@ -162,11 +192,11 @@ public abstract class ResourceLoader
     
     public String getPrefix()
     {
-        return _prefix;
+        return prefix;
     }
 
     public void setPrefix(String prefix)
     {
-        _prefix = prefix;
+        this.prefix = prefix;
     }
 }

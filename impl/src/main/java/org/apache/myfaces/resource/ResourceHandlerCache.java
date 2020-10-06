@@ -300,7 +300,7 @@ public class ResourceHandlerCache
         
         if (log.isLoggable(Level.FINE))
         {
-            log.log(Level.FINE, "Attemping to set confirmLibraryExists on cache " + libraryName);
+            log.log(Level.FINE, "Attemping to set confirmLibraryNotExists on cache " + libraryName);
         }
 
         _libraryExistsCacheMap.put(libraryName, Boolean.FALSE);
