@@ -51,7 +51,7 @@ public abstract class ResourceLoader
         if (this.resourceCacheEnabled)
         {
             int maxSize = myfacesConfig.getResourceHandlerCacheSize();
-            this.resourceExistsCache =  new ConcurrentLRUCache<>(maxSize * 2, maxSize);
+            this.resourceExistsCache = new ConcurrentLRUCache<>(maxSize * 2, maxSize);
         }
     }
 
