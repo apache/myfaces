@@ -149,7 +149,7 @@ public class ResourceHandlerCache
             log.log(Level.FINE, "Attemping to get resource from cache for " + resourceId);
         }
 
-        return _resourceCacheMap.get(contractName+':'+resourceId);
+        return _resourceCacheMap.get(contractName + ':' + resourceId);
     }
     
     public boolean containsResource(String resourceId, String contractName)

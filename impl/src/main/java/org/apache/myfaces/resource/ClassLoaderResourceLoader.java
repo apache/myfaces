@@ -100,6 +100,10 @@ public class ClassLoaderResourceLoader extends ResourceLoader
     @Override
     public URL getResourceURL(ResourceMeta resourceMeta)
     {
+        if (resourceMeta == null)
+        {
+            return null;
+        }
         return getResourceURL(resourceMeta.getResourceIdentifier());
     }
 

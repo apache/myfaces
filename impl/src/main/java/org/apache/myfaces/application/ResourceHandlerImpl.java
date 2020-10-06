@@ -164,7 +164,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         // contract name.
         if (contractPreferred != null)
         {
-            resourceValue = getResourceLoaderCache().getResource(
+            resourceValue = getResourceHandlerCache().getResource(
                     resourceName, libraryName, contentType, localePrefix, contractPreferred);
         }
         if (resourceValue == null && !contracts.isEmpty())
@@ -172,7 +172,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             // Try to get resource but try with a contract name
             for (String contract : contracts)
             {
-                resourceValue = getResourceLoaderCache().getResource(
+                resourceValue = getResourceHandlerCache().getResource(
                     resourceName, libraryName, contentType, localePrefix, contract);
                 if (resourceValue != null)
                 {
@@ -184,7 +184,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         if (resourceValue == null)
         {
             // Try to get resource without contract name
-            resourceValue = getResourceLoaderCache().getResource(resourceName, libraryName, contentType, localePrefix);
+            resourceValue = getResourceHandlerCache().getResource(resourceName, libraryName, contentType, localePrefix);
         }
         
         if(resourceValue != null)
@@ -210,7 +210,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                             getResourceHandlerSupport(), contentType);
 
                         // cache it
-                        getResourceLoaderCache().putResource(resourceName, libraryName, contentType,
+                        getResourceHandlerCache().putResource(resourceName, libraryName, contentType,
                                 localePrefix, contractPreferred, resourceMeta, loader, 
                                 new ResourceCachedInfo(resource.getURL(), resource.getRequestPath()));
                         resolved = true;
@@ -234,7 +234,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                                 getResourceHandlerSupport(), contentType);
 
                             // cache it
-                            getResourceLoaderCache().putResource(
+                            getResourceHandlerCache().putResource(
                                     resourceName, libraryName, contentType,
                                     localePrefix, contract, resourceMeta, loader,
                                     new ResourceCachedInfo(resource.getURL(), resource.getRequestPath()));
@@ -257,7 +257,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                             resourceMeta, loader, getResourceHandlerSupport(), contentType);
 
                         // cache it
-                        getResourceLoaderCache().putResource(resourceName, libraryName, contentType,
+                        getResourceHandlerCache().putResource(resourceName, libraryName, contentType,
                                 localePrefix, null, resourceMeta, loader, 
                                 new ResourceCachedInfo(resource.getURL(), resource.getRequestPath()));
                         break;
@@ -810,13 +810,13 @@ public class ResourceHandlerImpl extends ResourceHandler
             //Check with locale
             pathToLib = localePrefix + '/' + libraryName;
 
-            libraryFound = getResourceLoaderCache().libraryExists(pathToLib);
+            libraryFound = getResourceHandlerCache().libraryExists(pathToLib);
             if (libraryFound != null)
             {
                 return libraryFound;
             }
         }
-        libraryFound = getResourceLoaderCache().libraryExists(libraryName);
+        libraryFound = getResourceHandlerCache().libraryExists(libraryName);
         if (libraryFound != null)
         {
             return libraryFound;
@@ -832,7 +832,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                     {
                         if (loader.libraryExists(pathToLib, contract))
                         {
-                            getResourceLoaderCache().confirmLibraryExists(pathToLib);
+                            getResourceHandlerCache().confirmLibraryExists(pathToLib);
                             return true;
                         }
                     }
@@ -843,7 +843,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             {
                 if (loader.libraryExists(pathToLib))
                 {
-                    getResourceLoaderCache().confirmLibraryExists(pathToLib);
+                    getResourceHandlerCache().confirmLibraryExists(pathToLib);
                     return true;
                 }
             }            
@@ -858,7 +858,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                 {
                     if (loader.libraryExists(libraryName, contract))
                     {
-                        getResourceLoaderCache().confirmLibraryExists(libraryName);
+                        getResourceHandlerCache().confirmLibraryExists(libraryName);
                         return true;
                     }
                 }
@@ -869,7 +869,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         {
             if (loader.libraryExists(libraryName))
             {
-                getResourceLoaderCache().confirmLibraryExists(libraryName);
+                getResourceHandlerCache().confirmLibraryExists(libraryName);
                 return true;
             }
         }
@@ -877,11 +877,11 @@ public class ResourceHandlerImpl extends ResourceHandler
         if (localePrefix != null)
         {
             //Check with locale
-            getResourceLoaderCache().confirmLibraryNotExists(pathToLib);
+            getResourceHandlerCache().confirmLibraryNotExists(pathToLib);
         }
         else
         {
-            getResourceLoaderCache().confirmLibraryNotExists(libraryName);
+            getResourceHandlerCache().confirmLibraryNotExists(libraryName);
         }
         return false;
     }
@@ -900,7 +900,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         return _resourceHandlerSupport;
     }
 
-    private ResourceHandlerCache getResourceLoaderCache()
+    protected ResourceHandlerCache getResourceHandlerCache()
     {
         if (_resourceHandlerCache == null)
         {
@@ -909,7 +909,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         return _resourceHandlerCache;
     }
 
-    private String _getContentType(Resource resource, ExternalContext externalContext)
+    protected String _getContentType(Resource resource, ExternalContext externalContext)
     {
         String contentType = resource.getContentType();
 
@@ -996,14 +996,14 @@ public class ResourceHandlerImpl extends ResourceHandler
         // a contract.
         if (contractPreferred != null)
         {
-            resourceValue = getResourceLoaderCache().getResource(resourceId, contractPreferred);
+            resourceValue = getResourceHandlerCache().getResource(resourceId, contractPreferred);
         }
         if (resourceValue == null && !contracts.isEmpty())
         {
             // Try to get resource but try with a contract name
             for (String contract : contracts)
             {
-                resourceValue = getResourceLoaderCache().getResource(resourceId, contract);
+                resourceValue = getResourceHandlerCache().getResource(resourceId, contract);
                 if (resourceValue != null)
                 {
                     break;
@@ -1013,7 +1013,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         if (resourceValue == null)
         {
             // Try to get resource without contract name
-            resourceValue = getResourceLoaderCache().getResource(resourceId);
+            resourceValue = getResourceHandlerCache().getResource(resourceId);
         }
         
         if (resourceValue != null)
@@ -1045,7 +1045,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                             getResourceHandlerSupport(), contentType);
 
                         // cache it
-                        getResourceLoaderCache().putResource(resourceId, resourceMeta, loader, 
+                        getResourceHandlerCache().putResource(resourceId, resourceMeta, loader, 
                             new ResourceCachedInfo(resource.getURL(), resource.getRequestPath()));
                         
                         resolved = true;
@@ -1071,7 +1071,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                                 getResourceHandlerSupport(), contentType);
 
                             // cache it
-                            getResourceLoaderCache().putResource(resourceId, resourceMeta, loader, 
+                            getResourceHandlerCache().putResource(resourceId, resourceMeta, loader, 
                                 new ResourceCachedInfo(resource.getURL(), resource.getRequestPath()));
 
                             resolved = true;
@@ -1094,7 +1094,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                         resource = new ResourceImpl(resourceMeta, loader, getResourceHandlerSupport(), contentType);
 
                         // cache it
-                        getResourceLoaderCache().putResource(resourceId, resourceMeta, loader, 
+                        getResourceHandlerCache().putResource(resourceId, resourceMeta, loader, 
                             new ResourceCachedInfo(resource.getURL(), resource.getRequestPath()));
                         break;
                     }
@@ -1577,7 +1577,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         // a contract.
         if (contractPreferred != null)
         {
-            resourceValue = getResourceLoaderCache().getViewResource(
+            resourceValue = getResourceHandlerCache().getViewResource(
                     resourceName, contentType, localePrefix, contractPreferred);
         }
         if (resourceValue == null && !contracts.isEmpty())
@@ -1585,7 +1585,7 @@ public class ResourceHandlerImpl extends ResourceHandler
             // Try to get resource but try with a contract name
             for (String contract : contracts)
             {
-                resourceValue = getResourceLoaderCache().getViewResource(
+                resourceValue = getResourceHandlerCache().getViewResource(
                     resourceName, contentType, localePrefix, contract);
                 if (resourceValue != null)
                 {
@@ -1596,7 +1596,7 @@ public class ResourceHandlerImpl extends ResourceHandler
         if (resourceValue == null)
         {
             // Try to get resource without contract name
-            resourceValue = getResourceLoaderCache().getViewResource(resourceName, contentType, localePrefix);
+            resourceValue = getResourceHandlerCache().getViewResource(resourceName, contentType, localePrefix);
         }
 
         if(resourceValue != null)
@@ -1619,7 +1619,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                         resource = new ResourceImpl(resourceMeta, loader, getResourceHandlerSupport(), contentType);
 
                         // cache it
-                        getResourceLoaderCache().putViewResource(
+                        getResourceHandlerCache().putViewResource(
                             resourceName, contentType, localePrefix, contractPreferred, resourceMeta, loader, 
                             new ResourceCachedInfo(resource.getURL(), null));
                         
@@ -1643,7 +1643,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                                     getResourceHandlerSupport(), contentType);
 
                             // cache it
-                            getResourceLoaderCache().putViewResource(
+                            getResourceHandlerCache().putViewResource(
                                 resourceName, contentType, localePrefix, contract, resourceMeta, loader,
                                 new ResourceCachedInfo(resource.getURL(), null));
 
@@ -1669,7 +1669,7 @@ public class ResourceHandlerImpl extends ResourceHandler
                         resource = new ResourceImpl(resourceMeta, loader, getResourceHandlerSupport(), contentType);
 
                         // cache it
-                        getResourceLoaderCache().putViewResource(
+                        getResourceHandlerCache().putViewResource(
                             resourceName, contentType, localePrefix, resourceMeta, loader,
                             new ResourceCachedInfo(resource.getURL(), null));
                         break;

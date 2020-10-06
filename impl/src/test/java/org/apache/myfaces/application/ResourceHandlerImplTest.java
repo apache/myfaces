@@ -29,9 +29,13 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.myfaces.resource.ClassLoaderResourceLoader;
+import org.apache.myfaces.resource.ResourceHandlerCache;
+import org.apache.myfaces.resource.ResourceHandlerSupport;
 import org.apache.myfaces.resource.ResourceLoader;
 import org.apache.myfaces.resource.ResourceMeta;
 import org.apache.myfaces.resource.ResourceMetaImpl;
+import org.mockito.Mockito;
 
 /**
  * Test cases for org.apache.myfaces.application.ResourceHandlerImpl.
@@ -226,5 +230,34 @@ public class ResourceHandlerImplTest extends AbstractJsfTestCase
         }
         
         Assert.assertTrue(didNPEOccur);
+    }
+
+    @Test
+    public void testCache()
+    {
+        ResourceLoader loader = Mockito.spy(new ClassLoaderResourceLoader(null));
+        Mockito.when(loader.resourceExists(Mockito.any())).thenReturn(true);
+
+        ResourceHandlerCache cache = Mockito.spy(new ResourceHandlerCache());   
+        
+        ResourceHandlerSupport support = Mockito.spy(new DefaultResourceHandlerSupport());
+        Mockito.when(support.getResourceLoaders()).thenReturn(new ResourceLoader[] { loader });
+        
+        resourceHandler = Mockito.spy(resourceHandler);
+        Mockito.when(resourceHandler.getResourceHandlerCache()).thenReturn(cache);
+        Mockito.when(resourceHandler.getResourceHandlerSupport()).thenReturn(support);
+        
+        resourceHandler.createResource("test.png", "test", "test");
+        resourceHandler.createResource("test.png", "test", "test");
+        resourceHandler.createResource("test.png", "test", "test");
+        resourceHandler.createResource("test.png", "test", "test");
+
+        Mockito.verify(cache, Mockito.times(4)).getResource(
+                Mockito.eq("test.png"), Mockito.eq("test"), Mockito.eq("test"), Mockito.any());
+        Mockito.verify(cache, Mockito.times(1)).putResource(
+                Mockito.eq("test.png"), Mockito.eq("test"), Mockito.eq("test"), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+        Mockito.verify(loader, Mockito.times(1)).createResourceMeta(
+                Mockito.any(), Mockito.eq("test"), Mockito.any(), Mockito.eq("test.png"), Mockito.any());
+
     }
 }
