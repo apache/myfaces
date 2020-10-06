@@ -95,7 +95,12 @@ public abstract class ResourceLoader
             if (exists == null)
             {
                 exists = getResourceURL(resourceMeta) != null;
-                resourceExistsCache.put(resourceMeta, exists);
+                // this method is normally just called in case when there is no cached item in ResourceHandlerCache
+                // so lets just do a negative cache here
+                if (!exists)
+                {
+                    resourceExistsCache.put(resourceMeta, exists);
+                }
             }
             return exists;
         }
