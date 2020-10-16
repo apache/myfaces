@@ -1567,8 +1567,7 @@ public class AbstractJsfTestContainer
             }
             if (beanManager != null)
             {
-                externalContext.getApplicationMap().put(CDI_BEAN_MANAGER_INSTANCE,
-                    beanManager);
+                externalContext.getApplicationMap().put(CDI_BEAN_MANAGER_INSTANCE, beanManager);
             }
         }
 
@@ -1648,105 +1647,66 @@ public class AbstractJsfTestContainer
         private FacesConfig metaInfServicesFacesConfig;
         private List<FacesConfig> contextSpecifiedFacesConfig;
 
-        /**
-         * @return the annotationFacesConfig
-         */
         public FacesConfig getAnnotationsFacesConfig()
         {
             return annotationFacesConfig;
         }
 
-        /**
-         * @param annotationFacesConfig the annotationFacesConfig to set
-         */
         public void setAnnotationFacesConfig(FacesConfig annotationFacesConfig)
         {
             this.annotationFacesConfig = annotationFacesConfig;
         }
 
-        /**
-         * @return the annotationFacesConfig
-         */
         public FacesConfig getAnnotationFacesConfig()
         {
             return annotationFacesConfig;
         }
 
-        /**
-         * @return the faceletTaglibFacesConfig
-         */
         public List<FacesConfig> getFaceletTaglibFacesConfig()
         {
             return faceletTaglibFacesConfig;
         }
 
-        /**
-         * @param faceletTaglibFacesConfig the faceletTaglibFacesConfig to set
-         */
         public void setFaceletTaglibFacesConfig(List<FacesConfig> faceletTaglibFacesConfig)
         {
             this.faceletTaglibFacesConfig = faceletTaglibFacesConfig;
         }
 
-        /**
-         * @return the facesFlowFacesConfig
-         */
         public List<FacesConfig> getFacesFlowFacesConfig()
         {
             return facesFlowFacesConfig;
         }
 
-        /**
-         * @param facesFlowFacesConfig the facesFlowFacesConfig to set
-         */
         public void setFacesFlowFacesConfig(List<FacesConfig> facesFlowFacesConfig)
         {
             this.facesFlowFacesConfig = facesFlowFacesConfig;
         }
 
-        /**
-         * @return the metaInfServicesFacesConfig
-         */
         public FacesConfig getMetaInfServicesFacesConfig()
         {
             return metaInfServicesFacesConfig;
         }
 
-        /**
-         * @param metaInfServicesFacesConfig the metaInfServicesFacesConfig to set
-         */
         public void setMetaInfServicesFacesConfig(FacesConfig metaInfServicesFacesConfig)
         {
             this.metaInfServicesFacesConfig = metaInfServicesFacesConfig;
         }
 
-        /**
-         * @return the contextSpecifiedFacesConfig
-         */
         public List<FacesConfig> getContextSpecifiedFacesConfig()
         {
             return contextSpecifiedFacesConfig;
         }
 
-        /**
-         * @param contextSpecifiedFacesConfig the contextSpecifiedFacesConfig to set
-         */
         public void setContextSpecifiedFacesConfig(List<FacesConfig> contextSpecifiedFacesConfig)
         {
             this.contextSpecifiedFacesConfig = contextSpecifiedFacesConfig;
         }
 
-        /**
-         * @return the classloaderFacesConfigList
-         */
         public List<FacesConfig> getClassloaderFacesConfig()
         {
             return classloaderFacesConfig;
         }
 
-        /**
-         * @param classloaderFacesConfigList the classloaderFacesConfigList to set
-         */
         public void setClassloaderFacesConfig(List<FacesConfig> classloaderFacesConfigList)
         {
             this.classloaderFacesConfig = classloaderFacesConfigList;

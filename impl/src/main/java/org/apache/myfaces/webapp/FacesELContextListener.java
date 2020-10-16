@@ -23,14 +23,16 @@ import javax.el.ELContextListener;
 import javax.faces.context.FacesContext;
 
 /**
- * EL context listener which installs the faces context (if present) into el context and dispatches el context events to
- * faces application el context listeners.
+ * {@link ELContextListener} which installs the {@link FacesContext} (if present),
+ * into the {@link javax.el.ELContext} and dispatches ELContext events to
+ * the Faces application #{@link ELContextListener}.
  * 
  * @author Mathias Broekelmann (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
 public class FacesELContextListener implements ELContextListener
 {
+    @Override
     public void contextCreated(ELContextEvent ece)
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();

@@ -52,7 +52,7 @@ public class FaceletsInitilializer extends org.apache.myfaces.webapp.AbstractFac
                 {
                     if (log.isLoggable(Level.FINE))
                     {
-                        log.fine("javax.el.ExpressionFactory implementation found: " + candidate);
+                        log.fine(ExpressionFactory.class.getName() + " implementation found: " + candidate);
                     }
                     break;
                 }
@@ -61,8 +61,8 @@ public class FaceletsInitilializer extends org.apache.myfaces.webapp.AbstractFac
 
         if (expressionFactory == null)
         {
-            throw new FacesException("No javax.el.ExpressionFactory found. Please provide" +
-                    " <context-param> in web.xml: org.apache.myfaces.EXPRESSION_FACTORY");
+            throw new FacesException("No " + ExpressionFactory.class.getName() + " implementation found. "
+                    + "Please provide <context-param> in web.xml: org.apache.myfaces.EXPRESSION_FACTORY");
         }
         
         buildConfiguration(servletContext, externalContext, expressionFactory);

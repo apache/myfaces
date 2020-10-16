@@ -92,6 +92,8 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     /**
      * Performs all necessary initialization tasks like configuring this JSF
      * application.
+     * 
+     * @param servletContext The current {@link ServletContext}
      */
     @Override
     public void initFaces(ServletContext servletContext)
@@ -289,7 +291,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
      * Note if this does not work out
      * move the event handler into the application factory
      *
-     * @param servletContext the servlet context to be passed down
+     * @param servletContext The current {@link ServletContext}
      * @param eventClass     the class to be passed down into the dispatching
      *                       code
      */
@@ -302,11 +304,12 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     
     /**
      * Cleans up all remaining resources (well, theoretically).
+     * 
+     * @param servletContext The current {@link ServletContext}
      */
     @Override
     public void destroyFaces(ServletContext servletContext)
     {
-
         FacesContext facesContext = FacesContext.getCurrentInstance();
 
         if (!WebConfigParamUtils.getBooleanInitParameter(facesContext.getExternalContext(),
@@ -534,10 +537,10 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
 
     /**
      * The intention of this method is provide a point where CDI integration is done.
-     * Faces Flow and javax.faces.view.ViewScope requires CDI in order to work, so
-     * this method should set a BeanManager instance on application map under
-     * the key "oam.cdi.BEAN_MANAGER_INSTANCE". The default implementation look on
-     * ServletContext first and then use JNDI.
+     * {@link javax.faces.flow.FlowScoped} and {@link javax.faces.view.ViewScoped} requires CDI in order to work,
+     * so this method should set a BeanManager instance on application map under
+     * the key "oam.cdi.BEAN_MANAGER_INSTANCE".
+     * The default implementation look on ServletContext first and then use JNDI.
      * 
      * @param servletContext
      * @param externalContext 
@@ -550,8 +553,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         // directly, so if no CDI api is on the classpath no exception will be thrown.
         
         // Try with servlet context
-        Object beanManager = servletContext.getAttribute(
-            CDI_SERVLET_CONTEXT_BEAN_MANAGER_ATTRIBUTE);
+        Object beanManager = servletContext.getAttribute(CDI_SERVLET_CONTEXT_BEAN_MANAGER_ATTRIBUTE);
         if (beanManager == null)
         {
             beanManager = lookupBeanManagerFromCDI();
@@ -576,18 +578,15 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
     {
         try
         {
-            Class cdiClass = null;
-            Method cdiCurrentMethod = null;
-            Method cdiGetBeanManagerMethod = null;
-            cdiClass = simpleClassForNameNoException("javax.enterprise.inject.spi.CDI");
+            Class cdiClass = ClassUtils.simpleClassForName("javax.enterprise.inject.spi.CDI", false);
             if (cdiClass != null)
             {
-                cdiCurrentMethod = cdiClass.getMethod("current");
+                Method currentMethod = cdiClass.getMethod("current");
+                Object cdi = currentMethod.invoke(null);
 
-                Object cdiInstance = cdiCurrentMethod.invoke(null);
-
-                cdiGetBeanManagerMethod = cdiClass.getMethod("getBeanManager");
-                return cdiGetBeanManagerMethod.invoke(cdiInstance);
+                Method getBeanManagerMethod = cdiClass.getMethod("getBeanManager");
+                Object beanManager = getBeanManagerMethod.invoke(cdi);
+                return beanManager;
             }
         }
         catch (Exception e)
@@ -595,20 +594,6 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
             // ignore
         }
         return null;
-    }
-    
-    private static Class simpleClassForNameNoException(String type)
-    {
-        try
-        {
-            return ClassUtils.classForName(type);
-        }
-        catch (ClassNotFoundException e)
-        {
-            //log.log(Level.SEVERE, "Class " + type + " not found", e);
-            //Ignore
-            return null;
-        }
     }
 
     /**
@@ -631,7 +616,7 @@ public abstract class AbstractFacesInitializer implements FacesInitializer
         }
         catch (Throwable t)
         {
-            //
+            // noop
         }
         if (lookupMethod != null)
         {

@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class SourceCodeServlet extends HttpServlet 
 {
+    @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res)
         throws IOException, ServletException
     {
@@ -52,21 +53,12 @@ public class SourceCodeServlet extends HttpServlet
         ServletOutputStream out = res.getOutputStream();
 
         // print the file
-        InputStream in = null;
-        try 
+        try (InputStream in = new BufferedInputStream(new FileInputStream(realPath)))
         {
-            in = new BufferedInputStream(new FileInputStream(realPath));
             int ch;
             while ((ch = in.read()) !=-1) 
             {
                 out.print((char)ch);
-            }
-        }
-        finally
-        {
-            if (in != null)
-            {
-                in.close();  // very important
             }
         }
     }
