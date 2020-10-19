@@ -52,18 +52,12 @@ public class FaceletViewDeclarationLanguageStrategy implements ViewDeclarationLa
         _language = new FaceletViewDeclarationLanguage(context, this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ViewDeclarationLanguage getViewDeclarationLanguage()
     {
         return _language;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean handles(String viewId)
     {
@@ -169,9 +163,7 @@ public class FaceletViewDeclarationLanguageStrategy implements ViewDeclarationLa
         {
             return viewId.substring(0, viewId.length()-_extension.length());
         }
-        else
-        {
-            return viewId;
-        }
+
+        return viewId;
     }
 }

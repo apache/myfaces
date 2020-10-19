@@ -44,6 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.application.ViewIdSupport;
 import org.apache.myfaces.config.MyfacesConfig;
+import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.view.HttpServletResponseSwitch;
 import org.apache.myfaces.view.ResponseSwitch;
 import org.apache.myfaces.view.ServletResponseSwitch;
@@ -121,8 +122,8 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
     {
         //Try not to use native objects in this class.  Both MyFaces and the bridge
         //provide implementations of buildView but they do not override this class.
-        checkNull(context, "context");
-        checkNull(view, "view");
+        Assert.notNull(context, "context");
+        Assert.notNull(view, "view");
 
         // do not render the view if the rendered attribute for the view is false
         if (!view.isRendered())
@@ -255,7 +256,7 @@ public abstract class JspViewDeclarationLanguageBase extends ViewDeclarationLang
         // Not necessary given that this method always returns null, but staying true to
         // the spec.
 
-        checkNull(context, "context");
+        Assert.notNull(context, "context");
         //checkNull(viewId, "viewId");
 
         // JSP impl must return null.

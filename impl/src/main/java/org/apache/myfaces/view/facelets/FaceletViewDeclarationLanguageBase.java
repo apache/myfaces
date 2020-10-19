@@ -57,14 +57,14 @@ public abstract class FaceletViewDeclarationLanguageBase extends ViewDeclaration
         {
             return false;
         }
-        return Boolean.TRUE.equals(facesContext.getViewRoot().getAttributes().get(
-                DYNAMIC_COMPONENT_REFRESH_TRANSIENT_BUILD));
+        return Boolean.TRUE.equals(
+                facesContext.getViewRoot().getAttributes().get(DYNAMIC_COMPONENT_REFRESH_TRANSIENT_BUILD));
     }
     
     public static boolean isDynamicComponentRefreshTransientBuildActive(FacesContext facesContext, UIViewRoot view)
     {
-        return Boolean.TRUE.equals(view.getAttributes().get(
-                DYNAMIC_COMPONENT_REFRESH_TRANSIENT_BUILD));
+        return Boolean.TRUE.equals(
+                view.getAttributes().get(DYNAMIC_COMPONENT_REFRESH_TRANSIENT_BUILD));
     }
     
     public static void activateDynamicComponentRefreshTransientBuild(FacesContext facesContext)

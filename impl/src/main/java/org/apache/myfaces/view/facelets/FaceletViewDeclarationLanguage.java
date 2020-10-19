@@ -98,6 +98,7 @@ import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.util.WebConfigParamUtils;
+import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 import org.apache.myfaces.view.ViewMetadataBase;
 import org.apache.myfaces.view.facelets.compiler.Compiler;
@@ -648,7 +649,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     {
         BeanInfo beanInfo = null;
 
-        checkNull(context, "context");
+        Assert.notNull(context, "context");
 
         try
         {
@@ -776,9 +777,9 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     public void retargetAttachedObjects(FacesContext context,
                                         UIComponent topLevelComponent, List<AttachedObjectHandler> handlerList)
     {
-        checkNull(context, "context");
-        checkNull(topLevelComponent, "topLevelComponent");
-        checkNull(handlerList, "handlerList");
+        Assert.notNull(context, "context");
+        Assert.notNull(topLevelComponent, "topLevelComponent");
+        Assert.notNull(handlerList, "handlerList");
 
         BeanInfo compositeComponentMetadata
                 = (BeanInfo) topLevelComponent.getAttributes().get(UIComponent.BEANINFO_KEY);
@@ -928,7 +929,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     @Override
     public void retargetMethodExpressions(FacesContext context, UIComponent topLevelComponent)
     {
-        checkNull(context, "context");
+        Assert.notNull(context, "context");
 
         BeanInfo compositeComponentMetadata
                 = (BeanInfo) topLevelComponent.getAttributes().get(UIComponent.BEANINFO_KEY);
@@ -1686,8 +1687,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     @Override
     public Resource getScriptComponentResource(FacesContext context, Resource componentResource)
     {
-        checkNull(context, "context");
-        checkNull(componentResource, "componentResource");
+        Assert.notNull(context, "context");
+        Assert.notNull(componentResource, "componentResource");
 
         return null;
     }
@@ -1709,8 +1710,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     @Override
     public ViewMetadata getViewMetadata(FacesContext context, String viewId)
     {
-        checkNull(context, "facesContext");
-        checkNull(viewId, "viewId");
+        Assert.notNull(context, "facesContext");
+        Assert.notNull(viewId, "viewId");
         return new FaceletViewMetadata(viewId);
     }
 
@@ -1918,7 +1919,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     @Override
     public UIViewRoot createView(FacesContext context, String viewId)
     {
-        checkNull(viewId, "viewId");
+        Assert.notNull(viewId, "viewId");
         // we have to check for a possible debug request
         if (UIDebug.debugRequest(context))
         {
@@ -1950,7 +1951,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     @Override
     public UIViewRoot restoreView(FacesContext context, String viewId)
     {
-        checkNull(viewId, "viewId");
+        Assert.notNull(viewId, "viewId");
         // Currently there is no way, in which UIDebug.debugRequest(context)
         // can create debug information and return true at this point,
         // because this method is only accessed if the current request
@@ -2506,7 +2507,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     public UIComponent createComponent(FacesContext context, 
         String taglibURI, String tagName, Map<String, Object> attributes)
     {
-        checkNull(context, "context");
+        Assert.notNull(context, "context");
         UIComponent createdComponent = null;
         try
         {

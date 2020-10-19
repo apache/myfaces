@@ -25,6 +25,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.application.InvalidViewIdException;
+import org.apache.myfaces.util.lang.Assert;
 
 /**
  * @since 2.0
@@ -41,7 +42,7 @@ public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguag
     @Override
     public UIViewRoot createView(FacesContext context, String viewId)
     {
-        checkNull(context, "context");
+        Assert.notNull(context, "context");
 
         try
         {
@@ -86,13 +87,10 @@ public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguag
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public UIViewRoot restoreView(FacesContext context, String viewId)
     {
-        checkNull(context, "context");
+        Assert.notNull(context, "context");
 
         Application application = context.getApplication();
         
@@ -125,20 +123,4 @@ public abstract class ViewDeclarationLanguageBase extends ViewDeclarationLanguag
      * @param message the message associated with the error
      */
     protected abstract void sendSourceNotFound(FacesContext context, String message);
-    
-    /**
-     * Check if the specified value of a param is <code>null</code>.
-     * 
-     * @param o the parameter's value
-     * @param param the parameter's name
-     * 
-     * @throws NullPointerException if the value is <code>null</code>
-     */
-    protected void checkNull(final Object o, final String param)
-    {
-        if (o == null)
-        {
-            throw new NullPointerException(param + " can not be null.");
-        }
-    }
 }
