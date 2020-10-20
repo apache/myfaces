@@ -34,33 +34,32 @@ import javax.faces.application.NavigationCaseWrapper;
  */
 public class FlowNavigationCase extends NavigationCaseWrapper
 {
-    
-    private NavigationCase _delegate;
-    private String _fromOutcome;
-    private String _toFlowDocumentId;
+    private NavigationCase delegate;
+    private String fromOutcome;
+    private String toFlowDocumentId;
 
     public FlowNavigationCase(NavigationCase delegate, String fromOutcome, String toFlowDocumentId)
     {
-        this._delegate = delegate;
-        this._fromOutcome = fromOutcome;
-        this._toFlowDocumentId = toFlowDocumentId;
+        this.delegate = delegate;
+        this.fromOutcome = fromOutcome;
+        this.toFlowDocumentId = toFlowDocumentId;
     }
 
     @Override
     public NavigationCase getWrapped()
     {
-        return _delegate;
+        return delegate;
     }
     
     @Override
     public String getFromOutcome()
     {
-        return _fromOutcome;
+        return fromOutcome;
     }
     
     @Override
     public String getToFlowDocumentId()
     {
-        return _toFlowDocumentId;
+        return toFlowDocumentId;
     }
 }

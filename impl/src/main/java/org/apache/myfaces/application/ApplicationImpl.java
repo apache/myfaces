@@ -2099,7 +2099,7 @@ public class ApplicationImpl extends Application
         List<ResourceDependency> dependencyList = null;
         boolean isCachedList = false;
         
-        if(isProduction)
+        if (isProduction)
         {
             dependencyList = _classToResourceDependencyMap.get(inspectedClass);
 
@@ -2114,14 +2114,14 @@ public class ApplicationImpl extends Application
             }
         }
         
-        if(dependencyList == null)  //not in production or the class hasn't been inspected yet
+        if (dependencyList == null)  //not in production or the class hasn't been inspected yet
         {   
             ResourceDependency dependency = inspectedClass.getAnnotation(ResourceDependency.class);
             ResourceDependencies dependencies = inspectedClass.getAnnotation(ResourceDependencies.class);
             if(dependency != null || dependencies != null)
             {
                 //resource dependencies were found using one or both annotations, create and build a new list
-                dependencyList = new ArrayList<ResourceDependency>();
+                dependencyList = new ArrayList<>();
                 
                 if(dependency != null)
                 {

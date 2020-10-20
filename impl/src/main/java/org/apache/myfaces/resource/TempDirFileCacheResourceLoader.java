@@ -133,7 +133,7 @@ public class TempDirFileCacheResourceLoader extends ResourceLoaderWrapper
         _tempDir = imagesDir;
 
         //2. Create map for register temporal resources
-        Map<String, FileProducer> temporalFilesLockMap = new ConcurrentHashMap<String, FileProducer>();
+        Map<String, FileProducer> temporalFilesLockMap = new ConcurrentHashMap<>();
         facesContext.getExternalContext().getApplicationMap().put(TEMP_FILES_LOCK_MAP, temporalFilesLockMap);
     }
 
