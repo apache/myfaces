@@ -45,15 +45,18 @@ public final class RequestHeaderValuesMap extends AbstractAttributeMap<String[]>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected String[] getAttribute(final String key)
     {
-        return attributeValueCache.computeIfAbsent(key, k ->
+        String[] attributes = attributeValueCache.get(key);
+        if (attributes == null)
         {
-            Enumeration<String> asEnumeration = httpServletRequest.getHeaders(k);
-            List<String> asList = Collections.list(asEnumeration);
-            return asList.toArray(new String[asList.size()]);
-        });
+            List<String> attributesList = Collections.list(httpServletRequest.getHeaders(key));
+
+            attributes = attributesList.toArray(new String[attributesList.size()]);
+            attributeValueCache.put(key, attributes);
+        }
+
+        return attributes;
     }
 
     @Override
@@ -69,7 +72,6 @@ public final class RequestHeaderValuesMap extends AbstractAttributeMap<String[]>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Enumeration<String> getAttributeNames()
     {
         return httpServletRequest.getHeaderNames();

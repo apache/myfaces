@@ -35,30 +35,30 @@ import org.apache.myfaces.util.lang.AbstractThreadSafeAttributeMap;
  */
 public final class SessionMap extends AbstractThreadSafeAttributeMap<Object>
 {
-    private final HttpServletRequest _httpRequest;
+    private final HttpServletRequest httpRequest;
 
     SessionMap(final HttpServletRequest httpRequest)
     {
-        _httpRequest = httpRequest;
+        this.httpRequest = httpRequest;
     }
 
     @Override
     protected Object getAttribute(final String key)
     {
-        final HttpSession httpSession = _httpRequest.getSession(false);
+        HttpSession httpSession = httpRequest.getSession(false);
         return httpSession == null ? null : httpSession.getAttribute(key);
     }
 
     @Override
     protected void setAttribute(final String key, final Object value)
     {
-        _httpRequest.getSession(true).setAttribute(key, value);
+        httpRequest.getSession(true).setAttribute(key, value);
     }
 
     @Override
     protected void removeAttribute(final String key)
     {
-        final HttpSession httpSession = _httpRequest.getSession(false);
+        HttpSession httpSession = httpRequest.getSession(false);
         if (httpSession != null)
         {
             httpSession.removeAttribute(key);
@@ -66,10 +66,9 @@ public final class SessionMap extends AbstractThreadSafeAttributeMap<Object>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Enumeration<String> getAttributeNames()
     {
-        final HttpSession httpSession = _httpRequest.getSession(false);
+        HttpSession httpSession = httpRequest.getSession(false);
         return httpSession == null ? Collections.emptyEnumeration() : httpSession.getAttributeNames();
     }
 

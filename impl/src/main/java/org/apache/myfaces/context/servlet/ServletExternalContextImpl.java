@@ -279,10 +279,9 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Iterator<String> getRequestParameterNames()
     {
-        return new EnumerationIterator(_servletRequest.getParameterNames());
+        return new EnumerationIterator<>(_servletRequest.getParameterNames());
     }
 
     @Override
@@ -645,11 +644,10 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Iterator<Locale> getRequestLocales()
     {
         checkHttpServletRequest();
-        return new EnumerationIterator(_httpServletRequest.getLocales());
+        return new EnumerationIterator<>(_httpServletRequest.getLocales());
     }
 
     /**

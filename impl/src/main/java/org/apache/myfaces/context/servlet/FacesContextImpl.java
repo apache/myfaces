@@ -176,7 +176,7 @@ public class FacesContextImpl extends FacesContextImplBase
             _messages = new LinkedHashMap<>(5, 1f);
             _orderedMessages = new ArrayList<>();
         }
-        
+
         List<FacesMessage> lst = _messages.computeIfAbsent(clientId, k -> new ArrayList<>(3));         
         lst.add(message);
 
@@ -406,7 +406,7 @@ public class FacesContextImpl extends FacesContextImplBase
     {
         assertNotReleased();
         
-        _validationFailed=true;
+        _validationFailed = true;
     }
 
     @Override

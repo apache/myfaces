@@ -33,36 +33,35 @@ import org.apache.myfaces.util.lang.AbstractAttributeMap;
  */
 public final class RequestMap extends AbstractAttributeMap<Object>
 {
-    final ServletRequest _servletRequest;
+    final ServletRequest servletRequest;
 
     RequestMap(final ServletRequest servletRequest)
     {
-        _servletRequest = servletRequest;
+        this.servletRequest = servletRequest;
     }
 
     @Override
     protected Object getAttribute(final String key)
     {
-        return _servletRequest.getAttribute(key);
+        return servletRequest.getAttribute(key);
     }
 
     @Override
     protected void setAttribute(final String key, final Object value)
     {
-        _servletRequest.setAttribute(key, value);
+        servletRequest.setAttribute(key, value);
     }
 
     @Override
     protected void removeAttribute(final String key)
     {
-        _servletRequest.removeAttribute(key);
+        servletRequest.removeAttribute(key);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Enumeration<String> getAttributeNames()
     {
-        return _servletRequest.getAttributeNames();
+        return servletRequest.getAttributeNames();
     }
 
     @Override

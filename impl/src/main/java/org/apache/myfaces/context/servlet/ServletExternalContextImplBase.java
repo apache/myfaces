@@ -105,7 +105,6 @@ public abstract class ServletExternalContextImplBase extends ExternalContext
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Map<String, String> getInitParameterMap()
     {
         if (_initParameterMap == null)
@@ -136,7 +135,6 @@ public abstract class ServletExternalContextImplBase extends ExternalContext
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Set<String> getResourcePaths(final String path)
     {
         Assert.notNull(path, "path");

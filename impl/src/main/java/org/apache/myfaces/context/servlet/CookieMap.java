@@ -38,18 +38,17 @@ public final class CookieMap extends AbstractAttributeMap<Object>
 {
     private static final Cookie[] EMPTY_ARRAY = new Cookie[0];
 
-    private final HttpServletRequest _httpServletRequest;
+    private final HttpServletRequest httpServletRequest;
 
     CookieMap(final HttpServletRequest httpServletRequest)
     {
-        _httpServletRequest = httpServletRequest;
+        this.httpServletRequest = httpServletRequest;
     }
 
     @Override
     public void clear()
     {
-        throw new UnsupportedOperationException(
-            "Cannot clear HttpRequest Cookies");
+        throw new UnsupportedOperationException("Cannot clear HttpRequest Cookies");
     }
 
     @Override
@@ -60,7 +59,7 @@ public final class CookieMap extends AbstractAttributeMap<Object>
             return false;
         }
 
-        final Cookie[] cookies = _httpServletRequest.getCookies();
+        final Cookie[] cookies = httpServletRequest.getCookies();
         if (cookies == null)
         {
             return false;
@@ -79,14 +78,14 @@ public final class CookieMap extends AbstractAttributeMap<Object>
     @Override
     public boolean isEmpty()
     {
-        final Cookie[] cookies = _httpServletRequest.getCookies();
+        final Cookie[] cookies = httpServletRequest.getCookies();
         return cookies == null || cookies.length == 0;
     }
 
     @Override
     public int size()
     {
-        final Cookie[] cookies = _httpServletRequest.getCookies();
+        final Cookie[] cookies = httpServletRequest.getCookies();
         return cookies == null ? 0 : cookies.length;
     }
 
@@ -99,7 +98,7 @@ public final class CookieMap extends AbstractAttributeMap<Object>
     @Override
     protected Object getAttribute(final String key)
     {
-        final Cookie[] cookies = _httpServletRequest.getCookies();
+        final Cookie[] cookies = httpServletRequest.getCookies();
         if (cookies == null)
         {
             return null;
@@ -118,21 +117,19 @@ public final class CookieMap extends AbstractAttributeMap<Object>
     @Override
     protected void setAttribute(final String key, final Object value)
     {
-        throw new UnsupportedOperationException(
-            "Cannot set HttpRequest Cookies");
+        throw new UnsupportedOperationException("Cannot set HttpRequest Cookies");
     }
 
     @Override
     protected void removeAttribute(final String key)
     {
-        throw new UnsupportedOperationException(
-            "Cannot remove HttpRequest Cookies");
+        throw new UnsupportedOperationException("Cannot remove HttpRequest Cookies");
     }
 
     @Override
     protected Enumeration<String> getAttributeNames()
     {
-        final Cookie[] cookies = _httpServletRequest.getCookies();
+        final Cookie[] cookies = httpServletRequest.getCookies();
 
         return cookies == null ? new CookieNameEnumeration(EMPTY_ARRAY) : new CookieNameEnumeration(cookies);
   
@@ -140,20 +137,20 @@ public final class CookieMap extends AbstractAttributeMap<Object>
 
     private static class CookieNameEnumeration implements Enumeration<String>
     {
-        private final Cookie[] _cookies;
-        private final int _length;
-        private int _index;
+        private final Cookie[] cookies;
+        private final int length;
+        private int index;
 
         public CookieNameEnumeration(final Cookie[] cookies)
         {
-            _cookies = cookies;
-            _length = cookies.length;
+            this.cookies = cookies;
+            this.length = cookies.length;
         }
 
         @Override
         public boolean hasMoreElements()
         {
-            return _index < _length;
+            return index < length;
         }
 
         @Override
@@ -163,7 +160,7 @@ public final class CookieMap extends AbstractAttributeMap<Object>
             {
                 throw new NoSuchElementException();
             }
-            return _cookies[_index++].getName();
+            return cookies[index++].getName();
         }
     }
 }

@@ -34,17 +34,17 @@ import org.apache.myfaces.util.lang.AbstractAttributeMap;
  */
 public final class RequestHeaderMap extends AbstractAttributeMap<String>
 {
-    private final HttpServletRequest _httpServletRequest;
+    private final HttpServletRequest httpServletRequest;
 
     RequestHeaderMap(final HttpServletRequest httpServletRequest)
     {
-        _httpServletRequest = httpServletRequest;
+        this.httpServletRequest = httpServletRequest;
     }
 
     @Override
     protected String getAttribute(final String key)
     {
-        return _httpServletRequest.getHeader(key);
+        return httpServletRequest.getHeader(key);
     }
 
     @Override
@@ -62,10 +62,9 @@ public final class RequestHeaderMap extends AbstractAttributeMap<String>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Enumeration<String> getAttributeNames()
     {
-        return _httpServletRequest.getHeaderNames();
+        return httpServletRequest.getHeaderNames();
     }
 
     @Override
@@ -73,7 +72,6 @@ public final class RequestHeaderMap extends AbstractAttributeMap<String>
     {
         throw new UnsupportedOperationException();
     }
-
 
     @Override
     public void clear()

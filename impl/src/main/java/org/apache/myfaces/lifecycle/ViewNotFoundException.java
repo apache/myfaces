@@ -32,10 +32,7 @@ import javax.faces.FacesException;
  */
 public class ViewNotFoundException extends FacesException
 {
-    
-    /**
-     * 
-     */
+
     private static final long serialVersionUID = -537576038024094272L;
 
     public ViewNotFoundException()

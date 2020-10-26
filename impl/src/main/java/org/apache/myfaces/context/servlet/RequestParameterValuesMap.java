@@ -32,17 +32,17 @@ import org.apache.myfaces.util.lang.AbstractAttributeMap;
  */
 public final class RequestParameterValuesMap extends AbstractAttributeMap<String[]>
 {
-    private final ServletRequest _servletRequest;
+    private final ServletRequest servletRequest;
 
     RequestParameterValuesMap(final ServletRequest servletRequest)
     {
-        _servletRequest = servletRequest;
+        this.servletRequest = servletRequest;
     }
 
     @Override
     protected String[] getAttribute(final String key)
     {
-        return _servletRequest.getParameterValues(key);
+        return servletRequest.getParameterValues(key);
     }
 
     @Override
@@ -60,9 +60,8 @@ public final class RequestParameterValuesMap extends AbstractAttributeMap<String
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Enumeration<String> getAttributeNames()
     {
-        return _servletRequest.getParameterNames();
+        return servletRequest.getParameterNames();
     }
 }

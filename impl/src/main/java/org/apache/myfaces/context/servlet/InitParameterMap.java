@@ -25,7 +25,6 @@ import javax.servlet.ServletContext;
 
 import org.apache.myfaces.util.lang.AbstractAttributeMap;
 
-
 /**
  * ServletContext init parameters as Map.
  * 
@@ -34,17 +33,17 @@ import org.apache.myfaces.util.lang.AbstractAttributeMap;
  */
 public final class InitParameterMap extends AbstractAttributeMap<String>
 {
-    private final ServletContext _servletContext;
+    private final ServletContext servletContext;
 
     InitParameterMap(final ServletContext servletContext)
     {
-        _servletContext = servletContext;
+        this.servletContext = servletContext;
     }
 
     @Override
     protected String getAttribute(final String key)
     {
-        return _servletContext.getInitParameter(key);
+        return servletContext.getInitParameter(key);
     }
 
     @Override
@@ -62,10 +61,9 @@ public final class InitParameterMap extends AbstractAttributeMap<String>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Enumeration<String> getAttributeNames()
     {
-        return _servletContext.getInitParameterNames();
+        return servletContext.getInitParameterNames();
     }
     
     @Override
@@ -73,7 +71,6 @@ public final class InitParameterMap extends AbstractAttributeMap<String>
     {
         throw new UnsupportedOperationException();
     }
-
 
     @Override
     public void clear()

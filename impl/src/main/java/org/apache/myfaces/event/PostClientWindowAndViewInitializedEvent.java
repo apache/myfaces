@@ -20,15 +20,10 @@ package org.apache.myfaces.event;
 
 import javax.faces.event.SystemEvent;
 
-/**
- *
- */
 public class PostClientWindowAndViewInitializedEvent extends SystemEvent
 {
-
     public PostClientWindowAndViewInitializedEvent(Object source)
     {
         super(source);
     }
-    
 }

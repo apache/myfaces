@@ -39,7 +39,7 @@ import org.apache.myfaces.component.visit.MyFacesVisitHints;
  */
 public class RestoreViewSupport
 {
-    private final Logger log = Logger.getLogger(RestoreViewSupport.class.getName());
+    private static final Logger log = Logger.getLogger(RestoreViewSupport.class.getName());
 
     private RenderKitFactory renderKitFactory = null;
     private VisitContextFactory visitContextFactory = null;
