@@ -252,22 +252,6 @@ public class WholeBeanValidator implements Validator
 
     }
 
-
-    /**
-     * Get the ValueReference from the ValueExpression.
-     *
-     * @param valueExpression The ValueExpression for value.
-     * @param context The FacesContext.
-     * @return A ValueReferenceWrapper with the necessary information about the ValueReference.
-     */
-    private ValueReference getValueReference(
-            final ValueExpression valueExpression, final FacesContext context)
-    {
-        ELContext elCtx = context.getELContext();
-
-        return ValueReferenceResolver.resolve(valueExpression, elCtx);
-    }
-
     /**
      * This method creates ValidatorFactory instances or retrieves them from the container.
      *
@@ -398,7 +382,7 @@ public class WholeBeanValidator implements Validator
             }
 
             // Obtain a reference to the to-be-validated object and the property name.
-            ValueReference reference = validator.getValueReference(
+            ValueReference reference = ValueReferenceResolver.resolve(
                     valueExpression, context.getFacesContext());
             if (reference == null)
             {

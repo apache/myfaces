@@ -21,10 +21,24 @@ package org.apache.myfaces.core.api.shared;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.el.ValueReference;
+import javax.faces.context.FacesContext;
 import javax.faces.el.CompositeComponentExpressionHolder;
 
 public class ValueReferenceResolver
 {
+    /**
+     * Get the ValueReference from the ValueExpression.
+     *
+     * @param valueExpression The ValueExpression for value.
+     * @param context The FacesContext.
+     * @return A ValueReferenceWrapper with the necessary information about the ValueReference.
+     */
+    public static ValueReference resolve(ValueExpression valueExpression, FacesContext context)
+    {
+        ELContext elCtx = context.getELContext();
+        return ValueReferenceResolver.resolve(valueExpression, elCtx);
+    }
+
     /**
      * This method can be used to extract the ValueReference from the given ValueExpression.
      *
@@ -32,7 +46,7 @@ public class ValueReferenceResolver
      * @param elCtx The ELContext, needed to parse and execute the expression.
      * @return The ValueReferenceWrapper.
      */
-    public static ValueReference resolve(ValueExpression valueExpression, final ELContext elCtx)
+    public static ValueReference resolve(ValueExpression valueExpression, ELContext elCtx)
     {
         ValueReference valueReference = valueExpression.getValueReference(elCtx);
         

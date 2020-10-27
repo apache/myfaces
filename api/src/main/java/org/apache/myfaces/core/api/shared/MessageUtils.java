@@ -18,18 +18,15 @@
  */
 package org.apache.myfaces.core.api.shared;
 
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import org.apache.myfaces.core.api.shared.lang.ClassUtils;
 
 public class MessageUtils
 {
@@ -220,16 +217,7 @@ public class MessageUtils
                 try
                 {
                     //Last resort is the context class loader
-                    ClassLoader cl;
-                    if (System.getSecurityManager() == null)
-                    {
-                        cl = Thread.currentThread().getContextClassLoader();
-                    }
-                    else
-                    {
-                        cl = (ClassLoader) AccessController.doPrivileged(
-                                (PrivilegedExceptionAction) () -> Thread.currentThread().getContextClassLoader());
-                    }
+                    ClassLoader cl = ClassUtils.getContextClassLoader();
 
                     if (bundleControl == null)
                     {
@@ -239,10 +227,6 @@ public class MessageUtils
                     {
                         return ResourceBundle.getBundle(bundleName, locale, cl, bundleControl);
                     }
-                }
-                catch(PrivilegedActionException pae)
-                {
-                    throw new FacesException(pae);
                 }
                 catch (MissingResourceException damned)
                 {

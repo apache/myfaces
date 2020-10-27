@@ -136,7 +136,7 @@ public class WebXmlParser
 
         try
         {
-            Enumeration<URL> webFragments = Thread.currentThread().getContextClassLoader()
+            Enumeration<URL> webFragments = ClassUtils.getContextClassLoader()
                     .getResources("META-INF/web-fragment.xml");
             while (webFragments.hasMoreElements())
             {

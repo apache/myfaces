@@ -273,7 +273,7 @@ public class UIViewParameter extends UIInput
             log.finest("releaseRenderer rendererMap -> " + delegateRendererMap.toString());
         }
 
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader classLoader = ClassUtils.getContextClassLoader();
         
         if (log.isLoggable(Level.FINEST))
         {

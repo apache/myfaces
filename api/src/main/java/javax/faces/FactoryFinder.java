@@ -47,6 +47,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.component.search.SearchExpressionContextFactory;
+import org.apache.myfaces.core.api.shared.lang.ClassUtils;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -258,7 +259,7 @@ public final class FactoryFinder
 
     private static Object _getFactory(String factoryName) throws FacesException
     {
-        ClassLoader classLoader = getClassLoader();
+        ClassLoader classLoader = ClassUtils.getContextClassLoader();
 
         // This code must be synchronized because this could cause a problem when
         // using update feature each time of myfaces (org.apache.myfaces.CONFIG_REFRESH_PERIOD)
@@ -440,7 +441,7 @@ public final class FactoryFinder
     {
         try
         {
-            Class<?> beanEntryClass = _FactoryFinderProviderFactory.classForName(BEAN_ENTRY_CLASS_NAME);
+            Class<?> beanEntryClass = ClassUtils.classForName(BEAN_ENTRY_CLASS_NAME);
             Constructor beanEntryConstructor = beanEntryClass.getDeclaredConstructor(Object.class, Object.class);
 
             Object result = beanEntryConstructor.newInstance(instance, creationMetaData);
@@ -584,7 +585,7 @@ public final class FactoryFinder
     {
         checkFactoryName(factoryName);
 
-        ClassLoader classLoader = getClassLoader();
+        ClassLoader classLoader = ClassUtils.getContextClassLoader();
         Map<String, List<String>> factoryClassNames = null;
         synchronized (registeredFactoryNames)
         {
@@ -656,7 +657,7 @@ public final class FactoryFinder
 
     private static void _releaseFactories() throws FacesException
     {
-        ClassLoader classLoader = getClassLoader();
+        ClassLoader classLoader = ClassUtils.getContextClassLoader();
 
         Map<String, Object> factoryMap;
         // This code must be synchronized
@@ -714,33 +715,6 @@ public final class FactoryFinder
         if (!FACTORY_MAPPING.containsKey(factoryName))
         {
             throw new IllegalArgumentException("factoryName '" + factoryName + '\'');
-        }
-    }
-
-    private static ClassLoader getClassLoader()
-    {
-        try
-        {
-            ClassLoader classLoader = null;
-            if (System.getSecurityManager() != null)
-            {
-                classLoader = (ClassLoader) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () -> Thread.currentThread().getContextClassLoader());
-            }
-            else
-            {
-                classLoader = Thread.currentThread().getContextClassLoader();
-            }
-            
-            if (classLoader == null)
-            {
-                throw new FacesException("web application class loader cannot be identified", null);
-            }
-            return classLoader;
-        }
-        catch (Exception e)
-        {
-            throw new FacesException("web application class loader cannot be identified", e);
         }
     }
 }

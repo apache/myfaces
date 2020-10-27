@@ -19,12 +19,10 @@
 package javax.faces;
 
 import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.context.ExternalContext;
+import org.apache.myfaces.core.api.shared.lang.ClassUtils;
 
 /**
  * Provide utility methods used by FactoryFinder class to lookup for SPI interface FactoryFinderProvider.
@@ -83,7 +81,7 @@ class _FactoryFinderProviderFactory
 
         try
         {
-            factoryFinderFactoryClass = classForName(FACTORY_FINDER_PROVIDER_FACTORY_CLASS_NAME);
+            factoryFinderFactoryClass = ClassUtils.classForName(FACTORY_FINDER_PROVIDER_FACTORY_CLASS_NAME);
             if (factoryFinderFactoryClass != null)
             {
                 factoryFinderproviderFactoryGetMethod = factoryFinderFactoryClass.getMethod
@@ -92,7 +90,7 @@ class _FactoryFinderProviderFactory
                         .getMethod("getFactoryFinderProvider", null);
             }
 
-            factoryFinderProviderClass = classForName(FACTORY_FINDER_PROVIDER_CLASS_NAME);
+            factoryFinderProviderClass = ClassUtils.classForName(FACTORY_FINDER_PROVIDER_CLASS_NAME);
             if (factoryFinderProviderClass != null)
             {
                 factoryFinderProviderGetFactoryMethod = factoryFinderProviderClass.getMethod("getFactory",
@@ -103,7 +101,7 @@ class _FactoryFinderProviderFactory
                         ("releaseFactories", null);
             }
             
-            injectionProviderFactoryClass = classForName(INJECTION_PROVIDER_FACTORY_CLASS_NAME);
+            injectionProviderFactoryClass = ClassUtils.classForName(INJECTION_PROVIDER_FACTORY_CLASS_NAME);
             
             if (injectionProviderFactoryClass != null)
             {
@@ -113,7 +111,7 @@ class _FactoryFinderProviderFactory
                     getMethod("getInjectionProvider", ExternalContext.class);
             }
             
-            injectionProviderClass = classForName(INJECTION_PROVIDER_CLASS_NAME);
+            injectionProviderClass = ClassUtils.classForName(INJECTION_PROVIDER_CLASS_NAME);
             
             if (injectionProviderClass != null)
             {
@@ -171,62 +169,4 @@ class _FactoryFinderProviderFactory
         return null;
     }
 
-    // ~ Methods Copied from _ClassUtils
-    // ------------------------------------------------------------------------------------
-
-    /**
-     * Tries a Class.loadClass with the context class loader of the current thread first and automatically falls back
-     * to
-     * the ClassUtils class loader (i.e. the loader of the myfaces.jar lib) if necessary.
-     *
-     * @param type fully qualified name of a non-primitive non-array class
-     * @return the corresponding Class
-     * @throws NullPointerException   if type is null
-     * @throws ClassNotFoundException
-     */
-    public static Class<?> classForName(String type) throws ClassNotFoundException
-    {
-        if (type == null)
-        {
-            throw new NullPointerException("type");
-        }
-        try
-        {
-            // Try WebApp ClassLoader first
-            return Class.forName(type, false, // do not initialize for faster startup
-                    getContextClassLoader());
-        }
-        catch (ClassNotFoundException ignore)
-        {
-            // fallback: Try ClassLoader for ClassUtils (i.e. the myfaces.jar lib)
-            return Class.forName(type, false, // do not initialize for faster startup
-                    _FactoryFinderProviderFactory.class.getClassLoader());
-        }
-    }
-
-    /**
-     * Gets the ClassLoader associated with the current thread. Returns the class loader associated with the specified
-     * default object if no context loader is associated with the current thread.
-     *
-     * @return ClassLoader
-     */
-    protected static ClassLoader getContextClassLoader()
-    {
-        if (System.getSecurityManager() != null)
-        {
-            try
-            {
-                return (ClassLoader) AccessController.doPrivileged(
-                        (PrivilegedExceptionAction) () -> Thread.currentThread().getContextClassLoader());
-            }
-            catch (PrivilegedActionException pae)
-            {
-                throw new FacesException(pae);
-            }
-        }
-        else
-        {
-            return Thread.currentThread().getContextClassLoader();
-        }
-    }
 }

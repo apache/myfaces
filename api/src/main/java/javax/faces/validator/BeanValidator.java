@@ -20,9 +20,6 @@ package javax.faces.validator;
 
 import org.apache.myfaces.core.api.shared.MessageUtils;
 import org.apache.myfaces.core.api.shared.ExternalSpecifications;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -31,7 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.el.ValueReference;
 import javax.faces.FacesException;
@@ -51,6 +47,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidat
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.core.api.shared.FacesMessageInterpolator;
 import org.apache.myfaces.core.api.shared.ValueReferenceResolver;
+import org.apache.myfaces.core.api.shared.lang.ClassUtils;
 
 /**
  * <p>
@@ -158,7 +155,7 @@ public class BeanValidator implements Validator, PartialStateHolder
         }
 
         // Obtain a reference to the to-be-validated object and the property name.
-        ValueReference reference = getValueReference(valueExpression, context);
+        ValueReference reference = ValueReferenceResolver.resolve(valueExpression, context);
         if (reference == null)
         {
             return;
@@ -299,20 +296,6 @@ public class BeanValidator implements Validator, PartialStateHolder
     }
 
     /**
-     * Get the ValueReference from the ValueExpression.
-     *
-     * @param valueExpression The ValueExpression for value.
-     * @param context The FacesContext.
-     * @return A ValueReferenceWrapper with the necessary information about the ValueReference.
-     */
-    private ValueReference getValueReference(
-            final ValueExpression valueExpression, final FacesContext context)
-    {
-        ELContext elCtx = context.getELContext();
-        return ValueReferenceResolver.resolve(valueExpression, elCtx);
-    }
-
-    /**
      * This method creates ValidatorFactory instances or retrieves them from the container.
      *
      * Once created, ValidatorFactory instances are stored in the container under the key
@@ -369,44 +352,17 @@ public class BeanValidator implements Validator, PartialStateHolder
                 clazz = clazz.trim();
                 if (!clazz.isEmpty())
                 {
-                    Class<?> theClass = null;
-                    ClassLoader cl = null;
-                    if (System.getSecurityManager() != null) 
-                    {
-                        try 
-                        {
-                            cl = (ClassLoader) AccessController.doPrivileged(
-                                    (PrivilegedExceptionAction) () -> Thread.currentThread().getContextClassLoader());
-                        }
-                        catch (PrivilegedActionException pae)
-                        {
-                            throw new FacesException(pae);
-                        }
-                    }
-                    else
-                    {
-                        cl = Thread.currentThread().getContextClassLoader();
-                    }
-                    
                     try
-                    {                        
-                        // Try WebApp ClassLoader first
-                        theClass = Class.forName(clazz,false,cl);
-                    }
-                    catch (ClassNotFoundException ignore)
                     {
-                        try
-                        {
-                            // fallback: Try ClassLoader for BeanValidator (i.e. the myfaces.jar lib)
-                            theClass = Class.forName(clazz,false, BeanValidator.class.getClassLoader());
-                        }
-                        catch (ClassNotFoundException e)
-                        {
-                            throw new RuntimeException("Could not load validation group", e);
-                        }                        
+                        Class<?> theClass = ClassUtils.classForName(clazz);
+
+                        // the class was found
+                        validationGroupsList.add(theClass);
                     }
-                    // the class was found
-                    validationGroupsList.add(theClass);
+                    catch (ClassNotFoundException e)
+                    {
+                        throw new RuntimeException("Could not load validation group", e);                     
+                    }
                 }
             }
                     
@@ -461,8 +417,6 @@ public class BeanValidator implements Validator, PartialStateHolder
             // validationGroups to javax.validation.groups.Default. 
             this.validationGroups = null;
         }
-        // Only the String is saved, recalculate the Class[] on state restoration.
-        //postSetValidationGroups();
     }
 
     /**
@@ -484,7 +438,6 @@ public class BeanValidator implements Validator, PartialStateHolder
     {
         this.validationGroups = validationGroups;
         this.clearInitialState();
-        //postSetValidationGroups();
     }
 
     @JSFProperty
