@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
+import java.io.Serializable;
 import javax.faces.view.Location;
 
 /**
@@ -25,8 +26,9 @@ import javax.faces.view.Location;
  *
  * @author martinkoci
  */
-public class DefaultContextAwareELException implements ContextAwareExceptionWrapper
+public class DefaultContextAwareELException implements ContextAwareExceptionWrapper, Serializable
 {
+    private static final long serialVersionUID = 1L;
 
     private Location _location;
 
