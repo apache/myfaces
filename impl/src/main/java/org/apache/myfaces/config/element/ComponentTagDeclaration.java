@@ -26,6 +26,8 @@ import java.io.Serializable;
  */
 public abstract class ComponentTagDeclaration implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+    
     public abstract String getComponentType();
     
     public abstract String getNamespace();

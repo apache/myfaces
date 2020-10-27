@@ -24,7 +24,7 @@ import java.io.Serializable;
  * @author <a href="mailto:oliver@rossmueller.com">Oliver Rossmueller</a>
  */
 public class NavigationCaseImpl extends org.apache.myfaces.config.element.NavigationCase implements Serializable
-{
+{    
     private String fromAction;
     private String fromOutcome;
     private String ifValue;

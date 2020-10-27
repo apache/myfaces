@@ -25,6 +25,8 @@ import java.io.Serializable;
  */
 public abstract class FaceletsTemplateMapping implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+    
 // <facelets-template-mapping>
 //   <url-pattern>/templates/*</url-pattern>
 // </facelets-template-mapping>

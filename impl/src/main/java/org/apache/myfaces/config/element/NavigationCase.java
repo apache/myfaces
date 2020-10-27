@@ -30,6 +30,8 @@ import java.io.Serializable;
  */
 public abstract class NavigationCase implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     // <!ELEMENT navigation-case (description*, display-name*, icon*, from-action?,
     // from-outcome?, to-view-id, redirect?)>
 

@@ -141,7 +141,7 @@ public class ViewTransientScopeContext implements Context
         if (contextualInstanceInfo != null)
         {
             @SuppressWarnings("unchecked")
-            final T instance =  (T) contextualInstanceInfo.getContextualInstance();
+            final T instance = (T) contextualInstanceInfo.getContextualInstance();
 
             if (instance != null)
             {

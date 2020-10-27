@@ -84,7 +84,6 @@ public class ELResolverBuilder
      * @param scope scope of ELResolvers (Faces,JSP)  
      * @since 1.2.10, 2.0.2
      */
-    @SuppressWarnings("unchecked")
     protected void sortELResolvers(List<ELResolver> resolvers, FacesCompositeELResolver.Scope scope)
     {
         if (runtimeConfig.getELResolverComparator() != null)

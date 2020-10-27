@@ -25,6 +25,8 @@ import java.util.Map;
 
 public abstract class Redirect implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     public abstract Map<String, List<String>> getViewParams();
     public abstract String getIncludeViewParams();
 }

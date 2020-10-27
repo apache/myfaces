@@ -1401,7 +1401,7 @@ public class ApplicationImpl extends Application
     }
 
     @SuppressWarnings("unchecked")
-    private Converter internalCreateConverter(final Class<?> targetClass)
+    private Converter<?> internalCreateConverter(final Class<?> targetClass)
     {
         // Locate a Converter registered for the target class itself.
         Object converterClassOrClassName = _converterTargetClassToConverterClassMap.get(targetClass);
@@ -1419,7 +1419,7 @@ public class ApplicationImpl extends Application
                 {
                     // search all superinterfaces for a matching converter,
                     // create it
-                    final Converter converter = internalCreateConverter(interfaces[i]);
+                    final Converter<?> converter = internalCreateConverter(interfaces[i]);
                     if (converter != null)
                     {
                         return converter;
@@ -1468,7 +1468,7 @@ public class ApplicationImpl extends Application
                     }
                 }
                 
-                Converter converter = null;
+                Converter<?> converter = null;
                 
                 if (Boolean.TRUE.equals(_cdiManagedConverterMap.get(converterClass)))
                 {

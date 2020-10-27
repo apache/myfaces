@@ -706,7 +706,6 @@ public class FlashImpl extends Flash implements ReleasableFlash
      * because we just have to check if the value for FLASH_KEEP_MESSAGES_LIST exists.
      * @param facesContext
      */
-    @SuppressWarnings("unchecked")
     private void _restoreMessages(FacesContext facesContext)
     {
         List<MessageEntry> messageList = (List<MessageEntry>) 
