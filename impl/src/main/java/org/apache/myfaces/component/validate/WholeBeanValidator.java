@@ -69,8 +69,6 @@ public class WholeBeanValidator implements Validator
     private static final Logger log = Logger.getLogger(WholeBeanValidator.class.getName());
     
     private static final Class<?>[] DEFAULT_VALIDATION_GROUPS_ARRAY = new Class<?>[] { Default.class };
-
-    private static final String DEFAULT_VALIDATION_GROUP_NAME = "javax.validation.groups.Default";
     
     private static final String CANDIDATE_COMPONENT_VALUES_MAP = "oam.WBV.candidatesMap";
     
