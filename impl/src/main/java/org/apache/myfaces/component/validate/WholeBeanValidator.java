@@ -19,8 +19,6 @@
 
 package org.apache.myfaces.component.validate;
 
-import org.apache.myfaces.el.ELContextDecorator;
-import org.apache.myfaces.el.ValueReferenceResolver;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -30,7 +28,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -52,12 +49,14 @@ import static javax.faces.validator.BeanValidator.VALIDATOR_FACTORY_KEY;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 import javax.validation.ConstraintViolation;
-import javax.validation.MessageInterpolator;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 import javax.validation.metadata.BeanDescriptor;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.core.api.shared.ELContextDecorator;
+import org.apache.myfaces.core.api.shared.FacesMessageInterpolator;
+import org.apache.myfaces.core.api.shared.ValueReferenceResolver;
 import org.apache.myfaces.util.lang.Assert;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.MessageUtils;
@@ -65,9 +64,6 @@ import org.apache.myfaces.util.MyFacesObjectInputStream;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.util.lang.FastByteArrayOutputStream;
 
-/**
- *
- */
 public class WholeBeanValidator implements Validator
 {
     private static final Logger log = Logger.getLogger(WholeBeanValidator.class.getName());
@@ -141,13 +137,12 @@ public class WholeBeanValidator implements Validator
                     VisitContext.createVisitContext(context, candidatesMap.keySet(), null), 
                     callback);
             
-            Set constraintViolations = validator.validate(copy, validationGroupsArray);
+            Set<ConstraintViolation<Object>> constraintViolations = validator.validate(copy, validationGroupsArray);
             if (!constraintViolations.isEmpty())
             {
-                Set<FacesMessage> messages = new LinkedHashSet<FacesMessage>(constraintViolations.size());
-                for (Object violation: constraintViolations)
+                Set<FacesMessage> messages = new LinkedHashSet<>(constraintViolations.size());
+                for (ConstraintViolation constraintViolation : constraintViolations)
                 {
-                    ConstraintViolation constraintViolation = (ConstraintViolation) violation;
                     String message = constraintViolation.getMessage();
                     Object[] args = new Object[]{ message, MessageUtils.getLabel(context, component) };
                     FacesMessage msg = MessageUtils.getMessage(FacesMessage.SEVERITY_ERROR, MESSAGE_ID, args, context);
@@ -271,7 +266,7 @@ public class WholeBeanValidator implements Validator
             final ValueExpression valueExpression, final FacesContext context)
     {
         ELContext elCtx = context.getELContext();
-        
+
         return ValueReferenceResolver.resolve(valueExpression, elCtx);
     }
 
@@ -369,38 +364,6 @@ public class WholeBeanValidator implements Validator
     public void setValidationGroups(ValidateWholeBeanComponent component, final String validationGroups)
     {
         component.setValidationGroups(validationGroups);
-    }
-
-    /**
-     * Note: Before 2.1.5/2.0.11 there was another strategy for this point to minimize
-     * the instances used, but after checking this with a profiler, it is more expensive to
-     * call FacesContext.getCurrentInstance() than create this object for bean validation.
-     * 
-     * Standard MessageInterpolator, as described in the JSR-314 spec.
-     */
-    private static class FacesMessageInterpolator implements MessageInterpolator
-    {
-        private final FacesContext facesContext;
-        private final MessageInterpolator interpolator;
-
-        public FacesMessageInterpolator(final MessageInterpolator interpolator, final FacesContext facesContext)
-        {
-            this.interpolator = interpolator;
-            this.facesContext = facesContext;
-        }
-
-        @Override
-        public String interpolate(final String s, final MessageInterpolator.Context context)
-        {
-            Locale locale = facesContext.getViewRoot().getLocale();
-            return interpolator.interpolate(s, context, locale);
-        }
-
-        @Override
-        public String interpolate(final String s, final MessageInterpolator.Context context, final Locale locale)
-        {
-            return interpolator.interpolate(s, context, locale);
-        }
     }
 
     private static class UpdateBeanCopyCallback implements VisitCallback

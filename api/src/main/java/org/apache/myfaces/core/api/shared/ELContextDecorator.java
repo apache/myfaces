@@ -16,8 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-package org.apache.myfaces.el;
+package org.apache.myfaces.core.api.shared;
 
 import java.util.Locale;
 import javax.el.ELContext;
@@ -56,7 +55,6 @@ public class ELContextDecorator extends ELContext
         return interceptingResolver;
     }
 
-    // ############################ Standard delegating implementations ############################
     @Override
     public FunctionMapper getFunctionMapper()
     {
@@ -105,3 +103,4 @@ public class ELContextDecorator extends ELContext
         ctx.setLocale(locale);
     }
 }
+

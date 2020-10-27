@@ -16,8 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-package org.apache.myfaces.el;
+package org.apache.myfaces.core.api.shared;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
@@ -47,9 +46,7 @@ public class ValueReferenceResolver
             }
             valueReference = valueExpression.getValueReference(elCtx);
         }
-        
+
         return valueReference;
     }
-
 }
-

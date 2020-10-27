@@ -27,25 +27,19 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.FunctionMapper;
 import javax.el.ValueExpression;
 import javax.el.ValueReference;
-import javax.el.VariableMapper;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.el.CompositeComponentExpressionHolder;
 import javax.validation.ConstraintViolation;
-import javax.validation.MessageInterpolator;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
@@ -55,6 +49,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspProp
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFValidator;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.core.api.shared.FacesMessageInterpolator;
+import org.apache.myfaces.core.api.shared.ValueReferenceResolver;
 
 /**
  * <p>
@@ -217,7 +213,8 @@ public class BeanValidator implements Validator, PartialStateHolder
         }
         
         // Delegate to Bean Validation.
-        Set constraintViolations = validator.validateValue(valueBaseClass, valueProperty, value, validationGroupsArray);
+        Set<?> constraintViolations
+                = validator.validateValue(valueBaseClass, valueProperty, value, validationGroupsArray);
         if (!constraintViolations.isEmpty())
         {
             Set<FacesMessage> messages = new LinkedHashSet<>(constraintViolations.size());
@@ -312,7 +309,7 @@ public class BeanValidator implements Validator, PartialStateHolder
             final ValueExpression valueExpression, final FacesContext context)
     {
         ELContext elCtx = context.getELContext();
-        return _ValueReferenceResolver.resolve(valueExpression, elCtx);
+        return ValueReferenceResolver.resolve(valueExpression, elCtx);
     }
 
     /**
@@ -504,179 +501,34 @@ public class BeanValidator implements Validator, PartialStateHolder
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isTransient()
     {
         return isTransient;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setTransient(final boolean isTransient)
     {
         this.isTransient = isTransient;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void clearInitialState()
     {
         _initialStateMarked = false;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean initialStateMarked()
     {
         return _initialStateMarked;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void markInitialState()
     {
         _initialStateMarked = true;
     }
-    
-    /**
-     * Note: Before 2.1.5/2.0.11 there was another strategy for this point to minimize
-     * the instances used, but after checking this with a profiler, it is more expensive to
-     * call FacesContext.getCurrentInstance() than create this object for bean validation.
-     * 
-     * Standard MessageInterpolator, as described in the JSR-314 spec.
-     */
-    private static class FacesMessageInterpolator implements MessageInterpolator
-    {
-        private final FacesContext facesContext;
-        private final MessageInterpolator interpolator;
-
-        public FacesMessageInterpolator(final MessageInterpolator interpolator, final FacesContext facesContext)
-        {
-            this.interpolator = interpolator;
-            this.facesContext = facesContext;
-        }
-
-        @Override
-        public String interpolate(final String s, final Context context)
-        {
-            Locale locale = facesContext.getViewRoot().getLocale();
-            return interpolator.interpolate(s, context, locale);
-        }
-
-        @Override
-        public String interpolate(final String s, final Context context, final Locale locale)
-        {
-            return interpolator.interpolate(s, context, locale);
-        }
-    }
 }
 
-final class _ValueReferenceResolver
-{
-    /**
-     * This method can be used to extract the ValueReference from the given ValueExpression.
-     *
-     * @param valueExpression The ValueExpression to resolve.
-     * @param elCtx The ELContext, needed to parse and execute the expression.
-     * @return The ValueReferenceWrapper.
-     */
-    public static ValueReference resolve(ValueExpression valueExpression, final ELContext elCtx)
-    {
-        ValueReference valueReference = valueExpression.getValueReference(elCtx);
-        
-        while (valueReference != null && valueReference.getBase() instanceof CompositeComponentExpressionHolder)
-        {
-            valueExpression = ((CompositeComponentExpressionHolder) valueReference.getBase())
-                                  .getExpression((String) valueReference.getProperty());
-            if(valueExpression == null)
-            {
-                break;
-            }
-            valueReference = valueExpression.getValueReference(elCtx);
-        }
-        
-        return valueReference;
-    }
-}
-
-/**
- * This ELContext is used to hook into the EL handling, by decorating the
- * ELResolver chain with a custom ELResolver.
- */
-final class _ELContextDecorator extends ELContext
-{
-    private final ELContext ctx;
-    private final ELResolver interceptingResolver;
-
-    /**
-     * Only used by ValueExpressionResolver.
-     *
-     * @param elContext The standard ELContext. All method calls, except getELResolver, are delegated to it.
-     * @param interceptingResolver The ELResolver to be returned by getELResolver.
-     */
-    _ELContextDecorator(final ELContext elContext, final ELResolver interceptingResolver)
-    {
-        this.ctx = elContext;
-        this.interceptingResolver = interceptingResolver;
-    }
-
-    /**
-     * This is the important one, it returns the passed ELResolver.
-     * @return The ELResolver passed into the constructor.
-     */
-    @Override
-    public ELResolver getELResolver()
-    {
-        return interceptingResolver;
-    }
-
-    // ############################ Standard delegating implementations ############################
-    @Override
-    public FunctionMapper getFunctionMapper()
-    {
-        return ctx.getFunctionMapper();
-    }
-
-    @Override
-    public VariableMapper getVariableMapper()
-    {
-        return ctx.getVariableMapper();
-    }
-
-    @Override
-    public void setPropertyResolved(final boolean resolved)
-    {
-        ctx.setPropertyResolved(resolved);
-    }
-
-    @Override
-    public boolean isPropertyResolved()
-    {
-        return ctx.isPropertyResolved();
-    }
-
-    @Override
-    public void putContext(final Class key, Object contextObject)
-    {
-        ctx.putContext(key, contextObject);
-    }
-
-    @Override
-    public Object getContext(final Class key)
-    {
-        return ctx.getContext(key);
-    }
-
-    @Override
-    public Locale getLocale()
-    {
-        return ctx.getLocale();
-    }
-
-    @Override
-    public void setLocale(final Locale locale)
-    {
-        ctx.setLocale(locale);
-    }
-}

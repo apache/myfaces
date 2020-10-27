@@ -42,12 +42,9 @@ public class ComponentResourceContainer extends UIPanel
     static public final String COMPONENT_TYPE =
         "javax.faces.ComponentResourceContainer";
 
-    /**
-     * Construct an instance of the UIPanel.
-     */
     public ComponentResourceContainer()
     {
-      setRendererType(null);
+        setRendererType(null);
     }
     
     @Override
