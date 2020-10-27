@@ -34,7 +34,7 @@ import org.apache.myfaces.cdi.view.ViewScopedLiteral;
 
 public class ManagedBeanExtension implements Extension
 {
-    private final Logger logger = Logger.getLogger(ManagedBeanExtension.class.getName());
+    private static final Logger logger = Logger.getLogger(ManagedBeanExtension.class.getName());
 
     private Map<Class<? extends Annotation>, Class<? extends Annotation>> mappings = new HashMap<>();
     private Map<Class<? extends Annotation>, AnnotationLiteral> literals = new HashMap<>();
