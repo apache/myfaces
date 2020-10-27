@@ -19,14 +19,16 @@
 package org.apache.myfaces.view.facelets.el;
 
 import jakarta.faces.view.Location;
+import java.io.Serializable;
 
 /**
  * Default implementation of {@link ContextAwareExceptionWrapper}, used for delegation
  *
  * @author martinkoci
  */
-public class DefaultContextAwareELException implements ContextAwareExceptionWrapper
+public class DefaultContextAwareELException implements ContextAwareExceptionWrapper, Serializable
 {
+    private static final long serialVersionUID = 1L;
 
     private Location _location;
 
