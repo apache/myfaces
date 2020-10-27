@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
+import java.io.Serializable;
 import javax.faces.view.Location;
 
 /**
@@ -25,42 +26,44 @@ import javax.faces.view.Location;
  *
  * @author martinkoci
  */
-public class DefaultContextAwareELException implements ContextAwareExceptionWrapper
+public class DefaultContextAwareELException implements ContextAwareExceptionWrapper, Serializable
 {
-    private Location _location;
-    private String _expressionString;
-    private String _qName;
-    private Throwable _wrapped;
+    private static final long serialVersionUID = 1L;
+
+    private Location location;
+    private String expressionString;
+    private String qName;
+    private Throwable wrapped;
 
     public DefaultContextAwareELException(Location location, String expressionString, String qName, Throwable wrapped)
     {
-        _location = location;
-        _expressionString = expressionString;
-        _qName = qName;
-        _wrapped = wrapped;
+        this.location = location;
+        this.expressionString = expressionString;
+        this.qName = qName;
+        this.wrapped = wrapped;
     }
 
     @Override
     public Location getLocation()
     {
-        return _location;
+        return location;
     }
 
     @Override
     public String getExpressionString()
     {
-        return _expressionString;
+        return expressionString;
     }
 
     @Override
     public String getQName()
     {
-        return _qName;
+        return qName;
     }
 
     @Override
     public Throwable getWrapped()
     {
-        return _wrapped;
+        return wrapped;
     }
 }
