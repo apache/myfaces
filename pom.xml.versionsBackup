@@ -31,11 +31,11 @@
     <packaging>pom</packaging>
     <name>Apache MyFaces Core 4.0</name>
     <description>
-        This project is the home of the MyFaces implementation of the Jakarta Faces 4.0 specification, and
-        consists of an API module (jakarta.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
+        This project is the home of the MyFaces implementation of the JavaServer Faces 2.3 specification, and
+        consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
     <version>4.0.0-SNAPSHOT</version>
-    <url>https://myfaces.apache.org/#/core40</url>
+    <url>http://myfaces.apache.org/core23next</url>
 
     <issueManagement>
         <system>jira</system>
@@ -202,7 +202,7 @@
     </distributionManagement>
 
     <properties>
-        <siteModule.path>core40/module</siteModule.path>
+        <siteModule.path>core23next/module</siteModule.path>
         <site.mainDirectory>${user.home}/myfaces-site/checkout</site.mainDirectory>
         <siteContent.path>${user.home}/myfaces-site/site/${siteModule.path}</siteContent.path>
         <!-- it's a default location for performance reason (not checkout the content all the time)

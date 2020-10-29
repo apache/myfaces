@@ -29,13 +29,13 @@
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-core-project</artifactId>
     <packaging>pom</packaging>
-    <name>Apache MyFaces Core 2.3-next - Parent</name>
+    <name>Apache MyFaces Core 4.0 - Parent</name>
     <description>
         This project is the home of the MyFaces implementation of the JavaServer Faces 2.3 specification, and
-        consists of an API module (javax.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
+        consists of an API module (jakarta.faces.* classes) and an implementation module (org.apache.myfaces.* classes).
     </description>
-    <version>2.3-next-SNAPSHOT</version>
-    <url>http://myfaces.apache.org/core23next</url>
+    <version>4.0.0-SNAPSHOT</version>
+    <url>https://myfaces.apache.org/#/core40</url>
 
     <issueManagement>
         <system>jira</system>
@@ -509,7 +509,7 @@
     </distributionManagement>
 
     <properties>
-        <siteModule.path>core23next</siteModule.path>
+        <siteModule.path>core40</siteModule.path>
         <site.mainDirectory>${user.home}/myfaces-site/checkout</site.mainDirectory>
         <siteContent.path>${user.home}/myfaces-site/site/${siteModule.path}</siteContent.path>
         <!-- it's a default location for performance reason (not checkout the content all the time)

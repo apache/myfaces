@@ -56,9 +56,9 @@
 
         <menu name="JSF Implementations" inherit="top">
             <item name="Core JSF-2.3-next"   href="./index.html" collapse="false">
-              <item name="API"          href="http://myfaces.apache.org/core23next/myfaces-api/index.html"/>
-              <item name="Impl"         href="http://myfaces.apache.org/core23next/myfaces-impl/index.html"/>
-              <item name="Bundle"       href="http://myfaces.apache.org/core23next/myfaces-bundle/index.html"/>
+              <item name="API"          href="http://myfaces.apache.org/core40/myfaces-api/index.html"/>
+              <item name="Impl"         href="http://myfaces.apache.org/core40/myfaces-impl/index.html"/>
+              <item name="Bundle"       href="http://myfaces.apache.org/core40/myfaces-bundle/index.html"/>
             </item>
             <item name="Core JSF-2.3"   href="../core23/index.html" collapse="true">
               <item name="dummy"        href="dummy"/>

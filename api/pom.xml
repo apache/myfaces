@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-core-project</artifactId>
-        <version>2.3-next-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
@@ -28,25 +28,21 @@
 
     <groupId>org.apache.myfaces.core</groupId>
     <artifactId>myfaces-api</artifactId>
-    <name>Apache MyFaces Core 2.3-next - API</name>
+    <name>Apache MyFaces Core 4.0 - API</name>
     <description>
-        The public API classes of the Apache MyFaces Core JSF-2.3-next project
+        The public API classes of the Apache MyFaces Core JSF-4.0 project
     </description>
-    <url>http://myfaces.apache.org/core23next/myfaces-api</url>
+    <url>https://myfaces.apache.org/#/core40</url>
 
     <build>
-
-
         <resources>
             <!-- standard resources -->
             <resource>
                 <directory>src/main/resources</directory>
             </resource>
-
         </resources>
 
         <plugins>
-
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>

@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-integration-tests</artifactId>
-        <version>2.3-next-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -29,7 +29,7 @@
 
     <groupId>org.apache.myfaces.core.integration-tests</groupId>
     <artifactId>autoLookupExpressionFactoryWithoutJSP</artifactId>
-    <name>Apache MyFaces Core 2.3-next - Integration Tests - autoLookupExpressionFactoryWithoutJSP</name>
+    <name>Apache MyFaces Core 4.0 - Integration Tests - autoLookupExpressionFactoryWithoutJSP</name>
     <packaging>war</packaging>
 
 </project>

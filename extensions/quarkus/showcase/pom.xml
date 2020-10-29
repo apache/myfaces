@@ -22,7 +22,7 @@
     <groupId>io.quarkus</groupId>
     <artifactId>quarkus-myfaces-showcase</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>Apache MyFaces Core 2.3-next - Extensions - Quarkus - Showcase</name>
+    <name>Apache MyFaces Core 4.0 - Extensions - Quarkus - Showcase</name>
 
     <properties>
         <quarkus.version>1.7.0.Final</quarkus.version>
