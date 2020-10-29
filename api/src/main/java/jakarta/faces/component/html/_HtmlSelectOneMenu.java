@@ -45,7 +45,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 @JSFComponent(name = "h:selectOneMenu",
         clazz = "jakarta.faces.component.html.HtmlSelectOneMenu",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlSelectOneMenuTag",
-        defaultRendererType = "javax.faces.Menu",
+        defaultRendererType = "jakarta.faces.Menu",
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
         defaultEventName = "valueChange")
 abstract class _HtmlSelectOneMenu extends UISelectOne implements
@@ -56,8 +56,8 @@ abstract class _HtmlSelectOneMenu extends UISelectOne implements
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.SelectOne";
+    "jakarta.faces.SelectOne";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlSelectOneMenu";
+    "jakarta.faces.HtmlSelectOneMenu";
 
 }

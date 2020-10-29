@@ -269,7 +269,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         // According to the javascript doc of jsf.ajax.response,
         //
         // The new syntax looks like this:
-        // <update id="<VIEW_ROOT_CONTAINER_CLIENT_ID><SEP>javax.faces.ClientWindow<SEP><UNIQUE_PER_VIEW_NUMBER>">
+        // <update id="<VIEW_ROOT_CONTAINER_CLIENT_ID><SEP>jakarta.faces.ClientWindow<SEP><UNIQUE_PER_VIEW_NUMBER>">
         //    <![CDATA[...]]>
         // </update>
         //
@@ -297,7 +297,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         // According to the javascript doc of jsf.ajax.response,
         //
         // The new syntax looks like this:
-        // <update id="<VIEW_ROOT_CONTAINER_CLIENT_ID><SEP>javax.faces.ViewState<SEP><UNIQUE_PER_VIEW_NUMBER>">
+        // <update id="<VIEW_ROOT_CONTAINER_CLIENT_ID><SEP>jakarta.faces.ViewState<SEP><UNIQUE_PER_VIEW_NUMBER>">
         //    <![CDATA[...]]>
         // </update>
         //

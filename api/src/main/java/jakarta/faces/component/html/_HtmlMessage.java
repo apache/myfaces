@@ -30,14 +30,14 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 @JSFComponent(name = "h:message",
         clazz = "jakarta.faces.component.html.HtmlMessage",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlMessageTag",
-        defaultRendererType = "javax.faces.Message")
+        defaultRendererType = "jakarta.faces.Message")
 abstract class _HtmlMessage extends UIMessage implements _StyleProperties, 
     _MessageProperties, _UniversalProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.Message";
+    "jakarta.faces.Message";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlMessage";
+    "jakarta.faces.HtmlMessage";
 
 }

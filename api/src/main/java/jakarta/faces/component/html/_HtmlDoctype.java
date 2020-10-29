@@ -31,8 +31,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 abstract class _HtmlDoctype extends UIOutput
 {
 
-  static public final String COMPONENT_FAMILY = "javax.faces.Output";
-  static public final String COMPONENT_TYPE = "javax.faces.OutputDoctype";
+  static public final String COMPONENT_FAMILY = "jakarta.faces.Output";
+  static public final String COMPONENT_TYPE = "jakarta.faces.OutputDoctype";
 
   /**
    * 

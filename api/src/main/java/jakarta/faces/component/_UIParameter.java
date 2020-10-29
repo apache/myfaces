@@ -35,8 +35,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 abstract class _UIParameter extends UIComponentBase
 {
 
-    static public final String COMPONENT_FAMILY = "javax.faces.Parameter";
-    static public final String COMPONENT_TYPE = "javax.faces.Parameter";
+    static public final String COMPONENT_FAMILY = "jakarta.faces.Parameter";
+    static public final String COMPONENT_TYPE = "jakarta.faces.Parameter";
 
     /**
      * Disable this property; although this class extends a base-class that defines a read/write rendered property, this

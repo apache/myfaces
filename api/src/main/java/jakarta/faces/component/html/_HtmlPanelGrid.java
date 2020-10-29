@@ -34,16 +34,16 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFComponent(name = "h:panelGrid",
         clazz = "jakarta.faces.component.html.HtmlPanelGrid",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlPanelGridTag",
-        defaultRendererType = "javax.faces.Grid",
+        defaultRendererType = "jakarta.faces.Grid",
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder")
 abstract class _HtmlPanelGrid extends UIPanel implements _EventProperties,
 _StyleProperties, _UniversalProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.Panel";
+    "jakarta.faces.Panel";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlPanelGrid";
+    "jakarta.faces.HtmlPanelGrid";
 
   /**
    * HTML: The background color of this element.

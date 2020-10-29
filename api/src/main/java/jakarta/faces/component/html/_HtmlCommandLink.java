@@ -30,7 +30,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFComponent(name = "h:commandLink",
         clazz = "jakarta.faces.component.html.HtmlCommandLink",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlCommandLinkTag",
-        defaultRendererType = "javax.faces.Link",
+        defaultRendererType = "jakarta.faces.Link",
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
         defaultEventName = "action")
 abstract class _HtmlCommandLink extends UICommand
@@ -40,9 +40,9 @@ abstract class _HtmlCommandLink extends UICommand
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.Command";
+    "jakarta.faces.Command";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlCommandLink";
+    "jakarta.faces.HtmlCommandLink";
 
   /**
    * When true, this element cannot receive focus.

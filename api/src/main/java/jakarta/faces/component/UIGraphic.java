@@ -30,11 +30,11 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  * for further details.
  */
-@JSFComponent(defaultRendererType = "javax.faces.Image")
+@JSFComponent(defaultRendererType = "jakarta.faces.Image")
 public class UIGraphic extends UIComponentBase
 {
-    public static final String COMPONENT_TYPE = "javax.faces.Graphic";
-    public static final String COMPONENT_FAMILY = "javax.faces.Graphic";
+    public static final String COMPONENT_TYPE = "jakarta.faces.Graphic";
+    public static final String COMPONENT_FAMILY = "jakarta.faces.Graphic";
 
     private static final String URL_PROPERTY = "url";
     private static final String VALUE_PROPERTY = "value";
@@ -44,7 +44,7 @@ public class UIGraphic extends UIComponentBase
      */
     public UIGraphic()
     {
-        setRendererType("javax.faces.Image");
+        setRendererType("jakarta.faces.Image");
     }
 
     @Override

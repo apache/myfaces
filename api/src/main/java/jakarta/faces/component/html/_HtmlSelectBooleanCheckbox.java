@@ -36,7 +36,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 (name = "h:selectBooleanCheckbox",
         clazz = "jakarta.faces.component.html.HtmlSelectBooleanCheckbox",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlSelectBooleanCheckboxTag",
-        defaultRendererType = "javax.faces.Checkbox",
+        defaultRendererType = "jakarta.faces.Checkbox",
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
         defaultEventName = "valueChange")
 abstract class _HtmlSelectBooleanCheckbox extends UISelectBoolean implements
@@ -47,8 +47,8 @@ abstract class _HtmlSelectBooleanCheckbox extends UISelectBoolean implements
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.SelectBoolean";
+    "jakarta.faces.SelectBoolean";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlSelectBooleanCheckbox";
+    "jakarta.faces.HtmlSelectBooleanCheckbox";
 
 }

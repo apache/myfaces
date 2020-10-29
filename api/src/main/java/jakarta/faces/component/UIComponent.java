@@ -74,20 +74,20 @@ public abstract class UIComponent
      * Constant used in component attribute map to retrieve the BeanInfo of a composite
      * component.
      *
-     * @see javax.faces.view.ViewDeclarationLanguage#getComponentMetadata(FacesContext, Resource)
-     * @see javax.faces.view.ViewDeclarationLanguage#retargetAttachedObjects(FacesContext, UIComponent, List)
-     * @see javax.faces.view.ViewDeclarationLanguage#retargetMethodExpressions(FacesContext, UIComponent)
-     * @see javax.faces.application.Application#createComponent(FacesContext, Resource)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#getComponentMetadata(FacesContext, Resource)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#retargetAttachedObjects(FacesContext, UIComponent, List)
+     * @see jakarta.faces.view.ViewDeclarationLanguage#retargetMethodExpressions(FacesContext, UIComponent)
+     * @see jakarta.faces.application.Application#createComponent(FacesContext, Resource)
      */
-    public static final String BEANINFO_KEY = "javax.faces.component.BEANINFO_KEY";
+    public static final String BEANINFO_KEY = "jakarta.faces.component.BEANINFO_KEY";
 
     /**
      * Constant used in BeanInfo descriptor as a key for retrieve an alternate component type
      * for create the composite base component. 
      *
-     * @see javax.faces.application.Application#createComponent(FacesContext, Resource)
+     * @see jakarta.faces.application.Application#createComponent(FacesContext, Resource)
      */
-    public static final String COMPOSITE_COMPONENT_TYPE_KEY = "javax.faces.component.COMPOSITE_COMPONENT_TYPE";
+    public static final String COMPOSITE_COMPONENT_TYPE_KEY = "jakarta.faces.component.COMPOSITE_COMPONENT_TYPE";
 
     /**
      * Constant used to define the facet inside this component that store the component hierarchy
@@ -95,7 +95,7 @@ public abstract class UIComponent
      * note that direct children of a component are not rendered, instead components inside 
      * this face are rendered.
      */
-    public static final String COMPOSITE_FACET_NAME = "javax.faces.component.COMPOSITE_FACET_NAME";
+    public static final String COMPOSITE_FACET_NAME = "jakarta.faces.component.COMPOSITE_FACET_NAME";
 
     /**
      * Constant used to store the current component that is being processed.
@@ -103,7 +103,7 @@ public abstract class UIComponent
      * @see #pushComponentToEL(FacesContext, UIComponent)
      * @see #popComponentFromEL(FacesContext)
      */
-    public static final String CURRENT_COMPONENT = "javax.faces.component.CURRENT_COMPONENT";
+    public static final String CURRENT_COMPONENT = "jakarta.faces.component.CURRENT_COMPONENT";
 
     /**
      * Constant used to store the current composite component that is being processed. 
@@ -111,7 +111,7 @@ public abstract class UIComponent
      * @see #pushComponentToEL(FacesContext, UIComponent)
      * @see #popComponentFromEL(FacesContext)
      */
-    public static final String CURRENT_COMPOSITE_COMPONENT = "javax.faces.component.CURRENT_COMPOSITE_COMPONENT";
+    public static final String CURRENT_COMPOSITE_COMPONENT = "jakarta.faces.component.CURRENT_COMPOSITE_COMPONENT";
 
     /**
      * This constant has two usages. The first one is in component attribute map to identify the 
@@ -120,25 +120,25 @@ public abstract class UIComponent
      * by composite:facet tag and composite:implementation(because this one fills the facet referenced
      * by COMPOSITE_FACET_NAME constant). 
      */
-    public static final String FACETS_KEY = "javax.faces.component.FACETS_KEY";
+    public static final String FACETS_KEY = "jakarta.faces.component.FACETS_KEY";
 
     /**
-     * Constant used in component attribute map to store the {@link javax.faces.view.Location} object
+     * Constant used in component attribute map to store the {@link jakarta.faces.view.Location} object
      * where the definition of this component is.
      */
-    public static final String VIEW_LOCATION_KEY = "javax.faces.component.VIEW_LOCATION_KEY";
+    public static final String VIEW_LOCATION_KEY = "jakarta.faces.component.VIEW_LOCATION_KEY";
 
     public static final String ATTRS_WITH_DECLARED_DEFAULT_VALUES
-            = "javax.faces.component.ATTR_NAMES_WITH_DEFAULT_VALUES";
+            = "jakarta.faces.component.ATTR_NAMES_WITH_DEFAULT_VALUES";
 
     /**
-     * Indicate if the facesContext attribute values under the keys javax.faces.component.CURRENT_COMPONENT and
-     * javax.faces.component.CURRENT_COMPOSITE_COMPONENT should be valid or not. By default, those keys are
+     * Indicate if the facesContext attribute values under the keys jakarta.faces.component.CURRENT_COMPONENT and
+     * jakarta.faces.component.CURRENT_COMPOSITE_COMPONENT should be valid or not. By default, those keys are
      * deprecated since 2.1
      */
     @JSFWebConfigParam(since = "2.1.0", expectedValues = "true, false", defaultValue = "false")
     public static final String HONOR_CURRENT_COMPONENT_ATTRIBUTES_PARAM_NAME
-            = "javax.faces.HONOR_CURRENT_COMPONENT_ATTRIBUTES";
+            = "jakarta.faces.HONOR_CURRENT_COMPONENT_ATTRIBUTES";
 
     /**
      * The key under which the component stack is stored in the FacesContext.
@@ -1256,7 +1256,7 @@ public abstract class UIComponent
 
             // Push the current UIComponent this to the FacesContext  attribute map using the key CURRENT_COMPONENT 
             // saving the previous UIComponent associated with CURRENT_COMPONENT for a subsequent call to 
-            // popComponentFromEL(javax.faces.context.FacesContext).
+            // popComponentFromEL(jakarta.faces.context.FacesContext).
             contextAttributes.put(UIComponent.CURRENT_COMPONENT, component);
 
             if (component._isCompositeComponent())
@@ -1309,10 +1309,10 @@ public abstract class UIComponent
     }
 
     /**
-     * Gets value of "javax.faces.HONOR_CURRENT_COMPONENT_ATTRIBUTES" parameter cached in facesContext.attributes 
+     * Gets value of "jakarta.faces.HONOR_CURRENT_COMPONENT_ATTRIBUTES" parameter cached in facesContext.attributes 
      * or resolves that param and caches its value in facesContext.attributes.    
      *
-     * @return canonical Boolean value for parameter "javax.faces.HONOR_CURRENT_COMPONENT_ATTRIBUTES"
+     * @return canonical Boolean value for parameter "jakarta.faces.HONOR_CURRENT_COMPONENT_ATTRIBUTES"
      */
     private static Boolean _getHonorCurrentComponentAttributes(FacesContext facesContext)
     {
@@ -1592,7 +1592,7 @@ public abstract class UIComponent
         public void processEvent(SystemEvent event)
         {
             // This inner class must call through to the argument componentListener in its implementation of
-            // SystemEventListener.processEvent(javax.faces.event.SystemEvent)
+            // SystemEventListener.processEvent(jakarta.faces.event.SystemEvent)
             assert event instanceof ComponentSystemEvent;
 
             listener.processEvent((ComponentSystemEvent) event);

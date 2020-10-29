@@ -55,11 +55,11 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
 public class UIViewParameter extends UIInput
 {
     private static final Logger log = Logger.getLogger(UIViewParameter.class.getName());
-    public static final String COMPONENT_FAMILY = "javax.faces.ViewParameter";
-    public static final String COMPONENT_TYPE = "javax.faces.ViewParameter";
+    public static final String COMPONENT_FAMILY = "jakarta.faces.ViewParameter";
+    public static final String COMPONENT_TYPE = "jakarta.faces.ViewParameter";
 
     private static final String DELEGATE_FAMILY = UIInput.COMPONENT_FAMILY;
-    private static final String DELEGATE_RENDERER_TYPE = "javax.faces.Text";
+    private static final String DELEGATE_RENDERER_TYPE = "jakarta.faces.Text";
     
     private static ConcurrentHashMap<ClassLoader,Renderer> delegateRendererMap = 
         new ConcurrentHashMap<ClassLoader,Renderer>();
@@ -322,7 +322,7 @@ public class UIViewParameter extends UIInput
         public Reference(FacesContext context, UIViewParameter param, int indexInParent,
                          String viewIdAtTimeOfConstruction)
         {
-            // This constructor cause the StateHolder.saveState(javax.faces.context.FacesContext) method
+            // This constructor cause the StateHolder.saveState(jakarta.faces.context.FacesContext) method
             // to be called on argument UIViewParameter.
             _param = param;
             _viewId = viewIdAtTimeOfConstruction;
@@ -341,7 +341,7 @@ public class UIViewParameter extends UIInput
             }
             else
             {
-                // Otherwise, call StateHolder.restoreState(javax.faces.context.FacesContext, java.lang.Object) on
+                // Otherwise, call StateHolder.restoreState(jakarta.faces.context.FacesContext, java.lang.Object) on
                 // the saved state and return the result.
                 _param.restoreState(context, _state);
 

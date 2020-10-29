@@ -63,7 +63,7 @@ import org.junit.Before;
  * </ul>
  *
  * <p>In addition, appropriate factory classes will have been registered with
- * <code>javax.faces.FactoryFinder</code> for <code>Application</code> and
+ * <code>jakarta.faces.FactoryFinder</code> for <code>Application</code> and
  * <code>RenderKit</code> instances.  The created <code>FacesContext</code>
  * instance will also have been registered in the apppriate thread local
  * variable, to simulate what a servlet container would do.</p>

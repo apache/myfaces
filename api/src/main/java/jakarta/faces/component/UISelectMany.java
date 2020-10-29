@@ -56,7 +56,7 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
  * Specification</a> for further details.
  * </p>
  */
-@JSFComponent(defaultRendererType = "javax.faces.Listbox")
+@JSFComponent(defaultRendererType = "jakarta.faces.Listbox")
 @JSFJspProperties
 (properties={
         @JSFJspProperty(name="hideNoSelectionOption", returnType="boolean"),
@@ -65,14 +65,14 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
 )
 public class UISelectMany extends UIInput
 {
-    public static final String COMPONENT_TYPE = "javax.faces.SelectMany";
-    public static final String COMPONENT_FAMILY = "javax.faces.SelectMany";
+    public static final String COMPONENT_TYPE = "jakarta.faces.SelectMany";
+    public static final String COMPONENT_FAMILY = "jakarta.faces.SelectMany";
 
-    public static final String INVALID_MESSAGE_ID = "javax.faces.component.UISelectMany.INVALID";
+    public static final String INVALID_MESSAGE_ID = "jakarta.faces.component.UISelectMany.INVALID";
 
     public UISelectMany()
     {
-        setRendererType("javax.faces.Listbox");
+        setRendererType("jakarta.faces.Listbox");
     }
 
     @Override
@@ -399,7 +399,7 @@ public class UISelectMany extends UIInput
         }
     }
     
-    // Copied from javax.faces.component.UIInput
+    // Copied from jakarta.faces.component.UIInput
     private boolean shouldValidateEmptyFields(FacesContext context)
     {
         ExternalContext ec = context.getExternalContext();

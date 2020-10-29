@@ -44,7 +44,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFComponent(name = "h:selectOneRadio",
         clazz = "jakarta.faces.component.html.HtmlSelectOneRadio",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlSelectOneRadioTag",
-        defaultRendererType = "javax.faces.Radio",
+        defaultRendererType = "jakarta.faces.Radio",
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
         defaultEventName = "valueChange")
 abstract class _HtmlSelectOneRadio extends UISelectOne implements
@@ -55,9 +55,9 @@ abstract class _HtmlSelectOneRadio extends UISelectOne implements
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.SelectOne";
+    "jakarta.faces.SelectOne";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlSelectOneRadio";
+    "jakarta.faces.HtmlSelectOneRadio";
 
   /**
    * Width in pixels of the border to be drawn around the table containing the options list.

@@ -118,8 +118,8 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
      */
     public static class UITestComponentA extends UIComponentBase
     {
-        public static final String COMPONENT_TYPE = "javax.faces.TestComponentA";
-        public static final String COMPONENT_FAMILY = "javax.faces.TestComponentA";
+        public static final String COMPONENT_TYPE = "jakarta.faces.TestComponentA";
+        public static final String COMPONENT_FAMILY = "jakarta.faces.TestComponentA";
         public static final String DEFAULT_RENDERER_TYPE = "javax.faces.TestComponentA";
 
         public UITestComponentA()
@@ -478,8 +478,8 @@ public class ApplicationImplAnnotationTest extends AbstractJsfConfigurableMockTe
     @ResourceDependency(name = "testResource.js")
     public static class UITestComponentB extends UIComponentBase
     {
-        public static final String COMPONENT_TYPE = "javax.faces.TestComponentB";
-        public static final String COMPONENT_FAMILY = "javax.faces.TestComponentB";
+        public static final String COMPONENT_TYPE = "jakarta.faces.TestComponentB";
+        public static final String COMPONENT_FAMILY = "jakarta.faces.TestComponentB";
         public static final String DEFAULT_RENDERER_TYPE = "javax.faces.TestComponentB";
 
         public UITestComponentB()

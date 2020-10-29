@@ -37,8 +37,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 public class UIViewAction extends UIComponentBase implements ActionSource2
 {
 
-    public static final String COMPONENT_FAMILY = "javax.faces.ViewAction";
-    public static final String COMPONENT_TYPE = "javax.faces.ViewAction";
+    public static final String COMPONENT_FAMILY = "jakarta.faces.ViewAction";
+    public static final String COMPONENT_TYPE = "jakarta.faces.ViewAction";
     
     /**
      * Key in facesContext attribute map to check if a viewAction broadcast is 
@@ -237,7 +237,7 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
         removeFacesListener(listener);
     }
 
-    @JSFListener(event="javax.faces.event.ActionEvent",
+    @JSFListener(event="jakarta.faces.event.ActionEvent",
             phases="Invoke Application, Apply Request Values")
     @Override
     public ActionListener[] getActionListeners()

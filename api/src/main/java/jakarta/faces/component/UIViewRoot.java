@@ -82,18 +82,18 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
 @JSFJspProperty(name = "binding", returnType = "java.lang.String", tagExcluded = true)
 public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 {
-    public static final String COMPONENT_FAMILY = "javax.faces.ViewRoot";
-    public static final String COMPONENT_TYPE = "javax.faces.ViewRoot";
+    public static final String COMPONENT_FAMILY = "jakarta.faces.ViewRoot";
+    public static final String COMPONENT_TYPE = "jakarta.faces.ViewRoot";
     public static final String METADATA_FACET_NAME = "javax_faces_metadata";
     public static final String UNIQUE_ID_PREFIX = "j_id";
-    public static final String VIEW_PARAMETERS_KEY = "javax.faces.component.VIEW_PARAMETERS_KEY";
+    public static final String VIEW_PARAMETERS_KEY = "jakarta.faces.component.VIEW_PARAMETERS_KEY";
     
     /**
      * @since 2.3
      */
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.3")
     public static final String VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS_PARAM_NAME
-            = "javax.faces.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS";
+            = "jakarta.faces.VIEWROOT_PHASE_LISTENER_QUEUES_EXCEPTIONS";
 
     private transient Logger logger = null;
 
@@ -567,7 +567,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         else
         {
             // If PartialViewContext.isAjaxRequest() returns false
-            // delegate to super.encodeChildren(javax.faces.context.FacesContext) method.
+            // delegate to super.encodeChildren(jakarta.faces.context.FacesContext) method.
             super.encodeChildren(context);
         }
     }
@@ -594,7 +594,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                 {
                     // If the current view has view parameters, as indicated by a non-empty
                     // and non-UnsupportedOperationException throwing
-                    // return from ViewDeclarationLanguage.getViewMetadata(javax.faces.context.FacesContext, String)
+                    // return from ViewDeclarationLanguage.getViewMetadata(jakarta.faces.context.FacesContext, String)
                     ViewMetadata metadata = null;
                     try
                     {
@@ -613,7 +613,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
                             Collection<UIViewParameter> viewParams = ViewMetadata.getViewParameters(this);    
                             if(!viewParams.isEmpty())
                             {
-                                // call UIViewParameter.encodeAll(javax.faces.context.FacesContext) on each parameter.
+                                // call UIViewParameter.encodeAll(jakarta.faces.context.FacesContext) on each parameter.
                                 for(UIViewParameter param : viewParams)
                                 {
                                     param.encodeAll(context);
@@ -642,12 +642,12 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     }
 
     /**
-     * MethodExpression pointing to a method that takes a javax.faces.event.PhaseEvent and returns void,
+     * MethodExpression pointing to a method that takes a jakarta.faces.event.PhaseEvent and returns void,
      * called after every phase except for restore view.
      *
      * @return the new afterPhaseListener value
      */
-    @JSFProperty(returnSignature = "void", methodSignature = "javax.faces.event.PhaseEvent",
+    @JSFProperty(returnSignature = "void", methodSignature = "jakarta.faces.event.PhaseEvent",
                  jspName = "afterPhase", stateHolder=true)
     public MethodExpression getAfterPhaseListener()
     {
@@ -655,12 +655,12 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     }
 
     /**
-     * MethodExpression pointing to a method that takes a javax.faces.event.PhaseEvent and returns void,
+     * MethodExpression pointing to a method that takes a jakarta.faces.event.PhaseEvent and returns void,
      * called before every phase except for restore view.
      *
      * @return the new beforePhaseListener value
      */
-    @JSFProperty(returnSignature = "void", methodSignature = "javax.faces.event.PhaseEvent",
+    @JSFProperty(returnSignature = "void", methodSignature = "jakarta.faces.event.PhaseEvent",
                  jspName = "beforePhase", stateHolder=true)
     public MethodExpression getBeforePhaseListener()
     {
@@ -684,8 +684,8 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         if (facet == null)
         {
             // create the facet by calling context.getApplication().createComponent()
-            // using javax.faces.Panel as the argument
-            facet = context.getApplication().createComponent("javax.faces.Panel");
+            // using jakarta.faces.Panel as the argument
+            facet = context.getApplication().createComponent("jakarta.faces.Panel");
 
             // Set the id of the facet to be target
             facet.setId(target);
@@ -724,9 +724,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         if (facet == null)
         {
             // create the facet by calling context.getApplication().createComponent()
-            // using javax.faces.Panel as the argument
+            // using jakarta.faces.Panel as the argument
             facet = context.getApplication().createComponent(context,
-                "javax.faces.ComponentResourceContainer", null);
+                "jakarta.faces.ComponentResourceContainer", null);
 
             // Set the id of the facet to be target
             if (target.equals("head"))
@@ -933,7 +933,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
     @Override
     public void processRestoreState(FacesContext context, Object state)
     {
-        // The default implementation must call UIComponentBase.processRestoreState(javax.faces.context.FacesContext,
+        // The default implementation must call UIComponentBase.processRestoreState(jakarta.faces.context.FacesContext,
         // java.lang.Object) from within a try block.
         try
         {
@@ -1625,9 +1625,9 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             return;
         }
         //StateManagementStrategy says "... obtain the state of the UIViewRoot from the 
-        // state Object returned from ResponseStateManager.getState(javax.faces.context.FacesContext,
+        // state Object returned from ResponseStateManager.getState(jakarta.faces.context.FacesContext,
         // java.lang.String) and pass that to UIViewRoot.restoreViewScopeState(
-        // javax.faces.context.FacesContext, java.lang.Object).
+        // jakarta.faces.context.FacesContext, java.lang.Object).
         // Note restoreState() will be called later, and it will restore the view. If
         // we restore the component state here, later it could be a problem in the later
         // restoreState() call, because the initial state will not be the same.
@@ -1821,7 +1821,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         public void process(FacesContext context, UIViewRoot root)
         {
             PartialViewContext pvc = context.getPartialViewContext();
-            // Perform partial processing by calling PartialViewContext.processPartial(javax.faces.event.PhaseId)
+            // Perform partial processing by calling PartialViewContext.processPartial(jakarta.faces.event.PhaseId)
             // with PhaseId.UPDATE_MODEL_VALUES if:
             //   * PartialViewContext.isPartialRequest() returns true and we don't have a request to process all
             // components in the view (PartialViewContext.isExecuteAll() returns false)
@@ -1830,7 +1830,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             {
                 pvc.processPartial(PhaseId.APPLY_REQUEST_VALUES);
             }
-            // Perform full processing by calling UIComponentBase.processUpdates(javax.faces.context.FacesContext)
+            // Perform full processing by calling UIComponentBase.processUpdates(jakarta.faces.context.FacesContext)
             // if one of the following conditions are met:
             // *   PartialViewContext.isPartialRequest() returns true and we have a request to process all components
             // in the view (PartialViewContext.isExecuteAll() returns true)
@@ -1848,7 +1848,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         public void process(FacesContext context, UIViewRoot root)
         {
             PartialViewContext pvc = context.getPartialViewContext();
-            // Perform partial processing by calling PartialViewContext.processPartial(javax.faces.event.PhaseId)
+            // Perform partial processing by calling PartialViewContext.processPartial(jakarta.faces.event.PhaseId)
             // with PhaseId.UPDATE_MODEL_VALUES if:
             // PartialViewContext.isPartialRequest() returns true and we don't have a request to process all components
             // in the view (PartialViewContext.isExecuteAll() returns false)
@@ -1857,7 +1857,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             {
                 pvc.processPartial(PhaseId.PROCESS_VALIDATIONS);
             }
-            // Perform full processing by calling UIComponentBase.processUpdates(javax.faces.context.FacesContext)
+            // Perform full processing by calling UIComponentBase.processUpdates(jakarta.faces.context.FacesContext)
             // if one of the following conditions are met:
             // *   PartialViewContext.isPartialRequest() returns true and we have a request to process all components
             // in the view (PartialViewContext.isExecuteAll() returns true)
@@ -1875,7 +1875,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
         public void process(FacesContext context, UIViewRoot root)
         {
             PartialViewContext pvc = context.getPartialViewContext();
-            // Perform partial processing by calling PartialViewContext.processPartial(javax.faces.event.PhaseId)
+            // Perform partial processing by calling PartialViewContext.processPartial(jakarta.faces.event.PhaseId)
             // with PhaseId.UPDATE_MODEL_VALUES if:
             //   * PartialViewContext.isPartialRequest() returns true and we don't have a request to process
             // all components in the view (PartialViewContext.isExecuteAll() returns false)
@@ -1884,7 +1884,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             {
                 pvc.processPartial(PhaseId.UPDATE_MODEL_VALUES);
             }
-            // Perform full processing by calling UIComponentBase.processUpdates(javax.faces.context.FacesContext)
+            // Perform full processing by calling UIComponentBase.processUpdates(jakarta.faces.context.FacesContext)
             // if one of the following conditions are met:
             // *   PartialViewContext.isPartialRequest() returns true and we have a request to process all components
             // in the view (PartialViewContext.isExecuteAll() returns true)

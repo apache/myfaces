@@ -29,16 +29,16 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFComponent(name = "h:form",
         clazz = "jakarta.faces.component.html.HtmlForm",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlFormTag",
-        defaultRendererType = "javax.faces.Form",
+        defaultRendererType = "jakarta.faces.Form",
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder")
 abstract class _HtmlForm extends UIForm
     implements _EventProperties, _UniversalProperties, _StyleProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.Form";
+    "jakarta.faces.Form";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlForm";
+    "jakarta.faces.HtmlForm";
 
   /**
    * HTML: Provides a comma-separated list of content types that the 

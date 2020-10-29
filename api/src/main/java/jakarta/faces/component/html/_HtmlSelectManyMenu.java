@@ -50,7 +50,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 @JSFComponent(name = "h:selectManyMenu",
         clazz = "jakarta.faces.component.html.HtmlSelectManyMenu",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlSelectManyMenuTag",
-        defaultRendererType = "javax.faces.Menu",
+        defaultRendererType = "jakarta.faces.Menu",
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
         defaultEventName = "valueChange")
 abstract class _HtmlSelectManyMenu extends UISelectMany implements
@@ -61,8 +61,8 @@ abstract class _HtmlSelectManyMenu extends UISelectMany implements
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.SelectMany";
+    "jakarta.faces.SelectMany";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlSelectManyMenu";
+    "jakarta.faces.HtmlSelectManyMenu";
 
 }

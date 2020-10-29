@@ -32,7 +32,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFComponent(name = "h:outputLink",
         clazz = "jakarta.faces.component.html.HtmlOutputLink",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlOutputLinkTag",
-        defaultRendererType = "javax.faces.Link",
+        defaultRendererType = "jakarta.faces.Link",
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder")
 abstract class _HtmlOutputLink extends UIOutput implements _AccesskeyProperty,
 _UniversalProperties, _FocusBlurProperties, _EventProperties, _StyleProperties,
@@ -40,9 +40,9 @@ _TabindexProperty, _LinkProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.Output";
+    "jakarta.faces.Output";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlOutputLink";
+    "jakarta.faces.HtmlOutputLink";
 
   /**
    * append text to url after '#'

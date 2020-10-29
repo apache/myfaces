@@ -39,8 +39,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 abstract class _UISelectItem extends UIComponentBase
 {
 
-    static public final String COMPONENT_FAMILY = "javax.faces.SelectItem";
-    static public final String COMPONENT_TYPE = "javax.faces.SelectItem";
+    static public final String COMPONENT_FAMILY = "jakarta.faces.SelectItem";
+    static public final String COMPONENT_TYPE = "jakarta.faces.SelectItem";
 
     /**
      * Disable this property; although this class extends a base-class that defines a read/write rendered property, this
@@ -81,7 +81,7 @@ abstract class _UISelectItem extends UIComponentBase
      * 
      * @return the new value value
      */
-    @JSFProperty(deferredValueType="javax.faces.model.SelectItem")
+    @JSFProperty(deferredValueType="jakarta.faces.model.SelectItem")
     public abstract Object getValue();
 
     /**

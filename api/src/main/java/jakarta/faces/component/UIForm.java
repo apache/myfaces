@@ -36,7 +36,7 @@ import java.util.Collection;
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  */
-@JSFComponent(type = "javax.faces.Form", family = "javax.faces.Form")
+@JSFComponent(type = "jakarta.faces.Form", family = "jakarta.faces.Form")
 public class UIForm extends UIComponentBase implements NamingContainer, UniqueIdVendor
 {
 
@@ -370,9 +370,9 @@ public class UIForm extends UIComponentBase implements NamingContainer, UniqueId
 
     // ------------------ GENERATED CODE BEGIN (do not modify!) --------------------
 
-    public static final String COMPONENT_TYPE = "javax.faces.Form";
-    public static final String COMPONENT_FAMILY = "javax.faces.Form";
-    private static final String DEFAULT_RENDERER_TYPE = "javax.faces.Form";
+    public static final String COMPONENT_TYPE = "jakarta.faces.Form";
+    public static final String COMPONENT_FAMILY = "jakarta.faces.Form";
+    private static final String DEFAULT_RENDERER_TYPE = "jakarta.faces.Form";
 
     public UIForm()
     {

@@ -40,16 +40,16 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFComponent(name = "h:dataTable",
         clazz = "jakarta.faces.component.html.HtmlDataTable",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlDataTableTag",
-        defaultRendererType = "javax.faces.Table",
+        defaultRendererType = "jakarta.faces.Table",
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder")
 abstract class _HtmlDataTable extends UIData
     implements _EventProperties, _StyleProperties, _UniversalProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.Data";
+    "jakarta.faces.Data";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlDataTable";
+    "jakarta.faces.HtmlDataTable";
 
   /**
    * HTML: The background color of this element.

@@ -53,7 +53,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 @JSFComponent(name = "h:selectManyListbox",
         clazz = "jakarta.faces.component.html.HtmlSelectManyListbox",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlSelectManyListboxTag",
-        defaultRendererType = "javax.faces.Listbox",
+        defaultRendererType = "jakarta.faces.Listbox",
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
         defaultEventName = "valueChange")
 abstract class _HtmlSelectManyListbox extends UISelectMany implements 
@@ -64,9 +64,9 @@ abstract class _HtmlSelectManyListbox extends UISelectMany implements
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.SelectMany";
+    "jakarta.faces.SelectMany";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlSelectManyListbox";
+    "jakarta.faces.HtmlSelectManyListbox";
 
   /**
    * see JSF Spec.

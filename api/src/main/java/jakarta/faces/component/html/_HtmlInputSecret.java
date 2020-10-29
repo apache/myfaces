@@ -29,7 +29,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFComponent(name = "h:inputSecret",
         clazz = "jakarta.faces.component.html.HtmlInputSecret",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlInputSecretTag",
-        defaultRendererType = "javax.faces.Secret",
+        defaultRendererType = "jakarta.faces.Secret",
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
         defaultEventName = "valueChange")
 abstract class _HtmlInputSecret extends UIInput implements _AccesskeyProperty,
@@ -39,9 +39,9 @@ abstract class _HtmlInputSecret extends UIInput implements _AccesskeyProperty,
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.Input";
+    "jakarta.faces.Input";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlInputSecret";
+    "jakarta.faces.HtmlInputSecret";
 
   /**
    * HTML: The maximum number of characters allowed to be entered.

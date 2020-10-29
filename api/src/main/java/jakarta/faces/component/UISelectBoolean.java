@@ -34,15 +34,15 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * for further details.
  * </p>
  */
-@JSFComponent(defaultRendererType = "javax.faces.Checkbox")
+@JSFComponent(defaultRendererType = "jakarta.faces.Checkbox")
 public class UISelectBoolean extends UIInput
 {
-    public static final String COMPONENT_TYPE = "javax.faces.SelectBoolean";
-    public static final String COMPONENT_FAMILY = "javax.faces.SelectBoolean";
+    public static final String COMPONENT_TYPE = "jakarta.faces.SelectBoolean";
+    public static final String COMPONENT_FAMILY = "jakarta.faces.SelectBoolean";
 
     public UISelectBoolean()
     {
-        setRendererType("javax.faces.Checkbox");
+        setRendererType("jakarta.faces.Checkbox");
     }
 
     @Override

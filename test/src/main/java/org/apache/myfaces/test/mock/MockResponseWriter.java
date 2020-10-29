@@ -24,7 +24,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.ResponseWriter;
 
 /**
- * <p>Mock implementation of <code>javax.faces.context.ResponseWriter</code>.</p>
+ * <p>Mock implementation of <code>jakarta.faces.context.ResponseWriter</code>.</p>
  * 
  * @since 1.0.0
  */

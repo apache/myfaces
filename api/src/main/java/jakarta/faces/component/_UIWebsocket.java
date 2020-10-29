@@ -27,14 +27,14 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 
 @JSFComponent(clazz = "jakarta.faces.component.UIWebsocket",template=true,
         name = "f:websocket",
-        defaultRendererType = "javax.faces.Websocket",
+        defaultRendererType = "jakarta.faces.Websocket",
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
         bodyContent = "empty")
 abstract class _UIWebsocket extends UIComponentBase
 {
     
-    static public final String COMPONENT_FAMILY = "javax.faces.Script";
-    static public final String COMPONENT_TYPE = "javax.faces.Websocket";
+    static public final String COMPONENT_FAMILY = "jakarta.faces.Script";
+    static public final String COMPONENT_TYPE = "jakarta.faces.Websocket";
 
     private static final Collection<String> EVERY_EVENT = Collections.unmodifiableList(new java.util.ArrayList<String>()
     {

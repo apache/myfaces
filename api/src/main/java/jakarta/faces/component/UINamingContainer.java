@@ -45,8 +45,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFJspProperty(name="id",required=true)
 public class UINamingContainer extends UIComponentBase implements NamingContainer, UniqueIdVendor
 {
-    public static final String COMPONENT_TYPE = "javax.faces.NamingContainer";
-    public static final String COMPONENT_FAMILY = "javax.faces.NamingContainer";
+    public static final String COMPONENT_TYPE = "jakarta.faces.NamingContainer";
+    public static final String COMPONENT_FAMILY = "jakarta.faces.NamingContainer";
     public static final String SEPARATOR_CHAR_PARAM_NAME = "javax.faces.SEPARATOR_CHAR";
 
     /**

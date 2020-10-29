@@ -63,22 +63,22 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
  * Specification</a> for further details.
  * <p>
  */
-@JSFComponent(defaultRendererType = "javax.faces.Text")
+@JSFComponent(defaultRendererType = "jakarta.faces.Text")
 public class UIInput extends UIOutput implements EditableValueHolder
 {
-    public static final String COMPONENT_TYPE = "javax.faces.Input";
-    public static final String COMPONENT_FAMILY = "javax.faces.Input";
+    public static final String COMPONENT_TYPE = "jakarta.faces.Input";
+    public static final String COMPONENT_FAMILY = "jakarta.faces.Input";
 
-    public static final String CONVERSION_MESSAGE_ID = "javax.faces.component.UIInput.CONVERSION";
-    public static final String REQUIRED_MESSAGE_ID = "javax.faces.component.UIInput.REQUIRED";
-    public static final String UPDATE_MESSAGE_ID = "javax.faces.component.UIInput.UPDATE";
+    public static final String CONVERSION_MESSAGE_ID = "jakarta.faces.component.UIInput.CONVERSION";
+    public static final String REQUIRED_MESSAGE_ID = "jakarta.faces.component.UIInput.REQUIRED";
+    public static final String UPDATE_MESSAGE_ID = "jakarta.faces.component.UIInput.UPDATE";
 
     /**
      * Force validation on empty fields (By default is auto, which means it is only 
      * enabled when Bean Validation binaries are available on the current classpath).
      */
     @JSFWebConfigParam(defaultValue="auto", expectedValues="auto, true, false", since="2.0", group="validation")
-    public static final String VALIDATE_EMPTY_FIELDS_PARAM_NAME = "javax.faces.VALIDATE_EMPTY_FIELDS";
+    public static final String VALIDATE_EMPTY_FIELDS_PARAM_NAME = "jakarta.faces.VALIDATE_EMPTY_FIELDS";
     
     /** 
      * Submitted values are decoded as null values instead empty strings.
@@ -87,7 +87,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      **/
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.0", group="validation")
     public static final String EMPTY_STRING_AS_NULL_PARAM_NAME
-            = "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
+            = "jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
 
     /** 
      * When CLEAR_INPUT_WHEN_SUBMITTED_VALUE_IS_NULL_OR_EMPTY is enabled, input fields will be cleared
@@ -104,7 +104,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      */
     @JSFWebConfigParam(defaultValue="false", expectedValues="true, false", since="2.3", group="validation")
     public static final String ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE 
-            = "javax.faces.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE";
+            = "jakarta.faces.ALWAYS_PERFORM_VALIDATION_WHEN_REQUIRED_IS_TRUE";
     
     // our own, cached key
     private static final String MYFACES_EMPTY_VALUES_AS_NULL_PARAM_NAME =
@@ -128,7 +128,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      */
     public UIInput()
     {
-        setRendererType("javax.faces.Text");
+        setRendererType("jakarta.faces.Text");
     }
 
     @Override
@@ -488,7 +488,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
         // not yet cached...
         if (interpretEmptyStringAsNull == null)
         {
-            // parses the web.xml to get the "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL" value
+            // parses the web.xml to get the "jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL" value
             String param = ec.getInitParameter(EMPTY_STRING_AS_NULL_PARAM_NAME);
 
             // evaluate the param
@@ -1068,7 +1068,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * The valueChange event is delivered when the value attribute
      * is changed.
      */
-    @JSFListener(event="javax.faces.event.ValueChangeEvent")
+    @JSFListener(event="jakarta.faces.event.ValueChangeEvent")
     @Override
     public ValueChangeListener[] getValueChangeListeners()
     {

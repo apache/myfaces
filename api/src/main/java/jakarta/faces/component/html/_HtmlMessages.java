@@ -44,9 +44,9 @@ _MessageProperties, _UniversalProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.Messages";
+    "jakarta.faces.Messages";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlMessages";
+    "jakarta.faces.HtmlMessages";
 
   /**
    * The layout: "table" or "list". Default: list

@@ -120,11 +120,11 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * see Javadoc of the <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
  * for more information.
  */
-@JSFComponent(defaultRendererType = "javax.faces.Table")
+@JSFComponent(defaultRendererType = "jakarta.faces.Table")
 public class UIData extends UIComponentBase implements NamingContainer, UniqueIdVendor
 {
-    public static final String COMPONENT_FAMILY = "javax.faces.Data";
-    public static final String COMPONENT_TYPE = "javax.faces.Data"; // for unit tests
+    public static final String COMPONENT_FAMILY = "jakarta.faces.Data";
+    public static final String COMPONENT_TYPE = "jakarta.faces.Data"; // for unit tests
 
     private static final String FACES_DATA_MODEL_MANAGER_CLASS_NAME
             = "org.apache.myfaces.cdi.model.FacesDataModelManager";

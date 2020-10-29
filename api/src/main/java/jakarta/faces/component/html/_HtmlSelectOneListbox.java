@@ -51,7 +51,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 @JSFComponent(name = "h:selectOneListbox",
         clazz = "jakarta.faces.component.html.HtmlSelectOneListbox",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlSelectOneListboxTag",
-        defaultRendererType = "javax.faces.Listbox",
+        defaultRendererType = "jakarta.faces.Listbox",
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
         defaultEventName = "valueChange")
 abstract class _HtmlSelectOneListbox extends UISelectOne implements
@@ -62,9 +62,9 @@ abstract class _HtmlSelectOneListbox extends UISelectOne implements
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.SelectOne";
+    "jakarta.faces.SelectOne";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlSelectOneListbox";
+    "jakarta.faces.HtmlSelectOneListbox";
 
   /**
    * see JSF Spec.

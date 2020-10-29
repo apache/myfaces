@@ -36,8 +36,8 @@ abstract class _HtmlOutputFormat extends UIOutput implements _StyleProperties,
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.Output";
+    "jakarta.faces.Output";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlOutputFormat";
+    "jakarta.faces.HtmlOutputFormat";
 
 }

@@ -25,8 +25,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 @JSFComponent
 public class UIPanel extends UIComponentBase
 {
-    static public final String COMPONENT_FAMILY = "javax.faces.Panel";
-    static public final String COMPONENT_TYPE = "javax.faces.Panel";
+    static public final String COMPONENT_FAMILY = "jakarta.faces.Panel";
+    static public final String COMPONENT_TYPE = "jakarta.faces.Panel";
 
     /**
      * Construct an instance of the UIPanel.

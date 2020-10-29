@@ -33,7 +33,7 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
     clazz = "jakarta.faces.component.html.HtmlInputFile",
     template = true,
     tagClass = "org.apache.myfaces.taglib.html.HtmlInputFileTag",
-    defaultRendererType = "javax.faces.File",
+    defaultRendererType = "jakarta.faces.File",
     implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
     defaultEventName = "valueChange"
 )
@@ -44,8 +44,8 @@ abstract class _HtmlInputFile extends UIInput implements _AccesskeyProperty,
     _RoleProperty
 {
 
-    static public final String COMPONENT_FAMILY = "javax.faces.Input";
-    static public final String COMPONENT_TYPE = "javax.faces.HtmlInputFile";
+    static public final String COMPONENT_FAMILY = "jakarta.faces.Input";
+    static public final String COMPONENT_TYPE = "jakarta.faces.HtmlInputFile";
 
     /**
      * HTML: The maximum number of characters allowed to be entered.

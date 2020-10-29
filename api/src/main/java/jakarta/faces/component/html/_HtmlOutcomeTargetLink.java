@@ -36,8 +36,8 @@ _TabindexProperty, _LinkProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.OutcomeTarget";
+    "jakarta.faces.OutcomeTarget";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlOutcomeTargetLink";
+    "jakarta.faces.HtmlOutcomeTargetLink";
 
 }

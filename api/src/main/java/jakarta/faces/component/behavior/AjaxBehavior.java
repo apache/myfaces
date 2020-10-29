@@ -39,10 +39,10 @@ public class AjaxBehavior extends ClientBehaviorBase
     /**
      * not needed anymore but enforced by the spec
      * theoretically a
-     * FacesBehavior(value = "javax.faces.behavior.Ajax")
+     * FacesBehavior(value = "jakarta.faces.behavior.Ajax")
      * could do it
      */
-    public static final String BEHAVIOR_ID = "javax.faces.behavior.Ajax";
+    public static final String BEHAVIOR_ID = "jakarta.faces.behavior.Ajax";
 
     private static final String ATTR_EXECUTE = "execute";
     private static final String ATTR_ON_ERROR = "onerror";

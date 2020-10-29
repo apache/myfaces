@@ -52,7 +52,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 (name = "h:selectManyCheckbox",
         clazz = "jakarta.faces.component.html.HtmlSelectManyCheckbox",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlSelectManyCheckboxTag",
-        defaultRendererType = "javax.faces.Checkbox",
+        defaultRendererType = "jakarta.faces.Checkbox",
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
         defaultEventName = "valueChange")
 abstract class _HtmlSelectManyCheckbox extends UISelectMany implements 
@@ -63,9 +63,9 @@ abstract class _HtmlSelectManyCheckbox extends UISelectMany implements
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.SelectMany";
+    "jakarta.faces.SelectMany";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlSelectManyCheckbox";
+    "jakarta.faces.HtmlSelectManyCheckbox";
 
   /**
    * HTML: Specifies the width of the border of this element, in pixels.  Deprecated in HTML 4.01.

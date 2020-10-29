@@ -36,8 +36,8 @@ _StyleProperties, _UniversalProperties, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.Output";
+    "jakarta.faces.Output";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlOutputText";
+    "jakarta.faces.HtmlOutputText";
 
 }

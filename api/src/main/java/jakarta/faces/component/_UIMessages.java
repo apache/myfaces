@@ -31,9 +31,9 @@ abstract class _UIMessages extends UIComponentBase
 {
 
     static public final String COMPONENT_FAMILY =
-      "javax.faces.Messages";
+      "jakarta.faces.Messages";
     static public final String COMPONENT_TYPE =
-      "javax.faces.Messages";
+      "jakarta.faces.Messages";
 
     /**
      * Specifies whether only messages (FacesMessage objects) not associated with a

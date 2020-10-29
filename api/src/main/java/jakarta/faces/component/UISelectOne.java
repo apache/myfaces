@@ -45,20 +45,20 @@ import org.apache.myfaces.core.api.shared.MessageUtils;
  * href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/index.html">JSF Specification</a> for further details.
  * </p>
  */
-@JSFComponent(defaultRendererType = "javax.faces.Menu")
+@JSFComponent(defaultRendererType = "jakarta.faces.Menu")
 @JSFJspProperty(name="hideNoSelectionOption", returnType="boolean")
 public class UISelectOne extends UIInput
 {
-    public static final String COMPONENT_TYPE = "javax.faces.SelectOne";
-    public static final String COMPONENT_FAMILY = "javax.faces.SelectOne";
+    public static final String COMPONENT_TYPE = "jakarta.faces.SelectOne";
+    public static final String COMPONENT_FAMILY = "jakarta.faces.SelectOne";
 
-    public static final String INVALID_MESSAGE_ID = "javax.faces.component.UISelectOne.INVALID";
+    public static final String INVALID_MESSAGE_ID = "jakarta.faces.component.UISelectOne.INVALID";
 
     private boolean selectItemValueFound = false;
 
     public UISelectOne()
     {
-        setRendererType("javax.faces.Menu");
+        setRendererType("jakarta.faces.Menu");
     }
 
     @Override
@@ -72,7 +72,7 @@ public class UISelectOne extends UIInput
      * visit all the UISelectItem elements within the UISelectOne radio components to check if
      * the submitted value exists in any of the select items.
      *
-     * @see javax.faces.component.UIInput#processValidators(javax.faces.context.FacesContext)
+     * @see jakarta.faces.component.UIInput#processValidators(jakarta.faces.context.FacesContext)
      */
     @Override
     public void processValidators(FacesContext context) 
@@ -150,7 +150,7 @@ public class UISelectOne extends UIInput
      * Verify that the result of converting the newly submitted value is <i>equal</i> to the value property of one of
      * the child SelectItem objects. If this is not true, a validation error is reported.
      * 
-     * @see javax.faces.component.UIInput#validateValue(javax.faces.context.FacesContext,java.lang.Object)
+     * @see jakarta.faces.component.UIInput#validateValue(jakarta.faces.context.FacesContext,java.lang.Object)
      */
     @Override
     protected void validateValue(FacesContext context, Object value)

@@ -30,14 +30,14 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFComponent(name = "h:commandScript",
         clazz = "jakarta.faces.component.html.HtmlCommandScript",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlCommandScriptTag",
-        defaultRendererType = "javax.faces.Script",
+        defaultRendererType = "jakarta.faces.Script",
         defaultEventName = "action")
 abstract class _HtmlCommandScript extends UICommand
 {
     static public final String COMPONENT_FAMILY =
-        "javax.faces.Command";
+        "jakarta.faces.Command";
     static public final String COMPONENT_TYPE =
-        "javax.faces.HtmlCommandScript";
+        "jakarta.faces.HtmlCommandScript";
 
     @JSFProperty(defaultValue = "false")
     public abstract boolean isAutorun();

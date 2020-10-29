@@ -34,7 +34,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 abstract class _JsfElement extends UIPanel implements 
     _EventProperties, _FocusBlurProperties, _ChangeSelectProperties, _StyleProperties
 {
-    public static final String COMPONENT_FAMILY = "javax.faces.Panel";
+    public static final String COMPONENT_FAMILY = "jakarta.faces.Panel";
     public static final String COMPONENT_TYPE = "oam.passthrough.Element";
     
     /**

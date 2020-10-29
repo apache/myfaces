@@ -29,11 +29,11 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 /**
  * Displays a value to the user.
  */
-@JSFComponent(defaultRendererType = "javax.faces.Text")
+@JSFComponent(defaultRendererType = "jakarta.faces.Text")
 public class UIOutput extends UIComponentBase implements ValueHolder
 {
-    public static final String COMPONENT_TYPE = "javax.faces.Output";
-    public static final String COMPONENT_FAMILY = "javax.faces.Output";
+    public static final String COMPONENT_TYPE = "jakarta.faces.Output";
+    public static final String COMPONENT_FAMILY = "jakarta.faces.Output";
 
     private Converter _converter;
 
@@ -42,7 +42,7 @@ public class UIOutput extends UIComponentBase implements ValueHolder
      */
     public UIOutput()
     {
-        setRendererType("javax.faces.Text");
+        setRendererType("jakarta.faces.Text");
     }
 
     @Override

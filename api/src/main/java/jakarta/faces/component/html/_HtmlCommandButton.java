@@ -30,7 +30,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFComponent(name = "h:commandButton",
         clazz = "jakarta.faces.component.html.HtmlCommandButton",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlCommandButtonTag",
-        defaultRendererType = "javax.faces.Button",
+        defaultRendererType = "jakarta.faces.Button",
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
         defaultEventName = "action")
 abstract class _HtmlCommandButton extends UICommand implements _FocusBlurProperties, 
@@ -40,8 +40,8 @@ abstract class _HtmlCommandButton extends UICommand implements _FocusBlurPropert
     _LabelProperty, _RoleProperty
 {
 
-    static public final String COMPONENT_FAMILY = "javax.faces.Command";
-    static public final String COMPONENT_TYPE = "javax.faces.HtmlCommandButton";
+    static public final String COMPONENT_FAMILY = "jakarta.faces.Command";
+    static public final String COMPONENT_TYPE = "jakarta.faces.HtmlCommandButton";
 
     /**
      * HTML: The URL of an image that renders in place of the button.

@@ -34,7 +34,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFComponent(name = "h:graphicImage",
         clazz = "jakarta.faces.component.html.HtmlGraphicImage",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlGraphicImageTag",
-        defaultRendererType = "javax.faces.Image",
+        defaultRendererType = "jakarta.faces.Image",
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder")
 abstract class _HtmlGraphicImage extends UIGraphic 
     implements _EventProperties,
@@ -42,9 +42,9 @@ abstract class _HtmlGraphicImage extends UIGraphic
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.Graphic";
+    "jakarta.faces.Graphic";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlGraphicImage";
+    "jakarta.faces.HtmlGraphicImage";
 
   /**
    * HTML: Overrides the natural height of this image, by specifying height in pixels.

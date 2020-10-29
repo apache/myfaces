@@ -30,16 +30,16 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFComponent(name="h:button",
         clazz = "jakarta.faces.component.html.HtmlOutcomeTargetButton",template=true,
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
-        defaultRendererType = "javax.faces.Button")
+        defaultRendererType = "jakarta.faces.Button")
 abstract class _HtmlOutcomeTargetButton extends UIOutcomeTarget implements _FocusBlurProperties,
 _EventProperties, _StyleProperties, _UniversalProperties, _AccesskeyProperty,
 _TabindexProperty, _AltProperty, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.OutcomeTarget";
+    "jakarta.faces.OutcomeTarget";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlOutcomeTargetButton";
+    "jakarta.faces.HtmlOutcomeTargetButton";
 
   /**
    * HTML: the value to put as image attribute

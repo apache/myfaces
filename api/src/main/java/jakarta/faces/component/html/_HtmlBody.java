@@ -27,14 +27,14 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 
 @JSFComponent
 (name="h:body", clazz = "jakarta.faces.component.html.HtmlBody",
-        defaultRendererType="javax.faces.Body",template=true,
+        defaultRendererType = "jakarta.faces.Body", template = true,
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder")
 abstract class _HtmlBody extends UIOutput 
     implements _EventProperties, _UniversalProperties, _StyleProperties, _RoleProperty
 {
 
-  static public final String COMPONENT_FAMILY = "javax.faces.Output";
-  static public final String COMPONENT_TYPE = "javax.faces.OutputBody";
+  static public final String COMPONENT_FAMILY = "jakarta.faces.Output";
+  static public final String COMPONENT_TYPE = "jakarta.faces.OutputBody";
 
   /**
    * HTML: Script to be invoked when the page is loaded

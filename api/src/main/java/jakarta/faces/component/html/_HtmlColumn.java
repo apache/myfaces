@@ -43,8 +43,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 abstract class _HtmlColumn extends UIColumn
 {
 
-  static public final String COMPONENT_FAMILY = "javax.faces.Column";
-  static public final String COMPONENT_TYPE = "javax.faces.HtmlColumn";
+  static public final String COMPONENT_FAMILY = "jakarta.faces.Column";
+  static public final String COMPONENT_TYPE = "jakarta.faces.HtmlColumn";
 
   /**
    * CSS class to be used for the header.

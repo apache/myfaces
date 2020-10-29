@@ -28,8 +28,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 public class UIImportConstants extends UIComponentBase
 {
     
-    static public final String COMPONENT_FAMILY = "javax.faces.ImportConstants";
-    static public final String COMPONENT_TYPE = "javax.faces.ImportConstants";
+    static public final String COMPONENT_FAMILY = "jakarta.faces.ImportConstants";
+    static public final String COMPONENT_TYPE = "jakarta.faces.ImportConstants";
 
 
     public UIImportConstants()

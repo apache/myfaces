@@ -657,7 +657,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * Creates a transient UIOutput using the Application, with the following characteristics:
      * </p>
      * <p>
-     * <code>componentType</code> is <code>javax.faces.HtmlOutputText</code>.
+     * <code>componentType</code> is <code>jakarta.faces.HtmlOutputText</code>.
      * </p>
      * <p>
      * <code>transient</code> is <code>true</code>.

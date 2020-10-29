@@ -79,7 +79,7 @@ if (!window.jsf) {
          * </li>
          *
          * @return {String} the current project state emitted by the server side method:
-         * <i>javax.faces.application.Application.getProjectStage()</i>
+         * <i>jakarta.faces.application.Application.getProjectStage()</i>
          */
         this.getProjectStage = function() {
             var impl = myfaces._impl.core._Runtime.getGlobalConfig("jsfAjaxImpl", myfaces._impl.core.Impl);

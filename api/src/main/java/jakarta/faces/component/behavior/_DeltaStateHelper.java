@@ -71,9 +71,9 @@ import jakarta.faces.context.FacesContext;
  * </p>
  * <ul>
  *   <li> A new template is created (using 
- *   javax.faces.view.ViewDeclarationLanguage.buildView method)
+ *   jakarta.faces.view.ViewDeclarationLanguage.buildView method)
  *   and component.markInitialState is called from its related TagHandler classes 
- *  (see javax.faces.view.facelets.ComponentHandler ).
+ *  (see jakarta.faces.view.facelets.ComponentHandler ).
  *   When this method is executed, the component tree was populated from the values
  *   set in the facelet abstract syntax tree (or in other words composition of 
  *   facelets templates). </li>
@@ -87,7 +87,7 @@ import jakarta.faces.context.FacesContext;
  *   <li> A new template is created and component.markInitialState is called from
  *   its related TagHandler classes again. In this way, components like c:forEach 
  *   or c:if, that add or remove components could notify about this and handle 
- *   them properly (see javax.faces.view.StateManagementStrategy). Note that a 
+ *   them properly (see jakarta.faces.view.StateManagementStrategy). Note that a 
  *   component restored using this method is no different as the same component 
  *   at the first request at the same time. </li>
  *   <li> A call for restoreState is done, passing the delta as object value. If no 

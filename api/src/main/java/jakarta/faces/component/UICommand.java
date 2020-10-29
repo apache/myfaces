@@ -35,18 +35,18 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * UICommand is a base abstraction for components that implement ActionSource.
  * 
  */
-@JSFComponent(defaultRendererType = "javax.faces.Button")
+@JSFComponent(defaultRendererType = "jakarta.faces.Button")
 public class UICommand extends UIComponentBase implements ActionSource2
 {
-    public static final String COMPONENT_TYPE = "javax.faces.Command";
-    public static final String COMPONENT_FAMILY = "javax.faces.Command";
+    public static final String COMPONENT_TYPE = "jakarta.faces.Command";
+    public static final String COMPONENT_FAMILY = "jakarta.faces.Command";
 
     /**
      * Construct an instance of the UICommand.
      */
     public UICommand()
     {
-        setRendererType("javax.faces.Button");
+        setRendererType("jakarta.faces.Button");
     }
 
     @Override
@@ -167,7 +167,7 @@ public class UICommand extends UIComponentBase implements ActionSource2
      * invoked; for example, by clicking on a button. The action may result 
      * in page navigation.
      */
-    @JSFListener(event="javax.faces.event.ActionEvent",
+    @JSFListener(event="jakarta.faces.event.ActionEvent",
             phases="Invoke Application, Apply Request Values")
     @Override
     public ActionListener[] getActionListeners()

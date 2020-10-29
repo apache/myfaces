@@ -30,7 +30,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 @JSFComponent(name = "h:outputLabel",
         clazz = "jakarta.faces.component.html.HtmlOutputLabel",template=true,
         tagClass = "org.apache.myfaces.taglib.html.HtmlOutputLabelTag",
-        defaultRendererType = "javax.faces.Label",
+        defaultRendererType = "jakarta.faces.Label",
         implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder")
 abstract class _HtmlOutputLabel extends UIOutput implements _FocusBlurProperties,
 _EventProperties, _StyleProperties, _UniversalProperties, _AccesskeyProperty,
@@ -38,9 +38,9 @@ _TabindexProperty, _EscapeProperty, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.Output";
+    "jakarta.faces.Output";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlOutputLabel";
+    "jakarta.faces.HtmlOutputLabel";
 
   /**
    * The client ID of the target input element of this label.

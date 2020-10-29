@@ -38,7 +38,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  * </p>
  */
 @JSFComponent(clazz = "jakarta.faces.component.UISelectItems",
-              template=true,
+              template = true,
               name = "f:selectItems",
               tagClass = "org.apache.myfaces.taglib.core.SelectItemsTag",
               bodyContent = "empty")
@@ -46,9 +46,9 @@ abstract class _UISelectItems extends UIComponentBase
 {
 
     static public final String COMPONENT_FAMILY =
-        "javax.faces.SelectItems";
+        "jakarta.faces.SelectItems";
     static public final String COMPONENT_TYPE =
-        "javax.faces.SelectItems";
+        "jakarta.faces.SelectItems";
 
     /**
      * Disable this property; although this class extends a base-class that

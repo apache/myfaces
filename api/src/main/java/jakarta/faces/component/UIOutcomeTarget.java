@@ -28,8 +28,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 @JSFComponent
 public class UIOutcomeTarget extends UIOutput
 {
-    public static final String COMPONENT_TYPE = "javax.faces.OutcomeTarget";
-    public static final String COMPONENT_FAMILY = "javax.faces.OutcomeTarget";
+    public static final String COMPONENT_TYPE = "jakarta.faces.OutcomeTarget";
+    public static final String COMPONENT_FAMILY = "jakarta.faces.OutcomeTarget";
     
     private static final boolean DEFAULT_INCLUDEVIEWPARAMS = false;
     private static final boolean DEFAULT_DISABLE_CLIENT_WINDOW = false;
@@ -37,7 +37,7 @@ public class UIOutcomeTarget extends UIOutput
     public UIOutcomeTarget()
     {
         super();
-        setRendererType("javax.faces.Link");
+        setRendererType("jakarta.faces.Link");
     }
     
     @Override

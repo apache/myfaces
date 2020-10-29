@@ -18,7 +18,6 @@
  */
 package jakarta.faces.component.html;
 
-import jakarta.faces.component.html.HtmlOutputLink;
 import org.junit.Assert;
 import org.junit.Test;
 

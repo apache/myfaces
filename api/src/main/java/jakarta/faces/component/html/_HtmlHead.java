@@ -30,8 +30,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 abstract class _HtmlHead extends UIOutput 
 {
 
-  static public final String COMPONENT_FAMILY = "javax.faces.Output";
-  static public final String COMPONENT_TYPE = "javax.faces.OutputHead";
+  static public final String COMPONENT_FAMILY = "jakarta.faces.Output";
+  static public final String COMPONENT_TYPE = "jakarta.faces.OutputHead";
 
   /**
    * HTML: The direction of text display, either 'ltr' (left-to-right) or 'rtl' (right-to-left).

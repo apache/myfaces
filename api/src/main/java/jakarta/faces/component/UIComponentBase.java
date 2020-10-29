@@ -80,7 +80,7 @@ public abstract class UIComponentBase extends UIComponent
     private static Logger log = Logger.getLogger(UIComponentBase.class.getName());
 
     private static final String _STRING_BUILDER_KEY
-            = "javax.faces.component.UIComponentBase.SHARED_STRING_BUILDER";
+            = "jakarta.faces.component.UIComponentBase.SHARED_STRING_BUILDER";
 
     // See ViewPoolProcessor for comments and usages
     static final int RESET_MODE_OFF = 0;
@@ -394,7 +394,7 @@ public abstract class UIComponentBase extends UIComponent
         {
             return;
         }
-        // perf: _facesListeners is RandomAccess instance (javax.faces.component._DeltaList)
+        // perf: _facesListeners is RandomAccess instance (jakarta.faces.component._DeltaList)
         for (int i = 0, size = _facesListeners.size(); i < size; i++)
         {
             FacesListener facesListener = _facesListeners.get(i);
@@ -547,7 +547,7 @@ public abstract class UIComponentBase extends UIComponent
         try
         {
             setCachedFacesContext(context);
-            // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+            // Call UIComponent.pushComponentToEL(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent)
             pushComponentToEL(context, this);
     
             if (isRendered())
@@ -601,7 +601,7 @@ public abstract class UIComponentBase extends UIComponent
                 if (renderer == null)
                 {
                     // If no Renderer is associated with this UIComponent, iterate over each of the children of this
-                    // component and call UIComponent.encodeAll(javax.faces.context.FacesContext).
+                    // component and call UIComponent.encodeAll(jakarta.faces.context.FacesContext).
                     if (getChildCount() > 0)
                     {
                         for (int i = 0, childCount = getChildCount(); i < childCount; i++)
@@ -652,7 +652,7 @@ public abstract class UIComponentBase extends UIComponent
         }
         finally
         {
-            // Call UIComponent.popComponentFromEL(javax.faces.context.FacesContext). before returning regardless
+            // Call UIComponent.popComponentFromEL(jakarta.faces.context.FacesContext). before returning regardless
             // of the value of the rendered property.
             popComponentFromEL(context);
             setCachedFacesContext(null);
@@ -1243,7 +1243,7 @@ public abstract class UIComponentBase extends UIComponent
         }
 
         List<FacesListener> lst = null;
-        // perf: _facesListeners is RandomAccess instance (javax.faces.component._DeltaList)
+        // perf: _facesListeners is RandomAccess instance (jakarta.faces.component._DeltaList)
         for (int i = 0, size = _facesListeners.size(); i < size; i++)
         {
             FacesListener facesListener = _facesListeners.get(i);
@@ -1334,7 +1334,7 @@ public abstract class UIComponentBase extends UIComponent
         try
         {
             setCachedFacesContext(context);
-            // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+            // Call UIComponent.pushComponentToEL(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent)
             pushComponentToEL(context, this);
             if (_isPhaseExecutable(context))
             {
@@ -1370,7 +1370,7 @@ public abstract class UIComponentBase extends UIComponent
         }
         finally
         {
-            // Call UIComponent.popComponentFromEL(javax.faces.context.FacesContext) from inside of a finally
+            // Call UIComponent.popComponentFromEL(jakarta.faces.context.FacesContext) from inside of a finally
             // block, just before returning.
 
             popComponentFromEL(context);
@@ -1384,7 +1384,7 @@ public abstract class UIComponentBase extends UIComponent
         try
         {
             setCachedFacesContext(context);
-            // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+            // Call UIComponent.pushComponentToEL(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent)
             pushComponentToEL(context, this);
             if (_isPhaseExecutable(context))
             {
@@ -1437,7 +1437,7 @@ public abstract class UIComponentBase extends UIComponent
         try
         {
             setCachedFacesContext(context);
-            // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+            // Call UIComponent.pushComponentToEL(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent)
             pushComponentToEL(context, this);
             if (_isPhaseExecutable(context))
             {
@@ -1462,7 +1462,7 @@ public abstract class UIComponentBase extends UIComponent
         finally
         {
             // After returning from the processUpdates() method on a child or facet, call
-            // UIComponent.popComponentFromEL(javax.faces.context.FacesContext)
+            // UIComponent.popComponentFromEL(jakarta.faces.context.FacesContext)
             popComponentFromEL(context);
             
             setCachedFacesContext(null);
@@ -1483,7 +1483,7 @@ public abstract class UIComponentBase extends UIComponent
             return null;
         }
 
-        // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+        // Call UIComponent.pushComponentToEL(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent)
         pushComponentToEL(context, this);
 
         Map<String, Object> facetMap;
@@ -1549,7 +1549,7 @@ public abstract class UIComponentBase extends UIComponent
         }
         finally
         {
-            // Ensure that UIComponent.popComponentFromEL(javax.faces.context.FacesContext) is called
+            // Ensure that UIComponent.popComponentFromEL(jakarta.faces.context.FacesContext) is called
             // correctly after each child or facet.
             popComponentFromEL(context);
         }
@@ -1571,7 +1571,7 @@ public abstract class UIComponentBase extends UIComponent
 
         try
         {
-            // Call UIComponent.pushComponentToEL(javax.faces.context.FacesContext, javax.faces.component.UIComponent)
+            // Call UIComponent.pushComponentToEL(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent)
             pushComponentToEL(context, this);
 
             // Call the restoreState() method of this component.
@@ -1628,7 +1628,7 @@ public abstract class UIComponentBase extends UIComponent
         finally
         {
             // After returning from the processRestoreState() method on a child or facet, call
-            // UIComponent.popComponentFromEL(javax.faces.context.FacesContext)
+            // UIComponent.popComponentFromEL(jakarta.faces.context.FacesContext)
             popComponentFromEL(context);
         }
     }

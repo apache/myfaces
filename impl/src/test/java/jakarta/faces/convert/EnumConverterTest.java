@@ -29,7 +29,7 @@ import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
 
 /**
- * This testcase test <code>javax.faces.convert.EnumConverter</code>.
+ * This testcase test <code>jakarta.faces.convert.EnumConverter</code>.
  */
 public class EnumConverterTest extends AbstractJsfTestCase
 {

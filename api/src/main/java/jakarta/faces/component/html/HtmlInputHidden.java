@@ -32,22 +32,22 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
 @JSFComponent
 (name = "h:inputHidden",
 tagClass = "org.apache.myfaces.taglib.html.HtmlInputHiddenTag",
-defaultRendererType = "javax.faces.Hidden"
+defaultRendererType = "jakarta.faces.Hidden"
 )
 public class HtmlInputHidden extends UIInput
 {
 
   static public final String COMPONENT_FAMILY =
-    "javax.faces.Input";
+    "jakarta.faces.Input";
   static public final String COMPONENT_TYPE =
-    "javax.faces.HtmlInputHidden";
+    "jakarta.faces.HtmlInputHidden";
 
   /**
    * Construct an instance of the HtmlInputHidden.
    */
   public HtmlInputHidden()
   {
-    setRendererType("javax.faces.Hidden");
+    setRendererType("jakarta.faces.Hidden");
   }
 
   @Override

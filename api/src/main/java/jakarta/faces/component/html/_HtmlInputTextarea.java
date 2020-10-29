@@ -30,7 +30,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFCompone
     clazz = "jakarta.faces.component.html.HtmlInputTextarea",
     template = true,
     tagClass = "org.apache.myfaces.taglib.html.HtmlInputTextareaTag",
-    defaultRendererType = "javax.faces.Textarea",
+    defaultRendererType = "jakarta.faces.Textarea",
     implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
     defaultEventName = "valueChange")
 abstract class _HtmlInputTextarea extends UIInput implements _AccesskeyProperty,
@@ -40,8 +40,8 @@ abstract class _HtmlInputTextarea extends UIInput implements _AccesskeyProperty,
     _RoleProperty
 {
 
-    static public final String COMPONENT_FAMILY = "javax.faces.Input";
-    static public final String COMPONENT_TYPE = "javax.faces.HtmlInputTextarea";
+    static public final String COMPONENT_FAMILY = "jakarta.faces.Input";
+    static public final String COMPONENT_TYPE = "jakarta.faces.HtmlInputTextarea";
 
     /**
      * HTML: The width of this element, in characters.
