@@ -19,7 +19,7 @@
 package org.apache.myfaces.lifecycle.clientwindow;
 
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import java.io.Serializable;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;

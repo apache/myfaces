@@ -20,9 +20,9 @@ package org.apache.myfaces.lifecycle;
 
 import java.util.Locale;
 
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.event.PhaseId;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.event.PhaseId;
 import org.apache.myfaces.application.ViewIdSupport;
 
 import org.apache.myfaces.test.FacesTestCase;

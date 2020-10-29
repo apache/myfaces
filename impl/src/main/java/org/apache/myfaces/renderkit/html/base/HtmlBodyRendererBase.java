@@ -26,13 +26,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;

@@ -20,9 +20,9 @@ package org.apache.myfaces.test.mock;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.faces.context.FacesContext;
-import javax.faces.lifecycle.ClientWindow;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.render.ResponseStateManager;
 
 /**
  * Mock ClientWindow implementation that by default set the id with "1".

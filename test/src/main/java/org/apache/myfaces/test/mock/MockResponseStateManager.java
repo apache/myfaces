@@ -24,12 +24,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import javax.faces.FacesException;
-import javax.faces.application.StateManager.SerializedView;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.StateManager.SerializedView;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.ResponseStateManager;
 
 /**
  * Mock class that encode view state in hex format

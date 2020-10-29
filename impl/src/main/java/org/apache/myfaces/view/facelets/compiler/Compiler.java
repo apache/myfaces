@@ -29,11 +29,11 @@ import java.util.logging.Logger;
 
 import javax.el.ELException;
 import javax.el.ExpressionFactory;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.TagDecorator;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.TagDecorator;
 
 import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.util.lang.Assert;

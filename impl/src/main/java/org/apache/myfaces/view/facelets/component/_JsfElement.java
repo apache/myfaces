@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.component;
 
-import javax.faces.component.UIPanel;
+import jakarta.faces.component.UIPanel;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
@@ -28,7 +28,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  */
 @JSFComponent(name="jsf:element",
     clazz = "org.apache.myfaces.view.facelets.component.JsfElement",template=true,
-    implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
+    implementz = "jakarta.faces.component.behavior.ClientBehaviorHolder",
     defaultEventName = "click",
     defaultRendererType="javax.faces.passthrough.Element")
 abstract class _JsfElement extends UIPanel implements 

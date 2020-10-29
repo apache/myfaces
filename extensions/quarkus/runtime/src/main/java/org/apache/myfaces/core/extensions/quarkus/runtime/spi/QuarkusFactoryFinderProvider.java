@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 import org.apache.myfaces.spi.FactoryFinderProvider;
 import org.apache.myfaces.util.lang.ClassUtils;

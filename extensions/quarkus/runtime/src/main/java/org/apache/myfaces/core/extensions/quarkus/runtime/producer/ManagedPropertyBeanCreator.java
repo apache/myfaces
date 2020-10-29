@@ -21,8 +21,8 @@ package org.apache.myfaces.core.extensions.quarkus.runtime.producer;
 import java.util.Map;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
 
 import io.quarkus.arc.BeanCreator;
 

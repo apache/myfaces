@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 

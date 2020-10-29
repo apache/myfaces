@@ -38,10 +38,10 @@ import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 import javax.el.ResourceBundleELResolver;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.test.config.ResourceBundleVarNames;
 import org.apache.myfaces.test.el.FacesImplicitObjectELResolver;

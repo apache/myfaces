@@ -23,10 +23,10 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.el.ValueExpression;
 
-import javax.faces.component.StateHolder;
-import javax.faces.component.UIComponentBase;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 
 public class FaceletState implements StateHolder, Serializable
 {

@@ -20,10 +20,10 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
 
-import javax.faces.component.UISelectItem;
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.html.HtmlSelectBooleanCheckbox;
-import javax.faces.component.html.HtmlSelectManyCheckbox;
+import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.html.HtmlSelectBooleanCheckbox;
+import jakarta.faces.component.html.HtmlSelectManyCheckbox;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

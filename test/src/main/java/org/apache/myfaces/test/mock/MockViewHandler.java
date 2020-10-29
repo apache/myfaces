@@ -21,11 +21,11 @@ package org.apache.myfaces.test.mock;
 
 import java.util.Locale;
 
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.push.PushContext;
-import javax.faces.render.RenderKitFactory;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.push.PushContext;
+import jakarta.faces.render.RenderKitFactory;
 
 /**
  * <p>Mock implementation of <code>ViewHandler</code>.</p>

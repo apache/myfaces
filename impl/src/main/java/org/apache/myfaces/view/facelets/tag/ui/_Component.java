@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.ui;
 
-import javax.faces.component.UIComponentBase;
+import jakarta.faces.component.UIComponentBase;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;

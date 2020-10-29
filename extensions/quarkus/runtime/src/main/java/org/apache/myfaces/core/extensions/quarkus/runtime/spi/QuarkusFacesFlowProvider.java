@@ -22,9 +22,9 @@ import java.util.Iterator;
 
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.Flow;
-import javax.faces.flow.builder.FlowDefinition;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.builder.FlowDefinition;
 
 import org.apache.myfaces.flow.cdi.DefaultCDIFacesFlowProvider;
 

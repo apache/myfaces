@@ -22,8 +22,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.Iterator;
-import javax.faces.application.ResourceVisitOption;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.ResourceVisitOption;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.lang.ConcurrentLRUCache;
 

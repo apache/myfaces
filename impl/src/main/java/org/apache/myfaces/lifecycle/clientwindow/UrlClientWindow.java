@@ -21,9 +21,9 @@ package org.apache.myfaces.lifecycle.clientwindow;
 import org.apache.myfaces.util.token.TokenGenerator;
 import java.util.HashMap;
 import java.util.Map;
-import javax.faces.context.FacesContext;
-import javax.faces.lifecycle.ClientWindow;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.render.ResponseStateManager;
 
 /**
  *

@@ -27,8 +27,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
 
 import org.apache.myfaces.resource.ResourceLoaderUtils;
 import org.apache.myfaces.util.lang.Assert;

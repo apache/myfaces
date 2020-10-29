@@ -23,8 +23,8 @@ import java.util.Collections;
 import java.util.List;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
-import javax.faces.flow.MethodCallNode;
-import javax.faces.flow.Parameter;
+import jakarta.faces.flow.MethodCallNode;
+import jakarta.faces.flow.Parameter;
 
 /**
  *

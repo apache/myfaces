@@ -19,8 +19,8 @@
 package org.apache.myfaces.flow;
 
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.SwitchCase;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.SwitchCase;
 
 /**
  *

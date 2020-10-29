@@ -21,11 +21,11 @@ package org.apache.myfaces.view.facelets.component;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.Renderer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.Renderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;
 import org.apache.myfaces.renderkit.RendererUtils;
@@ -44,8 +44,8 @@ import org.apache.myfaces.view.facelets.LocationAwareFacesException;
  */
 @JSFRenderer(
     renderKitId = "HTML_BASIC",
-    family = "javax.faces.Panel",
-    type = "javax.faces.passthrough.Element")
+    family = "jakarta.faces.Panel",
+    type = "jakarta.faces.passthrough.Element")
 public class JsfElementRenderer extends HtmlRenderer
 {
 

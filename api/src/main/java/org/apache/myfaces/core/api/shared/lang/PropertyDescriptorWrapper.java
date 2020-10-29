@@ -22,7 +22,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Method;
-import javax.faces.FacesWrapper;
+import jakarta.faces.FacesWrapper;
 
 public class PropertyDescriptorWrapper implements FacesWrapper<PropertyDescriptor>
 {

@@ -19,11 +19,11 @@
 package org.apache.myfaces.test.mock;
 
 import java.util.Locale;
-import javax.faces.FactoryFinder;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.component.UIViewRoot;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.render.RenderKitFactory;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.lifecycle.LifecycleFactory;
+import jakarta.faces.render.RenderKitFactory;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;

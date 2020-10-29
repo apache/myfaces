@@ -139,7 +139,7 @@
                 <plugin>
                     <groupId>org.apache.myfaces.buildtools</groupId>
                     <artifactId>myfaces-builder-plugin</artifactId>
-                    <version>1.0.10</version>
+                    <version>1.0.11</version>
                 </plugin>
 
                 <plugin>

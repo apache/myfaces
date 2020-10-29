@@ -21,16 +21,16 @@ package org.apache.myfaces.view.facelets.compiler;
 
 import java.io.StringWriter;
 
-import javax.faces.component.UIForm;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UISelectItem;
-import javax.faces.component.UISelectOne;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlForm;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlPanelGrid;
-import javax.faces.component.html.HtmlSelectOneMenu;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.UISelectOne;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlForm;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.component.html.HtmlPanelGrid;
+import jakarta.faces.component.html.HtmlSelectOneMenu;
 
 import org.junit.Assert;
 

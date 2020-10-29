@@ -39,35 +39,35 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELResolver;
-import javax.faces.FacesException;
-import javax.faces.FacesWrapper;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.component.search.SearchKeywordResolver;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionListener;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.PhaseListener;
-import javax.faces.event.PostConstructApplicationEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.flow.FlowHandler;
-import javax.faces.flow.FlowHandlerFactory;
-import javax.faces.lifecycle.ClientWindow;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.validator.BeanValidator;
-import javax.faces.webapp.FacesServlet;
+import jakarta.faces.FacesException;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.application.ConfigurableNavigationHandler;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.component.search.SearchKeywordResolver;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.event.PostConstructApplicationEvent;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.FlowHandlerFactory;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.lifecycle.LifecycleFactory;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.validator.BeanValidator;
+import jakarta.faces.webapp.FacesServlet;
 
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.BackwardsCompatibleNavigationHandlerWrapper;
@@ -672,7 +672,7 @@ public class FacesConfigurator
                         ? systemEventListener.getSystemEventClass()
                         : SystemEvent.class.getName());
 
-                javax.faces.event.SystemEventListener listener = (javax.faces.event.SystemEventListener) 
+                jakarta.faces.event.SystemEventListener listener = (jakarta.faces.event.SystemEventListener) 
                         ClassUtils.newInstance(systemEventListener.getSystemEventListenerClass());
                 _callInjectAndPostConstruct(listener);
                 if (systemEventListener.getSourceClass() != null && systemEventListener.getSourceClass().length() > 0)
@@ -1087,7 +1087,7 @@ public class FacesConfigurator
 
             for (Renderer element : dispenser.getRenderers(renderKitId))
             {
-                javax.faces.render.Renderer renderer;
+                jakarta.faces.render.Renderer renderer;
                 
                 if (element.getRendererClass() != null)
                 {
@@ -1103,7 +1103,7 @@ public class FacesConfigurator
                         // Use standard form
                         try
                         {
-                            renderer = (javax.faces.render.Renderer) ClassUtils.newInstance(
+                            renderer = (jakarta.faces.render.Renderer) ClassUtils.newInstance(
                                 element.getRendererClass());
                         }
                         catch (Throwable e)
@@ -1141,8 +1141,8 @@ public class FacesConfigurator
             {
                 try
                 {
-                    javax.faces.render.ClientBehaviorRenderer behaviorRenderer
-                            = (javax.faces.render.ClientBehaviorRenderer)
+                    jakarta.faces.render.ClientBehaviorRenderer behaviorRenderer
+                            = (jakarta.faces.render.ClientBehaviorRenderer)
                             ClassUtils.newInstance(clientBehaviorRenderer.getRendererClass());
 
                     renderKit.addClientBehaviorRenderer(clientBehaviorRenderer.getRendererType(), behaviorRenderer);

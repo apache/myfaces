@@ -32,15 +32,15 @@ import java.util.logging.Logger;
 
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.ValueHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.event.FacesListener;
-import javax.faces.validator.Validator;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.FacesListener;
+import jakarta.faces.validator.Validator;
 
 /**
  * Utilities for logging.

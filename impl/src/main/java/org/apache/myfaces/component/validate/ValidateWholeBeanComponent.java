@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.component.validate;
 
-import javax.faces.component.UIInput;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.validator.BeanValidator;
-import javax.faces.validator.Validator;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.validator.BeanValidator;
+import jakarta.faces.validator.Validator;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 import org.apache.myfaces.util.WebConfigParamUtils;

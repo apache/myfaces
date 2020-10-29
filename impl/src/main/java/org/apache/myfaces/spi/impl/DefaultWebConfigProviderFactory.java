@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;

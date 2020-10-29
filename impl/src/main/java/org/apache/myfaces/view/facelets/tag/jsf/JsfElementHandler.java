@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf;
 
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.MetaRuleset;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 
 /**
@@ -29,7 +29,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFacelet
 @JSFFaceletTag(
         name = "jsf:element",
         componentClass = "org.apache.myfaces.view.facelets.component.JsfElement")
-public class JsfElementHandler extends javax.faces.view.facelets.ComponentHandler
+public class JsfElementHandler extends jakarta.faces.view.facelets.ComponentHandler
 {
 
     public JsfElementHandler(ComponentConfig config)

@@ -22,9 +22,9 @@ package org.apache.myfaces.test.mock;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.faces.component.UINamingContainer;
-import javax.faces.context.ExternalContext;
-import javax.faces.lifecycle.Lifecycle;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.lifecycle.Lifecycle;
 
 /**
  * <p>Mock implementation of <code>FacesContext</code> that includes the semantics

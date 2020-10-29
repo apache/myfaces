@@ -20,10 +20,10 @@
  */
 package ${component.tagPackage};
 
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 import javax.el.ValueExpression;
 import javax.el.MethodExpression;
-## import javax.faces.context.FacesContext;
+## import jakarta.faces.context.FacesContext;
 $utils.importTagClasses12($component)
 
 // Generated from class ${component.sourceClassName}.
@@ -34,7 +34,7 @@ public class $utils.getClassFromFullClass($component.tagClass)
 #if (${component.tagSuperclass})
     extends ${component.tagSuperclass}
 #else
-    extends javax.faces.webapp.UIComponentTag
+    extends jakarta.faces.webapp.UIComponentTag
 #end
 {
     public $utils.getClassFromFullClass($component.tagClass)()
@@ -46,8 +46,8 @@ public class $utils.getClassFromFullClass($component.tagClass)
     {
 #if ($component.type)
 ## see MYFACES-1790 HtmlColumnTag.getComponentType returns the wrong value
-#if ($component.type == "javax.faces.HtmlColumn")
-        return "javax.faces.Column";
+#if ($component.type == "jakarta.faces.HtmlColumn")
+        return "jakarta.faces.Column";
 #else
         return "$component.type";
 #end
@@ -86,8 +86,8 @@ public class $utils.getClassFromFullClass($component.tagClass)
     {
 ## see MYFACES-1790 HtmlColumnTag.getComponentType returns the wrong value
 #set ($className = $component.className)
-#if($className == "javax.faces.component.html.HtmlColumn")
-#set ($className = "javax.faces.component.UIColumn")
+#if($className == "jakarta.faces.component.html.HtmlColumn")
+#set ($className = "jakarta.faces.component.UIColumn")
 #end
         if (!(component instanceof $className ))
         {

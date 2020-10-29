@@ -23,9 +23,9 @@ import java.net.URL;
 import java.util.Comparator;
 import java.util.Iterator;
 
-import javax.faces.FacesWrapper;
-import javax.faces.application.ResourceVisitOption;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.application.ResourceVisitOption;
+import jakarta.faces.context.FacesContext;
 
 public abstract class ResourceLoaderWrapper extends ResourceLoader implements FacesWrapper<ResourceLoader>
 {

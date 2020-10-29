@@ -20,7 +20,7 @@ package org.apache.myfaces.application.flow;
 
 import java.util.Iterator;
 import java.util.stream.Stream;
-import javax.faces.application.StateManager;
+import jakarta.faces.application.StateManager;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.resource.ClassLoaderResourceLoader;

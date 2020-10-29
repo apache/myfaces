@@ -18,12 +18,12 @@
  */
 package org.apache.myfaces.renderkit.html.behavior;
 
-import javax.faces.FactoryFinder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.renderkit.html.HtmlResponseWriterImpl;
 import org.apache.myfaces.util.lang.FastWriter;

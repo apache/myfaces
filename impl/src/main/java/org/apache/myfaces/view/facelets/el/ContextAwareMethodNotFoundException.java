@@ -19,7 +19,7 @@
 package org.apache.myfaces.view.facelets.el;
 
 import javax.el.MethodNotFoundException;
-import javax.faces.view.Location;
+import jakarta.faces.view.Location;
 
 /**
  * Implementation of types {@link MethodNotFoundException}, {@link ContextAware}

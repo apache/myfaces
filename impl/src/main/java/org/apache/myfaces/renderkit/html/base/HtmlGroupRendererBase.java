@@ -24,14 +24,14 @@ import org.apache.myfaces.renderkit.html.util.CommonPropertyUtils;
 import org.apache.myfaces.renderkit.html.util.CommonEventUtils;
 import org.apache.myfaces.renderkit.RendererUtils;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.html.HtmlPanelGroup;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlPanelGroup;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import javax.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehavior;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
 

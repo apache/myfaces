@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.util.token;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.util.lang.Hex;

@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.webapp;
 
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;

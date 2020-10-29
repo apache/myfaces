@@ -19,8 +19,8 @@
 package org.apache.myfaces.flow.impl;
 
 import java.util.Iterator;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.Flow;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.flow.FlowImpl;
 import org.apache.myfaces.spi.FacesFlowProvider;

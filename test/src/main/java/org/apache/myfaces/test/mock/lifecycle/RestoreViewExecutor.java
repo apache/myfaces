@@ -23,13 +23,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.myfaces.test.util.JsfVersion;
 
-import javax.faces.FacesException;
-import javax.faces.application.Application;
-import javax.faces.application.ViewExpiredException;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ViewExpiredException;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
 
 /**
  * Implements the Restore View Phase (JSF Spec 2.2.1)

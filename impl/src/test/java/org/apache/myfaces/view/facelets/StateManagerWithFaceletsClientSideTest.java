@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets;
 
-import javax.faces.application.StateManager;
+import jakarta.faces.application.StateManager;
 
 import org.apache.myfaces.application.StateManagerImpl;
 

@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.faces.render.RenderKitFactory;
+import jakarta.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.config.FacesConfigDispenser;
 import org.apache.myfaces.config.element.Behavior;

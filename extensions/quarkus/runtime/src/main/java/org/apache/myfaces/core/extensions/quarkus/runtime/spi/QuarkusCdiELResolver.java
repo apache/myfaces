@@ -33,7 +33,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 /**
  * Custom {@link ELResolver} for CDI as {@link BeanManager#getELResolver} is not supported on Quarkus.

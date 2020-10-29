@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.context;
 
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExceptionHandlerFactory;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExceptionHandlerFactory;
 
 
 /**

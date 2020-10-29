@@ -19,7 +19,7 @@
 
 package org.apache.myfaces.test.mock;
 
-import javax.faces.flow.FlowHandler;
+import jakarta.faces.flow.FlowHandler;
 
 /**
  * <p>Mock implementation of <code>Application</code> that includes the semantics

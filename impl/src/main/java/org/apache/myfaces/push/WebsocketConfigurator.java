@@ -21,7 +21,7 @@ package org.apache.myfaces.push;
 import java.io.Serializable;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 import javax.websocket.HandshakeResponse;
 import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpointConfig;

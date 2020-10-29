@@ -19,9 +19,9 @@
 package org.apache.myfaces.view.facelets.compiler;
 
 import java.io.IOException;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletHandler;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 
 /**

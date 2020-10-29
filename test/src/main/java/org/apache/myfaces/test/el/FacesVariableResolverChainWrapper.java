@@ -23,7 +23,7 @@ import java.util.Iterator;
 
 import javax.el.ELContext;
 import javax.el.PropertyNotFoundException;
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 /**
  * <p><code>ELResolver</code> implementation that wraps the legacy (JSF 1.1)

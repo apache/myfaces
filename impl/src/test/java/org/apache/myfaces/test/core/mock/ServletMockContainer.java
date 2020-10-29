@@ -19,7 +19,7 @@
 
 package org.apache.myfaces.test.core.mock;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.test.mock.MockHttpServletRequest;
 import org.apache.myfaces.test.mock.MockHttpServletResponse;
 

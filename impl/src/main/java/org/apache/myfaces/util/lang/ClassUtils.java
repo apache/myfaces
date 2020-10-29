@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.util.lang;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;

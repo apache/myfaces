@@ -20,7 +20,7 @@ package org.apache.myfaces.renderkit.html.util;
 
 import java.util.logging.Logger;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 public final class HtmlJavaScriptUtils
 {

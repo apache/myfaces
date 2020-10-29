@@ -23,16 +23,16 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import javax.el.ELContext;
-import javax.faces.application.Application;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIPanel;
-import javax.faces.component.html.HtmlGraphicImage;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.html.HtmlGraphicImage;
+import jakarta.faces.context.FacesContext;
 
 import org.junit.Assert;
 import org.apache.myfaces.renderkit.html.util.HTML;

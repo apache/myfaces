@@ -21,8 +21,8 @@ package org.apache.myfaces.test.mock;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Mock for a JSF 2.0 ViewHandler.

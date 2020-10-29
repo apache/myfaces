@@ -22,10 +22,10 @@ package org.apache.myfaces.test.mock;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>Mock implementation of <code>NavigationHandler</code>.</p>

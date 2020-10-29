@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
-import javax.faces.component.UINamingContainer;
-import javax.faces.event.ComponentSystemEvent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.event.ComponentSystemEvent;
 
 public class CompositeTestComponent extends UINamingContainer
 {

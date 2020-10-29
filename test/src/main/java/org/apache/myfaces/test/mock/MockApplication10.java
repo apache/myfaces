@@ -26,16 +26,16 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.faces.FacesException;
-import javax.faces.application.Application;
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.convert.Converter;
-import javax.faces.event.ActionListener;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.validator.Validator;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.validator.Validator;
 
 /**
  * <p>Mock implementation of <code>Application</code>.</p>

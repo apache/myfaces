@@ -19,8 +19,8 @@
 package org.apache.myfaces.taglib.core;
 
 import javax.el.ValueExpression;
-import javax.faces.component.ActionSource;
-import javax.faces.event.ActionListener;
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.event.ActionListener;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;

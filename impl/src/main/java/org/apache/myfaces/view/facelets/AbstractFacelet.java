@@ -23,12 +23,12 @@ import java.net.URL;
 
 import javax.el.ELException;
 import javax.el.ExpressionFactory;
-import javax.faces.FacesException;
-import javax.faces.application.Resource;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.Facelet;
-import javax.faces.view.facelets.FaceletException;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.Facelet;
+import jakarta.faces.view.facelets.FaceletException;
 
 /**
  * @author Leonardo Uribe (latest modification by $Author$)

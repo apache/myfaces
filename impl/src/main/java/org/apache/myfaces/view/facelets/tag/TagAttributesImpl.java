@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributes;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributes;
 
 /**
  * A set of TagAttributes, usually representing all attributes on a Tag.

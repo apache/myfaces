@@ -27,7 +27,7 @@ import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.core.api.shared.lang.LambdaPropertyDescriptor;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorWrapper;

@@ -19,7 +19,7 @@ package org.apache.myfaces.application.viewstate;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 import org.junit.Assert;
 
 public class InitVector_CBCTestCase extends AbstractJsfTestCase

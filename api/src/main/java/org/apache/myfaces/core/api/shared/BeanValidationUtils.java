@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.core.api.shared;
 
-import javax.faces.validator.BeanValidator;
-import javax.faces.validator.Validator;
+import jakarta.faces.validator.BeanValidator;
+import jakarta.faces.validator.Validator;
 import javax.validation.Validation;
 
 /**

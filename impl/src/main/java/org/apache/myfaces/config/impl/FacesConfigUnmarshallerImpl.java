@@ -19,11 +19,11 @@
 package org.apache.myfaces.config.impl;
 
 import java.io.ByteArrayInputStream;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.Consumer;
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.myfaces.config.FacesConfigUnmarshaller;

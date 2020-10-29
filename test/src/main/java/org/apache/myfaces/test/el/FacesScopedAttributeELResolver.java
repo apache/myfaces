@@ -28,8 +28,8 @@ import java.util.Map.Entry;
 
 import javax.el.ELContext;
 import javax.el.PropertyNotFoundException;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p><code>ELResolver</code> implementation that accesses scoped variables

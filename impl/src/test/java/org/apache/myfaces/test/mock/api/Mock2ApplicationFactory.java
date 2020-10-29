@@ -19,8 +19,8 @@
 
 package org.apache.myfaces.test.mock.api;
 
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
 
 /**
  * Necessary for testing application-factory-setup with to application-factories;

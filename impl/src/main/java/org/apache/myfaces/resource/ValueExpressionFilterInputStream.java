@@ -29,10 +29,10 @@ import java.util.logging.Logger;
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ValueExpression;
-import javax.faces.application.Resource;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ExceptionQueuedEvent;
-import javax.faces.event.ExceptionQueuedEventContext;
+import jakarta.faces.application.Resource;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ExceptionQueuedEvent;
+import jakarta.faces.event.ExceptionQueuedEventContext;
 
 import org.apache.myfaces.util.lang.DynamicPushbackInputStream;
 

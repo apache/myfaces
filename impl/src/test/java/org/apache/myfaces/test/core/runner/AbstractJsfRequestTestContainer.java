@@ -20,10 +20,10 @@ package org.apache.myfaces.test.core.runner;
 
 import java.io.IOException;
 import java.util.List;
-import javax.faces.FacesException;
-import javax.faces.application.Application;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import javax.servlet.ServletRequestEvent;
 import org.apache.myfaces.test.core.mock.MockMyFacesClient;
 import org.apache.myfaces.test.core.mock.ServletMockContainer;

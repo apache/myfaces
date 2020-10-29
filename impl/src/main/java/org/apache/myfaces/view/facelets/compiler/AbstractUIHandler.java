@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.view.facelets.compiler;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.TextHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.TextHandler;
 
 import org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler;
 

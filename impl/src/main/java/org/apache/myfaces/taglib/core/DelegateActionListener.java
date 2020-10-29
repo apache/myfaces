@@ -20,12 +20,12 @@ package org.apache.myfaces.taglib.core;
 
 import javax.el.ELException;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.component.StateHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ActionListener;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.ActionListener;
 
 import org.apache.myfaces.util.lang.ClassUtils;
 

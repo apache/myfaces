@@ -24,7 +24,7 @@ import java.util.Map;
 import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
-import javax.faces.FacesWrapper;
+import jakarta.faces.FacesWrapper;
 
 /**
  * Utility class for wrapping another VariableMapper with a new context, represented by a {@link java.util.Map Map}.

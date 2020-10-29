@@ -23,11 +23,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.Lifecycle;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseEvent;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.lifecycle.Lifecycle;
 
 /**
  * This class encapsulates the logic used to call PhaseListeners.  It was 

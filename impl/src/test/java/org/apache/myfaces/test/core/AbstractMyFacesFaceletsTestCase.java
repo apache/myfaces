@@ -19,10 +19,10 @@
 package org.apache.myfaces.test.core;
 
 import org.apache.myfaces.test.core.mock.MockMyFacesFaceletViewDeclarationLanguage;
-import javax.faces.FactoryFinder;
-import javax.faces.component.UIViewRoot;
-import javax.faces.event.PhaseId;
-import javax.faces.view.ViewDeclarationLanguageFactory;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.view.ViewDeclarationLanguageFactory;
 
 /**
  * <p>Abstract JUnit test case base class, which provide a var called vdl, that

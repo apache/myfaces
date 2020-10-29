@@ -37,16 +37,16 @@ import java.util.logging.Logger;
 
 import javax.el.ELException;
 import javax.el.ExpressionFactory;
-import javax.faces.FacesException;
-import javax.faces.application.Resource;
-import javax.faces.application.ViewResource;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.UniqueIdVendor;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.FaceletHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ViewResource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.UniqueIdVendor;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
 
 import org.apache.myfaces.view.facelets.AbstractFacelet;
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;

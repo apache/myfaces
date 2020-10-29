@@ -20,7 +20,7 @@ package org.apache.myfaces.core.extensions.quarkus.deployment;
 
 import java.util.UUID;
 
-import javax.faces.annotation.ManagedProperty;
+import jakarta.faces.annotation.ManagedProperty;
 
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationValue;

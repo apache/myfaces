@@ -27,7 +27,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessBean;
-import javax.faces.flow.FlowScoped;
+import jakarta.faces.flow.FlowScoped;
 import org.apache.myfaces.flow.FlowReference;
 
 /**

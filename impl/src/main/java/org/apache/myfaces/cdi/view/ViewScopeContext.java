@@ -28,8 +28,8 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.PassivationCapable;
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
 
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;

@@ -22,9 +22,9 @@ package org.apache.myfaces.test.mock;
 import javax.el.ELContext;
 import javax.el.ELContextEvent;
 import javax.el.ELContextListener;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.lifecycle.Lifecycle;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.lifecycle.Lifecycle;
 
 import org.apache.myfaces.test.el.MockELContext;
 

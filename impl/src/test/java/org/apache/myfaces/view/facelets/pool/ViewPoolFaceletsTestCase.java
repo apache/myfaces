@@ -18,12 +18,12 @@
  */
 package org.apache.myfaces.view.facelets.pool;
 
-import javax.faces.application.ProjectStage;
-import javax.faces.application.StateManager;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.event.PhaseId;
-import javax.faces.render.RenderKitFactory;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.render.RenderKitFactory;
 import org.junit.Assert;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletTestCase;

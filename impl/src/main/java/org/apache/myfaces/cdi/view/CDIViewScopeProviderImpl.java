@@ -20,8 +20,8 @@ package org.apache.myfaces.cdi.view;
 
 import java.util.Map;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import org.apache.myfaces.cdi.util.CDIUtils;
 import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;

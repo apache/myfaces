@@ -18,14 +18,14 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.ValueHolder;
-import javax.faces.convert.Converter;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.MetaRule;
-import javax.faces.view.facelets.Metadata;
-import javax.faces.view.facelets.MetadataTarget;
-import javax.faces.view.facelets.TagAttribute;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.ValueHolder;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
  * 

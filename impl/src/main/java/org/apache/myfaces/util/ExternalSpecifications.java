@@ -22,7 +22,7 @@ import org.apache.myfaces.util.lang.ClassUtils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Validation;
 import org.apache.myfaces.util.lang.Lazy;

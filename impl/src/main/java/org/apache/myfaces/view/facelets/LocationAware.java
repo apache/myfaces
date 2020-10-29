@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets;
 
-import javax.faces.view.Location;
+import jakarta.faces.view.Location;
 
 /**
  * Identification inferface for types that know about {@link Location}.

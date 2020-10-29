@@ -22,11 +22,11 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
-import javax.faces.FactoryFinder;
-import javax.faces.validator.BeanValidator;
-import javax.faces.validator.LengthValidator;
-import javax.faces.validator.RequiredValidator;
-import javax.faces.webapp.FacesServlet;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.validator.BeanValidator;
+import jakarta.faces.validator.LengthValidator;
+import jakarta.faces.validator.RequiredValidator;
+import jakarta.faces.webapp.FacesServlet;
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 
 import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;

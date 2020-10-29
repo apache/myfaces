@@ -20,9 +20,9 @@ package org.apache.myfaces.core.extensions.quarkus.runtime.application;
 
 import javax.el.CompositeELResolver;
 import javax.el.ELResolver;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationWrapper;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationWrapper;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.config.RuntimeConfig;

@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.flow;
 
-import javax.faces.context.FacesContext;
-import javax.faces.flow.FlowHandler;
-import javax.faces.flow.FlowHandlerFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.FlowHandlerFactory;
 
 /**
  *

@@ -29,14 +29,14 @@ import java.net.URL;
 import java.util.List;
 
 import javax.el.ExpressionFactory;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.StateManager;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.RenderKitFactory;
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.ViewHandlerImpl;
@@ -335,10 +335,10 @@ public abstract class FaceletMultipleRequestsTestCase extends AbstractJsfConfigu
         for (Renderer element : dispenser
                 .getRenderers(RenderKitFactory.HTML_BASIC_RENDER_KIT))
         {
-            javax.faces.render.Renderer renderer;
+            jakarta.faces.render.Renderer renderer;
             try
             {
-                renderer = (javax.faces.render.Renderer) ClassUtils
+                renderer = (jakarta.faces.render.Renderer) ClassUtils
                         .newInstance(element.getRendererClass());
             }
             catch (Throwable e)
@@ -353,11 +353,11 @@ public abstract class FaceletMultipleRequestsTestCase extends AbstractJsfConfigu
         
         for (ClientBehaviorRenderer element : dispenser.getClientBehaviorRenderers(RenderKitFactory.HTML_BASIC_RENDER_KIT))
         {
-            javax.faces.render.ClientBehaviorRenderer renderer;
+            jakarta.faces.render.ClientBehaviorRenderer renderer;
             
             try
             {
-                renderer = (javax.faces.render.ClientBehaviorRenderer) ClassUtils
+                renderer = (jakarta.faces.render.ClientBehaviorRenderer) ClassUtils
                         .newInstance(element.getRendererClass());
             }
             catch (Throwable e)

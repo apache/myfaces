@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
-import javax.faces.FacesWrapper;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.view.BehaviorHolderAttachedObjectHandler;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.BehaviorHolderAttachedObjectHandler;
 
 /**
  * This wrapper is used in

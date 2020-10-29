@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.FactoryFinder;
-import javax.faces.application.NavigationCase;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.NavigationCase;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.NavigationRule;

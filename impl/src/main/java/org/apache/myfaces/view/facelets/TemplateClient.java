@@ -21,10 +21,10 @@ package org.apache.myfaces.view.facelets;
 import java.io.IOException;
 
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
 
 /**
  * FaceletHandlers can implement this contract and push themselves into the FaceletContext for participating in

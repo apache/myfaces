@@ -24,13 +24,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.ResourceDependency;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 

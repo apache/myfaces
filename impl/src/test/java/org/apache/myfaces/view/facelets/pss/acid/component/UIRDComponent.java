@@ -15,9 +15,9 @@
  */
 package org.apache.myfaces.view.facelets.pss.acid.component;
 
-import javax.faces.application.ResourceDependency;
-import javax.faces.component.FacesComponent;
-import javax.faces.component.UIOutput;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.UIOutput;
 
 /**
  *

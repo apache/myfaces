@@ -20,8 +20,8 @@ package org.apache.myfaces.taglib.core;
 
 import org.apache.myfaces.util.ConverterUtils;
 
-import javax.faces.validator.DoubleRangeValidator;
-import javax.faces.validator.Validator;
+import jakarta.faces.validator.DoubleRangeValidator;
+import jakarta.faces.validator.Validator;
 import javax.servlet.jsp.JspException;
 
 /**

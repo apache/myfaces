@@ -20,9 +20,9 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import java.util.Iterator;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.view.facelets.FaceletContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.view.facelets.FaceletContext;
 
 /**
  * This class is used in cases where alternate implementations of h:outputScript and h:outputStylesheet

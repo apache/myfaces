@@ -20,8 +20,8 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
 
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.html.HtmlInputSecret;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.html.HtmlInputSecret;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

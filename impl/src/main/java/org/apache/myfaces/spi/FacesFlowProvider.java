@@ -20,8 +20,8 @@ package org.apache.myfaces.spi;
 
 import java.util.Iterator;
 import java.util.Map;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.Flow;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
 
 /**
  *

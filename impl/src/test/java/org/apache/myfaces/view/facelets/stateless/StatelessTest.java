@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.stateless;
 
-import javax.faces.application.StateManager;
-import javax.faces.component.UIComponent;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;

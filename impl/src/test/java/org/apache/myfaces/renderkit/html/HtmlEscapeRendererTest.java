@@ -20,17 +20,17 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UISelectItem;
-import javax.faces.component.html.HtmlOutputLabel;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlSelectManyCheckbox;
-import javax.faces.component.html.HtmlSelectManyListbox;
-import javax.faces.component.html.HtmlSelectManyMenu;
-import javax.faces.component.html.HtmlSelectOneListbox;
-import javax.faces.component.html.HtmlSelectOneMenu;
-import javax.faces.component.html.HtmlSelectOneRadio;
-import javax.faces.model.SelectItem;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.html.HtmlOutputLabel;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.component.html.HtmlSelectManyCheckbox;
+import jakarta.faces.component.html.HtmlSelectManyListbox;
+import jakarta.faces.component.html.HtmlSelectManyMenu;
+import jakarta.faces.component.html.HtmlSelectOneListbox;
+import jakarta.faces.component.html.HtmlSelectOneMenu;
+import jakarta.faces.component.html.HtmlSelectOneRadio;
+import jakarta.faces.model.SelectItem;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

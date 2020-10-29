@@ -53,8 +53,8 @@ public class CompositeLibrary extends AbstractTagLibrary
         
         addTagHandler("interface", InterfaceHandler.class);
         
-        addComponent("renderFacet", "javax.faces.Output", 
-                "javax.faces.CompositeFacet", RenderFacetHandler.class);
+        addComponent("renderFacet", "jakarta.faces.Output", 
+                "jakarta.faces.CompositeFacet", RenderFacetHandler.class);
 
         addTagHandler("valueHolder", ValueHolderHandler.class);
     }

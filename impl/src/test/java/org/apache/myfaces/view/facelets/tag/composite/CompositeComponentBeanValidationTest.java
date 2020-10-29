@@ -21,9 +21,9 @@ package org.apache.myfaces.view.facelets.tag.composite;
 import java.io.IOException;
 
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.el.CompositeComponentExpressionHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.el.CompositeComponentExpressionHolder;
 import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.el.resolver.CompositeComponentELResolver;

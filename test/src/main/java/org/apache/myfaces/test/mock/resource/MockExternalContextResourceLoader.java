@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * A resource loader implementation which loads resources from the webapp root. 

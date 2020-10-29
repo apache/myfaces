@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.config.MyfacesConfig;
 

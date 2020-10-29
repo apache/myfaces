@@ -19,9 +19,9 @@ package org.apache.myfaces.lifecycle;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
+import jakarta.faces.event.PhaseEvent;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PhaseListener;
 
 public class InstrumentingPhaseListener implements PhaseListener
 {

@@ -22,9 +22,9 @@ import org.apache.myfaces.util.LocaleUtils;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.NumberConverter;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.NumberConverter;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.util.Locale;

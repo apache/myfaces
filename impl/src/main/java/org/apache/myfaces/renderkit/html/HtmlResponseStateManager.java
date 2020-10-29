@@ -22,11 +22,11 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.lifecycle.ClientWindow;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.application.viewstate.StateCache;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;

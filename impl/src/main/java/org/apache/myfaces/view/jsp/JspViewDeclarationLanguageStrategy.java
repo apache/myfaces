@@ -20,9 +20,9 @@ package org.apache.myfaces.view.jsp;
 
 import java.util.LinkedList;
 import java.util.StringTokenizer;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewDeclarationLanguage;
 import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;

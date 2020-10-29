@@ -21,9 +21,9 @@ package org.apache.myfaces.webapp;
 import java.lang.reflect.Field;
 import java.util.Locale;
 
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 

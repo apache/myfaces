@@ -19,7 +19,7 @@
 package org.apache.myfaces.util;
 
 import java.util.Map;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>

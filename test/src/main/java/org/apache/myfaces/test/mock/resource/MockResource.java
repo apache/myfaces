@@ -25,9 +25,9 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>Mock implementation of <code>Resource</code>.</p>

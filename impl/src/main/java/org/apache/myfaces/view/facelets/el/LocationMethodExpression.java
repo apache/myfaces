@@ -27,9 +27,9 @@ import java.io.ObjectOutput;
 import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.MethodInfo;
-import javax.faces.FacesWrapper;
-import javax.faces.context.FacesContext;
-import javax.faces.view.Location;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.Location;
 
 /**
  * A MethodExpression that contains the original MethodExpression and

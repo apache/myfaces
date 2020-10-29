@@ -26,7 +26,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionTarget;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 
 /**
  *

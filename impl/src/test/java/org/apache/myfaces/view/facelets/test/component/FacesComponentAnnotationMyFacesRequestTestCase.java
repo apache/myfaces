@@ -19,8 +19,8 @@
 package org.apache.myfaces.view.facelets.test.component;
 
 import javax.el.ExpressionFactory;
-import javax.faces.application.StateManager;
-import javax.faces.component.UIComponent;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIComponent;
 import org.junit.Assert;
 
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;

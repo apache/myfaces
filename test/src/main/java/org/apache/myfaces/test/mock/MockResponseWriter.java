@@ -20,8 +20,8 @@ package org.apache.myfaces.test.mock;
 
 import java.io.IOException;
 import java.io.Writer;
-import javax.faces.component.UIComponent;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.ResponseWriter;
 
 /**
  * <p>Mock implementation of <code>javax.faces.context.ResponseWriter</code>.</p>

@@ -36,7 +36,7 @@ class ManagedBeanWrapper implements AnnotatedType<Object>
     private Set<Annotation> annotationSet;
 
     ManagedBeanWrapper(AnnotatedType wrapped,
-                    javax.faces.bean.ManagedBean managedBean,
+                    jakarta.faces.bean.ManagedBean managedBean,
                     Class<? extends Annotation> newScope,
                     Class<? extends Annotation> oldScope,
                     AnnotationLiteral literal)
@@ -50,7 +50,7 @@ class ManagedBeanWrapper implements AnnotatedType<Object>
         for (Annotation originalAnnotation : wrapped.getAnnotations())
         {
             if (!originalAnnotation.annotationType().equals(oldScope)
-                    && !originalAnnotation.annotationType().equals(javax.faces.bean.ManagedBean.class))
+                    && !originalAnnotation.annotationType().equals(jakarta.faces.bean.ManagedBean.class))
             {
                 this.annotations.put(originalAnnotation.annotationType(), originalAnnotation);
             }

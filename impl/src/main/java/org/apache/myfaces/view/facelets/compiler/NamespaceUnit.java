@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.compiler;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.FaceletHandler;
 
 import org.apache.myfaces.view.facelets.tag.TagLibrary;
 

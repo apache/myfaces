@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.spi;
 
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;

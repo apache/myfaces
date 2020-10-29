@@ -19,7 +19,7 @@
 package org.apache.myfaces.core.api.shared;
 
 import java.util.Locale;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import javax.validation.MessageInterpolator;
 
 /**

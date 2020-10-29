@@ -22,15 +22,15 @@ package org.apache.myfaces.renderkit.html;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIParameter;
-import javax.faces.component.behavior.ClientBehaviorContext;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.component.html.HtmlCommandScript;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.ActionEvent;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlCommandScript;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.ActionEvent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.renderkit.html.util.AjaxScriptBuilder;
@@ -44,7 +44,7 @@ import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.SharedStringBuilder;
 
-@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Command", type = "javax.faces.Script")
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Command", type = "jakarta.faces.Script")
 public class HtmlCommandScriptRenderer extends HtmlRenderer
 {
     private static final String AJAX_SB = "oam.renderkit.AJAX_SB";

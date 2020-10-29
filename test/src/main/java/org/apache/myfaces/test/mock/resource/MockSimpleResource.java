@@ -21,8 +21,8 @@ package org.apache.myfaces.test.mock.resource;
 
 import org.apache.myfaces.test.mock.MockServletContext;
 
-import javax.faces.application.Resource;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.Resource;
+import jakarta.faces.context.FacesContext;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

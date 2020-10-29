@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets.compiler;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.context.ResponseWriter;
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.util.lang.FastWriter;
 import org.junit.Assert;

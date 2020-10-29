@@ -23,7 +23,7 @@ import org.apache.myfaces.config.impl.element.FacesConfigNameSlotImpl;
 import org.apache.myfaces.config.impl.element.OrderingImpl;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -21,16 +21,16 @@ package org.apache.myfaces.view.facelets;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.faces.FactoryFinder;
+import jakarta.faces.FactoryFinder;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.UniqueIdVendor;
-import javax.faces.component.visit.VisitContextFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.view.AttachedObjectHandler;
-import javax.faces.view.EditableValueHolderAttachedObjectHandler;
-import javax.faces.view.facelets.FaceletContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.UniqueIdVendor;
+import jakarta.faces.component.visit.VisitContextFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.AttachedObjectHandler;
+import jakarta.faces.view.EditableValueHolderAttachedObjectHandler;
+import jakarta.faces.view.facelets.FaceletContext;
 
 /**
  * @since 2.0.1

@@ -21,14 +21,14 @@ package org.apache.myfaces.view.facelets.compiler;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.event.PhaseId;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.ResponseStateManager;
 
 import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.renderkit.html.HtmlResponseStateManager;

@@ -29,8 +29,8 @@ import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 import javax.el.ValueExpression;
 import javax.el.ValueReference;
-import javax.faces.FacesWrapper;
-import javax.faces.view.facelets.TagAttribute;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.view.facelets.TagAttribute;
 
 /**
  * 

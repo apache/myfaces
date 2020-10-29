@@ -20,7 +20,7 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
 
-import javax.faces.component.html.HtmlHead;
+import jakarta.faces.component.html.HtmlHead;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

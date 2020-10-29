@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.compiler;
 
-import javax.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.FaceletHandler;
 
 /**
  * 

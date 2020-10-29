@@ -20,9 +20,9 @@ package org.apache.myfaces.taglib.core;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.webapp.ConverterELTag;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.webapp.ConverterELTag;
 import javax.servlet.jsp.JspException;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;

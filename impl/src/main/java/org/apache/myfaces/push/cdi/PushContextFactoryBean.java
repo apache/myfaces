@@ -22,8 +22,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.faces.push.Push;
-import javax.faces.push.PushContext;
+import jakarta.faces.push.Push;
+import jakarta.faces.push.PushContext;
 
 @ApplicationScoped
 public class PushContextFactoryBean

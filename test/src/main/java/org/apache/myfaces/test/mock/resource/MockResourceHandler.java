@@ -29,10 +29,10 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import javax.faces.FacesException;
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>Mock implementation of <code>ResourceHandler</code>.</p>

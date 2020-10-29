@@ -38,8 +38,8 @@ import java.util.function.ObjIntConsumer;
 import java.util.function.ObjLongConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
 public class PropertyDescriptorUtils

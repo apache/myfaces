@@ -19,9 +19,9 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import javax.el.MethodExpression;
-import javax.faces.component.PartialStateHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.MethodExpressionValidator;
+import jakarta.faces.component.PartialStateHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.MethodExpressionValidator;
 
 public class PartialMethodExpressionValidator extends MethodExpressionValidator
         implements PartialStateHolder

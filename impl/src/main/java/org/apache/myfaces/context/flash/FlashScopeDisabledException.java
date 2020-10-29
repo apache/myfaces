@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.context.flash;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 public class FlashScopeDisabledException extends FacesException
 {

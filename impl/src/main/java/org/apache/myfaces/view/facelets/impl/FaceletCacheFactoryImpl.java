@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.view.facelets.impl;
 
-import javax.faces.application.ProjectStage;
-import javax.faces.application.ViewHandler;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletCache;
-import javax.faces.view.facelets.FaceletCacheFactory;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletCache;
+import jakarta.faces.view.facelets.FaceletCacheFactory;
 import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.util.WebConfigParamUtils;

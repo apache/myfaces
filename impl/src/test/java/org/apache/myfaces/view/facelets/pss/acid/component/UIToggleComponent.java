@@ -18,16 +18,16 @@
  */
 package org.apache.myfaces.view.facelets.pss.acid.component;
 
-import javax.faces.component.FacesComponent;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIComponentBase;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.PreRenderViewEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.PreRenderViewEvent;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
 
 @FacesComponent(value = "com.myapp.UIToggleComponent")
 public class UIToggleComponent extends UIComponentBase implements

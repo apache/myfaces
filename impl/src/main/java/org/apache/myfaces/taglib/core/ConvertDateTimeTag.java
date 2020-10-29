@@ -22,9 +22,9 @@ import org.apache.myfaces.util.LocaleUtils;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.DateTimeConverter;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.DateTimeConverter;
 import javax.servlet.jsp.JspException;
 import java.util.Locale;
 import java.util.TimeZone;

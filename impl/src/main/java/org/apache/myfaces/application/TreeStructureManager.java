@@ -20,9 +20,9 @@ package org.apache.myfaces.application;
 
 import org.apache.myfaces.util.lang.ClassUtils;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 
 import java.io.Serializable;
 import java.util.ArrayList;

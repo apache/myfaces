@@ -28,16 +28,16 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIMessages;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.component.html.HtmlMessages;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchExpressionHandler;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIMessages;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlMessages;
+import jakarta.faces.component.search.SearchExpressionContext;
+import jakarta.faces.component.search.SearchExpressionHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 import org.apache.myfaces.component.search.MyFacesSearchExpressionHints;
 import org.apache.myfaces.core.api.shared.ComponentUtils;
 

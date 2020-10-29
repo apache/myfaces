@@ -18,9 +18,9 @@ package org.apache.myfaces.context;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.faces.FactoryFinder;
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
 
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;

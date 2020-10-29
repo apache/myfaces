@@ -24,9 +24,9 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.PartialResponseWriter;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.PartialResponseWriter;
+import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.util.CDataEndEscapeFilterWriter;
 import org.apache.myfaces.util.IllegalXmlCharacterFilterWriter;

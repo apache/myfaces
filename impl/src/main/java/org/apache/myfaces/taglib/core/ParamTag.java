@@ -19,7 +19,7 @@
 package org.apache.myfaces.taglib.core;
 
 
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 import javax.el.ValueExpression;
 
 /**

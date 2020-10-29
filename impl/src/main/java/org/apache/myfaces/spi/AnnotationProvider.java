@@ -24,8 +24,8 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.FacesWrapper;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.context.ExternalContext;
 
 /**
  * This interface provide a way to override myfaces annotation scanning algorithm that

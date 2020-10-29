@@ -24,7 +24,7 @@ import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.faces.application.Resource;
+import jakarta.faces.application.Resource;
 import java.net.URL;
 import java.util.Locale;
 import java.util.logging.Level;

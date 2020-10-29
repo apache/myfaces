@@ -20,7 +20,7 @@ package org.apache.myfaces.component.search;
 
 import java.util.EnumSet;
 import java.util.Set;
-import javax.faces.component.search.SearchExpressionHint;
+import jakarta.faces.component.search.SearchExpressionHint;
 
 public class MyFacesSearchExpressionHints
 {

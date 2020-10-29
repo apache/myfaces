@@ -22,7 +22,7 @@ import java.util.Map;
 import org.apache.myfaces.util.lang.ClassUtils;
 
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 import javax.servlet.ServletResponseWrapper;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

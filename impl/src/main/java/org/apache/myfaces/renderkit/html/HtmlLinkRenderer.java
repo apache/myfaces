@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderers;
@@ -30,9 +30,9 @@ import org.apache.myfaces.renderkit.html.base.HtmlLinkRendererBase;
  * @version $Revision$ $Date$
  */
 @JSFRenderers(renderers = {
-    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.Link"),    
-    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Command", type = "javax.faces.Link"),
-    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.OutcomeTarget", type = "javax.faces.Link")
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Output", type = "jakarta.faces.Link"),    
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Command", type = "jakarta.faces.Link"),
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.OutcomeTarget", type = "jakarta.faces.Link")
 })
 public class HtmlLinkRenderer extends HtmlLinkRendererBase
 {    

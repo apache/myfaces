@@ -21,7 +21,7 @@ package org.apache.myfaces.cdi.bean;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
-import javax.faces.annotation.ManagedProperty;
+import jakarta.faces.annotation.ManagedProperty;
 import javax.inject.Inject;
 import javax.inject.Named;
 

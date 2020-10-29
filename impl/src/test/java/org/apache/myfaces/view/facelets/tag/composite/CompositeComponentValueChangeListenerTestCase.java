@@ -19,11 +19,11 @@
 package org.apache.myfaces.view.facelets.tag.composite;
 
 import javax.el.ExpressionFactory;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.UIViewRoot;
-import javax.faces.event.ValueChangeEvent;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.event.ValueChangeEvent;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.junit.Assert;

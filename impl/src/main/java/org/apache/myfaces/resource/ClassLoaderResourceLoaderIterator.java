@@ -34,7 +34,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.application.ResourceVisitOption;
+import jakarta.faces.application.ResourceVisitOption;
 import org.apache.myfaces.util.lang.ClassUtils;
 
 /**

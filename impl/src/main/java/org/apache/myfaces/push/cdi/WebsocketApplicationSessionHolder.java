@@ -30,7 +30,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 import javax.websocket.Session;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.push.WebsocketSessionClusterSerializedRestore;

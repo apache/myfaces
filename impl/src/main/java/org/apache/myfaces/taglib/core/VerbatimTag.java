@@ -23,8 +23,8 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyContent;
 

@@ -21,8 +21,8 @@ package org.apache.myfaces.spi.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.WeakHashMap;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import javax.naming.NamingException;
 
 import org.apache.myfaces.util.lang.ClassUtils;

@@ -22,10 +22,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
-import javax.faces.component.ActionSource;
-import javax.faces.component.UIComponent;
-import javax.faces.event.ActionListener;
-import javax.faces.webapp.UIComponentClassicTagBase;
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.webapp.UIComponentClassicTagBase;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 

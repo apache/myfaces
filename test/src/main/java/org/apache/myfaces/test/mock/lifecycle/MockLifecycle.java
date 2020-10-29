@@ -21,11 +21,11 @@ package org.apache.myfaces.test.mock.lifecycle;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.Lifecycle;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.lifecycle.Lifecycle;
 
 /**
  * <p>Mock implementation of <code>Lifecycle</code>.</p>

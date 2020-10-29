@@ -21,9 +21,9 @@ package org.apache.myfaces.test.mock;
 
 import java.io.IOException;
 
-import javax.faces.application.StateManager;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>Mock implementation of <code>StateManager</code>.</p>

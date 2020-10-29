@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.faces.context.FacesContext;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
 
 /**
  * <p>Mock implementation of <code>RenderKitFactory</code>.</p>

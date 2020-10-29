@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.test.component;
 
-import javax.faces.component.FacesComponent;
-import javax.faces.component.UIPanel;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.UIPanel;
 
 /**
  *

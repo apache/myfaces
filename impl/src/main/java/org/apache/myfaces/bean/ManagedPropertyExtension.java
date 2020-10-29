@@ -29,7 +29,7 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessManagedBean;
-import javax.faces.bean.ManagedProperty;
+import jakarta.faces.bean.ManagedProperty;
 import org.apache.myfaces.cdi.managedproperty.ManagedPropertyInfo;
 import org.apache.myfaces.cdi.managedproperty.ManagedPropertyProducer;
 

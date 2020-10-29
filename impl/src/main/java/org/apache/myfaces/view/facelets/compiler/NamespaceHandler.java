@@ -25,12 +25,12 @@ import javax.el.ELContext;
 
 import javax.el.ELException;
 import javax.el.FunctionMapper;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.FaceletHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
 import org.apache.myfaces.el.FacesELContext;
 
 import org.apache.myfaces.view.facelets.el.CompositeFunctionMapper;

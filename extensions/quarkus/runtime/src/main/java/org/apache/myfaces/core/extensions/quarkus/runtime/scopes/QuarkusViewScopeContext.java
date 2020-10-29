@@ -23,7 +23,7 @@ import java.lang.annotation.Annotation;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.CDI;
-import javax.faces.view.ViewScoped;
+import jakarta.faces.view.ViewScoped;
 
 import org.apache.myfaces.cdi.view.ViewScopeContext;
 

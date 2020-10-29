@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag.ui;
 
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTags;

@@ -23,17 +23,17 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.ProjectStage;
-import javax.faces.application.Resource;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.event.ListenerFor;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.render.Renderer;
-import javax.faces.view.Location;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.view.Location;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
@@ -51,7 +51,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.resource.Stylesheet")
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Output", type = "jakarta.faces.resource.Stylesheet")
 @ListenerFor(systemEventClass = PostAddToViewEvent.class)
 public class HtmlStylesheetRenderer extends Renderer implements
     ComponentSystemEventListener

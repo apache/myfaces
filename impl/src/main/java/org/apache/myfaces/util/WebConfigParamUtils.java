@@ -19,8 +19,8 @@
 package org.apache.myfaces.util;
 
 import org.apache.myfaces.util.lang.ClassUtils;
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
 
 /**
  * Utility class to handle web config parameters

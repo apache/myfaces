@@ -19,9 +19,9 @@
 package org.apache.myfaces.test;
 
 import javax.el.ELContext;
-import javax.faces.application.Application;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 import junit.framework.TestCase;
 

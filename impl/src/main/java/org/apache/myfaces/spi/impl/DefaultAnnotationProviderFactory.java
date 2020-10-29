@@ -24,8 +24,8 @@ import org.apache.myfaces.spi.AnnotationProvider;
 import org.apache.myfaces.spi.AnnotationProviderFactory;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;
 
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;

@@ -24,13 +24,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialResponseWriter;
-import javax.faces.context.PartialViewContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.event.PhaseId;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialResponseWriter;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.event.PhaseId;
 
 import org.apache.myfaces.test.mock.visit.MockVisitCallback;
 

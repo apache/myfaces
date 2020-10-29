@@ -22,7 +22,7 @@ package org.apache.myfaces.view.facelets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.faces.component.UIViewRoot;
+import jakarta.faces.component.UIViewRoot;
 
 import org.apache.myfaces.util.lang.FastWriter;
 import org.apache.myfaces.test.mock.MockResponseWriter;

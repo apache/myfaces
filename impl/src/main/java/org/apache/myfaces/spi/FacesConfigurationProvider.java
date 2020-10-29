@@ -20,7 +20,7 @@ package org.apache.myfaces.spi;
 
 import java.util.List;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.config.element.FacesConfig;
 

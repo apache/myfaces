@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.test.util;
 
-import javax.faces.application.Application;
+import jakarta.faces.application.Application;
 
 public class JsfVersion
 {

@@ -20,10 +20,10 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.StringWriter;
 
-import javax.faces.component.UIColumn;
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlPanelGrid;
+import jakarta.faces.component.UIColumn;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.component.html.HtmlPanelGrid;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

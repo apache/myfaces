@@ -20,10 +20,10 @@ package org.apache.myfaces.test.mock;
 
 import java.util.Collections;
 import java.util.Map;
-import javax.faces.context.FacesContext;
-import javax.faces.flow.Flow;
-import javax.faces.flow.FlowCallNode;
-import javax.faces.flow.FlowHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.FlowCallNode;
+import jakarta.faces.flow.FlowHandler;
 
 /**
  *

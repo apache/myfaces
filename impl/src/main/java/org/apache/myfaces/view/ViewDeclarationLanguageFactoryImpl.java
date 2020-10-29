@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewDeclarationLanguage;
-import javax.faces.view.ViewDeclarationLanguageFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.view.ViewDeclarationLanguageFactory;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageStrategy;

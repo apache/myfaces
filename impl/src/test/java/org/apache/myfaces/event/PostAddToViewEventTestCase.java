@@ -18,14 +18,14 @@
  */
 package org.apache.myfaces.event;
 
-import javax.faces.application.StateManager;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewRoot;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.PhaseId;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.PhaseId;
 
 import org.apache.myfaces.test.core.AbstractMyFacesRequestTestCase;
 import org.apache.myfaces.util.WebConfigParamUtils;

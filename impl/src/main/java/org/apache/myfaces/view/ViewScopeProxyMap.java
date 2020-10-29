@@ -22,9 +22,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import javax.faces.component.StateHolder;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PreDestroyViewMapEvent;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PreDestroyViewMapEvent;
 import org.apache.myfaces.spi.ViewScopeProvider;
 import org.apache.myfaces.spi.ViewScopeProviderFactory;
 

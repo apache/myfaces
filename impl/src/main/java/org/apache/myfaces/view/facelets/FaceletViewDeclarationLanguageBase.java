@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.view.facelets;
 
-import javax.faces.FactoryFinder;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.visit.VisitContextFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.render.RenderKitFactory;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.visit.VisitContextFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.RenderKitFactory;
 import org.apache.myfaces.view.ViewDeclarationLanguageBase;
 
 /**

@@ -19,8 +19,8 @@
 package org.apache.myfaces.application.viewstate;
 
 import java.io.UnsupportedEncodingException;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
 
 /**
  *

@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.el;
 
-import javax.faces.FacesWrapper;
+import jakarta.faces.FacesWrapper;
 
 /**
  * A exception wrapper that "knows" interesting info about place where problem occured.

@@ -22,11 +22,11 @@ package org.apache.myfaces.test.base.junit;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import javax.faces.FactoryFinder;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.component.UIViewRoot;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.render.RenderKitFactory;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.lifecycle.LifecycleFactory;
+import jakarta.faces.render.RenderKitFactory;
 import junit.framework.TestCase;
 
 import org.apache.myfaces.test.config.ResourceBundleVarNames;

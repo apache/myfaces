@@ -23,8 +23,8 @@ import java.text.MessageFormat;
 import java.util.Locale;
 
 import javax.el.ValueExpression;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 
 /** 
  * This class encapsulates a FacesMessage to evaluate the label

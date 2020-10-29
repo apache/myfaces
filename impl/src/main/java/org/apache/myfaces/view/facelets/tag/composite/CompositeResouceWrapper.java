@@ -26,9 +26,9 @@ import java.io.ObjectOutput;
 import java.net.URL;
 import java.util.Map;
 
-import javax.faces.FacesWrapper;
-import javax.faces.application.Resource;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.application.Resource;
+import jakarta.faces.context.FacesContext;
 
 /**
  * The value inside composite component attribute map with the key

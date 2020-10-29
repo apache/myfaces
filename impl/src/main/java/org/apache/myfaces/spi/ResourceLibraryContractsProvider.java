@@ -21,7 +21,7 @@ package org.apache.myfaces.spi;
 import java.io.IOException;
 import java.util.Set;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 
 /**
  * Locate resource library contracts, implementing the behavior described in 

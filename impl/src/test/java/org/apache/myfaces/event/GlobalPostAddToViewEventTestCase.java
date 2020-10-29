@@ -18,13 +18,13 @@
  */
 package org.apache.myfaces.event;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
-import javax.faces.component.html.HtmlHead;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.html.HtmlHead;
+import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
 import org.apache.myfaces.application.ApplicationImplEventManager;
 import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;
 

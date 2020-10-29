@@ -20,7 +20,7 @@ package org.apache.myfaces.core.extensions.quarkus.runtime.graal;
 
 import com.oracle.svm.core.annotate.Substitute;
 import com.oracle.svm.core.annotate.TargetClass;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 
 @TargetClass(PropertyDescriptorUtils.class)

@@ -22,7 +22,7 @@ package org.apache.myfaces.test.el;
 import javax.el.ELContext;
 import javax.el.PropertyNotWritableException;
 import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>Mock implementation of <code>ValueExpression</code> that wraps a variable.</p>

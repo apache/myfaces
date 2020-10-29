@@ -19,11 +19,11 @@
 
 package org.apache.myfaces.test.mock;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
-import javax.faces.event.PhaseId;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
+import jakarta.faces.event.PhaseId;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;

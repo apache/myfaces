@@ -19,15 +19,15 @@
 
 package org.apache.myfaces.view.facelets.tag.jsf.html;
 
-import javax.faces.component.UIColumn;
-import javax.faces.component.UIData;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlColumn;
-import javax.faces.component.html.HtmlDataTable;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.component.UIColumn;
+import jakarta.faces.component.UIData;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlColumn;
+import jakarta.faces.component.html.HtmlDataTable;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.renderkit.html.HtmlTableRenderer;
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;

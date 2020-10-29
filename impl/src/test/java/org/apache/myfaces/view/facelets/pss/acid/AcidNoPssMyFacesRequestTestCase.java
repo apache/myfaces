@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.pss.acid;
 
-import javax.faces.application.StateManager;
+import jakarta.faces.application.StateManager;
 
 public class AcidNoPssMyFacesRequestTestCase extends AcidMyFacesRequestTestCase
 {

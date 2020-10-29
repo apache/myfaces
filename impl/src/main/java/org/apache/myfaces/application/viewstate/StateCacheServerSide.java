@@ -36,11 +36,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import javax.faces.FacesWrapper;
+import jakarta.faces.FacesWrapper;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.lifecycle.ClientWindow;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.lifecycle.ClientWindow;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.renderkit.RendererUtils;

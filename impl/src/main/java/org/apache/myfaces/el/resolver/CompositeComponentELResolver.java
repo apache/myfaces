@@ -31,9 +31,9 @@ import java.util.WeakHashMap;
 import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.el.CompositeComponentExpressionHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.CompositeComponentExpressionHolder;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.lang.ClassUtils;

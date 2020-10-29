@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.renderkit;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.util.lang.StringUtils;
 

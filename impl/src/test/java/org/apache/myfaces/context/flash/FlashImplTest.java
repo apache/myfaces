@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.event.PhaseId;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.event.PhaseId;
 import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;

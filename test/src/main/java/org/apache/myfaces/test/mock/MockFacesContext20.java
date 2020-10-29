@@ -25,14 +25,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.FactoryFinder;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.PartialViewContext;
-import javax.faces.context.PartialViewContextFactory;
-import javax.faces.event.PhaseId;
-import javax.faces.lifecycle.Lifecycle;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.context.PartialViewContextFactory;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.lifecycle.Lifecycle;
 
 /**
  * <p>Mock implementation of <code>FacesContext</code> that includes the semantics

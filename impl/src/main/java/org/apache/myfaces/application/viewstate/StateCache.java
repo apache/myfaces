@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.application.viewstate;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * This class provides an interface to separate the state caching operations (saving/restoring)

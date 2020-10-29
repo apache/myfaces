@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.FaceletHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
 
 /**
  * 
@@ -88,7 +88,7 @@ class CompilationUnit
         {
             fh[i] = ((CompilationUnit) this.children.get(i)).createFaceletHandler();
         }
-        return new javax.faces.view.facelets.CompositeFaceletHandler(fh);
+        return new jakarta.faces.view.facelets.CompositeFaceletHandler(fh);
     }
 
 }

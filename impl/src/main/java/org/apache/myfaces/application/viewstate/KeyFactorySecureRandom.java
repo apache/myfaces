@@ -20,8 +20,8 @@ package org.apache.myfaces.application.viewstate;
 
 import org.apache.myfaces.util.token.SessionIdGenerator;
 import java.util.Map;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.renderkit.RendererUtils;

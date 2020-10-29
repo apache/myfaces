@@ -33,8 +33,8 @@ import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 import javax.el.ResourceBundleELResolver;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.component.UIInput;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
 import org.apache.myfaces.config.RuntimeConfig;

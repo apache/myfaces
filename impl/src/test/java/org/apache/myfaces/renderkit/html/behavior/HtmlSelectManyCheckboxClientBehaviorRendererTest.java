@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.renderkit.html.behavior;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UISelectItem;
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.component.html.HtmlSelectManyCheckbox;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UISelectItem;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlSelectManyCheckbox;
 
 import org.junit.Assert;
 

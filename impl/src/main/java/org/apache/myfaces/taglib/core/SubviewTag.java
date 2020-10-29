@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.taglib.core;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.UIOutput;
-import javax.faces.context.FacesContext;
-import javax.faces.webapp.UIComponentELTag;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.webapp.UIComponentELTag;
 
 import org.apache.myfaces.view.ServletViewResponseWrapper;
 

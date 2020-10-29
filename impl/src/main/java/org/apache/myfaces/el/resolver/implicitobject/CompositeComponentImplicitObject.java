@@ -22,8 +22,8 @@ import java.beans.FeatureDescriptor;
 import java.util.List;
 
 import javax.el.ELContext;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
 

@@ -25,13 +25,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.FacesException;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-import javax.faces.event.SystemEventListenerHolder;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+import jakarta.faces.event.SystemEventListenerHolder;
 
 public class ApplicationImplEventManager
 {

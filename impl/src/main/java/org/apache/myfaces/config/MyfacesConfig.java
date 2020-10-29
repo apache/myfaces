@@ -21,11 +21,11 @@ package org.apache.myfaces.config;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.spi.InjectionProvider;

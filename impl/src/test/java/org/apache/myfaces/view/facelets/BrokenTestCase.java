@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets;
 
-import javax.faces.component.UIViewRoot;
+import jakarta.faces.component.UIViewRoot;
 
 import org.junit.Test;
 

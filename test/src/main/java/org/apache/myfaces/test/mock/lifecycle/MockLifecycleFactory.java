@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.lifecycle.LifecycleFactory;
 
 /**
  * <p>Mock implementation of <code>LifecycleFactory</code>.</p>

@@ -28,9 +28,9 @@ import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 import javax.el.ValueExpression;
 import javax.el.ValueReference;
-import javax.faces.FacesWrapper;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
 

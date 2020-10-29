@@ -27,16 +27,16 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.component.NamingContainer;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.UniqueIdVendor;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagAttributeException;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.UniqueIdVendor;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagAttributeException;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.ComponentState;

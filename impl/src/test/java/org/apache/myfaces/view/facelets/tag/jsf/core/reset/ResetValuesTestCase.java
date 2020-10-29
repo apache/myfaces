@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf.core.reset;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
 import org.junit.Assert;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.junit.Test;

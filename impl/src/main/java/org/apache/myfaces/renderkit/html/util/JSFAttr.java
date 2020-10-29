@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html.util;
 
-import javax.faces.event.ActionListener;
+import jakarta.faces.event.ActionListener;
 
 
 /**

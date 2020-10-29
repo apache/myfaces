@@ -29,9 +29,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;

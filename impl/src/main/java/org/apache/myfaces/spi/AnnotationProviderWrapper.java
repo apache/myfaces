@@ -24,8 +24,8 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.FacesWrapper;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.context.ExternalContext;
 
 /**
  * Wrapper class that all AnnotationProvider instances should extend. This is used

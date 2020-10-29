@@ -24,15 +24,15 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.faces.FactoryFinder;
+import jakarta.faces.FactoryFinder;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.UniqueIdVendor;
-import javax.faces.component.visit.VisitContextFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.view.AttachedObjectHandler;
-import javax.faces.view.EditableValueHolderAttachedObjectHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.UniqueIdVendor;
+import jakarta.faces.component.visit.VisitContextFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.AttachedObjectHandler;
+import jakarta.faces.view.EditableValueHolderAttachedObjectHandler;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.lang.Lazy;

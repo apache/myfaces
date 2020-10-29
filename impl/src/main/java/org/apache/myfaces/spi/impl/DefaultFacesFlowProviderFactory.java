@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.myfaces.spi.FacesFlowProvider;
 import org.apache.myfaces.spi.FacesFlowProviderFactory;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 import org.apache.myfaces.flow.cdi.DefaultCDIFacesFlowProvider;
 import org.apache.myfaces.flow.impl.DefaultFacesFlowProvider;
 import org.apache.myfaces.spi.ServiceProviderFinderFactory;

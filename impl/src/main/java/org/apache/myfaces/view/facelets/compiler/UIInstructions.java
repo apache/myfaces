@@ -21,7 +21,7 @@ package org.apache.myfaces.view.facelets.compiler;
 import java.io.IOException;
 import java.util.Arrays;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.view.facelets.el.ELText;
 

@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.renderkit.html.base.HtmlSecretRendererBase;
@@ -28,7 +28,7 @@ import org.apache.myfaces.renderkit.html.base.HtmlSecretRendererBase;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Input", type = "javax.faces.Secret")
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Input", type = "jakarta.faces.Secret")
 public class HtmlSecretRenderer extends HtmlSecretRendererBase
 {
     @Override

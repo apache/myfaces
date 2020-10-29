@@ -21,8 +21,8 @@ package org.apache.myfaces.core.extensions.quarkus.runtime;
 import java.util.Map;
 
 import javax.enterprise.inject.spi.CDI;
-import javax.faces.annotation.FacesConfig;
-import javax.faces.model.DataModel;
+import jakarta.faces.annotation.FacesConfig;
+import jakarta.faces.model.DataModel;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;

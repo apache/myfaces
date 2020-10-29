@@ -27,23 +27,23 @@ import java.util.List;
 import java.util.Map;
 
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.FacesWrapper;
-import javax.faces.component.ContextCallback;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.event.FacesEvent;
-import javax.faces.event.FacesListener;
-import javax.faces.event.SystemEvent;
-import javax.faces.event.SystemEventListener;
-import javax.faces.render.Renderer;
+import jakarta.faces.FacesException;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.component.ContextCallback;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.event.FacesEvent;
+import jakarta.faces.event.FacesListener;
+import jakarta.faces.event.SystemEvent;
+import jakarta.faces.event.SystemEventListener;
+import jakarta.faces.render.Renderer;
 
 /**
  * This class has two usages:

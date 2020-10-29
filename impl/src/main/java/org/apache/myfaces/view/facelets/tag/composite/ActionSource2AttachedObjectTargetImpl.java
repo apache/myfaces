@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
-import javax.faces.view.ActionSource2AttachedObjectTarget;
+import jakarta.faces.view.ActionSource2AttachedObjectTarget;
 
 /**
  * 

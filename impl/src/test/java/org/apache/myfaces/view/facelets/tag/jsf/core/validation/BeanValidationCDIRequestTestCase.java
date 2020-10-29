@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf.core.validation;
 
-import javax.faces.application.StateManager;
-import javax.faces.component.UIInput;
-import javax.faces.validator.BeanValidator;
-import javax.faces.validator.Validator;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.validator.BeanValidator;
+import jakarta.faces.validator.Validator;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.junit.Assert;

@@ -19,15 +19,15 @@
 package org.apache.myfaces.view.facelets.tag.jsf;
 
 import javax.el.MethodExpression;
-import javax.faces.component.ActionSource;
-import javax.faces.component.ActionSource2;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.MethodExpressionActionListener;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.MetaRule;
-import javax.faces.view.facelets.Metadata;
-import javax.faces.view.facelets.MetadataTarget;
-import javax.faces.view.facelets.TagAttribute;
+import jakarta.faces.component.ActionSource;
+import jakarta.faces.component.ActionSource2;
+import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.MethodExpressionActionListener;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRule;
+import jakarta.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.MetadataTarget;
+import jakarta.faces.view.facelets.TagAttribute;
 
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 

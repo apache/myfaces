@@ -20,12 +20,12 @@ package org.apache.myfaces.view.facelets.tag.composite;
 
 import java.io.IOException;
 import java.util.Map;
-import javax.faces.component.StateHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ComponentSystemEventListener;
-import javax.faces.view.facelets.Facelet;
+import jakarta.faces.component.StateHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.ComponentSystemEventListener;
+import jakarta.faces.view.facelets.Facelet;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.view.facelets.AbstractFacelet;
 import org.apache.myfaces.view.facelets.DynamicComponentRefreshTransientBuildEvent;

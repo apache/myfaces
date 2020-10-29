@@ -19,7 +19,7 @@
 package org.apache.myfaces.view.facelets.pool.impl;
 
 import java.lang.ref.SoftReference;
-import javax.faces.component.UIViewRoot;
+import jakarta.faces.component.UIViewRoot;
 import org.apache.myfaces.view.facelets.pool.RestoreViewFromPoolResult;
 import org.apache.myfaces.view.facelets.pool.ViewEntry;
 

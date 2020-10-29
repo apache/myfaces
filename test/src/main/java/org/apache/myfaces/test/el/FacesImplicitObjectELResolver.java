@@ -27,9 +27,9 @@ import java.util.Map;
 import javax.el.ELContext;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p><code>ELResolver</code> implementation that accesses implicit objects

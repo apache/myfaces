@@ -29,9 +29,9 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
-import javax.faces.push.PushContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.push.PushContext;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
 public class PushContextImpl implements PushContext

@@ -36,8 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;

@@ -27,14 +27,14 @@ import java.util.Map;
 
 import javax.el.ELException;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagException;
-import javax.faces.view.facelets.TagHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagException;
+import jakarta.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;

@@ -17,7 +17,7 @@
 package org.apache.myfaces.application.viewstate;
 
 import java.util.Map;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.spi.ViewScopeProvider;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;

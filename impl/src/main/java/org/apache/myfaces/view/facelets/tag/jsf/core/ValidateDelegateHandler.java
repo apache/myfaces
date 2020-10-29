@@ -18,12 +18,12 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf.core;
 
-import javax.faces.validator.Validator;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.MetaRuleset;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.ValidatorConfig;
-import javax.faces.view.facelets.ValidatorHandler;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.MetaRuleset;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.ValidatorConfig;
+import jakarta.faces.view.facelets.ValidatorHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;

@@ -37,8 +37,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ExpressionFactory;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
 
 public class ClassUtils
 {

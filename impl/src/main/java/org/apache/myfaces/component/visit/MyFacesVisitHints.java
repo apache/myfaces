@@ -21,7 +21,7 @@ package org.apache.myfaces.component.visit;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
-import javax.faces.component.visit.VisitHint;
+import jakarta.faces.component.visit.VisitHint;
 
 
 public class MyFacesVisitHints

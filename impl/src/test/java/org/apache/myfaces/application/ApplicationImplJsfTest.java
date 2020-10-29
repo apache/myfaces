@@ -21,12 +21,12 @@ package org.apache.myfaces.application;
 import java.beans.BeanInfo;
 
 import javax.el.ExpressionFactory;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationWrapper;
-import javax.faces.application.Resource;
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.FaceletContext;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationWrapper;
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;

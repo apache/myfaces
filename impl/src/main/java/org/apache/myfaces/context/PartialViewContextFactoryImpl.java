@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.context;
 
-import javax.faces.FactoryFinder;
-import javax.faces.component.visit.VisitContextFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
-import javax.faces.context.PartialViewContextFactory;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.component.visit.VisitContextFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.context.PartialViewContextFactory;
 
 import org.apache.myfaces.context.servlet.PartialViewContextImpl;
 

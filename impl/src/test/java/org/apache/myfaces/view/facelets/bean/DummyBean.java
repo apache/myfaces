@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.view.facelets.bean;
 
-import javax.faces.event.ActionEvent;
+import jakarta.faces.event.ActionEvent;
 
 public class DummyBean
 {
@@ -33,12 +33,12 @@ public class DummyBean
         System.out.println("actionListener");
     }
 
-    public void validate(javax.faces.context.FacesContext context, javax.faces.component.UIComponent component, java.lang.Object value)
+    public void validate(jakarta.faces.context.FacesContext context, jakarta.faces.component.UIComponent component, java.lang.Object value)
     {
         System.out.println("validate");
     }
     
-    public void valueChange(javax.faces.event.ValueChangeEvent evt)
+    public void valueChange(jakarta.faces.event.ValueChangeEvent evt)
     {
         System.out.println("valueChange");
     }

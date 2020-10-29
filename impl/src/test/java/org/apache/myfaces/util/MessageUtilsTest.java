@@ -18,7 +18,7 @@ package org.apache.myfaces.util;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.faces.application.FacesMessage;
+import jakarta.faces.application.FacesMessage;
 
 import org.apache.myfaces.util.MessageUtils;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;

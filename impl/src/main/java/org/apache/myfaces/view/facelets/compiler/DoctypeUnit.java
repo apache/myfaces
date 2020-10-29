@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.compiler;
 
-import javax.faces.view.facelets.CompositeFaceletHandler;
-import javax.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.CompositeFaceletHandler;
+import jakarta.faces.view.facelets.FaceletHandler;
 import org.apache.myfaces.view.facelets.el.ELText;
 
 /**

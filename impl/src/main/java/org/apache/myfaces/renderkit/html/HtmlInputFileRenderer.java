@@ -19,7 +19,7 @@
 
 package org.apache.myfaces.renderkit.html;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.renderkit.html.base.HtmlInputFileRendererBase;
@@ -28,7 +28,7 @@ import org.apache.myfaces.renderkit.html.base.HtmlInputFileRendererBase;
  * @author Werner Punz (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Input", type = "javax.faces.File")
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Input", type = "jakarta.faces.File")
 public class HtmlInputFileRenderer extends HtmlInputFileRendererBase
 {
     @Override

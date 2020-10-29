@@ -19,9 +19,9 @@
 package org.apache.myfaces.view.facelets.tag;
 
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagHandler;
 
 /**
  * Delegate class for TagLibraries

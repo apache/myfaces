@@ -20,10 +20,10 @@ package org.apache.myfaces.view.facelets.tag.jstl.core;
 
 import java.util.Map;
 
-import javax.faces.application.StateManager;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.event.PhaseId;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.event.PhaseId;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.view.facelets.FaceletTestCase;

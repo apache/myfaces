@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.view.facelets;
 
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.view.Location;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.Location;
 
 public class LocationAwareFacesException extends FacesException implements LocationAware
 {

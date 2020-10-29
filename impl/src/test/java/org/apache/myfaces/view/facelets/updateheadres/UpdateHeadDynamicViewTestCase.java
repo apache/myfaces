@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.updateheadres;
 
-import javax.faces.application.StateManager;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 
 import org.apache.myfaces.config.MyfacesConfig;

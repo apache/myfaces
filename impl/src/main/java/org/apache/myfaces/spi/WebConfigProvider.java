@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.spi;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 
 /**
  * SPI to provide a custom WebConfigProvider implementation.

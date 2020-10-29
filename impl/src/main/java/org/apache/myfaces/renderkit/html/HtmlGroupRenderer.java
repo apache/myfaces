@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.renderkit.html.base.HtmlGroupRendererBase;
@@ -29,7 +29,7 @@ import org.apache.myfaces.renderkit.html.base.HtmlGroupRendererBase;
  * @author Manfred Geiler
  * @version $Revision$ $Date$
  */
-@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Panel", type = "javax.faces.Group")
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Panel", type = "jakarta.faces.Group")
 public class HtmlGroupRenderer extends HtmlGroupRendererBase
 {
     @Override

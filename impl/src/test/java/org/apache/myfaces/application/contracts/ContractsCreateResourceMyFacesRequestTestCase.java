@@ -20,10 +20,10 @@ package org.apache.myfaces.application.contracts;
 
 import java.util.List;
 import java.util.Set;
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewResource;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewResource;
 
 import org.apache.myfaces.config.RuntimeConfig;
 

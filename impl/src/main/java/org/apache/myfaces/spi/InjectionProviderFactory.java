@@ -23,9 +23,9 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Map;
 
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.spi.impl.DefaultInjectionProviderFactory;
 
 import org.apache.myfaces.spi.impl.SpiUtils;

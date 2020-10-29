@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.test.component;
 
-import javax.faces.component.FacesComponent;
-import javax.faces.component.html.HtmlInputText;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.html.HtmlInputText;
 
 @FacesComponent(tagName = "inputText", createTag = true, namespace = "http://test.com/test")
 public class InputTextWithClass extends HtmlInputText {

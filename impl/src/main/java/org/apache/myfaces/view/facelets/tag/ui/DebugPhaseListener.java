@@ -26,16 +26,16 @@ import java.util.Map;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseEvent;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PhaseListener;
 
 import org.apache.myfaces.renderkit.ErrorPageWriter;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;

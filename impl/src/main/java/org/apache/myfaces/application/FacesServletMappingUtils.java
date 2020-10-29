@@ -24,10 +24,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.faces.context.ExternalContext;
-
-import javax.faces.context.FacesContext;
-import javax.faces.webapp.FacesServlet;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.webapp.FacesServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 import org.apache.myfaces.config.MyfacesConfig;

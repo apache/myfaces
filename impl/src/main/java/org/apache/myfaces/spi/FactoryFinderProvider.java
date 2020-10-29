@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.spi;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 /**
- * Provide an interface to override {@link javax.faces.FactoryFinder} class
+ * Provide an interface to override {@link jakarta.faces.FactoryFinder} class
  * methods. 
  * 
  * @since 2.0.5

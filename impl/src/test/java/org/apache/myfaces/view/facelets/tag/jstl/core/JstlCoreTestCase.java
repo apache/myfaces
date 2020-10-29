@@ -26,14 +26,14 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.el.ExpressionFactory;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlCommandButton;
-import javax.faces.component.html.HtmlForm;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlCommandButton;
+import jakarta.faces.component.html.HtmlForm;
+import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;

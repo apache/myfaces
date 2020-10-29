@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 import org.apache.myfaces.test.MyFacesAsserts;
 import org.apache.myfaces.test.FacesTestCase;

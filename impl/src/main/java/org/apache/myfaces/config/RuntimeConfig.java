@@ -34,9 +34,9 @@ import java.util.logging.Logger;
 
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
-import javax.faces.component.search.SearchKeywordResolver;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.search.SearchKeywordResolver;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.FaceletsProcessing;

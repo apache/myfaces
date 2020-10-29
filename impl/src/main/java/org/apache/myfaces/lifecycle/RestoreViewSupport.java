@@ -20,17 +20,17 @@ package org.apache.myfaces.lifecycle;
 
 import java.util.logging.Logger;
 
-import javax.faces.FactoryFinder;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitContextFactory;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PostRestoreStateEvent;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitContextFactory;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PostRestoreStateEvent;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.render.ResponseStateManager;
 import org.apache.myfaces.component.visit.MyFacesVisitHints;
 
 /**

@@ -24,18 +24,18 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.component.FacesComponent;
-import javax.faces.component.behavior.FacesBehavior;
-import javax.faces.context.ExternalContext;
-import javax.faces.convert.FacesConverter;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.NamedEvent;
-import javax.faces.render.FacesBehaviorRenderer;
-import javax.faces.render.FacesRenderer;
-import javax.faces.render.RenderKitFactory;
-import javax.faces.validator.FacesValidator;
-import javax.faces.view.facelets.FaceletsResourceResolver;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.behavior.FacesBehavior;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.convert.FacesConverter;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.NamedEvent;
+import jakarta.faces.render.FacesBehaviorRenderer;
+import jakarta.faces.render.FacesRenderer;
+import jakarta.faces.render.RenderKitFactory;
+import jakarta.faces.validator.FacesValidator;
+import jakarta.faces.view.facelets.FaceletsResourceResolver;
 
 import org.apache.myfaces.config.impl.element.ApplicationImpl;
 import org.apache.myfaces.config.impl.element.BehaviorImpl;
@@ -50,11 +50,11 @@ import org.apache.myfaces.util.lang.StringUtils;
  * Configure all annotations that needs to be defined at startup.
  *
  * <ul>
- * <li>{@link javax.faces.component.FacesComponent}</li>
- * <li>{@link javax.faces.convert.FacesConverter}</li>
- * <li>{@link javax.faces.validator.FacesValidator}</li>
- * <li>{@link javax.faces.render.FacesRenderer}</li>
- * <li>{@link javax.faces.render.FacesBehaviorRenderer}</li>
+ * <li>{@link jakarta.faces.component.FacesComponent}</li>
+ * <li>{@link jakarta.faces.convert.FacesConverter}</li>
+ * <li>{@link jakarta.faces.validator.FacesValidator}</li>
+ * <li>{@link jakarta.faces.render.FacesRenderer}</li>
+ * <li>{@link jakarta.faces.render.FacesBehaviorRenderer}</li>
  * </ul>
  * <p>
  * Some parts copied from org.apache.shale.tiger.view.faces.LifecycleListener2
@@ -315,7 +315,7 @@ public class AnnotationConfigurator
             if (facesBehavior != null)
             {
                 // Can only apply @FacesBehavior to Behavior implementors.
-                if (!javax.faces.component.behavior.Behavior.class.isAssignableFrom(clazz))
+                if (!jakarta.faces.component.behavior.Behavior.class.isAssignableFrom(clazz))
                 {
                     // Just log this.  We'll catch it later in the runtime.
                     if (log.isLoggable(Level.WARNING))

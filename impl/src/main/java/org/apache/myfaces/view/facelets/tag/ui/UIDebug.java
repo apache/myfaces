@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIComponentBase;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;

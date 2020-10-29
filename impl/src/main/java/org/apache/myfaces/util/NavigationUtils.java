@@ -24,8 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.faces.application.NavigationCase;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.config.element.NavigationRule;
 
 /**

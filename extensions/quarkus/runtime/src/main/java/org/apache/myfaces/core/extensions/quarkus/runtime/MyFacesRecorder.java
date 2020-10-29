@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.faces.model.DataModel;
+import jakarta.faces.model.DataModel;
 
 import org.apache.myfaces.flow.FlowReference;
 import org.apache.myfaces.util.lang.ClassUtils;

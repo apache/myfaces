@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.pool;
 
-import javax.faces.application.ResourceDependency;
-import javax.faces.component.FacesComponent;
-import javax.faces.component.UIComponentBase;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.UIComponentBase;
 
 /**
  *

@@ -18,8 +18,8 @@ package org.apache.myfaces.context;
 
 import java.util.Map;
 
-import javax.faces.FactoryFinder;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.context.servlet.FacesContextImpl;
 import org.apache.myfaces.test.base.junit.AbstractJsfTestCase;
 import org.junit.Assert;

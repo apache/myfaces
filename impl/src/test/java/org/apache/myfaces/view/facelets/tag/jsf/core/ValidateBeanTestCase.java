@@ -21,10 +21,10 @@ package org.apache.myfaces.view.facelets.tag.jsf.core;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
-import javax.faces.component.UIInput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.validator.BeanValidator;
-import javax.faces.validator.Validator;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.validator.BeanValidator;
+import jakarta.faces.validator.Validator;
 
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.util.lang.Lazy;

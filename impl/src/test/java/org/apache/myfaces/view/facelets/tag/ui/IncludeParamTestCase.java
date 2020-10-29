@@ -20,12 +20,12 @@
 package org.apache.myfaces.view.facelets.tag.ui;
 
 import javax.el.ExpressionFactory;
-import javax.faces.component.UINamingContainer;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.renderkit.html.HtmlCompositeComponentRenderer;
 import org.apache.myfaces.renderkit.html.HtmlCompositeFacetRenderer;

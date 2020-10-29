@@ -25,12 +25,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.context.ExceptionHandler;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ExceptionQueuedEvent;
-import javax.faces.event.ExceptionQueuedEventContext;
-import javax.faces.event.SystemEvent;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ExceptionQueuedEvent;
+import jakarta.faces.event.ExceptionQueuedEventContext;
+import jakarta.faces.event.SystemEvent;
 import org.apache.myfaces.util.lang.Assert;
 
 /**

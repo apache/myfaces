@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.config.element.NavigationCase;
 import org.apache.myfaces.config.element.NavigationRule;

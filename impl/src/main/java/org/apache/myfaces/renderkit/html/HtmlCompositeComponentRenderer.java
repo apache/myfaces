@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
@@ -33,7 +33,7 @@ import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.NamingContainer", type = "javax.faces.Composite")
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.NamingContainer", type = "jakarta.faces.Composite")
 public class HtmlCompositeComponentRenderer extends HtmlRenderer
 {
     private static final Logger log = Logger.getLogger(HtmlCompositeComponentRenderer.class.getName());

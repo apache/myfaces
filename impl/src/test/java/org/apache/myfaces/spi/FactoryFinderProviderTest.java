@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.spi;
 
-import javax.faces.FactoryFinder;
+import jakarta.faces.FactoryFinder;
 
 import org.junit.After;
 import org.junit.Assert;

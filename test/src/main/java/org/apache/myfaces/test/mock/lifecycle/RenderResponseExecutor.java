@@ -21,11 +21,11 @@ package org.apache.myfaces.test.mock.lifecycle;
 
 import java.io.IOException;
 
-import javax.faces.FacesException;
-import javax.faces.application.Application;
-import javax.faces.application.ViewHandler;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
 
 /**
  * Implements the lifecycle as described in Spec. 1.0 PFD Chapter 2

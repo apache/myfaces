@@ -23,18 +23,18 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.application.Application;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PostRenderViewEvent;
-import javax.faces.event.PreRenderViewEvent;
-import javax.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PostRenderViewEvent;
+import jakarta.faces.event.PreRenderViewEvent;
+import jakarta.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.config.MyfacesConfig;
 

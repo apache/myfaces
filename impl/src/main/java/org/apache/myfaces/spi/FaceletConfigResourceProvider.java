@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 
 /**
  * Locate facelet taglib xml files through classpath. These

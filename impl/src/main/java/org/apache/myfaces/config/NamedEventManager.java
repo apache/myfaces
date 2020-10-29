@@ -22,13 +22,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.PostAddToViewEvent;
-import javax.faces.event.PostRenderViewEvent;
-import javax.faces.event.PostValidateEvent;
-import javax.faces.event.PreRenderComponentEvent;
-import javax.faces.event.PreRenderViewEvent;
-import javax.faces.event.PreValidateEvent;
+import jakarta.faces.event.ComponentSystemEvent;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.event.PostRenderViewEvent;
+import jakarta.faces.event.PostValidateEvent;
+import jakarta.faces.event.PreRenderComponentEvent;
+import jakarta.faces.event.PreRenderViewEvent;
+import jakarta.faces.event.PreValidateEvent;
 
 /**
  * The NamedEventManager class is used to keep map a short name to ComponentSystemEvent classes

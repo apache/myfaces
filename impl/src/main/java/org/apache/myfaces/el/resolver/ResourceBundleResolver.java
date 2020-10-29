@@ -28,8 +28,8 @@ import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.config.RuntimeConfig;
 

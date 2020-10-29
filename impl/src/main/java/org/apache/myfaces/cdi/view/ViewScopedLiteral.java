@@ -19,7 +19,7 @@
 package org.apache.myfaces.cdi.view;
 
 import javax.enterprise.util.AnnotationLiteral;
-import javax.faces.view.ViewScoped;
+import jakarta.faces.view.ViewScoped;
 
 /**
  * Literal for {@link ViewScoped}

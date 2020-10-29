@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets.tag.jsf.core.reset;
 
 import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.event.ActionEvent;
+import jakarta.faces.event.ActionEvent;
 import javax.inject.Named;
 
 /**

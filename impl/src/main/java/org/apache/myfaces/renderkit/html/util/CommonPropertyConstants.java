@@ -21,7 +21,7 @@ package org.apache.myfaces.renderkit.html.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 
 /**
  * This is a list of the most common properties used by a JSF html

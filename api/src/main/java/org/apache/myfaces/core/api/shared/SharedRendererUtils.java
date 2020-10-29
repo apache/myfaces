@@ -33,14 +33,14 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UISelectMany;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
-import javax.faces.model.SelectItem;
-import javax.faces.model.SelectItemGroup;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UISelectMany;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.ConverterException;
+import jakarta.faces.model.SelectItem;
+import jakarta.faces.model.SelectItemGroup;
 
 public class SharedRendererUtils
 {

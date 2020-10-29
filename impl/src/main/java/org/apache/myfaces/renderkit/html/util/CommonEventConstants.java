@@ -20,7 +20,7 @@ package org.apache.myfaces.renderkit.html.util;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 
 public class CommonEventConstants
 {

@@ -22,8 +22,8 @@ package org.apache.myfaces.push;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import javax.faces.component.UIOutput;
-import javax.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
@@ -32,7 +32,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  */
 @JSFComponent(
         clazz = "org.apache.myfaces.push.WebsocketComponent",
-        family = "javax.faces.Output",
+        family = "jakarta.faces.Output",
         type = "org.apache.myfaces.WebsocketComponent",
         defaultRendererType="org.apache.myfaces.WebsocketComponent")
 public abstract class AbstractWebsocketComponent extends UIOutput implements ClientBehaviorHolder

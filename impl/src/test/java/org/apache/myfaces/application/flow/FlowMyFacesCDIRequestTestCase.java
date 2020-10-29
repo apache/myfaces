@@ -19,11 +19,11 @@
 package org.apache.myfaces.application.flow;
 
 import javax.enterprise.context.ContextNotActiveException;
-import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.NavigationCase;
-import javax.faces.application.StateManager;
-import javax.faces.component.UICommand;
-import javax.faces.flow.Flow;
+import jakarta.faces.application.ConfigurableNavigationHandler;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.flow.Flow;
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.junit.Assert;

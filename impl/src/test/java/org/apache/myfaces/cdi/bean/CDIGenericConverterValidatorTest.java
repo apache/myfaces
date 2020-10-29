@@ -20,10 +20,10 @@
 package org.apache.myfaces.cdi.bean;
 
 import javax.el.ExpressionFactory;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIOutput;
-import javax.faces.convert.Converter;
-import javax.faces.validator.ValidatorException;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.validator.ValidatorException;
 
 import org.apache.myfaces.test.core.AbstractMyFacesCDIRequestTestCase;
 import org.junit.Assert;

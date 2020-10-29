@@ -19,7 +19,7 @@
 package org.apache.myfaces.flow.builder;
 
 import javax.el.ValueExpression;
-import javax.faces.flow.builder.FlowCallBuilder;
+import jakarta.faces.flow.builder.FlowCallBuilder;
 import org.apache.myfaces.flow.FlowCallNodeImpl;
 import org.apache.myfaces.flow.FlowImpl;
 import org.apache.myfaces.flow.ParameterImpl;

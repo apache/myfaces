@@ -19,8 +19,8 @@
 package org.apache.myfaces.spi.impl;
 
 import java.util.Map;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.spi.WebConfigProvider;
 import org.apache.myfaces.util.WebXmlParser;

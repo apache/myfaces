@@ -25,7 +25,7 @@ import java.io.ObjectOutput;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.el.ValueReference;
-import javax.faces.FacesWrapper;
+import jakarta.faces.FacesWrapper;
 
 public class CacheableValueExpressionWrapper extends ValueExpression
     implements FacesWrapper<ValueExpression>, Externalizable, CacheableValueExpression

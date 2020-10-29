@@ -28,7 +28,7 @@ import java.util.Map.Entry;
 import javax.el.ELContext;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.test.mock.MockApplication;
 
 /**

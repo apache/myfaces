@@ -27,15 +27,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.faces.component.UIColumn;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIData;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.component.html.HtmlColumn;
-import javax.faces.component.html.HtmlDataTable;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.component.UIColumn;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIData;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlColumn;
+import jakarta.faces.component.html.HtmlDataTable;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;

@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.view.AttachedObjectTarget;
+import jakarta.faces.view.AttachedObjectTarget;
 
 /**
  * Implementation of BeanInfo object used by composite components.

@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.el.ValueExpression;
-import javax.faces.flow.builder.NavigationCaseBuilder;
+import jakarta.faces.flow.builder.NavigationCaseBuilder;
 import org.apache.myfaces.flow.FlowImpl;
 import org.apache.myfaces.flow.NavigationCaseImpl;
 

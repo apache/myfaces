@@ -20,11 +20,11 @@
 package org.apache.myfaces.component.search;
 
 import java.util.List;
-import javax.faces.component.UIComponent;
-import javax.faces.component.search.UntargetableComponent;
-import javax.faces.component.search.SearchExpressionContext;
-import javax.faces.component.search.SearchKeywordContext;
-import javax.faces.component.search.SearchKeywordResolver;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.search.UntargetableComponent;
+import jakarta.faces.component.search.SearchExpressionContext;
+import jakarta.faces.component.search.SearchKeywordContext;
+import jakarta.faces.component.search.SearchKeywordResolver;
 
 /**
  *

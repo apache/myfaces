@@ -21,7 +21,7 @@ package org.apache.myfaces.resource;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.lang.ConcurrentLRUCache;

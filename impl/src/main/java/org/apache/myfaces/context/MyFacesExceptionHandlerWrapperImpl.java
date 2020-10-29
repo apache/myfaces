@@ -26,16 +26,16 @@ import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.FacesException;
-import javax.faces.application.ProjectStage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExceptionHandlerWrapper;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ExceptionQueuedEvent;
-import javax.faces.event.ExceptionQueuedEventContext;
-import javax.faces.event.SystemEvent;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExceptionHandlerWrapper;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ExceptionQueuedEvent;
+import jakarta.faces.event.ExceptionQueuedEventContext;
+import jakarta.faces.event.SystemEvent;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.myfaces.lifecycle.ViewNotFoundException;

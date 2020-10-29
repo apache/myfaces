@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.lifecycle;
 
-import javax.faces.component.UIViewRoot;
+import jakarta.faces.component.UIViewRoot;
 
 import org.junit.Assert;
 

@@ -21,9 +21,9 @@ package org.apache.myfaces.spi;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import javax.faces.FacesException;
-import javax.faces.FacesWrapper;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.context.ExternalContext;
 import org.apache.myfaces.spi.impl.DefaultStateCacheProviderFactory;
 import org.apache.myfaces.spi.impl.SpiUtils;
 

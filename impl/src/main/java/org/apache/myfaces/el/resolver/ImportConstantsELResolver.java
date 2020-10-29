@@ -35,10 +35,10 @@ import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
-import javax.faces.component.UIImportConstants;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewMetadata;
+import jakarta.faces.component.UIImportConstants;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewMetadata;
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 

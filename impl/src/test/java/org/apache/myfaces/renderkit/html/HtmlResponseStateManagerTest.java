@@ -21,7 +21,7 @@ package org.apache.myfaces.renderkit.html;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.render.ResponseStateManager;
 import static junit.framework.TestCase.assertEquals;
 import org.apache.myfaces.test.FacesTestCase;
 import org.junit.Assert;

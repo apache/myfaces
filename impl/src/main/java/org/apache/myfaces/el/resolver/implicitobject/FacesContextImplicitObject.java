@@ -20,7 +20,7 @@ package org.apache.myfaces.el.resolver.implicitobject;
 
 import java.beans.FeatureDescriptor;
 import javax.el.ELContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Encapsulates information needed by the ImplicitObjectResolver

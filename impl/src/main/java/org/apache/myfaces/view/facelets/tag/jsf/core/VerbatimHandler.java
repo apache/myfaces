@@ -18,11 +18,11 @@
  */
 package org.apache.myfaces.view.facelets.tag.jsf.core;
 
-import javax.faces.component.UIComponent;
-import javax.faces.view.facelets.ComponentConfig;
-import javax.faces.view.facelets.ComponentHandler;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TextHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.ComponentConfig;
+import jakarta.faces.view.facelets.ComponentHandler;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TextHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 import org.apache.myfaces.view.facelets.tag.TagHandlerUtils;

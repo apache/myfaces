@@ -23,15 +23,15 @@ import java.util.Arrays;
 
 import javax.el.ELException;
 import javax.el.MethodExpression;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.event.PhaseEvent;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
-import javax.faces.view.facelets.TagHandler;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.event.PhaseEvent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.TagAttribute;
+import jakarta.faces.view.facelets.TagConfig;
+import jakarta.faces.view.facelets.TagHandler;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
@@ -48,7 +48,7 @@ import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
 @JSFFaceletTag(
         name = "f:view",
         bodyContent = "empty", 
-        componentClass="javax.faces.component.UIViewRoot")
+        componentClass = "jakarta.faces.component.UIViewRoot")
 public final class ViewHandler extends TagHandler
 {
 

@@ -25,10 +25,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * @author Mathias Broekelmann (latest modification by $Author: mbr $)

@@ -30,17 +30,17 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.application.ViewResource;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.Facelet;
-import javax.faces.view.facelets.FaceletCache;
-import javax.faces.view.facelets.FaceletCacheFactory;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.FaceletException;
-import javax.faces.view.facelets.FaceletHandler;
-import javax.faces.view.facelets.ResourceResolver;
+import jakarta.faces.FacesException;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.ViewResource;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.Facelet;
+import jakarta.faces.view.facelets.FaceletCache;
+import jakarta.faces.view.facelets.FaceletCacheFactory;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.FaceletException;
+import jakarta.faces.view.facelets.FaceletHandler;
+import jakarta.faces.view.facelets.ResourceResolver;
 import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.resource.ResourceLoaderUtils;

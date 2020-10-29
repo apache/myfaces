@@ -23,8 +23,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;

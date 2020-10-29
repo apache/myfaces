@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.event;
 
-import javax.faces.application.StateManager;
+import jakarta.faces.application.StateManager;
 
 public class PostAddToViewEventNoPssTestCase extends PostAddToViewEventTestCase
 {

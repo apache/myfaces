@@ -21,8 +21,8 @@ package org.apache.myfaces.el.resolver.implicitobject;
 import java.beans.FeatureDescriptor;
 import javax.el.ELContext;
 import javax.el.ELResolver;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Implementors of this class encapsulate the information needed to resolve the implicit object.

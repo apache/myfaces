@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.application.viewstate;
 
-import javax.faces.FacesWrapper;
-import javax.faces.render.ResponseStateManager;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.render.ResponseStateManager;
 import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
 
 public class StateCacheUtils

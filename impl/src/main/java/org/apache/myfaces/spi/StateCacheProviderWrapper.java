@@ -19,8 +19,8 @@
 
 package org.apache.myfaces.spi;
 
-import javax.faces.FacesWrapper;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.application.viewstate.StateCache;
 
 /**

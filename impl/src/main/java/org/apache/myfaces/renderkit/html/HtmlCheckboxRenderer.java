@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderers;
 import org.apache.myfaces.renderkit.html.base.HtmlCheckboxRendererBase;
@@ -31,8 +31,8 @@ import org.apache.myfaces.renderkit.html.base.HtmlCheckboxRendererBase;
  * @version $Revision$ $Date$
  */
 @JSFRenderers(renderers = {
-    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.SelectBoolean", type = "javax.faces.Checkbox"),   
-    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.SelectMany", type = "javax.faces.Checkbox")
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.SelectBoolean", type = "jakarta.faces.Checkbox"),
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.SelectMany", type = "jakarta.faces.Checkbox")
 })
 public class HtmlCheckboxRenderer extends HtmlCheckboxRendererBase
 {

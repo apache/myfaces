@@ -32,8 +32,8 @@ import org.apache.myfaces.spi.FacesConfigurationMerger;
 import org.apache.myfaces.spi.FacesConfigurationProvider;
 import org.apache.myfaces.spi.FacesConfigurationProviderFactory;
 
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

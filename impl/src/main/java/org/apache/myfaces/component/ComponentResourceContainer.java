@@ -20,8 +20,8 @@ package org.apache.myfaces.component;
 
 import java.io.IOException;
 
-import javax.faces.component.UIPanel;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 

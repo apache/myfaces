@@ -21,7 +21,7 @@ package org.apache.myfaces.application.viewstate;
 import org.apache.myfaces.util.token.CsrfSessionTokenFactory;
 import org.apache.myfaces.util.token.CsrfSessionTokenFactoryRandom;
 import org.apache.myfaces.util.token.CsrfSessionTokenFactorySecureRandom;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.config.MyfacesConfig;
 

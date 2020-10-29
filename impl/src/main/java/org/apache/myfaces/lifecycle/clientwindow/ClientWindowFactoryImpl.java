@@ -19,9 +19,9 @@
 package org.apache.myfaces.lifecycle.clientwindow;
 
 import org.apache.myfaces.util.token.TokenGenerator;
-import javax.faces.context.FacesContext;
-import javax.faces.lifecycle.ClientWindow;
-import javax.faces.lifecycle.ClientWindowFactory;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.lifecycle.ClientWindowFactory;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.util.WebConfigParamUtils;

@@ -23,7 +23,7 @@ import java.lang.annotation.Annotation;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.CDI;
-import javax.faces.flow.FlowScoped;
+import jakarta.faces.flow.FlowScoped;
 
 import org.apache.myfaces.flow.cdi.FlowScopedContextImpl;
 

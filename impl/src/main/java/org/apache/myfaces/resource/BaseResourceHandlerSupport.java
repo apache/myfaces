@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.resource;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.application.FacesServletMapping;
 import org.apache.myfaces.application.FacesServletMappingUtils;

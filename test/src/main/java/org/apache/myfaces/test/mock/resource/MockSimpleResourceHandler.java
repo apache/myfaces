@@ -21,11 +21,11 @@ package org.apache.myfaces.test.mock.resource;
 
 import org.apache.myfaces.test.mock.MockServletContext;
 
-import javax.faces.FacesException;
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;

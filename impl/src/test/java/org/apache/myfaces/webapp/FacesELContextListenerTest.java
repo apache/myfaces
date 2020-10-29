@@ -23,8 +23,8 @@ import static org.easymock.EasyMock.*;
 import javax.el.ELContext;
 import javax.el.ELContextEvent;
 import javax.el.ELContextListener;
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.test.mock.MockFacesContext;
 
 import org.apache.myfaces.test.mock.MockFacesContext12;

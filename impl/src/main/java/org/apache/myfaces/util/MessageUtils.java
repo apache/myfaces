@@ -26,12 +26,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.util.lang.ClassUtils;
 

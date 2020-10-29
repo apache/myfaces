@@ -20,8 +20,8 @@ package org.apache.myfaces.resource;
 
 import java.util.regex.Pattern;
 
-import javax.faces.context.FacesContext;
-import javax.faces.view.Location;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.Location;
 
 /**
  * Utility class when used in EL Expressions --&gt; #{resource}

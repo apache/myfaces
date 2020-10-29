@@ -27,7 +27,7 @@ import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.context.ResponseWriter;
 
 /**
  * Handles parsing EL Strings in accordance with the EL-API Specification. The parser accepts either <code>${..}</code>

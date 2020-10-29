@@ -20,7 +20,7 @@ package org.apache.myfaces.application.contracts;
 
 import java.util.List;
 import java.util.Set;
-import javax.faces.application.StateManager;
+import jakarta.faces.application.StateManager;
 
 import org.junit.Assert;
 import org.apache.myfaces.config.RuntimeConfig;

@@ -29,16 +29,16 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIOutput;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.convert.ConverterException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.convert.ConverterException;
 
 import org.apache.myfaces.renderkit.html.util.JSFAttr;
 import org.apache.myfaces.renderkit.RendererUtils;

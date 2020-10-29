@@ -19,7 +19,7 @@
 package org.apache.myfaces.el.resolver;
 
 import javax.el.ELContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.Map;

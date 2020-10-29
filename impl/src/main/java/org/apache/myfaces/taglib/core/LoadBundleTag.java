@@ -29,8 +29,8 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;

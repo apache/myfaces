@@ -20,10 +20,10 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import javax.faces.FactoryFinder;
+import jakarta.faces.FactoryFinder;
 
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.html.HtmlOutputLabel;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.html.HtmlOutputLabel;
 
 
 import org.apache.myfaces.test.base.junit.AbstractJsfConfigurableMockTestCase;

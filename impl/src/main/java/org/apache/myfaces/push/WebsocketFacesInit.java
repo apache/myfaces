@@ -20,7 +20,7 @@
 package org.apache.myfaces.push;
 
 import org.apache.myfaces.push.cdi.WebsocketApplicationSessionHolder;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 
 /**
  * Class to decouple websocket initialization steps and avoid load unwanted websocket API 

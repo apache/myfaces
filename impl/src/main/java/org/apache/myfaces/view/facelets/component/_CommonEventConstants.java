@@ -20,7 +20,7 @@ package org.apache.myfaces.view.facelets.component;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 
 /**
  *

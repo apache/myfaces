@@ -20,12 +20,12 @@ package org.apache.myfaces.el;
 
 import java.util.Iterator;
 
-import javax.faces.FactoryFinder;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
-import javax.faces.lifecycle.LifecycleFactory;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseEvent;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PhaseListener;
+import jakarta.faces.lifecycle.LifecycleFactory;
 
 /**
  * The class will initialize the resolver for JSP

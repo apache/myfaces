@@ -19,8 +19,8 @@
 package org.apache.myfaces.taglib.core;
 
 import javax.el.ValueExpression;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.event.ValueChangeListener;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.event.ValueChangeListener;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspAttribute;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFJspTag;

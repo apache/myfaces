@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.tag;
 
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.Metadata;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.Metadata;
 
 public class NullMetadata extends Metadata
 {

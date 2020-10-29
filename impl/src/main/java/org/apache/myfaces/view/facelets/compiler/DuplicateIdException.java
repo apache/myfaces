@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.view.facelets.compiler;
 
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
 
 /**
  * Indicates duplicate id as specified in spec 7.7.3 State Saving Methods.

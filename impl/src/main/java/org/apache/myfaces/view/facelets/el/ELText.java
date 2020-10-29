@@ -27,9 +27,9 @@ import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
-import javax.faces.component.UIComponent;
-import javax.faces.context.ResponseWriter;
-import javax.faces.view.Location;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.view.Location;
 import org.apache.myfaces.resource.ResourceELUtils;
 
 import org.apache.myfaces.view.facelets.AbstractFaceletContext;

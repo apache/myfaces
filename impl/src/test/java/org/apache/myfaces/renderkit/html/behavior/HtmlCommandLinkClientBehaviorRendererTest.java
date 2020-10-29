@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.renderkit.html.behavior;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.html.HtmlCommandLink;
-import javax.faces.component.html.HtmlForm;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlCommandLink;
+import jakarta.faces.component.html.HtmlForm;
 
 import org.apache.myfaces.application.NavigationHandlerImpl;
 import org.apache.myfaces.renderkit.ClientBehaviorEvents;

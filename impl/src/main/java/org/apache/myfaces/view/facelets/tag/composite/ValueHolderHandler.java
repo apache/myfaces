@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.view.facelets.tag.composite;
 
-import javax.faces.view.ValueHolderAttachedObjectTarget;
-import javax.faces.view.facelets.FaceletContext;
-import javax.faces.view.facelets.TagConfig;
+import jakarta.faces.view.ValueHolderAttachedObjectTarget;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagConfig;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFFaceletTag;
 

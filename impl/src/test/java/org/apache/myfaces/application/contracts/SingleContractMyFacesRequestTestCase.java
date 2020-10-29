@@ -22,10 +22,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.ResourceVisitOption;
-import javax.faces.application.StateManager;
-import javax.faces.component.UICommand;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.ResourceVisitOption;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.UICommand;
 
 
 import org.apache.myfaces.config.RuntimeConfig;

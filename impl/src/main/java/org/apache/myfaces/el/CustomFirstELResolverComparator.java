@@ -22,8 +22,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.el.ELResolver;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.config.RuntimeConfig;
 

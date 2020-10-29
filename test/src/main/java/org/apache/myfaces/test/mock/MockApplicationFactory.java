@@ -21,8 +21,8 @@ package org.apache.myfaces.test.mock;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
 
 /**
  * <p>Mock implementation of <code>ApplicationFactory</code>.</p>

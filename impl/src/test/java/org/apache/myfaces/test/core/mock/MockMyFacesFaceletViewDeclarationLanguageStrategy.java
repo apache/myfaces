@@ -20,10 +20,10 @@ package org.apache.myfaces.test.core.mock;
 
 import java.util.regex.Pattern;
 
-import javax.faces.application.ViewHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewDeclarationLanguage;
 
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 

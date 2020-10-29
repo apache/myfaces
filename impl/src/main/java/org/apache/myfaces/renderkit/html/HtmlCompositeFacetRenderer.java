@@ -20,8 +20,8 @@ package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.renderkit.html.base.HtmlRenderer;
@@ -32,7 +32,7 @@ import org.apache.myfaces.util.lang.Assert;
  * @author Leonardo Uribe (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-@JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.CompositeFacet")
+@JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.Output", type = "jakarta.faces.CompositeFacet")
 public class HtmlCompositeFacetRenderer extends HtmlRenderer
 {
     @Override

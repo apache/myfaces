@@ -30,14 +30,14 @@ import java.util.ResourceBundle;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
-import javax.faces.convert.EnumConverter;
+import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.ConverterException;
+import jakarta.faces.convert.EnumConverter;
 
 import junit.framework.TestCase;
 import org.apache.myfaces.test.MyFacesAsserts;

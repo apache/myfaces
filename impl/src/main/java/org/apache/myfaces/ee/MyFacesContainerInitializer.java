@@ -18,22 +18,22 @@
  */
 package org.apache.myfaces.ee;
 
-import javax.faces.application.ResourceDependencies;
-import javax.faces.application.ResourceDependency;
-import javax.faces.component.FacesComponent;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.FacesBehavior;
-import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
-import javax.faces.event.ListenerFor;
-import javax.faces.event.ListenersFor;
-import javax.faces.event.NamedEvent;
-import javax.faces.model.FacesDataModel;
-import javax.faces.render.FacesBehaviorRenderer;
-import javax.faces.render.FacesRenderer;
-import javax.faces.render.Renderer;
-import javax.faces.validator.FacesValidator;
-import javax.faces.validator.Validator;
+import jakarta.faces.application.ResourceDependencies;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.FacesBehavior;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.FacesConverter;
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.ListenersFor;
+import jakarta.faces.event.NamedEvent;
+import jakarta.faces.model.FacesDataModel;
+import jakarta.faces.render.FacesBehaviorRenderer;
+import jakarta.faces.render.FacesRenderer;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.validator.FacesValidator;
+import jakarta.faces.validator.Validator;
 import javax.servlet.annotation.HandlesTypes;
 
 // TODO: backward compatibility for TomEE

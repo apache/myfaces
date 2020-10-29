@@ -23,12 +23,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.render.ResponseStateManager;
-import javax.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.render.ResponseStateManager;
+import jakarta.faces.view.ViewDeclarationLanguage;
 import org.apache.myfaces.config.MyfacesConfig;
 
 import org.apache.myfaces.util.lang.ConcurrentLRUCache;
@@ -547,7 +547,7 @@ public class ViewIdSupport
      * <li>if null lookup the value for viewid by {@link javax.faces.context.ExternalContext#getRequestPathInfo()}
      * <li>if null lookup the value for viewid from the request attribute "javax.servlet.include.servlet_path"
      * <li>if null lookup the value for viewid by {@link javax.faces.context.ExternalContext#getRequestServletPath()}
-     * <li>if null throw a {@link javax.faces.FacesException}
+     * <li>if null throw a {@link jakarta.faces.FacesException}
      * </ul>
      */
     public String calculateViewId(FacesContext facesContext)

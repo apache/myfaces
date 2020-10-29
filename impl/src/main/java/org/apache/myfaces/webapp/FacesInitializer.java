@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.webapp;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
 /**

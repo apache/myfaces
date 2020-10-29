@@ -20,7 +20,7 @@ package org.apache.myfaces.spi;
 
 import org.apache.myfaces.config.element.FacesConfigData;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 
 /**
  * SPI that uses the FacesConfigurationProvider-SPI to get all FacesConfig data

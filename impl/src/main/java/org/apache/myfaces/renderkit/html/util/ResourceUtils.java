@@ -19,13 +19,13 @@
 package org.apache.myfaces.renderkit.html.util;
 
 import java.io.IOException;
-import javax.faces.FacesWrapper;
+import jakarta.faces.FacesWrapper;
 
-import javax.faces.application.Resource;
-import javax.faces.application.ResourceHandler;
-import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.application.Resource;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.context.ResponseWriter;
 
 import org.apache.myfaces.resource.ContractResource;
 

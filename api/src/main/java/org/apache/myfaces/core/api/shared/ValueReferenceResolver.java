@@ -21,8 +21,8 @@ package org.apache.myfaces.core.api.shared;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.el.ValueReference;
-import javax.faces.context.FacesContext;
-import javax.faces.el.CompositeComponentExpressionHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.CompositeComponentExpressionHolder;
 
 public class ValueReferenceResolver
 {

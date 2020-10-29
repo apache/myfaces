@@ -41,16 +41,16 @@ public class ManagedBeanExtension implements Extension
 
     public ManagedBeanExtension()
     {
-        mappings.put(javax.faces.bean.ApplicationScoped.class,
+        mappings.put(jakarta.faces.bean.ApplicationScoped.class,
                 javax.enterprise.context.ApplicationScoped.class);
-        mappings.put(javax.faces.bean.SessionScoped.class,
+        mappings.put(jakarta.faces.bean.SessionScoped.class,
                 javax.enterprise.context.SessionScoped.class);
-        mappings.put(javax.faces.bean.RequestScoped.class,
+        mappings.put(jakarta.faces.bean.RequestScoped.class,
                 javax.enterprise.context.RequestScoped.class);
-        mappings.put(javax.faces.bean.NoneScoped.class,
+        mappings.put(jakarta.faces.bean.NoneScoped.class,
                 javax.enterprise.context.Dependent.class);
-        mappings.put(javax.faces.bean.ViewScoped.class,
-                javax.faces.view.ViewScoped.class);
+        mappings.put(jakarta.faces.bean.ViewScoped.class,
+                jakarta.faces.view.ViewScoped.class);
         
         literals.put(javax.enterprise.context.ApplicationScoped.class,
                 new ApplicationScopedLiteral());
@@ -60,7 +60,7 @@ public class ManagedBeanExtension implements Extension
                 new RequestScopedLiteral());
         literals.put(javax.enterprise.context.Dependent.class,
                 new DependentScopeLiteral());
-        literals.put(javax.faces.view.ViewScoped.class,
+        literals.put(jakarta.faces.view.ViewScoped.class,
                 new ViewScopedLiteral());
     }
 
@@ -68,7 +68,7 @@ public class ManagedBeanExtension implements Extension
     {
         Class<?> clazz = pat.getAnnotatedType().getJavaClass();
 
-        javax.faces.bean.ManagedBean managedBean = clazz.getAnnotation(javax.faces.bean.ManagedBean.class);
+        jakarta.faces.bean.ManagedBean managedBean = clazz.getAnnotation(jakarta.faces.bean.ManagedBean.class);
         if (managedBean != null)
         {
             Class<? extends Annotation> oldScope = resolveScope(pat);

@@ -18,9 +18,9 @@
  */
 package org.apache.myfaces.test.core.mock;
 
-import javax.faces.FacesException;
-import javax.faces.view.ViewDeclarationLanguage;
-import javax.faces.view.ViewDeclarationLanguageFactory;
+import jakarta.faces.FacesException;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.view.ViewDeclarationLanguageFactory;
 
 import org.apache.myfaces.view.ViewDeclarationLanguageStrategy;
 

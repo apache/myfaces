@@ -28,7 +28,7 @@ import javax.el.ELResolver;
 import javax.el.MethodExpression;
 import javax.el.MethodInfo;
 import javax.el.MethodNotFoundException;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>Mock implementation of <code>MethodExpression</code>.</p>

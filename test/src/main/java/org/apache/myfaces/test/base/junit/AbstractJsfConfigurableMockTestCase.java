@@ -22,17 +22,17 @@ package org.apache.myfaces.test.base.junit;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.FacesContextFactory;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.FacesContextFactory;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.lifecycle.LifecycleFactory;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
 import junit.framework.TestCase;
 
 import org.apache.myfaces.test.config.ResourceBundleVarNames;

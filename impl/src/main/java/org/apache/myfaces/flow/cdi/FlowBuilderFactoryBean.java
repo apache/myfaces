@@ -20,8 +20,8 @@ package org.apache.myfaces.flow.cdi;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import javax.faces.flow.builder.FlowBuilder;
-import javax.faces.flow.builder.FlowBuilderParameter;
+import jakarta.faces.flow.builder.FlowBuilder;
+import jakarta.faces.flow.builder.FlowBuilderParameter;
 import javax.inject.Named;
 
 import org.apache.myfaces.flow.builder.FlowBuilderImpl;

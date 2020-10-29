@@ -20,10 +20,10 @@ package org.apache.myfaces.renderkits;
 
 import java.io.StringWriter;
 
-import javax.faces.FactoryFinder;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.render.RenderKit;
+import jakarta.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.renderkit.html.HtmlTextRenderer;
 import org.apache.myfaces.util.lang.ClassUtils;

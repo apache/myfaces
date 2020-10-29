@@ -18,10 +18,10 @@
  */
 package org.apache.myfaces.test.mock;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.lifecycle.ClientWindow;
-import javax.faces.lifecycle.ClientWindowFactory;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.faces.lifecycle.ClientWindowFactory;
 
 /**
  *

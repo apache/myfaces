@@ -20,10 +20,10 @@ package org.apache.myfaces.taglib.core;
 
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.JspException;
-import javax.faces.webapp.UIComponentClassicTagBase;
-import javax.faces.webapp.UIComponentELTag;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import jakarta.faces.webapp.UIComponentClassicTagBase;
+import jakarta.faces.webapp.UIComponentELTag;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 import javax.el.ValueExpression;
 import javax.el.ELContext;
 

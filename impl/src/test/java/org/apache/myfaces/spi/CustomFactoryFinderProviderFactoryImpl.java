@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.spi;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 public class CustomFactoryFinderProviderFactoryImpl extends FactoryFinderProviderFactory
 {

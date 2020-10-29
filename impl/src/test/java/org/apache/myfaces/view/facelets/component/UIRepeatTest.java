@@ -25,11 +25,11 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.component.UIData;
-import javax.faces.component.UIDataTest.RowData;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.event.PhaseId;
+import jakarta.faces.component.UIData;
+import jakarta.faces.component.UIDataTest.RowData;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.event.PhaseId;
 
 import org.apache.myfaces.test.MyFacesAsserts;
 import org.apache.myfaces.test.TestRunner;

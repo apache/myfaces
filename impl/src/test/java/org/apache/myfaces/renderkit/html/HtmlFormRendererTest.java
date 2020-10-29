@@ -21,8 +21,8 @@ package org.apache.myfaces.renderkit.html;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import javax.faces.component.behavior.AjaxBehavior;
-import javax.faces.component.html.HtmlForm;
+import jakarta.faces.component.behavior.AjaxBehavior;
+import jakarta.faces.component.html.HtmlForm;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

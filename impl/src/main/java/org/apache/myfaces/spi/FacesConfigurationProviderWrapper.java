@@ -20,8 +20,8 @@ package org.apache.myfaces.spi;
 
 import java.util.List;
 
-import javax.faces.FacesWrapper;
-import javax.faces.context.ExternalContext;
+import jakarta.faces.FacesWrapper;
+import jakarta.faces.context.ExternalContext;
 
 import org.apache.myfaces.config.element.FacesConfig;
 

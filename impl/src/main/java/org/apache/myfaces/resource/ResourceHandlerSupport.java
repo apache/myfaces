@@ -18,8 +18,8 @@
  */
 package org.apache.myfaces.resource;
 
-import javax.faces.application.ResourceHandler;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.ResourceHandler;
+import jakarta.faces.context.FacesContext;
 
 /**
  * A utility class to isolate a ResourceHandler implementation from its

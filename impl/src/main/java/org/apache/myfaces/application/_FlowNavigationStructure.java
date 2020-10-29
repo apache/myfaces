@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.faces.application.NavigationCase;
+import jakarta.faces.application.NavigationCase;
 
 /**
  * This class contains the navigation structure of a flow, including

@@ -24,16 +24,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UISelectMany;
-import javax.faces.component.UISelectOne;
-import javax.faces.component.behavior.ClientBehavior;
-import javax.faces.component.behavior.ClientBehaviorHolder;
-import javax.faces.component.html.HtmlSelectManyMenu;
-import javax.faces.component.html.HtmlSelectOneMenu;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UISelectMany;
+import jakarta.faces.component.UISelectOne;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlSelectManyMenu;
+import jakarta.faces.component.html.HtmlSelectOneMenu;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.ConverterException;
 
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;

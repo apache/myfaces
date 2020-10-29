@@ -25,7 +25,7 @@ import java.io.ObjectOutputStream;
 
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
-import javax.faces.view.Location;
+import jakarta.faces.view.Location;
 
 import org.apache.myfaces.view.facelets.FaceletTestCase;
 import org.apache.myfaces.view.facelets.tag.TagAttributeImpl;

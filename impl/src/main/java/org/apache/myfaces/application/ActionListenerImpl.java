@@ -19,18 +19,18 @@
 package org.apache.myfaces.application;
 
 import javax.el.MethodExpression;
-import javax.faces.application.Application;
-import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.NavigationCase;
-import javax.faces.application.NavigationHandler;
-import javax.faces.component.ActionSource2;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ActionListener;
-import javax.faces.event.PhaseId;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ConfigurableNavigationHandler;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.component.ActionSource2;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.event.PhaseId;
 import org.apache.myfaces.view.facelets.ViewPoolProcessor;
 import org.apache.myfaces.view.facelets.pool.ViewPool;
 

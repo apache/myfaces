@@ -20,8 +20,8 @@ package org.apache.myfaces.view.facelets.el;
 
 import java.io.StringWriter;
 import javax.el.ExpressionFactory;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.test.mock.MockResponseWriter;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;

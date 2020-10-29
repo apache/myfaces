@@ -18,7 +18,7 @@
  */
 package org.apache.myfaces.renderkit.html;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderers;
 import org.apache.myfaces.renderkit.html.base.HtmlMenuRendererBase;
@@ -29,8 +29,8 @@ import org.apache.myfaces.renderkit.html.base.HtmlMenuRendererBase;
  * @version $Revision$ $Date$
  */
 @JSFRenderers(renderers={
-    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.SelectOne", type = "javax.faces.Menu"),    
-    @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.SelectMany",type = "javax.faces.Menu")
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.SelectOne", type = "jakarta.faces.Menu"),    
+    @JSFRenderer(renderKitId = "HTML_BASIC", family = "jakarta.faces.SelectMany",type = "jakarta.faces.Menu")
 })
 public class HtmlMenuRenderer extends HtmlMenuRendererBase
 {

@@ -21,16 +21,16 @@ package org.apache.myfaces.view.facelets.tag.jsf.html;
 
 import java.io.StringWriter;
 import javax.el.MethodExpression;
-import javax.faces.component.ActionSource2;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIParameter;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.html.HtmlCommandButton;
-import javax.faces.component.html.HtmlForm;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlPanelGrid;
+import jakarta.faces.component.ActionSource2;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.html.HtmlCommandButton;
+import jakarta.faces.component.html.HtmlForm;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.component.html.HtmlPanelGrid;
 
 import org.apache.myfaces.renderkit.html.HtmlButtonRenderer;
 import org.apache.myfaces.renderkit.html.HtmlFormRenderer;
