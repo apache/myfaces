@@ -40,7 +40,7 @@ public class RenderKitFactoryImpl extends RenderKitFactory
 {
     private static final Logger log = Logger.getLogger(RenderKitFactoryImpl.class.getName());
 
-    private Map<String, RenderKit> _renderkits = new HashMap<String, RenderKit>();
+    private Map<String, RenderKit> _renderkits = new HashMap<>();
 
     public RenderKitFactoryImpl()
     {
