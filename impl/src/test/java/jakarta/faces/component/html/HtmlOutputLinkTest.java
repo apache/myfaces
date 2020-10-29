@@ -26,12 +26,12 @@ public class HtmlOutputLinkTest
 {
 
     /**
-     * Test method for {@link javax.faces.component.UIComponentBase#getRendererType()}.
+     * Test method for {@link jakarta.faces.component.UIComponentBase#getRendererType()}.
      */
     @Test
     public void testRendererType()
     {
-        Assert.assertEquals("javax.faces.Link", new HtmlOutputLink().getRendererType());
+        Assert.assertEquals("jakarta.faces.Link", new HtmlOutputLink().getRendererType());
     }
 
 }
